@@ -49,8 +49,8 @@ func newBuildPod(ctx context.Context, c client.Client, build *api.ContainerBuild
 			Namespace: build.Namespace,
 			Name:      buildPodName(build),
 			Labels: map[string]string{
-				"kie.kogito.org/containerBuildContext": build.Name,
-				"kie.kogito.org/component":             "builder",
+				"sonataflow.org/containerBuildContext": build.Name,
+				"sonataflow.org/component":             "builder",
 			},
 		},
 		Spec: corev1.PodSpec{
@@ -72,7 +72,7 @@ func newBuildPod(ctx context.Context, c client.Client, build *api.ContainerBuild
 }
 
 func buildPodName(build *api.ContainerBuild) string {
-	return "kogito-" + strings.ToLower(build.Name) + "-builder"
+	return "sonataflow-" + strings.ToLower(build.Name) + "-builder"
 }
 
 func getBuilderPod(ctx context.Context, c client.Client, build *api.ContainerBuild) (*corev1.Pod, error) {

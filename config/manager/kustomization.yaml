@@ -9,7 +9,7 @@ configMapGenerator:
   - controller_manager_config.yaml
   name: manager-config
 - files:
-  - Dockerfile=kogito_builder_dockerfile.yaml
+  - Dockerfile=sonataflow_builder_dockerfile.yaml
   literals:
   - DEFAULT_BUILDER_RESOURCE_NAME=Dockerfile
   - DEFAULT_WORKFLOW_EXTENSION=.sw.json

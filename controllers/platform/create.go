@@ -33,11 +33,11 @@ func (action *createAction) Name() string {
 	return "create"
 }
 
-func (action *createAction) CanHandle(platform *v08.KogitoServerlessPlatform) bool {
+func (action *createAction) CanHandle(platform *v08.SonataFlowPlatform) bool {
 	return platform.Status.Phase == v08.PlatformPhaseCreating
 }
 
-func (action *createAction) Handle(ctx context.Context, platform *v08.KogitoServerlessPlatform) (*v08.KogitoServerlessPlatform, error) {
+func (action *createAction) Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, error) {
 	//TODO: Perform the actions needed for the Platform creation
 	platform.Status.Phase = v08.PlatformPhaseReady
 

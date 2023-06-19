@@ -52,26 +52,26 @@ func SetTypeToObject(obj runtime.Object, s *runtime.Scheme) error {
 }
 
 // GetWorkflowPropertiesConfigMapName gets the default ConfigMap name that holds the application property for the given workflow
-func GetWorkflowPropertiesConfigMapName(workflow *operatorapi.KogitoServerlessWorkflow) string {
+func GetWorkflowPropertiesConfigMapName(workflow *operatorapi.SonataFlow) string {
 	return workflow.Name + workflowConfigMapNameSuffix
 }
 
 // SetDefaultLabels adds the default workflow application labels to the given object.
 // Overrides the defined labels.
-func SetDefaultLabels(workflow *operatorapi.KogitoServerlessWorkflow, object metav1.Object) {
+func SetDefaultLabels(workflow *operatorapi.SonataFlow, object metav1.Object) {
 	object.SetLabels(GetDefaultLabels(workflow))
 }
 
 // GetDefaultLabels gets the default labels based on the given workflow.
 // You can use SetDefaultLabels that essentially does the same thing, if you don't need the labels explicitly.
-func GetDefaultLabels(workflow *operatorapi.KogitoServerlessWorkflow) map[string]string {
+func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	return map[string]string{
 		LabelApp: workflow.Name,
 	}
 }
 
 // CreateNewAppPropsConfigMap creates a new ConfigMap object to hold the workflow application properties.
-func CreateNewAppPropsConfigMap(workflow *operatorapi.KogitoServerlessWorkflow, properties string) *corev1.ConfigMap {
+func CreateNewAppPropsConfigMap(workflow *operatorapi.SonataFlow, properties string) *corev1.ConfigMap {
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      GetWorkflowPropertiesConfigMapName(workflow),
@@ -83,7 +83,7 @@ func CreateNewAppPropsConfigMap(workflow *operatorapi.KogitoServerlessWorkflow, 
 }
 
 // SetWorkflowProfile adds the profile annotation to the workflow
-func SetWorkflowProfile(workflow *operatorapi.KogitoServerlessWorkflow, profile metadata.ProfileType) {
+func SetWorkflowProfile(workflow *operatorapi.SonataFlow, profile metadata.ProfileType) {
 	if workflow.Annotations == nil {
 		workflow.Annotations = map[string]string{}
 	}

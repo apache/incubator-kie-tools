@@ -22,7 +22,7 @@ env:
 jobs:
   e2e:
     concurrency:
-      group: kogito-serverless-operator-e2e-tests-${{ github.head_ref }}
+      group: sonataflow-operator-e2e-tests-${{ github.head_ref }}
       cancel-in-progress: true
     timeout-minutes: 120
     runs-on: ubuntu-latest

@@ -30,10 +30,10 @@ import (
 
 const KogitoWorkflowJSONFileExt = ".sw.json"
 
-// CreateNewConfigMap creates a new configMap object instance with the workflow definition based on the given KogitoServerlessWorkflow custom resource.
+// CreateNewConfigMap creates a new configMap object instance with the workflow definition based on the given SonataFlow custom resource.
 // It does not persist the CM into the Kubernetes storage.
 // The name and namespace are the same of the given CR.
-func CreateNewConfigMap(workflow *operatorapi.KogitoServerlessWorkflow) (*corev1.ConfigMap, error) {
+func CreateNewConfigMap(workflow *operatorapi.SonataFlow) (*corev1.ConfigMap, error) {
 	workflowDef, err := GetJSONWorkflow(workflow, context.TODO())
 	if err != nil {
 		return nil, err
@@ -49,7 +49,7 @@ func CreateNewConfigMap(workflow *operatorapi.KogitoServerlessWorkflow) (*corev1
 
 // FetchExternalResourcesConfigMapsRef fetches the Resource ConfigMaps into a LocalObjectReference that a client can mount to the workflow application.
 // The map format is map[<resource_type>]<ConfigMap_reference>. For example map["resource-openapi"]{MyOpenApisConfigMap}
-func FetchExternalResourcesConfigMapsRef(client client.Client, workflow *operatorapi.KogitoServerlessWorkflow) ([]operatorapi.ConfigMapWorkflowResource, error) {
+func FetchExternalResourcesConfigMapsRef(client client.Client, workflow *operatorapi.SonataFlow) ([]operatorapi.ConfigMapWorkflowResource, error) {
 	var externalConfigMaps []operatorapi.ConfigMapWorkflowResource
 	for _, res := range workflow.Spec.Resources.ConfigMaps {
 		// check if there's a valid reference of the given CM

@@ -25,7 +25,7 @@ import (
 )
 
 type ObjectEnsurer interface {
-	ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error)
+	ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error)
 }
 
 // newDefaultObjectEnsurer see defaultObjectEnsurer
@@ -64,7 +64,7 @@ type dummyObjectEnsurer struct {
 // Example: `object.(*appsv1.Deployment).Spec.Template.Name="myApp"` to change the pod's name.
 type mutateVisitor func(object client.Object) controllerutil.MutateFn
 
-func (d *defaultObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
+func (d *defaultObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
 	result := controllerutil.OperationResultNone
 
 	object, err := d.creator(workflow)
@@ -86,7 +86,7 @@ func (d *defaultObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi
 	return object, result, nil
 }
 
-func (d *dummyObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
+func (d *dummyObjectEnsurer) ensure(ctx context.Context, workflow *operatorapi.SonataFlow, visitors ...mutateVisitor) (client.Object, controllerutil.OperationResult, error) {
 	result := controllerutil.OperationResultNone
 	return nil, result, nil
 }

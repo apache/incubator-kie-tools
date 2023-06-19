@@ -33,13 +33,13 @@ import (
 type buildManagerContext struct {
 	ctx          context.Context
 	client       client.Client
-	platform     *operatorapi.KogitoServerlessPlatform
+	platform     *operatorapi.SonataFlowPlatform
 	commonConfig *v1.ConfigMap
 }
 
 type BuildManager interface {
-	Schedule(build *operatorapi.KogitoServerlessBuild) error
-	Reconcile(build *operatorapi.KogitoServerlessBuild) error
+	Schedule(build *operatorapi.SonataFlowBuild) error
+	Reconcile(build *operatorapi.SonataFlowBuild) error
 }
 
 func NewBuildManager(ctx context.Context, client client.Client, cliConfig *rest.Config, targetName, targetNamespace string) (BuildManager, error) {
@@ -54,7 +54,7 @@ func NewBuildManager(ctx context.Context, client client.Client, cliConfig *rest.
 	}
 	commonConfig, err := GetCommonConfigMap(client, targetNamespace)
 	if err != nil {
-		logger.Error(err, "Failed to get common configMap for Workflow Builder. Make sure that kogito-serverless-operator-builder-config is present in the operator namespace.")
+		logger.Error(err, "Failed to get common configMap for Workflow Builder. Make sure that sonataflow-operator-builder-config is present in the operator namespace.")
 		return nil, err
 	}
 	managerContext := buildManagerContext{
@@ -69,13 +69,13 @@ func NewBuildManager(ctx context.Context, client client.Client, cliConfig *rest.
 	case operatorapi.PlatformClusterKubernetes:
 		return newContainerBuilderManager(managerContext, cliConfig), nil
 	default:
-		logger.Info("Impossible to check the Cluster type in the KogitoServerlessPlatform")
+		logger.Info("Impossible to check the Cluster type in the SonataFlowPlatform")
 		return newContainerBuilderManager(managerContext, cliConfig), nil
 	}
 }
 
 // fetchWorkflowDefinitionAndImageTag fetches the workflow instance by name and namespace and convert it to JSON bytes.
-func (b *buildManagerContext) fetchWorkflowDefinitionAndImageTag(build *operatorapi.KogitoServerlessBuild) (workflowDef []byte, imageTag string, err error) {
+func (b *buildManagerContext) fetchWorkflowDefinitionAndImageTag(build *operatorapi.SonataFlowBuild) (workflowDef []byte, imageTag string, err error) {
 	instance, err := b.fetchWorkflowForBuild(build)
 	if err != nil {
 		return nil, "", err
@@ -88,8 +88,8 @@ func (b *buildManagerContext) fetchWorkflowDefinitionAndImageTag(build *operator
 }
 
 // fetchWorkflowForBuild fetches the k8s API for the workflow from the given build
-func (b *buildManagerContext) fetchWorkflowForBuild(build *operatorapi.KogitoServerlessBuild) (workflow *operatorapi.KogitoServerlessWorkflow, err error) {
-	workflow = &operatorapi.KogitoServerlessWorkflow{}
+func (b *buildManagerContext) fetchWorkflowForBuild(build *operatorapi.SonataFlowBuild) (workflow *operatorapi.SonataFlow, err error) {
+	workflow = &operatorapi.SonataFlow{}
 	if err = b.client.Get(b.ctx, client.ObjectKeyFromObject(build), workflow); err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerBinding
 metadata:
   name: kogito-serverless-operator-trigger-binding
-  namespace: kogito-serverless-operator-system
+  namespace: sonataflow-operator-system
 spec:
   params:
     - name: git-repo-url

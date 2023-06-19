@@ -36,7 +36,7 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
-const timeoutAnnotation = "kogito.kie.org/timeout"
+const timeoutAnnotation = "sonataflow.org/timeout"
 
 func newMonitorPodAction() Action {
 	return &monitorPodAction{}

@@ -47,11 +47,11 @@ func (action *initializeAction) Name() string {
 	return "initialize"
 }
 
-func (action *initializeAction) CanHandle(platform *operatorapi.KogitoServerlessPlatform) bool {
+func (action *initializeAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bool {
 	return platform.Status.Phase == "" || platform.Status.Phase == operatorapi.PlatformPhaseDuplicate
 }
 
-func (action *initializeAction) Handle(ctx context.Context, platform *operatorapi.KogitoServerlessPlatform) (*operatorapi.KogitoServerlessPlatform, error) {
+func (action *initializeAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	duplicate, err := action.isPrimaryDuplicate(ctx, platform)
 	if err != nil {
 		return nil, err
@@ -81,7 +81,7 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 			if err != nil {
 				return nil, err
 			}
-			// Create the Kaniko warmer pod that caches the base image into the Kogito Serverless builder volume
+			// Create the Kaniko warmer pod that caches the base image into the SonataFlow builder volume
 			action.Logger.Info("Create Kaniko cache warmer pod")
 			err = createKanikoCacheWarmerPod(ctx, action.client, platform)
 			if err != nil {
@@ -102,7 +102,7 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 
 // TODO: move this to Kaniko packages based on the platform context
 
-func createPersistentVolumeClaim(ctx context.Context, client client.Client, platform *operatorapi.KogitoServerlessPlatform) error {
+func createPersistentVolumeClaim(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform) error {
 	volumeSize, err := resource.ParseQuantity(defaultKanikoPVCSize)
 	if err != nil {
 		return err
@@ -147,7 +147,7 @@ func createPersistentVolumeClaim(ctx context.Context, client client.Client, plat
 }
 
 // Function to double-check if there is already an active platform on the current context (i.e. namespace)
-func (action *initializeAction) isPrimaryDuplicate(ctx context.Context, thisPlatform *operatorapi.KogitoServerlessPlatform) (bool, error) {
+func (action *initializeAction) isPrimaryDuplicate(ctx context.Context, thisPlatform *operatorapi.SonataFlowPlatform) (bool, error) {
 	if IsSecondary(thisPlatform) {
 		// Always reconcile secondary platforms
 		return false, nil

@@ -1,0 +1,57 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: sonataflow-operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: SonataFlowBuild is the Schema for the sonataflowbuilds API
+      displayName: Sonata Flow Build
+      kind: SonataFlowBuild
+      name: sonataflowbuilds.sonataflow.org
+      version: v1alpha08
+    - description: SonataFlowPlatform is the Schema for the sonataflowplatforms API
+      displayName: Sonata Flow Platform
+      kind: SonataFlowPlatform
+      name: sonataflowplatforms.sonataflow.org
+      version: v1alpha08
+    - description: SonataFlow is the Schema for the sonataflows API
+      displayName: Sonata Flow
+      kind: SonataFlow
+      name: sonataflows.sonataflow.org
+      version: v1alpha08
+  description: Sonata Flow Operator
+  displayName: sonataflow-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - sonataflow
+  - cncf
+  - serverless
+  - serverlessworkflow
+  links:
+  - name: Sonata Flow Operator
+    url: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html
+  maturity: alpha
+  provider:
+    name: sonataflow-operator
+  version: 0.0.0

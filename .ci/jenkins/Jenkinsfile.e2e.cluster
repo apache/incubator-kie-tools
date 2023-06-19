@@ -181,9 +181,9 @@ void executeInCluster(Closure executeClosure) {
 void getPlatformCRFilePath() {
     switch (getClusterName()) {
         case minikubeClusterPlatform:
-            return 'config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml'
+            return 'config/samples/sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml'
         case openshiftClusterPlatform:
-            return 'config/samples/sw.kogito_v1alpha08_kogitoserverlessplatform_openshift.yaml'
+            return 'config/samples/sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml'
         default:
             error "Unknown cluster name ${getClusterName()}. Cannot execute anything ..."
     }

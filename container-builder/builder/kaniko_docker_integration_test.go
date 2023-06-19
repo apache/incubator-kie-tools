@@ -48,7 +48,7 @@ func (suite *KanikoDockerTestSuite) TestKanikoBuild() {
 		VerbosityLevel:         "info",
 		KanikoExecutorImage:    EXECUTOR_IMAGE,
 		ContainerName:          "kaniko-build",
-		DockerFileName:         "Kogito.dockerfile",
+		DockerFileName:         "SonataFlow.dockerfile",
 		RegistryFinalImageName: imageName,
 		ReadBuildOutput:        false,
 	}

@@ -24,7 +24,7 @@ import (
 )
 
 func Test_ensureWorkflowDevServiceIsExposed(t *testing.T) {
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 
 	//On Kubernetes we want the service exposed in Dev with NodePort
 	service, _ := devServiceCreator(workflow)

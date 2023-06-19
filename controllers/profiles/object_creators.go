@@ -62,11 +62,11 @@ var defaultProdApplicationProperties = defaultDevApplicationProperties
 
 // objectCreator is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.
 // Can be used as a reference to keep the object immutable
-type objectCreator func(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error)
+type objectCreator func(workflow *operatorapi.SonataFlow) (client.Object, error)
 
 // defaultDeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
-func defaultDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func defaultDeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	lbl := workflowproj.GetDefaultLabels(workflow)
 	size := int32(1)
 	deployment := &appsv1.Deployment{
@@ -143,7 +143,7 @@ func naiveApplyImageDeploymentMutateVisitor(image string) mutateVisitor {
 }
 
 // defaultDeploymentMutateVisitor guarantees the state of the default Deployment object
-func defaultDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+func defaultDeploymentMutateVisitor(workflow *operatorapi.SonataFlow) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -180,7 +180,7 @@ func ensureDefaultDeployment(original *appsv1.Deployment, object *appsv1.Deploym
 
 // defaultServiceCreator is an objectCreator for a basic Service aiming a vanilla Kubernetes Deployment.
 // It maps the default HTTP port (80) to the target Java application webserver on port 8080.
-func defaultServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func defaultServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	lbl := workflowproj.GetDefaultLabels(workflow)
 
 	service := &corev1.Service{
@@ -206,12 +206,12 @@ func defaultServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (clie
 // running on OpenShift.
 // It enables the exposition of the dev service using an OpenShift Route.
 // See: https://github.com/openshift/api/blob/d170fcdc0fa638b664e4f35f2daf753cb4afe36b/route/v1/route.crd.yaml
-func defaultNetworkCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func defaultNetworkCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	route, err := openshift.RouteForWorkflow(workflow)
 	return route, err
 }
 
-func defaultServiceMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+func defaultServiceMutateVisitor(workflow *operatorapi.SonataFlow) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -228,7 +228,7 @@ func defaultServiceMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow)
 	}
 }
 
-func ensureWorkflowPropertiesConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow, defaultProperties string) mutateVisitor {
+func ensureWorkflowPropertiesConfigMapMutator(workflow *operatorapi.SonataFlow, defaultProperties string) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -263,11 +263,11 @@ func ensureWorkflowPropertiesConfigMapMutator(workflow *operatorapi.KogitoServer
 	}
 }
 
-func ensureProdWorkflowPropertiesConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+func ensureProdWorkflowPropertiesConfigMapMutator(workflow *operatorapi.SonataFlow) mutateVisitor {
 	return ensureWorkflowPropertiesConfigMapMutator(workflow, defaultProdApplicationProperties)
 }
 
 // workflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
-func workflowPropsConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func workflowPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	return workflowproj.CreateNewAppPropsConfigMap(workflow, defaultDevApplicationProperties), nil
 }

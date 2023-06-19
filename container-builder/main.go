@@ -38,11 +38,11 @@ Usage example. Please note that you must have a valid Kubernetes environment up 
 func main() {
 	cli, err := client.NewOutOfClusterClient("")
 
-	dockerFile, err := os.ReadFile("examples/dockerfiles/Kogito.dockerfile")
+	dockerFile, err := os.ReadFile("examples/dockerfiles/SonataFlow.dockerfile")
 	if err != nil {
 		panic("Can't read dockerfile")
 	}
-	source, err := os.ReadFile("examples/sources/kogitogreetings.sw.json")
+	source, err := os.ReadFile("examples/sources/sonataflowgreetings.sw.json")
 	if err != nil {
 		panic("Can't read source file")
 	}
@@ -53,7 +53,7 @@ func main() {
 	}
 	platform := api.PlatformContainerBuild{
 		ObjectReference: api.ObjectReference{
-			Namespace: "kogito-builder",
+			Namespace: "sonataflow-builder",
 			Name:      "testPlatform",
 		},
 		Spec: api.PlatformContainerBuildSpec{
@@ -71,7 +71,7 @@ func main() {
 	cpuQty, _ := resource2.ParseQuantity("1")
 	memQty, _ := resource2.ParseQuantity("4Gi")
 
-	build, err := builder.NewBuild(builder.ContainerBuilderInfo{FinalImageName: "greetings:latest", BuildUniqueName: "kogito-test", Platform: platform}).
+	build, err := builder.NewBuild(builder.ContainerBuilderInfo{FinalImageName: "greetings:latest", BuildUniqueName: "sonataflow-test", Platform: platform}).
 		WithResource("Dockerfile", dockerFile).WithResource("greetings.sw.json", source).
 		WithAdditionalArgs([]string{"--build-arg=QUARKUS_PACKAGE_TYPE=mutable-jar", "--build-arg=QUARKUS_LAUNCH_DEVMODE=true", "--build-arg=SCRIPT_DEBUG=false"}).
 		WithResourceRequirements(v1.ResourceRequirements{

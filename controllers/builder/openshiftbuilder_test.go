@@ -33,9 +33,9 @@ import (
 func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	// Setup
 	ns := t.Name()
-	workflow := test.GetBaseServerlessWorkflow(ns)
+	workflow := test.GetBaseSonataFlow(ns)
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	config := test.GetKogitoServerlessOperatorBuilderConfig("../../", ns)
+	config := test.GetSonataFlowBuilderConfig("../../", ns)
 	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
 	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config).Build()
 	buildClient := buildfake.NewSimpleClientset().BuildV1()
@@ -51,7 +51,7 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	// End Setup
 
 	// Schedule a build
-	kogitoBuildManager := NewKogitoServerlessBuildManager(context.TODO(), client)
+	kogitoBuildManager := NewSonataFlowBuildManager(context.TODO(), client)
 	kbuild, err := kogitoBuildManager.GetOrCreateBuild(workflow)
 	assert.NoError(t, err)
 	assert.NotNil(t, kbuild)
@@ -87,9 +87,9 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 
 func Test_openshiftbuilder_externalCMs(t *testing.T) {
 	ns := t.Name()
-	workflow := test.GetBaseServerlessWorkflow(ns)
+	workflow := test.GetBaseSonataFlow(ns)
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	config := test.GetKogitoServerlessOperatorBuilderConfig("../../", ns)
+	config := test.GetSonataFlowBuilderConfig("../../", ns)
 	externalCm := &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "myopenapis",
@@ -114,7 +114,7 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 	// End Setup
 
 	// Schedule a build
-	kogitoBuildManager := NewKogitoServerlessBuildManager(context.TODO(), client)
+	kogitoBuildManager := NewSonataFlowBuildManager(context.TODO(), client)
 	kbuild, err := kogitoBuildManager.GetOrCreateBuild(workflow)
 	assert.NoError(t, err)
 

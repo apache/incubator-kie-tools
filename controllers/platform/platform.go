@@ -112,12 +112,12 @@ func GetOperatorLockName(operatorID string) string {
 }
 
 // GetActivePlatform returns the currently installed active platform in the local namespace.
-func GetActivePlatform(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.KogitoServerlessPlatform, error) {
+func GetActivePlatform(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatform, error) {
 	return GetLocalPlatform(ctx, c, namespace, true)
 }
 
 // GetLocalPlatform returns the currently installed platform or any platform existing in local namespace.
-func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, active bool) (*operatorapi.KogitoServerlessPlatform, error) {
+func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, active bool) (*operatorapi.SonataFlowPlatform, error) {
 	log.Debug("Finding available platforms")
 
 	lst, err := ListPrimaryPlatforms(ctx, c, namespace)
@@ -141,17 +141,17 @@ func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, acti
 	}
 
 	log.Debugf("Not found a local build platform")
-	return nil, k8serrors.NewNotFound(operatorapi.Resource("KogitoServerlessPlatform"), DefaultPlatformName)
+	return nil, k8serrors.NewNotFound(operatorapi.Resource("SonataFlowPlatform"), DefaultPlatformName)
 }
 
 // ListPrimaryPlatforms returns all non-secondary platforms installed in a given namespace (only one will be active).
-func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.KogitoServerlessPlatformList, error) {
+func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatformList, error) {
 	lst, err := ListAllPlatforms(ctx, c, namespace)
 	if err != nil {
 		return nil, err
 	}
 
-	filtered := &operatorapi.KogitoServerlessPlatformList{}
+	filtered := &operatorapi.SonataFlowPlatformList{}
 	for i := range lst.Items {
 		pl := lst.Items[i]
 		if !IsSecondary(&pl) {
@@ -162,8 +162,8 @@ func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) 
 }
 
 // ListAllPlatforms returns all platforms installed in a given namespace.
-func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.KogitoServerlessPlatformList, error) {
-	lst := operatorapi.NewKogitoServerlessPlatformList()
+func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatformList, error) {
+	lst := operatorapi.NewSonataFlowPlatformList()
 	if err := c.List(ctx, &lst, ctrl.InNamespace(namespace)); err != nil {
 		return nil, err
 	}
@@ -171,12 +171,12 @@ func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*op
 }
 
 // IsActive determines if the given platform is being used.
-func IsActive(p *operatorapi.KogitoServerlessPlatform) bool {
+func IsActive(p *operatorapi.SonataFlowPlatform) bool {
 	return p.Status.Phase != "" && p.Status.Phase != operatorapi.PlatformPhaseDuplicate
 }
 
 // IsSecondary determines if the given platform is marked as secondary.
-func IsSecondary(p *operatorapi.KogitoServerlessPlatform) bool {
+func IsSecondary(p *operatorapi.SonataFlowPlatform) bool {
 	if l, ok := p.Annotations[metadata.SecondaryPlatformAnnotation]; ok && l == "true" {
 		return true
 	}

@@ -1,6 +1,6 @@
 # Workflow Project Handler
 
-Handler to programmatically convert a local Kogito Serverless Workflow project into Kubernetes manifests to deploy with
+Handler to programmatically convert a local SonataFlow project into Kubernetes manifests to deploy with
 the operator.
 
 ## How to
@@ -48,12 +48,12 @@ func Main() {
 }
 ```
 
-The `KogitoServerlessWorkflow` custom resource generated is annotated with
+The `SonataFlow` custom resource generated is annotated with
 the [devmode profile](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/cloud/operator/developing-workflows.html)
 .
 Every other resource added to the project is a `ConfigMap` handling these resources for you.
 
-Given that you already have the Kogito Serverless
+Given that you already have the SonataFlow
 Operator [installed](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/cloud/operator/install-serverless-operator.html)
 , to deploy the generated project you can simply run:
 

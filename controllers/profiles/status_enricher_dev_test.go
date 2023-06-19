@@ -30,13 +30,13 @@ import (
 func Test_enrichmentStatusOnK8s(t *testing.T) {
 	t.Run("verify that the service URL is returned with the default cluster name on default namespace", func(t *testing.T) {
 
-		workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
 		service, err := defaultServiceCreator(workflow)
 		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
 		obj, err := defaultDevStatusEnricher(context.TODO(), client, workflow)
 
-		reflectWorkflow := obj.(*apiv08.KogitoServerlessWorkflow)
+		reflectWorkflow := obj.(*apiv08.SonataFlow)
 		assert.NoError(t, err)
 		assert.NotNil(t, obj)
 		assert.NotNil(t, reflectWorkflow.Status.Address)
@@ -46,7 +46,7 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 
 	t.Run("verify that the service URL won't be generated if an invalid namespace is used", func(t *testing.T) {
 
-		workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = t.Name()
 		service, err := defaultServiceCreator(workflow)
 		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
@@ -58,7 +58,7 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 
 func Test_enrichmentStatusOnOCP(t *testing.T) {
 	t.Run("verify that the service URL is returned with the default cluster name on default namespace", func(t *testing.T) {
-		workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
 		service, err := defaultServiceCreator(workflow)
 		route := &openshiftv1.Route{}
@@ -68,7 +68,7 @@ func Test_enrichmentStatusOnOCP(t *testing.T) {
 		client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, service, route).Build()
 		obj, err := devStatusEnricherForOpenShift(context.TODO(), client, workflow)
 
-		reflectWorkflow := obj.(*apiv08.KogitoServerlessWorkflow)
+		reflectWorkflow := obj.(*apiv08.SonataFlow)
 		assert.NoError(t, err)
 		assert.NotNil(t, obj)
 		assert.NotNil(t, reflectWorkflow.Status.Address)

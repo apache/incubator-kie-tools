@@ -1,19 +1,18 @@
-# Kogito Serverless Operator
+# SonataFlow Operator
 
-The Kogito Serverless Operator defines a set
+The SonataFlow Operator defines a set
 of [Kubernetes Custom Resources](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
-to help users to deploy Kogito Serverless
-Workflow projects on Kubernetes and OpenShift.
+to help users to deploy SonataFlow projects on Kubernetes and OpenShift.
 
 Please [visit our official documentation](https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/cloud/operator/install-serverless-operator.html)
 to know more.
 
 ## Available modules for integrations
 
-If you're a developer, and you are interested in integrating your project or application with the Kogito Serverless Operator
+If you're a developer, and you are interested in integrating your project or application with the SonataFlow Operator
 ecosystem, this repository provides a few Go Modules described below.
 
-### Kogito Serverless Operator Types (api)
+### SonataFlow Operator Types (api)
 
 Every custom resource managed by the operator is exported in the module [api](api). You can use it to programmatically
 create any custom type managed by the operator.
@@ -26,9 +25,9 @@ go get github.com/kiegroup/kogito-serverless-workflow/api
 Then you can create any type programmatically, for example:
 
 ```go
-workflow := &v1alpha08.KogitoServerlessWorkflow{
+workflow := &v1alpha08.SonataFlow{
 ObjectMeta: metav1.ObjectMeta{Name: w.name, Namespace: w.namespace},
-Spec:       v1alpha08.KogitoServerlessWorkflowSpec{Flow: *myWorkflowDef>}
+Spec:       v1alpha08.SonataFlowSpec{Flow: *myWorkflowDef>}
 }
 ```
 

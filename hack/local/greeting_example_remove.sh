@@ -16,11 +16,11 @@
 
 remove_operator=${1}
 
-kubectl delete -f config/samples/sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml -n kogito-workflows
+kubectl delete -f config/samples/sonataflow.org_v1alpha08_sonataflow.yaml -n sonataflow
 
 if [ "${remove_operator}" = '-A' ] || [ "${remove_operator}" = '--all' ]; then
     echo 'Removing the operator from the cluster'
 
-    kubectl delete namespace kogito-workflows
+    kubectl delete namespace sonataflow
     make undeploy
 fi

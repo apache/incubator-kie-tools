@@ -32,7 +32,7 @@ import (
 const (
 	envVarPodNamespaceName = "POD_NAMESPACE"
 	// ConfigMapName is the default name for the Builder ConfigMap name
-	ConfigMapName                       = "kogito-serverless-operator-builder-config"
+	ConfigMapName                       = "sonataflow-operator-builder-config"
 	configKeyDefaultExtension           = "DEFAULT_WORKFLOW_EXTENSION"
 	configKeyDefaultBuilderResourceName = "DEFAULT_BUILDER_RESOURCE_NAME"
 	configKeyBuildNamespace             = "build-namespace"
@@ -40,7 +40,7 @@ const (
 	configKeyRegistryAddress            = "registry-address"
 )
 
-func NewCustomConfig(platform operatorapi.KogitoServerlessPlatform) (map[string]string, error) {
+func NewCustomConfig(platform operatorapi.SonataFlowPlatform) (map[string]string, error) {
 	customConfig := make(map[string]string)
 	if platform.Namespace == "" {
 		return nil, fmt.Errorf("unable to retrieve the namespace from platform %s", platform.Name)

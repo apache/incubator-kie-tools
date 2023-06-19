@@ -155,11 +155,11 @@ type ensureRunningDevWorkflowReconciliationState struct {
 	ensurers *devProfileObjectEnsurers
 }
 
-func (e *ensureRunningDevWorkflowReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (e *ensureRunningDevWorkflowReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.IsReady() || workflow.Status.GetTopLevelCondition().IsUnknown() || workflow.Status.IsChildObjectsProblem()
 }
 
-func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	var objs []client.Object
 
 	flowDefCM, _, err := e.ensurers.definitionConfigMap.ensure(ctx, workflow, ensureWorkflowDefConfigMapMutator(workflow))
@@ -239,11 +239,11 @@ type followDeployDevWorkflowReconciliationState struct {
 	enrichers *devProfileObjectEnrichers
 }
 
-func (f *followDeployDevWorkflowReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (f *followDeployDevWorkflowReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.IsWaitingForDeployment()
 }
 
-func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	deployment := &appsv1.Deployment{}
 	if err := f.client.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
 		// we should have the deployment by this time, so even if the error above is not found, we should halt.
@@ -281,7 +281,7 @@ func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, wor
 	return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
 }
 
-func (f *followDeployDevWorkflowReconciliationState) PostReconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) error {
+func (f *followDeployDevWorkflowReconciliationState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
 	deployment := &appsv1.Deployment{}
 	if err := f.client.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
 		return err
@@ -302,11 +302,11 @@ type recoverFromFailureDevReconciliationState struct {
 	*stateSupport
 }
 
-func (r *recoverFromFailureDevReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (r *recoverFromFailureDevReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.GetCondition(api.RunningConditionType).IsFalse()
 }
 
-func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	// for now, a very basic attempt to recover by rolling out the deployment
 	deployment := &appsv1.Deployment{}
 	if err := r.client.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {

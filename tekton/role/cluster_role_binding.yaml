@@ -9,4 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: pipeline
-  namespace: kogito-serverless-operator-system
+  namespace: sonataflow-operator-system

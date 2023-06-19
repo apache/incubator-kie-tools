@@ -2,24 +2,24 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/sw.kogito.kie.org_kogitoserverlessworkflows.yaml
-- bases/sw.kogito.kie.org_kogitoserverlessbuilds.yaml
-- bases/sw.kogito.kie.org_kogitoserverlessplatforms.yaml
+- bases/sonataflow.org_sonataflows.yaml
+- bases/sonataflow.org_sonataflowbuilds.yaml
+- bases/sonataflow.org_sonataflowplatforms.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
 # [WEBHOOK] To enable webhook, uncomment all the sections with [WEBHOOK] prefix.
 # patches here are for enabling the conversion webhook for each CRD
 #- patches/webhook_in_workflows.yaml
-#- patches/webhook_in_kogitoserverlessworkflows.yaml
-#- patches/webhook_in_kogitoserverlessplatforms.yaml
+#- patches/webhook_in_sonataflows.yaml
+#- patches/webhook_in_sonataflowplatforms.yaml
 #+kubebuilder:scaffold:crdkustomizewebhookpatch
 
 # [CERTMANAGER] To enable cert-manager, uncomment all the sections with [CERTMANAGER] prefix.
 # patches here are for enabling the CA injection for each CRD
 #- patches/cainjection_in_workflows.yaml
-#- patches/cainjection_in_kogitoserverlessworkflows.yaml
-#- patches/cainjection_in_kogitoserverlessplatforms.yaml
+#- patches/cainjection_in_sonataflowworkflows.yaml
+#- patches/cainjection_in_sonataflowplatforms.yaml
 #+kubebuilder:scaffold:crdkustomizecainjectionpatch
 
 # the following config is for teaching kustomize how to do kustomization for CRDs.

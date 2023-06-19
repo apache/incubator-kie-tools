@@ -14,7 +14,7 @@
 
 // Package v1alpha08 contains API Schema definitions for the serverless v1alpha08 API group
 // +kubebuilder:object:generate=true
-// +groupName=sw.kogito.kie.org
+// +groupName=sonataflow.org
 package v1alpha08
 
 import (
@@ -24,7 +24,7 @@ import (
 
 var (
 	// GroupVersion is group version used to register these objects
-	GroupVersion = schema.GroupVersion{Group: "sw.kogito.kie.org", Version: "v1alpha08"}
+	GroupVersion = schema.GroupVersion{Group: "sonataflow.org", Version: "v1alpha08"}
 
 	// SchemeBuilder is used to add go types to the GroupVersionKind scheme
 	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}

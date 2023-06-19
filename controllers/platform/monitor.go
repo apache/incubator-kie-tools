@@ -34,11 +34,11 @@ func (action *monitorAction) Name() string {
 	return "monitor"
 }
 
-func (action *monitorAction) CanHandle(platform *operatorapi.KogitoServerlessPlatform) bool {
+func (action *monitorAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bool {
 	return platform.Status.Phase == operatorapi.PlatformPhaseReady
 }
 
-func (action *monitorAction) Handle(ctx context.Context, platform *operatorapi.KogitoServerlessPlatform) (*operatorapi.KogitoServerlessPlatform, error) {
+func (action *monitorAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	// Just track the version of the operator in the platform resource
 	if platform.Status.Version != metadata.SpecVersion {
 		platform.Status.Version = metadata.SpecVersion

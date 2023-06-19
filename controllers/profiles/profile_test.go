@@ -23,12 +23,12 @@ import (
 )
 
 func Test_workflowIsDevProfile(t *testing.T) {
-	workflowWithDevProfile := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflowWithDevProfile := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	assert.True(t, IsDevProfile(workflowWithDevProfile))
 
-	workflowWithNoProfile := test.GetBaseServerlessWorkflow(t.Name())
+	workflowWithNoProfile := test.GetBaseSonataFlow(t.Name())
 	assert.False(t, IsDevProfile(workflowWithNoProfile))
 
-	workflowWithProdProfile := test.GetBaseServerlessWorkflowWithProdProfile(t.Name())
+	workflowWithProdProfile := test.GetBaseSonataFlowWithProdProfile(t.Name())
 	assert.False(t, IsDevProfile(workflowWithProdProfile))
 }

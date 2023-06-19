@@ -31,5 +31,5 @@ getOperatorImageName() {
 }
 
 getCsvFile() {
-  echo "${CSV_DIR}/kogito-serverless-operator.clusterserviceversion.yaml"
+  echo "${CSV_DIR}/sonataflow-operator.clusterserviceversion.yaml"
 }

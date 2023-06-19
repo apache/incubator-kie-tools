@@ -1,5 +1,5 @@
 ## Append samples you want in your CSV to this file as resources ##
 resources:
-- sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml
-- sw.kogito_v1alpha08_kogitoserverlessplatform.yaml
+- sonataflow.org_v1alpha08_sonataflow.yaml
+- sonataflow.org_v1alpha08_sonataflowplatform.yaml
 #+kubebuilder:scaffold:manifestskustomizesamples

@@ -89,7 +89,7 @@ func ObjectOrCollect(ctx context.Context, c client.Client, namespace string, col
 			return err
 		}
 		// For some resources, also reset the status
-		if obj.GetObjectKind().GroupVersionKind().Kind == v08.KogitoServerlessPlatformKind {
+		if obj.GetObjectKind().GroupVersionKind().Kind == v08.SonataFlowPlatformKind {
 			if err := c.Status().Update(ctx, obj); err != nil {
 				return err
 			}

@@ -28,7 +28,7 @@ const (
 )
 
 // GetWorkflowAppImageNameTag retrieve the tag for the image based on the Workflow based annotation, <workflowid>:latest otherwise
-func GetWorkflowAppImageNameTag(w *v1alpha08.KogitoServerlessWorkflow) string {
+func GetWorkflowAppImageNameTag(w *v1alpha08.SonataFlow) string {
 	v := w.Annotations[metadata.Version]
 	if v != "" {
 		return w.Name + ":" + v

@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kogito-greetings
+  name: sonataflow-greetings
   labels:
-    app: kogito-greetings
+    app: sonataflow-greetings
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kogito-greetings
+      app: sonataflow-greetings
   template:
     metadata:
       labels:
-        app: kogito-greetings
+        app: sonataflow-greetings
     spec:
       containers:
-        - name: kogito-greetings
+        - name: sonataflow-greetings
           # taken from kaniko logs
           image: 10.107.131.33/greetings:latest
           ports:

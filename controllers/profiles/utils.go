@@ -56,7 +56,7 @@ func findNodePortFromPorts(ports []v1.ServicePort) int {
 }
 
 // IsDevProfile detects if the workflow is using the Dev profile or not
-func IsDevProfile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func IsDevProfile(workflow *operatorapi.SonataFlow) bool {
 	profile := workflow.Annotations[metadata.Profile]
 	if len(profile) == 0 {
 		return false

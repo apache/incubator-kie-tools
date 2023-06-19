@@ -36,11 +36,11 @@ const kanikoWarmerImage = "KanikoWarmerImage"
 const kanikoBuildCacheEnabled = "KanikoBuildCacheEnabled"
 const kanikoDefaultWarmerImageName = "gcr.io/kaniko-project/warmer"
 
-func IsKanikoCacheEnabled(platform *v08.KogitoServerlessPlatform) bool {
+func IsKanikoCacheEnabled(platform *v08.SonataFlowPlatform) bool {
 	return platform.Spec.BuildPlatform.IsOptionEnabled(kanikoBuildCacheEnabled)
 }
 
-func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platform *v08.KogitoServerlessPlatform) error {
+func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platform *v08.SonataFlowPlatform) error {
 	// The pod will be scheduled to nodes that are selected by the persistent volume
 	// node affinity spec, if any, as provisioned by the persistent volume claim storage
 	// class provisioner.
@@ -69,7 +69,7 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 			Namespace: platform.Namespace,
 			Name:      platform.Name + "-cache",
 			Labels: map[string]string{
-				"sw.kogito.kie.org/component": "kaniko-warmer",
+				"sonataflow.org/component": "kaniko-warmer",
 			},
 		},
 		Spec: corev1.PodSpec{

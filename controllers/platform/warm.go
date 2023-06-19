@@ -41,11 +41,11 @@ func (action *warmAction) Name() string {
 	return "warm"
 }
 
-func (action *warmAction) CanHandle(platform *operatorapi.KogitoServerlessPlatform) bool {
+func (action *warmAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bool {
 	return platform.Status.Phase == operatorapi.PlatformPhaseWarming
 }
 
-func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.KogitoServerlessPlatform) (*operatorapi.KogitoServerlessPlatform, error) {
+func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	// Check Kaniko warmer pod status
 	pod := corev1.Pod{
 		TypeMeta: metav1.TypeMeta{

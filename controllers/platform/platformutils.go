@@ -37,7 +37,7 @@ import (
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
 
-func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.KogitoServerlessPlatform, verbose bool) error {
+func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	//@TODO Add a notification on the status about this registry value ignored when https://issues.redhat.com/browse/KOGITO-9218 will be implemented
 	if p.Spec.BuildPlatform.BuildStrategy == operatorapi.PlatformBuildStrategy && p.Status.Cluster == operatorapi.PlatformClusterOpenShift {
 		p.Spec.BuildPlatform.Registry = operatorapi.RegistrySpec{}
@@ -59,9 +59,9 @@ func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.Kogi
 	return nil
 }
 
-func SetPlatformDefaults(p *operatorapi.KogitoServerlessPlatform, verbose bool) error {
+func SetPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	if p.Spec.BuildPlatform.BuildStrategyOptions == nil {
-		log.Debugf("Kogito Serverless Platform [%s]: setting publish strategy options", p.Namespace)
+		log.Debugf("SonataFlow Platform [%s]: setting publish strategy options", p.Namespace)
 		p.Spec.BuildPlatform.BuildStrategyOptions = map[string]string{}
 	}
 
@@ -72,12 +72,12 @@ func SetPlatformDefaults(p *operatorapi.KogitoServerlessPlatform, verbose bool) 
 			log.Log.Infof("ContainerBuild timeout minimum unit is sec (configured: %s, truncated: %s)", p.Spec.BuildPlatform.GetTimeout().Duration, d)
 		}
 
-		log.Debugf("Kogito Serverless Platform [%s]: setting build timeout", p.Namespace)
+		log.Debugf("SonataFlow Platform [%s]: setting build timeout", p.Namespace)
 		p.Spec.BuildPlatform.Timeout = &metav1.Duration{
 			Duration: d,
 		}
 	} else {
-		log.Debugf("Kogito Serverless Platform [%s]: setting default build timeout to 5 minutes", p.Namespace)
+		log.Debugf("SonataFlow Platform [%s]: setting default build timeout to 5 minutes", p.Namespace)
 		p.Spec.BuildPlatform.Timeout = &metav1.Duration{
 			Duration: 5 * time.Minute,
 		}
@@ -110,14 +110,14 @@ func SetPlatformDefaults(p *operatorapi.KogitoServerlessPlatform, verbose bool) 
 	return nil
 }
 
-func setStatusAdditionalInfo(platform *operatorapi.KogitoServerlessPlatform) {
+func setStatusAdditionalInfo(platform *operatorapi.SonataFlowPlatform) {
 	platform.Status.Info = make(map[string]string)
 
-	log.Debugf("Kogito Serverless Platform [%s]: setting build publish strategy", platform.Namespace)
+	log.Debugf("SonataFlow Platform [%s]: setting build publish strategy", platform.Namespace)
 	if platform.Spec.BuildPlatform.BuildStrategy == operatorapi.OperatorBuildStrategy {
 		platform.Status.Info["kanikoVersion"] = defaults.KanikoVersion
 	}
-	log.Debugf("Kogito Serverless [%s]: setting status info", platform.Namespace)
+	log.Debugf("SonataFlow [%s]: setting status info", platform.Namespace)
 	platform.Status.Info["goVersion"] = runtime.Version()
 	platform.Status.Info["goOS"] = runtime.GOOS
 }

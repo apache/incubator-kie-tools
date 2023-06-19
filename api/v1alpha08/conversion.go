@@ -40,12 +40,12 @@ const (
 	charLimit = 253
 )
 
-// FromCNCFWorkflow converts the given CNCF Serverless Workflow instance in a new KogitoServerlessWorkflow Custom Resource.
-func FromCNCFWorkflow(cncfWorkflow *cncfmodel.Workflow, context context.Context) (*KogitoServerlessWorkflow, error) {
+// FromCNCFWorkflow converts the given CNCF Serverless Workflow instance in a new SonataFlow Custom Resource.
+func FromCNCFWorkflow(cncfWorkflow *cncfmodel.Workflow, context context.Context) (*SonataFlow, error) {
 	if cncfWorkflow == nil {
 		return nil, errors.New("CNCF Workflow is nil")
 	}
-	workflowCR := &KogitoServerlessWorkflow{
+	workflowCR := &SonataFlow{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: extractName(cncfWorkflow),
 			Annotations: map[string]string{
@@ -81,10 +81,10 @@ func FromCNCFWorkflow(cncfWorkflow *cncfmodel.Workflow, context context.Context)
 	return workflowCR, nil
 }
 
-// ToCNCFWorkflow converts a KogitoServerlessWorkflow object to a Workflow one in order to be able to convert it to a YAML/Json
-func ToCNCFWorkflow(workflowCR *KogitoServerlessWorkflow, context context.Context) (*cncfmodel.Workflow, error) {
+// ToCNCFWorkflow converts a SonataFlow object to a Workflow one in order to be able to convert it to a YAML/Json
+func ToCNCFWorkflow(workflowCR *SonataFlow, context context.Context) (*cncfmodel.Workflow, error) {
 	if workflowCR == nil {
-		return nil, errors.New("kogitoServerlessWorkflow is nil")
+		return nil, errors.New("SonataFlow is nil")
 	}
 	cncfWorkflow := &cncfmodel.Workflow{}
 
@@ -130,8 +130,8 @@ func extractExpressionLang(annotations map[string]string) string {
 }
 
 // Function to extract from the apiVersion the ServerlessWorkflow schema version
-// For example given KogitoServerlessWorkflow APIVersion, we would like to extract 0.8
-func extractSpecVersion(workflowCR *KogitoServerlessWorkflow) string {
+// For example given SonataFlow APIVersion, we would like to extract 0.8
+func extractSpecVersion(workflowCR *SonataFlow) string {
 	schemaVersion := path.Base(workflowCR.APIVersion)
 	if len(schemaVersion) == 0 {
 		return metadata.SpecVersion

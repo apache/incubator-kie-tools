@@ -37,14 +37,14 @@ import (
 )
 
 // namespace store the ns where the Operator and Operand will be executed
-const namespace = "kogito-serverless-operator-system"
+const namespace = "sonataflow-operator-system"
 
 const (
 	minikubePlatform  = "minikube"
 	openshiftPlatform = "openshift"
 )
 
-var _ = Describe("Kogito Serverless Operator", Ordered, func() {
+var _ = Describe("Sonata Flow Operator", Ordered, func() {
 
 	BeforeAll(func() {
 
@@ -120,10 +120,10 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
 		if applySeccompProfilePatch {
 			By("Applying seccompProfile")
-			cmd = exec.Command("kubectl", "patch", "deployment", "kogito-serverless-operator-controller-manager", "-p", `{"spec":{"template":{"spec":{"securityContext":{"seccompProfile":{"type":"RuntimeDefault"}}}}}}`, "-n", namespace)
+			cmd = exec.Command("kubectl", "patch", "deployment", "sonataflow-operator-controller-manager", "-p", `{"spec":{"template":{"spec":{"securityContext":{"seccompProfile":{"type":"RuntimeDefault"}}}}}}`, "-n", namespace)
 			_, err := utils.Run(cmd)
 			if utils.IsDebugEnabled() {
-				err = utils.OutputDeployment(namespace, "kogito-serverless-operator-controller-manager")
+				err = utils.OutputDeployment(namespace, "sonataflow-operator-controller-manager")
 			}
 			ExpectWithOffset(1, err).NotTo(HaveOccurred())
 		}
@@ -185,20 +185,20 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 		projectDir, _ := utils.GetProjectDir()
 
 		It("should create a basic platform for Minikube", func() {
-			By("creating an instance of the Kogito Serverless Platform")
+			By("creating an instance of the SonataFlowPlatform")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					getKogitoServerlessPlatformFilename()), "-n", namespace)
+					getSonataFlowPlatformFilename()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
 		})
 
 		It("should successfully deploy the Greeting Workflow in prod mode and verify if it's running", func() {
-			By("creating an instance of the Kogito Serverless Operand(CR)")
+			By("creating an instance of the SonataFlow Operand(CR)")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR), "-n", namespace)
+					"config/samples/"+test.SonataFlowSampleYamlCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -208,7 +208,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.KogitoServerlessWorkflowSampleYamlCR), "-n", namespace)
+					"config/samples/"+test.SonataFlowSampleYamlCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -216,10 +216,10 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
 		It("should successfully deploy the orderprocessing workflow in devmode and verify if it's running", func() {
 
-			By("creating an instance of the Kogito Serverless Workflow in DevMode")
+			By("creating an instance of the SonataFlow Workflow in DevMode")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					test.GetServerlessWorkflowE2eOrderProcessingFolder()), "-n", namespace)
+					test.GetSonataFlowE2eOrderProcessingFolder()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -237,7 +237,7 @@ var _ = Describe("Kogito Serverless Operator", Ordered, func() {
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
-					test.GetServerlessWorkflowE2eOrderProcessingFolder()), "-n", namespace)
+					test.GetSonataFlowE2eOrderProcessingFolder()), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -285,7 +285,7 @@ func verifyWorkflowIsAddressable(workflowName string) bool {
 	}
 }
 
-func getKogitoServerlessPlatformFilename() string {
+func getSonataFlowPlatformFilename() string {
 	if getClusterPlatform() == openshiftPlatform {
 		return test.GetPlatformOpenshiftE2eTest()
 	}

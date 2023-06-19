@@ -102,7 +102,7 @@ var knownTypes = map[schema.GroupVersion][]runtime.Object{
 }
 
 func MockServiceWithExtraScheme(objs ...runtime.Object) *MockPlatformService {
-	registerObjs := []runtime.Object{&apiv08.KogitoServerlessWorkflow{}, &apiv08.KogitoServerlessWorkflowList{}}
+	registerObjs := []runtime.Object{&apiv08.SonataFlow{}, &apiv08.SonataFlowList{}}
 	registerObjs = append(registerObjs, objs...)
 	apiv08.SchemeBuilder.Register(registerObjs...)
 	scheme, _ := apiv08.SchemeBuilder.Build()

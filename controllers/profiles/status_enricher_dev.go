@@ -32,7 +32,7 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
 
-func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.SonataFlow) (client.Object, error) {
 	//If the workflow Status hasn't got a NodePort Endpoint, we are ensuring it will be set
 	// If we aren't on OpenShift we will enrich the status with 2 info:
 	// - Address the service can be reached
@@ -83,7 +83,7 @@ func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *op
 	return workflow, nil
 }
 
-func devStatusEnricherForOpenShift(ctx context.Context, client client.Client, workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func devStatusEnricherForOpenShift(ctx context.Context, client client.Client, workflow *operatorapi.SonataFlow) (client.Object, error) {
 	// On OpenShift we need to retrieve the Route to have the URL the service is available to
 	route := &openshiftv1.Route{}
 	err := client.Get(ctx, types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}, route)

@@ -1,0 +1,525 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "sonataflow.org/v1alpha08",
+          "kind": "SonataFlow",
+          "metadata": {
+            "annotations": {
+              "sonataflow.org/description": "Greeting example on k8s!",
+              "sonataflow.org/version": "0.0.1"
+            },
+            "name": "greeting"
+          },
+          "spec": {
+            "flow": {
+              "functions": [
+                {
+                  "name": "greetFunction",
+                  "operation": "sysout",
+                  "type": "custom"
+                }
+              ],
+              "start": "ChooseOnLanguage",
+              "states": [
+                {
+                  "dataConditions": [
+                    {
+                      "condition": "${ .language == \"English\" }",
+                      "transition": "GreetInEnglish"
+                    },
+                    {
+                      "condition": "${ .language == \"Spanish\" }",
+                      "transition": "GreetInSpanish"
+                    }
+                  ],
+                  "defaultCondition": "GreetInEnglish",
+                  "name": "ChooseOnLanguage",
+                  "type": "switch"
+                },
+                {
+                  "data": {
+                    "greeting": "Hello from JSON Workflow, "
+                  },
+                  "name": "GreetInEnglish",
+                  "transition": "GreetPerson",
+                  "type": "inject"
+                },
+                {
+                  "data": {
+                    "greeting": "Saludos desde JSON Workflow, "
+                  },
+                  "name": "GreetInSpanish",
+                  "transition": "GreetPerson",
+                  "type": "inject"
+                },
+                {
+                  "actions": [
+                    {
+                      "functionRef": {
+                        "arguments": {
+                          "message": ".greeting+.name"
+                        },
+                        "refName": "greetFunction"
+                      },
+                      "name": "greetAction"
+                    }
+                  ],
+                  "end": true,
+                  "name": "GreetPerson",
+                  "type": "operation"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "apiVersion": "sonataflow.org/v1alpha08",
+          "kind": "SonataFlowPlatform",
+          "metadata": {
+            "name": "sonataflow-platform"
+          },
+          "spec": {
+            "platform": {
+              "registry": {
+                "address": "quay.io/kiegroup",
+                "secret": "regcred"
+              }
+            }
+          }
+        }
+      ]
+    capabilities: Basic Install
+    operators.operatorframework.io/builder: operator-sdk-v1.25.0
+    operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+  name: sonataflow-operator.v2.0.0-snapshot
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: SonataFlowBuild is the Schema for the sonataflowbuilds API
+      displayName: Sonata Flow Build
+      kind: SonataFlowBuild
+      name: sonataflowbuilds.sonataflow.org
+      version: v1alpha08
+    - description: SonataFlowPlatform is the Schema for the sonataflowplatforms API
+      displayName: Sonata Flow Platform
+      kind: SonataFlowPlatform
+      name: sonataflowplatforms.sonataflow.org
+      version: v1alpha08
+    - description: SonataFlow is the Schema for the sonataflows API
+      displayName: Sonata Flow
+      kind: SonataFlow
+      name: sonataflows.sonataflow.org
+      version: v1alpha08
+  description: Sonata Flow Operator
+  displayName: sonataflow-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          - pods
+          - pods/exec
+          - services
+          - services/finalizers
+          - namespaces
+          - serviceaccounts
+          - persistentvolumeclaims
+          - secrets
+          - events
+          - deployments
+          - nodes
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - apps
+          resources:
+          - configmaps
+          - pods
+          - pods/exec
+          - services
+          - services/finalizers
+          - namespaces
+          - serviceaccounts
+          - persistentvolumeclaims
+          - secrets
+          - events
+          - deployments
+          - nodes
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - rbac.authorization.k8s.io
+          resources:
+          - roles
+          - rolebindings
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - coordination.k8s.io
+          resources:
+          - leases
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowbuilds
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowbuilds/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowbuilds/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowplatforms
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowplatforms/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflowplatforms/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflows
+          verbs:
+          - create
+          - delete
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflows/finalizers
+          verbs:
+          - update
+        - apiGroups:
+          - sonataflow.org
+          resources:
+          - sonataflows/status
+          verbs:
+          - get
+          - patch
+          - update
+        - apiGroups:
+          - route.openshift.io
+          resources:
+          - route
+          - routes
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - route.openshift.io
+          resources:
+          - route/finalizers
+          - routes/finalizers
+          verbs:
+          - get
+          - list
+          - create
+          - update
+          - delete
+          - deletecollection
+          - patch
+          - watch
+        - apiGroups:
+          - image.openshift.io
+          resources:
+          - imagestreams
+          - imagestreamtags
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - image.openshift.io
+          resources:
+          - imagestreams/finalizers
+          - imagestreamtags/finalizers
+          verbs:
+          - get
+          - list
+          - create
+          - update
+          - delete
+          - deletecollection
+          - patch
+          - watch
+        - apiGroups:
+          - build.openshift.io
+          resources:
+          - buildconfigs
+          - builds
+          verbs:
+          - create
+          - delete
+          - deletecollection
+          - get
+          - list
+          - patch
+          - update
+          - watch
+        - apiGroups:
+          - build.openshift.io
+          resources:
+          - buildconfigs/finalizers
+          - builds/finalizers
+          verbs:
+          - get
+          - list
+          - create
+          - update
+          - delete
+          - deletecollection
+          - patch
+          - watch
+        - apiGroups:
+          - build.openshift.io
+          resources:
+          - buildconfigs/instantiatebinary
+          verbs:
+          - create
+        - apiGroups:
+          - authentication.k8s.io
+          resources:
+          - tokenreviews
+          verbs:
+          - create
+        - apiGroups:
+          - authorization.k8s.io
+          resources:
+          - subjectaccessreviews
+          verbs:
+          - create
+        serviceAccountName: sonataflow-operator-controller-manager
+      deployments:
+      - label:
+          control-plane: controller-manager
+        name: sonataflow-operator-controller-manager
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              control-plane: controller-manager
+          strategy: {}
+          template:
+            metadata:
+              annotations:
+                kubectl.kubernetes.io/default-container: manager
+              labels:
+                control-plane: controller-manager
+            spec:
+              containers:
+              - args:
+                - --secure-listen-address=0.0.0.0:8443
+                - --upstream=http://127.0.0.1:8080/
+                - --logtostderr=true
+                - --v=0
+                image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.0
+                name: kube-rbac-proxy
+                ports:
+                - containerPort: 8443
+                  name: https
+                  protocol: TCP
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 5m
+                    memory: 64Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                    - ALL
+                  seccompProfile:
+                    type: RuntimeDefault
+              - args:
+                - --health-probe-bind-address=:8081
+                - --metrics-bind-address=127.0.0.1:8080
+                - --leader-elect
+                command:
+                - /usr/local/bin/manager
+                env:
+                - name: POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                image: quay.io/kiegroup/kogito-serverless-operator-nightly:2.0.0-snapshot
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8081
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                name: manager
+                readinessProbe:
+                  httpGet:
+                    path: /readyz
+                    port: 8081
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 128Mi
+                  requests:
+                    cpu: 10m
+                    memory: 64Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+                  capabilities:
+                    drop:
+                    - ALL
+              securityContext:
+                runAsNonRoot: true
+                seccompProfile:
+                  type: RuntimeDefault
+              serviceAccountName: sonataflow-operator-controller-manager
+              terminationGracePeriodSeconds: 10
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          resources:
+          - configmaps
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - coordination.k8s.io
+          resources:
+          - leases
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - events
+          verbs:
+          - create
+          - patch
+        serviceAccountName: sonataflow-operator-controller-manager
+    strategy: deployment
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - sonataflow
+  - cncf
+  - serverless
+  - serverlessworkflow
+  links:
+  - name: Sonata Flow Operator
+    url: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html
+  maturity: alpha
+  provider:
+    name: sonataflow-operator
+  version: 2.0.0-snapshot

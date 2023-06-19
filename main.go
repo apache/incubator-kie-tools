@@ -81,33 +81,33 @@ func main() {
 
 	utils.SetIsOpenShift(mgr.GetConfig())
 
-	if err = (&controllers.KogitoServerlessWorkflowReconciler{
+	if err = (&controllers.SonataFlowReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
 		Config:   mgr.GetConfig(),
 		Recorder: mgr.GetEventRecorderFor("workflow-controller"),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessWorkflow")
+		setupLog.Error(err, "unable to create controller", "controller", "SonataFlow")
 		os.Exit(1)
 	}
-	if err = (&controllers.KogitoServerlessBuildReconciler{
+	if err = (&controllers.SonataFlowBuildReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
 		Config:   mgr.GetConfig(),
 		Recorder: mgr.GetEventRecorderFor("build-controller"),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessBuild")
+		setupLog.Error(err, "unable to create controller", "controller", "SonataFlowBuild")
 		os.Exit(1)
 	}
 
-	if err = (&controllers.KogitoServerlessPlatformReconciler{
+	if err = (&controllers.SonataFlowPlatformReconciler{
 		Client:   mgr.GetClient(),
 		Scheme:   mgr.GetScheme(),
 		Reader:   mgr.GetAPIReader(),
 		Config:   mgr.GetConfig(),
 		Recorder: mgr.GetEventRecorderFor("platform-controller"),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessPlatform")
+		setupLog.Error(err, "unable to create controller", "controller", "SonataFlowPlatform")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

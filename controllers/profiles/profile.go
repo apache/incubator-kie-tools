@@ -34,7 +34,7 @@ var profileBuilders = map[metadata.ProfileType]reconcilerBuilder{
 	metadata.DevProfile:  newDevProfileReconciler,
 }
 
-func profileBuilder(workflow *operatorapi.KogitoServerlessWorkflow) reconcilerBuilder {
+func profileBuilder(workflow *operatorapi.SonataFlow) reconcilerBuilder {
 	profile := workflow.Annotations[metadata.Profile]
 	if len(profile) == 0 {
 		return profileBuilders[defaultProfile]

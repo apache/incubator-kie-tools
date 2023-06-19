@@ -15,8 +15,8 @@
 
 # Runs the operator locally via go main
 
-kubectl apply -f ./bundle/manifests/sw.kogito.kie.org_kogitoserverlessplatforms.yaml
-kubectl apply -f ./bundle/manifests/sw.kogito.kie.org_kogitoserverlessbuilds.yaml
-kubectl apply -f ./bundle/manifests/sw.kogito.kie.org_kogitoserverlessworkflows.yaml
+kubectl apply -f ./bundle/manifests/sonataflow.org_sonataflowplatforms.yaml
+kubectl apply -f ./bundle/manifests/sonataflow.org_sonataflowbuilds.yaml
+kubectl apply -f ./bundle/manifests/sonataflow.org_sonataflows.yaml
 
 make debug

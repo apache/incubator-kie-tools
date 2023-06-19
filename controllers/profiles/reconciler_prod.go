@@ -101,13 +101,13 @@ type newBuilderReconciliationState struct {
 	*stateSupport
 }
 
-func (h *newBuilderReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (h *newBuilderReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.GetTopLevelCondition().IsUnknown() ||
 		workflow.Status.IsWaitingForPlatform() ||
 		workflow.Status.IsBuildFailed()
 }
 
-func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	_, err := platform.GetActivePlatform(ctx, h.client, workflow.Namespace)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -121,7 +121,7 @@ func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operat
 	}
 	// If there is an active platform we have got all the information to build but...
 	// ...let's check before if we have got already a build!
-	buildManager := builder.NewKogitoServerlessBuildManager(ctx, h.client)
+	buildManager := builder.NewSonataFlowBuildManager(ctx, h.client)
 	build, err := buildManager.GetOrCreateBuild(workflow)
 	if err != nil {
 		return ctrl.Result{}, nil, err
@@ -133,7 +133,7 @@ func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operat
 		_, err = h.performStatusUpdate(ctx, workflow)
 	} else {
 		// TODO: not ideal, but we will improve it on https://issues.redhat.com/browse/KOGITO-8792
-		h.logger.Info("Build is in failed state, try to delete the KogitoServerlessBuild to restart a new build cycle")
+		h.logger.Info("Build is in failed state, try to delete the SonataFlowBuild to restart a new build cycle")
 	}
 
 	return ctrl.Result{RequeueAfter: requeueAfterStartingBuild}, nil, err
@@ -143,13 +143,13 @@ type followBuildStatusReconciliationState struct {
 	*stateSupport
 }
 
-func (h *followBuildStatusReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (h *followBuildStatusReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.IsBuildRunningOrUnknown()
 }
 
-func (h *followBuildStatusReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (h *followBuildStatusReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	// Let's retrieve the build to check the status
-	build, err := builder.NewKogitoServerlessBuildManager(ctx, h.client).GetOrCreateBuild(workflow)
+	build, err := builder.NewSonataFlowBuildManager(ctx, h.client).GetOrCreateBuild(workflow)
 	if err != nil {
 		h.logger.Error(err, "Failed to get or create the build for the workflow.")
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason, build.Status.Error)
@@ -184,11 +184,11 @@ type deployWorkflowReconciliationState struct {
 	deploymentVisitors []mutateVisitor
 }
 
-func (h *deployWorkflowReconciliationState) CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (h *deployWorkflowReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	return workflow.Status.GetCondition(api.BuiltConditionType).IsTrue()
 }
 
-func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	pl, err := platform.GetActivePlatform(ctx, h.client, workflow.Namespace)
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForPlatformReason,
@@ -198,7 +198,7 @@ func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *op
 
 	if h.isWorkflowChanged(workflow) { // Let's check that the 2 resWorkflowDef definition are different
 		workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
-		buildManager := builder.NewKogitoServerlessBuildManager(ctx, h.client)
+		buildManager := builder.NewSonataFlowBuildManager(ctx, h.client)
 		build, err := buildManager.GetOrCreateBuild(workflow)
 		if err != nil {
 			return ctrl.Result{}, nil, err
@@ -221,7 +221,7 @@ func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *op
 	return h.handleObjects(ctx, workflow, image)
 }
 
-func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow, image string) (reconcile.Result, []client.Object, error) {
+func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
 	// the dev one is ok for now
 	propsCM, _, err := h.ensurers.propertiesConfigMap.ensure(ctx, workflow, ensureProdWorkflowPropertiesConfigMapMutator(workflow))
 	if err != nil {
@@ -285,7 +285,7 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 }
 
 // getDeploymentMutateVisitors gets the deployment mutate visitors based on the current plat
-func (h *deployWorkflowReconciliationState) getDeploymentMutateVisitors(workflow *operatorapi.KogitoServerlessWorkflow, image string, configMap *v1.ConfigMap) []mutateVisitor {
+func (h *deployWorkflowReconciliationState) getDeploymentMutateVisitors(workflow *operatorapi.SonataFlow, image string, configMap *v1.ConfigMap) []mutateVisitor {
 	if utils.IsOpenShift() {
 		return []mutateVisitor{defaultDeploymentMutateVisitor(workflow),
 			mountProdConfigMapsMutateVisitor(configMap),
@@ -320,7 +320,7 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) mutateVisitor {
 }
 
 // isWorkflowChanged marks the workflow status as unknown to require a new build reconciliation
-func (h *deployWorkflowReconciliationState) isWorkflowChanged(workflow *operatorapi.KogitoServerlessWorkflow) bool {
+func (h *deployWorkflowReconciliationState) isWorkflowChanged(workflow *operatorapi.SonataFlow) bool {
 	generation := kubeutil.GetLastGeneration(workflow.Namespace, workflow.Name, h.client, context.TODO(), h.logger)
 	if generation > workflow.Status.ObservedGeneration {
 		return true

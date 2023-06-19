@@ -23,11 +23,11 @@ import (
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-func getWorkflow(namespace string, name string, c client.Client, ctx context.Context, logger *logr.Logger) *operatorapi.KogitoServerlessWorkflow {
-	serverlessWorkflowType := &operatorapi.KogitoServerlessWorkflow{}
+func getWorkflow(namespace string, name string, c client.Client, ctx context.Context, logger *logr.Logger) *operatorapi.SonataFlow {
+	serverlessWorkflowType := &operatorapi.SonataFlow{}
 	serverlessWorkflowType.Namespace = namespace
 	serverlessWorkflowType.Name = name
-	serverlessWorkflow := &operatorapi.KogitoServerlessWorkflow{}
+	serverlessWorkflow := &operatorapi.SonataFlow{}
 	if err := c.Get(ctx, client.ObjectKeyFromObject(serverlessWorkflowType), serverlessWorkflow); err != nil {
 		logger.Error(err, "Error during Get")
 	}

@@ -32,10 +32,10 @@ type Action interface {
 	Name() string
 
 	// returns true if the action can handle the platform
-	CanHandle(platform *v08.KogitoServerlessPlatform) bool
+	CanHandle(platform *v08.SonataFlowPlatform) bool
 
 	// executes the handling function
-	Handle(ctx context.Context, platform *v08.KogitoServerlessPlatform) (*v08.KogitoServerlessPlatform, error)
+	Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, error)
 }
 
 type baseAction struct {

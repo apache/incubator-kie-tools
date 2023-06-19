@@ -27,7 +27,7 @@ import (
 )
 
 func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	// can't be new
 	cm, _ := workflowPropsConfigMapCreator(workflow)
 	cm.SetUID("1")

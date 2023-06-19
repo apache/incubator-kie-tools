@@ -15,9 +15,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: kogito-greetings-external
+  name: sonataflow-greetings-external
   labels:
-    app: kogito-greetings
+    app: sonataflow-greetings
 spec:
   ports:
     - protocol: TCP
@@ -25,7 +25,7 @@ spec:
       targetPort: 8080
       nodePort: 31961
   selector:
-    app: kogito-greetings
+    app: sonataflow-greetings
   type: NodePort
   sessionAffinity: None
   externalTrafficPolicy: Cluster

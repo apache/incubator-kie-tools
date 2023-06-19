@@ -45,7 +45,7 @@ var defaultDevApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflow
 // aiming a vanilla Kubernetes Deployment.
 // It maps the default HTTP port (80) to the target Java application webserver on port 8080.
 // It configures the Service as a NodePort type service, in this way it will be easier for a developer access the service
-func devServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func devServiceCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	object, _ := defaultServiceCreator(workflow)
 	service := object.(*corev1.Service)
 	// Let's double-check that the workflow is using the Dev Profile we would like to expose it via NodePort
@@ -55,7 +55,7 @@ func devServiceCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.O
 	return service, nil
 }
 
-func devDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func devDeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	obj, err := defaultDeploymentCreator(workflow)
 	if err != nil {
 		return nil, err
@@ -68,7 +68,7 @@ func devDeploymentCreator(workflow *operatorapi.KogitoServerlessWorkflow) (clien
 }
 
 // devDeploymentMutateVisitor guarantees the state of the default Deployment object
-func devDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+func devDeploymentMutateVisitor(workflow *operatorapi.SonataFlow) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -85,7 +85,7 @@ func devDeploymentMutateVisitor(workflow *operatorapi.KogitoServerlessWorkflow) 
 }
 
 // workflowDefConfigMapCreator creates a new ConfigMap that holds the definition of a workflow specification.
-func workflowDefConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error) {
+func workflowDefConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	configMap, err := workflowdef.CreateNewConfigMap(workflow)
 	if err != nil {
 		return nil, err
@@ -94,7 +94,7 @@ func workflowDefConfigMapCreator(workflow *operatorapi.KogitoServerlessWorkflow)
 	return configMap, nil
 }
 
-func ensureWorkflowDefConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+func ensureWorkflowDefConfigMapMutator(workflow *operatorapi.SonataFlow) mutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
@@ -111,6 +111,6 @@ func ensureWorkflowDefConfigMapMutator(workflow *operatorapi.KogitoServerlessWor
 	}
 }
 
-func ensureWorkflowDevPropertiesConfigMapMutator(workflow *operatorapi.KogitoServerlessWorkflow) mutateVisitor {
+func ensureWorkflowDevPropertiesConfigMapMutator(workflow *operatorapi.SonataFlow) mutateVisitor {
 	return ensureWorkflowPropertiesConfigMapMutator(workflow, defaultDevApplicationProperties)
 }

@@ -34,11 +34,11 @@ import (
 
 func Test_reconcilerProdBuildConditions(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflow(t.Name())
+	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	client := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(workflow, platform).
-		WithStatusSubresource(workflow, platform, &operatorapi.KogitoServerlessBuild{}).Build()
+		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
 	config := &rest.Config{}
 	result, err := NewReconciler(client, config, &logger, workflow).Reconcile(context.TODO(), workflow)
@@ -56,7 +56,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.False(t, workflow.Status.IsReady())
 
 	// let's finish this build
-	build := &operatorapi.KogitoServerlessBuild{}
+	build := &operatorapi.SonataFlowBuild{}
 	assert.NoError(t, client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), build))
 	build.Status.BuildPhase = operatorapi.BuildPhaseSucceeded
 	assert.NoError(t, client.Status().Update(context.TODO(), build))
@@ -85,7 +85,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 
 func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflow(t.Name())
+	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	handler := &deployWorkflowReconciliationState{
@@ -130,11 +130,11 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 func Test_GenerationAnnotationCheck(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	// we load a workflow with metadata.generation to 0
-	workflow := test.GetBaseServerlessWorkflow(t.Name())
+	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	client := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(workflow, platform).
-		WithStatusSubresource(workflow, platform, &operatorapi.KogitoServerlessBuild{}).Build()
+		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
 	handler := &deployWorkflowReconciliationState{
 		stateSupport: fakeReconcilerSupport(client),
@@ -146,7 +146,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 3)
 	// then we load a workflow with metadata.generation set to 1
-	workflowChanged := test.GetBaseServerlessWorkflow(t.Name())
+	workflowChanged := test.GetBaseSonataFlow(t.Name())
 	//we set the generation to 1
 	workflowChanged.Generation = int64(1)
 	handler = &deployWorkflowReconciliationState{

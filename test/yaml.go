@@ -32,13 +32,12 @@ import (
 )
 
 const (
-	kogitoServerlessWorkflowOrderProcessingFolder   = "order-processing"
-	KogitoServerlessWorkflowSampleYamlCR            = "sw.kogito_v1alpha08_kogitoserverlessworkflow.yaml"
-	kogitoServerlessPlatformYamlCR                  = "sw.kogito_v1alpha08_kogitoserverlessplatform.yaml"
-	kogitoServerlessPlatformWithCacheMinikubeYamlCR = "sw.kogito_v1alpha08_kogitoserverlessplatform_withCache_minikube.yaml"
-	kogitoServerlessPlatformForOpenshift            = "sw.kogito_v1alpha08_kogitoserverlessplatform_openshift.yaml"
-	kogitoServerlessWorkflowSampleDevModeYamlCR     = "sw.kogito_v1alpha08_kogitoserverlessworkflow_devmode.yaml"
-	kogitoServerlessOperatorBuilderConfig           = "kogito-serverless-operator-builder-config_v1_configmap.yaml"
+	sonataFlowOrderProcessingFolder           = "order-processing"
+	SonataFlowSampleYamlCR                    = "sonataflow.org_v1alpha08_sonataflow.yaml"
+	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
+	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
+	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
+	sonataFlowBuilderConfig                   = "sonataflow-operator-builder-config_v1_configmap.yaml"
 
 	configSamplesOneLevelPath = "../config/samples/"
 	configSamplesTwoLevelPath = "../../config/samples/"
@@ -49,15 +48,15 @@ const (
 
 // TODO: remove the path parameter from every method
 
-func GetKogitoServerlessWorkflow(path string, namespace string) *operatorapi.KogitoServerlessWorkflow {
-	ksw := &operatorapi.KogitoServerlessWorkflow{}
+func GetSonataFlow(path string, namespace string) *operatorapi.SonataFlow {
+	ksw := &operatorapi.SonataFlow{}
 	yamlFile, err := os.ReadFile(path)
 	if err != nil {
 		log.Errorf(err, "yamlFile.Get err   #%v ", err)
 		panic(err)
 	}
 
-	// Important: Here we are reading the CR deployment file from a given path and creating an &operatorapi.KogitoServerlessWorkflow struct
+	// Important: Here we are reading the CR deployment file from a given path and creating an &operatorapi.SonataFlow struct
 	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(ksw)
 	if err != nil {
 		log.Errorf(err, "Unmarshal: #%v", err)
@@ -68,14 +67,14 @@ func GetKogitoServerlessWorkflow(path string, namespace string) *operatorapi.Kog
 	return ksw
 }
 
-func GetKogitoServerlessPlatform(path string) *operatorapi.KogitoServerlessPlatform {
-	ksp := &operatorapi.KogitoServerlessPlatform{}
+func GetSonataFlowPlatform(path string) *operatorapi.SonataFlowPlatform {
+	ksp := &operatorapi.SonataFlowPlatform{}
 	yamlFile, err := os.ReadFile(path)
 	if err != nil {
 		log.Errorf(err, "yamlFile.Get err #%v ", err)
 		panic(err)
 	}
-	// Important: Here we are reading the CR deployment file from a given path and creating a &operatorapi.KogitoServerlessPlatform struct
+	// Important: Here we are reading the CR deployment file from a given path and creating a &operatorapi.SonataFlowPlatform struct
 	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(ksp)
 	if err != nil {
 		log.Errorf(err, "Unmarshal: %v", err)
@@ -85,33 +84,33 @@ func GetKogitoServerlessPlatform(path string) *operatorapi.KogitoServerlessPlatf
 	return ksp
 }
 
-func GetKogitoServerlessPlatformInReadyPhase(path string, namespace string) *operatorapi.KogitoServerlessPlatform {
-	ksp := GetKogitoServerlessPlatform(path)
+func GetSonataFlowPlatformInReadyPhase(path string, namespace string) *operatorapi.SonataFlowPlatform {
+	ksp := GetSonataFlowPlatform(path)
 	ksp.Status.Phase = operatorapi.PlatformPhaseReady
 	ksp.Namespace = namespace
 	return ksp
 }
 
-func GetNewEmptyKogitoServerlessBuild(name, namespace string) *operatorapi.KogitoServerlessBuild {
-	return &operatorapi.KogitoServerlessBuild{
+func GetNewEmptySonataFlowBuild(name, namespace string) *operatorapi.SonataFlowBuild {
+	return &operatorapi.SonataFlowBuild{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: operatorapi.KogitoServerlessBuildSpec{
+		Spec: operatorapi.SonataFlowBuildSpec{
 			BuildTemplate: operatorapi.BuildTemplate{
 				Resources: corev1.ResourceRequirements{},
 				Arguments: []string{},
 			},
 		},
-		Status: operatorapi.KogitoServerlessBuildStatus{},
+		Status: operatorapi.SonataFlowBuildStatus{},
 	}
 
 }
 
-func GetKogitoServerlessOperatorBuilderConfig(path, namespace string) *corev1.ConfigMap {
+func GetSonataFlowBuilderConfig(path, namespace string) *corev1.ConfigMap {
 	cm := &corev1.ConfigMap{}
-	yamlFile, err := os.ReadFile(path + manifestsPath + kogitoServerlessOperatorBuilderConfig)
+	yamlFile, err := os.ReadFile(path + manifestsPath + sonataFlowBuilderConfig)
 	if err != nil {
 		log.Errorf(err, "yamlFile.Get err   #%v ", err)
 		panic(err)
@@ -143,39 +142,39 @@ func GetPathForSamples(path string) string {
 	}
 }
 
-func GetBaseServerlessWorkflow(namespace string) *operatorapi.KogitoServerlessWorkflow {
+func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
 	_, file, _, ok := runtime.Caller(1)
 	log.Info("caller:" + file)
 	if ok {
-		return GetKogitoServerlessWorkflow(GetPathForSamples(file)+KogitoServerlessWorkflowSampleYamlCR, namespace)
+		return GetSonataFlow(GetPathForSamples(file)+SonataFlowSampleYamlCR, namespace)
 	} else {
-		return &operatorapi.KogitoServerlessWorkflow{}
+		return &operatorapi.SonataFlow{}
 	}
 }
 
-func GetBaseServerlessWorkflowWithDevProfile(namespace string) *operatorapi.KogitoServerlessWorkflow {
-	workflow := GetBaseServerlessWorkflow(namespace)
-	workflow.Annotations["sw.kogito.kie.org/profile"] = "dev"
+func GetBaseSonataFlowWithDevProfile(namespace string) *operatorapi.SonataFlow {
+	workflow := GetBaseSonataFlow(namespace)
+	workflow.Annotations["sonataflow.org/profile"] = "dev"
 	return workflow
 }
 
-func GetBaseServerlessWorkflowWithProdProfile(namespace string) *operatorapi.KogitoServerlessWorkflow {
-	workflow := GetBaseServerlessWorkflow(namespace)
-	workflow.Annotations["sw.kogito.kie.org/profile"] = "prod"
+func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow {
+	workflow := GetBaseSonataFlow(namespace)
+	workflow.Annotations["sonataflow.org/profile"] = "prod"
 	return workflow
 }
 
-func GetBasePlatformInReadyPhase(namespace string) *operatorapi.KogitoServerlessPlatform {
+func GetBasePlatformInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	_, file, _, ok := runtime.Caller(1)
 	if ok {
-		return GetKogitoServerlessPlatformInReadyPhase(GetPathForSamples(file)+kogitoServerlessPlatformYamlCR, namespace)
+		return GetSonataFlowPlatformInReadyPhase(GetPathForSamples(file)+sonataFlowPlatformYamlCR, namespace)
 	} else {
-		return &operatorapi.KogitoServerlessPlatform{}
+		return &operatorapi.SonataFlowPlatform{}
 	}
 
 }
 
-func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.KogitoServerlessPlatform {
+func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Phase = operatorapi.PlatformPhaseReady
@@ -183,7 +182,7 @@ func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.Kog
 	return platform
 }
 
-func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.KogitoServerlessPlatform {
+func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Phase = operatorapi.PlatformPhaseReady
@@ -191,23 +190,23 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	return platform
 }
 
-func GetBasePlatform() *operatorapi.KogitoServerlessPlatform {
+func GetBasePlatform() *operatorapi.SonataFlowPlatform {
 	_, file, _, ok := runtime.Caller(1)
 	if ok {
-		return GetKogitoServerlessPlatform(GetPathForSamples(file) + kogitoServerlessPlatformYamlCR)
+		return GetSonataFlowPlatform(GetPathForSamples(file) + sonataFlowPlatformYamlCR)
 	} else {
-		return &operatorapi.KogitoServerlessPlatform{}
+		return &operatorapi.SonataFlowPlatform{}
 	}
 }
 
 func GetPlatformMinikubeE2eTest() string {
-	return e2eSamples + kogitoServerlessPlatformWithCacheMinikubeYamlCR
+	return e2eSamples + sonataFlowPlatformWithCacheMinikubeYamlCR
 }
 
 func GetPlatformOpenshiftE2eTest() string {
-	return e2eSamples + kogitoServerlessPlatformForOpenshift
+	return e2eSamples + sonataFlowPlatformForOpenshift
 }
 
-func GetServerlessWorkflowE2eOrderProcessingFolder() string {
-	return e2eSamples + kogitoServerlessWorkflowOrderProcessingFolder
+func GetSonataFlowE2eOrderProcessingFolder() string {
+	return e2eSamples + sonataFlowOrderProcessingFolder
 }

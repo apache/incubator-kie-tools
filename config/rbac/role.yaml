@@ -6,9 +6,9 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessbuilds
+  - sonataflowbuilds
   verbs:
   - create
   - delete
@@ -18,23 +18,23 @@ rules:
   - update
   - watch
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessbuilds/finalizers
+  - sonataflowbuilds/finalizers
   verbs:
   - update
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessbuilds/status
+  - sonataflowbuilds/status
   verbs:
   - get
   - patch
   - update
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessplatforms
+  - sonataflowplatforms
   verbs:
   - create
   - delete
@@ -44,23 +44,23 @@ rules:
   - update
   - watch
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessplatforms/finalizers
+  - sonataflowplatforms/finalizers
   verbs:
   - update
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessplatforms/status
+  - sonataflowplatforms/status
   verbs:
   - get
   - patch
   - update
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessworkflows
+  - sonataflows
   verbs:
   - create
   - delete
@@ -70,15 +70,15 @@ rules:
   - update
   - watch
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessworkflows/finalizers
+  - sonataflows/finalizers
   verbs:
   - update
 - apiGroups:
-  - sw.kogito.kie.org
+  - sonataflow.org
   resources:
-  - kogitoserverlessworkflows/status
+  - sonataflows/status
   verbs:
   - get
   - patch

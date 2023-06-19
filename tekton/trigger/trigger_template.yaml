@@ -2,7 +2,7 @@ apiVersion: triggers.tekton.dev/v1beta1
 kind: TriggerTemplate
 metadata:
   name: kogito-serverless-operator-trigger-template
-  namespace: kogito-serverless-operator-system
+  namespace: sonataflow-operator-system
 spec:
   params:
     - name: git-repo-url
@@ -30,7 +30,7 @@ spec:
           - name: git-revision
             value: $(tt.params.git-revision)
           - name: IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/kogito-serverless-operator-system/$(tt.params.git-repo-name)
+            value: image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/$(tt.params.git-repo-name)
         workspaces:
           - name: shared-workspace
             volumeClaimTemplate:

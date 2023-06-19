@@ -2,7 +2,7 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   name: kogito-serverless-operator-pipeline
-  namespace: kogito-serverless-operator-system
+  namespace: sonataflow-operator-system
 spec:
   params:
     - description: name of the deployment to be patched
@@ -53,7 +53,7 @@ spec:
       params:
         - name: script
           value: >
-            curl https://raw.githubusercontent.com/kiegroup/kogito-serverless-operator/main/operator.yaml | sed -E 's|image: quay.io/kiegroup/.*|image: image-registry.openshift-image-registry.svc:5000/kogito-serverless-operator-system/kogito-serverless-operator:latest|g' | kubectl apply -f -
+            curl https://raw.githubusercontent.com/kiegroup/kogito-serverless-operator/main/operator.yaml | sed -E 's|image: quay.io/kiegroup/.*|image: image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/kogito-serverless-operator:latest|g' | kubectl apply -f -
       runAfter:
         - build-image
       taskRef:

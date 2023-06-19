@@ -1,5 +1,5 @@
 name: Bug Report
-description: Report a bug in Kogito Serverless Operator
+description: Report a bug in the Sonata Flow Operator
 labels: kind/bug
 body:
   - type: markdown
@@ -52,7 +52,7 @@ body:
       label: Operator-sdk version
   - type: input
     attributes:
-      label:  Kogito Serverless Operator version or git rev
+      label:  Sonata Flow Operator version or git rev
   - type: textarea
     attributes:
       label: Additional information

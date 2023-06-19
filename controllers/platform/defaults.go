@@ -26,7 +26,7 @@ import (
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.KogitoServerlessPlatform, verbose bool) error {
+func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	// update missing fields in the resource
 	if p.Status.Cluster == "" || utils.IsOpenShift() {
 		p.Status.Cluster = operatorapi.PlatformClusterOpenShift
@@ -56,8 +56,8 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Kogi
 	return nil
 }
 
-func updatePlatform(ctx context.Context, c client.Client, p *operatorapi.KogitoServerlessPlatform) {
-	config := operatorapi.KogitoServerlessPlatform{}
+func updatePlatform(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform) {
+	config := operatorapi.SonataFlowPlatform{}
 	errGet := c.Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
 	if errGet != nil {
 		log.Error(errGet, "Error reading the Platform")

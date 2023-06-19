@@ -7,9 +7,9 @@
    https://tkn-cli-serve-openshift-pipelines.apps-crc.testing/tkn/tkn-linux-amd64.tar.gz  
    The version proposed by the Operator is correctly aligned version with the tekton version.
 
-3) If isn't yet created, create the project  `kogito-serverless-operator-system`
+3) If isn't yet created, create the project  `sonataflow-operator-system`
 ```sh
-oc new-project kogito-serverless-operator-system
+oc new-project sonataflow-operator-system
 ```
 
 4) Install the Tekton `kubernetes-actions` task
@@ -40,13 +40,13 @@ tkn pipeline start kogito-serverless-operator-pipeline \
   -p deployment-name=kogito-serverless-operator \
   -p git-url=https://github.com/kiegroup/kogito-serverless-operator.git \
   -p git-revision=main \
-  -p IMAGE='image-registry.openshift-image-registry.svc:5000/kogito-serverless-operator-system/kogito-serverless-operator:latest' \
+  -p IMAGE='image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/kogito-serverless-operator:latest' \
   --use-param-defaults
 ```
 
 8) Check the Pipeline execution
  
-Open the Pipeline menu under the namespace/project `kogito-serverless-operator-system`
+Open the Pipeline menu under the namespace/project `sonataflow-operator-system`
 or with the Tekton cli (use the pipeline run id):
 
 ```sh
@@ -87,7 +87,7 @@ oc create -f tekton/trigger/trigger_resource.yaml
 
 4) Add a label to enable the secure HTTPS connection to the Eventlistener resource
 ```sh
-oc label namespace kogito-serverless-operator-system operator.tekton.dev/enable-annotation=enabled
+oc label namespace sonataflow-operator-system operator.tekton.dev/enable-annotation=enabled
 ```
 
 5) Create the Event listener trigger

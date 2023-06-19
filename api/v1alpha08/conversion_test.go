@@ -29,9 +29,9 @@ const (
 	camelCNCFWorkflow   = "testdata/camel.sw.json"
 	foreachCNCFWorkflow = "testdata/foreach.sw.json"
 	invalidCNCFWorkflow = "testdata/invalid.sw.json"
-	camelWorkflowCR     = "testdata/kogitoserverlessworkflow-camel.yaml"
-	foreachWorkflowCR   = "testdata/kogitoserverlessworkflow-foreach.yaml"
-	invalidWorkflowCR   = "testdata/kogitoserverlessworkflow-invalid.yaml"
+	camelWorkflowCR     = "testdata/sonataflow-camel.yaml"
+	foreachWorkflowCR   = "testdata/sonataflow-foreach.yaml"
+	invalidWorkflowCR   = "testdata/sonataflow-invalid.yaml"
 )
 
 func getCNCFWorkflow(name string) *cncfmodel.Workflow {
@@ -47,12 +47,12 @@ func getCNCFWorkflow(name string) *cncfmodel.Workflow {
 	return cncfWorkflow
 }
 
-func getWorkflowCR(name string) *KogitoServerlessWorkflow {
+func getWorkflowCR(name string) *SonataFlow {
 	crBytes, err := os.ReadFile(name)
 	if err != nil {
 		panic(err)
 	}
-	workflowCR := &KogitoServerlessWorkflow{}
+	workflowCR := &SonataFlow{}
 	if err = yaml.Unmarshal(crBytes, workflowCR); err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func TestFromCNCFWorkflow(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    args
-		want    *KogitoServerlessWorkflow
+		want    *SonataFlow
 		wantErr bool
 	}{
 		{name: "Camel Flow", args: args{getCNCFWorkflow(camelCNCFWorkflow)}, wantErr: false, want: getWorkflowCR(camelWorkflowCR)},
@@ -97,7 +97,7 @@ func TestFromCNCFWorkflow(t *testing.T) {
 
 func TestToCNCFWorkflow(t *testing.T) {
 	type args struct {
-		workflowCR *KogitoServerlessWorkflow
+		workflowCR *SonataFlow
 	}
 	tests := []struct {
 		name    string

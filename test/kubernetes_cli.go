@@ -51,29 +51,29 @@ func NewKogitoClientBuilderWithOpenShift() *fake.ClientBuilder {
 	return fake.NewClientBuilder().WithScheme(s)
 }
 
-func MustGetDeployment(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow) *appsv1.Deployment {
+func MustGetDeployment(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.SonataFlow) *appsv1.Deployment {
 	deployment := &appsv1.Deployment{}
 	return mustGet(t, client, workflow, deployment).(*appsv1.Deployment)
 }
 
-func MustGetService(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow) *v1.Service {
+func MustGetService(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.SonataFlow) *v1.Service {
 	svc := &v1.Service{}
 	return mustGet(t, client, workflow, svc).(*v1.Service)
 }
 
-func MustGetConfigMap(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow) *v1.ConfigMap {
+func MustGetConfigMap(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.SonataFlow) *v1.ConfigMap {
 	cm := &v1.ConfigMap{}
 	return mustGet(t, client, workflow, cm).(*v1.ConfigMap)
 }
 
-func MustGetWorkflow(t *testing.T, client ctrl.WithWatch, name types.NamespacedName) *operatorapi.KogitoServerlessWorkflow {
-	workflow := &operatorapi.KogitoServerlessWorkflow{}
+func MustGetWorkflow(t *testing.T, client ctrl.WithWatch, name types.NamespacedName) *operatorapi.SonataFlow {
+	workflow := &operatorapi.SonataFlow{}
 	workflow.Name = name.Name
 	workflow.Namespace = name.Namespace
-	return mustGet(t, client, workflow, workflow).(*operatorapi.KogitoServerlessWorkflow)
+	return mustGet(t, client, workflow, workflow).(*operatorapi.SonataFlow)
 }
 
-func mustGet(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.KogitoServerlessWorkflow, obj ctrl.Object) ctrl.Object {
+func mustGet(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.SonataFlow, obj ctrl.Object) ctrl.Object {
 	err := client.Get(context.TODO(), ctrl.ObjectKeyFromObject(workflow), obj)
 	assert.NoError(t, err)
 	return obj

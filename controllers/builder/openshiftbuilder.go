@@ -41,7 +41,7 @@ import (
 
 const (
 	imageStreamTagKind         = "ImageStreamTag"
-	defaultBuildMessageTrigger = "Triggered by Kogito Serverless Operator"
+	defaultBuildMessageTrigger = "Triggered by SonataFlow Operator"
 )
 
 //		openshiftBuildPhaseMatrix Build phases correlations:
@@ -89,7 +89,7 @@ func newOpenShiftBuilderManagerWithClient(managerContext buildManagerContext, bu
 	return manager
 }
 
-func (o *openshiftBuilderManager) Schedule(build *operatorapi.KogitoServerlessBuild) error {
+func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) error {
 	is := &imgv1.ImageStream{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      build.Name,
@@ -141,7 +141,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.KogitoServerlessBu
 	return nil
 }
 
-func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.KogitoServerlessBuild) *buildv1.BuildConfig {
+func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.SonataFlowBuild) *buildv1.BuildConfig {
 	optimizationPol := buildv1.ImageOptimizationSkipLayers
 	dockerFile := o.commonConfig.Data[o.commonConfig.Data[configKeyDefaultBuilderResourceName]]
 	return &buildv1.BuildConfig{
@@ -174,7 +174,7 @@ func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.Kogit
 	}
 }
 
-func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConfig, workflow *operatorapi.KogitoServerlessWorkflow) error {
+func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConfig, workflow *operatorapi.SonataFlow) error {
 	if len(workflow.Spec.Resources.ConfigMaps) == 0 {
 		return nil
 	}
@@ -189,7 +189,7 @@ func (o *openshiftBuilderManager) addExternalResources(config *buildv1.BuildConf
 	return nil
 }
 
-func (o *openshiftBuilderManager) Reconcile(build *operatorapi.KogitoServerlessBuild) (err error) {
+func (o *openshiftBuilderManager) Reconcile(build *operatorapi.SonataFlowBuild) (err error) {
 	var openshiftBuild *buildv1.Build
 
 	if build.Status.BuildPhase == operatorapi.BuildPhaseNone ||
@@ -237,7 +237,7 @@ func (o *openshiftBuilderManager) Reconcile(build *operatorapi.KogitoServerlessB
 	return build.Status.SetInnerBuild(kubeutil.ToTypedLocalReference(openshiftBuild))
 }
 
-func (o *openshiftBuilderManager) fetchOpenShiftBuildRef(build *operatorapi.KogitoServerlessBuild) (*buildv1.Build, error) {
+func (o *openshiftBuilderManager) fetchOpenShiftBuildRef(build *operatorapi.SonataFlowBuild) (*buildv1.Build, error) {
 	openshiftBuild := &buildv1.Build{}
 	refOpenShiftBuild := &corev1.TypedLocalObjectReference{}
 	if err := build.Status.GetInnerBuild(refOpenShiftBuild); err != nil {
@@ -254,7 +254,7 @@ func (o *openshiftBuilderManager) fetchOpenShiftBuildRef(build *operatorapi.Kogi
 
 // TODO: this should be from fileS, in this case we can TAR everything in a temp directory within the operator pod fs and push
 // TODO: for now, we mount the CMs from the devmode into the build and push only the bytes for the workflow definition from memory
-func (o *openshiftBuilderManager) pushNewOpenShiftBuildForWorkflow(build *operatorapi.KogitoServerlessBuild, workflow *operatorapi.KogitoServerlessWorkflow) (*buildv1.Build, error) {
+func (o *openshiftBuilderManager) pushNewOpenShiftBuildForWorkflow(build *operatorapi.SonataFlowBuild, workflow *operatorapi.SonataFlow) (*buildv1.Build, error) {
 	options := &buildv1.BinaryBuildRequestOptions{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: build.Name, Namespace: build.Namespace,

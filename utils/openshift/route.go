@@ -23,7 +23,7 @@ import (
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-func RouteForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) (*v1.Route, error) {
+func RouteForWorkflow(workflow *operatorapi.SonataFlow) (*v1.Route, error) {
 	route := &v1.Route{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      workflow.Name,

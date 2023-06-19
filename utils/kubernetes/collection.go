@@ -127,7 +127,7 @@ func (c *Collection) GetDeployment(filter func(*appsv1.Deployment) bool) *appsv1
 }
 
 // GetDeploymentForWorkflow returns a Deployment for the given workflow.
-func (c *Collection) GetDeploymentForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *appsv1.Deployment {
+func (c *Collection) GetDeploymentForWorkflow(workflow *operatorapi.SonataFlow) *appsv1.Deployment {
 	if workflow == nil {
 		return nil
 	}
@@ -221,7 +221,7 @@ func (c *Collection) GetService(filter func(*corev1.Service) bool) *corev1.Servi
 }
 
 // GetServiceForWorkflow returns a user Service for the given workflow.
-func (c *Collection) GetServiceForWorkflow(workflow *operatorapi.KogitoServerlessWorkflow) *corev1.Service {
+func (c *Collection) GetServiceForWorkflow(workflow *operatorapi.SonataFlow) *corev1.Service {
 	if workflow == nil {
 		return nil
 	}

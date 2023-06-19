@@ -1,0 +1,140 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.2
+  creationTimestamp: null
+  name: sonataflowbuilds.sonataflow.org
+spec:
+  group: sonataflow.org
+  names:
+    kind: SonataFlowBuild
+    listKind: SonataFlowBuildList
+    plural: sonataflowbuilds
+    shortNames:
+    - sfb
+    - sfbuild
+    - sfbuilds
+    singular: sonataflowbuild
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.imageTag
+      name: Image
+      type: string
+    - jsonPath: .status.buildPhase
+      name: Phase
+      type: string
+    name: v1alpha08
+    schema:
+      openAPIV3Schema:
+        description: SonataFlowBuild is the Schema for the sonataflowbuilds API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: SonataFlowBuildSpec an abstraction over the actual build
+              process performed by the platform.
+            properties:
+              arguments:
+                description: Arguments lists the command line arguments to send to
+                  the builder
+                items:
+                  type: string
+                type: array
+              resources:
+                description: Resources optional compute resource requirements for
+                  the builder
+                properties:
+                  claims:
+                    description: "Claims lists the names of resources, defined in
+                      spec.resourceClaims, that are used by this container. \n This
+                      is an alpha field and requires enabling the DynamicResourceAllocation
+                      feature gate. \n This field is immutable. It can only be set
+                      for containers."
+                    items:
+                      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                      properties:
+                        name:
+                          description: Name must match the name of one entry in pod.spec.resourceClaims
+                            of the Pod where this field is used. It makes that resource
+                            available inside a container.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - name
+                    x-kubernetes-list-type: map
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Limits describes the maximum amount of compute resources
+                      allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                    type: object
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: 'Requests describes the minimum amount of compute
+                      resources required. If Requests is omitted for a container,
+                      it defaults to Limits if that is explicitly specified, otherwise
+                      to an implementation-defined value. Requests cannot exceed Limits.
+                      More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                    type: object
+                type: object
+              timeout:
+                description: Timeout defines the Build maximum execution duration.
+                  The Build deadline is set to the Build start time plus the Timeout
+                  duration. If the Build deadline is exceeded, the Build context is
+                  canceled, and its phase set to BuildPhaseFailed.
+                format: duration
+                type: string
+            type: object
+          status:
+            description: SonataFlowBuildStatus defines the observed state of SonataFlowBuild
+            properties:
+              buildPhase:
+                description: Current phase of the build
+                type: string
+              error:
+                description: Last error found during build
+                type: string
+              imageTag:
+                description: The final image tag produced by this build instance
+                type: string
+              innerBuild:
+                description: InnerBuild is a reference to an internal build object,
+                  which can be anything known only to internal builders.
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

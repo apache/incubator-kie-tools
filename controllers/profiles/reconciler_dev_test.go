@@ -43,7 +43,7 @@ import (
 
 func Test_OverrideStartupProbe(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflow(t.Name())
+	workflow := test.GetBaseSonataFlow(t.Name())
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
@@ -70,7 +70,7 @@ func Test_OverrideStartupProbe(t *testing.T) {
 
 func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflow(t.Name())
+	workflow := test.GetBaseSonataFlow(t.Name())
 	workflowID := clientruntime.ObjectKeyFromObject(workflow)
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
@@ -115,7 +115,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 
 func Test_newDevProfile(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflow(t.Name())
+	workflow := test.GetBaseSonataFlow(t.Name())
 
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
@@ -192,7 +192,7 @@ func Test_newDevProfile(t *testing.T) {
 
 func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 	config := &rest.Config{}
 	devReconciler := newDevProfileReconciler(client, config, &logger)
@@ -208,7 +208,7 @@ func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 
 func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 
 	platform := test.GetBasePlatformWithDevBaseImageInReadyPhase(workflow.Namespace)
 
@@ -227,7 +227,7 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 
 func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 
 	platform := test.GetBasePlatformWithBaseImageInReadyPhase(workflow.Namespace)
 
@@ -246,7 +246,7 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 
 func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 
 	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
 
@@ -266,7 +266,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	logger := ctrllog.FromContext(context.TODO())
 	configmapName := "mycamel-configmap"
-	workflow := test.GetBaseServerlessWorkflowWithDevProfile(t.Name())
+	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	workflow.Spec.Resources.ConfigMaps = append(workflow.Spec.Resources.ConfigMaps,
 		operatorapi.ConfigMapWorkflowResource{ConfigMap: v1.LocalObjectReference{Name: configmapName}, WorkflowPath: "routes"})
 

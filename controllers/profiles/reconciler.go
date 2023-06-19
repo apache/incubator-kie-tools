@@ -41,7 +41,7 @@ import (
 // 3. reconciliationStateMachine: is a struct within the ProfileReconciler that do the actual reconciliation.
 // Each part of the reconciliation algorithm is a ReconciliationState that will be executed based on the ReconciliationState.CanReconcile call.
 //
-// 4. ReconciliationState: is where your business code should be focused on. Each state should react to a specific operatorapi.KogitoServerlessWorkflowConditionType.
+// 4. ReconciliationState: is where your business code should be focused on. Each state should react to a specific operatorapi.SonataFlowConditionType.
 // The least conditions your state handles, the better.
 // The ReconciliationState can provide specific code that will only be triggered if the workflow is in that specific condition.
 //
@@ -58,7 +58,7 @@ import (
 //
 // While debugging, focus on the ReconciliationState(s), not in the profile implementation since the base algorithm is the same for every profile.
 type ProfileReconciler interface {
-	Reconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, error)
+	Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error)
 	GetProfile() metadata.ProfileType
 }
 
@@ -68,8 +68,8 @@ type stateSupport struct {
 	client client.Client
 }
 
-// performStatusUpdate updates the KogitoServerlessWorkflow Status conditions
-func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (bool, error) {
+// performStatusUpdate updates the SonataFlow Status conditions
+func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operatorapi.SonataFlow) (bool, error) {
 	var err error
 	workflow.Status.ObservedGeneration = workflow.Generation
 	if err = s.client.Status().Update(ctx, workflow); err != nil {
@@ -80,7 +80,7 @@ func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operato
 }
 
 // PostReconcile function to perform all the other operations required after the reconciliation - placeholder for null pattern usages
-func (s stateSupport) PostReconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) error {
+func (s stateSupport) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
 	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
 	return nil
 }
@@ -101,7 +101,7 @@ func newBaseProfileReconciler(support *stateSupport, stateMachine *reconciliatio
 }
 
 // Reconcile does the actual reconciliation algorithm based on a set of ReconciliationState
-func (b baseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, error) {
+func (b baseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
 	workflow.Status.Manager().InitializeConditions()
 	result, objects, err := b.reconciliationStateMachine.do(ctx, workflow)
 	if err != nil {
@@ -116,12 +116,12 @@ func (b baseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.Kog
 // ReconciliationState is an interface implemented internally by different reconciliation algorithms to perform the adequate logic for a given workflow profile
 type ReconciliationState interface {
 	// CanReconcile checks if this state can perform its reconciliation task
-	CanReconcile(workflow *operatorapi.KogitoServerlessWorkflow) bool
+	CanReconcile(workflow *operatorapi.SonataFlow) bool
 	// Do perform the reconciliation task. It returns the controller result, the objects updated, and an error if any.
 	// Objects can be nil if the reconciliation state doesn't perform any updates in any Kubernetes object.
-	Do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error)
+	Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error)
 	// PostReconcile performs the actions to perform after the reconciliation that are not mandatory
-	PostReconcile(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) error
+	PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error
 }
 
 // newReconciliationStateMachine builder for the reconciliationStateMachine
@@ -141,7 +141,7 @@ type reconciliationStateMachine struct {
 	logger *logr.Logger
 }
 
-func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (ctrl.Result, []client.Object, error) {
+func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	for _, h := range r.states {
 		if h.CanReconcile(workflow) {
 			r.logger.Info("Found a condition to reconcile.", "Conditions", workflow.Status.Conditions)
@@ -159,6 +159,6 @@ func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatora
 }
 
 // NewReconciler creates a new ProfileReconciler based on the given workflow and context.
-func NewReconciler(client client.Client, config *rest.Config, logger *logr.Logger, workflow *operatorapi.KogitoServerlessWorkflow) ProfileReconciler {
+func NewReconciler(client client.Client, config *rest.Config, logger *logr.Logger, workflow *operatorapi.SonataFlow) ProfileReconciler {
 	return profileBuilder(workflow)(client, config, logger)
 }

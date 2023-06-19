@@ -18,7 +18,6 @@ package kubernetes
 
 import (
 	"context"
-	//builder2 "github.com/kiegroup/kogito-serverless-operator/container-builder/builder"
 	"time"
 
 	"github.com/jpillora/backoff"

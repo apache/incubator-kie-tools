@@ -1,6 +1,6 @@
 <!--
 
-Welcome to the Kogito Serverless Operator! Before contributing, make sure to:
+Welcome to the Sonata Flow Operator! Before contributing, make sure to:
 
 - Rebase your branch on the latest upstream main
 - Link any relevant issues, PR's, or documentation

@@ -37,7 +37,7 @@ func newStatusEnricher(client client.Client, logger *logr.Logger, enricher statu
 
 // statusEnricherFn is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.
 // Can be used as a reference to keep the object immutable
-type statusEnricherFn func(ctx context.Context, client client.Client, workflow *operatorapi.KogitoServerlessWorkflow) (client.Object, error)
+type statusEnricherFn func(ctx context.Context, client client.Client, workflow *operatorapi.SonataFlow) (client.Object, error)
 
 // statusEnricher provides the engine for a ReconciliationState that needs to create or update a given Kubernetes object during the reconciliation cycle.
 type statusEnricher struct {
@@ -47,7 +47,7 @@ type statusEnricher struct {
 	enricher statusEnricherFn
 }
 
-func (d *statusEnricher) Enrich(ctx context.Context, workflow *operatorapi.KogitoServerlessWorkflow) (controllerutil.OperationResult, error) {
+func (d *statusEnricher) Enrich(ctx context.Context, workflow *operatorapi.SonataFlow) (controllerutil.OperationResult, error) {
 	result := controllerutil.OperationResultNone
 	_, err := d.enricher(ctx, d.client, workflow)
 	if err != nil {

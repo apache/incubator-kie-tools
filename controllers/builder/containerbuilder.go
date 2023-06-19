@@ -44,7 +44,7 @@ type containerBuilderManager struct {
 	restConfig *rest.Config
 }
 
-func (c *containerBuilderManager) Schedule(build *operatorapi.KogitoServerlessBuild) error {
+func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) error {
 	workflowDef, imageNameTag, err := c.fetchWorkflowDefinitionAndImageTag(build)
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.KogitoServerlessBu
 	return nil
 }
 
-func (c *containerBuilderManager) Reconcile(build *operatorapi.KogitoServerlessBuild) error {
+func (c *containerBuilderManager) Reconcile(build *operatorapi.SonataFlowBuild) error {
 	containerBuild := &api.ContainerBuild{}
 	if err := build.Status.GetInnerBuild(containerBuild); err != nil {
 		return err

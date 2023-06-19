@@ -15,7 +15,7 @@
 package metadata
 
 const (
-	Domain                      = "sw.kogito.kie.org"
+	Domain                      = "sonataflow.org"
 	Key                         = Domain + "/key"
 	Name                        = Domain + "/name"
 	Description                 = Domain + "/description"

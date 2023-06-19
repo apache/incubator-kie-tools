@@ -52,16 +52,16 @@ rules:
     - update
     - watch   
 - apiGroups:
-    - sw.kogito.kie.org
+    - sonataflow.org
   resources:
-    - kogitoserverlessbuilds
-    - kogitoserverlessbuilds/status
-    - kogitoserverlessplatforms
-    - kogitoserverlessplatforms/finalizers
-    - kogitoserverlessplatforms/status
-    - kogitoserverlessworkflows
-    - kogitoserverlessworkflows/finalizers
-    - kogitoserverlessworkflows/status
+    - sonataflowbuilds
+    - sonataflowbuilds/status
+    - sonataflowplatforms
+    - sonataflowplatforms/finalizers
+    - sonataflowplatforms/status
+    - sonataflows
+    - sonataflows/finalizers
+    - sonataflows/status
     - pods
   verbs:
     - create

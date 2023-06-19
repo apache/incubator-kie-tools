@@ -1,14 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Jira
-    url: https://issues.redhat.com/projects/KOGITO
-    about: Kogito Jira Board
+  - name: GitHub Issues
+    url: https://github.com/kiegroup/kogito-serverless-operator/issues
+    about: GitHub Issues page in case you need to report a bug or wish to ask for a new feature.
   - name: Question
-    url: https://stackoverflow.com/questions/ask?tags=kogito-serverless
-    about: I have a question about how to use Kogito Serverless Operator.
-  - name: Kogito Zulip chat
-    url: https://kie.zulipchat.com/
-    about: If you prefer live chat with the developers, we have a Zulip chat where we all hang out.
-  - name: Kogito Development mailing list
-    url: https://groups.google.com/g/kogito-development
-    about: You can also ask questions on our mailing list.
+    url: https://github.com/kiegroup/kogito-serverless-operator/discussions
+    about: I have a question about how to use the operator.

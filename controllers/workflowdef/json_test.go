@@ -26,10 +26,10 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
 
-func TestKogitoServerlessWorkflowConverter(t *testing.T) {
-	t.Run("verify that when KogitoServerlessWorkflow CR is nil an error is returned", func(t *testing.T) {
-		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw := test.GetBaseServerlessWorkflow(t.Name())
+func TestSonataFlowConverter(t *testing.T) {
+	t.Run("verify that when SonataFlow CR is nil an error is returned", func(t *testing.T) {
+		// Create a SonataFlow object with metadata and spec.
+		ksw := test.GetBaseSonataFlow(t.Name())
 		out, err := operatorapi.ToCNCFWorkflow(ksw, context.TODO())
 		assert.NoError(t, err)
 		assert.True(t, out != nil)

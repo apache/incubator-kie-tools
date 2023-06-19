@@ -26,26 +26,26 @@ import (
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-var _ KogitoServerlessBuildManager = &kogitoServerlessBuildManager{}
+var _ SonataFlowBuildManager = &sonataFlowBuildManager{}
 
-type kogitoServerlessBuildManager struct {
+type sonataFlowBuildManager struct {
 	client client.Client
 	ctx    context.Context
 }
 
-func (k *kogitoServerlessBuildManager) MarkToRestart(build *operatorapi.KogitoServerlessBuild) error {
+func (k *sonataFlowBuildManager) MarkToRestart(build *operatorapi.SonataFlowBuild) error {
 	build.Status.BuildPhase = operatorapi.BuildPhaseNone
 	return k.client.Status().Update(k.ctx, build)
 }
 
-func (k *kogitoServerlessBuildManager) GetOrCreateBuild(workflow *operatorapi.KogitoServerlessWorkflow) (*operatorapi.KogitoServerlessBuild, error) {
-	buildInstance := &operatorapi.KogitoServerlessBuild{}
+func (k *sonataFlowBuildManager) GetOrCreateBuild(workflow *operatorapi.SonataFlow) (*operatorapi.SonataFlowBuild, error) {
+	buildInstance := &operatorapi.SonataFlowBuild{}
 	buildInstance.ObjectMeta.Namespace = workflow.Namespace
 	buildInstance.ObjectMeta.Name = workflow.Name
 
 	if err := k.client.Get(k.ctx, client.ObjectKeyFromObject(workflow), buildInstance); err != nil {
 		if errors.IsNotFound(err) {
-			plat := &operatorapi.KogitoServerlessPlatform{}
+			plat := &operatorapi.SonataFlowPlatform{}
 			if plat, err = platform.GetActivePlatform(k.ctx, k.client, workflow.Namespace); err != nil {
 				return nil, err
 			}
@@ -64,19 +64,19 @@ func (k *kogitoServerlessBuildManager) GetOrCreateBuild(workflow *operatorapi.Ko
 	return buildInstance, nil
 }
 
-type KogitoServerlessBuildManager interface {
-	// GetOrCreateBuild gets or creates a new instance of KogitoServerlessBuild for the given KogitoServerlessWorkflow.
+type SonataFlowBuildManager interface {
+	// GetOrCreateBuild gets or creates a new instance of SonataFlowBuild for the given SonataFlow.
 	//
 	// Only one build is allowed per workflow instance
-	GetOrCreateBuild(workflow *operatorapi.KogitoServerlessWorkflow) (*operatorapi.KogitoServerlessBuild, error)
+	GetOrCreateBuild(workflow *operatorapi.SonataFlow) (*operatorapi.SonataFlowBuild, error)
 	// MarkToRestart tell the controller to restart this build in the next iteration
-	MarkToRestart(build *operatorapi.KogitoServerlessBuild) error
+	MarkToRestart(build *operatorapi.SonataFlowBuild) error
 }
 
-// NewKogitoServerlessBuildManager entry point to manage KogitoServerlessBuild instances.
+// NewSonataFlowBuildManager entry point to manage SonataFlowBuild instances.
 // Won't start a build, but once it creates a new instance, the controller will take place and start the build in the cluster context.
-func NewKogitoServerlessBuildManager(ctx context.Context, client client.Client) KogitoServerlessBuildManager {
-	return &kogitoServerlessBuildManager{
+func NewSonataFlowBuildManager(ctx context.Context, client client.Client) SonataFlowBuildManager {
+	return &sonataFlowBuildManager{
 		client: client,
 		ctx:    ctx,
 	}

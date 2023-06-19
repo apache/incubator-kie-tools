@@ -24,17 +24,17 @@ import (
 )
 
 // GetJSONWorkflow return a Kogito compliant JSON format workflow as bytearray give a specific workflow CR
-func GetJSONWorkflow(workflowCR *operatorapi.KogitoServerlessWorkflow, ctx context.Context) ([]byte, error) {
+func GetJSONWorkflow(workflowCR *operatorapi.SonataFlow, ctx context.Context) ([]byte, error) {
 	logger := ctrllog.FromContext(ctx)
 	// apply workflow metadata
 	workflow, err := operatorapi.ToCNCFWorkflow(workflowCR, ctx)
 	if err != nil {
-		logger.Error(err, "Failed converting KogitoServerlessWorkflow into Workflow")
+		logger.Error(err, "Failed converting SonataFlow into Workflow")
 		return nil, err
 	}
 	jsonWorkflow, err := json.Marshal(workflow)
 	if err != nil {
-		logger.Error(err, "Failed converting KogitoServerlessWorkflow into JSON")
+		logger.Error(err, "Failed converting SonataFlow into JSON")
 		return nil, err
 	}
 	return jsonWorkflow, nil
