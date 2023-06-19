@@ -17,11 +17,9 @@ quarkus_platform_version="${3}"
 kogito_version="${KOGITO_VERSION:-${4}}"
 
 # common extensions used by the kogito-swf-builder and kogito-swf-devmode
-quarkus_extensions='quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version}'
+quarkus_extensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version}"
 # dev mode purpose extensions used only by the kogito-swf-devmode
-kogito_swf_devmode_extensions='kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files'
-# devmode extensions that are not available in RHBQ 2.13.x
-kogito_swf_devmode_extensions_2_16="org.kie.kogito:kogito-addons-quarkus-jobs-service-embedded:${kogito_version},org.kie.kogito:kogito-addons-quarkus-data-index-inmemory:${kogito_version},org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version}"
+kogito_swf_devmode_extensions="kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,org.kie.kogito:kogito-addons-quarkus-jobs-service-embedded:${kogito_version},org.kie.kogito:kogito-addons-quarkus-data-index-inmemory:${kogito_version}"
 
 if [ -z ${quarkus_platform_version} ]; then
     echo "Please provide the quarkus version"
@@ -33,7 +31,7 @@ case ${image_name} in
         quarkus_extensions="${quarkus_extensions}"
         ;;
     "kogito-swf-devmode")
-        quarkus_extensions="${quarkus_extensions},${kogito_swf_devmode_extensions},${kogito_swf_devmode_extensions_2_16}"
+        quarkus_extensions="${quarkus_extensions},${kogito_swf_devmode_extensions}"
         ;;
     *)
         echo "${image_name} is not a quarkus app image, exiting..."
