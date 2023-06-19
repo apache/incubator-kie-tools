@@ -1,3 +1,11 @@
+# 0.30.0 (alpha)
+
+- [KOGITO-9227](https://issues.redhat.com/browse/KOGITO-9227) - Make an internal Dashbuilder timeseries component
+- [KOGITO-9325](https://issues.redhat.com/browse/KOGITO-9325) - Support Join in Dashbuilder DataSets
+- [KOGITO-9384](https://issues.redhat.com/browse/KOGITO-9384) - [Dashbuilder] Keep order and ignore empty in Join datasets
+- [KOGITO-9389](https://issues.redhat.com/browse/KOGITO-9389) - Support query params in dashbuilder datasets
+- [KOGITO-9390](https://issues.redhat.com/browse/KOGITO-9390) - Support for Global Datasets declarations in Dashbuilder YAML
+
 # 0.29.0 (alpha)
 
 - [KOGITO-9175](https://issues.redhat.com/browse/KOGITO-9175) - Support types for Dashbuilder external datasets
