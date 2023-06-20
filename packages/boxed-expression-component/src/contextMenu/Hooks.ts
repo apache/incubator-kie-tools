@@ -38,7 +38,7 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
   const hide = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      if (!isOpen) {
+      if (!isOpen || e.ctrlKey) {
         return;
       }
 
