@@ -608,6 +608,8 @@ jobs:
           registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
+        env:
+          TMPDIR: ${{ github.workspace }}/tmp
 
       - name: "Clean up serverless-logic-web-tools-swf-dev-mode-image"
         working-directory: ${{ github.workspace }}/kie-tools
