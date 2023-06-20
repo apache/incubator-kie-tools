@@ -155,6 +155,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
+          TMPDIR: "${{ github.workspace }}/tmp"
           KIE_TOOLS_BUILD__runIntegrationTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
           KIE_TOOLS_BUILD__runLinters: "false"
@@ -222,6 +223,9 @@ jobs:
           git commit -m "Deploy ${{ inputs.tag }}-prerelease (staging)"
           git push origin main
 
+          echo "Clean up deployment dir"
+          rm -rf $DEPLOYMENT_DIR
+
       - name: "STAGING: Deploy Serverless Logic Web Tools to serverless-logic-sandbox-deployment (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/serverless-logic-sandbox-deployment
@@ -238,6 +242,9 @@ jobs:
           git add $DEPLOYMENT_DIR
           git commit -m "Deploy ${{ inputs.tag }}-prerelease (staging)"
           git push origin gh-pages
+
+          echo "Clean up deployment dir"
+          rm -rf $DEPLOYMENT_DIR
 
       - name: "STAGING: Compress Online Editor (Ubuntu only)"
         if: runner.os == 'Linux'
@@ -460,13 +467,7 @@ jobs:
           asset_name: "STAGING__kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
 
-  push_images:
-    env:
-      TMPDIR: "${{ github.workspace }}/tmp"
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - name: "STAGING: Deploy Serverless Logic Web Tools to serverless-logic-sandbox-deployment (Ubuntu only)"
+      - name: "STAGING: Create temp dir (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}
         run: |
