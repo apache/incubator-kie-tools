@@ -45,15 +45,14 @@ KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], 
 /////////////////////////////////////////////////////////////////
 
 void setupPrJob(boolean isProdCI = false) {
+    setupBuildImageJob(JobType.PULL_REQUEST, '', isProdCI)
+
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.PULL_REQUEST, "${jenkins_path}/Jenkinsfile", "Kogito Images${isProdCI ? ' Prod' : ''} PR check")
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
         disable_status_message_failure: true,
-    ])
-    jobParams.env.putAll([
-        QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
     ])
     if (isProdCI) {
         jobParams.job.name += '.prod'
@@ -94,6 +93,8 @@ void createSetupBranchJob() {
 }
 
 void setupDeployJob(JobType jobType, String envName = '') {
+    setupBuildImageJob(jobType, envName)
+
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     if (jobType == JobType.PULL_REQUEST) {
@@ -162,9 +163,52 @@ void setupDeployJob(JobType jobType, String envName = '') {
                 stringParam('QUARKUS_PLATFORM_VERSION', '', 'Allow to override the Quarkus Platform version')
             }
 
-            booleanParam('CREATE_PR', false, 'In case of not releasing, you can ask to create a PR with the changes')
-
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
+        }
+    }
+}
+
+void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = false) {
+    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images.build-image', jobType, envName, "${jenkins_path}/Jenkinsfile.build-image", 'Kogito Images Build single image')
+    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        MAX_REGISTRY_RETRIES: 3,
+        TARGET_AUTHOR: Utils.getGitAuthor(this), // In case of a PR to merge with target branch
+        PROD_CI: prodCI,
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        logRotator {
+            daysToKeep(10)
+        }
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_IMAGE_NAME', '', 'Image name to build. Mandatory parameter.')
+
+            stringParam('SOURCE_AUTHOR', Utils.getGitAuthor(this), 'Build author')
+            stringParam('SOURCE_BRANCH', Utils.getGitBranch(this), 'Build branch name')
+            stringParam('TARGET_BRANCH', '', 'In case of a PR to merge with target branch, please provide the target branch')
+
+            // Build information
+            stringParam('BUILD_KOGITO_APPS_URI', '', 'Git uri to the kogito-apps repository to use for tests.')
+            stringParam('BUILD_KOGITO_APPS_REF', '', 'Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
+            stringParam('QUARKUS_PLATFORM_URL', Utils.getMavenQuarkusPlatformRepositoryUrl(this), 'URL to the Quarkus platform to use. The version to use will be guessed from artifacts.')
+
+            // Test information
+            booleanParam('SKIP_TESTS', false, 'Skip tests')
+            stringParam('TESTS_KOGITO_EXAMPLES_URI', '', 'Git uri to the kogito-examples repository to use for tests.')
+            stringParam('TESTS_KOGITO_EXAMPLES_REF', '', 'Git reference (branch/tag) to the kogito-examples repository to use for tests.')
+            stringParam('TESTS_MAVEN_ARTIFACTS_REPOSITORY_URL', "${MAVEN_ARTIFACTS_REPOSITORY}")
+
+            // Deploy information
+            booleanParam('DEPLOY_IMAGE', false, 'Should we deploy image to given deploy registry ?')
+            booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
+            stringParam('DEPLOY_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('DEPLOY_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
+            stringParam('DEPLOY_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
+            stringParam('DEPLOY_IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
+            stringParam('DEPLOY_IMAGE_TAG', '', 'Image tag to use to deploy images')
+            booleanParam('DEPLOY_WITH_LATEST_TAG', false, 'Set to true if you want the deployed images to also be with the `latest` tag')
         }
     }
 }

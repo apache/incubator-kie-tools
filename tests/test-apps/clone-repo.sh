@@ -8,8 +8,7 @@ if [ -n "${IMAGE_NAME}" ]; then
     if [[ ${IMAGE_NAME} =~ rhpam|logic* ]]; then
         prod="--prod"
     fi
-    python3 ../../scripts/list-images.py ${prod} -is ${IMAGE_NAME}
-    if [ $? = 0 ]; then
+    if python3 ../../scripts/list-images.py ${prod} -is ${IMAGE_NAME}; then
         echo "Target image is supporting services, skipping examples build"
         exit 0
     fi

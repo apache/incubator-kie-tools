@@ -3,6 +3,9 @@ name: Images PR check
 on: pull_request
 jobs:
   bats_test:
+    concurrency:
+      group: ${{ github.repository.name }}_bats_test-${{ github.head_ref }}
+      cancel-in-progress: true
     name: Bats Tests
     runs-on: ubuntu-latest
 
@@ -24,6 +27,9 @@ jobs:
           ./scripts/run-bats.sh
           
   validate_kogito_imagestream:
+    concurrency:
+      group: ${{ github.repository.name }}_validate_kogito_imagestream-${{ github.head_ref }}
+      cancel-in-progress: true
     name: Validate Kogito imagestreams
     runs-on: ubuntu-latest
     steps:
@@ -43,6 +49,9 @@ jobs:
           ${HOME}/openshift-template-validator-linux-amd64 validate -f logic-imagestream.yaml
 
   shellcheck:
+    concurrency:
+      group: ${{ github.repository.name }}_shellcheck-${{ github.head_ref }}
+      cancel-in-progress: true
     name: ShellCheck
     runs-on: ubuntu-latest
 

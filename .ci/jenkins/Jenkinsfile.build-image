@@ -1,0 +1,349 @@
+ @Library('jenkins-pipeline-shared-libraries')_
+
+QUAY_REGISTRY = 'quay.io'
+
+pipeline {
+    agent {
+        label 'kie-rhel8 && docker && !built-in'
+    }
+    tools {
+        maven env.BUILD_MAVEN_TOOL
+        jdk env.BUILD_JDK_TOOL
+    }
+    options {
+        timeout(time: 120, unit: 'MINUTES')
+    }
+    environment {
+        CI = true
+
+        // Linked to node label
+        // Use docker due to multiplatform build
+        CONTAINER_ENGINE = 'docker'
+        CONTAINER_ENGINE_TLS_OPTIONS = ''
+
+        OPENSHIFT_API = credentials('OPENSHIFT_API')
+        OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
+        OPENSHIFT_CREDS_KEY = 'OPENSHIFT_CREDS'
+
+        IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
+    }
+    stages {
+        stage('Initialization') {
+            steps {
+                script {
+                    clean()
+
+                    assert getBuildImageName() : 'Please provide `BUILD_IMAGE_NAME` parameter'
+
+                    currentBuild.displayName = params.DISPLAY_NAME ?: currentBuild.displayName
+
+                    if (getTargetBranch()) {
+                        echo "Got a target branch ... Trying to merge the source with the target"
+                        githubscm.checkoutIfExists(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getTargetBranch(), true)
+                    } else {
+                        echo "No target branch ... Checking out simply"
+                        checkout(githubscm.resolveRepository(getRepoName(), getSourceAuthor(), getSourceBranch(), false))
+                    }
+
+                    if (isProdCI()) {
+                        // Prod fix to be able to build the image as a community one
+                        sh "echo '' > content_sets.yaml"
+                    }
+
+                    // Login to final registry if deploy is needed
+                    if (shouldDeployImage()) {
+                        if (isDeployImageInOpenshiftRegistry()) {
+                            cloud.loginOpenShift(env.OPENSHIFT_API, env.OPENSHIFT_CREDS_KEY)
+                            cloud.loginOpenshiftRegistry(env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
+                        } else if (getDeployImageRegistryCredentials()) {
+                            cloud.loginContainerRegistry(getDeployImageRegistry(), getDeployImageRegistryCredentials(), env.CONTAINER_ENGINE, env.CONTAINER_ENGINE_TLS_OPTIONS ?: '')
+                        }
+                    }
+                }
+            }
+        }
+        stage('Prepare environment') {
+            steps {
+                script {
+                    cloud.prepareForDockerMultiplatformBuild()
+                    cloud.startLocalRegistry()
+                    if (shouldDeployImage()) {
+                        cloud.installSkopeo()
+                    }
+
+                    // Set the mirror url only if exist
+                    if (env.MAVEN_MIRROR_REPOSITORY) {
+                        env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
+
+                        // Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
+                        runPythonCommand("python3 scripts/update-repository.py --build-maven-mirror-url ${MAVEN_MIRROR_URL} --ignore-self-signed-cert")
+                    }
+                }
+            }
+        }
+        // Commented as we cannot fully rely on Quarkus platform
+        // Should be uncommmented once https://issues.redhat.com/browse/KOGITO-9120 is implemented
+        // stage('Setup Quarkus platform') {
+        //     steps {
+        //         script {
+        //             if (getQuarkusPlatformURL()) {
+        //                 String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
+        //                 String quarkusPlatformVersion = "kogito-${kogitoVersion}"
+        //                 if (getMavenArtifactRepository()) {
+        //                     echo "[WARN] Artifacts repository defined in env will override the quarkus platform URL in tests. Make sure the platform artifacts are available on that artifacts repository (you can use a maven group)"
+        //                 }
+        //                 // Setup quarkus platform repo configuration
+        //                 runPythonCommand("python3 scripts/update-repository.py --repo-url ${getQuarkusPlatformURL()} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Build image') {
+            steps {
+                script {
+                    // Generate the Dockerfile
+                    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_test=true ignore_tag=true build_options='--dry-run'")
+
+                    // Build multiplatform from generated Dockerfile
+                    String squashMessage = "${getBuildImageName()}:${getImageVersion()} squashed"
+                    dir('target/image') {
+                        cloud.dockerBuildMultiPlatformImages(getBuiltImageTag(), getImageBuildPlatforms(), shouldDeployImage(), squashMessage)
+                    }
+                }
+            }
+        }
+        stage('Push tags') {
+            when {
+                expression { return shouldDeployImage() }
+            }
+            steps {
+                script {
+                    // Make public if quay registry
+                    if (getDeployImageRegistry() == QUAY_REGISTRY) {
+                        String namespace = getDeployImageNamespace()
+                        String repository = getFinalImageName()
+                        echo "Check and set public if needed Quay repository ${namespace}/${repository}"
+                        try {
+                            cloud.makeQuayImagePublic(namespace, repository, [ usernamePassword: getDeployImageRegistryCredentials()])
+                        } catch (err) {
+                            echo "[ERROR] Cannot set image quay.io/${namespace}/${repository} as visible"
+                        }
+                    }
+
+                    int retries = Integer.parseInt(env.MAX_REGISTRY_RETRIES)
+                    String imageTag = getBuiltImageTag()
+                    if (isDeployLatestTag()) {
+                        cloud.skopeoCopyRegistryImages(imageTag, getBuiltImageTag('latest'), retries)
+                    }
+                    try {
+                        cloud.skopeoCopyRegistryImages(cloud.getReducedTag(getDeployImageTag()), getBuiltImageTag(reducedTag), retries)
+                    } catch(err) {
+                        echo "Reduced tag cannot be applied"
+                    }
+                }
+            }
+        }
+        stage('Setup for testing') {
+            when {
+                expression { return !shouldSkipTests() }
+            }
+            steps {
+                script {
+                    updateTestsCommand = 'python3 scripts/update-repository.py --tests-only'
+                    updateTestsCommand += getMavenArtifactRepository() ? " --repo-url ${getMavenArtifactRepository()}" : ''
+                    updateTestsCommand += getTestsKogitoExamplesRef() ? " --examples-ref ${getTestsKogitoExamplesRef()}" : ''
+                    updateTestsCommand += getTestsKogitoExamplesURI() ? " --examples-uri ${getTestsKogitoExamplesURI()}" : ''
+
+                    // Launch update tests
+                    runPythonCommand(updateTestsCommand)
+
+                    // Debug purpose in case of issue
+                    sh 'cat tests/test-apps/clone-repo.sh'
+                    sh 'cat scripts/setup-maven.sh'
+                    sh 'cat tests/features/kogito-s2i-builder.feature'
+                }
+            }
+        }
+        stage('Test image') {
+            when {
+                expression { return !shouldSkipTests() }
+            }
+            steps {
+                script {
+                    String testImageTag = "quay.io/kiegroup/${getBuildImageName()}:${getImageVersion()}"
+                    String builtImageTag = getBuiltImageTag()
+                    // Pull and tag to test image
+                    sh """
+                        docker pull ${builtImageTag}
+                        docker tag ${builtImageTag} ${testImageTag}
+                    """
+                    try {
+                        runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_build=true ignore_tag=${isProdCI()}")
+                    } catch (err) {
+                        unstable "Testing error(s) for image ${getBuildImageName()}"
+                    } finally {
+                        junit testResults: 'target/**/*.xml', allowEmptyResults: true
+                        archiveArtifacts artifacts: 'target/**/*.xml', allowEmptyArchive: true
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                clean()
+            }
+        }
+    }
+}
+
+void clean() {
+    util.cleanNode(env.CONTAINER_ENGINE)
+
+    cloud.cleanDockerMultiplatformBuild()
+    cloud.cleanLocalRegistry()
+    cloud.cleanSkopeo()
+
+    // Clean Cekit cache, in case we reuse an old node
+    sh "rm -rf \$HOME/.cekit/cache"
+}
+
+String getMakeBuildImageArgs() {
+    List args = []
+    if (getBuildKogitoAppsRef()) {
+        args.add("KOGITO_APPS_TARGET_BRANCH=${getBuildKogitoAppsRef()}")
+    }
+    if (getBuildKogitoAppsURI()) {
+        args.add("KOGITO_APPS_TARGET_URI=${getBuildKogitoAppsURI()}")
+    }
+    args.add("BUILD_ENGINE=${CONTAINER_ENGINE}")
+    if (env.CONTAINER_ENGINE_TLS_OPTIONS) {
+        args.add("BUILD_ENGINE_TLS_OPTIONS=${CONTAINER_ENGINE_TLS_OPTIONS}")
+    }
+    return args.join(' ')
+}
+
+String getImageVersion() {
+    return runPythonCommand('make display-image-version', true).trim()
+}
+
+String getBuiltImageTag(String imageTag = '') {
+    if (shouldDeployImage()) {
+        return "${getDeployImageRegistry()}/${getDeployImageNamespace()}/${getFinalImageName()}:${imageTag ?: getDeployImageTag()}"
+    } else {
+        return "localhost:5000/${getBuildImageName()}:${githubscm.getCommitHash()}"
+    }
+}
+
+void runPythonCommand(String cmd, boolean stdout = false) {
+    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+}
+
+////////////////////////////////////////////////////////////////////////
+// Deploy image information
+////////////////////////////////////////////////////////////////////////
+
+boolean isDeployImageInOpenshiftRegistry() {
+    return params.DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY
+}
+
+String getDeployImageRegistryCredentials() {
+    return params.DEPLOY_IMAGE_REGISTRY_CREDENTIALS
+}
+
+String getDeployImageRegistry() {
+    return isDeployImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.DEPLOY_IMAGE_REGISTRY
+}
+
+String getDeployImageNamespace() {
+    return isDeployImageInOpenshiftRegistry() ? 'openshift' : params.DEPLOY_IMAGE_NAMESPACE
+}
+
+String getDeployImageNameSuffix() {
+    return params.DEPLOY_IMAGE_NAME_SUFFIX
+}
+
+String getDeployImageTag() {
+    if (params.DEPLOY_IMAGE_TAG != '') {
+        return params.DEPLOY_IMAGE_TAG
+    } else {
+        return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+    }
+}
+
+String getFinalImageName() {
+    return getBuildImageName() + (getDeployImageNameSuffix() ? "-${getDeployImageNameSuffix()}" : '')
+}
+
+boolean isDeployLatestTag() {
+    return params.DEPLOY_WITH_LATEST_TAG
+}
+
+////////////////////////////////////////////////////////////////////////
+// utils
+////////////////////////////////////////////////////////////////////////
+
+String getRepoName() {
+    return env.REPO_NAME
+}
+
+String getBuildImageName() {
+    return params.BUILD_IMAGE_NAME
+}
+
+String getSourceAuthor() {
+    return params.SOURCE_AUTHOR
+}
+
+String getSourceBranch() {
+    return params.SOURCE_BRANCH
+}
+
+String getTargetAuthor() {
+    return env.TARGET_AUTHOR
+}
+
+String getTargetBranch() {
+    return params.TARGET_BRANCH
+}
+
+boolean shouldDeployImage() {
+    return params.DEPLOY_IMAGE
+}
+
+String getBuildKogitoAppsRef() {
+    return params.BUILD_KOGITO_APPS_REF
+}
+
+String getBuildKogitoAppsURI() {
+    return params.BUILD_KOGITO_APPS_URI
+}
+
+String getTestsKogitoExamplesRef() {
+    return params.TESTS_KOGITO_EXAMPLES_REF
+}
+
+String getTestsKogitoExamplesURI() {
+    return params.TESTS_KOGITO_EXAMPLES_URI
+}
+
+boolean shouldSkipTests() {
+    return params.SKIP_TESTS
+}
+
+List getImageBuildPlatforms() {
+    return "${IMAGE_BUILD_PLATFORMS}".split(',') as List
+}
+
+String getMavenArtifactRepository() {
+    return params.TESTS_MAVEN_ARTIFACTS_REPOSITORY_URL
+}
+
+boolean isProdCI() {
+    return env.PROD_CI ? Boolean.parseBoolean(env.PROD_CI) : false
+}
+
+String getQuarkusPlatformURL() {
+    return params.QUARKUS_PLATFORM_URL
+}

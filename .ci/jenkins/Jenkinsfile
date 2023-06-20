@@ -1,14 +1,8 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
-changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
-changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
-
-BUILD_FAILED_IMAGES = []
-
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem24g && !built-in'
+        label 'rhel8 && !built-in'
     }
     tools {
         maven env.BUILD_MAVEN_TOOL
@@ -17,31 +11,13 @@ pipeline {
     options {
         timeout(time: 120, unit: 'MINUTES')
     }
-    environment {
-        CI = true
-
-        // Linked to node label
-        // Use docker due to multiplatform build
-        CONTAINER_ENGINE='docker'
-        CONTAINER_ENGINE_TLS_OPTIONS=''
-
-        IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
-    }
     stages {
         stage('Initialization') {
             steps {
                 script {
                     clean()
 
-                    githubscm.checkoutIfExists('kogito-images', changeAuthor, changeBranch, 'kiegroup', changeTarget, true)
-
-                    if (isProdCI()) {
-                        // Prod fix to be able to build the image as a community one
-                        sh "echo '' > content_sets.yaml"
-                    }
-
-                    cloud.prepareForDockerMultiplatformBuild()
-                    cloud.startLocalRegistry()
+                    githubscm.checkoutIfExists('kogito-images', getChangeAuthor(), getChangeBranch(), 'kiegroup', getChangeTarget(), true)
                 }
             }
         }
@@ -58,76 +34,14 @@ pipeline {
                 }
             }
         }
-        stage('Prepare environment') {
-            steps {
-                script {
-                    // Set the mirror url only if exist
-                    if (env.MAVEN_MIRROR_REPOSITORY) {
-                        env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
-                        
-                        // Ignore self-signed certificates if MAVEN_MIRROR_URL is defined
-                        runPythonCommand("python3 scripts/update-repository.py --build-maven-mirror-url ${MAVEN_MIRROR_URL} --ignore-self-signed-cert")
-                    }
-                }
-            }
-        }
-        // Commented as we cannot fully rely on Quarkus platform
-        // Should be uncommmented once https://issues.redhat.com/browse/KOGITO-9120 is implemented
-        // stage('Setup Quarkus platform') {
-        //     steps {
-        //         script {
-        //             String kogitoVersion = sh(returnStdout: true, script: 'make display-kogito-version')
-        //             String quarkusPlatformVersion = "kogito-${kogitoVersion}"
-
-        //             // Setup quarkus platform repo configuration
-        //             runPythonCommand("python3 scripts/update-repository.py --repo-url ${QUARKUS_PLATFORM_NEXUS_URL} --ignore-self-signed-cert --quarkus-platform-version ${quarkusPlatformVersion}")
-        //         }
-        //     }
-        // }
-        stage('Prepare offline kogito-examples') {
-            steps {
-                script {
-                    runPythonCommand('make clone-repos')
-                }
-            }
-        }
         stage('Build & Test Images') {
             steps {
                 script {
                     parallelStages = [:]
-                    getImages().each { image ->
-                        initWorkspace(image)
-                        String workspacePath = getWorkspacePath(image)
-                        parallelStages["Build&Test ${image}"] = {
-                            stage("Build/Test ${image}") {
-                                dir(workspacePath) {
-                                    try {
-                                        buildImage(image)
-                                    } catch (err) {
-                                        registerBuildFailedImage(image)
-                                        util.archiveConsoleLog(image, 400)
-                                        throw err
-                                    }
-                                    try {
-                                        testImage(image)
-                                    } catch (err) {
-                                        echo "Testing error(s) for image ${image}"
-                                    } finally {
-                                        junit testResults: 'target/**/*.xml', allowEmptyResults: true
-                                        archiveArtifacts artifacts: 'target/**/*.xml', allowEmptyArchive: true
-                                    }
-                                }
-                            }
-                        }
+                    for(String image : getImages()){
+                        parallelStages[image] = createBuildAndTestStageClosure(image)
                     }
                     parallel parallelStages
-                }
-            }
-            post {
-                always {
-                    script {
-                        cleanWorkspaces()
-                    }
                 }
             }
         }
@@ -140,98 +54,37 @@ pipeline {
         }
         unsuccessful {
             script {
-                def additionalInfo = ''
-                if (getBuildFailedImages()) {
-                    additionalInfo += 'Build failures on those images:\n'
-                    getBuildFailedImages().each {
-                        additionalInfo += "- ${it}\n"
-                    }
-                }
-                pullrequest.postComment(util.getMarkdownTestSummary('PR', additionalInfo, "${BUILD_URL}", 'GITHUB'))
+                pullrequest.postComment(util.getMarkdownTestSummary(isProdCI() ? 'Prod' : 'PR', '', "${BUILD_URL}", 'GITHUB'))
             }
         }
     }
 }
 
 void clean() {
-    cleanWorkspaces()
-    util.cleanNode(env.CONTAINER_ENGINE)
-    
-    cloud.cleanDockerMultiplatformBuild()
-    cloud.cleanLocalRegistry()
-
-    // Clean Cekit cache, in case we reuse an old node
-    sh "rm -rf \$HOME/.cekit/cache"
+    util.cleanNode()
 }
 
-void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
-    parallelStages = [:]
-    getImages().each { image ->
-        parallelStages["${stageNamePrefix} ${image}"] = {
-            dir(getWorkspacePath(image)) {
-                executeOnImage(image)
+Closure createBuildAndTestStageClosure(String image) {
+    return {
+        stage("Build&Test ${image}") {
+            List buildParams = []
+            buildParams.add(string(name: "DISPLAY_NAME", value: "PR #${ghprbPullId} - ${image}: ${ghprbPullLink}"))
+            buildParams.add(string(name: 'BUILD_IMAGE_NAME', value: image))
+            buildParams.add(string(name: 'SOURCE_AUTHOR', value: getChangeAuthor()))
+            buildParams.add(string(name: 'SOURCE_BRANCH', value: getChangeBranch()))
+            buildParams.add(string(name: 'TARGET_BRANCH', value: getChangeTarget()))
+            buildParams.add(string(name: 'BUILD_KOGITO_APPS_REF', value: getChangeTarget()))
+
+            def job = build(job: "kogito-images.build-image", wait: true, parameters: buildParams, propagate: false)
+            if (job.result != 'SUCCESS') {
+                if (job.result == 'UNSTABLE') {
+                    unstable("Tests on ${image} seems to have failed")
+                } else {
+                    error("Error building ${image}. Please check the logs of the job: ${job.absoluteUrl}")
+                }
             }
         }
     }
-    parallel parallelStages
-}
-
-void buildImage(String imageName) {
-    // Generate the Dockerfile
-    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true ignore_tag=true build_options='--dry-run'")
-
-    // Build multiplatform from generated Dockerfile
-    dir('target/image') {
-        cloud.dockerBuildMultiPlatformImages(getTempBuiltImageTag(imageName), getImageBuildPlatforms(), false)
-    }
-}
-
-void testImage(String imageName) {
-    String testImageTag = "quay.io/kiegroup/${imageName}:${getImageVersion()}"
-    String tempBuiltImageTag = getTempBuiltImageTag(imageName)
-    // Pull and tag to test image
-    sh """
-        docker pull ${tempBuiltImageTag}
-        docker tag ${tempBuiltImageTag} ${testImageTag}
-    """
-    runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true ignore_tag=${isProdCI()}")
-}
-
-String getMakeBuildImageArgs() {
-    List args = [ "cekit_option='--work-dir .'" ]
-    args.add("KOGITO_APPS_TARGET_BRANCH=${changeTarget}")
-    args.add("BUILD_ENGINE=${CONTAINER_ENGINE}")
-    if (env.CONTAINER_ENGINE_TLS_OPTIONS) {
-        args.add("BUILD_ENGINE_TLS_OPTIONS=${CONTAINER_ENGINE_TLS_OPTIONS}")   
-    }
-    return args.join(' ')
-}
-
-void registerBuildFailedImage(String imageName) {
-    lock("${BUILD_URL} build failed") {
-        BUILD_FAILED_IMAGES.add(imageName)
-    }
-}
-
-List getBuildFailedImages() {
-    return BUILD_FAILED_IMAGES
-}
-
-void initWorkspace(String image) {
-    sh "mkdir -p ${getWorkspacePath(image)}"
-    sh "rsync -av --progress . ${getWorkspacePath(image)} --exclude workspaces"
-}
-
-void cleanWorkspaces() {
-    sh "rm -rf ${getWorkspacesPath()}"
-}
-
-String getWorkspacesPath() {
-    return "${WORKSPACE}/workspaces"
-}
-
-String getWorkspacePath(String image) {
-    return "${getWorkspacesPath()}/${image}"
 }
 
 String[] getImages() {
@@ -239,26 +92,21 @@ String[] getImages() {
     if (isProdCI()) {
         listCmd += ' arg=--prod'
     }
-    return runPythonCommand("${listCmd} | tr '\\n' ','", true).trim().split(',')
-}
-
-List getImageBuildPlatforms() {
-    return "${IMAGE_BUILD_PLATFORMS}".split(',') as List
-}
-
-String getImageVersion() {
-    return runPythonCommand('make display-image-version', true).trim()
+    return util.runWithPythonVirtualEnv("${listCmd} | tr '\\n' ','", 'cekit', true).trim().split(',')
 }
 
 boolean isProdCI() {
     return env.PROD_CI ? env.PROD_CI.toBoolean() : false
 }
 
-String getTempBuiltImageTag(String imageName) {
-    return "localhost:5000/${imageName}:${githubscm.getCommitHash()}"
+String getChangeAuthor() {
+    return env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
 }
 
-void runPythonCommand(String cmd, boolean stdout = false) {
-    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+String getChangeBranch() {
+    return env.ghprbSourceBranch ?: CHANGE_BRANCH
 }
 
+String getChangeTarget() {
+    return env.ghprbTargetBranch ?: CHANGE_TARGET
+}
