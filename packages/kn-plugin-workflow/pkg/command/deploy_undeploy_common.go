@@ -58,7 +58,7 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 		}
 	}
 
-	fmt.Println("🔎 Checking if the Kogito Serverless Workflow Operator is correctly installed...")
+	fmt.Println("🔎 Checking if the SonataFlow Operator is correctly installed...")
 	if err := common.CheckOperatorInstalled(); err != nil {
 		return err
 	}
@@ -67,8 +67,8 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 }
 
 func generateManifests(cfg *DeployUndeployCmdConfig) error {
-	fmt.Println("\n🛠️ Generating your manifests...")
-	fmt.Println("🔍 Looking for your Serverless Workflow File...")
+	fmt.Println("\n🛠️  Generating your manifests...")
+	fmt.Println("🔍 Looking for your SonataFlow files...")
 	if file, err := findServerlessWorkflowFile(); err != nil {
 		return err
 	} else {

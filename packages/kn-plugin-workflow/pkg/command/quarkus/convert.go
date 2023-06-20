@@ -31,9 +31,9 @@ import (
 func NewConvertCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "convert",
-		Short: "Convert a single-file Kogito Serverless Workflow project to a Quarkus project",
+		Short: "Convert a SonataFlow project to a Quarkus SonataFlow project",
 		Long: `
-	Convert a Single Kogito Serverless Workflow project to a Quarkus Project.
+	Convert a SonataFlow project to a Quarkus SonataFlow Project.
 		`,
 		Example: `
 	# Run the local directory
@@ -64,7 +64,7 @@ func runConvert() error {
 	} else if common.IsQuarkusSWFProject() {
 		return fmt.Errorf("looks like you are already inside a Quarkus project, so no need to convert it")
 	} else {
-		return fmt.Errorf("cannot find Kogito Serverless Workflow project")
+		return fmt.Errorf("cannot find SonataFlow project")
 	}
 }
 
@@ -119,13 +119,13 @@ func convert() error {
 
 func runConvertProject(cfg CreateQuarkusProjectConfig) (err error) {
 
-	fmt.Println("🔨 Creating a Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("🔨 Creating a Quarkus SonataFlow project...")
 	if err = CreateQuarkusProject(cfg); err != nil {
 		fmt.Println("❌ Error creating Quarkus project", err)
 		return err
 	}
 
-	fmt.Println("🔨 Moving Kogito Serverless Workflow files to Quarkus project...")
+	fmt.Println("🔨 Moving SonataFlow files to Quarkus SonataFlow project...")
 	rootFolder, err := os.Getwd()
 	if err != nil {
 		return err
@@ -138,15 +138,15 @@ func runConvertProject(cfg CreateQuarkusProjectConfig) (err error) {
 	generatedQuarkusProjectPath := rootFolder + "/" + cfg.ProjectName
 
 	if err := copyDir(generatedQuarkusProjectPath, rootFolder); err != nil {
-		fmt.Println("❌ Error migrating Quarkus project files", err)
+		fmt.Println("❌ Error migrating Quarkus SonataFlow project files", err)
 		return err
 	}
 	if err := os.RemoveAll(generatedQuarkusProjectPath); err != nil {
-		fmt.Println("❌ Error migrating Quarkus project", err)
+		fmt.Println("❌ Error migrating Quarkus SonataFlow project", err)
 		return err
 	}
 
-	fmt.Println("✅ Quarkus Kogito Serverless Workflow project successfully created")
+	fmt.Println("✅ Quarkus SonataFlow project successfully created")
 
 	return nil
 }
