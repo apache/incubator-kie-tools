@@ -484,7 +484,7 @@ jobs:
           username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Clean up dmn-dev-deployment-base-image"
+      - name: "STAGING: Clean up dmn-dev-deployment-base-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -514,7 +514,7 @@ jobs:
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "golang"
 
-      - name: "Clean up kie-sandbox-extended-services-image"
+      - name: "STAGING: Clean up kie-sandbox-extended-services-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -544,7 +544,7 @@ jobs:
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "nodejs"
 
-      - name: "Clean up git-cors-proxy-image"
+      - name: "STAGING: Clean up git-cors-proxy-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -581,7 +581,7 @@ jobs:
           deployment_envvars_file_path: ./deployment.env
           deployment_icon: "js"
 
-      - name: "Clean up kie-sandbox-image"
+      - name: "STAGING: Clean up kie-sandbox-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -597,7 +597,7 @@ jobs:
           username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Clean up dashbuilder-viewer-image"
+      - name: "STAGING: Clean up dashbuilder-viewer-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -613,7 +613,7 @@ jobs:
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Clean up serverless-logic-web-tools-swf-builder-image"
+      - name: "STAGING: Clean up serverless-logic-web-tools-swf-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -629,7 +629,7 @@ jobs:
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Clean up serverless-logic-web-tools-base-builder-image"
+      - name: "STAGING: Clean up serverless-logic-web-tools-base-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
@@ -645,7 +645,7 @@ jobs:
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "Clean up serverless-logic-web-tools-swf-dev-mode-image"
+      - name: "STAGING: Clean up serverless-logic-web-tools-swf-dev-mode-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           rm -rf ../tmp/*
