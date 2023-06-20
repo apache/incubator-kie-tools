@@ -155,7 +155,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
-          TMPDIR: "${{ github.workspace }}/tmp"
+          TMPDIR: "${{ github.workspace }}/kie-tools/tmp"
           KIE_TOOLS_BUILD__runIntegrationTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
           KIE_TOOLS_BUILD__runLinters: "false"
