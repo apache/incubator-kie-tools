@@ -225,8 +225,8 @@ jobs:
           git commit -m "Deploy ${{ inputs.tag }}-prerelease (staging)"
           git push origin main
 
-          echo "Clean up deployment dir"
-          rm -rf $DEPLOYMENT_DIR
+          echo "Clean up kogito-online-staging dir"
+          rm -rf *
 
       - name: "STAGING: Deploy Serverless Logic Web Tools to serverless-logic-sandbox-deployment (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
@@ -245,8 +245,8 @@ jobs:
           git commit -m "Deploy ${{ inputs.tag }}-prerelease (staging)"
           git push origin gh-pages
 
-          echo "Clean up deployment dir"
-          rm -rf $DEPLOYMENT_DIR
+          echo "Clean up serverless-logic-sandbox-deployment dir"
+          rm -rf *
 
       - name: "STAGING: Compress Online Editor (Ubuntu only)"
         if: runner.os == 'Linux'
@@ -482,6 +482,7 @@ jobs:
       - name: "STAGING: Clean up dmn-dev-deployment-base-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F dmn-dev-deployment-base-image cleanup
 
@@ -512,6 +513,7 @@ jobs:
       - name: "STAGING: Clean up kie-sandbox-extended-services-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-extended-services-image cleanup
 
@@ -542,6 +544,7 @@ jobs:
       - name: "STAGING: Clean up git-cors-proxy-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.GIT_CORS_PROXY__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F git-cors-proxy-image cleanup
 
@@ -579,6 +582,7 @@ jobs:
       - name: "STAGING: Clean up kie-sandbox-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.KIE_SANDBOX__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-image cleanup
 
@@ -595,6 +599,7 @@ jobs:
       - name: "STAGING: Clean up dashbuilder-viewer-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.DASHBUILDER__viewerImageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F dashbuilder-viewer-image cleanup
 
@@ -611,6 +616,7 @@ jobs:
       - name: "STAGING: Clean up serverless-logic-web-tools-swf-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-swf-builder-image cleanup
 
@@ -627,6 +633,7 @@ jobs:
       - name: "STAGING: Clean up serverless-logic-web-tools-base-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-base-builder-image cleanup
 
@@ -643,5 +650,6 @@ jobs:
       - name: "STAGING: Clean up serverless-logic-web-tools-swf-dev-mode-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-swf-dev-mode-image cleanup
