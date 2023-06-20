@@ -90,6 +90,7 @@ jobs:
       SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: "serverless-logic-web-tools-swf-dev-mode-image"
       SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag: "${{ inputs.tag }}-prerelease"
       SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags: "${{ inputs.tag }}-prerelease"
+      TMPDIR: "${{ github.workspace }}/tmp"
 
     strategy:
       matrix:
@@ -602,8 +603,6 @@ jobs:
       - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
-        env:
-          TMPDIR: "${{ github.workspace }}/tmp"
         with:
           image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }}"
           tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags }}"
