@@ -480,6 +480,7 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Clean up dmn-dev-deployment-base-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }} | xargs podman rmi
@@ -511,6 +512,7 @@ jobs:
           deployment_icon: "golang"
 
       - name: "STAGING: Clean up kie-sandbox-extended-services-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }} | xargs podman rmi
@@ -542,6 +544,7 @@ jobs:
           deployment_icon: "nodejs"
 
       - name: "STAGING: Clean up git-cors-proxy-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.GIT_CORS_PROXY__imageName }} | xargs podman rmi
@@ -580,6 +583,7 @@ jobs:
           deployment_icon: "js"
 
       - name: "STAGING: Clean up kie-sandbox-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.KIE_SANDBOX__imageName }} | xargs podman rmi
@@ -597,6 +601,7 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Clean up dashbuilder-viewer-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.DASHBUILDER__viewerImageName }} | xargs podman rmi
@@ -614,6 +619,7 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Clean up serverless-logic-web-tools-swf-builder-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }} | xargs podman rmi
@@ -631,6 +637,7 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Clean up serverless-logic-web-tools-base-builder-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName }} | xargs podman rmi
@@ -648,6 +655,7 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Clean up serverless-logic-web-tools-swf-dev-mode-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }} | xargs podman rmi
