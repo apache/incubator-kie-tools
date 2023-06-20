@@ -37,6 +37,9 @@ on:
       openshift_token:
         required: false
 
+env:
+  TMPDIR: "${{ github.workspace }}/kie-tools/tmp"
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -155,7 +158,6 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
-          TMPDIR: "${{ github.workspace }}/kie-tools/tmp"
           KIE_TOOLS_BUILD__runIntegrationTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
           KIE_TOOLS_BUILD__runLinters: "false"
@@ -467,13 +469,6 @@ jobs:
           asset_name: "STAGING__kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Create temp dir (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        working-directory: ${{ github.workspace }}
-        run: |
-          echo "Creating tmp dir"
-          mkdir tmp
-
       - name: "STAGING: Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -487,7 +482,7 @@ jobs:
       - name: "STAGING: Clean up dmn-dev-deployment-base-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F dmn-dev-deployment-base-image cleanup
 
       - name: "STAGING: Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
@@ -517,7 +512,7 @@ jobs:
       - name: "STAGING: Clean up kie-sandbox-extended-services-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-extended-services-image cleanup
 
       - name: "STAGING: Push git-cors-proxy-image to quay.io (Ubuntu only)"
@@ -547,7 +542,7 @@ jobs:
       - name: "STAGING: Clean up git-cors-proxy-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F git-cors-proxy-image cleanup
 
       - name: "STAGING: Push kie-sandbox-image to quay.io (Ubuntu only)"
@@ -584,7 +579,7 @@ jobs:
       - name: "STAGING: Clean up kie-sandbox-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-image cleanup
 
       - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
@@ -600,7 +595,7 @@ jobs:
       - name: "STAGING: Clean up dashbuilder-viewer-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F dashbuilder-viewer-image cleanup
 
       - name: "STAGING: Push serverless-logic-web-tools-swf-builder-image to quay.io (Ubuntu only)"
@@ -616,7 +611,7 @@ jobs:
       - name: "STAGING: Clean up serverless-logic-web-tools-swf-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-swf-builder-image cleanup
 
       - name: "STAGING: Push serverless-logic-web-tools-base-builder-image to quay.io (Ubuntu only)"
@@ -632,7 +627,7 @@ jobs:
       - name: "STAGING: Clean up serverless-logic-web-tools-base-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-base-builder-image cleanup
 
       - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
@@ -648,5 +643,5 @@ jobs:
       - name: "STAGING: Clean up serverless-logic-web-tools-swf-dev-mode-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          rm -rf ../tmp/*
+          rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-swf-dev-mode-image cleanup
