@@ -460,6 +460,19 @@ jobs:
           asset_name: "STAGING__kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
 
+  push_images:
+    env:
+      TMPDIR: "${{ github.workspace }}/tmp"
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: "STAGING: Deploy Serverless Logic Web Tools to serverless-logic-sandbox-deployment (Ubuntu only)"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "Creating tmp dir"
+          mkdir tmp
+
       - name: "STAGING: Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -473,6 +486,7 @@ jobs:
       - name: "Clean up dmn-dev-deployment-base-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F dmn-dev-deployment-base-image cleanup
 
       - name: "STAGING: Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
@@ -502,6 +516,7 @@ jobs:
       - name: "Clean up kie-sandbox-extended-services-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F kie-sandbox-extended-services-image cleanup
 
       - name: "STAGING: Push git-cors-proxy-image to quay.io (Ubuntu only)"
@@ -531,6 +546,7 @@ jobs:
       - name: "Clean up git-cors-proxy-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F git-cors-proxy-image cleanup
 
       - name: "STAGING: Push kie-sandbox-image to quay.io (Ubuntu only)"
@@ -567,6 +583,7 @@ jobs:
       - name: "Clean up kie-sandbox-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F kie-sandbox-image cleanup
 
       - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
@@ -582,6 +599,7 @@ jobs:
       - name: "Clean up dashbuilder-viewer-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F dashbuilder-viewer-image cleanup
 
       - name: "STAGING: Push serverless-logic-web-tools-swf-builder-image to quay.io (Ubuntu only)"
@@ -597,6 +615,7 @@ jobs:
       - name: "Clean up serverless-logic-web-tools-swf-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F serverless-logic-web-tools-swf-builder-image cleanup
 
       - name: "STAGING: Push serverless-logic-web-tools-base-builder-image to quay.io (Ubuntu only)"
@@ -612,14 +631,9 @@ jobs:
       - name: "Clean up serverless-logic-web-tools-base-builder-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F serverless-logic-web-tools-base-builder-image cleanup
 
-  serverless_logic_web_tools_swf_dev_mode_image:
-    env:
-      TMPDIR: "${{ github.workspace }}/tmp"
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
       - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -633,4 +647,5 @@ jobs:
       - name: "Clean up serverless-logic-web-tools-swf-dev-mode-image"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
+          rm -rf ../tmp/*
           pnpm -F serverless-logic-web-tools-swf-dev-mode-image cleanup
