@@ -68,6 +68,13 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   };
   inputClause: string;
   invocation: string;
+  insert: string;
+  insertDirections: {
+    toTheRight: string;
+    toTheLeft: string;
+    above: string;
+    below: string;
+  };
   list: string;
   literal: string;
   manage: string;

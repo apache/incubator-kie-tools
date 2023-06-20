@@ -197,6 +197,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
         ],
       },
@@ -327,6 +328,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           ? [
               BeeTableOperation.RowInsertAbove,
               ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowInsertBelow] : []), // do not insert below <result>
+              ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowInsertN] : []), // Because we can't insert multiple lines below <result>
               ...(contextExpression.contextEntries.length > 1 && rowIndex !== contextExpression.contextEntries.length
                 ? [BeeTableOperation.RowDelete]
                 : []), // do not delete <result>
