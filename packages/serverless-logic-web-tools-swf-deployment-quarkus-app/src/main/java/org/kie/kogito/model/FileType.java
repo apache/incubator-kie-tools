@@ -19,6 +19,7 @@ package org.kie.kogito.model;
 public enum FileType {
     SERVERLESS_WORKFLOW,
     APPLICATION_PROPERTIES,
-    SPEC,
+    JSON,
+    YAML,
     UNKNOWN
 }

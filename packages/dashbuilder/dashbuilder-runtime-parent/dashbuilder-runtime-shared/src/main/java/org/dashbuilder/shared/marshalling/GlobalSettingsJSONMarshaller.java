@@ -17,6 +17,9 @@ package org.dashbuilder.shared.marshalling;
 
 import java.util.Optional;
 
+import org.dashbuilder.dataprovider.DataSetProviderType;
+import org.dashbuilder.dataset.def.ExternalDataSetDef;
+import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
@@ -27,8 +30,9 @@ import org.dashbuilder.shared.model.GlobalSettings;
 public class GlobalSettingsJSONMarshaller {
 
     private static final String MODE = "mode";
+    private static final String DATASET = "dataset";
     private static final String ALLOW_URL_PROPERTIES = "allowUrlProperties";
-    private static final Mode DEFAULT_MODE = Mode.LIGHT;
+    private static final Mode DEFAULT_MODE = Mode.LIGHT;    
 
     private static GlobalSettingsJSONMarshaller instance;
 
@@ -49,6 +53,7 @@ public class GlobalSettingsJSONMarshaller {
         var mode = DEFAULT_MODE;
         var allowUrlProperties = false;
         var displayerSettings = new DisplayerSettings();
+        ExternalDataSetDef dataSetDef = null;
 
         if (json != null) {
             mode = retrieveMode(json);
@@ -59,11 +64,22 @@ public class GlobalSettingsJSONMarshaller {
             } catch (Exception e) {
                 // ignore settings and use a empty global settings                
             }
+            
+            var datasetDefJson = json.getObject(DATASET);
+            try {
+                DataSetDefJSONMarshaller marshaller = new DataSetDefJSONMarshaller(DataSetProviderType.EXTERNAL);
+                dataSetDef = (ExternalDataSetDef) marshaller.fromJsonObj(datasetDefJson);
+                
+            }  catch (Exception e) {
+                // ignore def and use empty global settings
+            }
+            
         }
 
         displayerSettings.setMode(mode);
         globalSettings.setMode(mode);
         globalSettings.setSettings(displayerSettings);
+        globalSettings.setDataSetDef(dataSetDef);
         globalSettings.setAllowUrlProperties(allowUrlProperties);
         return globalSettings;
 

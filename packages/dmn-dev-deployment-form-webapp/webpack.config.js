@@ -21,6 +21,8 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { ProvidePlugin } = require("webpack");
+
 const buildEnv = env;
 
 module.exports = async (env) => {
@@ -40,6 +42,10 @@ module.exports = async (env) => {
           { from: "./static/images", to: "./images" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
+      }),
+      new ProvidePlugin({
+        process: require.resolve("process/browser.js"),
+        Buffer: ["buffer", "Buffer"],
       }),
     ],
 

@@ -16,7 +16,11 @@
 
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { FormDmn, FormDmnOutputs, extractDifferences } from "@kie-tools/form-dmn";
-import { DecisionResult } from "@kie-tools/extended-services-api";
+import {
+  DecisionResult,
+  DmnInputFieldProperties,
+  ExtendedServicesDmnJsonSchema,
+} from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -29,6 +33,16 @@ import { fetchDmnResult } from "./DmnDevDeploymentRuntimeApi";
 import { DmnFormToolbar } from "./DmnFormToolbar";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { useDmnFormI18n } from "./i18n";
+import {
+  get as getObjectValueByPath,
+  set as setObjectValueByPath,
+  unset as unsetObjectValueByPath,
+  cloneDeep,
+} from "lodash";
+import { resolveRefs, pathFromPtr } from "json-refs";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { RECURSION_KEYWORD, RECURSION_REF_KEYWORD, X_DMN_TYPE_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
+import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 
 interface Props {
   formData: FormData;
@@ -48,9 +62,122 @@ export function DmnFormPage(props: Props) {
   const [formOutputs, setFormOutputs] = useState<DecisionResult[]>();
   const [formOutputDiffs, setFormOutputDiffs] = useState<object[]>();
   const [formError, setFormError] = useState(false);
+  const [jsonSchema, setJsonSchema] = useState<ExtendedServicesDmnJsonSchema | undefined>(undefined);
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
+
+  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties):
+    | string
+    | boolean
+    | []
+    | object
+    | undefined => {
+    if (dmnField?.type === "string" && dmnField?.format === undefined) {
+      return undefined;
+    }
+    if (dmnField?.type === "number") {
+      return undefined;
+    }
+    if (dmnField?.type === "boolean") {
+      return false;
+    }
+    if (dmnField?.type === "array") {
+      return [];
+    }
+    if (dmnField?.type === "object") {
+      return {};
+    }
+    return undefined;
+  }, []);
+
+  const getDefaultValues = useCallback(
+    (jsonSchema?: ExtendedServicesDmnJsonSchema) => {
+      if (!jsonSchema) {
+        return {};
+      }
+
+      return Object.entries(getObjectValueByPath(jsonSchema, "definitions.InputSet.properties") ?? {})?.reduce(
+        (acc, [key, field]: [string, Record<string, string>]) => {
+          acc[key] = getFieldDefaultValue(field);
+          return acc;
+        },
+        {} as Record<string, any>
+      );
+    },
+    [getFieldDefaultValue]
+  );
+
+  const resolveReferencesAndCheckForRecursion = useCallback(
+    async (jsonSchema: ExtendedServicesDmnJsonSchema, canceled: Holder<boolean>) => {
+      try {
+        const jsonSchemaCopy = cloneDeep(jsonSchema);
+        const $ref = getObjectValueByPath(jsonSchemaCopy, "$ref");
+        unsetObjectValueByPath(jsonSchemaCopy, "$ref");
+
+        const { refs, resolved } = await resolveRefs(jsonSchemaCopy as any);
+        if (canceled.get()) {
+          return;
+        }
+
+        let reResolve = false;
+        Object.entries(refs).forEach(([ptr, properties]) => {
+          if (properties?.circular) {
+            const path = pathFromPtr(ptr);
+            const recursiveRefPath = pathFromPtr(properties.def.$ref);
+            setObjectValueByPath(resolved, path.join("."), {
+              [`${RECURSION_KEYWORD}`]: true,
+              [`${RECURSION_REF_KEYWORD}`]: properties.def.$ref,
+              [`${X_DMN_TYPE_KEYWORD}`]: recursiveRefPath[recursiveRefPath.length - 1],
+            });
+            reResolve = true;
+          }
+        });
+
+        if (reResolve) {
+          const { resolved: reResolved } = await resolveRefs(resolved);
+          if (canceled.get()) {
+            return;
+          }
+
+          if ($ref) {
+            setObjectValueByPath(reResolved, "$ref", $ref);
+          }
+          return reResolved;
+        }
+
+        if ($ref) {
+          setObjectValueByPath(resolved, "$ref", $ref);
+        }
+        return resolved;
+      } catch (err) {
+        console.log(err);
+        return;
+      }
+    },
+    []
+  );
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        resolveReferencesAndCheckForRecursion(props.formData.schema, canceled).then((resolvedJsonSchema) => {
+          if (canceled.get()) {
+            return;
+          }
+
+          setJsonSchema(resolvedJsonSchema);
+          setFormInputs((previousFormInputs) => {
+            return {
+              ...getDefaultValues(resolvedJsonSchema),
+              ...previousFormInputs,
+            };
+          });
+        });
+      },
+      [props.formData.schema, resolveReferencesAndCheckForRecursion, getDefaultValues]
+    )
+  );
 
   const closeAlert = useCallback(() => setOpenAlert(AlertTypes.NONE), []);
 
@@ -115,7 +242,7 @@ export function DmnFormPage(props: Props) {
   useEffect(() => {
     errorBoundaryRef.current?.reset();
     setPageError(false);
-  }, [props.formData.schema]);
+  }, [jsonSchema]);
 
   useEffect(() => {
     onSubmit();
@@ -152,7 +279,7 @@ export function DmnFormPage(props: Props) {
                       setFormInputs={setFormInputs}
                       formError={formError}
                       setFormError={setFormError}
-                      formSchema={props.formData.schema}
+                      formSchema={jsonSchema}
                       id={"form"}
                       showInlineError={true}
                       notificationsPanel={false}

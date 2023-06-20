@@ -207,7 +207,7 @@ function isEditModeTriggeringKey(e: React.KeyboardEvent) {
     return false;
   }
 
-  return /^[\d\w ()[\]{},.\-_'"/?<>+\\|]$/.test(e.key);
+  return /^[\s\S]$/.test(e.key);
 }
 
 function calculateCellHeight(value: string) {
