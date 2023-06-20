@@ -602,14 +602,14 @@ jobs:
       - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
+        env:
+          TMPDIR: "${{ github.workspace }}/tmp"
         with:
           image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }}"
           tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags }}"
           registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
-        env:
-          TMPDIR: ${{ github.workspace }}/tmp
 
       - name: "Clean up serverless-logic-web-tools-swf-dev-mode-image"
         working-directory: ${{ github.workspace }}/kie-tools
