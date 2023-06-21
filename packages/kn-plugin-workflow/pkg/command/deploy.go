@@ -91,7 +91,7 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: applying deploy: %w", err)
 	}
 
-	fmt.Printf("\n🎉 SonataFlow project successfully deployed.")
+	fmt.Printf("\n🎉 SonataFlow project successfully deployed.\n")
 
 	return nil
 }
