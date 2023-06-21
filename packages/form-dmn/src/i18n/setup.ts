@@ -22,7 +22,7 @@ import { de } from "./locales";
 import { I18n, I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
 export const formDmnI18nDefaults: I18nDefaults<FormDmnI18n> = { locale: "en", dictionary: en };
-export const formDmnI18nDictionaries: I18nDictionaries<FormDmnI18n> = new Map([["en", en], ["de", de]]]);
+export const formDmnI18nDictionaries: I18nDictionaries<FormDmnI18n> = new Map([["en", en], ["de", de]]);
 export const FormDmnI18nContext = React.createContext<I18nContextType<FormDmnI18n>>({} as any);
 
 export const formDmnI18n = new I18n(formDmnI18nDefaults, formDmnI18nDictionaries);
