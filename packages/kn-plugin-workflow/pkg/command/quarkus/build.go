@@ -45,9 +45,9 @@ type BuildCmdConfig struct {
 func NewBuildCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
-		Short: "Build a Kogito Serverless Workflow project and generate a container image",
+		Short: "Build a Quarkus SonataFlow project and generate a container image",
 		Long: `
-	Builds a Kogito Serverless Workflow project in the current directory 
+	Builds a Quarkus SonataFlow project in the current directory 
 	resulting in a container image.  
 	By default the resultant container image will have the project name. It can be 
 	overridden with the --image or with others image options, see help for more information.
@@ -110,7 +110,7 @@ func NewBuildCommand() *cobra.Command {
 }
 
 func runBuild(cmd *cobra.Command) (out string, err error) {
-	fmt.Println("🔨 Building your Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("🔨 Building your Quarkus SonataFlow project...")
 
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
@@ -144,7 +144,7 @@ func runBuild(cmd *cobra.Command) (out string, err error) {
 		return
 	}
 
-	fmt.Println("✅ Quarkus Kogito Serverless Workflow project successfully built")
+	fmt.Println("✅ Quarkus SonataFlow project successfully built")
 
 	return
 }

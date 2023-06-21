@@ -147,14 +147,14 @@ func CheckIfDirExists(dirName string) (bool, error) {
 	return false, err
 }
 
-func IsQuarkusSWFProject() bool {
+func IsQuarkusSonataFlowProject() bool {
 	if fileExists("pom.xml") {
 		return true
 	}
 	return false
 }
 
-func IsSWFProject() bool {
+func IsSonataFlowProject() bool {
 	if anyFileExists("*.sw.*") {
 		return true
 	}

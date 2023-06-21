@@ -1,3 +1,4 @@
 github.com/emicklei/go-restful v2.15.0+incompatible h1:8KpYO/Xl/ZudZs5RNOEhWMBY4hmzlZhhRd9cu+jrZP4=
-github.com/evanphx/json-patch v5.6.0+incompatible h1:jBYDEEiFBPxA0v50tFdvOzQQTCvpL6mnFh5mB2/l16U=
 github.com/jstemmer/go-junit-report v0.9.1 h1:6QPYqodiu3GuPL+7mfx+NwDdp2eTkp9IfEUpgAwUN0o=
+github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230619124910-96f05158ba87 h1:RgW8XqqkibzzD4EXnqiFvKVxJ4BQFbF89GQLtDB1iWc=
+github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230619124910-96f05158ba87/go.mod h1:5nAGodPBf6ebCjFtF7JKl40Ji0ptG0JwJNT/P0OupfE=
