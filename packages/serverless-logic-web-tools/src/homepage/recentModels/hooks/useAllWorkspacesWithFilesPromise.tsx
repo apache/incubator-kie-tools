@@ -34,7 +34,7 @@ type WorkspaceWithFilesResponse =
       errorMessage: string;
     });
 
-export function useAllWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescriptor["workspaceId"][]) {
+export function useAllWorkspacesWithFilesPromise() {
   const workspaces = useWorkspaces();
   const [workspaceWithFilesResponsesPromise, setWorkspaceWithFilesResponsesPromise] =
     usePromiseState<WorkspaceWithFilesResponse[]>();
@@ -47,9 +47,9 @@ export function useAllWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescrip
       }
 
       try {
-        const idsToFetch: WorkspaceDescriptor["workspaceId"][] = workspaceIds
-          ? workspaceIds
-          : (await workspaces.listAllWorkspaces()).map((w) => w.workspaceId);
+        const idsToFetch: WorkspaceDescriptor["workspaceId"][] = (await workspaces.listAllWorkspaces()).map(
+          (w) => w.workspaceId
+        );
         setIds(idsToFetch);
 
         const workspaceWithFilesResponses = await Promise.all(
@@ -76,7 +76,7 @@ export function useAllWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescrip
         return;
       }
     },
-    [setWorkspaceWithFilesResponsesPromise, workspaces, workspaceIds]
+    [setWorkspaceWithFilesResponsesPromise, workspaces]
   );
 
   useCancelableEffect(
