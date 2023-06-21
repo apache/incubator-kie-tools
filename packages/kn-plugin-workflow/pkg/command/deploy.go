@@ -97,7 +97,7 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 }
 
 func deploy(cfg *DeployUndeployCmdConfig) error {
-	fmt.Printf("🛠  Deploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
+	fmt.Printf("🛠 Deploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
 
 	manifestExtension := []string{".yaml"}
 
