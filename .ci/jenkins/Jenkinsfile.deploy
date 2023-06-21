@@ -27,6 +27,8 @@ pipeline {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
+
+        OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
     }
 
     stages {
@@ -281,13 +283,13 @@ void createBuildAndTestStageClosure(String image) {
             buildParams.add(string(name: 'TESTS_MAVEN_ARTIFACTS_REPOSITORY_URL', value: env.MAVEN_ARTIFACT_REPOSITORY ?: (isRelease() ? env.DEFAULT_STAGING_REPOSITORY : '')))
 
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: true))
-            buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: params.IMAGE_USE_OPENSHIFT_REGISTRY))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_CREDENTIALS', value: params.IMAGE_REGISTRY_CREDENTIALS))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY', value: params.IMAGE_REGISTRY))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_NAMESPACE', value: params.IMAGE_NAMESPACE))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_NAME_SUFFIX', value: params.IMAGE_NAME_SUFFIX))
-            buildParams.add(string(name: 'DEPLOY_IMAGE_TAG', value: params.IMAGE_TAG))
-            buildParams.add(booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', value: params.DEPLOY_WITH_LATEST_TAG))
+            buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: isDeployImageInOpenshiftRegistry()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY_CREDENTIALS', value: getDeployImageRegistryCredentials()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_REGISTRY', value: getDeployImageRegistry()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_NAMESPACE', value: getDeployImageNamespace()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_NAME_SUFFIX', value: getDeployImageNameSuffix()))
+            buildParams.add(string(name: 'DEPLOY_IMAGE_TAG', value: getDeployImageTag()))
+            buildParams.add(booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', value: isDeployLatestTag()))
 
             def job = build(job: 'kogito-images.build-image', wait: true, parameters: buildParams, propagate: false)
             if (!job.result == 'SUCCESS') {
@@ -340,24 +342,33 @@ List getTestFailedImages() {
 // Deploy image information
 ////////////////////////////////////////////////////////////////////////
 
+boolean isDeployImageInOpenshiftRegistry() {
+    return params.IMAGE_USE_OPENSHIFT_REGISTRY
+}
+
+String getDeployImageRegistryCredentials() {
+    return params.IMAGE_REGISTRY_CREDENTIALS
+}
+
 String getDeployImageRegistry() {
     return isDeployImageInOpenshiftRegistry() ? env.OPENSHIFT_REGISTRY : params.IMAGE_REGISTRY
 }
-
 String getDeployImageNamespace() {
     return isDeployImageInOpenshiftRegistry() ? 'openshift' : params.IMAGE_NAMESPACE
 }
-
 String getDeployImageNameSuffix() {
     return params.IMAGE_NAME_SUFFIX
 }
-
 String getDeployImageTag() {
     if (params.IMAGE_TAG != '') {
         return params.IMAGE_TAG
     } else {
         return sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
     }
+}
+
+boolean isDeployLatestTag() {
+    return params.DEPLOY_WITH_LATEST_TAG
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -412,4 +423,8 @@ String[] getImages() {
 
 void runPythonCommand(String cmd, boolean stdout = false) {
     return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+}
+
+String getQuarkusPlatformVersion() {
+    return params.QUARKUS_PLATFORM_VERSION
 }
