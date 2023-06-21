@@ -47,18 +47,16 @@ export function useAllWorkspacesWithFilesPromise() {
       }
 
       try {
-        const idsToFetch: WorkspaceDescriptor["workspaceId"][] = (await workspaces.listAllWorkspaces()).map(
-          (w) => w.workspaceId
-        );
+        const allDescriptors = await workspaces.listAllWorkspaces();
+        const idsToFetch: WorkspaceDescriptor["workspaceId"][] = allDescriptors.map((w) => w.workspaceId);
         setIds(idsToFetch);
 
         const workspaceWithFilesResponses = await Promise.all(
           idsToFetch.map<Promise<WorkspaceWithFilesResponse>>(async (workspaceId) => {
-            let descriptor = undefined;
-            try {
-              descriptor = await workspaces.getWorkspace({ workspaceId });
-            } catch (e) {
-              return { success: false, errorMessage: e, workspaceId };
+            const descriptor = allDescriptors.find((d) => d.workspaceId === workspaceId);
+
+            if (!descriptor) {
+              return { success: false, errorMessage: "Workspace not found!", workspaceId };
             }
 
             try {
