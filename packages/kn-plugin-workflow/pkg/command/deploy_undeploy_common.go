@@ -28,7 +28,7 @@ import (
 type DeployUndeployCmdConfig struct {
 	NameSpace                 string
 	KubectlContext            string
-	SWFFile                   string
+	SonataFlowFile            string
 	ManifestPath              string
 	TempDir                   string
 	ApplicationPropertiesPath string
@@ -58,7 +58,7 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 		}
 	}
 
-	fmt.Println("🔎 Checking if the Kogito Serverless Workflow Operator is correctly installed...")
+	fmt.Println("🔎 Checking if the SonataFlow Operator is correctly installed...")
 	if err := common.CheckOperatorInstalled(); err != nil {
 		return err
 	}
@@ -67,14 +67,14 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 }
 
 func generateManifests(cfg *DeployUndeployCmdConfig) error {
-	fmt.Println("\n🛠️ Generating your manifests...")
-	fmt.Println("🔍 Looking for your Serverless Workflow File...")
-	if file, err := findServerlessWorkflowFile(); err != nil {
+	fmt.Println("\n🛠️  Generating your manifests...")
+	fmt.Println("🔍 Looking for your SonataFlow files...")
+	if file, err := findSonataFlowFile(); err != nil {
 		return err
 	} else {
-		cfg.SWFFile = file
+		cfg.SonataFlowFile = file
 	}
-	fmt.Printf(" - ✅ Serverless workflow file found: %s\n", cfg.SWFFile)
+	fmt.Printf(" - ✅ SonataFlow file found: %s\n", cfg.SonataFlowFile)
 
 	fmt.Println("🔍 Looking for your configuration support files...")
 
@@ -102,7 +102,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 
 	fmt.Println("🚚️ Generating your Kubernetes manifest files..")
 
-	swfFile, err := common.MustGetFile(cfg.SWFFile)
+	swfFile, err := common.MustGetFile(cfg.SonataFlowFile)
 	if err != nil {
 		return err
 	}
@@ -148,7 +148,7 @@ func findApplicationPropertiesPath(directoryPath string) string {
 	return filePath
 }
 
-func findServerlessWorkflowFile() (string, error) {
+func findSonataFlowFile() (string, error) {
 	extensions := []string{metadata.YAMLExtension, metadata.YAMLExtensionShort, metadata.JSONExtension}
 
 	dir, err := os.Getwd()
@@ -168,7 +168,7 @@ func findServerlessWorkflowFile() (string, error) {
 	case 1:
 		return matchingFiles[0], nil
 	default:
-		return "", fmt.Errorf("❌ ERROR: multiple serverless workflow definition files found")
+		return "", fmt.Errorf("❌ ERROR: multiple SonataFlow definition files found")
 	}
 }
 

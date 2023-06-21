@@ -29,13 +29,13 @@ import (
 func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "deploy",
-		Short: "Deploy a Kogito Serverless Workflow file on Kubernetes via Kogito Serverless Workflow Operator",
+		Short: "Deploy a SonataFlow project on Kubernetes via SonataFlow Operator",
 		Long: `
-	Deploy a Kogito Serverless Workflow file in Kubernetes via the Kogito Serverless Workflow Operator. 
+	Deploy a SonataFlow project in Kubernetes via the SonataFlow Operator. 
 	`,
 		Example: `
-	# Deploy the workflow from the current directory's project. 
-	# as a Knative service. You must provide target namespace.
+	# Deploy the workflow project from the current directory's project. 
+	# You must provide target namespace.
 	{{.Name}} deploy --namespace <your_namespace>
 	# Persist the generated Kubernetes manifests on a given path and deploy the 
 	# workflow from the current directory's project. 
@@ -77,7 +77,7 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: initializing deploy config: %w", err)
 	}
 
-	fmt.Println("🛠️️ Deploy a Kogito Serverless Workflow file on Kubernetes via the Kogito Serverless Workflow Operator...")
+	fmt.Println("🛠️️ Deploy a SonataFlow project on Kubernetes via the SonataFlow Operator...")
 
 	if err := checkEnvironment(&cfg); err != nil {
 		return fmt.Errorf("❌ ERROR: checking deploy environment: %w", err)
@@ -91,13 +91,13 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: applying deploy: %w", err)
 	}
 
-	fmt.Printf("\n🎉 Kogito Serverless Workflow project successfully deployed.")
+	fmt.Printf("\n🎉 SonataFlow project successfully deployed.\n")
 
 	return nil
 }
 
 func deploy(cfg *DeployUndeployCmdConfig) error {
-	fmt.Printf("🛠 Deploying your Kogito Serverless project in namespace %s\n", cfg.NameSpace)
+	fmt.Printf("🛠 Deploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
 
 	manifestExtension := []string{".yaml"}
 

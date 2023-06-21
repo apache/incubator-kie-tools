@@ -32,9 +32,9 @@ type RunCmdConfig struct {
 func NewRunCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "run",
-		Short: "Run a workflow project in development mode",
+		Short: "Run a Quarkus SonataFlow project in development mode",
 		Long: `
-	Run a workflow project based on Quarkus in development mode.
+	Run a Quarkus SonataFlow project based on Quarkus in development mode.
  	 `,
 		Example: `
 	# Run the local directory
@@ -62,11 +62,11 @@ func run(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
 
-	if common.IsQuarkusSWFProject() {
+	if common.IsQuarkusSonataFlowProject() {
 		return runQuarkusSWFProject(cfg)
 	}
 
-	return fmt.Errorf("cannot find Quarkus Kogito Serverless Workflow project")
+	return fmt.Errorf("cannot find Quarkus SonataFlow project")
 }
 
 func runDevCmdConfig(cmd *cobra.Command) (cfg RunCmdConfig, err error) {
@@ -86,7 +86,7 @@ func runQuarkusSWFProject(cfg RunCmdConfig) error {
 }
 
 func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
-	fmt.Println("🛠️ Starting your Quarkus Kogito Serverless Workflow in dev mode...")
+	fmt.Println("🛠️ Starting your Quarkus SonataFlow in dev mode...")
 	create := common.ExecCommand(
 		"mvn",
 		"quarkus:dev",
