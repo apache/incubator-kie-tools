@@ -62,7 +62,7 @@ func run(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
 
-	if common.IsQuarkusSWFProject() {
+	if common.IsQuarkusSonataFlowProject() {
 		return runQuarkusSWFProject(cfg)
 	}
 

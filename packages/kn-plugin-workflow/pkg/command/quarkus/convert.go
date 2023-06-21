@@ -59,9 +59,9 @@ func NewConvertCommand() *cobra.Command {
 }
 
 func runConvert() error {
-	if common.IsSWFProject() {
+	if common.IsSonataFlowProject() {
 		return convert()
-	} else if common.IsQuarkusSWFProject() {
+	} else if common.IsQuarkusSonataFlowProject() {
 		return fmt.Errorf("looks like you are already inside a Quarkus project, so no need to convert it")
 	} else {
 		return fmt.Errorf("cannot find SonataFlow project")

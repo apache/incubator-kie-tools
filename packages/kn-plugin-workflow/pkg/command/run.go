@@ -68,12 +68,12 @@ func run() error {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
 
-	if common.IsSWFProject() {
+	if common.IsSonataFlowProject() {
 		if err := runSWFProject(cfg); err != nil {
 			return err
 		}
 		return nil
-	} else if common.IsQuarkusSWFProject() {
+	} else if common.IsQuarkusSonataFlowProject() {
 		return fmt.Errorf("looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command")
 	} else {
 		return fmt.Errorf("cannot find SonataFlow project")
