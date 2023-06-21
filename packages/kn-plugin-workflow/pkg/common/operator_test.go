@@ -28,12 +28,12 @@ var testCasesCheckOperatorRunning = []struct {
 	{
 		name: "pod running",
 		input: `NAME   READY   STATUS    RESTARTS   AGE
-kogito-serverless-operator-controller-manager-78cb446b89-gj9jz   2/2     Running   0          95m`,
+sonataflow-operator-controller-manager-78cb446b89-gj9jz   2/2     Running   0          95m`,
 		expected: true,
 	},
 	{
 		name:     "no pods",
-		input:    "No resources found in kogito-serverless-operator-system namespace.",
+		input:    "No resources found in sonataflow-operator-system namespace.",
 		expected: false,
 	},
 	{

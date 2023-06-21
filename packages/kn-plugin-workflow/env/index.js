@@ -22,17 +22,17 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     KN_PLUGIN_WORKFLOW__version: {
       name: "KN_PLUGIN_WORKFLOW__version",
       default: packageJson.version,
-      description: "Knative Workflow plugin version",
+      description: "Knative SonataFlow plugin version",
     },
     KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId: {
       name: "KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId",
       default: "io.quarkus.platform",
-      description: "Quarkus group to be used when creating the Kogito Serverless Workflow project",
+      description: "Quarkus group to be used when creating the SonataFlow project",
     },
     KN_PLUGIN_WORKFLOW__quarkusVersion: {
       name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
       default: "2.16.7.Final",
-      description: "Quarkus version to be used when creating the Kogito Serverless Workflow project",
+      description: "Quarkus version to be used when creating the SonataFlow project",
     },
   }),
   get env() {

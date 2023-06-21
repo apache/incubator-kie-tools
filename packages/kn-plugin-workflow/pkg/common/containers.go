@@ -95,7 +95,7 @@ func StopContainer(containerTool string, containerID string) error {
 }
 
 func RunContainerCommand(containerTool string, portMapping string, path string) *exec.Cmd {
-	fmt.Println("🔎 Warming up Kogito containers, this could take some time...")
+	fmt.Println("🔎 Warming up SonataFlow containers, this could take some time...")
 	return exec.Command(
 		containerTool,
 		"run",
