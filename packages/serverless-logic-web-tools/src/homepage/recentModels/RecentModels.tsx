@@ -33,7 +33,7 @@ import { WorkspacesTable, WorkspacesTableRowData } from "./WorkspacesTable";
 import { Link } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 import { escapeRegExp } from "../../regex";
-import { useWorkspacesWithFilesPromise } from "./hooks/useWorkspacesWithFilesPromise";
+import { useAllWorkspacesWithFilesPromise } from "./hooks/useAllWorkspacesWithFilesPromise";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 
@@ -52,7 +52,7 @@ export function RecentModels() {
   const [deleteModalDataLoaded, setDeleteModalDataLoaded] = useState(false);
   const [deleteModalFetchError, setDeleteModalFetchError] = useState(false);
   const isDeletingWorkspacePlural = useMemo(() => deletingWorkspaceIds.length > 1, [deletingWorkspaceIds]);
-  const workspacesWithFilesPromise = useWorkspacesWithFilesPromise();
+  const workspacesWithFilesPromise = useAllWorkspacesWithFilesPromise();
 
   const deletingElementTypesName = useMemo(() => {
     if (deletingWorkspaceIds.length > 1) {

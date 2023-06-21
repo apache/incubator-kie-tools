@@ -34,7 +34,7 @@ type WorkspaceWithFilesResponse =
       errorMessage: string;
     });
 
-export function useWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescriptor["workspaceId"][]) {
+export function useAllWorkspacesWithFilesPromise(workspaceIds?: WorkspaceDescriptor["workspaceId"][]) {
   const workspaces = useWorkspaces();
   const [workspaceWithFilesResponsesPromise, setWorkspaceWithFilesResponsesPromise] =
     usePromiseState<WorkspaceWithFilesResponse[]>();
