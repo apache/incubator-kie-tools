@@ -23,8 +23,8 @@ import { Key } from "vscode-extension-tester";
 import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import DashbuilderTextEditorTestHelper from "./helpers/dashbuilder/DashbuilderTextEditorTestHelper";
 
-describe("Dashbuilder editor - autocomplete function tests", () => {
-  const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "autocomplete-test");
+describe("Dashbuilder editor - autocompletion tests", () => {
+  const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "autocompletion");
 
   let testHelper: VSCodeTestHelper;
 
@@ -45,44 +45,42 @@ describe("Dashbuilder editor - autocomplete function tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  it("Completes empty dashbuilder yaml file with first dashboard example", async function () {
+  it("Completes dashbuilder yaml file from an empty file", async function () {
     this.timeout(50000);
 
-    const editorWebviews = await testHelper.openFileFromSidebar("empty_file_example_autocomplete.dash.yaml");
+    const editorWebviews = await testHelper.openFileFromSidebar("empty_file_autocompletion.dash.yaml");
     const dashbuilderTextEditor = new DashbuilderTextEditorTestHelper(editorWebviews[0]);
     const textEditor = await dashbuilderTextEditor.getDashbuilderTextEditor();
 
-    // open content assist
-    await textEditor.toggleContentAssist(true);
-
     // first dashboard example is expected to be the first option in the content assist
+    await textEditor.toggleContentAssist(true);
     textEditor.typeText(Key.ENTER);
 
-    // check that the example from content assist is the same as expected example
+    // check that the final editor content is the same as expected result
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(
-      path.resolve(TEST_PROJECT_FOLDER, "empty_file_example_autocomplete.dash.yaml.result"),
+      path.resolve(TEST_PROJECT_FOLDER, "empty_file_autocompletion.dash.yaml.result"),
       "utf-8"
     );
     expect(editorContent).equals(expectedContent);
   });
 
-  it("Check autocomplete feature suggestions for dashbuilder yaml file", async function () {
+  it("Checks dashbuilder yaml provides correct autocompletion", async function () {
     this.timeout(50000);
 
-    const editorWebviews = await testHelper.openFileFromSidebar("file_for_autocompletion.dash.yaml");
+    const editorWebviews = await testHelper.openFileFromSidebar("autocompletion.dash.yaml");
     const dashbuilderTextEditor = new DashbuilderTextEditorTestHelper(editorWebviews[0]);
     const textEditor = await dashbuilderTextEditor.getDashbuilderTextEditor();
 
     await textEditor.moveCursor(18, 14);
     await textEditor.typeText(Key.ENTER);
-    const content = await textEditor.toggleContentAssist(true);
 
-    // check content assist suggestions
-    const suggestedItems = await content?.getItems();
-    const suggestedItemsToString = await Promise.all(suggestedItems?.map(async (i) => await i.getText()) ?? []);
-    expect(suggestedItemsToString).to.have.length(12);
-    expect(suggestedItemsToString).to.contain.members(["date", "label", "number", "text"]);
-    expect(suggestedItemsToString).to.contain.members(["date", "Date", "DATE"]);
+    // check available content assist parameters
+    const content = await textEditor.toggleContentAssist(true);
+    const items = await content?.getItems();
+    const itemNames = await Promise.all(items?.map(async (i) => await i.getText()) ?? []);
+    expect(itemNames).to.have.length(12);
+    expect(itemNames).to.contain.members(["date", "label", "number", "text"]);
+    expect(itemNames).to.contain.members(["date", "Date", "DATE"]);
   });
 });
