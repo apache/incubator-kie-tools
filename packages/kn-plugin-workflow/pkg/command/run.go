@@ -76,7 +76,7 @@ func run() error {
 	} else if common.IsQuarkusSWFProject() {
 		return fmt.Errorf("looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command")
 	} else {
-		return fmt.Errorf("cannot find Serverless Workflow project")
+		return fmt.Errorf("cannot find SonataFlow project")
 	}
 }
 
