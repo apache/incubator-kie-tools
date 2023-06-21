@@ -6836,6 +6836,9 @@ importers:
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
       "@types/svg-pan-zoom":
         specifier: ^3.4.0
         version: 3.4.0
