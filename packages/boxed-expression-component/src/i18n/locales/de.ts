@@ -29,7 +29,7 @@ export const de: BoxedExpressionEditorI18n = {
     none: "Aggregiert Werte in einer beliebigen Liste.",
   },
   choose: "Auswählen...",
-  class: "class",
+  class: "Klasse",
   columnOperations: {
     delete: "Löschen",
     insertLeft: "Links einfügen",
@@ -46,7 +46,7 @@ export const de: BoxedExpressionEditorI18n = {
   decisionRule: "ENTSCHEIDUNGSREGEL",
   decisionTable: "Entscheidungstabelle",
   delete: "Löschen",
-  document: "document",
+  document: "Dokument",
   editClause: {
     input: "Eingangsklausel bearbeiten",
     output: "Ausgangsklausel bearbeiten",

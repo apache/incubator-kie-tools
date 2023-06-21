@@ -42,15 +42,15 @@ export const de: DmnFormI18n = {
     },
   },
   validation: {
-    daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
-    yearsAndMonthsError: "should match format P1Y(ears)2M(onths)",
+    daysAndTimeError: "sollte dem Format P1D(Tage)T2H(Stunden)3M(inuten)1S(ekunden) entsprechen",
+    yearsAndMonthsError: "sollte dem Format P1Y(Jahre)2M(onate) entsprechen",
   },
   schema: {
     selectPlaceholder: "Auswählen...",
   },
   dmnSchema: {
-    daysAndTimePlaceholder: "P1DT5H or P2D or PT1H2M10S",
-    yearsAndMonthsPlaceholder: "P1Y5M or P2Y or P1M",
+    daysAndTimePlaceholder: "P1DT5H oder P2D oder PT1H2M10S",
+    yearsAndMonthsPlaceholder: "P1Y5M oder P2Y oder P1M",
   },
   result: {
     evaluation: {
