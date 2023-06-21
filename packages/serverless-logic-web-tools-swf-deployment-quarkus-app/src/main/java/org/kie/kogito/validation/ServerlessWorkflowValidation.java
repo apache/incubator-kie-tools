@@ -32,7 +32,7 @@ import org.kie.kogito.serverless.workflow.utils.WorkflowFormat;
 public class ServerlessWorkflowValidation implements FileValidation {
 
     @Override
-    public FileValidationResult isValid(final Path path) {
+    public FileValidationResult validate(final Path path) {
         try {
             final WorkflowFormat format = resolveFormat(path);
 

@@ -1,0 +1,9 @@
+{
+  "id": "Workflow unique identifier",
+  "version": "0.1",
+  "name": "Workflow name",
+  "description": "Workflow description",
+  "functions": [],
+  "events": [],
+  "states": []
+}

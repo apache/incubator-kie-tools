@@ -689,9 +689,13 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
               ? newSelectionEndAction(prev.selectionEnd)
               : newSelectionEndAction;
 
+          // do not change selection if currently a cell is being edited
+          if (prev.active?.isEditing) {
+            return prev;
+          }
           // Selecting a header cell from another header cell
           // Do not allow selecting multi-line header cells
-          if (
+          else if (
             (prev.selectionEnd?.rowIndex ?? 0) < 0 &&
             (newSelectionEnd?.rowIndex ?? 0) < 0 &&
             prev.selectionEnd?.rowIndex !== newSelectionEnd?.rowIndex

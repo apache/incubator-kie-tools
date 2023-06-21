@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,6 +41,7 @@ import org.kie.kogito.api.FileService;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileType;
 import org.kie.kogito.model.FileValidationResult;
+import org.kie.kogito.validation.JsonSchemaValidation;
 import org.kie.kogito.validation.OpenApiValidation;
 import org.kie.kogito.validation.PropertiesValidation;
 import org.kie.kogito.validation.ServerlessWorkflowValidation;
@@ -50,12 +52,14 @@ public class FileServiceImpl implements FileService {
     private static final Logger LOGGER = Logger.getLogger(FileService.class);
 
     private static final String SW_REGEX = ".*\\.sw\\.(json|ya?ml)";
-    private static final String SPEC_REGEX = ".*\\.(json|ya?ml)";
+    private static final String YAML_REGEX = ".*\\.ya?ml";
+    private static final String JSON_REGEX = ".*\\.json";
 
-    private final Map<FileType, FileValidation> VALIDATION_MAP =
-            Map.ofEntries(Map.entry(FileType.SERVERLESS_WORKFLOW, new ServerlessWorkflowValidation()),
-                          Map.entry(FileType.APPLICATION_PROPERTIES, new PropertiesValidation()),
-                          Map.entry(FileType.SPEC, new OpenApiValidation()));
+    private final Map<FileType, List<FileValidation>> VALIDATION_MAP =
+            Map.ofEntries(Map.entry(FileType.SERVERLESS_WORKFLOW, List.of(new ServerlessWorkflowValidation())),
+                          Map.entry(FileType.APPLICATION_PROPERTIES, List.of(new PropertiesValidation())),
+                          Map.entry(FileType.YAML, List.of(new OpenApiValidation())),
+                          Map.entry(FileType.JSON, List.of(new OpenApiValidation(), new JsonSchemaValidation())));
 
     @Override
     public void createFolder(final Path folderPath) {
@@ -94,8 +98,10 @@ public class FileServiceImpl implements FileService {
             return FileType.SERVERLESS_WORKFLOW;
         } else if (fileName.equals(FileStructureConstants.APPLICATION_PROPERTIES_FILE_NAME)) {
             return FileType.APPLICATION_PROPERTIES;
-        } else if (Pattern.matches(SPEC_REGEX, fileName)) {
-            return FileType.SPEC;
+        } else if (Pattern.matches(JSON_REGEX, fileName)) {
+            return FileType.JSON;
+        } else if (Pattern.matches(YAML_REGEX, fileName)) {
+            return FileType.YAML;
         }
         return FileType.UNKNOWN;
     }
@@ -154,7 +160,18 @@ public class FileServiceImpl implements FileService {
         for (Path filePath : supportedFiles) {
             LOGGER.info("Validating file '" + filePath + "'...");
             final FileType fileType = getFileType(filePath);
-            results.add(VALIDATION_MAP.get(fileType).isValid(filePath));
+            final List<FileValidation> validators = VALIDATION_MAP.get(fileType);
+            final List<FileValidationResult> validationResults = validators.stream()
+                    .map(fileValidation -> fileValidation.validate(filePath))
+                    .collect(Collectors.toList());
+            Optional<FileValidationResult> firstValidResult = validationResults.stream()
+                    .filter(FileValidationResult::isValid)
+                    .findFirst();
+            if (firstValidResult.isPresent()) {
+                results.add(firstValidResult.get());
+            } else {
+                results.addAll(validationResults);
+            }
         }
         LOGGER.info("Validate " + filePaths.size() + " incoming file(s) ... done");
 

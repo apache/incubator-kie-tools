@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.api;
+package org.kie.kogito.validation;
 
-import java.nio.file.Path;
+public class OpenApiValidationTest extends BaseValidationTest {
 
-import org.kie.kogito.model.FileValidationResult;
-
-public interface FileValidation {
-
-    FileValidationResult validate(Path path);
+    public OpenApiValidationTest() {
+        super(new OpenApiValidation(), "valid-openapi.yaml", "invalid-openapi.yaml");
+    }
 }

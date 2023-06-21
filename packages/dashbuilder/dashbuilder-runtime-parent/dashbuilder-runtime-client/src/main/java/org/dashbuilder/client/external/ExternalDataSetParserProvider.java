@@ -31,7 +31,6 @@ public class ExternalDataSetParserProvider {
     public void init() {
         var format = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
         parser = new ExternalDataSetJSONParser(format::parse);
-
     }
 
     public ExternalDataSetJSONParser get() {
