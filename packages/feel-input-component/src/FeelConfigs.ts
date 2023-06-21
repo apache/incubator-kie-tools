@@ -190,40 +190,220 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
-    Snippet: [
+    snippet: [
       ["if", "if $1 then\n\t$0\nelse\n\t"],
       ["for", "for element in $1 return\n\t$0"],
     ],
-    Function: [
-      ["abs(n)", "abs($1)"],
-      ["after(range, point)", "after($1, $2)"],
-      ["after(range1, range2)", "after($1, $2)"],
-      ["after(point, range)", "after($1, $2)"],
-      ["after(point1, point2)", "after($1, $2)"],
-      ["all(list)", "all($1)"],
-      ["any(list)", "any($1)"],
-      ["append(list, item)", "append($1, $2)"],
-      ["before(range, point)", "before($1, $2)"],
-      ["before(range1, range2)", "before($1, $2)"],
-      ["before(point, range)", "before($1, $2)"],
-      ["before(point1, point2)", "before($1, $2)"],
-      ["ceiling(n)", "ceiling($1)"],
-      ["code(value)", "code($1)"],
-      ["coincides(range1, range2)", "coincides($1, $2)"],
-      ["coincides(point1, point2)", "coincides($1, $2)"],
-      ["concatenate(list)", "concatenate($1)"],
-      ["contains(string, match)", "contains($1, $2)"],
-      ["count(list)", "count($1)"],
-      ["date and time(date, time)", "date and time($1, $2)"],
-      ["date and time(from)", "date and time($1)"],
+    function: [
+      {
+        label: "abs(n)",
+        insertText: "abs($1)",
+        description: "returns the absolute value of n",
+        parameters: [["n", `\`number\`, \`days and time duration\`, \`years and months duration\``]],
+        examples: ["abs( 10 ) = 10", "abs( -10 ) = 10", 'abs( @"PT5H" ) = @"PT5H"', 'abs( @"-PT5H" ) = @"PT5H"'],
+      },
+      {
+        label: "after(point1, point2)",
+        insertText: "after($1, $2)",
+        description: "returns true when an point A is after an point B",
+        parameters: [
+          ["point1", `\`number\``],
+          ["point2", `\`number\``],
+        ],
+        examples: ["after( 10, 5 ) = true", "after( 5, 10 ) = false"],
+      },
+      {
+        label: "after(point, range)",
+        insertText: "after($1, $2)",
+        description: "returns true when an point A is after a range B",
+        parameters: [
+          ["point", `\`number\``],
+          ["range", `\`range\` (\`interval\`)`],
+        ],
+        examples: ["after( 12, [1..10] ) = true", "after( 10, [1..10) ) = true", "after( 10, [1..10] ) = false"],
+      },
+      {
+        label: "after(range, point)",
+        insertText: "after($1, $2)",
+        description: "returns true when a range A is after an point B",
+        parameters: [
+          ["range", `\`range\` (\`interval\`)`],
+          ["point", `\`number\``],
+        ],
+        examples: [
+          "after( [11..20], 12 ) = false",
+          "after( [11 ..20], 10 ) = true",
+          "after( (11..20], 11 ) = true",
+          "after( [11 ..20], 11 ) = false",
+        ],
+      },
+      {
+        label: "after(range1, range1)",
+        insertText: "after($1, $2)",
+        description: "returns true when a range A is after a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "after( [11..20], [1..10] ) = true",
+          "after( [1 ..1 0], [11 ..20] ) = false",
+          "after( [11 ..20], [1.. 11) ) = true",
+          "after( (11..20], [1..11] ) = true",
+        ],
+      },
+      {
+        label: "all(list)",
+        insertText: "all($1)",
+        description: "return false if any item is false, else true if empty or all items are true, else null",
+        parameters: [["list", `\`list\` of \`boolean\` elements`]],
+        examples: ["all( [false,null,true] ) = false", "all( true ) = true", "all( [] ) = true", "all( 0 ) = null"],
+      },
+      {
+        label: "any(list)",
+        insertText: "any($1)",
+        description: "return true if any item is true, else false if empty or all items are false, else null",
+        parameters: [["list", `\`list\` of \`boolean\` elements`]],
+        examples: ["any( [false,null,true] ) = true", "any( false ) = false", "any( [] ) = false", "any( 0 ) = null"],
+      },
+      {
+        label: "append(list, item)",
+        insertText: "append($1, $2)",
+        description: "return new list with items appended",
+        parameters: [
+          ["list", `\`list\``],
+          ["item", "Any type"],
+        ],
+        examples: ["append( [1], 2, 3 ) = [1,2,3]"],
+      },
+      {
+        label: "before(point1, point2)",
+        insertText: "before($1, $2)",
+        description: "returns true when an point A is before an point B",
+        parameters: [
+          ["point1", `\`number\``],
+          ["point2", `\`number\``],
+        ],
+        examples: ["before( 1, 10 ) = true", "before( 10, 1 ) = false"],
+      },
+      {
+        label: "before(point, range)",
+        insertText: "before($1, $2)",
+        description: "returns true when an point A is before a range B",
+        parameters: [
+          ["point", `\`number\``],
+          ["range", `\`range\` (\`interval\`)`],
+        ],
+        examples: ["before( 1, [1.. 10] ) = false", "before( 1, (1..10] ) = true", "before( 1, [5.. 10] )= true"],
+      },
+      {
+        label: "before(range, point)",
+        insertText: "before($1, $2)",
+        description: "returns true when a range A is before an point B",
+        parameters: [
+          ["range", `\`range\` (\`interval\`)`],
+          ["point", `\`number\``],
+        ],
+        examples: ["before( [1..10], 10 ) = false", "before( [1..10), 10 ) = true", "before( [1..10], 15 ) = true"],
+      },
+      {
+        label: "before(range1, range1)",
+        insertText: "before($1, $2)",
+        description: "returns true when a range A is before a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "before( [1..10], [15..20] ) = true",
+          "before( [1..10], [10..20] ) = false",
+          "before( [1..10), [10..20] ) = true",
+          "before( [1..10], (10..20] ) = true",
+        ],
+      },
+      {
+        label: "ceiling(n)",
+        insertText: "ceiling($1)",
+        description: "return n with rounding mode ceiling. If n is null the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
+      },
+      {
+        label: "ceiling(n, scale)",
+        insertText: "ceiling($1, $2)",
+        description:
+          "returns n with given scale and rounding mode ceiling. If at least one of n or scale is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: ["ceiling( -1.56, 1 ) = -1.5"],
+      },
+      {
+        label: "code(value)",
+        insertText: "code($1)",
+        description: "",
+        parameters: [],
+        examples: [],
+      },
+      {
+        label: "coincides(point1, point2)",
+        insertText: "coincides($1, $2)",
+        description: "return true when a point A coincides with a point B",
+        parameters: [
+          ["point1", `\`number\``],
+          ["point2", `\`number\``],
+        ],
+        examples: ["coincides( 5, 5 ) = true", "coincides( 3, 4 ) = false"],
+      },
+      {
+        label: "coincides(range1, range2)",
+        insertText: "coincides($1, $2)",
+        description: "return true when a range A coincides with a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: ["coincides( 5, 5 ) = true", "coincides( 3, 4 ) = false"],
+      },
+      {
+        label: "concatenate(list...)",
+        insertText: "concatenate($1)",
+        description: "return new list that is a concatenation of the arguments",
+        parameters: [["list", `One or more \`list\``]],
+        examples: ["concatenate( [1,2], [3] ) = [1,2,3]"],
+      },
+      {
+        label: "contains(string, match)",
+        insertText: "contains($1, $2)",
+        description: "does the string contain the match?",
+        parameters: [
+          ["string", `string`],
+          ["match", `string`],
+        ],
+        examples: ['contains( "foobar", "of" ) = false'],
+      },
+      {
+        label: "count(list)",
+        insertText: "count($1)",
+        description: "return size of list, or zero if list is empty",
+        parameters: [["list", `\`list\``]],
+        examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
+      },
+    ],
+  };
+
+  /*
+      ["date and time(date, time)", "date and time($1, $2)", "creates a date time from the given date (ignoring any time component) and the given time"],
+      ["date and time(from)", "date and time($1)", "convert from to a date and time"],
       ["date and time(year, month, day, hour, minute, second)", "date and time($1, $2, $3, $4, $5, $6)"],
       [
         "date and time(year, month, day, hour, minute, second, hour offset)",
         "date and time($1, $2, $3, $4, $5, $6, $7)",
       ],
       ["date and time(year, month, day, hour, minute, second, timezone)", "date and time($1, $2, $3, $4, $5, $6, $7)"],
-      ["date(from)", "date($1)"],
-      ["date(year, month, day)", "date($1, $2, $3)"],
+      ["date(from)", "date($1)", "convert from to a date"],
+      ["date(year, month, day)", "date($1, $2, $3)", "creates a date from year, month, day component values"],
       ["day of week(date)", "day of week($1)"],
       ["day of year(date)", "day of year($1)"],
       ["decimal(n, scale)", "decimal($1, $2)"],
@@ -316,9 +496,9 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       ["week of year(date)", "week of year($1)"],
       ["years and months duration(from, to)", "years and months duration($1, $2)"],
     ],
-  };
+  }; */
 
-  for (const suggestion of suggestionTypes.Snippet) {
+  for (const suggestion of suggestionTypes.snippet) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Keyword,
       insertTextRules: Monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
@@ -327,14 +507,58 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
     } as Monaco.languages.CompletionItem);
   }
 
-  for (const suggestion of suggestionTypes.Function) {
+  for (const suggestion of suggestionTypes.function) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Function,
       insertTextRules: Monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-      label: suggestion[0],
-      insertText: suggestion[1],
+      label: suggestion.label,
+      insertText: suggestion.insertText,
+      documentation:
+        suggestion.description !== ""
+          ? {
+              isTrusted: true,
+              value: generateDocumentationMarkDown(
+                generateMarkdownFEELCode([suggestion.label]),
+                suggestion.description,
+                generateMarkdownParametersTable(suggestion.parameters),
+                generateMarkdownFEELCode(suggestion.examples)
+              ),
+            }
+          : null,
     } as Monaco.languages.CompletionItem);
   }
 
   return suggestions;
+};
+
+/**
+ * It generates a Markdown FEEL code block given an array of code statement. E.g:
+ *  \`\`\`FEEL
+ *  string length( "tes" ) = 3
+ *  string length( "\U01F40Eab" ) = 3
+ *  \`\`\`
+ */
+const generateMarkdownFEELCode = (codeStatement: string[]): string => {
+  return `\`\`\`FEEL\n${codeStatement.join(`\n`)}\n\`\`\``;
+};
+
+/**
+ * It generates a Markdown Table to show all the parameters requested by a function. E.g:
+ *  | Parameter | Type |
+ *  |-|-|
+ *  | \`name\`| type |
+ *  | \`name2\`| type2 |
+ */
+const generateMarkdownParametersTable = (parameters: string[][]): string => {
+  let rows = parameters.map((item) => `|\`${item[0]}\`|${item[1]}|`);
+  return `| Parameter | Type |\n|-|-|\n${rows.join(`\n`)}`;
+};
+
+const generateDocumentationMarkDown = (
+  feelFunctionTitle: string,
+  description: string,
+  parametersTable: string,
+  feelFunctionExamples: string
+): string => {
+  return `${feelFunctionTitle}\n---\n_${description}_\n\n${parametersTable}\n\nExample:\n${feelFunctionExamples}`;
 };
