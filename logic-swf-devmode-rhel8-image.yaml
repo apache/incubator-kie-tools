@@ -65,4 +65,4 @@ osbs:
   extra_dir: osbs-extra/logic-swf-devmode-rhel8
   repository:
     name: containers/openshift-serverless-1-logic-swf-devmode
-    branch: openshift-serverless-1.29-rhel-8
+    branch: openshift-serverless-1.30-rhel-8
