@@ -51,7 +51,7 @@ func getPodmanContainerID() (string, error) {
 		"ps",
 		"-a",
 		"--filter",
-		fmt.Sprintf("ancestor=%s", metadata.KogitoImage),
+		fmt.Sprintf("ancestor=%s", metadata.DevModeImage),
 		"--format", "{{.ID}}")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -74,7 +74,7 @@ func getDockerContainerID() (string, error) {
 
 	for _, container := range containers {
 		// Check if the container has the expected image name or other identifying information
-		if strings.Contains(container.Image, metadata.KogitoImage) {
+		if strings.Contains(container.Image, metadata.DevModeImage) {
 			return container.ID, nil
 		}
 	}
@@ -95,7 +95,7 @@ func StopContainer(containerTool string, containerID string) error {
 }
 
 func RunContainerCommand(containerTool string, portMapping string, path string) *exec.Cmd {
-	fmt.Println("🔎 Warming up SonataFlow containers, this could take some time...")
+	fmt.Printf("🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
 	return exec.Command(
 		containerTool,
 		"run",
@@ -104,7 +104,7 @@ func RunContainerCommand(containerTool string, portMapping string, path string) 
 		fmt.Sprintf("%s:8080", portMapping),
 		"-v",
 		fmt.Sprintf("%s:/home/kogito/serverless-workflow-project/src/main/resources:z", path),
-		fmt.Sprintf("%s", metadata.KogitoImage),
+		fmt.Sprintf("%s", metadata.DevModeImage),
 	)
 }
 
