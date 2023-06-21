@@ -1,6 +1,6 @@
 schema_version: 1
 name: org.kie.kogito.swf.devmode.runtime.osl
-version: "1.29.0"
+version: "1.30.0"
 description: "OpenShift Serverless Logic devmode with required extensions"
 
 envs:
