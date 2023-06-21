@@ -18,10 +18,8 @@ package org.dashbuilder;
 import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.StaticDataSetProvider;
 import org.dashbuilder.dataset.AbstractDataSetCore;
-import org.dashbuilder.dataset.DataSetDefDeployer;
 import org.dashbuilder.dataset.IntervalBuilderDynamicDate;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
-import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.scheduler.Scheduler;
 
 /**
@@ -55,13 +53,9 @@ public abstract class DataSetCore extends AbstractDataSetCore {
 
     public abstract DataSetProviderRegistry getDataSetProviderRegistry();
 
-    public abstract DataSetDefDeployer getDataSetDefDeployer();
-
     public abstract StaticDataSetProvider getStaticDataSetProvider();
 
     public abstract IntervalBuilderDynamicDate getIntervalBuilderDynamicDate();
-
-    public abstract DataSetDefJSONMarshaller getDataSetDefJSONMarshaller();
 
     public abstract void setDataSetPushEnabled(boolean dataSetPushEnabled);
 
@@ -73,13 +67,8 @@ public abstract class DataSetCore extends AbstractDataSetCore {
 
     public abstract void setDataSetProviderRegistry(DataSetProviderRegistry dataSetProviderRegistry);
 
-    public abstract void setDataSetDefDeployer(DataSetDefDeployer dataSetDefDeployer);
-
     public abstract void setStaticDataSetProvider(StaticDataSetProvider staticDataSetProvider);
 
     public abstract void setIntervalBuilderDynamicDate(IntervalBuilderDynamicDate intervalBuilderDynamicDate);
 
-    public abstract void setDataSetDefJSONMarshaller(DataSetDefJSONMarshaller dataSetDefJSONMarshaller);
 }
-
-

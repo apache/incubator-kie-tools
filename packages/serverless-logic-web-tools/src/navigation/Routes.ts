@@ -147,7 +147,6 @@ export const routes = {
     extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/extended-services`),
     service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/service-account`),
     service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
-    feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/feature-preview`),
     storage: new Route<{}>(() => `${SETTINGS_ROUTE}/storage`),
   },
 
@@ -156,7 +155,6 @@ export const routes = {
     images: {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
-      kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
   },

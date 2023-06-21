@@ -39,6 +39,7 @@ import { routes } from "../../../navigation/Routes";
 import { setPageTitle } from "../../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../../table";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
+import { ErrorPage } from "../../../error/ErrorPage";
 
 export interface Props {
   workspaceId: string;
@@ -170,13 +171,19 @@ export function WorkspaceFiles(props: Props) {
   }, [searchValue]);
 
   useEffect(() => {
-    setSelectedWorkspaceFiles([]);
+    if (workspacePromise.data?.files) {
+      setSelectedWorkspaceFiles((selectedFiles) =>
+        selectedFiles.filter((sFile) =>
+          workspacePromise.data.files.some((wFile) => wFile.relativePath === sFile.relativePath)
+        )
+      );
+    }
   }, [workspacePromise]);
 
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
-      rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
+      rejected={(e) => <ErrorPage kind="WorkspaceFiles" workspaceId={props.workspaceId} errors={e} />}
       resolved={(workspace: ActiveWorkspace) => {
         const allFiles = splitFiles(workspace.files);
         const isViewRoFilesDisabled = !allFiles.editableFiles.length || !allFiles.readonlyFiles.length;

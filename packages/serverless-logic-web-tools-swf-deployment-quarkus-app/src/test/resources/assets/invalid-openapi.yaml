@@ -1,0 +1,33 @@
+---
+openapi: 3.0.3
+info:
+  title: Score Service
+  version: 1.0.0
+servers:
+  - url: localhost:8080
+paths:
+  "/scores":
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                format: int64
+                type: integer
+    post:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ScoreResult"
+components:
+  schemas:
+    ScoreResult:
+      type: object
+      properties:
+        result:
+          type: boolean

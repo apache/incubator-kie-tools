@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.renderer.echarts.client;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -105,8 +106,12 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
                                                         displayerSettings.getMeterEnd(), "red")
         });
 
+        var valuesSettings = displayerSettings.getColumnSettings(valuesColumn);
         var names = getNames(nColumns);
-        var values = getNumberValues(valuesColumn);
+        var values = Arrays.stream(getNumberValues(valuesColumn))
+                .mapToObj(v -> super.evaluateValueToString(v, valuesSettings))
+                .map(Double::valueOf)
+                .toArray(Double[]::new);
 
         int legendBasePosX = LEGEND_ITEM_MIN_POS_X;
         int legendBasePosY = LEGEND_ITEM_MIN_POS_Y;
@@ -171,9 +176,11 @@ public class EChartsMeterChartDisplayer extends EChartsAbstractDisplayer<ECharts
                     .mapToObj(i -> "Series " + i)
                     .toArray(String[]::new);
         }
-        List<?> list = dataSet.getColumnByIndex(0).getValues();
+        var column = dataSet.getColumnByIndex(0);
+        List<?> list = column.getValues();
         return list.stream()
-                .map(o -> o.toString())
+                .map(Object::toString)
+                .map(v -> super.formatValue(v, column))
                 .toArray(String[]::new);
     }
 

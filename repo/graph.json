@@ -581,6 +581,7 @@
         "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
+      { "source": "@kie-tools/dmn-dev-deployment-form-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-dev-deployment-form-webapp", "target": "@kie-tools/form-dmn", "weight": 1 },
       {
         "source": "@kie-tools/dmn-dev-deployment-quarkus-app",

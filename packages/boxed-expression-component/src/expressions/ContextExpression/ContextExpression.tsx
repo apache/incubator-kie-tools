@@ -198,7 +198,6 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
       {
@@ -332,7 +331,6 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
                 ? [BeeTableOperation.RowDelete]
                 : []), // do not delete <result>
               BeeTableOperation.RowReset,
-              ...(rowIndex !== contextExpression.contextEntries.length ? [BeeTableOperation.RowDuplicate] : []), // do not duplicate <result>
             ]
           : []),
       ];

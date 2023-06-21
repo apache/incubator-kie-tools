@@ -20,7 +20,6 @@ import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettings } from "../github/GitHubSettings";
 import { ExtendedServicesSettings } from "../extendedServices/ExtendedServicesSettings";
-import { FeaturePreviewSettings } from "../featurePreview/FeaturePreviewSettings";
 import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
@@ -49,9 +48,6 @@ export function SettingsPageRoutes(props: {} & SettingsPageProps) {
       </Route>
       <Route path={routes.settings.service_registry.path({})}>
         <ServiceRegistrySettings {...settingsPageProps} />
-      </Route>
-      <Route path={routes.settings.feature_preview.path({})}>
-        <FeaturePreviewSettings />
       </Route>
       <Route path={routes.settings.storage.path({})}>
         <StorageSettings />

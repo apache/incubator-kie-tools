@@ -2842,6 +2842,12 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools-core/react-hooks":
+        specifier: workspace:*
+        version: link:../react-hooks
+      "@kie-tools/dmn-runner":
+        specifier: workspace:*
+        version: link:../dmn-runner
       "@kie-tools/extended-services-api":
         specifier: workspace:*
         version: link:../extended-services-api
@@ -2857,6 +2863,12 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      json-refs:
+        specifier: ^3.0.15
+        version: 3.0.15
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2903,6 +2915,9 @@ importers:
       "@types/jest-when":
         specifier: ^2.7.4
         version: 2.7.4
+      "@types/lodash":
+        specifier: ^4.14.168
+        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -2924,9 +2939,6 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.70.0)
-      html-replace-webpack-plugin:
-        specifier: ^2.6.0
-        version: 2.6.0
       html-webpack-plugin:
         specifier: ^5.3.2
         version: 5.3.2(webpack@5.70.0)
@@ -2939,6 +2951,9 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3413,8 +3428,8 @@ importers:
   packages/extended-services:
     dependencies:
       "@kie-tools/jitexecutor-native":
-        specifier: 1.39.0-Final
-        version: 1.39.0-Final
+        specifier: 1.40.0-Final
+        version: 1.40.0-Final
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -3904,15 +3919,12 @@ importers:
 
   packages/git-cors-proxy-image:
     devDependencies:
-      "@isomorphic-git/cors-proxy":
-        specifier: ^2.7.1
-        version: 2.7.1
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      patch-package:
-        specifier: ^6.4.7
-        version: 6.4.7
+      "@thiagoelg/cors-proxy":
+        specifier: ^0.0.1
+        version: 0.0.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -6095,6 +6107,9 @@ importers:
       jest:
         specifier: ^26.6.3
         version: 26.6.3(ts-node@10.9.1)
+      jest-fetch-mock:
+        specifier: ^3.0.3
+        version: 3.0.3
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
@@ -13547,22 +13562,6 @@ packages:
       "@hapi/hoek": 9.1.0
     dev: true
 
-  /@isomorphic-git/cors-proxy@2.7.1:
-    resolution:
-      { integrity: sha512-5P4bcOiwCJoYi6lf3pkTtFz6eQWaJsJD3IS75VQBgAoFFfNUlMw5Ufqd/UMFeqy6FJNgGCbuSHdfoKUx+pAlhA== }
-    hasBin: true
-    dependencies:
-      cross-env: 5.2.1
-      daemonize-process: 1.0.9
-      micro: 9.3.4
-      micro-cors: 0.1.1
-      minimisted: 2.0.1
-      node-fetch: 2.6.7
-      tree-kill: 1.2.2
-    transitivePeerDependencies:
-      - encoding
-    dev: true
-
   /@isomorphic-git/idb-keyval@3.3.2:
     resolution:
       { integrity: sha512-r8/AdpiS0/WJCNR/t/gsgL+M8NMVj/ek7s60uz3LmpCaTF2mEVlZJlB01ZzalgYzRLXwSPC92o+pdzjM7PN/pA== }
@@ -13924,9 +13923,9 @@ packages:
       { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
     dev: false
 
-  /@kie-tools/jitexecutor-native@1.39.0-Final:
+  /@kie-tools/jitexecutor-native@1.40.0-Final:
     resolution:
-      { integrity: sha512-jHOOZ4oyJLkEke6u7SxO1rzhnwo0nx1TnwIvjp6v3yUfOt9qkvIgNTh0k/mcGPO/bxYoUGJtZZ4acL8rvy99rA== }
+      { integrity: sha512-mmxVLBsLgZzuGESakwsHjTBuYk2npBr2oaF2V9jx7gpbZzJMc60S0sUcC7IsPbufZvuqEuPWgOAOO4wS9PWSmQ== }
     dev: false
 
   /@koa/cors@3.4.3:
@@ -14244,7 +14243,7 @@ packages:
       "@octokit/request-error": 2.0.5
       "@octokit/types": 6.14.2
       is-plain-object: 5.0.0
-      node-fetch: 2.6.7
+      node-fetch: 2.6.11
       universal-user-agent: 6.0.0
     transitivePeerDependencies:
       - encoding
@@ -15847,6 +15846,22 @@ packages:
       "@babel/runtime": 7.16.7
       "@testing-library/dom": 7.31.0
       react: 17.0.2
+    dev: true
+
+  /@thiagoelg/cors-proxy@0.0.1:
+    resolution:
+      { integrity: sha512-bWuahxgmL4D7GgcaoI7YygUzwD1/tx3F7c7OzNhinQM8A+VYdmu2M+2RuronAfCDTsEmumMqFSZoF3FD/p58kQ== }
+    hasBin: true
+    dependencies:
+      cross-env: 5.2.1
+      daemonize-process: 1.0.9
+      micro: 9.3.4
+      micro-cors: 0.1.1
+      minimisted: 2.0.1
+      node-fetch: 2.6.11
+      tree-kill: 1.2.2
+    transitivePeerDependencies:
+      - encoding
     dev: true
 
   /@tootallnate/once@1.1.2:
@@ -25032,6 +25047,16 @@ packages:
       jest-util: 26.6.2
     dev: true
 
+  /jest-fetch-mock@3.0.3:
+    resolution:
+      { integrity: sha512-Ux1nWprtLrdrH4XwE7O7InRY6psIi3GOsqNESJgMJ+M5cv4A8Lh7SN9d2V2kKRZ8ebAfcd1LNyZguAOb6JiDqw== }
+    dependencies:
+      cross-fetch: 3.1.5
+      promise-polyfill: 8.3.0
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
   /jest-get-type@26.3.0:
     resolution:
       { integrity: sha512-TpfaviN1R2pQWkIihlfEanwOXK0zcxrKEE4MlU6Tn7keoXdN6/3gK/xl0yEh8DOunn5pOVGKf8hB4R9gVh04ig== }
@@ -27458,6 +27483,18 @@ packages:
     dev: true
     optional: true
 
+  /node-fetch@2.6.11:
+    resolution:
+      { integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w== }
+    engines: { node: 4.x || >=6.0.0 }
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+
   /node-fetch@2.6.7:
     resolution:
       { integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ== }
@@ -28593,7 +28630,7 @@ packages:
       chalk: 4.1.2
       fs-extra: 9.1.0
       https-proxy-agent: 5.0.1
-      node-fetch: 2.6.7
+      node-fetch: 2.6.11
       progress: 2.0.3
       semver: 7.3.8
       tar-fs: 2.1.1
@@ -29381,6 +29418,11 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-polyfill@8.3.0:
+    resolution:
+      { integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg== }
     dev: true
 
   /promise-retry@2.0.1:

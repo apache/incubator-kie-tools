@@ -15,20 +15,17 @@
  */
 package org.dashbuilder.dataset.def;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataset.validation.groups.ExternalDataSetDefValidation;
+
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class ExternalDataSetDef extends DataSetDef {
 
-    @NotNull(groups = {ExternalDataSetDefValidation.class})
-    @Size(min = 4, groups = {ExternalDataSetDefValidation.class})
     private String url;
 
     private boolean dynamic;
@@ -37,13 +34,15 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private String content;
 
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
+
+    private Map<String, String> query = new HashMap<>();
 
     private boolean accumulate;
 
     private ExternalServiceType type;
 
-    private List<String> join;
+    private Collection<String> join;
 
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
@@ -81,11 +80,11 @@ public class ExternalDataSetDef extends DataSetDef {
         this.content = content;
     }
 
-    public List<String> getJoin() {
+    public Collection<String> getJoin() {
         return join;
     }
 
-    public void setJoin(List<String> join) {
+    public void setJoin(Collection<String> join) {
         this.join = join;
     }
 
@@ -113,6 +112,21 @@ public class ExternalDataSetDef extends DataSetDef {
         this.type = type;
     }
 
+    public void setQuery(Map<String, String> query) {
+        this.query = query;
+    }
+
+    public Map<String, String> getQuery() {
+        return query;
+    }
+    
+    public void validate() {
+        super.validate();
+        if (isBlank(url) && isBlank(content) && (join == null || join.isEmpty())) {
+            throw new IllegalArgumentException("Data Sets must have \"url\", \"content\" or \"join\" field");
+        }
+    }
+
     @Override
     public DataSetDef clone() {
         var def = new ExternalDataSetDef();
@@ -121,8 +135,10 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setDynamic(isDynamic());
         def.setHeaders(getHeaders());
         def.setAccumulate(isAccumulate());
+        def.setContent(getContent());
         def.setType(getType());
         def.setJoin(getJoin());
+        def.setQuery(getQuery());
         return def;
     }
 
@@ -142,7 +158,8 @@ public class ExternalDataSetDef extends DataSetDef {
                Objects.equals(url, other.url) &&
                Objects.equals(accumulate, other.accumulate) &&
                Objects.equals(type, other.type) &&
-               Objects.equals(join, other.join);
+               Objects.equals(join, other.join) &&
+               Objects.equals(query, other.query);
     }
 
     public String toString() {
@@ -160,6 +177,7 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Accumulate=").append(accumulate).append("\n");
         out.append("Type=").append(type);
         out.append("Join=").append(join);
+        out.append("Query=").append(query);
         return out.toString();
     }
 
@@ -173,7 +191,8 @@ public class ExternalDataSetDef extends DataSetDef {
                 headers,
                 accumulate,
                 type,
-                join);
+                join,
+                query);
     }
 
 }

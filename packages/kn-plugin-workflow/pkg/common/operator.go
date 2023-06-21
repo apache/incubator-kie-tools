@@ -17,6 +17,8 @@
 package common
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"gopkg.in/yaml.v2"
@@ -38,11 +40,27 @@ func ExecuteKubectlApply(crd, namespace string) error {
 		"-f", crd,
 		"-n", namespace,
 		"--validate=false")
+
+	var stderror bytes.Buffer
+
 	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = &stderror //os.Stderr
 
 	err := cmd.Run()
+	scanner := bufio.NewScanner(&stderror)
+	for scanner.Scan() {
+		line := scanner.Text()
+		//Temporarily removing the following warning:
+		//In this context, using apply or create are interchangeable, but generates a warning.
+		//Warning: resource configmaps/service-props is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+		//This is tracked here: https://issues.redhat.com/browse/KOGITO-9391 and it will be fixed by
+		//https://issues.redhat.com/browse/KOGITO-9381
+		if !strings.Contains(line, "kubectl.kubernetes.io/last-applied-configuration") {
+			fmt.Fprintln(os.Stderr, line)
+		}
+	}
 	if err != nil {
+		fmt.Printf("has a error")
 		return fmt.Errorf("❌ ERROR: failed to execute kubectl apply command for %s: %s", crd, err)
 	}
 

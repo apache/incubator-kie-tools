@@ -25,8 +25,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { KIE_SAMPLES_REPO } from "../../samples/SampleApi";
+import { ErrorPage } from "../../error/ErrorPage";
 import { useSampleDispatch } from "../../samples/hooks/SampleContext";
 
 export function NewWorkspaceFromSample() {
@@ -55,13 +54,13 @@ export function NewWorkspaceFromSample() {
         });
       })
       .catch((e) => {
-        setOpeningError(e.toString());
+        setOpeningError(e.message);
       });
   }, [history, routes.workspaceWithFilePath, sampleId, workspaces, sampleDispatch]);
 
   return (
     <>
-      {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
+      {openingError && <ErrorPage kind="Sample" sampleId={sampleId} errors={[openingError]} />}
       {!openingError && (
         <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
           <Bullseye>
