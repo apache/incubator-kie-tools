@@ -372,7 +372,7 @@ def update_maven_repo_in_behave_tests(repo_url, replace_jboss_repository):
     env_var_key = "MAVEN_REPO_URL"
     if replace_jboss_repository:
         env_var_key = "JBOSS_MAVEN_REPO_URL"
-    replacement = "| variable | value |\n      | {} | {} |\n      | MAVEN_DOWNLOAD_OUTPUT | true |".format(env_var_key,
+    replacement = "| variable | value |\n      | {} | {} |".format(env_var_key,
                                                                                                            repo_url)
     update_in_behave_tests(pattern, replacement)
 

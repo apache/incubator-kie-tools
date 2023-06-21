@@ -65,12 +65,6 @@ pipeline {
         stage('Prepare environment') {
             steps {
                 script {
-                    cloud.prepareForDockerMultiplatformBuild()
-                    cloud.startLocalRegistry()
-                    if (shouldDeployImage()) {
-                        cloud.installSkopeo()
-                    }
-
                     // Set the mirror url only if exist
                     if (env.MAVEN_MIRROR_REPOSITORY) {
                         env.MAVEN_MIRROR_URL = env.MAVEN_MIRROR_REPOSITORY
@@ -101,6 +95,9 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
+                    cloud.prepareForDockerMultiplatformBuild()
+                    cloud.startLocalRegistry()
+
                     // Generate the Dockerfile
                     runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_test=true ignore_tag=true build_options='--dry-run'")
 
@@ -118,6 +115,8 @@ pipeline {
             }
             steps {
                 script {
+                    cloud.installSkopeo()
+
                     // Make public if quay registry
                     if (getDeployImageRegistry() == QUAY_REGISTRY) {
                         String namespace = getDeployImageNamespace()
@@ -178,7 +177,7 @@ pipeline {
                         docker tag ${builtImageTag} ${testImageTag}
                     """
                     try {
-                        runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_build=true ignore_tag=${isProdCI()}")
+                        runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_build=true")
                     } catch (err) {
                         unstable "Testing error(s) for image ${getBuildImageName()}"
                     } finally {

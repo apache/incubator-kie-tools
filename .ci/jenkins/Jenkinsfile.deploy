@@ -292,7 +292,7 @@ void createBuildAndTestStageClosure(String image) {
             buildParams.add(booleanParam(name: 'DEPLOY_WITH_LATEST_TAG', value: isDeployLatestTag()))
 
             def job = build(job: 'kogito-images.build-image', wait: true, parameters: buildParams, propagate: false)
-            if (!job.result == 'SUCCESS') {
+            if (job.result != 'SUCCESS') {
                 if (job.result == 'UNSTABLE') {
                     registerTestFailedImage(image)
                     unstable("Tests on ${image} seems to have failed")
