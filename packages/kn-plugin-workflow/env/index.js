@@ -34,6 +34,11 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "2.16.7.Final",
       description: "Quarkus version to be used when creating the SonataFlow project",
     },
+    KN_PLUGIN_WORKFLOW__devModeImage: {
+      name: "KN_PLUGIN_WORKFLOW__devModeImage",
+      default: "quay.io/kiegroup/kogito-swf-devmode-nightly:latest",
+      description: "SonataFlow dev mode image (used on cli run)",
+    },
   }),
   get env() {
     return {
@@ -41,6 +46,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         version: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__version),
         quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
         quarkusVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusVersion),
+        devModeImage: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__devModeImage),
       },
     };
   },

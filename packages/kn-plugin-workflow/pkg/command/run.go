@@ -37,7 +37,7 @@ func NewRunCommand() *cobra.Command {
 		Short: "Run a SonataFlow project in development mode",
 		Long: `
 	 Run a SonataFlow project in development mode.
-	 By default, it runs over ` + metadata.KogitoImage + ` on Docker.
+	 By default, it runs over ` + metadata.DevModeImage + ` on Docker.
 	 Alternatively, you can run the same image with Podman.
 		
 		 `,

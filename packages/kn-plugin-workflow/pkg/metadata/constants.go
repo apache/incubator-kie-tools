@@ -36,8 +36,6 @@ const (
 	DefaultTag     = "latest"
 	WorkflowSwJson = "workflow.sw.json"
 
-	KogitoImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:latest"
-
 	OperatorName       = "sonataflow-operator-system"
 	OperatorManagerPod = "sonataflow-operator-controller-manager"
 
