@@ -89,16 +89,16 @@ func CheckOperatorInstalled() error {
 
 	output, err := cmd.Output()
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: Kogito Serverless Workflow Operator not found %w", err)
+		return fmt.Errorf("❌ ERROR: SonataFlow Operator not found %w", err)
 	}
 
 	// Check if the pod is running
 	operatorRunning := checkOperatorRunning(string(output))
 	if !operatorRunning {
-		return fmt.Errorf("❌ ERROR: Kogito Serverless Workflow Operator not found")
+		return fmt.Errorf("❌ ERROR: SonataFlow Operator not found")
 	}
 
-	fmt.Println(" - ✅ Kogito Serverless Workflow Operator is available")
+	fmt.Println(" - ✅ SonataFlow Operator is available")
 	return nil
 }
 

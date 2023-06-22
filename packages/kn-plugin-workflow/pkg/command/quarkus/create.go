@@ -27,9 +27,9 @@ import (
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
-		Short: "Create a Kogito Serverless Workflow project",
+		Short: "Create a Quarkus SonataFlow project",
 		Long: `
-	Creates a Kogito Serverless Workflow project in the current directory.
+	Creates a Quarkus SonataFlow project in the current directory.
 	It sets up a Quarkus project with minimal extensions to build a workflow
 	project.
 	The generated project has a "hello world" workflow.sw.json located on the
@@ -84,16 +84,16 @@ func runCreate() error {
 		return err
 	}
 
-	fmt.Println("🛠️ Creating a Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("🛠️ Creating a Quarkus SonataFlow project...")
 	if err = CreateQuarkusProject(cfg); err != nil {
-		fmt.Println("❌ ERROR: creating Quarkus project", err)
+		fmt.Println("❌ ERROR: creating Quarkus SonataFlow project", err)
 		return err
 	}
 
 	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, metadata.WorkflowSwJson)
 	common.CreateWorkflow(workflowFilePath)
 
-	fmt.Println("🎉 Quarkus Kogito Serverless Workflow project successfully created")
+	fmt.Println("🎉 Quarkus SonataFlow project successfully created")
 	return nil
 }
 
@@ -115,7 +115,7 @@ func runCreateProject(cfg CreateQuarkusProjectConfig) (err error) {
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extensions))
 
-	fmt.Println("Creating a Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("Creating a Quarkus SonataFlow project...")
 
 	if err := common.RunCommand(
 		create,

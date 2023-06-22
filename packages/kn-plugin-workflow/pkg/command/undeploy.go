@@ -29,13 +29,13 @@ import (
 func NewUndeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "undeploy",
-		Short: "Undeploy a Kogito Serverless Workflow file on Kubernetes via Kogito Serverless Workflow Operator",
+		Short: "Undeploy a SonataFlow project on Kubernetes via SonataFlow Operator",
 		Long: `
-	Undeploy a Kogito Serverless Workflow file in Kubernetes via the Kogito Serverless Workflow Operator. 
+	Undeploy a SonataFlow project in Kubernetes via the SonataFlow Operator. 
 	`,
 		Example: `
-	# Undeploy the workflow from the current directory's project. 
-	# as a Knative service. You must provide target namespace.
+	# Undeploy the workflow project from the current directory's project. 
+	# You must provide target namespace.
 	{{.Name}} undeploy --namespace <your_namespace>
 	# Persist the generated Kubernetes manifests on a given path and deploy the 
 	# workflow from the current directory's project. 
@@ -74,7 +74,7 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: initializing undeploy config: %w", err)
 	}
 
-	fmt.Println("🛠️️ Undeploy a Kogito Serverless Workflow file on Kubernetes via the Kogito Serverless Workflow Operator...")
+	fmt.Println("🛠️️ Undeploy a SonataFlow project on Kubernetes via the SonataFlow Operator...")
 
 	if err := checkEnvironment(&cfg); err != nil {
 		return fmt.Errorf("❌ ERROR: checking undeploy environment: %w", err)
@@ -88,13 +88,13 @@ func runUndeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("❌ ERROR: undeploying: %w", err)
 	}
 
-	fmt.Println("\n🎉 Kogito Serverless Workflow project successfully undeployed.")
+	fmt.Println("\n🎉 SonataFlow project successfully undeployed.")
 
 	return nil
 }
 
 func undeploy(cfg *DeployUndeployCmdConfig) error {
-	fmt.Printf("🔨 Undeploying your Kogito Serverless project in namespace %s\n", cfg.NameSpace)
+	fmt.Printf("🔨 Undeploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
 
 	files, err := common.FindServiceFiles(cfg.ManifestPath)
 	if err != nil {

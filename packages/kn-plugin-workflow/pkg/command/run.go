@@ -34,10 +34,10 @@ type RunCmdConfig struct {
 func NewRunCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "run",
-		Short: "Run a Workflow project in development mode",
+		Short: "Run a SonataFlow project in development mode",
 		Long: `
-	 Run a Workflow project in development mode.
-	 By default, it runs over ` + metadata.KogitoImage + ` on Docker.
+	 Run a SonataFlow project in development mode.
+	 By default, it runs over ` + metadata.DevModeImage + ` on Docker.
 	 Alternatively, you can run the same image with Podman.
 		
 		 `,
@@ -68,15 +68,15 @@ func run() error {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
 
-	if common.IsSWFProject() {
+	if common.IsSonataFlowProject() {
 		if err := runSWFProject(cfg); err != nil {
 			return err
 		}
 		return nil
-	} else if common.IsQuarkusSWFProject() {
-		return fmt.Errorf("Looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command.")
+	} else if common.IsQuarkusSonataFlowProject() {
+		return fmt.Errorf("looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command")
 	} else {
-		return fmt.Errorf("cannot find Serverless Workflow project")
+		return fmt.Errorf("cannot find SonataFlow project")
 	}
 }
 
@@ -104,10 +104,10 @@ func runSWFProject(cfg RunCmdConfig) error {
 }
 
 func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
-	fmt.Println("⏳ Starting your Kogito Serverless Workflow in dev mode...")
+	fmt.Println("⏳ Starting your SonataFlow project in dev mode...")
 	path, err := os.Getwd()
 	if err != nil {
-		fmt.Errorf("❌ Error running Kogito project: %w", err)
+		fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 	}
 
 	common.GracefullyStopTheContainerWhenInterrupted(containerTool)
@@ -121,7 +121,7 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 			common.RunContainerCommand(containerTool, cfg.PortMapping, path),
 			"container run",
 		); err != nil {
-			err = fmt.Errorf("❌ Error running Kogito project: %w", err)
+			err = fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 		}
 	}()
 
