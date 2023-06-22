@@ -23,7 +23,10 @@ import { en } from "./locales";
 import { de } from "./locales";
 
 export const dmnFormI18nDefaults: I18nDefaults<DmnFormI18n> = { locale: "en", dictionary: en };
-export const dmnFormI18nDictionaries: I18nDictionaries<DmnFormI18n> = new Map([["en", en], ["de", de]]);
+export const dmnFormI18nDictionaries: I18nDictionaries<DmnFormI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const DmnFormI18nContext = React.createContext<I18nContextType<DmnFormI18n>>({} as any);
 
 export function useDmnFormI18n() {

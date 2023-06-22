@@ -26,7 +26,10 @@ export const boxedExpressionEditorI18nDefaults: I18nDefaults<BoxedExpressionEdit
   locale: "en",
   dictionary: en,
 };
-export const boxedExpressionEditorDictionaries: I18nDictionaries<BoxedExpressionEditorI18n> = new Map([["en", en], ["de", de]]);
+export const boxedExpressionEditorDictionaries: I18nDictionaries<BoxedExpressionEditorI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const BoxedExpressionEditorI18nContext = React.createContext<I18nContextType<BoxedExpressionEditorI18n>>(
   {} as never
 );
