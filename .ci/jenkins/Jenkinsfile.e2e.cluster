@@ -169,7 +169,7 @@ void executeInCluster(Closure executeClosure) {
             break
         case openshiftClusterPlatform:
             echo "Execute in openshift"
-            lock("E2E tests on OCP API ${getOpenshiftApi()}") {
+            lock("Sonataflow Operator OpenShift tests ${getOpenshiftApi()}") {
                 executeClosure()
             }
             break
@@ -181,9 +181,9 @@ void executeInCluster(Closure executeClosure) {
 void getPlatformCRFilePath() {
     switch (getClusterName()) {
         case minikubeClusterPlatform:
-            return 'config/samples/sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml'
+            return 'test/testdata/sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml'
         case openshiftClusterPlatform:
-            return 'config/samples/sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml'
+            return 'test/testdata/sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml'
         default:
             error "Unknown cluster name ${getClusterName()}. Cannot execute anything ..."
     }

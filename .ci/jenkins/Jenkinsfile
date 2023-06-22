@@ -45,13 +45,13 @@ pipeline {
                 }
             }
         }
-        stage('Build Kogito Operator profiling') {
+        stage('Build Operator') {
             steps {
                 sh "make container-build BUILDER=${CONTAINER_ENGINE} IMG=${getBuiltImage()}"
 
             }
         }
-        stage('Push Operator Image(s) to Openshift Registry') {
+        stage('Push image to Openshift Registry') {
             steps {
                 sh """
                     set -x
@@ -62,6 +62,9 @@ pipeline {
         }
 
         stage('Run e2e tests') {
+            options {
+                lock("Sonataflow Operator OpenShift tests ${OPENSHIFT_API}")
+            }
             stages {
                 stage('Running e2e tests') {
                     options {
