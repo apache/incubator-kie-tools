@@ -1,6 +1,6 @@
 module github.com/kiegroup/kie-tools/packages/kn-plugin-workflow
 
-go 1.19
+go 1.20
 
 require (
 	github.com/docker/docker v23.0.6+incompatible
