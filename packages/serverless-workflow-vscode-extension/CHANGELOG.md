@@ -1,3 +1,8 @@
+# 0.30.0 (alpha)
+
+- [KOGITO-9100](https://issues.redhat.com/browse/KOGITO-9100) - [SWF Editor] Add AsyncAPI autocomplete support for events array
+- [KOGITO-9222](https://issues.redhat.com/browse/KOGITO-9222) - Workflow yaml file takes too much time to load
+
 # 0.29.0 (alpha)
 
 - [KOGITO-8986](https://issues.redhat.com/browse/KOGITO-8986) - SWF Viewer - missing icon for parameters for Switch state
