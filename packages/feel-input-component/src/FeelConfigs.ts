@@ -327,8 +327,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "return n with rounding mode ceiling. If n is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
-      },
-      {
+      } /* 
+      {   === DMN 1.4 ===
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
         description:
@@ -338,7 +338,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["scale", `\`number\``],
         ],
         examples: ["ceiling( -1.56, 1 ) = -1.5"],
-      },
+      }, */,
       {
         label: "code(value)",
         insertText: "code($1)",
@@ -390,29 +390,106 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         parameters: [["list", `\`list\``]],
         examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
       },
+      {
+        label: "date(from)",
+        insertText: "date($1)",
+        description: "convert `from` to a date",
+        parameters: [["from", `\`string\` or \`date and time\``]],
+        examples: [
+          'date( "2012-12-25" ) – date( "2012-12-24" ) = duration( "P1D" )',
+          'date( date and time( "2012-12-25T11:00:00Z" ) ) = date( "2012-12-25")',
+        ],
+      },
+      {
+        label: "date(year, month, day)",
+        insertText: "date($1, $2, $3)",
+        description: "creates a date from year, month, day component values",
+        parameters: [
+          ["year", `\`number\``],
+          ["month", `\`number\``],
+          ["day", `\`number\``],
+        ],
+        examples: ['date( 2012, 12, 25 ) = date( "2012-12-25" )'],
+      },
+      {
+        label: "date and time(from)",
+        insertText: "date and time($1)",
+        description: "convert `from` to a date and time",
+        parameters: [["from", `string`]],
+        examples: [
+          'date and time( "2012-12-24T23:59:00" ) + duration( "PT1M" ) = date and time( "2012-12-25T00:00:00" )',
+        ],
+      },
+      {
+        label: "date and time(date, time)",
+        insertText: "date and time($1, $2)",
+        description: "creates a date time from the given date (ignoring any time component) and the given time",
+        parameters: [
+          ["date", `\`date\` or \`date and time\``],
+          ["time", `\`time\``],
+        ],
+        examples: [
+          'date and time ( "2012-12-24T23:59:00" ) = date and time ( date( "2012-12-24” ), time ( “23:59:00" ) )',
+        ],
+      },
+      {
+        label: "day of week(date)",
+        insertText: "day of week($1)",
+        description:
+          "returns the day of the week according to the Gregorian calendar enumeration: “Monday”, “Tuesday”, “Wednesday”, “Thursday”, “Friday”, “Saturday”, “Sunday”",
+        parameters: [["date", `\`date\` or \`date and time\``]],
+        examples: ['day of week( date(2019, 9, 17) ) = "Tuesday"'],
+      },
+      {
+        label: "day of year(date)",
+        insertText: "day of year($1)",
+        description: "returns the Gregorian number of the day within the year",
+        parameters: [["date", `\`date\` or \`date and time\``]],
+        examples: ["day of year( date(2019, 9, 17) ) = 260"],
+      },
+      {
+        label: "decimal(n, scale)",
+        insertText: "decimal($1, $2)",
+        description: "return `n` with given `scale`",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: ["decimal( 1/3, 2 ) = .33", "decimal( 1.5, 0 ) = 2", "decimal( 2.5, 0 ) = 2"],
+      },
+      {
+        label: "distinct values(list)",
+        insertText: "distinct values($1)",
+        description: "duplicate removal",
+        parameters: [["list", `\`list\``]],
+        examples: ["distinct values( [1,2,3,2,1] ) = [1,2,3]"],
+      },
+      {
+        label: "duration(from)",
+        insertText: "duration($1)",
+        description: "convert `from` to a days and time or years and months duration",
+        parameters: [["from", `string`]],
+        examples: [
+          'date and time( "2012-12-24T23:59:00" ) - date and time( "2012-12-22T03:45:00" ) = duration( "P2DT20H14M" )',
+          'duration( "P2Y2M" ) = duration( "P26M" )',
+        ],
+      },
     ],
   };
 
   /*
-      ["date and time(date, time)", "date and time($1, $2)", "creates a date time from the given date (ignoring any time component) and the given time"],
-      ["date and time(from)", "date and time($1)", "convert from to a date and time"],
-      ["date and time(year, month, day, hour, minute, second)", "date and time($1, $2, $3, $4, $5, $6)"],
+      ["date and time(year, month, day, hour, minute, second)", "date and time($1, $2, $3, $4, $5, $6)"], 
       [
         "date and time(year, month, day, hour, minute, second, hour offset)",
         "date and time($1, $2, $3, $4, $5, $6, $7)",
       ],
-      ["date and time(year, month, day, hour, minute, second, timezone)", "date and time($1, $2, $3, $4, $5, $6, $7)"],
-      ["date(from)", "date($1)", "convert from to a date"],
-      ["date(year, month, day)", "date($1, $2, $3)", "creates a date from year, month, day component values"],
-      ["day of week(date)", "day of week($1)"],
-      ["day of year(date)", "day of year($1)"],
-      ["decimal(n, scale)", "decimal($1, $2)"],
+      ["date and time(year, month, day, hour, minute, second, timezone)", "date and time($1, $2, $3, $4, $5, $6, $7)"], 
       [
         "decision table(ctx, outputs, input expression list, input values list, output values, rule list, hit policy, default output value)",
         "decision table($1, $2, $3, $4, $5, $6, $7, $8)",
       ],
-      ["distinct values(list)", "distinct values($1)"],
-      ["duration(from)", "duration($1)"],
+
+
       ["during(range1, range2)", "during($1, $2)"],
       ["during(point, range)", "during($1, $2)"],
       ["ends with(string, match)", "ends with($1, $2)"],
