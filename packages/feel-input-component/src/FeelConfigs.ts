@@ -81,7 +81,7 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
       "distinct values",
       "duration",
       "during",
-      "ends",
+      "ends with",
       "even",
       "exp",
       "finished by",
@@ -154,7 +154,8 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
         [/(?:true|false)/, "feel-boolean"],
         [/[0-9]+/, "feel-numeric"],
         [/(?:"(?:.*?)")/, "feel-string"],
-        [/([a-z{1}][a-z_\s]+[a-z$])(?=\()/, { cases: { "@keywords": "feel-keyword", "@functions": "feel-function" } }],
+        [/([a-z{1}][a-z_\s]+[a-z$])(?=\()/, "feel-function"],
+        [/[\w$]*[a-z_$][\w$]*/, "feel-keyword"],
       ],
     },
   };
@@ -198,14 +199,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "abs(n)",
         insertText: "abs($1)",
-        description: "returns the absolute value of `n`",
+        description: "Returns the absolute value of `n`",
         parameters: [["n", `\`number\`, \`days and time duration\`, \`years and months duration\``]],
         examples: ["abs( 10 ) = 10", "abs( -10 ) = 10", 'abs( @"PT5H" ) = @"PT5H"', 'abs( @"-PT5H" ) = @"PT5H"'],
       },
       {
         label: "after(point1, point2)",
         insertText: "after($1, $2)",
-        description: "returns true when a point A is after a point B",
+        description: "Returns true when a point A is after a point B",
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -215,7 +216,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(point, range)",
         insertText: "after($1, $2)",
-        description: "returns true when a point A is after a range B",
+        description: "Returns true when a point A is after a range B",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -225,7 +226,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range, point)",
         insertText: "after($1, $2)",
-        description: "returns true when a range A is after a point B",
+        description: "Returns true when a range A is after a point B",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -240,7 +241,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range1, range2)",
         insertText: "after($1, $2)",
-        description: "returns true when a range A is after a range B",
+        description: "Returns true when a range A is after a range B",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -255,21 +256,21 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "all(list)",
         insertText: "all($1)",
-        description: "return false if any item is false, else true if empty or all items are true, else null",
+        description: "Returns false if any item is false, else true if empty or all items are true, else null",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: ["all( [false,null,true] ) = false", "all( true ) = true", "all( [] ) = true", "all( 0 ) = null"],
       },
       {
         label: "any(list)",
         insertText: "any($1)",
-        description: "return true if any item is true, else false if empty or all items are false, else null",
+        description: "Returns true if any item is true, else false if empty or all items are false, else null",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: ["any( [false,null,true] ) = true", "any( false ) = false", "any( [] ) = false", "any( 0 ) = null"],
       },
       {
         label: "append(list, item)",
         insertText: "append($1, $2)",
-        description: "return new list with items appended",
+        description: "Returns new list with items appended",
         parameters: [
           ["list", `\`list\``],
           ["item", "Any type"],
@@ -279,7 +280,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point1, point2)",
         insertText: "before($1, $2)",
-        description: "returns true when an point A is before an point B",
+        description: "Returns true when a point A is before a point B",
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -289,7 +290,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point, range)",
         insertText: "before($1, $2)",
-        description: "returns true when a point A is before a range B",
+        description: "Returns true when a point A is before a range B",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -299,7 +300,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range, point)",
         insertText: "before($1, $2)",
-        description: "returns true when a range A is before a point B",
+        description: "Returns true when a range A is before a point B",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -309,7 +310,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range1, range1)",
         insertText: "before($1, $2)",
-        description: "returns true when a range A is before a range B",
+        description: "Returns true when a range A is before a range B",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -324,7 +325,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "ceiling(n)",
         insertText: "ceiling($1)",
-        description: "return `n` with rounding mode ceiling. If n is null the result is null.",
+        description: "Returns `n` with rounding mode ceiling. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
       } /* 
@@ -332,7 +333,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
         description:
-          "returns `n` with given scale and rounding mode ceiling. If at least one of n or scale is null, the result is null.",
+          "returns `n` with given scale and rounding mode ceiling. If at least one of `n` or scale is null, the result is null.",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -349,7 +350,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(point1, point2)",
         insertText: "coincides($1, $2)",
-        description: "return true when a point A coincides with a point B",
+        description: "Returns true when a point A coincides with a point B",
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -359,7 +360,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(range1, range2)",
         insertText: "coincides($1, $2)",
-        description: "return true when a range A coincides with a range B",
+        description: "Returns true when a range A coincides with a range B",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -369,14 +370,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "concatenate(list...)",
         insertText: "concatenate($1)",
-        description: "return new list that is a concatenation of the arguments",
-        parameters: [["list", `One or more \`list\``]],
+        description: "Returns a new list that is a concatenation of the arguments",
+        parameters: [["list", `Multiple \`list\``]],
         examples: ["concatenate( [1,2], [3] ) = [1,2,3]"],
       },
       {
         label: "contains(string, match)",
         insertText: "contains($1, $2)",
-        description: "does the string contain the match?",
+        description: "Does the string contain the match?",
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -386,7 +387,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "count(list)",
         insertText: "count($1)",
-        description: "return size of list, or zero if list is empty",
+        description: "Returns size of list, or zero if list is empty",
         parameters: [["list", `\`list\``]],
         examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
       },
@@ -403,7 +404,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date(year, month, day)",
         insertText: "date($1, $2, $3)",
-        description: "creates a date from year, month, day component values",
+        description: "Creates a date from year, month, day component values",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -423,7 +424,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(date, time)",
         insertText: "date and time($1, $2)",
-        description: "creates a date time from the given date (ignoring any time component) and the given time",
+        description: "Creates a date time from the given date (ignoring any time component) and the given time",
         parameters: [
           ["date", `\`date\` or \`date and time\``],
           ["time", `\`time\``],
@@ -435,7 +436,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(year, month, day, hour, minute, second)",
         insertText: "date and time($1, $2, $3, $4, $5, $6)",
-        description: "creates a date time from the given year, month, day, hour, minute, and second.",
+        description: "Creates a date time from the given year, month, day, hour, minute, and second.",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -449,7 +450,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(year, month, day, hour, minute, second, offset)",
         insertText: "date and time($1, $2, $3, $4, $5, $6, $7)",
-        description: "creates a date time from the given year, month, day, hour, minute, second and offset",
+        description: "Creates a date time from the given year, month, day, hour, minute, second and offset",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -464,7 +465,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(year, month, day, hour, minute, second, timezone)",
         insertText: "date and time($1, $2, $3, $4, $5, $6, $7)",
-        description: "creates a date time from the given year, month, day, hour, minute, second and timezone",
+        description: "Creates a date time from the given year, month, day, hour, minute, second and timezone",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -480,21 +481,21 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "day of week(date)",
         insertText: "day of week($1)",
         description:
-          "returns the day of the week according to the Gregorian calendar enumeration: “Monday”, “Tuesday”, “Wednesday”, “Thursday”, “Friday”, “Saturday”, “Sunday”",
+          "Returns the day of the week according to the Gregorian calendar enumeration: “Monday”, “Tuesday”, “Wednesday”, “Thursday”, “Friday”, “Saturday”, “Sunday”",
         parameters: [["date", `\`date\` or \`date and time\``]],
         examples: ['day of week( date(2019, 9, 17) ) = "Tuesday"'],
       },
       {
         label: "day of year(date)",
         insertText: "day of year($1)",
-        description: "returns the Gregorian number of the day within the year",
+        description: "Returns the Gregorian number of the day within the year",
         parameters: [["date", `\`date\` or \`date and time\``]],
         examples: ["day of year( date(2019, 9, 17) ) = 260"],
       },
       {
         label: "decimal(n, scale)",
         insertText: "decimal($1, $2)",
-        description: "return `n` with given `scale`",
+        description: "Returns `n` with given `scale`",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -519,7 +520,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "duration(from)",
         insertText: "duration($1)",
-        description: "convert `from` to a days and time or years and months duration",
+        description: "Converts `from` to a days and time or years and months duration",
         parameters: [["from", `string`]],
         examples: [
           'date and time( "2012-12-24T23:59:00" ) - date and time( "2012-12-22T03:45:00" ) = duration( "P2DT20H14M" )',
@@ -529,7 +530,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "during(point, range)",
         insertText: "during($1, $2)",
-        description: "return true when a point A is during an range B",
+        description: "Returns true when a point A is during an range B",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -546,10 +547,10 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "during(range1, range2)",
         insertText: "during($1, $2)",
-        description: "return true when a range A is during an range B",
+        description: "Returns true when a range A is during an range B",
         parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
-          ["range3", `\`range\` (\`interval\`)`],
         ],
         examples: [
           "during( [4..6], [1..10] ) = true",
@@ -565,7 +566,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "ends with(string, match)",
         insertText: "ends with($1, $2)",
-        description: "does the string end with the match?",
+        description: "Does the string end with the match?",
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -589,14 +590,64 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         parameters: [["number", `\`number\``]],
         examples: ["exp( 5 ) = 148.413159102577"],
       },
+      {
+        label: "finished by(range, point)",
+        insertText: "finished by($1, $2)",
+        description: "Returns true when a range A is finished by a point B",
+        parameters: [
+          ["range", `\`range\` (\`interval\`)`],
+          ["point", `\`number\``],
+        ],
+        examples: ["finished by( [1..10], 10 ) = true", "finished by( [1..10), 10 ) = false"],
+      },
+      {
+        label: "finished by(range1, range2)",
+        insertText: "finished by($1, $2)",
+        description: "Returns true when a range A is finished by a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "finished by( [1..10], [5..10] ) = true",
+          "finished by( [1..10], [5..10) ) = false",
+          "finished by( [1..10), [5..10) ) = true",
+          "finished by( [1..10], [1..10] ) = true",
+          "finished by( [1..10], (1..10] ) = true",
+        ],
+      },
+      {
+        label: "finishes(point, range)",
+        insertText: "finishes($1, $2)",
+        description: "Returns true when a point A finishes a range B",
+        parameters: [
+          ["point", `\`number\``],
+          ["range", `\`range\` (\`interval\`)`],
+        ],
+        examples: ["finishes( 10, [1..10] ) = true", "finishes( 10, [1..10) ) = false"],
+      },
+      {
+        label: "finishes(range1, range2)",
+        insertText: "finishes($1, $2)",
+        description: "Returns true when a range A finishes an range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "finishes( 10, [1..10] ) = true",
+          "finishes( 10, [1..10) ) = false",
+          "finishes( [5..10], [1..10] ) = true",
+          "finishes( [5..10), [1..10] ) = false",
+          "finishes( [5..10), [1..10) ) = true",
+          "finishes( [1..10], [1..10] ) = true",
+          "finishes( (1..10], [1..10] ) = true",
+        ],
+      },
     ],
   };
 
   /*
-      ["finished by(range, point)", "finished by($1, $2)"],
-      ["finished by(range1, range2)", "finished by($1, $2)"],
-      ["finishes(range1, range2)", "finishes($1, $2)"],
-      ["finishes(point, range)", "finishes($1, $2)"],
       ["flatten(list)", "flatten($1)"],
       ["floor(n)", "floor($1)"],
       ["get entries(m)", "get entries($1)"],
