@@ -20,7 +20,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WORKSPACES_BROADCAST_CHANNEL } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspacesBroadcastEvents";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 type WorkspaceWithFilesResponse =
   | {
@@ -34,21 +34,29 @@ type WorkspaceWithFilesResponse =
       errorMessage: string;
     });
 
-export function useWorkspacesWithFilesPromise(workspaceIds: WorkspaceDescriptor["workspaceId"][]) {
+export function useAllWorkspacesWithFilesPromise() {
   const workspaces = useWorkspaces();
   const [workspaceWithFilesResponsesPromise, setWorkspaceWithFilesResponsesPromise] =
     usePromiseState<WorkspaceWithFilesResponse[]>();
+  const [ids, setIds] = useState<string[]>([]);
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
+      if (canceled.get()) {
+        return;
+      }
+
       try {
+        const allDescriptors = await workspaces.listAllWorkspaces();
+        const idsToFetch: WorkspaceDescriptor["workspaceId"][] = allDescriptors.map((w) => w.workspaceId);
+        setIds(idsToFetch);
+
         const workspaceWithFilesResponses = await Promise.all(
-          workspaceIds.map<Promise<WorkspaceWithFilesResponse>>(async (workspaceId) => {
-            let descriptor = undefined;
-            try {
-              descriptor = await workspaces.getWorkspace({ workspaceId });
-            } catch (e) {
-              return { success: false, errorMessage: e, workspaceId };
+          idsToFetch.map<Promise<WorkspaceWithFilesResponse>>(async (workspaceId) => {
+            const descriptor = allDescriptors.find((d) => d.workspaceId === workspaceId);
+
+            if (!descriptor) {
+              return { success: false, errorMessage: "Workspace not found!", workspaceId };
             }
 
             try {
@@ -59,10 +67,6 @@ export function useWorkspacesWithFilesPromise(workspaceIds: WorkspaceDescriptor[
             }
           })
         );
-        if (canceled.get()) {
-          return;
-        }
-
         setWorkspaceWithFilesResponsesPromise({ data: workspaceWithFilesResponses });
       } catch (error) {
         setWorkspaceWithFilesResponsesPromise({ error: "Can't load data from workspaces" });
@@ -70,7 +74,7 @@ export function useWorkspacesWithFilesPromise(workspaceIds: WorkspaceDescriptor[
         return;
       }
     },
-    [setWorkspaceWithFilesResponsesPromise, workspaceIds, workspaces]
+    [setWorkspaceWithFilesResponsesPromise, workspaces]
   );
 
   useCancelableEffect(
@@ -91,7 +95,7 @@ export function useWorkspacesWithFilesPromise(workspaceIds: WorkspaceDescriptor[
           return refresh(canceled);
         };
 
-        const workspaceBroadcastChannels = workspaceIds.map((workspaceId) => {
+        const workspaceBroadcastChannels = ids.map((workspaceId) => {
           const bc = new BroadcastChannel(workspaceId);
           bc.onmessage = ({ data }) => {
             console.debug(`EVENT::WORKSPACE: ${JSON.stringify(data)}`);
@@ -105,7 +109,7 @@ export function useWorkspacesWithFilesPromise(workspaceIds: WorkspaceDescriptor[
           workspaceBroadcastChannels.forEach((bc) => bc.close());
         };
       },
-      [workspaceIds, refresh]
+      [ids, refresh]
     )
   );
 
