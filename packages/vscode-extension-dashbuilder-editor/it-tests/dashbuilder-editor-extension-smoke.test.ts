@@ -20,8 +20,7 @@ import { By, VSBrowser, WebDriver } from "vscode-extension-tester";
 import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import DashbuilderEditorTestHelper from "./helpers/dashbuilder/DashbuilderEditorTestHelper";
 
-// TODO Fix tests and re-enable them
-describe.skip("Dashbuilder editor - smoke integration tests", () => {
+describe("Dashbuilder editor - smoke integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "smoke-test");
   const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
