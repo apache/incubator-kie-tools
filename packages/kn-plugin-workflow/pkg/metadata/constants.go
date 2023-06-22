@@ -36,15 +36,13 @@ const (
 	DefaultTag     = "latest"
 	WorkflowSwJson = "workflow.sw.json"
 
-	KogitoImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:latest"
-
-	OperatorName       = "kogito-serverless-operator-system"
-	OperatorManagerPod = "kogito-serverless-operator-controller-manager"
+	OperatorName       = "sonataflow-operator-system"
+	OperatorManagerPod = "sonataflow-operator-controller-manager"
 
 	YAMLExtension         = "sw.yaml"
 	YAMLExtensionShort    = "sw.yml"
 	JSONExtension         = "sw.json"
 	ApplicationProperties = "application.properties"
 
-	ManifestServiceFilesKind = "KogitoServerlessWorkflow"
+	ManifestServiceFilesKind = "SonataFlow"
 )
