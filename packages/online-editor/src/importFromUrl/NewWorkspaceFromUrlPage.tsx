@@ -20,16 +20,16 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { basename } from "path";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { EditorPageErrorPage } from "../editor/EditorPageErrorPage";
 import { useRoutes } from "../navigation/Hooks";
 import { QueryParams } from "../navigation/Routes";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
+import { useSettingsDispatch } from "../settings/SettingsContext";
 import {
   ImportableUrl,
-  isCertainlyGit,
   isPotentiallyGit,
   isSingleFile,
   UrlType,
@@ -42,7 +42,7 @@ import { fetchSingleFileContent } from "./fetchSingleFileContent";
 import { useGitHubClient } from "../github/Hooks";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
@@ -59,7 +59,9 @@ export function NewWorkspaceFromUrlPage() {
   const accountsDispatch = useAccountsDispatch();
 
   const [importingError, setImportingError] = useState("");
+
   const queryParams = useQueryParams();
+
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
   const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
@@ -140,40 +142,35 @@ export function NewWorkspaceFromUrlPage() {
 
   // Startup the page. Only import if those are set.
   useEffect(() => {
-    const urlDomain = importableUrl.url?.hostname;
+    if (!selectedGitRefName || !queryParamUrl) {
+      return;
+    }
+
     const { compatible } = getCompatibleAuthSessionWithUrlDomain({
       authProviders,
       authSessions,
       authSessionStatus,
-      urlDomain,
+      urlDomain: new URL(queryParamUrl).hostname,
     });
-    setAuthSessionId(compatible[0].id);
 
-    if (compatible[0].id === AUTH_SESSION_NONE.id && !selectedGitRefName) {
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams.with(QueryParams.CONFIRM, "true").toString(),
-      });
-    } else {
-      history.replace({
-        pathname: routes.import.path({}),
-        search: queryParams
-          .without(QueryParams.CONFIRM)
-          .with(QueryParams.BRANCH, selectedGitRefName)
-          .with(QueryParams.AUTH_SESSION_ID, compatible[0].id)
-          .toString(),
-      });
-    }
+    history.replace({
+      pathname: routes.import.path({}),
+      search: queryParams
+        .with(QueryParams.BRANCH, selectedGitRefName)
+        .with(QueryParams.AUTH_SESSION_ID, authSession?.id ?? compatible[0].id)
+        .toString(),
+    });
   }, [
     authProviders,
+    authSession?.id,
     authSessionStatus,
     authSessions,
     history,
-    importableUrl.url?.hostname,
+    queryParamUrl,
     queryParams,
     routes.import,
     selectedGitRefName,
-    setAuthSessionId,
+    setGitRefName,
   ]);
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
@@ -251,10 +248,6 @@ export function NewWorkspaceFromUrlPage() {
     try {
       if (queryParamAuthSessionId && !authSession) {
         setImportingError(`Auth session '${queryParamAuthSessionId}' not found.`);
-        return;
-      }
-
-      if (!queryParamBranch && isCertainlyGit(importableUrl.type) && queryParamAuthSessionId !== AUTH_SESSION_NONE.id) {
         return;
       }
 
@@ -394,6 +387,7 @@ export function NewWorkspaceFromUrlPage() {
       advancedImportModalRef.current?.open();
       return;
     }
+
     setImportingError("");
     doImport();
   }, [

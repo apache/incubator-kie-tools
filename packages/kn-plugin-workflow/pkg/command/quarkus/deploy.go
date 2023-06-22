@@ -30,9 +30,9 @@ type DeployCmdConfig struct {
 func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "deploy",
-		Short: "Deploy a Kogito Serverless Workflow project",
+		Short: "Deploy a Quarkus SonataFlow project",
 		Long: `
-	Deploys a Kogito Serverless Workflow project in the current directory. 
+	Deploys a Quarkus SonataFlow project in the current directory. 
 	By default, this command uses the ./target/kubernetes folder to find
 	the deployment files generated in the build process. The build step
 	is required before using the deploy command.
@@ -64,7 +64,7 @@ func NewDeployCommand() *cobra.Command {
 }
 
 func runDeploy(cmd *cobra.Command, args []string) error {
-	fmt.Println("🛠️ Deploying your Quarkus Kogito Serverless Workflow project...")
+	fmt.Println("🛠️  Deploying your Quarkus SonataFlow project...")
 
 	cfg, err := runDeployCmdConfig(cmd)
 	if err != nil {
@@ -79,7 +79,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Println("🎉 Quarkus Kogito Serverless Workflow project successfully deployed")
+	fmt.Println("🎉 Quarkus SonataFlow project successfully deployed")
 
 	return nil
 }
