@@ -15,10 +15,10 @@
  */
 
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
-import { DmnFormI18n } from "../DmnFormI18n";
+import { FormDmnI18n } from "../FormDmnI18n";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
 
-export const de: DmnFormI18n = {
+export const de: FormDmnI18n = {
   ...de_common,
   form: {
     status: {
@@ -42,6 +42,7 @@ export const de: DmnFormI18n = {
     },
   },
   validation: {
+    xDmnAllowedValues: "gehört nicht zur Menge der zulässigen Werte",
     daysAndTimeError: "sollte dem Format P1D(Tage)T2H(Stunden)3M(inuten)1S(ekunden) entsprechen",
     yearsAndMonthsError: "sollte dem Format P1Y(Jahre)2M(onate) entsprechen",
   },
