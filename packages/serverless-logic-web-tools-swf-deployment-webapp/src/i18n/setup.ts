@@ -23,7 +23,10 @@ import { en } from "./locales";
 import { de } from "./locales";
 
 export const appI18nDefaults: I18nDefaults<AppI18n> = { locale: "en", dictionary: en };
-export const appI18nDictionaries: I18nDictionaries<AppI18n> = new Map([["en", en], ["de", de]]);
+export const appI18nDictionaries: I18nDictionaries<AppI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const AppI18nContext = React.createContext<I18nContextType<AppI18n>>({} as any);
 
 export function useAppI18n() {

@@ -25,5 +25,6 @@ export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVs
 };
 
 export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
-  ["en", en], ["de", de],
+  ["en", en],
+  ["de", de],
 ]);

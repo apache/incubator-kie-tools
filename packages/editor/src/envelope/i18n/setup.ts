@@ -23,7 +23,10 @@ import { EditorEnvelopeI18n } from "./EditorEnvelopeI18n";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 
 export const editorEnvelopeI18nDefaults: I18nDefaults<EditorEnvelopeI18n> = { locale: "en", dictionary: en };
-export const editorEnvelopeI18nDictionaries: I18nDictionaries<EditorEnvelopeI18n> = new Map([["en", en],["de", de]]);
+export const editorEnvelopeI18nDictionaries: I18nDictionaries<EditorEnvelopeI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const EditorEnvelopeI18nContext = React.createContext<I18nContextType<EditorEnvelopeI18n>>({} as any);
 
 export function useEditorEnvelopeI18nContext() {

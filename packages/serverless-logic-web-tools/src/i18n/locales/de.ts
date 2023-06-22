@@ -26,7 +26,8 @@ export const de: AppI18n = {
     },
     alerts: {
       setContentError: {
-        title: "Fehler beim Öffnen der Datei. Sie können sie als Text bearbeiten und das Diagramm nach der Korrektur erneut öffnen.",
+        title:
+          "Fehler beim Öffnen der Datei. Sie können sie als Text bearbeiten und das Diagramm nach der Korrektur erneut öffnen.",
         action: "Als Text öffnen",
       },
       copy: "Inhalt in Zwischenablage kopiert",
@@ -41,7 +42,8 @@ export const de: AppI18n = {
         titleLocal: "Sie haben neue Änderungen seit Ihrem letzten Download.",
         titleGit: "Es gibt neue Änderungen seit Ihrem letzten Push.",
         proceedAnyway: "Trotzdem fortfahren",
-        message: "Die Dateien bleiben vorübergehend im Browser gespeichert, werden aber möglicherweise gelöscht, bevor Sie zurückkehren.",
+        message:
+          "Die Dateien bleiben vorübergehend im Browser gespeichert, werden aber möglicherweise gelöscht, bevor Sie zurückkehren.",
       },
     },
   },
@@ -84,7 +86,8 @@ export const de: AppI18n = {
       placeHolder: "Fügen Sie Ihr Token hier ein",
     },
     body: {
-      disclaimer: "Das von Ihnen angegebene Token wird lokal als Browser-Cookie gespeichert und niemals an Dritte weitergegeben.",
+      disclaimer:
+        "Das von Ihnen angegebene Token wird lokal als Browser-Cookie gespeichert und niemals an Dritte weitergegeben.",
       learnMore: `Erfahren Sie mehr über ${de_common.names.github}-Token`,
       note: `Sie sollten ein Token mit der Berechtigung ${"'gist'".bold()} bereitstellen.`,
     },
@@ -184,7 +187,11 @@ export const de: AppI18n = {
           },
           start: {
             openTerminal: " Öffnen Sie ein Terminal-Fenster.",
-            goToFolder: ["Wechseln Sie zu dem Ordner, in dem Sie die ausführbare Datei ", wrapped("file"), " abgelegt haben."],
+            goToFolder: [
+              "Wechseln Sie zu dem Ordner, in dem Sie die ausführbare Datei ",
+              wrapped("file"),
+              " abgelegt haben.",
+            ],
             runCommand: "Ausführen",
             advanced: {
               title: "Erweiterte Einstellungen",
@@ -240,7 +247,8 @@ export const de: AppI18n = {
   deployments: {
     virtualServiceRegistry: {
       dependencyWarning: "Es gibt Abhängigkeiten von fremden Arbeitsbereichen!",
-      dependencyWarningTooltip: "Modelle in diesem Arbeitsbereich können von Bereitstellungen aus anderen Arbeitsbereichen abhängen.",
+      dependencyWarningTooltip:
+        "Modelle in diesem Arbeitsbereich können von Bereitstellungen aus anderen Arbeitsbereichen abhängen.",
     },
   },
 };

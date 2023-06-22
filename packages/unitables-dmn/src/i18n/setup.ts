@@ -26,7 +26,10 @@ export const dmnUnitablesI18nDefaults: I18nDefaults<DmnUnitablesI18n> = {
   locale: "en",
   dictionary: en,
 };
-export const dmnUnitablesDictionaries: I18nDictionaries<DmnUnitablesI18n> = new Map([["en", en], ["de", de]]);
+export const dmnUnitablesDictionaries: I18nDictionaries<DmnUnitablesI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const DmnUnitablesI18nContext = React.createContext<I18nContextType<DmnUnitablesI18n>>({} as never);
 
 export function useDmnUnitablesI18n(): I18nContextType<DmnUnitablesI18n> {

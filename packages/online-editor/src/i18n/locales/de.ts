@@ -27,7 +27,8 @@ export const de: OnlineI18n = {
     },
     alerts: {
       setContentError: {
-        title: "Fehler beim Öffnen der Datei. Sie können sie als Text bearbeiten und das Diagramm nach der Korrektur erneut öffnen.",
+        title:
+          "Fehler beim Öffnen der Datei. Sie können sie als Text bearbeiten und das Diagramm nach der Korrektur erneut öffnen.",
         action: "Als Text öffnen",
       },
       copy: "Inhalt in Zwischenablage kopiert",
@@ -45,7 +46,8 @@ export const de: OnlineI18n = {
         titleLocal: "Sie haben neue Änderungen seit Ihrem letzten Download.",
         titleGit: "Es gibt neue Änderungen seit Ihrem letzten Push.",
         proceedAnyway: "Trotzdem fortfahren",
-        message: "Die Dateien bleiben vorübergehend im Browser gespeichert, werden aber möglicherweise gelöscht, bevor Sie zurückkehren.",
+        message:
+          "Die Dateien bleiben vorübergehend im Browser gespeichert, werden aber möglicherweise gelöscht, bevor Sie zurückkehren.",
       },
     },
     error: {
@@ -132,8 +134,10 @@ export const de: OnlineI18n = {
         "Es fehlen die erforderlichen Berechtigungen für Dev Deployments (Deployments, Services, Ingresses). Überprüfen Sie Ihre Benutzerberechtigungen und versuchen Sie es erneut.",
       namespaceNotFound: (namespace: string) => `Der Namespace ${namespace} wurde in Ihrem Cluster nicht gefunden.`,
       configExpiredWarning: "Token oder Konto ist abgelaufen. Bitte aktualisieren Sie Ihre Konfiguration.",
-      useOpenShiftWizard: "Konfigurieren Sie eine neue Developer Sandbox für Red Hat OpenShift mit Hilfe des geführten Assistenten",
-      useKubernetesWizard: "Konfigurieren Sie einen neuen lokalen Kubernetes-Cluster mithilfe des geführten Assistenten",
+      useOpenShiftWizard:
+        "Konfigurieren Sie eine neue Developer Sandbox für Red Hat OpenShift mit Hilfe des geführten Assistenten",
+      useKubernetesWizard:
+        "Konfigurieren Sie einen neuen lokalen Kubernetes-Cluster mithilfe des geführten Assistenten",
     },
     deployConfirmModal: {
       title: "Bereitstellen",
@@ -147,7 +151,8 @@ export const de: OnlineI18n = {
       deployStartedError:
         "Bei der Erstellung Ihres Dev Deployments ist etwas schief gelaufen. Bitte überprüfen Sie Ihre Konfiguration und versuchen Sie es erneut.",
       deployStartedSuccess: "Ihre Dev Deployment wurde erfolgreich gestartet und wird in Kürze verfügbar sein.",
-      deleteError: "Dev Deployment(s) konnte(n) nicht gelöscht werden. Bitte versuchen Sie es erneut über die OpenShift-Konsole oder CLI.",
+      deleteError:
+        "Dev Deployment(s) konnte(n) nicht gelöscht werden. Bitte versuchen Sie es erneut über die OpenShift-Konsole oder CLI.",
       deleteSuccess: "Dev deployment(s) erfolgreich gelöscht.",
     },
     introduction: {
@@ -187,7 +192,8 @@ export const de: OnlineI18n = {
           connectionSuccess: "Verbindung erfolgreich hergestellt.",
           connectionError: "Verbindung abgelehnt.",
           introduction: "Jetzt können Sie Dev Deployments auf dieser OpenShift-Instanz erstellen.",
-          configNote: "Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben.",
+          configNote:
+            "Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben.",
           connectionErrorLong: `Eine Verbindung mit Ihrer ${de_common.names.shortDevSandbox} Instanz konnte nicht hergestellt werden.`,
           checkInfo: "Bitte überprüfen Sie die angegebenen Informationen und versuchen Sie es erneut.",
           possibleErrorReasons: {
@@ -230,7 +236,8 @@ export const de: OnlineI18n = {
             "Wenn Ihr Cluster eingerichtet ist und läuft, sollte er auf dem unten vorausgefüllten Host verfügbar sein und einen Namespace haben.",
           disclaimer:
             "Ändern Sie die folgenden Werte nur, wenn Sie eine benutzerdefinierte Kubernetes-Installation haben, aber beachten Sie, dass die Dinge möglicherweise nicht wie erwartet funktionieren.",
-          hostInputReason: "Diese Informationen sind erforderlich, um eine Verbindung mit Ihrem Kubernetes-Cluster herzustellen.",
+          hostInputReason:
+            "Diese Informationen sind erforderlich, um eine Verbindung mit Ihrem Kubernetes-Cluster herzustellen.",
           namespaceInputReason:
             "Diese Informationen sind notwendig, um Ihre Dev Deployments im richtigen Namespace zu erstellen.",
           namespacePlaceholder: "Der Namespace, in dem Sie Ihre Dev Deployments erstellen möchten.",
@@ -240,16 +247,19 @@ export const de: OnlineI18n = {
           name: "Authentifizierung",
           introduction:
             "Die Kubernetes-API erfordert ein Authentifizierungs-Token für alle Anfragen. In diesem Schritt erhalten wir das Authentifizierungs-Token für das zuvor erstellte Servicekonto.",
-          getToken: "Führen Sie den folgenden Befehl in Ihrem Terminal aus, um das Authentifizierungs-Token zu erhalten, und kopieren Sie es:",
+          getToken:
+            "Führen Sie den folgenden Befehl in Ihrem Terminal aus, um das Authentifizierungs-Token zu erhalten, und kopieren Sie es:",
           tokenPlaceholder: "Fügen Sie das Token hier ein",
-          tokenInputReason: "Das Token ist für die Authentifizierung von Anfragen an den Kubernetes-API-Server erforderlich.",
+          tokenInputReason:
+            "Das Token ist für die Authentifizierung von Anfragen an den Kubernetes-API-Server erforderlich.",
         },
         final: {
           name: "Verbinden",
           connectionSuccess: "Verbindung erfolgreich hergestellt.",
           connectionError: "Verbindung abgelehnt.",
           introduction: "Jetzt können Sie Dev Deployments auf dieser OpenShift-Instanz erstellen.",
-          configNote: "Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben..",
+          configNote:
+            "Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben..",
           connectionErrorLong: `Eine Verbindung mit Ihrem Kubernetes-Cluster konnte nicht hergestellt werden.`,
           checkInfo: "Bitte überprüfen Sie die angegebenen Informationen und versuchen Sie es erneut.",
           possibleErrorReasons: {
@@ -270,7 +280,8 @@ export const de: OnlineI18n = {
     source: {
       current: {
         label: "Aktueller Inhalt",
-        description: "Der eingebettete Editor enthält den aktuellen Inhalt, so dass er nicht von außen geändert werden kann.",
+        description:
+          "Der eingebettete Editor enthält den aktuellen Inhalt, so dass er nicht von außen geändert werden kann.",
       },
       gist: {
         alert: `Sie haben neue Änderungen zu pushen. Das Einbetten als ${de_common.names.github} gist wird Ihre letzten Änderungen nicht zeigen.`,
@@ -356,7 +367,8 @@ export const de: OnlineI18n = {
   },
   commitModal: {
     title: "Benutzerdefinierte Commit-Nachricht eingeben",
-    description: "Schreiben Sie eine kurze Zusammenfassung der am Arbeitsbereich vorgenommenen Änderungen, idealerweise bis zu 72 Zeichen.",
+    description:
+      "Schreiben Sie eine kurze Zusammenfassung der am Arbeitsbereich vorgenommenen Änderungen, idealerweise bis zu 72 Zeichen.",
     commit: "Commit",
     emptyMessageValidation: "Commit-Nachricht kann nicht leer sein",
     placeholder: "Commit-Nachricht",
@@ -430,7 +442,7 @@ export const de: OnlineI18n = {
       initial: {
         runDmnModels: "Führen Sie Ihre Modelle aus und sehen Sie die Ergebnisse live, während Sie sie bearbeiten.",
         explanation:
-            "Eingabeknoten werden zu interaktiven Feldern in einem automatisch generierten Formular, und die Ergebnisse werden als leicht lesbare Karten angezeigt.",
+          "Eingabeknoten werden zu interaktiven Feldern in einem automatisch generierten Formular, und die Ergebnisse werden als leicht lesbare Karten angezeigt.",
         notificationPanelExplanation: [
           `Das Problem-Panel`,
           wrapped("icon"),
@@ -530,7 +542,11 @@ export const de: OnlineI18n = {
           },
           start: {
             openTerminal: " Öffnen Sie ein Terminal-Fenster.",
-            goToFolder: ["Wechseln Sie zu dem Ordner, in dem Sie die ausführbare Datei ", wrapped("file"), " abgelegt haben."],
+            goToFolder: [
+              "Wechseln Sie zu dem Ordner, in dem Sie die ausführbare Datei ",
+              wrapped("file"),
+              " abgelegt haben.",
+            ],
             runCommand: "Ausführen",
             advanced: {
               title: "Erweiterte Einstellungen",
@@ -609,7 +625,7 @@ export const de: OnlineI18n = {
       repository: `${de_common.names.bitbucket} repository`,
       createRepository: `Erstelle ${de_common.names.bitbucket} repository`,
       description: (workspace: string) =>
-          `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.bitbucket} Repository übernommen.`,
+        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.bitbucket} Repository übernommen.`,
       error: {
         formAlert: (error: string) => `Fehler beim Erstellen des ${de_common.names.bitbucket} Repository. ${error}`,
       },
@@ -624,7 +640,7 @@ export const de: OnlineI18n = {
       repository: `${de_common.names.github} repository`,
       createRepository: `Erstelle ${de_common.names.github} repository`,
       description: (workspace: string) =>
-          `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.github} repository übernommen.`,
+        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.github} repository übernommen.`,
       error: {
         formAlert: (error: string) => `Fehler beim Erstellen des Repositorys ${de_common.names.github}. ${error}`,
       },
@@ -654,7 +670,7 @@ export const de: OnlineI18n = {
       gistOrSnippet: `${de_common.names.bitbucket} Snippet`,
       create: `Erstelle ${de_common.names.bitbucket} Snippet`,
       description: (workspace: string) =>
-          `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.bitbucket} Snippet verfügbar gemacht.`,
+        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.bitbucket} Snippet verfügbar gemacht.`,
       error: {
         formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names.bitbucket} Snippet. ${error}`,
       },
@@ -669,7 +685,7 @@ export const de: OnlineI18n = {
       gistOrSnippet: `${de_common.names.github} Gist`,
       create: `Erstelle ${de_common.names.github} Gist`,
       description: (workspace: string) =>
-          `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.github} Gist verfügbar gemacht.`,
+        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.github} Gist verfügbar gemacht.`,
       error: {
         formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names.github} Gist. ${error}`,
       },

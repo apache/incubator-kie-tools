@@ -26,7 +26,10 @@ export const yardEditorI18nDefaults: I18nDefaults<YardEditorI18n> = {
   locale: "en",
   dictionary: en,
 };
-export const yardEditorDictionaries: I18nDictionaries<YardEditorI18n> = new Map([["en", en], ["de", de]]);
+export const yardEditorDictionaries: I18nDictionaries<YardEditorI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const YardEditorI18nContext = React.createContext<I18nContextType<YardEditorI18n>>({} as never);
 
 export function useBoxedExpressionEditorI18n(): I18nContextType<YardEditorI18n> {

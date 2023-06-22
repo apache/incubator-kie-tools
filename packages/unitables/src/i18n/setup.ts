@@ -26,7 +26,10 @@ export const unitablesI18nDefaults: I18nDefaults<UnitablesI18n> = {
   locale: "en",
   dictionary: en,
 };
-export const unitablesDictionaries: I18nDictionaries<UnitablesI18n> = new Map([["en", en], ["de", de]]);
+export const unitablesDictionaries: I18nDictionaries<UnitablesI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const unitablesI18n = new I18n(unitablesI18nDefaults, unitablesDictionaries);
 export const UnitablesI18nContext = React.createContext<I18nContextType<UnitablesI18n>>({} as never);
 
