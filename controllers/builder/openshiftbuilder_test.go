@@ -27,6 +27,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
 
@@ -64,7 +65,7 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	assert.NoError(t, client.Get(context.TODO(), namespacedName, bc))
 	is := &imgv1.ImageStream{}
 	assert.NoError(t, client.Get(context.TODO(), namespacedName, is))
-	assert.Contains(t, *bc.Spec.Source.Dockerfile, "FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder")
+	assert.Contains(t, *bc.Spec.Source.Dockerfile, "FROM "+workflowdef.GetDefaultImageTag(workflowdef.DefaultWorkflowBuilderImage)+" AS builder")
 
 	// Reconcile
 	// unfortunately, the fake buildclient doesn't implement the RESTAPI, thus we can't push a new build to it
