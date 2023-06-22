@@ -513,7 +513,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "distinct values(list)",
         insertText: "distinct values($1)",
-        description: "duplicate removal",
+        description: "Duplicate removal",
         parameters: [["list", `\`list\``]],
         examples: ["distinct values( [1,2,3,2,1] ) = [1,2,3]"],
       },
@@ -644,12 +644,35 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "finishes( (1..10], [1..10] ) = true",
         ],
       },
+      {
+        label: "flatten(list)",
+        insertText: "flatten($1)",
+        description: "flatten nested lists ",
+        parameters: [["list", `\`list\``]],
+        examples: ["flatten( [[1 ,2],[[3]], 4] ) = [1,2,3,4]"],
+      },
+      {
+        label: "floor(n)",
+        insertText: "floor($1)",
+        description: "Returns `n` with rounding mode flooring. If `n` is null the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["floor(1.5) = 1"],
+      } /* 
+      {   === DMN 1.4 ===
+        label: "floor(n, scale)",
+        insertText: "floor($1, $2)",
+        description:
+          "returns `n` with given scale and rounding mode flooring. If at least one of `n` or scale is null, the result is null.",
+        parameters: [
+          ["n", `\`number\``],
+          ["scale", `\`number\``],
+        ],
+        examples: ["floor( -1.56, 1 ) = -1.6"],
+      }, */,
     ],
   };
 
   /*
-      ["flatten(list)", "flatten($1)"],
-      ["floor(n)", "floor($1)"],
       ["get entries(m)", "get entries($1)"],
       ["get value(m, key)", "get value($1, $2)"],
       ["includes(range, index)", "includes($1, $2)"],
