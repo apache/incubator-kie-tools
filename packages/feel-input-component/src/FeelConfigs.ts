@@ -154,8 +154,8 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
         [/(?:true|false)/, "feel-boolean"],
         [/[0-9]+/, "feel-numeric"],
         [/(?:"(?:.*?)")/, "feel-string"],
-        [/([a-z{1}][a-z_\s]+[a-z$])(?=\()/, "feel-function"],
-        [/[\w$]*[a-z_$][\w$]*/, "feel-keyword"],
+        [/([a-z{1}][a-z_\s]+[a-z$])(?=\()/, { cases: { "@functions": "feel-function" } }],
+        [/[\w$]*[a-z_$][\w$]*/, { cases: { "@keywords": "feel-keyword" } }],
       ],
     },
   };
@@ -248,7 +248,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
         examples: [
           "after( [11..20], [1..10] ) = true",
-          "after( [1 ..1 0], [11 ..20] ) = false",
+          "after( [1 ..10], [11 ..20] ) = false",
           "after( [11 ..20], [1.. 11) ) = true",
           "after( (11..20], [1..11] ) = true",
         ],
