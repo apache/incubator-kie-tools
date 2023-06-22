@@ -170,6 +170,9 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
 void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = false) {
     def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images.build-image', jobType, envName, "${jenkins_path}/Jenkinsfile.build-image", 'Kogito Images Build single image')
+    // Use jenkinsfile from the build branch
+    jobParams.git.author = '${SOURCE_AUTHOR}'
+    jobParams.git.branch = '${SOURCE_BRANCH}'
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         MAX_REGISTRY_RETRIES: 3,
@@ -187,17 +190,17 @@ void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = f
 
             stringParam('SOURCE_AUTHOR', Utils.getGitAuthor(this), 'Build author')
             stringParam('SOURCE_BRANCH', Utils.getGitBranch(this), 'Build branch name')
-            stringParam('TARGET_BRANCH', '', 'In case of a PR to merge with target branch, please provide the target branch')
+            stringParam('TARGET_BRANCH', '', '(Optional) In case of a PR to merge with target branch, please provide the target branch')
 
             // Build information
-            stringParam('BUILD_KOGITO_APPS_URI', '', 'Git uri to the kogito-apps repository to use for tests.')
-            stringParam('BUILD_KOGITO_APPS_REF', '', 'Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
+            stringParam('BUILD_KOGITO_APPS_URI', '', '(Optional) Git uri to the kogito-apps repository to use for tests.')
+            stringParam('BUILD_KOGITO_APPS_REF', '', '(Optional) Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
             stringParam('QUARKUS_PLATFORM_URL', Utils.getMavenQuarkusPlatformRepositoryUrl(this), 'URL to the Quarkus platform to use. The version to use will be guessed from artifacts.')
 
             // Test information
             booleanParam('SKIP_TESTS', false, 'Skip tests')
-            stringParam('TESTS_KOGITO_EXAMPLES_URI', '', 'Git uri to the kogito-examples repository to use for tests.')
-            stringParam('TESTS_KOGITO_EXAMPLES_REF', '', 'Git reference (branch/tag) to the kogito-examples repository to use for tests.')
+            stringParam('TESTS_KOGITO_EXAMPLES_URI', '', '(Optional) Git uri to the kogito-examples repository to use for tests.')
+            stringParam('TESTS_KOGITO_EXAMPLES_REF', '', '(Optional) Git reference (branch/tag) to the kogito-examples repository to use for tests.')
             stringParam('TESTS_MAVEN_ARTIFACTS_REPOSITORY_URL', "${MAVEN_ARTIFACTS_REPOSITORY}")
 
             // Deploy information
