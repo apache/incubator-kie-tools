@@ -39,13 +39,19 @@ import { routes } from "../../../navigation/Routes";
 import { setPageTitle } from "../../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../../table";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
+import { escapeRegExp } from "../../../regex";
 import { ErrorPage } from "../../../error/ErrorPage";
 
-export interface Props {
+function filterFiles(files: WorkspaceFile[], searchValue: string): WorkspaceFile[] {
+  const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
+  return searchValue ? files.filter((e) => e.name.search(searchRegex) >= 0) : files;
+}
+
+export interface WorkspaceFilesProps {
   workspaceId: string;
 }
 
-export function WorkspaceFiles(props: Props) {
+export function WorkspaceFiles(props: WorkspaceFilesProps) {
   const { workspaceId } = props;
   const workspacePromise = useWorkspacePromise(workspaceId);
   const [selectedWorkspaceFiles, setSelectedWorkspaceFiles] = useState<WorkspaceFile[]>([]);
@@ -185,12 +191,13 @@ export function WorkspaceFiles(props: Props) {
       promise={workspacePromise}
       rejected={(e) => <ErrorPage kind="WorkspaceFiles" workspaceId={props.workspaceId} errors={e} />}
       resolved={(workspace: ActiveWorkspace) => {
-        const allFiles = splitFiles(workspace.files);
-        const isViewRoFilesDisabled = !allFiles.editableFiles.length || !allFiles.readonlyFiles.length;
-        const isViewRoFilesCheckedInternal = isViewRoFilesDisabled ? true : isViewRoFilesChecked;
-        const files = [...allFiles.editableFiles, ...(isViewRoFilesCheckedInternal ? allFiles.readonlyFiles : [])];
-        const filesCount = files.length;
         const allFilesCount = workspace.files.length;
+        const { editableFiles, readonlyFiles } = splitFiles(workspace.files);
+        const isViewRoFilesDisabled = !editableFiles.length || !readonlyFiles.length;
+        const isViewRoFilesCheckedInternal = isViewRoFilesDisabled ? true : isViewRoFilesChecked;
+        const visibleFiles = [...editableFiles, ...(isViewRoFilesCheckedInternal ? readonlyFiles : [])];
+        const filteredFiles = filterFiles(visibleFiles, searchValue);
+        const filteredFilesCount = filteredFiles.length;
 
         setPageTitle([workspace.descriptor.name]);
 
@@ -236,12 +243,12 @@ export function WorkspaceFiles(props: Props) {
 
               <PageSection isFilled aria-label="workspaces-table-section">
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-                  {filesCount > 0 && (
+                  {allFilesCount > 0 && (
                     <>
                       <TableToolbar
-                        itemCount={filesCount}
+                        itemCount={filteredFilesCount}
                         onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
-                        onToggleAllElements={(checked) => onToggleAllElements(checked, files)}
+                        onToggleAllElements={(checked) => onToggleAllElements(checked, filteredFiles)}
                         searchValue={searchValue}
                         selectedElementsCount={selectedWorkspaceFiles.length}
                         setSearchValue={setSearchValue}
@@ -304,16 +311,14 @@ export function WorkspaceFiles(props: Props) {
                         page={page}
                         perPage={perPage}
                         onFileToggle={onFileToggle}
-                        searchValue={searchValue}
                         selectedWorkspaceFiles={selectedWorkspaceFiles}
-                        totalFilesCount={allFilesCount}
-                        workspaceFiles={files}
+                        workspaceFiles={filteredFiles}
                         onClearFilters={onClearFilters}
                         onDelete={onSingleConfirmDeleteModalOpen}
                       />
 
                       <TablePagination
-                        itemCount={filesCount}
+                        itemCount={filteredFilesCount}
                         page={page}
                         perPage={perPage}
                         perPageOptions={defaultPerPageOptions}
@@ -323,7 +328,7 @@ export function WorkspaceFiles(props: Props) {
                       />
                     </>
                   )}
-                  {files.length === 0 && (
+                  {allFilesCount === 0 && (
                     <Bullseye>
                       <EmptyState>
                         <EmptyStateIcon icon={CubesIcon} />
@@ -340,7 +345,7 @@ export function WorkspaceFiles(props: Props) {
             <ConfirmDeleteModal
               isOpen={isConfirmDeleteModalOpen}
               onClose={onConfirmDeleteModalClose}
-              onDelete={() => onConfirmDeleteModalDelete(workspace.files.length)}
+              onDelete={() => onConfirmDeleteModalDelete(allFilesCount)}
               elementsTypeName={deletingElementTypesName}
               deleteMessage={deleteModalMessage}
             />

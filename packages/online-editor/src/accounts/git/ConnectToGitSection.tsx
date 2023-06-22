@@ -111,7 +111,12 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
           .then(
             switchExpression<SupportedGitAuthProviders, () => Promise<AuthenticatedUserResponse>>(authProviderType, {
               bitbucket: () =>
-                fetchAuthenticatedBitbucketUser(env.KIE_SANDBOX_APP_NAME, tokenInput, props.authProvider.domain),
+                fetchAuthenticatedBitbucketUser(
+                  env.KIE_SANDBOX_APP_NAME,
+                  usernameInput,
+                  tokenInput,
+                  props.authProvider.domain
+                ),
               github: () => fetchAuthenticatedGitHubUser(tokenInput, props.authProvider.domain),
             })
           )
@@ -165,6 +170,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
         setNewAuthSession,
         authSessions,
         i18n.connectToGitModal.auth.error,
+        usernameInput,
         env.KIE_SANDBOX_APP_NAME,
         authSessionsDispatch,
       ]
