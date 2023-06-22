@@ -14,6 +14,11 @@ All the commands in this section should be performed in the monorepo root.
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Go `1.19.10` _(To install, follow these instructions: https://go.dev/doc/install)_
 
+#### Prerequisites for running integration tests
+
+- docker _(To install, follow these instructions: https://docs.docker.com/engine/install)_
+- podman _(To install, follow these instructions: https://podman.io/docs/installation)_
+
 ### Installing and linking dependencies
 
 The following command will install the `kn-plugin-workflow` dependencies and link it with any other monorepo
