@@ -65,7 +65,7 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	assert.NoError(t, client.Get(context.TODO(), namespacedName, bc))
 	is := &imgv1.ImageStream{}
 	assert.NoError(t, client.Get(context.TODO(), namespacedName, is))
-	assert.Contains(t, *bc.Spec.Source.Dockerfile, "FROM "+workflowdef.GetDefaultImageTag(workflowdef.DefaultWorkflowBuilderImage)+" AS builder")
+	assert.Contains(t, *bc.Spec.Source.Dockerfile, "FROM "+workflowdef.GetDefaultWorkflowBuilderImageTag()+" AS builder")
 
 	// Reconcile
 	// unfortunately, the fake buildclient doesn't implement the RESTAPI, thus we can't push a new build to it

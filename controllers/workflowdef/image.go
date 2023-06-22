@@ -23,8 +23,8 @@ import (
 const (
 	latestImageTag              = "latest"
 	nightlySuffix               = "nightly"
-	DefaultWorkflowDevModeImage = "quay.io/kiegroup/kogito-swf-devmode"
-	DefaultWorkflowBuilderImage = "quay.io/kiegroup/kogito-swf-builder"
+	defaultWorkflowDevModeImage = "quay.io/kiegroup/kogito-swf-devmode"
+	defaultWorkflowBuilderImage = "quay.io/kiegroup/kogito-swf-builder"
 )
 
 // GetWorkflowAppImageNameTag retrieve the tag for the image based on the Workflow based annotation, <workflowid>:latest otherwise
@@ -37,11 +37,11 @@ func GetWorkflowAppImageNameTag(w *v1alpha08.SonataFlow) string {
 }
 
 func GetDefaultWorkflowDevModeImageTag() string {
-	return GetDefaultImageTag(DefaultWorkflowDevModeImage)
+	return GetDefaultImageTag(defaultWorkflowDevModeImage)
 }
 
 func GetDefaultWorkflowBuilderImageTag() string {
-	return GetDefaultImageTag(DefaultWorkflowBuilderImage)
+	return GetDefaultImageTag(defaultWorkflowBuilderImage)
 }
 
 func GetDefaultImageTag(imgTag string) string {
