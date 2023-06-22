@@ -60,7 +60,7 @@ import {
   useState,
 } from "react";
 import { Position } from "monaco-editor";
-import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfPreviewOptions } from "../api";
+import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 import { colorNodes } from "./helpers/ColorNodes";
@@ -76,6 +76,7 @@ interface Props {
 export type ServerlessWorkflowCombinedEditorRef = {
   setContent(path: string, content: string): Promise<void>;
   colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
+  moveCursorToPosition(position: Position): void;
 };
 
 interface File {
@@ -102,9 +103,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const [diagramEditorEnvelopeContent] = useSharedValue<string>(
     editorEnvelopeCtx.channelApi.shared.kogitoSwfGetDiagramEditorEnvelopeContent
   );
-  const [mermaidEnvelopeContent] = useSharedValue<string>(
-    editorEnvelopeCtx.channelApi.shared.kogitoSwfGetMermaidEnvelopeContent
-  );
   const [textEditorEnvelopeContent] = useSharedValue<string>(
     editorEnvelopeCtx.channelApi.shared.kogitoSwfGetTextEditorEnvelopeContent
   );
@@ -112,9 +110,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { editor: textEditor, editorRef: textEditorRef } = useEditorRef();
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
 
-  const [featureToggle] = useSharedValue<SwfFeatureToggle>(
-    editorEnvelopeCtx.channelApi?.shared.kogitoSwfFeatureToggle_get
-  );
   const [previewOptions] = useSharedValue<SwfPreviewOptions>(
     editorEnvelopeCtx.channelApi?.shared.kogitoSwfPreviewOptions_get
   );
@@ -139,21 +134,24 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     } else {
       return isTextEditorReady && isDiagramEditorReady;
     }
-  }, [isDiagramEditorReady, isTextEditorReady]);
+  }, [isDiagramEditorReady, isTextEditorReady, previewOptions]);
 
-  const buildEnvelopeContent = (content: string, path: string): EnvelopeContent => {
-    if (isStandalone) {
-      return {
-        type: EnvelopeContentType.CONTENT,
-        content: content,
-      };
-    } else {
-      return {
-        type: EnvelopeContentType.PATH,
-        path,
-      };
-    }
-  };
+  const buildEnvelopeContent = useCallback(
+    (content: string, path: string): EnvelopeContent => {
+      if (isStandalone) {
+        return {
+          type: EnvelopeContentType.CONTENT,
+          content: content,
+        };
+      } else {
+        return {
+          type: EnvelopeContentType.PATH,
+          path,
+        };
+      }
+    },
+    [isStandalone]
+  );
 
   const textEditorEnvelopeLocator = useMemo(
     () =>
@@ -168,36 +166,32 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           ),
         }),
       ]),
-    [props.resourcesPathPrefix, targetOrigin, textEditorEnvelopeContent]
+    [props.resourcesPathPrefix, targetOrigin, textEditorEnvelopeContent, buildEnvelopeContent]
   );
 
-  const diagramEditorEnvelopeLocator = useMemo(() => {
-    const diagramEnvelopeMappingConfig =
-      featureToggle && !featureToggle.stunnerEnabled
-        ? {
-            resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
-            envelopeContent: buildEnvelopeContent(
-              mermaidEnvelopeContent ?? "",
-              props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
-            ),
-          }
-        : {
-            resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
-            envelopeContent: buildEnvelopeContent(
-              diagramEditorEnvelopeContent ?? "",
-              props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html"
-            ),
-          };
+  const diagramEditorEnvelopeLocator = useMemo(
+    () =>
+      new EditorEnvelopeLocator(targetOrigin, [
+        new EnvelopeMapping({
+          type: ENVELOPE_LOCATOR_TYPE,
+          filePathGlob: "**/*.sw.+(json|yml|yaml)",
+          resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
+          envelopeContent: buildEnvelopeContent(
+            diagramEditorEnvelopeContent ?? "",
+            props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html"
+          ),
+        }),
+      ]),
+    [props.resourcesPathPrefix, targetOrigin, diagramEditorEnvelopeContent, buildEnvelopeContent]
+  );
 
-    return new EditorEnvelopeLocator(targetOrigin, [
-      new EnvelopeMapping({
-        type: ENVELOPE_LOCATOR_TYPE,
-        filePathGlob: "**/*.sw.+(json|yml|yaml)",
-        resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
-        envelopeContent: diagramEnvelopeMappingConfig.envelopeContent,
-      }),
-    ]);
-  }, [featureToggle, props.resourcesPathPrefix, targetOrigin, mermaidEnvelopeContent, diagramEditorEnvelopeContent]);
+  const textEditorEnvelopeApi = useMemo(
+    () =>
+      textEditor &&
+      (textEditor.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>),
+    [textEditor]
+  );
 
   useImperativeHandle(
     forwardedRef,
@@ -235,24 +229,24 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         getContent: async () => file?.content ?? "",
         getPreview: async () => diagramEditor?.getPreview() ?? "",
         undo: async () => {
-          textEditor?.undo();
-          diagramEditor?.undo();
+          await Promise.all([textEditor?.undo(), diagramEditor?.undo()]);
         },
         redo: async () => {
-          textEditor?.redo();
-          diagramEditor?.redo();
+          await Promise.all([textEditor?.redo(), diagramEditor?.redo()]);
         },
         validate: async (): Promise<Notification[]> => textEditor?.validate() ?? [],
         setTheme: async (theme: EditorTheme) => {
-          textEditor?.setTheme(theme);
-          diagramEditor?.setTheme(theme);
+          await Promise.all([textEditor?.setTheme(theme), diagramEditor?.setTheme(theme)]);
         },
         colorNodes: (nodeNames: string[], color: string, colorConnectedEnds: boolean) => {
           colorNodes(nodeNames, color, colorConnectedEnds);
         },
+        moveCursorToPosition: (position: Position) => {
+          textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__moveCursorToPosition.send(position);
+        },
       };
     },
-    [diagramEditor, file, props.isReadOnly, textEditor]
+    [diagramEditor, file, props.isReadOnly, textEditor, textEditorEnvelopeApi]
   );
 
   useStateControlSubscription(
@@ -414,19 +408,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.send();
     }
   }, [isCombinedEditorReady]);
-
-  useSubscription(
-    editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition,
-    useCallback(
-      (position: Position) => {
-        const swfTextEditorEnvelopeApi = textEditor?.getEnvelopeServer()
-          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
-
-        swfTextEditorEnvelopeApi.notifications.kogitoSwfTextEditor__moveCursorToPosition.send(position);
-      },
-      [textEditor]
-    )
-  );
 
   return (
     <div style={{ height: "100%" }}>

@@ -1217,9 +1217,6 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope":
         specifier: workspace:*
         version: link:../serverless-workflow-diagram-editor-envelope
-      "@kie-tools/serverless-workflow-mermaid-viewer":
-        specifier: workspace:*
-        version: link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-text-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-text-editor
@@ -2321,6 +2318,9 @@ importers:
       "@kie-tools-core/editor":
         specifier: workspace:*
         version: link:../editor
+      "@kie-tools-core/envelope":
+        specifier: workspace:*
+        version: link:../envelope
       "@kie-tools-core/envelope-bus":
         specifier: workspace:*
         version: link:../envelope-bus
@@ -5908,9 +5908,6 @@ importers:
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-mermaid-viewer":
-        specifier: workspace:*
-        version: link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog":
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
@@ -6384,9 +6381,6 @@ importers:
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-mermaid-viewer":
-        specifier: workspace:*
-        version: link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog":
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
@@ -6755,136 +6749,6 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
 
-  packages/serverless-workflow-mermaid-viewer:
-    dependencies:
-      "@kie-tools-core/editor":
-        specifier: workspace:*
-        version: link:../editor
-      "@kie-tools-core/envelope-bus":
-        specifier: workspace:*
-        version: link:../envelope-bus
-      "@kie-tools-core/keyboard-shortcuts":
-        specifier: workspace:*
-        version: link:../keyboard-shortcuts
-      "@kie-tools-core/notifications":
-        specifier: workspace:*
-        version: link:../notifications
-      "@kie-tools-core/operating-system":
-        specifier: workspace:*
-        version: link:../operating-system
-      "@kie-tools-core/patternfly-base":
-        specifier: workspace:*
-        version: link:../patternfly-base
-      "@kie-tools-core/workspace":
-        specifier: workspace:*
-        version: link:../workspace
-      "@patternfly/react-core":
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-icons":
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      "@severlessworkflow/sdk-typescript":
-        specifier: ^3.0.3
-        version: 3.0.3
-      mermaid:
-        specifier: ^9.1.7
-        version: 9.1.7
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      svg-pan-zoom:
-        specifier: ^3.6.1
-        version: 3.6.1
-    devDependencies:
-      "@babel/core":
-        specifier: ^7.16.0
-        version: 7.16.12
-      "@babel/preset-env":
-        specifier: ^7.16.0
-        version: 7.16.11(@babel/core@7.16.12)
-      "@babel/preset-react":
-        specifier: ^7.16.0
-        version: 7.16.0(@babel/core@7.16.12)
-      "@kie-tools-core/webpack-base":
-        specifier: workspace:*
-        version: link:../webpack-base
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      "@testing-library/jest-dom":
-        specifier: ^5.16.1
-        version: 5.16.1
-      "@types/jest":
-        specifier: ^26.0.23
-        version: 26.0.23
-      "@types/jest-when":
-        specifier: ^2.7.4
-        version: 2.7.4
-      "@types/mermaid":
-        specifier: ^8.2.9
-        version: 8.2.9
-      "@types/react":
-        specifier: ^17.0.6
-        version: 17.0.21
-      "@types/react-dom":
-        specifier: ^17.0.5
-        version: 17.0.8
-      "@types/svg-pan-zoom":
-        specifier: ^3.4.0
-        version: 3.4.0
-      "@types/testing-library__jest-dom":
-        specifier: ^5.9.1
-        version: 5.9.5
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.70.0)
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      jest:
-        specifier: ^26.6.3
-        version: 26.6.3
-      jest-junit:
-        specifier: ^14.0.0
-        version: 14.0.0
-      jest-when:
-        specifier: ^3.5.0
-        version: 3.5.0(jest@26.6.3)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      start-server-and-test:
-        specifier: ^1.12.1
-        version: 1.12.1
-      ts-jest:
-        specifier: ^26.5.6
-        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
-      typescript:
-        specifier: ^4.6.2
-        version: 4.8.4
-      webpack:
-        specifier: ^5.36.2
-        version: 5.70.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
-      webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
-      webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
-
   packages/serverless-workflow-service-catalog:
     dependencies:
       "@kie-tools-core/envelope-bus":
@@ -7005,9 +6869,6 @@ importers:
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-mermaid-viewer":
-        specifier: workspace:*
-        version: link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog":
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
@@ -7297,9 +7158,6 @@ importers:
       "@kie-tools/serverless-workflow-language-service":
         specifier: workspace:*
         version: link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-mermaid-viewer":
-        specifier: workspace:*
-        version: link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog":
         specifier: workspace:*
         version: link:../serverless-workflow-service-catalog
@@ -13247,11 +13105,6 @@ packages:
       { integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw== }
     dev: true
 
-  /@braintree/sanitize-url@6.0.0:
-    resolution:
-      { integrity: sha512-mgmE7XBYY/21erpzhexk4Cj1cyTQ9LzvnTxtzM17BJ7ERMNE6W72mQRo0I1Ud8eFJ+RVVIcBNhLFZ3GX4XFz5w== }
-    dev: false
-
   /@chevrotain/types@9.1.0:
     resolution:
       { integrity: sha512-3hbCD1CThkv9gnaSIPq0GUXwKni68e0ph6jIHwCvcWiQ4JB2xi8bFxBain0RF04qHUWuDjgnZLj4rLgimuGO+g== }
@@ -16366,11 +16219,6 @@ packages:
     resolution:
       { integrity: sha512-DvmZHoHTFJ8zhVYwCLWbQ7uAbYQEk52Ev2/ZiQ7Y7gQGeV9pjBqjnQpECMHfKS1rCYAhMI7LHVxwyZLZinJgdw== }
 
-  /@types/mermaid@8.2.9:
-    resolution:
-      { integrity: sha512-f1i8fNoVFVJXedk+R7GcEk4KoOWzWAU3CzFqlVw1qWKktfsataBERezCz1pOdKy8Ec02ZdPQXGM7NU2lPHABYQ== }
-    dev: true
-
   /@types/meteor@1.4.70:
     resolution:
       { integrity: sha512-AefKGIqeTRKdUbceWJG973iTpCDuYyQYqrtTx8WBnesl+IprWVns9NB/sIpkX9P6z9ULFTFk5fy3CGUuVHlpYg== }
@@ -16654,14 +16502,6 @@ packages:
   /@types/stack-utils@2.0.0:
     resolution:
       { integrity: sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw== }
-    dev: true
-
-  /@types/svg-pan-zoom@3.4.0:
-    resolution:
-      { integrity: sha512-G1/BVNEkjlcL8mOT1b6Iwsn0B9uxqYFhX12dbvpR8A6w4B8aucSn9XeI0W5HaR/JdGeztgR375At9jlsuYZHug== }
-    deprecated: This is a stub types definition for svg-pan-zoom (https://github.com/ariutta/svg-pan-zoom). svg-pan-zoom provides its own type definitions, so you don't need @types/svg-pan-zoom installed!
-    dependencies:
-      svg-pan-zoom: 3.6.1
     dev: true
 
   /@types/testing-library__dom@7.5.0:
@@ -19326,6 +19166,7 @@ packages:
     resolution:
       { integrity: sha512-QrWXB+ZQSVPmIWIhtEO9H+gwHaMGYiF5ChvoJ+K9ZGHG/sVsa6yiesAD1GC/x46sET00Xlwo1u49RVVVzvcSkw== }
     engines: { node: ">= 10" }
+    dev: true
 
   /commander@8.3.0:
     resolution:
@@ -20033,56 +19874,6 @@ packages:
       internmap: 2.0.3
     dev: false
 
-  /d3-axis@1.0.12:
-    resolution:
-      { integrity: sha512-ejINPfPSNdGFKEOAtnBtdkpr24c4d4jsei6Lg98mxf424ivoDP2956/5HDpIAtmHo85lqT4pruy+zEgvRUBqaQ== }
-    dev: false
-
-  /d3-axis@3.0.0:
-    resolution:
-      { integrity: sha512-IH5tgjV4jE/GhHkRV0HiVYPDtvfjHQlQfJHs0usq7M30XcSBvOotpmH1IgkcXsO/5gEQZD43B//fc7SRT5S+xw== }
-    engines: { node: ">=12" }
-    dev: false
-
-  /d3-brush@1.1.6:
-    resolution:
-      { integrity: sha512-7RW+w7HfMCPyZLifTz/UnJmI5kdkXtpCbombUSs8xniAyo0vIbrDzDwUJB6eJOgl9u5DQOt2TQlYumxzD1SvYA== }
-    dependencies:
-      d3-dispatch: 1.0.6
-      d3-drag: 1.2.5
-      d3-interpolate: 1.4.0
-      d3-selection: 1.4.2
-      d3-transition: 1.3.2
-    dev: false
-
-  /d3-brush@3.0.0:
-    resolution:
-      { integrity: sha512-ALnjWlVYkXsVIGlOsuWH1+3udkYFI48Ljihfnh8FZPF2QS9o+PzGLBslO0PjzVoHLZ2KCVgAM8NVkXPJB2aNnQ== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-drag: 3.0.0
-      d3-interpolate: 3.0.1
-      d3-selection: 3.0.0
-      d3-transition: 3.0.1(d3-selection@3.0.0)
-    dev: false
-
-  /d3-chord@1.0.6:
-    resolution:
-      { integrity: sha512-JXA2Dro1Fxw9rJe33Uv+Ckr5IrAa74TlfDEhE/jfLOaXegMQFQTAgAw9WnZL8+HxVBRXaRGCkrNU7pJeylRIuA== }
-    dependencies:
-      d3-array: 1.2.4
-      d3-path: 1.0.9
-    dev: false
-
-  /d3-chord@3.0.1:
-    resolution:
-      { integrity: sha512-VE5S6TNa+j8msksl7HwjxMHDM2yNK3XCkusIlpX5kwauBfXuyLAtNg9jCp/iHH61tgI4sb6R/EIMWCqEIdjT/g== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-path: 3.0.1
-    dev: false
-
   /d3-collection@1.0.7:
     resolution:
       { integrity: sha512-ii0/r5f4sjKNTfh84Di+DpztYwqKhEyUlKoPrzUFfeSkWxjW49xU2QzO9qrPrNkpdI0XJkfzvmTu8V2Zylln6A== }
@@ -20093,58 +19884,15 @@ packages:
       { integrity: sha512-p2sTHSLCJI2QKunbGb7ocOh7DgTAn8IrLx21QRc/BSnodXM4sv6aLQlnfpvehFMLZEfBc6g9pH9SWQccFYfJ9Q== }
     dev: false
 
-  /d3-color@3.0.1:
-    resolution:
-      { integrity: sha512-6/SlHkDOBLyQSJ1j1Ghs82OIUXpKWlR0hCsw0XrLSQhuUPuCSmLQ1QPH98vpnQxMUQM2/gfAkUEWsupVpd9JGw== }
-    engines: { node: ">=12" }
-    dev: false
-
   /d3-color@3.1.0:
     resolution:
       { integrity: sha512-zg/chbXyeBtMQ1LbD/WSoW2DpC3I0mpmPdW+ynRTj/x2DAWYrIY7qeZIHidozwV24m4iavr15lNwIwLxRmOxhA== }
     engines: { node: ">=12" }
     dev: false
 
-  /d3-contour@1.3.2:
-    resolution:
-      { integrity: sha512-hoPp4K/rJCu0ladiH6zmJUEz6+u3lgR+GSm/QdM2BBvDraU39Vr7YdDCicJcxP1z8i9B/2dJLgDC1NcvlF8WCg== }
-    dependencies:
-      d3-array: 1.2.4
-    dev: false
-
-  /d3-contour@3.0.1:
-    resolution:
-      { integrity: sha512-0Oc4D0KyhwhM7ZL0RMnfGycLN7hxHB8CMmwZ3+H26PWAG0ozNuYG5hXSDNgmP1SgJkQMrlG6cP20HoaSbvcJTQ== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-array: 3.1.1
-    dev: false
-
-  /d3-delaunay@6.0.2:
-    resolution:
-      { integrity: sha512-IMLNldruDQScrcfT+MWnazhHbDJhcRJyOEBAJfwQnHle1RPh6WDuLvxNArUju2VSMSUuKlY5BGHRJ2cYyoFLQQ== }
-    engines: { node: ">=12" }
-    dependencies:
-      delaunator: 5.0.0
-    dev: false
-
   /d3-dispatch@1.0.6:
     resolution:
       { integrity: sha512-fVjoElzjhCEy+Hbn8KygnmMS7Or0a9sI2UzGwoB7cCtvI1XpVN9GpoYlnb3xt2YV66oXYb1fLJ8GMvP4hdU1RA== }
-    dev: false
-
-  /d3-dispatch@3.0.1:
-    resolution:
-      { integrity: sha512-rzUyPU/S7rwUflMyLc1ETDeBj0NRuHKKAcvukozwhshr6g6c5d8zh4c2gQjY2bZ0dXeGLWc1PF174P2tVvKhfg== }
-    engines: { node: ">=12" }
-    dev: false
-
-  /d3-drag@1.2.5:
-    resolution:
-      { integrity: sha512-rD1ohlkKQwMZYkQlYVCrSFxsWPzI97+W+PaEIBNTMxRuxz9RF0Hi5nJWHGVJ3Om9d2fRTe1yOBINJyy/ahV95w== }
-    dependencies:
-      d3-dispatch: 1.0.6
-      d3-selection: 1.4.2
     dev: false
 
   /d3-drag@2.0.0:
@@ -20153,36 +19901,6 @@ packages:
     dependencies:
       d3-dispatch: 1.0.6
       d3-selection: 2.0.0
-    dev: false
-
-  /d3-drag@3.0.0:
-    resolution:
-      { integrity: sha512-pWbUJLdETVA8lQNJecMxoXfH6x+mO2UQo8rSmZ+QqxcbyA3hfeprFgIT//HW2nlHChWeIIMwS2Fq+gEARkhTkg== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-selection: 3.0.0
-    dev: false
-
-  /d3-dsv@1.2.0:
-    resolution:
-      { integrity: sha512-9yVlqvZcSOMhCYzniHE7EVUws7Fa1zgw+/EAV2BxJoG3ME19V6BQFBwI855XQDsxyOuG7NibqRMTtiF/Qup46g== }
-    hasBin: true
-    dependencies:
-      commander: 2.20.3
-      iconv-lite: 0.4.24
-      rw: 1.3.3
-    dev: false
-
-  /d3-dsv@3.0.1:
-    resolution:
-      { integrity: sha512-UG6OvdI5afDIFP9w4G0mNq50dSOsXHJaRE8arAS5o9ApWnIElp8GZw1Dun8vP8OyHOZ/QJUKUJwxiiCCnUwm+Q== }
-    engines: { node: ">=12" }
-    hasBin: true
-    dependencies:
-      commander: 7.2.0
-      iconv-lite: 0.6.3
-      rw: 1.3.3
     dev: false
 
   /d3-ease@1.0.7:
@@ -20196,41 +19914,6 @@ packages:
     engines: { node: ">=12" }
     dev: false
 
-  /d3-fetch@1.2.0:
-    resolution:
-      { integrity: sha512-yC78NBVcd2zFAyR/HnUiBS7Lf6inSCoWcSxFfw8FYL7ydiqe80SazNwoffcqOfs95XaLo7yebsmQqDKSsXUtvA== }
-    dependencies:
-      d3-dsv: 1.2.0
-    dev: false
-
-  /d3-fetch@3.0.1:
-    resolution:
-      { integrity: sha512-kpkQIM20n3oLVBKGg6oHrUchHM3xODkTzjMoj7aWQFq5QEM+R6E4WkzT5+tojDY7yjez8KgCBRoj4aEr99Fdqw== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-dsv: 3.0.1
-    dev: false
-
-  /d3-force@1.2.1:
-    resolution:
-      { integrity: sha512-HHvehyaiUlVo5CxBJ0yF/xny4xoaxFxDnBXNvNcfW9adORGZfyNF1dj6DGLKyk4Yh3brP/1h3rnDzdIAwL08zg== }
-    dependencies:
-      d3-collection: 1.0.7
-      d3-dispatch: 1.0.6
-      d3-quadtree: 1.0.7
-      d3-timer: 1.0.10
-    dev: false
-
-  /d3-force@3.0.0:
-    resolution:
-      { integrity: sha512-zxV/SsA+U4yte8051P4ECydjD/S+qeYtnaIyAs9tgHCqfguma/aAQDjo85A9Z6EKhBirHRJHXIgJUlffT4wdLg== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-quadtree: 3.0.1
-      d3-timer: 3.0.1
-    dev: false
-
   /d3-format@1.4.5:
     resolution:
       { integrity: sha512-J0piedu6Z8iB6TbIGfZgDzfXxUFN3qQRMofy2oPdXzQibYGqPB/9iMcxr/TGalU+2RsyDO+U4f33id8tbnSRMQ== }
@@ -20242,37 +19925,11 @@ packages:
     engines: { node: ">=12" }
     dev: false
 
-  /d3-geo@1.12.1:
-    resolution:
-      { integrity: sha512-XG4d1c/UJSEX9NfU02KwBL6BYPj8YKHxgBEw5om2ZnTRSbIcego6dhHwcxuSR3clxh0EpE38os1DVPOmnYtTPg== }
-    dependencies:
-      d3-array: 1.2.4
-    dev: false
-
   /d3-geo@2.0.2:
     resolution:
       { integrity: sha512-8pM1WGMLGFuhq9S+FpPURxic+gKzjluCD/CHTuUF3mXMeiCo0i6R0tO1s4+GArRFde96SLcW/kOFRjoAosPsFA== }
     dependencies:
       d3-array: 2.12.1
-    dev: false
-
-  /d3-geo@3.0.1:
-    resolution:
-      { integrity: sha512-Wt23xBych5tSy9IYAM1FR2rWIBFWa52B/oF/GYe5zbdHrg08FU8+BuI6X4PvTwPDdqdAdq04fuWJpELtsaEjeA== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-array: 3.1.1
-    dev: false
-
-  /d3-hierarchy@1.1.9:
-    resolution:
-      { integrity: sha512-j8tPxlqh1srJHAtxfvOUwKNYJkQuBFdM1+JAUfq6xqH5eAqf93L7oG1NVqDa4CpFZNvnNKtCYEUC8KY9yEn9lQ== }
-    dev: false
-
-  /d3-hierarchy@3.1.1:
-    resolution:
-      { integrity: sha512-LtAIu54UctRmhGKllleflmHalttH3zkfSi4NlKrTAoFKjC+AFBJohsCAdgCBYQwH0F8hIOGY89X1pPqAchlMkA== }
-    engines: { node: ">=12" }
     dev: false
 
   /d3-interpolate@1.4.0:
@@ -20295,66 +19952,10 @@ packages:
       { integrity: sha512-VLaYcn81dtHVTjEHd8B+pbe9yHWpXKZUC87PzoFmsFrJqgFwDe/qxfp5MlfsfM1V5E/iVt0MmEbWQ7FVIXh/bg== }
     dev: false
 
-  /d3-path@3.0.1:
-    resolution:
-      { integrity: sha512-gq6gZom9AFZby0YLduxT1qmrp4xpBA1YZr19OI717WIdKE2OM5ETq5qrHLb301IgxhLwcuxvGZVLeeWc/k1I6w== }
-    engines: { node: ">=12" }
-    dev: false
-
   /d3-path@3.1.0:
     resolution:
       { integrity: sha512-p3KP5HCf/bvjBSSKuXid6Zqijx7wIfNW+J/maPs+iwR35at5JCbLUT0LzF1cnjbCHWhqzQTIN2Jpe8pRebIEFQ== }
     engines: { node: ">=12" }
-    dev: false
-
-  /d3-polygon@1.0.6:
-    resolution:
-      { integrity: sha512-k+RF7WvI08PC8reEoXa/w2nSg5AUMTi+peBD9cmFc+0ixHfbs4QmxxkarVal1IkVkgxVuk9JSHhJURHiyHKAuQ== }
-    dev: false
-
-  /d3-polygon@3.0.1:
-    resolution:
-      { integrity: sha512-3vbA7vXYwfe1SYhED++fPUQlWSYTTGmFmQiany/gdbiWgU/iEyQzyymwL9SkJjFFuCS4902BSzewVGsHHmHtXg== }
-    engines: { node: ">=12" }
-    dev: false
-
-  /d3-quadtree@1.0.7:
-    resolution:
-      { integrity: sha512-RKPAeXnkC59IDGD0Wu5mANy0Q2V28L+fNe65pOCXVdVuTJS3WPKaJlFHer32Rbh9gIo9qMuJXio8ra4+YmIymA== }
-    dev: false
-
-  /d3-quadtree@3.0.1:
-    resolution:
-      { integrity: sha512-04xDrxQTDTCFwP5H6hRhsRcb9xxv2RzkcsygFzmkSIOJy3PeRJP7sNk3VRIbKXcog561P9oU0/rVH6vDROAgUw== }
-    engines: { node: ">=12" }
-    dev: false
-
-  /d3-random@1.1.2:
-    resolution:
-      { integrity: sha512-6AK5BNpIFqP+cx/sreKzNjWbwZQCSUatxq+pPRmFIQaWuoD+NrbVWw7YWpHiXpCQ/NanKdtGDuB+VQcZDaEmYQ== }
-    dev: false
-
-  /d3-random@3.0.1:
-    resolution:
-      { integrity: sha512-FXMe9GfxTxqd5D6jFsQ+DJ8BJS4E/fT5mqqdjovykEB2oFbTMDVdg1MGFxfQW+FBOGoB++k8swBrgwSHT1cUXQ== }
-    engines: { node: ">=12" }
-    dev: false
-
-  /d3-scale-chromatic@1.5.0:
-    resolution:
-      { integrity: sha512-ACcL46DYImpRFMBcpk9HhtIyC7bTBR4fNOPxwVSl0LfulDAwyiHyPOTqcDG1+t5d4P9W7t/2NAuWu59aKko/cg== }
-    dependencies:
-      d3-color: 1.4.1
-      d3-interpolate: 1.4.0
-    dev: false
-
-  /d3-scale-chromatic@3.0.0:
-    resolution:
-      { integrity: sha512-Lx9thtxAKrO2Pq6OO2Ua474opeziKr279P/TKZsMAhYyNDD3EnCffdbgeSYN5O7m2ByQsxtuP2CSDczNUIZ22g== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-color: 3.0.1
-      d3-interpolate: 3.0.1
     dev: false
 
   /d3-scale@1.0.7:
@@ -20364,18 +19965,6 @@ packages:
       d3-array: 1.2.4
       d3-collection: 1.0.7
       d3-color: 1.4.1
-      d3-format: 1.4.5
-      d3-interpolate: 1.4.0
-      d3-time: 1.1.0
-      d3-time-format: 2.3.0
-    dev: false
-
-  /d3-scale@2.2.2:
-    resolution:
-      { integrity: sha512-LbeEvGgIb8UMcAa0EATLNX0lelKWGYDQiPdHj+gLblGVhGLyNbaCn3EvrJf0A3Y/uOOU5aD6MTh5ZFCdEwGiCw== }
-    dependencies:
-      d3-array: 1.2.4
-      d3-collection: 1.0.7
       d3-format: 1.4.5
       d3-interpolate: 1.4.0
       d3-time: 1.1.0
@@ -20394,20 +19983,9 @@ packages:
       d3-time-format: 4.1.0
     dev: false
 
-  /d3-selection@1.4.2:
-    resolution:
-      { integrity: sha512-SJ0BqYihzOjDnnlfyeHT0e30k0K1+5sR3d5fNueCNeuhZTnGw4M4o8mqJchSwgKMXCNFo+e2VTChiSJ0vYtXkg== }
-    dev: false
-
   /d3-selection@2.0.0:
     resolution:
       { integrity: sha512-XoGGqhLUN/W14NmaqcO/bb1nqjDAw5WtSYb2X8wiuQWvSZUsUVYsOSkOybUrNvcBjaywBdYPy03eXHMXjk9nZA== }
-    dev: false
-
-  /d3-selection@3.0.0:
-    resolution:
-      { integrity: sha512-fmTRWbNMmsmWq6xJV8D19U/gw/bwrHfNXxrIN+HfZgnzqTHp9jOmKMhsTUjXOJnZOdZY9Q28y4yebKzqDKlxlQ== }
-    engines: { node: ">=12" }
     dev: false
 
   /d3-shape@1.3.7:
@@ -20415,14 +19993,6 @@ packages:
       { integrity: sha512-EUkvKjqPFUAZyOlhY5gzCxCeI0Aep04LwIRpsZ/mLFelJiUfnK56jo5JMDSE7yyP2kLSb6LtF+S5chMk7uqPqw== }
     dependencies:
       d3-path: 1.0.9
-    dev: false
-
-  /d3-shape@3.1.0:
-    resolution:
-      { integrity: sha512-tGDh1Muf8kWjEDT/LswZJ8WF85yDZLvVJpYU9Nq+8+yW1Z5enxrmXOhTArlkaElU+CTn0OTVNli+/i+HP45QEQ== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-path: 3.0.1
     dev: false
 
   /d3-shape@3.2.0:
@@ -20480,18 +20050,6 @@ packages:
     engines: { node: ">=12" }
     dev: false
 
-  /d3-transition@1.3.2:
-    resolution:
-      { integrity: sha512-sc0gRU4PFqZ47lPVHloMn9tlPcv8jxgOQg+0zjhfZXMQuvppjG6YuwdMBE0TuqCZjeJkLecku/l9R0JPcRhaDA== }
-    dependencies:
-      d3-color: 1.4.1
-      d3-dispatch: 1.0.6
-      d3-ease: 1.0.7
-      d3-interpolate: 1.4.0
-      d3-selection: 1.4.2
-      d3-timer: 1.0.10
-    dev: false
-
   /d3-transition@2.0.0(d3-selection@2.0.0):
     resolution:
       { integrity: sha512-42ltAGgJesfQE3u9LuuBHNbGrI/AJjNL2OAUdclE70UE6Vy239GCBEYD38uBPoLeNsOhFStGpPI0BAOV+HMxog== }
@@ -20506,37 +20064,6 @@ packages:
       d3-timer: 1.0.10
     dev: false
 
-  /d3-transition@3.0.1(d3-selection@3.0.0):
-    resolution:
-      { integrity: sha512-ApKvfjsSR6tg06xrL434C0WydLr7JewBB3V+/39RMHsaXTOG0zmt/OAXeng5M5LBm0ojmxJrpomQVZ1aPvBL4w== }
-    engines: { node: ">=12" }
-    peerDependencies:
-      d3-selection: 2 - 3
-    dependencies:
-      d3-color: 3.0.1
-      d3-dispatch: 3.0.1
-      d3-ease: 3.0.1
-      d3-interpolate: 3.0.1
-      d3-selection: 3.0.0
-      d3-timer: 3.0.1
-    dev: false
-
-  /d3-voronoi@1.1.4:
-    resolution:
-      { integrity: sha512-dArJ32hchFsrQ8uMiTBLq256MpnZjeuBtdHpaDlYuQyjU0CVzCJl/BVW+SkszaAeH95D/8gxqAhgx0ouAWAfRg== }
-    dev: false
-
-  /d3-zoom@1.8.3:
-    resolution:
-      { integrity: sha512-VoLXTK4wvy1a0JpH2Il+F2CiOhVu7VRXWF5M/LroMIh3/zBAC3WAt7QoIvPibOavVo20hN6/37vwAsdBejLyKQ== }
-    dependencies:
-      d3-dispatch: 1.0.6
-      d3-drag: 1.2.5
-      d3-interpolate: 1.4.0
-      d3-selection: 1.4.2
-      d3-transition: 1.3.2
-    dev: false
-
   /d3-zoom@2.0.0:
     resolution:
       { integrity: sha512-fFg7aoaEm9/jf+qfstak0IYpnesZLiMX6GZvXtUSdv8RH2o4E2qeelgdU09eKS6wGuiGMfcnMI0nTIqWzRHGpw== }
@@ -20548,115 +20075,11 @@ packages:
       d3-transition: 2.0.0(d3-selection@2.0.0)
     dev: false
 
-  /d3-zoom@3.0.0:
-    resolution:
-      { integrity: sha512-b8AmV3kfQaqWAuacbPuNbL6vahnOJflOhexLzMMNLga62+/nh0JzvJ0aO/5a5MVgUFGS7Hu1P9P03o3fJkDCyw== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-dispatch: 3.0.1
-      d3-drag: 3.0.0
-      d3-interpolate: 3.0.1
-      d3-selection: 3.0.0
-      d3-transition: 3.0.1(d3-selection@3.0.0)
-    dev: false
-
-  /d3@5.16.0:
-    resolution:
-      { integrity: sha512-4PL5hHaHwX4m7Zr1UapXW23apo6pexCgdetdJ5kTmADpG/7T9Gkxw0M0tf/pjoB63ezCCm0u5UaFYy2aMt0Mcw== }
-    dependencies:
-      d3-array: 1.2.4
-      d3-axis: 1.0.12
-      d3-brush: 1.1.6
-      d3-chord: 1.0.6
-      d3-collection: 1.0.7
-      d3-color: 1.4.1
-      d3-contour: 1.3.2
-      d3-dispatch: 1.0.6
-      d3-drag: 1.2.5
-      d3-dsv: 1.2.0
-      d3-ease: 1.0.7
-      d3-fetch: 1.2.0
-      d3-force: 1.2.1
-      d3-format: 1.4.5
-      d3-geo: 1.12.1
-      d3-hierarchy: 1.1.9
-      d3-interpolate: 1.4.0
-      d3-path: 1.0.9
-      d3-polygon: 1.0.6
-      d3-quadtree: 1.0.7
-      d3-random: 1.1.2
-      d3-scale: 2.2.2
-      d3-scale-chromatic: 1.5.0
-      d3-selection: 1.4.2
-      d3-shape: 1.3.7
-      d3-time: 1.1.0
-      d3-time-format: 2.3.0
-      d3-timer: 1.0.10
-      d3-transition: 1.3.2
-      d3-voronoi: 1.1.4
-      d3-zoom: 1.8.3
-    dev: false
-
-  /d3@7.3.0:
-    resolution:
-      { integrity: sha512-MDRLJCMK232OJQRqGljQ/gCxtB8k3/sLKFjftMjzPB3nKVUODpdW9Rb3vcq7U8Ka5YKoZkAmp++Ur6I+6iNWIw== }
-    engines: { node: ">=12" }
-    dependencies:
-      d3-array: 3.1.1
-      d3-axis: 3.0.0
-      d3-brush: 3.0.0
-      d3-chord: 3.0.1
-      d3-color: 3.0.1
-      d3-contour: 3.0.1
-      d3-delaunay: 6.0.2
-      d3-dispatch: 3.0.1
-      d3-drag: 3.0.0
-      d3-dsv: 3.0.1
-      d3-ease: 3.0.1
-      d3-fetch: 3.0.1
-      d3-force: 3.0.0
-      d3-format: 3.1.0
-      d3-geo: 3.0.1
-      d3-hierarchy: 3.1.1
-      d3-interpolate: 3.0.1
-      d3-path: 3.0.1
-      d3-polygon: 3.0.1
-      d3-quadtree: 3.0.1
-      d3-random: 3.0.1
-      d3-scale: 4.0.2
-      d3-scale-chromatic: 3.0.0
-      d3-selection: 3.0.0
-      d3-shape: 3.1.0
-      d3-time: 3.0.0
-      d3-time-format: 4.1.0
-      d3-timer: 3.0.1
-      d3-transition: 3.0.1(d3-selection@3.0.0)
-      d3-zoom: 3.0.0
-    dev: false
-
   /daemonize-process@1.0.9:
     resolution:
       { integrity: sha512-YoB+AmcgHIBDVeyfVWSCV90FNk799zX8Uvn7RJTDCD8Y0EMNbSfIKLG961VgchJme2GHmqpXUuV8Rxe2j2L+bw== }
     engines: { node: ">=4" }
     dev: true
-
-  /dagre-d3@0.6.4:
-    resolution:
-      { integrity: sha512-e/6jXeCP7/ptlAM48clmX4xTZc5Ek6T6kagS7Oz2HrYSdqcLZFLqpAfh7ldbZRFfxCZVyh61NEPR08UQRVxJzQ== }
-    dependencies:
-      d3: 5.16.0
-      dagre: 0.8.5
-      graphlib: 2.1.8
-      lodash: 4.17.21
-    dev: false
-
-  /dagre@0.8.5:
-    resolution:
-      { integrity: sha512-/aTqmnRta7x7MCCpExk7HQL2O4owCT2h8NT//9I1OQ9vt29Pa0BzSAkR5lwFUcQ7491yVi/3CXU9jQ5o0Mn2Sw== }
-    dependencies:
-      graphlib: 2.1.8
-      lodash: 4.17.21
-    dev: false
 
   /dashdash@1.14.1:
     resolution:
@@ -21033,13 +20456,6 @@ packages:
   /delaunator@4.0.1:
     resolution:
       { integrity: sha512-WNPWi1IRKZfCt/qIDMfERkDp93+iZEmOxN2yy4Jg+Xhv8SLk2UTqqbe1sfiipn0and9QrE914/ihdx82Y/Giag== }
-    dev: false
-
-  /delaunator@5.0.0:
-    resolution:
-      { integrity: sha512-AyLvtyJdbv/U1GkiS6gUUzclRoAY4Gs75qkMygJJhU75LW4DNuSF2RMzpxs9jw9Oz1BobHjTdkG3zdP55VxAqw== }
-    dependencies:
-      robust-predicates: 3.0.1
     dev: false
 
   /delaunay-find@0.0.6:
@@ -24102,6 +23518,7 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       safer-buffer: 2.1.2
+    dev: true
 
   /icss-utils@5.1.0(postcss@8.4.12):
     resolution:
@@ -26832,21 +26249,6 @@ packages:
     engines: { node: ">= 8" }
     dev: true
 
-  /mermaid@9.1.7:
-    resolution:
-      { integrity: sha512-MRVHXy5FLjnUQUG7YS3UN9jEN6FXCJbFCXVGJQjVIbiR6Vhw0j/6pLIjqsiah9xoHmQU6DEaKOvB3S1g/1nBPA== }
-    dependencies:
-      "@braintree/sanitize-url": 6.0.0
-      d3: 7.3.0
-      dagre: 0.8.5
-      dagre-d3: 0.6.4
-      dompurify: 2.4.0
-      graphlib: 2.1.8
-      khroma: 2.0.0
-      moment-mini: 2.24.0
-      stylis: 4.0.13
-    dev: false
-
   /message-box@0.2.7:
     resolution:
       { integrity: sha512-C4ccA5nHb58kTS+pLrgF/JWtr7fAIkHxRDceH7tdy5fMA783nUfbYwZ7H2XLvSeYfcnWIYCig5dWW+icK9X/Ag== }
@@ -27231,11 +26633,6 @@ packages:
       yargs-parser: 20.2.4
       yargs-unparser: 2.0.0
     dev: true
-
-  /moment-mini@2.24.0:
-    resolution:
-      { integrity: sha512-9ARkWHBs+6YJIvrIp0Ik5tyTTtP9PoV0Ssu2Ocq5y9v8+NOOpWiRshAp8c4rZVWTOe+157on/5G+zj5pwIQFEQ== }
-    dev: false
 
   /moment@2.29.4:
     resolution:
@@ -30684,11 +30081,6 @@ packages:
     dependencies:
       glob: 7.2.0
 
-  /robust-predicates@3.0.1:
-    resolution:
-      { integrity: sha512-ndEIpszUHiG4HtDsQLeIuMvRsDnn8c8rYStabochtUeCvfuvNptb5TUbVD68LRAILPX7p9nqQGh4xJgn3EHS/g== }
-    dev: false
-
   /rsvp@4.8.5:
     resolution:
       { integrity: sha512-nfMOlASu9OnRJo1mbEk2cz0D56a1MBNrJ7orjRZQG10XDyuvwksKbuXNp6qa+kbn839HwjwhBzhFmdsaEAfauA== }
@@ -30718,11 +30110,6 @@ packages:
       { integrity: sha512-ql6P2LzhBTTDfzKts+Qo4H94VUKpxKDFz6QxxwaUZN0mwvi7L3lpOI7BqPCq7lgDh3XLl0dpeXwfcVIitlrYrw== }
     hasBin: true
     dev: true
-
-  /rw@1.3.3:
-    resolution:
-      { integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ== }
-    dev: false
 
   /rxjs@6.6.7:
     resolution:
@@ -31991,11 +31378,6 @@ packages:
       webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
-  /stylis@4.0.13:
-    resolution:
-      { integrity: sha512-xGPXiFVl4YED9Jh7Euv2V220mriG9u4B2TA6Ybjc1catrstKD2PpIdU3U0RKpkVBC2EhmL/F0sPCr9vrFTNRag== }
-    dev: false
-
   /stylus-loader@7.0.0(stylus@0.59.0)(webpack@5.76.1):
     resolution:
       { integrity: sha512-WTbtLrNfOfLgzTaR9Lj/BPhQroKk/LC1hfTXSUbrxmxgfUo3Y3LpmKRVA2R1XbjvTAvOfaian9vOyfv1z99E+A== }
@@ -32089,10 +31471,6 @@ packages:
       { integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w== }
     engines: { node: ">= 0.4" }
     dev: true
-
-  /svg-pan-zoom@3.6.1:
-    resolution:
-      { integrity: sha512-JaKkGHHfGvRrcMPdJWkssLBeWqM+Isg/a09H7kgNNajT1cX5AztDTNs+C8UzpCxjCTRrG34WbquwaovZbmSk9g== }
 
   /svg-parser@2.0.4:
     resolution:

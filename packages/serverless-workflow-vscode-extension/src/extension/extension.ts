@@ -75,16 +75,6 @@ export async function activate(context: vscode.ExtensionContext) {
   const swEnvelopeType = "swf";
   const baseEnvelopePath = "dist/webview/editors/serverless-workflow";
 
-  const diagramEnvelopeMappingConfig = configuration.isKogitoServerlessWorkflowVisualizationPreviewEnabled()
-    ? {
-        resourcesPathPrefix: baseEnvelopePath + "/diagram",
-        envelopePath: baseEnvelopePath + "/serverless-workflow-diagram-editor-envelope.js",
-      }
-    : {
-        resourcesPathPrefix: baseEnvelopePath,
-        envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
-      };
-
   const kieEditorsStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.swf-vscode-extension",
@@ -96,8 +86,11 @@ export async function activate(context: vscode.ExtensionContext) {
       new EnvelopeMapping({
         type: swEnvelopeType,
         filePathGlob: "**/*.sw.+(json|yml|yaml)",
-        resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
-        envelopeContent: { type: EnvelopeContentType.PATH, path: diagramEnvelopeMappingConfig.envelopePath },
+        resourcesPathPrefix: baseEnvelopePath + "/diagram",
+        envelopeContent: {
+          type: EnvelopeContentType.PATH,
+          path: baseEnvelopePath + "/serverless-workflow-diagram-editor-envelope.js",
+        },
       }),
     ]),
     channelApiProducer: new ServerlessWorkflowDiagramEditorChannelApiProducer({

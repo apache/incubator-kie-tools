@@ -90,7 +90,6 @@ export default async (env: any, argv: any) => {
             "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
           "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
           "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
-          "serverless-workflow-mermaid-viewer-envelope": "./src/envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
         },
         plugins: [
           new HtmlWebpackPlugin({
@@ -135,10 +134,6 @@ export default async (env: any, argv: any) => {
               {
                 from: "./static/envelope/serverless-workflow-diagram-editor-envelope.html",
                 to: "./serverless-workflow-diagram-editor-envelope.html",
-              },
-              {
-                from: "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html",
-                to: "./serverless-workflow-mermaid-viewer-envelope.html",
               },
               {
                 from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
