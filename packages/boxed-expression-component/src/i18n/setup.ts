@@ -17,6 +17,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
+import { de } from "./locales";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { BoxedExpressionEditorI18n } from "./BoxedExpressionEditorI18n";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
@@ -25,7 +26,10 @@ export const boxedExpressionEditorI18nDefaults: I18nDefaults<BoxedExpressionEdit
   locale: "en",
   dictionary: en,
 };
-export const boxedExpressionEditorDictionaries: I18nDictionaries<BoxedExpressionEditorI18n> = new Map([["en", en]]);
+export const boxedExpressionEditorDictionaries: I18nDictionaries<BoxedExpressionEditorI18n> = new Map([
+  ["en", en],
+  ["de", de],
+]);
 export const BoxedExpressionEditorI18nContext = React.createContext<I18nContextType<BoxedExpressionEditorI18n>>(
   {} as never
 );
