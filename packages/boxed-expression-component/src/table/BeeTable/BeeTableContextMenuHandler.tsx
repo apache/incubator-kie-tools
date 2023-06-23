@@ -275,47 +275,47 @@ export function BeeTableContextMenuHandler({
             beforeIndex: columnIndex - 1,
             groupType: column?.groupType,
           });
-          console.info(`Insert column left to ${columnIndex}`);
+          console.debug(`Insert column left to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
             beforeIndex: columnIndex,
             groupType: column?.groupType,
           });
-          console.info(`Insert column right to ${columnIndex}`);
+          console.debug(`Insert column right to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertN:
-          console.info(`Insert n columns to ${columnIndex}`);
+          console.debug(`Insert n columns to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
           onColumnDeleted?.({
             columnIndex: columnIndex - 1,
             groupType: column?.groupType,
           });
-          console.info(`Delete column ${columnIndex}`);
+          console.debug(`Delete column ${columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
           onRowAdded?.({ beforeIndex: rowIndex });
-          console.info(`Insert row above to ${rowIndex}`);
+          console.debug(`Insert row above to ${rowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
           onRowAdded?.({ beforeIndex: rowIndex + 1 });
-          console.info(`Insert row below to ${rowIndex}`);
+          console.debug(`Insert row below to ${rowIndex}`);
           break;
         case BeeTableOperation.RowInsertN:
-          console.info(`Insert n rows to ${columnIndex}`);
+          console.debug(`Insert n rows to ${columnIndex}`);
           break;
         case BeeTableOperation.RowDelete:
           onRowDeleted?.({ rowIndex: rowIndex });
-          console.info(`Delete row ${rowIndex}`);
+          console.debug(`Delete row ${rowIndex}`);
           break;
         case BeeTableOperation.RowReset:
           onRowReset?.({ rowIndex: rowIndex });
-          console.info(`Reset row ${rowIndex}`);
+          console.debug(`Reset row ${rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
           onRowDuplicated?.({ rowIndex: rowIndex });
-          console.info(`Duplicate row ${rowIndex}`);
+          console.debug(`Duplicate row ${rowIndex}`);
           break;
         case BeeTableOperation.SelectionCopy:
           copy();
@@ -397,7 +397,7 @@ export function BeeTableContextMenuHandler({
         style={{ textAlign: "center" }}
       />
     );
-  }, [insertMultipleRowColumnsValue]);
+  }, [insertMultipleRowColumnsValue, onMinus, onChange, onPlus]);
 
   const contextMenuContainerDiv = React.createRef<HTMLDivElement>();
 
