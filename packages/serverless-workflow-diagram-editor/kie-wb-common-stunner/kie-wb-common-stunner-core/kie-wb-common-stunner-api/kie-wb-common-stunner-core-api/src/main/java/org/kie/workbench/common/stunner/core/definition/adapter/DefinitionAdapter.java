@@ -37,6 +37,11 @@ public interface DefinitionAdapter<T> extends PriorityAdapter {
     String getCategory(T pojo);
 
     /**
+     * Returns the definition's element factory for a given pojo.
+     */
+    Class<? extends ElementFactory> getElementFactory(T pojo);
+
+    /**
      * Returns the definition's title for a given pojo.
      */
     String getTitle(T pojo);

@@ -13,6 +13,7 @@ import org.kie.workbench.common.stunner.core.definition.jsadapter.JsDefinitionSe
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsPropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -79,6 +80,10 @@ public class JsDefinitionManager {
 
     public void initializeRules(RuleSet ruleSet) {
         ruleAdapter.setRuleSet(ruleSet);
+    }
+
+    public void initializeElementFactory(String category, Class<? extends ElementFactory> factory) {
+        definitionAdapter.setElementFactory(category, factory);
     }
 
     public DefinitionId getId(Object pojo) {

@@ -154,7 +154,7 @@ public class StunnerEditorTest {
         assertEquals(editorSession, tested.getSession());
         verify(sessionEditorPresenters).get();
         verify(sessionViewerPresenters, never()).get();
-        verify(sessionEditorPresenter).withPalette(eq(true));
+        verify(sessionEditorPresenter).withPalette(eq(false));
         verify(sessionEditorPresenter).withToolbar(eq(false));
         assertFalse(tested.isReadOnly());
     }
