@@ -647,7 +647,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "flatten(list)",
         insertText: "flatten($1)",
-        description: "flatten nested lists ",
+        description: "Flatten nested lists",
         parameters: [["list", `\`list\``]],
         examples: ["flatten( [[1 ,2],[[3]], 4] ) = [1,2,3,4]"],
       },
@@ -669,25 +669,163 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
         examples: ["floor( -1.56, 1 ) = -1.6"],
       }, */,
+      {
+        label: "get entries(m)",
+        insertText: "get entries($1)",
+        description: "Produces a list of key,value pairs from a context `m`",
+        parameters: [["m", `\`context\``]],
+        examples: [
+          'get entries( {key1 : "value1", key2 : "value2"} ) = [ { key : "key1", value : "value1" }, {key : "key2", value : "value2"} ]',
+        ],
+      },
+      {
+        label: "get value(m, key)",
+        insertText: "get value($1, $2)",
+        description: "Select the value of the entry named key from context `m`",
+        parameters: [
+          ["m", `\`context\``],
+          ["key", `\`string\``],
+        ],
+        examples: [
+          'get value( {key1 : "value1"}, "key1" ) = "value1"',
+          'get value( {key1 : "value1"}, "unexistent-key" ) = null',
+        ],
+      },
+      {
+        label: "includes(range, index)",
+        insertText: "includes($1, $2)",
+        description: "Returns true when a range A includes a point B",
+        parameters: [
+          ["range", `\`range\` (\`interval\`)`],
+          ["point", `\`number\``],
+        ],
+        examples: [
+          "includes( [1..10], 5 ) = true",
+          "includes( [1..10], 12 ) = false",
+          "includes( [1..10], 1 ) = true",
+          "includes( [1..10], 10 ) = true",
+          "includes( (1..10], 1 ) = false",
+          "includes( [1..10), 10 ) = false]",
+        ],
+      },
+      {
+        label: "includes(range1, range2)",
+        insertText: "includes($1, $2)",
+        description: "Returns true when a range A includes a pange B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "includes( [1..10], [4..6] ) = true",
+          "includes( [1..10], [1..5] ) = true",
+          "includes( (1..10], (1..5] ) = true",
+          "includes( [1..10], (1..10) ) = true",
+          "includes( [1..10), [5..10) ) = true",
+          "includes( [1..10], [1..10) ) = true",
+          "includes( [1..10], (1..10] ) = true",
+          "includes( [1..10], [1..10] ) = true",
+        ],
+      },
+      {
+        label: "index of(list, match)",
+        insertText: "index of($1, $2)",
+        description: "Returns ascending list of `list` positions containing `match`",
+        parameters: [
+          ["list", `\`list\``],
+          ["match", `\`string\``],
+        ],
+        examples: ["index of( [1,2,3,2], 2 ) = [2,4]", "index of( [1,2,3,2], 1 ) = [1]"],
+      },
+      {
+        label: "insert before(list, position, newItem)",
+        insertText: "insert before($1, $2, $3)",
+        description: "Return new list with `newItem` inserted at `position`",
+        parameters: [
+          ["list", `\`list\``],
+          ["position", `\`number\``],
+          ["newItem", `Any type`],
+        ],
+        examples: ["insert before( [1 ,3], 1, 2 ) = [2,1,3]"],
+      },
+      {
+        label: "invoke(ctx, namespace, model name, decision name, parameters))",
+        insertText: "invoke($1, $2, $3, $4, $5)",
+        description: "",
+        parameters: [],
+        examples: [],
+      },
+      {
+        label: "list contains(list, element)",
+        insertText: "list contains($1, $2)",
+        description: "Does the `list` contain the `element`?",
+        parameters: [
+          ["list", `\`list\``],
+          ["element", `Any type`],
+        ],
+        examples: ["list contains( [1,2,3], 2 ) = true"],
+      },
+      {
+        label: "log(number)",
+        insertText: "log($1)",
+        description: "Returns the natural logarithm (base e) of the `number` parameter",
+        parameters: [["number", `\`number\``]],
+        examples: ["log( 10 ) = 2.30258509299"],
+      },
+      {
+        label: "lower case(string)",
+        insertText: "lower case($1)",
+        description: "Returns lowercased `string`",
+        parameters: [["string", `\`string\``]],
+        examples: ['lower case( "aBc4" ) = "abc4"'],
+      },
+      {
+        label: "matches(input, pattern)",
+        insertText: "matches($1, $2)",
+        description: "Does the `input` match the regexp `pattern`?",
+        parameters: [
+          ["input", `\`string\``],
+          ["pattern", `\`string\``],
+        ],
+        examples: ['matches( "foobar", "^fo*b" ) = true'],
+      },
+      {
+        label: "matches(input, pattern, flags)",
+        insertText: "matches($1, $2, $3)",
+        description: "Does the `input` match the regexp `pattern`?",
+        parameters: [
+          ["input", `\`string\``],
+          ["pattern", `\`string\``],
+          ["flags", `\`string\``],
+        ],
+        examples: ['matches( "foobar", "^Fo*bar", "i" ) = true'],
+      },
+      {
+        label: "max(list)",
+        insertText: "max($1)",
+        description: "Returns maximum item, or null if `list` is empty",
+        parameters: [["list", `\`list\``]],
+        examples: ["min( [1,2,3] ) = 1", "max( 1,2,3 ) = 3", "min( 1 ) = min( [1] ) = 1", "max( [] ) = null"],
+      },
+      {
+        label: "mean(list)",
+        insertText: "mean($1)",
+        description: "Returns arithmetic mean (average) of numbers",
+        parameters: [["list", `\`list\``]],
+        examples: ["mean( [1,2,3] ) = 2", "mean( 1,2,3 ) = 2", "mean( 1 ) = 1", "mean( [] ) = null"],
+      },
+      {
+        label: "median(list)",
+        insertText: "median($1)",
+        description:
+          "Returns the median element of the `list` of numbers. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
+        parameters: [["list", `\`list\``]],
+        examples: ["median( 8, 2, 5, 3, 4 ) = 4", "median( [6, 1, 2, 3] ) = 2.5", "median( [ ] ) = null"],
+      },
     ],
   };
 
   /*
-      ["get entries(m)", "get entries($1)"],
-      ["get value(m, key)", "get value($1, $2)"],
-      ["includes(range, index)", "includes($1, $2)"],
-      ["includes(range1, range2)", "includes($1, $2)"],
-      ["index of(list, match)", "index of($1, $2)"],
-      ["insert before(list, position, newItem)", "insert before($1, $2, $3)"],
-      ["invoke(ctx, namespace, model name, decision name, parameters)", "invoke($1, $2, $3, $4, $5)"],
-      ["list contains(list, element)", "list contains($1, $2)"],
-      ["log(number)", "log($1)"],
-      ["lower case(string)", "lower case($1)"],
-      ["matches(input, pattern)", "matches($1, $2)"],
-      ["matches(input, pattern, flags)", "matches($1, $2, $3)"],
-      ["max(list)", "max($1)"],
-      ["mean(list)", "mean($1)"],
-      ["median(list)", "median($1)"],
       ["meets(range1, range2)", "meets($1, $2)"],
       ["met by(range1, range2)", "met by($1, $2)"],
       ["min(list)", "min($1)"],
@@ -809,5 +947,8 @@ const generateDocumentationMarkDown = (
   parametersTable: string,
   feelFunctionExamples: string
 ): string => {
-  return `${feelFunctionTitle}\n---\n_${description}_\n\n${parametersTable}\n\nExample:\n${feelFunctionExamples}`;
+  console.log(
+    `${feelFunctionTitle}\n\n---\n\n_${description}_\n\n${parametersTable}\n\nExample:\n${feelFunctionExamples}`
+  );
+  return `${feelFunctionTitle}\n\n---\n\n_${description}_\n\n${parametersTable}\n\nExample:\n${feelFunctionExamples}`;
 };
