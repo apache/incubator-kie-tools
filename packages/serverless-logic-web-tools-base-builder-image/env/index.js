@@ -25,11 +25,11 @@ module.exports = composeEnv(
         description: "",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion: {
-        default: "v1.25.4",
+        default: "v1.27.3",
         description: "",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoVersion: {
-        default: "1.30.0",
+        default: "1.39.0",
         description: "",
       },
     }),

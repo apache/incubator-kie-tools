@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi8/ubi-minimal:8.7
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.2
 
-RUN microdnf --disableplugin=subscription-manager -y install httpd \
+RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.53-11.el9_2.5.x86_64 \
   && microdnf --disableplugin=subscription-manager clean all \
   && sed -i -e 's/Listen 80/Listen 8080/' /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \

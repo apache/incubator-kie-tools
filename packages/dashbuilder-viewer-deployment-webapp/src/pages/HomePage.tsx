@@ -32,9 +32,9 @@ export function HomePage() {
         promise={app.appDataPromise}
         pending={<LoadingSpinner />}
         rejected={(_errors) => <ErrorPage />}
-        resolved={(_data) =>
+        resolved={(data) =>
           app.current && (
-            <Page header={<AppToolbar dashboard={app.current} />}>
+            <Page header={<AppToolbar dashboard={app.current} showDisclaimer={!!data.showDisclaimer} />}>
               <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
                 <DashboardViewer dashboard={app.current} />
               </PageSection>
