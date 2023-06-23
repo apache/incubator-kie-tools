@@ -73,6 +73,8 @@ digraph G {
   "@kie-tools-core/react-hooks" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xml-parser-ts-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-runner" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -129,6 +131,7 @@ digraph G {
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "yard-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
@@ -237,6 +240,7 @@ digraph G {
   "@kie-tools/dmn-language-service" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
@@ -422,6 +426,10 @@ digraph G {
   "@kie-tools-core/workspaces-git-fs" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "purple" ];
   "@kie-tools-core/workspaces-git-fs" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
   "@kie-tools-core/workspaces-git-fs" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "purple" ];
+  "@kie-tools/xml-parser-ts" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "@kie-tools/xml-parser-ts" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/xml-parser-ts" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/xml-parser-ts-codegen" -> "@kie-tools/xml-parser-ts" [ style = "solid", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];

@@ -1,0 +1,26 @@
+diff --git a/src/xmlparser/OrderedObjParser.js b/src/xmlparser/OrderedObjParser.js
+index db11a8c06da37a2af73db75dfd36354dd4f698fc..9c65141d3c1be0b0821f5eb3e6c564b475d5eeec 100644
+--- a/src/xmlparser/OrderedObjParser.js
++++ b/src/xmlparser/OrderedObjParser.js
+@@ -305,7 +305,7 @@ const parseXml = function(xmlData) {
+         if(tagName !== xmlObj.tagname){
+           jPath += jPath ? "." + tagName : tagName;
+         }
+-        if (this.isItStopNode(this.options.stopNodes, jPath, tagName)) { //TODO: namespace
++        if (this.isItStopNode(this.options.stopNodes, jPath, tagName) || this.options.depth === jPath.split('.').length - 1) { //TODO: namespace
+           let tagContent = "";
+           //self-closing tag
+           if(tagExp.length > 0 && tagExp.lastIndexOf("/") === tagExp.length - 1){
+diff --git a/src/xmlparser/node2json.js b/src/xmlparser/node2json.js
+index 304557380dd8129d4b60f44b94223425b19fbe02..3750b5d31fd26009245999a81632d6217b62c840 100644
+--- a/src/xmlparser/node2json.js
++++ b/src/xmlparser/node2json.js
+@@ -43,7 +43,7 @@ function compress(arr, options, jPath){
+         val = val[options.textNodeName];
+       }else if(Object.keys(val).length === 0){
+         if(options.alwaysCreateTextNode) val[options.textNodeName] = "";
+-        else val = "";
++        else val = options.tagValueProcessor?.(property, "", jPath + "." + property, false, true) ?? "";
+       }
+ 
+       if(compressedObj[property] !== undefined && compressedObj.hasOwnProperty(property)) {
