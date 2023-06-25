@@ -18,6 +18,7 @@
 @quay.io/kiegroup/kogito-management-console
 @quay.io/kiegroup/kogito-task-console
 @quay.io/kiegroup/kogito-swf-builder
+@quay.io/kiegroup/kogito-base-builder
 @rhpam-7/rhpam-kogito-runtime-jvm-rhel8
 @rhpam-7/rhpam-kogito-builder-rhel8
 @rhpam-7/rhpam-kogito-runtime-native-rhel8
