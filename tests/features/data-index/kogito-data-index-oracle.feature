@@ -9,16 +9,15 @@ Feature: Kogito-data-index oracle feature.
       And the image should contain label io.k8s.display-name with value Kogito Data Index Service - Oracle
       And the image should contain label io.openshift.tags with value kogito,data-index,data-index-oracle
 
-
   Scenario: verify if of container is correctly started with oracle parameters
     When container is started with env
-      | variable                     | value                                     |
-      | SCRIPT_DEBUG                 | true                                      |
+      | variable                     | value                                      |
+      | SCRIPT_DEBUG                 | true                                       |
       | QUARKUS_DATASOURCE_JDBC_URL  | jdbc:oracle:thin:@//10.1.1.53:1521/quarkus |
-      | QUARKUS_DATASOURCE_USERNAME  | kogito                                    |
-      | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                    |
+      | QUARKUS_DATASOURCE_USERNAME  | kogito                                     |
+      | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                     |
     Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
-    And container log should contain Datasource '<default>': IO Error: The Network Adapter could not establish the connection
+    And container log should contain java.sql.SQLException: Acquisition timeout while waiting for new connection
     And container log should not contain Application failed to start
 
   Scenario: check if the default quarkus profile is correctly set on data index
