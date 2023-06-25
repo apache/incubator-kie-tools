@@ -329,10 +329,10 @@ export const root = {
 export const ns = new Map<string, string>([
 ${[...__XSDS.entries()]
   .map(([k, v]) => {
-    const url = v["xsd:schema"]["@_targetNamespace"];
+    const uri = v["xsd:schema"]["@_targetNamespace"];
     const ns = getRealtiveLocationNs(__RELATIVE_LOCATION, k);
-    return `    ["${url}", "${ns}"],
-    ["${ns}", "${url}"],`;
+    return `    ["${uri}", "${ns}"],
+    ["${ns}", "${uri}"],`;
   })
   .join("\n")}
 ]);

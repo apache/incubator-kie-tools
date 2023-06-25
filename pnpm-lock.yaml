@@ -665,7 +665,7 @@ importers:
         version: 0.27.2
       fast-xml-parser:
         specifier: ^4.2.4
-        version: 4.2.4
+        version: 4.2.4(patch_hash=6sowqm6wvq3bl3vi6z33rw34za)
       portfinder:
         specifier: ^1.0.32
         version: 1.0.32
@@ -5907,6 +5907,61 @@ importers:
 
   packages/root-env: {}
 
+  packages/scesim-marshaller:
+    dependencies:
+      "@kie-tools/xml-parser-ts":
+        specifier: workspace:*
+        version: link:../xml-parser-ts
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.18.10
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.18.10(@babel/core@7.18.10)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@kie-tools/xml-parser-ts-codegen":
+        specifier: workspace:*
+        version: link:../xml-parser-ts-codegen
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
   packages/serverless-logic-web-tools:
     dependencies:
       "@kie-tools-core/editor":
@@ -8840,7 +8895,7 @@ importers:
     dependencies:
       fast-xml-parser:
         specifier: ^4.2.4
-        version: 4.2.4
+        version: 4.2.4(patch_hash=6sowqm6wvq3bl3vi6z33rw34za)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -8895,7 +8950,7 @@ importers:
         version: link:../xml-parser-ts
       fast-xml-parser:
         specifier: ^4.2.4
-        version: 4.2.4
+        version: 4.2.4(patch_hash=6sowqm6wvq3bl3vi6z33rw34za)
     devDependencies:
       "@kie-tools/eslint":
         specifier: workspace:*
@@ -23210,14 +23265,6 @@ packages:
   /fast-text-encoding@1.0.3:
     resolution:
       { integrity: sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig== }
-    dev: false
-
-  /fast-xml-parser@4.2.4:
-    resolution:
-      { integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ== }
-    hasBin: true
-    dependencies:
-      strnum: 1.0.5
     dev: false
 
   /fast-xml-parser@4.2.4(patch_hash=6sowqm6wvq3bl3vi6z33rw34za):

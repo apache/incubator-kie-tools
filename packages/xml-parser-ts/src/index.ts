@@ -98,7 +98,7 @@ const __FXP_BUILDER = new fxp.XMLBuilder({
 });
 
 /**
- * Returns a bi-directional map with the namespace aliases declared at the root element of a XML document pointing to their URLs and vice-versa. In this map, namespace aliases are suffixed with `:`.
+ * Returns a bi-directional map with the namespace aliases declared at the root element of a XML document pointing to their URIs and vice-versa. In this map, namespace aliases are suffixed with `:`.
  * E.g. "dmn:" => "https://www.omg.org/spec/DMN/20211108/MODEL/"
  *      "https://www.omg.org/spec/DMN/20211108/MODEL/" => "dmn:"
  */
@@ -114,23 +114,24 @@ export function getInstanceNs(xml: string | Buffer): Map<string, string> {
   })!;
 
   const nsMap = new Map<string, string>(
-    Object.keys(shallowXml[rootElementKey])
+    Object.keys(shallowXml[rootElementKey] ?? {})
       .filter((p) => p.startsWith("@_xmlns"))
       .flatMap((p) => {
         const s = p.split(":");
-        const nsUrl = shallowXml[rootElementKey][p];
+
+        const nsUri = shallowXml[rootElementKey][p];
 
         if (s.length === 1) {
           // That's the default namespace.
           return [
-            [nsUrl, ""],
-            ["", nsUrl],
+            [nsUri, ""],
+            ["", nsUri],
           ];
         } else if (s.length === 2) {
           // Normal namespace mapping.
           return [
-            [nsUrl, `${s[1]}:`],
-            [`${s[1]}:`, nsUrl],
+            [nsUri, `${s[1]}:`],
+            [`${s[1]}:`, nsUri],
           ];
         } else {
           throw new Error(`Invalid xmlns mapping attribute '${p}'`);
@@ -145,7 +146,7 @@ export function getInstanceNs(xml: string | Buffer): Map<string, string> {
 export function getParser<T extends object>(args: {
   /** Meta information about the structure of the XML. Used for deciding whether a property is array, boolean, float or integer. */
   meta: Meta;
-  /** Bi-directional namespace --> URL mapping. This is the one used to normalize the resulting JSON, independent of the namespaces declared on the XML instance. */
+  /** Bi-directional namespace --> URI mapping. This is the one used to normalize the resulting JSON, independent of the namespaces declared on the XML instance. */
   ns: Map<string, string>;
   /** Information about the root element used on the XML documents */
   root: { element: string; type: string };
@@ -256,7 +257,8 @@ function applyInstanceNsMap<T extends object>(json: T, ns: Map<string, string>, 
 
     let newPropertyName: string = propertyName;
     if (s.length === 1) {
-      newPropertyName = `${instanceNs.get(ns.get("")!)}${propertyName}`;
+      const newPropertyNs = instanceNs.get(ns.get("")!) ?? "";
+      newPropertyName = `${newPropertyNs}${propertyName}`;
     } else if (s.length === 2) {
       const propertyNs = `${s[0]}:`;
       const newPropertyNs = instanceNs.get(ns.get(propertyNs) ?? "obviously non-existent key") ?? propertyNs;
