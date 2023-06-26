@@ -28,8 +28,8 @@ module.exports = composeEnv(
         default: "v1.27.3",
         description: "",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoVersion: {
-        default: "1.39.0",
+      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
+        default: "1.40",
         description: "",
       },
     }),
@@ -38,7 +38,7 @@ module.exports = composeEnv(
         baseBuilderImage: {
           buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags),
           kubectlVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion),
-          kogitoVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoVersion),
+          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag),
         },
       };
     },

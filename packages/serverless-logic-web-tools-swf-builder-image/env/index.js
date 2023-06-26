@@ -24,8 +24,8 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoVersion: {
-        default: "1.40.0",
+      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag: {
+        default: "1.40",
         description: "",
       },
     }),
@@ -33,7 +33,7 @@ module.exports = composeEnv(
       return {
         swfBuilderImage: {
           buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags),
-          kogitoVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoVersion),
+          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag),
         },
       };
     },
