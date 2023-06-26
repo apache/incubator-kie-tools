@@ -40,7 +40,6 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
 export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
   return {
     keywords: [
-      "@",
       "for",
       "in",
       "instance of",
