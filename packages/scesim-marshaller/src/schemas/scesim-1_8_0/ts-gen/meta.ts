@@ -1,3 +1,5 @@
+import { Meta } from "@kie-tools/xml-parser-ts";
+
 export const root = {
   element: "SceSim.xsd__ScenarioSimulationModel",
   type: "SceSim__ScenarioSimulationModelType",
@@ -8,11 +10,7 @@ export const ns = new Map<string, string>([
   ["", "undefined"],
 ]);
 
-// TODO: Import these from parser.ts
-export type TypeDef = { type: string; isArray: boolean; isOptional: boolean };
-export type Meta = Record<string, Record<string, TypeDef>>;
-
-export const meta = {
+export const meta: Meta = {
   SceSim__ExpressionElementType: {
     step: { type: "string", isArray: false, isOptional: false },
   },

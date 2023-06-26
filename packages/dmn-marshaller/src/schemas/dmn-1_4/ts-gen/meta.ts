@@ -1,3 +1,5 @@
+import { Meta } from "@kie-tools/xml-parser-ts";
+
 export const root = {
   element: "DMN14.xsd__definitions",
   type: "DMN14__tDefinitions",
@@ -14,11 +16,7 @@ export const ns = new Map<string, string>([
   ["di:", "http://www.omg.org/spec/DMN/20180521/DI/"],
 ]);
 
-// TODO: Import these from parser.ts
-export type TypeDef = { type: string; isArray: boolean; isOptional: boolean };
-export type Meta = Record<string, Record<string, TypeDef>>;
-
-export const meta = {
+export const meta: Meta = {
   DMN14__tDMNElement: {
     "@_id": { type: "string", isArray: false, isOptional: true },
     "@_label": { type: "string", isArray: false, isOptional: true },

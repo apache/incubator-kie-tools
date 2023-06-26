@@ -111,7 +111,7 @@ async function main() {
 
   const __CONVENTIONS = {
     extensionTypesLocation: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen-extensions")),
-    outputFileForGeneratedTypes: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen/types.d.ts")),
+    outputFileForGeneratedTypes: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen/types.ts")),
     outputFileForGeneratedMeta: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen/meta.ts")),
   };
 
@@ -286,24 +286,26 @@ ${enumValues.join(" |\n")}
       })
       .join("\n");
 
-    const extensionTypeName = getTsExtensionTypeNameFor(ct);
-    if (ct.needsExtensionType) {
-      __IMPORTS.save(extensionTypeName, extensionTypeName);
-    }
-
-    const extensionType = ct.needsExtensionType ? `& ${extensionTypeName}` : "";
-
-    const rootTypeExtraTypes =
-      rootTsTypeName === typeName ? "Partial<{ [k: `@_xmlns:${string}`]: string }> & { '@_xmlns'?: string } & " : "";
-
-    ts += `
-export type ${typeName} = ${rootTypeExtraTypes} ${doc} {
+    if (metaProperties.length > 0) {
+      const rootElementBaseType = rootTsTypeName === typeName ? "extends XmlParserTsRootElementBaseType" : "";
+      ts += `
+export interface ${typeName} ${rootElementBaseType} ${doc} {
 ${properties}
-} ${extensionType}
-`;
+}
+      `;
+    } else {
+      const rootElementBaseType = rootTsTypeName === typeName ? "XmlParserTsRootElementBaseType & " : "";
+      ts += `
+export type ${typeName} = ${rootElementBaseType} ${doc} {
+${properties}
+}
+    `;
+    }
   }
 
-  let imports = "";
+  let imports = `import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts"
+`;
+
   for (const [name, absolutePath] of __IMPORTED_TYPES.entries()) {
     const relativePath = path.relative(path.dirname(__CONVENTIONS.outputFileForGeneratedTypes), absolutePath);
     imports += `import { ${name} } from '${relativePath}'
@@ -326,6 +328,9 @@ ${ts}
   // meta
 
   let meta = `
+
+import { Meta } from "@kie-tools/xml-parser-ts"
+
 export const root = {
     element: "${__ROOT_ELEMENT}",
     type: "${rootTsTypeName}" 
@@ -342,12 +347,8 @@ ${[...__XSDS.entries()]
   .join("\n")}
 ]);
 
-// TODO: Import these from parser.ts
-export type TypeDef = { type: string; isArray: boolean; isOptional: boolean };
-export type Meta = Record<string, Record<string, TypeDef>>;
 
-
-export const meta = {
+export const meta: Meta = {
 `;
 
   Array.from(__META_TYPE_MAPPING.entries()).forEach(([name, type]) => {
@@ -384,16 +385,6 @@ function getRealtiveLocationNs(__RELATIVE_LOCATION: string, relativeLocation: st
   return relativeLocation === __RELATIVE_LOCATION
     ? ""
     : `${relativeLocation.replace(".xsd", "").toLocaleLowerCase().replaceAll(/\d/g, "")}:`;
-}
-
-function getTsExtensionTypeNameFor(ct: TiagoComplexType) {
-  const tsTypeName = !ct.isAnonymous
-    ? getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name)
-    : `${getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.parentIdentifierForExtensionType)}__${
-        ct.forElementWithName
-      }`;
-
-  return `${tsTypeName}ExtensionType`;
 }
 
 function resolveElementRef(

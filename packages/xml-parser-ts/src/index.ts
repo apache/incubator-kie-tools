@@ -9,6 +9,8 @@ export type Parser<T extends object> = {
   build: (args: { json: T; instanceNs: Map<string, string> }) => string;
 };
 
+export type XmlParserTsRootElementBaseType = Partial<{ [k: `@_xmlns:${string}`]: string }> & { "@_xmlns"?: string };
+
 export const TERMINAL_TYPES = ["boolean", "integer", "float", "string"];
 
 export type TypeDef = { type: string; isArray: boolean; isOptional: boolean };
