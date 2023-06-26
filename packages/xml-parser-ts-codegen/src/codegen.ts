@@ -263,9 +263,8 @@ ${enumValues.join(" |\n")}
       continue;
     }
     const typeName = getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name);
-    const metaProperties = getMetaProperties(
+    const { metaProperties, needsExtensionType, anonymousTypes } = getMetaProperties(
       __META_TYPE_MAPPING,
-      __IMPORTS,
       __ELEMENTS,
       __SUBSTITUTIONS,
       __XSDS,
@@ -275,6 +274,16 @@ ${enumValues.join(" |\n")}
     );
 
     const doc = ct.doc.trim() ? `/* ${ct.doc} */` : "";
+
+    const anonymousTypesString = anonymousTypes
+      .map((s) => {
+        const anonymousTypesProperties = "";
+        return `// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ${s.name} {
+  ${anonymousTypesProperties}
+}`;
+      })
+      .join("\n");
 
     const properties = metaProperties
       .map((p) => {
@@ -286,20 +295,24 @@ ${enumValues.join(" |\n")}
       })
       .join("\n");
 
-    if (metaProperties.length > 0) {
+    if (needsExtensionType) {
       const rootElementBaseType = rootTsTypeName === typeName ? "extends XmlParserTsRootElementBaseType" : "";
       ts += `
 export interface ${typeName} ${rootElementBaseType} ${doc} {
 ${properties}
 }
-      `;
+
+${anonymousTypesString}
+`;
     } else {
       const rootElementBaseType = rootTsTypeName === typeName ? "XmlParserTsRootElementBaseType & " : "";
       ts += `
 export type ${typeName} = ${rootElementBaseType} ${doc} {
 ${properties}
 }
-    `;
+
+${anonymousTypesString}
+`;
     }
   }
 
@@ -412,17 +425,19 @@ function getMetaTypeName(typeName: string, doc: string) {
   return typeName === "number" ? (doc === "xsd:double" || doc === "xsd:float" ? "float" : "integer") : typeName;
 }
 
+type TiagoAnonType = { name: string };
+
 function getMetaProperties(
   __META_TYPE_MAPPING: Map<string, TiagoMetaType>,
-  __IMPORTS: TiagoTsImports,
   __ELEMENTS: Map<string, TiagoElement>,
   __SUBSTITUTIONS: Map<string, Map<string, string[]>>,
   __XSDS: Map<string, XsdSchema>,
   __NAMED_TYPES_BY_TS_NAME: Map<string, TiagoComplexType | TiagoSimpleType>,
   ct: TiagoComplexType,
   metaTypeName: string
-): TiagoMetaTypeProperty[] {
+): { anonymousTypes: TiagoAnonType[]; needsExtensionType: boolean; metaProperties: TiagoMetaTypeProperty[] } {
   const metaProperties: TiagoMetaTypeProperty[] = [];
+  const anonymousTypes: TiagoAnonType[] = [];
 
   for (const a of ct.attributes) {
     const tsType = getTsTypeFromLocalRef(
@@ -504,12 +519,18 @@ function getMetaProperties(
         isOptional: e.isOptional,
       });
     } else if (e.kind === "ofAnonymousType") {
+      const anonymousType = getAnonymousMetaTypeName(e.name, metaTypeName);
+      anonymousTypes.push({ name: anonymousType });
+      __META_TYPE_MAPPING.set(anonymousType, {
+        name: anonymousType,
+        properties: [],
+      });
       metaProperties.push({
         declaredAt: ct.declaredAtRelativeLocation,
         fromType: metaTypeName,
         name: e.name,
         elem: undefined, // REALLY?
-        metaType: { name: "any", tiagoType: undefined },
+        metaType: { name: anonymousType, tiagoType: undefined },
         isArray: e.isArray,
         isOptional: e.isOptional,
       });
@@ -524,8 +545,10 @@ function getMetaProperties(
 
   let curParentCt = immediateParentType ? __NAMED_TYPES_BY_TS_NAME.get(immediateParentType.name) : undefined;
 
+  let needsExtensionType = ct.needsExtensionType;
   while (curParentCt) {
     if (curParentCt?.type === "complex") {
+      needsExtensionType = needsExtensionType || curParentCt.needsExtensionType;
       if (curParentCt.isAnonymous) {
         throw new Error("Anonymous types are never parent types.");
       }
@@ -549,12 +572,18 @@ function getMetaProperties(
 
       for (const e of curParentCt.elements) {
         if (e.kind === "ofAnonymousType") {
+          const anonymousType = getAnonymousMetaTypeName(e.name, metaTypeName);
+          anonymousTypes.push({ name: anonymousType });
+          __META_TYPE_MAPPING.set(anonymousType, {
+            name: anonymousType,
+            properties: [],
+          });
           metaProperties.push({
             elem: undefined, // REALLY?
             declaredAt: curParentCt.declaredAtRelativeLocation,
             fromType: curParentCt.name,
             name: e.name,
-            metaType: { name: "any", tiagoType: undefined },
+            metaType: { name: anonymousType, tiagoType: undefined },
             isArray: e.isArray,
             isOptional: e.isOptional,
           });
@@ -647,7 +676,11 @@ function getMetaProperties(
     });
   }
 
-  return metaProperties;
+  return { metaProperties, needsExtensionType, anonymousTypes };
+}
+
+function getAnonymousMetaTypeName(elementName: string, metaTypeName: string) {
+  return `${metaTypeName}__${elementName}`;
 }
 
 function getTsNameFromNamedType(relativeLocation: string, namedTypeName: string) {
