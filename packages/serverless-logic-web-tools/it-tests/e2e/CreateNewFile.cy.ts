@@ -47,7 +47,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
-          .should("contain.value", '"id": "Workflow unique identifier",')
+          .should("contain.value", '"id": "workflow_unique_identifier",')
           .should("contain.value", '"name": "Workflow name",')
           .should("contain.value", '"start": "StartState",');
 
@@ -86,7 +86,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
-          .should("contain.value", "id: 'Workflow unique identifier'")
+          .should("contain.value", "id: 'workflow_unique_identifier'")
           .should("contain.value", "name: 'Workflow name'")
           .should("contain.value", "start: 'StartState'");
 

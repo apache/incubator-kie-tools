@@ -1,5 +1,5 @@
 {
-  "id": "Workflow unique identifier",
+  "id": "workflow_unique_identifier",
   "version": "0.1",
   "name": "Workflow name",
   "description": "Workflow description",
