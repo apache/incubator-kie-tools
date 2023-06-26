@@ -31,7 +31,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapte
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 
 @ApplicationScoped
@@ -40,6 +39,7 @@ public class JsDefinitionAdapter implements DefinitionAdapter<Object> {
     private final Map<String, String> categories;
     private final Map<String, String> labels;
     private final Map<String, String> nameFields;
+    private final Map<String, Class<? extends ElementFactory>> elementFactories;
 
     private StunnerTranslationService translationService;
 
@@ -47,6 +47,7 @@ public class JsDefinitionAdapter implements DefinitionAdapter<Object> {
         categories = new HashMap<String, String>();
         labels = new HashMap<String, String>();
         nameFields = new HashMap<String, String>();
+        elementFactories = new HashMap<String, Class<? extends ElementFactory>>();
     }
 
     @Override
@@ -63,6 +64,11 @@ public class JsDefinitionAdapter implements DefinitionAdapter<Object> {
     public String getCategory(Object pojo) {
         String id = getJsDefinitionId(pojo);
         return categories.get(id);
+    }
+
+    @Override
+    public Class<? extends ElementFactory> getElementFactory(Object pojo) {
+        return elementFactories.get(getCategory(pojo));
     }
 
     @Override
@@ -111,7 +117,7 @@ public class JsDefinitionAdapter implements DefinitionAdapter<Object> {
 
     @Override
     public Class<? extends ElementFactory> getGraphFactoryType(Object pojo) {
-        return NodeFactory.class;
+        return getElementFactory(pojo);
     }
 
     @Override
@@ -126,6 +132,10 @@ public class JsDefinitionAdapter implements DefinitionAdapter<Object> {
 
     public void setCategory(String definitionId, String category) {
         categories.put(definitionId, category);
+    }
+
+    public void setElementFactory(String category, Class<? extends ElementFactory> factory) {
+        elementFactories.put(category, factory);
     }
 
     public void setLabels(String definitionId, String[] definitionLabels) {

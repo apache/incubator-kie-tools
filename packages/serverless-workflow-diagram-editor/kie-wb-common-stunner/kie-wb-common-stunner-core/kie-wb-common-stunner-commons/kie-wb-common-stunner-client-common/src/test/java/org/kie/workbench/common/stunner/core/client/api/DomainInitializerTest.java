@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.definition.jsadapter.JsDefinitionPr
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsDefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsPropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsRuleAdapter;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -192,6 +193,18 @@ public class DomainInitializerTest {
     }
 
     @Test
+    public void testInitializeElementFactory() {
+        final State pojo = new State();
+        final Class<? extends State> type = pojo.getClass();
+        final String category = "States";
+
+        tested.initializeCategory(type, category);
+        tested.initializeElementFactory(NodeFactory.class, category);
+
+        assertEquals(jsDefinitionAdapter.getElementFactory(pojo), NodeFactory.class);
+    }
+
+    @Test
     public void testInitializeLabels() {
         final Start pojo = new Start();
         final Class<? extends Start> type = pojo.getClass();
@@ -308,6 +321,11 @@ public class DomainInitializerTest {
 
     @SuppressWarnings("all")
     class Start {
+
+    }
+
+    @SuppressWarnings("all")
+    class State {
 
     }
 

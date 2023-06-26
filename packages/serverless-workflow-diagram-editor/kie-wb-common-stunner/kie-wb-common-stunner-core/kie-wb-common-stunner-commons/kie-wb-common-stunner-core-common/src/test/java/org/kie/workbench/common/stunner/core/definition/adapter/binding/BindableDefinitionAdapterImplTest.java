@@ -40,7 +40,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class BindableDefinitionAdapterImplTest {
 
+    @Mock
+    private StunnerTranslationService translationService;
+
+    @Mock
+    private BindableAdapterFunctions functions;
+
     private static final BindableTestBean1 BEAN1 = new BindableTestBean1();
+
     private static final DefinitionAdapterBindings BEAN1_BINDINGS = new DefinitionAdapterBindings()
             .setBaseType(BindableTestProperty1.class)
             .setGraphFactory(NodeFactory.class)
@@ -51,13 +58,8 @@ public class BindableDefinitionAdapterImplTest {
             .setLabelsField("labelsField")
             .setPropertiesFieldNames(Arrays.asList("nameField", "stringField", "propertyField"))
             .setTypedPropertyFields(Arrays.asList(false, false, true))
-            .setMetaTypes(DefinitionAdapterBindings.PropertyMetaTypes.parse("0,-1,-1,-1,-1"));
-
-    @Mock
-    private StunnerTranslationService translationService;
-
-    @Mock
-    private BindableAdapterFunctions functions;
+            .setMetaTypes(DefinitionAdapterBindings.PropertyMetaTypes.parse("0,-1,-1,-1,-1"))
+            .setElementFactory(NodeFactory.class);
 
     private BindableDefinitionAdapterImpl<Object> tested;
 
@@ -79,6 +81,12 @@ public class BindableDefinitionAdapterImplTest {
         when(functions.getValue(eq(BEAN1), eq("categoryField"))).thenReturn("categoryValue");
         String category = tested.getCategory(BEAN1);
         assertEquals("categoryValue", category);
+    }
+
+    @Test
+    public void testGetElementFactory() {
+        Class<? extends ElementFactory> elementFactory = tested.getElementFactory(BEAN1);
+        assertEquals(NodeFactory.class, elementFactory);
     }
 
     @Test

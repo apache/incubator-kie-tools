@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+
 public class DefinitionAdapterBindings {
 
     private Class<?> baseType;
@@ -32,6 +34,7 @@ public class DefinitionAdapterBindings {
     private List<String> propertiesFieldNames;
     private List<Boolean> typedPropertyFields;
     private PropertyMetaTypes metaTypes;
+    private Class<? extends ElementFactory> elementFactory;
 
     public DefinitionAdapterBindings() {
         this.baseType = Object.class;
@@ -98,6 +101,15 @@ public class DefinitionAdapterBindings {
     public DefinitionAdapterBindings setCategoryField(String categoryField) {
         this.categoryField = categoryField;
         return this;
+    }
+
+    public DefinitionAdapterBindings setElementFactory(Class<? extends ElementFactory> factory) {
+        this.elementFactory = factory;
+        return this;
+    }
+
+    public Class<? extends ElementFactory> getElementFactory() {
+        return elementFactory;
     }
 
     public String getDescriptionField() {

@@ -183,7 +183,7 @@ public class GeneralCreateNodeActionTest {
         Assertions.assertThat(connectorEdge).isEqualTo(setTargetNodeCommand.getEdge());
         Assertions.assertThat(targetNode).isEqualTo(setTargetNodeCommand.getNode());
         Assertions.assertThat(targetNode).isEqualTo(updateElementPositionCommand.getElement());
-        Assertions.assertThat(new Point2D(100d, 500d)).isEqualTo(updateElementPositionCommand.getLocation());
+        Assertions.assertThat(new Point2D(10d, 200d)).isEqualTo(updateElementPositionCommand.getLocation());
         final ArgumentCaptor<CanvasSelectionEvent> eventArgumentCaptor = ArgumentCaptor.forClass(CanvasSelectionEvent.class);
         verify(selectionEvent).fire(eventArgumentCaptor.capture());
 

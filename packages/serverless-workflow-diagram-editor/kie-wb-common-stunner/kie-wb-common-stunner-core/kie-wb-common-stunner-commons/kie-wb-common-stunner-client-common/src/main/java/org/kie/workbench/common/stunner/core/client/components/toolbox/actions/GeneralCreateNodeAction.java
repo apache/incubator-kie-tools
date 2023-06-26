@@ -65,6 +65,7 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
     private final Event<InlineTextEditEvent> inlineTextEditEventEvent;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories;
+    public static double OFFSET_Y = 200d;
 
     @Inject
     public GeneralCreateNodeAction(final DefinitionUtils definitionUtils,
@@ -151,11 +152,10 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                                     final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                                                     final Node<View<?>, Edge> sourceNode,
                                                                     final Node<View<?>, Edge> targetNode) {
-        // Obtain the candidate locations for the target node.
-        final Point2D location = canvasLayoutUtils.getNext(canvasHandler,
-                                                           sourceNode,
-                                                           targetNode,
-                                                           getNodeOrientation(targetNode));
+
+        final Point2D location = new Point2D(sourceNode.getContent().getBounds().getX(),
+                                             sourceNode.getContent().getBounds().getY() + OFFSET_Y);
+
         return commandFactory.updatePosition(targetNode,
                                              location);
     }

@@ -33,6 +33,18 @@ public interface ImageResources extends ClientBundleWithLookup {
     @Source("images/icons/state-inject.png")
     ImageResource stateInject();
 
+    @Source("images/icons/state-sleep.png")
+    ImageResource stateSleep();
+
+    @Source("images/icons/state-parallel.png")
+    ImageResource stateParallel();
+
+    @Source("images/icons/state-foreach.png")
+    ImageResource stateForeach();
+
+    @Source("images/icons/state-callback.png")
+    ImageResource stateCallback();
+
     @Source("images/icons/state-switch.png")
     ImageResource stateSwitch();
 
@@ -66,12 +78,18 @@ public interface ImageResources extends ClientBundleWithLookup {
     @Source("images/icons/transition-error.png")
     ImageResource transitionError();
 
-    @Source("images/icons/transition-condition.png")
-    ImageResource transitionCondition();
-
     @Source("images/icons/transition-action.png")
     ImageResource transitionAction();
 
-    @Source("images/icons/transition.png")
+    @Source("images/icons/transition-compensation.png")
     ImageResource transitionCompensation();
+
+    @Source("images/icons/transition-default-condition.png")
+    ImageResource transitionDefaultCondition();
+
+    @Source("images/icons/transition-data-condition.png")
+    ImageResource transitionDataCondition();
+
+    @Source("images/icons/transition-event-condition.png")
+    ImageResource transitionEventCondition();
 }

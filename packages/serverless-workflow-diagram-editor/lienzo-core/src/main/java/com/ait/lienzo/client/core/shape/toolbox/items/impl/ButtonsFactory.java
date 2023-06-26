@@ -58,6 +58,11 @@ public class ButtonsFactory {
         return setupAsDropRight(button);
     }
 
+    public ButtonGridItem groupDropRight(final Group group) {
+        final GroupButtonGridItemImpl button = new GroupButtonGridItemImpl(group);
+        return setupAsGroupDropRight(button);
+    }
+
     private static ButtonGridItem setupAsDropDown(final ButtonGridItemImpl button) {
         button
                 .at(Direction.SOUTH_WEST)
@@ -69,6 +74,16 @@ public class ButtonsFactory {
     }
 
     private static ButtonGridItem setupAsDropRight(final ButtonGridItemImpl button) {
+        button
+                .at(Direction.NORTH_EAST)
+                .offset(new Point2D(5,
+                                    0))
+                .useShowExecutor(ToolboxVisibilityExecutors.upScaleX())
+                .useHideExecutor(ToolboxVisibilityExecutors.downScaleX());
+        return button;
+    }
+
+    private static ButtonGridItem setupAsGroupDropRight(final GroupButtonGridItemImpl button) {
         button
                 .at(Direction.NORTH_EAST)
                 .offset(new Point2D(5,
