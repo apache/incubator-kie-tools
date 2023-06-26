@@ -1,4 +1,8 @@
-export type XsdPrimitives = "xsd:int" | "xsd:string";
+export type XsdPrimitives = "xsd:int" | "xsd:string" | "xsd:token";
+
+export interface XsdImport {
+  "@_schemaLocation": string;
+}
 
 export interface XsdImport {
   "@_schemaLocation": string;
@@ -6,6 +10,9 @@ export interface XsdImport {
 
 export interface XsdSimpleType {
   "@_name": string;
+  "xsd:union"?: {
+    "xsd:simpleType"?: XsdSimpleType[];
+  };
   "xsd:restriction"?: {
     "@_base": XsdPrimitives;
     "xsd:all"?: XsdAll;
@@ -94,6 +101,7 @@ export interface XsdSchema {
     "@_elementFormDefault": "qualified";
     "@_attributeFormDefault": "unqualified";
     "xsd:import"?: XsdImport[];
+    "xsd:include"?: XsdInclude[];
     "xsd:simpleType"?: XsdSimpleType[];
     "xsd:complexType"?: XsdComplexType[];
     "xsd:element"?: XsdTopLevelElement[];

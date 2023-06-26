@@ -10,6 +10,7 @@ export const ns = new Map([
 export const meta = {
   schema: {
     "xsd:import": { type: "import", isArray: true, isOptional: false },
+    "xsd:include": { type: "include", isArray: true, isOptional: false },
     "xsd:element": { type: "element", isArray: true, isOptional: false },
     "xsd:annotation": { type: "annotation", isArray: true, isOptional: false },
     "xsd:simpleType": { type: "simpleType", isArray: true, isOptional: false },
@@ -21,8 +22,14 @@ export const meta = {
     "xsd:element": { type: "element", isArray: true, isOptional: false },
   },
   import: {},
+  include: {},
   annotation: {},
-  simpleType: {},
+  simpleType: {
+    "xsd:union": { type: "union", isArray: false, isOptional: true },
+  },
+  union: {
+    "xsd:simpleType": { type: "simpleType", isArray: true, isOptional: false },
+  },
   attribute: {},
   element: {
     "@_abstract": { type: "boolean", isArray: false, isOptional: true },

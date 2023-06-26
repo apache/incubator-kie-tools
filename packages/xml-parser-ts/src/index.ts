@@ -73,6 +73,7 @@ export function traverse(meta: Meta, jsonPath: string, root: { element: string; 
 const __FXP_OPTS: X2jOptionsOptional = {
   ignoreAttributes: false, // Obviously, we want the attributes to be part of the JSON too.
   alwaysCreateTextNode: false,
+  textNodeName: "#text",
   trimValues: true, //
   numberParseOptions: {
     leadingZeros: true,
@@ -91,6 +92,7 @@ const __FXP_SHALLOW_PARSER = new fxp.XMLParser({ ...__FXP_OPTS, depth: 0 } as an
 
 const __FXP_BUILDER = new fxp.XMLBuilder({
   attributeNamePrefix: "@_",
+  textNodeName: "#text",
   ignoreAttributes: false,
   processEntities: true,
   format: true,
@@ -248,7 +250,7 @@ function applyInstanceNsMap<T extends object>(json: T, ns: Map<string, string>, 
   const res: any = {};
 
   for (const propertyName in json) {
-    if (propertyName.startsWith("@_") || propertyName.startsWith("?")) {
+    if (propertyName.startsWith("@_") || propertyName.startsWith("?") || propertyName === "#text") {
       res[propertyName] = json[propertyName];
       continue;
     }

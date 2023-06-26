@@ -19,8 +19,10 @@ import {
   XsdComplexType,
   XsdSchema,
   XsdSequence,
+  XsdSimpleType,
 } from "./schemas/xsd-incomplete--manually-written/ts-gen/types";
 import { ns as xsdNs, meta as xsdMeta } from "./schemas/xsd-incomplete--manually-written/ts-gen/meta";
+import * as _ from "lodash";
 
 export const __XSD_PARSER = getParser<XsdSchema>({
   ns: xsdNs,
@@ -39,6 +41,7 @@ export const XSD__TYPES = new Map<string, TiagoTsPrimitiveType>([
   ["xsd:QName", { type: "primitive", tsEquivalent: "string", doc: "xsd:QName" }],
   ["xsd:string", { type: "primitive", tsEquivalent: "string", doc: "xsd:string" }],
   ["xsd:int", { type: "primitive", tsEquivalent: "number", doc: "xsd:int" }],
+  ["xsd:integer", { type: "primitive", tsEquivalent: "number", doc: "xsd:integer" }],
   ["xsd:double", { type: "primitive", tsEquivalent: "number", doc: "xsd:double" }],
   ["xsd:float", { type: "primitive", tsEquivalent: "number", doc: "xsd:float" }],
   ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREF" }],
@@ -67,13 +70,33 @@ async function parseDeep(
 
   const { json: schema } = __XSD_PARSER.parse({ xml: xsdString });
 
+  const includePromises = (schema["xsd:schema"]["xsd:include"] ?? []).map((i) =>
+    parseDeep(__XSD_PARSER, baseLocation, i["@_schemaLocation"])
+  );
+
   const importPromises = (schema["xsd:schema"]["xsd:import"] ?? []).map((i) =>
     parseDeep(__XSD_PARSER, baseLocation, i["@_schemaLocation"])
   );
 
+  const includes = (await Promise.all(includePromises)).flatMap((s) => s);
   const imports = (await Promise.all(importPromises)).flatMap((s) => s);
 
-  return [[relativeLocation, schema], ...imports];
+  const sameNs = includes.filter(
+    ([k, v]) => v["xsd:schema"]["@_targetNamespace"] === schema["xsd:schema"]["@_targetNamespace"]
+  );
+  let schemaPlusIncludes = schema;
+  for (const [k, v] of sameNs) {
+    schemaPlusIncludes = _.mergeWith(schemaPlusIncludes, v, (a, b) => {
+      if (Array.isArray(a) && Array.isArray(b)) {
+        return [...a, ...b];
+      }
+    });
+  }
+
+  const includesFromOtherNs = includes.filter(
+    ([k, v]) => v["xsd:schema"]["@_targetNamespace"] !== schema["xsd:schema"]["@_targetNamespace"]
+  );
+  return [[relativeLocation, schema], ...imports, ...includesFromOtherNs];
 }
 
 async function main() {
@@ -100,28 +123,10 @@ async function main() {
   // // process <xsd:simpleType>'s
   const __SIMPLE_TYPES: TiagoSimpleType[] = Array.from(__XSDS.entries()).flatMap(([location, schema]) =>
     (schema["xsd:schema"]["xsd:simpleType"] || []).flatMap((s) => {
-      if (s["xsd:restriction"]?.["@_base"] === "xsd:string" && s["xsd:restriction"]["xsd:enumeration"]) {
-        return {
-          doc: "enum",
-          type: "simple",
-          kind: "enum",
-          name: s["@_name"],
-          declaredAtRelativeLocation: location,
-          values: s["xsd:restriction"]["xsd:enumeration"].map((e) => e["@_value"]),
-        };
-      } else if (s["xsd:restriction"]?.["@_base"] === "xsd:int") {
-        return {
-          doc: "int",
-          type: "simple",
-          kind: "int",
-          restrictionBase: s["xsd:restriction"]["@_base"],
-          name: s["@_name"],
-          declaredAtRelativeLocation: location,
-          minInclusive: s["xsd:restriction"]["xsd:minInclusive"]?.["@_value"],
-          maxInclusive: s["xsd:restriction"]["xsd:maxInclusive"]?.["@_value"],
-        };
+      if (s["xsd:union"]) {
+        return (s["xsd:union"]["xsd:simpleType"] ?? []).flatMap((s) => xsdSimpleTypeToTiagoSimpleType(s, location));
       } else {
-        throw new Error(`Unknown xsd:simpleType --> ${JSON.stringify(s, undefined, 2)}`);
+        return xsdSimpleTypeToTiagoSimpleType(s, location);
       }
     })
   );
@@ -412,10 +417,6 @@ function resolveElementRef(
   });
 }
 
-function getAnonymousMetaTypeName(elementName: string, metaTypeName: string) {
-  return `anonymous__${elementName}__at__${metaTypeName}`;
-}
-
 function getMetaTypeName(typeName: string, doc: string) {
   return typeName === "number" ? (doc === "xsd:double" || doc === "xsd:float" ? "float" : "integer") : typeName;
 }
@@ -512,8 +513,6 @@ function getMetaProperties(
         isOptional: e.isOptional,
       });
     } else if (e.kind === "ofAnonymousType") {
-      const anonymousMetaTypeName = getAnonymousMetaTypeName(e.name, metaTypeName);
-
       metaProperties.push({
         declaredAt: ct.declaredAtRelativeLocation,
         fromType: metaTypeName,
@@ -559,11 +558,6 @@ function getMetaProperties(
 
       for (const e of curParentCt.elements) {
         if (e.kind === "ofAnonymousType") {
-          const anonymousTypeName = getAnonymousMetaTypeName(
-            e.name,
-            getTsNameFromNamedType(curParentCt.declaredAtRelativeLocation, curParentCt.name)
-          );
-
           metaProperties.push({
             elem: undefined, // REALLY?
             declaredAt: curParentCt.declaredAtRelativeLocation,
@@ -720,6 +714,35 @@ function getTsTypeFromLocalRef(
     name: getTsNameFromNamedType(relativeLocation, namedTypeLocalRef),
     doc: "// local type",
   };
+}
+
+function xsdSimpleTypeToTiagoSimpleType(s: XsdSimpleType, location: string): TiagoSimpleType {
+  if (
+    (s["xsd:restriction"]?.["@_base"] === "xsd:string" || s["xsd:restriction"]?.["@_base"] === "xsd:token") &&
+    s["xsd:restriction"]["xsd:enumeration"]
+  ) {
+    return {
+      doc: "enum",
+      type: "simple",
+      kind: "enum",
+      name: s["@_name"],
+      declaredAtRelativeLocation: location,
+      values: s["xsd:restriction"]["xsd:enumeration"].map((e) => e["@_value"]),
+    };
+  } else if (s["xsd:restriction"]?.["@_base"] === "xsd:int") {
+    return {
+      doc: "int",
+      type: "simple",
+      kind: "int",
+      restrictionBase: s["xsd:restriction"]["@_base"],
+      name: s["@_name"],
+      declaredAtRelativeLocation: location,
+      minInclusive: s["xsd:restriction"]["xsd:minInclusive"]?.["@_value"],
+      maxInclusive: s["xsd:restriction"]["xsd:maxInclusive"]?.["@_value"],
+    };
+  } else {
+    throw new Error(`Unknown xsd:simpleType --> ${JSON.stringify(s, undefined, 2)}`);
+  }
 }
 
 function getTiagoElementFromLocalElementRef(

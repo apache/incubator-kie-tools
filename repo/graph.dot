@@ -34,6 +34,8 @@ digraph G {
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/operating-system" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/bpmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xml-parser-ts-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "bpmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -74,7 +76,6 @@ digraph G {
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/xml-parser-ts-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-runner" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -167,6 +168,7 @@ digraph G {
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/bpmn-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "bpmn-vscode-extension" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
