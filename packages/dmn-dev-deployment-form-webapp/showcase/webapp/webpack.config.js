@@ -53,7 +53,7 @@ module.exports = (env) =>
       static: { directory: path.join(__dirname, "./dist") },
       historyApiFallback: true,
       compress: true,
-      port: buildEnv.dmnDevDeploymentFormWebapp.dev.port,
+      port: buildEnv.dmnDevDeploymentFormWebapp.dev.webpackPort,
       open: false,
       hot: true,
       client: {

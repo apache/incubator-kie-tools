@@ -27,7 +27,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       dmnDevDeploymentFormWebapp: {
         dev: {
-          port: 9008,
+          webpackPort: 9008,
+          quarkusPort: 9009,
         },
         quarkusBaseUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENTS_FORM_WEBAPP_QUARKUS_BASE_URL),
       },
