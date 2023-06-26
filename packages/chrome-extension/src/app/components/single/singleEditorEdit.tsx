@@ -23,6 +23,7 @@ import {
   extractOpenFilePath,
   iframeFullscreenContainer,
   removeAllChildren,
+  runScriptOnPage,
   waitForElementToBeReady,
 } from "../../utils";
 import { SingleEditorApp } from "./SingleEditorApp";
@@ -36,7 +37,7 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
   // TODO: This if can be removed once github unifies the ui for logged in/out users.
   if (document.body.classList.contains("logged-in")) {
     // wait for the dom element to be ready before rendering.
-    await waitForElementToBeReady(".CodeMirror");
+    await waitForElementToBeReady(".cm-content");
   }
   // Checking whether this text editor exists is a good way to determine if the page is "ready",
   // because that would mean that the user could see the default GitHub page.
@@ -81,12 +82,17 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
 
 function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileInfo }) {
   const globals = useGlobals();
+
+  React.useEffect(() => {
+    runScriptOnPage(chrome.runtime.getURL("scripts/set-workflow-content.js"));
+  }, []);
+
   const getFileName = useCallback(() => {
     return globals.dependencies.all.edit__githubFileNameInput()!.value;
   }, [globals.dependencies]);
 
   const getFileContents = useCallback(() => {
-    return Promise.resolve(globals.dependencies.all.edit__githubTextAreaWithFileContents()!.value);
+    return Promise.resolve(globals.dependencies.all.edit__githubTextAreaWithFileContents()?.textContent ?? "");
   }, [globals.dependencies]);
 
   return (

@@ -89,7 +89,7 @@ export class Dependencies {
       return document.querySelector("[aria-describedby=file-name-editor-breadcrumb]") as HTMLInputElement | null;
     },
     edit__githubTextAreaWithFileContents: () => {
-      return document.querySelector(".js-react-code-editor") as HTMLTextAreaElement | null;
+      return document.getElementById("workflow-content") as HTMLTextAreaElement | null;
     },
     pr__mutationObserverTarget: () => {
       return document.getElementById("files") as HTMLElement | null;
