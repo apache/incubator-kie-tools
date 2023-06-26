@@ -51,8 +51,6 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
       "some",
       "every",
       "satisfies",
-      "instance",
-      "of",
       "function",
       "external",
       "or",
@@ -194,9 +192,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
 
   const suggestionTypes = {
     Snippet: [
-      ["@", '@"23:59:00"', '@"P2DT20H14M"'],
       ["if", "if $1 then\n\t$0\nelse\n\t"],
-      ["instance of", "instance of number", "instance of string", "instance of boolean"],
+      ["instance of", "instance of $0"],
       ["for", "for element in $1 return\n\t$0"],
     ],
     Function: [
