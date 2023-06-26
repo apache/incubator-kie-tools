@@ -1,6 +1,6 @@
 module github.com/kiegroup/kie-tools/packages/extended-services
 
-go 1.19
+go 1.20
 
 require (
 	github.com/getlantern/systray v1.1.0
