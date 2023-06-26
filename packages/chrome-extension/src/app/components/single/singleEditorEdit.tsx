@@ -84,7 +84,7 @@ function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileI
   const globals = useGlobals();
 
   React.useEffect(() => {
-    runScriptOnPage(chrome.runtime.getURL("scripts/set-workflow-content.js"));
+    runScriptOnPage(chrome.runtime.getURL("scripts/set-content.js"));
   }, []);
 
   const getFileName = useCallback(() => {
