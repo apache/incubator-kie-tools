@@ -17,15 +17,19 @@
 export class Dependencies {
   public readonly singleEdit = {
     iframeContainerTarget: () => {
-      return document.querySelector("[class$='react-code-view-edit']")!.parentElement!
-        .parentElement as HTMLElement | null;
+      return (
+        document.querySelector("[class$='react-code-view-edit']")?.parentElement?.parentElement ??
+        (null as HTMLElement | null)
+      );
     },
     toolbarContainerTarget: () => {
-      return document.querySelector("[class$='react-code-view-edit']")!.parentElement!
-        .parentElement as HTMLElement | null;
+      return (
+        document.querySelector("[class$='react-code-view-edit']")?.parentElement?.parentElement ??
+        (null as HTMLElement | null)
+      );
     },
     githubTextEditorToReplaceElement: () => {
-      return document.querySelector("[class$='react-code-view-edit']")!.parentElement as HTMLElement | null;
+      return document.querySelector("[class$='react-code-view-edit']")?.parentElement ?? (null as HTMLElement | null);
     },
   };
 
@@ -49,7 +53,7 @@ export class Dependencies {
       if (document.body.classList.contains("logged-out")) {
         return document.querySelector(".Box-body.p-0.blob-wrapper.data") as HTMLElement | null;
       }
-      return document.getElementById("highlighted-line-menu-positioner")!.firstChild as HTMLElement | null;
+      return document.getElementById("highlighted-line-menu-positioner")?.firstChild as HTMLElement | null;
     },
   };
 
@@ -71,7 +75,7 @@ export class Dependencies {
       if (document.body.classList.contains("logged-out")) {
         return document.querySelector(".file-navigation") as HTMLElement | null;
       }
-      return document.querySelector(".d-flex.gap-2")?.parentElement as HTMLElement | null;
+      return document.querySelector(".d-flex.gap-2")?.parentElement ?? (null as HTMLElement | null);
     },
     buttonContainerOnPrs: () => {
       return document.querySelector(".gh-header-actions") as HTMLElement | null;
