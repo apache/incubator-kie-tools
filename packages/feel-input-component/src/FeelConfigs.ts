@@ -40,8 +40,10 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
 export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
   return {
     keywords: [
+      "@",
       "for",
       "in",
+      "instance of",
       "return",
       "if",
       "then",
@@ -94,6 +96,7 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
       "index of",
       "insert before",
       "invoke",
+      "is",
       "list contains",
       "log",
       "lower case",
@@ -191,7 +194,9 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
 
   const suggestionTypes = {
     Snippet: [
+      ["@", '@"23:59:00"', '@"P2DT20H14M"'],
       ["if", "if $1 then\n\t$0\nelse\n\t"],
+      ["instance of", "instance of number", "instance of string", "instance of boolean"],
       ["for", "for element in $1 return\n\t$0"],
     ],
     Function: [
@@ -252,6 +257,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       ["insert before(list, position, newItem)", "insert before($1, $2, $3)"],
       ["invoke(ctx, namespace, model name, decision name, parameters)", "invoke($1, $2, $3, $4, $5)"],
       ["list contains(list, element)", "list contains($1, $2)"],
+      ["is(point1, point2)", "is($1, $2)"],
       ["log(number)", "log($1)"],
       ["lower case(string)", "lower case($1)"],
       ["matches(input, pattern)", "matches($1, $2)"],
