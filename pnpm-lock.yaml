@@ -9220,7 +9220,7 @@ packages:
     engines: { node: ">=6.0.0" }
     dependencies:
       "@jridgewell/gen-mapping": 0.1.1
-      "@jridgewell/trace-mapping": 0.3.9
+      "@jridgewell/trace-mapping": 0.3.18
     dev: true
 
   /@angular-devkit/architect@0.1402.11:
@@ -13889,12 +13889,6 @@ packages:
       "@jridgewell/trace-mapping": 0.3.18
     dev: true
 
-  /@jridgewell/resolve-uri@3.0.5:
-    resolution:
-      { integrity: sha512-VPeQ7+wH0itvQxnG+lIzWgkysKIr3L9sslimFW55rHMdGu/qCQ5z5h9zq4gI8uBtqkpHhsF4Z/OwExufUCThew== }
-    engines: { node: ">=6.0.0" }
-    dev: true
-
   /@jridgewell/resolve-uri@3.1.0:
     resolution:
       { integrity: sha512-F2msla3tad+Mfht5cJq7LSXcdudKTWCVYUgw6pLFOOHSTtZlj6SWNYAp+AhuqLmWdBO2X5hPrLcu8cVP8fy28w== }
@@ -13912,7 +13906,7 @@ packages:
       { integrity: sha512-b+fsZXeLYi9fEULmfBrhxn4IrPlINf8fiNarzTof004v3lFdntdwa9PF7vFJqm3mg7s+ScJMxXaE3Acp1irZcg== }
     dependencies:
       "@jridgewell/gen-mapping": 0.3.3
-      "@jridgewell/trace-mapping": 0.3.9
+      "@jridgewell/trace-mapping": 0.3.18
     dev: true
 
   /@jridgewell/sourcemap-codec@1.4.14:
@@ -13932,7 +13926,7 @@ packages:
     resolution:
       { integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ== }
     dependencies:
-      "@jridgewell/resolve-uri": 3.0.5
+      "@jridgewell/resolve-uri": 3.1.0
       "@jridgewell/sourcemap-codec": 1.4.14
     dev: true
 
@@ -32246,7 +32240,7 @@ packages:
     hasBin: true
     dependencies:
       "@jridgewell/source-map": 0.3.3
-      acorn: 8.7.0
+      acorn: 8.8.2
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
@@ -32566,7 +32560,7 @@ packages:
       "@tsconfig/node12": 1.0.11
       "@tsconfig/node14": 1.0.3
       "@tsconfig/node16": 1.0.3
-      acorn: 8.7.0
+      acorn: 8.8.2
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
