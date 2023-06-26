@@ -15,6 +15,7 @@
  */
 
 const IS_HASH_ROUTER = true;
+const QUARKUS_BASE_URL = process.env.WEBPACK_REPLACE__quarkusBaseUrl;
 
 export enum QueryParams {}
 
@@ -108,11 +109,11 @@ export const routes = {
 
   dataJson: new Route<{}>(() => "./data.json"),
 
-  swaggerUi: new Route<{}>(() => "./q/swagger-ui"),
+  swaggerUi: new Route<{}>(() => `${QUARKUS_BASE_URL}/q/swagger-ui`),
 
   dmnResult: new Route<{
     pathParams: PathParams.MODEL_NAME;
-  }>(({ modelName }) => `./${modelName}/dmnresult`),
+  }>(({ modelName }) => `${QUARKUS_BASE_URL}/${modelName}/dmnresult`),
 
   form: new Route<{
     pathParams: PathParams.FILE_PATH;
@@ -120,11 +121,11 @@ export const routes = {
 
   model: new Route<{
     pathParams: PathParams.FILE_PATH;
-  }>(({ filePath }) => `/${filePath}`),
+  }>(({ filePath }) => `${QUARKUS_BASE_URL}/${filePath}`),
 
   static: {
     images: {
-      appLogoReverse: new Route<{}>(() => `./images/app_logo_rgb_fullcolor_reverse.svg`),
+      appLogoReverse: new Route<{}>(() => `${QUARKUS_BASE_URL}/images/app_logo_rgb_fullcolor_reverse.svg`),
     },
   },
 };

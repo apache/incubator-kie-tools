@@ -18,7 +18,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
+    "start": "DMN_DEV_DEPLOYMENTS_FORM_WEBAPP_QUARKUS_BASE_URL=http://localhost:8080 webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\""
   },
   "dependencies": {

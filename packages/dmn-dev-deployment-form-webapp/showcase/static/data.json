@@ -1,5 +1,5 @@
 {
-  "baseUrl": "http://localhost/dmn-dev-deployment-s8csrcb369",
+  "baseUrl": "http://localhost:8080",
   "forms": [
     {
       "uri": "/insurance-pricing.dmn",

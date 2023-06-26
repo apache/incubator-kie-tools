@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    DMN_DEV_DEPLOYMENTS_FORM_WEBAPP_QUARKUS_BASE_URL: {
+      default: ".",
+      description: "Sets the Quarkus base URL",
+    },
+  }),
   get env() {
     return {
       dmnDevDeploymentFormWebapp: {
         dev: {
           port: 9008,
         },
+        quarkusBaseUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENTS_FORM_WEBAPP_QUARKUS_BASE_URL),
       },
     };
   },

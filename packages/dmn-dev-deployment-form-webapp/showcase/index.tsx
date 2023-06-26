@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { useState } from "react";
@@ -21,20 +22,24 @@ import "../static/resources/style.css";
 import { DmnFormApp } from "../src/DmnFormApp";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
+// each button should change routes.
+// http://localhost:9008/#/form/insurance-pricing.dmn
 export const App: React.FunctionComponent = () => {
-  const [version, setVersion] = useState(-1);
-
   return (
-    <div className="showcase">
-      <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
-      <div className="boxed-expression">
-        <DmnFormApp />
+    <div style={{ margin: "20px" }}>
+      <div style={{ display: "flex" }}>
+        <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+          Example 1
+        </Button>
+        <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+          Example 2
+        </Button>
+        <Button style={{ margin: "10px" }} variant="secondary" iconPosition="left" ouiaId="edit-expression-json">
+          Example 3
+        </Button>
       </div>
-
-      <div className="updated-json">
-        <div className="buttons">
-          <Button variant="secondary" iconPosition="left" ouiaId="edit-expression-json"></Button>
-        </div>
+      <div style={{ margin: "10px", border: "1px solid" }}>
+        <DmnFormApp />
       </div>
     </div>
   );
