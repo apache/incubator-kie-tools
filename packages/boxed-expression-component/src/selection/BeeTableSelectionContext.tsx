@@ -612,10 +612,9 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
           for (let c = startColumn; c <= endColumn; c++) {
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
               ?.flatMap((ref) => {
-                const value = ref.getValue ? [ref.getValue()] : [];
-                console.log("R: " + r + " C: " + " value:" + value);
+                const cellValue = ref.getValue ? [ref.getValue()] : [];
                 ref.setValue?.(CELL_EMPTY_VALUE);
-                return value;
+                return cellValue;
               })
               .join(""); // What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
           }
