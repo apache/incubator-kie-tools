@@ -36,7 +36,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     },
     KN_PLUGIN_WORKFLOW__devModeImage: {
       name: "KN_PLUGIN_WORKFLOW__devModeImage",
-      default: "quay.io/kiegroup/kogito-swf-devmode:1.40",
+      default: "quay.io/kiegroup/kogito-swf-devmode:1.40.1",
       description: "SonataFlow dev mode image (used on cli run)",
     },
   }),
