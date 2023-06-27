@@ -60,6 +60,8 @@ void setupPrJob(boolean isProdCI = false) {
         jobParams.pr.trigger_phrase_only = true
         jobParams.pr.commitContext = 'Prod'
         jobParams.env.put('PROD_CI', true)
+    } else if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
+        jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
     }
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
@@ -129,6 +131,9 @@ void setupDeployJob(JobType jobType, String envName = '') {
             QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
         ])
     }
+    if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
+        jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
+    }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
@@ -193,6 +198,7 @@ void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = f
             stringParam('TARGET_BRANCH', '', '(Optional) In case of a PR to merge with target branch, please provide the target branch')
 
             // Build information
+            stringParam('MAVEN_ARTIFACTS_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
             stringParam('BUILD_KOGITO_APPS_URI', '', '(Optional) Git uri to the kogito-apps repository to use for tests.')
             stringParam('BUILD_KOGITO_APPS_REF', '', '(Optional) Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
             stringParam('QUARKUS_PLATFORM_URL', Utils.getMavenQuarkusPlatformRepositoryUrl(this), 'URL to the Quarkus platform to use. The version to use will be guessed from artifacts.')
@@ -201,7 +207,6 @@ void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = f
             booleanParam('SKIP_TESTS', false, 'Skip tests')
             stringParam('TESTS_KOGITO_EXAMPLES_URI', '', '(Optional) Git uri to the kogito-examples repository to use for tests.')
             stringParam('TESTS_KOGITO_EXAMPLES_REF', '', '(Optional) Git reference (branch/tag) to the kogito-examples repository to use for tests.')
-            stringParam('TESTS_MAVEN_ARTIFACTS_REPOSITORY_URL', "${MAVEN_ARTIFACTS_REPOSITORY}")
 
             // Deploy information
             booleanParam('DEPLOY_IMAGE', false, 'Should we deploy image to given deploy registry ?')
@@ -236,6 +241,9 @@ void setupPromoteJob(JobType jobType) {
         DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
         MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
     ])
+    if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
+        jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
+    }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')

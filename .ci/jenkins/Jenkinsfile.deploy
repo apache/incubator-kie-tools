@@ -275,12 +275,12 @@ void createBuildAndTestStageClosure(String image) {
             buildParams.add(string(name: 'SOURCE_AUTHOR', value: isRelease() ? getBotAuthor() : getGitAuthor()))
             buildParams.add(string(name: 'SOURCE_BRANCH', value: isRelease() ? getBotBranch() : getBuildBranch()))
 
+            buildParams.add(string(name: 'MAVEN_ARTIFACTS_REPOSITORY', value: env.MAVEN_ARTIFACT_REPOSITORY ?: (isRelease() ? env.DEFAULT_STAGING_REPOSITORY : '')))
             buildParams.add(string(name: 'BUILD_KOGITO_APPS_URI', value: params.APPS_URI))
             buildParams.add(string(name: 'BUILD_KOGITO_APPS_REF', value: params.APPS_REF))
             buildParams.add(booleanParam(name: 'SKIP_TESTS', value: params.SKIP_TESTS))
             buildParams.add(string(name: 'TESTS_KOGITO_EXAMPLES_URI', value: params.EXAMPLES_URI))
             buildParams.add(string(name: 'TESTS_KOGITO_EXAMPLES_REF', value: params.EXAMPLES_REF))
-            buildParams.add(string(name: 'TESTS_MAVEN_ARTIFACTS_REPOSITORY_URL', value: env.MAVEN_ARTIFACT_REPOSITORY ?: (isRelease() ? env.DEFAULT_STAGING_REPOSITORY : '')))
 
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE', value: true))
             buildParams.add(booleanParam(name: 'DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', value: isDeployImageInOpenshiftRegistry()))
@@ -418,6 +418,9 @@ void setDeployPropertyIfNeeded(String key, def value) {
 }
 
 String[] getImages() {
+    if (env.IMAGES_LIST) {
+        return env.IMAGES_LIST.split(',')
+    }
     return runPythonCommand("make list | tr '\\n' ','", true).trim().split(',')
 }
 

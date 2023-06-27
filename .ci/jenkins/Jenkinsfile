@@ -88,6 +88,9 @@ Closure createBuildAndTestStageClosure(String image) {
 }
 
 String[] getImages() {
+    if (env.IMAGES_LIST) {
+        return env.IMAGES_LIST.split(',')
+    }
     String listCmd = 'make list'
     if (isProdCI()) {
         listCmd += ' arg=--prod'

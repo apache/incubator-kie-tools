@@ -460,8 +460,8 @@ String getNewImageTag() {
 }
 
 String[] getImages() {
-    String oldImageNames = getOldImageNames()
-    return oldImageNames ? oldImageNames.split(',') : runPythonCommand("make list | tr '\\n' ','", true).trim().split(',')
+    String images = getOldImageNames() ?: env.IMAGES_LIST ?: runPythonCommand("make list | tr '\\n' ','", true).trim()
+    return images.split(',')
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
