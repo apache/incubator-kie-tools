@@ -4,15 +4,15 @@ import * as fs from "fs";
 import * as path from "path";
 import { XmlParserTs, getParser } from "@kie-tools/xml-parser-ts";
 import {
-  TiagoTsImports,
-  TiagoTsPrimitiveType,
-  TiagoElement,
-  TiagoSimpleType,
-  TiagoComplexType,
-  TiagoComplexTypeNamed,
-  TiagoComplexTypeAnonymous,
-  TiagoMetaType,
-  TiagoMetaTypeProperty,
+  XptcTsImports,
+  XptcTsPrimitiveType,
+  XptcElement,
+  XptcSimpleType,
+  XptcComplexType,
+  XptcComplexTypeNamed,
+  XptcComplexTypeAnonymous,
+  XptcMetaType,
+  XptcMetaTypeProperty,
 } from "./types";
 import {
   XsdAttribute,
@@ -36,7 +36,7 @@ const __LOGS = {
   done: (location: string) => `[xml-parser-ts-codegen] Done for '${location}'.`,
 };
 
-export const XSD__TYPES = new Map<string, TiagoTsPrimitiveType>([
+export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
   ["xsd:boolean", { type: "primitive", tsEquivalent: "boolean", doc: "xsd:boolean" }],
   ["xsd:QName", { type: "primitive", tsEquivalent: "string", doc: "xsd:QName" }],
   ["xsd:string", { type: "primitive", tsEquivalent: "string", doc: "xsd:string" }],
@@ -121,18 +121,18 @@ async function main() {
   // types
 
   // // process <xsd:simpleType>'s
-  const __SIMPLE_TYPES: TiagoSimpleType[] = Array.from(__XSDS.entries()).flatMap(([location, schema]) =>
+  const __SIMPLE_TYPES: XptcSimpleType[] = Array.from(__XSDS.entries()).flatMap(([location, schema]) =>
     (schema["xsd:schema"]["xsd:simpleType"] || []).flatMap((s) => {
       if (s["xsd:union"]) {
-        return (s["xsd:union"]["xsd:simpleType"] ?? []).flatMap((s) => xsdSimpleTypeToTiagoSimpleType(s, location));
+        return (s["xsd:union"]["xsd:simpleType"] ?? []).flatMap((s) => xsdSimpleTypeToXptcSimpleType(s, location));
       } else {
-        return xsdSimpleTypeToTiagoSimpleType(s, location);
+        return xsdSimpleTypeToXptcSimpleType(s, location);
       }
     })
   );
 
   // // process <xsd:complexType>'s
-  const __COMPLEX_TYPES: TiagoComplexTypeNamed[] = [];
+  const __COMPLEX_TYPES: XptcComplexTypeNamed[] = [];
   for (const [location, xsd] of __XSDS.entries()) {
     for (const xsdCt of xsd["xsd:schema"]["xsd:complexType"] || []) {
       const isAbstract = xsdCt["@_abstract"] ?? false;
@@ -147,28 +147,28 @@ async function main() {
         childOf: xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["@_base"],
         elements: [
           ...(xsdCt["xsd:all"]?.["xsd:element"] ?? []).flatMap((s) =>
-            xsdElementToTiagoElement(xsdCt["@_name"]!, s, location)
+            xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
           ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
-            xsdElementToTiagoElement(xsdCt["@_name"]!, s, location)
+            xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
           ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
-            xsdElementToTiagoElement(xsdCt["@_name"]!, s, location)
+            xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
           ...(
             xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:sequence"]?.["xsd:choice"]?.["xsd:element"] ?? []
-          ).flatMap((s) => xsdElementToTiagoElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
+          ).flatMap((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
           ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:choice"]?.["xsd:element"] ?? []).flatMap((s) =>
-            xsdElementToTiagoElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
+            xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
           ),
           ...(
             xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []
-          ).flatMap((s) => xsdElementToTiagoElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
+          ).flatMap((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
         ],
         attributes: [
-          ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToTiagoAttribute(a)),
+          ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
           ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:attribute"] ?? []).map((a) =>
-            xsdAttributeToTiagoAttribute(a)
+            xsdAttributeToXptcAttribute(a)
           ),
         ],
       });
@@ -176,7 +176,7 @@ async function main() {
   }
 
   // // process <xsd:element>'s
-  const __ELEMENTS = new Map<string, TiagoElement>();
+  const __ELEMENTS = new Map<string, XptcElement>();
   for (const [location, xsd] of __XSDS.entries()) {
     for (const e of xsd["xsd:schema"]["xsd:element"] || []) {
       __ELEMENTS.set(`${location}__${e["@_name"]}`, {
@@ -200,11 +200,11 @@ async function main() {
       __SUBSTITUTIONS.set(xLocation, localizedSubstitutions);
       for (const e of xsd["xsd:schema"]["xsd:element"] || []) {
         if (e["@_substitutionGroup"]) {
-          const subsGroup = getTiagoElementFromLocalElementRef(__XSDS, __ELEMENTS, xLocation, e["@_substitutionGroup"]);
+          const subsGroup = getXptcElementFromLocalElementRef(__XSDS, __ELEMENTS, xLocation, e["@_substitutionGroup"]);
           if (!subsGroup) {
             throw new Error(`Invalid subsitution group for element '${e["@_name"]}'`);
           }
-          const elem = getTiagoElementFromLocalElementRef(__XSDS, __ELEMENTS, xLocation, e["@_name"]);
+          const elem = getXptcElementFromLocalElementRef(__XSDS, __ELEMENTS, xLocation, e["@_name"]);
           if (!elem) {
             throw new Error(`Invalid element '${e["@_name"]}'`);
           }
@@ -218,23 +218,23 @@ async function main() {
     }
   }
 
-  const __NAMED_TYPES_BY_TS_NAME = new Map<string, TiagoComplexType | TiagoSimpleType>([
+  const __NAMED_TYPES_BY_TS_NAME = new Map<string, XptcComplexType | XptcSimpleType>([
     ...__SIMPLE_TYPES.map(
-      (st) => [getTsNameFromNamedType(st.declaredAtRelativeLocation, st.name), st] as [string, TiagoSimpleType]
+      (st) => [getTsNameFromNamedType(st.declaredAtRelativeLocation, st.name), st] as [string, XptcSimpleType]
     ),
     ...__COMPLEX_TYPES.map(
-      (ct) => [getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name), ct] as [string, TiagoComplexType]
+      (ct) => [getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name), ct] as [string, XptcComplexType]
     ),
   ]);
 
   const __IMPORTED_TYPES = new Map<string, string>();
-  const __IMPORTS: TiagoTsImports = {
+  const __IMPORTS: XptcTsImports = {
     save(typeName: string, relativePath: string) {
       __IMPORTED_TYPES.set(typeName, path.join(__CONVENTIONS.extensionTypesLocation, relativePath));
     },
   };
 
-  const __META_TYPE_MAPPING = new Map<string, TiagoMetaType>();
+  const __META_TYPE_MAPPING = new Map<string, XptcMetaType>();
 
   let ts = "";
 
@@ -390,7 +390,7 @@ export const meta = {
 
 main();
 
-function getMetaPropertyNs(__RELATIVE_LOCATION: string, p: TiagoMetaTypeProperty) {
+function getMetaPropertyNs(__RELATIVE_LOCATION: string, p: XptcMetaTypeProperty) {
   return p.name.startsWith("@_")
     ? ""
     : getRealtiveLocationNs(__RELATIVE_LOCATION, p.elem?.declaredAtRelativeLocation ?? p.declaredAt);
@@ -403,11 +403,11 @@ function getRealtiveLocationNs(__RELATIVE_LOCATION: string, relativeLocation: st
 }
 
 function resolveElementRef(
-  __ELEMENTS: Map<string, TiagoElement>,
+  __ELEMENTS: Map<string, XptcElement>,
   __XSDS: Map<string, XsdSchema>,
   substitutions: Map<string, string[]>,
-  referencedElement: TiagoElement
-): TiagoElement[] {
+  referencedElement: XptcElement
+): XptcElement[] {
   const key = `${referencedElement.declaredAtRelativeLocation}__${referencedElement.name}`;
   const substitutionNamesForReferencedElement = substitutions.get(key);
   if (!substitutionNamesForReferencedElement) {
@@ -428,16 +428,16 @@ function getMetaTypeName(typeName: string, doc: string) {
 }
 
 function getMetaProperties(
-  __META_TYPE_MAPPING: Map<string, TiagoMetaType>,
-  __ELEMENTS: Map<string, TiagoElement>,
+  __META_TYPE_MAPPING: Map<string, XptcMetaType>,
+  __ELEMENTS: Map<string, XptcElement>,
   __SUBSTITUTIONS: Map<string, Map<string, string[]>>,
   __XSDS: Map<string, XsdSchema>,
-  __NAMED_TYPES_BY_TS_NAME: Map<string, TiagoComplexType | TiagoSimpleType>,
-  ct: TiagoComplexType,
+  __NAMED_TYPES_BY_TS_NAME: Map<string, XptcComplexType | XptcSimpleType>,
+  ct: XptcComplexType,
   metaTypeName: string
-): { anonymousTypes: TiagoMetaType[]; needsExtensionType: boolean; metaProperties: TiagoMetaTypeProperty[] } {
-  const metaProperties: TiagoMetaTypeProperty[] = [];
-  const anonymousTypes: TiagoMetaType[] = [];
+): { anonymousTypes: XptcMetaType[]; needsExtensionType: boolean; metaProperties: XptcMetaTypeProperty[] } {
+  const metaProperties: XptcMetaTypeProperty[] = [];
+  const anonymousTypes: XptcMetaType[] = [];
 
   for (const a of ct.attributes) {
     const tsType = getTsTypeFromLocalRef(
@@ -454,7 +454,7 @@ function getMetaProperties(
       elem: undefined,
       metaType: {
         name: getMetaTypeName(tsType.name, tsType.doc),
-        tiagoType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
+        xptcType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
       },
       isArray: false,
       isOptional: a.isOptional,
@@ -463,7 +463,7 @@ function getMetaProperties(
 
   for (const e of ct.elements) {
     if (e.kind === "ofRef") {
-      const referencedElement = getTiagoElementFromLocalElementRef(
+      const referencedElement = getXptcElementFromLocalElementRef(
         __XSDS,
         __ELEMENTS,
         ct.declaredAtRelativeLocation,
@@ -497,7 +497,7 @@ function getMetaProperties(
           elem: elem,
           metaType: {
             name: getMetaTypeName(tsType.name, tsType.doc),
-            tiagoType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
+            xptcType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
           },
           isArray: e.isArray,
           isOptional: isOptionalForSure,
@@ -513,7 +513,7 @@ function getMetaProperties(
         elem: undefined, // REALLY?
         metaType: {
           name: getMetaTypeName(tsType.name, tsType.doc),
-          tiagoType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
+          xptcType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
         },
         isArray: e.isArray,
         isOptional: e.isOptional,
@@ -540,12 +540,12 @@ function getMetaProperties(
         fromType: metaTypeName,
         name: e.name,
         elem: undefined, // REALLY?
-        metaType: { name: anonymousType, tiagoType: undefined },
+        metaType: { name: anonymousType, xptcType: undefined },
         isArray: e.isArray,
         isOptional: e.isOptional,
       });
     } else {
-      throw new Error(`Unknown kind of TiagoComplexType '${e}'`);
+      throw new Error(`Unknown kind of XptcComplexType '${e}'`);
     }
   }
 
@@ -574,7 +574,7 @@ function getMetaProperties(
           fromType: curParentCt.name,
           elem: undefined,
           name: `@_${a.name}`,
-          metaType: { name: getMetaTypeName(attributeType.name, attributeType.doc), tiagoType: undefined },
+          metaType: { name: getMetaTypeName(attributeType.name, attributeType.doc), xptcType: undefined },
           isArray: false,
           isOptional: a.isOptional,
         });
@@ -603,7 +603,7 @@ function getMetaProperties(
             declaredAt: curParentCt.declaredAtRelativeLocation,
             fromType: curParentCt.name,
             name: e.name,
-            metaType: { name: anonymousTypeName, tiagoType: undefined },
+            metaType: { name: anonymousTypeName, xptcType: undefined },
             isArray: e.isArray,
             isOptional: e.isOptional,
           });
@@ -622,13 +622,13 @@ function getMetaProperties(
             name: e.name,
             metaType: {
               name: getMetaTypeName(tsType.name, tsType.doc),
-              tiagoType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
+              xptcType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name),
             },
             isArray: e.isArray,
             isOptional: e.isOptional,
           });
         } else if (e.kind === "ofRef") {
-          const referencedElement = getTiagoElementFromLocalElementRef(
+          const referencedElement = getXptcElementFromLocalElementRef(
             __XSDS,
             __ELEMENTS,
             curParentCt.declaredAtRelativeLocation,
@@ -662,7 +662,7 @@ function getMetaProperties(
               elem: elem,
               metaType: {
                 name: getMetaTypeName(tsType.name, tsType.doc),
-                tiagoType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name)!,
+                xptcType: __NAMED_TYPES_BY_TS_NAME.get(tsType.name)!,
               },
               isArray: e.isArray,
               isOptional: isOptionalForSure,
@@ -710,7 +710,7 @@ function getTsNameFromNamedType(relativeLocation: string, namedTypeName: string)
 
 function getTsTypeFromLocalRef(
   __XSDS: Map<string, XsdSchema>,
-  __NAMED_TYPES_BY_TS_NAME: Map<string, TiagoComplexType | TiagoSimpleType>,
+  __NAMED_TYPES_BY_TS_NAME: Map<string, XptcComplexType | XptcSimpleType>,
   relativeLocation: string,
   namedTypeLocalRef: string
 ): { name: string; doc: string } {
@@ -760,7 +760,7 @@ function getTsTypeFromLocalRef(
   };
 }
 
-function xsdSimpleTypeToTiagoSimpleType(s: XsdSimpleType, location: string): TiagoSimpleType {
+function xsdSimpleTypeToXptcSimpleType(s: XsdSimpleType, location: string): XptcSimpleType {
   if (
     (s["xsd:restriction"]?.["@_base"] === "xsd:string" || s["xsd:restriction"]?.["@_base"] === "xsd:token") &&
     s["xsd:restriction"]["xsd:enumeration"]
@@ -789,12 +789,12 @@ function xsdSimpleTypeToTiagoSimpleType(s: XsdSimpleType, location: string): Tia
   }
 }
 
-function getTiagoElementFromLocalElementRef(
+function getXptcElementFromLocalElementRef(
   __XSDS: Map<string, XsdSchema>,
-  __ELEMENTS: Map<string, TiagoElement>,
+  __ELEMENTS: Map<string, XptcElement>,
   relativeLocation: string,
   localElementRef: string
-): TiagoElement | undefined {
+): XptcElement | undefined {
   // check if it's a local ref to another namespace
   if (localElementRef.includes(":") && localElementRef.split(":").length === 2) {
     const [localNsName, referencedElementName] = localElementRef.split(":");
@@ -815,12 +815,12 @@ function getTiagoElementFromLocalElementRef(
   return __ELEMENTS.get(`${relativeLocation}__${localElementRef}`);
 }
 
-function xsdElementToTiagoElement(
+function xsdElementToXptcElement(
   parentIdentifierForExtensionType: string,
   xsdElement: NonNullable<Unpacked<XsdSequence["xsd:element"]>>,
   location: string,
   args?: { forceOptional: boolean }
-): TiagoComplexType["elements"] {
+): XptcComplexType["elements"] {
   const minOccurs = xsdElement["@_minOccurs"] ?? 1;
   const maxOccurs = xsdElement["@_maxOccurs"] ?? 1;
 
@@ -893,7 +893,7 @@ function xsdElementToTiagoElement(
         kind: "ofAnonymousType",
         isArray,
         isOptional,
-        anonymousType: xsdComplexTypeToAnonymousTiagoComplexType(
+        anonymousType: xsdComplexTypeToAnonymousXptcComplexType(
           parentIdentifierForExtensionType,
           xsdElement["xsd:complexType"],
           location,
@@ -921,7 +921,7 @@ function xsdElementToTiagoElement(
   throw new Error(`Unknown xsd:element structure. ${JSON.stringify(xsdElement)}`);
 }
 
-function xsdAttributeToTiagoAttribute(xsdAttribute: XsdAttribute): Unpacked<TiagoComplexType["attributes"]> {
+function xsdAttributeToXptcAttribute(xsdAttribute: XsdAttribute): Unpacked<XptcComplexType["attributes"]> {
   return {
     name: xsdAttribute["@_name"],
     localTypeRef: xsdAttribute["@_type"],
@@ -929,12 +929,12 @@ function xsdAttributeToTiagoAttribute(xsdAttribute: XsdAttribute): Unpacked<Tiag
   };
 }
 
-function xsdComplexTypeToAnonymousTiagoComplexType(
+function xsdComplexTypeToAnonymousXptcComplexType(
   parentIdentifierForExtensionType: string,
   xsdCt: XsdComplexType,
   location: string,
   element: string
-): TiagoComplexTypeAnonymous {
+): XptcComplexTypeAnonymous {
   return {
     type: "complex",
     doc: "",
@@ -946,16 +946,16 @@ function xsdComplexTypeToAnonymousTiagoComplexType(
     childOf: xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["@_base"],
     elements: [
       ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
-        xsdElementToTiagoElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
+        xsdElementToXptcElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
       ),
       ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
-        xsdElementToTiagoElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
+        xsdElementToXptcElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
       ),
     ],
     attributes: [
-      ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToTiagoAttribute(a)),
+      ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
       ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:attribute"] ?? []).map((a) =>
-        xsdAttributeToTiagoAttribute(a)
+        xsdAttributeToXptcAttribute(a)
       ),
     ],
   };

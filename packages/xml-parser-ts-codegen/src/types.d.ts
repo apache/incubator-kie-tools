@@ -1,4 +1,5 @@
-export type TiagoComplexTypeBase = {
+// XPTC stands for XmlParserTsCodegen
+export type XptcComplexTypeBase = {
   childOf?: string;
   doc: string;
   type: "complex";
@@ -17,7 +18,7 @@ export type TiagoComplexTypeBase = {
       | {
           name: string;
           kind: "ofAnonymousType"; // Types declared directly inside the element.
-          anonymousType: TiagoComplexTypeAnonymous;
+          anonymousType: XptcComplexTypeAnonymous;
         }
       | {
           kind: "ofRef"; // References another element.
@@ -32,21 +33,21 @@ export type TiagoComplexTypeBase = {
   }>;
 };
 
-export type TiagoComplexTypeAnonymous = TiagoComplexTypeBase & {
+export type XptcComplexTypeAnonymous = XptcComplexTypeBase & {
   isAnonymous: true; // Declared directly inside elements.
   forElementWithName: string;
   parentIdentifierForExtensionType: string;
 };
 
-export type TiagoComplexTypeNamed = TiagoComplexTypeBase & {
+export type XptcComplexTypeNamed = XptcComplexTypeBase & {
   name: string;
   isAbstract: boolean;
   isAnonymous: false;
 };
 
-export type TiagoComplexType = TiagoComplexTypeNamed | TiagoComplexTypeAnonymous;
+export type XptcComplexType = XptcComplexTypeNamed | XptcComplexTypeAnonymous;
 
-export type TiagoElement = {
+export type XptcElement = {
   name: string;
   type: string;
   isAbstract: boolean;
@@ -54,7 +55,7 @@ export type TiagoElement = {
   declaredAtRelativeLocation: string;
 };
 
-export type TiagoSimpleType = {
+export type XptcSimpleType = {
   type: "simple";
   doc: string;
   name: string;
@@ -72,27 +73,27 @@ export type TiagoSimpleType = {
     }
 );
 
-export type TiagoTsPrimitiveType = {
+export type XptcTsPrimitiveType = {
   doc: string;
   type: "primitive";
   tsEquivalent: string;
 };
 
-export type TiagoTsImports = {
+export type XptcTsImports = {
   save: (name: string, location: string) => void;
 };
 
-export type TiagoMetaType = {
+export type XptcMetaType = {
   name: string;
-  properties: TiagoMetaTypeProperty[];
+  properties: XptcMetaTypeProperty[];
 };
 
-export type TiagoMetaTypeProperty = {
+export type XptcMetaTypeProperty = {
   name: string;
-  elem: TiagoElement | undefined;
+  elem: XptcElement | undefined;
   metaType: {
     name: string;
-    tiagoType: TiagoSimpleType | TiagoComplexType | undefined;
+    xptcType: XptcSimpleType | XptcComplexType | undefined;
   };
   isArray: boolean;
   isOptional: boolean;
