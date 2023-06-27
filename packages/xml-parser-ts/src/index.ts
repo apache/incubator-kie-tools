@@ -1,7 +1,6 @@
 import * as fxp from "fast-xml-parser";
-import { X2jOptionsOptional } from "fast-xml-parser";
 
-export type Parser<T extends object> = {
+export type XmlParserTs<T extends object> = {
   parse: (args: { xml: string | Buffer; instanceNs?: Map<string, string> }) => {
     json: T;
     instanceNs: Map<string, string>;
@@ -11,27 +10,51 @@ export type Parser<T extends object> = {
 
 export type XmlParserTsRootElementBaseType = Partial<{ [k: `@_xmlns:${string}`]: string }> & { "@_xmlns"?: string };
 
-export const TERMINAL_TYPES = ["boolean", "integer", "float", "string"];
+export type MetaTypeDef = { type: string; isArray: boolean; isOptional: boolean };
 
-export type TypeDef = { type: string; isArray: boolean; isOptional: boolean };
-export type Meta = Record<string, Record<string, TypeDef>>;
+export type Meta = Record<string, Record<string, MetaTypeDef>>;
+
+export type NamespacedProperty<P extends string, K> = K extends string
+  ? K extends `@_${string}` | `${string}:${string}` // @_xxx are attributes, xxx:xxx are elements referencing other namespaces;
+    ? K
+    : `${P}:${K}`
+  : never;
+
+export type Namespaced<P extends string, T> = {
+  [K in keyof T as NamespacedProperty<P, K>]: NonNullable<T[K]> extends Array<infer R> ? Array<Namespaced<P, R>> : T[K];
+};
 
 function parseInt(attrValue: string) {
+  let i: number;
   try {
-    return Number.parseInt(attrValue);
+    i = Number.parseInt(attrValue);
   } catch (e) {
     throw new Error(`Cannot parse integer value '${attrValue}'`);
   }
+
+  if (Number.isNaN(i)) {
+    throw new Error(`Stopping NaN from propagating. Tried to parse from (integer) '${attrValue}'`);
+  }
+
+  return i;
 }
 
 function parseFloat(attrValue: string) {
+  let f: number;
   try {
-    return Number.parseFloat(attrValue);
+    f = Number.parseFloat(attrValue);
   } catch (e) {
     throw new Error(`Cannot parse float value '${attrValue}'`);
   }
+
+  if (Number.isNaN(f)) {
+    throw new Error(`Stopping NaN from propagating. Tried to parse from (float) '${attrValue}'`);
+  }
+
+  return f;
 }
 
+//** AllNNI stands for All non-negative integers. This comes from the XSD specification. */
 function parseAllNNI(attrValue: string) {
   try {
     return attrValue === "unbounded" ? "unbounded" : parseInt(attrValue);
@@ -50,12 +73,47 @@ function parseBoolean(attrValue: string) {
   }
 }
 
-export function traverse(meta: Meta, jsonPath: string, root: { element: string; type: string }): TypeDef | undefined {
+/**
+ * Receives a base meta and an array of prefix-meta pair. Types described by the extension metas have their properties prefixed by their corresponding prefix.
+ *
+ * @returns a single meta, containing the information of `base` and all extensions metas with prefixed properties.
+ */
+export function mergeMetas(base: Meta, extensionMetasByPrefix: [string, Meta][]) {
+  const prefixedMetas = extensionMetasByPrefix.reduce((acc, [k, m]) => {
+    return {
+      ...acc,
+      ...Object.keys(m).reduce((macc, t) => {
+        macc[t] = Object.keys(m[t]).reduce((tacc, p) => {
+          if (p.includes(":") || p.startsWith("@_")) {
+            tacc[p] = m[t][p];
+          } else {
+            tacc[`${k}${p}`] = m[t][p];
+          }
+          return tacc;
+        }, {} as any);
+        return macc;
+      }, {} as any),
+    };
+  }, {});
+
+  return { ...base, ...prefixedMetas };
+}
+
+/**
+ * Searches for a meta type information for the given jsonPath inside `meta`. `root` is used to start the traversal properly.
+ *
+ * @returns The corresponding meta type information for the given jsonPath, or undefined is none is found.
+ */
+export function traverse(
+  meta: Meta,
+  jsonPath: string,
+  root: { element: string; type: string }
+): MetaTypeDef | undefined {
   const path = jsonPath.split(".");
   path.shift(); // Discard the first, as it's always empty.
 
-  let ret: TypeDef | undefined = undefined;
-  let currentType: Record<string, TypeDef | undefined> = meta[root.type];
+  let ret: MetaTypeDef | undefined = undefined;
+  let currentType: Record<string, MetaTypeDef | undefined> = meta[root.type];
 
   for (const prop of path) {
     if (!currentType) {
@@ -72,7 +130,8 @@ export function traverse(meta: Meta, jsonPath: string, root: { element: string; 
   return ret;
 }
 
-const __FXP_OPTS: X2jOptionsOptional = {
+// Common options used by FXP Parsers and Builders.
+const __FXP_OPTS: fxp.X2jOptionsOptional = {
   ignoreAttributes: false, // Obviously, we want the attributes to be part of the JSON too.
   alwaysCreateTextNode: false,
   textNodeName: "#text",
@@ -92,6 +151,7 @@ const __FXP_OPTS: X2jOptionsOptional = {
 // The depth option is not documented. It works because of the local patch we have.
 const __FXP_SHALLOW_PARSER = new fxp.XMLParser({ ...__FXP_OPTS, depth: 0 } as any);
 
+// This is used to write XML strings based on the JSONs we created.
 const __FXP_BUILDER = new fxp.XMLBuilder({
   attributeNamePrefix: "@_",
   textNodeName: "#text",
@@ -107,7 +167,7 @@ const __FXP_BUILDER = new fxp.XMLBuilder({
  *      "https://www.omg.org/spec/DMN/20211108/MODEL/" => "dmn:"
  */
 export function getInstanceNs(xml: string | Buffer): Map<string, string> {
-  console.time("instanceNs took");
+  // console.time("instanceNs took");
 
   // We don't need to parse the entire document, just the first level, as namespaces are always declared at the root element.
   const shallowXml = __FXP_SHALLOW_PARSER.parse(xml);
@@ -143,7 +203,7 @@ export function getInstanceNs(xml: string | Buffer): Map<string, string> {
       })
   );
 
-  console.timeEnd("instanceNs took");
+  // console.timeEnd("instanceNs took");
   return nsMap;
 }
 
@@ -154,7 +214,7 @@ export function getParser<T extends object>(args: {
   ns: Map<string, string>;
   /** Information about the root element used on the XML documents */
   root: { element: string; type: string };
-}): Parser<T> {
+}): XmlParserTs<T> {
   const actualParser = (instanceNs: Map<string, string>) => {
     // console.info(instanceNs);
     return new fxp.XMLParser({
@@ -184,10 +244,12 @@ export function getParser<T extends object>(args: {
           return tagValue;
         } else if (t.type === "string") {
           return tagValue || "";
-        } else if (t.type === "integer" || t.type === "float") {
-          throw new Error("Can't have an empty number tag");
+        } else if (t.type === "integer") {
+          return parseInt(tagValue);
+        } else if (t.type === "float") {
+          return parseFloat(tagValue);
         } else if (t.type === "boolean") {
-          throw new Error("Can't have an empty boolean tag");
+          return parseBoolean(tagValue);
         } else if (t.type === "any") {
           return tagValue || {}; // That's the empty object. The tag is there, but it doesn't have any information.
         } else {
@@ -216,15 +278,15 @@ export function getParser<T extends object>(args: {
     parse: ({ xml, instanceNs }) => {
       instanceNs = instanceNs ?? getInstanceNs(xml);
 
-      console.time("parsing took");
+      // console.time("parsing took");
       const json = actualParser(instanceNs).parse(xml);
-      console.timeEnd("parsing took");
+      // console.timeEnd("parsing took");
       return { json, instanceNs };
     },
     build: ({ json, instanceNs }) => {
-      console.time("building took");
+      // console.time("building took");
       const xml = __FXP_BUILDER.build(applyInstanceNsMap(json, args.ns, instanceNs));
-      console.timeEnd("building took");
+      // console.timeEnd("building took");
       return xml;
     },
   };
@@ -236,7 +298,9 @@ export function getParser<T extends object>(args: {
  * @param json The data to be transformed to XML.
  * @param ns The ns map representing the data on the JSON.
  * @param instanceNs The ns map representing the data on the final XML.
- * @returns An XML string representation of `json`.
+ *
+ * @returns a JSON that will be used to write an XML string. The type of this JSON is purposefully `any`
+ *          since there's no way to type-safely know what namespace mapping was used on `instanceNs`.
  */
 function applyInstanceNsMap<T extends object>(json: T, ns: Map<string, string>, instanceNs: Map<string, string>): any {
   if (typeof json !== "object") {

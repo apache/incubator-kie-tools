@@ -1,29 +1,27 @@
-import { Meta, Parser, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts";
+import { Meta, XmlParserTs, getInstanceNs, getParser, mergeMetas } from "@kie-tools/xml-parser-ts";
 import { meta as dmn12meta, root as dmn12root, ns as dmn12ns } from "./schemas/dmn-1_2/ts-gen/meta";
 import { meta as dmn13meta, root as dmn13root, ns as dmn13ns } from "./schemas/dmn-1_3/ts-gen/meta";
 import { meta as dmn14meta, root as dmn14root, ns as dmn14ns } from "./schemas/dmn-1_4/ts-gen/meta";
-import { meta as kie10meta, root as kie10root, ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";
-import "./extensions";
+import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
 type DmnMarshaller = {
-  parser: Parser<DmnDefinitions>;
+  parser: XmlParserTs<DmnDefinitions>;
   instanceNs: Map<string, string>;
   root: { element: string; type: string };
   meta: Meta;
   version: "1.0" | "1.1" | "1.2" | "1.3" | "1.4";
 };
 
-export type DmnDefinitions = DMN12__tDefinitions | DMN13__tDefinitions | DMN14__tDefinitions;
+export type DmnDefinitions = { definitions: DMN12__tDefinitions | DMN13__tDefinitions | DMN14__tDefinitions };
 
 export function getMarshaller(xml: string): DmnMarshaller {
   const instanceNs = getInstanceNs(xml);
 
   // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   if (instanceNs.get(dmn12ns.get("")!) !== undefined) {
-    console.log("Detected version is DMN 1.2");
     return {
       instanceNs,
       version: "1.2",
@@ -37,7 +35,6 @@ export function getMarshaller(xml: string): DmnMarshaller {
     };
     // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   } else if (instanceNs.get(dmn13ns.get("")!) !== undefined) {
-    console.log("Detected version is DMN 1.3");
     return {
       instanceNs,
       version: "1.3",
@@ -51,7 +48,6 @@ export function getMarshaller(xml: string): DmnMarshaller {
     };
     // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   } else if (instanceNs.get(dmn14ns.get("")!) !== undefined) {
-    console.log("Detected version is DMN 1.4");
     return {
       instanceNs,
       version: "1.4",

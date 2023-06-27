@@ -2,7 +2,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import { Parser, getParser } from "@kie-tools/xml-parser-ts";
+import { XmlParserTs, getParser } from "@kie-tools/xml-parser-ts";
 import {
   TiagoTsImports,
   TiagoTsPrimitiveType,
@@ -33,7 +33,7 @@ export const __XSD_PARSER = getParser<XsdSchema>({
 export type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const __LOGS = {
-  done: (location: string) => `[codegen] Done for '${location}'.`,
+  done: (location: string) => `[xml-parser-ts-codegen] Done for '${location}'.`,
 };
 
 export const XSD__TYPES = new Map<string, TiagoTsPrimitiveType>([
@@ -62,7 +62,7 @@ async function fetchXsdString(baseLocation: string, relativeLocation: string) {
 
 // TODO: Unit tests
 async function parseDeep(
-  __XSD_PARSER: Parser<XsdSchema>,
+  __XSD_PARSER: XmlParserTs<XsdSchema>,
   baseLocation: string,
   relativeLocation: string
 ): Promise<[string, XsdSchema][]> {
@@ -284,7 +284,8 @@ ${enumValues.join(" |\n")}
         // FIXME: Not all anonymous types are extensible!
         return `// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ${anonType.name} {
-${anonymousTypesProperties}
+  __?: undefined;
+${anonymousTypesProperties.join("\n")}
 }`;
       })
       .join("\n");
@@ -345,9 +346,6 @@ ${ts}
   // meta
 
   let meta = `
-
-import { Meta } from "@kie-tools/xml-parser-ts"
-
 export const root = {
     element: "${__ROOT_ELEMENT}",
     type: "${rootTsTypeName}" 
@@ -365,7 +363,7 @@ ${[...__XSDS.entries()]
 ]);
 
 
-export const meta: Meta = {
+export const meta = {
 `;
 
   Array.from(__META_TYPE_MAPPING.entries()).forEach(([name, type]) => {
