@@ -1418,16 +1418,6 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
     ],
   };
 
-  /*
-      ["string(mask, p)", "string($1, $2)"],
-
-      ["substring after(string, match)", "substring after($1, $2)"],
-      ["substring before(string, match)", "substring before($1, $2)"],
-
-
-    ],
-  }; */
-
   for (const suggestion of suggestionTypes.snippet) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Keyword,
