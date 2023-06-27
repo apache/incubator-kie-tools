@@ -1203,7 +1203,44 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "started by( (1..10), (1..10) ) = true",
         ],
       },
-
+      {
+        label: "starts with(string, match)",
+        insertText: "starts with($1, $2)",
+        description: "Does the string start with the match?",
+        parameters: [
+          ["string", `string`],
+          ["match", `string`],
+        ],
+        examples: ['starts with( "testing", "te" ) = true'],
+      },
+      {
+        label: "starts(range, point)",
+        insertText: "starts($1, $2)",
+        description: "Returns true when a range A starts a point B",
+        parameters: [
+          ["range", `\`range\` (\`interval\`)`],
+          ["point", `\`number\``],
+        ],
+        examples: ["starts( 1, [1..10] ) = true", "starts( 1, (1..10] ) = false", "starts( 2, [1..10] ) = false"],
+      },
+      {
+        label: "starts(range1, range2)",
+        insertText: "starts($1, $2)",
+        description: "Returns true when a range A starts a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "starts( [1..5], [1..10] ) = true",
+          "starts( (1..5], (1..10] ) = true",
+          "starts( (1..5], [1..10] ) = false",
+          "starts( [1..5], (1..10] ) = false",
+          "starts( [1..10], [1..10] ) = true",
+          "starts( [1..10), [1..10] ) = true",
+          "starts( (1..10), (1..10) ) = true",
+        ],
+      },
       {
         label: "stddev(list)",
         insertText: "stddev($1)",
@@ -1216,6 +1253,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "stddev( [ ] ) = null",
         ],
       },
+
       {
         label: "sum(list)",
         insertText: "sum($1)",
@@ -1227,10 +1265,6 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   };
 
   /*
-      ["starts with(string, match)", "starts with($1, $2)"],
-      ["starts(range1, range2)", "starts($1, $2)"],
-      ["starts(point, range)", "starts($1, $2)"],
-      ["stddev(list)", "stddev($1)"],
       ["string length(string)", "string length($1)"],
       ["string(from)", "string($1)"],
       ["string(mask, p)", "string($1, $2)"],
