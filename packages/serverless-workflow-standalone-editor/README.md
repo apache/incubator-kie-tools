@@ -37,7 +37,7 @@ Available parameters:
   - `Promise.resolve("")`
   - `Promise.resolve("<SWF_CONTENT_DIRECTLY_HERE>")`
 - `readOnly` (optional, defaults to `false`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.
-- `languageType` (required, defaults to `json`): Use `json` to render text editor with serverless workflow content in json format and stunner editor to display diagram. Use `yaml` to render text editor with serverless workflow content in yaml format and mermaid editor to display diagram.
+- `languageType` (required, defaults to `json`): Use `json`/`yaml` to render text editor with serverless workflow content in json/yaml format and stunner editor to display diagram.
 - `swfPreviewOptions` (optional, defaults to `{ editorMode: "full", defaultWidth: "50%" }`): You can use this option to change the `editorMode` (optional, defaults to `full`) and `defaultWidth` (optional, defaults to `50%`). If you want to render only the diagram editors into the web application and hide the text editor, you can use this parameter and set the value `diagram`. To render the text editor and hide the diagram editor, you can use set the value `text`. To render both `diagram` and `text` together, you can set the value `full`.
 
 The returned object will contain the methods needed to manipulate the Editor:

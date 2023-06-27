@@ -16,7 +16,6 @@
 
 import swfCombinedEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfCombinedEditorEnvelopeIndex.html";
 import swfDiagramEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfDiagramEditorEnvelopeIndex.html";
-import swfMermaidViewerEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfMermaidViewerEnvelopeIndex.html";
 import swfTextEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfTextEditorEnvelopeIndex.html";
 import { createEditor, Editor, ServerlessWorkflowType, StandaloneEditorApi } from "../common/Editor";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
@@ -24,7 +23,6 @@ import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import {
-  SwfFeatureToggleChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl,
   NoOpSwfServiceCatalogChannelApiImpl,
   SwfStaticEnvelopeContentProviderChannelApiImpl,
@@ -123,13 +121,11 @@ export const open = (args: {
         },
       }
     ),
-    new SwfFeatureToggleChannelApiImpl({ stunnerEnabled: true }),
     new NoOpSwfServiceCatalogChannelApiImpl(),
     languageServiceChannelApiImpl,
     new SwfPreviewOptionsChannelApiImpl(args.swfPreviewOptions ?? undefined),
     new SwfStaticEnvelopeContentProviderChannelApiImpl({
       diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,
-      mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
       textEditorEnvelopeContent: swfTextEditorEnvelopeIndex,
     })
   );

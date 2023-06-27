@@ -101,8 +101,4 @@ export class DashbuilderEditorChannelApiImpl implements DashbuilderEditorChannel
   kogitoDashbuilderLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
     return this.dashbuilderLanguageServiceChannelApiImpl.kogitoDashbuilderLanguageService__getCodeLenses(args) ?? [];
   }
-
-  public kogitoDashbuilderTextEditor_moveCursorToPosition(_position: MonacoPosition): void {
-    // no-op
-  }
 }
