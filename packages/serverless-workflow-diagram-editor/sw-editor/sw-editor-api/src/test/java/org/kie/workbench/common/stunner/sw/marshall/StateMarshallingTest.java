@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.HasEnd;
 import org.kie.workbench.common.stunner.sw.definition.HasErrors;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
+import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -47,7 +48,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                 .setId(WORKFLOW_ID)
                 .setName(WORKFLOW_NAME)
                 .setStates(new State[]{
-                        new InjectState()
+                        new OperationState()
                                 .setName("State1")
                 });
     }
@@ -121,7 +122,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         unmarshallWorkflow();
         Workflow workflow = marshallWorkflow();
         assertEquals(1, workflow.getStates().length);
-        InjectState state1 = (InjectState) workflow.getStates()[0];
+        OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
         assertFalse(state1.toEnd());
         assertNull(state1.getCompensatedBy());
@@ -141,7 +142,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                                graphHandler.newNode(Marshaller.STATE_END, Optional.of(new End())));
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
-        InjectState state1 = (InjectState) workflow.getStates()[0];
+        OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
         assertFalse(state1.toEnd());
         assertNull(state1.getCompensatedBy());
@@ -167,11 +168,11 @@ public class StateMarshallingTest extends BaseMarshallingTest {
 
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
-        InjectState state1 = (InjectState) workflow.getStates()[0];
+        OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
         assertFalse(state1.toEnd());
-        assertEquals(compensationState.getName(), state1.getCompensatedBy());
         assertNull(state1.getTransition());
         assertNull(((HasErrors) state1).getOnErrors());
+        assertEquals(compensationState.getName(), state1.getCompensatedBy());
     }
 }

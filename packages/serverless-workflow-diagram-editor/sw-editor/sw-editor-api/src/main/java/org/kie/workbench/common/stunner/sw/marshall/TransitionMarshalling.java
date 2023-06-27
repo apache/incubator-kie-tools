@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
@@ -113,8 +114,9 @@ public interface TransitionMarshalling {
                 Node sourceNode = edge.getSourceNode();
                 if (null != sourceNode) {
                     Node targetNode = edge.getTargetNode();
-                    if (null != targetNode) {
-                        HasCompensatedBy sourceState = getElementDefinition(sourceNode);
+                    ViewImpl view = (ViewImpl) sourceNode.getContent();
+                    if (null != targetNode && view != null && view.getDefinition() instanceof HasCompensatedBy) {
+                        HasCompensatedBy<?> sourceState = getElementDefinition(sourceNode);
                         sourceState.setCompensatedBy(getStateNodeName(targetNode));
                     }
                 }
