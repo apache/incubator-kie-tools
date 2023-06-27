@@ -1527,7 +1527,7 @@ const generateMarkdownParametersTable = (parameters: string[][]): string => {
   if (parameters.length === 0) {
     return "";
   }
-  let rows = parameters.map((item) => `|\`${item[0]}\`|${item[1]}|`);
+  const rows = parameters.map((item) => `|\`${item[0]}\`|${item[1]}|`);
   return `| Parameter | Type |\n|-|-|\n${rows.join(`\n`)}`;
 };
 
