@@ -42,6 +42,7 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
     keywords: [
       "for",
       "in",
+      "instance of",
       "return",
       "if",
       "then",
@@ -49,8 +50,6 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
       "some",
       "every",
       "satisfies",
-      "instance",
-      "of",
       "function",
       "external",
       "or",
@@ -193,6 +192,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   const suggestionTypes = {
     snippet: [
       ["if", "if $1 then\n\t$0\nelse\n\t"],
+      ["instance of", "instance of $0"],
       ["for", "for element in $1 return\n\t$0"],
     ],
     function: [
@@ -328,7 +328,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns `n` with rounding mode ceiling. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
-      } /* 
+      } /*
       {   === DMN 1.4 ===
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
@@ -657,7 +657,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns `n` with rounding mode flooring. If `n` is null the result is null.",
         parameters: [["n", `\`number\``]],
         examples: ["floor(1.5) = 1"],
-      } /* 
+      } /*
       {   === DMN 1.4 ===
         label: "floor(n, scale)",
         insertText: "floor($1, $2)",
