@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-import { Menu, MenuGroup, MenuItem, MenuList } from "@patternfly/react-core/dist/js/components/Menu";
+import {
+  DrilldownMenu,
+  Menu,
+  MenuContent,
+  MenuGroup,
+  MenuItem,
+  MenuList,
+} from "@patternfly/react-core/dist/js/components/Menu";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
-import { useCallback, useLayoutEffect, useMemo } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { BeeTableContextMenuAllowedOperationsConditions, BeeTableOperation, BeeTableOperationConfig } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
@@ -38,6 +46,8 @@ import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
+import { NumberInput, Radio } from "@patternfly/react-core/dist/js/";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
 export interface BeeTableContextMenuHandlerProps {
   tableRef: React.RefObject<HTMLDivElement | null>;
@@ -53,6 +63,19 @@ export interface BeeTableContextMenuHandlerProps {
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
 }
 
+export enum InsertRowColumnsDirection {
+  AboveOrRight,
+  BelowOrLeft,
+}
+
+const ROOT_MENU_ID = "beeTableContextMenuRoot";
+
+/** The maximum numbers of rows or columns that can be inserted from the Insert menu. */
+const MAXIMUM_ROWS_COLUMNS_PER_INSERTION = 500;
+
+/** The default value for insert multiple rows/columns. */
+const DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION = 2;
+
 export function BeeTableContextMenuHandler({
   tableRef,
   operationConfig,
@@ -67,8 +90,38 @@ export function BeeTableContextMenuHandler({
 }: BeeTableContextMenuHandlerProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
+  const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
+  const [drillDownPath, setDrillDownPath] = useState<string[]>([]);
+  const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
+  const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
+  const [direction, setDirection] = useState(InsertRowColumnsDirection.AboveOrRight);
+  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number | "">(
+    DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION
+  );
+
+  const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
+    setMenuDrilledIn((prev) => [...prev, fromMenuId]);
+    setDrillDownPath((prev) => [...prev, pathId]);
+    setActiveMenu(toMenuId);
+  }, []);
+
+  const drillOut = useCallback((_event, toMenuId) => {
+    setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
+    setDrillDownPath((prev) => prev.slice(0, prev.length - 1));
+    setActiveMenu(toMenuId);
+  }, []);
+
+  const setMenuHeight = useCallback((menuId: string, height: number) => {
+    setMenuHeights((prev) => {
+      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
+        return { ...prev, [menuId]: height };
+      }
+      return prev;
+    });
+  }, []);
 
   const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
+
   const selection: BeeTableSelection = useMemo(() => {
     return {
       active: activeCell,
@@ -138,12 +191,16 @@ export function BeeTableContextMenuHandler({
           return i18n.columnOperations.insertLeft;
         case BeeTableOperation.ColumnInsertRight:
           return i18n.columnOperations.insertRight;
+        case BeeTableOperation.ColumnInsertN:
+          return i18n.insert;
         case BeeTableOperation.ColumnDelete:
           return i18n.columnOperations.delete;
         case BeeTableOperation.RowInsertAbove:
           return i18n.rowOperations.insertAbove;
         case BeeTableOperation.RowInsertBelow:
           return i18n.rowOperations.insertBelow;
+        case BeeTableOperation.RowInsertN:
+          return i18n.insert;
         case BeeTableOperation.RowDelete:
           return i18n.rowOperations.delete;
         case BeeTableOperation.RowReset:
@@ -171,11 +228,15 @@ export function BeeTableContextMenuHandler({
         return <PlusIcon />;
       case BeeTableOperation.ColumnInsertRight:
         return <PlusIcon />;
+      case BeeTableOperation.ColumnInsertN:
+        return <PlusIcon />;
       case BeeTableOperation.ColumnDelete:
         return <TrashIcon />;
       case BeeTableOperation.RowInsertAbove:
         return <PlusIcon />;
       case BeeTableOperation.RowInsertBelow:
+        return <PlusIcon />;
+      case BeeTableOperation.RowInsertN:
         return <PlusIcon />;
       case BeeTableOperation.RowDelete:
         return <TrashIcon />;
@@ -214,41 +275,47 @@ export function BeeTableContextMenuHandler({
             beforeIndex: columnIndex - 1,
             groupType: column?.groupType,
           });
-          console.info(`Insert column left to ${columnIndex}`);
+          console.debug(`Insert column left to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnInsertRight:
           onColumnAdded?.({
             beforeIndex: columnIndex,
             groupType: column?.groupType,
           });
-          console.info(`Insert column right to ${columnIndex}`);
+          console.debug(`Insert column right to ${columnIndex}`);
+          break;
+        case BeeTableOperation.ColumnInsertN:
+          console.debug(`Insert n columns to ${columnIndex}`);
           break;
         case BeeTableOperation.ColumnDelete:
           onColumnDeleted?.({
             columnIndex: columnIndex - 1,
             groupType: column?.groupType,
           });
-          console.info(`Delete column ${columnIndex}`);
+          console.debug(`Delete column ${columnIndex}`);
           break;
         case BeeTableOperation.RowInsertAbove:
           onRowAdded?.({ beforeIndex: rowIndex });
-          console.info(`Insert row above to ${rowIndex}`);
+          console.debug(`Insert row above to ${rowIndex}`);
           break;
         case BeeTableOperation.RowInsertBelow:
           onRowAdded?.({ beforeIndex: rowIndex + 1 });
-          console.info(`Insert row below to ${rowIndex}`);
+          console.debug(`Insert row below to ${rowIndex}`);
+          break;
+        case BeeTableOperation.RowInsertN:
+          console.debug(`Insert n rows to ${columnIndex}`);
           break;
         case BeeTableOperation.RowDelete:
           onRowDeleted?.({ rowIndex: rowIndex });
-          console.info(`Delete row ${rowIndex}`);
+          console.debug(`Delete row ${rowIndex}`);
           break;
         case BeeTableOperation.RowReset:
           onRowReset?.({ rowIndex: rowIndex });
-          console.info(`Reset row ${rowIndex}`);
+          console.debug(`Reset row ${rowIndex}`);
           break;
         case BeeTableOperation.RowDuplicate:
           onRowDuplicated?.({ rowIndex: rowIndex });
-          console.info(`Duplicate row ${rowIndex}`);
+          console.debug(`Duplicate row ${rowIndex}`);
           break;
         case BeeTableOperation.SelectionCopy:
           copy();
@@ -297,9 +364,58 @@ export function BeeTableContextMenuHandler({
     ]
   );
 
+  const onMinus = () => {
+    const newValue = (insertMultipleRowColumnsValue || 0) - 1;
+    setInsertMultipleRowColumnsValue(newValue);
+  };
+
+  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const value = (event.target as HTMLInputElement).value;
+    const intValue = Math.abs(parseInt(value));
+    setInsertMultipleRowColumnsValue(intValue === 0 ? 1 : Math.min(intValue, MAXIMUM_ROWS_COLUMNS_PER_INSERTION));
+  };
+
+  const onPlus = () => {
+    const newValue = (insertMultipleRowColumnsValue || 0) + 1;
+    setInsertMultipleRowColumnsValue(newValue);
+  };
+
+  const insertRowColumnsNumberInput = useMemo(() => {
+    return (
+      <NumberInput
+        value={insertMultipleRowColumnsValue}
+        onMinus={onMinus}
+        onChange={onChange}
+        onPlus={onPlus}
+        inputName="input"
+        inputAriaLabel="number input"
+        minusBtnAriaLabel="minus"
+        plusBtnAriaLabel="plus"
+        allowEmptyInput={false}
+        min={1}
+        max={MAXIMUM_ROWS_COLUMNS_PER_INSERTION}
+        style={{ textAlign: "center" }}
+      />
+    );
+  }, [insertMultipleRowColumnsValue, onMinus, onChange, onPlus]);
+
   const contextMenuContainerDiv = React.createRef<HTMLDivElement>();
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
+
+  function resetDrillDownMenu() {
+    setMenuDrilledIn([]);
+    setDrillDownPath([]);
+    setMenuHeights({});
+    setActiveMenu(ROOT_MENU_ID);
+    setInsertMultipleRowColumnsValue(DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION);
+  }
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetDrillDownMenu();
+    }
+  }, [isOpen]);
 
   const style = useMemo(() => {
     return {
@@ -311,7 +427,7 @@ export function BeeTableContextMenuHandler({
   useLayoutEffect(() => {
     if (contextMenuContainerDiv.current) {
       const bounds = contextMenuContainerDiv.current.getBoundingClientRect();
-      const contextMenuHeight = bounds.height;
+      const contextMenuHeight = menuHeights[activeMenu];
       const availableHeight = document.documentElement.clientHeight;
       if (contextMenuHeight <= availableHeight && contextMenuHeight + yPos > availableHeight) {
         const offset = contextMenuHeight + yPos - availableHeight;
@@ -335,11 +451,147 @@ export function BeeTableContextMenuHandler({
       columns,
     });
   }, [allowedOperations, selection, column, columns]);
+
   const hasAllowedOperations = useMemo(() => {
     return allOperations.some((operation) => allowedOperationsForSelection.includes(operation.type));
   }, [allOperations, allowedOperationsForSelection]);
 
   let countGroupsWithAllowedOperations = 0;
+
+  function toggleInsertDirection() {
+    setDirection(
+      direction === InsertRowColumnsDirection.AboveOrRight
+        ? InsertRowColumnsDirection.BelowOrLeft
+        : InsertRowColumnsDirection.AboveOrRight
+    );
+  }
+
+  function insertMultipleRowColumns(operation: BeeTableOperation) {
+    if (operation === BeeTableOperation.ColumnInsertN) {
+      for (let i = 0; i < insertMultipleRowColumnsValue; i++) {
+        handleOperation(
+          direction === InsertRowColumnsDirection.AboveOrRight
+            ? BeeTableOperation.ColumnInsertRight
+            : BeeTableOperation.ColumnInsertLeft
+        );
+      }
+    } else if (operation === BeeTableOperation.RowInsertN) {
+      for (let i = 0; i < insertMultipleRowColumnsValue; i++) {
+        handleOperation(
+          direction === InsertRowColumnsDirection.AboveOrRight
+            ? BeeTableOperation.RowInsertAbove
+            : BeeTableOperation.RowInsertBelow
+        );
+      }
+    }
+  }
+
+  function createDrillDownMenu(group: string, operation: BeeTableOperation) {
+    return (
+      <DrilldownMenu id={"insertNColumnsMenu" + operation.toString()}>
+        <MenuItem direction="up" onClick={(e) => e.stopPropagation()}>
+          Back
+        </MenuItem>
+        <Divider />
+        <MenuGroup label={group}>
+          <Flex
+            direction={{ default: "column" }}
+            style={{ padding: "16px" }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Flex direction={{ default: "column" }} width={"300px"}>
+              <FlexItem>{insertRowColumnsNumberInput}</FlexItem>
+            </Flex>
+            <Flex direction={{ default: "row" }}>
+              <FlexItem>
+                <br />
+                <Radio
+                  id={"insertRightAbove" + operation}
+                  name={"insertRightAbove" + operation}
+                  label={
+                    operation === BeeTableOperation.ColumnInsertN
+                      ? i18n.insertDirections.toTheRight
+                      : i18n.insertDirections.above
+                  }
+                  onChange={toggleInsertDirection}
+                  isChecked={direction === InsertRowColumnsDirection.AboveOrRight}
+                />
+                <Radio
+                  id={"insertLeftBelow" + operation}
+                  name={"insertLeftBelow" + operation}
+                  label={
+                    operation === BeeTableOperation.ColumnInsertN
+                      ? i18n.insertDirections.toTheLeft
+                      : i18n.insertDirections.below
+                  }
+                  onChange={toggleInsertDirection}
+                  isChecked={direction === InsertRowColumnsDirection.BelowOrLeft}
+                />
+              </FlexItem>
+            </Flex>
+            <FlexItem align={{ default: "alignLeft" }}>
+              <br />
+              <Button onClick={() => insertMultipleRowColumns(operation)}>Insert</Button>
+            </FlexItem>
+          </Flex>
+        </MenuGroup>
+      </DrilldownMenu>
+    );
+  }
+
+  function buildMenuList(items: { name: string; type: BeeTableOperation }[], group: string) {
+    return (
+      <MenuList>
+        {items.map((operation) =>
+          operation.type === BeeTableOperation.ColumnInsertN || operation.type === BeeTableOperation.RowInsertN ? (
+            <MenuItem
+              icon={operationIcon(operation.type)}
+              data-ouia-component-id={"expression-table-context-menu-" + operation.name}
+              key={operation.type + group}
+              itemId={operation.type}
+              isDisabled={!allowedOperationsForSelection.includes(operation.type)}
+              direction={"down"}
+              onClick={(e) => e.stopPropagation()}
+              drilldownMenu={createDrillDownMenu(group, operation.type)}
+            >
+              {operationLabel(operation.type)}
+            </MenuItem>
+          ) : (
+            <MenuItem
+              icon={operationIcon(operation.type)}
+              data-ouia-component-id={"expression-table-context-menu-" + operation.name}
+              key={operation.type + group}
+              itemId={operation.type}
+              onClick={() => handleOperation(operation.type)}
+              isDisabled={!allowedOperationsForSelection.includes(operation.type)}
+            >
+              {operationLabel(operation.type)}
+            </MenuItem>
+          )
+        )}
+      </MenuList>
+    );
+  }
+
+  function createMenuGroup(items: { name: string; type: BeeTableOperation }[], group: string, element: JSX.Element) {
+    return (
+      <>
+        {items.some((operation) => allowedOperationsForSelection.includes(operation.type)) &&
+          ++countGroupsWithAllowedOperations &&
+          countGroupsWithAllowedOperations > 1 && <Divider key={"divider-" + group} style={{ padding: "16px" }} />}
+        <MenuGroup
+          label={group}
+          className={
+            items.every((operation) => !allowedOperationsForSelection.includes(operation.type))
+              ? "no-allowed-actions-in-group"
+              : ""
+          }
+        >
+          {element}
+        </MenuGroup>
+      </>
+    );
+  }
 
   return (
     <>
@@ -353,40 +605,25 @@ export function BeeTableContextMenuHandler({
           <Menu
             ouiaId="expression-table-context-menu"
             className="table-context-menu"
-            onSelect={(e, itemId) => handleOperation(itemId as BeeTableOperation)}
+            id={ROOT_MENU_ID}
+            containsDrilldown={true}
+            onDrillIn={drillIn}
+            onDrillOut={drillOut}
+            activeMenu={activeMenu}
+            onGetMenuHeight={setMenuHeight}
+            drilldownItemPath={drillDownPath}
+            drilledInMenus={menuDrilledIn}
           >
-            {hasAllowedOperations &&
-              operationGroups.map(({ group, items }) => (
-                <React.Fragment key={group}>
-                  {items.some((operation) => allowedOperationsForSelection.includes(operation.type)) &&
-                    ++countGroupsWithAllowedOperations &&
-                    countGroupsWithAllowedOperations > 1 && (
-                      <Divider key={"divider-" + group} style={{ padding: "16px" }} />
-                    )}
-                  <MenuGroup
-                    label={group}
-                    className={
-                      items.every((operation) => !allowedOperationsForSelection.includes(operation.type))
-                        ? "no-allowed-actions-in-group"
-                        : ""
-                    }
-                  >
-                    <MenuList>
-                      {items.map((operation) => (
-                        <MenuItem
-                          icon={operationIcon(operation.type)}
-                          data-ouia-component-id={"expression-table-context-menu-" + operation.name}
-                          key={operation.type + group}
-                          itemId={operation.type}
-                          isDisabled={!allowedOperationsForSelection.includes(operation.type)}
-                        >
-                          {operationLabel(operation.type)}
-                        </MenuItem>
-                      ))}
-                    </MenuList>
-                  </MenuGroup>
-                </React.Fragment>
-              ))}
+            <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
+              {hasAllowedOperations &&
+                operationGroups.map(({ group, items }) => (
+                  <React.Fragment key={group}>
+                    {activeMenu === ROOT_MENU_ID
+                      ? createMenuGroup(items, group, buildMenuList(items, group))
+                      : buildMenuList(items, group)}
+                  </React.Fragment>
+                ))}
+            </MenuContent>
           </Menu>
         </div>
       )}

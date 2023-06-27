@@ -81,6 +81,7 @@ export function DecisionTableExpression(
         items: [
           { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
           { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.insert, type: BeeTableOperation.ColumnInsertN },
           { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
         ],
       },
@@ -89,6 +90,7 @@ export function DecisionTableExpression(
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
           { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
@@ -698,6 +700,7 @@ export function DecisionTableExpression(
           : [
               BeeTableOperation.ColumnInsertLeft,
               BeeTableOperation.ColumnInsertRight,
+              BeeTableOperation.ColumnInsertN,
               ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
             ];
 
@@ -711,6 +714,7 @@ export function DecisionTableExpression(
           ? [
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
               BeeTableOperation.RowDuplicate,
