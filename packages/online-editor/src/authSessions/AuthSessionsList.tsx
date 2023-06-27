@@ -43,10 +43,23 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { AuthSession, AuthSessionStatus } from "./AuthSessionApi";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
+import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
+import { KieSandboxDeployedModel } from "../devDeployments/services/types";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
+  const devDeployments = useDevDeployments();
+  const [openshiftUsages, setOpenshiftUsages] = useState(new Map());
+
+  useMemo(() => {
+    [...authSessions.values()].map(async (authSession) => {
+      if (authSession.type === "openshift") {
+        const getOpenshiftUsages = await devDeployments.loadDeployments({ authSession });
+        setOpenshiftUsages((prev) => new Map([...prev, [authSession.id, getOpenshiftUsages]]));
+      }
+    });
+  }, [authSessions, devDeployments]);
 
   const usagesByWorkspace = useMemo(() => {
     if (!workspaceDescriptorsPromise.data) {
@@ -82,7 +95,11 @@ export function AuthSessionsList(props: {}) {
             <AuthSessionCard
               key={authSession.id}
               authSession={authSession}
-              usages={usagesByWorkspace.get(authSession.id)}
+              usages={
+                authSession.type === "openshift"
+                  ? openshiftUsages.get(authSession.id)
+                  : usagesByWorkspace.get(authSession.id)
+              }
             />
           );
         })}
@@ -91,7 +108,10 @@ export function AuthSessionsList(props: {}) {
   );
 }
 
-function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDescriptor[] | undefined }) {
+function AuthSessionCard(props: {
+  authSession: AuthSession;
+  usages: WorkspaceDescriptor[] | KieSandboxDeployedModel[] | undefined;
+}) {
   const authSessionsDispatch = useAuthSessionsDispatch();
   const [isExpanded, setExpanded] = useState(false);
   const { authSessionStatus } = useAuthSessions();
@@ -127,6 +147,15 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
               </Label>
             </>
           )}
+          {props.authSession.type === "openshift" && (
+            <>
+              &nbsp; &nbsp; &nbsp;
+              <Label>
+                &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
+                &nbsp;
+              </Label>
+            </>
+          )}
         </CardHeaderMain>
       </CardHeader>
       <CardExpandableContent>
@@ -143,7 +172,10 @@ function AuthSessionCard(props: { authSession: AuthSession; usages: WorkspaceDes
   );
 }
 
-export function AuthSessionDescriptionList(props: { authSession: AuthSession; usages?: WorkspaceDescriptor[] }) {
+export function AuthSessionDescriptionList(props: {
+  authSession: AuthSession;
+  usages?: WorkspaceDescriptor[] | KieSandboxDeployedModel[];
+}) {
   return (
     <>
       {(props.authSession.type === "openshift" || props.authSession.type === "kubernetes") && (
@@ -166,6 +198,14 @@ export function AuthSessionDescriptionList(props: { authSession: AuthSession; us
                 <DescriptionListTerm>Created at</DescriptionListTerm>
                 <DescriptionListDescription>{props.authSession.createdAtDateISO}</DescriptionListDescription>
               </DescriptionListGroup>
+              {props.usages && (
+                <>
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>Usages</DescriptionListTerm>
+                    <DescriptionListDescription>{props.usages.length}</DescriptionListDescription>
+                  </DescriptionListGroup>
+                </>
+              )}
             </>
           </DescriptionList>
         </>
