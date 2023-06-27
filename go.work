@@ -4,5 +4,6 @@ use (
 	.
 	./api
 	./container-builder
+	./testbdd
 	./workflowproj
 )
