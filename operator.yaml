@@ -35,7 +35,8 @@ spec:
     name: v1alpha08
     schema:
       openAPIV3Schema:
-        description: SonataFlowBuild is the Schema for the sonataflowbuilds API
+        description: SonataFlowBuild is an internal custom resource to control workflow
+          build instances in the target platform
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -173,8 +174,8 @@ spec:
     name: v1alpha08
     schema:
       openAPIV3Schema:
-        description: SonataFlowPlatform is the Schema for the sonataflowplatforms
-          API
+        description: SonataFlowPlatform is the descriptor for the workflow platform
+          infrastructure.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -467,7 +468,8 @@ spec:
     name: v1alpha08
     schema:
       openAPIV3Schema:
-        description: SonataFlow is the Schema for the sonataflows API
+        description: SonataFlow is the descriptor representation for a workflow application
+          based on the CNCF Serverless Workflow specification.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation

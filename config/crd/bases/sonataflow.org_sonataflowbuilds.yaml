@@ -29,7 +29,8 @@ spec:
     name: v1alpha08
     schema:
       openAPIV3Schema:
-        description: SonataFlowBuild is the Schema for the sonataflowbuilds API
+        description: SonataFlowBuild is an internal custom resource to control workflow
+          build instances in the target platform
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation

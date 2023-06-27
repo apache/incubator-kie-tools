@@ -97,7 +97,7 @@ func (k *SonataFlowBuildStatus) GetInnerBuild(innerBuild interface{}) error {
 	return nil
 }
 
-// SonataFlowBuild is the Schema for the sonataflowbuilds API
+// SonataFlowBuild is an internal custom resource to control workflow build instances in the target platform
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true

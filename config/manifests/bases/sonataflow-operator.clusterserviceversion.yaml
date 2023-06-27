@@ -4,32 +4,43 @@ metadata:
   annotations:
     alm-examples: '[]'
     capabilities: Basic Install
+    categories: Application Runtime
+    containerImage: quay.io/kiegroup/kogito-serverless-operator:0.0.0
+    description: SonataFlow Kubernetes Operator for deploying workflow applications
+      based on the CNCF Serverless Workflow specification
+    repository: https://github.com/kiegroup/kogito-serverless-operator
+    support: Red Hat
   name: sonataflow-operator.v0.0.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
   customresourcedefinitions:
     owned:
-    - description: SonataFlowBuild is the Schema for the sonataflowbuilds API
+    - description: SonataFlowBuild is an internal custom resource to control workflow
+        build instances in the target platform
       displayName: Sonata Flow Build
       kind: SonataFlowBuild
       name: sonataflowbuilds.sonataflow.org
       version: v1alpha08
-    - description: SonataFlowPlatform is the Schema for the sonataflowplatforms API
+    - description: SonataFlowPlatform is the descriptor for the workflow platform
+        infrastructure.
       displayName: Sonata Flow Platform
       kind: SonataFlowPlatform
       name: sonataflowplatforms.sonataflow.org
       version: v1alpha08
-    - description: SonataFlow is the Schema for the sonataflows API
+    - description: SonataFlow is the descriptor representation for a workflow application
+        based on the CNCF Serverless Workflow specification.
       displayName: Sonata Flow
       kind: SonataFlow
       name: sonataflows.sonataflow.org
       version: v1alpha08
-  description: SonataFlow Operator
-  displayName: sonataflow-operator
-  icon:
-  - base64data: ""
-    mediatype: ""
+  description: |-
+    SonataFlow Kubernetes Operator for deploying workflow applications
+    based on the [CNCF Serverless Workflow specification](https://serverlessworkflow.io/):
+
+    * Deploy workflow applications using the [dev profile](https://sonataflow.org/serverlessworkflow/latest/cloud/operator/developing-workflows.html), suited for the your development cycle
+    * Build workflow applications based on the platform you're currently working on.
+  displayName: SonataFlow Operator
   install:
     spec:
       deployments: null
@@ -49,9 +60,13 @@ spec:
   - serverless
   - serverlessworkflow
   links:
-  - name: SonataFlow Operator
-    url: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/index.html
+  - name: Product Page
+    url: https://sonataflow.org/serverlessworkflow/latest/index.html
+  maintainers:
+  - email: bsig-cloud@redhat.com
+    name: Red Hat
   maturity: alpha
+  minKubeVersion: 1.23.0
   provider:
-    name: sonataflow-operator
+    name: Red Hat
   version: 0.0.0

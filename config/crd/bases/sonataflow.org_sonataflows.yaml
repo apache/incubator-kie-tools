@@ -38,7 +38,8 @@ spec:
     name: v1alpha08
     schema:
       openAPIV3Schema:
-        description: SonataFlow is the Schema for the sonataflows API
+        description: SonataFlow is the descriptor representation for a workflow application
+          based on the CNCF Serverless Workflow specification.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation

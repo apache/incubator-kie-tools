@@ -177,7 +177,7 @@ func (s *SonataFlowStatus) IsBuildFailed() bool {
 	return cond.IsFalse() && cond.Reason == api.BuildFailedReason
 }
 
-// SonataFlow is the Schema for the sonataflows API
+// SonataFlow is the descriptor representation for a workflow application based on the CNCF Serverless Workflow specification.
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status

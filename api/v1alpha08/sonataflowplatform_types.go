@@ -199,7 +199,7 @@ type SonataFlowPlatformStatus struct {
 	Info map[string]string `json:"info,omitempty"`
 }
 
-// SonataFlowPlatform is the Schema for the sonataflowplatforms API
+// SonataFlowPlatform is the descriptor for the workflow platform infrastructure.
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true

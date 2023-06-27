@@ -32,8 +32,8 @@ spec:
     name: v1alpha08
     schema:
       openAPIV3Schema:
-        description: SonataFlowPlatform is the Schema for the sonataflowplatforms
-          API
+        description: SonataFlowPlatform is the descriptor for the workflow platform
+          infrastructure.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
