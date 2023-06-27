@@ -153,7 +153,7 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
         [/(?:true|false)/, "feel-boolean"],
         [/[0-9]+/, "feel-numeric"],
         [/(?:"(?:.*?)")/, "feel-string"],
-        [/([a-z{1}][a-z_\s]+[a-z$])(?=\()/, { cases: { "@functions": "feel-function" } }],
+        [/([a-z{1}][a-z_\s]*[a-z$])(?=\()/, { cases: { "@functions": "feel-function" } }],
         [/[\w$]*[a-z_$][\w$]*/, { cases: { "@keywords": "feel-keyword" } }],
       ],
     },
@@ -804,7 +804,10 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         parameters: [
           ["input", `\`string\``],
           ["pattern", `\`string\``],
-          ["flags", `\`string\``],
+          [
+            "flags",
+            `\`string\` \`i\` makes the regex match case insensitive, \`s\` enables "single-line mode" or "dot-all" mode. \`m\` enables "multi-line mode"`,
+          ],
         ],
         examples: ['matches( "foobar", "^Fo*bar", "i" ) = true'],
       },
@@ -955,28 +958,188 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "nn mode(list)", //TODO check
         insertText: "mode($1)",
         description:
-          "Returns the mode of the numbers in the `list`. If multiple elements are returned, the numbers are sorted in ascending order.",
+          "Returns the mode of the numbers in the `list`. If multiple elements are returned, the numbers are sorted in ascending order",
         parameters: [["list", `\`list\``]],
         examples: ["mode( 6, 3, 9, 6, 6 ) = [6]", "mode( [6, 1, 9, 6, 1] ) = [1, 6]", "mode( [ ] ) = [ ]"],
+      },
+      {
+        label: "nn stddev(list)", //TODO check
+        insertText: "stddev($1)",
+        description: "Returns the standard deviation of the numbers in the `list`",
+        parameters: [["list", `\`list\``]],
+        examples: ["mode( 6, 3, 9, 6, 6 ) = [6]", "mode( [6, 1, 9, 6, 1] ) = [1, 6]", "mode( [ ] ) = [ ]"],
+      },
+      {
+        label: "nn sum(list)", //TODO check
+        insertText: "sum($1)",
+        description:
+          "Returns the mode of the numbers in the `list`. If multiple elements are returned, the numbers are sorted in ascending order",
+        parameters: [["list", `\`list\``]],
+        examples: [
+          "stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
+          "stddev( [47] ) = null",
+          "stddev( 47 ) = null",
+          "stddev( [ ] ) = null",
+        ],
+      },
+      {
+        label: "not(negand)",
+        insertText: "not($1)",
+        description: "Performs the logical negation of the negand operand",
+        parameters: [["negand", `\`boolean\``]],
+        examples: ["not( true ) = false", "not( null ) = null"],
+      },
+      {
+        label: "now()",
+        insertText: "now()",
+        description: "Returns the current date and time.",
+        parameters: [],
+        examples: ["now()"],
+      },
+      {
+        label: "number(from, grouping separator, decimal separator)",
+        insertText: "number($1, $2, $3)",
+        description: "Return new list with `newItem` inserted at `position`",
+        parameters: [
+          ["from", `\`string\` representing a valid number`],
+          ["grouping separator", `Space (\`\`), comma (\`,\`), period (\`.\`), or null`],
+          ["decimal separator", `Same types as \`grouping separator\`, but the values cannot match`],
+        ],
+        examples: ['number( "1 000,0", " ", "," ) = number( "1,000.0", ",", "." )'],
+      },
+      {
+        label: "odd(number)",
+        insertText: "odd($1)",
+        description: "Returns true if the specified `number` is odd.",
+        parameters: [["number", `\`number\``]],
+        examples: ["odd( 5 ) = true", "odd( 2 ) = false"],
+      },
+      {
+        label: "overlaps after(range1, range2)",
+        insertText: "overlaps after($1, $2)",
+        description: "Returns true when a range A overlaps after a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "overlaps after( [3..8], [1..5] ) = true",
+          "overlaps after( [6..8], [1..5] ) = false",
+          "overlaps after( [5..8], [1..5] ) = true",
+          "overlaps after( (5..8], [1..5] ) = false",
+          "overlaps after( [5..8], [1..5) ) = false",
+          "overlaps after( (1..5], [1..5) ) = true",
+          "overlaps after( (1..5], [1..5] ) = true",
+          "overlaps after( [1..5], [1..5) ) = false",
+          "overlaps after( [1..5], [1..5] ) = false",
+          "overlaps after( (1..5), [1..5] ) = false",
+          "overlaps after( (1..5], [1..6] ) = false",
+          "overlaps after( (1..5], (1..5] ) = false",
+          "overlaps after( (1..5], [2..5] ) = false",
+        ],
+      },
+      {
+        label: "overlaps before(range1, range2)",
+        insertText: "overlaps before($1, $2)",
+        description: "Returns true when a range A overlaps before a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "overlaps before( [1..5], [3..8] ) = true",
+          "overlaps before( [1..5], [6..8] ) = false",
+          "overlaps before( [1..5], [5..8] ) = true",
+          "overlaps before( [1..5], (5..8] ) = false",
+          "overlaps before( [1..5), [5..8] ) = false",
+          "overlaps before( [1..5), (1..5] ) = true",
+          "overlaps before( [1..5], (1..5] ) = true",
+          "overlaps before( [1..5), [1..5] ) = false",
+          "overlaps before( [1..5], [1..5] ) = false",
+        ],
+      },
+      {
+        label: "overlaps(range1, range2)",
+        insertText: "overlaps($1, $2)",
+        description: "Returns true when a range A overlaps a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "overlaps( [1..5], [3..8] ) = true",
+          "overlaps( [3..8], [1..5] ) = true",
+          "overlaps( [1..8], [3..5] ) = true",
+          "overlaps( [3..5], [1..8] ) = true",
+          "overlaps( [1..5], [6..8] ) = false",
+          "overlaps( [6..8], [1..5] ) = false",
+          "overlaps( [1..5], [5..8] ) = true",
+          "overlaps( [1..5], (5..8] ) = false",
+          "overlaps( [1..5), [5..8] ) = false",
+          "overlaps( [1..5), (5..8] ) = false",
+          "overlaps( [5..8], [1..5] ) = true",
+          "overlaps( (5..8], [1..5] ) = false",
+          "overlaps( [5..8], [1..5) ) = false",
+          "overlaps( (5..8], [1..5) ) = false",
+        ],
+      },
+      {
+        label: "product(list)",
+        insertText: "product($1)",
+        description: "Returns the product of the numbers in the list",
+        parameters: [["list", `\`list\` of \`number\` elements`]],
+        examples: ["product( [2, 3, 4] ) = 24", "product( [] ) = null", "product( 2, 3, 4 ) = 24"],
+      },
+      {
+        label: "remove(list, position)",
+        insertText: "remove($1, $2)",
+        description: "Creates a list with the removed element excluded from the specified position.",
+        parameters: [
+          ["list", `\`list\``],
+          ["position", `\`number\``],
+        ],
+        examples: ["remove( [1,2,3], 2 ) = [1,3]"],
+      },
+      {
+        label: "replace(input, pattern, replacement)",
+        insertText: "replace($1, $2, $3)",
+        description: "Calculates the regular expression replacement",
+        parameters: [
+          ["input", `\`string\``],
+          ["pattern", `\`string\``],
+          ["replacement", `\`string\``],
+        ],
+        examples: [
+          'replace( "banana", "a", "o" ) = "bonono"',
+          'replace( "abcd", "(ab)|(a)", "[1=$1][2=$2]" ) = "[1=ab][2=]cd"',
+        ],
+      },
+      {
+        label: "replace(input, pattern, replacement, flags)",
+        insertText: "replace($1, $2, $3, $4)",
+        description: "Calculates the regular expression replacement",
+        parameters: [
+          ["input", `\`string\``],
+          ["pattern", `\`string\``],
+          ["replacement", `\`string\``],
+          [
+            "flags",
+            `\`string\` \`i\` makes the regex match case insensitive, \`s\` enables "single-line mode" or "dot-all" mode. \`m\` enables "multi-line mode"`,
+          ],
+        ],
+        examples: ['replace( "foobar", "^fOO", "ttt", "i") = "tttbar"'],
+      },
+      {
+        label: "reverse(list)",
+        insertText: "reverse($1)",
+        description: "Returns a reversed list",
+        parameters: [["list", `\`list\``]],
+        examples: ["reverse( [1,2,3] ) = [3,2,1]"],
       },
     ],
   };
 
   /*
-      ["nn stddev(list)", "nn stddev($1)"],
-      ["nn sum(list)", "nn sum($1)"],
-      ["not(negand)", "not($1)"],
-      ["now()", "now()"],
-      ["number(from, grouping separator, decimal separator)", "number($1, $2, $3)"],
-      ["odd(number)", "odd($1)"],
-      ["overlaps after(range1, range2)", "overlaps after($1, $2)"],
-      ["overlaps before(range1, range2)", "overlaps before($1, $2)"],
-      ["overlaps(range1, range2)", "overlaps($1, $2)"],
-      ["product(list)", "product($1)"],
-      ["remove(list, position)", "remove($1, $2)"],
-      ["replace(input, pattern, replacement)", "replace($1, $2, $3)"],
-      ["replace(input, pattern, replacement, flags)", "replace($1, $2, $3, $4)"],
-      ["reverse(list)", "reverse($1)"],
       ["sort(list, precedes)", "sort($1, $2)"],
       ["sort(list)", "sort($1)"],
       ["split(string, delimiter)", "split($1, $2)"],
@@ -1048,8 +1211,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
  *  string length( "\U01F40Eab" ) = 3
  *  \`\`\`
  */
-const generateMarkdownFEELCode = (codeStatement: string[]): string => {
-  return `\`\`\`FEEL\n${codeStatement.join(`\n`)}\n\`\`\``;
+const generateMarkdownFEELCode = (codeStatements: string[]): string => {
+  return `\`\`\`FEEL\n${codeStatements.join(`\n`)}\n\`\`\``;
 };
 
 /**
@@ -1060,6 +1223,9 @@ const generateMarkdownFEELCode = (codeStatement: string[]): string => {
  *  | \`name2\`| type2 |
  */
 const generateMarkdownParametersTable = (parameters: string[][]): string => {
+  if (parameters.length === 0) {
+    return "";
+  }
   let rows = parameters.map((item) => `|\`${item[0]}\`|${item[1]}|`);
   return `| Parameter | Type |\n|-|-|\n${rows.join(`\n`)}`;
 };
