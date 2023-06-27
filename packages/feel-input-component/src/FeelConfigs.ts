@@ -836,7 +836,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "meets(range1, range2)",
         insertText: "meets($1, $2)",
-        description: "Returns true when a range A meets an range B ",
+        description: "Returns true when a range A meets an range B",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -851,7 +851,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "met by(range1, range2)",
         insertText: "met by($1, $2)",
-        description: "Returns true when a range A is met an range B ",
+        description: "Returns true when a range A is met an range B",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -920,28 +920,28 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       },
       {
         label: "nn count(list)", //TODO check
-        insertText: "count($1)",
+        insertText: "nn count($1)",
         description: "Returns size of list, or zero if list is empty",
         parameters: [["list", `\`list\``]],
         examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
       },
       {
         label: "nn max(list)", //TODO check
-        insertText: "max($1)",
+        insertText: "nn max($1)",
         description: "Returns maximum item, or null if `list` is empty",
         parameters: [["list", `\`list\``]],
         examples: ["min( [1,2,3] ) = 1", "max( 1,2,3 ) = 3", "min( 1 ) = min( [1] ) = 1", "max( [] ) = null"],
       },
       {
         label: "nn mean(list)", //TODO check
-        insertText: "mean($1)",
+        insertText: "nn mean($1)",
         description: "Returns arithmetic mean (average) of numbers",
         parameters: [["list", `\`list\``]],
         examples: ["mean( [1,2,3] ) = 2", "mean( 1,2,3 ) = 2", "mean( 1 ) = 1", "mean( [] ) = null"],
       },
       {
         label: "nn median(list)", //TODO check
-        insertText: "median($1)",
+        insertText: "nn median($1)",
         description:
           "Returns the median element of the `list` of numbers. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
         parameters: [["list", `\`list\``]],
@@ -949,14 +949,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       },
       {
         label: "nn min(list)", //TODO check
-        insertText: "min($1)",
+        insertText: "nn min($1)",
         description: "Returns minimum item, or null if `list` is empty",
         parameters: [["list", `\`list\``]],
         examples: ["min( [1,2,3] ) = 1", "min( 1 ) = 1", "min( [1] ) = 1"],
       },
       {
         label: "nn mode(list)", //TODO check
-        insertText: "mode($1)",
+        insertText: "nn mode($1)",
         description:
           "Returns the mode of the numbers in the `list`. If multiple elements are returned, the numbers are sorted in ascending order",
         parameters: [["list", `\`list\``]],
@@ -964,16 +964,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       },
       {
         label: "nn stddev(list)", //TODO check
-        insertText: "stddev($1)",
+        insertText: "nn stddev($1)",
         description: "Returns the standard deviation of the numbers in the `list`",
-        parameters: [["list", `\`list\``]],
-        examples: ["mode( 6, 3, 9, 6, 6 ) = [6]", "mode( [6, 1, 9, 6, 1] ) = [1, 6]", "mode( [ ] ) = [ ]"],
-      },
-      {
-        label: "nn sum(list)", //TODO check
-        insertText: "sum($1)",
-        description:
-          "Returns the mode of the numbers in the `list`. If multiple elements are returned, the numbers are sorted in ascending order",
         parameters: [["list", `\`list\``]],
         examples: [
           "stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
@@ -981,6 +973,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "stddev( 47 ) = null",
           "stddev( [ ] ) = null",
         ],
+      },
+      {
+        label: "nn sum(list)", //TODO check
+        insertText: "nn sum($1)",
+        description: "Returns the sum of the numbers in the `list`",
+        parameters: [["list", `\`list\``]],
+        examples: ["sum( [1,2,3] ) = 6", "sum( 1,2,3 ) = 6", "sum( 1 ) = 1", "sum( [] ) = null"],
       },
       {
         label: "not(negand)",
@@ -1136,16 +1135,98 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         parameters: [["list", `\`list\``]],
         examples: ["reverse( [1,2,3] ) = [3,2,1]"],
       },
+      {
+        label: "sort(list)",
+        insertText: "sort($1)",
+        description:
+          "Returns a list of the same elements but ordered according a default sorting, if the elements are comparable (eg. `number` or `string`)",
+        parameters: [["list", `\`list\``]],
+        examples: ["sort( [3,1,4,5,2] ) = [1,2,3,4,5]"],
+      },
+      {
+        label: "sort(list, precedes)",
+        insertText: "sort($1, $2)",
+        description: "Returns a list of the same elements but ordered according to the sorting function",
+        parameters: [
+          ["list", `\`list\``],
+          ["precedes", `\`function\``],
+        ],
+        examples: ["sort( list: [3,1,4,5,2], precedes: function(x,y) x < y ) = [1,2,3,4,5]"],
+      },
+      {
+        label: "split(string, delimiter)",
+        insertText: "split($1, $2)",
+        description:
+          "Returns a list of the original `string` and splits it at the `delimiter` regular expression pattern",
+        parameters: [
+          ["string", `\`string\``],
+          ["delimiter", `\`string\` for a regular expression pattern`],
+        ],
+        examples: ['split( "John Doe", "\\s" ) = ["John", "Doe"]', 'split( "a;b;c;;", ";" ) = ["a","b","c","",""]'],
+      },
+      {
+        label: "sqrt(number)",
+        insertText: "sqrt($1)",
+        description: "Returns the square root of the specified `number`.",
+        parameters: [["number", `\`number\``]],
+        examples: ["sqrt( 16 ) = 4"],
+      },
+      {
+        label: "started by(range, point)",
+        insertText: "started by($1, $2)",
+        description: "Returns true when a range A is started by a point B",
+        parameters: [
+          ["range", `\`range\` (\`interval\`)`],
+          ["point", `\`number\``],
+        ],
+        examples: [
+          "started by( [1..10], 1 ) = true",
+          "started by( (1..10], 1 ) = false",
+          "started by( [1..10], 2 ) = false",
+        ],
+      },
+      {
+        label: "started by(range1, range2)",
+        insertText: "started by($1, $2)",
+        description: "Returns true when a range A is started by a range B",
+        parameters: [
+          ["range1", `\`range\` (\`interval\`)`],
+          ["range2", `\`range\` (\`interval\`)`],
+        ],
+        examples: [
+          "started by( [1..10], [1..5] ) = true",
+          "started by( (1..10], (1..5] ) = true",
+          "started by( [1..10], (1..5] ) = false",
+          "started by( (1..10], [1..5] ) = false",
+          "started by( [1..10], [1..10] ) = true",
+          "started by( [1..10], [1..10) ) = true",
+          "started by( (1..10), (1..10) ) = true",
+        ],
+      },
+
+      {
+        label: "stddev(list)",
+        insertText: "stddev($1)",
+        description: "Returns the standard deviation of the numbers in the `list`",
+        parameters: [["list", `\`list\``]],
+        examples: [
+          "stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
+          "stddev( [47] ) = null",
+          "stddev( 47 ) = null",
+          "stddev( [ ] ) = null",
+        ],
+      },
+      {
+        label: "sum(list)",
+        insertText: "sum($1)",
+        description: "Returns the sum of the numbers in the `list`",
+        parameters: [["list", `\`list\``]],
+        examples: ["sum( [1,2,3] ) = 6", "sum( 1,2,3 ) = 6", "sum( 1 ) = 1", "sum( [] ) = null"],
+      },
     ],
   };
 
   /*
-      ["sort(list, precedes)", "sort($1, $2)"],
-      ["sort(list)", "sort($1)"],
-      ["split(string, delimiter)", "split($1, $2)"],
-      ["sqrt(number)", "sqrt($1)"],
-      ["started by(range, point)", "started by($1, $2)"],
-      ["started by(range1, range2)", "started by($1, $2)"],
       ["starts with(string, match)", "starts with($1, $2)"],
       ["starts(range1, range2)", "starts($1, $2)"],
       ["starts(point, range)", "starts($1, $2)"],
