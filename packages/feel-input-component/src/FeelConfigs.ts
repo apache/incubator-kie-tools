@@ -756,7 +756,12 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["value1", `Any type`],
           ["value2", `Any type`],
         ],
-        examples: ["insert before( [1 ,3], 1, 2 ) = [2,1,3]"],
+        examples: [
+          'is( date( "2012-12-25" ), time( "23:00:50" ) ) = false',
+          'is( date( "2012-12-25" ), date( "2012-12-25" ) ) = true',
+          'is( time( "23:00:50z" ), time( "23:00:50" ) ) = false',
+          'is( time( "23:00:50z" ), time( "23:00:50+00:00" ) ) = true',
+        ],
       },
       {
         label: "list contains(list, element)",
