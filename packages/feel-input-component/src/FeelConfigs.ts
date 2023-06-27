@@ -1253,6 +1253,20 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "stddev( [ ] ) = null",
         ],
       },
+      {
+        label: "string length(string)",
+        insertText: "string length($1)",
+        description: "Calculates the length of the specified `string`.",
+        parameters: [["string", `\`string\``]],
+        examples: ['string length( "tes" ) = 3', 'string length( "U01F40Eab" ) = 3'],
+      },
+      {
+        label: "string(from)",
+        insertText: "string($1)",
+        description: "Provides a string representation of the specified parameter",
+        parameters: [["from", `Not null value`]],
+        examples: ['string( 1.1 ) = "1.1"', "string( null ) = null"],
+      },
 
       {
         label: "sum(list)",
@@ -1261,12 +1275,88 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         parameters: [["list", `\`list\``]],
         examples: ["sum( [1,2,3] ) = 6", "sum( 1,2,3 ) = 6", "sum( 1 ) = 1", "sum( [] ) = null"],
       },
+      {
+        label: "time(from)",
+        insertText: "time($1)",
+        description: "Produces a time from the specified parameter ",
+        parameters: [["from", `\`string\` or \`date and time\``]],
+        examples: [
+          'time( "23:59:00z" ) + duration( "PT2M" ) = time( "00:01:00@Etc/UTC" )',
+          'time(date and time( "2012-12-25T11:00:00Z" )) = time( "11:00:00Z" )',
+        ],
+      },
+      {
+        label: "time(hour, minute, second)",
+        insertText: "date and time($1, $2, $3)",
+        description: "Creates a time from the given hour, minute, and second.",
+        parameters: [
+          ["hour", `\`number\``],
+          ["minute", `\`number\``],
+          ["second", `\`number\``],
+        ],
+        examples: ['time( 23, 59, 59 ) = time( "23:59:59" )'],
+      },
+      {
+        label: "time(hour, minute, second, offset)",
+        insertText: "time($1, $2, $3)",
+        description: "Creates a time from the given hour, minute, second and offset",
+        parameters: [
+          ["hour", `\`number\``],
+          ["minute", `\`number\``],
+          ["second", `\`number\``],
+          ["offset", `\`days and time duration or null\``],
+        ],
+        examples: ['time( "23:59:00z" ) = time(23, 59, 0, duration( "PT0H" ))'],
+      },
+      {
+        label: "today()",
+        insertText: "today()",
+        description: "Returns the current date",
+        parameters: [],
+        examples: ["today()"],
+      },
+      {
+        label: "union(list)",
+        insertText: "union($1)",
+        description: "Returns a list of all the elements from multiple lists and excludes duplicates",
+        parameters: [["list", `\`list\``]],
+        examples: ["union( [1,2],[2,3] ) = [1,2,3]"],
+      },
+      {
+        label: "upper case(string)",
+        insertText: "string($1)",
+        description: "Produces an uppercase version of the specified `string`.",
+        parameters: [["string", `\`string\``]],
+        examples: ['upper case( "aBc4" ) = "ABC4"'],
+      },
+      {
+        label: "week of year(date)",
+        insertText: "week of year($1)",
+        description: "Returns the Gregorian week of the year as defined by ISO 8601",
+        parameters: [["date", `\`date\` or \`date and time\``]],
+        examples: [
+          "week of year( date(2019, 9, 17) ) = 38",
+          "week of year( date(2003, 12, 29) ) = 1",
+          "week of year( date(2004, 1, 4) ) = 1",
+          "week of year( date(2005, 1, 1) ) = 53",
+          "week of year( date(2005, 1, 3) ) = 1",
+          "week of year( date(2005, 1, 9) ) = 1",
+        ],
+      },
+      {
+        label: "years and months duration(from, to)",
+        insertText: "years and months duration($1, $2)",
+        description: "Calculates the years and months duration between the two specified parameters.",
+        parameters: [
+          ["from", `\`date\` or \`date and time\``],
+          ["to", `\`date\` or \`date and time\``],
+        ],
+        examples: ['years and months duration( date( "2011-12-22" ), date( "2013-08-24" ) ) = duration( "P1Y8M" )'],
+      },
     ],
   };
 
   /*
-      ["string length(string)", "string length($1)"],
-      ["string(from)", "string($1)"],
       ["string(mask, p)", "string($1, $2)"],
       ["sublist(list, start position)", "sublist($1, $2)"],
       ["sublist(list, start position, length)", "sublist($1, $2, $3)"],
@@ -1274,15 +1364,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       ["substring before(string, match)", "substring before($1, $2)"],
       ["substring(string, start position)", "substring($1, $2)"],
       ["substring(string, start position, length)", "substring($1, $2, $3)"],
-      ["sum(list)", "sum($1)"],
-      ["time(from)", "time($1)"],
-      ["time(hour, minute, second)", "time($1, $2, $3)"],
-      ["time(hour, minute, second, offset)", "time($1, $2, $3, $4)"],
-      ["today()", "today()"],
-      ["union(list)", "union($1)"],
-      ["upper case(string)", "upper case($1)"],
-      ["week of year(date)", "week of year($1)"],
-      ["years and months duration(from, to)", "years and months duration($1, $2)"],
+
+
     ],
   }; */
 
