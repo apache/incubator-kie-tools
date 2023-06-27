@@ -26,6 +26,7 @@ import com.ait.lienzo.client.core.shape.TextNoWrap;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 
+// TODO: Kirill - drop this.
 public final class TextWrapperProvider {
 
     public static ITextWrapper get(final TextWrapperStrategy strategy,

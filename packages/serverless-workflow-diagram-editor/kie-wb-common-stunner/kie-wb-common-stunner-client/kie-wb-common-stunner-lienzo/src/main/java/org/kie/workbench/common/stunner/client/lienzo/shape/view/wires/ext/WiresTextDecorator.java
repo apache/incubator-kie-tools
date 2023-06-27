@@ -61,6 +61,7 @@ import static org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEven
  * type, can be reused for shapes or connectors.
  * <p>
  */
+// TODO: Kirill - drop this.
 public class WiresTextDecorator implements HasTitle<WiresTextDecorator> {
 
     // Default text attribute values.

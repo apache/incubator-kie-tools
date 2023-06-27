@@ -34,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 
 // TODO: (Roger) Refactor use of inner text child as done in WiresShapeViewExt.
+// TODO: Kirill - drop this.
 public class WiresConnectorViewExt<T>
         extends WiresConnectorView<T>
         implements
