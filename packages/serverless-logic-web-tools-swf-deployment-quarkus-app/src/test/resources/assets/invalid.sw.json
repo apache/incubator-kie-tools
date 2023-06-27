@@ -1,8 +1,8 @@
 {
-  "id": "workflow&invalid identifier",
+  "id": "workflow identifier",
   "version": "0.1",
   "name": "Workflow name",
-  "description": "Workflow description",
+  "invalid": "Workflow description",
   "functions": [],
   "events": [],
   "states": []

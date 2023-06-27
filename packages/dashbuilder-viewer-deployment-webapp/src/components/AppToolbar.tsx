@@ -39,6 +39,7 @@ import { useApp } from "../context/AppContext";
 
 interface Props {
   dashboard: Dashboard;
+  showDisclaimer: boolean;
 }
 
 export function AppToolbar(props: Props) {
@@ -98,21 +99,23 @@ export function AppToolbar(props: Props) {
             </TextContent>
           </MastheadBrand>
         </PageHeaderToolsItem>
-        <PageHeaderToolsItem>
-          <Tooltip
-            className="app--masterhead__disclaimer"
-            position="bottom-end"
-            key="disclaimer-tooltip"
-            content={<I18nHtml>{i18n.masthead.disclaimer.description}</I18nHtml>}
-          >
-            <TextContent>
-              <Text component={TextVariants.h5}>
-                {i18n.masthead.disclaimer.title}
-                <HelpIcon className="app--masterhead__disclaimer-icon" />
-              </Text>
-            </TextContent>
-          </Tooltip>
-        </PageHeaderToolsItem>
+        {props.showDisclaimer && (
+          <PageHeaderToolsItem>
+            <Tooltip
+              className="app--masterhead__disclaimer"
+              position="bottom-end"
+              key="disclaimer-tooltip"
+              content={<I18nHtml>{i18n.masthead.disclaimer.description}</I18nHtml>}
+            >
+              <TextContent>
+                <Text component={TextVariants.h5}>
+                  {i18n.masthead.disclaimer.title}
+                  <HelpIcon className="app--masterhead__disclaimer-icon" />
+                </Text>
+              </TextContent>
+            </Tooltip>
+          </PageHeaderToolsItem>
+        )}
         <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
           <FlexItem>
             <PageHeaderToolsItem>

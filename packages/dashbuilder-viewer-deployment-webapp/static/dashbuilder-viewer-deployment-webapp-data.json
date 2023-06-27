@@ -1,4 +1,5 @@
 {
   "primary": { "uri": "dashboard.dash.yaml" },
-  "secondary": []
+  "secondary": [],
+  "showDisclaimer": "false"
 }
