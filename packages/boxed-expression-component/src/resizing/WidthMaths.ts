@@ -1,5 +1,10 @@
 import { ExpressionDefinitionLogicType } from "../api";
-import { ExpressionDefinition, FunctionExpressionDefinitionKind } from "../api/ExpressionDefinition";
+import {
+  ContextExpressionDefinition,
+  ExpressionDefinition,
+  FunctionExpressionDefinitionKind,
+  InvocationExpressionDefinition,
+} from "../api/ExpressionDefinition";
 import { ResizingWidth } from "./ResizingWidthsContext";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -105,6 +110,34 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
     return DEFAULT_MIN_WIDTH;
   } else {
     throw new Error("Shouldn't ever reach this point");
+  }
+}
+
+/**
+ * This function gous recursively trough all `expression` nested expressions and sum either `entryInfoWidth` or default minimal width, returned by `getExpressionMinWidth`, if it is last nested expression in the chain.
+ * This function returns maximal sum found bewteen all `expression` nested expressions
+ */
+export function getExpressionTotalMinimalWidth(currentWidth: number, expression: ExpressionDefinition): number {
+  if (expression.logicType === ExpressionDefinitionLogicType.Context) {
+    // it is a Context, we need to go trough entries and result row
+    const c = expression as ContextExpressionDefinition;
+    const width = currentWidth + (c.entryInfoWidth ?? 0);
+    const contextEntriesMaxWidth = c.contextEntries.reduce((maxWidth, currentExpression) => {
+      return Math.max(maxWidth, getExpressionTotalMinimalWidth(width, currentExpression.entryExpression));
+    }, width);
+    const resultWidth = getExpressionTotalMinimalWidth(width, c.result);
+    return Math.max(contextEntriesMaxWidth, resultWidth);
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
+    // it is an Invocation, we need to go trough entries
+    const i = expression as InvocationExpressionDefinition;
+    const width = currentWidth + (i.entryInfoWidth ?? 0);
+    return i.bindingEntries.reduce((maxWidth, currentExpression) => {
+      return Math.max(maxWidth, getExpressionTotalMinimalWidth(width, currentExpression.entryExpression));
+    }, width);
+  } else {
+    // it is an expression without entryInfoWidth
+    const width = currentWidth + getExpressionMinWidth(expression);
+    return width;
   }
 }
 

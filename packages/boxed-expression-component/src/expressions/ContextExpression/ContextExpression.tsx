@@ -50,6 +50,7 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import "./ContextExpression.css";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
+import { getExpressionTotalMinimalWidth } from "../../resizing/WidthMaths";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
@@ -93,6 +94,13 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const entriesWidths = contextExpression.contextEntries.map((e) =>
+          getExpressionTotalMinimalWidth(0, e.entryExpression)
+        );
+        const resultWidth = getExpressionTotalMinimalWidth(0, contextExpression.result);
+
+        const biggestWidth = Math.max(...entriesWidths, resultWidth);
+
         return {
           nestedExpressions: [
             ...contextExpression.contextEntries.map((e) => e.entryExpression),
@@ -101,12 +109,12 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           fixedColumnActualWidth: entryInfoWidth,
           fixedColumnResizingWidth: entryInfoResizingWidth,
           fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-          nestedExpressionMinWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          nestedExpressionMinWidth: biggestWidth > 0 ? biggestWidth : CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
           extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
           expression: contextExpression,
           flexibleColumnIndex: 2,
         };
-      }, [contextExpression, entryInfoResizingWidth, entryInfoWidth])
+      }, [contextExpression, entryInfoResizingWidth, entryInfoWidth, getExpressionTotalMinimalWidth])
     );
 
   /// //////////////////////////////////////////////////////
