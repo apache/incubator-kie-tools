@@ -146,7 +146,7 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
       "today",
       "union",
       "upper case",
-      "week of years",
+      "week of year",
       "years and months duration",
     ],
     tokenizer: {
@@ -1394,7 +1394,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "time(from)",
         insertText: "time($1)",
-        description: "Produces a time from the specified parameter ",
+        description: "Produces a time from the specified parameter",
         parameters: [["from", `\`string\` or \`date and time\``]],
         examples: [
           'time( "23:59:00z" ) + duration( "PT2M" ) = time( "00:01:00@Etc/UTC" )',
