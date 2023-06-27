@@ -22,7 +22,7 @@ import {
   XsdSimpleType,
 } from "./schemas/xsd-incomplete--manually-written/ts-gen/types";
 import { ns as xsdNs, meta as xsdMeta } from "./schemas/xsd-incomplete--manually-written/ts-gen/meta";
-import * as _ from "lodash";
+import { mergeWith } from "lodash";
 
 export const __XSD_PARSER = getParser<XsdSchema>({
   ns: xsdNs,
@@ -86,7 +86,7 @@ async function parseDeep(
   );
   let schemaPlusIncludes = schema;
   for (const [k, v] of sameNs) {
-    schemaPlusIncludes = _.mergeWith(schemaPlusIncludes, v, (a, b) => {
+    schemaPlusIncludes = mergeWith(schemaPlusIncludes, v, (a, b) => {
       if (Array.isArray(a) && Array.isArray(b)) {
         return [...a, ...b];
       }
@@ -281,9 +281,8 @@ ${enumValues.join(" |\n")}
           return `    "${p.name}": ${p.metaType.name};`;
         });
 
-        // FIXME: Not all anonymous types are extensible!
-        return `// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ${anonType.name} {
+        // FIXME: Tiago: Not all anonymous types are extensible!
+        return `export interface ${anonType.name} {
   __?: undefined;
 ${anonymousTypesProperties.join("\n")}
 }`;
