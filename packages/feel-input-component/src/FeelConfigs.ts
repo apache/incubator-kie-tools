@@ -92,6 +92,7 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
       "includes",
       "index of",
       "insert before",
+      "invoke",
       "is",
       "list contains",
       "log",
@@ -256,16 +257,28 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "all(list)",
         insertText: "all($1)",
-        description: "Returns false if any item is false, else true if empty or all items are true, else null",
+        description: "Returns true if all elements in the list are true.",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
-        examples: ["all( [false,null,true] ) = false", "all( true ) = true", "all( [] ) = true", "all( 0 ) = null"],
+        examples: [
+          "all( [false,null,true] ) = false",
+          "all( [true,null,true] ) = false",
+          "all( true ) = true",
+          "all( [] ) = true",
+          "all( 0 ) = null",
+        ],
       },
       {
         label: "any(list)",
         insertText: "any($1)",
         description: "Returns true if any item is true, else false if empty or all items are false, else null",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
-        examples: ["any( [false,null,true] ) = true", "any( false ) = false", "any( [] ) = false", "any( 0 ) = null"],
+        examples: [
+          "any( [false,null,true] ) = true",
+          "any( false ) = false",
+          "any( [] ) = false",
+          "any( null ) = null",
+          "any( 0 ) = null",
+        ],
       },
       {
         label: "append(list, item)",
@@ -905,81 +918,122 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ['month of year( date(2017, 2, 18) ) = "February"'],
       },
       {
-        label: "nn all(list)", //TODO check
+        label: "nn all(list)",
         insertText: "nn all($1)",
-        description: "Returns false if any item is false, else true if empty or all items are true, else null",
+        description: "Returns true if all elements in the list are true. null values are ignored",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
-        examples: ["all( [false,null,true] ) = false", "all( true ) = true", "all( [] ) = true", "all( 0 ) = null"],
+        examples: [
+          "all( [false,null,true] ) = false",
+          "all( [true,null,true] ) = true",
+          "all( true ) = true",
+          "all( [] ) = true",
+          "all( 0 ) = null",
+        ],
       },
       {
-        label: "nn any(list)", //TODO check
+        label: "nn any(list)",
         insertText: "nn any($1)",
-        description: "Returns true if any item is true, else false if empty or all items are false, else null",
+        description: "Returns true if any element in the list is true. null values are ignored",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
-        examples: ["any( [false,null,true] ) = true", "any( false ) = false", "any( [] ) = false", "any( 0 ) = null"],
+        examples: [
+          "any( [false,null,true] ) = true",
+          "any( false ) = false",
+          "any( [] ) = false",
+          "any( null ) = false",
+          "any( 0 ) = null",
+        ],
       },
       {
-        label: "nn count(list)", //TODO check
+        label: "nn count(list)",
         insertText: "nn count($1)",
-        description: "Returns size of list, or zero if list is empty",
+        description: "Returns size of list, or zero if list is empty. null values are not counted",
         parameters: [["list", `\`list\``]],
-        examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
+        examples: ["count( [1,2,3] ) = 3", "count( [1,2,null,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
       },
       {
-        label: "nn max(list)", //TODO check
+        label: "nn max(list)",
         insertText: "nn max($1)",
-        description: "Returns maximum item, or null if `list` is empty",
+        description: "Returns maximum item, or null if `list` is empty. null values are ignored",
         parameters: [["list", `\`list\``]],
-        examples: ["min( [1,2,3] ) = 1", "max( 1,2,3 ) = 3", "min( 1 ) = min( [1] ) = 1", "max( [] ) = null"],
+        examples: [
+          "min( [1,2,3] ) = 1",
+          "max( 1,2,3 ) = 3",
+          "max( 1,2,3,null ) = 3",
+          "min( 1 ) = min( [1] ) = 1",
+          "max( [] ) = null",
+        ],
       },
       {
-        label: "nn mean(list)", //TODO check
+        label: "nn mean(list)",
         insertText: "nn mean($1)",
-        description: "Returns arithmetic mean (average) of numbers",
+        description: "Returns arithmetic mean (average) of numbers. null values are ignored",
         parameters: [["list", `\`list\``]],
-        examples: ["mean( [1,2,3] ) = 2", "mean( 1,2,3 ) = 2", "mean( 1 ) = 1", "mean( [] ) = null"],
+        examples: [
+          "mean( [1,2,3] ) = 2",
+          "mean( 1,2,3 ) = 2",
+          "mean( 1,2,3,null ) = 2",
+          "mean( 1 ) = 1",
+          "mean( [] ) = null",
+        ],
       },
       {
-        label: "nn median(list)", //TODO check
+        label: "nn median(list)",
         insertText: "nn median($1)",
         description:
-          "Returns the median element of the `list` of numbers. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
+          "Returns the median element of the `list` of numbers. null values are ignored. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
         parameters: [["list", `\`list\``]],
-        examples: ["median( 8, 2, 5, 3, 4 ) = 4", "median( [6, 1, 2, 3] ) = 2.5", "median( [ ] ) = null"],
+        examples: [
+          "median( 8, 2, 5, 3, 4 ) = 4",
+          "median( 20, 30, null, 40, null, 10 ) =  25",
+          "median( [6, 1, 2, 3] ) = 2.5",
+          "median( [ ] ) = null",
+        ],
       },
       {
-        label: "nn min(list)", //TODO check
+        label: "nn min(list)",
         insertText: "nn min($1)",
-        description: "Returns minimum item, or null if `list` is empty",
+        description: "Returns minimum item, or null if `list` is empty. null values are ignored",
         parameters: [["list", `\`list\``]],
-        examples: ["min( [1,2,3] ) = 1", "min( 1 ) = 1", "min( [1] ) = 1"],
+        examples: ["min( [1,2,3] ) = 1", "min( [1,2,null,3] ) = 1", "min( 1 ) = 1", "min( [1] ) = 1"],
       },
       {
-        label: "nn mode(list)", //TODO check
+        label: "nn mode(list)",
         insertText: "nn mode($1)",
         description:
-          "Returns the mode of the numbers in the `list`. If multiple elements are returned, the numbers are sorted in ascending order",
+          "Returns the mode of the numbers in the `list`. null values are ignored. If multiple elements are returned, the numbers are sorted in ascending order",
         parameters: [["list", `\`list\``]],
-        examples: ["mode( 6, 3, 9, 6, 6 ) = [6]", "mode( [6, 1, 9, 6, 1] ) = [1, 6]", "mode( [ ] ) = [ ]"],
+        examples: [
+          "mode( 6, 3, 9, 6, 6 ) = [6]",
+          "mode( 20, 30, null, 20, null, 10) = [20]",
+          "mode( [6, 1, 9, 6, 1] ) = [1, 6]",
+          "mode( [ ] ) = [ ]",
+        ],
       },
       {
-        label: "nn stddev(list)", //TODO check
+        label: "nn stddev(list)",
         insertText: "nn stddev($1)",
-        description: "Returns the standard deviation of the numbers in the `list`",
+        description: "Returns the standard deviation of the numbers in the `list`. null values are ignored.",
         parameters: [["list", `\`list\``]],
         examples: [
           "stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
+          "stddev( 20, 30, null, 40, null, 10) = 12.90994448735805628393088466594133",
           "stddev( [47] ) = null",
           "stddev( 47 ) = null",
           "stddev( [ ] ) = null",
         ],
       },
       {
-        label: "nn sum(list)", //TODO check
+        label: "nn sum(list)",
         insertText: "nn sum($1)",
-        description: "Returns the sum of the numbers in the `list`",
+        description: "Returns the sum of the numbers in the `list`. null values are ignored.",
         parameters: [["list", `\`list\``]],
-        examples: ["sum( [1,2,3] ) = 6", "sum( 1,2,3 ) = 6", "sum( 1 ) = 1", "sum( [] ) = null"],
+        examples: [
+          "sum( [1,2,3] ) = 6",
+          "sum( 4, -1, 12.1, null, 5, null, 10 ) = 30.1",
+          "sum( 1,2,3 ) = 6",
+          "sum( 1 ) = 1",
+          "sum( [] ) = null",
+        ],
       },
       {
         label: "not(negand)",
