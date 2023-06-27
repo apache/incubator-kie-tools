@@ -1267,7 +1267,69 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         parameters: [["from", `Not null value`]],
         examples: ['string( 1.1 ) = "1.1"', "string( null ) = null"],
       },
-
+      {
+        label: "sublist(list, start position)",
+        insertText: "sublist($1, $2)",
+        description: "Returns the sublist from the `start position`",
+        parameters: [
+          ["list", `\`list\``],
+          ["start position", `\`number\``],
+        ],
+        examples: ["sublist( [4,5,6], 2 ) = [5,6]"],
+      },
+      {
+        label: "sublist(list, start position, length)",
+        insertText: "substring($1, $2, $3)",
+        description: "Returns the sublist from the `start position for the specified `length`",
+        parameters: [
+          ["list", `\`list\``],
+          ["start position", `\`number\``],
+          ["length", `\`number\``],
+        ],
+        examples: ["sublist( [4,5,6], 1, 2 ) = [4,5]"],
+      },
+      {
+        label: "substring after(string, match)",
+        insertText: "substring after($1, $2)",
+        description: "Calculates the substring after the `match`",
+        parameters: [
+          ["string", `string`],
+          ["match", `string`],
+        ],
+        examples: ['substring before( "testing", "ing" ) = "test"', 'substring before( "testing", "xyz" ) = ""'],
+      },
+      {
+        label: "substring before(string, match)",
+        insertText: "substring before($1, $2)",
+        description: "Calculates the substring before the `match`",
+        parameters: [
+          ["string", `string`],
+          ["match", `string`],
+        ],
+        examples: ['starts with( "testing", "te" ) = true'],
+      },
+      {
+        label: "substring(string, start position)",
+        insertText: "substring($1, $2)",
+        description: "Returns the substring from the `start position`. The first character is at position value 1",
+        parameters: [
+          ["string", `\`string\``],
+          ["start position", `\`number\``],
+        ],
+        examples: ['substring( "testing", 3 ) = "sting"', 'substring( "U01F40Eab", 2 ) = "ab"'],
+      },
+      {
+        label: "substring(string, start position, length)",
+        insertText: "substring($1, $2, $3)",
+        description:
+          "Returns the substring from the `start position` for the specified `length`. The first character is at position value 1",
+        parameters: [
+          ["string", `\`string\``],
+          ["start position", `\`number\``],
+          ["length", `\`number\``],
+        ],
+        examples: ['substring( "testing", 3, 3 ) = "sti"', 'substring( "testing", -2, 1 ) = "n"'],
+      },
       {
         label: "sum(list)",
         insertText: "sum($1)",
@@ -1358,12 +1420,9 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
 
   /*
       ["string(mask, p)", "string($1, $2)"],
-      ["sublist(list, start position)", "sublist($1, $2)"],
-      ["sublist(list, start position, length)", "sublist($1, $2, $3)"],
+
       ["substring after(string, match)", "substring after($1, $2)"],
       ["substring before(string, match)", "substring before($1, $2)"],
-      ["substring(string, start position)", "substring($1, $2)"],
-      ["substring(string, start position, length)", "substring($1, $2, $3)"],
 
 
     ],
