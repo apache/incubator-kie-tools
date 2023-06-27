@@ -2,6 +2,7 @@ import { Meta, Parser, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts
 import { meta as dmn12meta, root as dmn12root, ns as dmn12ns } from "./schemas/dmn-1_2/ts-gen/meta";
 import { meta as dmn13meta, root as dmn13root, ns as dmn13ns } from "./schemas/dmn-1_3/ts-gen/meta";
 import { meta as dmn14meta, root as dmn14root, ns as dmn14ns } from "./schemas/dmn-1_4/ts-gen/meta";
+import { meta as kie10meta, root as kie10root, ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";

@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { DmnDefinitions, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { Parser } from "@kie-tools/xml-parser-ts";
+import { DMN12__tDefinitions } from "../dist/schemas/dmn-1_2/ts-gen/types";
 
 describe("basic", () => {
   test("sample.dmn", () => {
@@ -51,7 +52,13 @@ describe("basic", () => {
     expect(version).toStrictEqual("1.2");
 
     const { json } = parser.parse({ xml, instanceNs });
-    json.myCustomProperty; // Do not remove this line, as it's used to verify that the compilation is working well.
+    ((json as DMN12__tDefinitions)["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).map((s) => {
+      s["di:extension"]?.ComponentWidthsExtension; // Do not remove this line, as it's used to verify that the compilation is working well for extension types.
+    });
+
+    ((json as DMN12__tDefinitions)["knowledgeSource"] ?? []).map((s) => {
+      s.extensionElements?.attachment; // Do not remove this line, as it's used to verify that the compilation is working well for extension types.
+    });
 
     const xml_firstPass = parser.build({ json, instanceNs });
     const xml_secondPass = parser.build({ json: parser.parse({ xml: xml_firstPass, instanceNs }).json, instanceNs });
