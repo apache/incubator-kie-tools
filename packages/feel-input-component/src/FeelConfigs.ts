@@ -694,7 +694,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "get value(m, key)",
         insertText: "get value($1, $2)",
-        description: "Select the value of the entry named key from context `m`",
+        description: "Select the value of the entry named `key` from context `m`",
         parameters: [
           ["m", `\`context\``],
           ["key", `\`string\``],
