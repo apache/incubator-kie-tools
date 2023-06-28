@@ -32,8 +32,8 @@ describe("type safety", () => {
     test(path.basename(file), () => {
       const xml = fs.readFileSync(path.join(__dirname, file), "utf-8");
 
-      const { parser, instanceNs, version } = getMarshaller(xml);
-      const { json } = parser.parse({ xml, instanceNs });
+      const { parser, version } = getMarshaller(xml);
+      const json = parser.parse();
 
       const thisPath = path.resolve(__dirname);
 

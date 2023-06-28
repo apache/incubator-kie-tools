@@ -12,7 +12,8 @@ import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";
 import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
 type DmnMarshaller = {
-  parser: XmlParserTs<DmnDefinitions>;
+  parser: { parse(): DmnDefinitions };
+  builder: { build(json: DmnDefinitions): string };
   instanceNs: Map<string, string>;
   root: { element: string; type: string };
   meta: Meta;
@@ -34,68 +35,83 @@ export function getMarshaller(xml: string): DmnMarshaller {
 
   // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   if (instanceNs.get(dmn10ns.get("")!) !== undefined) {
+    const p = getParser<DmnDefinitions>({
+      ns: dmn10ns,
+      meta: dmn10meta,
+      root: dmn10root,
+    });
+
     return {
       instanceNs,
       version: "1.0",
       root: dmn10root,
       meta: dmn10meta,
-      parser: getParser<DmnDefinitions>({
-        ns: dmn10ns,
-        meta: dmn10meta,
-        root: dmn10root,
-      }),
+      parser: { parse: () => p.parse({ xml, instanceNs }).json },
+      builder: { build: (json: DmnDefinitions) => p.build({ json, instanceNs }) },
     };
     // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   } else if (instanceNs.get(dmn11ns.get("")!) !== undefined) {
+    const p = getParser<DmnDefinitions>({
+      ns: dmn11ns,
+      meta: dmn11meta,
+      root: dmn11root,
+    });
+
     return {
       instanceNs,
       version: "1.1",
       root: dmn11root,
       meta: dmn11meta,
-      parser: getParser<DmnDefinitions>({
-        ns: dmn11ns,
-        meta: dmn11meta,
-        root: dmn11root,
-      }),
+      parser: { parse: () => p.parse({ xml, instanceNs }).json },
+      builder: { build: (json: DmnDefinitions) => p.build({ json, instanceNs }) },
     };
     // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   } else if (instanceNs.get(dmn12ns.get("")!) !== undefined) {
+    const p = getParser<DmnDefinitions>({
+      ns: dmn12ns,
+      meta: dmn12meta,
+      root: dmn12root,
+    });
+
     return {
       instanceNs,
       version: "1.2",
       root: dmn12root,
       meta: dmn12meta,
-      parser: getParser<DmnDefinitions>({
-        ns: dmn12ns,
-        meta: dmn12meta,
-        root: dmn12root,
-      }),
+      parser: { parse: () => p.parse({ xml, instanceNs }).json },
+      builder: { build: (json: DmnDefinitions) => p.build({ json, instanceNs }) },
     };
     // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   } else if (instanceNs.get(dmn13ns.get("")!) !== undefined) {
+    const p = getParser<DmnDefinitions>({
+      ns: dmn13ns,
+      meta: dmn13meta,
+      root: dmn13root,
+    });
+
     return {
       instanceNs,
       version: "1.3",
       root: dmn13root,
       meta: dmn13meta,
-      parser: getParser<DmnDefinitions>({
-        ns: dmn13ns,
-        meta: dmn13meta,
-        root: dmn13root,
-      }),
+      parser: { parse: () => p.parse({ xml, instanceNs }).json },
+      builder: { build: (json: DmnDefinitions) => p.build({ json, instanceNs }) },
     };
     // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
   } else if (instanceNs.get(dmn14ns.get("")!) !== undefined) {
+    const p = getParser<DmnDefinitions>({
+      ns: dmn14ns,
+      meta: dmn14meta,
+      root: dmn14root,
+    });
+
     return {
       instanceNs,
       version: "1.4",
       root: dmn14root,
       meta: dmn14meta,
-      parser: getParser<DmnDefinitions>({
-        ns: dmn14ns,
-        meta: dmn14meta,
-        root: dmn14root,
-      }),
+      parser: { parse: () => p.parse({ xml, instanceNs }).json },
+      builder: { build: (json: DmnDefinitions) => p.build({ json, instanceNs }) },
     };
   } else {
     throw new Error(
