@@ -255,7 +255,7 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
     public TextAreaSingletonDOMElementFactory getBodyTextAreaFactory() {
         return new TextAreaSingletonDOMElementFactory(gridPanel,
                                                       gridLayer,
-                                                      this,
+                                            this,
                                                       sessionManager,
                                                       sessionCommandManager,
                                                       newCellHasNoValueCommand(),
