@@ -18,8 +18,11 @@ import { EditorFactory, KogitoEditorEnvelopeContextType } from "@kie-tools-core/
 import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { Position } from "monaco-editor";
-import { ServerlessWorkflowTextEditorChannelApi, ServerlessWorkflowTextEditorEnvelopeApi } from "../api";
-import { ServerlessWorkflowTextEditorApi } from "../editor";
+import {
+  ServerlessWorkflowTextEditorApi,
+  ServerlessWorkflowTextEditorChannelApi,
+  ServerlessWorkflowTextEditorEnvelopeApi,
+} from "../api";
 
 export type ServerlessWorkflowTextEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   ServerlessWorkflowTextEditorEnvelopeApi,

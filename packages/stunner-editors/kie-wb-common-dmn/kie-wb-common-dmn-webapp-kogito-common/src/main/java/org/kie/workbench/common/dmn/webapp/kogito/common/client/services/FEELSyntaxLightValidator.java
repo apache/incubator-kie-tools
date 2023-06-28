@@ -17,11 +17,11 @@
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.stream.Stream.of;
-import static org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer.FEEL_RESERVED_KEYWORDS;
 
 /**
  * <p>It provides a light validation for variable names, respect to the FEEL syntax</p>
@@ -35,6 +35,11 @@ public class FEELSyntaxLightValidator {
             '!', '@', '#', '$', '$', '%', '&', '^', '(', ')', '\"', '°', '§', '←', '→', '↓', '¢', 'µ',
             '{', '}', '[', ']', '|', '\\', '=', '<', '>', ';', ':', ',', '¶', '«', '»', '”', '“'
     };
+
+    public static final List<String> FEEL_RESERVED_KEYWORDS = Arrays.asList(
+            "for", "return", "if", "then", "else", "some", "every", "satisfies", "instance", "of", "in",
+            "function", "external", "or", "and", "between", "not", "null", "true", "false"
+    );
 
     private static final Character[] ALLOWED_SEPARATORS = {'-', '.', '/', '\'', '*', '+'};
 

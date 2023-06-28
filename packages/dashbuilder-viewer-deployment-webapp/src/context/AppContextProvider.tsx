@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-import React, { ReactNode, useEffect, useMemo, useState } from "react";
+import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { Dashboard } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { routes } from "../routes";
 import { AppContext } from "./AppContext";
 
-interface Props {
-  children: ReactNode;
-}
-
-export function AppContextProvider(props: Props) {
+export function AppContextProvider(props: PropsWithChildren<{}>) {
   const history = useHistory();
   const location = useLocation();
   const appDataPromise = useAppDataPromise();
@@ -38,8 +34,8 @@ export function AppContextProvider(props: Props) {
     }
 
     const pathUri = location.pathname.slice(1);
-    const dashboards = [appDataPromise.data.appData.primary, ...appDataPromise.data.appData.secondary];
-    const current = dashboards.find((d) => d.uri === pathUri) ?? appDataPromise.data.appData.primary;
+    const dashboards = [appDataPromise.data.primary, ...appDataPromise.data.secondary];
+    const current = dashboards.find((d) => d.uri === pathUri) ?? appDataPromise.data.primary;
 
     setCurrent(current);
     setDashboards(dashboards);

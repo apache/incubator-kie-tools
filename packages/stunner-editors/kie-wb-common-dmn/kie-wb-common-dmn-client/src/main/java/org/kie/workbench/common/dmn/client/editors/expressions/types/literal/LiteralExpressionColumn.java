@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.AutocompleteTextAreaDOMElementFactory;
+import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;
 import org.uberfire.ext.wires.core.grids.client.model.GridCellValue;
@@ -31,10 +31,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.single.HasSingletonDO
 
 public class LiteralExpressionColumn extends DMNSimpleGridColumn<LiteralExpressionGrid, String> implements HasSingletonDOMElementResource {
 
-    private final AutocompleteTextAreaDOMElementFactory factory;
+    private final TextAreaSingletonDOMElementFactory factory;
 
     public LiteralExpressionColumn(final List<HeaderMetaData> headerMetaData,
-                                   final AutocompleteTextAreaDOMElementFactory factory,
+                                   final TextAreaSingletonDOMElementFactory factory,
                                    final double width,
                                    final LiteralExpressionGrid gridWidget) {
         super(headerMetaData,

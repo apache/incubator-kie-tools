@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
@@ -22,7 +22,9 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export class NoOpSwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor() {}
+  constructor() {
+    /* Empty on purpose */
+  }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return {
@@ -43,14 +45,22 @@ export class NoOpSwfServiceCatalogChannelApiImpl implements SwfServiceCatalogCha
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
-  }): void {}
+  }): void {
+    /* Empty on purpose */
+  }
 
   public kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
-  }): void {}
+  }): void {
+    /* Empty on purpose */
+  }
 
-  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {}
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    /* Empty on purpose */
+  }
 
-  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {}
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
+    /* Empty on purpose */
+  }
 }

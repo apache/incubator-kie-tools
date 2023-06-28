@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
-
-const buildEnv = env;
 
 module.exports = async (env) => {
   return merge(common(env), {
@@ -51,12 +47,6 @@ module.exports = async (env) => {
 
     module: {
       rules: [...patternflyBase.webpackModuleRules],
-    },
-    devServer: {
-      historyApiFallback: false,
-      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
-      compress: true,
-      port: buildEnv.dmnDevDeploymentFormWebapp.dev.port,
     },
   });
 };

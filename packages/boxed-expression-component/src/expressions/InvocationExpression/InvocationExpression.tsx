@@ -232,6 +232,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
         ],
       },
@@ -329,6 +330,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           ? [
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
             ]

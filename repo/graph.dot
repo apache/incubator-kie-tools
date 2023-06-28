@@ -70,10 +70,10 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools-core/react-hooks" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-runner" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-core/react-hooks" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -116,7 +116,6 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/serverless-workflow-mermaid-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-jq-expressions" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -230,13 +229,13 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-quarkus-app" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
-  "@kie-tools/dmn-dev-deployment-form-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/dmn-runner" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/extended-services-api" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-runner" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "dmn-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
@@ -357,7 +356,6 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
-  "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-text-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
@@ -366,8 +364,6 @@ digraph G {
   "@kie-tools/serverless-workflow-jq-expressions" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-jq-expressions" [ style = "solid", color = "blue" ];
-  "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-standalone-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -376,7 +372,7 @@ digraph G {
   "swf-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
-  "swf-vscode-extension" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
+  "swf-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
@@ -394,7 +390,6 @@ digraph G {
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
-  "@kie-tools/unitables" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/dmn-runner" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];

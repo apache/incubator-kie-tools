@@ -27,7 +27,6 @@ module.exports = (env) => [
     },
     entry: {
       "envelope/swf-diagram-editor-envelope": "./src/envelope/SwfDiagramEditorEnvelopeApp.ts",
-      "envelope/swf-mermaid-viewer-envelope": "./src/envelope/SwfMermaidViewerEnvelopeApp.ts",
       "envelope/swf-text-editor-envelope": "./src/envelope/SwfTextEditorEnvelopeApp.ts",
     },
     module: {

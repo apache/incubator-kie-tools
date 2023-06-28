@@ -21,6 +21,7 @@ import { DashbuilderViewer } from "./BaseContainerImages";
 export interface DashbuilderViewerAppData {
   primary: { uri: string };
   secondary: { uri: string }[];
+  showDisclaimer: boolean;
 }
 
 export function createDashbuilderViewerAppDataFile(args: {
@@ -33,6 +34,7 @@ export function createDashbuilderViewerAppDataFile(args: {
       uri: args.primary.relativePath,
     },
     secondary: args.secondary.map((f) => ({ uri: f.relativePath })),
+    showDisclaimer: true,
   };
 
   return new WorkspaceFile({
