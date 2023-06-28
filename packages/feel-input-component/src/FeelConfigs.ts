@@ -378,7 +378,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
         ],
-        examples: ["coincides( [1..10], [1..10]) = true", "coincides( [1..9], [2..10] ) = false"],
+        examples: [
+          "coincides( [1..5], [1..5] ) = true",
+          "coincides( (1..5), [1..5] ) = false",
+          "coincides( [1..5], [2..6] ) = false",
+        ],
       },
       {
         label: "concatenate(list...)",
@@ -543,7 +547,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "during(point, range)",
         insertText: "during($1, $2)",
-        description: "Returns true when a point A is during an range B",
+        description: "Returns true when `point` is during `range`",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -560,7 +564,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "during(range1, range2)",
         insertText: "during($1, $2)",
-        description: "Returns true when a range A is during an range B",
+        description: "Returns true when a `range1` is during `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -606,7 +610,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finished by(range, point)",
         insertText: "finished by($1, $2)",
-        description: "Returns true when a range A is finished by a point B",
+        description: "Returns true when `range` is finished by `point`",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -616,7 +620,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finished by(range1, range2)",
         insertText: "finished by($1, $2)",
-        description: "Returns true when a range A is finished by a range B",
+        description: "Returns true when `range1` is finished by `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -632,7 +636,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finishes(point, range)",
         insertText: "finishes($1, $2)",
-        description: "Returns true when a point A finishes a range B",
+        description: "Returns true when `point` finishes `range`",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -642,7 +646,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finishes(range1, range2)",
         insertText: "finishes($1, $2)",
-        description: "Returns true when a range A finishes an range B",
+        description: "Returns true when `range1` finishes `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -705,9 +709,9 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
-        label: "includes(range, index)",
+        label: "includes(range, point)",
         insertText: "includes($1, $2)",
-        description: "Returns true when a range A includes a point B",
+        description: "Returns true when `range` includes `point`",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -724,7 +728,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "includes(range1, range2)",
         insertText: "includes($1, $2)",
-        description: "Returns true when a range A includes a pange B",
+        description: "Returns true when `range1` includes `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -775,6 +779,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           'is( time( "23:00:50z" ), time( "23:00:50" ) ) = false',
           'is( time( "23:00:50z" ), time( "23:00:50+00:00" ) ) = true',
         ],
+      },
+      {
+        label: "invoke(ctx, namespace, model name, decision name, parameters)",
+        insertText: "invoke($1, $2, $3, $4, $5)",
+        description: "",
+        parameters: [],
+        examples: [""],
       },
       {
         label: "list contains(list, element)",
@@ -849,7 +860,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "meets(range1, range2)",
         insertText: "meets($1, $2)",
-        description: "Returns true when a range A meets an range B",
+        description: "Returns true when `range1` meets `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -864,7 +875,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "met by(range1, range2)",
         insertText: "met by($1, $2)",
-        description: "Returns true when a range A is met an range B",
+        description: "Returns true when `range1` is met `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
