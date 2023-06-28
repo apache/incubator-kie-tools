@@ -24,7 +24,6 @@ const mvn = spawn("mvn", [
   "-f",
   path.join(__dirname, "./quarkus-app"),
   "clean",
-  "package",
   "quarkus:dev",
   "-Dmaven.test.skip",
   `-Dquarkus.platform.version=${buildEnv.quarkusPlatform.version}`,
@@ -50,6 +49,12 @@ mvn.on("error", (error) => {
   console.log(`[WEBPACK ERROR]: ${error}`);
 });
 
+let mode = "dev";
+// check for --env arg and if the next arg is "live"
+if (process.argv.indexOf("--env") !== -1 && process.argv[process.argv.indexOf("--env") + 1] === "live") {
+  mode = "live";
+}
+
 const webpack = spawn("npx", [
   "webpack",
   "serve",
@@ -58,7 +63,7 @@ const webpack = spawn("npx", [
   "--host",
   "0.0.0.0",
   "--env",
-  "dev",
+  mode,
 ]);
 
 webpack.stdout.on("data", (data) => {

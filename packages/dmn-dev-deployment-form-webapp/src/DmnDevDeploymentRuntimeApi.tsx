@@ -23,8 +23,7 @@ export interface FetchDmnResultArgs {
 }
 
 export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
-  const a = routes.dmnResult.path({ modelName: args.modelName });
-  const response = await fetch(a, {
+  const response = await fetch(routes.dmnResult.path({ modelName: args.modelName }), {
     method: "POST",
     headers: {
       Accept: "application/json",
