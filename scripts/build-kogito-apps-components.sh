@@ -24,6 +24,12 @@ MAVEN_OPTIONS="${MAVEN_OPTIONS} ${BUILD_MVN_OPTS} -Dquarkus.package.type=fast-ja
 # used for all-in-one image
 extended_context=""
 
+# Fix taken from https://github.com/kiegroup/kogito-apps/pull/1762
+if [ ! -z "${CYPRESS_BINARY_URL}" ]; then
+    export CYPRESS_INSTALL_BINARY="${CYPRESS_BINARY_URL}/cypress-9.7.0.zip"
+    echo "Setting 'CYPRESS_INSTALL_BINARY' variable to ${CYPRESS_INSTALL_BINARY}"
+fi
+
 case ${imageName} in
     "kogito-management-console")
         contextDir="management-console"

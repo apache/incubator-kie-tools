@@ -41,6 +41,7 @@ if [ ! -z "${NPM_REGISTRY_URL}" ]; then
 <yarnDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/yarn/</yarnDownloadRoot>\
 <nodeDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/node/</nodeDownloadRoot>\
 <npmDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/npm/</npmDownloadRoot>\
+<pnpmDownloadRoot>http://download.devel.redhat.com/rcm-guest/staging/rhba/dist/pnpm/</pnpmDownloadRoot>\
 </properties>\
 </profile>\
 "   

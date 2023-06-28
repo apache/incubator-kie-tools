@@ -33,6 +33,8 @@ pipeline {
                 script {
                     clean()
 
+                    sh 'printenv'
+
                     assert getBuildImageName() : 'Please provide `BUILD_IMAGE_NAME` parameter'
 
                     currentBuild.displayName = params.DISPLAY_NAME ?: currentBuild.displayName

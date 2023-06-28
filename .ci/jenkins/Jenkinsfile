@@ -17,6 +17,8 @@ pipeline {
                 script {
                     clean()
 
+                    sh 'printenv'
+
                     githubscm.checkoutIfExists('kogito-images', getChangeAuthor(), getChangeBranch(), 'kiegroup', getChangeTarget(), true)
                 }
             }
