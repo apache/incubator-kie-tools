@@ -1112,10 +1112,7 @@
                       <ignoreClass>javax.enterprise.*</ignoreClass>
 
                       <!-- TODO: Fix and remove these ignores -->
-                      <ignoreClass>org.kie.dmn.feel.*</ignoreClass>
-                      <ignoreClass>org.dominokit.domino.logger.ConsoleLoggerAdapter</ignoreClass>
                       <ignoreClass>org.slf4j.*</ignoreClass>
-                      <ignoreClass>org.antlr.v4.runtime.*</ignoreClass>
 
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->
                       <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
