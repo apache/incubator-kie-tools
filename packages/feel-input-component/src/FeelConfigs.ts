@@ -378,7 +378,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
         ],
-        examples: ["coincides( 5, 5 ) = true", "coincides( 3, 4 ) = false"],
+        examples: ["coincides( [1..10], [1..10]) = true", "coincides( [1..9], [2..10] ) = false"],
       },
       {
         label: "concatenate(list...)",
@@ -923,11 +923,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns true if all elements in the list are true. null values are ignored",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
-          "all( [false,null,true] ) = false",
-          "all( [true,null,true] ) = true",
-          "all( true ) = true",
-          "all( [] ) = true",
-          "all( 0 ) = null",
+          "nn all( [false,null,true] ) = false",
+          "nn all( [true,null,true] ) = true",
+          "nn all( true ) = true",
+          "nn all( [] ) = true",
+          "nn all( 0 ) = null",
         ],
       },
       {
@@ -936,11 +936,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns true if any element in the list is true. null values are ignored",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
-          "any( [false,null,true] ) = true",
-          "any( false ) = false",
-          "any( [] ) = false",
-          "any( null ) = false",
-          "any( 0 ) = null",
+          "nn any( [false,null,true] ) = true",
+          "nn any( false ) = false",
+          "nn any( [] ) = false",
+          "nn any( null ) = false",
+          "nn any( 0 ) = null",
         ],
       },
       {
@@ -948,7 +948,12 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         insertText: "nn count($1)",
         description: "Returns size of list, or zero if list is empty. null values are not counted",
         parameters: [["list", `\`list\``]],
-        examples: ["count( [1,2,3] ) = 3", "count( [1,2,null,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
+        examples: [
+          "nn count( [1,2,3] ) = 3",
+          "nn count( [1,2,null,3] ) = 3",
+          "nn count( [] ) = 0",
+          "nn count( [1, [2,3]] ) = 2",
+        ],
       },
       {
         label: "nn max(list)",
@@ -956,11 +961,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns maximum item, or null if `list` is empty. null values are ignored",
         parameters: [["list", `\`list\``]],
         examples: [
-          "min( [1,2,3] ) = 1",
-          "max( 1,2,3 ) = 3",
-          "max( 1,2,3,null ) = 3",
-          "min( 1 ) = min( [1] ) = 1",
-          "max( [] ) = null",
+          "nn min( [1,2,3] ) = 1",
+          "nn max( 1,2,3 ) = 3",
+          "nn max( 1,2,3,null ) = 3",
+          "nn min( 1 ) = min( [1] ) = 1",
+          "nn max( [] ) = null",
         ],
       },
       {
@@ -969,11 +974,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns arithmetic mean (average) of numbers. null values are ignored",
         parameters: [["list", `\`list\``]],
         examples: [
-          "mean( [1,2,3] ) = 2",
-          "mean( 1,2,3 ) = 2",
-          "mean( 1,2,3,null ) = 2",
-          "mean( 1 ) = 1",
-          "mean( [] ) = null",
+          "nn mean( [1,2,3] ) = 2",
+          "nn mean( 1,2,3 ) = 2",
+          "nn mean( 1,2,3,null ) = 2",
+          "nn mean( 1 ) = 1",
+          "nn mean( [] ) = null",
         ],
       },
       {
@@ -983,10 +988,10 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "Returns the median element of the `list` of numbers. null values are ignored. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
         parameters: [["list", `\`list\``]],
         examples: [
-          "median( 8, 2, 5, 3, 4 ) = 4",
-          "median( 20, 30, null, 40, null, 10 ) =  25",
-          "median( [6, 1, 2, 3] ) = 2.5",
-          "median( [ ] ) = null",
+          "nn median( 8, 2, 5, 3, 4 ) = 4",
+          "nn median( 20, 30, null, 40, null, 10 ) =  25",
+          "nn median( [6, 1, 2, 3] ) = 2.5",
+          "nn median( [ ] ) = null",
         ],
       },
       {
@@ -994,7 +999,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         insertText: "nn min($1)",
         description: "Returns minimum item, or null if `list` is empty. null values are ignored",
         parameters: [["list", `\`list\``]],
-        examples: ["min( [1,2,3] ) = 1", "min( [1,2,null,3] ) = 1", "min( 1 ) = 1", "min( [1] ) = 1"],
+        examples: ["nn min( [1,2,3] ) = 1", "nn min( [1,2,null,3] ) = 1", "nn min( 1 ) = 1", "nn min( [1] ) = 1"],
       },
       {
         label: "nn mode(list)",
@@ -1003,10 +1008,10 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "Returns the mode of the numbers in the `list`. null values are ignored. If multiple elements are returned, the numbers are sorted in ascending order",
         parameters: [["list", `\`list\``]],
         examples: [
-          "mode( 6, 3, 9, 6, 6 ) = [6]",
-          "mode( 20, 30, null, 20, null, 10) = [20]",
-          "mode( [6, 1, 9, 6, 1] ) = [1, 6]",
-          "mode( [ ] ) = [ ]",
+          "nn mode( 6, 3, 9, 6, 6 ) = [6]",
+          "nn mode( 20, 30, null, 20, null, 10) = [20]",
+          "nn mode( [6, 1, 9, 6, 1] ) = [1, 6]",
+          "nn mode( [ ] ) = [ ]",
         ],
       },
       {
@@ -1015,11 +1020,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns the standard deviation of the numbers in the `list`. null values are ignored.",
         parameters: [["list", `\`list\``]],
         examples: [
-          "stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
-          "stddev( 20, 30, null, 40, null, 10) = 12.90994448735805628393088466594133",
-          "stddev( [47] ) = null",
-          "stddev( 47 ) = null",
-          "stddev( [ ] ) = null",
+          "nn stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
+          "nn stddev( 20, 30, null, 40, null, 10) = 12.90994448735805628393088466594133",
+          "nn stddev( [47] ) = null",
+          "nn stddev( 47 ) = null",
+          "nn stddev( [ ] ) = null",
         ],
       },
       {
@@ -1028,11 +1033,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns the sum of the numbers in the `list`. null values are ignored.",
         parameters: [["list", `\`list\``]],
         examples: [
-          "sum( [1,2,3] ) = 6",
-          "sum( 4, -1, 12.1, null, 5, null, 10 ) = 30.1",
-          "sum( 1,2,3 ) = 6",
-          "sum( 1 ) = 1",
-          "sum( [] ) = null",
+          "nn sum( [1,2,3] ) = 6",
+          "nn sum( 4, -1, 12.1, null, 5, null, 10 ) = 30.1",
+          "nn sum( 1,2,3 ) = 6",
+          "nn sum( 1 ) = 1",
+          "nn sum( [] ) = null",
         ],
       },
       {
@@ -1070,7 +1075,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "overlaps after(range1, range2)",
         insertText: "overlaps after($1, $2)",
-        description: "Returns true when a range A overlaps after a range B",
+        description: "Returns true when `range1` overlaps after `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1094,7 +1099,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "overlaps before(range1, range2)",
         insertText: "overlaps before($1, $2)",
-        description: "Returns true when a range A overlaps before a range B",
+        description: "Returns true when `range1` overlaps before `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1114,7 +1119,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "overlaps(range1, range2)",
         insertText: "overlaps($1, $2)",
-        description: "Returns true when a range A overlaps a range B",
+        description: "Returns true when `range1` overlaps `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1242,7 +1247,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "started by(range1, range2)",
         insertText: "started by($1, $2)",
-        description: "Returns true when a range A is started by a range B",
+        description: "Returns true when `range1` is started by `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1268,12 +1273,12 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         examples: ['starts with( "testing", "te" ) = true'],
       },
       {
-        label: "starts(range, point)",
+        label: "starts(point, range)",
         insertText: "starts($1, $2)",
-        description: "Returns true when a range A starts a point B",
+        description: "Returns true when `point` starts a `range`",
         parameters: [
-          ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
+          ["range", `\`range\` (\`interval\`)`],
         ],
         examples: ["starts( 1, [1..10] ) = true", "starts( 1, (1..10] ) = false", "starts( 2, [1..10] ) = false"],
       },
