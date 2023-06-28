@@ -24,7 +24,6 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.dmn.model.api.FunctionKind;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.model.Binding;
 import org.kie.workbench.common.dmn.api.definition.model.BuiltinAggregator;
@@ -210,12 +209,12 @@ public class ExpressionModelFiller {
 
     private static Double retrieveFunctionExpressionWidth(FunctionProps props) {
         Double functionExpressionWidth = null;
-        if (props.functionKind.equals(FunctionKind.FEEL.value())) {
+        if (props.functionKind.equals(FunctionDefinition.Kind.FEEL.getValue())) {
             functionExpressionWidth = retrieveNestedExpressionWidth(((FeelFunctionProps) props).expression);
-        } else if (props.functionKind.equals(FunctionKind.JAVA.value())) {
+        } else if (props.functionKind.equals(FunctionDefinition.Kind.JAVA.getValue())) {
             functionExpressionWidth = props.classAndMethodNamesWidth;
-        } else if (props.functionKind.equals(FunctionKind.PMML.value())) {
-            /* PMML FUnction expressions have FIXED widths - Using defaults with NULL */
+        } else if (props.functionKind.equals(FunctionDefinition.Kind.PMML.getValue())) {
+            /* PMML Function expressions have FIXED widths - Using defaults with NULL */
             functionExpressionWidth = null;
         }
         return functionExpressionWidth;
