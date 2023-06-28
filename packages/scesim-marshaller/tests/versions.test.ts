@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
 const files = [{ path: "../tests-data--manual/simple.scesim", version: "1.8" }];
 

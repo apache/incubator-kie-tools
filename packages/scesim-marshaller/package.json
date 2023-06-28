@@ -19,11 +19,12 @@
     "src"
   ],
   "scripts": {
-    "build:codegen": "xml-parser-ts-codegen ./src/schemas/scesim-1_8/SceSim.xsd ScenarioSimulationModel",
+    "build:codegen": "pnpm xml-parser-ts-codegen ./src/schemas/scesim-1_8/SceSim.xsd ScenarioSimulationModel",
     "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist &&  pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "xml-parser-ts-codegen": "node ./node_modules/@kie-tools/xml-parser-ts-codegen/dist/codegen.js"
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*"
