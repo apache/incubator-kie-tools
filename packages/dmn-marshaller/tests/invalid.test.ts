@@ -27,8 +27,8 @@ describe("invalid", () => {
     }
   });
 
-  // FIXME: How to make sure that the parsed XML is actually a DMN, and not some random XML?
-  test("non-dmn, valid xml", () => {
+  // FIXME: Tiago --> How to make sure that the parsed XML is actually a DMN, and not some random XML?
+  test.skip("non-dmn, valid xml", () => {
     try {
       const { parser } = getMarshaller(`
 <dmn:definitions

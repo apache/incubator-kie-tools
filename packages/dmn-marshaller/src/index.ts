@@ -24,10 +24,10 @@ export type DmnDefinitions = {
   definitions: DMN12__tDefinitions | DMN13__tDefinitions | DMN14__tDefinitions;
 };
 
-// FIXME: DMN 1.1 doesn't seem to have diagram types, which is too much of a deal breaker... What to do?
+// FIXME: Tiago --> DMN 1.1 doesn't seem to have diagram types, which is too much of a deal breaker... What to do?
 // | { definitions: DMN11__tDefinitions };
 
-// FIXME: DMN 1.0 is not included because it doesn't seem to be retro-compatble, as it declares some elements with an Upper Case first letter. E.g., "Definitions". Need to double-check that, as XML seems to be case-sensitive.
+// FIXME: Tiago --> DMN 1.0 is not included because it doesn't seem to be retro-compatble, as it declares some elements with an Upper Case first letter. E.g., "Definitions". Need to double-check that, as XML seems to be case-sensitive.
 // | { Definitions: DMN10__tDefinitions };
 
 export function getMarshaller(xml: string): DmnMarshaller {

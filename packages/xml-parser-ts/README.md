@@ -16,5 +16,5 @@ This lets you parse/build XML strings from/to JSON using types and metadata gene
 ## Usage:
 
 ```typescript
-// TODO:
+// TODO: Tiago --> Write
 ```

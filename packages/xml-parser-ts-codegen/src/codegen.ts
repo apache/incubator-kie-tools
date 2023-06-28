@@ -51,7 +51,7 @@ export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
   ["xsd:ID", { type: "primitive", tsEquivalent: "string", doc: "xsd:ID" }],
 ]);
 
-// TODO: Unit tests
+// TODO: Tiago --> Write unit tests
 async function fetchXsdString(baseLocation: string, relativeLocation: string) {
   try {
     const url = new URL(relativeLocation);
@@ -62,7 +62,7 @@ async function fetchXsdString(baseLocation: string, relativeLocation: string) {
   }
 }
 
-// TODO: Unit tests
+// TODO: Tiago --> Write unit tests
 async function parseDeep(
   __XSD_PARSER: XmlParserTs<XsdSchema>,
   baseLocation: string,
