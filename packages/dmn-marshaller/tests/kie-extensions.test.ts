@@ -4,7 +4,7 @@ import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
 describe("kie-extensions", () => {
   test("kie:attachment", () => {
-    const xml = fs.readFileSync(path.join(__dirname, "../tests-data--manual/attachment.dmn"), "utf-8");
+    const xml = fs.readFileSync(path.join(__dirname, "../tests-data--manual/other/attachment.dmn"), "utf-8");
     const { parser, instanceNs } = getMarshaller(xml);
     const { json } = parser.parse({ xml, instanceNs });
 
@@ -16,7 +16,7 @@ describe("kie-extensions", () => {
   });
 
   test("kie:ComponentWidthsExtension", () => {
-    const xml = fs.readFileSync(path.join(__dirname, "../tests-data--manual/sample12.dmn"), "utf-8");
+    const xml = fs.readFileSync(path.join(__dirname, "../tests-data--manual/other/sample12.dmn"), "utf-8");
     const { parser, instanceNs } = getMarshaller(xml);
     const { json } = parser.parse({ xml, instanceNs });
 

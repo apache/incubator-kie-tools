@@ -5,10 +5,12 @@ import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
 const files = [
-  "../tests-data--manual/attachment.dmn",
-  "../tests-data--manual/empty13.dmn",
-  "../tests-data--manual/sample12.dmn",
-  "../tests-data--manual/weird.dmn",
+  "../tests-data--manual/other/attachment.dmn",
+  "../tests-data--manual/other/empty13.dmn",
+  "../tests-data--manual/other/sample12.dmn",
+  "../tests-data--manual/other/weird.dmn",
+  // FIXME: This is failing due to vendor-specific properties. If we remove them manually, everything works well.
+  // "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
 const tmpDir = path.join(os.tmpdir(), "dmn-marshaller-type-safety-tests");
@@ -29,8 +31,8 @@ describe("type safety", () => {
   for (const file of files) {
     test(path.basename(file), () => {
       const xml = fs.readFileSync(path.join(__dirname, file), "utf-8");
-      const { parser, instanceNs, version } = getMarshaller(xml);
 
+      const { parser, instanceNs, version } = getMarshaller(xml);
       const { json } = parser.parse({ xml, instanceNs });
 
       const thisPath = path.resolve(__dirname);

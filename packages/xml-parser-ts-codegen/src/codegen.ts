@@ -46,6 +46,8 @@ export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
   ["xsd:float", { type: "primitive", tsEquivalent: "number", doc: "xsd:float" }],
   ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREF" }],
   ["xsd:anyURI", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyURI" }],
+  ["xsd:anyType", { type: "primitive", tsEquivalent: "string", doc: "xsd:antType" }],
+  ["xsd:IDREFS", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREFS" }],
   ["xsd:ID", { type: "primitive", tsEquivalent: "string", doc: "xsd:ID" }],
 ]);
 
@@ -154,22 +156,22 @@ async function main() {
           ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
+          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
           ...(
-            xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:sequence"]?.["xsd:choice"]?.["xsd:element"] ?? []
+            xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:choice"]?.["xsd:element"] ?? []
           ).flatMap((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:choice"]?.["xsd:element"] ?? []).flatMap((s) =>
+          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:element"] ?? []).flatMap((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
           ),
           ...(
-            xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []
+            xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []
           ).flatMap((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
         ],
         attributes: [
           ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:attribute"] ?? []).map((a) =>
+          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:attribute"] ?? []).map((a) =>
             xsdAttributeToXptcAttribute(a)
           ),
         ],
@@ -949,13 +951,13 @@ function xsdComplexTypeToAnonymousXptcComplexType(
       ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
         xsdElementToXptcElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
       ),
-      ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
+      ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
         xsdElementToXptcElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
       ),
     ],
     attributes: [
       ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
-      ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]["xsd:attribute"] ?? []).map((a) =>
+      ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:attribute"] ?? []).map((a) =>
         xsdAttributeToXptcAttribute(a)
       ),
     ],

@@ -12,6 +12,35 @@ export const KIE_NS = "kie:";
 type KIE = "kie";
 
 ///////////////////////////
+///       DMN 1.1       ///
+///////////////////////////
+
+declare module "./schemas/dmn-1_1/ts-gen/types" {
+  export interface DMNDI12__DMNDiagram__extension {
+    "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
+  }
+
+  export interface DMN12__tKnowledgeSource__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+}
+dmn12ns.set(KIE_NS, kie10ns.get("")!);
+dmn12ns.set(kie10ns.get("")!, KIE_NS);
+
+(dmn12meta as any) = mergeMetas(dmn12meta, [[KIE_NS, kie10meta]]);
+
+(dmn12meta["DMNDI12__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
+  type: "KIE__tComponentsWidthsExtension",
+  isArray: false,
+  isOptional: true,
+};
+
+(dmn12meta["DMN12__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+///////////////////////////
 ///       DMN 1.2       ///
 ///////////////////////////
 

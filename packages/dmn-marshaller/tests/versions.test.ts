@@ -3,10 +3,14 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
 const files = [
-  { path: "../tests-data--manual/attachment.dmn", version: "1.2" },
-  { path: "../tests-data--manual/empty13.dmn", version: "1.3" },
-  { path: "../tests-data--manual/sample12.dmn", version: "1.2" },
-  { path: "../tests-data--manual/weird.dmn", version: "1.2" },
+  { path: "../tests-data--manual/other/attachment.dmn", version: "1.2" },
+  { path: "../tests-data--manual/other/empty13.dmn", version: "1.3" },
+  { path: "../tests-data--manual/other/sample12.dmn", version: "1.2" },
+  { path: "../tests-data--manual/other/weird.dmn", version: "1.2" },
+  {
+    path: "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
+    version: "1.4",
+  },
 ];
 
 describe("versions", () => {

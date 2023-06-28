@@ -52,7 +52,7 @@ export interface XsdComplexType {
     "@_processContents": "lax";
   };
   "xsd:complexContent"?: {
-    "xsd:extension": {
+    "xsd:extension"?: {
       "xsd:attribute"?: XsdAttribute[];
       "xsd:sequence"?: XsdSequence;
       "xsd:all"?: XsdAll;
