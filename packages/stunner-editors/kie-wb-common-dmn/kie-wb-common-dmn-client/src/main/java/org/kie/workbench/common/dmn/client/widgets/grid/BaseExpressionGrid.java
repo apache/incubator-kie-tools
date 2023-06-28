@@ -47,7 +47,6 @@ import org.kie.workbench.common.dmn.client.commands.general.SetHeaderValueComman
 import org.kie.workbench.common.dmn.client.commands.general.SetTypeRefCommand;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.EditableHeaderMetaData;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.AutocompleteTextAreaDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.ListBoxSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextBoxSingletonDOMElementFactory;
@@ -263,14 +262,14 @@ public abstract class BaseExpressionGrid<E extends Expression, D extends GridDat
                                                       newCellHasValueCommand());
     }
 
-    public AutocompleteTextAreaDOMElementFactory getAutocompleteTextareaFactory() {
-        return new AutocompleteTextAreaDOMElementFactory(gridPanel,
-                                                         gridLayer,
-                                                         this,
-                                                         sessionManager,
-                                                         sessionCommandManager,
-                                                         newCellHasNoValueCommand(),
-                                                         newCellHasValueCommand());
+    public TextAreaSingletonDOMElementFactory getAutocompleteTextareaFactory() {
+        return new TextAreaSingletonDOMElementFactory(gridPanel,
+                                                      gridLayer,
+                                            this,
+                                                      sessionManager,
+                                                      sessionCommandManager,
+                                                      newCellHasNoValueCommand(),
+                                                      newCellHasValueCommand());
     }
 
     public ListBoxSingletonDOMElementFactory getBodyListBoxFactory() {
