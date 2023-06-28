@@ -112,7 +112,6 @@ async function main() {
   const __RELATIVE_LOCATION_WITHOUT_EXTENSION = __RELATIVE_LOCATION.replace(path.extname(__RELATIVE_LOCATION), "");
 
   const __CONVENTIONS = {
-    extensionTypesLocation: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen-extensions")),
     outputFileForGeneratedTypes: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen/types.ts")),
     outputFileForGeneratedMeta: path.resolve(".", path.join(__BASE_LOCATION, "ts-gen/meta.ts")),
   };

@@ -4,7 +4,7 @@ import * as os from "os";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
-const files = ["../tests-data--manual/simple.scesim"];
+const files = ["../tests-data--manual/TrafficViolationTest.scesim"];
 
 const tmpDir = path.join(os.tmpdir(), "scesim-marshaller-type-safety-tests");
 
@@ -22,8 +22,7 @@ describe("type safety", () => {
   });
 
   for (const file of files) {
-    // TODO: Tiago --> Fix this
-    test.skip(path.basename(file), () => {
+    test(path.basename(file), () => {
       const xml = fs.readFileSync(path.join(__dirname, file), "utf-8");
       const { parser, version } = getMarshaller(xml);
 

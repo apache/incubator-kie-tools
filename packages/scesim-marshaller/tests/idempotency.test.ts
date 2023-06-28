@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
-const files = ["../tests-data--manual/simple.scesim"];
+const files = ["../tests-data--manual/simple.scesim", "../tests-data--manual/TrafficViolationTest.scesim"];
 
 describe("idempotency", () => {
   for (const file of files) {

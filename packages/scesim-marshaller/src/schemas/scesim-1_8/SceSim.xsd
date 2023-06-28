@@ -8,7 +8,7 @@
   </xsd:complexType>
   <xsd:complexType name="expressionElementsType">
     <xsd:sequence>
-      <xsd:element type="ExpressionElementType" name="ExpressionElement" maxOccurs="unbounded" />
+      <xsd:element type="ExpressionElementType" name="ExpressionElement" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="expressionIdentifierType">
@@ -37,8 +37,8 @@
       <xsd:element type="xsd:string" name="className" />
       <xsd:element type="xsd:string" name="factAlias" />
       <xsd:element type="xsd:string" name="expressionAlias" minOccurs="0" />
-      <xsd:element type="genericTypes" name="genericTypes" />
-      <xsd:element type="xsd:double" name="columnWidth" />
+      <xsd:element type="genericTypes" name="genericTypes" minOccurs="0"/>
+      <xsd:element type="xsd:double" name="columnWidth" minOccurs="0"/>
       <xsd:element type="xsd:string" name="factMappingValueType" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
