@@ -526,7 +526,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "distinct values(list)",
         insertText: "distinct values($1)",
-        description: "Duplicate removal",
+        description: "Returns `list` without duplicates",
         parameters: [["list", `\`list\``]],
         examples: ["distinct values( [1,2,3,2,1] ) = [1,2,3]"],
       },
