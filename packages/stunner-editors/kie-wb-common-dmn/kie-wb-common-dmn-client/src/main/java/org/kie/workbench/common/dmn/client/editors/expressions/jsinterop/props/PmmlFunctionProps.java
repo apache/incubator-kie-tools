@@ -28,7 +28,7 @@ public class PmmlFunctionProps extends FunctionProps {
     public final String modelFieldId;
 
     public PmmlFunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String document, final String model, final String documentFieldId, final String modelFieldId) {
-        super(id, name, dataType, formalParameters, parametersWidth, FunctionDefinition.Kind.FEEL.getValue());
+        super(id, name, dataType, formalParameters, parametersWidth, FunctionDefinition.Kind.PMML.getValue());
         this.document = document;
         this.model = model;
         this.documentFieldId = documentFieldId;
