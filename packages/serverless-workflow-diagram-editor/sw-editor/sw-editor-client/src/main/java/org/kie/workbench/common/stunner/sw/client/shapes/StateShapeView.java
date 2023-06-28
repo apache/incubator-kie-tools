@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import java.util.Map;
-
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPathClipper;
@@ -28,6 +26,7 @@ import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static com.ait.lienzo.shared.core.types.TextAlign.CENTER;
 import static com.ait.lienzo.shared.core.types.TextBaseLine.MIDDLE;
@@ -42,9 +41,9 @@ public class StateShapeView
     public final static double STATE_SHAPE_HEIGHT = 90;
     public final static double STATE_SHAPE_ICON_RADIUS = 25;
     public final static double STATE_CORNER_RADIUS = 5.00;
-    public final static String SHAPE_TITLE_FONT_COLOR = "#929292";
-    public final static double SHAPE_TITLE_FONT_SIZE = 12.00;
-    public final static String SHAPE_TITLE_FONT_FAMILY = "Open Sans";
+    private final static double LABEL_WIDTH = 150;
+    private final static double LABEL_POSITION_X = 80;
+    private final static double LABEL_POSITION_Y = 5;
     private Text title;
 
     public StateShapeView(String name) {
@@ -52,22 +51,12 @@ public class StateShapeView
                       .rect(0, 0, STATE_SHAPE_WIDTH, STATE_SHAPE_HEIGHT)
                       .setCornerRadius(STATE_CORNER_RADIUS));
         initialize(name);
-        initializeTitle(name);
-    }
-
-    private void initializeTitle(String title) {
-        setTitle(title);
-        setTitlePosition(VerticalAlignment.MIDDLE, HorizontalAlignment.CENTER, ReferencePosition.INSIDE, Orientation.HORIZONTAL);
-        setTitleFontColor(SHAPE_TITLE_FONT_COLOR);
-        setTitleFontFamily(SHAPE_TITLE_FONT_FAMILY);
-        setTitleFontSize(SHAPE_TITLE_FONT_SIZE);
-        setTitleStrokeWidth(0);
-        setTitleStrokeAlpha(0);
     }
 
     @Override
     public StateShapeView setTitle(String name) {
         title.setText(name);
+        // Text widget can't be centered vertically, so we need to manually set Y position
         title.setY(40 - title.getBoundingBox().getHeight() / 2);
         return this;
     }
@@ -78,15 +67,9 @@ public class StateShapeView
         return this;
     }
 
-    @Override
-    public double getMarginX() {
-        return 80d;
-    }
-
     private void initialize(String name) {
         title = new Text(name)
-                .setX(80)
-                .setY(35)
+                .setX(LABEL_POSITION_X)
                 .setStrokeWidth(0)
                 .setFillColor("#383B3D")
                 .setFontFamily("Open Sans")
@@ -94,7 +77,7 @@ public class StateShapeView
                 .setTextBaseLine(MIDDLE)
                 .setFontSize(12)
                 .setListening(false);
-        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 150, 90));
+        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, LABEL_WIDTH, STATE_SHAPE_HEIGHT));
 
         title.setWrapper(textWrapper);
         addChild(title);
@@ -109,11 +92,6 @@ public class StateShapeView
 
         iconImage = newGroup();
         icon.add(iconImage);
-    }
-
-    public void setText(String name) {
-        title.setText(name);
-        title.setVisible(true);
     }
 
     public void setIconPicture(Picture picture) {
@@ -148,42 +126,6 @@ public class StateShapeView
         return iconImage.getChildNodes().isEmpty();
     }
 
-    // TODO
-    @Override
-    public StateShapeView setTitleSizeConstraints(Size sizeConstraints) {
-        return this;
-    }
-
-    // TODO
-    @Override
-    public StateShapeView setTitlePosition(VerticalAlignment verticalAlignment, HorizontalAlignment horizontalAlignment, ReferencePosition referencePosition, Orientation orientation) {
-        return this;
-    }
-
-    // TODO
-    @Override
-    public StateShapeView setMargins(Map<Enum, Double> margins) {
-        return this;
-    }
-
-    // TODO
-    @Override
-    public StateShapeView setTitleXOffsetPosition(Double xOffset) {
-        return this;
-    }
-
-    // TODO
-    @Override
-    public StateShapeView setTitleYOffsetPosition(Double yOffset) {
-        return this;
-    }
-
-    @Override
-    public StateShapeView setTitleRotation(double degrees) {
-        title.setRotationDegrees(degrees);
-        return this;
-    }
-
     @Override
     public StateShapeView setTitleFontFamily(String fontFamily) {
         title.setFontFamily(fontFamily);
@@ -209,6 +151,16 @@ public class StateShapeView
     }
 
     @Override
+    public double getTextboxWidth() {
+        return LABEL_WIDTH;
+    }
+
+    @Override
+    public double getTextboxHeight() {
+        return STATE_SHAPE_HEIGHT;
+    }
+
+    @Override
     public StateShapeView setTitleStrokeColor(String color) {
         title.setStrokeColor(color);
         return this;
@@ -224,28 +176,9 @@ public class StateShapeView
         return title.getFontSize();
     }
 
-    // TODO
     @Override
-    public String getTitlePosition() {
-        return null;
-    }
-
-    // TODO
-    @Override
-    public String getOrientation() {
-        return null;
-    }
-
-    // TODO
-    @Override
-    public String getFontPosition() {
-        return null;
-    }
-
-    // TODO
-    @Override
-    public String getFontAlignment() {
-        return null;
+    public Point2D getTitlePosition() {
+        return new Point2D(LABEL_POSITION_X, LABEL_POSITION_Y);
     }
 
     @Override
@@ -257,6 +190,8 @@ public class StateShapeView
     @Override
     public void batch() {
         title.refresh();
-        title.getLayer().batch();
+        if (title.getLayer() != null) {
+            title.getLayer().batch();
+        }
     }
 }

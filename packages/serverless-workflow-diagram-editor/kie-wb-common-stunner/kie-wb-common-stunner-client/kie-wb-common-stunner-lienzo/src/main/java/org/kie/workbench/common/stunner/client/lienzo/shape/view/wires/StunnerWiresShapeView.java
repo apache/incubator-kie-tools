@@ -21,13 +21,13 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.IControlHandle;
 import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.LayoutContainer;
+import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresDragEvent;
 import com.ait.lienzo.client.core.shape.wires.event.AbstractWiresResizeEvent;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.LinearGradient;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresLayoutContainerNoTextBoundingBox;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils;
 import org.kie.workbench.common.stunner.client.lienzo.util.ShapeControlPointsHelper;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -56,7 +56,7 @@ public class StunnerWiresShapeView<T extends StunnerWiresShapeView>
     public StunnerWiresShapeView(final ViewEventType[] supportedEventTypes,
                                  final MultiPath path) {
         this(path,
-             new WiresLayoutContainerNoTextBoundingBox());
+             new WiresLayoutContainer());
         setEventHandlerManager(new ViewEventHandlerManager(getGroup(),
                                                            path,
                                                            supportedEventTypes));
@@ -73,10 +73,6 @@ public class StunnerWiresShapeView<T extends StunnerWiresShapeView>
         this.eventHandlerManager = eventHandlerManager;
     }
 
-    protected ViewEventHandlerManager getEventHandlerManager() {
-        return this.eventHandlerManager;
-    }
-
     @Override
     public boolean supports(final ViewEventType type) {
         return eventHandlerManager.supports(type);
@@ -88,7 +84,6 @@ public class StunnerWiresShapeView<T extends StunnerWiresShapeView>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T setFillGradient(final Type type,
                              final String startColor,
                              final String endColor) {
@@ -111,7 +106,6 @@ public class StunnerWiresShapeView<T extends StunnerWiresShapeView>
         updateControlPoints(ControlPointType.RESIZE);
     }
 
-    @SuppressWarnings("unchecked")
     public T updateFillGradient(final double width,
                                 final double height) {
         if (this.fillGradientType != null
