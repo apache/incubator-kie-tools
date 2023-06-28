@@ -13,13 +13,15 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
+    "build:dev": "pnpm docker:build",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\" \"pnpm test\"",
     "docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose build\" --else \"echo Docker not found, skipping image build.\"",
     "docker:create-env-file": "rimraf .env && pnpm build-env --print-env-file:self > .env",
     "docker:down": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose down\" --else \"echo Docker not found, skipping image down.\"",
     "docker:start": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose up -d --wait --wait-timeout 60\" --else \"echo Docker not found, skipping image start.\"",
     "docker:stop": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker compose stop\" --else \"echo Docker not found, skipping image stop.\"",
     "postinstall": "pnpm docker:create-env-file",
-    "test": "node scripts/test.js"
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"pnpm docker:start\" \"node scripts/test.js\" \"pnpm docker:stop\""
   },
   "dependencies": {
     "@kie-tools/git-cors-proxy-image": "workspace:*",
