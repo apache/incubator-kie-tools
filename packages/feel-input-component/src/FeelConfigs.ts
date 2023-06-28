@@ -257,7 +257,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "all(list)",
         insertText: "all($1)",
-        description: "Returns true if all elements in the list are true.",
+        description: "Returns true if all elements in the `list` are true.",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "all( [false,null,true] ) = false",
