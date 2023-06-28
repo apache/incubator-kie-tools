@@ -395,7 +395,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["string", `string`],
           ["match", `string`],
         ],
-        examples: ['contains( "foobar", "of" ) = false'],
+        examples: ['contains( "foobar", "of" ) = false', 'contains( "foobar", "fo" ) = true'],
       },
       {
         label: "count(list)",
