@@ -9,11 +9,11 @@ describe("idempotency", () => {
     test(path.basename(file), () => {
       const xml_original = fs.readFileSync(path.join(__dirname, file), "utf-8");
 
-      const { parser, instanceNs } = getMarshaller(xml_original);
-      const { json } = parser.parse({ xml: xml_original, instanceNs });
+      const { parser, builder } = getMarshaller(xml_original);
+      const json = parser.parse();
 
-      const xml_firstPass = parser.build({ json, instanceNs });
-      const xml_secondPass = parser.build({ json: parser.parse({ xml: xml_firstPass, instanceNs }).json, instanceNs });
+      const xml_firstPass = builder.build(json);
+      const xml_secondPass = builder.build(getMarshaller(xml_firstPass).parser.parse());
 
       expect(xml_firstPass).toStrictEqual(xml_secondPass);
     });
