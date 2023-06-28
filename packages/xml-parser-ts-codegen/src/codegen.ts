@@ -124,9 +124,11 @@ async function main() {
   const __SIMPLE_TYPES: XptcSimpleType[] = Array.from(__XSDS.entries()).flatMap(([location, schema]) =>
     (schema["xsd:schema"]["xsd:simpleType"] || []).flatMap((s) => {
       if (s["xsd:union"]) {
-        return (s["xsd:union"]["xsd:simpleType"] ?? []).flatMap((s) => xsdSimpleTypeToXptcSimpleType(s, location));
+        return (s["xsd:union"]["xsd:simpleType"] ?? []).flatMap((ss) =>
+          xsdSimpleTypeToXptcSimpleType(ss, location, s["@_name"])
+        );
       } else {
-        return xsdSimpleTypeToXptcSimpleType(s, location);
+        return xsdSimpleTypeToXptcSimpleType(s, location, s["@_name"]);
       }
     })
   );
@@ -759,7 +761,7 @@ function getTsTypeFromLocalRef(
   };
 }
 
-function xsdSimpleTypeToXptcSimpleType(s: XsdSimpleType, location: string): XptcSimpleType {
+function xsdSimpleTypeToXptcSimpleType(s: XsdSimpleType, location: string, name: string): XptcSimpleType {
   if (
     (s["xsd:restriction"]?.["@_base"] === "xsd:string" || s["xsd:restriction"]?.["@_base"] === "xsd:token") &&
     s["xsd:restriction"]["xsd:enumeration"]
@@ -768,7 +770,7 @@ function xsdSimpleTypeToXptcSimpleType(s: XsdSimpleType, location: string): Xptc
       doc: "enum",
       type: "simple",
       kind: "enum",
-      name: s["@_name"],
+      name: s["@_name"] ?? name,
       declaredAtRelativeLocation: location,
       values: s["xsd:restriction"]["xsd:enumeration"].map((e) => e["@_value"]),
     };
@@ -778,7 +780,7 @@ function xsdSimpleTypeToXptcSimpleType(s: XsdSimpleType, location: string): Xptc
       type: "simple",
       kind: "int",
       restrictionBase: s["xsd:restriction"]["@_base"],
-      name: s["@_name"],
+      name: s["@_name"] ?? name,
       declaredAtRelativeLocation: location,
       minInclusive: s["xsd:restriction"]["xsd:minInclusive"]?.["@_value"],
       maxInclusive: s["xsd:restriction"]["xsd:maxInclusive"]?.["@_value"],

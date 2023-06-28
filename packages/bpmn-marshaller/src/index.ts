@@ -1,8 +1,10 @@
-import { Meta, Parser, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts";
-import { meta as bpmn20meta, root as bpmn20root, ns as bpmn20ns } from "./schemas/bpmn-2_0_2/ts-gen/meta";
+import { Meta, XmlParserTs, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts";
+import { meta as bpmn20meta, root as bpmn20root, ns as bpmn20ns } from "./schemas/bpmn-2_0/ts-gen/meta";
+import { BPMN20__tDefinitions } from "./schemas/bpmn-2_0/ts-gen/types";
 
+type BpmnDefinitions = { definitions: BPMN20__tDefinitions };
 type BpmnMarshaller = {
-  parser: Parser<any>;
+  parser: XmlParserTs<BpmnDefinitions>;
   instanceNs: Map<string, string>;
   root: { element: string; type: string };
   meta: Meta;
@@ -17,7 +19,7 @@ export function getMarshaller(xml: string): BpmnMarshaller {
     version: "2.0",
     root: bpmn20root,
     meta: bpmn20meta,
-    parser: getParser({
+    parser: getParser<BpmnDefinitions>({
       ns: bpmn20ns,
       meta: bpmn20meta,
       root: bpmn20root,
