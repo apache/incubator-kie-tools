@@ -207,7 +207,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(point1, point2)",
         insertText: "after($1, $2)",
-        description: "Returns true when a point A is after a point B",
+        description: "Returns true when `point1` is after `point2`",
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -217,7 +217,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(point, range)",
         insertText: "after($1, $2)",
-        description: "Returns true when a point A is after a range B",
+        description: "Returns true when `point` is after `range`",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -227,7 +227,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range, point)",
         insertText: "after($1, $2)",
-        description: "Returns true when a range A is after a point B",
+        description: "Returns true when `range` is after `point`",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -242,7 +242,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range1, range2)",
         insertText: "after($1, $2)",
-        description: "Returns true when a range A is after a range B",
+        description: "Returns true when `range1` is after `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -293,7 +293,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point1, point2)",
         insertText: "before($1, $2)",
-        description: "Returns true when a point A is before a point B",
+        description: "Returns true when `point1` is before `point2`",
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -303,7 +303,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point, range)",
         insertText: "before($1, $2)",
-        description: "Returns true when a point A is before a range B",
+        description: "Returns true when `point` is before `range`",
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -313,7 +313,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range, point)",
         insertText: "before($1, $2)",
-        description: "Returns true when a range A is before a point B",
+        description: "Returns true when a `range` is before `point`",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -323,7 +323,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range1, range1)",
         insertText: "before($1, $2)",
-        description: "Returns true when a range A is before a range B",
+        description: "Returns true when `range1` is before `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -346,7 +346,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
         description:
-          "returns `n` with given scale and rounding mode ceiling. If at least one of `n` or scale is null, the result is null.",
+          "returns `n` with given scale and rounding mode ceiling. If at least one of `n` or `scale` is null, the result is null.",
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -363,7 +363,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(point1, point2)",
         insertText: "coincides($1, $2)",
-        description: "Returns true when a point A coincides with a point B",
+        description: "Returns true when `point1` coincides with `point2`",
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -373,7 +373,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(range1, range2)",
         insertText: "coincides($1, $2)",
-        description: "Returns true when a range A coincides with a range B",
+        description: "Returns true when `range1` coincides with `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
