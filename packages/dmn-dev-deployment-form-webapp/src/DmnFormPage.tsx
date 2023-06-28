@@ -14,35 +14,24 @@
  * limitations under the License.
  */
 
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { FormDmn, FormDmnOutputs, extractDifferences } from "@kie-tools/form-dmn";
-import {
-  DecisionResult,
-  DmnInputFieldProperties,
-  ExtendedServicesDmnJsonSchema,
-} from "@kie-tools/extended-services-api";
+import { FormDmn, FormDmnOutputs } from "@kie-tools/form-dmn";
+import { DecisionResult, ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormData } from "./DmnDevDeploymentFormWebAppDataApi";
 import { fetchDmnResult } from "./DmnDevDeploymentRuntimeApi";
 import { DmnFormToolbar } from "./DmnFormToolbar";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { useDmnFormI18n } from "./i18n";
-import {
-  get as getObjectValueByPath,
-  set as setObjectValueByPath,
-  unset as unsetObjectValueByPath,
-  cloneDeep,
-} from "lodash";
-import { resolveRefs, pathFromPtr } from "json-refs";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { RECURSION_KEYWORD, RECURSION_REF_KEYWORD, X_DMN_TYPE_KEYWORD } from "@kie-tools/dmn-runner/dist/constants";
-import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
+import { resolveReferencesAndCheckForRecursion, getDefaultValues } from "@kie-tools/dmn-runner/dist/jsonSchema";
+import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
 
 interface Props {
   formData: FormData;
@@ -67,97 +56,6 @@ export function DmnFormPage(props: Props) {
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
 
-  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties):
-    | string
-    | boolean
-    | []
-    | object
-    | undefined => {
-    if (dmnField?.type === "string" && dmnField?.format === undefined) {
-      return undefined;
-    }
-    if (dmnField?.type === "number") {
-      return undefined;
-    }
-    if (dmnField?.type === "boolean") {
-      return false;
-    }
-    if (dmnField?.type === "array") {
-      return [];
-    }
-    if (dmnField?.type === "object") {
-      return {};
-    }
-    return undefined;
-  }, []);
-
-  const getDefaultValues = useCallback(
-    (jsonSchema?: ExtendedServicesDmnJsonSchema) => {
-      if (!jsonSchema) {
-        return {};
-      }
-
-      return Object.entries(getObjectValueByPath(jsonSchema, "definitions.InputSet.properties") ?? {})?.reduce(
-        (acc, [key, field]: [string, Record<string, string>]) => {
-          acc[key] = getFieldDefaultValue(field);
-          return acc;
-        },
-        {} as Record<string, any>
-      );
-    },
-    [getFieldDefaultValue]
-  );
-
-  const resolveReferencesAndCheckForRecursion = useCallback(
-    async (jsonSchema: ExtendedServicesDmnJsonSchema, canceled: Holder<boolean>) => {
-      try {
-        const jsonSchemaCopy = cloneDeep(jsonSchema);
-        const $ref = getObjectValueByPath(jsonSchemaCopy, "$ref");
-        unsetObjectValueByPath(jsonSchemaCopy, "$ref");
-
-        const { refs, resolved } = await resolveRefs(jsonSchemaCopy as any);
-        if (canceled.get()) {
-          return;
-        }
-
-        let reResolve = false;
-        Object.entries(refs).forEach(([ptr, properties]) => {
-          if (properties?.circular) {
-            const path = pathFromPtr(ptr);
-            const recursiveRefPath = pathFromPtr(properties.def.$ref);
-            setObjectValueByPath(resolved, path.join("."), {
-              [`${RECURSION_KEYWORD}`]: true,
-              [`${RECURSION_REF_KEYWORD}`]: properties.def.$ref,
-              [`${X_DMN_TYPE_KEYWORD}`]: recursiveRefPath[recursiveRefPath.length - 1],
-            });
-            reResolve = true;
-          }
-        });
-
-        if (reResolve) {
-          const { resolved: reResolved } = await resolveRefs(resolved);
-          if (canceled.get()) {
-            return;
-          }
-
-          if ($ref) {
-            setObjectValueByPath(reResolved, "$ref", $ref);
-          }
-          return reResolved;
-        }
-
-        if ($ref) {
-          setObjectValueByPath(resolved, "$ref", $ref);
-        }
-        return resolved;
-      } catch (err) {
-        console.log(err);
-        return;
-      }
-    },
-    []
-  );
-
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -168,6 +66,9 @@ export function DmnFormPage(props: Props) {
 
           setJsonSchema(resolvedJsonSchema);
           setFormInputs((previousFormInputs) => {
+            if (!resolvedJsonSchema) {
+              return {};
+            }
             return {
               ...getDefaultValues(resolvedJsonSchema),
               ...previousFormInputs,
@@ -175,7 +76,7 @@ export function DmnFormPage(props: Props) {
           });
         });
       },
-      [props.formData.schema, resolveReferencesAndCheckForRecursion, getDefaultValues]
+      [props.formData.schema]
     )
   );
 
@@ -189,8 +90,7 @@ export function DmnFormPage(props: Props) {
       });
 
       setFormOutputs((previousOutputs: DecisionResult[]) => {
-        // extractDifferences was refactor to accept an array of inputs;
-        const [differences] = extractDifferences([formOutputs], [previousOutputs]);
+        const differences = extractDifferences(formOutputs, previousOutputs);
         if (differences?.length !== 0) {
           setFormOutputDiffs(differences);
         }
