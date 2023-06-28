@@ -231,11 +231,6 @@ async function main() {
   ]);
 
   const __IMPORTED_TYPES = new Map<string, string>();
-  const __IMPORTS: XptcTsImports = {
-    save(typeName: string, relativePath: string) {
-      __IMPORTED_TYPES.set(typeName, path.join(__CONVENTIONS.extensionTypesLocation, relativePath));
-    },
-  };
 
   const __META_TYPE_MAPPING = new Map<string, XptcMetaType>();
 

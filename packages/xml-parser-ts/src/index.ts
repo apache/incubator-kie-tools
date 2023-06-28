@@ -226,6 +226,7 @@ export function getParser<T extends object>(args: {
         const t = traverse(args.meta, jsonPath, args.root);
         return t?.isArray ?? false;
       },
+      // <ns:tagName />
       transformTagName: (tagName) => {
         const s = tagName.split(":");
         if (s.length === 1) {
@@ -238,6 +239,7 @@ export function getParser<T extends object>(args: {
           throw new Error(`Invalid tag name '${tagName}'.`);
         }
       },
+      // <tagName>tagValue</tagName>
       tagValueProcessor: (tagName, tagValue, jsonPath, hasAttributes, isLeaftNode) => {
         const t = traverse(args.meta, jsonPath, args.root);
         if (!t) {
@@ -256,6 +258,7 @@ export function getParser<T extends object>(args: {
           return tagValue || {}; // That's the empty object. The tag is there, but it doesn't have any information.
         }
       },
+      // <tagName attrName="attrValue" />
       attributeValueProcessor: (attrName, attrValue, jsonPath) => {
         const attrJsonPath = `${jsonPath}.@_${attrName}`;
         const t = traverse(args.meta, attrJsonPath, args.root);
