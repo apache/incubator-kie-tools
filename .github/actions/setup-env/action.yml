@@ -126,7 +126,7 @@ runs:
           sudo apt install -y \
           build-essential \
           libgtk-3-dev \
-          libappindicator3-dev \
+          libayatana-appindicator3-dev \
           gir1.2-appindicator3-0.1
         fi
 
