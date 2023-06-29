@@ -15,9 +15,7 @@
   "scripts": {
     "build:dev": "pnpm env-json:schema:generate",
     "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && run-script-os",
-    "build:prod:darwin": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
-    "build:prod:linux": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:podman:build\"",
-    "build:prod:win32": "echo 'Skipping image build on Windows'",
+    "build:prod:darwin:linux:win32": "pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:online-editor && pnpm copy:image-env-to-json",
     "copy:image-env-to-json": "cp ../image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",

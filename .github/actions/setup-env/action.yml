@@ -50,6 +50,11 @@ runs:
       with:
         maven-version: 3.8.6
 
+    - name: setup-docker
+      uses: docker-practice/actions-setup-docker@v1
+      with:
+        docker_version: 24.0.2
+
     - name: "Setup network timeout"
       shell: bash
       run: |
