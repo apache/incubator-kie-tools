@@ -136,7 +136,7 @@ export const App: React.FunctionComponent = () => {
 
   const emptyRef = React.useRef<HTMLElement>(null);
   return (
-    <div className="showcase">
+    <div className="bee-dev-webapp">
       <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
         <BoxedExpressionEditor

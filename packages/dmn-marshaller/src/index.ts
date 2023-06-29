@@ -35,7 +35,7 @@ import {
   ns as dmn14ns,
 } from "./schemas/dmn-1_4/ts-gen/meta";
 // import { dmn3__tDefinitions as DMN10__tDefinitions } from "./schemas/dmn-1_0/ts-gen/types";
-// import { dmn__tDefinitions as DMN11__tDefinitions } from "./schemas/dmn-1_1/ts-gen/types";
+import { dmn__tDefinitions as DMN11__tDefinitions } from "./schemas/dmn-1_1/ts-gen/types";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";

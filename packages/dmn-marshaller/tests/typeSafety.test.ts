@@ -36,7 +36,7 @@ describe("type safety", () => {
     test(path.basename(file), () => {
       const xml = fs.readFileSync(path.join(__dirname, file), "utf-8");
 
-      const { parser, version } = getMarshaller(xml);
+      const { parser, version, builder } = getMarshaller(xml);
       const json = parser.parse();
 
       const thisPath = path.resolve(__dirname);
@@ -50,6 +50,8 @@ const dmn: DMN1${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions
 
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
+      // fs.writeFileSync(path.join(tmpDir, `${path.basename(file)}.xml`), builder.build(json));
+      // fs.writeFileSync(path.join(tmpDir, `${path.basename(file)}.original.xml`), xml);
 
       const tsc = child_process.spawnSync("tsc", ["--noEmit", "--strict", tmpFilePath], { stdio: "pipe" });
       const tscOutput = tsc.output

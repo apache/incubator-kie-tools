@@ -74,8 +74,9 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/react-hooks" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-runner" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/extended-services-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "dmn-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -240,6 +241,9 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dmn-editor" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
