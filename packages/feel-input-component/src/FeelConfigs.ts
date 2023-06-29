@@ -270,7 +270,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "any(list)",
         insertText: "any($1)",
-        description: "Returns true if any item is true, else false if empty or all items are false, else null",
+        description:
+          "Returns true if any `list` item is true, else false if empty or all `list` items are false, else null",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "any( [false,null,true] ) = true",
@@ -286,9 +287,9 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns new list with items appended",
         parameters: [
           ["list", `\`list\``],
-          ["item", "Any type"],
+          ["item", "Any type (even more items)"],
         ],
-        examples: ["append( [1], 2, 3 ) = [1,2,3]"],
+        examples: ["append( [1], 2, 3 ) = [1,2,3]", "append( [1], 2 ) = [1,2]", "append( [], 1, 2 ) = [1,2]"],
       },
       {
         label: "before(point1, point2)",
@@ -394,7 +395,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "contains(string, match)",
         insertText: "contains($1, $2)",
-        description: "Does the string contain the match?",
+        description: "Does the `string` contain the `match`?",
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -404,7 +405,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "count(list)",
         insertText: "count($1)",
-        description: "Returns size of list, or zero if list is empty",
+        description: "Returns size of `list`, or zero if `list` is empty",
         parameters: [["list", `\`list\``]],
         examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
       },
@@ -421,7 +422,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date(year, month, day)",
         insertText: "date($1, $2, $3)",
-        description: "Creates a date from year, month, day component values",
+        description: "Creates a date from `year`, `month`, `day` component values",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -441,7 +442,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(date, time)",
         insertText: "date and time($1, $2)",
-        description: "Creates a date time from the given date (ignoring any time component) and the given time",
+        description: "Creates a date time from the given `date` (ignoring any time component) and the given `time`",
         parameters: [
           ["date", `\`date\` or \`date and time\``],
           ["time", `\`time\``],
@@ -453,7 +454,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(year, month, day, hour, minute, second)",
         insertText: "date and time($1, $2, $3, $4, $5, $6)",
-        description: "Creates a date time from the given year, month, day, hour, minute, and second.",
+        description: "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, and `second`.",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -467,7 +468,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(year, month, day, hour, minute, second, offset)",
         insertText: "date and time($1, $2, $3, $4, $5, $6, $7)",
-        description: "Creates a date time from the given year, month, day, hour, minute, second and offset",
+        description:
+          "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, `second` and `offset`",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -482,7 +484,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "date and time(year, month, day, hour, minute, second, timezone)",
         insertText: "date and time($1, $2, $3, $4, $5, $6, $7)",
-        description: "Creates a date time from the given year, month, day, hour, minute, second and timezone",
+        description:
+          "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, `second` and `timezone`",
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -583,7 +586,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "ends with(string, match)",
         insertText: "ends with($1, $2)",
-        description: "Does the string end with the match?",
+        description: "Does the `string` end with the `match`?",
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -845,7 +848,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "mean(list)",
         insertText: "mean($1)",
-        description: "Returns arithmetic mean (average) of numbers",
+        description: "Returns arithmetic mean (average) of `list` of numbers",
         parameters: [["list", `\`list\``]],
         examples: ["mean( [1,2,3] ) = 2", "mean( 1,2,3 ) = 2", "mean( 1 ) = 1", "mean( [] ) = null"],
       },
@@ -853,7 +856,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "median(list)",
         insertText: "median($1)",
         description:
-          "Returns the median element of the `list` of numbers. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
+          "Returns the median element of the `list` of numbers. I.e., after sorting the `list`, if the `list` has an odd number of elements, it returns the middle element. If the `list` has an even number of elements, returns the average of the two middle elements. If the `list` is empty, returns null",
         parameters: [["list", `\`list\``]],
         examples: ["median( 8, 2, 5, 3, 4 ) = 4", "median( [6, 1, 2, 3] ) = 2.5", "median( [ ] ) = null"],
       },
@@ -931,7 +934,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "nn all(list)",
         insertText: "nn all($1)",
-        description: "Returns true if all elements in the list are true. null values are ignored",
+        description: "Returns true if all elements in the `list` are true. null values are ignored",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "nn all( [false,null,true] ) = false",
@@ -944,7 +947,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "nn any(list)",
         insertText: "nn any($1)",
-        description: "Returns true if any element in the list is true. null values are ignored",
+        description: "Returns true if any element in the `list` is true. null values are ignored",
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "nn any( [false,null,true] ) = true",
@@ -957,7 +960,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "nn count(list)",
         insertText: "nn count($1)",
-        description: "Returns size of list, or zero if list is empty. null values are not counted",
+        description: "Returns size of `list`, or zero if `list` is empty. null values are not counted",
         parameters: [["list", `\`list\``]],
         examples: [
           "nn count( [1,2,3] ) = 3",
@@ -996,7 +999,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         label: "nn median(list)",
         insertText: "nn median($1)",
         description:
-          "Returns the median element of the `list` of numbers. null values are ignored. I.e., after sorting the list, if the list has an odd number of elements, it returns the middle element. If the list has an even number of elements, returns the average of the two middle elements. If the list is empty, returns null",
+          "Returns the median element of the `list` of numbers. null values are ignored. I.e., after sorting the `list`, if the `list` has an odd number of elements, it returns the middle element. If the `list` has an even number of elements, returns the average of the two middle elements. If the `list` is empty, returns null",
         parameters: [["list", `\`list\``]],
         examples: [
           "nn median( 8, 2, 5, 3, 4 ) = 4",
@@ -1054,7 +1057,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "not(negand)",
         insertText: "not($1)",
-        description: "Performs the logical negation of the negand operand",
+        description: "Performs the logical negation of the `negand` operand",
         parameters: [["negand", `\`boolean\``]],
         examples: ["not( true ) = false", "not( null ) = null"],
       },
@@ -1068,11 +1071,11 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "number(from, grouping separator, decimal separator)",
         insertText: "number($1, $2, $3)",
-        description: "Return new list with `newItem` inserted at `position`",
+        description: "Converts `from` to a number using the specified separators.",
         parameters: [
-          ["from", `\`string\` representing a valid number`],
-          ["grouping separator", `Space (\`\`), comma (\`,\`), period (\`.\`), or null`],
-          ["decimal separator", `Same types as \`grouping separator\`, but the values cannot match`],
+          ["from", "`string` representing a valid number"],
+          ["grouping separator", "Space (` `), comma (`,`), period (`.`), or null"],
+          ["decimal separator", "Same types as `grouping separator`, but the values cannot match"],
         ],
         examples: ['number( "1 000,0", " ", "," ) = number( "1,000.0", ",", "." )'],
       },
@@ -1155,14 +1158,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "product(list)",
         insertText: "product($1)",
-        description: "Returns the product of the numbers in the list",
+        description: "Returns the product of the numbers in the `list`",
         parameters: [["list", `\`list\` of \`number\` elements`]],
         examples: ["product( [2, 3, 4] ) = 24", "product( [] ) = null", "product( 2, 3, 4 ) = 24"],
       },
       {
         label: "remove(list, position)",
         insertText: "remove($1, $2)",
-        description: "Creates a list with the removed element excluded from the specified position.",
+        description: "Creates a list with the removed element excluded from the specified `position`.",
         parameters: [
           ["list", `\`list\``],
           ["position", `\`number\``],
@@ -1201,7 +1204,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "reverse(list)",
         insertText: "reverse($1)",
-        description: "Returns a reversed list",
+        description: "Returns a reversed `list`",
         parameters: [["list", `\`list\``]],
         examples: ["reverse( [1,2,3] ) = [3,2,1]"],
       },
@@ -1244,7 +1247,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "started by(range, point)",
         insertText: "started by($1, $2)",
-        description: "Returns true when a range A is started by a point B",
+        description: "Returns true when a `range` is started by a `point`",
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -1276,7 +1279,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "starts with(string, match)",
         insertText: "starts with($1, $2)",
-        description: "Does the string start with the match?",
+        description: "Does the `string` start with the `match`?",
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -1296,7 +1299,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "starts(range1, range2)",
         insertText: "starts($1, $2)",
-        description: "Returns true when a range A starts a range B",
+        description: "Returns true when a `range1` starts a `range2`",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1366,7 +1369,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["string", `string`],
           ["match", `string`],
         ],
-        examples: ['substring before( "testing", "ing" ) = "test"', 'substring before( "testing", "xyz" ) = ""'],
+        examples: ['substring after( "testing", "te" ) = "sting"', 'substring after( "testing", "tin" ) = "g"'],
       },
       {
         label: "substring before(string, match)",
@@ -1376,7 +1379,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["string", `string`],
           ["match", `string`],
         ],
-        examples: ['starts with( "testing", "te" ) = true'],
+        examples: ['substring before( "testing", "te" ) = ""', 'substring before( "testing", "tin" ) = "tes"'],
       },
       {
         label: "substring(string, start position)",
@@ -1420,7 +1423,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "time(hour, minute, second)",
         insertText: "date and time($1, $2, $3)",
-        description: "Creates a time from the given hour, minute, and second.",
+        description: "Creates a time from the given `hour`, `minute`, and `second`.",
         parameters: [
           ["hour", `\`number\``],
           ["minute", `\`number\``],
@@ -1431,7 +1434,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "time(hour, minute, second, offset)",
         insertText: "time($1, $2, $3)",
-        description: "Creates a time from the given hour, minute, second and offset",
+        description: "Creates a time from the given `hour`, `minute`, `second` and `offset`",
         parameters: [
           ["hour", `\`number\``],
           ["minute", `\`number\``],
