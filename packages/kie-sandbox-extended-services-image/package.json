@@ -20,8 +20,8 @@
     "copy:extended-services": "run-script-os",
     "copy:extended-services:linux:darwin": "cp -R ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless",
     "copy:extended-services:win32": "pnpm powershell \"Copy-Item ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless\"",
-    "docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env extendedServicesImage.buildTags) | xargs printf -- \"-t $(build-env extendedServicesImage.registry)/$(build-env extendedServicesImage.account)/$(build-env extendedServicesImage.name):%s\n\" | xargs echo) . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
-    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServicesImage.buildTags) | xargs printf -- \"-t $(build-env extendedServicesImage.registry)/$(build-env extendedServicesImage.account)/$(build-env extendedServicesImage.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "docker:build": "image-builder -r extendedServicesImage.registry -a extendedServicesImage.account -n extendedServicesImage.name -t extendedServicesImage.buildTags",
+    "podman:build": "image-builder -r extendedServicesImage.registry -a extendedServicesImage.account -n extendedServicesImage.name -t extendedServicesImage.buildTags -e podman"
   },
   "dependencies": {
     "@kie-tools/extended-services": "workspace:*"

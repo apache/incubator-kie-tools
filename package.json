@@ -16,6 +16,7 @@
     "@kie-tools-scripts/bootstrap": "workspace:*",
     "@kie-tools-scripts/build-env": "workspace:*",
     "@kie-tools-scripts/check-junit-report-results": "workspace:*",
+    "@kie-tools-scripts/image-builder": "workspace:*",
     "@kie-tools-scripts/run-script-if": "workspace:*",
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",

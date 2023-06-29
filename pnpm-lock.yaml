@@ -23,6 +23,9 @@ importers:
       "@kie-tools-scripts/check-junit-report-results":
         specifier: workspace:*
         version: link:scripts/check-junit-report-results
+      "@kie-tools-scripts/image-builder":
+        specifier: workspace:*
+        version: link:scripts/image-builder
       "@kie-tools-scripts/run-script-if":
         specifier: workspace:*
         version: link:scripts/run-script-if
@@ -9048,6 +9051,25 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0
 
+  scripts/image-builder:
+    dependencies:
+      "@kie-tools-scripts/build-env":
+        specifier: workspace:*
+        version: link:../build-env
+      yargs:
+        specifier: ^17.0.1
+        version: 17.5.1
+    devDependencies:
+      "@types/yargs":
+        specifier: ^17.0.1
+        version: 17.0.24
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
   scripts/run-script-if:
     dependencies:
       yargs:
@@ -16591,6 +16613,13 @@ packages:
   /@types/yargs@15.0.4:
     resolution:
       { integrity: sha512-9T1auFmbPZoxHz0enUFlUuKRy3it01R+hlggyVUMtnCTQRunsQYifnSGb8hET4Xo8yiC0o0r1paW3ud5+rbURg== }
+    dependencies:
+      "@types/yargs-parser": 15.0.0
+    dev: true
+
+  /@types/yargs@17.0.24:
+    resolution:
+      { integrity: sha512-6i0aC7jV6QzQB8ne1joVZ0eSFIstHsCrobmOtghM11yGlH0j43FKL2UhWdELkyps0zuf7qVTUVCCR+tgSlyLLw== }
     dependencies:
       "@types/yargs-parser": 15.0.0
     dev: true
@@ -26953,6 +26982,7 @@ packages:
   /node-addon-api@3.2.1:
     resolution:
       { integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A== }
+    requiresBuild: true
     dev: true
     optional: true
 
@@ -33952,7 +33982,6 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.0.0
-    dev: true
 
   /yauzl@2.10.0:
     resolution:

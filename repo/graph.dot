@@ -5,6 +5,7 @@ digraph G {
   "kie-tools-root" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/bootstrap" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/check-junit-report-results" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-scripts/image-builder" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/run-script-if" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/sparse-checkout" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-scripts/update-version" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -132,6 +133,7 @@ digraph G {
   "yard-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/check-junit-report-results" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-scripts/image-builder" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/run-script-if" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/sparse-checkout" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-scripts/update-version" [ style = "dashed", color = "black" ];
@@ -426,4 +428,5 @@ digraph G {
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
+  "@kie-tools-scripts/image-builder" -> "@kie-tools-scripts/build-env" [ style = "solid", color = "blue" ];
 }
