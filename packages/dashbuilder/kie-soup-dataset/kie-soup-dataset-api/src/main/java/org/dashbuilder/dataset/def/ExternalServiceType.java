@@ -32,7 +32,11 @@ public enum ExternalServiceType {
             "            resultType = \"vector\" ?  result.[ value[0] * 1000, value[1],  metric.* ]\n" +
             "        )\n" +
             "    }\n" +
-            ")");
+            ")"),
+    SPLUNK("{\n" +
+            "  \"columns\": $.fields.name.({\"id\": $} ),\n" +
+            "  \"values\": $map($.results, function($r) { $.fields.name.( $lookup($r, $)) } )\n" +
+            "}");
 
     private ExternalServiceType(String expression) {
         this.expression = expression;
