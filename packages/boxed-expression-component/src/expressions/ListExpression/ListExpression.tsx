@@ -86,6 +86,15 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
         ],
       },
+      {
+        group: _.upperCase(i18n.terms.selection),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
+        ],
+      },
     ],
     [i18n]
   );
