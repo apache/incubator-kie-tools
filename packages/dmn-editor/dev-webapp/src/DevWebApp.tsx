@@ -1,8 +1,10 @@
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
-import { DmnEditor } from "../../src/DmnEditor";
+import { DmnEditor, DmnEditorRef } from "../../src/DmnEditor";
+
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function DevWebApp() {
   const [xml, setXml] = useState(DEFAULT_DEV_WEBAPP_DMN);
@@ -28,13 +30,52 @@ export function DevWebApp() {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
   }, []);
 
+  const ref = useRef<DmnEditorRef>(null);
+
+  const copyAsXml = useCallback(() => {
+    navigator.clipboard.writeText(ref.current?.getContent() || "");
+  }, []);
+
+  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const downloadAsXml = useCallback(() => {
+    if (downloadRef.current) {
+      const fileBlob = new Blob([ref.current?.getContent() || ""], { type: "text/xml" });
+      downloadRef.current.download = `dmn-${makeid(10)}.dmn`;
+      downloadRef.current.href = URL.createObjectURL(fileBlob);
+      downloadRef.current.click();
+    }
+  }, []);
+
   return (
     <div className={"dmn-editor-dev-webapp"} onDrop={onDrop} onDragOver={onDragOver}>
-      <h4 style={{ display: "inline" }}>DMN Editor :: Dev webapp </h4>
-      &nbsp; &nbsp; &nbsp; &nbsp;
-      <h5 style={{ display: "inline", textDecoration: "underline" }}>(Drag & drop a file anywhere to open it)</h5>
+      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+        <FlexItem shrink={{ default: "shrink" }}>
+          <h3>DMN Editor :: Dev webapp </h3>
+        </FlexItem>
+        <FlexItem>
+          <h5>(Drag & drop a file anywhere to open it)</h5>
+        </FlexItem>
+        <FlexItem shrink={{ default: "shrink" }}>
+          <button onClick={copyAsXml}>Copy as XML</button>
+          &nbsp; &nbsp;
+          <button onClick={downloadAsXml}>Download as XML</button>
+        </FlexItem>
+      </Flex>
       <hr />
-      <DmnEditor xml={xml} />
+      <DmnEditor ref={ref} xml={xml} />
+      <a ref={downloadRef} />
     </div>
   );
+}
+
+function makeid(length: number) {
+  let result = "";
+  const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
 }

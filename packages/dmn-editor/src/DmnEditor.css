@@ -17,6 +17,10 @@
   text-align: center;
 }
 
+.kie-dmn-editor--node:hover {
+  box-shadow: 4px 4px 2px 0px rgb(0 0 0 / 50%);
+}
+
 .kie-dmn-editor--node.kie-dmn-editor--input-data-node {
   border-radius: 9999px;
 }

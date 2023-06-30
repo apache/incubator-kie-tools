@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./DmnEditor.css";
 
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import {
   NodeProps,
   EdgeProps,
@@ -40,12 +40,29 @@ const SNAP_GRID = {
   y: 20,
 };
 
-export function DmnEditor(props: { xml: string }) {
+export type DmnEditorRef = {
+  getContent(): string;
+};
+
+export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Ref<DmnEditorRef>) => {
   const marshaller = useMemo(() => getMarshaller(props.xml.trim() || EMPTY_DMN_14), [props.xml]);
 
-  const dmn: { definitions: DMN14__tDefinitions } = useMemo(
+  const dmnInitial: { definitions: DMN14__tDefinitions } = useMemo(
     () => marshaller.parser.parse() as { definitions: DMN14__tDefinitions }, // FIXME: Casting to the latest version, but... what should we do?
     [marshaller.parser]
+  );
+
+  const [dmn, setDmn] = useState(dmnInitial);
+  useEffect(() => {
+    setDmn(dmnInitial);
+  }, [dmnInitial]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      getContent: () => marshaller.builder.build(dmn),
+    }),
+    [dmn, marshaller.builder]
   );
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -283,6 +300,63 @@ export function DmnEditor(props: { xml: string }) {
     setEdges,
   ]);
 
+  const _onNodesChange = useCallback<typeof onNodesChange>(
+    (changes) => {
+      for (const change of changes) {
+        if (change.type === "position") {
+          setDmn((prev) => {
+            if (!change.position) {
+              return prev;
+            }
+
+            const newDiagrams = [...(prev.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])];
+            const newShapes = [...(newDiagrams[0]?.["dmndi:DMNShape"] ?? [])];
+
+            const shapeIndex = newShapes.findIndex(({ "@_dmnElementRef": ref }) => ref === change.id);
+            if (!shapeIndex) {
+              return prev;
+            }
+
+            newDiagrams[0]["dmndi:DMNShape"] = newShapes;
+            newShapes[shapeIndex] = {
+              ...newShapes[shapeIndex],
+              "dc:Bounds": {
+                ...newShapes[shapeIndex]["dc:Bounds"]!,
+                "@_x": change.position.x,
+                "@_y": change.position.y,
+              },
+            };
+
+            return {
+              ...prev,
+              definitions: {
+                ...prev.definitions,
+                "dmndi:DMNDI": {
+                  "dmndi:DMNDiagram": newDiagrams,
+                },
+              },
+            };
+          });
+        }
+      }
+
+      return onNodesChange(changes);
+    },
+    [onNodesChange]
+  );
+
+  const _onEdgesChange = useCallback<typeof onEdgesChange>(
+    (changes) => {
+      for (const change of changes) {
+        if (change.type === "add") {
+          //
+        }
+      }
+      return onEdgesChange(changes);
+    },
+    [onEdgesChange]
+  );
+
   return (
     <>
       <b>Version:</b> {marshaller.version}
@@ -290,8 +364,8 @@ export function DmnEditor(props: { xml: string }) {
         <ReactFlow
           nodes={nodes}
           edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
+          onNodesChange={_onNodesChange}
+          onEdgesChange={_onEdgesChange}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           snapToGrid={true}
@@ -307,7 +381,7 @@ export function DmnEditor(props: { xml: string }) {
       </div>
     </>
   );
-}
+});
 
 export function EmptyLabel() {
   return (
