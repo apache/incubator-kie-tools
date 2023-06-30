@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "pnpm cleanup && pnpm copy:assets",
-    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --build-env \"containerImages.build\" --then \"pnpm docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:extended-services",
     "copy:extended-services": "run-script-os",

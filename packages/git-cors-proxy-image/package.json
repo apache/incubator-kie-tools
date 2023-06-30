@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "echo \"Nothing to do\"",
-    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && run-script-if --build-env \"containerImages.build\" --then \"pnpm docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:git-cors-proxy-package": "run-script-os",
     "copy:git-cors-proxy-package:linux:darwin": "cp -R ./node_modules/@thiagoelg/cors-proxy/ dist-dev/git-cors-proxy",

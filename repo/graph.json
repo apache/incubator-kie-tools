@@ -138,6 +138,7 @@
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/sparse-checkout", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-version", "weight": 1 },
       { "source": "@kie-tools-scripts/bootstrap", "target": "@kie-tools-scripts/build-env", "weight": 1 },
+      { "source": "@kie-tools-scripts/run-script-if", "target": "@kie-tools-scripts/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/backend", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/envelope", "weight": 1 },
