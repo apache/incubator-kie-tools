@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
-	knplugin "knative.dev/client/pkg/kn/plugin"
+	knplugin "knative.dev/client-pkg/pkg/plugin"
 )
 
 type workflowPlugin struct{}
