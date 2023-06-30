@@ -4,7 +4,7 @@ This package contains the `Containerfile` and scripts to build a container image
 
 ## Additional requirements
 
-- podman
+- docker or podman
 
 ## Build
 
@@ -34,12 +34,24 @@ $ pnpm build:prod @kie-tools/git-cors-proxy-image...
 Then check out the image:
 
 ```bash
+$ docker images
+```
+
+or
+
+```bash
 $ podman images
 ```
 
 ## Run
 
 Start up a new container with:
+
+```bash
+$ docker run -p 8080:8080 -i --rm quay.io/kie-tools/cors-proxy-image:latest
+```
+
+or
 
 ```bash
 $ podman run -p 8080:8080 -i --rm quay.io/kie-tools/cors-proxy-image:latest
