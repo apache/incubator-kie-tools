@@ -57,6 +57,7 @@
       { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-envelope" },
       { "id": "@kie-tools/serverless-workflow-text-editor" },
+      { "id": "@kie-tools/cors-proxy" },
       { "id": "@kie-tools/dashbuilder" },
       { "id": "@kie-tools/dashbuilder-component-assembler" },
       { "id": "@kie-tools/dashbuilder-component-echarts" },
@@ -357,6 +358,9 @@
         "weight": 1
       },
       { "source": "@kie-tools/serverless-workflow-text-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/cors-proxy", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/cors-proxy", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/cors-proxy", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
       {
@@ -860,6 +864,7 @@
     ["@kie-tools-core/chrome-extension", "packages/chrome-extension"],
     ["chrome-extension-pack-kogito-kie-editors", "packages/chrome-extension-pack-kogito-kie-editors"],
     ["chrome-extension-serverless-workflow-editor", "packages/chrome-extension-serverless-workflow-editor"],
+    ["@kie-tools/cors-proxy", "packages/cors-proxy"],
     ["@kie-tools/dashbuilder", "packages/dashbuilder"],
     ["@kie-tools/dashbuilder-client", "packages/dashbuilder-client"],
     ["@kie-tools/dashbuilder-component-api", "packages/dashbuilder-component-api"],

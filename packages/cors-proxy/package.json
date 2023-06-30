@@ -1,0 +1,45 @@
+{
+  "name": "@kie-tools/cors-proxy",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "start": "pnpm build:dev && node dist/index.js -v",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.12",
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.13.0",
+    "@types/node-fetch": "^2.6.4",
+    "@types/yargs": "^17.0.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.6.2"
+  }
+}
