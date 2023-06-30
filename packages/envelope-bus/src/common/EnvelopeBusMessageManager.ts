@@ -304,6 +304,7 @@ export class EnvelopeBusMessageManager<
           response = api.apply(apiImpl, request.data);
         } else {
           console.warn(`API '${String(request.type)}' was not found. Request will be ignored.`);
+          return;
         }
       } catch (err) {
         console.error(err);
