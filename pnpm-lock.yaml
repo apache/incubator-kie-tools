@@ -9079,25 +9079,6 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0
 
-  scripts/image-builder:
-    dependencies:
-      "@kie-tools-scripts/build-env":
-        specifier: workspace:*
-        version: link:../build-env
-      yargs:
-        specifier: ^17.0.1
-        version: 17.5.1
-    devDependencies:
-      "@types/yargs":
-        specifier: ^17.0.1
-        version: 17.0.24
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^4.6.2
-        version: 4.8.4
-
   scripts/run-script-if:
     dependencies:
       "@kie-tools-scripts/build-env":

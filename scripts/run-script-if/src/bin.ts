@@ -31,16 +31,6 @@ function log(logFunction: (commandName: string, ...args: any[]) => void, isSilen
 type LogType = typeof log;
 
 async function main() {
-  const { env } = await findEnv(path.resolve("."), path.resolve("."));
-  const flattenedEnv = flattenObj(env);
-
-  const parseBuildEnvPath = (path: string) => {
-    if (flattenedEnv[path] === undefined) {
-      return "";
-    }
-    return flattenedEnv[path].toString();
-  };
-
   const argv = yargs(hideBin(process.argv))
     .epilog(
       `
@@ -64,8 +54,7 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
         description: "Name of the environment variables which value will be compared to --eq.",
         default: [],
       },
-      buildEnv: {
-        alias: "build-env",
+      "build-env": {
         type: "array",
         description: "Build env path to be parsed and compared to --eq.",
         default: [],
@@ -157,9 +146,19 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
     })
     .parseSync();
 
+  const { env } = await findEnv(path.resolve("."), path.resolve("."));
+  const flattenedEnv = flattenObj(env);
+
+  const parseBuildEnvPath = (path: string) => {
+    if (flattenedEnv[path] === undefined) {
+      return "";
+    }
+    return flattenedEnv[path].toString();
+  };
+
   const envVarNames = argv.env;
   const envVarValues = envVarNames.map((envVarName) => ({ name: envVarName, value: process.env[envVarName] }));
-  const buildEnvVarPaths = argv.buildEnv;
+  const buildEnvVarPaths = argv["build-env"];
   const buildEnvValues = buildEnvVarPaths.map((buildEnvVarPath: string) => ({
     path: buildEnvVarPath,
     value: parseBuildEnvPath(buildEnvVarPath),

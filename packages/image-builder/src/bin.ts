@@ -23,7 +23,8 @@ import * as yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
 async function main() {
-  const { env } = await findEnv(path.resolve("."), path.resolve("."));
+  const currentPath = path.resolve(".") !== path.resolve(__dirname, "..") ? "." : "../root-env";
+  const { env } = await findEnv(path.resolve(currentPath), path.resolve(currentPath));
   const flattenedEnv = flattenObj(env);
 
   const parseBuildEnvPath = (path: string) => {
