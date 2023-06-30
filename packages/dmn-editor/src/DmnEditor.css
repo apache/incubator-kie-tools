@@ -17,7 +17,8 @@
   text-align: center;
 }
 
-.kie-dmn-editor--node:hover {
+.react-flow__node:hover > .kie-dmn-editor--node,
+.react-flow__node.selected > .kie-dmn-editor--node {
   box-shadow: 4px 4px 2px 0px rgb(0 0 0 / 50%);
 }
 
@@ -74,4 +75,15 @@
 .kie-dmn-editor--node.kie-dmn-editor--knowledge-source-node {
   border-bottom: 0;
   border-left: 0;
+}
+
+/* react flow theming */
+
+.react-flow__nodesselection-rect {
+  transform-origin: top left;
+  transform: translate(-20px, -20px);
+  box-sizing: content-box;
+  padding: 20px;
+  border-radius: 6px;
+  border: 2px dotted;
 }

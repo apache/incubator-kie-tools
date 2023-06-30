@@ -1,22 +1,9 @@
 import * as React from "react";
-import "./DmnEditor.css";
 
-import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import {
-  NodeProps,
-  EdgeProps,
-  ReactFlow,
-  Background,
-  Controls,
-  useNodesState,
-  useEdgesState,
-  Position,
-  Handle,
-  MarkerType,
-  BaseEdge,
-  getStraightPath,
-} from "reactflow";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import * as RF from "reactflow";
 import "reactflow/dist/style.css";
+import "./DmnEditor.css";
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import {
@@ -30,6 +17,7 @@ import {
   DMN14__tTextAnnotation,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { v4 as uuid } from "uuid";
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -65,15 +53,15 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
     [dmn, marshaller.builder]
   );
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = RF.useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = RF.useEdgesState([]);
 
   const defaultViewport = useMemo(() => {
-    return { x: 0, y: 0, zoom: 1.5 };
+    return { x: 100, y: 0, zoom: 1 };
   }, []);
 
   const fitViewOptions = useMemo(() => {
-    return {};
+    return { maxZoom: 1, minZoom: 1 };
   }, []);
 
   const snapGrid = useMemo<[number, number]>(() => {
@@ -220,7 +208,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
     const markerEnd = {
       width: 20,
       height: 20,
-      type: MarkerType.ArrowClosed,
+      type: RF.MarkerType.ArrowClosed,
       color: "black",
     };
 
@@ -313,7 +301,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
             const newShapes = [...(newDiagrams[0]?.["dmndi:DMNShape"] ?? [])];
 
             const shapeIndex = newShapes.findIndex(({ "@_dmnElementRef": ref }) => ref === change.id);
-            if (!shapeIndex) {
+            if (shapeIndex < 0) {
               return prev;
             }
 
@@ -357,32 +345,147 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
     [onEdgesChange]
   );
 
+  const rfContainer = useRef<HTMLDivElement>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
+
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }, []);
+
+  const onDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      if (!rfContainer.current || !reactFlowInstance) {
+        return;
+      }
+
+      const type = e.dataTransfer.getData("application/reactflow");
+      if (typeof type === "undefined" || !type) {
+        return;
+      }
+
+      const rfBounds = rfContainer.current.getBoundingClientRect();
+      const position = reactFlowInstance.project({
+        x: e.clientX - rfBounds.left,
+        y: e.clientY - rfBounds.top,
+      });
+
+      const id = generateUuid();
+
+      setDmn((prev) => {
+        // TODO: Implement this
+        return { ...prev };
+      });
+
+      console.info(`Adding node of type '${type}' at position '${position.x},${position.y}'.`);
+    },
+    [reactFlowInstance]
+  );
+
   return (
     <>
       <b>Version:</b> {marshaller.version}
-      <div className={"kie-dmn-editor--diagram-container"}>
-        <ReactFlow
+      <div className={"kie-dmn-editor--diagram-container"} ref={rfContainer}>
+        <RF.ReactFlow
+          elementsSelectable={true}
           nodes={nodes}
           edges={edges}
-          onNodesChange={_onNodesChange}
-          onEdgesChange={_onEdgesChange}
+          panOnScroll={true}
+          selectionOnDrag={true}
+          panOnDrag={panOnDrag}
+          panActivationKeyCode={"Alt"}
+          selectionMode={RF.SelectionMode.Partial}
+          onNodesChange={onNodesChange} // FIXME: Selection is getting lost when dragging if I change to _onNodesChange.
+          onEdgesChange={onEdgesChange}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           snapToGrid={true}
           snapGrid={snapGrid}
           defaultViewport={defaultViewport}
-          fitView={true}
+          fitView={false}
           fitViewOptions={fitViewOptions}
-          attributionPosition={"bottom-left"}
+          attributionPosition={"bottom-right"}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
         >
-          <Background />
-          <Controls />
-        </ReactFlow>
+          <Pallete />
+          <PanWhenAltPressed />
+          <RF.Background />
+          <RF.Controls fitViewOptions={fitViewOptions} position={"bottom-right"} />
+        </RF.ReactFlow>
       </div>
     </>
   );
 });
 
+export function Pallete() {
+  const onDragStart = useCallback((event, nodeType) => {
+    event.dataTransfer.setData("application/reactflow", nodeType);
+    event.dataTransfer.effectAllowed = "move";
+  }, []);
+
+  return (
+    <RF.Panel position={"top-left"}>
+      <aside style={{ width: "40px" }}>
+        <div className="dndnode input-data" onDragStart={(event) => onDragStart(event, "inputData")} draggable>
+          Input
+        </div>
+        <br />
+        <div className="dndnode decision" onDragStart={(event) => onDragStart(event, "decision")} draggable>
+          Decision
+        </div>
+        <br />
+        <div className="dndnode bkm" onDragStart={(event) => onDragStart(event, "bkm")} draggable>
+          BKM
+        </div>
+        <br />
+        <div
+          className="dndnode knowledge-source"
+          onDragStart={(event) => onDragStart(event, "knowledgeSource")}
+          draggable
+        >
+          Knowledge Source
+        </div>
+        <br />
+        <div
+          className="dndnode decision-service"
+          onDragStart={(event) => onDragStart(event, "decisionService")}
+          draggable
+        >
+          Decision Service
+        </div>
+        <br />
+        <div
+          className="dndnode text-annotation"
+          onDragStart={(event) => onDragStart(event, "textAnnotation")}
+          draggable
+        >
+          Text Annotation
+        </div>
+      </aside>
+    </RF.Panel>
+  );
+}
+
+const panOnDrag = [1, 2];
+
+export function PanWhenAltPressed() {
+  const altPressed = RF.useKeyPress("Alt");
+  const store = RF.useStoreApi();
+
+  useEffect(() => {
+    store.setState({
+      nodesDraggable: !altPressed,
+      nodesConnectable: !altPressed,
+      elementsSelectable: !altPressed,
+    });
+  }, [altPressed, store]);
+
+  return <></>;
+}
 export function EmptyLabel() {
   return (
     <span>
@@ -393,7 +496,7 @@ export function EmptyLabel() {
 
 export function InputDataNode({
   data: { inputData, shape },
-}: NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
@@ -409,7 +512,7 @@ export function InputDataNode({
 
 export function DecisionNode({
   data: { decision, shape },
-}: NodeProps<{ decision: DMN14__tDecision; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ decision: DMN14__tDecision; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
@@ -425,11 +528,15 @@ export function DecisionNode({
 
 export function BkmNode({
   data: { bkm, shape },
-}: NodeProps<{ bkm: DMN14__tBusinessKnowledgeModel; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ bkm: DMN14__tBusinessKnowledgeModel; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
-      <div style={{ ...getShapeDimensions(shape) }} className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}>
+      <div
+        style={{ ...getShapeDimensions(shape) }}
+        className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}
+        onClick={() => {}}
+      >
         {bkm["@_name"] ?? bkm["@_label"] ?? bkm.variable?.["@_label"] ?? bkm.variable?.["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -438,7 +545,7 @@ export function BkmNode({
 
 export function TextAnnotationNode({
   data: { textAnnotation, shape },
-}: NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
@@ -454,7 +561,7 @@ export function TextAnnotationNode({
 
 export function DecisionServiceNode({
   data: { decisionService, shape },
-}: NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
@@ -468,7 +575,9 @@ export function DecisionServiceNode({
   );
 }
 
-export function GroupNode({ data: { group, shape } }: NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
+export function GroupNode({
+  data: { group, shape },
+}: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
@@ -481,7 +590,7 @@ export function GroupNode({ data: { group, shape } }: NodeProps<{ group: DMN14__
 
 export function KnowledgeSourceNode({
   data: { knowledgeSource, shape },
-}: NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape }>) {
   return (
     <>
       <NsweHandles />
@@ -495,46 +604,58 @@ export function KnowledgeSourceNode({
   );
 }
 
-export function InformationRequirementEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: EdgeProps) {
-  const [path] = getStraightPath({ sourceX, sourceY, targetX, targetY });
-  return <BaseEdge path={path} markerEnd={markerEnd} style={{ strokeWidth: 1, stroke: "black" }} />;
+export function InformationRequirementEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: RF.EdgeProps) {
+  const [path] = RF.getStraightPath({ sourceX, sourceY, targetX, targetY });
+  return <RF.BaseEdge path={path} markerEnd={markerEnd} style={{ strokeWidth: 1, stroke: "black" }} />;
 }
 
-export function AssociationEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: EdgeProps) {
-  const [path] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+export function AssociationEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: RF.EdgeProps) {
+  const [path] = RF.getStraightPath({ sourceX, sourceY, targetX, targetY });
   return (
-    <BaseEdge path={path} markerEnd={markerEnd} style={{ strokeDasharray: "2,10", strokeWidth: 1, stroke: "black" }} />
+    <RF.BaseEdge
+      path={path}
+      markerEnd={markerEnd}
+      style={{ strokeDasharray: "2,10", strokeWidth: 1, stroke: "black" }}
+    />
   );
 }
 
-export function AuthorityRequirementEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: EdgeProps) {
-  const [path] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+export function AuthorityRequirementEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: RF.EdgeProps) {
+  const [path] = RF.getStraightPath({ sourceX, sourceY, targetX, targetY });
   return (
-    <BaseEdge path={path} markerEnd={markerEnd} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
+    <RF.BaseEdge
+      path={path}
+      markerEnd={markerEnd}
+      style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }}
+    />
   );
 }
 
-export function KnowledgeRequirementEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: EdgeProps) {
-  const [path] = getStraightPath({ sourceX, sourceY, targetX, targetY });
+export function KnowledgeRequirementEdge({ sourceX, sourceY, targetX, targetY, markerEnd }: RF.EdgeProps) {
+  const [path] = RF.getStraightPath({ sourceX, sourceY, targetX, targetY });
   return (
-    <BaseEdge path={path} markerEnd={markerEnd} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
+    <RF.BaseEdge
+      path={path}
+      markerEnd={markerEnd}
+      style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }}
+    />
   );
 }
 
 export function NsweHandles() {
   return (
     <>
-      <Handle
+      <RF.Handle
         id={"target-south"}
         type={"target"}
-        position={Position.Bottom}
+        position={RF.Position.Bottom}
         isConnectable={false}
         style={{ opacity: 0, margin: "4px" }}
       />
-      <Handle
+      <RF.Handle
         id={"sorce-north"}
         type={"source"}
-        position={Position.Top}
+        position={RF.Position.Top}
         isConnectable={false}
         style={{ opacity: 0, margin: "4px" }}
       />
@@ -554,4 +675,62 @@ function getShapeDimensions(shape: DMNDI13__DMNShape) {
     width: Math.floor((shape["dc:Bounds"]?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
     height: Math.floor((shape["dc:Bounds"]?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
   };
+}
+
+export const generateUuid = () => {
+  return `_${uuid()}`.toLocaleUpperCase();
+};
+function newNodeFromType(id: string, position: RF.XYPosition, type: string) {
+  const defaultShape = {};
+  switch (type) {
+    case "inputData":
+      return {
+        inputData: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+    case "decision":
+      return {
+        decision: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+    case "bkm":
+      return {
+        bkm: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+    case "decisionService":
+      return {
+        decisionService: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+    case "knowledgeSource":
+      return {
+        knowledgeSource: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+    case "textAnnotation":
+      return {
+        textAnnotation: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+    case "group":
+      return {
+        group: {
+          "@_id": id,
+        },
+        shape: defaultShape,
+      };
+  }
 }
