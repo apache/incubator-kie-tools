@@ -274,9 +274,9 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                           size={"2xl"}
                           style={
                             {
-                              letterSpacing: "0.3px",
+                              letterSpacing: "0.2px",
                               fontWeight: "bold",
-                            } /* margin here is to avoid truncation of names like "iiiiiiiii" KOGITO-9332 */
+                            } /* letterSpacing is to avoid truncation of names like "iiiiiiiii" KOGITO-9332 */
                           }
                         >
                           {displayName}
