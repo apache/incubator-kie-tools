@@ -806,6 +806,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@playwright/test":
+        specifier: ^1.35.1
+        version: 1.35.1
       "@testing-library/jest-dom":
         specifier: ^5.16.1
         version: 5.16.1
@@ -14349,6 +14352,18 @@ packages:
   /@patternfly/react-tokens@4.94.6:
     resolution:
       { integrity: sha512-tm7C6nat+uKMr1hrapis7hS3rN9cr41tpcCKhx6cod6FLU8KwF2Yt5KUxakhIOCEcE/M/EhXhAw/qejp8w0r7Q== }
+
+  /@playwright/test@1.35.1:
+    resolution:
+      { integrity: sha512-b5YoFe6J9exsMYg0pQAobNDR85T1nLumUYgUTtKm4d21iX2L7WqKq9dW8NGJ+2vX0etZd+Y7UeuqsxDXm9+5ZA== }
+    engines: { node: ">=16" }
+    hasBin: true
+    dependencies:
+      "@types/node": 18.13.0
+      playwright-core: 1.35.1
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
 
   /@pnpm/build-modules@9.3.5(@pnpm/logger@4.0.0):
     resolution:
@@ -28444,6 +28459,13 @@ packages:
     resolution:
       { integrity: sha512-zD7aonO+07kOTthsrCR3YCVnDcqSHIJpdFUtZEMOb6//1Rc7/6mZDRdw+nlzcQiQltOOsiqI3rrSyn/SlyjnJQ== }
     engines: { node: ">=14" }
+    hasBin: true
+    dev: true
+
+  /playwright-core@1.35.1:
+    resolution:
+      { integrity: sha512-pNXb6CQ7OqmGDRspEjlxE49w+4YtR6a3X6mT1hZXeJHWmsEz7SunmvZeiG/+y1yyMZdHnnn73WKYdtV1er0Xyg== }
+    engines: { node: ">=16" }
     hasBin: true
     dev: true
 
