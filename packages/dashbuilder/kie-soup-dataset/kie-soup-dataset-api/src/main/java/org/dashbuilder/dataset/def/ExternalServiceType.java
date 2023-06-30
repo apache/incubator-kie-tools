@@ -34,8 +34,8 @@ public enum ExternalServiceType {
             "    }\n" +
             ")"),
     SPLUNK("{\n" +
-            "  \"columns\": $.fields.name.({\"id\": $} ),\n" +
-            "  \"values\": $map($.results, function($r) { $.fields.name.( $lookup($r, $)) } )\n" +
+            "    \"columns\": $.fields.name.({\"id\": $, \"type\": \"LABEL\"} ),\n" +
+            "    \"values\": $map($.results, function($r) { $.fields.name.( $join($lookup($r, $), \",\")) } )\n" +
             "}");
 
     private ExternalServiceType(String expression) {
