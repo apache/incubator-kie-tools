@@ -23,9 +23,6 @@ importers:
       "@kie-tools-scripts/check-junit-report-results":
         specifier: workspace:*
         version: link:scripts/check-junit-report-results
-      "@kie-tools-scripts/image-builder":
-        specifier: workspace:*
-        version: link:scripts/image-builder
       "@kie-tools-scripts/run-script-if":
         specifier: workspace:*
         version: link:scripts/run-script-if
@@ -3937,6 +3934,9 @@ importers:
 
   packages/git-cors-proxy-image:
     devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -4062,6 +4062,25 @@ importers:
       ts-jest:
         specifier: ^26.5.6
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
+  packages/image-builder:
+    dependencies:
+      "@kie-tools-scripts/build-env":
+        specifier: workspace:*
+        version: link:../../scripts/build-env
+      yargs:
+        specifier: ^17.0.1
+        version: 17.5.1
+    devDependencies:
+      "@types/yargs":
+        specifier: ^17.0.1
+        version: 17.0.24
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -4808,6 +4827,9 @@ importers:
         specifier: workspace:*
         version: link:../extended-services
     devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -4900,6 +4922,9 @@ importers:
         specifier: workspace:*
         version: link:../online-editor
     devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env

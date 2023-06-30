@@ -86,7 +86,7 @@ jobs:
           KIE_TOOLS_BUILD__runLinters: "false"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != "Windows" }}
           KIE_TOOLS_BUILD__buildExamples: "false"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
           KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
