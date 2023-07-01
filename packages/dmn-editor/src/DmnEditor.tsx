@@ -1,10 +1,9 @@
+import "@patternfly/react-core/dist/styles/base.css";
+import "reactflow/dist/style.css";
 import * as React from "react";
 
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import * as RF from "reactflow";
-import "@patternfly/react-core/dist/styles/base.css";
-import "reactflow/dist/style.css";
-import "./DmnEditor.css";
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import {
@@ -22,11 +21,12 @@ import {
 import { v4 as uuid } from "uuid";
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { EditAltIcon } from "@patternfly/react-icons/dist/js/icons/edit-alt-icon";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+
+import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -549,13 +549,10 @@ export function EmptyLabel() {
   );
 }
 
-export function InfoAndEditToolbar(props: {}) {
+export function InfoToolbar(props: {}) {
   return (
     <RF.NodeToolbar position={RF.Position.Left} align={"center"}>
       <Flex direction={{ default: "column" }}>
-        <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
-          <EditAltIcon />
-        </Button>
         <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
           <InfoAltIcon />
         </Button>
@@ -619,8 +616,8 @@ export function InputDataNode({
       <NsweHandles />
       <NewNodeToolbar />
       <OutgoingEdgesToolbar />
-      <DataTypeToolbar variable={inputData.variable} shape={shape} />
-      <InfoAndEditToolbar />
+      {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
+      <InfoToolbar />
       <div className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"} style={{ ...getShapeDimensions(shape) }}>
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
       </div>
@@ -628,17 +625,67 @@ export function InputDataNode({
   );
 }
 
+export function EditExpressionButton(props: { isVisible: boolean }) {
+  const onClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }, []);
+
+  return (
+    <>
+      {props.isVisible && (
+        <Label onMouseDownCapture={onClick} onClick={onClick} className={"kie-dmn-editor--edit-expression-label"}>
+          Edit
+        </Label>
+      )}
+    </>
+  );
+}
+
+export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
+  const [isHovered, setHovered] = useState(false);
+
+  useEffect(() => {
+    function onEnter(e: MouseEvent) {
+      setHovered(true);
+    }
+
+    function onLeave() {
+      setHovered(false);
+    }
+
+    const r = ref.current;
+
+    r?.addEventListener("mouseenter", onEnter);
+    r?.addEventListener("mouseleave", onLeave);
+    return () => {
+      r?.removeEventListener("mouseleave", onLeave);
+      r?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [ref]);
+
+  return isHovered;
+}
+
 export function DecisionNode({
   data: { decision, shape },
 }: RF.NodeProps<{ decision: DMN14__tDecision; shape: DMNDI13__DMNShape }>) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isHovered = useHoveredInfo(ref);
+
   return (
     <>
       <NsweHandles />
       <NewNodeToolbar />
       <OutgoingEdgesToolbar />
-      <DataTypeToolbar variable={decision.variable} shape={shape} />
-      <InfoAndEditToolbar />
-      <div className={"kie-dmn-editor--node kie-dmn-editor--decision-node"} style={{ ...getShapeDimensions(shape) }}>
+      {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
+      <InfoToolbar />
+      <div
+        ref={ref}
+        className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}
+        style={{ ...getShapeDimensions(shape) }}
+      >
+        <EditExpressionButton isVisible={isHovered} />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -648,19 +695,23 @@ export function DecisionNode({
 export function BkmNode({
   data: { bkm, shape },
 }: RF.NodeProps<{ bkm: DMN14__tBusinessKnowledgeModel; shape: DMNDI13__DMNShape }>) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isHovered = useHoveredInfo(ref);
+
   return (
     <>
       <NsweHandles />
       <NewNodeToolbar />
       <OutgoingEdgesToolbar />
-      <DataTypeToolbar variable={bkm.variable} shape={shape} />
-      <InfoAndEditToolbar />
+      {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
+      <InfoToolbar />
       <div
-        style={{ ...getShapeDimensions(shape) }}
+        ref={ref}
         className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}
-        onClick={() => {}}
+        style={{ ...getShapeDimensions(shape) }}
       >
-        {bkm["@_name"] ?? bkm["@_label"] ?? bkm.variable?.["@_label"] ?? bkm.variable?.["@_name"] ?? <EmptyLabel />}
+        <EditExpressionButton isVisible={isHovered} />
+        {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
       </div>
     </>
   );
@@ -674,7 +725,7 @@ export function TextAnnotationNode({
       <NsweHandles />
       <NewNodeToolbar />
       <OutgoingEdgesToolbar />
-      <InfoAndEditToolbar />
+      <InfoToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}
@@ -693,8 +744,8 @@ export function DecisionServiceNode({
       <NsweHandles />
       <NewNodeToolbar />
       <OutgoingEdgesToolbar />
-      <DataTypeToolbar variable={decisionService.variable} shape={shape} />
-      <InfoAndEditToolbar />
+      {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
+      <InfoToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}
@@ -713,7 +764,7 @@ export function KnowledgeSourceNode({
       <NsweHandles />
       <NewNodeToolbar />
       <OutgoingEdgesToolbar />
-      <InfoAndEditToolbar />
+      <InfoToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}

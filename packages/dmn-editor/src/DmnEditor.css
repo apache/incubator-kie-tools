@@ -18,23 +18,39 @@
   background: white;
 }
 
-/* .react-flow__node.selected::after {
+.react-flow__node.selected::before {
   content: "";
   top: -20px;
   left: -20px;
   position: absolute;
   width: calc(100% + 20px + 20px);
   height: calc(100% + 20px + 20px);
-  background: #e8e8e8a8;
+  background: #ffffffd9;
   border-radius: 36px;
-  z-index: -20;
-  box-shadow: 0px 0px 8px 0px #e8e8e8a8;
-  backdrop-filter: blur(1px);
-} */
+  z-index: -1;
+  box-shadow: 0px 0px 40px 40px #ffffffd9;
+}
 
 .react-flow__node:hover > .kie-dmn-editor--node,
 .react-flow__node.selected > .kie-dmn-editor--node {
-  box-shadow: 4px 4px 2px 0px rgb(0 0 0 / 50%);
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-dmn-editor--edit-expression-label {
+  position: absolute;
+  padding: 4px 8px;
+  bottom: -12px;
+  font-size: 0.7em;
+  box-shadow: 4px 6px 2px 0px rgb(127 127 127);
+  cursor: pointer;
+}
+
+.kie-dmn-editor--edit-expression-label:hover {
+  filter: brightness(95%);
+}
+
+.kie-dmn-editor--edit-expression-label:active {
+  filter: brightness(90%);
 }
 
 .kie-dmn-editor--node.kie-dmn-editor--input-data-node {
@@ -46,7 +62,8 @@
 }
 
 .kie-dmn-editor--node.kie-dmn-editor--bkm-node {
-  transform: skew(-30deg);
+  border-top-left-radius: 40px;
+  border-bottom-right-radius: 40px;
 }
 
 .kie-dmn-editor--node.kie-dmn-editor--decision-service-node {
