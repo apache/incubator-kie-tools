@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Text;
 
 public class EndShapeView extends ServerlessWorkflowShapeView<EndShapeView> {
 
@@ -26,5 +27,13 @@ public class EndShapeView extends ServerlessWorkflowShapeView<EndShapeView> {
         super(new MultiPath()
                       .rect(0, 0, END_SHAPE_SIZE, END_SHAPE_SIZE)
                       .setID("end"));
+        addChild(new Text(title)
+                         .setX(9)
+                         .setY(29)
+                         .setStrokeWidth(0)
+                         .setFillColor("#929292")
+                         .setFontFamily("Open Sans")
+                         .setFontSize(12)
+                         .setListening(false));
     }
 }

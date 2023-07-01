@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Text;
 
 public class StartShapeView extends ServerlessWorkflowShapeView<StartShapeView> {
 
@@ -26,5 +27,13 @@ public class StartShapeView extends ServerlessWorkflowShapeView<StartShapeView> 
         super(new MultiPath()
                       .circle(START_SHAPE_RADIUS)
                       .setID("start"));
+        addChild(new Text(title)
+                         .setX(7)
+                         .setY(29)
+                         .setStrokeWidth(0)
+                         .setFillColor("#929292")
+                         .setFontFamily("Open Sans")
+                         .setFontSize(12)
+                         .setListening(false));
     }
 }
