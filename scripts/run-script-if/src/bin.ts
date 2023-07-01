@@ -125,11 +125,7 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
           "Command(s) to execute at the end of execution. Provided commands will run even if one of the commands being executed fails.",
       },
     })
-    .check((argv, options) => {
-      // if (argv.bool.length && argv.env.length) {
-      //   throw new Error("Conditions must be either --bool or --env");
-      // }
-
+    .check((argv) => {
       argv.bool && argv.bool.every(evalBoolStringArg);
       evalBoolStringArg(argv["ignore-errors"]);
       const shouldRunIfEmpty = evalBoolStringArg(argv["true-if-empty"]) === "true";
@@ -137,10 +133,6 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
       if (argv.bool.length && shouldRunIfEmpty) {
         throw new Error("Conditions with --bool cannot be used with --true-if-empty");
       }
-
-      // if (!(argv.bool.length || argv.env.length)) {
-      //   throw new Error("Conditions must be either --bool or --env");
-      // }
 
       return true;
     })

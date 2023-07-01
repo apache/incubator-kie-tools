@@ -10,4 +10,10 @@ Options:
   -c, --context        Path to the build context  [string] [required] [default: "./"]
       --build-arg      Build args for the builder in the format '<arg>=<value>', where <value> can be a string or a build-env path (Can be used multiple times)  [array] [default: []]
   -h, --help           Show help  [boolean]
+
+Examples:
+  $ image-builder --registry "myCustomEnv.registry" --account "myCustomEnv.account" --name "myCustomEnv.name" --tags "myCustomEnv.buildTags" --engine docker --push  Build an image using parameters from your myCustomEnv build env variables
+
+
+ CLI tool to help building container images using build variables and different engines on different OSes.
 ```

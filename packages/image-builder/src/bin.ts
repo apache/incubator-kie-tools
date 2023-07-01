@@ -38,6 +38,16 @@ async function main() {
     .version(false)
     .scriptName("")
     .wrap(Math.min(150, yargs.terminalWidth()))
+    .scriptName("@kie-tools/image-builder")
+    .epilog(
+      `
+CLI tool to help building container images using build variables and different engines on different OSes.
+    `
+    )
+    .example(
+      `$ image-builder --registry "myCustomEnv.registry" --account "myCustomEnv.account" --name "myCustomEnv.name" --tags "myCustomEnv.buildTags" --engine docker --push`,
+      "Build an image using parameters from your myCustomEnv build env variables"
+    )
     .options({
       registry: {
         alias: "r",
@@ -138,7 +148,7 @@ async function main() {
 
   const imageFullNames = (args.tags as string).split(" ").map((tag) => `${imageFullNameWithoutTags}:${tag}`);
 
-  const buildCommand = `${args.engine} build ${imageFullNames
+  const buildCommand = `${args.engine} build ${args.push ? "--push" : ""} ${imageFullNames
     .map((fullName) => `-t ${fullName}`)
     .join(" ")} ${args.buildArg.map((arg: string) => `--build-arg ${arg}`).join(" ")} ${args.context} -f ${
     args.containerfile
