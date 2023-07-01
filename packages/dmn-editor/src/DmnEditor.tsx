@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import * as RF from "reactflow";
+import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 import "./DmnEditor.css";
 
@@ -12,12 +13,20 @@ import {
   DMN14__tDecisionService,
   DMN14__tDefinitions,
   DMN14__tGroup,
+  DMN14__tInformationItem,
   DMN14__tInputData,
   DMN14__tKnowledgeSource,
   DMN14__tTextAnnotation,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { v4 as uuid } from "uuid";
+
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { EditAltIcon } from "@patternfly/react-icons/dist/js/icons/edit-alt-icon";
+import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
+import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -122,26 +131,6 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
 
   useEffect(() => {
     setNodes([
-      // grouping
-      ...(dmn.definitions.decisionService ?? []).map((decisionService) => {
-        const shape = shapesById.get(decisionService["@_id"]!)!;
-        return {
-          id: decisionService["@_id"]!,
-          type: "decisionService",
-          position: getShapePosition(shape),
-          data: { decisionService, shape },
-        };
-      }),
-      ...(dmn.definitions.group ?? []).map((group) => {
-        const shape = shapesById.get(group["@_id"]!)!;
-        return {
-          id: group["@_id"]!,
-          type: "group",
-          position: getShapePosition(shape),
-          data: { group, shape },
-        };
-      }),
-
       //logic
       ...(dmn.definitions.inputData ?? []).map((inputData) => {
         const shape = shapesById.get(inputData["@_id"]!)!;
@@ -150,6 +139,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           type: "inputData",
           position: getShapePosition(shape),
           data: { inputData, shape },
+          style: { zIndex: 100 },
         };
       }),
       ...(dmn.definitions.decision ?? []).map((decision) => {
@@ -159,6 +149,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           type: "decision",
           position: getShapePosition(shape),
           data: { decision, shape },
+          style: { zIndex: 100 },
         };
       }),
       ...(dmn.definitions.businessKnowledgeModel ?? []).map((bkm) => {
@@ -168,6 +159,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           type: "bkm",
           position: getShapePosition(shape),
           data: { bkm, shape },
+          style: { zIndex: 100 },
         };
       }),
 
@@ -179,6 +171,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           type: "textAnnotation",
           position: getShapePosition(shape),
           data: { textAnnotation, shape },
+          style: { zIndex: 100 },
         };
       }),
       ...(dmn.definitions.knowledgeSource ?? []).map((knowledgeSource) => {
@@ -188,6 +181,29 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           type: "knowledgeSource",
           position: getShapePosition(shape),
           data: { knowledgeSource, shape },
+          style: { zIndex: 100 },
+        };
+      }),
+
+      // grouping
+      ...(dmn.definitions.decisionService ?? []).map((decisionService) => {
+        const shape = shapesById.get(decisionService["@_id"]!)!;
+        return {
+          id: decisionService["@_id"]!,
+          type: "decisionService",
+          position: getShapePosition(shape),
+          data: { decisionService, shape },
+          style: { zIndex: 10 },
+        };
+      }),
+      ...(dmn.definitions.group ?? []).map((group) => {
+        const shape = shapesById.get(group["@_id"]!)!;
+        return {
+          id: group["@_id"]!,
+          type: "group",
+          position: getShapePosition(shape),
+          data: { group, shape },
+          style: { zIndex: 10 },
         };
       }),
     ]);
@@ -348,13 +364,13 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
   const rfContainer = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
-  const onDragOver = useCallback((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
-    (e) => {
+    (e: React.DragEvent) => {
       e.preventDefault();
 
       if (!rfContainer.current || !reactFlowInstance) {
@@ -389,6 +405,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
       <b>Version:</b> {marshaller.version}
       <div className={"kie-dmn-editor--diagram-container"} ref={rfContainer}>
         <RF.ReactFlow
+          zoomOnDoubleClick={false}
           elementsSelectable={true}
           nodes={nodes}
           edges={edges}
@@ -411,6 +428,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           onDrop={onDrop}
           onDragOver={onDragOver}
         >
+          <Status />
           <Pallete />
           <PanWhenAltPressed />
           <RF.Background />
@@ -421,6 +439,41 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
   );
 });
 
+export function Status() {
+  const nodes = RF.useNodes();
+  const { setState: setStore, getState: getStore } = RF.useStoreApi();
+
+  const selectedCount = useMemo(() => {
+    return nodes.filter((s) => s.selected).length;
+  }, [nodes]);
+
+  useEffect(() => {
+    if (selectedCount >= 2) {
+      setStore((prev) => ({
+        ...prev,
+        nodesSelectionActive: true,
+      }));
+    }
+  }, [selectedCount, setStore]);
+
+  const onClose = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      getStore().resetSelectedElements();
+    },
+    [getStore]
+  );
+  return (
+    <>
+      {(selectedCount >= 2 && (
+        <RF.Panel position={"top-center"}>
+          <Label style={{ paddingLeft: "24px" }} onClose={onClose}>{`${selectedCount} nodes selected`}</Label>
+        </RF.Panel>
+      )) || <></>}
+    </>
+  );
+}
+
 export function Pallete() {
   const onDragStart = useCallback((event, nodeType) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
@@ -429,7 +482,7 @@ export function Pallete() {
 
   return (
     <RF.Panel position={"top-left"}>
-      <aside style={{ width: "40px" }}>
+      <aside style={{ width: "80px" }}>
         <div className="dndnode input-data" onDragStart={(event) => onDragStart(event, "inputData")} draggable>
           Input
         </div>
@@ -488,9 +541,73 @@ export function PanWhenAltPressed() {
 }
 export function EmptyLabel() {
   return (
-    <span>
-      <i>{`(empty)`}</i>
+    <span style={{ fontFamily: "serif" }}>
+      <i style={{ opacity: 0.8 }}>{`<Empty>`}</i>
+      <br />
+      <i style={{ opacity: 0.5, fontSize: "0.8em", lineHeight: "0.8em" }}>{`Double-click to name`}</i>
     </span>
+  );
+}
+
+export function InfoAndEditToolbar(props: {}) {
+  return (
+    <RF.NodeToolbar position={RF.Position.Left} align={"center"}>
+      <Flex direction={{ default: "column" }}>
+        <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
+          <EditAltIcon />
+        </Button>
+        <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
+          <InfoAltIcon />
+        </Button>
+        <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
+          <BarsIcon size={"sm"} style={{ width: "0.5em" }} />
+        </Button>
+      </Flex>
+    </RF.NodeToolbar>
+  );
+}
+
+export function DataTypeToolbar(props: {
+  variable: DMN14__tInformationItem | undefined;
+  shape: DMNDI13__DMNShape | undefined;
+}) {
+  return (
+    <RF.NodeToolbar position={RF.Position.Bottom} align={"start"}>
+      <Label
+        style={{
+          maxWidth: (props.shape?.["dc:Bounds"]?.["@_width"] ?? 0) - 16,
+          background: "white",
+          fontFamily: "monospace",
+          paddingRight: "16px",
+        }}
+        isCompact={true}
+      >{`🔹 ${props.variable?.["@_typeRef"] ?? "<Undefined>"}`}</Label>
+    </RF.NodeToolbar>
+  );
+}
+
+export function NewNodeToolbar(props: {}) {
+  return (
+    <RF.NodeToolbar position={RF.Position.Top} align={"center"}>
+      <Label isCompact={true}>D</Label>
+      <Label isCompact={true}>K</Label>
+      <Label isCompact={true}>T</Label>
+      <Label isCompact={true}>B</Label>
+    </RF.NodeToolbar>
+  );
+}
+
+export function OutgoingEdgesToolbar(props: {}) {
+  return (
+    <RF.NodeToolbar position={RF.Position.Right} align={"center"}>
+      <Label isCompact={true}>I</Label>
+      <br />
+      <Label isCompact={true}>K</Label>
+      <br />
+      <Label isCompact={true}>A</Label>
+      <br />
+      <Label isCompact={true}>-</Label>
+    </RF.NodeToolbar>
   );
 }
 
@@ -500,11 +617,12 @@ export function InputDataNode({
   return (
     <>
       <NsweHandles />
+      <NewNodeToolbar />
+      <OutgoingEdgesToolbar />
+      <DataTypeToolbar variable={inputData.variable} shape={shape} />
+      <InfoAndEditToolbar />
       <div className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"} style={{ ...getShapeDimensions(shape) }}>
-        {inputData["@_name"] ??
-          inputData["@_label"] ??
-          inputData.variable?.["@_label"] ??
-          inputData.variable?.["@_name"] ?? <EmptyLabel />}
+        {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
       </div>
     </>
   );
@@ -516,11 +634,12 @@ export function DecisionNode({
   return (
     <>
       <NsweHandles />
+      <NewNodeToolbar />
+      <OutgoingEdgesToolbar />
+      <DataTypeToolbar variable={decision.variable} shape={shape} />
+      <InfoAndEditToolbar />
       <div className={"kie-dmn-editor--node kie-dmn-editor--decision-node"} style={{ ...getShapeDimensions(shape) }}>
-        {decision["@_name"] ??
-          decision["@_label"] ??
-          decision.variable?.["@_label"] ??
-          decision.variable?.["@_name"] ?? <EmptyLabel />}
+        {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
       </div>
     </>
   );
@@ -532,6 +651,10 @@ export function BkmNode({
   return (
     <>
       <NsweHandles />
+      <NewNodeToolbar />
+      <OutgoingEdgesToolbar />
+      <DataTypeToolbar variable={bkm.variable} shape={shape} />
+      <InfoAndEditToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}
@@ -549,6 +672,9 @@ export function TextAnnotationNode({
   return (
     <>
       <NsweHandles />
+      <NewNodeToolbar />
+      <OutgoingEdgesToolbar />
+      <InfoAndEditToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}
@@ -565,24 +691,15 @@ export function DecisionServiceNode({
   return (
     <>
       <NsweHandles />
+      <NewNodeToolbar />
+      <OutgoingEdgesToolbar />
+      <DataTypeToolbar variable={decisionService.variable} shape={shape} />
+      <InfoAndEditToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}
       >
         {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
-      </div>
-    </>
-  );
-}
-
-export function GroupNode({
-  data: { group, shape },
-}: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
-  return (
-    <>
-      <NsweHandles />
-      <div style={{ ...getShapeDimensions(shape) }} className={"kie-dmn-editor--node kie-dmn-editor--group-node"}>
-        {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
       </div>
     </>
   );
@@ -594,11 +711,26 @@ export function KnowledgeSourceNode({
   return (
     <>
       <NsweHandles />
+      <NewNodeToolbar />
+      <OutgoingEdgesToolbar />
+      <InfoAndEditToolbar />
       <div
         style={{ ...getShapeDimensions(shape) }}
         className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}
       >
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
+      </div>
+    </>
+  );
+}
+
+export function GroupNode({
+  data: { group, shape },
+}: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
+  return (
+    <>
+      <div style={{ ...getShapeDimensions(shape) }} className={"kie-dmn-editor--node kie-dmn-editor--group-node"}>
+        {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
       </div>
     </>
   );
