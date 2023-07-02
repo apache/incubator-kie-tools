@@ -62,9 +62,15 @@ pipeline {
                         // Tag with given parameter tag
                         promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix))
 
+                        try {
+                            promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageReducedTag(imageName, promoteImageParamsPrefix))
+                        } catch (err) {
+                            echo 'Reduced tag cannot be applied'
+                        }
+
                         // Tag with `latest` tag if asked for as parameter
                         if (helper.isDeployLatestTag()) {
-                            promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix, 'latest'), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
+                             promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
                         }
                     }
                 }

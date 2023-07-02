@@ -14,6 +14,7 @@
 # limitations under the License.
 
 CSV_DIR="config/manifests/bases"
+BUNDLE_DIR="bundle/manifests"
 
 getOperatorVersion() {
   local version=$(grep -m 1 'OperatorVersion' version/version.go | awk -F\" '{print $2}')
@@ -32,4 +33,8 @@ getOperatorImageName() {
 
 getCsvFile() {
   echo "${CSV_DIR}/sonataflow-operator.clusterserviceversion.yaml"
+}
+
+getBundleFile() {
+  echo "${BUNDLE_DIR}/sonataflow-operator.clusterserviceversion.yaml"
 }

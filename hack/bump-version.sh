@@ -41,6 +41,8 @@ fi
 
 echo "Set new version to ${new_version} (img_suffix = '${imageSuffix}', majorMinor = ${newMajorMinorVersion})"
 
+sed -i "s|version: ${old_version}|version: ${new_version}|g" image.yaml
+
 sed -i "s|^VERSION ?=.*|VERSION ?= ${new_version}|g" Makefile
 sed -i "s|newTag:.*|newTag: ${new_version}|g" config/manager/kustomization.yaml
 
@@ -58,5 +60,8 @@ sed -i -r "s|OperatorVersion =.*|OperatorVersion = \"${new_version}\"|g" version
 
 make generate-all
 make vet
+
+# Update bundle
+sed -i "s|${new_version}|${newMajorMinorVersion}|g" $(getBundleFile)
 
 echo "Version bumped to ${new_version}"

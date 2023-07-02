@@ -137,7 +137,7 @@ pipeline {
 
                     // Build multiplatform from generated Dockerfile
                     dir('target/image') {
-                        cloud.dockerBuildMultiPlatformImages(tempBuiltImageTag, getImageBuildPlatforms(), true, "Kogito Serverless Operator squashed image")
+                        cloud.dockerBuildMultiPlatformImages(tempBuiltImageTag, getImageBuildPlatforms(), true, 'Kogito Serverless Operator squashed image')
                     }
                 }
             }
@@ -161,6 +161,12 @@ pipeline {
 
                     // Tag with given parameter tag
                     pushFinalImage(getTempBuiltImageTag(), helper.getImageFullTag(env.OPERATOR_IMAGE_NAME))
+
+                    try {
+                        pushFinalImage(getTempBuiltImageTag(), helper.getImageReducedTag(env.OPERATOR_IMAGE_NAME))
+                    } catch (err) {
+                        echo 'Reduced tag cannot be applied'
+                    }
 
                     // Tag with `latest` tag if asked for as parameter
                     if (helper.isDeployLatestTag()) {

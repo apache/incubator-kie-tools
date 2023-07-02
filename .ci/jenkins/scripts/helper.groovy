@@ -229,6 +229,10 @@ String getImageFullTag(String imageName, String paramsPrefix = defaultImageParam
     return fullTag
 }
 
+String getImageReducedTag(String imageName, String paramsPrefix = defaultImageParamsPrefix, String tag = '') {
+    return getImageFullTag(imageName, paramsPrefix, cloud.getReducedTag(tag ?: getImageTag(paramsPrefix)))
+}
+
 String constructKey(String keyPrefix, String key) {
     return keyPrefix ? "${keyPrefix}_${key}" : key
 }
