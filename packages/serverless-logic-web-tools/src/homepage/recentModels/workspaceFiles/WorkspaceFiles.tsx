@@ -34,12 +34,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
-import { filterFiles, splitFiles } from "../../../extension";
+import { splitFiles } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
 import { setPageTitle } from "../../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../../table";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
 import { ErrorPage } from "../../../error/ErrorPage";
+import Fuse from "fuse.js";
 
 export interface WorkspaceFilesProps {
   workspaceId: string;
@@ -56,6 +57,16 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
   const [perPage, setPerPage] = React.useState(5);
   const [isViewRoFilesChecked, setIsViewRoFilesChecked] = useState(false);
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
+  const splittedFiles = useMemo(() => splitFiles(workspacePromise.data?.files || []), [workspacePromise]);
+  const isViewRoFilesDisabled = useMemo(
+    () => !splittedFiles.editableFiles.length || !splittedFiles.readonlyFiles.length,
+    [splittedFiles]
+  );
+  const visibleFiles = useMemo(
+    () => [...splittedFiles.editableFiles, ...(isViewRoFilesChecked ? splittedFiles.readonlyFiles : [])],
+    [isViewRoFilesChecked, splittedFiles]
+  );
+  const [fuseSearch, setFuseSearch] = useState<Fuse<WorkspaceFile>>();
   const workspaces = useWorkspaces();
   const history = useHistory();
   const isDeletingWorkspaceFilesPlural = useMemo(() => deletingWorkspaceFiles.length > 1, [deletingWorkspaceFiles]);
@@ -166,9 +177,22 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
     setIsViewRoFilesChecked(checked);
   }, []);
 
+  const filterFiles = useCallback(
+    (searchValue: string) => {
+      return !searchValue.trim() || !fuseSearch ? visibleFiles : fuseSearch.search(searchValue).map((r) => r.item);
+    },
+    [fuseSearch, visibleFiles]
+  );
+
   useEffect(() => {
     setPage(1);
   }, [searchValue]);
+
+  useEffect(() => {
+    if (isViewRoFilesDisabled) {
+      setIsViewRoFilesChecked(true);
+    }
+  }, [isViewRoFilesDisabled]);
 
   useEffect(() => {
     if (workspacePromise.data?.files) {
@@ -178,7 +202,15 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
         )
       );
     }
-  }, [workspacePromise]);
+
+    setFuseSearch(
+      new Fuse(visibleFiles || [], {
+        keys: ["nameWithoutExtension"],
+        shouldSort: false,
+        threshold: 0.3,
+      })
+    );
+  }, [workspacePromise, visibleFiles]);
 
   return (
     <PromiseStateWrapper
@@ -186,11 +218,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
       rejected={(e) => <ErrorPage kind="WorkspaceFiles" workspaceId={props.workspaceId} errors={e} />}
       resolved={(workspace: ActiveWorkspace) => {
         const allFilesCount = workspace.files.length;
-        const { editableFiles, readonlyFiles } = splitFiles(workspace.files);
-        const isViewRoFilesDisabled = !editableFiles.length || !readonlyFiles.length;
-        const isViewRoFilesCheckedInternal = isViewRoFilesDisabled ? true : isViewRoFilesChecked;
-        const visibleFiles = [...editableFiles, ...(isViewRoFilesCheckedInternal ? readonlyFiles : [])];
-        const filteredFiles = filterFiles(visibleFiles, searchValue);
+        const filteredFiles = filterFiles(searchValue);
         const filteredFilesCount = filteredFiles.length;
 
         setPageTitle([workspace.descriptor.name]);
@@ -292,7 +320,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
                               <Checkbox
                                 id="viewRoFiles"
                                 label="View readonly files"
-                                isChecked={isViewRoFilesCheckedInternal}
+                                isChecked={isViewRoFilesChecked}
                                 isDisabled={isViewRoFilesDisabled}
                                 onChange={handleViewRoCheckboxChange}
                               ></Checkbox>

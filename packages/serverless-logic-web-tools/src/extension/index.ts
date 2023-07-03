@@ -16,7 +16,6 @@
 
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import Fuse from "fuse.js";
 
 export const GLOB_PATTERN = {
   all: "**/*",
@@ -77,25 +76,4 @@ export function splitFiles(files: WorkspaceFile[]): {
     [[], []]
   );
   return { editableFiles, readonlyFiles };
-}
-
-/**
- * Filters a list of files
- *
- * @param files the list of files to filter
- * @param searchValue the search value
- * @returns the filtered list
- */
-export function filterFiles(files: WorkspaceFile[], searchValue: string): WorkspaceFile[] {
-  if (!searchValue) {
-    return files;
-  }
-
-  const fuse = new Fuse(files, {
-    keys: ["nameWithoutExtension"],
-    shouldSort: false,
-    threshold: 0.3,
-  });
-
-  return fuse.search(searchValue).map((r) => r.item);
 }
