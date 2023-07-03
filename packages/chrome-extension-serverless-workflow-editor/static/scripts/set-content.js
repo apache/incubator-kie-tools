@@ -1,8 +1,8 @@
 // gets the initial content and sets in a pre tag
-const cmInstance = document.querySelector(".cm-content").cmView;
-const content = cmInstance.view.state.doc.toString();
-const newElement = document.createElement("pre");
-newElement.id = "kie-tools__initial-content";
-newElement.style.display = "none";
-newElement.textContent = content;
-document.body.appendChild(newElement);
+const kieTools_cmInstance = document.querySelector(".cm-content").cmView;
+const kieTools_content = kieTools_cmInstance.view.state.doc.toString();
+const kieTools_newElement = document.createElement("pre");
+kieTools_newElement.id = "kie-tools__initial-content";
+kieTools_newElement.style.display = "none";
+kieTools_newElement.textContent = kieTools_content;
+document.body.appendChild(kieTools_newElement);
