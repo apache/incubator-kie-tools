@@ -34,18 +34,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { NewFileDropdownMenu } from "../../../editor/NewFileDropdownMenu";
-import { splitFiles } from "../../../extension";
+import { filterFiles, splitFiles } from "../../../extension";
 import { routes } from "../../../navigation/Routes";
 import { setPageTitle } from "../../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../../table";
 import { WorkspaceFilesTable } from "./WorkspaceFilesTable";
-import { escapeRegExp } from "../../../regex";
 import { ErrorPage } from "../../../error/ErrorPage";
-
-function filterFiles(files: WorkspaceFile[], searchValue: string): WorkspaceFile[] {
-  const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-  return searchValue ? files.filter((e) => e.name.search(searchRegex) >= 0) : files;
-}
 
 export interface WorkspaceFilesProps {
   workspaceId: string;
