@@ -30,6 +30,9 @@
 
             <%
               _.map(editorResources.referencedJsResources, function(jsResource) {
+                if (jsResource.userAgentCondition) {
+                  print('\n\nif (' + jsResource.userAgentCondition + ')');
+                }
                 print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
               });
             %>
