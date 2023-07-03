@@ -120,12 +120,14 @@ type SonataFlowSpec struct {
 // SonataFlowStatus defines the observed state of SonataFlow
 type SonataFlowStatus struct {
 	api.Status `json:",inline"`
+	// Address is used as a part of Addressable interface (status.address.url) for knative
 	// +optional
 	Address duckv1.Addressable `json:"address,omitempty"`
 	// keeps track of how many failure recovers a given workflow had so far
 	RecoverFailureAttempts int         `json:"recoverFailureAttempts,omitempty"`
 	LastTimeRecoverAttempt metav1.Time `json:"lastTimeRecoverAttempt,omitempty"`
-	Endpoint               *apis.URL   `json:"endpoint,omitempty"`
+	// Endpoint is an externally accessible URL of the workflow
+	Endpoint *apis.URL `json:"endpoint,omitempty"`
 }
 
 func (s *SonataFlowStatus) GetTopLevelConditionType() api.ConditionType {
