@@ -53,7 +53,7 @@ items:
     metadata:
       name: logic-builder
       annotations:
-        openshift.io/display-name: Red Hat build of Runtime image for Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled
+        openshift.io/display-name: Red Hat build of Runtime image for Kogito Serverless Workflow builder with Quarkus extensions libraries preinstalled
         openshift.io/provider-display-name: Kie Group
     spec:
       tags:

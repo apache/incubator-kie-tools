@@ -2,7 +2,7 @@ schema_version: 1
 name: "openshift-serverless-1-tech-preview/logic-swf-devmode-rhel8"
 from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 version: "1.30.0"
-description: "Red Hat build of Kogito Serverless Workflow development mode with Quarkus extensions libraries preinstalled"
+description: "Red Hat build of Kogito Serverless Workflow development mode image with Quarkus extensions libraries preinstalled"
 
 labels:
   - name: "io.quarkus.platform.version"
@@ -19,6 +19,8 @@ labels:
     value: "8080:http,5005:http"
   - name: "com.redhat.component"
     value: "openshift-serverless-1-logic-swf-devmode-rhel8-container"
+  - name: "maintainer"
+    value: "serverless-logic <bsig-cloud@redhat.com>"
 
 modules:
   repositories:
