@@ -11,22 +11,32 @@ import {
   DMN14__tDecision,
   DMN14__tDecisionService,
   DMN14__tDefinitions,
+  DMN14__tFunctionDefinition,
   DMN14__tGroup,
   DMN14__tInformationItem,
   DMN14__tInputData,
+  DMN14__tItemDefinition,
   DMN14__tKnowledgeSource,
   DMN14__tTextAnnotation,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { v4 as uuid } from "uuid";
-
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  FunctionExpressionDefinitionKind,
+} from "@kie-tools/boxed-expression-component/dist/api";
+import exp = require("constants");
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -37,9 +47,26 @@ const SNAP_GRID = {
   y: 20,
 };
 
+export enum DmnEditorTab {
+  EDITOR,
+  DATA_TYPES,
+  INCLUDED_MODELS,
+  DOCUMENTATION,
+}
+
 export type DmnEditorRef = {
   getContent(): string;
 };
+
+export type DmnExpression =
+  | {
+      type: "bkm";
+      expression: DMN14__tBusinessKnowledgeModel;
+    }
+  | {
+      type: "decision";
+      expression: DMN14__tDecision;
+    };
 
 export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Ref<DmnEditorRef>) => {
   const marshaller = useMemo(() => getMarshaller(props.xml.trim() || EMPTY_DMN_14), [props.xml]);
@@ -112,6 +139,13 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
     [dmn.definitions]
   );
 
+  const itemDefsById = useMemo(() => {
+    return (dmn.definitions.itemDefinition ?? []).reduce(
+      (acc, item) => acc.set(item["@_id"]!, item),
+      new Map<string, DMN14__tItemDefinition>()
+    );
+  }, [dmn.definitions.itemDefinition]);
+
   const getShapePosition = useCallback(
     (shape: DMNDI13__DMNShape) => {
       // Without snapping at opening
@@ -127,6 +161,23 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
       };
     },
     [snapGrid]
+  );
+
+  const [openExpression, setOpenExpression] = useState<DmnExpression | undefined>(undefined);
+
+  const expressionDefinition = useMemo<ExpressionDefinition>(
+    () => (openExpression ? dmnExpressionToBee(itemDefsById, openExpression) : newExpressionDefinition()),
+    [itemDefsById, openExpression]
+  );
+
+  const dataTypes = useMemo(
+    () =>
+      [...itemDefsById.values()].map((item) => ({
+        isCustom: true,
+        typeRef: item.typeRef!,
+        name: item["@_name"]!,
+      })),
+    [itemDefsById]
   );
 
   useEffect(() => {
@@ -148,7 +199,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           id: decision["@_id"]!,
           type: "decision",
           position: getShapePosition(shape),
-          data: { decision, shape },
+          data: { decision, shape, setOpenExpression },
           style: { zIndex: 100 },
         };
       }),
@@ -158,7 +209,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
           id: bkm["@_id"]!,
           type: "bkm",
           position: getShapePosition(shape),
-          data: { bkm, shape },
+          data: { bkm, shape, setOpenExpression },
           style: { zIndex: 100 },
         };
       }),
@@ -400,41 +451,91 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
     [reactFlowInstance]
   );
 
+  const [tab, setTab] = useState(DmnEditorTab.EDITOR);
+  const onTabChanged = useCallback((e, tab) => {
+    setTab(tab);
+  }, []);
+
   return (
     <>
-      <b>Version:</b> {marshaller.version}
-      <div className={"kie-dmn-editor--diagram-container"} ref={rfContainer}>
-        <RF.ReactFlow
-          zoomOnDoubleClick={false}
-          elementsSelectable={true}
-          nodes={nodes}
-          edges={edges}
-          panOnScroll={true}
-          selectionOnDrag={true}
-          panOnDrag={panOnDrag}
-          panActivationKeyCode={"Alt"}
-          selectionMode={RF.SelectionMode.Partial}
-          onNodesChange={onNodesChange} // FIXME: Selection is getting lost when dragging if I change to _onNodesChange.
-          onEdgesChange={onEdgesChange}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          snapToGrid={true}
-          snapGrid={snapGrid}
-          defaultViewport={defaultViewport}
-          fitView={false}
-          fitViewOptions={fitViewOptions}
-          attributionPosition={"bottom-right"}
-          onInit={setReactFlowInstance}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-        >
-          <Status />
-          <Pallete />
-          <PanWhenAltPressed />
-          <RF.Background />
-          <RF.Controls fitViewOptions={fitViewOptions} position={"bottom-right"} />
-        </RF.ReactFlow>
-      </div>
+      <>
+        <Tabs activeKey={tab} onSelect={onTabChanged} isBox={true} role="region">
+          <Tab eventKey={DmnEditorTab.EDITOR} title={<TabTitleText>Editor</TabTitleText>}>
+            <>
+              <div className={"kie-dmn-editor--diagram-container"} ref={rfContainer}>
+                {!openExpression && (
+                  <>
+                    <Label style={{ position: "absolute", bottom: "8px" }}>{`DMN ${marshaller.version}`}</Label>
+                    <RF.ReactFlow
+                      zoomOnDoubleClick={false}
+                      elementsSelectable={true}
+                      nodes={nodes}
+                      edges={edges}
+                      panOnScroll={true}
+                      selectionOnDrag={true}
+                      panOnDrag={panOnDrag}
+                      panActivationKeyCode={"Alt"}
+                      selectionMode={RF.SelectionMode.Partial}
+                      onNodesChange={onNodesChange} // FIXME: Selection is getting lost when dragging if I change to _onNodesChange.
+                      onEdgesChange={onEdgesChange}
+                      nodeTypes={nodeTypes}
+                      edgeTypes={edgeTypes}
+                      snapToGrid={true}
+                      snapGrid={snapGrid}
+                      defaultViewport={defaultViewport}
+                      fitView={false}
+                      fitViewOptions={fitViewOptions}
+                      attributionPosition={"bottom-right"}
+                      onInit={setReactFlowInstance}
+                      onDrop={onDrop}
+                      onDragOver={onDragOver}
+                    >
+                      <Status />
+                      <Pallete />
+                      <PanWhenAltPressed />
+                      <RF.Background />
+                      <RF.Controls fitViewOptions={fitViewOptions} position={"bottom-right"} />
+                    </RF.ReactFlow>
+                  </>
+                )}
+                {openExpression && (
+                  <>
+                    <br />
+                    <Button
+                      isSmall={true}
+                      variant={ButtonVariant.tertiary}
+                      onClick={() => setOpenExpression(undefined)}
+                    >{`Back`}</Button>
+                    <br />
+                    <br />
+                    <>
+                      <BoxedExpressionEditor
+                        decisionNodeId={openExpression.expression["@_id"]!}
+                        expressionDefinition={expressionDefinition}
+                        setExpressionDefinition={function (value: React.SetStateAction<ExpressionDefinition>): void {
+                          throw new Error("Function not implemented.");
+                        }}
+                        dataTypes={dataTypes}
+                        scrollableParentRef={rfContainer}
+                      />
+                    </>
+                    <>{openExpression.expression["@_id"]}</>
+                  </>
+                )}
+              </div>
+            </>
+          </Tab>
+          <Tab eventKey={DmnEditorTab.DATA_TYPES} title={<TabTitleText>Data types</TabTitleText>}>
+            <>Data types</>
+          </Tab>
+          <Tab eventKey={DmnEditorTab.INCLUDED_MODELS} title={<TabTitleText>Included models</TabTitleText>}>
+            <>Included models</>
+          </Tab>
+          <Tab eventKey={DmnEditorTab.DOCUMENTATION} title={<TabTitleText>Documentation</TabTitleText>}>
+            <>Documentation</>
+          </Tab>
+        </Tabs>
+      </>
     </>
   );
 });
@@ -625,7 +726,7 @@ export function InputDataNode({
   );
 }
 
-export function EditExpressionButton(props: { isVisible: boolean }) {
+export function EditExpressionButton(props: { isVisible: boolean; onClick: () => void }) {
   const onClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -634,7 +735,12 @@ export function EditExpressionButton(props: { isVisible: boolean }) {
   return (
     <>
       {props.isVisible && (
-        <Label onMouseDownCapture={onClick} onClick={onClick} className={"kie-dmn-editor--edit-expression-label"}>
+        <Label
+          onMouseDownCapture={onClick}
+          onMouseUpCapture={onClick}
+          onClick={props.onClick}
+          className={"kie-dmn-editor--edit-expression-label"}
+        >
           Edit
         </Label>
       )}
@@ -668,8 +774,12 @@ export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
 }
 
 export function DecisionNode({
-  data: { decision, shape },
-}: RF.NodeProps<{ decision: DMN14__tDecision; shape: DMNDI13__DMNShape }>) {
+  data: { decision, shape, setOpenExpression },
+}: RF.NodeProps<{
+  decision: DMN14__tDecision;
+  shape: DMNDI13__DMNShape;
+  setOpenExpression: React.Dispatch<React.SetStateAction<DmnExpression | undefined>>;
+}>) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
 
@@ -685,7 +795,10 @@ export function DecisionNode({
         className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}
         style={{ ...getShapeDimensions(shape) }}
       >
-        <EditExpressionButton isVisible={isHovered} />
+        <EditExpressionButton
+          isVisible={isHovered}
+          onClick={() => setOpenExpression({ type: "decision", expression: decision })}
+        />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -693,8 +806,12 @@ export function DecisionNode({
 }
 
 export function BkmNode({
-  data: { bkm, shape },
-}: RF.NodeProps<{ bkm: DMN14__tBusinessKnowledgeModel; shape: DMNDI13__DMNShape }>) {
+  data: { bkm, shape, setOpenExpression },
+}: RF.NodeProps<{
+  bkm: DMN14__tBusinessKnowledgeModel;
+  shape: DMNDI13__DMNShape;
+  setOpenExpression: React.Dispatch<React.SetStateAction<DmnExpression | undefined>>;
+}>) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
 
@@ -710,7 +827,10 @@ export function BkmNode({
         className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}
         style={{ ...getShapeDimensions(shape) }}
       >
-        <EditExpressionButton isVisible={isHovered} />
+        <EditExpressionButton
+          isVisible={isHovered}
+          onClick={() => setOpenExpression({ type: "bkm", expression: bkm })}
+        />
         {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -915,5 +1035,103 @@ function newNodeFromType(id: string, position: RF.XYPosition, type: string) {
         },
         shape: defaultShape,
       };
+  }
+}
+
+function newExpressionDefinition(): ExpressionDefinition {
+  return {
+    id: uuid(),
+    logicType: ExpressionDefinitionLogicType.Undefined,
+    dataType: DmnBuiltInDataType.Undefined,
+  };
+}
+
+function dmnExpressionToBee(
+  itemDefsById: Map<string, DMN14__tItemDefinition>,
+  dmnExpression: DmnExpression
+): ExpressionDefinition {
+  if (dmnExpression.type == "bkm") {
+    return exprToBee({ functionDefinition: dmnExpression.expression.encapsulatedLogic });
+  } else if (dmnExpression.type == "decision") {
+    return exprToBee(dmnExpression.expression);
+  } else {
+    throw new Error("Unknown DMN Expression type");
+  }
+}
+
+function exprToBee(expr: DMN14__tDecision | DMN14__tFunctionDefinition | undefined): any {
+  if (!expr) {
+    return newExpressionDefinition();
+  } else if (expr.literalExpression) {
+    return {
+      logicType: ExpressionDefinitionLogicType.Literal,
+    };
+  } else if (expr.decisionTable) {
+    return {
+      logicType: ExpressionDefinitionLogicType.DecisionTable,
+    };
+  } else if (expr.relation) {
+    return {
+      logicType: ExpressionDefinitionLogicType.Relation,
+    };
+  } else if (expr.context) {
+    return {
+      logicType: ExpressionDefinitionLogicType.Context,
+    };
+  } else if (expr.invocation) {
+    return {
+      logicType: ExpressionDefinitionLogicType.Invocation,
+    };
+  } else if (expr.functionDefinition) {
+    const func = expr.functionDefinition;
+    const basic = {
+      id: func!["@_id"]!,
+      dataType: DmnBuiltInDataType.Any,
+      logicType: ExpressionDefinitionLogicType.Function as const,
+      formalParameters: (func?.formalParameter ?? []).map((p) => ({
+        id: p["@_id"]!,
+        name: p["@_name"]!,
+        dataType: p["@_typeRef"]! as DmnBuiltInDataType,
+      })),
+    };
+
+    return (() => {
+      switch (func!["@_kind"]) {
+        case "FEEL":
+          return {
+            ...basic,
+            functionKind: FunctionExpressionDefinitionKind.Feel,
+            expression: exprToBee(func),
+          };
+        case "Java":
+          return {
+            ...basic,
+            functionKind: FunctionExpressionDefinitionKind.Java,
+            className: "",
+            methodName: "",
+            classFieldId: "",
+            methodFieldId: "",
+          };
+        case "PMML":
+          return {
+            ...basic,
+            functionKind: FunctionExpressionDefinitionKind.Pmml,
+            document: "",
+            model: "",
+            documentFieldId: "",
+            modelFieldId: "",
+          };
+        default:
+          throw new Error("");
+      }
+    })();
+  } else if (expr.list) {
+    return {
+      logicType: ExpressionDefinitionLogicType.List,
+    };
+  } else {
+    return {
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    };
   }
 }

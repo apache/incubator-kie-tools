@@ -3045,6 +3045,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/boxed-expression-component":
+        specifier: workspace:*
+        version: link:../boxed-expression-component
       "@kie-tools/dmn-marshaller":
         specifier: workspace:*
         version: link:../dmn-marshaller
