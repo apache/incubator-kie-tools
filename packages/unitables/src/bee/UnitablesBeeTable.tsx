@@ -48,6 +48,7 @@ import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
+import _ from "lodash";
 
 export type ROWTYPE = Record<string, any>;
 
@@ -90,6 +91,14 @@ export function UnitablesBeeTable({
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
+        group: _.upperCase(i18n.terms.selection),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionPaste },
+        ],
+      },
+      {
         group: i18n.rows,
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
@@ -103,16 +112,25 @@ export function UnitablesBeeTable({
     [i18n]
   );
 
-  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
-    return [
-      BeeTableOperation.SelectionCopy,
-      BeeTableOperation.RowInsertAbove,
-      BeeTableOperation.RowInsertBelow,
-      BeeTableOperation.RowDuplicate,
-      BeeTableOperation.RowReset,
-      BeeTableOperation.RowDelete,
-    ];
-  }, []);
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      return [
+        BeeTableOperation.SelectionCopy,
+        BeeTableOperation.SelectionCut,
+        BeeTableOperation.SelectionPaste,
+        ...((conditions.selection.active?.rowIndex ?? -1) > -1
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowDuplicate,
+              BeeTableOperation.RowReset,
+            ]
+          : []),
+        ...(rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+      ];
+    },
+    [rows.length]
+  );
 
   const uuid = useMemo(() => {
     return generateUuid();

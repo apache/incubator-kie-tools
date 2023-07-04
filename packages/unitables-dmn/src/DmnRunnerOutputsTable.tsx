@@ -133,23 +133,8 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
-        group: i18n.rows,
-        items: [
-          { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
-          { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
-          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
-          { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
-          { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
-        ],
-      },
-      {
         group: _.upperCase(i18n.terms.selection),
-        items: [
-          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
-          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
-          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
-          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
-        ],
+        items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
       },
     ],
     [i18n]
@@ -409,17 +394,7 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   }, []);
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
-    return [
-      BeeTableOperation.RowInsertAbove,
-      BeeTableOperation.RowInsertBelow,
-      BeeTableOperation.RowDuplicate,
-      BeeTableOperation.RowDelete,
-      BeeTableOperation.RowReset,
-      BeeTableOperation.SelectionReset,
-      BeeTableOperation.SelectionCopy,
-      BeeTableOperation.SelectionCut,
-      BeeTableOperation.SelectionPaste,
-    ];
+    return [BeeTableOperation.SelectionCopy];
   }, []);
 
   return (
