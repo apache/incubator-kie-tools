@@ -45,9 +45,15 @@ export class ServerlessWorkflowDiagramEditorResources extends BaseEditorResource
   }
 
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
-    const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
+    const editorDirPath = `${resourcesPathPrefix}/${gwtModuleName}`;
+    const editorDir = fs.readdirSync(editorDirPath);
     const gwtJsFiles = editorDir.filter((file) => file.indexOf(".cache.js") >= 0);
-    return gwtJsFiles.map((file) => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
+
+    return gwtJsFiles.map((file) => {
+      const gwtJsFileName = `${file?.split("/").pop()}`;
+      const gwtJsFilePath = `${editorDirPath}/${gwtJsFileName}`;
+      return { path: gwtJsFilePath, userAgentCondition: this.getUserAgentCondition(editorDirPath, gwtJsFileName) };
+    });
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
