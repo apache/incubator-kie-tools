@@ -32,7 +32,7 @@ import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolba
 import { WorkspacesTable, WorkspacesTableRowData } from "./WorkspacesTable";
 import { Link } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
-import { escapeRegExp } from "../../regex";
+import Fuse from "fuse.js";
 import { useAllWorkspacesWithFilesPromise } from "./hooks/useAllWorkspacesWithFilesPromise";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
@@ -51,6 +51,7 @@ export function RecentModels() {
   const [firstDeletingWorkspaceName, setFirstDeletingWorkspaceName] = useState("");
   const [deleteModalDataLoaded, setDeleteModalDataLoaded] = useState(false);
   const [deleteModalFetchError, setDeleteModalFetchError] = useState(false);
+  const [fuseSearch, setFuseSearch] = useState<Fuse<WorkspacesTableRowData>>();
   const isDeletingWorkspacePlural = useMemo(() => deletingWorkspaceIds.length > 1, [deletingWorkspaceIds]);
   const workspacesWithFilesPromise = useAllWorkspacesWithFilesPromise();
 
@@ -202,9 +203,8 @@ export function RecentModels() {
   );
 
   const filteredTableData = useMemo(() => {
-    const searchRegex = new RegExp(escapeRegExp(searchValue), "i");
-    return searchValue ? tableData.filter((e) => e.descriptor.name.search(searchRegex) >= 0) : tableData;
-  }, [tableData, searchValue]);
+    return !searchValue.trim() || !fuseSearch ? tableData : fuseSearch.search(searchValue).map((r) => r.item);
+  }, [tableData, searchValue, fuseSearch]);
 
   const onToggleAllElements = useCallback(
     (checked: boolean) => {
@@ -239,6 +239,14 @@ export function RecentModels() {
   useEffect(() => {
     setSelectedWorkspaceIds((selectedIds) =>
       selectedIds.filter((id) => tableData.some((element) => element.descriptor.workspaceId === id))
+    );
+
+    setFuseSearch(
+      new Fuse(tableData || [], {
+        keys: ["descriptor.name"],
+        shouldSort: false,
+        threshold: 0.3,
+      })
     );
   }, [tableData]);
 
