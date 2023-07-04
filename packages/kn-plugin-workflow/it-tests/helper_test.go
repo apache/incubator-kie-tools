@@ -68,7 +68,7 @@ func ExecuteKnWorkflowQuarkusWithCmd(cmd *exec.Cmd, args ...string) (string, err
 
 // executeCommandWithOutput executes a command with the given arguments using the provided command and captures its standard output and error streams.
 // It returns the combined standard output as a string and an error if the command fails.
-// It also prints out the standard output to the console.
+// It also prints out the standard output to the console if 'KN_PLUGIN_WORKFLOW__testPrintCmdOutput' is set to 'true'.
 func executeCommandWithOutput(cmd *exec.Cmd, args ...string) (string, error) {
 	cmd.Args = append([]string{cmd.Path}, args...)
 	var stdout bytes.Buffer
