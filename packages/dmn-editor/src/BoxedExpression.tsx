@@ -8,7 +8,7 @@ import {
   FunctionExpressionDefinitionKind,
   generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import {
   DMN14__tDecision,
   DMN14__tDefinitions,
@@ -17,6 +17,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { SPEC } from "./Spec";
 
 export function BoxedExpression({
   dmn,
@@ -61,6 +62,16 @@ export function BoxedExpression({
     [dmn.definitions.itemDefinition]
   );
 
+  const setExpressionDefinition = useCallback(
+    (beeExpression: ExpressionDefinition) => {
+      setDmn((prev) => {
+        console.info(beeToDmn(beeExpression)); // TODO: Actually mutate the DMN JSON.
+        return prev;
+      });
+    },
+    [setDmn]
+  );
+
   return (
     <>
       <Label
@@ -76,9 +87,7 @@ export function BoxedExpression({
         <BoxedExpressionEditor
           decisionNodeId={openNodeWithExpression.content["@_id"]!}
           expressionDefinition={expressionDefinition}
-          setExpressionDefinition={function (value: React.SetStateAction<ExpressionDefinition>): void {
-            throw new Error("Function not implemented.");
-          }}
+          setExpressionDefinition={setExpressionDefinition}
           dataTypes={dataTypes}
           scrollableParentRef={container}
         />
@@ -101,13 +110,13 @@ function dmnNodeToBoxedExpression(
 ): ExpressionDefinition {
   if (dmnNode.type == "bkm") {
     return {
-      ...exprToBee(widthsById, { functionDefinition: dmnNode.content.encapsulatedLogic }),
+      ...dmnToBee(widthsById, { functionDefinition: dmnNode.content.encapsulatedLogic }),
       dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
       name: dmnNode.content["@_name"],
     };
   } else if (dmnNode.type == "decision") {
     return {
-      ...exprToBee(widthsById, dmnNode.content),
+      ...dmnToBee(widthsById, dmnNode.content),
       dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
       name: dmnNode.content["@_name"],
     };
@@ -116,14 +125,23 @@ function dmnNodeToBoxedExpression(
   }
 }
 
-function exprToBee(
-  widthsById: Map<string, number[]>,
-  expr: DMN14__tDecision | DMN14__tFunctionDefinition | undefined
-): ExpressionDefinition {
-  if (!expr) {
+export type DmnExpression = DMN14__tDecision | DMN14__tFunctionDefinition | undefined;
+
+/** Converts an ExpressionDefinition to a DMN JSON. This convertion is
+ *  necessary for historical reasons, as the Boxed Expression Editor was
+ *  created prior to the DMN Editor, needing to declare its own model. */
+function beeToDmn(expression: ExpressionDefinition): DmnExpression {
+  return {} as any;
+}
+
+/** Converts a DMN JSON to an ExpressionDefinition. This convertion is
+ *  necessary for historical reasons, as the Boxed Expression Editor was
+ *  created prior to the DMN Editor, needing to declare its own model. */
+function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): ExpressionDefinition {
+  if (!dmnExpr) {
     return newExpressionDefinition();
-  } else if (expr.literalExpression) {
-    const l = expr.literalExpression as DMN14__tLiteralExpression;
+  } else if (dmnExpr.literalExpression) {
+    const l = dmnExpr.literalExpression as DMN14__tLiteralExpression;
     return {
       id: l["@_id"]!,
       name: l["@_label"],
@@ -132,28 +150,28 @@ function exprToBee(
       content: l.text,
       width: widthsById.get(l["@_id"]!)?.[0],
     };
-  } else if (expr.decisionTable) {
+  } else if (dmnExpr.decisionTable) {
     return newExpressionDefinition();
     // return {
     //   logicType: ExpressionDefinitionLogicType.DecisionTable,
     // };
-  } else if (expr.relation) {
+  } else if (dmnExpr.relation) {
     return newExpressionDefinition();
     // return {
     //   logicType: ExpressionDefinitionLogicType.Relation,
     // };
-  } else if (expr.context) {
+  } else if (dmnExpr.context) {
     return newExpressionDefinition();
     // return {
     //   logicType: ExpressionDefinitionLogicType.Context,
     // };
-  } else if (expr.invocation) {
+  } else if (dmnExpr.invocation) {
     return newExpressionDefinition();
     // return {
     //   logicType: ExpressionDefinitionLogicType.Invocation,
     // };
-  } else if (expr.functionDefinition) {
-    const f = expr.functionDefinition;
+  } else if (dmnExpr.functionDefinition) {
+    const f = dmnExpr.functionDefinition;
     const basic = {
       id: f["@_id"]!,
       dataType: f["@_typeRef"] as DmnBuiltInDataType,
@@ -165,36 +183,58 @@ function exprToBee(
       })),
     };
 
-    const kind = f["@_kind"] ?? "FEEL"; // FEEL is the default;
+    const kind = f["@_kind"] ?? SPEC.BOXED.FUNCTION.kind.default;
     switch (kind) {
-      case "FEEL":
+      case "FEEL": {
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Feel,
-          expression: exprToBee(widthsById, f),
+          expression: dmnToBee(widthsById, f),
         };
-      case "Java":
+      }
+      case "Java": {
+        // Special case, defined by the spec, where the implementation is a context expression with two fields.
+        const c = f.context!;
+        const clazz = c.contextEntry?.find(
+          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.classFieldName
+        );
+        const method = c.contextEntry?.find(
+          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName
+        );
+
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Java,
-          className: "",
-          methodName: "",
-          classFieldId: "",
-          methodFieldId: "",
+          className: clazz?.literalExpression?.text,
+          classFieldId: clazz?.literalExpression?.["@_id"],
+          methodName: method?.literalExpression?.text,
+          methodFieldId: method?.literalExpression?.["@_id"],
+          // `clazz` and `method` would have the exact same width, as they're always in sync, so it doens't matter which one we use.
+          classAndMethodNamesWidth: widthsById.get(clazz?.literalExpression?.["@_id"] ?? "")?.[0],
         };
-      case "PMML":
+      }
+      case "PMML": {
+        // Special case, defined by the spec, where the implementation is a context expression with two fields.
+        const c = f.context!;
+        const document = c.contextEntry?.find(
+          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
+        );
+        const model = c.contextEntry?.find(
+          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.modelFieldName
+        );
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Pmml,
-          document: "",
-          model: "",
-          documentFieldId: "",
-          modelFieldId: "",
+          document: document?.literalExpression?.text,
+          documentFieldId: document?.literalExpression?.["@_id"],
+          model: model?.literalExpression?.text,
+          modelFieldId: model?.literalExpression?.["@_id"],
         };
+      }
       default:
         throw new Error(`Unknown function expression kind '${f["@_kind"]}'`);
     }
-  } else if (expr.list) {
+  } else if (dmnExpr.list) {
     return newExpressionDefinition();
     // return {
     //   logicType: ExpressionDefinitionLogicType.List,

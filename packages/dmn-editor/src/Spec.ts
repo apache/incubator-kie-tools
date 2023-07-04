@@ -1,0 +1,35 @@
+export const SPEC = {
+  expressionLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/"` },
+  typeLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/"` },
+  BOXED: {
+    DECISION_TABLE: {
+      PreferredOrientation: { default: "Rule-as-Row" },
+      HitPolicy: { default: "UNIQUE" },
+    },
+    FUNCTION: {
+      kind: { default: "FEEL" },
+      JAVA: {
+        classFieldName: "class",
+        methodSignatureFieldName: "method signature",
+      },
+      PMML: {
+        documentFieldName: "document",
+        modelFieldName: "model",
+      },
+    },
+  },
+  ITEM_DEFINITIONS: {
+    isCollection: { default: "false" },
+  },
+  ANNOTATIONS: {
+    format: { default: "text/plain" },
+  },
+  ASSOCIATIONS: {
+    direction: { default: "None" },
+  },
+  SHAPE: {
+    isCollapsed: {
+      default: "false",
+    },
+  },
+};
