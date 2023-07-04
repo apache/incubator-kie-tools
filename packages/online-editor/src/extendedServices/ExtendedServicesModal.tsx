@@ -48,8 +48,8 @@ enum ModalPage {
   WIZARD,
 }
 
-const UBUNTU_APP_INDICATOR_LIB = "apt install libayatana-appindicator3-dev";
-const FEDORA_APP_INDICATOR_LIB = "dnf install libappindicator-gtk3";
+const UBUNTU_APP_INDICATOR_LIB = "apt install libayatana-appindicator3-1";
+const FEDORA_APP_INDICATOR_LIB = "dnf install libayatana-appindicator3-1";
 
 export function ExtendedServicesModal() {
   const { i18n } = useOnlineI18n();
