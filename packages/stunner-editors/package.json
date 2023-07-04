@@ -36,6 +36,7 @@
     "@kie-tools/stunner-editors-dmn-loader": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/kie-patternfly-webjar": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",

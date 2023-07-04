@@ -166,12 +166,13 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars.bower</groupId>
-                  <artifactId>patternfly</artifactId>
-                  <version>${version.org.webjars.bower.org.patternfly}</version>
+                  <groupId>org.webjars.bowergithub.kiegroup</groupId>
+                  <artifactId>kie-patternfly</artifactId>
+                  <version>${version.org.webjars.bowergithub.kiegroup.kie-patternfly}</version>
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/patternfly</outputDirectory>
+                  <includes>META-INF/resources/webjars/patternfly/${version.org.webjars.bowergithub.kiegroup.kie-patternfly}/dist/</includes>
                 </artifactItem>
               </artifactItems>
               <overWriteReleases>false</overWriteReleases>
@@ -278,7 +279,7 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist</directory>
+                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bowergithub.kie-patternfly}/dist</directory>
                   <includes>
                     <include>**</include>
                   </includes>

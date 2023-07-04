@@ -1284,6 +1284,9 @@ importers:
         specifier: workspace:*
         version: link:../dashbuilder-component-assembler
     devDependencies:
+      "@kie-tools/kie-patternfly-webjar":
+        specifier: workspace:*
+        version: link:../kie-patternfly-webjar
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -4780,6 +4783,24 @@ importers:
         specifier: ^5.8.0
         version: 5.8.0
 
+  packages/kie-patternfly-webjar:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+      symlink-dir:
+        specifier: ^5.0.1
+        version: 5.0.1
+
   packages/kie-sandbox-distribution:
     dependencies:
       "@kie-tools/git-cors-proxy-image":
@@ -6514,6 +6535,9 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     devDependencies:
+      "@kie-tools/kie-patternfly-webjar":
+        specifier: workspace:*
+        version: link:../kie-patternfly-webjar
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -7298,6 +7322,9 @@ importers:
         specifier: workspace:*
         version: link:../stunner-editors-dmn-loader
     devDependencies:
+      "@kie-tools/kie-patternfly-webjar":
+        specifier: workspace:*
+        version: link:../kie-patternfly-webjar
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper
@@ -17261,12 +17288,6 @@ packages:
     engines: { node: ">=10" }
     dev: true
 
-  /@zkochan/rimraf@2.1.1:
-    resolution:
-      { integrity: sha512-TgiZpFi4XSvS8wY2/JzoJQYqgpOeBfVMPLC93cRXjbqYSXr1PGyQagS1Wyztuq1uMA1Cqd+EYLa5HESrJwH0Kw== }
-    engines: { node: ">=12.10" }
-    dev: true
-
   /@zkochan/rimraf@2.1.2:
     resolution:
       { integrity: sha512-Lc2oK51J6aQWcLWTloobJun5ZF41BbTDdLvE+aMcexoVWFoFqvZmnZoyXR2IZk6NJEVoZW8tjgtvQLfTsmRs2Q== }
@@ -22939,7 +22960,7 @@ packages:
       fs.realpath: 1.0.0
       inflight: 1.0.6
       inherits: 2.0.4
-      minimatch: 3.0.5
+      minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
 
@@ -26662,7 +26683,6 @@ packages:
       { integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw== }
     dependencies:
       brace-expansion: 1.1.11
-    dev: true
 
   /minimatch@5.1.0:
     resolution:
@@ -30055,14 +30075,6 @@ packages:
       { integrity: sha512-/hS+Y0u3aOfIETiaiirUFwDBDzmXPvO+jAfKTitUngIPzdKc6Z0LoFjM/CK5PL4C+eKwHohlHAb6H0VFfmmUsw== }
     dev: true
 
-  /rename-overwrite@4.0.0:
-    resolution:
-      { integrity: sha512-GZxPjarpxu2DGD6xHE8L4GdJhWz2+2i2x6N1I7VEof2p5M/x/LDNxNXA547k8xOpPmHnijXBE1ofmj7NDGP20g== }
-    engines: { node: ">=12.10" }
-    dependencies:
-      "@zkochan/rimraf": 2.1.1
-    dev: true
-
   /rename-overwrite@4.0.2:
     resolution:
       { integrity: sha512-L1sgBgagVgOgb1Z6QZr1yJgSMHI4SXQqAH0l/UbeyHnLKxECvKIlyVEmBo4BqsCAZGg0SBSyjCh68lis5PgC7g== }
@@ -31809,7 +31821,7 @@ packages:
     hasBin: true
     dependencies:
       better-path-resolve: 1.0.0
-      rename-overwrite: 4.0.0
+      rename-overwrite: 4.0.2
     dev: true
 
   /tabbable@5.3.3:

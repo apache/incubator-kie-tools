@@ -52,6 +52,7 @@
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
+      { "id": "@kie-tools/kie-patternfly-webjar" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
       { "id": "chrome-extension-serverless-workflow-editor" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor-assets" },
@@ -252,7 +253,7 @@
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/dmn-language-service", "weight": 1 },
       { "source": "@kie-tools/kie-bc-editors", "target": "@kie-tools/pmml-editor-marshaller", "weight": 1 },
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
-      { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/kie-patternfly-webjar", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
         "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
@@ -321,6 +322,8 @@
         "target": "@kie-tools/import-java-classes-component",
         "weight": 1
       },
+      { "source": "@kie-tools/kie-patternfly-webjar", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/kie-patternfly-webjar", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "chrome-extension-pack-kogito-kie-editors",
         "target": "@kie-tools-core/chrome-extension",
@@ -356,7 +359,7 @@
       },
       { "source": "@kie-tools/serverless-workflow-text-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/maven-config-setup-helper", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/kie-patternfly-webjar", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
         "target": "@kie-tools/dashbuilder-component-echarts",
@@ -770,10 +773,9 @@
       },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor",
-        "target": "@kie-tools/maven-config-setup-helper",
+        "target": "@kie-tools/kie-patternfly-webjar",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-language-service",
         "target": "@kie-tools/json-yaml-language-service",
@@ -898,6 +900,7 @@
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
     ["kie-editors-dev-vscode-extension", "packages/kie-editors-dev-vscode-extension"],
     ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
+    ["@kie-tools/kie-patternfly-webjar", "packages/kie-patternfly-webjar"],
     ["@kie-tools/kie-sandbox-distribution", "packages/kie-sandbox-distribution"],
     ["@kie-tools/kie-sandbox-extended-services-image", "packages/kie-sandbox-extended-services-image"],
     ["@kie-tools/kie-sandbox-fs", "packages/kie-sandbox-fs"],

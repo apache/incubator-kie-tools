@@ -164,7 +164,7 @@
     <illegaltransitivereportonly>false</illegaltransitivereportonly>
 
     <!-- Properties from APPFORMER parent POM -->
-    <version.org.webjars.bower.org.patternfly>3.18.1</version.org.webjars.bower.org.patternfly>
+    <version.org.webjars.bowergithub.kiegroup.kie-patternfly>3.18.1</version.org.webjars.bowergithub.kiegroup.kie-patternfly>
     <version.org.webjars.bower.bootstrap-select>1.10.0</version.org.webjars.bower.bootstrap-select>
     <version.org.webjars.npm.moment>2.29.4</version.org.webjars.npm.moment>
     <version.org.webjars.npm.moment-timezone>0.5.43</version.org.webjars.npm.moment-timezone>
