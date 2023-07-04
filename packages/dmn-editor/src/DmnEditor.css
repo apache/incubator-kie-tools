@@ -57,8 +57,7 @@
 }
 
 .react-flow__node:hover > .kie-dmn-editor--node,
-.react-flow__node.selected > .kie-dmn-editor--node,
-.react-flow__edge:hover {
+.react-flow__node.selected > .kie-dmn-editor--node {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
 
