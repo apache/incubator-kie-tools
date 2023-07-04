@@ -1,6 +1,5 @@
 import * as React from "react";
 import { DmnNodeWithExpression } from "./DmnEditor";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import {
   DmnBuiltInDataType,
@@ -16,6 +15,8 @@ import {
   DMN14__tFunctionDefinition,
   DMN14__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export function BoxedExpression({
   dmn,
@@ -30,9 +31,24 @@ export function BoxedExpression({
   setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
   container: React.RefObject<HTMLElement>;
 }) {
+  const widthsById = useMemo(() => {
+    return (
+      dmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.["kie:ComponentsWidthsExtension"]?.[
+        "kie:ComponentWidths"
+      ] ?? []
+    ).reduce((acc, c) => {
+      if (c["@_dmnElementRef"] === undefined) {
+        return acc;
+      } else {
+        return acc.set(c["@_dmnElementRef"], c["kie:width"] ?? []);
+      }
+    }, new Map<string, number[]>());
+  }, [dmn.definitions]);
+
   const expressionDefinition = useMemo<ExpressionDefinition>(
-    () => (openNodeWithExpression ? dmnNodeToBoxedExpression(openNodeWithExpression) : newExpressionDefinition()),
-    [openNodeWithExpression]
+    () =>
+      openNodeWithExpression ? dmnNodeToBoxedExpression(widthsById, openNodeWithExpression) : newExpressionDefinition(),
+    [openNodeWithExpression, widthsById]
   );
 
   const dataTypes = useMemo(
@@ -47,13 +63,14 @@ export function BoxedExpression({
 
   return (
     <>
-      <br />
-      <Button
-        isSmall={true}
-        variant={ButtonVariant.tertiary}
+      <Label
+        isCompact={true}
+        className={"kie-dmn-editor--boxed-expression-back"}
         onClick={() => setOpenNodeWithExpression(undefined)}
-      >{`Back`}</Button>
-      <br />
+      >
+        Back to Diagram
+      </Label>
+      <Divider inset={{ default: "insetMd" }} />
       <br />
       <>
         <BoxedExpressionEditor
@@ -78,17 +95,20 @@ function newExpressionDefinition(): ExpressionDefinition {
   };
 }
 
-function dmnNodeToBoxedExpression(dmnNode: DmnNodeWithExpression): ExpressionDefinition {
+function dmnNodeToBoxedExpression(
+  widthsById: Map<string, number[]>,
+  dmnNode: DmnNodeWithExpression
+): ExpressionDefinition {
   if (dmnNode.type == "bkm") {
     return {
-      ...exprToBee({ functionDefinition: dmnNode.content.encapsulatedLogic }),
-      dataType: dmnNode.content.variable?.["@_typeRef"],
+      ...exprToBee(widthsById, { functionDefinition: dmnNode.content.encapsulatedLogic }),
+      dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
       name: dmnNode.content["@_name"],
     };
   } else if (dmnNode.type == "decision") {
     return {
-      ...exprToBee(dmnNode.content),
-      dataType: dmnNode.content.variable?.["@_typeRef"],
+      ...exprToBee(widthsById, dmnNode.content),
+      dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
       name: dmnNode.content["@_name"],
     };
   } else {
@@ -96,17 +116,21 @@ function dmnNodeToBoxedExpression(dmnNode: DmnNodeWithExpression): ExpressionDef
   }
 }
 
-function exprToBee(expr: DMN14__tDecision | DMN14__tFunctionDefinition | undefined): any {
+function exprToBee(
+  widthsById: Map<string, number[]>,
+  expr: DMN14__tDecision | DMN14__tFunctionDefinition | undefined
+): ExpressionDefinition {
   if (!expr) {
     return newExpressionDefinition();
   } else if (expr.literalExpression) {
     const l = expr.literalExpression as DMN14__tLiteralExpression;
     return {
-      id: l["@_id"],
+      id: l["@_id"]!,
       name: l["@_label"],
       logicType: ExpressionDefinitionLogicType.Literal,
       dataType: l["@_typeRef"] as DmnBuiltInDataType,
       content: l.text,
+      width: widthsById.get(l["@_id"]!)?.[0],
     };
   } else if (expr.decisionTable) {
     return newExpressionDefinition();
@@ -147,7 +171,7 @@ function exprToBee(expr: DMN14__tDecision | DMN14__tFunctionDefinition | undefin
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Feel,
-          expression: exprToBee(f),
+          expression: exprToBee(widthsById, f),
         };
       case "Java":
         return {

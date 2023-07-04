@@ -5,6 +5,7 @@ import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
 import { DmnEditor, DmnEditorRef } from "../../src/DmnEditor";
 
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 export function DevWebApp() {
   const [xml, setXml] = useState(DEFAULT_DEV_WEBAPP_DMN);
@@ -47,24 +48,28 @@ export function DevWebApp() {
   }, []);
 
   return (
-    <div className={"dmn-editor-dev-webapp"} onDrop={onDrop} onDragOver={onDragOver}>
-      <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-        <FlexItem shrink={{ default: "shrink" }}>
-          <h3>DMN Editor :: Dev webapp </h3>
-        </FlexItem>
-        <FlexItem>
-          <h5>(Drag & drop a file anywhere to open it)</h5>
-        </FlexItem>
-        <FlexItem shrink={{ default: "shrink" }}>
-          <button onClick={copyAsXml}>Copy as XML</button>
-          &nbsp; &nbsp;
-          <button onClick={downloadAsXml}>Download as XML</button>
-        </FlexItem>
-      </Flex>
-      <hr />
-      <DmnEditor ref={ref} xml={xml} />
-      <a ref={downloadRef} />
-    </div>
+    <>
+      <Page onDragOver={onDragOver} onDrop={onDrop}>
+        <PageSection variant={"light"} isFilled={true}>
+          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+            <FlexItem shrink={{ default: "shrink" }}>
+              <h3>DMN Editor :: Dev webapp </h3>
+            </FlexItem>
+            <FlexItem>
+              <h5>(Drag & drop a file anywhere to open it)</h5>
+            </FlexItem>
+            <FlexItem shrink={{ default: "shrink" }}>
+              <button onClick={copyAsXml}>Copy as XML</button>
+              &nbsp; &nbsp;
+              <button onClick={downloadAsXml}>Download as XML</button>
+            </FlexItem>
+          </Flex>
+          <hr />
+          <DmnEditor ref={ref} xml={xml} />
+          <a ref={downloadRef} />
+        </PageSection>
+      </Page>
+    </>
   );
 }
 

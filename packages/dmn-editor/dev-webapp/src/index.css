@@ -28,15 +28,5 @@ body {
 }
 
 #dev-webapp {
-  height: calc(100vh - 20px); /* 2*10px margin */
-  margin: 10px;
-  border: 1px solid black;
-  position: relative;
-}
-
-.dmn-editor-dev-webapp {
-  padding: 10px;
   height: 100%;
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  font-size: 10pt;
 }

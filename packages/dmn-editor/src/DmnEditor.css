@@ -17,6 +17,32 @@
   background: white;
 }
 
+.kie-dmn-editor--pallete {
+  width: 42px;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--pallete:hover {
+  box-shadow: 5px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-dmn-editor--pallete-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 20px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--pallete-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--pallete-button:active {
+  filter: brightness(90%);
+}
+
 .react-flow__node.selected::before {
   content: "";
   top: -20px;
@@ -31,24 +57,45 @@
 }
 
 .react-flow__node:hover > .kie-dmn-editor--node,
-.react-flow__node.selected > .kie-dmn-editor--node {
+.react-flow__node.selected > .kie-dmn-editor--node,
+.react-flow__edge:hover {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
 
+/* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-label {
   position: absolute;
   padding: 4px 8px;
-  bottom: -12px;
+  bottom: -16px;
   font-size: 0.7em;
   box-shadow: 4px 6px 2px 0px rgb(127 127 127);
   cursor: pointer;
+  background: white;
 }
-
+.kie-dmn-editor--edit-expression-label > .pf-c-label__content::before {
+  border: 1px solid black;
+}
 .kie-dmn-editor--edit-expression-label:hover {
   filter: brightness(95%);
 }
-
 .kie-dmn-editor--edit-expression-label:active {
+  filter: brightness(90%);
+}
+
+/* back button on boxed expression */
+.kie-dmn-editor--boxed-expression-back {
+  cursor: pointer;
+  background: white;
+  margin: 16px 0;
+}
+.kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
+  border: 1px solid black;
+}
+.kie-dmn-editor--boxed-expression-back:hover {
+  filter: brightness(95%);
+  box-shadow: 2px 3px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--boxed-expression-back:active {
   filter: brightness(90%);
 }
 
@@ -117,4 +164,21 @@
   padding: 20px;
   border-radius: 6px;
   border: 2px dotted;
+}
+
+.react-flow__controls {
+  border-radius: 20px;
+  border: 1px solid black;
+}
+.react-flow__controls:hover {
+  box-shadow: -5px -4px 2px 0px rgb(127 127 127);
+}
+.react-flow__controls > button {
+  border-radius: 20px;
+}
+.react-flow__controls > button:hover {
+  filter: brightness(95%);
+}
+.react-flow__controls > button:active {
+  filter: brightness(90%);
 }

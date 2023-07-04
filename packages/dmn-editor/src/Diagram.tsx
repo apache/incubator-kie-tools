@@ -11,6 +11,7 @@ import {
   DMN14__tTextAnnotation,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { v4 as uuid } from "uuid";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -456,42 +457,52 @@ export function Pallete() {
 
   return (
     <RF.Panel position={"top-left"}>
-      <aside style={{ width: "80px" }}>
-        <div className="dndnode input-data" onDragStart={(event) => onDragStart(event, "inputData")} draggable>
-          Input
-        </div>
-        <br />
-        <div className="dndnode decision" onDragStart={(event) => onDragStart(event, "decision")} draggable>
-          Decision
-        </div>
-        <br />
-        <div className="dndnode bkm" onDragStart={(event) => onDragStart(event, "bkm")} draggable>
-          BKM
-        </div>
-        <br />
-        <div
-          className="dndnode knowledge-source"
+      <aside className={"kie-dmn-editor--pallete"}>
+        <button
+          className={"kie-dmn-editor--pallete-button dndnode input-data"}
+          onDragStart={(event) => onDragStart(event, "inputData")}
+          draggable={true}
+        >
+          I
+        </button>
+        <button
+          className={"kie-dmn-editor--pallete-button dndnode decision"}
+          onDragStart={(event) => onDragStart(event, "decision")}
+          draggable={true}
+        >
+          D
+        </button>
+        <button
+          className={"kie-dmn-editor--pallete-button dndnode bkm"}
+          onDragStart={(event) => onDragStart(event, "bkm")}
+          draggable={true}
+        >
+          B
+        </button>
+
+        <button
+          className={"kie-dmn-editor--pallete-button dndnode knowledge-source"}
           onDragStart={(event) => onDragStart(event, "knowledgeSource")}
-          draggable
+          draggable={true}
         >
-          Knowledge Source
-        </div>
-        <br />
-        <div
-          className="dndnode decision-service"
+          K
+        </button>
+
+        <button
+          className={"kie-dmn-editor--pallete-button dndnode decision-service"}
           onDragStart={(event) => onDragStart(event, "decisionService")}
-          draggable
+          draggable={true}
         >
-          Decision Service
-        </div>
-        <br />
-        <div
-          className="dndnode text-annotation"
+          D
+        </button>
+
+        <button
+          className={"kie-dmn-editor--pallete-button dndnode text-annotation"}
           onDragStart={(event) => onDragStart(event, "textAnnotation")}
-          draggable
+          draggable={true}
         >
-          Text Annotation
-        </div>
+          T
+        </button>
       </aside>
     </RF.Panel>
   );
@@ -909,7 +920,4 @@ function newNodeFromType(id: string, position: RF.XYPosition, type: string) {
         shape: defaultShape,
       };
   }
-}
-function uuid() {
-  throw new Error("Function not implemented.");
 }
