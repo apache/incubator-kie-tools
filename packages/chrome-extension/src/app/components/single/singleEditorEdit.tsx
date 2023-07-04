@@ -84,8 +84,8 @@ function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileI
   const globals = useGlobals();
 
   React.useEffect(() => {
-    runScriptOnPage(chrome.runtime.getURL("scripts/set-content.js"));
-  }, []);
+    runScriptOnPage(chrome.runtime.getURL("scripts/set_content.js"));
+  }, [props.fileInfo]);
 
   const getFileName = useCallback(() => {
     return globals.dependencies.all.edit__githubFileNameInput()!.value;
