@@ -26,9 +26,11 @@ export default defineConfig({
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
-
+    baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
+    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+    screenshot: "only-on-failure",
+    /* automatically record video on retry  */
+    video: "retry-with-video",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
@@ -40,10 +42,10 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
 
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
+    // {
+    //   name: "firefox",
+    //   use: { ...devices["Desktop Firefox"] },
+    // },
 
     {
       name: "webkit",
@@ -59,6 +61,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://127.0.0.1:${buildEnv.boxedExpressionComponent.dev.port}`,
+    url: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
+    reuseExistingServer: !process.env.CI || true,
   },
 });

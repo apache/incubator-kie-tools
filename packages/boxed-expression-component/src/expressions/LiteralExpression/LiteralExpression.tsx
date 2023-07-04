@@ -189,7 +189,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   }, []);
 
   return (
-    <div className={`literal-expression`}>
+    <div className={`literal-expression`} data-testid="literal-expression">
       <div className={"literal-expression-body-container"}>
         <div className={"equals-sign"}>{`=`}</div>
         <BeeTable
