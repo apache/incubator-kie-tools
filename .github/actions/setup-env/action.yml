@@ -51,7 +51,7 @@ runs:
         maven-version: 3.8.6
 
     - name: "Set up Docker"
-      uses: docker-practice/actions-setup-docker@v1
+      uses: docker-practice/actions-setup-docker@fd7ecdac7caf8e2c541a48c9bcc280aae59a8461 #v1
       with:
         docker_version: 24.0.2
 
