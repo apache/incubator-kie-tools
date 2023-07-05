@@ -178,6 +178,7 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/patternfly</outputDirectory>
+                  <includes>META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist/</includes>
                   <excludes>META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist/tests/</excludes>
                 </artifactItem>
               </artifactItems>
@@ -307,12 +308,6 @@
               <resources>
                 <resource>
                   <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist</directory>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                  <excludes>
-                    <exclude>tests/**</exclude>
-                  </excludes>
                 </resource>
               </resources>
             </configuration>
