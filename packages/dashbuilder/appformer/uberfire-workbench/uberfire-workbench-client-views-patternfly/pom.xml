@@ -297,13 +297,10 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bowergithub.kie-patternfly}/dist</directory>
+                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bowergithub.kiegroup.kie-patternfly}/dist</directory>
                   <includes>
                     <include>**</include>
                   </includes>
-                  <excludes>
-                    <exclude>tests/**</exclude>
-                  </excludes>
                 </resource>
               </resources>
             </configuration>
