@@ -24,7 +24,7 @@ RUN mkdir $HOME \
   && microdnf install nodejs-2:20.3.1-1nodesource.x86_64 -y \
   && microdnf clean all
 
-COPY --chown=1000:0 --chmod=775 dist-dev/git-cors-proxy $HOME/git-cors-proxy
+COPY --chown=1000:0 dist-dev/git-cors-proxy $HOME/git-cors-proxy
 
 EXPOSE 8080
 

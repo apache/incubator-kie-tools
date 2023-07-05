@@ -4817,9 +4817,24 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      node-fetch:
+        specifier: ^3.3.1
+        version: 3.3.1
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
 
   packages/kie-sandbox-extended-services-image:
     dependencies:
@@ -15744,7 +15759,7 @@ packages:
       { integrity: sha512-ajUJdfDIuTCadB79ukO+0l8O+QwN0LiSxDaYUTI4LndbbUsGi6rWU1SCexXzBA2NSjlVB9/vbkasQIL3tmPBjw== }
     engines: { node: ">=8", npm: ">=6", yarn: ">=1" }
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
       "@types/testing-library__jest-dom": 5.9.5
       aria-query: 5.0.0
       chalk: 3.0.0
@@ -20271,6 +20286,12 @@ packages:
     engines: { node: ">= 6" }
     dev: true
 
+  /data-uri-to-buffer@4.0.1:
+    resolution:
+      { integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A== }
+    engines: { node: ">= 12" }
+    dev: true
+
   /data-urls@2.0.0:
     resolution:
       { integrity: sha512-X5eWTSXO/BJmpdIKCRuKUgSCgAN0OwliVK3yPKbwIWU1Tdw5BRajxlzMidvh+gwko9AfQ9zIj52pzF91Q3YAvQ== }
@@ -22332,6 +22353,15 @@ packages:
         optional: true
     dev: true
 
+  /fetch-blob@3.2.0:
+    resolution:
+      { integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ== }
+    engines: { node: ^12.20 || >= 14.13 }
+    dependencies:
+      node-domexception: 1.0.0
+      web-streams-polyfill: 3.2.1
+    dev: true
+
   /figures@3.2.0:
     resolution:
       { integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg== }
@@ -22627,6 +22657,14 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.34
     dev: false
+
+  /formdata-polyfill@4.0.10:
+    resolution:
+      { integrity: sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g== }
+    engines: { node: ">=12.20.0" }
+    dependencies:
+      fetch-blob: 3.2.0
+    dev: true
 
   /formidable@2.1.1:
     resolution:
@@ -23368,7 +23406,7 @@ packages:
     resolution:
       { integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ== }
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
     dev: false
 
   /hoist-non-react-statics@3.3.2:
@@ -27262,6 +27300,12 @@ packages:
     dev: true
     optional: true
 
+  /node-domexception@1.0.0:
+    resolution:
+      { integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ== }
+    engines: { node: ">=10.5.0" }
+    dev: true
+
   /node-fetch@2.6.11:
     resolution:
       { integrity: sha512-4I6pdBY1EthSqDmJkiNk3JIT8cswwR9nfeW/cPdUagJYEQG7R95WRH74wpz7ma8Gh/9dI9FP+OU+0E4FvtA55w== }
@@ -27295,6 +27339,16 @@ packages:
       fetch-blob: 2.1.2
     transitivePeerDependencies:
       - domexception
+    dev: true
+
+  /node-fetch@3.3.1:
+    resolution:
+      { integrity: sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow== }
+    engines: { node: ^12.20.0 || ^14.13.1 || >=16.0.0 }
+    dependencies:
+      data-uri-to-buffer: 4.0.1
+      fetch-blob: 3.2.0
+      formdata-polyfill: 4.0.10
     dev: true
 
   /node-forge@1.3.1:
@@ -33441,6 +33495,12 @@ packages:
       { integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg== }
     dependencies:
       defaults: 1.0.3
+
+  /web-streams-polyfill@3.2.1:
+    resolution:
+      { integrity: sha512-e0MO3wdXWKrLbL0DgGnUV7WHVuw9OUvL4hjgnPkIeEvESk74gAITi5G606JtZPp39cd8HA9VQzCIvA49LpPN5Q== }
+    engines: { node: ">= 8" }
+    dev: true
 
   /webidl-conversions@3.0.1:
     resolution:
