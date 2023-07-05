@@ -4,8 +4,6 @@ Options:
   --version        Show version number                                 [boolean]
   --env            Name of the environment variables which value will be
                    compared to --eq.                       [array] [default: []]
-  --build-env      Build env path to be parsed and compared to --eq.
-                                                           [array] [default: []]
   --bool           Boolean value to be used as condition   [array] [default: []]
   --eq, --equals   Value to be compared with the condition supplied. Both --bool
                    and --env.                         [string] [default: "true"]
