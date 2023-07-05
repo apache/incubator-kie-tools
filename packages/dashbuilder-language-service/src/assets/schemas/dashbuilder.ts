@@ -29,7 +29,7 @@ export const DASHBUILDER_SCHEMA = {
     },
     datasets: {
       type: "array",
-      description: "Datasets are used to declare source data",
+      description: "Datasets are used to declare source of data",
       items: {
         $ref: "#/definitions/Dataset",
       },
@@ -53,10 +53,19 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         mode: {
+          description: "The dashboard style",
           $ref: "#/definitions/ColourModes",
         },
-        settings: {
+        allowUrlProperties: {
+          type: ["boolean"],
+        },
+        displayer: {
+          description: "A global configuration for all displayers. It does not support lookup.",
           $ref: "#/definitions/DisplayerSettings",
+        },
+        dataset: {
+          description: "A global dataset definition. It is not recommended to set a global uuid.",
+          $ref: "#/definitions/Dataset",
         },
       },
       title: "Global Properties",
@@ -65,21 +74,26 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         name: {
+          description: "The page name. If not set then a name is generated.",
           type: "string",
         },
         components: {
           type: "array",
+          description:
+            "A list of components for this page. If rows are not used then the components are organized in a list of rows with single column each.",
           items: {
             $ref: "#/definitions/PageComponent",
           },
         },
         rows: {
           type: "array",
+          description: "List of pages rows. It should be used only if components is not used",
           items: {
             $ref: "#/definitions/Row",
           },
         },
         properties: {
+          description: "CSS properties for the whole page",
           $ref: "#/definitions/CustomProperties",
         },
       },
@@ -87,11 +101,26 @@ export const DASHBUILDER_SCHEMA = {
     },
     PageComponent: {
       type: "object",
+      description: "A page component that can be dynamic (dataset information) or static (static content)",
       properties: {
         html: {
+          description: "A component that renders HTML content.",
           type: "string",
         },
-        settings: {
+        markdown: {
+          description: "A component that renders markdown content.",
+          type: "string",
+        },
+        panel: {
+          description: "A panel to embed other pages. The panel is collapsible and the title is the page name.",
+          type: "string",
+        },
+        screen: {
+          description: "A component that embed other page",
+          type: "string",
+        },
+        displayer: {
+          description: "A page block to show a part of a dataset",
           $ref: "#/definitions/DisplayerSettings",
         },
       },
@@ -99,14 +128,17 @@ export const DASHBUILDER_SCHEMA = {
     },
     Row: {
       type: "object",
+      description: "A page row",
       properties: {
         columns: {
           type: "array",
+          description: "List of columns for this row",
           items: {
             $ref: "#/definitions/RowColumn",
           },
         },
         properties: {
+          description: "CSS properties applied for this row.",
           $ref: "#/definitions/CustomProperties",
         },
       },
@@ -115,18 +147,23 @@ export const DASHBUILDER_SCHEMA = {
     },
     RowColumn: {
       type: "object",
+      description: "A column which lives in a row.",
       properties: {
         span: {
-          type: ["integer", "string"],
+          description:
+            "The amount of spaces occupied by this column. The max value is 12 and the sum of all columns in a rfow must be 12.",
+          type: ["integer"],
         },
         components: {
           type: "array",
+          description: "A list of components for this column",
           items: {
             $ref: "#/definitions/ColumnComponent",
           },
         },
         rows: {
           type: "array",
+          description: "A row for the column, used for more complex layouts. Use it or components",
           items: {
             $ref: "#/definitions/Row",
           },
@@ -139,65 +176,61 @@ export const DASHBUILDER_SCHEMA = {
       title: "RowColumn",
     },
     ColumnComponent: {
-      type: "object",
-      anyOf: [
-        {
-          properties: {
-            html: {
-              type: "string",
-            },
-            type: {
-              $ref: "#/definitions/NavComponentTypes",
-            },
-            settings: {
-              $ref: "#/definitions/DisplayerSettings",
-            },
-          },
-        },
-        {
-          properties: {
-            html: {
-              type: "string",
-            },
-            type: {
-              type: "string",
-            },
-            settings: {
-              $ref: "#/definitions/DisplayerSettings",
-            },
-          },
-        },
-      ],
-      title: "ColumnComponent",
+      $ref: "#/definitions/PageComponent",
     },
     Dataset: {
       type: "object",
       properties: {
         uuid: {
+          description: "An unique identifier for the dataset",
           type: "string",
         },
         url: {
+          description: "The dataset JSON content URL",
           type: "string",
           format: "uri",
         },
+        type: {
+          description: "The dataset type",
+          $ref: "#/definitions/typeEnum",
+        },
         content: {
+          description: "Local JSON Array used as the dataset content",
           type: "string",
         },
         columns: {
           type: "array",
+          description: "A list of  columns for the dataset",
           items: {
             $ref: "#/definitions/DatasetColumn",
           },
         },
         expression: {
+          description: "A JSONAta expression to handle the dataset content and parse to a JSON 2d Array",
           type: "string",
           minLength: 1,
         },
         cacheEnabled: {
-          type: ["boolean", "string"],
+          description: "Enables cache for the dataset. If no refreshTime is provided, then it the cache won't expire.",
+          type: ["boolean"],
         },
         refreshTime: {
+          description: "The cache expiration time. Its syntax is {number}{unit}, example: 10minute, 10second, 10hour",
           type: "string",
+        },
+        maxCacheRows: {
+          description: "The max of rows cached by the dataset or with accumulated datasets. Default is 1000.",
+          type: "integer",
+        },
+        accumulate: {
+          description: "If true then previous calls to the dataset are kept in memory and not discarded.",
+          type: "boolean",
+        },
+        headers: {
+          $ref: "#/definitions/DatasetHeaders",
+        },
+        query: {
+          $ref: "#/definitions/DatasetQuery",
         },
       },
       oneOf: [
@@ -210,10 +243,13 @@ export const DASHBUILDER_SCHEMA = {
               type: "string",
               format: "uri",
             },
+            join: {
+              type: "array",
+            },
           },
           required: ["content"],
           not: {
-            required: ["url"],
+            required: ["url", "join"],
           },
         },
         {
@@ -225,15 +261,42 @@ export const DASHBUILDER_SCHEMA = {
               type: "string",
               format: "uri",
             },
+            join: {
+              type: "array",
+            },
           },
           required: ["url"],
           not: {
-            required: ["content"],
+            required: ["content", "join"],
+          },
+        },
+        {
+          properties: {
+            content: {
+              type: "string",
+            },
+            url: {
+              type: "string",
+              format: "uri",
+            },
+            join: {
+              type: "array",
+            },
+          },
+          required: ["join"],
+          not: {
+            required: ["content", "url"],
           },
         },
       ],
       required: ["uuid"],
       title: "Dataset",
+    },
+    typeEnum: {
+      type: "string",
+      enum: ["prometheus"],
+      additionalProperties: false,
+      title: "typeEnum",
     },
     DatasetColumn: {
       type: "object",
@@ -245,35 +308,41 @@ export const DASHBUILDER_SCHEMA = {
           $ref: "#/definitions/DataSetType",
         },
       },
-      required: ["id", "type"],
+      required: ["id"],
       title: "DatasetColumn",
     },
     DataSetLookup: {
       type: "object",
       properties: {
         uuid: {
+          description: "The dataset uuid.",
           type: "string",
         },
         rowCount: {
+          description: "The amount of rows to be returned.",
           type: "integer",
         },
         rowOffset: {
+          description: "Rows offset",
           type: "integer",
         },
         sort: {
           type: "array",
+          description: "A list of sort operation.",
           items: {
             $ref: "#/definitions/Sort",
           },
         },
         filter: {
           type: "array",
+          description: "A list of filter operation.",
           items: {
             $ref: "#/definitions/FilterComponent",
           },
         },
         group: {
           type: "array",
+          description: "List of group operations",
           items: {
             $ref: "#/definitions/DatasetlookupGroup",
           },
@@ -286,48 +355,99 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         enabled: {
-          type: ["boolean", "string"],
+          type: ["boolean"],
         },
         listening: {
-          type: ["boolean", "string"],
+          type: ["boolean"],
         },
         notification: {
-          type: ["boolean", "string"],
+          type: ["boolean"],
         },
         selfapply: {
-          type: ["boolean", "string"],
+          type: ["boolean"],
         },
       },
-      required: ["enabled"],
+      oneOf: [
+        {
+          properties: {
+            notification: {
+              type: "boolean",
+            },
+            listening: {
+              type: "boolean",
+            },
+          },
+          required: ["notification"],
+          not: {
+            required: ["listening"],
+          },
+        },
+        {
+          properties: {
+            notification: {
+              type: "boolean",
+            },
+            listening: {
+              type: "boolean",
+            },
+          },
+          required: ["listening"],
+          not: {
+            required: ["notification"],
+          },
+        },
+      ],
       title: "SettingsFilter",
     },
     SettingsColumn: {
+      description: "Settings for the columns returned by the dataset lookup.",
       type: "object",
       properties: {
         id: {
+          description: "The column identifier.",
           type: "string",
         },
         name: {
+          description: "An optional new name for the column.",
           type: "string",
         },
         expression: {
+          description: "A javascript expression to transform the column. You can use the variable value.",
           type: "string",
         },
         pattern: {
+          description: "A pattern for number columns.",
           type: "string",
         },
       },
       required: ["id"],
       title: "SettingsColumn",
     },
+    SettingsHTML: {
+      type: "object",
+      description: "HTML template for METRICS component",
+      properties: {
+        html: {
+          description: "The HTML template. ",
+          type: "string",
+        },
+        javascript: {
+          description: "Javascript for the template",
+          type: "string",
+        },
+      },
+      title: "SettingsHTML",
+    },
     SettingsTable: {
       type: "object",
       properties: {
         pageSize: {
+          description: "The size of a table page.",
           type: "integer",
         },
         show_column_picker: {
-          type: "string",
+          description: "The column picker visible when true",
+          type: "boolean",
         },
         sort: {
           $ref: "#/definitions/TableSort",
@@ -337,9 +457,10 @@ export const DASHBUILDER_SCHEMA = {
     },
     TableSort: {
       type: "object",
+      description: "Table sort configuration.",
       properties: {
         enabled: {
-          type: ["boolean", "string"],
+          type: ["boolean"],
         },
         columnId: {
           type: "string",
@@ -366,20 +487,24 @@ export const DASHBUILDER_SCHEMA = {
     },
     sortEnum: {
       type: "string",
-      enum: ["ASCENDING", "DESCENDING", "ascending", "descending", "Ascending", "descending"],
+      enum: ["ASCENDING", "DESCENDING"],
       additionalProperties: false,
       title: "sortEnum",
     },
     FilterComponent: {
       type: "object",
+      description: "A Filter operation on the dataset lookup.",
       properties: {
         column: {
+          description: "The column to be filtered.",
           type: "string",
         },
         function: {
+          description: "The filter function.",
           $ref: "#/definitions/FunctionList",
         },
         args: {
+          description: "A list of arguments to be used with the filter function",
           type: "array",
         },
       },
@@ -449,16 +574,19 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         columnGroup: {
+          description: "A group operation for the filter.",
           type: "object",
           properties: {
             source: {
+              description: "The column which will be used for the group",
               type: "string",
             },
           },
           required: ["source"],
         },
-        groupFunctions: {
+        functions: {
           type: "array",
+          description: "A list of columns returned by this group operation.",
           items: {
             $ref: "#/definitions/ColumnGroupFunctions",
           },
@@ -468,16 +596,19 @@ export const DASHBUILDER_SCHEMA = {
     },
     ColumnGroupFunctions: {
       type: "object",
+      description: "A function used in the group",
       properties: {
         source: {
+          description: "The column which the group will be applied",
           type: "string",
         },
         function: {
           type: "string",
-          enum: ["SUM", "MAX", "MIN", "AVERAGE"],
+          enum: ["SUM", "MAX", "MIN", "AVERAGE", "COUNT", "MEDIAN", "JOIN", "JOIN_COMMA", "JOIN_HYPHEN"],
           additionalProperties: false,
         },
         column: {
+          description: "A name for the result column",
           type: "string",
         },
       },
@@ -486,8 +617,10 @@ export const DASHBUILDER_SCHEMA = {
     },
     NavTree: {
       type: "object",
+      description: "The pages navigation configuration.",
       properties: {
         root_items: {
+          description: "List of the navigation groups/items",
           type: "array",
           items: {
             $ref: "#/definitions/RootItem",
@@ -499,9 +632,11 @@ export const DASHBUILDER_SCHEMA = {
     },
     RootItem: {
       type: "object",
+      description: "A navigation item. Can be a group of pages.",
       properties: {
         type: {
-          type: "string",
+          description: "The item type.",
+          $ref: "#/definitions/NavItemEnum",
         },
         id: {
           type: "string",
@@ -511,6 +646,7 @@ export const DASHBUILDER_SCHEMA = {
         },
         children: {
           type: "array",
+          description: "The list of child items. Can be other navigation groups or pages",
           items: {
             $ref: "#/definitions/Child",
           },
@@ -527,9 +663,14 @@ export const DASHBUILDER_SCHEMA = {
       },
       title: "Child",
     },
+    NavItemEnum: {
+      type: "string",
+      enum: ["ITEM", "GROUP", "DIVIDER"],
+      title: "Type",
+    },
     DataSetType: {
       type: "string",
-      enum: ["LABEL", "NUMBER", "TEXT", "DATE", "label", "number", "text", "date", "Label", "Number", "Text", "Date"],
+      enum: ["LABEL", "NUMBER", "TEXT", "DATE"],
       title: "Type",
     },
     FunctionList: {
@@ -558,68 +699,67 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         bgColor: {
+          description: "Chart background color.",
           type: "string",
         },
         width: {
-          type: ["number", "string"],
+          description: "The chart fixed with. Does not have effect if resizable is true",
+          type: ["number"],
         },
         height: {
-          type: ["number", "string"],
+          description: "The chart fixed height. Does not have effect if resizable is true",
+          type: ["number"],
         },
         zoom: {
-          type: ["boolean", "string"],
+          description: "Enables zoom on the chart.",
+          type: ["boolean"],
         },
         margin: {
           type: "object",
+          description: "A margin for the chart",
           properties: {
             right: {
-              type: ["number", "string"],
+              type: ["number"],
             },
             top: {
-              type: ["number", "string"],
+              type: ["number"],
             },
             bottom: {
-              type: ["number", "string"],
+              type: ["number"],
             },
             left: {
-              type: ["number", "string"],
+              type: ["number"],
             },
           },
         },
         resizable: {
-          type: ["boolean", "string"],
+          description: "Makes the chart responsible",
+          type: ["boolean"],
         },
         legend: {
           type: "object",
+          description: "Configuration for the chart legend.",
           properties: {
             show: {
-              type: ["boolean", "string"],
+              description: "If true the legend is displayed. Default is false.",
+              type: ["boolean"],
             },
             position: {
               type: "string",
+              description: "The legend position.",
               enum: ["in", "right", "bottom"],
             },
           },
         },
         grid: {
           type: "object",
+          description: "Show/hide the XY charts grid.",
           properties: {
             x: {
-              type: ["boolean", "string"],
+              type: ["boolean"],
             },
             y: {
-              type: ["boolean", "string"],
-            },
-          },
-        },
-        general: {
-          type: "object",
-          properties: {
-            visible: {
-              type: ["boolean", "string"],
-            },
-            title: {
-              type: "string",
+              type: ["boolean"],
             },
           },
         },
@@ -628,6 +768,16 @@ export const DASHBUILDER_SCHEMA = {
     CustomProperties: {
       type: "object",
       description: "The properties can be CSS properties, such as width/height, background color, color and more.",
+      additionalProperties: {},
+    },
+    DatasetHeaders: {
+      type: "object",
+      description: "Additional headers sent to a dataset HTTP Request",
+      additionalProperties: {},
+    },
+    DatasetQuery: {
+      type: "object",
+      description: "Additional query parameter sent to a dataset HTTP Request",
       additionalProperties: {},
     },
     DisplayerSettings: {
@@ -641,9 +791,11 @@ export const DASHBUILDER_SCHEMA = {
         },
         refresh: {
           type: "object",
+          description: "Configure an auto refresh feature for the displayer",
           properties: {
             interval: {
-              type: "string",
+              description: "The value in seconds. Use -1 for no update.",
+              type: "number",
             },
           },
           required: ["interval"],
@@ -651,34 +803,43 @@ export const DASHBUILDER_SCHEMA = {
         },
         renderer: {
           type: "string",
+          description: "The underlying library used by Dashbuilder.",
           enum: ["c3", "echarts"],
           additionalProperties: false,
           title: "renderer",
+        },
+        extraConfiguration: {
+          type: "string",
+          description:
+            "An extra configuration for the chart. It depends on the underlying chart library, for example, you can provide a JSON object for the echarts renderer which will be merged with the default configuration",
         },
         selector: {
           type: "object",
           properties: {
             multiple: {
-              type: ["boolean", "string"],
+              type: ["boolean"],
             },
             inputs_show: {
-              type: ["boolean", "string"],
+              type: ["boolean"],
             },
           },
-          required: ["multiple", "inputs_show"],
+          required: ["multiple"],
           title: "selector",
-        },
-        echarts: {
-          title: "echarts",
         },
         general: {
           type: "object",
           properties: {
+            visible: {
+              description: "Enable/disable the title. Default is true.",
+              type: ["boolean"],
+            },
             title: {
+              description: "A title for the chart.",
               type: "string",
             },
-            visible: {
-              type: "boolean",
+            subtitle: {
+              description: "A subtitle for the chart.",
+              type: "string",
             },
             mode: {
               $ref: "#/definitions/ColourModes",
@@ -693,8 +854,10 @@ export const DASHBUILDER_SCHEMA = {
         },
         export: {
           type: "object",
+          description: "Export configuration for the displayer",
           properties: {
             png: {
+              description: "Enables PNG download",
               type: "boolean",
             },
           },
@@ -710,9 +873,8 @@ export const DASHBUILDER_SCHEMA = {
         table: {
           $ref: "#/definitions/SettingsTable",
         },
-        html: {},
-        javascript: {
-          type: "string",
+        html: {
+          $ref: "#/definitions/SettingsHTML",
         },
         map: {
           type: "object",
@@ -737,18 +899,23 @@ export const DASHBUILDER_SCHEMA = {
           ],
         },
         external: {
+          description: "Specific configuration for the external component.",
           $ref: "#/definitions/SettingsExternal",
         },
         bubble: {
           type: "object",
+          description: "Bubble chart specific configuration",
           properties: {
             minSize: {
+              description: "The mininum size for the bubble",
               type: "number",
             },
             maxSize: {
+              description: "The max size for the bubble",
               type: "number",
             },
             color: {
+              description: "Bubble color",
               type: "string",
             },
           },
@@ -760,15 +927,19 @@ export const DASHBUILDER_SCHEMA = {
           properties: {
             x: {
               type: "object",
+              description: "Specific X axis configuration.",
               properties: {
                 labels_show: {
-                  type: ["boolean", "string"],
+                  description: "Shows or hide the axis X. Default is false.",
+                  type: ["boolean"],
                 },
                 title: {
+                  description: "A title for the axis X.",
                   type: "string",
                 },
                 labels_angle: {
-                  type: ["string", "number"],
+                  description: "X Labels angle",
+                  type: ["number"],
                 },
               },
               title: "x",
@@ -777,13 +948,16 @@ export const DASHBUILDER_SCHEMA = {
               type: "object",
               properties: {
                 labels_show: {
-                  type: ["boolean", "string"],
+                  description: "Shows or hide the axis Y. Default is false.",
+                  type: ["boolean"],
                 },
                 title: {
+                  description: "A title for the axis Y.",
                   type: "string",
                 },
                 labels_angle: {
-                  type: ["string", "number"],
+                  description: "Y Labels angle",
+                  type: ["number"],
                 },
               },
               title: "y",
@@ -895,6 +1069,7 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
       ],
+      required: ["lookup"],
       title: "DisplayerSettings",
     },
     SettingsExternal: {
@@ -922,89 +1097,42 @@ export const DASHBUILDER_SCHEMA = {
         "METERCHART",
         "MAP",
         "TABLE",
-        "barchart",
-        "linechart",
-        "areachart",
-        "piechart",
-        "bubblechart",
-        "scatterchart",
-        "selector",
-        "metric",
-        "meterchart",
-        "map",
-        "table",
-        "Barchart",
-        "Linechart",
-        "Areachart",
-        "Piechart",
-        "Bubblechart",
-        "Scatterchart",
-        "Selector",
-        "Metric",
-        "Meterchart",
-        "Map",
-        "Table",
+        "TIMESERIES",
       ],
       additionalProperties: false,
       title: "ChartType",
     },
     BarChartTypes: {
       type: "string",
-      enum: [
-        "COLUMN",
-        "BAR",
-        "STACKED",
-        "COLUMN_STACKED",
-        "BAR_STACKED",
-        "column",
-        "bar",
-        "stacked",
-        "column_stacked",
-        "bar_stacked",
-        "Column",
-        "Bar",
-        "Stacked",
-        "Column_Stacked",
-        "Bar_Stacked",
-      ],
+      enum: ["COLUMN", "BAR", "STACKED", "COLUMN_STACKED", "BAR_STACKED"],
       default: "COLUMN",
       additionalProperties: false,
       title: "BarChartTypes",
     },
     LineChartTypes: {
       type: "string",
-      enum: ["LINE", "SMOOTH", "line", "smooth", "Line", "Smooth"],
+      enum: ["LINE", "SMOOTH"],
       default: "LINE",
       additionalProperties: false,
       title: "LineChartTypes",
     },
     AreaChartTypes: {
       type: "string",
-      enum: ["AREA", "AREA_STACKED", "area", "area_stacked", "Area", "Area_Stacked"],
+      enum: ["AREA", "AREA_STACKED"],
       default: "AREA",
       additionalProperties: false,
       title: "AreaChartChartTypes",
     },
     PieChartTypes: {
       type: "string",
-      enum: ["PIE", "DONUT", "pie", "donut", "Pie", "Donut"],
+      enum: ["PIE", "DONUT"],
       default: "PIE",
       additionalProperties: false,
       title: "PieChartChartTypes",
     },
     SelectorTypes: {
       type: "string",
-      enum: [
-        "SELECTOR_LABELS",
-        "SELECTOR_DROPDOWN",
-        "SELECTOR_SLIDER",
-        "selector_labels",
-        "selector_dropdown",
-        "selector_slider",
-        "Selector_Labels",
-        "Selector_Dropdown",
-        "Selector_Slider",
-      ],
+      enum: ["SELECTOR_LABELS", "SELECTOR_DROPDOWN", "SELECTOR_SLIDER"],
       additionalProperties: false,
       title: "SelectorTypes",
     },
@@ -1036,26 +1164,7 @@ export const DASHBUILDER_SCHEMA = {
     },
     NavComponentTypes: {
       type: "string",
-      enum: [
-        "TILES",
-        "CAROUSEL",
-        "TREE",
-        "MENU",
-        "TABS",
-        "DIV",
-        "tiles",
-        "carousel",
-        "tree",
-        "menu",
-        "tabs",
-        "div",
-        "Tiles",
-        "Carousel",
-        "Tree",
-        "Menu",
-        "Tabs",
-        "Div",
-      ],
+      enum: ["TILES", "CAROUSEL", "TREE", "MENU", "TABS", "DIV"],
       additionalProperties: false,
     },
     SettingsComponent: {
