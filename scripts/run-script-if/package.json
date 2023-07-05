@@ -27,7 +27,6 @@
     "write-readme:win32": "echo 'Nothing to do.'"
   },
   "dependencies": {
-    "@kie-tools-scripts/build-env": "workspace:*",
     "yargs": "^17.0.1"
   },
   "devDependencies": {

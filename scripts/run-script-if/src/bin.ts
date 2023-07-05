@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-import { findEnv, flattenObj } from "@kie-tools-scripts/build-env";
 import * as yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { spawn, spawnSync } from "child_process";
@@ -52,11 +51,6 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
       env: {
         type: "array",
         description: "Name of the environment variables which value will be compared to --eq.",
-        default: [],
-      },
-      "build-env": {
-        type: "array",
-        description: "Build env path to be parsed and compared to --eq.",
         default: [],
       },
       bool: {
@@ -138,23 +132,8 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
     })
     .parseSync();
 
-  const { env } = await findEnv(path.resolve("."), path.resolve("."));
-  const flattenedEnv = flattenObj(env);
-
-  const parseBuildEnvPath = (path: string) => {
-    if (flattenedEnv[path] === undefined) {
-      return "";
-    }
-    return flattenedEnv[path].toString();
-  };
-
   const envVarNames = argv.env;
   const envVarValues = envVarNames.map((envVarName) => ({ name: envVarName, value: process.env[envVarName] }));
-  const buildEnvVarPaths = argv["build-env"];
-  const buildEnvValues = buildEnvVarPaths.map((buildEnvVarPath: string) => ({
-    path: buildEnvVarPath,
-    value: parseBuildEnvPath(buildEnvVarPath),
-  }));
   const shouldRunIfEmpty = evalBoolStringArg(argv["true-if-empty"]) === "true";
   const ignoreErrors = evalBoolStringArg(argv["ignore-errors"]) === "true";
   const boolStringConditions = argv.bool.map(evalBoolStringArg);
@@ -169,14 +148,8 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
         conditions.push(
           envVarValues.every((envVarValue) => envVarValue.value === undefined || envVarValue.value === "")
         );
-      buildEnvValues.length &&
-        conditions.push(
-          buildEnvValues.every((buildEnvValue) => buildEnvValue.value === undefined || buildEnvValue.value === "")
-        );
     } else {
       envVarValues.length && conditions.push(envVarValues.every((envVarValue) => envVarValue.value === argv.eq));
-      buildEnvValues.length &&
-        conditions.push(buildEnvValues.every((buildEnvValue) => buildEnvValue.value === argv.eq));
     }
   } else {
     boolStringConditions.length &&
@@ -186,17 +159,10 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
         conditions.push(
           envVarValues.some((envVarValue) => envVarValue.value === undefined || envVarValue.value === "")
         );
-      buildEnvValues.length &&
-        conditions.push(
-          buildEnvValues.some((buildEnvValue) => buildEnvValue.value === undefined || buildEnvValue.value === "")
-        );
     } else {
       envVarValues.length && conditions.push(envVarValues.some((envVarValue) => envVarValue.value === argv.eq));
-      buildEnvValues.length && conditions.push(buildEnvValues.some((buildEnvValue) => buildEnvValue.value === argv.eq));
     }
   }
-
-  console.log(conditions);
 
   const condition = argv.force || (operator === "and" ? conditions.every(Boolean) : conditions.some(Boolean));
 
@@ -208,12 +174,6 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
       console.info,
       isSilent,
       envVarValues.map((envVarValue) => LOGS.envVarSummary(envVarValue))
-    );
-  if (buildEnvValues.length)
-    log(
-      console.info,
-      isSilent,
-      buildEnvValues.map((buildEnvValue) => LOGS.buildEnvSummary(buildEnvValue))
     );
   if (argv.bool.length) log(console.info, isSilent, LOGS.boolSummary());
   if (shouldRunIfEmpty) log(console.info, isSilent, LOGS.trueIfEmptyEnabled());
@@ -401,18 +361,6 @@ const LOGS = {
     }
 
     return `Environment variable '${envVarValue.name}' is ${envVarValueLog}.`;
-  },
-  buildEnvSummary: (buildEnvValue: { path: string | number; value: string | undefined }) => {
-    let buildEnvValueLog;
-    if (buildEnvValue.value === "") {
-      buildEnvValueLog = `not set ("")`;
-    } else if (buildEnvValue.value === undefined) {
-      buildEnvValueLog = "not set";
-    } else {
-      buildEnvValueLog = `'${buildEnvValue.value}'`;
-    }
-
-    return `build-env variable '${buildEnvValue.path}' is ${buildEnvValueLog}.`;
   },
   trueIfEmptyEnabled: () => {
     return `--true-if-empty is enabled.`;

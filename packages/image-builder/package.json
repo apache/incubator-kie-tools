@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "bin": {
-    "image-builder": "bin.js"
+    "kie-tools--image-builder": "bin.js"
   },
   "main": "dist/index.js",
   "files": [
@@ -28,7 +28,6 @@
     "write-readme:win32": "echo 'Nothing to do.'"
   },
   "dependencies": {
-    "@kie-tools-scripts/build-env": "workspace:*",
     "yargs": "^17.0.1"
   },
   "devDependencies": {

@@ -4068,9 +4068,6 @@ importers:
 
   packages/image-builder:
     dependencies:
-      "@kie-tools-scripts/build-env":
-        specifier: workspace:*
-        version: link:../../scripts/build-env
       yargs:
         specifier: ^17.0.1
         version: 17.5.1
@@ -9081,9 +9078,6 @@ importers:
 
   scripts/run-script-if:
     dependencies:
-      "@kie-tools-scripts/build-env":
-        specifier: workspace:*
-        version: link:../build-env
       yargs:
         specifier: ^17.0.1
         version: 17.3.1
