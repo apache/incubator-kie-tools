@@ -16,25 +16,28 @@
  * limitations under the License.
  */
 
-import * as path from "path";
-import { execSync } from "child_process";
-import { findEnv, flattenObj } from "@kie-tools-scripts/build-env";
+import { execSync, spawnSync } from "child_process";
 import * as yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 
+function shell() {
+  return process.platform === "win32" ? { shell: "powershell.exe" } : {};
+}
+
+function evalStringArg(arg: never | string | number) {
+  let ret;
+  if (process.platform === "win32" && arg && typeof arg === "string" && arg.startsWith("$")) {
+    const output = spawnSync(arg, [], { stdio: "pipe", ...shell() });
+    ret = String(output.stdout).trim();
+  } else {
+    ret = arg;
+  }
+
+  return ret;
+}
+
 async function main() {
-  const currentPath = path.resolve(".") !== path.resolve(__dirname, "..") ? "." : "../root-env";
-  const { env } = await findEnv(path.resolve(currentPath), path.resolve(currentPath));
-  const flattenedEnv = flattenObj(env);
-
-  const parseBuildEnvPath = (path: string) => {
-    if (!flattenedEnv[path]) {
-      return path;
-    }
-    return flattenedEnv[path];
-  };
-
-  const args = yargs(hideBin(process.argv))
+  const args = await yargs(hideBin(process.argv))
     .version(false)
     .scriptName("")
     .wrap(Math.min(150, yargs.terminalWidth()))
@@ -45,41 +48,41 @@ CLI tool to help building container images using build variables and different e
     `
     )
     .example(
-      `$ image-builder --registry "myCustomEnv.registry" --account "myCustomEnv.account" --name "myCustomEnv.name" --tags "myCustomEnv.buildTags" --engine docker --push`,
+      `$ image-builder --registry "$(build-env myCustomEnv.registry)" --account "$(build-env myCustomEnv.account)" --name "$(build-env myCustomEnv.name)" --tags "$(build-env myCustomEnv.buildTags)" --engine docker --push`,
       "Build an image using parameters from your myCustomEnv build env variables"
     )
     .options({
       registry: {
         alias: "r",
         demandOption: false,
-        describe: "The build-env path or string for the image registry",
+        describe: "The string for the image registry",
         type: "string",
         nargs: 1,
-        coerce: parseBuildEnvPath,
+        coerce: evalStringArg,
       },
       account: {
         alias: "a",
         demandOption: false,
-        describe: "The build-env path or string for the image account",
+        describe: "The string for the image account",
         type: "string",
         nargs: 1,
-        coerce: parseBuildEnvPath,
+        coerce: evalStringArg,
       },
       name: {
         alias: "n",
         demandOption: true,
-        describe: "The build-env path or string for the image name",
+        describe: "The string for the image name",
         type: "string",
         nargs: 1,
-        coerce: parseBuildEnvPath,
+        coerce: evalStringArg,
       },
       tags: {
         alias: "t",
         demandOption: true,
-        describe: "The build-env path or string for the image tags",
+        describe: "The string for the image tags",
         type: "string",
         nargs: 1,
-        coerce: parseBuildEnvPath,
+        coerce: evalStringArg,
       },
       engine: {
         alias: "e",
@@ -117,7 +120,7 @@ CLI tool to help building container images using build variables and different e
       "build-arg": {
         demandOption: false,
         describe:
-          "Build args for the builder in the format '<arg>=<value>', where <value> can be a string or a build-env path (Can be used multiple times)",
+          "Build args for the builder in the format '<arg>=<value>', where <value> is a string (Can be used multiple times)",
         type: "array",
         default: [],
         coerce: (args) => {
@@ -130,17 +133,12 @@ CLI tool to help building container images using build variables and different e
               )}"). Use the format 'var1=value1 var2=value2 ...'`
             );
           }
-          const replacedArgs = args.map((arg: string) => {
-            const [key, value] = arg.split("=");
-            const replacedValue = parseBuildEnvPath(value);
-            return `${key}=${replacedValue}`;
-          });
-          return replacedArgs;
+          return args;
         },
       },
     })
     .alias("h", "help")
-    .parseSync();
+    .parse();
 
   const imageFullNameWithoutTags = `${args.registry ? `${args.registry}/` : ""}${
     args.account ? `${args.account}/` : ""
@@ -155,9 +153,7 @@ CLI tool to help building container images using build variables and different e
   }`;
 
   try {
-    process.platform === "win32"
-      ? execSync(`command ${args.engine}`, { shell: "powershell", stdio: "inherit" })
-      : execSync(`command -v ${args.engine}`, { stdio: "inherit" });
+    execSync(`command ${process.platform === "win32" ? "" : "-v"} ${args.engine}`, { stdio: "inherit", ...shell() });
   } catch (e) {
     console.log(`Build engine "${args.engine}" not available. Skipping build!`);
     return;

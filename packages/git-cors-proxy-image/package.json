@@ -14,13 +14,13 @@
   },
   "scripts": {
     "build:dev": "echo \"Nothing to do\"",
-    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && run-script-if --build-env \"containerImages.build\" --then \"pnpm docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm copy:git-cors-proxy-package && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:git-cors-proxy-package": "run-script-os",
     "copy:git-cors-proxy-package:linux:darwin": "cp -R ./node_modules/@thiagoelg/cors-proxy/ dist-dev/git-cors-proxy",
     "copy:git-cors-proxy-package:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@thiagoelg/cors-proxy/ ./dist-dev/git-cors-proxy\"",
-    "docker:build": "image-builder -r gitCorsProxy.image.registry -a gitCorsProxy.image.account -n gitCorsProxy.image.name -t gitCorsProxy.image.buildTags",
-    "podman:build": "image-builder -r gitCorsProxy.image.registry -a gitCorsProxy.image.account -n gitCorsProxy.image.name -t gitCorsProxy.image.buildTags -e podman",
+    "docker:build": "kie-tools--image-builder -r \"$(build-env gitCorsProxy.image.registry)\" -a \"$(build-env gitCorsProxy.image.account)\" -n \"$(build-env gitCorsProxy.image.name)\" -t \"$(build-env gitCorsProxy.image.buildTags)\"",
+    "podman:build": "kie-tools--image-builder -r \"$(build-env gitCorsProxy.image.registry)\" -a \"$(build-env gitCorsProxy.image.account)\" -n \"$(build-env gitCorsProxy.image.name)\" -t \"$(build-env gitCorsProxy.image.buildTags)\" -e podman",
     "start": "cd ./node_modules/@thiagoelg/cors-proxy && pnpm start -p 8080"
   },
   "devDependencies": {

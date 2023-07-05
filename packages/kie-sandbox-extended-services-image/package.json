@@ -14,14 +14,14 @@
   },
   "scripts": {
     "build:dev": "pnpm cleanup && pnpm copy:assets",
-    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --build-env \"containerImages.build\" --then \"pnpm docker:build\"",
+    "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:extended-services",
     "copy:extended-services": "run-script-os",
     "copy:extended-services:linux:darwin": "cp -R ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless",
     "copy:extended-services:win32": "pnpm powershell \"Copy-Item ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless\"",
-    "docker:build": "image-builder -r extendedServicesImage.registry -a extendedServicesImage.account -n extendedServicesImage.name -t extendedServicesImage.buildTags",
-    "podman:build": "image-builder -r extendedServicesImage.registry -a extendedServicesImage.account -n extendedServicesImage.name -t extendedServicesImage.buildTags -e podman"
+    "docker:build": "kie-tools--image-builder -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\"",
+    "podman:build": "kie-tools--image-builder -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" -e podman"
   },
   "dependencies": {
     "@kie-tools/extended-services": "workspace:*"
