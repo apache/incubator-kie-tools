@@ -22,5 +22,5 @@ ReactDOM.render(
   <div>
     <Showcase />
   </div>,
-  document.getElementById("app")!
+  document.getElementById("showcase")!
 );
