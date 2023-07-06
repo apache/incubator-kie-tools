@@ -13,3 +13,80 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import * as React from "react";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+
+interface Props {
+  /**
+   * Callback to the container so that it may bind to the TestScenarioEditor.
+   *
+   * @returns Instance of the TestScenarioEditor.
+   */
+  exposing: (s: TestScenarioEditor) => void;
+
+  /**
+   * Delegation for KogitoEditorChannelApi.kogitoEditor_ready() to signal to the Channel that the editor is ready.
+   */
+  ready: () => void;
+
+  /**
+   * Delegation for WorkspaceChannelApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
+   * @param edit An object representing the unique change.
+   */
+  newEdit: (edit: WorkspaceEdit) => void;
+
+  /**
+   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
+   * notifications to the Channel that will replace existing notification for the path.
+   * @param path The path that references the Notification
+   * @param notifications List of Notifications
+   */
+  setNotifications: (path: string, notifications: Notification[]) => void;
+}
+
+export interface State {
+  path: string;
+  content: string;
+  originalContent: string;
+}
+
+export class TestScenarioEditor extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    props.exposing(this);
+    this.state = {
+      path: "",
+      content: "",
+      originalContent: "",
+    };
+  }
+
+  public setContent(path: string, content: string): Promise<void> {
+    try {
+      //this.doSetContent(path, content);
+      //this.props.setNotifications(this.state.path, this.validate());
+      return Promise.resolve();
+    } catch (e) {
+      console.error(e);
+      return Promise.reject();
+    }
+  }
+
+  public getContent(): Promise<string> {
+    return Promise.resolve("");
+  }
+
+  public async undo(): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
+  public async redo(): Promise<void> {
+    return Promise.resolve(undefined);
+  }
+
+  public validate(): Notification[] {
+    return [];
+  }
+}

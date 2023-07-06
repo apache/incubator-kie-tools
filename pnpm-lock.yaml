@@ -5866,15 +5866,24 @@ importers:
 
   packages/scesim-editor:
     dependencies:
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
+      "@kie-tools-core/notifications":
+        specifier: workspace:*
+        version: link:../notifications
       "@kie-tools-core/operating-system":
         specifier: workspace:*
         version: link:../operating-system
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools-core/workspace":
+        specifier: workspace:*
+        version: link:../workspace
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
