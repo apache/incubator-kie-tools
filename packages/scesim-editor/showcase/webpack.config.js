@@ -34,10 +34,8 @@ module.exports = (env) =>
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: path.resolve(__dirname, "./static/resources"), to: "./resources" },
           { from: path.resolve(__dirname, "./static/index.html"), to: "./index.html" },
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
-          { from: path.resolve(__dirname, "../static/images"), to: "./images" },
         ],
       }),
     ],
