@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import com.google.gwt.dev.util.HttpHeaders;
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.FormData;
 import elemental2.dom.Headers;
 import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
@@ -39,6 +40,7 @@ import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
+import org.dashbuilder.dataset.def.HttpMethod;
 import org.jboss.resteasy.util.HttpResponseCodes;
 
 import static org.dashbuilder.common.client.StringUtils.isBlank;
@@ -152,6 +154,15 @@ public class ExternalDataSetClientProvider {
 
         if (def.getQuery() != null) {
             def.getQuery().forEach(url.searchParams::set);
+        }
+        if (def.getMethod() != null) {
+            req.setMethod(def.getMethod().name());
+        }
+
+        if (def.getMethod() == HttpMethod.POST && def.getForm() != null && !def.getForm().isEmpty()) {
+            var form = new FormData();
+            def.getForm().forEach(form::set);
+            req.setBody(form);
         }
 
         DomGlobal.fetch(url.toString(), req).then((Response response) -> {

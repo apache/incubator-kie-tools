@@ -38,9 +38,13 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private Map<String, String> query = new HashMap<>();
 
+    private Map<String, String> form = new HashMap<>();
+
     private boolean accumulate;
 
     private ExternalServiceType type;
+
+    private HttpMethod method = HttpMethod.GET;
 
     private Collection<String> join;
 
@@ -119,7 +123,23 @@ public class ExternalDataSetDef extends DataSetDef {
     public Map<String, String> getQuery() {
         return query;
     }
-    
+
+    public Map<String, String> getForm() {
+        return form;
+    }
+
+    public void setForm(Map<String, String> form) {
+        this.form = form;
+    }
+
+    public void setMethod(HttpMethod method) {
+        this.method = method;
+    }
+
+    public HttpMethod getMethod() {
+        return method;
+    }
+
     public void validate() {
         super.validate();
         if (isBlank(url) && isBlank(content) && (join == null || join.isEmpty())) {
@@ -139,6 +159,8 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setType(getType());
         def.setJoin(getJoin());
         def.setQuery(getQuery());
+        def.setForm(getForm());
+        def.setMethod(getMethod());
         return def;
     }
 
@@ -159,7 +181,9 @@ public class ExternalDataSetDef extends DataSetDef {
                Objects.equals(accumulate, other.accumulate) &&
                Objects.equals(type, other.type) &&
                Objects.equals(join, other.join) &&
-               Objects.equals(query, other.query);
+               Objects.equals(query, other.query) &&
+               Objects.equals(form, other.form) &&
+               Objects.equals(method, other.method);
     }
 
     public String toString() {
@@ -175,9 +199,11 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Content=").append(content).append("\n");
         out.append("Headers=").append(headers).append("\n");
         out.append("Accumulate=").append(accumulate).append("\n");
-        out.append("Type=").append(type);
-        out.append("Join=").append(join);
-        out.append("Query=").append(query);
+        out.append("Type=").append(type).append("\n");
+        out.append("Join=").append(join).append("\n");
+        out.append("Query=").append(query).append("\n");
+        out.append("Form=").append(form).append("\n");
+        out.append("Method=").append(method);
         return out.toString();
     }
 
@@ -192,7 +218,9 @@ public class ExternalDataSetDef extends DataSetDef {
                 accumulate,
                 type,
                 join,
-                query);
+                query,
+                form,
+                method);
     }
 
 }
