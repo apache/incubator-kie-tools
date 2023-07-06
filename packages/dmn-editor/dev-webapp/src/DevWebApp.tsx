@@ -67,7 +67,7 @@ export function DevWebApp() {
           <a ref={downloadRef} />
         </PageSection>
         <hr />
-        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true}>
           <DmnEditor ref={ref} xml={xml} />
         </PageSection>
       </Page>

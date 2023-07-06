@@ -109,6 +109,28 @@ export function Diagram({
 
   useEffect(() => {
     setNodes([
+      // grouping
+      ...(dmn.definitions.decisionService ?? []).map((decisionService) => {
+        const shape = shapesById.get(decisionService["@_id"]!)!;
+        return {
+          id: decisionService["@_id"]!,
+          type: "decisionService",
+          position: getShapePosition(shape),
+          data: { decisionService, shape, onInfo },
+          style: { zIndex: 1, ...getShapeDimensions(shape) },
+        };
+      }),
+      ...(dmn.definitions.group ?? []).map((group) => {
+        const shape = shapesById.get(group["@_id"]!)!;
+        return {
+          id: group["@_id"]!,
+          type: "group",
+          position: getShapePosition(shape),
+          data: { group, shape, onInfo },
+          style: { zIndex: 1, ...getShapeDimensions(shape) },
+        };
+      }),
+
       //logic
       ...(dmn.definitions.inputData ?? []).map((inputData) => {
         const shape = shapesById.get(inputData["@_id"]!)!;
@@ -159,28 +181,6 @@ export function Diagram({
           type: "knowledgeSource",
           position: getShapePosition(shape),
           data: { knowledgeSource, shape, onInfo },
-          style: { ...getShapeDimensions(shape) },
-        };
-      }),
-
-      // grouping
-      ...(dmn.definitions.decisionService ?? []).map((decisionService) => {
-        const shape = shapesById.get(decisionService["@_id"]!)!;
-        return {
-          id: decisionService["@_id"]!,
-          type: "decisionService",
-          position: getShapePosition(shape),
-          data: { decisionService, shape, onInfo },
-          style: { ...getShapeDimensions(shape) },
-        };
-      }),
-      ...(dmn.definitions.group ?? []).map((group) => {
-        const shape = shapesById.get(group["@_id"]!)!;
-        return {
-          id: group["@_id"]!,
-          type: "group",
-          position: getShapePosition(shape),
-          data: { group, shape, onInfo },
           style: { ...getShapeDimensions(shape) },
         };
       }),
@@ -534,6 +534,7 @@ export function Pallete() {
         >
           T
         </button>
+        <button className={"kie-dmn-editor--pallete-button dndnode text-annotation"}>G</button>
       </aside>
     </RF.Panel>
   );
@@ -713,16 +714,17 @@ export function InputDataNode({
 }: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
+
+  useEffect(() => {
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
+  }, [selected, isHovered]);
+
   return (
     <>
       <NsweHandles />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
-      <div
-        ref={ref}
-        className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}
-        style={{ zIndex: selected ? 100 : 10 }}
-      >
+      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
@@ -743,16 +745,16 @@ export function DecisionNode({
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
 
+  useEffect(() => {
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
+  }, [selected, isHovered]);
+
   return (
     <>
       <NsweHandles />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
-      <div
-        ref={ref}
-        className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}
-        style={{ zIndex: selected ? 100 : 10 }}
-      >
+      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}>
         <EditExpressionButton
           isVisible={isHovered || selected}
           onClick={() => setOpenNodeWithExpression({ type: "decision", content: decision })}
@@ -777,17 +779,17 @@ export function BkmNode({
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
 
+  useEffect(() => {
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
+  }, [selected, isHovered]);
+
   return (
     <>
       <NsweHandles />
       <OutgoingStuffToolbar isVisible={isHovered || selected} />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
-      <div
-        ref={ref}
-        className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}
-        style={{ zIndex: selected ? 100 : 10 }}
-      >
+      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}>
         <EditExpressionButton
           isVisible={isHovered || selected}
           onClick={() => setOpenNodeWithExpression({ type: "bkm", content: bkm })}
@@ -806,15 +808,16 @@ export function TextAnnotationNode({
 }: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
+
+  useEffect(() => {
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
+  }, [selected, isHovered]);
+
   return (
     <>
       <NsweHandles />
       {selected && <ResizerHandle />}
-      <div
-        ref={ref}
-        className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}
-        style={{ zIndex: selected ? 100 : 10 }}
-      >
+      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
@@ -829,16 +832,13 @@ export function DecisionServiceNode({
 }: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
+
   return (
     <>
       <NsweHandles />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
-      <div
-        ref={ref}
-        className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}
-        style={{ zIndex: selected ? 100 : 10 }}
-      >
+      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
@@ -853,15 +853,16 @@ export function KnowledgeSourceNode({
 }: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
+
+  useEffect(() => {
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
+  }, [selected, isHovered]);
+
   return (
     <>
       <NsweHandles />
       {selected && <ResizerHandle />}
-      <div
-        ref={ref}
-        className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}
-        style={{ zIndex: selected ? 100 : 10 }}
-      >
+      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
@@ -876,7 +877,7 @@ export function GroupNode({
 }: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
   return (
     <>
-      <div className={"kie-dmn-editor--node kie-dmn-editor--group-node"} style={{ zIndex: selected ? 100 : 10 }}>
+      <div className={"kie-dmn-editor--node kie-dmn-editor--group-node"}>
         {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -951,8 +952,8 @@ function getShapeDimensions(shape: DMNDI13__DMNShape) {
 
   // With snapping at opening
   return {
-    width: Math.floor((shape["dc:Bounds"]?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
-    height: Math.floor((shape["dc:Bounds"]?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+    width: Math.max(Math.floor((shape["dc:Bounds"]?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x, SNAP_GRID.x * 8),
+    height: Math.max(Math.floor((shape["dc:Bounds"]?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y, SNAP_GRID.y * 4),
   };
 }
 

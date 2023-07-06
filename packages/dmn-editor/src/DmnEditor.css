@@ -115,10 +115,10 @@
   position: absolute;
   width: calc(100% + 20px + 20px);
   height: calc(100% + 20px + 20px);
-  background: #ffffffd9;
   border-radius: 36px;
   z-index: -1;
-  box-shadow: 0px 0px 40px 40px #ffffffd9;
+  /* background: #ffffffd9; */
+  /* box-shadow: 0px 0px 40px 40px #ffffffd9; */
 }
 
 .react-flow__node:hover > .kie-dmn-editor--node,
@@ -253,6 +253,10 @@
 }
 
 /* react flow theming */
+
+/* .react-flow__edges { */
+/* z-index: 400 !important; */
+/* } */
 
 .react-flow__nodesselection-rect {
   transform-origin: top left;
