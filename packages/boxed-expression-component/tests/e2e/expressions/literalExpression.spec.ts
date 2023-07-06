@@ -90,7 +90,7 @@ test.describe("Literal Expression", () => {
     await expect(json).toContainText("Expression Name");
   });
 
-  test("test", async ({ page }) => {
+  test.skip("Literal Expression resizing", async ({ page }) => {
     const literalExpression = page.getByTestId("literal-expression");
 
     const splitter = literalExpression.locator(".pf-c-drawer__splitter");

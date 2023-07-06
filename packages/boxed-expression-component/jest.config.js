@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
+const jestBase = require("@kie-tools-core/tests-configs/jest.config");
+
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": "ts-jest",
-  },
+  ...jestBase,
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
-    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
+    ...jestBase.moduleNameMapper,
+    "@kie-tools-core/monaco-editor": "<rootDir>/tests/mocks/monacoMock.js",
   },
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
 };
