@@ -231,10 +231,16 @@ export function getParser<T extends object>(args: {
         const s = tagName.split(":");
         if (s.length === 1) {
           const ns = args.ns.get(instanceNs.get("")!) ?? "";
-          return `${ns}${s}`;
+          // if (s[0] === "context" || s[0] === "literalExpression") {
+          //   return { newTagName: `${ns}expression`, newExtraAttrs: { __$$element: { ns: undefined, name: s[0] } } };
+          // }
+          return { newTagName: `${ns}${s[0]}`, newExtraAttrs: undefined };
         } else if (s.length === 2) {
           const ns = args.ns.get(instanceNs.get(`${s[0]}:`)!) ?? `${s[0]}:`;
-          return `${ns}${s[1]}`;
+          // if (s[1] === "context" || s[1] === "literalExpression") {
+          //   return { newTagName: `${ns}expression`, newExtraAttrs: { __$$element: { ns: s[0], name: s[1] } } };
+          // }
+          return { newTagName: `${ns}${s[1]}`, newExtraAttrs: undefined };
         } else {
           throw new Error(`Invalid tag name '${tagName}'.`);
         }

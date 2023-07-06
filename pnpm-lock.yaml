@@ -8,7 +8,7 @@ packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
 
 patchedDependencies:
   fast-xml-parser@4.2.4:
-    hash: 6sowqm6wvq3bl3vi6z33rw34za
+    hash: 56afyixzkhgtiooidpaj62m7wu
     path: patches/fast-xml-parser@4.2.4.patch
   selenium-webdriver@4.8.1:
     hash: lbqefch5nrzt5atgrk2dnw5phe
@@ -9426,7 +9426,7 @@ importers:
     dependencies:
       fast-xml-parser:
         specifier: ^4.2.4
-        version: 4.2.4(patch_hash=6sowqm6wvq3bl3vi6z33rw34za)
+        version: 4.2.4(patch_hash=56afyixzkhgtiooidpaj62m7wu)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -23327,6 +23327,15 @@ packages:
     resolution:
       { integrity: sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig== }
     dev: false
+
+  /fast-xml-parser@4.2.4(patch_hash=56afyixzkhgtiooidpaj62m7wu):
+    resolution:
+      { integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ== }
+    hasBin: true
+    dependencies:
+      strnum: 1.0.5
+    dev: false
+    patched: true
 
   /fast-xml-parser@4.2.4(patch_hash=6sowqm6wvq3bl3vi6z33rw34za):
     resolution:
