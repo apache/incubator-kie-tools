@@ -161,17 +161,17 @@ export function SingleNodeProperties({
           </FormGroup>
         </FormFieldGroupExpandable>
 
-        <StyleOptions />
-        <ShapeOptions />
+        <StyleOptions startExpanded={false} />
+        <ShapeOptions startExpanded={false} />
       </Form>
     </>
   );
 }
 
-export function StyleOptions() {
+export function StyleOptions(props: { startExpanded: boolean }) {
   return (
     <FormFieldGroupExpandable
-      isExpanded={false}
+      isExpanded={props.startExpanded}
       header={
         <FormFieldGroupHeader
           titleText={{
@@ -237,10 +237,10 @@ export function StyleOptions() {
   );
 }
 
-export function ShapeOptions() {
+export function ShapeOptions(props: { startExpanded: boolean }) {
   return (
     <FormFieldGroupExpandable
-      isExpanded={false}
+      isExpanded={props.startExpanded}
       header={
         <FormFieldGroupHeader
           titleText={{
@@ -319,7 +319,7 @@ export function PropertiesPanel({
         {selectedNodes.length > 1 && (
           <>
             <Form>
-              <StyleOptions />
+              <StyleOptions startExpanded={true} />
             </Form>
           </>
         )}

@@ -28,6 +28,11 @@ const PAN_ON_DRAG = [1, 2];
 
 const SNAP_GRID = { x: 20, y: 20 };
 
+const MIN_SIZE_FOR_NODES = {
+  width: SNAP_GRID.x * 8,
+  height: SNAP_GRID.y * 4,
+};
+
 const FIT_VIEW_OPTIONS = { maxZoom: 1, minZoom: 1, duration: 400 };
 
 const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
@@ -284,63 +289,6 @@ export function Diagram({
     setEdges,
   ]);
 
-  const _onNodesChange = useCallback<typeof onNodesChange>(
-    (changes) => {
-      for (const change of changes) {
-        if (change.type === "position") {
-          setDmn((prev) => {
-            if (!change.position) {
-              return prev;
-            }
-
-            const newDiagrams = [...(prev.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])];
-            const newShapes = [...(newDiagrams[0]?.["dmndi:DMNShape"] ?? [])];
-
-            const shapeIndex = newShapes.findIndex(({ "@_dmnElementRef": ref }) => ref === change.id);
-            if (shapeIndex < 0) {
-              return prev;
-            }
-
-            newDiagrams[0]["dmndi:DMNShape"] = newShapes;
-            newShapes[shapeIndex] = {
-              ...newShapes[shapeIndex],
-              "dc:Bounds": {
-                ...newShapes[shapeIndex]["dc:Bounds"]!,
-                "@_x": change.position.x,
-                "@_y": change.position.y,
-              },
-            };
-
-            return {
-              ...prev,
-              definitions: {
-                ...prev.definitions,
-                "dmndi:DMNDI": {
-                  "dmndi:DMNDiagram": newDiagrams,
-                },
-              },
-            };
-          });
-        }
-      }
-
-      return onNodesChange(changes);
-    },
-    [onNodesChange, setDmn]
-  );
-
-  const _onEdgesChange = useCallback<typeof onEdgesChange>(
-    (changes) => {
-      for (const change of changes) {
-        if (change.type === "add") {
-          //
-        }
-      }
-      return onEdgesChange(changes);
-    },
-    [onEdgesChange]
-  );
-
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
   useEffect(() => {
@@ -371,16 +319,9 @@ export function Diagram({
         y: e.clientY - rfBounds.top,
       });
 
-      const id = generateUuid();
-
-      setDmn((prev) => {
-        // TODO: Implement this
-        return { ...prev };
-      });
-
       console.info(`Adding node of type '${type}' at position '${position.x},${position.y}'.`);
     },
-    [container, reactFlowInstance, setDmn]
+    [container, reactFlowInstance]
   );
 
   return (
@@ -630,7 +571,11 @@ const resizerControlStyle = {
 
 export function ResizerHandle(props: {}) {
   return (
-    <RF.NodeResizeControl style={resizerControlStyle} minWidth={SNAP_GRID.x * 5} minHeight={SNAP_GRID.y * 3}>
+    <RF.NodeResizeControl
+      style={resizerControlStyle}
+      minWidth={MIN_SIZE_FOR_NODES.width}
+      minHeight={MIN_SIZE_FOR_NODES.height}
+    >
       <div
         style={{
           position: "absolute",
@@ -952,66 +897,17 @@ function getShapeDimensions(shape: DMNDI13__DMNShape) {
 
   // With snapping at opening
   return {
-    width: Math.max(Math.floor((shape["dc:Bounds"]?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x, SNAP_GRID.x * 8),
-    height: Math.max(Math.floor((shape["dc:Bounds"]?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y, SNAP_GRID.y * 4),
+    width: Math.max(
+      Math.floor((shape["dc:Bounds"]?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
+      MIN_SIZE_FOR_NODES.width
+    ),
+    height: Math.max(
+      Math.floor((shape["dc:Bounds"]?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+      MIN_SIZE_FOR_NODES.height
+    ),
   };
 }
 
 export const generateUuid = () => {
   return `_${uuid()}`.toLocaleUpperCase();
 };
-
-function newNodeFromType(id: string, position: RF.XYPosition, type: string) {
-  const defaultShape = {};
-  switch (type) {
-    case "inputData":
-      return {
-        inputData: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-    case "decision":
-      return {
-        decision: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-    case "bkm":
-      return {
-        bkm: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-    case "decisionService":
-      return {
-        decisionService: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-    case "knowledgeSource":
-      return {
-        knowledgeSource: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-    case "textAnnotation":
-      return {
-        textAnnotation: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-    case "group":
-      return {
-        group: {
-          "@_id": id,
-        },
-        shape: defaultShape,
-      };
-  }
-}
