@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-module.exports = {
+import type { Config } from "jest";
+
+export const jestBase: Config = {
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.json",

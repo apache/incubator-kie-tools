@@ -1,5 +1,5 @@
 import { defineConfig } from "@playwright/test";
-import { playwrightBase } from "@kie-tools-core/tests-configs/playwright.config";
+import { playwrightBase } from "@kie-tools-core/tests-base/playwright.config";
 import { env } from "./env";
 
 const buildEnv: any = env;
