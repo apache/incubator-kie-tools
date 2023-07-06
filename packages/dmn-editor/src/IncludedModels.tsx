@@ -1,10 +1,12 @@
 import * as React from "react";
-import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { useCallback, useMemo } from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon, Title } from "@patternfly/react-core/dist/esm/components";
+
+import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 
 export function IncludedModels({

@@ -112,7 +112,13 @@ export function SingleNodeProperties({
           }
         >
           <FormGroup label="Name">
-            <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a name..."} />
+            <TextInput
+              aria-label={"Name"}
+              type={"text"}
+              isDisabled={false}
+              value={""}
+              placeholder={"Enter a name..."}
+            />
           </FormGroup>
           <FormGroup label="Data type">
             <Select
@@ -139,6 +145,7 @@ export function SingleNodeProperties({
           </FormGroup>
           <FormGroup label="Description">
             <TextArea
+              aria-label={"Description"}
               type={"text"}
               isDisabled={false}
               value={""}
@@ -182,19 +189,49 @@ export function StyleOptions() {
       }
     >
       <FormGroup label="Border color">
-        <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a color..."} />
+        <TextInput
+          aria-label={"Border color"}
+          type={"text"}
+          isDisabled={false}
+          value={""}
+          placeholder={"Enter a color..."}
+        />
       </FormGroup>{" "}
       <FormGroup label="Font">
-        <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a font name..."} />
+        <TextInput
+          aria-label={"Font"}
+          type={"text"}
+          isDisabled={false}
+          value={""}
+          placeholder={"Enter a font name..."}
+        />
       </FormGroup>
       <FormGroup label="Font size">
-        <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a font size..."} />
+        <TextInput
+          aria-label={"Font size"}
+          type={"text"}
+          isDisabled={false}
+          value={""}
+          placeholder={"Enter a font size..."}
+        />
       </FormGroup>
       <FormGroup label="Text color">
-        <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a color..."} />
+        <TextInput
+          aria-label={"Text color"}
+          type={"text"}
+          isDisabled={false}
+          value={""}
+          placeholder={"Enter a color..."}
+        />
       </FormGroup>
       <FormGroup label="Fill color">
-        <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a color..."} />
+        <TextInput
+          aria-label={"Fill color"}
+          type={"text"}
+          isDisabled={false}
+          value={""}
+          placeholder={"Enter a color..."}
+        />
       </FormGroup>
     </FormFieldGroupExpandable>
   );
@@ -223,24 +260,36 @@ export function ShapeOptions() {
       <Grid hasGutter={true}>
         <GridItem span={6}>
           <FormGroup label="Width">
-            <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a value..."} />
+            <TextInput
+              aria-label={"Width"}
+              type={"text"}
+              isDisabled={false}
+              value={""}
+              placeholder={"Enter a value..."}
+            />
           </FormGroup>
         </GridItem>
         <GridItem span={6}>
           <FormGroup label="Height">
-            <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a value..."} />
+            <TextInput
+              aria-label={"Height"}
+              type={"text"}
+              isDisabled={false}
+              value={""}
+              placeholder={"Enter a value..."}
+            />
           </FormGroup>
         </GridItem>
       </Grid>
       <Grid hasGutter={true}>
         <GridItem span={6}>
           <FormGroup label="X">
-            <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a value..."} />
+            <TextInput aria-label={"X"} type={"text"} isDisabled={false} value={""} placeholder={"Enter a value..."} />
           </FormGroup>
         </GridItem>
         <GridItem span={6}>
           <FormGroup label="Y">
-            <TextInput type={"text"} isDisabled={false} value={""} placeholder={"Enter a value..."} />
+            <TextInput aria-label={"Y"} type={"text"} isDisabled={false} value={""} placeholder={"Enter a value..."} />
           </FormGroup>
         </GridItem>
       </Grid>
@@ -283,7 +332,7 @@ export function PropertiesPanel({
                   titleText={{
                     text: (
                       <TextContent>
-                        <Text component={TextVariants.h2}>
+                        <Text component={TextVariants.h4}>
                           <DataSourceIcon />
                           &nbsp;&nbsp;Global properties
                         </Text>
@@ -296,6 +345,7 @@ export function PropertiesPanel({
             >
               <FormGroup label="Name">
                 <TextInput
+                  aria-label={"Name"}
                   type={"text"}
                   isDisabled={false}
                   value={dmn.definitions["@_name"]}
@@ -304,6 +354,7 @@ export function PropertiesPanel({
               </FormGroup>
               <FormGroup label="Description">
                 <TextArea
+                  aria-label={"Description"}
                   type={"text"}
                   isDisabled={false}
                   value={dmn.definitions["description"]}
@@ -318,6 +369,7 @@ export function PropertiesPanel({
 
               <FormGroup label="Namespace">
                 <TextInput
+                  aria-label={"Namespace"}
                   type={"text"}
                   isDisabled={false}
                   value={dmn.definitions["@_namespace"]}
@@ -326,6 +378,7 @@ export function PropertiesPanel({
               </FormGroup>
               <FormGroup label="Expression language">
                 <TextInput
+                  aria-label={"Expression language"}
                   type={"text"}
                   isDisabled={false}
                   value={dmn.definitions["@_expressionLanguage"]}

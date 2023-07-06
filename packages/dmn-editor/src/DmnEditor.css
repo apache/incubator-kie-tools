@@ -1,5 +1,5 @@
 .kie-dmn-editor--diagram-container {
-  height: 600px;
+  height: 100%;
 }
 
 .kie-dmn-editor--node {
@@ -54,7 +54,6 @@
 .kie-dmn-editor--properties-panel-toggle:hover {
   box-shadow: -5px 4px 2px 0px rgb(127 127 127);
 }
-
 .kie-dmn-editor--properties-panel-toggle-button {
   margin: 0;
   width: 40px;
@@ -68,6 +67,44 @@
   filter: brightness(95%);
 }
 .kie-dmn-editor--properties-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+
+.kie-dmn-editor--node-outgoing-stuff-toolbar {
+  position: absolute;
+  left: calc(100% - 1px); /* - 1px to make sure it is directly connected to the node */
+  top: 0;
+  font-size: 0.7em;
+  padding-left: 5px;
+}
+.kie-dmn-editor--node-outgoing-stuff-toolbar > div {
+  display: flex;
+  margin: 0 0 4px 0;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid black;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--node-outgoing-stuff-toolbar > div > div {
+  color: black;
+  margin: 0;
+  padding: 0;
+  width: 22px;
+  height: 22px;
+  max-width: 22px;
+  border-radius: 22px;
+  background: #fff;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+}
+.kie-dmn-editor--node-outgoing-stuff-toolbar > div > div:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--node-outgoing-stuff-toolbar > div > div:active {
   filter: brightness(90%);
 }
 
@@ -111,17 +148,26 @@
   filter: brightness(90%);
 }
 
+.kie-dmn-editor--tabs ~ section {
+  overflow: scroll;
+  height: calc(100% - 40px);
+}
+
 /* info button on all nodes */
-.kie-dmn-editor--info-label {
+.kie-dmn-editor--info-label-toolbar {
   position: absolute;
+  left: calc(-9.5px - 14px);
+  top: 0px;
+  padding-right: 21px;
+}
+.kie-dmn-editor--info-label {
   padding: 4px 5px;
-  left: -8.5px;
-  top: 4px;
   height: 19px;
   cursor: pointer;
   background: white;
   color: black;
   font-weight: bold;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
 .kie-dmn-editor--info-label > .pf-c-label__content::before {
   border: 1px solid black;

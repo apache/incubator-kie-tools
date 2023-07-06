@@ -1,35 +1,27 @@
-import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
+import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import {
-  DMN14__tBusinessKnowledgeModel,
-  DMN14__tDecision,
-  DMN14__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-
+import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
-
 import { BoxedExpression } from "./BoxedExpression";
 import { Diagram } from "./Diagram";
-
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
 import { IncludedModels } from "./IncludedModels";
-
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DataTypes } from "./DataTypes";
 import { Documentation } from "./Documentation";
+import { PropertiesPanel } from "./PropertiesPanel";
+import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { PropertiesPanel } from "./PropertiesPanel";
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -45,16 +37,6 @@ export enum DmnEditorTab {
 export type DmnEditorRef = {
   getContent(): string;
 };
-
-export type DmnNodeWithExpression =
-  | {
-      type: "bkm";
-      content: DMN14__tBusinessKnowledgeModel;
-    }
-  | {
-      type: "decision";
-      content: DMN14__tDecision;
-    };
 
 export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Ref<DmnEditorRef>) => {
   const marshaller = useMemo(() => getMarshaller(props.xml.trim() || EMPTY_DMN_14), [props.xml]);
@@ -95,7 +77,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
   return (
     <>
       <>
-        <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region">
+        <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region" className={"kie-dmn-editor--tabs"}>
           <Tab
             eventKey={DmnEditorTab.EDITOR}
             title={

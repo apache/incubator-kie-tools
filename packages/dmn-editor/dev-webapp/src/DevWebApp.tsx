@@ -50,7 +50,7 @@ export function DevWebApp() {
   return (
     <>
       <Page onDragOver={onDragOver} onDrop={onDrop}>
-        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true}>
+        <PageSection variant={"light"} isFilled={false} padding={{ default: "padding" }}>
           <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
             <FlexItem shrink={{ default: "shrink" }}>
               <h3>DMN Editor :: Dev webapp </h3>
@@ -64,9 +64,11 @@ export function DevWebApp() {
               <button onClick={downloadAsXml}>Download as XML</button>
             </FlexItem>
           </Flex>
-          <hr />
-          <DmnEditor ref={ref} xml={xml} />
           <a ref={downloadRef} />
+        </PageSection>
+        <hr />
+        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+          <DmnEditor ref={ref} xml={xml} />
         </PageSection>
       </Page>
     </>

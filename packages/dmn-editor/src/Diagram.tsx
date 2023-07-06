@@ -1,3 +1,8 @@
+import * as RF from "reactflow";
+
+import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
 import {
   DMN14__tBusinessKnowledgeModel,
   DMN14__tDecision,
@@ -6,29 +11,26 @@ import {
   DMN14__tGroup,
   DMN14__tInformationItem,
   DMN14__tInputData,
-  DMN14__tItemDefinition,
   DMN14__tKnowledgeSource,
   DMN14__tTextAnnotation,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { v4 as uuid } from "uuid";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import * as RF from "reactflow";
-import { DmnNodeWithExpression } from "./DmnEditor";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
-import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
+import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
+import { v4 as uuid } from "uuid";
+import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 
-const panOnDrag = [1, 2];
+const PAN_ON_DRAG = [1, 2];
 
-const SNAP_GRID = {
-  x: 20,
-  y: 20,
-};
+const SNAP_GRID = { x: 20, y: 20 };
+
+const FIT_VIEW_OPTIONS = { maxZoom: 1, minZoom: 1, duration: 400 };
+
+const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
 
 export function Diagram({
   dmn,
@@ -50,17 +52,7 @@ export function Diagram({
   const [nodes, setNodes, onNodesChange] = RF.useNodesState([]);
   const [edges, setEdges, onEdgesChange] = RF.useEdgesState([]);
 
-  const defaultViewport = useMemo(() => {
-    return { x: 100, y: 0, zoom: 1 };
-  }, []);
-
-  const fitViewOptions = useMemo<RF.FitViewOptions>(() => {
-    return { maxZoom: 1, minZoom: 1, duration: 400 };
-  }, []);
-
-  const snapGrid = useMemo<[number, number]>(() => {
-    return [SNAP_GRID.x, SNAP_GRID.y];
-  }, []);
+  const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
 
   const nodeTypes = useMemo(
     () => ({
@@ -97,22 +89,19 @@ export function Diagram({
     [dmn.definitions]
   );
 
-  const getShapePosition = useCallback(
-    (shape: DMNDI13__DMNShape) => {
-      // Without snapping at opening
-      // return {
-      //   x: shape["dc:Bounds"]?.["@_x"] ?? 0,
-      //   y: shape["dc:Bounds"]?.["@_y"] ?? 0,
-      // };
+  const getShapePosition = useCallback((shape: DMNDI13__DMNShape) => {
+    // Without snapping at opening
+    // return {
+    //   x: shape["dc:Bounds"]?.["@_x"] ?? 0,
+    //   y: shape["dc:Bounds"]?.["@_y"] ?? 0,
+    // };
 
-      // With snapping at opening
-      return {
-        x: Math.floor((shape["dc:Bounds"]?.["@_x"] ?? 0) / snapGrid[0]) * snapGrid[0],
-        y: Math.floor((shape["dc:Bounds"]?.["@_y"] ?? 0) / snapGrid[1]) * snapGrid[1],
-      };
-    },
-    [snapGrid]
-  );
+    // With snapping at opening
+    return {
+      x: Math.floor((shape["dc:Bounds"]?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
+      y: Math.floor((shape["dc:Bounds"]?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+    };
+  }, []);
 
   const onInfo = useCallback(() => {
     setPropertiesPanelOpen(true);
@@ -403,7 +392,7 @@ export function Diagram({
         edges={edges}
         panOnScroll={true}
         selectionOnDrag={true}
-        panOnDrag={panOnDrag}
+        panOnDrag={PAN_ON_DRAG}
         panActivationKeyCode={"Alt"}
         selectionMode={RF.SelectionMode.Partial}
         onNodesChange={onNodesChange} // FIXME: Selection is getting lost when dragging if I change to _onNodesChange.
@@ -412,15 +401,15 @@ export function Diagram({
         edgeTypes={edgeTypes}
         snapToGrid={true}
         snapGrid={snapGrid}
-        defaultViewport={defaultViewport}
+        defaultViewport={DEFAULT_VIEWPORT}
         fitView={false}
-        fitViewOptions={fitViewOptions}
+        fitViewOptions={FIT_VIEW_OPTIONS}
         attributionPosition={"bottom-right"}
         onInit={setReactFlowInstance}
         onDrop={onDrop}
         onDragOver={onDragOver}
       >
-        <Status />
+        <SelectionStatus />
         <Pallete />
         <PropertiesPanelToggle
           isPropertiesPanelOpen={isPropertiesPanelOpen}
@@ -428,7 +417,7 @@ export function Diagram({
         />
         <PanWhenAltPressed />
         <RF.Background />
-        <RF.Controls fitViewOptions={fitViewOptions} position={"bottom-right"} />
+        <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
       </RF.ReactFlow>
     </>
   );
@@ -459,7 +448,7 @@ export function PropertiesPanelToggle({
   );
 }
 
-export function Status() {
+export function SelectionStatus() {
   const nodes = RF.useNodes();
   const { setState: setStore, getState: getStore } = RF.useStoreApi();
 
@@ -524,7 +513,6 @@ export function Pallete() {
         >
           B
         </button>
-
         <button
           className={"kie-dmn-editor--pallete-button dndnode knowledge-source"}
           onDragStart={(event) => onDragStart(event, "knowledgeSource")}
@@ -539,7 +527,6 @@ export function Pallete() {
         >
           D
         </button>
-
         <button
           className={"kie-dmn-editor--pallete-button dndnode text-annotation"}
           onDragStart={(event) => onDragStart(event, "textAnnotation")}
@@ -611,28 +598,27 @@ export function DataTypeToolbar(props: {
   );
 }
 
-export function NewNodeToolbar(props: {}) {
+export function OutgoingStuffToolbar(props: { isVisible: boolean }) {
   return (
-    <RF.NodeToolbar position={RF.Position.Top} align={"center"}>
-      <Label isCompact={true}>D</Label>
-      <Label isCompact={true}>K</Label>
-      <Label isCompact={true}>T</Label>
-      <Label isCompact={true}>B</Label>
-    </RF.NodeToolbar>
-  );
-}
+    <>
+      {props.isVisible && (
+        <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"}>
+          <FlexItem>
+            <div>I</div>
+            <div>K</div>
+            <div>A</div>
+            <div>-</div>
+          </FlexItem>
 
-export function OutgoingEdgesToolbar(props: {}) {
-  return (
-    <RF.NodeToolbar position={RF.Position.Right} align={"center"}>
-      <Label isCompact={true}>I</Label>
-      <br />
-      <Label isCompact={true}>K</Label>
-      <br />
-      <Label isCompact={true}>A</Label>
-      <br />
-      <Label isCompact={true}>-</Label>
-    </RF.NodeToolbar>
+          <FlexItem>
+            <div>D</div>
+            <div>K</div>
+            <div>T</div>
+            <div>B</div>
+          </FlexItem>
+        </Flex>
+      )}
+    </>
   );
 }
 
@@ -686,9 +672,11 @@ export function InfoButton(props: { isVisible: boolean; onClick: () => void }) {
   return (
     <>
       {props.isVisible && (
-        <Label onClick={props.onClick} className={"kie-dmn-editor--info-label"}>
-          <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
-        </Label>
+        <div className={"kie-dmn-editor--info-label-toolbar"}>
+          <Label onClick={props.onClick} className={"kie-dmn-editor--info-label"}>
+            <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
+          </Label>
+        </div>
       )}
     </>
   );
@@ -728,8 +716,6 @@ export function InputDataNode({
   return (
     <>
       <NsweHandles />
-      <NewNodeToolbar />
-      <OutgoingEdgesToolbar />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
       <div
@@ -737,6 +723,7 @@ export function InputDataNode({
         className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}
         style={{ zIndex: selected ? 100 : 10 }}
       >
+        <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
       </div>
@@ -759,8 +746,6 @@ export function DecisionNode({
   return (
     <>
       <NsweHandles />
-      <NewNodeToolbar />
-      <OutgoingEdgesToolbar />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
       <div
@@ -772,6 +757,7 @@ export function DecisionNode({
           isVisible={isHovered || selected}
           onClick={() => setOpenNodeWithExpression({ type: "decision", content: decision })}
         />
+        <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
       </div>
@@ -794,8 +780,7 @@ export function BkmNode({
   return (
     <>
       <NsweHandles />
-      <NewNodeToolbar />
-      <OutgoingEdgesToolbar />
+      <OutgoingStuffToolbar isVisible={isHovered || selected} />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
       <div
@@ -807,6 +792,7 @@ export function BkmNode({
           isVisible={isHovered || selected}
           onClick={() => setOpenNodeWithExpression({ type: "bkm", content: bkm })}
         />
+        <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
       </div>
@@ -823,14 +809,13 @@ export function TextAnnotationNode({
   return (
     <>
       <NsweHandles />
-      <NewNodeToolbar />
-      <OutgoingEdgesToolbar />
       {selected && <ResizerHandle />}
       <div
         ref={ref}
         className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}
         style={{ zIndex: selected ? 100 : 10 }}
       >
+        <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
       </div>
@@ -847,8 +832,6 @@ export function DecisionServiceNode({
   return (
     <>
       <NsweHandles />
-      <NewNodeToolbar />
-      <OutgoingEdgesToolbar />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
       <div
@@ -856,6 +839,7 @@ export function DecisionServiceNode({
         className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}
         style={{ zIndex: selected ? 100 : 10 }}
       >
+        <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
       </div>
@@ -872,14 +856,13 @@ export function KnowledgeSourceNode({
   return (
     <>
       <NsweHandles />
-      <NewNodeToolbar />
-      <OutgoingEdgesToolbar />
       {selected && <ResizerHandle />}
       <div
         ref={ref}
         className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}
         style={{ zIndex: selected ? 100 : 10 }}
       >
+        <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
       </div>

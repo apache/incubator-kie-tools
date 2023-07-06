@@ -1,5 +1,4 @@
 import * as React from "react";
-import { DmnNodeWithExpression } from "./DmnEditor";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import {
   DmnBuiltInDataType,
@@ -18,6 +17,7 @@ import {
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { SPEC } from "./Spec";
+import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 
 export function BoxedExpression({
   dmn,
