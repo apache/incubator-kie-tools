@@ -17,6 +17,16 @@
 import * as React from "react";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import {
+  Title,
+  Button,
+  EmptyState,
+  EmptyStateVariant,
+  EmptyStateIcon,
+  EmptyStateBody,
+  EmptyStateSecondaryActions,
+} from "@patternfly/react-core/dist/js";
+import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 
 interface Props {
   /**
@@ -65,8 +75,6 @@ export class TestScenarioEditor extends React.Component<Props, State> {
 
   public setContent(path: string, content: string): Promise<void> {
     try {
-      //this.doSetContent(path, content);
-      //this.props.setNotifications(this.state.path, this.validate());
       return Promise.resolve();
     } catch (e) {
       console.error(e);
@@ -88,5 +96,26 @@ export class TestScenarioEditor extends React.Component<Props, State> {
 
   public validate(): Notification[] {
     return [];
+  }
+
+  public render() {
+    return (
+      <EmptyState variant={EmptyStateVariant.large}>
+        <EmptyStateIcon icon={CubesIcon} />
+        <Title headingLevel="h4" size="lg">
+          Empty state
+        </Title>
+        <EmptyStateBody>This represents an the empty state pattern in Patternfly 4.</EmptyStateBody>
+        <Button variant="primary">Primary action</Button>
+        <EmptyStateSecondaryActions>
+          <Button variant="link">Multiple</Button>
+          <Button variant="link">Action Buttons</Button>
+          <Button variant="link">Can</Button>
+          <Button variant="link">Go here</Button>
+          <Button variant="link">In the secondary</Button>
+          <Button variant="link">Action area</Button>
+        </EmptyStateSecondaryActions>
+      </EmptyState>
+    );
   }
 }

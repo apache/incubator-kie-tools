@@ -32,7 +32,7 @@ export class TestScenarioEditorInterface implements Editor {
 
   constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>) {}
 
-  af_componentRoot() {
+  public af_componentRoot() {
     return (
       <TestScenarioEditor
         exposing={(s) => (this.self = s)}
@@ -45,24 +45,24 @@ export class TestScenarioEditorInterface implements Editor {
     );
   }
 
-  setContent(path: string, content: string): Promise<void> {
+  public setContent(path: string, content: string): Promise<void> {
     return this.self.setContent(path, content);
   }
 
-  getContent(): Promise<string> {
+  public getContent(): Promise<string> {
     return this.self.getContent();
   }
 
-  getPreview(): Promise<string | undefined> {
+  public getPreview(): Promise<string | undefined> {
     // Preview not available
     return Promise.resolve(undefined);
   }
 
-  undo(): Promise<void> {
+  public undo(): Promise<void> {
     return this.self.undo();
   }
 
-  redo(): Promise<void> {
+  public redo(): Promise<void> {
     return this.self.redo();
   }
 
