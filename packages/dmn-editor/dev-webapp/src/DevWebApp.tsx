@@ -50,7 +50,7 @@ export function DevWebApp() {
   return (
     <>
       <Page onDragOver={onDragOver} onDrop={onDrop}>
-        <PageSection variant={"light"} isFilled={true}>
+        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true}>
           <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
             <FlexItem shrink={{ default: "shrink" }}>
               <h3>DMN Editor :: Dev webapp </h3>

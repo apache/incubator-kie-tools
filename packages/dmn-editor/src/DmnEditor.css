@@ -3,6 +3,8 @@
 }
 
 .kie-dmn-editor--node {
+  height: 100%;
+  width: 100%;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -20,7 +22,7 @@
 .kie-dmn-editor--pallete {
   width: 42px;
   background: #fff;
-  border-radius: 20px;
+  border-radius: 40px;
   border: 1px solid black;
 }
 .kie-dmn-editor--pallete:hover {
@@ -32,7 +34,7 @@
   width: 40px;
   height: 40px;
   max-width: 40px;
-  border-radius: 20px;
+  border-radius: 40px;
   border: 0;
   background: white;
 }
@@ -40,6 +42,32 @@
   filter: brightness(95%);
 }
 .kie-dmn-editor--pallete-button:active {
+  filter: brightness(90%);
+}
+
+.kie-dmn-editor--properties-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--properties-panel-toggle:hover {
+  box-shadow: -5px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-dmn-editor--properties-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--properties-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--properties-panel-toggle-button:active {
   filter: brightness(90%);
 }
 
@@ -70,6 +98,8 @@
   box-shadow: 4px 6px 2px 0px rgb(127 127 127);
   cursor: pointer;
   background: white;
+  color: black;
+  font-weight: bold;
 }
 .kie-dmn-editor--edit-expression-label > .pf-c-label__content::before {
   border: 1px solid black;
@@ -78,6 +108,28 @@
   filter: brightness(95%);
 }
 .kie-dmn-editor--edit-expression-label:active {
+  filter: brightness(90%);
+}
+
+/* info button on all nodes */
+.kie-dmn-editor--info-label {
+  position: absolute;
+  padding: 4px 5px;
+  left: -8.5px;
+  top: 4px;
+  height: 19px;
+  cursor: pointer;
+  background: white;
+  color: black;
+  font-weight: bold;
+}
+.kie-dmn-editor--info-label > .pf-c-label__content::before {
+  border: 1px solid black;
+}
+.kie-dmn-editor--info-label:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--info-label:active {
   filter: brightness(90%);
 }
 

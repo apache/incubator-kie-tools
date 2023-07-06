@@ -22,14 +22,14 @@ import { SPEC } from "./Spec";
 export function BoxedExpression({
   dmn,
   setDmn,
-  openNodeWithExpression,
-  setOpenNodeWithExpression,
+  nodeWithExpression,
+  onBackToDiagram,
   container,
 }: {
   dmn: { definitions: DMN14__tDefinitions };
   setDmn: React.Dispatch<React.SetStateAction<{ definitions: DMN14__tDefinitions }>>;
-  openNodeWithExpression: DmnNodeWithExpression;
-  setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
+  nodeWithExpression: DmnNodeWithExpression;
+  onBackToDiagram: () => void;
   container: React.RefObject<HTMLElement>;
 }) {
   const widthsById = useMemo(() => {
@@ -47,9 +47,8 @@ export function BoxedExpression({
   }, [dmn.definitions]);
 
   const expressionDefinition = useMemo<ExpressionDefinition>(
-    () =>
-      openNodeWithExpression ? dmnNodeToBoxedExpression(widthsById, openNodeWithExpression) : newExpressionDefinition(),
-    [openNodeWithExpression, widthsById]
+    () => (nodeWithExpression ? dmnNodeToBoxedExpression(widthsById, nodeWithExpression) : newExpressionDefinition()),
+    [nodeWithExpression, widthsById]
   );
 
   const dataTypes = useMemo(
@@ -74,18 +73,14 @@ export function BoxedExpression({
 
   return (
     <>
-      <Label
-        isCompact={true}
-        className={"kie-dmn-editor--boxed-expression-back"}
-        onClick={() => setOpenNodeWithExpression(undefined)}
-      >
+      <Label isCompact={true} className={"kie-dmn-editor--boxed-expression-back"} onClick={onBackToDiagram}>
         Back to Diagram
       </Label>
       <Divider inset={{ default: "insetMd" }} />
       <br />
       <>
         <BoxedExpressionEditor
-          decisionNodeId={openNodeWithExpression.content["@_id"]!}
+          decisionNodeId={nodeWithExpression.content["@_id"]!}
           expressionDefinition={expressionDefinition}
           setExpressionDefinition={setExpressionDefinition}
           dataTypes={dataTypes}

@@ -17,16 +17,19 @@ import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/di
 import { BoxedExpression } from "./BoxedExpression";
 import { Diagram } from "./Diagram";
 
-import { IncludedModels } from "./IncludedModels";
-import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
-import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
-import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
+import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
+import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
+import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
+import { IncludedModels } from "./IncludedModels";
+
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { DataTypes } from "./DataTypes";
+import { Documentation } from "./Documentation";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Documentation } from "./Documentation";
-import { DataTypes } from "./DataTypes";
+import { PropertiesPanel } from "./PropertiesPanel";
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -75,18 +78,24 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
   );
 
   const [openNodeWithExpression, setOpenNodeWithExpression] = useState<DmnNodeWithExpression | undefined>(undefined);
-
   const [tab, setTab] = useState(DmnEditorTab.EDITOR);
   const onTabChanged = useCallback((e, tab) => {
     setTab(tab);
   }, []);
 
-  const rfContainer = useRef<HTMLDivElement>(null);
+  const [isPropertiesPanelOpen, setPropertiesPanelOpen] = useState(true);
+  const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
+
+  const diagramContainerRef = useRef<HTMLDivElement>(null);
+
+  const onBackToDigram = useCallback(() => {
+    setOpenNodeWithExpression(undefined);
+  }, []);
 
   return (
     <>
-      <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-        <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region" style={{ height: "100%" }}>
+      <>
+        <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region">
           <Tab
             eventKey={DmnEditorTab.EDITOR}
             title={
@@ -99,26 +108,44 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
             }
           >
             {tab === DmnEditorTab.EDITOR && (
-              <div className={"kie-dmn-editor--diagram-container"} ref={rfContainer}>
-                <Label style={{ position: "absolute", bottom: "10px" }}>{`DMN ${marshaller.version}`}</Label>
-                {!openNodeWithExpression && (
-                  <Diagram
-                    dmn={dmn}
-                    setDmn={setDmn}
-                    container={rfContainer}
-                    setOpenNodeWithExpression={setOpenNodeWithExpression}
-                  />
-                )}
-                {openNodeWithExpression && (
-                  <BoxedExpression
-                    dmn={dmn}
-                    setDmn={setDmn}
-                    container={rfContainer}
-                    openNodeWithExpression={openNodeWithExpression}
-                    setOpenNodeWithExpression={setOpenNodeWithExpression}
-                  />
-                )}
-              </div>
+              <Drawer isExpanded={isPropertiesPanelOpen} isInline={true} position={"right"}>
+                <DrawerContent
+                  panelContent={
+                    <PropertiesPanel
+                      dmn={dmn}
+                      setDmn={setDmn}
+                      selectedNodes={selectedNodes}
+                      onClose={() => setPropertiesPanelOpen(false)}
+                    />
+                  }
+                >
+                  <DrawerContentBody>
+                    <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
+                      <Label style={{ position: "absolute", bottom: "10px" }}>{`DMN ${marshaller.version}`}</Label>
+                      {!openNodeWithExpression && (
+                        <Diagram
+                          dmn={dmn}
+                          setDmn={setDmn}
+                          container={diagramContainerRef}
+                          isPropertiesPanelOpen={isPropertiesPanelOpen}
+                          setOpenNodeWithExpression={setOpenNodeWithExpression}
+                          onSelect={setSelectedNodes}
+                          setPropertiesPanelOpen={setPropertiesPanelOpen}
+                        />
+                      )}
+                      {openNodeWithExpression && (
+                        <BoxedExpression
+                          dmn={dmn}
+                          setDmn={setDmn}
+                          container={diagramContainerRef}
+                          nodeWithExpression={openNodeWithExpression}
+                          onBackToDiagram={onBackToDigram}
+                        />
+                      )}
+                    </div>
+                  </DrawerContentBody>
+                </DrawerContent>
+              </Drawer>
             )}
           </Tab>
 
@@ -164,7 +191,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
             {tab === DmnEditorTab.DOCUMENTATION && <Documentation />}
           </Tab>
         </Tabs>
-      </PageSection>
+      </>
     </>
   );
 });
