@@ -46,6 +46,8 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private HttpMethod method = HttpMethod.GET;
 
+    private String path = "";
+
     private Collection<String> join;
 
     public ExternalDataSetDef() {
@@ -140,6 +142,14 @@ public class ExternalDataSetDef extends DataSetDef {
         return method;
     }
 
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
     public void validate() {
         super.validate();
         if (isBlank(url) && isBlank(content) && (join == null || join.isEmpty())) {
@@ -161,6 +171,7 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setQuery(getQuery());
         def.setForm(getForm());
         def.setMethod(getMethod());
+        def.setPath(getPath());
         return def;
     }
 
@@ -183,7 +194,8 @@ public class ExternalDataSetDef extends DataSetDef {
                Objects.equals(join, other.join) &&
                Objects.equals(query, other.query) &&
                Objects.equals(form, other.form) &&
-               Objects.equals(method, other.method);
+               Objects.equals(method, other.method) &&
+               Objects.equals(path, other.path);
     }
 
     public String toString() {
@@ -203,7 +215,8 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Join=").append(join).append("\n");
         out.append("Query=").append(query).append("\n");
         out.append("Form=").append(form).append("\n");
-        out.append("Method=").append(method);
+        out.append("Method=").append(method).append("\n");
+        out.append("Path=").append(path);
         return out.toString();
     }
 
@@ -220,7 +233,8 @@ public class ExternalDataSetDef extends DataSetDef {
                 join,
                 query,
                 form,
-                method);
+                method,
+                path);
     }
 
 }

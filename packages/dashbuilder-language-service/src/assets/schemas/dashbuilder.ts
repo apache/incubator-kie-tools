@@ -222,6 +222,10 @@ export const DASHBUILDER_SCHEMA = {
           description: "The max of rows cached by the dataset or with accumulated datasets. Default is 1000.",
           type: "integer",
         },
+        path: {
+          description: "Additional path added to the dataset URL",
+          type: "string",
+        },
         method: {
           description: "HTTP Method used by the the dataset request. By default it is GET",
           type: "string",

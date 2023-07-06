@@ -146,6 +146,11 @@ public class ExternalDataSetClientProvider {
             // relative URLs
             url = new URL(def.getUrl(), DomGlobal.location.href);
         }
+
+        if (!isBlank(def.getPath())) {
+            url = new URL(def.getPath(), url);
+        }
+
         if (def.getHeaders() != null) {
             var headers = new Headers();
             def.getHeaders().forEach(headers::append);
@@ -203,8 +208,14 @@ public class ExternalDataSetClientProvider {
         DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
 
-        if (def.getType() != null && isBlank(def.getExpression())) {
-            def.setExpression(def.getType().getExpression());
+        if (def.getType() != null) {
+            var type = def.getType();
+            try {
+                content = applyExpression(type.getExpression(), content);
+            } catch (Exception e) {
+                callback.onError(new ClientRuntimeError("Error evaluating type \"" + type + "\" expression", e));
+                return null;
+            }
         }
 
         if (!isBlank(def.getExpression())) {

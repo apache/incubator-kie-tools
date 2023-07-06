@@ -42,6 +42,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public static final String JOIN = "join";
     public static final String FORM = "form";
     public static final String METHOD = "method";
+    public static final String PATH = "path";
 
     @Override
     public void fromJson(ExternalDataSetDef def, JsonObject json) {
@@ -54,6 +55,7 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var query = json.getObject(QUERY);
         var accumulate = json.getBoolean(ACCUMULATE);
         var type = json.getString(TYPE);
+        var path = json.getString(PATH);
         var method = json.getString(METHOD);
         var join = json.getArray(JOIN);
 
@@ -71,6 +73,10 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
 
         if (!isBlank(method)) {
             def.setMethod(HttpMethod.byName(method));
+        }
+
+        if (!isBlank(path)) {
+            def.setPath(path);
         }
 
         if (headers != null) {
@@ -117,6 +123,10 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
 
         if (def.getMethod() != null) {
             json.put(METHOD, def.getMethod().name());
+        }
+
+        if (def.getPath() != null) {
+            json.put(PATH, def.getPath());
         }
 
         if (def.getHeaders() != null) {

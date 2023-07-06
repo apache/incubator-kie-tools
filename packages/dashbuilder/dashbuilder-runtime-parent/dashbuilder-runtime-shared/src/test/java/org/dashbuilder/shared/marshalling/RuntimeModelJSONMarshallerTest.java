@@ -85,7 +85,8 @@ public class RuntimeModelJSONMarshallerTest {
             "      \"dynamic\": false,\n" + 
             "      \"url\": \"http://acme.com\",\n" +
             "      \"accumulate\": false,\n" +
-            "      \"method\": \"GET\"\n" +
+            "      \"method\": \"GET\",\n" +
+            "      \"path\": \"\"\n" +
             "    }\n" + 
             "  ],\n" + 
             "  \"properties\": {\n" + 
