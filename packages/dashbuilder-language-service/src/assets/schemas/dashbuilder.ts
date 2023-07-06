@@ -294,6 +294,7 @@ export const DASHBUILDER_SCHEMA = {
     },
     typeEnum: {
       type: "string",
+      description: "For datasets that are reading data from Prometheus query response",
       enum: ["prometheus"],
       additionalProperties: false,
       title: "typeEnum",
@@ -302,6 +303,7 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         id: {
+          description: "An unique ID for the column",
           type: "string",
         },
         type: {
@@ -313,6 +315,7 @@ export const DASHBUILDER_SCHEMA = {
     },
     DataSetLookup: {
       type: "object",
+      description: "Selects a dataset part to be displayed by this component",
       properties: {
         uuid: {
           description: "The dataset uuid.",
@@ -358,45 +361,18 @@ export const DASHBUILDER_SCHEMA = {
           type: ["boolean"],
         },
         listening: {
+          description: "Enable this so this component can be filtered by others",
           type: ["boolean"],
         },
         notification: {
+          description: "Enable this so this component can filter others",
           type: ["boolean"],
         },
         selfapply: {
+          description: "Enable this so this component can self apply the filter",
           type: ["boolean"],
         },
       },
-      oneOf: [
-        {
-          properties: {
-            notification: {
-              type: "boolean",
-            },
-            listening: {
-              type: "boolean",
-            },
-          },
-          required: ["notification"],
-          not: {
-            required: ["listening"],
-          },
-        },
-        {
-          properties: {
-            notification: {
-              type: "boolean",
-            },
-            listening: {
-              type: "boolean",
-            },
-          },
-          required: ["listening"],
-          not: {
-            required: ["notification"],
-          },
-        },
-      ],
       title: "SettingsFilter",
     },
     SettingsColumn: {
@@ -784,6 +760,7 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         lookup: {
+          description: "Configures the source of data for this displayer",
           $ref: "#/definitions/DataSetLookup",
         },
         filter: {
