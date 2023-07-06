@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-import { Pagination, PaginationVariant, PerPageOptions, Skeleton } from "@patternfly/react-core/dist/js";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+  Pagination,
+  PaginationVariant,
+  PerPageOptions,
+  Skeleton,
+} from "@patternfly/react-core/dist/js";
 import {
   Dropdown,
   DropdownItem,
@@ -32,15 +40,16 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router";
+import { ErrorPage } from "../error/ErrorPage";
 import { QueryParams } from "../navigation/Routes";
 import { setPageTitle } from "../PageTitle";
 import { useQueryParam } from "../queryParams/QueryParamsContext";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { useSampleDispatch } from "./hooks/SampleContext";
-import { Sample, SampleCategories, SampleCategory, SampleCoversHashtable } from "./types";
 import { SampleCard } from "./SampleCard";
 import { SampleCardSkeleton } from "./SampleCardSkeleton";
-import { ErrorPage } from "../error/ErrorPage";
+import { SamplesPanelContent } from "./SamplePanelContent";
+import { Sample, SampleCategories, SampleCategory, SampleCoversHashtable } from "./types";
 
 type SearchParams = { searchValue: string; category?: SampleCategory };
 
@@ -78,6 +87,8 @@ export function SamplesCatalog() {
   const [searchParams, setSearchParams] = useState<SearchParams | undefined>(undefined);
   const [page, setPage] = React.useState(1);
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
+  const [isDrawerExpanded, setIsDrawerExpanded] = React.useState(false);
+  const [selectedSample, setSelectedSample] = useState<Sample>();
   const history = useHistory();
   const location = useLocation();
 
@@ -194,118 +205,139 @@ export function SamplesCatalog() {
     setPage(v);
   }, []);
 
+  const onCardClick = useCallback((sample: Sample) => {
+    setSelectedSample(sample);
+    setIsDrawerExpanded(true);
+  }, []);
+
   useEffect(() => {
     setPageTitle([PAGE_TITLE]);
   }, []);
 
   return (
     <Page>
-      {sampleLoadingError ? (
-        <ErrorPage kind="SampleCatalog" errors={[sampleLoadingError]} />
-      ) : (
-        <>
-          <PageSection variant={"light"}>
-            <TextContent>
-              <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-              <Text component={TextVariants.p}>Try one of our samples to start defining your model.</Text>
-            </TextContent>
-            <Toolbar style={{ paddingBottom: "0" }}>
-              <ToolbarContent style={{ paddingLeft: "0", paddingRight: "0", paddingBottom: "0" }}>
-                <ToolbarItem variant="search-filter">
-                  <SearchInput
-                    value={""}
-                    type={"search"}
-                    onChange={(_ev, value) => onSearch({ searchValue: value, category: categoryFilter })}
-                    onClear={() => onSearch({ searchValue: "", category: categoryFilter })}
-                    onFocus={() => setCategoryFilterDropdownOpen(false)}
-                    placeholder={"Find samples"}
-                    style={{ width: "400px" }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  />
-                </ToolbarItem>
-                <ToolbarItem>
-                  <Dropdown
-                    style={{ backgroundColor: "white" }}
-                    onSelect={() => setCategoryFilterDropdownOpen(false)}
-                    dropdownItems={categoryFilterDropdownItems}
-                    toggle={
-                      <DropdownToggle
-                        id="category-filter-dropdown"
-                        onToggle={(isOpen: boolean) => setCategoryFilterDropdownOpen(isOpen)}
-                      >
-                        {selectedCategory}
-                      </DropdownToggle>
-                    }
-                    isOpen={isCategoryFilterDropdownOpen}
-                  />
-                </ToolbarItem>
-                <ToolbarItem>
-                  {filterResultMessage && (
-                    <TextContent>
-                      <Text>{filterResultMessage}</Text>
-                    </TextContent>
-                  )}
-                </ToolbarItem>
-                <ToolbarItem variant="pagination">
-                  {loading && <Skeleton width="200px" />}
-                  {!loading && (
-                    <Pagination
-                      isCompact
-                      itemCount={samplesCount}
-                      onSetPage={onSetPage}
-                      page={page}
-                      perPage={CARDS_PER_PAGE}
-                      perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
-                      variant="top"
-                    />
-                  )}
-                </ToolbarItem>
-              </ToolbarContent>
-            </Toolbar>
-          </PageSection>
-          <PageSection isFilled>
-            <>
-              {loading && <SampleCardSkeleton numberOfCards={6} />}
-              {!loading && samplesCount === 0 && (
-                <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
-                  <EmptyState style={{ height: "350px" }}>
-                    <EmptyStateIcon icon={CubesIcon} />
-                    <Title headingLevel="h4" size="lg">
-                      {"None of the available samples matched this search"}
-                    </Title>
-                  </EmptyState>
+      <Drawer isExpanded={isDrawerExpanded} position="right">
+        <DrawerContent
+          panelContent={
+            selectedSample && (
+              <SamplesPanelContent
+                sample={selectedSample}
+                onPanelToggle={() => setIsDrawerExpanded(false)}
+              ></SamplesPanelContent>
+            )
+          }
+        >
+          <DrawerContentBody>
+            {sampleLoadingError ? (
+              <ErrorPage kind="SampleCatalog" errors={[sampleLoadingError]} />
+            ) : (
+              <>
+                <PageSection variant={"light"}>
+                  <TextContent>
+                    <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
+                    <Text component={TextVariants.p}>Try one of our samples to start defining your model.</Text>
+                  </TextContent>
+                  <Toolbar style={{ paddingBottom: "0" }}>
+                    <ToolbarContent style={{ paddingLeft: "0", paddingRight: "0", paddingBottom: "0" }}>
+                      <ToolbarItem variant="search-filter">
+                        <SearchInput
+                          value={""}
+                          type={"search"}
+                          onChange={(_ev, value) => onSearch({ searchValue: value, category: categoryFilter })}
+                          onClear={() => onSearch({ searchValue: "", category: categoryFilter })}
+                          onFocus={() => setCategoryFilterDropdownOpen(false)}
+                          placeholder={"Find samples"}
+                          style={{ width: "400px" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        />
+                      </ToolbarItem>
+                      <ToolbarItem>
+                        <Dropdown
+                          style={{ backgroundColor: "white" }}
+                          onSelect={() => setCategoryFilterDropdownOpen(false)}
+                          dropdownItems={categoryFilterDropdownItems}
+                          toggle={
+                            <DropdownToggle
+                              id="category-filter-dropdown"
+                              onToggle={(isOpen: boolean) => setCategoryFilterDropdownOpen(isOpen)}
+                            >
+                              {selectedCategory}
+                            </DropdownToggle>
+                          }
+                          isOpen={isCategoryFilterDropdownOpen}
+                        />
+                      </ToolbarItem>
+                      <ToolbarItem>
+                        {filterResultMessage && (
+                          <TextContent>
+                            <Text>{filterResultMessage}</Text>
+                          </TextContent>
+                        )}
+                      </ToolbarItem>
+                      <ToolbarItem variant="pagination">
+                        {loading && <Skeleton width="200px" />}
+                        {!loading && (
+                          <Pagination
+                            isCompact
+                            itemCount={samplesCount}
+                            onSetPage={onSetPage}
+                            page={page}
+                            perPage={CARDS_PER_PAGE}
+                            perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
+                            variant="top"
+                          />
+                        )}
+                      </ToolbarItem>
+                    </ToolbarContent>
+                  </Toolbar>
                 </PageSection>
-              )}
-              {!loading && samplesCount > 0 && (
-                <>
-                  <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}>
-                    {visibleSamples.map((sample) => (
-                      <SampleCard
-                        sample={sample}
-                        key={`sample-${sample.sampleId}`}
-                        cover={sampleCovers[sample.sampleId]}
-                      />
-                    ))}
-                  </Gallery>
-                  <br />
-                  <Pagination
-                    itemCount={samplesCount}
-                    onSetPage={onSetPage}
-                    page={page}
-                    perPage={CARDS_PER_PAGE}
-                    perPageComponent="button"
-                    perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
-                    variant={PaginationVariant.bottom}
-                    widgetId="bottom-example"
-                  />
-                </>
-              )}
-            </>
-          </PageSection>
-        </>
-      )}
+                <PageSection isFilled>
+                  <>
+                    {loading && <SampleCardSkeleton numberOfCards={6} />}
+                    {!loading && samplesCount === 0 && (
+                      <PageSection variant={"light"} isFilled={true} style={{ marginRight: "25px" }}>
+                        <EmptyState style={{ height: "350px" }}>
+                          <EmptyStateIcon icon={CubesIcon} />
+                          <Title headingLevel="h4" size="lg">
+                            {"None of the available samples matched this search"}
+                          </Title>
+                        </EmptyState>
+                      </PageSection>
+                    )}
+                    {!loading && samplesCount > 0 && (
+                      <>
+                        <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}>
+                          {visibleSamples.map((sample) => (
+                            <SampleCard
+                              sample={sample}
+                              key={`sample-${sample.sampleId}`}
+                              cover={sampleCovers[sample.sampleId]}
+                              onClick={onCardClick}
+                            />
+                          ))}
+                        </Gallery>
+                        <br />
+                        <Pagination
+                          itemCount={samplesCount}
+                          onSetPage={onSetPage}
+                          page={page}
+                          perPage={CARDS_PER_PAGE}
+                          perPageComponent="button"
+                          perPageOptions={SAMPLE_CARDS_PER_PAGE_OPTIONS}
+                          variant={PaginationVariant.bottom}
+                          widgetId="bottom-example"
+                        />
+                      </>
+                    )}
+                  </>
+                </PageSection>
+              </>
+            )}
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </Page>
   );
 }
