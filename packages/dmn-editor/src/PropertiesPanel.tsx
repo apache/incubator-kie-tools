@@ -171,7 +171,7 @@ export function SingleNodeProperties({
 export function StyleOptions() {
   return (
     <FormFieldGroupExpandable
-      isExpanded={true}
+      isExpanded={false}
       header={
         <FormFieldGroupHeader
           titleText={{
@@ -240,7 +240,7 @@ export function StyleOptions() {
 export function ShapeOptions() {
   return (
     <FormFieldGroupExpandable
-      isExpanded={true}
+      isExpanded={false}
       header={
         <FormFieldGroupHeader
           titleText={{
