@@ -176,6 +176,8 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         name: output["@_label"] ?? output["@_name"] ?? "",
         dataType: (output["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
         width: widthsById.get(d["@_id"]!)?.[1 + (d.input ?? []).length + i],
+        //FIXME: Tiago --> Add defaultOutputEntry
+        //FIXME: Tiago --> Add clauseUnaryTests
       })),
       annotations: (d.annotation ?? []).map((a, i) => ({
         name: a["@_name"] ?? "",
@@ -189,10 +191,24 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
       })),
     };
   } else if (dmnExpr.relation) {
-    return getUndefinedExpressionDefinition();
-    // return {
-    //   logicType: ExpressionDefinitionLogicType.Relation,
-    // };
+    const r = dmnExpr.relation;
+    return {
+      id: r["@_id"]!,
+      name: r["@_label"],
+      logicType: ExpressionDefinitionLogicType.Relation,
+      dataType: (r["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      rows: (r.row ?? []).map((row) => ({
+        id: row["@_id"]!,
+        // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
+        cells: (row.literalExpression ?? []).map((s) => ({ id: s["@_id"]!, content: s.text ?? "" })),
+      })),
+      columns: (r.column ?? []).map((c, i) => ({
+        id: c["@_id"]!,
+        name: c["@_label"] ?? c["@_name"] ?? "",
+        dataType: (c["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        width: widthsById.get(r["@_id"]!)?.[1 + i],
+      })),
+    };
   } else if (dmnExpr.context) {
     const c = dmnExpr.context;
 

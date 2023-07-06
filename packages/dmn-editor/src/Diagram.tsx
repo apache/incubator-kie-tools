@@ -722,13 +722,13 @@ export function InputDataNode({
   return (
     <>
       <NsweHandles />
-      {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
       </div>
+      {selected && <ResizerHandle />}
     </>
   );
 }
@@ -752,7 +752,6 @@ export function DecisionNode({
   return (
     <>
       <NsweHandles />
-      {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}>
         <EditExpressionButton
@@ -763,6 +762,7 @@ export function DecisionNode({
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
       </div>
+      {selected && <ResizerHandle />}
     </>
   );
 }
@@ -787,7 +787,6 @@ export function BkmNode({
     <>
       <NsweHandles />
       <OutgoingStuffToolbar isVisible={isHovered || selected} />
-      {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}>
         <EditExpressionButton
@@ -798,6 +797,7 @@ export function BkmNode({
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
       </div>
+      {selected && <ResizerHandle />}
     </>
   );
 }
@@ -816,12 +816,12 @@ export function TextAnnotationNode({
   return (
     <>
       <NsweHandles />
-      {selected && <ResizerHandle />}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
       </div>
+      {selected && <ResizerHandle />}
     </>
   );
 }
@@ -861,12 +861,12 @@ export function KnowledgeSourceNode({
   return (
     <>
       <NsweHandles />
-      {selected && <ResizerHandle />}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}>
         <OutgoingStuffToolbar isVisible={isHovered || selected} />
         <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
       </div>
+      {selected && <ResizerHandle />}
     </>
   );
 }

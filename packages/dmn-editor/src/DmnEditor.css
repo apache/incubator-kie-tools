@@ -72,10 +72,12 @@
 
 .kie-dmn-editor--node-outgoing-stuff-toolbar {
   position: absolute;
-  left: calc(100% - 1px); /* - 1px to make sure it is directly connected to the node */
+  left: calc(100% - 10px); /* - 1px to make sure it is directly connected to the node */
   top: 0;
   font-size: 0.7em;
-  padding-left: 5px;
+  padding-left: 15px;
+  height: 100%;
+  align-content: flex-start;
 }
 .kie-dmn-editor--node-outgoing-stuff-toolbar > div {
   display: flex;
@@ -157,8 +159,9 @@
 .kie-dmn-editor--info-label-toolbar {
   position: absolute;
   left: calc(-9.5px - 14px);
-  top: 0px;
+  top: 0;
   padding-right: 21px;
+  height: 100%;
 }
 .kie-dmn-editor--info-label {
   padding: 4px 5px;
