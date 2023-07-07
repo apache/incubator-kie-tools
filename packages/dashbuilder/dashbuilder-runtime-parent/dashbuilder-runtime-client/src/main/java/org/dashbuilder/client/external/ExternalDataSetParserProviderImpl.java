@@ -20,10 +20,11 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.dataset.json.ExternalDataSetJSONParser;
 
 @ApplicationScoped
-public class ExternalDataSetParserProvider {
+public class ExternalDataSetParserProviderImpl implements ExternalDataSetParserProvider {
 
     ExternalDataSetJSONParser parser;
 

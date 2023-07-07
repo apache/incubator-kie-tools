@@ -18,6 +18,8 @@ package org.dashbuilder.displayer;
 import java.util.Optional;
 
 import org.dashbuilder.dataset.DataSetLookup;
+import org.dashbuilder.dataset.DataSetOpType;
+import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.dataset.sort.DataSetSort;
 import org.junit.Test;
 
@@ -143,16 +145,37 @@ public class GlobalDisplayerSettingsTest {
     }
 
     @Test
+    public void testLookupOpOrder() {
+        var globalSettings = new DisplayerSettings();
+        var settings = new DisplayerSettings();
+
+        var userLookup = new DataSetLookup(null);
+        userLookup.addOperation(new DataSetFilter());
+        settings.setDataSetLookup(userLookup);
+
+        var globalLookup = new DataSetLookup("GLOBAL UUID");
+        globalLookup.addOperation(new DataSetSort());
+        globalSettings.setDataSetLookup(globalLookup);
+
+        globalDisplayerSettings.setDisplayerSettings(globalSettings);
+        globalDisplayerSettings.apply(settings);
+
+        assertEquals(globalLookup.getDataSetUUID(), settings.getDataSetLookup().getDataSetUUID());
+        assertEquals(DataSetOpType.SORT, settings.getDataSetLookup().getOperation(0).getType());
+        assertEquals(DataSetOpType.FILTER, settings.getDataSetLookup().getOperation(1).getType());
+    }
+
+    @Test
     public void testGlobalColumnsSettings() {
         var globalSettings = new DisplayerSettings();
         var settings = new DisplayerSettings();
-        var userSettingsColumnId= "user columns";
-        var globalSettingsColumnId= "global column";
+        var userSettingsColumnId = "user columns";
+        var globalSettingsColumnId = "global column";
         settings.getColumnSettingsList().add(new ColumnSettings(userSettingsColumnId));
         globalSettings.getColumnSettingsList().add(new ColumnSettings(globalSettingsColumnId));
         globalDisplayerSettings.setDisplayerSettings(globalSettings);
         globalDisplayerSettings.apply(settings);
-        
+
         assertEquals(2, settings.getColumnSettingsList().size());
         assertEquals(globalSettingsColumnId, settings.getColumnSettingsList().get(0).getColumnId());
         assertEquals(userSettingsColumnId, settings.getColumnSettingsList().get(1).getColumnId());

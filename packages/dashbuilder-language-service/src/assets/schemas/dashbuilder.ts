@@ -222,15 +222,29 @@ export const DASHBUILDER_SCHEMA = {
           description: "The max of rows cached by the dataset or with accumulated datasets. Default is 1000.",
           type: "integer",
         },
+        path: {
+          description: "Additional path added to the dataset URL",
+          type: "string",
+        },
+        method: {
+          description: "HTTP Method used by the the dataset request. By default it is GET",
+          type: "string",
+        },
         accumulate: {
           description: "If true then previous calls to the dataset are kept in memory and not discarded.",
           type: "boolean",
         },
         headers: {
+          description: "HTTP headers sent with the request.",
           $ref: "#/definitions/DatasetHeaders",
         },
         query: {
+          description: "Query parameters added to the dataset URL.",
           $ref: "#/definitions/DatasetQuery",
+        },
+        form: {
+          description: "Form parameters sent when the HTTP method is POST.",
+          $ref: "#/definitions/DatasetForm",
         },
       },
       oneOf: [
@@ -756,12 +770,21 @@ export const DASHBUILDER_SCHEMA = {
       description: "Additional query parameter sent to a dataset HTTP Request",
       additionalProperties: {},
     },
+    DatasetForm: {
+      type: "object",
+      description: "Form Parameters used in the request body when the HTTP method is POST",
+      additionalProperties: {},
+    },
     DisplayerSettings: {
       type: "object",
       properties: {
         lookup: {
           description: "Configures the source of data for this displayer",
           $ref: "#/definitions/DataSetLookup",
+        },
+        dataSet: {
+          description: "A local dataset declaration which should be a string with a JSON array",
+          type: "string",
         },
         filter: {
           $ref: "#/definitions/SettingsFilter",
@@ -1046,7 +1069,6 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
       ],
-      required: ["lookup"],
       title: "DisplayerSettings",
     },
     SettingsExternal: {
