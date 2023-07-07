@@ -19,14 +19,19 @@ package common
 import (
 	"context"
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/docker/go-connections/nat"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
 const (
@@ -84,11 +89,22 @@ func getDockerContainerID() (string, error) {
 
 func StopContainer(containerTool string, containerID string) error {
 	fmt.Printf("⏳ Stopping %s container.\n", containerID)
-	stopCmd := exec.Command(containerTool, "stop", containerID)
-	err := stopCmd.Run()
-	if err != nil {
-		fmt.Printf("Error stopping container: %v\n", err)
-		return err
+	if containerTool == Podman {
+		stopCmd := exec.Command(containerTool, "stop", containerID)
+		if err := stopCmd.Run(); err != nil {
+			fmt.Printf("Unable to stop container %s: %s", containerID, err)
+			return err
+		}
+	} else if containerTool == Docker {
+		cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+		if err != nil {
+			fmt.Printf("unable to create client for docker")
+			return err
+		}
+		if err := cli.ContainerStop(context.Background(), containerID, container.StopOptions{}); err != nil {
+			fmt.Printf("Unable to stop container %s: %s", containerID, err)
+			return err
+		}
 	}
 	fmt.Printf("🛑 Container %s stopped successfully.\n", containerID)
 	return nil
@@ -134,4 +150,71 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 
 		os.Exit(0) // Exit the program gracefully
 	}()
+}
+
+func RunDockerContainer(portMapping string, path string) error {
+	fmt.Printf("🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return err
+	}
+	reader, err := cli.ImagePull(ctx, metadata.DevModeImage, types.ImagePullOptions{})
+	if err != nil {
+		fmt.Printf("Error pulling image: %s. Error is: %s", metadata.DevModeImage, err)
+		return err
+	}
+	io.Copy(os.Stdout, reader)
+
+	containerConfig := &container.Config{
+		Image: metadata.DevModeImage,
+	}
+	hostConfig := &container.HostConfig{
+		AutoRemove: true,
+		PortBindings: nat.PortMap{
+			"8080/tcp": []nat.PortBinding{
+				{
+					HostIP:   "0.0.0.0",
+					HostPort: portMapping,
+				},
+			},
+		},
+		Binds: []string{
+			fmt.Sprintf("%s:/home/kogito/serverless-workflow-project/src/main/resources:z", path),
+		},
+	}
+
+	resp, err := cli.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, "")
+
+	if err != nil {
+		fmt.Printf("Unable to create container %s: %s", metadata.DevModeImage, err)
+		return err
+	}
+
+	fmt.Printf("Created container with ID %s", resp.ID)
+
+	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		fmt.Printf("Unable to start container %s", resp.ID)
+		return err
+	}
+	fmt.Printf("Successfully started the container %s", resp.ID)
+
+	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+	select {
+	case err := <-errCh:
+		if err != nil {
+			fmt.Printf("Error starting the container %s", resp.ID)
+			return err
+		}
+	case <-statusCh:
+	}
+
+	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
+	if err != nil {
+		return err
+	}
+
+	stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+
+	return nil
 }
