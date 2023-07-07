@@ -21,7 +21,7 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
   const { author } = props;
   const [isExpanded, setIsExpanded] = React.useState(false);
 
-  const renderSocialLink = useCallback((network: string, id: string) => {
+  const getSocialLink = useCallback((network: string, id: string) => {
     switch (network.toLowerCase()) {
       case "twitter":
         return `https://twitter.com/${id}`;
@@ -72,7 +72,7 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
           {author.social.map((social, index) => (
             <div key={index}>
               <b style={{ textTransform: "capitalize" }}>{social.network}</b>:{" "}
-              <a href={renderSocialLink(social.network, social.id)} target="_blank" rel="noopener noreferrer">
+              <a href={getSocialLink(social.network, social.id)} target="_blank" rel="noopener noreferrer">
                 {" "}
                 {social.id}{" "}
               </a>

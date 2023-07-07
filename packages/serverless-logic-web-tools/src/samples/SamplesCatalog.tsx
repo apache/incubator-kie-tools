@@ -14,15 +14,9 @@
  * limitations under the License.
  */
 
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  Pagination,
-  PaginationVariant,
-  PerPageOptions,
-  Skeleton,
-} from "@patternfly/react-core/dist/js";
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
+import { Pagination, PaginationVariant, PerPageOptions } from "@patternfly/react-core/dist/js/components/Pagination";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import {
   Dropdown,
   DropdownItem,
