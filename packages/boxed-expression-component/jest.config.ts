@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-import { jestBase } from "@kie-tools-core/tests-base/jest.config";
-
 export default {
-  ...jestBase,
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.json",
+    },
+  },
+  moduleDirectories: ["node_modules"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleNameMapper: {
-    ...jestBase.moduleNameMapper,
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/mocks/styleMocks.js",
     "@kie-tools-core/monaco-editor": "<rootDir>/tests/mocks/monacoMock.js",
+  },
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/jest-report.xml" }]],
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
+    "^.+\\.tsx?$": "ts-jest",
   },
 };

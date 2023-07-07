@@ -794,9 +794,6 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.16.12)
-      "@kie-tools-core/tests-base":
-        specifier: workspace:*
-        version: link:../tests-base
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
