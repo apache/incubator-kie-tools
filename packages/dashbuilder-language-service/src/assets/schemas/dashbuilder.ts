@@ -1069,7 +1069,6 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
       ],
-      required: ["lookup"],
       title: "DisplayerSettings",
     },
     SettingsExternal: {

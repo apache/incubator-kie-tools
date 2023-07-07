@@ -18,6 +18,8 @@ package org.dashbuilder.displayer;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import org.dashbuilder.dataset.DataSetOp;
+
 public interface GlobalDisplayerSettings {
 
     void setDisplayerSettings(DisplayerSettings settings);
@@ -55,8 +57,11 @@ public interface GlobalDisplayerSettings {
                     if (lookup.getNumberOfRows() == -1) {
                         lookup.setNumberOfRows(globalLookup.getNumberOfRows());
                     }
-                    // Operations can't be overriden
-                    globalLookup.getOperationList().forEach(lookup::addOperation);
+                    // Operations can't be overriden, but the global operation should come first
+                    var globalOperations = new ArrayList<DataSetOp>(globalLookup.getOperationList());
+                    lookup.getOperationList().forEach(globalOperations::add);
+                    lookup.getOperationList().clear();
+                    globalOperations.forEach(lookup::addOperation);
                 }
             }
 
