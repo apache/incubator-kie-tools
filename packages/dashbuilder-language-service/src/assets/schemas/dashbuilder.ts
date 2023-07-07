@@ -782,6 +782,10 @@ export const DASHBUILDER_SCHEMA = {
           description: "Configures the source of data for this displayer",
           $ref: "#/definitions/DataSetLookup",
         },
+        dataSet: {
+          description: "A local dataset declaration which should be a string with a JSON array",
+          type: "string",
+        },
         filter: {
           $ref: "#/definitions/SettingsFilter",
         },

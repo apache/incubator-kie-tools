@@ -39,6 +39,7 @@ import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.def.HttpMethod;
 import org.jboss.resteasy.util.HttpResponseCodes;

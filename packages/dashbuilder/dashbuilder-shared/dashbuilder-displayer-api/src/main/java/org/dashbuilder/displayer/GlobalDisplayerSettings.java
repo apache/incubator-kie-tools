@@ -30,13 +30,16 @@ public interface GlobalDisplayerSettings {
         getSettings().ifPresent(globalSettings -> {
             var globalLookup = globalSettings.getDataSetLookup();
             var lookup = settings.getDataSetLookup();
-            var globalColumnsSettings = globalSettings.getColumnSettingsList();
             // Copy Settings
             globalSettings.getSettingsFlatMap().forEach((k, v) -> {
                 if (!settings.getSettingsFlatMap().containsKey(k)) {
                     settings.setDisplayerSetting(k, v);
                 }
             });
+
+            if (globalSettings.getDataSet() != null && settings.getDataSet() == null) {
+                settings.setDataSet(globalSettings.getDataSet());
+            }
 
             // Copy Lookup
             if (globalLookup != null) {
