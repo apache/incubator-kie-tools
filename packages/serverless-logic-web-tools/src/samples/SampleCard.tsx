@@ -136,7 +136,7 @@ export function SampleCard(props: SampleCardProps) {
                   search: routes.sampleShowcase.queryString({ sampleId: props.sample.sampleId }),
                 }}
               >
-                <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.sampleId + `-try-swf-sample-button`}>
+                <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.sampleId + `-try-sample-button`}>
                   Try it out!
                 </Button>
               </Link>

@@ -48,7 +48,7 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
       {author.email && (
         <div>
           <strong>Email:</strong>{" "}
-          <a href="mailto:${author.email}" rel="noopener noreferrer">
+          <a href={`mailto:${author.email}`} rel="noopener noreferrer">
             {author.email}
           </a>
         </div>
