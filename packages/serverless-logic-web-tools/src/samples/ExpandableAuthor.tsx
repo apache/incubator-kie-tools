@@ -62,8 +62,8 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
           </a>
         </div>
       </When>
-      <When condition={author.social && author.social.length > 0}>
-        {author.social.map((social, index) => (
+      {author.social &&
+        author.social.map((social, index) => (
           <div key={index}>
             <b style={{ textTransform: "capitalize" }}>{social.network}</b>:{" "}
             <a href={getSocialLink(social.network, social.id)} target="_blank" rel="noopener noreferrer">
@@ -71,7 +71,6 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
             </a>
           </div>
         ))}
-      </When>
     </ExpandableSection>
   );
 }
