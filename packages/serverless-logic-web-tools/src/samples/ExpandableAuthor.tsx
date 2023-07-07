@@ -45,11 +45,6 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
       isExpanded={isExpanded}
       isIndented
     >
-      {author.name && (
-        <div>
-          <strong>Name:</strong> {author.name}
-        </div>
-      )}
       {author.email && (
         <div>
           <strong>Email:</strong>{" "}
