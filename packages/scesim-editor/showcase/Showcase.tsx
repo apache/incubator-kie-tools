@@ -18,10 +18,8 @@ import * as React from "react";
 import { ChangeEvent, useRef, useState } from "react";
 import type { Property } from "csstype";
 import { TestScenarioEditor } from "../src";
-import { HistoryButtons, Theme } from "./HistoryButtons";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
@@ -29,6 +27,8 @@ import {
   EmptyStateSecondaryActions,
   EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import "./Showcase.scss";
 
@@ -52,6 +52,7 @@ export const Showcase = () => {
   };
 
   const validate = () => {
+    /** Check if validation makes sense */
     const notifications: Notification[] = editor.validate();
     window.alert(JSON.stringify(notifications, undefined, 2));
   };
@@ -71,6 +72,7 @@ export const Showcase = () => {
             loadScesim={(path: string, xml: string) => {
               setContent(xml);
               editor.setContent(path, xml).finally();
+              console.log(xml);
             }}
           />
           <EmptyStateSecondaryActions>
@@ -88,21 +90,31 @@ export const Showcase = () => {
         </EmptyState>
       )}
       <div style={{ display: displayEditor() }}>
-        <HistoryButtons
-          undo={undo}
-          redo={redo}
-          get={() => editor.getContent()}
-          setTheme={(theme) => {
-            if (container.current) {
-              if (theme === Theme.DARK) {
-                container.current?.classList.add("vscode-dark");
-              } else {
-                container.current?.classList.remove("vscode-dark");
-              }
-            }
-          }}
-          validate={validate}
-        />
+        <div className="editor-footer ignore-onclickoutside">
+          <Split hasGutter={true}>
+            <SplitItem>
+              <Button variant="primary" onClick={() => setContent(undefined)} ouiaId="undo-button">
+                Back
+              </Button>
+            </SplitItem>
+            <SplitItem>
+              <Button variant="primary" onClick={undo} ouiaId="undo-button">
+                Undo
+              </Button>
+            </SplitItem>
+            <SplitItem>
+              <Button variant="primary" onClick={redo} ouiaId="redo-button">
+                Redo
+              </Button>
+            </SplitItem>
+            <SplitItem>
+              <Button variant="secondary" onClick={validate} ouiaId="validate-button">
+                Validate
+              </Button>
+            </SplitItem>
+          </Split>
+          <hr className="editor-footer__divider" />
+        </div>
         <div ref={container} className="editor-container">
           <TestScenarioEditor
             exposing={(self: TestScenarioEditor) => (editor = self)}

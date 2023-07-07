@@ -17,3 +17,19 @@
 .editor-container {
   padding-top: 48px;
 }
+
+.editor-footer {
+  padding: 5px 5px 0 5px;
+  width: 100%;
+  position: fixed;
+  background-color: white;
+  z-index: 999;
+
+  &__divider {
+    margin-top: 5px;
+  }
+
+  &__theme-switch {
+    padding-top: 5px;
+  }
+}
