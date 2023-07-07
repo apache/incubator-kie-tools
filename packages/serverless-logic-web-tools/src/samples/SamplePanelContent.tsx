@@ -122,18 +122,6 @@ export function SamplesPanelContent(props: SamplePanelContentProps) {
               <DescriptionListDescription>{resourceList}</DescriptionListDescription>
             </DescriptionListGroup>
           )}
-          {status && (
-            <DescriptionListGroup>
-              <DescriptionListTerm icon={<TachometerAltIcon />}>Status</DescriptionListTerm>
-              <DescriptionListDescription style={{ textTransform: "capitalize" }}>{status}</DescriptionListDescription>
-            </DescriptionListGroup>
-          )}
-          {type && (
-            <DescriptionListGroup>
-              <DescriptionListTerm icon={<CubeIcon />}>Type</DescriptionListTerm>
-              <DescriptionListDescription style={{ textTransform: "capitalize" }}>{type}</DescriptionListDescription>
-            </DescriptionListGroup>
-          )}
           {tags.length > 0 && (
             <DescriptionListGroup>
               <DescriptionListTerm icon={<TagIcon />}>Tags</DescriptionListTerm>
