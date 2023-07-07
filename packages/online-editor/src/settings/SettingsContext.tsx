@@ -41,7 +41,6 @@ export class ExtendedServicesConfig {
     return {
       jitExecutor: `${this.buildUrl()}/`,
       ping: `${this.buildUrl()}/ping`,
-      corsProxy: `${this.buildUrl()}/cors-proxy`,
     };
   }
 }

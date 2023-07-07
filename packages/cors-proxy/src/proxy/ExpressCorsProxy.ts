@@ -25,7 +25,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
   constructor(private readonly origin: string, verbose: boolean = false) {
     this.logger = new Logger(verbose);
-    this.logger.forcelog("Starting in verbose mode...");
+    this.logger.log("Starting in verbose mode...");
   }
 
   async handle(req: Request, res: Response, next: Function): Promise<void> {
@@ -33,8 +33,8 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       const info = this.resolveRequestInfo(req);
 
       this.logger.log("New request: ", info.targetUrl);
-      this.logger.log("Request Method: ", req.method);
-      this.logger.log("Request Headers: ", req.headers);
+      this.logger.debug("Request Method: ", req.method);
+      this.logger.debug("Request Headers: ", req.headers);
 
       // Creating the headers for the new request
       const outHeaders: Record<string, string> = { ...info?.corsConfig?.customHeaders };
@@ -47,9 +47,9 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         }
       });
 
-      this.logger.forcelog("Proxying to: ", info.proxyUrl);
-      this.logger.log("Proxy Method: ", req.method);
-      this.logger.log("Proxy Headers: ", outHeaders);
+      this.logger.log("Proxying to: ", info.proxyUrl);
+      this.logger.debug("Proxy Method: ", req.method);
+      this.logger.debug("Proxy Headers: ", outHeaders);
 
       const proxyResponse = await fetch(info.proxyUrl, {
         method: req.method,
@@ -57,7 +57,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         redirect: "manual",
         body: req.method !== "GET" && req.method !== "HEAD" ? req : undefined,
       });
-      this.logger.log("Proxy Response status: ", proxyResponse.status);
+      this.logger.debug("Proxy Response status: ", proxyResponse.status);
 
       // Setting up the headers to the original response...
       res.header("Access-Control-Allow-Origin", this.origin);
@@ -81,16 +81,16 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         res.setHeader("x-redirected-url", info.proxyUrl);
       }
 
-      this.logger.log("New Response Headers: ", res.getHeaders());
+      this.logger.debug("New Response Headers: ", res.getHeaders());
 
       res.status(proxyResponse.status);
 
-      this.logger.log("Writting Response...");
+      this.logger.debug("Writting Response...");
       if (proxyResponse.body) {
         const stream = proxyResponse.body.pipe(res);
         stream.on("end", () => {
           res.end();
-          this.logger.forcelog("Request succesfully proxied!");
+          this.logger.log("Request succesfully proxied!");
         });
         stream.on("error", (e) => {
           this.logger.warn("Something went wrong when writting the new response... ", e);
@@ -98,7 +98,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         });
       } else {
         res.end();
-        this.logger.forcelog("Request succesfully proxied!");
+        this.logger.log("Request succesfully proxied!");
       }
     } catch (err) {
       this.logger.warn("Couldn't handle request correctly due to: ", err);
@@ -109,7 +109,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
     const targetUrl: string = (request.headers[TARGET_URL_HEADER] as string) ?? request.url;
 
-    if (!targetUrl) {
+    if (!targetUrl || targetUrl == "/") {
       throw new Error("Couldn't resolve the target url...");
     }
 
@@ -157,22 +157,18 @@ class ProxyRequestInfo {
 class Logger {
   constructor(private readonly enabled: boolean) {}
 
-  public forcelog(message: string, arg?: any) {
-    this.doLog(message, arg);
+  public log(message: string, arg?: any) {
+    console.log(message, arg ?? "");
   }
 
-  public log(message: string, arg?: any) {
+  public debug(message: string, arg?: any) {
     if (!this.enabled) {
       return;
     }
-    this.doLog(message, arg);
+    console.debug(message, arg ?? "");
   }
 
   public warn(message: string, arg?: any) {
     console.warn(message, arg ?? "");
-  }
-
-  private doLog(message: string, arg?: any) {
-    console.log(message, arg ?? "");
   }
 }

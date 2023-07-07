@@ -163,7 +163,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 if (
                   (await new KieSandboxOpenShiftService({
                     connection: authSession,
-                    proxyUrl: extendedServices.config.url.corsProxy,
+                    proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
                   }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
                 ) {
                   return [authSession.id, AuthSessionStatus.VALID];
@@ -201,7 +201,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       }
       run();
     },
-    [authProviders, authSessions, env.KIE_SANDBOX_APP_NAME, extendedServices.config.url.corsProxy]
+    [authProviders, authSessions, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
   useCancelableEffect(recalculateAuthSessionStatus);

@@ -15,6 +15,8 @@
  */
 
 import * as express from "express";
+import * as cors from "cors";
+
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
 
 export type ServerArgs = {
@@ -29,6 +31,11 @@ export const startServer = (args: ServerArgs): void => {
   const app: express.Express = express();
 
   const proxy = new ExpressCorsProxy(args.origin, args.verbose);
+
+  const corsHandler = cors();
+
+  app.use(corsHandler);
+  app.options("/", corsHandler); // enable pre-flight requests
 
   // Just to avoid proxying the favicon if requested from browser
   app.use("/favicon.ico", (_req: express.Request, res: express.Response) => {

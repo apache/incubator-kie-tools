@@ -19,8 +19,6 @@ package pkg
 import (
 	"bufio"
 	"context"
-	"crypto/tls"
-	"net"
 
 	"encoding/json"
 	"fmt"
@@ -87,7 +85,6 @@ func (p *Proxy) Start() {
 	}
 
 	router := mux.NewRouter()
-	router.PathPrefix("/cors-proxy").HandlerFunc(p.corsProxyHandler())
 	router.PathPrefix("/ping").HandlerFunc(p.pingHandler())
 	router.PathPrefix("/").HandlerFunc(p.jitExecutorHandler())
 
@@ -156,54 +153,6 @@ func (p *Proxy) Refresh() {
 	}
 
 	p.View.Refresh()
-}
-
-func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Request) {
-	return func(rw http.ResponseWriter, req *http.Request) {
-		if req.Method == "OPTIONS" {
-			rw.Header().Set("Access-Control-Allow-Origin", "*")
-			rw.Header().Set("Access-Control-Allow-Methods", "*")
-			rw.Header().Set("Access-Control-Allow-Headers", "*")
-			return
-		}
-
-		targetUrl, err := url.Parse(req.Header.Get("Target-Url"))
-		if err != nil {
-			log.Fatal(err)
-		}
-		emptyUrl, _ := url.Parse("")
-		req.URL = emptyUrl
-		req.Host = req.URL.Host
-
-		req.Header.Del("Origin")
-
-		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
-
-		// tolerate p-signed certificates
-		proxy.Transport = &http.Transport{
-			Proxy: http.ProxyFromEnvironment,
-			DialContext: (&net.Dialer{
-				Timeout:   30 * time.Second,
-				KeepAlive: 30 * time.Second,
-			}).DialContext,
-			ForceAttemptHTTP2:     true,
-			MaxIdleConns:          10,
-			IdleConnTimeout:       60 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: p.InsecureSkipVerify,
-			},
-		}
-
-		proxy.ModifyResponse = func(resp *http.Response) error {
-			resp.Header.Set("Access-Control-Allow-Origin", "*")
-			resp.Header.Set("Access-Control-Allow-Methods", "*")
-			resp.Header.Set("Access-Control-Allow-Headers", "*")
-			return nil
-		}
-		proxy.ServeHTTP(rw, req)
-	}
 }
 
 func (p *Proxy) jitExecutorHandler() func(rw http.ResponseWriter, req *http.Request) {
