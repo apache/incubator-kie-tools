@@ -170,11 +170,10 @@ public class ExternalDataSetClientProvider {
             def.getForm().forEach(form::set);
             req.setBody(form);
         }
-
-        DomGlobal.fetch(url.toString(), req).then((Response response) -> {
+        final var finalUrl = url.toString();
+        DomGlobal.fetch(finalUrl, req).then((Response response) -> {
             var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
-            var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, def.getUrl())
-                    .orElse(DEFAULT_TYPE);
+            var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, finalUrl).orElse(DEFAULT_TYPE);
             return response.text().then(responseText -> {
                 if (response.status == HttpResponseCodes.SC_OK) {
                     return register(def, callback, responseText, mimeType);
