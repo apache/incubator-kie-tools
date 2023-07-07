@@ -48,7 +48,6 @@ import getObjectValueByPath from "lodash/get";
 import { useUnitablesContext, useUnitablesRow } from "../UnitablesContext";
 import moment from "moment";
 import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
-import _ from "lodash";
 
 export type ROWTYPE = Record<string, any>;
 
@@ -91,7 +90,7 @@ export function UnitablesBeeTable({
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCut },
@@ -116,10 +115,10 @@ export function UnitablesBeeTable({
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
       return [
         BeeTableOperation.SelectionCopy,
-        BeeTableOperation.SelectionCut,
-        BeeTableOperation.SelectionPaste,
         ...((conditions.selection.active?.rowIndex ?? -1) > -1
           ? [
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
               BeeTableOperation.RowDuplicate,

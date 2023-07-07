@@ -35,7 +35,6 @@ import {
 import "./LiteralExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 type ROWTYPE = any;
@@ -164,7 +163,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
   const beeTableOperationConfig = useMemo(() => {
     return [
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },

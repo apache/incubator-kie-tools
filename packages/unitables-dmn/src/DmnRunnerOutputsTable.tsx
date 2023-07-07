@@ -41,7 +41,6 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import "./DmnRunnerOutputsTable.css";
 import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
-import _ from "lodash";
 
 interface Props {
   i18n: DmnUnitablesI18n;
@@ -133,7 +132,7 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
       },
     ],
