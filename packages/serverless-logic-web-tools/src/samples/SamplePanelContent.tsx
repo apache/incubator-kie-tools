@@ -46,6 +46,7 @@ import { Sample } from "./types";
 import { Link } from "react-router-dom";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "../navigation/Hooks";
+import { When } from "react-if";
 
 type SamplePanelContentProps = { sample: Sample; onPanelToggle?: () => void };
 
@@ -100,37 +101,36 @@ export function SamplesPanelContent(props: SamplePanelContentProps) {
           <DescriptionListGroup>
             <DescriptionListTerm icon={<TopologyIcon />}>Category</DescriptionListTerm>
             <DescriptionListDescription>
-              {" "}
-              <SampleCategoryComponent category={category} />{" "}
+              <SampleCategoryComponent category={category} />
             </DescriptionListDescription>
           </DescriptionListGroup>
-          {dependencies.length > 0 && (
+          <When condition={dependencies.length > 0}>
             <DescriptionListGroup>
               <DescriptionListTerm icon={<LinkIcon />}>Dependencies</DescriptionListTerm>
               <DescriptionListDescription>{dependencyList}</DescriptionListDescription>
             </DescriptionListGroup>
-          )}
-          {related_to.length > 0 && (
+          </When>
+          <When condition={related_to.length > 0}>
             <DescriptionListGroup>
               <DescriptionListTerm icon={<LinkIcon />}>Related To</DescriptionListTerm>
               <DescriptionListDescription>{relatedToList}</DescriptionListDescription>
             </DescriptionListGroup>
-          )}
-          {resources.length > 0 && (
+          </When>
+          <When condition={resources.length > 0}>
             <DescriptionListGroup>
               <DescriptionListTerm icon={<ExternalLinkAltIcon />}>Resources</DescriptionListTerm>
               <DescriptionListDescription>{resourceList}</DescriptionListDescription>
             </DescriptionListGroup>
-          )}
-          {tags.length > 0 && (
+          </When>
+          <When condition={tags.length > 0}>
             <DescriptionListGroup>
               <DescriptionListTerm icon={<TagIcon />}>Tags</DescriptionListTerm>
               <DescriptionListDescription>
                 <ChipGroup>{tagList}</ChipGroup>
               </DescriptionListDescription>
             </DescriptionListGroup>
-          )}
-          {authors.length > 0 && (
+          </When>
+          <When condition={authors.length > 0}>
             <DescriptionListGroup>
               <DescriptionListTerm icon={<UserIcon />}>Authors</DescriptionListTerm>
               <DescriptionListDescription>
@@ -139,7 +139,7 @@ export function SamplesPanelContent(props: SamplePanelContentProps) {
                 ))}
               </DescriptionListDescription>
             </DescriptionListGroup>
-          )}
+          </When>
         </DescriptionList>
         <br />
         <TextContent>

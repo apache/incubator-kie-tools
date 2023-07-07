@@ -15,6 +15,7 @@
  */
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import React, { useCallback, useEffect } from "react";
+import { When } from "react-if";
 import { SampleAuthor } from "./types";
 
 export function ExpandableAuthor(props: { author: SampleAuthor }) {
@@ -45,35 +46,32 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
       isExpanded={isExpanded}
       isIndented
     >
-      {author.email && (
+      <When condition={author.email}>
         <div>
           <strong>Email:</strong>{" "}
           <a href={`mailto:${author.email}`} rel="noopener noreferrer">
             {author.email}
           </a>
         </div>
-      )}
-      {author.github && (
+      </When>
+      <When condition={author.github}>
         <div>
           <strong>Github:</strong>{" "}
           <a href={author.github} target="_blank" rel="noopener noreferrer">
             {author.github}
           </a>
         </div>
-      )}
-      {author.social && author.social.length > 0 && (
-        <>
-          {author.social.map((social, index) => (
-            <div key={index}>
-              <b style={{ textTransform: "capitalize" }}>{social.network}</b>:{" "}
-              <a href={getSocialLink(social.network, social.id)} target="_blank" rel="noopener noreferrer">
-                {" "}
-                {social.id}{" "}
-              </a>
-            </div>
-          ))}
-        </>
-      )}
+      </When>
+      <When condition={author.social && author.social.length > 0}>
+        {author.social.map((social, index) => (
+          <div key={index}>
+            <b style={{ textTransform: "capitalize" }}>{social.network}</b>:{" "}
+            <a href={getSocialLink(social.network, social.id)} target="_blank" rel="noopener noreferrer">
+              {social.id}
+            </a>
+          </div>
+        ))}
+      </When>
     </ExpandableSection>
   );
 }
