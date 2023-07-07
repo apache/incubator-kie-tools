@@ -49,7 +49,7 @@ env:
   KIE_TOOLS_BUILD__runLinters: "false"
   KIE_TOOLS_BUILD__runTests: "false"
   KIE_TOOLS_BUILD__runIntegrationTests: "false"
-  KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
+  KIE_TOOLS_BUILD__buildContainerImages: "true"
   OPENSHIFT_NAMESPACE: "kie-sandbox"
   OPENSHIFT_PART_OF: "kie-sandbox-app"
 

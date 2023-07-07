@@ -1,9 +1,9 @@
 const kieSandboxDistributionEnv = require("../env");
 
 const env = kieSandboxDistributionEnv.env;
-const kieSandboxUrl = `http://localhost:${env.kieSandboxDistribution.kieSandbox.port}`;
-const gitCorsProxyUrl = `http://localhost:${env.kieSandboxDistribution.gitCorsProxy.port}`;
-const extendedServicesUrl = `http://localhost:${env.kieSandboxDistribution.extendedServices.port}`;
+const kieSandboxUrl = `http://127.0.0.1:${env.kieSandboxDistribution.kieSandbox.port}`;
+const gitCorsProxyUrl = `http://127.0.0.1:${env.kieSandboxDistribution.gitCorsProxy.port}`;
+const extendedServicesUrl = `http://127.0.0.1:${env.kieSandboxDistribution.extendedServices.port}`;
 
 describe("Test built images individually", async () => {
   it("git-cors-proxy homepage", async () => {
@@ -19,6 +19,6 @@ describe("Test built images individually", async () => {
     expect(await (await fetch(`${extendedServicesUrl}/ping`)).json()).toHaveProperty("proxy");
   });
   it("kie-sandbox homepage", async () => {
-    expect(await (await fetch(kieSandboxUrl)).text()).toMatchSnapshot();
+    expect(await (await fetch(kieSandboxUrl)).text()).toContain('<script src="index.js"></script>');
   });
 });

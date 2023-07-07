@@ -21,7 +21,7 @@
     "docker:start": "docker compose up -d --wait",
     "docker:stop": "docker compose stop",
     "install": "pnpm docker:create-env-file",
-    "test": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env integrationTests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"pnpm docker:start\" \"jest --silent --verbose\" \"pnpm docker:stop\""
+    "test": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"pnpm docker:start\" \"jest --silent --verbose\" \"pnpm docker:stop\""
   },
   "dependencies": {
     "@kie-tools/git-cors-proxy-image": "workspace:*",
