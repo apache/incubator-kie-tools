@@ -63,7 +63,6 @@ export function ExpandableAuthor(props: { author: SampleAuthor }) {
       )}
       {author.social && author.social.length > 0 && (
         <>
-          <strong>Social:</strong>
           {author.social.map((social, index) => (
             <div key={index}>
               <b style={{ textTransform: "capitalize" }}>{social.network}</b>:{" "}
