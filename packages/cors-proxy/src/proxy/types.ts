@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const TARGET_URL_HEADER = "Target-Url";
+export const TARGET_URL_HEADER = "target-url";
 
 export type CorsConfig = {
   exposeHeaders: string[];

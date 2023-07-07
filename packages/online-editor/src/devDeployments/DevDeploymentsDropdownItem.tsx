@@ -146,7 +146,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
           description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
           icon={stateIcon}
         >
-          {deploymentName}
+          {deploymentName} click!
         </DropdownItem>
       </FlexItem>
       <FlexItem alignSelf={{ default: "alignSelfCenter" }}>

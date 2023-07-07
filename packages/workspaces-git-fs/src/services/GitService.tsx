@@ -78,7 +78,17 @@ export type UnstagedModifiedFilesStatusEntryType = {
   status: FileModificationStatus;
 };
 export class GitService {
-  public constructor(private readonly corsProxy: Promise<string>) {}
+  public constructor(private readonly corsProxy: Promise<string>) {
+    this.corsProxy
+      .then((proxyurl) => {
+        console.log("proxy url: ", proxyurl);
+        alert("proxy url: " + proxyurl);
+      })
+      .catch((err) => {
+        console.log("proxy url err: ", err);
+        alert("proxy url err: " + err);
+      });
+  }
 
   public async listServerRefs(args: {
     url: string;
