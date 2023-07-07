@@ -23,8 +23,8 @@ export default {
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/mocks/styleMocks.js",
-    "@kie-tools-core/monaco-editor": "<rootDir>/tests/mocks/monacoMock.js",
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
+    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
   },
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/jest-report.xml" }]],
   setupFilesAfterEnv: ["./tests/jest.setup.ts"],
