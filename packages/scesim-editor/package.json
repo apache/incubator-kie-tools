@@ -7,7 +7,6 @@
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
     "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:it",
-    "deploy": "gh-pages -d dist-dev",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "echo 'No Tests to run at this moment.'",
@@ -46,7 +45,6 @@
     "@types/react-table": "^7.0.25",
     "copy-webpack-plugin": "^11.0.0",
     "file-loader": "^6.2.0",
-    "gh-pages": "^3.2.3",
     "react-json-view": "^1.21.3",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.2",
