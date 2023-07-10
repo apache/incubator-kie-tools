@@ -64,9 +64,15 @@ export class TestScenarioEditor extends React.Component<Props, State> {
 
   public setContent(path: string, content: string): Promise<void> {
     try {
-      //TODO: XML Deserialization to JSON here (Scesim File)
-
-      //TODO: XML Deserialization to JSON here (DMN File) If DMN type scesim
+      /**
+       * if Content is NULL => create a new Scesim file.
+       * 1. User must select the Scenario type (DMN, RULE, PMML?) * Only DMN supported in the first release and the DMN location (if DMN type).
+       * 2. Deserialization of the DMN file (if DMN type)
+       * ===
+       * if Content is NOT NULL, create a new Scesim file.
+       * 1. Deserialization of the SCESIM file
+       * 2. Deserialization of the DMN file (if DMN type)
+       */
       this.setState({ path: path, content: content });
       return Promise.resolve();
     } catch (e) {
@@ -96,8 +102,8 @@ export class TestScenarioEditor extends React.Component<Props, State> {
   public render() {
     return (
       <>
-        <TextInput value={this.state.path} />
-        <TextArea autoResize={true} value={this.state.content} />
+        <TextInput id="filename-text-input" value={this.state.path} />
+        <TextArea id="content-text-area" value={this.state.content} />
       </>
     );
   }

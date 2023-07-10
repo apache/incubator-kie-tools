@@ -80,7 +80,7 @@ export const Showcase = () => {
               variant="link"
               onClick={(e) => {
                 setContent("");
-                editor.setContent("New document", "").finally();
+                editor.setContent("Untitled.scesim", "").finally();
               }}
               ouiaId="new-button"
             >
