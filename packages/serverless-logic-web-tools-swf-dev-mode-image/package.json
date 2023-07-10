@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "echo Nothing to do",
-    "build:prod": "echo Temporarily disabled",
+    "build:prod": "pnpm cleanup && run-script-os",
     "build:prod:darwin": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:docker:build\"",
     "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm image:podman:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
