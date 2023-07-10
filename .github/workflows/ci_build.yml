@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-main-{0}', github.sha) }}
   cancel-in-progress: true
 
+env:
+  TMPDIR: "${{ github.workspace }}/tmp"
+
 jobs:
   run:
     environment: ci
