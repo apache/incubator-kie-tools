@@ -36,10 +36,11 @@ import Fuse from "fuse.js";
 import { useAllWorkspacesWithFilesPromise } from "./hooks/useAllWorkspacesWithFilesPromise";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
+import { CreateOrImportModelGrid } from "../overView/CreateOrImportModelGrid";
 
 const PAGE_TITLE = "Recent models";
 
-export function RecentModels() {
+export function RecentModels(props: { isNavOpen: boolean }) {
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [deletingWorkspaceIds, setDeletingWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
@@ -263,61 +264,64 @@ export function RecentModels() {
         </PageSection>
 
         <PageSection isFilled aria-label="workspaces-table-section">
-          <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-            {tableData.length > 0 && (
-              <>
-                <TableToolbar
-                  itemCount={filteredTableData.length}
-                  onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
-                  onToggleAllElements={(checked) => onToggleAllElements(checked)}
-                  searchValue={searchValue}
-                  selectedElementsCount={selectedWorkspaceIds.length}
-                  setSearchValue={setSearchValue}
-                  page={page}
-                  perPage={perPage}
-                  perPageOptions={defaultPerPageOptions}
-                  setPage={setPage}
-                  setPerPage={setPerPage}
-                />
-                <WorkspacesTable
-                  page={page}
-                  perPage={perPage}
-                  onClearFilters={onClearFilters}
-                  onWsToggle={onWsToggle}
-                  selectedWorkspaceIds={selectedWorkspaceIds}
-                  tableData={filteredTableData}
-                  onDelete={onSingleConfirmDeleteModalOpen}
-                />
-                <TablePagination
-                  itemCount={filteredTableData.length}
-                  page={page}
-                  perPage={perPage}
-                  perPageOptions={defaultPerPageOptions}
-                  setPage={setPage}
-                  setPerPage={setPerPage}
-                  variant="bottom"
-                />
-              </>
-            )}
-            {tableData.length === 0 && (
-              <Bullseye>
-                <EmptyState>
-                  <EmptyStateIcon icon={CubesIcon} />
-                  <Title headingLevel="h4" size="lg">
-                    {`Nothing here`}
-                  </Title>
-                  <EmptyStateBody>
-                    <TextContent>
-                      <Text>
-                        Start by adding a <Link to={routes.home.path({})}>new model</Link> or{" "}
-                        <Link to={routes.sampleCatalog.path({})}>try a sample</Link>
-                      </Text>
-                    </TextContent>
-                  </EmptyStateBody>
-                </EmptyState>
-              </Bullseye>
-            )}
-          </PageSection>
+          {tableData.length > 0 && (
+            <PageSection variant={"light"} padding={{ default: "noPadding" }}>
+              <TableToolbar
+                itemCount={filteredTableData.length}
+                onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
+                onToggleAllElements={(checked) => onToggleAllElements(checked)}
+                searchValue={searchValue}
+                selectedElementsCount={selectedWorkspaceIds.length}
+                setSearchValue={setSearchValue}
+                page={page}
+                perPage={perPage}
+                perPageOptions={defaultPerPageOptions}
+                setPage={setPage}
+                setPerPage={setPerPage}
+              />
+              <WorkspacesTable
+                page={page}
+                perPage={perPage}
+                onClearFilters={onClearFilters}
+                onWsToggle={onWsToggle}
+                selectedWorkspaceIds={selectedWorkspaceIds}
+                tableData={filteredTableData}
+                onDelete={onSingleConfirmDeleteModalOpen}
+              />
+              <TablePagination
+                itemCount={filteredTableData.length}
+                page={page}
+                perPage={perPage}
+                perPageOptions={defaultPerPageOptions}
+                setPage={setPage}
+                setPerPage={setPerPage}
+                variant="bottom"
+              />
+            </PageSection>
+          )}
+          {tableData.length === 0 && (
+            <>
+              <PageSection variant={"light"} padding={{ default: "noPadding" }}>
+                <Bullseye>
+                  <EmptyState>
+                    <EmptyStateIcon icon={CubesIcon} />
+                    <Title headingLevel="h4" size="lg">
+                      {`Nothing here`}
+                    </Title>
+                    <EmptyStateBody>
+                      <TextContent>
+                        <Text>
+                          Start by adding a model or <Link to={routes.sampleCatalog.path({})}>try a sample</Link>
+                        </Text>
+                      </TextContent>
+                    </EmptyStateBody>
+                  </EmptyState>
+                </Bullseye>
+              </PageSection>
+              <br />
+              <CreateOrImportModelGrid isNavOpen={props.isNavOpen} />
+            </>
+          )}
         </PageSection>
       </Page>
       <ConfirmDeleteModal

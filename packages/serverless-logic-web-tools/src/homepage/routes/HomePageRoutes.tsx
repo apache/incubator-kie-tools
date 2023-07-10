@@ -63,7 +63,7 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
         <Overview isNavOpen={props.isNavOpen} />
       </Route>
       <Route path={routes.recentModels.path({})}>
-        <RecentModels />
+        <RecentModels isNavOpen={props.isNavOpen} />
       </Route>
       <Route path={routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" })}>
         {({ match }) => <WorkspaceFiles workspaceId={match!.params.workspaceId!} />}
