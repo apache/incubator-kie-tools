@@ -82,7 +82,7 @@ module.exports = composeEnv(
         description:
           "Tag for the Serverless Workflow Dev Mode Image that runs a pre-configured Serverless Workflow project in Quarkus Dev Mode",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: {
+      SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl: {
         default: "https://cors.isomorphic-git.org",
         description: "Git CORS Proxy URL to make the application able to interact with GitHub using `isomorphic-git`",
       },
@@ -122,7 +122,7 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows),
             },
           },
-          gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),
+          corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl),
           samplesRepositoryRef: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef),
         },
       };

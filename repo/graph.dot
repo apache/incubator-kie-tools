@@ -44,6 +44,7 @@ digraph G {
   "@kie-tools/cors-proxy" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/tsconfig" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-config-setup-helper" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -85,7 +86,6 @@ digraph G {
   "@kie-tools/form-generation-tool" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/git-cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-builder" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -175,9 +175,10 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "black" ];
+  "@kie-tools/cors-proxy" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/cors-proxy" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
-  "@kie-tools/cors-proxy" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/cors-proxy" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
+  "@kie-tools/cors-proxy-image" -> "@kie-tools/cors-proxy" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "dashed", color = "blue" ];
@@ -268,8 +269,6 @@ digraph G {
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-bootstrap4-codegen" [ style = "solid", color = "blue" ];
   "@kie-tools/form-generation-tool" -> "@kie-tools/uniforms-patternfly-codegen" [ style = "solid", color = "blue" ];
-  "@kie-tools/git-cors-proxy-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/git-cors-proxy-image" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/i18n" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/i18n" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
@@ -318,8 +317,8 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/cors-proxy-image" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/git-cors-proxy-image" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/operating-system" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];

@@ -42,23 +42,23 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "21345",
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageRegistry: {
+    KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry: {
       default: "quay.io",
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageAccount: {
+    KIE_SANDBOX_DISTRIBUTION__corsProxyImageAccount: {
       default: "kie-tools",
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageName: {
-      default: "git-cors-proxy-image",
+    KIE_SANDBOX_DISTRIBUTION__corsProxyImageName: {
+      default: "cors-proxy-image",
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageTag: {
+    KIE_SANDBOX_DISTRIBUTION__corsProxyImageTag: {
       default: "latest",
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__gitCorsProxyPort: {
+    KIE_SANDBOX_DISTRIBUTION__corsProxyPort: {
       default: "7081",
       description: "",
     },
@@ -80,12 +80,12 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           imageTag: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag),
           port: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesPort),
         },
-        gitCorsProxy: {
-          imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageRegistry),
-          imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageAccount),
-          imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageName),
-          imageTag: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageTag),
-          port: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__gitCorsProxyPort),
+        corsProxy: {
+          imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry),
+          imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageAccount),
+          imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageName),
+          imageTag: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageTag),
+          port: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyPort),
         },
       },
     };
