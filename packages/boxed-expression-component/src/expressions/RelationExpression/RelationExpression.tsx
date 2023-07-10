@@ -42,7 +42,6 @@ import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from 
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
-import _ from "lodash";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
 
@@ -74,7 +73,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         ],
       },
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },

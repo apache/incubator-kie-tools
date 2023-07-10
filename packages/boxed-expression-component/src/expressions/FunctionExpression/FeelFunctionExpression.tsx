@@ -15,7 +15,6 @@
  */
 
 import * as React from "react";
-import _ from "lodash";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
@@ -102,11 +101,11 @@ export function FeelFunctionExpression({
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
       },
       {
-        group: _.upperCase(i18n.function),
+        group: i18n.function.toUpperCase(),
         items: [{ name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset }],
       },
     ];
