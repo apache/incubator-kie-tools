@@ -133,7 +133,7 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 
 		containerID, err := GetContainerID(containerTool)
 		if err != nil {
-			fmt.Printf("error getting container id: %v\n", err)
+			fmt.Printf("\nerror getting container id: %v\n", err)
 			os.Exit(1) // Exit the program with error
 		}
 
@@ -153,7 +153,7 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 }
 
 func RunDockerContainer(portMapping string, path string) error {
-	fmt.Printf("🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
+	fmt.Printf("\n🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
 	ctx := context.Background()
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
@@ -161,7 +161,7 @@ func RunDockerContainer(portMapping string, path string) error {
 	}
 	reader, err := cli.ImagePull(ctx, metadata.DevModeImage, types.ImagePullOptions{})
 	if err != nil {
-		fmt.Printf("Error pulling image: %s. Error is: %s", metadata.DevModeImage, err)
+		fmt.Printf("\nError pulling image: %s. Error is: %s", metadata.DevModeImage, err)
 		return err
 	}
 	io.Copy(os.Stdout, reader)
@@ -187,23 +187,23 @@ func RunDockerContainer(portMapping string, path string) error {
 	resp, err := cli.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, "")
 
 	if err != nil {
-		fmt.Printf("Unable to create container %s: %s", metadata.DevModeImage, err)
+		fmt.Printf("\nUnable to create container %s: %s", metadata.DevModeImage, err)
 		return err
 	}
 
-	fmt.Printf("Created container with ID %s", resp.ID)
+	fmt.Printf("\nCreated container with ID %s", resp.ID)
 
 	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
 		fmt.Printf("Unable to start container %s", resp.ID)
 		return err
 	}
-	fmt.Printf("Successfully started the container %s", resp.ID)
+	fmt.Printf("\nSuccessfully started the container %s", resp.ID)
 
 	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
 	select {
 	case err := <-errCh:
 		if err != nil {
-			fmt.Printf("Error starting the container %s", resp.ID)
+			fmt.Printf("\nError starting the container %s", resp.ID)
 			return err
 		}
 	case <-statusCh:
