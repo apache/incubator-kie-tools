@@ -93,6 +93,7 @@ func CheckDocker() error {
 	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		fmt.Println("Error creating docker client")
+		return err
 	}
 	_, err = cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
