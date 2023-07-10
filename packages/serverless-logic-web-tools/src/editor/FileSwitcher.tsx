@@ -272,7 +272,12 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                           aria-label={"EmbeddedEditorFile name"}
                           headingLevel={"h3"}
                           size={"2xl"}
-                          style={{ fontWeight: "bold" }}
+                          style={
+                            {
+                              letterSpacing: "0.2px",
+                              fontWeight: "bold",
+                            } /* letterSpacing is to avoid truncation of names like "iiiiiiiii" KOGITO-9332 */
+                          }
                         >
                           {displayName}
                         </Title>

@@ -224,7 +224,8 @@ export function DecisionTableExpression(
           decisionTableExpression.output?.length == 1
             ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
             : outputClause.name,
-        dataType: outputClause.dataType,
+        dataType:
+          decisionTableExpression.output?.length == 1 ? decisionTableExpression.dataType : outputClause.dataType,
         width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
         setWidth: setOutputColumnWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
