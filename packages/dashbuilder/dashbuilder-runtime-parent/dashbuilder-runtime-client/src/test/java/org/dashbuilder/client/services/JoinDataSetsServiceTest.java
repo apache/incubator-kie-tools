@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
-import org.dashbuilder.client.external.ExternalDataSetParserProvider;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
@@ -27,6 +26,7 @@ import org.dashbuilder.dataset.DataSetLookupFactory;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.client.DataSetReadyCallbackAdapter;
+import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.junit.Before;

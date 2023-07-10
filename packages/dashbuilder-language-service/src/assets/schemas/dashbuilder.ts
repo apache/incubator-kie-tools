@@ -222,15 +222,29 @@ export const DASHBUILDER_SCHEMA = {
           description: "The max of rows cached by the dataset or with accumulated datasets. Default is 1000.",
           type: "integer",
         },
+        path: {
+          description: "Additional path added to the dataset URL",
+          type: "string",
+        },
+        method: {
+          description: "HTTP Method used by the the dataset request. By default it is GET",
+          type: "string",
+        },
         accumulate: {
           description: "If true then previous calls to the dataset are kept in memory and not discarded.",
           type: "boolean",
         },
         headers: {
+          description: "HTTP headers sent with the request.",
           $ref: "#/definitions/DatasetHeaders",
         },
         query: {
+          description: "Query parameters added to the dataset URL.",
           $ref: "#/definitions/DatasetQuery",
+        },
+        form: {
+          description: "Form parameters sent when the HTTP method is POST.",
+          $ref: "#/definitions/DatasetForm",
         },
       },
       oneOf: [
@@ -294,6 +308,7 @@ export const DASHBUILDER_SCHEMA = {
     },
     typeEnum: {
       type: "string",
+      description: "For datasets that are reading data from Prometheus query response",
       enum: ["prometheus"],
       additionalProperties: false,
       title: "typeEnum",
@@ -302,6 +317,7 @@ export const DASHBUILDER_SCHEMA = {
       type: "object",
       properties: {
         id: {
+          description: "An unique ID for the column",
           type: "string",
         },
         type: {
@@ -313,6 +329,7 @@ export const DASHBUILDER_SCHEMA = {
     },
     DataSetLookup: {
       type: "object",
+      description: "Selects a dataset part to be displayed by this component",
       properties: {
         uuid: {
           description: "The dataset uuid.",
@@ -358,45 +375,18 @@ export const DASHBUILDER_SCHEMA = {
           type: ["boolean"],
         },
         listening: {
+          description: "Enable this so this component can be filtered by others",
           type: ["boolean"],
         },
         notification: {
+          description: "Enable this so this component can filter others",
           type: ["boolean"],
         },
         selfapply: {
+          description: "Enable this so this component can self apply the filter",
           type: ["boolean"],
         },
       },
-      oneOf: [
-        {
-          properties: {
-            notification: {
-              type: "boolean",
-            },
-            listening: {
-              type: "boolean",
-            },
-          },
-          required: ["notification"],
-          not: {
-            required: ["listening"],
-          },
-        },
-        {
-          properties: {
-            notification: {
-              type: "boolean",
-            },
-            listening: {
-              type: "boolean",
-            },
-          },
-          required: ["listening"],
-          not: {
-            required: ["notification"],
-          },
-        },
-      ],
       title: "SettingsFilter",
     },
     SettingsColumn: {
@@ -780,11 +770,21 @@ export const DASHBUILDER_SCHEMA = {
       description: "Additional query parameter sent to a dataset HTTP Request",
       additionalProperties: {},
     },
+    DatasetForm: {
+      type: "object",
+      description: "Form Parameters used in the request body when the HTTP method is POST",
+      additionalProperties: {},
+    },
     DisplayerSettings: {
       type: "object",
       properties: {
         lookup: {
+          description: "Configures the source of data for this displayer",
           $ref: "#/definitions/DataSetLookup",
+        },
+        dataSet: {
+          description: "A local dataset declaration which should be a string with a JSON array",
+          type: "string",
         },
         filter: {
           $ref: "#/definitions/SettingsFilter",
@@ -1069,7 +1069,6 @@ export const DASHBUILDER_SCHEMA = {
           },
         },
       ],
-      required: ["lookup"],
       title: "DisplayerSettings",
     },
     SettingsExternal: {
