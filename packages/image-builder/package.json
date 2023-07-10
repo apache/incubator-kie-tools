@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools-scripts/run-script-if",
+  "name": "@kie-tools/image-builder",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -13,8 +13,9 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "bin": {
-    "run-script-if": "bin.js"
+    "kie-tools--image-builder": "bin.js"
   },
+  "main": "dist/index.js",
   "files": [
     "bin.js",
     "dist",

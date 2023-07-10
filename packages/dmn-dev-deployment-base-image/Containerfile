@@ -22,8 +22,8 @@ USER 1000
 
 RUN mkdir -p -m 777 /tmp/kogito
 
-COPY --chown=1000:1000 --chmod=777 dist-dev/dmn-dev-deployment-quarkus-app /tmp/kogito/dmn-dev-deployment-quarkus-app/
-COPY --chown=1000:1000 --chmod=777 dist-dev/dmn-dev-deployment-form-webapp/ /tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/
+COPY --chown=1000:1000 dist-dev/dmn-dev-deployment-quarkus-app /tmp/kogito/dmn-dev-deployment-quarkus-app/
+COPY --chown=1000:1000 dist-dev/dmn-dev-deployment-form-webapp/ /tmp/kogito/dmn-dev-deployment-quarkus-app/src/main/resources/META-INF/resources/
 
 WORKDIR /tmp/kogito/dmn-dev-deployment-quarkus-app/
 
