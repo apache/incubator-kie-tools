@@ -1,6 +1,6 @@
 # cors-proxy-image
 
-This package contains the `Containerfile` and scripts to build a container image for the [@isomorphic-git/cors-proxy](https://github.com/isomorphic-git/cors-proxy).
+This package contains the `Containerfile` and scripts to build a container image for the [@kie-tools/cors-proxy](https://github.com/kiegroup/kie-tools/packages/cors-proxy).
 
 ## Additional requirements
 
@@ -17,10 +17,10 @@ $ export KIE_TOOLS_BUILD__buildContainerImages=true
 The image name and tags can be customized by setting the following environment variables:
 
 ```bash
-$ export GIT_CORS_PROXY__imageRegistry=<registry>
-$ export GIT_CORS_PROXY__imageAccount=<account>
-$ export GIT_CORS_PROXY__imageName=<image-name>
-$ export GIT_CORS_PROXY__imageBuildTags=<image-tags>
+$ export CORS_PROXY__imageRegistry=<registry>
+$ export CORS_PROXY__imageAccount=<account>
+$ export CORS_PROXY__imageName=<image-name>
+$ export CORS_PROXY__imageBuildTags=<image-tags>
 ```
 
 Default values can be found [here](../build-env/index.js).
@@ -28,7 +28,7 @@ Default values can be found [here](../build-env/index.js).
 After setting up the environment variables, run the following in the root folder of the repository to build the package:
 
 ```bash
-$ pnpm build:prod @kie-tools/git-cors-proxy-image...
+$ pnpm build:prod @kie-tools/cors-proxy-image...
 ```
 
 Then check out the image:

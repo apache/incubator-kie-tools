@@ -29,14 +29,14 @@ RUN mkdir $HOME \
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH      $NODE_PATH:$PATH
 
-COPY --chown=1000:0 dist-dev/git-cors-proxy $HOME/git-cors-proxy
+COPY --chown=1000:0 dist-dev/cors-proxy $HOME/cors-proxy
 
 EXPOSE 8080
 
-WORKDIR $HOME/git-cors-proxy
+WORKDIR $HOME/cors-proxy
 
 RUN npm install --cache $HOME/.cache --production && chmod -R 775 .
 
 USER 1000
 
-CMD ./bin.js start -p 8080
+CMD $HOME/cors-proxy/index.js start -p 8080

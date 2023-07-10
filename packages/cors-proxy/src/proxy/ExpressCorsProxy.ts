@@ -25,7 +25,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
   constructor(private readonly origin: string, verbose: boolean = false) {
     this.logger = new Logger(verbose);
-    this.logger.log("Starting in verbose mode...");
   }
 
   async handle(req: Request, res: Response, next: Function): Promise<void> {
@@ -155,14 +154,18 @@ class ProxyRequestInfo {
 }
 
 class Logger {
-  constructor(private readonly enabled: boolean) {}
+  constructor(private readonly verbose: boolean) {
+    if (this.verbose) {
+      this.log("Starting in verbose mode...");
+    }
+  }
 
   public log(message: string, arg?: any) {
     console.log(message, arg ?? "");
   }
 
   public debug(message: string, arg?: any) {
-    if (!this.enabled) {
+    if (!this.verbose) {
       return;
     }
     console.debug(message, arg ?? "");

@@ -22,10 +22,10 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start:git-cors-proxy http-get://0.0.0.0:$(build-env gitCorsProxy.dev.port)/ping test:it:start:extended-services http-get://0.0.0.0:$(build-env extendedServices.port)/ping test:it:run\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start:cors-proxy http-get://0.0.0.0:$(build-env corsProxy.dev.port)/ping test:it:start:extended-services http-get://0.0.0.0:$(build-env extendedServices.port)/ping test:it:run\"",
     "test:it:run": "start-server-and-test start https-get://0.0.0.0:$(build-env onlineEditor.dev.port) cy:run",
-    "test:it:start:extended-services": "npm --prefix ../extended-services run start",
-    "test:it:start:git-cors-proxy": "npm --prefix ../git-cors-proxy-image run start"
+    "test:it:start:cors-proxy": "npm --prefix ../cors-proxy-image run start",
+    "test:it:start:extended-services": "npm --prefix ../extended-services run start"
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
@@ -80,9 +80,9 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",
-    "@kie-tools/git-cors-proxy-image": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",

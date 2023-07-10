@@ -1,6 +1,7 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
     "outDir": "dist"
   },
   "include": ["src"]

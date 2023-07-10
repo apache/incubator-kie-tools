@@ -18,7 +18,7 @@ const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools
 
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
-const corsProxyImageEnv = require("@kie-tools/git-cors-proxy-image/env");
+const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
 const devPort = 9001;
 
 module.exports = composeEnv(
