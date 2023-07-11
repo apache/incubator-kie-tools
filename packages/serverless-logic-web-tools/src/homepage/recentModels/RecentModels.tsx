@@ -299,7 +299,7 @@ export function RecentModels(props: { isNavOpen: boolean }) {
               />
             </PageSection>
           )}
-          {tableData.length === 0 && (
+          {workspacesWithFilesPromise.data && tableData.length === 0 && (
             <>
               <PageSection variant={"light"} padding={{ default: "noPadding" }}>
                 <Bullseye>
