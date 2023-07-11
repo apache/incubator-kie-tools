@@ -30,15 +30,7 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import {
-  CubeIcon,
-  ExternalLinkAltIcon,
-  LinkIcon,
-  TachometerAltIcon,
-  TagIcon,
-  TopologyIcon,
-  UserIcon,
-} from "@patternfly/react-icons/dist/js";
+import { ExternalLinkAltIcon, LinkIcon, TagIcon, TopologyIcon, UserIcon } from "@patternfly/react-icons/dist/js";
 import { useMemo } from "react";
 import { ExpandableAuthor } from "./ExpandableAuthor";
 import { SampleCategoryComponent } from "./SampleCategoryComponent";
@@ -51,8 +43,7 @@ import { When } from "react-if";
 type SamplePanelContentProps = { sample: Sample; onPanelToggle?: () => void };
 
 export function SamplesPanelContent(props: SamplePanelContentProps) {
-  const { category, status, title, description, tags, type, dependencies, related_to, resources, authors } =
-    props.sample.definition;
+  const { category, title, description, tags, dependencies, related_to, resources, authors } = props.sample.definition;
   const routes = useRoutes();
 
   const tagList = useMemo(
