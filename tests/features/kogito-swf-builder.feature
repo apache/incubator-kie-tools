@@ -1,4 +1,5 @@
 @quay.io/kiegroup/kogito-swf-builder
+@openshift-serverless-1-tech-preview/logic-swf-builder-rhel8
 Feature: Serverless Workflow builder images
 
   Scenario: Verify that the application is built and started correctly
