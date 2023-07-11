@@ -126,7 +126,7 @@ export function SamplesPanelContent(props: SamplePanelContentProps) {
             <DescriptionListGroup>
               <DescriptionListTerm icon={<TagIcon />}>Tags</DescriptionListTerm>
               <DescriptionListDescription>
-                <ChipGroup>{tagList}</ChipGroup>
+                <ChipGroup numChips={10}>{tagList}</ChipGroup>
               </DescriptionListDescription>
             </DescriptionListGroup>
           </When>
