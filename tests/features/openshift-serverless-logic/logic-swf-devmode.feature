@@ -1,5 +1,5 @@
 @openshift-serverless-1-tech-preview/logic-swf-devmode-rhel8
-Feature: logic-swf-devmode-rhel8 feature.
+Feature: logic-swf-devmode-rhel8 feature
 
   Scenario: verify if all labels are correctly set on logic-swf-devmode-rhel8 image
     Given image is built
