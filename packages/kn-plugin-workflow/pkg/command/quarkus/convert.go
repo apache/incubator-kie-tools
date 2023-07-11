@@ -73,14 +73,13 @@ func loadConvertCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 	quarkusVersion := viper.GetString("quarkus-version")
 
 	cfg = CreateQuarkusProjectConfig{
-		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s",
+		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s",
 			metadata.KogitoQuarkusServerlessWorkflowExtension,
 			metadata.KogitoAddonsQuarkusKnativeEventingExtension,
 			metadata.QuarkusKubernetesExtension,
 			metadata.QuarkusResteasyJacksonExtension,
 			metadata.KogitoQuarkusServerlessWorkflowDevUi,
 			metadata.KogitoAddonsQuarkusSourceFiles,
-			metadata.KogitoDataIndexInMemory,
 			metadata.SmallryeHealth,
 			viper.GetString("extension"),
 		),
