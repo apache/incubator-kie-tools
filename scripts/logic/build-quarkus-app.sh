@@ -16,6 +16,8 @@ quarkus_platform_groupid="${2}"
 quarkus_platform_version="${3}"
 kogito_version="${KOGITO_VERSION:-${4}}"
 
+# arch specific dependencies
+quarkus_extensions_arch_specific="com.aayushatharva.brotli4j:native-linux-aarch64:1.8.0"
 # common extensions used by the kogito-swf-builder and kogito-swf-devmode
 quarkus_extensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version}"
 # dev mode purpose extensions used only by the kogito-swf-devmode
@@ -28,10 +30,10 @@ fi
 
 case ${image_name} in
     "kogito-swf-builder")
-        quarkus_extensions="${quarkus_extensions}"
+        quarkus_extensions="${quarkus_extensions},${quarkus_extensions_arch_specific}"
         ;;
     "kogito-swf-devmode")
-        quarkus_extensions="${quarkus_extensions},${kogito_swf_devmode_extensions}"
+        quarkus_extensions="${quarkus_extensions},${kogito_swf_devmode_extensions},${quarkus_extensions_arch_specific}"
         ;;
     *)
         echo "${image_name} is not a quarkus app image, exiting..."
