@@ -30,13 +30,13 @@ import {
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import "./Showcase.scss";
+import "./App.scss";
 
 let editor: TestScenarioEditor;
 
 type State = string | undefined;
 
-export const Showcase = () => {
+export const App = () => {
   const [content, setContent] = useState<State>(undefined);
 
   const displayEditor = (): Property.Display => {

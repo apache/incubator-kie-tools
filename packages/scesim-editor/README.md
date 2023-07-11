@@ -27,13 +27,13 @@ To build the `scesim-editor` module ONLY, you can use ONE of the below commands:
 - `pnpm -F @kie-tools/scesim-editor build:dev` This is fast, but not as strict. It skips tests, linters, and some type checks. Recommended for dev purposes.
 - `pnpm -F @kie-tools/scesim-editor build:prod` The default command to build production-ready packages. This is the recommended build for production purposes
 
-## How to launch the Test Scenario Showcase
+## How to launch the Test Scenario Dev WebApp
 
-After building the project, you can benefit of the Showcase for development or testing scope.
+After building the project, you can benefit of the Dev Webapp for development or testing scope.
 To launch it, simply type in your terminal the following command:
 
 `pnpm -F @kie-tools/scesim-editor start`
 
-A web server with a showcase of Test Scenario editor will be launched, reachable at the following address:
+A web server with a Dev Webapp of Test Scenario editor will be launched, reachable at the following address:
 
 http://localhost:9004/ or http://192.168.1.128:9004/

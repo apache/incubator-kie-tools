@@ -16,11 +16,11 @@
 
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Showcase } from "./Showcase";
+import { App } from "./App";
 
 ReactDOM.render(
   <div>
-    <Showcase />
+    <App />
   </div>,
-  document.getElementById("showcase")!
+  document.getElementById("app")!
 );
