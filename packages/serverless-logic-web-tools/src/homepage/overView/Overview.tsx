@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Button, ButtonVariant, Card } from "@patternfly/react-core/dist/js";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -24,52 +23,14 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo } from "react";
-import { useHistory } from "react-router";
+import { useEffect } from "react";
 import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
-import { useRoutes } from "../../navigation/Hooks";
-import { QueryParams } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
 import { CreateOrImportModelGrid } from "./CreateOrImportModelGrid";
 
 const PAGE_TITLE = "Overview";
 
 export function Overview(props: { isNavOpen: boolean }) {
-  const routes = useRoutes();
-  const history = useHistory();
-  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
-  const queryParams = useQueryParams();
-  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
-
-  const force12Cols = useMemo(
-    () => props.isNavOpen && !!qsContext.activeQuickStartID,
-    [props.isNavOpen, qsContext.activeQuickStartID]
-  );
-
-  const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: routes.home.path({}),
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, routes, queryParams]);
-
-  const expandWorkspace = useCallback(
-    (workspaceId: string) => {
-      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
-      if (!expand) {
-        closeExpandedWorkspace();
-        return;
-      }
-
-      history.replace({
-        pathname: routes.home.path({}),
-        search: routes.home.queryString({ expand }),
-      });
-    },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
-  );
-
   useEffect(() => {
     setPageTitle([PAGE_TITLE]);
   }, []);

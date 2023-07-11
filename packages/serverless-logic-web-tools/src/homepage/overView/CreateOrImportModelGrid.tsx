@@ -16,53 +16,21 @@
 import React from "react";
 import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
-import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { useCallback, useContext, useMemo } from "react";
-import { useHistory } from "react-router";
-import { useRoutes } from "../../navigation/Hooks";
-import { QueryParams } from "../../navigation/Routes";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
+import { useContext, useMemo } from "react";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";
 import { NewModelCard } from "./NewModelCard";
 import { UploadCard } from "./UploadCard";
 
 export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
-  const routes = useRoutes();
-  const history = useHistory();
-  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
-  const queryParams = useQueryParams();
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
   const force12Cols = useMemo(
     () => props.isNavOpen && !!qsContext.activeQuickStartID,
     [props.isNavOpen, qsContext.activeQuickStartID]
-  );
-
-  const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: routes.home.path({}),
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, routes, queryParams]);
-
-  const expandWorkspace = useCallback(
-    (workspaceId: string) => {
-      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
-      if (!expand) {
-        closeExpandedWorkspace();
-        return;
-      }
-
-      history.replace({
-        pathname: routes.home.path({}),
-        search: routes.home.queryString({ expand }),
-      });
-    },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
   );
 
   return (
@@ -116,7 +84,7 @@ export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
               style={{ height: "calc(100% - 32px)" }}
             >
               <ImportFromUrlCard />
-              <UploadCard expandWorkspace={expandWorkspace} />
+              <UploadCard />
             </Gallery>
           </CardBody>
         </Card>

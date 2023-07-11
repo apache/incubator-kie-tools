@@ -38,7 +38,7 @@ enum UploadType {
   DND,
 }
 
-export function UploadCard(props: { expandWorkspace: (workspaceId: string) => void }) {
+export function UploadCard() {
   const routes = useRoutes();
   const history = useHistory();
   const workspaces = useWorkspaces();
@@ -117,7 +117,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         });
 
         if (!suggestedFirstFile) {
-          return props.expandWorkspace(workspace.workspaceId);
+          return;
         }
 
         history.push({
@@ -131,7 +131,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         // setUploading(UploadType.NONE);
       }
     },
-    [props, workspaces, history, routes]
+    [workspaces, history, routes]
   );
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive, draggedFiles } = useDropzone({

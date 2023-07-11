@@ -21,7 +21,6 @@ export enum QueryParams {
   SETTINGS = "settings",
   URL = "url",
   BRANCH = "branch",
-  EXPAND = "expand",
   REMOVE_REMOTE = "removeRemote",
   RENAME_WORKSPACE = "renameWorkspace",
   SAMPLE_ID = "sampleId",
@@ -112,9 +111,7 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  home: new Route<{
-    queryParams: QueryParams.EXPAND;
-  }>(() => `/`),
+  home: new Route<{}>(() => `/`),
 
   newModel: new Route<{
     pathParams: PathParams.EXTENSION;
