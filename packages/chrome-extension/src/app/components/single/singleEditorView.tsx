@@ -139,7 +139,7 @@ function toolbarContainer(id: string, dependencies: Dependencies) {
   return element() as HTMLElement;
 }
 
-function iframeContainer(id: string, dependencies: Dependencies) {
+export function iframeContainer(id: string, dependencies: Dependencies) {
   const element = () => document.querySelector(`.${KOGITO_IFRAME_CONTAINER_CLASS}.${id}`)!;
   if (element) {
     element()?.remove();

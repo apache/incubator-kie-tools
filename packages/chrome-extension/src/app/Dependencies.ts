@@ -41,7 +41,7 @@ export class Dependencies {
       return document.querySelector("[class$='react-code-size-details-banner']") as HTMLElement | null;
     },
     githubTextEditorToReplaceElement: () => {
-      return document.getElementById("highlighted-line-menu-positioner")?.firstChild as HTMLElement | null;
+      return document.getElementById("highlighted-line-menu-positioner") as HTMLElement | null;
     },
   };
 

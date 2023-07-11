@@ -16,7 +16,7 @@
 
 import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
-import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
+import { iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
@@ -120,6 +120,7 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependenc
       ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies.all.body())!);
       logger.log("Unmounted previous features.");
     }
+    switchHiddenCssForNonSwfFiles(id, dependencies);
   } catch (e) {
     logger.log("Ignoring exception while unmounting features.");
   }
@@ -127,6 +128,19 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependenc
 
 function pathnameMatches(regex: string) {
   return !!window.location.pathname.match(new RegExp(regex));
+}
+
+function switchHiddenCssForNonSwfFiles(id: string, dependencies: Dependencies) {
+  const uri = window.location.pathname;
+  const pattern = /(\.sw\.)|(\.bpmn)|(\.dmn)/g;
+  const isSwfOpened = pattern.test(uri.split("/").at(-1)!);
+  if (!isSwfOpened) {
+    dependencies.singleView.githubTextEditorToReplaceElement()?.classList.remove("hidden");
+    iframeContainer(id, dependencies)?.classList.add("hidden");
+  } else {
+    dependencies.singleView.githubTextEditorToReplaceElement()!.classList.add("hidden");
+    iframeContainer(id, dependencies)?.classList.remove("hidden");
+  }
 }
 
 export function discoverCurrentGitHubPageType() {
