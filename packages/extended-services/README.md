@@ -8,20 +8,14 @@ Powers the DMN Runner and Dev deployments features.
 
 ## Note to Fedora users
 
-### Build
-
-To build this application on Fedora, it's necessary to install some additional packages:
-
-- `sudo dnf install gtk3-devel libayatana-appindicator3-dev`
-
 ### Run
 
 To run this application on Fedora, it's necessary to install the App Indicator lib:
 Firstly install the following packages:
 
-- `sudo dnf install libayatana-appindicator3-1`
+- `sudo dnf install libappindicator-gtk3`
 
-If you want to have more control Extended Services, it's necessary to enable the App Indicator extension
+Then, enable the App Indicator extension
 https://extensions.gnome.org/extension/615/appindicator-support/
 
 ## Misc
