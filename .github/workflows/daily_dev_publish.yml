@@ -224,7 +224,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cd kie-tools
-          podman image ls -q --filter reference=${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }} | xargs podman rmi
+          docker image ls -q --filter reference=${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }} | xargs docker rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-extended-services-image cleanup
           cd -
@@ -257,7 +257,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cd kie-tools
-          podman image ls -q --filter reference=${{ env.GIT_CORS_PROXY__imageName }} | xargs podman rmi
+          docker image ls -q --filter reference=${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}/${{ env.GIT_CORS_PROXY__imageName }} | xargs docker rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F git-cors-proxy-image cleanup
           cd -
@@ -297,7 +297,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           cd kie-tools
-          podman image ls -q --filter reference=${{ env.KIE_SANDBOX__imageName }} | xargs podman rmi
+          docker image ls -q --filter reference=${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}/${{ env.KIE_SANDBOX__imageName }} | xargs docker rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-image cleanup
           cd -
