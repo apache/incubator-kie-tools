@@ -18,6 +18,7 @@ package common
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -113,6 +114,8 @@ func StopContainer(containerTool string, containerID string) error {
 			fmt.Printf("Unable to stop container %s: %s", containerID, err)
 			return err
 		}
+	} else {
+		return errors.New(fmt.Sprintf("The specified containerTool:%s does not exist", containerTool))
 	}
 	fmt.Printf("🛑 Container %s stopped successfully.\n", containerID)
 	return nil
@@ -140,6 +143,8 @@ func RunContainerCommand(containerTool string, portMapping string, path string) 
 		if err := runDockerContainer(portMapping, path); err != nil {
 			return err
 		}
+	} else {
+		return errors.New(fmt.Sprintf("The specified containerTool:%s does not exist", containerTool))
 	}
 	return nil
 }
