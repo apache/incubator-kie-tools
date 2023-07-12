@@ -39,6 +39,14 @@ const (
 	Podman = "podman"
 )
 
+func getDockerClient() (*client.Client, error) {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return nil, err
+	}
+	return cli, nil
+}
+
 func GetContainerID(containerTool string) (string, error) {
 
 	switch containerTool {
@@ -67,7 +75,7 @@ func getPodmanContainerID() (string, error) {
 }
 
 func getDockerContainerID() (string, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := getDockerClient()
 	if err != nil {
 		return "", err
 	}
@@ -96,7 +104,7 @@ func StopContainer(containerTool string, containerID string) error {
 			return err
 		}
 	} else if containerTool == Docker {
-		cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+		cli, err := getDockerClient()
 		if err != nil {
 			fmt.Printf("unable to create client for docker")
 			return err
@@ -110,18 +118,30 @@ func StopContainer(containerTool string, containerID string) error {
 	return nil
 }
 
-func RunContainerCommand(containerTool string, portMapping string, path string) *exec.Cmd {
+func RunContainerCommand(containerTool string, portMapping string, path string) error {
 	fmt.Printf("🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
-	return exec.Command(
-		containerTool,
-		"run",
-		"--rm",
-		"-p",
-		fmt.Sprintf("%s:8080", portMapping),
-		"-v",
-		fmt.Sprintf("%s:/home/kogito/serverless-workflow-project/src/main/resources:z", path),
-		fmt.Sprintf("%s", metadata.DevModeImage),
-	)
+	if containerTool == Podman {
+		if err := RunCommand(
+			exec.Command(
+				containerTool,
+				"run",
+				"--rm",
+				"-p",
+				fmt.Sprintf("%s:8080", portMapping),
+				"-v",
+				fmt.Sprintf("%s:%s", path, metadata.VolumeBindPath),
+				fmt.Sprintf("%s", metadata.DevModeImage),
+			),
+			"container run",
+		); err != nil {
+			return err
+		}
+	} else if containerTool == Docker {
+		if err := runDockerContainer(portMapping, path); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
@@ -152,10 +172,9 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 	}()
 }
 
-func RunDockerContainer(portMapping string, path string) error {
-	fmt.Printf("\n🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
+func runDockerContainer(portMapping string, path string) error {
 	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := getDockerClient()
 	if err != nil {
 		return err
 	}
@@ -172,7 +191,7 @@ func RunDockerContainer(portMapping string, path string) error {
 	hostConfig := &container.HostConfig{
 		AutoRemove: true,
 		PortBindings: nat.PortMap{
-			"8080/tcp": []nat.PortBinding{
+			metadata.DockerInternalPort: []nat.PortBinding{
 				{
 					HostIP:   "0.0.0.0",
 					HostPort: portMapping,
@@ -180,7 +199,7 @@ func RunDockerContainer(portMapping string, path string) error {
 			},
 		},
 		Binds: []string{
-			fmt.Sprintf("%s:/home/kogito/serverless-workflow-project/src/main/resources:z", path),
+			fmt.Sprintf("%s:%s", path, metadata.VolumeBindPath),
 		},
 	}
 

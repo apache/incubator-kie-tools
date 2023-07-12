@@ -118,17 +118,8 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 
 	go func() {
 		defer wg.Done()
-		if containerTool == common.Podman {
-			if err := common.RunCommand(
-				common.RunContainerCommand(containerTool, cfg.PortMapping, path),
-				"container run",
-			); err != nil {
-				err = fmt.Errorf("❌ Error running SonataFlow project: %w", err)
-			}
-		} else if containerTool == common.Docker {
-			if err := common.RunDockerContainer(cfg.PortMapping, path); err != nil {
-				err = fmt.Errorf("❌ Error running SonataFlow project: %w", err)
-			}
+		if err := common.RunContainerCommand(containerTool, cfg.PortMapping, path); err != nil {
+			fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 		}
 	}()
 

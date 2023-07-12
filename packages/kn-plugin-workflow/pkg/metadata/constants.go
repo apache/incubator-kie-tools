@@ -45,4 +45,7 @@ const (
 	ApplicationProperties = "application.properties"
 
 	ManifestServiceFilesKind = "SonataFlow"
+
+	DockerInternalPort = "8080/tcp"
+	VolumeBindPath     = "/home/kogito/serverless-workflow-project/src/main/resources:z"
 )
