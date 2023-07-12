@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import * as https from "https";
+import fetch from "node-fetch";
 import { Request, Response } from "express";
 import { CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
-import fetch from "node-fetch";
 
-const BANNED_PROXY_HEADERS = ["origin", "host"];
+const HTTPS_PROTOCOL = "https:";
+const BANNED_PROXY_HEADERS = ["origin", "host", "target-url"];
 
 export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   private readonly logger: Logger;
 
-  constructor(private readonly origin: string, verbose: boolean = false) {
-    this.logger = new Logger(verbose);
+  constructor(
+    private readonly args: {
+      origin: string;
+      verifyCert: boolean;
+      verbose: boolean;
+    }
+  ) {
+    this.logger = new Logger(args.verbose);
   }
 
   async handle(req: Request, res: Response, next: Function): Promise<void> {
@@ -55,11 +64,12 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         headers: outHeaders,
         redirect: "manual",
         body: req.method !== "GET" && req.method !== "HEAD" ? req : undefined,
+        agent: this.getProxyAgent(info),
       });
       this.logger.debug("Proxy Response status: ", proxyResponse.status);
 
       // Setting up the headers to the original response...
-      res.header("Access-Control-Allow-Origin", this.origin);
+      res.header("Access-Control-Allow-Origin", this.args.origin);
 
       if (req.method == "OPTIONS") {
         res.header("Access-Control-Allow-Methods", info.corsConfig?.allowMethods.join(", ") ?? "*");
@@ -77,7 +87,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       });
 
       if (proxyResponse.redirected) {
-        res.setHeader("x-redirected-url", info.proxyUrl);
+        res.setHeader("x-redirected-url", info.proxyUrl.toString());
       }
 
       this.logger.debug("New Response Headers: ", res.getHeaders());
@@ -87,17 +97,17 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       this.logger.debug("Writting Response...");
       if (proxyResponse.body) {
         const stream = proxyResponse.body.pipe(res);
-        stream.on("end", () => {
-          res.end();
+        stream.on("close", () => {
           this.logger.log("Request succesfully proxied!");
+          res.end();
         });
         stream.on("error", (e) => {
           this.logger.warn("Something went wrong when writting the new response... ", e);
           next();
         });
       } else {
-        res.end();
         this.logger.log("Request succesfully proxied!");
+        res.end();
       }
     } catch (err) {
       this.logger.warn("Couldn't handle request correctly due to: ", err);
@@ -121,6 +131,15 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     });
   }
 
+  private getProxyAgent(info: ProxyRequestInfo): https.Agent | undefined {
+    if (!this.args.verifyCert && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
+      return new https.Agent({
+        rejectUnauthorized: false,
+      });
+    }
+    return undefined;
+  }
+
   private resolveCorsConfig(targetUrl: string, request: Request): CorsConfig | undefined {
     return isGitOperation(targetUrl, {
       method: request.method,
@@ -132,20 +151,24 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 }
 
 class ProxyRequestInfo {
+  private readonly _proxyUrl: URL;
+
   constructor(
     private readonly args: {
       targetUrl: string;
       proxyUrl?: string;
       corsConfig?: CorsConfig;
     }
-  ) {}
+  ) {
+    this._proxyUrl = new URL(args.proxyUrl ?? args.targetUrl);
+  }
 
   get targetUrl(): string {
     return this.args.targetUrl;
   }
 
-  get proxyUrl(): string {
-    return this.args.proxyUrl ?? this.targetUrl;
+  get proxyUrl(): URL {
+    return this._proxyUrl;
   }
 
   get corsConfig(): CorsConfig | undefined {

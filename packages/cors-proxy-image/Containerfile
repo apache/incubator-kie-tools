@@ -35,8 +35,6 @@ EXPOSE 8080
 
 WORKDIR $HOME/cors-proxy
 
-RUN npm install --cache $HOME/.cache --production && chmod -R 775 .
-
 USER 1000
 
-CMD $HOME/cors-proxy/index.js start -p 8080
+CMD node $HOME/cors-proxy/dist/index.js

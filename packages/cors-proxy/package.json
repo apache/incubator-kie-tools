@@ -20,7 +20,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "start": "pnpm build:dev && node dist/index.js -v",
+    "start": "pnpm build:dev && node dist/index.js -v -p  \"$(build-env corsProxy.dev.port)\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
@@ -45,8 +45,7 @@
     "typescript": "^4.6.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
-    "webpack-merge": "^5.8.0",
-    "webpack-node-externals": "^3.0.0"
+    "webpack-merge": "^5.8.0"
   },
   "bind": "dist/index.js"
 }

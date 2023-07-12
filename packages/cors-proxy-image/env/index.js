@@ -44,9 +44,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           name: getOrDefault(this.vars.CORS_PROXY__imageName),
           buildTags: getOrDefault(this.vars.CORS_PROXY__imageBuildTags),
         },
-        dev: {
-          port: 8080,
-        },
       },
     };
   },
