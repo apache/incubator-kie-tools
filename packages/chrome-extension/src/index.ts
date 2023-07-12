@@ -18,7 +18,7 @@ import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
 import { iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
-import { mainContainer, runAfterUriChange } from "./app/utils";
+import { mainContainer, runAfterUriChange, waitForPageLoadToComplete } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
 import * as ReactDOM from "react-dom";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
@@ -135,8 +135,10 @@ function pathnameMatches(regex: string) {
   return !!window.location.pathname.match(new RegExp(regex));
 }
 
-function switchHiddenCss(id: string, dependencies: Dependencies, editorEnvelopeLocator: EditorEnvelopeLocator) {
+async function switchHiddenCss(id: string, dependencies: Dependencies, editorEnvelopeLocator: EditorEnvelopeLocator) {
   if (!editorEnvelopeLocator.getEnvelopeMapping(window.location.pathname)) {
+    // a mutation observer hack to wait until the page load is complete
+    await waitForPageLoadToComplete(document.getElementById("repos-sticky-header")?.parentElement!);
     dependencies.singleView.githubTextEditorToReplaceElement()?.classList.remove("hidden");
     iframeContainer(id, dependencies)?.classList.add("hidden");
   } else {
