@@ -24,6 +24,7 @@ import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
+import "@patternfly/react-core/dist/styles/base.css";
 import "./TestScenarioEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
 export enum TestScenarioEditorTab {
