@@ -1,0 +1,4 @@
+.kie-scesim-editor--tabs ~ section {
+  overflow: scroll;
+  height: calc(100% - 40px);
+}

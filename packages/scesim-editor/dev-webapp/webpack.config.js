@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,17 +26,14 @@ module.exports = (env) =>
   merge(common(env), {
     mode: "development",
     entry: {
-      index: path.resolve(__dirname, "./index.tsx"),
+      index: path.resolve(__dirname, "./src/index.tsx"),
     },
     output: {
-      path: path.resolve("../dist-dev"),
+      path: path.resolve(__dirname, "../dist-dev"),
     },
     plugins: [
       new CopyPlugin({
-        patterns: [
-          { from: path.resolve(__dirname, "./static/index.html"), to: "./index.html" },
-          { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
-        ],
+        patterns: [{ from: path.resolve(__dirname, "./static"), to: "./" }],
       }),
     ],
     module: {
@@ -48,22 +45,14 @@ module.exports = (env) =>
         ...patternflyBase.webpackModuleRules,
       ],
     },
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
-        //"monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
-      },
-    },
     devServer: {
-      client: {
-        overlay: true,
-      },
       historyApiFallback: true,
       compress: true,
       port: buildEnv.scesimEditor.dev.port,
       open: false,
       hot: true,
+      client: {
+        overlay: true,
+      },
     },
   });

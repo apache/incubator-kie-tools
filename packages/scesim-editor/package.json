@@ -13,23 +13,12 @@
     "test:it": "echo 'No IT Tests to run at this moment.'"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "workspace:*",
-    "@kie-tools-core/i18n": "workspace:*",
-    "@kie-tools-core/notifications": "workspace:*",
-    "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
-    "@kie-tools-core/workspace": "workspace:*",
-    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-styles": "^4.92.6",
-    "@patternfly/react-table": "^4.112.39",
-    "csstype": "^3.0.11",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-id-generator": "^3.0.1",
-    "react-resizable": "^1.11.0",
-    "react-table": "^7.6.2"
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -41,8 +30,6 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-resizable": "^1.7.2",
-    "@types/react-table": "^7.0.25",
     "copy-webpack-plugin": "^11.0.0",
     "file-loader": "^6.2.0",
     "react-json-view": "^1.21.3",

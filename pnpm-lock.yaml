@@ -5866,27 +5866,9 @@ importers:
 
   packages/scesim-editor:
     dependencies:
-      "@kie-tools-core/editor":
-        specifier: workspace:*
-        version: link:../editor
-      "@kie-tools-core/i18n":
-        specifier: workspace:*
-        version: link:../i18n
-      "@kie-tools-core/notifications":
-        specifier: workspace:*
-        version: link:../notifications
-      "@kie-tools-core/operating-system":
-        specifier: workspace:*
-        version: link:../operating-system
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
-      "@kie-tools-core/workspace":
-        specifier: workspace:*
-        version: link:../workspace
-      "@kie-tools/i18n-common-dictionary":
-        specifier: workspace:*
-        version: link:../i18n-common-dictionary
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -5896,27 +5878,12 @@ importers:
       "@patternfly/react-styles":
         specifier: ^4.92.6
         version: 4.92.6
-      "@patternfly/react-table":
-        specifier: ^4.112.39
-        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
-      csstype:
-        specifier: ^3.0.11
-        version: 3.0.11
       react:
         specifier: ^17.0.2
         version: 17.0.2
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-id-generator:
-        specifier: ^3.0.1
-        version: 3.0.2(react@17.0.2)
-      react-resizable:
-        specifier: ^1.11.0
-        version: 1.11.1(react-dom@17.0.2)(react@17.0.2)
-      react-table:
-        specifier: ^7.6.2
-        version: 7.7.0(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -5945,12 +5912,6 @@ importers:
       "@types/react-dom":
         specifier: ^17.0.5
         version: 17.0.8
-      "@types/react-resizable":
-        specifier: ^1.7.2
-        version: 1.7.4
-      "@types/react-table":
-        specifier: ^7.0.25
-        version: 7.7.7
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.76.1)

@@ -15,96 +15,99 @@
  */
 
 import * as React from "react";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { TextArea, TextInput } from "@patternfly/react-core/dist/js";
+import { useCallback, useImperativeHandle, useState } from "react";
 
-interface Props {
-  /**
-   * Callback to the container so that it may bind to the TestScenarioEditor.
-   *
-   * @returns Instance of the TestScenarioEditor.
-   */
-  exposing: (s: TestScenarioEditor) => void;
+import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
+//import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+//import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
+import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
+import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-  /**
-   * Delegation for KogitoEditorChannelApi.kogitoEditor_ready() to signal to the Channel that the editor is ready.
-   */
-  ready: () => void;
+import "./TestScenarioEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
-  /**
-   * Delegation for WorkspaceChannelApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
-   * @param edit An object representing the unique change.
-   */
-  newEdit: (edit: WorkspaceEdit) => void;
-
-  /**
-   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
-   * notifications to the Channel that will replace existing notification for the path.
-   * @param path The path that references the Notification
-   * @param notifications List of Notifications
-   */
-  setNotifications: (path: string, notifications: Notification[]) => void;
+export enum TestScenarioEditorTab {
+  EDITOR,
+  BACKGROUND,
+  SETTINGS,
+  CHEATSHEET,
 }
 
-export interface State {
-  path: string;
-  content: string;
-}
+export type TestScenarioEditorRef = {
+  getContent(): string;
+};
 
-export class TestScenarioEditor extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    props.exposing(this);
-    this.state = {
-      path: "",
-      content: "",
-    };
-  }
+export const TestScenarioEditor = React.forwardRef((props: { xml: string }, ref: React.Ref<TestScenarioEditorRef>) => {
+  useImperativeHandle(
+    ref,
+    () => ({
+      getContent: () => "",
+    }),
+    []
+  );
 
-  public setContent(path: string, content: string): Promise<void> {
-    try {
-      /**
-       * if Content is NULL => create a new Scesim file.
-       * 1. User must select the Scenario type (DMN, RULE, PMML?) * Only DMN supported in the first release and the DMN location (if DMN type).
-       * 2. Deserialization of the DMN file (if DMN type)
-       * ===
-       * if Content is NOT NULL, create a new Scesim file.
-       * 1. Deserialization of the SCESIM file
-       * 2. Deserialization of the DMN file (if DMN type)
-       */
-      this.setState({ path: path, content: content });
-      return Promise.resolve();
-    } catch (e) {
-      console.error(e);
-      return Promise.reject();
-    }
-  }
+  const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
+  const onTabChanged = useCallback((e, tab) => {
+    setTab(tab);
+  }, []);
 
-  public getContent(): Promise<string> {
-    //TODO: JSON Serialization to XML here (SCESIM file)
-
-    return Promise.resolve("");
-  }
-
-  public async undo(): Promise<void> {
-    return Promise.resolve(undefined);
-  }
-
-  public async redo(): Promise<void> {
-    return Promise.resolve(undefined);
-  }
-
-  public validate(): Notification[] {
-    return [];
-  }
-
-  public render() {
-    return (
-      <>
-        <TextInput id="filename-text-input" value={this.state.path} />
-        <TextArea id="content-text-area" value={this.state.content} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region" className={"kie-scesim-editor--tabs"}>
+        <Tab
+          eventKey={TestScenarioEditorTab.EDITOR}
+          title={
+            <>
+              <TabTitleIcon>
+                <TableIcon />
+              </TabTitleIcon>
+              <TabTitleText>Editor</TabTitleText>
+            </>
+          }
+        >
+          Editor
+        </Tab>
+        <Tab
+          eventKey={TestScenarioEditorTab.BACKGROUND}
+          isDisabled
+          title={
+            <>
+              <TabTitleIcon>
+                <TableIcon />
+              </TabTitleIcon>
+              <TabTitleText>Background</TabTitleText>
+            </>
+          }
+        >
+          Backgroud
+        </Tab>
+        <Tab
+          eventKey={TestScenarioEditorTab.SETTINGS}
+          title={
+            <>
+              <TabTitleIcon>
+                <CogIcon />
+              </TabTitleIcon>
+              <TabTitleText>Settings</TabTitleText>
+            </>
+          }
+        >
+          Settings
+        </Tab>
+        <Tab
+          eventKey={TestScenarioEditorTab.CHEATSHEET}
+          title={
+            <>
+              <TabTitleIcon>
+                <InfoIcon />
+              </TabTitleIcon>
+              <TabTitleText>CheatSheet</TabTitleText>
+            </>
+          }
+        >
+          CheatSheet
+        </Tab>
+      </Tabs>
+    </>
+  );
+});
