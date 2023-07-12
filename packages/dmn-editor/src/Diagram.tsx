@@ -4,6 +4,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
+  DMN14__tAssociation,
   DMN14__tBusinessKnowledgeModel,
   DMN14__tDecision,
   DMN14__tDecisionService,
@@ -89,8 +90,12 @@ export function Diagram({
   const shapesById = useMemo(
     () =>
       (dmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
-        .flatMap((diagram) => diagram["dmndi:DMNShape"] ?? [])
-        .reduce((acc, shape) => acc.set(shape["@_dmnElementRef"], shape), new Map<string, DMNDI13__DMNShape>()),
+        .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
+        .filter(({ __$$element }) => __$$element === "dmndi:DMNShape")
+        .reduce(
+          (acc, shape: DMNDI13__DMNShape) => acc.set(shape["@_dmnElementRef"], shape),
+          new Map<string, DMNDI13__DMNShape>()
+        ),
     [dmn.definitions]
   );
 
@@ -114,90 +119,81 @@ export function Diagram({
 
   useEffect(() => {
     setNodes([
-      // grouping
-      ...(dmn.definitions.decisionService ?? []).map((decisionService) => {
-        const shape = shapesById.get(decisionService["@_id"]!)!;
-        return {
-          id: decisionService["@_id"]!,
-          type: "decisionService",
-          position: getShapePosition(shape),
-          data: { decisionService, shape, onInfo },
-          style: { zIndex: 1, ...getShapeDimensions(shape) },
-        };
-      }),
-      ...(dmn.definitions.group ?? []).map((group) => {
-        const shape = shapesById.get(group["@_id"]!)!;
-        return {
-          id: group["@_id"]!,
-          type: "group",
-          position: getShapePosition(shape),
-          data: { group, shape, onInfo },
-          style: { zIndex: 1, ...getShapeDimensions(shape) },
-        };
-      }),
+      ...(dmn.definitions.drgElement ?? []).map((drgElement) => {
+        const shape = shapesById.get(drgElement["@_id"]!)!;
 
-      //logic
-      ...(dmn.definitions.inputData ?? []).map((inputData) => {
-        const shape = shapesById.get(inputData["@_id"]!)!;
-        return {
-          id: inputData["@_id"]!,
-          type: "inputData",
-          position: getShapePosition(shape),
-          data: { inputData, shape },
-          style: { ...getShapeDimensions(shape) },
-        };
+        if (drgElement.__$$element === "inputData") {
+          return {
+            id: drgElement["@_id"]!,
+            type: "inputData",
+            position: getShapePosition(shape),
+            data: { inputData: drgElement, shape },
+            style: { ...getShapeDimensions(shape) },
+          };
+        } else if (drgElement.__$$element === "decision") {
+          return {
+            id: drgElement["@_id"]!,
+            type: "decision",
+            position: getShapePosition(shape),
+            data: { decision: drgElement, shape, setOpenNodeWithExpression, onInfo },
+            style: { ...getShapeDimensions(shape) },
+          };
+        } else if (drgElement.__$$element === "businessKnowledgeModel") {
+          return {
+            id: drgElement["@_id"]!,
+            type: "bkm",
+            position: getShapePosition(shape),
+            data: { bkm: drgElement, shape, setOpenNodeWithExpression, onInfo },
+            style: { ...getShapeDimensions(shape) },
+          };
+        } else if (drgElement.__$$element === "decisionService") {
+          return {
+            id: drgElement["@_id"]!,
+            type: "decisionService",
+            position: getShapePosition(shape),
+            data: { decisionService: drgElement, shape, onInfo },
+            style: { zIndex: 1, ...getShapeDimensions(shape) },
+          };
+        } else if (drgElement.__$$element === "knowledgeSource") {
+          return {
+            id: drgElement["@_id"]!,
+            type: "knowledgeSource",
+            position: getShapePosition(shape),
+            data: { knowledgeSource: drgElement, shape, onInfo },
+            style: { ...getShapeDimensions(shape) },
+          };
+        } else {
+          throw new Error("Unknown type of drgElement for nodes.");
+        }
       }),
-      ...(dmn.definitions.decision ?? []).map((decision) => {
-        const shape = shapesById.get(decision["@_id"]!)!;
-        return {
-          id: decision["@_id"]!,
-          type: "decision",
-          position: getShapePosition(shape),
-          data: { decision, shape, setOpenNodeWithExpression, onInfo },
-          style: { ...getShapeDimensions(shape) },
-        };
-      }),
-      ...(dmn.definitions.businessKnowledgeModel ?? []).map((bkm) => {
-        const shape = shapesById.get(bkm["@_id"]!)!;
-        return {
-          id: bkm["@_id"]!,
-          type: "bkm",
-          position: getShapePosition(shape),
-          data: { bkm, shape, setOpenNodeWithExpression, onInfo },
-          style: { ...getShapeDimensions(shape) },
-        };
-      }),
-
-      // info
-      ...(dmn.definitions.textAnnotation ?? []).map((textAnnotation) => {
-        const shape = shapesById.get(textAnnotation["@_id"]!)!;
-        return {
-          id: textAnnotation["@_id"]!,
-          type: "textAnnotation",
-          position: getShapePosition(shape),
-          data: { textAnnotation, shape, onInfo },
-          style: { ...getShapeDimensions(shape) },
-        };
-      }),
-      ...(dmn.definitions.knowledgeSource ?? []).map((knowledgeSource) => {
-        const shape = shapesById.get(knowledgeSource["@_id"]!)!;
-        return {
-          id: knowledgeSource["@_id"]!,
-          type: "knowledgeSource",
-          position: getShapePosition(shape),
-          data: { knowledgeSource, shape, onInfo },
-          style: { ...getShapeDimensions(shape) },
-        };
-      }),
+      ...(dmn.definitions.artifact ?? [])
+        .filter(({ __$$element }) => __$$element === "group" || __$$element === "textAnnotation")
+        .map((artifact) => {
+          const shape = shapesById.get(artifact["@_id"]!)!;
+          if (artifact.__$$element === "group") {
+            return {
+              id: artifact["@_id"]!,
+              type: "group",
+              position: getShapePosition(shape),
+              data: { group: artifact, shape, onInfo },
+              style: { zIndex: 1, ...getShapeDimensions(shape) },
+            };
+          } else if (artifact.__$$element === "textAnnotation") {
+            return {
+              id: artifact["@_id"]!,
+              type: "textAnnotation",
+              position: getShapePosition(shape),
+              data: { textAnnotation: artifact, shape, onInfo },
+              style: { ...getShapeDimensions(shape) },
+            };
+          } else {
+            throw new Error("Unknown type of artifact for nodes.");
+          }
+        }),
     ]);
   }, [
-    dmn.definitions.businessKnowledgeModel,
-    dmn.definitions.decision,
-    dmn.definitions.decisionService,
-    dmn.definitions.group,
-    dmn.definitions.inputData,
-    dmn.definitions.knowledgeSource,
-    dmn.definitions.textAnnotation,
+    dmn.definitions.drgElement,
+    dmn.definitions.artifact,
     getShapePosition,
     onInfo,
     setNodes,
@@ -215,79 +211,81 @@ export function Diagram({
 
     setEdges([
       // information requirement
-      ...(dmn.definitions.decision ?? []).flatMap((decision) => [
-        ...(decision.informationRequirement ?? []).map((ir) => {
-          const source = (ir.requiredDecision?.["@_href"] ?? ir.requiredInput?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-          const target = decision["@_id"]!;
-          return {
-            id: ir["@_id"] ?? "",
-            type: "informationRequirement",
-            source,
-            target,
-            markerEnd,
-          };
-        }),
-      ]),
+      ...(dmn.definitions.drgElement ?? [])
+        .filter(({ __$$element }) => __$$element === "decision")
+        .flatMap((decision: DMN14__tDecision) => [
+          ...(decision.informationRequirement ?? []).map((ir) => {
+            const source = (ir.requiredDecision?.["@_href"] ?? ir.requiredInput?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+            const target = decision["@_id"]!;
+            return {
+              id: ir["@_id"] ?? "",
+              type: "informationRequirement",
+              source,
+              target,
+              markerEnd,
+            };
+          }),
+        ]),
 
       // knowledge requirement
-      ...[...(dmn.definitions.decision ?? []), ...(dmn.definitions.businessKnowledgeModel ?? [])].flatMap((node) => [
-        ...(node.knowledgeRequirement ?? []).map((kr) => {
-          const source = (kr.requiredKnowledge?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-          const target = node["@_id"]!;
-          return {
-            id: kr["@_id"] ?? "",
-            type: "knowledgeRequirement",
-            source,
-            target,
-            markerEnd,
-          };
-        }),
-      ]),
+      ...(dmn.definitions.drgElement ?? [])
+        .filter(({ __$$element }) => __$$element === "decision" || __$$element === "businessKnowledgeModel")
+        .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel) => [
+          ...(node.knowledgeRequirement ?? []).map((kr) => {
+            const source = (kr.requiredKnowledge?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+            const target = node["@_id"]!;
+            return {
+              id: kr["@_id"] ?? "",
+              type: "knowledgeRequirement",
+              source,
+              target,
+              markerEnd,
+            };
+          }),
+        ]),
 
       // authority requirement
-      ...[
-        ...(dmn.definitions.decision ?? []),
-        ...(dmn.definitions.businessKnowledgeModel ?? []),
-        ...(dmn.definitions.knowledgeSource ?? []),
-      ].flatMap((node) => [
-        ...(node.authorityRequirement ?? []).map((ar) => {
-          const source = (
-            ar.requiredInput?.["@_href"] ??
-            ar.requiredDecision?.["@_href"] ??
-            ar.requiredAuthority?.["@_href"] ??
-            "#"
-          ).substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-          const target = node["@_id"]!;
+      ...(dmn.definitions.drgElement ?? [])
+        .filter(
+          ({ __$$element }) =>
+            __$$element === "decision" || __$$element === "businessKnowledgeModel" || __$$element === "knowledgeSource"
+        )
+        .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel | DMN14__tKnowledgeSource) => [
+          ...(node.authorityRequirement ?? []).map((ar) => {
+            const source = (
+              ar.requiredInput?.["@_href"] ??
+              ar.requiredDecision?.["@_href"] ??
+              ar.requiredAuthority?.["@_href"] ??
+              "#"
+            ).substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+            const target = node["@_id"]!;
+            return {
+              id: ar["@_id"] ?? "",
+              type: "authorityRequirement",
+              source,
+              target,
+              markerEnd,
+            };
+          }),
+        ]),
+
+      // association
+      ...(dmn.definitions.artifact ?? [])
+        .filter(({ __$$element }) => __$$element === "association")
+        .flatMap((artifact) => {
+          const association = artifact as DMN14__tAssociation;
+          const source = (association.sourceRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+          const target = (association.targetRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
           return {
-            id: ar["@_id"] ?? "",
-            type: "authorityRequirement",
+            id: artifact["@_id"] ?? "",
+            type: "association",
             source,
             target,
             markerEnd,
           };
         }),
-      ]),
-
-      // association
-      ...(dmn.definitions.association ?? []).map((node) => {
-        const source = (node.sourceRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-        const target = (node.targetRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-        return {
-          id: node["@_id"] ?? "",
-          type: "association",
-          source,
-          target,
-          markerEnd,
-        };
-      }),
     ]);
-  }, [
-    dmn.definitions.association,
-    dmn.definitions.businessKnowledgeModel,
-    dmn.definitions.decision,
-    dmn.definitions.knowledgeSource,
-    setEdges,
-  ]);
+  }, [dmn.definitions.artifact, dmn.definitions.drgElement, setEdges]);
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 

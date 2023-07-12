@@ -10,10 +10,14 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import {
+  DMN14__tContext,
   DMN14__tDecision,
+  DMN14__tDecisionTable,
   DMN14__tDefinitions,
   DMN14__tFunctionDefinition,
+  DMN14__tInvocation,
   DMN14__tLiteralExpression,
+  DMN14__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -111,7 +115,9 @@ function dmnNodeToBoxedExpression(
 ): ExpressionDefinition {
   if (dmnNode.type == "bkm") {
     return {
-      ...dmnToBee(widthsById, { functionDefinition: dmnNode.content.encapsulatedLogic }),
+      ...dmnToBee(widthsById, {
+        expression: { __$$element: "functionDefinition", ...dmnNode.content.encapsulatedLogic },
+      }),
       dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
       name: dmnNode.content["@_name"],
     };
@@ -141,8 +147,8 @@ function beeToDmn(expression: ExpressionDefinition): DmnExpression {
 function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): ExpressionDefinition {
   if (!dmnExpr) {
     return getUndefinedExpressionDefinition();
-  } else if (dmnExpr.literalExpression) {
-    const l = dmnExpr.literalExpression as DMN14__tLiteralExpression;
+  } else if (dmnExpr.expression?.__$$element === "literalExpression") {
+    const l = dmnExpr.expression;
     return {
       id: l["@_id"]!,
       name: l["@_label"],
@@ -151,8 +157,8 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
       content: l.text,
       width: widthsById.get(l["@_id"]!)?.[0],
     };
-  } else if (dmnExpr.decisionTable) {
-    const d = dmnExpr.decisionTable;
+  } else if (dmnExpr.expression?.__$$element === "decisionTable") {
+    const d = dmnExpr.expression;
     return {
       id: d["@_id"]!,
       name: d["@_label"],
@@ -190,8 +196,8 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         annotationEntries: (r.annotationEntry ?? []).map((s) => s.text ?? ""),
       })),
     };
-  } else if (dmnExpr.relation) {
-    const r = dmnExpr.relation;
+  } else if (dmnExpr.expression?.__$$element === "relation") {
+    const r = dmnExpr.expression;
     return {
       id: r["@_id"]!,
       name: r["@_label"],
@@ -200,7 +206,10 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
       rows: (r.row ?? []).map((row) => ({
         id: row["@_id"]!,
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
-        cells: (row.literalExpression ?? []).map((s) => ({ id: s["@_id"]!, content: s.text ?? "" })),
+        cells: ((row.expression as DMN14__tLiteralExpression[]) ?? []).map((s) => ({
+          id: s["@_id"]!,
+          content: s.text ?? "",
+        })),
       })),
       columns: (r.column ?? []).map((c, i) => ({
         id: c["@_id"]!,
@@ -209,8 +218,8 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         width: widthsById.get(r["@_id"]!)?.[1 + i],
       })),
     };
-  } else if (dmnExpr.context) {
-    const c = dmnExpr.context;
+  } else if (dmnExpr.expression?.__$$element === "context") {
+    const c = dmnExpr.expression;
 
     const { contextEntries, result } = (c.contextEntry ?? []).reduce(
       (acc, e) => {
@@ -244,8 +253,8 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
       result,
       contextEntries,
     };
-  } else if (dmnExpr.invocation) {
-    const i = dmnExpr.invocation;
+  } else if (dmnExpr.expression?.__$$element === "invocation") {
+    const i = dmnExpr.expression;
 
     // From the spec:
     //
@@ -253,7 +262,7 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
     // commonly, it is a LiteralExpression naming a BusinessKnowledgeModel.
     //
     // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 71, document page 57. Section "7.3.6 Invocation metamodel".
-    const calledFunction = i.literalExpression!;
+    const calledFunction = i.expression! as DMN14__tLiteralExpression;
 
     return {
       id: i["@_id"]!,
@@ -274,8 +283,8 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         entryExpression: dmnToBee(widthsById, b),
       })),
     };
-  } else if (dmnExpr.functionDefinition) {
-    const f = dmnExpr.functionDefinition;
+  } else if (dmnExpr.expression?.__$$element === "functionDefinition") {
+    const f = dmnExpr.expression;
     const basic = {
       id: f["@_id"]!,
       name: f["@_label"],
@@ -307,7 +316,7 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         // and the form of the mapping information SHALL be the pmml form.
         //
         // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 106, document page 92. Section "10.2.1.7 Boxed Function".
-        const c = f.context!;
+        const c = f.expression! as DMN14__tContext;
         const clazz = c.contextEntry?.find(
           ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.classFieldName
         );
@@ -318,17 +327,17 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Java,
-          className: clazz?.literalExpression?.text,
-          classFieldId: clazz?.literalExpression?.["@_id"],
-          methodName: method?.literalExpression?.text,
-          methodFieldId: method?.literalExpression?.["@_id"],
+          className: (clazz?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          classFieldId: clazz?.expression?.["@_id"],
+          methodName: (method?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          methodFieldId: method?.expression?.["@_id"],
           // `clazz` and `method` would have the exact same width, as they're always in sync, so it doens't matter which one we use.
-          classAndMethodNamesWidth: widthsById.get(clazz?.literalExpression?.["@_id"] ?? "")?.[0],
+          classAndMethodNamesWidth: widthsById.get(clazz?.expression?.["@_id"] ?? "")?.[0],
         };
       }
       case "PMML": {
         // Special case, defined by the spec, where the implementation is a context expression with two fields.
-        const c = f.context!;
+        const c = f.expression as DMN14__tContext;
         const document = c.contextEntry?.find(
           ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
         );
@@ -338,35 +347,24 @@ function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): Ex
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Pmml,
-          document: document?.literalExpression?.text,
-          documentFieldId: document?.literalExpression?.["@_id"],
-          model: model?.literalExpression?.text,
-          modelFieldId: model?.literalExpression?.["@_id"],
+          document: (document?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          documentFieldId: document?.expression?.["@_id"],
+          model: (model?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          modelFieldId: model?.expression?.["@_id"],
         };
       }
       default:
         throw new Error(`Unknown function expression kind '${f["@_kind"]}'`);
     }
-  } else if (dmnExpr.list) {
-    const l = dmnExpr.list;
-
-    // FIXME: This is messing with the order of the list. This is a bug on the DMN marshaller. We'll need to revisit the strategy used for substitution groups.
-    const dmnExpressions: DmnExpression[] = [
-      ...(l.functionDefinition ?? []).map((e) => ({ functionDefinition: e })),
-      ...(l.literalExpression ?? []).map((e) => ({ literalExpression: e })),
-      ...(l.decisionTable ?? []).map((e) => ({ decisionTable: e })),
-      ...(l.invocation ?? []).map((e) => ({ invocation: e })),
-      ...(l.relation ?? []).map((e) => ({ relation: e })),
-      ...(l.context ?? []).map((e) => ({ context: e })),
-      ...(l.list ?? []).map((e) => ({ list: e })),
-    ];
+  } else if (dmnExpr.expression?.__$$element === "list") {
+    const l = dmnExpr.expression;
 
     return {
       id: l["@_id"]!,
       name: l["@_label"],
       dataType: (l["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.List as const,
-      items: dmnExpressions.map((e) => dmnToBee(widthsById, e)),
+      items: (l.expression ?? []).map((e) => dmnToBee(widthsById, { expression: e })),
     };
   } else {
     return getUndefinedExpressionDefinition();
