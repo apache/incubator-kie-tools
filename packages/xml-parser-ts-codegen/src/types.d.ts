@@ -93,8 +93,8 @@ export type XptcMetaTypeProperty = {
   elem: XptcElement | undefined;
   metaType: {
     name: string;
-    xptcType: XptcSimpleType | XptcComplexType | undefined;
   };
+  typeBody?: string;
   isArray: boolean;
   isOptional: boolean;
   fromType: string;

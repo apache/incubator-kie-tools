@@ -24,6 +24,13 @@
       <dmn:literalExpression id="_58EC9A57-2BDE-4D14-B13C-901AB09F0830">
         <dmn:text>B</dmn:text>
       </dmn:literalExpression>
+      <dmn:literalExpression id="_3C4A5897-71BA-47A3-B933-89420BDD88B3">
+        <dmn:text>C</dmn:text>
+      </dmn:literalExpression>
+      <dmn:expression/>
+      <dmn:literalExpression id="_13CBF20B-E17F-480C-A5D3-B1B96B3CB766">
+        <dmn:text>D</dmn:text>
+      </dmn:literalExpression>
     </dmn:list>
   </dmn:decision>
   <dmndi13:DMNDI>
@@ -49,6 +56,12 @@
             <kie:width>100</kie:width>
           </kie:ComponentWidths>
           <kie:ComponentWidths dmnElementRef="_58EC9A57-2BDE-4D14-B13C-901AB09F0830">
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_3C4A5897-71BA-47A3-B933-89420BDD88B3">
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_13CBF20B-E17F-480C-A5D3-B1B96B3CB766">
             <kie:width>290</kie:width>
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>

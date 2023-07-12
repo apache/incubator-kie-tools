@@ -6,6 +6,9 @@ const files = [
   "../tests-data--manual/other/attachment.dmn",
   "../tests-data--manual/other/empty13.dmn",
   "../tests-data--manual/other/sample12.dmn",
+  "../tests-data--manual/other/list.dmn",
+  "../tests-data--manual/other/list2.dmn",
+  "../tests-data--manual/other/external.dmn",
   "../tests-data--manual/other/weird.dmn",
   "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];

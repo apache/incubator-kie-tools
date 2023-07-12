@@ -1,5 +1,11 @@
-import { Meta, XmlParserTs, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts";
-import { meta as scesim18meta, root as scesim18root, ns as scesim18ns } from "./schemas/scesim-1_8/ts-gen/meta";
+import { Meta, domParser, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts";
+import {
+  meta as scesim18meta,
+  root as scesim18root,
+  subs as scesim18subs,
+  elements as scesim18elements,
+  ns as scesim18ns,
+} from "./schemas/scesim-1_8/ts-gen/meta";
 import { SceSim__ScenarioSimulationModelType } from "./schemas/scesim-1_8/ts-gen/types";
 
 type SceSimMarshaller = {
@@ -16,11 +22,14 @@ export type SceSimModel = {
 };
 
 export function getMarshaller(xml: string): SceSimMarshaller {
-  const instanceNs = getInstanceNs(xml);
+  const domdoc = domParser.getDomDocument(xml);
+  const instanceNs = getInstanceNs(domdoc);
 
   const p = getParser<SceSimModel>({
     ns: scesim18ns,
     meta: scesim18meta,
+    subs: scesim18subs,
+    elements: scesim18elements,
     root: scesim18root,
   });
 

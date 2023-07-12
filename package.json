@@ -44,7 +44,6 @@
       }
     },
     "patchedDependencies": {
-      "fast-xml-parser@4.2.4": "patches/fast-xml-parser@4.2.4.patch",
       "selenium-webdriver@4.8.1": "patches/selenium-webdriver@4.8.1.patch"
     }
   },

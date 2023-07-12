@@ -1,6 +1,12 @@
-<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
-  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<xsd:schema
+  attributeFormDefault="unqualified"
+  elementFormDefault="qualified"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="https://kie.org/scesim/1.8"
+  targetNamespace="https://kie.org/scesim/1.8">
+
   <xsd:element name="ScenarioSimulationModel" type="ScenarioSimulationModelType" />
+
   <xsd:complexType name="ExpressionElementType">
     <xsd:sequence>
       <xsd:element type="xsd:string" name="step" />
@@ -8,7 +14,8 @@
   </xsd:complexType>
   <xsd:complexType name="expressionElementsType">
     <xsd:sequence>
-      <xsd:element type="ExpressionElementType" name="ExpressionElement" minOccurs="0" maxOccurs="unbounded" />
+      <xsd:element type="ExpressionElementType" name="ExpressionElement" minOccurs="0"
+        maxOccurs="unbounded" />
     </xsd:sequence>
   </xsd:complexType>
   <xsd:complexType name="expressionIdentifierType">
@@ -31,14 +38,15 @@
   </xsd:complexType>
   <xsd:complexType name="FactMappingType">
     <xsd:sequence>
-      <xsd:element type="expressionElementsType" name="expressionElements" maxOccurs="1" minOccurs="0"/>
+      <xsd:element type="expressionElementsType" name="expressionElements" maxOccurs="1"
+        minOccurs="0" />
       <xsd:element type="expressionIdentifierType" name="expressionIdentifier" />
       <xsd:element type="factIdentifierType" name="factIdentifier" />
       <xsd:element type="xsd:string" name="className" />
       <xsd:element type="xsd:string" name="factAlias" />
       <xsd:element type="xsd:string" name="expressionAlias" minOccurs="0" />
-      <xsd:element type="genericTypes" name="genericTypes" minOccurs="0"/>
-      <xsd:element type="xsd:double" name="columnWidth" minOccurs="0"/>
+      <xsd:element type="genericTypes" name="genericTypes" minOccurs="0" />
+      <xsd:element type="xsd:double" name="columnWidth" minOccurs="0" />
       <xsd:element type="xsd:string" name="factMappingValueType" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
@@ -144,4 +152,6 @@
     </xsd:sequence>
     <xsd:attribute type="xsd:string" name="version" />
   </xsd:complexType>
+
+
 </xsd:schema>

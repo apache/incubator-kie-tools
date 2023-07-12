@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DMN14__tKnowledgeSource } from "../dist/schemas/dmn-1_4/ts-gen/types";
 
 describe("kie-extensions", () => {
   test("kie:attachment", () => {
@@ -8,9 +9,9 @@ describe("kie-extensions", () => {
     const { parser } = getMarshaller(xml);
     const json = parser.parse();
 
-    const attachments = (json.definitions["knowledgeSource"] ?? []).flatMap(
-      (k) => k.extensionElements?.["kie:attachment"]
-    );
+    const attachments = (json.definitions.drgElement ?? [])
+      .filter((drgElement) => drgElement["__$$element"] === "knowledgeSource" ?? [])
+      .flatMap((knowledgeSource: DMN14__tKnowledgeSource) => knowledgeSource.extensionElements?.["kie:attachment"]);
 
     expect(attachments.length).toStrictEqual(1);
   });
