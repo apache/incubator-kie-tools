@@ -15,7 +15,8 @@
  */
 
 import React from "react";
-import { Alert, AlertActionCloseButton, Button } from "@patternfly/react-core/dist/js";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";

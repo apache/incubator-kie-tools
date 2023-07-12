@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button, Checkbox, Modal, ModalProps, Skeleton } from "@patternfly/react-core/dist/js";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Modal, ModalProps } from "@patternfly/react-core/dist/js/components/Modal";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 
