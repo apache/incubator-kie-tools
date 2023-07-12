@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import * as ReactDOM from "react-dom";
 import {
   createAndGetMainContainer,
@@ -80,7 +80,7 @@ export async function renderSingleEditorApp(args: Globals & { fileInfo: FileInfo
 function SingleEditorEditApp(props: { openFileExtension: string; fileInfo: FileInfo }) {
   const globals = useGlobals();
 
-  React.useEffect(() => {
+  useEffect(() => {
     runScriptOnPage(chrome.runtime.getURL("scripts/set_content.js"));
   }, [props.fileInfo]);
 

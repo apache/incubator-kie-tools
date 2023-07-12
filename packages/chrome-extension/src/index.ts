@@ -69,7 +69,7 @@ function init(globals: Globals) {
   globals.logger.log(`---`);
   globals.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies);
+  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies, globals.editorEnvelopeLocator);
 
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
@@ -114,13 +114,18 @@ export function extractFileInfoFromUrl() {
   };
 }
 
-function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependencies: Dependencies) {
+function unmountPreviouslyRenderedFeatures(
+  id: string,
+  logger: Logger,
+  dependencies: Dependencies,
+  editorEnvelopeLocator: EditorEnvelopeLocator
+) {
   try {
     if (mainContainer(id, dependencies.all.body())) {
       ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies.all.body())!);
       logger.log("Unmounted previous features.");
     }
-    switchHiddenCssForNonSwfFiles(id, dependencies);
+    switchHiddenCss(id, dependencies, editorEnvelopeLocator);
   } catch (e) {
     logger.log("Ignoring exception while unmounting features.");
   }
@@ -130,11 +135,8 @@ function pathnameMatches(regex: string) {
   return !!window.location.pathname.match(new RegExp(regex));
 }
 
-function switchHiddenCssForNonSwfFiles(id: string, dependencies: Dependencies) {
-  const uri = window.location.pathname;
-  const pattern = /(\.sw\.)|(\.bpmn)|(\.dmn)/g;
-  const isSwfOpened = pattern.test(uri.split("/").at(-1)!);
-  if (!isSwfOpened) {
+function switchHiddenCss(id: string, dependencies: Dependencies, editorEnvelopeLocator: EditorEnvelopeLocator) {
+  if (!editorEnvelopeLocator.getEnvelopeMapping(window.location.pathname)) {
     dependencies.singleView.githubTextEditorToReplaceElement()?.classList.remove("hidden");
     iframeContainer(id, dependencies)?.classList.add("hidden");
   } else {
