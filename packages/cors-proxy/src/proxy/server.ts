@@ -18,11 +18,13 @@ import * as express from "express";
 import * as cors from "cors";
 
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
+import { dnsFix } from "./dnsFix";
 
 export type ServerArgs = {
   port: number;
   origin: string;
-  verbose?: boolean;
+  verifyCert: boolean;
+  verbose: boolean;
 };
 
 export const startServer = (args: ServerArgs): void => {
@@ -30,7 +32,13 @@ export const startServer = (args: ServerArgs): void => {
 
   const app: express.Express = express();
 
-  const proxy = new ExpressCorsProxy(args.origin, args.verbose);
+  const proxy = new ExpressCorsProxy({
+    origin: args.origin,
+    verifyCert: args.verifyCert,
+    verbose: args.verbose,
+  });
+
+  dnsFix();
 
   const corsHandler = cors();
 

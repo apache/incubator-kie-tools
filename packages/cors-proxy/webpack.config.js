@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const nodeExternals = require("webpack-node-externals");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
@@ -27,6 +26,5 @@ module.exports = (env, argv) => [
     output: {
       libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals()],
   }),
 ];
