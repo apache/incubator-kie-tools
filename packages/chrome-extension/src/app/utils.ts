@@ -145,20 +145,3 @@ export function waitForElementToBeReady(selector: string) {
     });
   });
 }
-
-export function waitForPageLoadToComplete(elementToObserve: HTMLElement): Promise<void> {
-  return new Promise((resolve) => {
-    const observer = new MutationObserver((mutations) => {
-      for (let mutation of mutations) {
-        if (mutation.type === "characterData") {
-          resolve();
-          observer.disconnect();
-        }
-      }
-    });
-    observer.observe(elementToObserve, {
-      characterData: true,
-      subtree: true,
-    });
-  });
-}
