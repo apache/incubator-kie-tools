@@ -20,31 +20,37 @@ package it_tests
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
-type CfgTestInputQuarkusCreate struct {
+var cfgTestInputCreateConvert = CfgTestInputCreate{
+	input: command.CreateCmdConfig{},
+}
+
+var cfgTestInputQuarkusCreateConvert = CfgTestInputQuarkusCreate{
+	input: quarkus.CreateQuarkusProjectConfig{},
+}
+
+type CfgTestInputQuarkusConvert struct {
 	input quarkus.CreateQuarkusProjectConfig
 }
 
-var cfgTestInputQuarkusCreate_Success = []CfgTestInputQuarkusCreate{
+var cfgTestInputQuarkusConvert_Success = []CfgTestInputQuarkusConvert{
 	{input: quarkus.CreateQuarkusProjectConfig{}},
-	{input: quarkus.CreateQuarkusProjectConfig{
-		ProjectName: "my-project",
-	}},
 	{input: quarkus.CreateQuarkusProjectConfig{
 		Extensions: "quarkus-jsonp,quarkus-smallrye-openapi",
 	}},
 	{input: quarkus.CreateQuarkusProjectConfig{
-		ProjectName: "serverless-workflow-hello-world",
-		Extensions:  "quarkus-jsonp,quarkus-smallrye-openapi",
+		Extensions: "quarkus-jsonp,quarkus-smallrye-openapi",
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: "io.quarkus.platform",
 			QuarkusVersion:         "2.16.6.Final",
@@ -52,20 +58,19 @@ var cfgTestInputQuarkusCreate_Success = []CfgTestInputQuarkusCreate{
 	}},
 }
 
-var cfgTestInputQuarkusCreate_Fail = []CfgTestInputQuarkusCreate{
-	{input: quarkus.CreateQuarkusProjectConfig{
-		ProjectName: "wrong/project-name",
-	}},
+var cfgTestInputQuarkusConvert_Failed = []CfgTestInputQuarkusConvert{
 	{input: quarkus.CreateQuarkusProjectConfig{
 		Extensions: "nonexistent-extension",
 	}},
 }
 
-func transformQuarkusCreateCmdCfgToArgs(cfg quarkus.CreateQuarkusProjectConfig) []string {
-	args := []string{"create"}
-	if cfg.ProjectName != "" {
-		args = append(args, "--name", cfg.ProjectName)
-	}
+var cfgTestInputQuarkusConvert_FailedAlreadyQuarkus = []CfgTestInputQuarkusConvert{
+	{input: quarkus.CreateQuarkusProjectConfig{}},
+}
+
+func transformQuarkusConvertCmdCfgToArgs(t *testing.T, cfg quarkus.CreateQuarkusProjectConfig) []string {
+	args := []string{"convert"}
+	require.Empty(t, cfg.ProjectName, "The project name can not be set in the test of `quarkus convert`.")
 	if cfg.Extensions != "" {
 		args = append(args, "--extension", cfg.Extensions)
 	}
@@ -78,37 +83,30 @@ func transformQuarkusCreateCmdCfgToArgs(cfg quarkus.CreateQuarkusProjectConfig) 
 	return args
 }
 
-func GetQuarkusCreateProjectName(t *testing.T, config CfgTestInputQuarkusCreate) string {
-	if config.input.ProjectName != "" {
-		return config.input.ProjectName
-	} else {
-		projectDefaultName, err := LookupFlagDefaultValue("name", quarkus.NewCreateCommand())
-		require.NoErrorf(t, err, "Error: %v", err)
-		return projectDefaultName
-	}
-}
-
-func TestQuarkusCreateProjectSuccess(t *testing.T) {
-	for testIndex, test := range cfgTestInputQuarkusCreate_Success {
-		t.Run(fmt.Sprintf("Test quarkus create project success index: %d", testIndex), func(t *testing.T) {
+func TestQuarkusConvertProjectSuccess(t *testing.T) {
+	for testIndex, test := range cfgTestInputQuarkusConvert_Success {
+		t.Run(fmt.Sprintf("Test quarkus convert project success index: %d", testIndex), func(t *testing.T) {
 			defer CleanUpAndChdirTemp(t)
-			RunQuarkusCreateTest(t, test)
+			RunQuarkusConvertTest(t, cfgTestInputCreateConvert, test)
 		})
 	}
 }
 
-func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
+func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputCreate, test CfgTestInputQuarkusConvert) string {
 	var err error
 
-	projectName := GetQuarkusCreateProjectName(t, test)
+	projectName := GetCreateProjectName(t, cfgTestInputCreateConvert)
 	projectDir := filepath.Join(TempTestsPath, projectName)
 
-	// Run `quarkus create` command
-	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
-	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	// Create the project
+	RunCreateTest(t, cfgTestInputCreateConvert)
 
-	// Check if the project directory was created
-	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
+	err = os.Chdir(projectDir)
+	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+
+	// Run `quarkus convert` command
+	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
+	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
 	// Check if the expected directories and files are present
 	expectedDirectories := []string{
@@ -150,20 +148,48 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	return projectName
 }
 
-func TestQuarkusCreateProjectFail(t *testing.T) {
-	for testIndex, test := range cfgTestInputQuarkusCreate_Fail {
-		t.Run(fmt.Sprintf("Test quarkus create project fail index: %d", testIndex), func(t *testing.T) {
+func TestQuarkusConvertProjectFailed(t *testing.T) {
+	for testIndex, test := range cfgTestInputQuarkusConvert_Failed {
+		t.Run(fmt.Sprintf("Test quarkus convert project fail index: %d", testIndex), func(t *testing.T) {
 			defer CleanUpAndChdirTemp(t)
 
-			projectName := GetQuarkusCreateProjectName(t, test)
+			var err error
+			projectName := GetCreateProjectName(t, cfgTestInputCreateConvert)
 			projectDir := filepath.Join(TempTestsPath, projectName)
 
-			// Run `quarkus create` command
-			_, err := ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
+			// Create the project
+			RunCreateTest(t, cfgTestInputCreateConvert)
+
+			err = os.Chdir(projectDir)
+			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+
+			// Run `quarkus convert` command
+			_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
 			require.Errorf(t, err, "Expected error, got nil")
 
-			// Check if the project directory was not created
-			require.NoDirExistsf(t, projectDir, "Expected project directory '%s' not to be created", projectDir)
+			common.DeleteFolderStructure(t, projectDir)
+		})
+	}
+}
+
+func TestQuarkusConvertProjectFailedAlreadyQuarkus(t *testing.T) {
+	for testIndex, test := range cfgTestInputQuarkusConvert_Failed {
+		t.Run(fmt.Sprintf("Test quarkus convert project fail already quarkus index: %d", testIndex), func(t *testing.T) {
+			defer CleanUpAndChdirTemp(t)
+			
+			var err error
+			projectName := GetQuarkusCreateProjectName(t, cfgTestInputQuarkusCreateConvert)
+			projectDir := filepath.Join(TempTestsPath, projectName)
+
+			// Create the project
+			RunQuarkusCreateTest(t, cfgTestInputQuarkusCreateConvert)
+
+			err = os.Chdir(projectDir)
+			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+
+			// Run `quarkus convert` command
+			_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
+			require.Errorf(t, err, "Expected error, got nil")
 		})
 	}
 }
