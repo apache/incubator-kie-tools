@@ -1,4 +1,4 @@
-export type XsdPrimitives = "xsd:int" | "xsd:string" | "xsd:token";
+export type XsdPrimitives = "xsd:int" | "xsd:string" | "xsd:token" | "xsd:integer" | "xsd:anyURI";
 
 export interface XsdImport {
   "@_schemaLocation": string;
@@ -11,6 +11,7 @@ export interface XsdImport {
 export interface XsdSimpleType {
   "@_name": string;
   "xsd:union"?: {
+    "@_memberTypes": XsdPrimitives;
     "xsd:simpleType"?: XsdSimpleType[];
   };
   "xsd:restriction"?: {
@@ -76,7 +77,7 @@ export interface XsdElement {
   "xsd:complexType"?: XsdComplexType; // mutualy exclusive with @_type and @_ref and xsd:simpleType
   "xsd:simpleType"?: XsdSimpleType; // mutualy exclusive with xsd:complexType
 
-  "@_substitutionGroup": string;
+  "@_substitutionGroup"?: string;
   "@_minOccurs": number; // default is 1
   "@_maxOccurs": number | "unbounded"; // default is 1
 }

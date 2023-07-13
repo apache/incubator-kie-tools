@@ -19,9 +19,10 @@
     "src"
   ],
   "scripts": {
-    "build:codegen": "pnpm xml-parser-ts-codegen ./src/schemas/bpmn-2_0/BPMN20.xsd definitions",
-    "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "echo built",
+    "build:codegen": "pnpm build:codegen:bpmn20",
+    "build:codegen:bpmn20": "pnpm xml-parser-ts-codegen ./src/schemas/bpmn-2_0/BPMN20.xsd definitions",
+    "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "xml-parser-ts-codegen": "node ./node_modules/@kie-tools/xml-parser-ts-codegen/dist/codegen.js"

@@ -43,8 +43,11 @@ export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
   ["xsd:string", { type: "primitive", tsEquivalent: "string", doc: "xsd:string" }],
   ["xsd:int", { type: "primitive", tsEquivalent: "number", doc: "xsd:int" }],
   ["xsd:integer", { type: "primitive", tsEquivalent: "number", doc: "xsd:integer" }],
+  ["xsd:dateTime", { type: "primitive", tsEquivalent: "string", doc: "xsd:dateTime" }],
   ["xsd:double", { type: "primitive", tsEquivalent: "number", doc: "xsd:double" }],
+  ["xsd:long", { type: "primitive", tsEquivalent: "number", doc: "xsd:long" }],
   ["xsd:float", { type: "primitive", tsEquivalent: "number", doc: "xsd:float" }],
+  ["xsd:duration", { type: "primitive", tsEquivalent: "string", doc: "xsd:duration" }],
   ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREF" }],
   ["xsd:anyURI", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyURI" }],
   ["xsd:anyType", { type: "primitive", tsEquivalent: "string", doc: "xsd:antType" }],
@@ -124,6 +127,18 @@ async function main() {
   const __SIMPLE_TYPES: XptcSimpleType[] = Array.from(__XSDS.entries()).flatMap(([location, schema]) =>
     (schema["xsd:schema"]["xsd:simpleType"] || []).flatMap((s) => {
       if (s["xsd:union"]) {
+        if (s["xsd:union"]["@_memberTypes"] === "xsd:anyURI") {
+          return [
+            {
+              doc: "xsd:anyURI",
+              type: "simple",
+              kind: "enum",
+              name: s["@_name"] ?? s["@_name"],
+              declaredAtRelativeLocation: location,
+              values: [],
+            },
+          ];
+        }
         return (s["xsd:union"]["xsd:simpleType"] ?? []).flatMap((ss) =>
           xsdSimpleTypeToXptcSimpleType(ss, location, s["@_name"])
         );
@@ -134,7 +149,7 @@ async function main() {
   );
 
   // // process <xsd:complexType>'s
-  const __COMPLEX_TYPES: XptcComplexTypeNamed[] = [];
+  const __COMPLEX_TYPES: XptcComplexType[] = [];
   for (const [location, xsd] of __XSDS.entries()) {
     for (const xsdCt of xsd["xsd:schema"]["xsd:complexType"] || []) {
       const isAbstract = xsdCt["@_abstract"] ?? false;
@@ -148,24 +163,24 @@ async function main() {
         declaredAtRelativeLocation: location,
         childOf: xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["@_base"],
         elements: [
-          ...(xsdCt["xsd:all"]?.["xsd:element"] ?? []).flatMap((s) =>
+          ...(xsdCt["xsd:all"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
-          ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
+          ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
+          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
           ...(
             xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:choice"]?.["xsd:element"] ?? []
-          ).flatMap((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:element"] ?? []).flatMap((s) =>
+          ).map((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
+          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
           ),
           ...(
             xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []
-          ).flatMap((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
+          ).map((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
         ],
         attributes: [
           ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
@@ -181,12 +196,17 @@ async function main() {
   const __GLOBAL_ELEMENTS = new Map<string, XptcElement>();
   for (const [location, xsd] of __XSDS.entries()) {
     for (const e of xsd["xsd:schema"]["xsd:element"] || []) {
+      const a = xsdElementToXptcElement("GLOBAL", { ...e, "@_minOccurs": 0, "@_maxOccurs": "unbounded" }, location, {
+        forceOptional: false,
+      });
+
       __GLOBAL_ELEMENTS.set(`${location}__${e["@_name"]}`, {
         name: e["@_name"],
         isAbstract: e["@_abstract"] ?? false,
         substitutionGroup: e["@_substitutionGroup"],
         type: e["@_type"],
         declaredAtRelativeLocation: location,
+        anonymousType: a.kind === "ofAnonymousType" ? a.anonymousType : undefined,
       });
     }
   }
@@ -198,7 +218,7 @@ async function main() {
     const xsds = new Map<string, XsdSchema>(await parseDeep(__XSD_PARSER, __BASE_LOCATION, baseLoc));
 
     for (const [xLocation, xsd] of xsds.entries()) {
-      const localizedSubstitutions = new Map<string, string[]>();
+      const localizedSubstitutions = __SUBSTITUTIONS.get(xLocation) ?? new Map<string, string[]>();
       __SUBSTITUTIONS.set(xLocation, localizedSubstitutions);
       for (const e of xsd["xsd:schema"]["xsd:element"] || []) {
         if (e["@_substitutionGroup"]) {
@@ -216,46 +236,47 @@ async function main() {
             throw new Error(`Invalid element '${e["@_name"]}'`);
           }
 
-          localizedSubstitutions.set(`${subsGroup.declaredAtRelativeLocation}__${subsGroup.name}`, [
-            ...(localizedSubstitutions.get(`${xLocation}__${subsGroup.name}`) ?? []),
+          const localizedElementName = `${subsGroup.declaredAtRelativeLocation}__${subsGroup.name}`;
+
+          // Using this strategy to remove duplicates.
+          const accumulatedSubstitutionElements = new Set([
+            ...(localizedSubstitutions.get(localizedElementName) ?? []),
             `${xLocation}__${elem.name}`,
           ]);
+
+          localizedSubstitutions.set(localizedElementName, [...accumulatedSubstitutionElements]);
         }
       }
     }
   }
 
+  Array.from(__GLOBAL_ELEMENTS.values()).forEach((e) => {
+    if (!e.anonymousType) {
+      return;
+    } else {
+      __COMPLEX_TYPES.push(e.anonymousType);
+    }
+  });
+
   const __NAMED_TYPES_BY_TS_NAME = new Map<string, XptcComplexType | XptcSimpleType>([
     ...__SIMPLE_TYPES.map(
       (st) => [getTsNameFromNamedType(st.declaredAtRelativeLocation, st.name), st] as [string, XptcSimpleType]
     ),
-    ...__COMPLEX_TYPES.map(
-      (ct) => [getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name), ct] as [string, XptcComplexType]
-    ),
+    ...__COMPLEX_TYPES.map((ct) => {
+      if (ct.isAnonymous) {
+        const name = getAnonymousMetaTypeName(ct.forElementWithName, "GLOBAL");
+        return [getTsNameFromNamedType(ct.declaredAtRelativeLocation, name), ct] as [string, XptcComplexType];
+      } else {
+        return [getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name), ct] as [string, XptcComplexType];
+      }
+    }),
   ]);
-
-  const __DIRECT_CHILDREN = __COMPLEX_TYPES.reduce((acc, ct) => {
-    if (ct.childOf) {
-      const { name: parentName } = getTsTypeFromLocalRef(
-        __XSDS,
-        __NAMED_TYPES_BY_TS_NAME,
-        ct.declaredAtRelativeLocation,
-        ct.childOf
-      );
-      acc.set(parentName, [
-        ...(acc.get(parentName) ?? []),
-        getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name),
-      ]);
-    }
-
-    return acc;
-  }, new Map<string, string[]>());
 
   const __META_TYPE_MAPPING = new Map<string, XptcMetaType>();
 
   const rootTsTypeName = getTsNameFromNamedType(
     __RELATIVE_LOCATION_WITHOUT_EXTENSION,
-    __GLOBAL_ELEMENTS.get(__ROOT_ELEMENT)!.type
+    __GLOBAL_ELEMENTS.get(__ROOT_ELEMENT)!.type ?? getAnonymousMetaTypeName(__ROOT_ELEMENT_NAME, "GLOBAL")
   );
 
   let ts = "";
@@ -266,18 +287,24 @@ async function main() {
       continue;
     }
 
-    if (sp.kind === "enum") {
-      const enumName = getTsNameFromNamedType(sp.declaredAtRelativeLocation, sp.name);
-      const enumValues = sp.values.map((v) => `    '${v}'`);
+    const enumName = getTsNameFromNamedType(sp.declaredAtRelativeLocation, sp.name);
+    if (sp.doc === "xsd:anyURI") {
+      ts += `
+export type ${enumName} = string; // ${sp.doc}
+`;
+    } else if (sp.kind === "enum") {
       ts += `
 export type ${enumName} = |
-${enumValues.join(" |\n")}
+${sp.values.map((v) => `    '${v}'`).join(" |\n")}
 `;
     }
   }
 
   for (const ct of __COMPLEX_TYPES) {
-    const typeName = getTsNameFromNamedType(ct.declaredAtRelativeLocation, ct.name);
+    const typeName = getTsNameFromNamedType(
+      ct.declaredAtRelativeLocation,
+      ct.isAnonymous ? getAnonymousMetaTypeName(ct.forElementWithName, "GLOBAL") : ct.name
+    );
 
     const { metaProperties, needsExtensionType, anonymousTypes } = getMetaProperties(
       __RELATIVE_LOCATION,
@@ -294,7 +321,10 @@ ${enumValues.join(" |\n")}
       .map((p) => {
         const optionalMarker = p.isOptional ? "?" : "";
         const arrayMarker = p.isArray ? "[]" : "";
-        const tsType = p.metaType.name === "integer" || p.metaType.name === "float" ? "number" : p.metaType.name;
+        const tsType =
+          p.metaType.name === "integer" || p.metaType.name === "float" || p.metaType.name === "long"
+            ? "number"
+            : p.metaType.name;
         const ns = getMetaPropertyNs(__RELATIVE_LOCATION, p);
         return `    "${ns}${p.name}"${optionalMarker}: ${p.typeBody ?? tsType}${arrayMarker}; // from type ${
           p.fromType
@@ -306,13 +336,18 @@ ${enumValues.join(" |\n")}
 
     const anonymousTypesString = anonymousTypes
       .map((anonType) => {
-        const anonymousTypesProperties = anonType.properties.map((p) => {
-          return `    "${p.name}": ${p.metaType.name};`;
-        });
+        const anonymousTypesProperties = anonType.properties.map(
+          (p) =>
+            `    "${p.name}": ${
+              p.metaType.name === "integer" || p.metaType.name === "float" || p.metaType.name === "long"
+                ? "number"
+                : p.metaType.name
+            };`
+        );
 
         // FIXME: Tiago: Not all anonymous types are extensible!
         return `export interface ${anonType.name} {
-  __?: undefined;
+    __?: undefined;
 ${anonymousTypesProperties.join("\n")}
 }`;
       })
@@ -322,6 +357,7 @@ ${anonymousTypesProperties.join("\n")}
       const rootElementBaseType = rootTsTypeName === typeName ? "extends XmlParserTsRootElementBaseType" : "";
       ts += `
 export interface ${typeName} ${rootElementBaseType} ${doc} {
+    __?: undefined;
 ${properties}
 }
 
@@ -395,7 +431,7 @@ ${Array.from(subs.entries())
 export const elements = {
 ${Array.from(__GLOBAL_ELEMENTS.entries())
   .map(([k, v]) => {
-    const s = v.type.split(":");
+    const s = v.type?.split(":") || [getAnonymousMetaTypeName(v.name, "GLOBAL")];
     const elementName = `${getRealtiveLocationNs(__RELATIVE_LOCATION, k.split("__")[0])}${v.name}`;
     const elementType = `${getTsNameFromNamedType(v.declaredAtRelativeLocation, s.length === 1 ? s[0] : s[1])}`;
     return `  "${elementName}": "${elementType}",`;
@@ -496,7 +532,12 @@ ${resolutions
     const elementName = `${elementNs}${element.name}`;
     return [
       `        ({ __$$element: "${elementName}" } & ${
-        getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, element.type).name
+        getTsTypeFromLocalRef(
+          __XSDS,
+          __NAMED_TYPES_BY_TS_NAME,
+          ct.declaredAtRelativeLocation,
+          element.type ?? getAnonymousMetaTypeName(element.name, "GLOBAL")
+        ).name
       })`,
     ];
   })
@@ -518,7 +559,7 @@ function getMetaProperties(
   const anonymousTypes: XptcMetaType[] = [];
 
   for (const a of ct.attributes) {
-    const tsType = getTsTypeFromLocalRef(
+    const attributeType = getTsTypeFromLocalRef(
       __XSDS,
       __NAMED_TYPES_BY_TS_NAME,
       ct.declaredAtRelativeLocation,
@@ -530,9 +571,7 @@ function getMetaProperties(
       fromType: metaTypeName,
       name: `@_${a.name}`,
       elem: undefined,
-      metaType: {
-        name: getMetaTypeName(tsType.name, tsType.doc),
-      },
+      metaType: { name: getMetaTypeName(attributeType.name, attributeType.doc) },
       isArray: false,
       isOptional: a.isOptional,
     });
@@ -551,12 +590,15 @@ function getMetaProperties(
         throw new Error(`Can't find reference to element '${e.ref}'`);
       }
 
-      const tsType = getTsTypeFromLocalRef(
-        __XSDS,
-        __NAMED_TYPES_BY_TS_NAME,
-        ct.declaredAtRelativeLocation,
-        referencedElement.type
-      );
+      const tsType = referencedElement.type
+        ? getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, ct.declaredAtRelativeLocation, referencedElement.type)
+        : {
+            name: getTsNameFromNamedType(
+              ct.declaredAtRelativeLocation,
+              getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
+            ),
+            doc: "Anonymous type from element " + referencedElement.name,
+          };
 
       metaProperties.push({
         declaredAt: referencedElement?.declaredAtRelativeLocation,
@@ -638,13 +680,18 @@ function getMetaProperties(
       if (curParentCt.isAnonymous) {
         throw new Error("Anonymous types are never parent types.");
       }
-      const d = curParentCt.declaredAtRelativeLocation;
 
       for (const a of curParentCt.attributes) {
-        const attributeType = getTsTypeFromLocalRef(__XSDS, __NAMED_TYPES_BY_TS_NAME, d, a.localTypeRef);
+        const attributeType = getTsTypeFromLocalRef(
+          __XSDS,
+          __NAMED_TYPES_BY_TS_NAME,
+          curParentCt.declaredAtRelativeLocation,
+          a.localTypeRef
+        );
         if (!attributeType) {
           throw new Error(`Can't resolve local type ref ${a.localTypeRef}`);
         }
+
         metaProperties.push({
           declaredAt: curParentCt.declaredAtRelativeLocation,
           fromType: curParentCt.name,
@@ -715,12 +762,20 @@ function getMetaProperties(
             throw new Error(`Can't find reference to element '${e.ref}'`);
           }
 
-          const tsType = getTsTypeFromLocalRef(
-            __XSDS,
-            __NAMED_TYPES_BY_TS_NAME,
-            ct.declaredAtRelativeLocation,
-            referencedElement.type
-          );
+          const tsType = referencedElement.type
+            ? getTsTypeFromLocalRef(
+                __XSDS,
+                __NAMED_TYPES_BY_TS_NAME,
+                ct.declaredAtRelativeLocation,
+                referencedElement.type
+              )
+            : {
+                name: getTsNameFromNamedType(
+                  ct.declaredAtRelativeLocation,
+                  getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
+                ),
+                doc: "Anonymous type from element " + referencedElement.name,
+              };
 
           metaProperties.push({
             declaredAt: referencedElement?.declaredAtRelativeLocation,
@@ -848,7 +903,7 @@ function xsdSimpleTypeToXptcSimpleType(s: XsdSimpleType, location: string, name:
       declaredAtRelativeLocation: location,
       values: s["xsd:restriction"]["xsd:enumeration"].map((e) => e["@_value"]),
     };
-  } else if (s["xsd:restriction"]?.["@_base"] === "xsd:int") {
+  } else if (s["xsd:restriction"]?.["@_base"] === "xsd:int" || s["xsd:restriction"]?.["@_base"] === "xsd:integer") {
     return {
       doc: "int",
       type: "simple",
@@ -895,7 +950,7 @@ function xsdElementToXptcElement(
   xsdElement: NonNullable<Unpacked<XsdSequence["xsd:element"]>>,
   location: string,
   args?: { forceOptional: boolean }
-): XptcComplexType["elements"] {
+): Unpacked<XptcComplexType["elements"]> {
   const minOccurs = xsdElement["@_minOccurs"] ?? 1;
   const maxOccurs = xsdElement["@_maxOccurs"] ?? 1;
 
@@ -950,32 +1005,28 @@ function xsdElementToXptcElement(
   }
 
   if (xsdElement["@_type"] && xsdElement["@_name"]) {
-    return [
-      {
-        name: xsdElement["@_name"],
-        typeName: xsdElement["@_type"],
-        kind: "ofNamedType",
-        isArray,
-        isOptional,
-      },
-    ];
+    return {
+      name: xsdElement["@_name"],
+      typeName: xsdElement["@_type"],
+      kind: "ofNamedType",
+      isArray,
+      isOptional,
+    };
   }
 
   if (xsdElement["xsd:complexType"] && xsdElement["@_name"]) {
-    return [
-      {
-        name: xsdElement["@_name"],
-        kind: "ofAnonymousType",
-        isArray,
-        isOptional,
-        anonymousType: xsdComplexTypeToAnonymousXptcComplexType(
-          parentIdentifierForExtensionType,
-          xsdElement["xsd:complexType"],
-          location,
-          xsdElement["@_name"]
-        ),
-      },
-    ];
+    return {
+      name: xsdElement["@_name"],
+      kind: "ofAnonymousType",
+      isArray,
+      isOptional,
+      anonymousType: xsdComplexTypeToAnonymousXptcComplexType(
+        parentIdentifierForExtensionType,
+        xsdElement["xsd:complexType"],
+        location,
+        xsdElement["@_name"]
+      ),
+    };
   }
 
   if (xsdElement["xsd:simpleType"] && xsdElement["@_name"]) {
@@ -983,14 +1034,12 @@ function xsdElementToXptcElement(
   }
 
   if (xsdElement["@_ref"]) {
-    return [
-      {
-        ref: xsdElement["@_ref"],
-        kind: "ofRef",
-        isArray,
-        isOptional,
-      },
-    ];
+    return {
+      ref: xsdElement["@_ref"],
+      kind: "ofRef",
+      isArray,
+      isOptional,
+    };
   }
 
   throw new Error(`Unknown xsd:element structure. ${JSON.stringify(xsdElement)}`);
@@ -1020,10 +1069,10 @@ function xsdComplexTypeToAnonymousXptcComplexType(
     declaredAtRelativeLocation: location,
     childOf: xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["@_base"],
     elements: [
-      ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
+      ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
         xsdElementToXptcElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
       ),
-      ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).flatMap((s) =>
+      ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
         xsdElementToXptcElement(`${parentIdentifierForExtensionType}__${element}`, s, location)
       ),
     ],

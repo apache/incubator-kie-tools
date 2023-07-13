@@ -49,10 +49,11 @@ export type XptcComplexType = XptcComplexTypeNamed | XptcComplexTypeAnonymous;
 
 export type XptcElement = {
   name: string;
-  type: string;
+  type?: string;
   isAbstract: boolean;
   substitutionGroup?: string;
   declaredAtRelativeLocation: string;
+  anonymousType?: XptcComplexTypeAnonymous;
 };
 
 export type XptcSimpleType = {
@@ -68,6 +69,11 @@ export type XptcSimpleType = {
     }
   | {
       kind: "int";
+      minInclusive?: number;
+      maxInclusive?: number;
+    }
+  | {
+      kind: "integer";
       minInclusive?: number;
       maxInclusive?: number;
     }
