@@ -99,7 +99,6 @@ CLI tool to help building container images using build variables and different e
         default: false,
         describe: "Push the image to the registry",
         type: "boolean",
-        nargs: 1,
       },
       containerfile: {
         alias: "f",
