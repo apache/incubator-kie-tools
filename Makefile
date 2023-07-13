@@ -36,7 +36,9 @@ IMAGE_TAG_BASE ?= quay.io/kiegroup/kogito-serverless-operator-nightly
 BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 
 # BUNDLE_GEN_FLAGS are the flags passed to the operator-sdk generate bundle command
-BUNDLE_GEN_FLAGS ?= -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+# TODO: review this flag once we upgrade https://github.com/operator-framework/operator-sdk/issues/4992 (https://issues.redhat.com/browse/KOGITO-9428)
+# TODO: It is preventing us from adding new annotations to bundle/metadata/annotations.yaml
+BUNDLE_GEN_FLAGS ?= -q --overwrite=false --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 
 # Container runtime engine used for building the images
 BUILDER ?= podman
