@@ -30,7 +30,7 @@ export function TestToolsPanel() {
           </Text>
           <Divider />
           <Text component={TextVariants.p}>
-            To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.
+            {'To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.'}
           </Text>
         </TextContent>
       </DrawerHead>
