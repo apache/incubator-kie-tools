@@ -15,23 +15,24 @@
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.2
 
 ENV HOME=/home/kie-sandbox
+ENV NVM_DIR=$HOME/.nvm
 
 RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
   && chmod -R g=u $HOME \
   && chown -R 1000:0 $HOME \
-  && curl -fsSL https://rpm.nodesource.com/setup_20.x | bash - \
-  && microdnf install nodejs-2:20.3.1-1nodesource.x86_64 -y \
-  && microdnf clean all
+  && microdnf install -y tar gzip \
+  && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
+  && . ~/.nvm/nvm.sh && nvm install 20.3.1
 
 COPY --chown=1000:0 dist-dev/git-cors-proxy $HOME/git-cors-proxy
 
 EXPOSE 8080
 
-USER 1000
-
 WORKDIR $HOME/git-cors-proxy
 
-RUN npm install --cache $HOME/.cache --production && chmod -R 775 .
+USER 1000
 
-CMD ./bin.js start -p 8080
+RUN . ~/.nvm/nvm.sh && npm install --cache $HOME/.cache --production && chmod -R 775 .
+
+CMD . ~/.nvm/nvm.sh && ./bin.js start -p 8080
