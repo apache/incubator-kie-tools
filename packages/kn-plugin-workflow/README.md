@@ -39,7 +39,7 @@ To build the `kn-plugin-workflow` run the following command:
 
 ### Integration Tests
 
-To build the `kn-plugin-workflow` and run integration tests, use the following command:
+To build the `kn-plugin-workflow` and run integration tests, use the following commands:
 
 - `export KIE_TOOLS_BUILD__runIntegrationTests=true`
 - `pnpm -r -F "@kie-tools/kn-plugin-workflow..." build:prod`
