@@ -4,7 +4,7 @@ async function main() {
   const errors = [];
   const env = kieSandboxDistributionEnv.env;
   const kieSandboxUrl = `http://localhost:${env.kieSandboxDistribution.kieSandbox.port}`;
-  const gitCorsProxyUrl = `http://localhost:${env.kieSandboxDistribution.gitCorsProxy.port}/ping`;
+  const corsProxyUrl = `http://localhost:${env.kieSandboxDistribution.corsProxy.port}/ping`;
   const extendedServicesUrl = `http://localhost:${env.kieSandboxDistribution.extendedServices.port}/ping`;
   console.log("Testing if images are up:");
   console.log(`KIE Sandbox on ${kieSandboxUrl}`);
@@ -15,13 +15,13 @@ async function main() {
     console.log("Failed!");
     errors.push({ kieSandbox: e });
   }
-  console.log(`Git CORS Proxy on ${gitCorsProxyUrl}`);
+  console.log(`Git CORS Proxy on ${corsProxyUrl}`);
   try {
-    await fetch(gitCorsProxyUrl);
+    await fetch(corsProxyUrl);
     console.log("OK!");
   } catch (e) {
     console.log("Failed!");
-    errors.push({ gitCorsProxy: e });
+    errors.push({ corsProxy: e });
   }
   console.log(`Extended Services on ${extendedServicesUrl}`);
   try {

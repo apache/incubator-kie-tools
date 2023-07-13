@@ -18,7 +18,7 @@ const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools
 
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
-const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
+const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 const devPort = 9001;
 
 module.exports = composeEnv(
@@ -26,7 +26,7 @@ module.exports = composeEnv(
     // dependencies
     buildEnv,
     extendedServicesEnv,
-    corsProxyImageEnv,
+    corsProxyEnv,
   ],
   {
     vars: varsWithName({
@@ -60,7 +60,7 @@ module.exports = composeEnv(
         description: "Cypress URL to be used on integrationt tests.",
       },
       ONLINE_EDITOR__corsProxyUrl: {
-        default: `http://localhost:${corsProxyImageEnv.env.corsProxy.dev.port}`,
+        default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
         description: "Git CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
