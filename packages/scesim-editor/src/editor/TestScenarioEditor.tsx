@@ -18,12 +18,14 @@ import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
 import { useCallback, useImperativeHandle, useState } from "react";
+
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-import "./TestScenarioEditor.css";
 import { TestToolsPanel } from "../panels/TestToolsPanel";
+
+import "./TestScenarioEditor.css";
 
 export enum TestScenarioEditorTab {
   EDITOR,
