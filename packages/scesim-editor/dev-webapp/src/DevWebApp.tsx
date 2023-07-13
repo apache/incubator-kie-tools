@@ -11,8 +11,6 @@ export function DevWebApp() {
   const [xml, setXml] = useState("");
 
   const onDrop = useCallback((e: React.DragEvent) => {
-    console.log("File(s) dropped");
-
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
 
     if (e.dataTransfer.items) {
@@ -41,7 +39,7 @@ export function DevWebApp() {
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
       const fileBlob = new Blob([ref.current?.getContent() || ""], { type: "text/xml" });
-      downloadRef.current.download = `dmn-${makeid(10)}.dmn`;
+      downloadRef.current.download = `scesim-${makeid(10)}.scesim`;
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
@@ -53,15 +51,18 @@ export function DevWebApp() {
         <PageSection variant={"light"} isFilled={false} padding={{ default: "padding" }}>
           <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
             <FlexItem shrink={{ default: "shrink" }}>
-              <h3>Test Scenario Editor :: Dev webapp </h3>
+              <h3>Test Scenario Editor :: Dev WebApp</h3>
             </FlexItem>
             <FlexItem>
               <h5>(Drag & drop a file anywhere to open it)</h5>
             </FlexItem>
             <FlexItem shrink={{ default: "shrink" }}>
-              <button onClick={copyAsXml}>Copy as XML</button>
-              &nbsp; &nbsp;
-              <button onClick={downloadAsXml}>Download as XML</button>
+              {/**
+}               Restore it after integration with Marshaller
+                <button onClick={copyAsXml}>Copy as XML</button>
+                &nbsp; &nbsp;
+                <button onClick={downloadAsXml}>Download as XML</button>
+              */}
             </FlexItem>
           </Flex>
           <a ref={downloadRef} />

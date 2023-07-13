@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
+
 import * as React from "react";
 import { useCallback, useImperativeHandle, useState } from "react";
-
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-//import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-//import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
-import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-import "@patternfly/react-core/dist/styles/base.css";
-import "./TestScenarioEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import "./TestScenarioEditor.css";
+import { TestToolsPanel } from "../panels/TestToolsPanel";
 
 export enum TestScenarioEditorTab {
   EDITOR,
   BACKGROUND,
   SETTINGS,
-  CHEATSHEET,
 }
 
 export type TestScenarioEditorRef = {
@@ -62,11 +59,19 @@ export const TestScenarioEditor = React.forwardRef((props: { xml: string }, ref:
               <TabTitleIcon>
                 <TableIcon />
               </TabTitleIcon>
-              <TabTitleText>Editor</TabTitleText>
+              <TabTitleText>Scenarios</TabTitleText>
             </>
           }
         >
-          Editor
+          {tab === TestScenarioEditorTab.EDITOR && (
+            <Drawer isExpanded={true} isInline={true} position={"right"}>
+              <DrawerContent panelContent={<TestToolsPanel />}>
+                <DrawerContentBody>
+                  <div className={"kie-scesim-editor--diagram-container"}>Scenario Grid</div>
+                </DrawerContentBody>
+              </DrawerContent>
+            </Drawer>
+          )}
         </Tab>
         <Tab
           eventKey={TestScenarioEditorTab.BACKGROUND}
@@ -81,32 +86,6 @@ export const TestScenarioEditor = React.forwardRef((props: { xml: string }, ref:
           }
         >
           Backgroud
-        </Tab>
-        <Tab
-          eventKey={TestScenarioEditorTab.SETTINGS}
-          title={
-            <>
-              <TabTitleIcon>
-                <CogIcon />
-              </TabTitleIcon>
-              <TabTitleText>Settings</TabTitleText>
-            </>
-          }
-        >
-          Settings
-        </Tab>
-        <Tab
-          eventKey={TestScenarioEditorTab.CHEATSHEET}
-          title={
-            <>
-              <TabTitleIcon>
-                <InfoIcon />
-              </TabTitleIcon>
-              <TabTitleText>CheatSheet</TabTitleText>
-            </>
-          }
-        >
-          CheatSheet
         </Tab>
       </Tabs>
     </>
