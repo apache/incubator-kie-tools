@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "bin": {
-    "xml-parser-ts-codegen": "dist/codegen.js"
+    "xml-parser-ts-codegen": "bin.js"
   },
   "files": [
     "dist",
