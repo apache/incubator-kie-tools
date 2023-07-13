@@ -20,12 +20,13 @@
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:cors-proxy-package": "run-script-os",
     "copy:cors-proxy-package:linux:darwin": "cp -R ./node_modules/@kie-tools/cors-proxy/ dist-dev/cors-proxy/",
-    "copy:cors-proxy-package:win32": "echo \"Copy cors-proxy package not supported on Windows\"",
-    "docker:build": "run-script-if --bool $([ $(command -v docker) ] && echo true || echo false) --then \"docker build $(echo $(build-env corsProxy.image.buildTags) | xargs printf -- \"-t $(build-env corsProxy.image.registry)/$(build-env corsProxy.image.account)/$(build-env corsProxy.image.name):%s\n\" | xargs echo) . -f Containerfile\" --else \"echo Docker not found, skipping image build.\"",
-    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env corsProxy.image.buildTags) | xargs printf -- \"-t $(build-env corsProxy.image.registry)/$(build-env corsProxy.image.account)/$(build-env corsProxy.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "copy:git-cors-proxy-package:win32": "pnpm powershell \"Copy-Item -R ../node_modules/@kie-tools/cors-proxy/ dist-dev/cors-proxy/\"",
+    "docker:build": "kie-tools--image-builder -r \"$(build-env corsProxy.image.registry)\" -a \"$(build-env corsProxy.image.account)\" -n \"$(build-env corsProxy.image.name)\" -t \"$(build-env corsProxy.image.buildTags)\"",
+    "podman:build": "kie-tools--image-builder -r \"$(build-env corsProxy.image.registry)\" -a \"$(build-env corsProxy.image.account)\" -n \"$(build-env corsProxy.image.name)\" -t \"$(build-env corsProxy.image.buildTags)\" -e podman"
   },
   "devDependencies": {
     "@kie-tools/cors-proxy": "workspace:*",
+    "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"

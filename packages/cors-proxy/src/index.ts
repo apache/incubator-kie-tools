@@ -78,5 +78,3 @@ export const run = async () => {
 };
 
 run();
-
-console.log(process.env);
