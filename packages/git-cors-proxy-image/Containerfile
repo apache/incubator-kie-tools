@@ -14,8 +14,9 @@
 
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.2
 
-ENV HOME=/home/kie-sandbox
-ENV NVM_DIR=$HOME/.nvm
+ENV HOME          /home/kie-sandbox
+ENV NVM_DIR       $HOME/.nvm
+ENV NODE_VERSION  v20.3.1
 
 RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
@@ -23,7 +24,10 @@ RUN mkdir $HOME \
   && chown -R 1000:0 $HOME \
   && microdnf install -y tar-2:1.34-6.el9_1.x86_64 gzip-1.12-1.el9.x86_64 \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
-  && . ~/.nvm/nvm.sh && nvm install 20.3.1
+  && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION"
+
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
+ENV PATH      $NODE_PATH:$PATH
 
 COPY --chown=1000:0 dist-dev/git-cors-proxy $HOME/git-cors-proxy
 
@@ -31,8 +35,8 @@ EXPOSE 8080
 
 WORKDIR $HOME/git-cors-proxy
 
+RUN npm install --cache $HOME/.cache --production && chmod -R 775 .
+
 USER 1000
 
-RUN . ~/.nvm/nvm.sh && npm install --cache $HOME/.cache --production && chmod -R 775 .
-
-CMD . ~/.nvm/nvm.sh && ./bin.js start -p 8080
+CMD ./bin.js start -p 8080
