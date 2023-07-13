@@ -67,7 +67,7 @@ export const TestScenarioEditor = React.forwardRef((props: { xml: string }, ref:
             <Drawer isExpanded={true} isInline={true} position={"right"}>
               <DrawerContent panelContent={<TestToolsPanel />}>
                 <DrawerContentBody>
-                  <div className={"kie-scesim-editor--diagram-container"}>Scenario Grid</div>
+                  <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
                 </DrawerContentBody>
               </DrawerContent>
             </Drawer>
