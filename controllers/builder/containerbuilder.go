@@ -96,7 +96,7 @@ func newContainerBuilderManager(managerContext buildManagerContext, config *rest
 }
 
 func (c *containerBuilderManager) getImageBuilderForKaniko(workflowID string, imageNameTag string, workflowDefinition []byte, task *api.KanikoTask) imageBuilder {
-	containerFile := c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]]
+	containerFile := platform.GetCustomizedDockerfile(c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]], *c.platform)
 	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
 	ib.OnNamespace(c.platform.Namespace)
 	ib.WithPodMiddleName(workflowID)

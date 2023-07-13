@@ -16,7 +16,9 @@ package platform
 
 import (
 	"context"
+	"regexp"
 	"runtime"
+	"strings"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
@@ -33,6 +35,8 @@ import (
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
+
+var builderDockerfileFromRE = regexp.MustCompile(`FROM (.*) AS builder`)
 
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
@@ -141,4 +145,12 @@ func GetRegistryAddress(ctx context.Context, c client.Client) (*string, error) {
 		return &result.HostFromClusterNetwork, nil
 	}
 	return nil, nil
+}
+
+func GetCustomizedDockerfile(dockerfile string, platform operatorapi.SonataFlowPlatform) string {
+	if platform.Spec.BuildPlatform.BaseImage != "" {
+		res := builderDockerfileFromRE.FindAllStringSubmatch(dockerfile, 1)
+		dockerfile = strings.Replace(dockerfile, strings.Trim(res[0][1], " "), platform.Spec.BuildPlatform.BaseImage, 1)
+	}
+	return dockerfile
 }

@@ -29,6 +29,7 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
@@ -143,7 +144,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 
 func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.SonataFlowBuild) *buildv1.BuildConfig {
 	optimizationPol := buildv1.ImageOptimizationSkipLayers
-	dockerFile := o.commonConfig.Data[o.commonConfig.Data[configKeyDefaultBuilderResourceName]]
+	dockerFile := platform.GetCustomizedDockerfile(o.commonConfig.Data[o.commonConfig.Data[configKeyDefaultBuilderResourceName]], *o.platform)
 	return &buildv1.BuildConfig{
 		ObjectMeta: metav1.ObjectMeta{Namespace: build.Namespace, Name: build.Name},
 		Spec: buildv1.BuildConfigSpec{

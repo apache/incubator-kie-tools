@@ -39,6 +39,8 @@ const (
 	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
 	sonataFlowBuilderConfig                   = "sonataflow-operator-builder-config_v1_configmap.yaml"
 
+	BuilderDockerfile = "builder_dockerfile.yaml"
+
 	configSamplesOneLevelPath = "../config/samples/"
 	configSamplesTwoLevelPath = "../../config/samples/"
 	e2eSamples                = "test/testdata/"
