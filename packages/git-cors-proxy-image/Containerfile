@@ -21,7 +21,7 @@ RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
   && chmod -R g=u $HOME \
   && chown -R 1000:0 $HOME \
-  && microdnf install -y tar gzip \
+  && microdnf install -y tar-2:1.34-6.el9_1.x86_64 gzip-1.12-1.el9.x86_64 \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
   && . ~/.nvm/nvm.sh && nvm install 20.3.1
 
