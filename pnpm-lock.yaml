@@ -8918,9 +8918,6 @@ importers:
       "@kie-tools/xml-parser-ts":
         specifier: workspace:*
         version: link:../xml-parser-ts
-      fast-xml-parser:
-        specifier: ^4.2.4
-        version: 4.2.4
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -13371,7 +13368,7 @@ packages:
     dependencies:
       "@babel/core": 7.18.10
       "@babel/helper-plugin-utils": 7.21.5
-      "@babel/helper-validator-option": 7.16.7
+      "@babel/helper-validator-option": 7.21.0
       "@babel/plugin-transform-typescript": 7.18.4(@babel/core@7.18.10)
     transitivePeerDependencies:
       - supports-color
@@ -34494,7 +34491,7 @@ packages:
       "@webassemblyjs/wasm-parser": 1.11.1
       acorn: 8.8.2
       acorn-import-assertions: 1.8.0(acorn@8.8.2)
-      browserslist: 4.20.2
+      browserslist: 4.21.5
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.14.0
       es-module-lexer: 0.9.3

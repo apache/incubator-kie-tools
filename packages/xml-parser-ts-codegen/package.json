@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*",
-    "fast-xml-parser": "^4.2.4",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
