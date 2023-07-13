@@ -51,7 +51,7 @@ func NewRunCommand() *cobra.Command {
 		return run(cmd, args)
 	}
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different port to Quarkus dev mode.")
-	cmd.Flags().Bool("open-dev-ui", true, "Disable automatic browser launch of SonataFlow  Dev UI")
+	cmd.Flags().Bool("open-dev-ui", true, "If false, disables automatic browser launch of SonataFlow Dev UI")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
