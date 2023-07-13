@@ -39,7 +39,10 @@ const scesim: SceSim__ScenarioSimulationModelType = ${JSON.stringify(json.Scenar
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
 
-      const tsc = child_process.spawnSync("tsc", ["--noEmit", "--strict", tmpFilePath], { stdio: "pipe" });
+      const tsc = child_process.spawnSync("tsc", ["--noEmit", "--strict", tmpFilePath], {
+        stdio: "pipe",
+        shell: "true",
+      });
       const tscOutput = tsc.output
         .map((line) => line?.toString())
         .join("\n")
