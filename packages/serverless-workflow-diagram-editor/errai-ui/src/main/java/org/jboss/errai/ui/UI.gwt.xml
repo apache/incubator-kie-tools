@@ -20,13 +20,12 @@
   <inherits name="com.google.gwt.user.User"/>
   <inherits name="com.google.gwt.resources.Resources" />
   <inherits name="org.jboss.errai.ioc.Container"/>
-  <inherits name="org.jboss.errai.databinding.DataBinding" />
   <inherits name="elemental2.dom.Dom" />
 
   <inherits name="org.w3c.dom.Dom"/>
 
   <!--the GWT logging framework breaks Mobile Safari in iOS 6.1 -->
-  <!--<inherits name="com.google.gwt.logging.Logging"/>-->  
+  <!--<inherits name="com.google.gwt.logging.Logging"/>-->
 
   <generate-with class="org.jboss.errai.ui.rebind.TranslationServiceGenerator">
     <when-type-is class="org.jboss.errai.ui.client.local.spi.TranslationService"/>

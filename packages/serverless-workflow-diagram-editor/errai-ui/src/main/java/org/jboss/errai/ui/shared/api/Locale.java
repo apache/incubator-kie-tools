@@ -17,13 +17,11 @@
 package org.jboss.errai.ui.shared.api;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.databinding.client.api.Bindable;
 
 /**
  * Simple data object representing a Locale for i18n
  * @author edewit@redhat.com
  */
-@Bindable
 public class Locale {
   private String locale;
   private String label;

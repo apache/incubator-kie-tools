@@ -21,21 +21,23 @@
 
   <!-- Uberfire dependencies -->
   <inherits name="org.uberfire.UberfireAPI"/>
-  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
 
   <!-- Appformer Kogito Bridge -->
   <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
 
   <!-- Errai, Drools etc -->
-  <inherits name="org.gwtbootstrap3.extras.toggleswitch.ToggleSwitch"/>
   <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
 
   <!-- Stunner -->
+  <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+  <inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
   <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
 
   <!-- SW -->
   <inherits name="org.kie.workbench.common.stunner.sw.SWEditorApi"/>
   <inherits name="org.kie.workbench.common.stunner.sw.SWEditorClient"/>
+
+  <inherits name="org.kie.workbench.common.stunner.Stylesheets"/>
 
   <!-- Only default locale support for kogito. -->
   <set-property name="locale" value="default"/>
@@ -54,5 +56,9 @@
 
   <!-- Specify the paths for translatable code -->
   <source path="client"/>
+
+  <public path="resources">
+    <include name="fonts/*"/>
+  </public>
 
 </module>

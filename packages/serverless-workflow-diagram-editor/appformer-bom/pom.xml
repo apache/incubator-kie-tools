@@ -505,10 +505,27 @@
         <version>${project.version}</version>
       </dependency>
 
-
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
         <artifactId>snakeyaml-engine</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.gwtbootstrap3</groupId>
+        <artifactId>extras</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+        <artifactId>stylesheets</artifactId>
         <version>${project.version}</version>
       </dependency>
 

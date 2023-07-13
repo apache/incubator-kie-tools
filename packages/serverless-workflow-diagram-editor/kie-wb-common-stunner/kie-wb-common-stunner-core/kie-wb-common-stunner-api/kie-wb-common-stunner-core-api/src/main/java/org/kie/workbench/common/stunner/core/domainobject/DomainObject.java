@@ -15,23 +15,15 @@
  */
 package org.kie.workbench.common.stunner.core.domainobject;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 
 /**
  * A DomainObject belongs to the underlying model represented by the Graph but is not represented by a Node.
  * It is ordinarily itself a property of a Node Content that can have its properties displayed by the Properties Panel.
  * A DomainObject must adhere to the same requirements as Nodes bound to the Properties Panel; namely:
- * 1) It must be {@link Portable}
- * 2) It must be {@link Bindable}
  * 3) It must be a {@link Definition}
- * 5) It must have a {@link Category} property and associated public getter.
- * 6) It must have a {@link Labels} property and associated public getter.
  * 7) It must be included in a {@link DefinitionSet} declaration.
  * 8) It can have one or more {@link Property}
  */

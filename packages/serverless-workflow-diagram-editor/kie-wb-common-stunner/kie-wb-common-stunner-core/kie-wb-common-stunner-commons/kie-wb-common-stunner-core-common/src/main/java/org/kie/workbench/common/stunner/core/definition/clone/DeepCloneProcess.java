@@ -22,7 +22,6 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -73,7 +72,7 @@ public class DeepCloneProcess extends AbstractCloneProcess implements IDeepClone
     }
 
     private boolean isAllowedToClone(Object value) {
-        return Objects.nonNull(value) && (isSimpleValue(value) || BindableProxyFactory.isBindableType(value));
+        return Objects.nonNull(value) && (isSimpleValue(value));
     }
 
     private boolean isSimpleValue(Object value) {

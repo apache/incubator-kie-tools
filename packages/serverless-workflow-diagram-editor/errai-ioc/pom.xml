@@ -69,7 +69,7 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava-gwt</artifactId>
@@ -156,17 +156,6 @@
       <id>integration-test</id>
 
       <dependencies>
-        <dependency>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-        </dependency>
-
-        <dependency>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-          <classifier>sources</classifier>
-        </dependency>
-
         <dependency>
           <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
           <artifactId>errai-codegen</artifactId>
