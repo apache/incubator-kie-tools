@@ -16,7 +16,7 @@
 
 import { GitHubPageType } from "./app/github/GitHubPageType";
 import { renderSingleEditorApp } from "./app/components/single/singleEditorEdit";
-import { renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
+import { iframeContainer, renderSingleEditorReadonlyApp } from "./app/components/single/singleEditorView";
 import { renderPrEditorsApp } from "./app/components/pr/prEditors";
 import { mainContainer, runAfterUriChange } from "./app/utils";
 import { Dependencies } from "./app/Dependencies";
@@ -69,7 +69,7 @@ function init(globals: Globals) {
   globals.logger.log(`---`);
   globals.logger.log(`Starting GitHub extension.`);
 
-  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies);
+  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies, globals.editorEnvelopeLocator);
 
   const fileInfo = extractFileInfoFromUrl();
   const pageType = discoverCurrentGitHubPageType();
@@ -114,12 +114,18 @@ export function extractFileInfoFromUrl() {
   };
 }
 
-function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependencies: Dependencies) {
+function unmountPreviouslyRenderedFeatures(
+  id: string,
+  logger: Logger,
+  dependencies: Dependencies,
+  editorEnvelopeLocator: EditorEnvelopeLocator
+) {
   try {
     if (mainContainer(id, dependencies.all.body())) {
       ReactDOM.unmountComponentAtNode(mainContainer(id, dependencies.all.body())!);
       logger.log("Unmounted previous features.");
     }
+    switchHiddenCss(id, dependencies, editorEnvelopeLocator);
   } catch (e) {
     logger.log("Ignoring exception while unmounting features.");
   }
@@ -127,6 +133,16 @@ function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependenc
 
 function pathnameMatches(regex: string) {
   return !!window.location.pathname.match(new RegExp(regex));
+}
+
+function switchHiddenCss(id: string, dependencies: Dependencies, editorEnvelopeLocator: EditorEnvelopeLocator) {
+  if (!editorEnvelopeLocator.getEnvelopeMapping(window.location.pathname)) {
+    dependencies.singleView.githubTextEditorToReplaceElement()?.classList.remove("hidden");
+    iframeContainer(id, dependencies)?.classList.add("hidden");
+  } else {
+    dependencies.singleView.githubTextEditorToReplaceElement()!.classList.add("hidden");
+    iframeContainer(id, dependencies)?.classList.remove("hidden");
+  }
 }
 
 export function discoverCurrentGitHubPageType() {

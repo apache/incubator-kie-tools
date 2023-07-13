@@ -42,7 +42,6 @@ import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from 
 import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
-import _ from "lodash";
 
 type ROWTYPE = RelationExpressionDefinitionRow;
 
@@ -59,6 +58,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         items: [
           { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
           { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.insert, type: BeeTableOperation.ColumnInsertN },
           { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
         ],
       },
@@ -67,12 +67,13 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
           { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
@@ -350,6 +351,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           : [
               BeeTableOperation.ColumnInsertLeft,
               BeeTableOperation.ColumnInsertRight,
+              BeeTableOperation.ColumnInsertN,
               ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
             ];
 
@@ -363,6 +365,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           ? [
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
               BeeTableOperation.RowDuplicate,

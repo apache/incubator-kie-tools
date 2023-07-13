@@ -1,15 +1,16 @@
 module github.com/kiegroup/kie-tools/packages/kn-plugin-workflow
 
-go 1.19
+go 1.20
 
 require (
 	github.com/docker/docker v23.0.6+incompatible
+	github.com/docker/go-connections v0.4.0
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
-	github.com/kiegroup/kogito-serverless-operator/workflowproj v0.0.0-20230619124910-96f05158ba87
+	github.com/kiegroup/kogito-serverless-operator/workflowproj v1.40.0
 	github.com/ory/viper v1.7.5
 	github.com/spf13/afero v1.9.3
 	github.com/spf13/cobra v1.6.1
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 	gopkg.in/yaml.v2 v2.4.0
 	knative.dev/client v0.31.1
 )
@@ -22,7 +23,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgraph-io/ristretto v0.0.1 // indirect
 	github.com/docker/distribution v2.8.2+incompatible // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936 // indirect
 	github.com/emicklei/go-restful/v3 v3.9.0 // indirect
@@ -47,7 +47,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/kiegroup/kogito-serverless-operator/api v0.0.0-20230619124910-96f05158ba87 // indirect
+	github.com/kiegroup/kogito-serverless-operator/api v1.40.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

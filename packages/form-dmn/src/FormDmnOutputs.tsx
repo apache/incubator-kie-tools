@@ -32,7 +32,6 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { formDmnI18n } from "./i18n";
-import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
@@ -59,23 +58,6 @@ export interface FormDmnOutputsProps {
   locale?: string;
   notificationsPanel: boolean;
   openExecutionTab?: () => void;
-}
-
-export function extractDifferences(
-  current: Array<DecisionResult[] | undefined>,
-  previous: Array<DecisionResult[] | undefined>
-): object[][] {
-  return current.map(
-    (decisionResults, index) =>
-      decisionResults
-        ?.map(
-          (decisionResult, jndex): Partial<DecisionResult> => diff(previous?.[index]?.[jndex] ?? [], decisionResult)
-        )
-        ?.map((difference) => {
-          delete difference.messages;
-          return difference;
-        }) ?? []
-  );
 }
 
 export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsProps) {

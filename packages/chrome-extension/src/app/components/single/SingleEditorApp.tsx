@@ -81,6 +81,7 @@ export function SingleEditorApp(props: {
   const exitFullScreen = useCallback(() => {
     setFullscreen(false);
     setTextModeAvailable(false);
+    globals.dependencies.all.showDocumentBody();
   }, []);
 
   const deactivateTextMode = useCallback(() => {
@@ -94,6 +95,7 @@ export function SingleEditorApp(props: {
 
   const goFullScreen = useCallback(() => {
     setFullscreen(true);
+    globals.dependencies.all.hideDocumentBody();
   }, []);
 
   const { getFileContents, getFileName } = props;

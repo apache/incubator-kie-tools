@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-import {
-  Editor,
-  EditorApi,
-  EditorInitArgs,
-  EditorTheme,
-  KogitoEditorEnvelopeContextType,
-} from "@kie-tools-core/editor/dist/api";
+import { EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
+import { ServerlessWorkflowCombinedEditorApi, ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { ServerlessWorkflowCombinedEditor } from "./ServerlessWorkflowCombinedEditor";
-export interface ServerlessWorkflowCombinedEditorApi extends Editor {
-  colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void;
-}
+import { Position } from "monaco-editor";
+
 export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowCombinedEditorApi {
   private readonly editorRef: React.RefObject<ServerlessWorkflowCombinedEditorApi>;
   public af_isReact = true;
@@ -83,6 +76,10 @@ export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowC
   }
 
   public colorNodes(nodeNames: string[], color: string, colorConnectedEnds: boolean): void {
-    return this.editorRef.current!.colorNodes(nodeNames, color, colorConnectedEnds);
+    this.editorRef.current!.colorNodes(nodeNames, color, colorConnectedEnds);
+  }
+
+  public moveCursorToPosition(position: Position): void {
+    this.editorRef.current!.moveCursorToPosition(position);
   }
 }

@@ -17,14 +17,14 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 
 import jsinterop.annotations.JsType;
-import org.kie.dmn.model.api.FunctionKind;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 
 @JsType
 public class FeelFunctionProps extends FunctionProps {
     public final ExpressionProps expression;
 
     public FeelFunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final ExpressionProps expression) {
-        super(id, name, dataType, formalParameters, parametersWidth, FunctionKind.FEEL.value());
+        super(id, name, dataType, formalParameters, parametersWidth, FunctionDefinition.Kind.FEEL.getValue());
         this.expression = expression;
     }
 }

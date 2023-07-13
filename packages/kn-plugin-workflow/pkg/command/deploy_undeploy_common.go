@@ -58,10 +58,13 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 		}
 	}
 
-	fmt.Println("🔎 Checking if the SonataFlow Operator is correctly installed...")
-	if err := common.CheckOperatorInstalled(); err != nil {
-		return err
-	}
+	// Temporarily disabled due to lack of clarity of operator 'final name'
+	// and also how to verify if operator is correctly installed.
+	// For more info, please refer to:	KOGITO-9562 and KOGITO-9563
+	//fmt.Println("🔎 Checking if the SonataFlow Operator is correctly installed...")
+	//if err := common.CheckOperatorInstalled(); err != nil {
+	//	return err
+	//}
 
 	return nil
 }

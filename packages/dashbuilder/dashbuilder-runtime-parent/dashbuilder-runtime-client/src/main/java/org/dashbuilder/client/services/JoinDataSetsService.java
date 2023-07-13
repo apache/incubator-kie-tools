@@ -24,7 +24,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
-import org.dashbuilder.client.external.ExternalDataSetParserProvider;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
@@ -34,6 +33,7 @@ import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetLookupFactory;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 
 import static org.dashbuilder.common.client.StringUtils.isBlank;

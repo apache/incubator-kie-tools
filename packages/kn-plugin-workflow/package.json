@@ -29,7 +29,7 @@
     "build:win32": "pnpm setup:env:win32 make build-win32-amd64",
     "debug:clean": "rimraf debug",
     "go:test": "rimraf dist-tests && mkdir dist-tests && go test -v ./... -tags '!it_tests' 2>&1 | tee ./dist-tests/go-test-output.txt",
-    "go:test:it": "rimraf dist-it-tests && mkdir dist-it-tests && go test -v ./it-tests/... -tags it_tests 2>&1 | tee ./dist-it-tests/go-test-output-it.txt",
+    "go:test:it": "rimraf dist-it-tests && mkdir dist-it-tests && go test -v ./it-tests/... -tags it_tests -timeout 20m 2>&1 | tee ./dist-it-tests/go-test-output-it.txt",
     "go:test:it:report": "go run github.com/jstemmer/go-junit-report/v2 -set-exit-code -in ./dist-it-tests/go-test-output-it.txt -out ./dist-it-tests/junit-report-it.xml",
     "go:test:report": "go run github.com/jstemmer/go-junit-report/v2 -set-exit-code -in ./dist-tests/go-test-output.txt -out ./dist-tests/junit-report.xml",
     "install": "go mod tidy",

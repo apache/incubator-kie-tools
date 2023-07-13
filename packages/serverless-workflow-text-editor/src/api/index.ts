@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
+export * from "./ServerlessWorkflowTextEditorApi";
 export * from "./ServerlessWorkflowTextEditorChannelApi";
 export * from "./ServerlessWorkflowTextEditorEnvelopeApi";

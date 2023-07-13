@@ -233,6 +233,8 @@ public class FunctionDefinition extends Expression implements HasExpression {
             return code;
         }
 
+        public String getValue() { return value; }
+
         public static Kind fromValue(final String value) {
             for (final Kind kind : Kind.values()) {
                 if (Objects.equals(kind.value, value)) {

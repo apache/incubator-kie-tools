@@ -45,7 +45,6 @@ import org.kie.workbench.common.dmn.client.editors.types.listview.common.DataTyp
 import org.kie.workbench.common.dmn.client.events.EditExpressionEvent;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
-import org.kie.workbench.common.dmn.client.widgets.codecompletion.MonacoFEELInitializer;
 import org.kie.workbench.common.dmn.client.widgets.toolbar.DMNLayoutHelper;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerPresenter;
 import org.kie.workbench.common.kogito.client.editor.MultiPageEditorContainerView;
@@ -106,7 +105,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final DMNEditorSearchIndex editorSearchIndex;
     protected final SearchBarComponent<DMNSearchableElement> searchBarComponent;
     protected final KogitoClientDiagramService diagramServices;
-    protected final MonacoFEELInitializer feelInitializer;
     protected final CanvasFileExport canvasFileExport;
     protected final Promises promises;
     protected final IncludedModelsPage includedModelsPage;
@@ -135,7 +133,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                        final OpenDiagramLayoutExecutor openDiagramLayoutExecutor,
                                        final DataTypesPage dataTypesPage,
                                        final KogitoClientDiagramService diagramServices,
-                                       final MonacoFEELInitializer feelInitializer,
                                        final CanvasFileExport canvasFileExport,
                                        final Promises promises,
                                        final IncludedModelsPage includedModelsPage,
@@ -160,7 +157,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.editorSearchIndex = editorSearchIndex;
         this.searchBarComponent = searchBarComponent;
         this.diagramServices = diagramServices;
-        this.feelInitializer = feelInitializer;
         this.canvasFileExport = canvasFileExport;
         this.promises = promises;
         this.includedModelsPage = includedModelsPage;
@@ -243,7 +239,6 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         ensureDocksAreInitialized();
         ensureTabBarVisibility(true);
         searchBarComponent.setSearchButtonVisibility(true);
-        feelInitializer.initializeFEELEditor();
         if (layoutHelper.hasLayoutInformation(diagram)) {
             executeOpen(diagram, callback);
         } else {

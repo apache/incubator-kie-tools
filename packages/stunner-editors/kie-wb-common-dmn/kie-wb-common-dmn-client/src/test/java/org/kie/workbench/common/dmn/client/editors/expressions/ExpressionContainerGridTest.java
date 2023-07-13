@@ -53,7 +53,6 @@ import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCache;
 import org.kie.workbench.common.dmn.client.widgets.grid.ExpressionGridCacheImpl;
-import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.AutocompleteTextAreaDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.container.CellEditorControlsView;
 import org.kie.workbench.common.dmn.client.widgets.grid.controls.list.HasListSelectorControl;
@@ -197,7 +196,7 @@ public class ExpressionContainerGridTest {
     private TextAreaSingletonDOMElementFactory textAreaSingletonDOMElementFactory;
 
     @Mock
-    private AutocompleteTextAreaDOMElementFactory autocompleteTextareaDOMElementFactory;
+    private TextAreaSingletonDOMElementFactory autocompleteTextareaDOMElementFactory;
 
     @Captor
     private ArgumentCaptor<Optional<HasName>> hasNameCaptor;

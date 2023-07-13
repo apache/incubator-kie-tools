@@ -45,7 +45,8 @@
 .boxed-expression-provider input,
 .boxed-expression-provider optgroup,
 .boxed-expression-provider select,
-.boxed-expression-provider textarea {
+.boxed-expression-provider textarea,
+.boxed-expression-provider label {
   font-family: inherit;
   font-size: 100%;
   line-height: var(--pf-global--LineHeight--md);

@@ -20790,7 +20790,7 @@ Array [
     "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20850,7 +20850,7 @@ Array [
     "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20887,7 +20887,7 @@ Array [
     "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20947,7 +20947,7 @@ Array [
     "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20984,7 +20984,7 @@ Array [
     "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -21044,7 +21044,7 @@ Array [
     "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",

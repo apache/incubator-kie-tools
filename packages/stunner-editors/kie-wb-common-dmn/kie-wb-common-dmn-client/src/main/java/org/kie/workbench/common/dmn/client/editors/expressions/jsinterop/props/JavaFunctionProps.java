@@ -17,7 +17,7 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 
 import jsinterop.annotations.JsType;
-import org.kie.dmn.model.api.FunctionKind;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 
 @JsType
 public class JavaFunctionProps extends FunctionProps {
@@ -28,7 +28,7 @@ public class JavaFunctionProps extends FunctionProps {
     public final String methodFieldId;
 
     public JavaFunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String className, final String methodName, final String classFieldId, final String methodFieldId) {
-        super(id, name, dataType, formalParameters, parametersWidth, FunctionKind.JAVA.value());
+        super(id, name, dataType, formalParameters, parametersWidth, FunctionDefinition.Kind.JAVA.getValue());
         this.className = className;
         this.methodName = methodName;
         this.classFieldId = classFieldId;

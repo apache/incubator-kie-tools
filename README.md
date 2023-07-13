@@ -26,14 +26,14 @@ To start building the KIE Tools project, you're going to need:
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.6`
 - Java `11`
-- Go `1.19.10` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.20.5` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
 
 > **ℹ️ NOTE:** \*nix users will also need:
 >
 > - `lib-gtk-3-dev`
-> - `appindicator3-0.1` (`libappindicator3-dev` and `gir1.2-appindicator3-0.1`)
+> - `appindicator3-0.1` (`libayatana-appindicator3-dev` or `libappindicator-gtk3-devel` and `gir1.2-appindicator3-0.1`)
 
 > **ℹ️ NOTE:** Users of Fedora or RHEL will need to add a repository:
 >

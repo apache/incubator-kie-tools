@@ -17,10 +17,12 @@ package org.dashbuilder.client.editor;
 
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
@@ -36,6 +38,8 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
+import static org.dashbuilder.common.client.StringUtils.isBlank;
+
 @Dependent
 public class DisplayerDragComponent implements LayoutDragComponent {
 
@@ -43,25 +47,32 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     DisplayerViewer viewer;
     PlaceManager placeManager;
     PerspectiveCoordinator perspectiveCoordinator;
-    DisplayerSettingsJSONMarshaller marshaller;
     GlobalDisplayerSettings globalDisplayerSettings;
 
     @Inject
     DisplayerErrorWidget displayError;
 
     @Inject
+    ExternalDataSetParserProvider dataSetParserProvider;
+
+    @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
-            DisplayerViewer viewer,
-            PlaceManager placeManager,
-            PerspectiveCoordinator perspectiveCoordinator,
-            GlobalDisplayerSettings globalDisplayerSettings) {
+                                  DisplayerViewer viewer,
+                                  PlaceManager placeManager,
+                                  PerspectiveCoordinator perspectiveCoordinator,
+                                  GlobalDisplayerSettings globalDisplayerSettings) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
         this.placeManager = placeManager;
         this.perspectiveCoordinator = perspectiveCoordinator;
         this.globalDisplayerSettings = globalDisplayerSettings;
-        this.marshaller = DisplayerSettingsJSONMarshaller.get();
+    }
+
+    @PostConstruct
+    public void init() {
+        // use the client side implementation
+        DisplayerSettingsJSONMarshaller.get().setDataSetJsonParser(dataSetParserProvider.get());
     }
 
     public DisplayerType getDisplayerType() {
@@ -118,9 +129,17 @@ public class DisplayerDragComponent implements LayoutDragComponent {
         if (settings != null) {
             var displayerSettings = (DisplayerSettings) settings;
             globalDisplayerSettings.apply(displayerSettings);
+            if (isDataMissing(displayerSettings)) {
+                displayerSettings.setError("A displayer must have a dataset 'uuid' in 'lookup' or an inline dataSet.");
+            }
             return Optional.of(displayerSettings);
         }
 
         return Optional.empty();
+    }
+
+    private boolean isDataMissing(DisplayerSettings displayerSettings) {
+        var lookup = displayerSettings.getDataSetLookup();
+        return (lookup == null || isBlank(lookup.getDataSetUUID())) && displayerSettings.getDataSet() == null;
     }
 }

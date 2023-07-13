@@ -43,7 +43,6 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import _ from "lodash";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -82,7 +81,17 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+        ],
+      },
+      {
+        group: i18n.terms.selection.toUpperCase(),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ],
@@ -195,6 +204,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           ? [
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
             ]
