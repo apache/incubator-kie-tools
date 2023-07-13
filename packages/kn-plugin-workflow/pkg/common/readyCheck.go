@@ -19,18 +19,17 @@ package common
 import (
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 )
 
-func ReadyCheck(healthCheckURL string, pollInterval time.Duration, portMapping string) {
+func ReadyCheck(healthCheckURL string, pollInterval time.Duration, portMapping string, openDevUI bool) {
 	ready := make(chan bool)
 
 	go PollReadyCheckURL(healthCheckURL, pollInterval, ready)
 	select {
 	case <-ready:
-		fmt.Println("✅ SonataFlow project is up and running")
-		if os.Getenv("KN_PLUGIN_WORKFLOW__suppressBrowserWindow") == "false" {
+		fmt.Println("\n✅ SonataFlow project is up and running")
+		if openDevUI {
 			OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev", portMapping))
 		}
 	case <-time.After(10 * time.Minute):
