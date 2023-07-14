@@ -35,10 +35,9 @@ export const domParser = {
 export function getInstanceNs(domdoc: Document): Map<string, string> {
   console.time("instanceNs took");
   // Find the root element. As there can be only one root element, we're safe looking for the first node with type 1 (element).
-  const rootElement: Element = [...domdoc.children].find((child) => child.nodeType === 1 /* element */)!;
 
   const nsMap = new Map<string, string>(
-    [...rootElement.attributes]
+    [...domdoc.documentElement.attributes]
       .filter((attr) => attr.name.startsWith("xmlns"))
       .flatMap((attr) => {
         const s = attr.name.split(":");
