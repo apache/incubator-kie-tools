@@ -177,6 +177,10 @@ jobs:
           name: swf-chrome-extension
           path: kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ steps.version.outputs.version }}.zip
 
+      - name: "Load docker built images to podman local registry"
+        if: runner.os == 'Linux'
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }}' -e '${{ env.GIT_CORS_PROXY__imageName }}' -e '${{ env.KIE_SANDBOX__imageName }}' | grep -v '<none>' | xargs podman pull
+
       - name: "Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
         if: runner.os == 'Linux' && github.event_name != 'pull_request'
         uses: redhat-actions/push-to-registry@v2
@@ -225,6 +229,7 @@ jobs:
         run: |
           cd kie-tools
           docker image ls -q --filter reference=${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount }}/${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }} | xargs docker rmi
+          podman image ls -q --filter reference=${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-extended-services-image cleanup
           cd -
@@ -258,6 +263,7 @@ jobs:
         run: |
           cd kie-tools
           docker image ls -q --filter reference=${{ env.GIT_CORS_PROXY__imageRegistry }}/${{ env.GIT_CORS_PROXY__imageAccount }}/${{ env.GIT_CORS_PROXY__imageName }} | xargs docker rmi
+          podman image ls -q --filter reference=${{ env.GIT_CORS_PROXY__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F git-cors-proxy-image cleanup
           cd -
@@ -298,6 +304,7 @@ jobs:
         run: |
           cd kie-tools
           docker image ls -q --filter reference=${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}/${{ env.KIE_SANDBOX__imageName }} | xargs docker rmi
+          podman image ls -q --filter reference=${{ env.KIE_SANDBOX__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-image cleanup
           cd -
