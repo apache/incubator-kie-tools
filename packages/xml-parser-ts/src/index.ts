@@ -37,29 +37,30 @@ export function getInstanceNs(domdoc: Document): Map<string, string> {
   // Find the root element. As there can be only one root element, we're safe looking for the first node with type 1 (element).
 
   const nsMap = new Map<string, string>(
-    [...domdoc.documentElement.attributes]
-      .filter((attr) => attr.name.startsWith("xmlns"))
-      .flatMap((attr) => {
-        const s = attr.name.split(":");
+    [...domdoc.documentElement.attributes].flatMap((attr) => {
+      if (!attr.name.startsWith("xmlns")) {
+        return [];
+      }
 
-        const nsUri = attr.value;
+      const nsUri = attr.value;
 
-        if (s.length === 1) {
-          // That's the default namespace.
-          return [
-            [nsUri, ""],
-            ["", nsUri],
-          ];
-        } else if (s.length === 2) {
-          // Normal namespace mapping.
-          return [
-            [nsUri, `${s[1]}:`],
-            [`${s[1]}:`, nsUri],
-          ];
-        } else {
-          throw new Error(`Invalid xmlns mapping attribute '${attr.name}'`);
-        }
-      })
+      const s = attr.name.split(":");
+      if (s.length === 1) {
+        // That's the default namespace.
+        return [
+          [nsUri, ""],
+          ["", nsUri],
+        ];
+      } else if (s.length === 2) {
+        // Normal namespace mapping.
+        return [
+          [nsUri, `${s[1]}:`],
+          [`${s[1]}:`, nsUri],
+        ];
+      } else {
+        throw new Error(`Invalid xmlns mapping attribute '${attr.name}'`);
+      }
+    })
   );
 
   console.timeEnd("instanceNs took");
