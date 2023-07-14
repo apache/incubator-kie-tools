@@ -1,0 +1,119 @@
+//go:build it_tests
+
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package it_tests
+
+import (
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"sync"
+	"testing"
+	"time"
+
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/stretchr/testify/require"
+)
+
+var cfgTestInputPrepareCreateRun = CfgTestInputCreate{
+	input: command.CreateCmdConfig{ProjectName: "new-project"},
+}
+
+type cfgTestInputRun struct {
+	input command.RunCmdConfig
+}
+
+var cfgTestInputRun_Success = []cfgTestInputRun{
+	{input: command.RunCmdConfig{PortMapping: "8081"}},
+	{input: command.RunCmdConfig{}},
+}
+
+func transformRunCmdCfgToArgs(cfg command.RunCmdConfig) []string {
+	args := []string{"run"}
+	if cfg.PortMapping != "" {
+		args = append(args, "--port", cfg.PortMapping)
+	}
+	return args
+}
+
+func getRunProjectPort(t *testing.T, config cfgTestInputRun) string {
+	if config.input.PortMapping != "" {
+		return config.input.PortMapping
+	} else {
+		projectDefaultPort, err := LookupFlagDefaultValue("port", command.NewRunCommand())
+		require.NoErrorf(t, err, "Error: %v", err)
+		return projectDefaultPort
+	}
+}
+
+func TestRunCommand(t *testing.T) {
+	for testIndex, test := range cfgTestInputRun_Success {
+		t.Run(fmt.Sprintf("Test run project success index: %d", testIndex), func(t *testing.T) {
+			defer CleanUpAndChdirTemp(t)
+			RunRunTest(t, cfgTestInputPrepareCreateRun, test)
+		})
+	}
+}
+
+func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test cfgTestInputRun) string {
+	var err error
+
+	os.Setenv("KN_PLUGIN_WORKFLOW__suppressBrowserWindow", "true")
+	defer os.Setenv("KN_PLUGIN_WORKFLOW__suppressBrowserWindow", "false")
+
+	// Create the project
+	RunCreateTest(t, cfgTestInputPrepareCreate)
+
+	projectName := GetCreateProjectName(t, cfgTestInputPrepareCreateRun)
+	projectDir := filepath.Join(TempTestsPath, projectName)
+	err = os.Chdir(projectDir)
+	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+
+	cmd := exec.Command(KnExecutable)
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	// Run the `run` command
+	go func() {
+		defer wg.Done()
+		_, err = ExecuteKnWorkflowWithCmd(cmd, transformRunCmdCfgToArgs(test.input)...)
+		require.Truef(t, err == nil || IsSignalInterrupt(err), "Expected nil error or signal interrupt, got %v", err)
+	}()
+
+	// Check if the project is successfully run and accessible within a specified time limit.
+	readyCheckURL := fmt.Sprintf("http://localhost:%s/q/health/ready", getRunProjectPort(t, test))
+	pollInterval := 5 * time.Second
+	timeout := 2 * time.Minute
+	ready := make(chan bool)
+	t.Logf("Checking if project is ready at %s", readyCheckURL)
+	go common.PollReadyCheckURL(readyCheckURL, pollInterval, ready)
+	select {
+	case <-ready:
+		cmd.Process.Signal(os.Interrupt)
+	case <-time.After(timeout):
+		t.Fatalf("Test case timed out after %s. The project was not ready within the specified time.", timeout)
+		cmd.Process.Signal(os.Interrupt)
+	}
+
+	wg.Wait()
+
+	return projectName
+}

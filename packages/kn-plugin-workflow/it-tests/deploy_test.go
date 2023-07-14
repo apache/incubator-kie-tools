@@ -43,9 +43,9 @@ func TestDeployProjectSuccess(t *testing.T) {
 	// 	t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
 	// 		// Run `deploy` command
 	// 		out, err := ExecuteKnWorkflow(transformDeployCmdCfgToArgs(test.input)...)
-	// 		assert.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	// 		require.NoErrorf(t, err, "Expected nil error, got: %v", err)
 	// 		fmt.Println(out)
-	// 		assert.Equal(t, command.DeployCommandOutput, out)
+	// 		require.Equal(t, command.DeployCommandOutput, out)
 	// 	})
 	// }
 }

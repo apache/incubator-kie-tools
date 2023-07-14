@@ -25,7 +25,6 @@ import org.kie.workbench.common.stunner.client.widgets.notification.Notification
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -126,8 +125,6 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
     void focus();
 
     void lostFocus();
-
-    Toolbar<S> getToolbar();
 
     PaletteWidget<PaletteDefinition> getPalette();
 }

@@ -23,7 +23,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -78,26 +78,37 @@ func transformQuarkusCreateCmdCfgToArgs(cfg quarkus.CreateQuarkusProjectConfig) 
 	return args
 }
 
+func GetQuarkusCreateProjectName(t *testing.T, config CfgTestInputQuarkusCreate) string {
+	if config.input.ProjectName != "" {
+		return config.input.ProjectName
+	} else {
+		projectDefaultName, err := LookupFlagDefaultValue("name", quarkus.NewCreateCommand())
+		require.NoErrorf(t, err, "Error: %v", err)
+		return projectDefaultName
+	}
+}
+
 func TestQuarkusCreateProjectSuccess(t *testing.T) {
 	for testIndex, test := range cfgTestInputQuarkusCreate_Success {
 		t.Run(fmt.Sprintf("Test quarkus create project success index: %d", testIndex), func(t *testing.T) {
-			RunQuarkusCreateTest(t, test, true)
+			defer CleanUpAndChdirTemp(t)
+			RunQuarkusCreateTest(t, test)
 		})
 	}
 }
 
-func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate, cleanUp bool) {
+func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	var err error
 
 	projectName := GetQuarkusCreateProjectName(t, test)
-	projectDir := filepath.Join(projectName)
+	projectDir := filepath.Join(TempTestsPath, projectName)
 
-	// Run `create` command
+	// Run `quarkus create` command
 	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
-	assert.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
 
 	// Check if the project directory was created
-	assert.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
+	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
 
 	// Check if the expected directories and files are present
 	expectedDirectories := []string{
@@ -132,36 +143,27 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate, cleanUp 
 	// Verify the content of the file `workflow.sw.json`
 	workflowFilePath := filepath.Join(projectDir, "src/main/resources/workflow.sw.json")
 	workflowFileData, err := common.GetWorkflowTemplate()
-	assert.NoErrorf(t, err, "Error reading workflow template: %v", err)
+	require.NoErrorf(t, err, "Error reading workflow template: %v", err)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, workflowFilePath, expectedFileContent)
 
-	if cleanUp {
-		common.DeleteFolderStructure(t, projectDir)
-	}
+	return projectName
 }
 
 func TestQuarkusCreateProjectFail(t *testing.T) {
 	for testIndex, test := range cfgTestInputQuarkusCreate_Fail {
 		t.Run(fmt.Sprintf("Test quarkus create project fail index: %d", testIndex), func(t *testing.T) {
-			projectName := test.input.ProjectName
-			projectDir := filepath.Join(projectName)
+			defer CleanUpAndChdirTemp(t)
 
+			projectName := GetQuarkusCreateProjectName(t, test)
+			projectDir := filepath.Join(TempTestsPath, projectName)
+
+			// Run `quarkus create` command
 			_, err := ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
-			assert.Errorf(t, err, "Expected error, got nil")
+			require.Errorf(t, err, "Expected error, got nil")
 
 			// Check if the project directory was not created
-			assert.NoDirExistsf(t, projectDir, "Expected project directory '%s' not to be created", projectDir)
+			require.NoDirExistsf(t, projectDir, "Expected project directory '%s' not to be created", projectDir)
 		})
-	}
-}
-
-func GetQuarkusCreateProjectName(t *testing.T, config CfgTestInputQuarkusCreate) string {
-	if config.input.ProjectName != "" {
-		return config.input.ProjectName
-	} else {
-		projectDefaultName, err := LookupFlagDefaultValue("name", quarkus.NewCreateCommand())
-		assert.NoErrorf(t, err, "Error: %v", err)
-		return projectDefaultName
 	}
 }

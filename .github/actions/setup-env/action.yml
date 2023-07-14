@@ -50,6 +50,21 @@ runs:
       with:
         maven-version: 3.8.6
 
+    - name: Setup docker (macOS only)
+      if: runner.os == 'macOS'
+      shell: bash
+      env:
+        HOMEBREW_NO_INSTALL_FROM_API:
+      run: |
+        brew untap homebrew/core homebrew/cask
+        brew update
+        brew install docker docker-compose
+        mkdir -p ~/.docker/cli-plugins
+        ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+        brew install docker-Buildx
+        ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
+        colima start --memory 4 --network-address
+
     - name: "Setup network timeout"
       shell: bash
       run: |
@@ -121,7 +136,7 @@ runs:
           sudo apt install -y \
           build-essential \
           libgtk-3-dev \
-          libappindicator3-dev \
+          libayatana-appindicator3-dev \
           gir1.2-appindicator3-0.1
         fi
 

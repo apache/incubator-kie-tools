@@ -20,6 +20,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -27,11 +28,11 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -50,39 +51,40 @@ public class ZoomLevelSelectorView
 
     @Inject
     @DataField
-    Button previewButton;
+    HTMLButtonElement previewButton;
 
     @Inject
     @DataField
-    Button decreaseButton;
+    HTMLButtonElement decreaseButton;
 
     @Inject
     @DataField
-    Button increaseButton;
+    HTMLButtonElement increaseButton;
 
     @Inject
     @DataField
-    Button resetButton;
+    HTMLButtonElement resetButton;
 
     @Inject
     @DataField
-    Div dropDownPanelGroup;
+    HTMLDivElement dropDownPanelGroup;
 
     @Inject
     @DataField
-    Div dropDownPanel;
+    HTMLDivElement dropDownPanel;
 
     @Inject
     @DataField
-    Button dropDownButton;
+    HTMLButtonElement dropDownButton;
 
     @Inject
     @DataField
-    Span dropDownText;
+    @Named("span")
+    HTMLElement dropDownText;
 
     @Inject
     @DataField
-    UnorderedList dropDownMenu;
+    HTMLUListElement dropDownMenu;
 
     @Inject
     @Any
@@ -117,30 +119,30 @@ public class ZoomLevelSelectorView
     }
 
     public void setSelectedValue(String selectedItem) {
-        dropDownText.setTextContent(selectedItem);
+        dropDownText.textContent = (selectedItem);
     }
 
     @Override
     public void setText(String text) {
-        dropDownText.setTextContent(text);
+        dropDownText.textContent = (text);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        resetButton.setDisabled(!enabled);
-        increaseButton.setDisabled(!enabled);
-        dropDownButton.setDisabled(!enabled);
-        decreaseButton.setDisabled(!enabled);
+        resetButton.disabled = (!enabled);
+        increaseButton.disabled = (!enabled);
+        dropDownButton.disabled = (!enabled);
+        decreaseButton.disabled = (!enabled);
     }
 
     @Override
     public void dropUp() {
-        dropDownPanelGroup.setClassName(dropDownPanelGroup.getClassName() + " " + CSS_DROP_UP);
+        dropDownPanelGroup.className = (dropDownPanelGroup.className + " " + CSS_DROP_UP);
     }
 
     @Override
     public void updatePreviewButton(boolean enabled) {
-        previewButton.setDisabled(!enabled);
+        previewButton.disabled = (!enabled);
     }
 
     @EventHandler("previewButton")
@@ -190,9 +192,9 @@ public class ZoomLevelSelectorView
         presenter = null;
     }
 
-    private static void setTooltip(final Button button,
+    private static void setTooltip(final HTMLButtonElement button,
                                    final String text) {
         button.setAttribute("data-placement", "top");
-        button.setTitle(text);
+        button.title = (text);
     }
 }

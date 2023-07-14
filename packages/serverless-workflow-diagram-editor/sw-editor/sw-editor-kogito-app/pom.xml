@@ -171,30 +171,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Needed by forms for JSR303 validation -->
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- UberFire Commons Editor -->
     <!-- Basics for uberfire's generic editor support -->
     <dependency>
@@ -226,17 +202,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-simple-docks-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -255,16 +221,6 @@
     <!-- Generic ui components -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-widgets-table</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -280,16 +236,6 @@
           <artifactId>javax.servlet-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3-extras</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.elemental2</groupId>
@@ -327,6 +273,11 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
       <artifactId>stdlib</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+      <artifactId>stylesheets</artifactId>
     </dependency>
 
     <!-- Test dependencies -->
@@ -402,7 +353,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <extraJvmArgs>-Xmx4G -Xms1G -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs>-Xmx4G -Xms1G -Xss1M -XX:CompileThreshold=7000</extraJvmArgs>
           <module>org.kie.workbench.common.stunner.sw.KogitoSWEditor</module>
           <localWorkers>8</localWorkers>
           <noServer>false</noServer>
@@ -422,17 +373,11 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-simple-docks-client</compileSourcesArtifact>
             <!-- Errai, Drools etc -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:errai-data-binding</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-ui</compileSourcesArtifact>
             <!-- UF-ext -->
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-table</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-core-client</compileSourcesArtifact>
             <!-- Appformer -->
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-kogito-bridge</compileSourcesArtifact>

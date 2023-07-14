@@ -29,9 +29,19 @@ exports[`SingleEditorApp go fullscreen 1`] = `
     </div>
   </div>
   <div />
+  <div
+    data-turbo-body=""
+    style="display: none;"
+  />
   <div />
   <div
+    data-turbo-body=""
+  />
+  <div
     class="hidden"
+  />
+  <div
+    data-turbo-body=""
   />
   <div />
 </body>
@@ -82,6 +92,10 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
       </div>
     </div>
   </div>
+  <div
+    data-turbo-body=""
+    style="display: unset;"
+  />
   <div>
     <div
       class="kogito-iframe not-fullscreen"
@@ -97,7 +111,13 @@ exports[`SingleEditorApp go fullscreen and back 1`] = `
     </div>
   </div>
   <div
+    data-turbo-body=""
+  />
+  <div
     class="hidden"
+  />
+  <div
+    data-turbo-body=""
   />
   <div />
 </body>
@@ -156,6 +176,9 @@ exports[`SingleEditorApp not readonly 1`] = `
       </h5>
     </div>
   </div>
+  <div
+    data-turbo-body=""
+  />
   <div>
     <div
       class="kogito-iframe not-fullscreen"
@@ -171,7 +194,13 @@ exports[`SingleEditorApp not readonly 1`] = `
     </div>
   </div>
   <div
+    data-turbo-body=""
+  />
+  <div
     class="hidden"
+  />
+  <div
+    data-turbo-body=""
   />
   <div />
 </body>
@@ -222,6 +251,9 @@ exports[`SingleEditorApp open external editor 1`] = `
       </div>
     </div>
   </div>
+  <div
+    data-turbo-body=""
+  />
   <div>
     <div
       class="kogito-iframe not-fullscreen"
@@ -237,7 +269,13 @@ exports[`SingleEditorApp open external editor 1`] = `
     </div>
   </div>
   <div
+    data-turbo-body=""
+  />
+  <div
     class="hidden"
+  />
+  <div
+    data-turbo-body=""
   />
   <div />
 </body>
@@ -288,6 +326,9 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
       </div>
     </div>
   </div>
+  <div
+    data-turbo-body=""
+  />
   <div>
     <div
       class="kogito-iframe not-fullscreen"
@@ -303,7 +344,13 @@ exports[`SingleEditorApp open external editor and wait for come back 1`] = `
     </div>
   </div>
   <div
+    data-turbo-body=""
+  />
+  <div
     class="hidden"
+  />
+  <div
+    data-turbo-body=""
   />
   <div />
 </body>
@@ -354,6 +401,9 @@ exports[`SingleEditorApp readonly 1`] = `
       </div>
     </div>
   </div>
+  <div
+    data-turbo-body=""
+  />
   <div>
     <div
       class="kogito-iframe not-fullscreen"
@@ -369,7 +419,13 @@ exports[`SingleEditorApp readonly 1`] = `
     </div>
   </div>
   <div
+    data-turbo-body=""
+  />
+  <div
     class="hidden"
+  />
+  <div
+    data-turbo-body=""
   />
   <div />
 </body>

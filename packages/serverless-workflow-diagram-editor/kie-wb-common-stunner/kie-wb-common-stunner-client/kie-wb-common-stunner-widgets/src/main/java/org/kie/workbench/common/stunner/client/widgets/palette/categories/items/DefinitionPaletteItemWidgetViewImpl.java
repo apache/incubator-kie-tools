@@ -19,11 +19,12 @@ package org.kie.workbench.common.stunner.client.widgets.palette.categories.items
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -43,15 +44,17 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
 
     @Inject
     @DataField
-    private Anchor itemAnchor;
+    private HTMLAnchorElement itemAnchor;
 
     @Inject
     @DataField
-    private Span icon;
+    @Named("span")
+    private HTMLElement icon;
 
     @Inject
     @DataField
-    private Span name;
+    @Named("span")
+    private HTMLElement name;
 
     @Inject
     private DOMGlyphRenderers domGlyphRenderers;
@@ -74,16 +77,16 @@ public class DefinitionPaletteItemWidgetViewImpl implements DefinitionPaletteIte
         icon.appendChild(glyphElement.getElement());
         final String title = presenter.getItem().getTitle();
         if (!StringUtils.isEmpty(title)) {
-            name.setTextContent(presenter.getItem().getTitle());
+            name.textContent = presenter.getItem().getTitle();
         } else {
-            name.getStyle().setProperty(DISPLAY, DISPLAY_NONE);
-            icon.getStyle().setProperty(PADDING_RIGHT, "0");
+            name.style.setProperty(DISPLAY, DISPLAY_NONE);
+            icon.style.setProperty(PADDING_RIGHT, "0");
         }
         final String tooltip = presenter.getItem().getTooltip();
         if (!StringUtils.isEmpty(tooltip)) {
-            itemAnchor.setTitle(tooltip);
+            itemAnchor.title = tooltip;
         } else {
-            itemAnchor.setTitle("");
+            itemAnchor.title = "";
         }
     }
 

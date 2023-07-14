@@ -33,7 +33,7 @@ To start building the KIE Tools project, you're going to need:
 > **ℹ️ NOTE:** \*nix users will also need:
 >
 > - `lib-gtk-3-dev`
-> - `appindicator3-0.1` (`libappindicator3-dev` and `gir1.2-appindicator3-0.1`)
+> - `appindicator3-0.1` (`libayatana-appindicator3-dev` or `libappindicator-gtk3-devel` and `gir1.2-appindicator3-0.1`)
 
 > **ℹ️ NOTE:** Users of Fedora or RHEL will need to add a repository:
 >

@@ -71,11 +71,6 @@
     <!-- Uberfire & Errai. -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
 
@@ -95,11 +90,6 @@
           <artifactId>jboss-annotations-api_1.2_spec</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-data-binding</artifactId>
     </dependency>
 
     <dependency>
@@ -182,6 +172,10 @@
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+          <artifactId>uberfire-workbench-client</artifactId>
+      </dependency>
 
   </dependencies>
 

@@ -48,7 +48,6 @@ public class StunnerEditorView
     public StunnerEditorView(final ResizeFlowPanel editorPanel) {
         this.editorPanel = editorPanel;
     }
-
     @Override
     protected void onAttach() {
         super.onAttach();

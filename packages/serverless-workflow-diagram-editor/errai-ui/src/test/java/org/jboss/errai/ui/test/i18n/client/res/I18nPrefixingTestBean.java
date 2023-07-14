@@ -18,7 +18,7 @@ package org.jboss.errai.ui.test.i18n.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Span;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -33,10 +33,10 @@ public class I18nPrefixingTestBean {
 
   @Inject
   @DataField
-  public Span welcome;
+  public HTMLElement welcome;
 
   @Inject
   @DataField
-  public Span farewell;
+  public HTMLElement farewell;
 
 }

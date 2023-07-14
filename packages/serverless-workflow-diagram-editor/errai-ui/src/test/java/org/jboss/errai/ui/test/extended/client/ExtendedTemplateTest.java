@@ -43,7 +43,7 @@ public class ExtendedTemplateTest extends AbstractErraiCDITest {
   public void testParentWithFragmentValueChildWithout() throws Exception {
     try {
       final ChildWithoutTemplatedFragmentValue bean = IOCUtil.getInstance(ChildWithoutTemplatedFragmentValue.class);
-      assertEquals("Child has the wrong root element.", "root", bean.getElement().getId());
+      assertEquals("Child has the wrong root element.", "root", bean.getElement().id);
     } catch (final AssertionError ae) {
       throw ae;
     } catch (final Throwable t) {

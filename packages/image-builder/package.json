@@ -1,0 +1,39 @@
+{
+  "name": "@kie-tools/image-builder",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "bin": {
+    "kie-tools--image-builder": "bin.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "bin.js",
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "install": "rimraf dist && tsc && pnpm write-readme",
+    "write-readme": "run-script-os",
+    "write-readme:darwin:linux": "echo '```' > README.md && ./bin.js --help >> README.md && echo '```' >> README.md",
+    "write-readme:win32": "echo 'Nothing to do.'"
+  },
+  "dependencies": {
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "typescript": "^4.6.2"
+  }
+}
