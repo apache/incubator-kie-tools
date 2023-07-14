@@ -17,23 +17,73 @@
 import * as React from "react";
 
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { DrawerHead, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
+import {
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerHead,
+  DrawerPanelBody,
+  DrawerPanelContent,
+} from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-export function TestToolsPanel() {
+import { TestScenarioEditorDock } from "../editor/TestScenarioEditor";
+
+export function TestToolsPanel({
+  selectedDock,
+  onClose,
+}: {
+  selectedDock: TestScenarioEditorDock;
+  onClose: () => void;
+}) {
   return (
-    <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"500px"}>
+    <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
       <DrawerHead>
+        <DrawerActions>
+          <DrawerCloseButton onClose={onClose} />
+        </DrawerActions>
         <TextContent>
           <Text component={TextVariants.h4}>
-            <>Test Tools</>
-          </Text>
-          <Divider />
-          <Text component={TextVariants.p}>
-            {'To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.'}
+            {(() => {
+              switch (selectedDock) {
+                case TestScenarioEditorDock.CHEATSHEET:
+                  return <>Scenario Cheatsheet</>;
+                case TestScenarioEditorDock.DATA_OBJECT:
+                  return <>Data Objects tool</>;
+                case TestScenarioEditorDock.SETTINGS:
+                  return <>Settings</>;
+                default:
+                  throw new Error("");
+              }
+            })()}
           </Text>
         </TextContent>
+        <Divider />
       </DrawerHead>
+      <DrawerPanelBody>
+        {/* The following is a temporary text content. Specific panel for all Docks will be managed */}
+        <TextContent>
+          <Text component={TextVariants.small}>
+            {(() => {
+              switch (selectedDock) {
+                case TestScenarioEditorDock.CHEATSHEET:
+                  return <>Scenario Cheatsheet</>;
+                case TestScenarioEditorDock.DATA_OBJECT:
+                  return (
+                    <>
+                      {
+                        'To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.'
+                      }
+                    </>
+                  );
+                case TestScenarioEditorDock.SETTINGS:
+                  return <>Settings</>;
+                default:
+                  throw new Error("");
+              }
+            })()}
+          </Text>
+        </TextContent>
+      </DrawerPanelBody>
     </DrawerPanelContent>
   );
 }
