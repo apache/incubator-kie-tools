@@ -23,7 +23,7 @@ import { dnsFix } from "./dnsFix";
 export type ServerArgs = {
   port: number;
   origin: string;
-  verifyCert: boolean;
+  allowSelfSignedCertificates: boolean;
   verbose: boolean;
 };
 
@@ -32,11 +32,7 @@ export const startServer = (args: ServerArgs): void => {
 
   const app: express.Express = express();
 
-  const proxy = new ExpressCorsProxy({
-    origin: args.origin,
-    verifyCert: args.verifyCert,
-    verbose: args.verbose,
-  });
+  const proxy = new ExpressCorsProxy(args);
 
   dnsFix();
 

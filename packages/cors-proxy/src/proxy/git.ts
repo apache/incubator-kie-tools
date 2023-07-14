@@ -18,6 +18,25 @@ import * as url from "url";
 
 import { CorsConfig } from "./types";
 
+export enum GIT_HTTP_METHODS {
+  GET = "GET",
+  OPTIONS = "OPTIONS",
+  POST = "POST",
+}
+
+export const GIT_CONSTS = {
+  INFO_REFS: "/info/refs",
+
+  GIT_UPLOAD_PACK: "git-upload-pack",
+  GIT_RECEIVE_PACK: "git-receive-pack",
+
+  ACCESS_CONTROL_HEADERS: "access-control-request-headers",
+  CONTENT_TYPE: "content-type",
+
+  X_GIT_UPLOAD_PACK_REQUEST: "application/x-git-upload-pack-request",
+  X_GIT_RECEIVE_PACK_REQUEST: "application/x-git-receive-pack-request",
+};
+
 export const GIT_CORS_CONFIG: CorsConfig = {
   allowHeaders: [
     "accept-encoding",
@@ -61,70 +80,66 @@ export const GIT_CORS_CONFIG: CorsConfig = {
   customHeaders: {
     "user-agent": "git/@kie-tools/cors-proxy",
   },
-  allowMethods: ["POST", "GET", "OPTIONS"],
+  allowMethods: Object.values(GIT_HTTP_METHODS),
 };
 
-type IncommingRequestInfo = {
-  method: string;
-  headers: Record<string, string>;
-};
-
-export const isGitOperation = (targetUrl: string, request: IncommingRequestInfo) => {
+export const isGitOperation = (targetUrl: string, method: string, headers: Record<string, string> = {}) => {
   const parsedUrl = url.parse(targetUrl, true);
 
   return (
-    isPreflightInfoRefs(parsedUrl, request) ||
-    isInfoRefs(parsedUrl, request) ||
-    isPreflightPull(parsedUrl, request) ||
-    isPull(parsedUrl, request) ||
-    isPreflightPush(parsedUrl, request) ||
-    isPush(parsedUrl, request)
+    isPreflightInfoRefs(parsedUrl, method) ||
+    isInfoRefs(parsedUrl, method) ||
+    isPreflightPull(parsedUrl, method, headers) ||
+    isPull(parsedUrl, method, headers) ||
+    isPreflightPush(parsedUrl, method, headers) ||
+    isPush(parsedUrl, method, headers)
   );
 };
 
-function isPreflightInfoRefs(url: url.UrlWithParsedQuery, request: IncommingRequestInfo) {
+function isPreflightInfoRefs(url: url.UrlWithParsedQuery, method: string) {
   return (
-    request.method === "OPTIONS" &&
-    url.pathname!.endsWith("/info/refs") &&
-    (url.query.service === "git-upload-pack" || url.query.service === "git-receive-pack")
-  );
-}
-function isInfoRefs(url: url.UrlWithParsedQuery, request: IncommingRequestInfo) {
-  return (
-    request.method === "GET" &&
-    url.pathname!.endsWith("/info/refs") &&
-    (url.query.service === "git-upload-pack" || url.query.service === "git-receive-pack")
+    method === GIT_HTTP_METHODS.OPTIONS &&
+    url.pathname!.endsWith(GIT_CONSTS.INFO_REFS) &&
+    [GIT_CONSTS.GIT_UPLOAD_PACK, GIT_CONSTS.GIT_RECEIVE_PACK].includes(url.query.service as string)
   );
 }
 
-function isPreflightPull(url: url.UrlWithParsedQuery, request: IncommingRequestInfo) {
+function isInfoRefs(url: url.UrlWithParsedQuery, method: string) {
   return (
-    request.method === "OPTIONS" &&
-    request.headers["access-control-request-headers"] === "content-type" &&
-    url.pathname!.endsWith("git-upload-pack")
+    method === GIT_HTTP_METHODS.GET &&
+    url.pathname!.endsWith(GIT_CONSTS.INFO_REFS) &&
+    [GIT_CONSTS.GIT_UPLOAD_PACK, GIT_CONSTS.GIT_RECEIVE_PACK].includes(url.query.service as string)
   );
 }
 
-function isPull(url: url.UrlWithParsedQuery, request: IncommingRequestInfo) {
+function isPreflightPull(url: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
   return (
-    request.method === "POST" &&
-    request.headers["content-type"] === "application/x-git-upload-pack-request" &&
-    url.pathname!.endsWith("git-upload-pack")
+    method === GIT_HTTP_METHODS.OPTIONS &&
+    headers[GIT_CONSTS.ACCESS_CONTROL_HEADERS] === GIT_CONSTS.CONTENT_TYPE &&
+    url.pathname!.endsWith(GIT_CONSTS.GIT_UPLOAD_PACK)
   );
 }
 
-function isPreflightPush(url: url.UrlWithParsedQuery, request: IncommingRequestInfo) {
+function isPull(url: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
   return (
-    request.method === "OPTIONS" &&
-    request.headers["access-control-request-headers"] === "content-type" &&
-    url.pathname!.endsWith("git-receive-pack")
+    method === GIT_HTTP_METHODS.POST &&
+    headers[GIT_CONSTS.CONTENT_TYPE] === GIT_CONSTS.X_GIT_UPLOAD_PACK_REQUEST &&
+    url.pathname!.endsWith(GIT_CONSTS.GIT_UPLOAD_PACK)
   );
 }
 
-function isPush(u: url.UrlWithParsedQuery, request: IncommingRequestInfo) {
+function isPreflightPush(url: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
   return (
-    request.method === "POST" &&
-    request.headers["content-type"] === "application/x-git-receive-pack-request" &&
-    u.pathname!.endsWith("git-receive-pack")
+    method === GIT_HTTP_METHODS.OPTIONS &&
+    headers[GIT_CONSTS.ACCESS_CONTROL_HEADERS] === GIT_CONSTS.CONTENT_TYPE &&
+    url.pathname!.endsWith(GIT_CONSTS.GIT_RECEIVE_PACK)
+  );
+}
+
+function isPush(u: url.UrlWithParsedQuery, method: string, headers: Record<string, string>) {
+  return (
+    method === GIT_HTTP_METHODS.POST &&
+    headers[GIT_CONSTS.CONTENT_TYPE] === GIT_CONSTS.X_GIT_RECEIVE_PACK_REQUEST &&
+    u.pathname!.endsWith(GIT_CONSTS.GIT_RECEIVE_PACK)
   );
 }

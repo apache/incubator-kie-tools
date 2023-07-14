@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({}),
@@ -23,6 +23,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       corsProxy: {
         dev: {
           port: 8080,
+          selfSignedCertificates: true,
+          verbose: true,
         },
       },
     };

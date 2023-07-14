@@ -23,8 +23,6 @@ module.exports = (env, argv) => [
       index: "./src/index.ts",
     },
     target: "node",
-    output: {
-      libraryTarget: "commonjs2",
-    },
+    ignoreWarnings: [/express/],
   }),
 ];
