@@ -13,34 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import React from "react";
+import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { Dropdown, DropdownToggle, ToolbarItem } from "@patternfly/react-core/dist/js";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { CaretDownIcon, PlusIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import * as React from "react";
+import Fuse from "fuse.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { splitFiles } from "../../extension";
+import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../table";
-import { WorkspacesTable, WorkspacesTableRowData } from "./WorkspacesTable";
-import { Link } from "react-router-dom";
-import { routes } from "../../navigation/Routes";
-import Fuse from "fuse.js";
 import { useAllWorkspacesWithFilesPromise } from "./hooks/useAllWorkspacesWithFilesPromise";
-import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { CreateOrImportModelGrid } from "../overView/CreateOrImportModelGrid";
+import { WorkspacesTable, WorkspacesTableRowData } from "./WorkspacesTable";
 
 const PAGE_TITLE = "Recent models";
 
-export function RecentModels(props: { isNavOpen: boolean }) {
+export function RecentModels() {
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [deletingWorkspaceIds, setDeletingWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
@@ -55,6 +56,7 @@ export function RecentModels(props: { isNavOpen: boolean }) {
   const [fuseSearch, setFuseSearch] = useState<Fuse<WorkspacesTableRowData>>();
   const isDeletingWorkspacePlural = useMemo(() => deletingWorkspaceIds.length > 1, [deletingWorkspaceIds]);
   const workspacesWithFilesPromise = useAllWorkspacesWithFilesPromise();
+  const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
 
   const deletingElementTypesName = useMemo(() => {
     if (deletingWorkspaceIds.length > 1) {
@@ -264,21 +266,41 @@ export function RecentModels(props: { isNavOpen: boolean }) {
         </PageSection>
 
         <PageSection isFilled aria-label="workspaces-table-section">
-          {tableData.length > 0 && (
-            <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-              <TableToolbar
-                itemCount={filteredTableData.length}
-                onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
-                onToggleAllElements={(checked) => onToggleAllElements(checked)}
-                searchValue={searchValue}
-                selectedElementsCount={selectedWorkspaceIds.length}
-                setSearchValue={setSearchValue}
-                page={page}
-                perPage={perPage}
-                perPageOptions={defaultPerPageOptions}
-                setPage={setPage}
-                setPerPage={setPerPage}
-              />
+          <PageSection variant={"light"} padding={{ default: "noPadding" }}>
+            <TableToolbar
+              itemCount={filteredTableData.length}
+              onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
+              onToggleAllElements={(checked) => onToggleAllElements(checked)}
+              searchValue={searchValue}
+              selectedElementsCount={selectedWorkspaceIds.length}
+              setSearchValue={setSearchValue}
+              page={page}
+              perPage={perPage}
+              perPageOptions={defaultPerPageOptions}
+              setPage={setPage}
+              setPerPage={setPerPage}
+              additionalComponents={
+                <ToolbarItem>
+                  <Dropdown
+                    position={"right"}
+                    isOpen={isNewFileDropdownMenuOpen}
+                    toggle={
+                      <DropdownToggle
+                        onToggle={setNewFileDropdownMenuOpen}
+                        toggleIndicator={CaretDownIcon}
+                        toggleVariant="primary"
+                      >
+                        <PlusIcon />
+                        &nbsp;&nbsp;New model
+                      </DropdownToggle>
+                    }
+                  >
+                    <NewFileDropdownMenu destinationDirPath={""} />
+                  </Dropdown>
+                </ToolbarItem>
+              }
+            />
+            {tableData.length > 0 && (
               <WorkspacesTable
                 page={page}
                 perPage={perPage}
@@ -288,40 +310,40 @@ export function RecentModels(props: { isNavOpen: boolean }) {
                 tableData={filteredTableData}
                 onDelete={onSingleConfirmDeleteModalOpen}
               />
-              <TablePagination
-                itemCount={filteredTableData.length}
-                page={page}
-                perPage={perPage}
-                perPageOptions={defaultPerPageOptions}
-                setPage={setPage}
-                setPerPage={setPerPage}
-                variant="bottom"
-              />
-            </PageSection>
-          )}
-          {workspacesWithFilesPromise.data && tableData.length === 0 && (
-            <>
-              <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-                <Bullseye>
-                  <EmptyState>
-                    <EmptyStateIcon icon={CubesIcon} />
-                    <Title headingLevel="h4" size="lg">
-                      {`Nothing here`}
-                    </Title>
-                    <EmptyStateBody>
-                      <TextContent>
-                        <Text>
-                          Start by adding a model or <Link to={routes.sampleCatalog.path({})}>try a sample</Link>
-                        </Text>
-                      </TextContent>
-                    </EmptyStateBody>
-                  </EmptyState>
-                </Bullseye>
-              </PageSection>
-              <br />
-              <CreateOrImportModelGrid isNavOpen={props.isNavOpen} />
-            </>
-          )}
+            )}
+            {workspacesWithFilesPromise.data && tableData.length === 0 && (
+              <>
+                <PageSection variant={"light"} padding={{ default: "noPadding" }}>
+                  <Bullseye>
+                    <EmptyState>
+                      <EmptyStateIcon icon={CubesIcon} />
+                      <Title headingLevel="h4" size="lg">
+                        {`Nothing here`}
+                      </Title>
+                      <EmptyStateBody>
+                        <TextContent>
+                          <Text>
+                            Start by adding a <Link to={routes.home.path({})}>new model</Link> or{" "}
+                            <Link to={routes.sampleCatalog.path({})}>try a sample</Link>
+                          </Text>
+                        </TextContent>
+                      </EmptyStateBody>
+                    </EmptyState>
+                  </Bullseye>
+                </PageSection>
+                <br />
+              </>
+            )}
+            <TablePagination
+              itemCount={filteredTableData.length}
+              page={page}
+              perPage={perPage}
+              perPageOptions={defaultPerPageOptions}
+              setPage={setPage}
+              setPerPage={setPerPage}
+              variant="bottom"
+            />
+          </PageSection>
         </PageSection>
       </Page>
       <ConfirmDeleteModal

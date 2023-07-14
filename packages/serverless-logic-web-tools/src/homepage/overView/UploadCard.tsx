@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useRef, useState } from "react";
-import { isAbsolute } from "path";
-import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useDropzone } from "react-dropzone";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import React from "react";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
+import { useCallback, useRef, useState } from "react";
+import { useDropzone } from "react-dropzone";
+import { CreateWorkspaceFromUploadedFolder } from "../../editor/CreateWorkspaceFromUploadedFolder";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
+import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 enum UploadType {
   NONE,
@@ -45,97 +44,28 @@ export function UploadCard() {
 
   const [uploading, setUploading] = useState(UploadType.NONE);
 
-  const createWorkspaceFromUploadedFolder = useCallback(
+  const uploadFiles = useCallback(
     async (type: UploadType, acceptedFiles: File[]) => {
-      function resolveRelativePath(args: { keepRootDirs: boolean; file: File & { path?: string } }) {
-        if (!args.file.path) {
-          return args.file.name;
-        }
+      setUploading(type);
+      const val = await CreateWorkspaceFromUploadedFolder({ files: acceptedFiles, workspaces });
 
-        if (args.keepRootDirs) {
-          // Keeps the root directories name, just remove the preceding slash.
-          return !isAbsolute(args.file.path)
-            ? args.file.path
-            : args.file.path.substring(args.file.path.indexOf("/") + 1);
-        }
-
-        // Remove first portion of the path, which is the uploaded directory name.
-        return isAbsolute(args.file.path)
-          ? args.file.path.substring(args.file.path.indexOf("/", 1) + 1)
-          : args.file.path.substring(args.file.path.indexOf("/") + 1);
-      }
-
-      if (acceptedFiles.length === 0) {
+      if (!val) {
         return;
       }
 
-      const uploadedRootDirs = acceptedFiles.reduce((acc: Set<string>, file: File & { path?: string }) => {
-        if (!file.path) {
-          return acc.add(file.name);
-        }
-
-        return acc.add(
-          isAbsolute(file.path)
-            ? file.path.substring(1, file.path.indexOf("/", 1))
-            : file.path.substring(0, file.path.indexOf("/"))
-        );
-      }, new Set<string>());
-
-      const localFiles: LocalFile[] = await Promise.all(
-        Array.from(acceptedFiles ?? []).map(async (file: File & { path?: string }) => {
-          const path = resolveRelativePath({
-            file,
-            keepRootDirs: uploadedRootDirs.size > 1,
-          });
-
-          return {
-            path,
-            fileContents: await (async () =>
-              new Promise<Uint8Array>((res) => {
-                const reader = new FileReader();
-                reader.onload = (event: ProgressEvent<FileReader>) =>
-                  res(new Uint8Array(event.target?.result as ArrayBuffer));
-                reader.readAsArrayBuffer(file);
-              }))(),
-          };
-        })
-      );
-
-      const preferredName =
-        uploadedRootDirs.size !== 1
-          ? undefined
-          : [...uploadedRootDirs][0] === localFiles[0].path
-          ? undefined
-          : [...uploadedRootDirs][0];
-
-      setUploading(type);
-
-      try {
-        const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromLocal({
-          localFiles,
-          preferredName,
-        });
-
-        if (!suggestedFirstFile) {
-          return;
-        }
-
-        history.push({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
-        });
-      } finally {
-        // setUploading(UploadType.NONE);
-      }
+      history.push({
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: val.workspaceId,
+          fileRelativePath: val.fileRelativePath,
+          extension: val.extension,
+        }),
+      });
     },
-    [workspaces, history, routes]
+    [history, routes, workspaces]
   );
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive, draggedFiles } = useDropzone({
-    onDrop: (acceptedFiles) => createWorkspaceFromUploadedFolder(UploadType.DND, acceptedFiles),
+    onDrop: (acceptedFiles) => uploadFiles(UploadType.DND, acceptedFiles),
     noClick: true,
     noKeyboard: true,
     noDragEventsBubbling: false,
@@ -222,7 +152,7 @@ export function UploadCard() {
             ref={uploadFilesInputRef}
             style={{ display: "none" }}
             multiple={true}
-            onChange={(e) => createWorkspaceFromUploadedFolder(UploadType.FILES, Array.from(e.target.files ?? []))}
+            onChange={(e) => uploadFiles(UploadType.FILES, Array.from(e.target.files ?? []))}
           />
 
           <br />
@@ -246,7 +176,7 @@ export function UploadCard() {
                 f.path = f.webkitRelativePath;
                 return f;
               });
-              return createWorkspaceFromUploadedFolder(UploadType.FOLDER, files);
+              return uploadFiles(UploadType.FOLDER, files);
             }}
           />
         </CardFooter>
