@@ -7848,9 +7848,6 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0
-      "@kie-tools-scripts/build-env":
-        specifier: workspace:*
-        version: link:../../scripts/build-env
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
