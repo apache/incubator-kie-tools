@@ -84,8 +84,7 @@ export function getParser<T extends object>(args: {
       instanceNs = instanceNs ?? getInstanceNs(domdoc);
 
       console.time("parsing overhead took");
-      const rootElementName = args.root.element;
-      const rootType = { [rootElementName]: { type: args.root.type, isArray: false } };
+      const rootType = { [args.root.element]: { type: args.root.type, isArray: false } };
       const json = parse({ ...args, instanceNs, node: domdoc, nodeType: rootType });
       console.timeEnd("parsing overhead took");
 
