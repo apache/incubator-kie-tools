@@ -18,7 +18,7 @@ package org.jboss.errai.ui.test.element.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -32,6 +32,6 @@ public class TemplatedIsElementBean implements IsElement {
 
   @Inject
   @DataField
-  public Div root;
+  public HTMLDivElement root;
 
 }

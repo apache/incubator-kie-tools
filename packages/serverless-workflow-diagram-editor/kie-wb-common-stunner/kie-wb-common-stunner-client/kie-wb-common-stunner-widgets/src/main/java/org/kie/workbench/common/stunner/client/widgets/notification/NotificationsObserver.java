@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.widgets.notification;
 
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.PreDestroy;
@@ -31,13 +29,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasC
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationEvent;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationFailEvent;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationSuccessEvent;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
@@ -48,9 +41,6 @@ public class NotificationsObserver {
     private Optional<ParameterizedCommand<Notification>> onNotification;
     private Optional<ParameterizedCommand<CommandNotification>> commandSuccess;
     private Optional<ParameterizedCommand<CommandNotification>> commandFailed;
-    private Optional<ParameterizedCommand<ValidationSuccessNotification>> validationSuccess;
-    private Optional<ParameterizedCommand<ValidationFailedNotification>> validationFailed;
-    private Optional<ParameterizedCommand<ValidationExecutedNotification>> validationExecuted;
     private final NotificationBuilder notificationBuilder;
 
     @Inject
@@ -60,9 +50,6 @@ public class NotificationsObserver {
         this.onNotification = Optional.empty();
         this.commandSuccess = Optional.empty();
         this.commandFailed = Optional.empty();
-        this.validationSuccess = Optional.empty();
-        this.validationFailed = Optional.empty();
-        this.validationExecuted = Optional.empty();
     }
 
     protected NotificationsObserver(ClientTranslationService translationService, NotificationBuilder notificationBuilder) {
@@ -85,29 +72,11 @@ public class NotificationsObserver {
         return this;
     }
 
-    public NotificationsObserver onValidationSuccess(final ParameterizedCommand<ValidationSuccessNotification> callback) {
-        this.validationSuccess = Optional.ofNullable(callback);
-        return this;
-    }
-
-    public NotificationsObserver onValidationFailed(final ParameterizedCommand<ValidationFailedNotification> callback) {
-        this.validationFailed = Optional.ofNullable(callback);
-        return this;
-    }
-
-    public NotificationsObserver onValidationExecuted(final ParameterizedCommand<ValidationExecutedNotification> callback) {
-        this.validationExecuted = Optional.ofNullable(callback);
-        return this;
-    }
-
     @PreDestroy
     public void destroy() {
         onNotification = null;
         commandFailed = null;
         commandSuccess = null;
-        validationSuccess = null;
-        validationFailed = null;
-        validationExecuted = null;
     }
 
     @SuppressWarnings("unchecked")
@@ -133,55 +102,6 @@ public class NotificationsObserver {
     }
 
     @SuppressWarnings("unchecked")
-    void onCanvasValidationSuccessEvent(final @Observes CanvasValidationSuccessEvent validationSuccessEvent) {
-        final NotificationContext context = buildContext(validationSuccessEvent);
-
-        //first call the executed notification
-        handleValidationExecuted(context);
-
-        handleValidationSuccess(context);
-    }
-
-    private void handleValidationExecuted(NotificationContext context) {
-        validationExecuted.ifPresent(v -> v.execute(new ValidationExecutedNotification(context)));
-    }
-
-    private void handleValidationSuccess(NotificationContext context) {
-        final Notification notification = notificationBuilder.createValidationSuccessNotification(context);
-        fireNotification(notification);
-        validationSuccess.ifPresent(n -> n.execute((ValidationSuccessNotification) notification));
-    }
-
-    @SuppressWarnings("unchecked")
-    void onCanvasValidationFailEvent(final @Observes CanvasValidationFailEvent validationFailEvent) {
-        final NotificationContext context = buildContext(validationFailEvent);
-
-        //first call the executed notification
-        handleValidationExecuted(context);
-
-        handleValidationFailed(validationFailEvent, context);
-    }
-
-    private NotificationContext buildContext(CanvasValidationEvent event) {
-        return NotificationContext.Builder.build(event.getCanvasHandlerUUID(),
-                                                 event.getDiagramName(),
-                                                 event.getDiagramTitle());
-    }
-
-    private void handleValidationFailed(CanvasValidationFailEvent validationFailEvent, NotificationContext context) {
-        //here send the notifications that will be show by message on the panel and popup
-        //so to split one notification per violation
-        validationFailEvent.getViolations().stream()
-                .map(v -> notificationBuilder.createValidationFailedNotification(context, v))
-                .filter(Objects::nonNull)
-                .map(this::fireNotification)
-                .map(n -> (ValidationFailedNotification) n)
-                .forEach(this::fireValidationFailed);
-    }
-
-    private void fireValidationFailed(ValidationFailedNotification notification) {
-        validationFailed.ifPresent(cmd -> cmd.execute(notification));
-    }
 
     private Notification fireNotification(final Notification notification) {
         onNotification.ifPresent(n -> n.execute(notification));
@@ -208,10 +128,6 @@ public class NotificationsObserver {
                                                final Command<?, CanvasViolation> command,
                                                final CommandResult<CanvasViolation> result);
 
-        Notification createValidationSuccessNotification(final NotificationContext context);
-
-        Notification createValidationFailedNotification(final NotificationContext context,
-                                                        final DiagramElementViolation<RuleViolation> error);
     }
 
     private final class NotificationBuilderImpl implements NotificationBuilder {
@@ -226,18 +142,5 @@ public class NotificationsObserver {
                                                      result);
         }
 
-        @Override
-        public Notification createValidationSuccessNotification(final NotificationContext context) {
-            return ValidationSuccessNotification.Builder.build(translationService,
-                                                               context);
-        }
-
-        @Override
-        public Notification createValidationFailedNotification(final NotificationContext context,
-                                                               final DiagramElementViolation<RuleViolation> error) {
-            return ValidationFailedNotification.Builder.build(translationService,
-                                                              context,
-                                                              Arrays.asList(error)).orElse(null);
-        }
     }
 }

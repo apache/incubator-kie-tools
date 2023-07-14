@@ -22,11 +22,11 @@ import javax.inject.Inject;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -46,7 +46,7 @@ public class InlineTextEditorBoxViewImpl
 
     @Inject
     @DataField
-    private Div nameField;
+    private HTMLDivElement nameField;
 
     public static final String CARET_RETURN = "<br>";
     public static final String TEXT_ALIGN_CENTER = "text-align: center;";
@@ -80,8 +80,8 @@ public class InlineTextEditorBoxViewImpl
     }
 
     public InlineTextEditorBoxViewImpl(final TranslationService translationService,
-                                       final Div editNameBox,
-                                       final Div nameField,
+                                       final HTMLDivElement editNameBox,
+                                       final HTMLDivElement nameField,
                                        final Command showCommand,
                                        final Command hideCommand) {
         super(showCommand, hideCommand);
@@ -132,18 +132,18 @@ public class InlineTextEditorBoxViewImpl
 
     @Override
     public void show(final String name, final double width, final double height) {
-        editNameBox.getStyle().setCssText("width: " + width + "px;" +
+        editNameBox.style.cssText = ("width: " + width + "px;" +
                                                   "height: " + height + "px;");
         nameField.setAttribute("style", buildStyle(width, height));
         presenter.onChangeName(name);
-        final CSSStyleDeclaration style = ((HTMLElement) editNameBox.getParentElement()).getStyle();
+        final CSSStyleDeclaration style = ((HTMLElement) editNameBox.parentElement).style;
 
         Scheduler.get().scheduleDeferred(() -> {
             style.removeProperty("z-index");
             style.setProperty("z-index", "0");
         });
         presenter.flush();
-        nameField.setTextContent(name);
+        nameField.textContent = name;
         nameField.setAttribute("data-text", placeholder);
 
         setVisible();
@@ -153,7 +153,7 @@ public class InlineTextEditorBoxViewImpl
         });
     }
 
-    public void selectText(Div node) {
+    public void selectText(HTMLDivElement node) {
         DomGlobal.window.getSelection().selectAllChildren(Js.cast(node));
     }
 
@@ -204,7 +204,7 @@ public class InlineTextEditorBoxViewImpl
     }
 
     private String getTextContent() {
-        String text = nameField.getInnerHTML();
+        String text = nameField.innerHTML;
 
         // Handle specific browser caret return <br> (e.g. Firefox)
         if (text.contains(CARET_RETURN)) {
@@ -213,7 +213,7 @@ public class InlineTextEditorBoxViewImpl
             }
             return text.replace(CARET_RETURN, "\n");
         }
-        return nameField.getTextContent();
+        return nameField.textContent;
     }
 
     @Override

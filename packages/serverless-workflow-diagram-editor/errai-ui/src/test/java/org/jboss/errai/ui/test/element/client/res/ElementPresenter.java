@@ -19,8 +19,8 @@ package org.jboss.errai.ui.test.element.client.res;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.Div;
 
 /**
  * @author Max Barkley <mbarkley@redhat.com>
@@ -29,10 +29,10 @@ import org.jboss.errai.common.client.dom.Div;
 public class ElementPresenter implements IsElement {
 
   @Inject
-  private Div element;
+  private HTMLDivElement element;
 
   @Override
-  public Div getElement() {
+  public HTMLDivElement getElement() {
     return element;
   }
 

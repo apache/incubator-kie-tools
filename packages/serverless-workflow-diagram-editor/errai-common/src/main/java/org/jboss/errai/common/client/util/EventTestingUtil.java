@@ -21,7 +21,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.user.client.ui.HasValue;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 /**
@@ -99,17 +98,6 @@ public abstract class EventTestingUtil {
       };
     }
   }-*/;
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static void invokeEventListeners(final HTMLElement element, final String eventType) {
-    invokeEventListeners((Object) element, eventType);
-    if ("change".equals(eventType)) {
-      final ElementWrapperWidget elem = ElementWrapperWidget.getWidget(element);
-      if (elem instanceof HasValue) {
-        ValueChangeEvent.fire(((HasValue) elem), ((HasValue) elem).getValue());
-      }
-    }
-  }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static void invokeEventListeners(final Element element, final String eventType) {

@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette.items;
 
 import java.util.function.Consumer;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

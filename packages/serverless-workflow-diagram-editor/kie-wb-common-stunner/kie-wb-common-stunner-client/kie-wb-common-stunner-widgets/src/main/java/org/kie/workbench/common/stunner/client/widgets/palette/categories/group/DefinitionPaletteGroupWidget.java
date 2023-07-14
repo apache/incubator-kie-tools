@@ -25,7 +25,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteGroup;
@@ -98,7 +97,7 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
                                   shapeFactory,
                                   itemMouseDownCallback);
             if (i >= COMPACT_ELEMENTS_LIST_SIZE) {
-                itemWidget.getElement().getStyle().setProperty("display",
+                itemWidget.getElement().style.setProperty("display",
                                                                "none");
                 hiddenList.add(itemWidget);
             }
@@ -115,7 +114,7 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
             this.state = state;
             String displayStyle = state.equals(State.COMPACT) ? "none" : "block";
             hiddenList.forEach(item -> {
-                item.getElement().getStyle().setProperty("display",
+                item.getElement().style.setProperty("display",
                                                          displayStyle);
             });
 
@@ -143,7 +142,7 @@ public class DefinitionPaletteGroupWidget implements DefinitionPaletteGroupWidge
     }
 
     @Override
-    public HTMLElement getElement() {
+    public elemental2.dom.HTMLElement getElement() {
         return view.getElement();
     }
 

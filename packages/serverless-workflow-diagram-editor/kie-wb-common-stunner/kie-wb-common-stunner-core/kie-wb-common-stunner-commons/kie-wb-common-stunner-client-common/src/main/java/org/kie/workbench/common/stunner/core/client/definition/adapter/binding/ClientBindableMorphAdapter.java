@@ -22,7 +22,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.databinding.client.api.DataBinder;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -60,11 +59,6 @@ public class ClientBindableMorphAdapter<S> extends BindableMorphAdapter<S> {
 
     @Override
     public boolean accepts(final Class<?> type) {
-        try {
-            DataBinder.forType(type);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

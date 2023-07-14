@@ -74,25 +74,6 @@ public class Elemental2DomUtil {
     return Js.cast(gwtElement);
   }
 
-  /**
-   * Converts from {@link org.jboss.errai.common.client.dom.HTMLElement} to {@link HTMLElement}.
-   * @param htmlElement The deprecated Errai HTMLElement
-   * @return The GWT Elemental2 HTMLElement
-   */
-  public HTMLElement asHTMLElement(final org.jboss.errai.common.client.dom.HTMLElement htmlElement) {
-    return Js.cast(htmlElement);
-  }
-
-  /**
-   * Converts from {@link HTMLElement} to {@link org.jboss.errai.common.client.dom.HTMLElement}. This is just in case you
-   * need to use your new elements with deprecated Errai HTMLElement.
-   * @param htmlElement The deprecated Errai HTMLElement
-   * @return The GWT Elemental2 HTMLElement
-   */
-  public org.jboss.errai.common.client.dom.HTMLElement asHTMLElement(final HTMLElement htmlElement) {
-    return Js.cast(htmlElement);
-  }
-
   native void onAttach(Widget w)/*-{
     w.@com.google.gwt.user.client.ui.Widget::onAttach()();
   }-*/;

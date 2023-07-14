@@ -33,11 +33,7 @@
   <name>Extensions to UberFire</name>
 
   <modules>
-    <module>uberfire-widgets</module>
     <module>uberfire-commons-editor</module>
-    <module>uberfire-wires</module>
-    <module>uberfire-layout-editor</module>
-    <module>uberfire-simple-docks</module>
   </modules>
 
 </project>
