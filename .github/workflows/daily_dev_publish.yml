@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     env:
       KIE_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
       KIE_TOOLS_BUILD__buildContainerImages: ${{ matrix.os != 'windows-latest' }}
@@ -140,7 +140,7 @@ jobs:
           SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
         run: |
           cd kie-tools
-          pnpm -r -F @kie-tools/git-cors-proxy-image... -F @kie-tools/kie-sandbox-extended-services-image... build:prod
+          pnpm -r build:prod
 
       - name: "Upload Serverless Workflow VS Code Extension - KIE (Ubuntu only)"
         if: runner.os == 'Linux'
