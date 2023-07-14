@@ -40,12 +40,11 @@ import (
 )
 
 type Proxy struct {
-	View               *Systray
-	Started            bool
-	URL                string
-	Port               string
-	RunnerPort         string
-	InsecureSkipVerify bool
+	View       *Systray
+	Started    bool
+	URL        string
+	Port       string
+	RunnerPort string
 
 	cmd             *exec.Cmd
 	jitexecutorPath string
@@ -54,10 +53,9 @@ type Proxy struct {
 
 func NewProxy(port string, jitexecutor []byte) *Proxy {
 	return &Proxy{
-		jitexecutorPath:    createJitExecutor(jitexecutor),
-		Started:            false,
-		Port:               port,
-		InsecureSkipVerify: false,
+		jitexecutorPath: createJitExecutor(jitexecutor),
+		Started:         false,
+		Port:            port,
 	}
 }
 
@@ -180,7 +178,7 @@ func (p *Proxy) pingHandler() func(rw http.ResponseWriter, req *http.Request) {
 		rw.Header().Set("Access-Control-Allow-Origin", "*")
 		rw.Header().Set("Access-Control-Allow-Methods", "GET")
 
-		conf := GetPingResponse(p.InsecureSkipVerify, p.Started)
+		conf := GetPingResponse(p.Started)
 		rw.WriteHeader(http.StatusOK)
 		json, _ := json.Marshal(conf)
 		_, err := rw.Write(json)

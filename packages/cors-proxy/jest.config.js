@@ -28,5 +28,4 @@ module.exports = {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
   },
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
 };
