@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +13,15 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
-
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi"/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreApi" />
 
-  <source path="api"/>
-  <source path="definition"/>
-  <source path="service"/>
-  <source path="marshaller"/>
+  <source path="api" />
+  <source path="definition" />
+  <source path="service" />
+  <source path="marshaller" />
 
 </module>

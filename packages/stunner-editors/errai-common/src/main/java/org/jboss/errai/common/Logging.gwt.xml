@@ -1,18 +1,18 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.6//EN"
-        "http://google-web-toolkit.googlecode.com/svn/releases/1.6/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/releases/1.6/distro-source/core/src/gwt-module.dtd">
 <module>
-    <inherits name="de.benediktmeurer.gwt.slf4j.api.API"/>
-    <inherits name="de.benediktmeurer.gwt.slf4j.jul.JUL"/>
+    <inherits name="de.benediktmeurer.gwt.slf4j.api.API" />
+    <inherits name="de.benediktmeurer.gwt.slf4j.jul.JUL" />
     
-    <set-property name="gwt.logging.systemHandler" value="DISABLED"/>
-    <set-property name="gwt.logging.developmentModeHandler" value="DISABLED"/>
-    <set-property name="gwt.logging.consoleHandler" value="DISABLED"/>
-    <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED"/>
-    <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED"/>
+    <set-property name="gwt.logging.systemHandler" value="DISABLED" />
+    <set-property name="gwt.logging.developmentModeHandler" value="DISABLED" />
+    <set-property name="gwt.logging.consoleHandler" value="DISABLED" />
+    <set-property name="gwt.logging.simpleRemoteHandler" value="DISABLED" />
+    <set-property name="gwt.logging.hasWidgetsHandler" value="DISABLED" />
     
-    <set-property name="gwt.logging.logLevel" value="INFO"/>
+    <set-property name="gwt.logging.logLevel" value="INFO" />
     
-    <entry-point class="org.jboss.errai.common.client.logging.LoggingHandlerConfigurator"/>
+    <entry-point class="org.jboss.errai.common.client.logging.LoggingHandlerConfigurator" />
 
-    <public path="js"/>
+    <public path="js" />
 </module>

@@ -35,6 +35,9 @@ importers:
       "@nice-move/prettier-plugin-package-json":
         specifier: ^0.6.1
         version: 0.6.1(prettier@2.3.0)
+      "@prettier/plugin-xml":
+        specifier: ^2
+        version: 2.2.0
       "@types/node":
         specifier: ^18.13.0
         version: 18.13.0
@@ -15582,6 +15585,14 @@ packages:
       write-yaml-file: 4.2.0
     dev: true
 
+  /@prettier/plugin-xml@2.2.0:
+    resolution:
+      { integrity: sha512-UWRmygBsyj4bVXvDiqSccwT1kmsorcwQwaIy30yVh8T+Gspx4OlC0shX1y+ZuwXZvgnafmpRYKks0bAu9urJew== }
+    dependencies:
+      "@xml-tools/parser": 1.0.11
+      prettier: 3.0.0
+    dev: true
+
   /@rhoas/registry-instance-sdk@0.34.1:
     resolution:
       { integrity: sha512-qsUgLN+fbF4StEvSTSaOSKRccyFpWGHnoJet1FFXotG6vefy3RqEC0NIfz93KzXAgE/NhKM3cRq7qBhVLBNkHQ== }
@@ -17243,6 +17254,13 @@ packages:
     dependencies:
       webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
       webpack-dev-server: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+    dev: true
+
+  /@xml-tools/parser@1.0.11:
+    resolution:
+      { integrity: sha512-aKqQ077XnR+oQtHJlrAflaZaL7qZsulWc/i/ZEooar5JiWj1eLt0+Wg28cpa+XLney107wXqneC+oG1IZvxkTA== }
+    dependencies:
+      chevrotain: 7.1.1
     dev: true
 
   /@xtuc/ieee754@1.2.0:
@@ -19151,6 +19169,13 @@ packages:
       parse5: 6.0.1
       parse5-htmlparser2-tree-adapter: 6.0.1
       tslib: 2.5.0
+    dev: true
+
+  /chevrotain@7.1.1:
+    resolution:
+      { integrity: sha512-wy3mC1x4ye+O+QkEinVJkPf5u2vsrDIYW9G7ZuwFl6v/Yu0LwUuT2POsb+NUWApebyxfkQq6+yDfRExbnI5rcw== }
+    dependencies:
+      regexp-to-ast: 0.5.0
     dev: true
 
   /chevrotain@9.1.0:
@@ -29314,6 +29339,13 @@ packages:
       { integrity: sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w== }
     engines: { node: ">=10.13.0" }
     hasBin: true
+
+  /prettier@3.0.0:
+    resolution:
+      { integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g== }
+    engines: { node: ">=14" }
+    hasBin: true
+    dev: true
 
   /pretty-bytes@5.6.0:
     resolution:

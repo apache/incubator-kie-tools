@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
   GwtBootstrap3
@@ -20,8 +20,8 @@
   -->
 <module>
     <public path="resource">
-        <include name="css/*.css"/>
-        <include name="js/*.js"/>
-        <include name="fonts/*"/>
+        <include name="css/*.css" />
+        <include name="js/*.js" />
+        <include name="fonts/*" />
     </public>
 </module>

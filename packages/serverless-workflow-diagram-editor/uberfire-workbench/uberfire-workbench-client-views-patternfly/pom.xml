@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,8 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -278,7 +281,8 @@
               <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist</directory>
+                  <directory
+                  >${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly/${version.org.webjars.bower.org.patternfly}/dist</directory>
                   <includes>
                     <include>**</include>
                   </includes>
@@ -296,10 +300,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/bootstrap-select</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/uberfire/client/views/static/bootstrap-select</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/bootstrap-select/META-INF/resources/webjars/bootstrap-select/${version.org.webjars.bower.bootstrap-select}/dist</directory>
+                  <directory
+                  >${project.build.directory}/bootstrap-select/META-INF/resources/webjars/bootstrap-select/${version.org.webjars.bower.bootstrap-select}/dist</directory>
                   <includes>
                     <include>**</include>
                   </includes>
@@ -314,10 +320,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/moment</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/uberfire/client/views/static/moment</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/moment/META-INF/resources/webjars/moment/${version.org.webjars.npm.moment}/min/</directory>
+                  <directory
+                  >${project.build.directory}/moment/META-INF/resources/webjars/moment/${version.org.webjars.npm.moment}/min/</directory>
                   <includes>
                     <include>moment-with-locales.min.js</include>
                   </includes>
@@ -332,10 +340,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/moment-timezone</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/uberfire/client/views/static/moment-timezone</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/moment-timezone/META-INF/resources/webjars/moment-timezone/${version.org.webjars.npm.moment-timezone}/builds/</directory>
+                  <directory
+                  >${project.build.directory}/moment-timezone/META-INF/resources/webjars/moment-timezone/${version.org.webjars.npm.moment-timezone}/builds/</directory>
                   <includes>
                     <include>moment-timezone-with-data-2012-2022.min.js</include>
                   </includes>
@@ -350,10 +360,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/bootstrap-daterangepicker</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/uberfire/client/views/static/bootstrap-daterangepicker</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/${version.org.webjars.bower.bootstrap-daterangepicker}/</directory>
+                  <directory
+                  >${project.build.directory}/bootstrap-daterangepicker/META-INF/resources/webjars/bootstrap-daterangepicker/${version.org.webjars.bower.bootstrap-daterangepicker}/</directory>
                   <includes>
                     <include>daterangepicker.css</include>
                     <include>daterangepicker.js</include>
@@ -378,7 +390,8 @@
           <forkMode>pertest</forkMode>
           <!-- DO NOT REMOVE THE errai.ioc.experimental.infer_dependent_by_reachability
             flag or the testsuite WILL fail. -->
-          <argLine>-Xmx1500m -Derrai.devel.nocache=true -Derrai.hosted_mode_testing=true -Derrai.ioc.experimental.infer_dependent_by_reachability=true -Dorg.jboss.errai.bus.do_long_poll=false</argLine>
+          <argLine
+          >-Xmx1500m -Derrai.devel.nocache=true -Derrai.hosted_mode_testing=true -Derrai.ioc.experimental.infer_dependent_by_reachability=true -Dorg.jboss.errai.bus.do_long_poll=false</argLine>
 
           <systemProperties>
             <!-- Must disable long polling for automated tests to succeed -->

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
   GwtBootstrap3
@@ -18,12 +18,11 @@
   limitations under the License.
   #L%
   -->
-
 <!--
     Inherit this module if you want to use the Bootrap 2.x lookalike theme.
 -->
 <module rename-to="GwtBootstrap3Theme">
-    <inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+    <inherits name="org.gwtbootstrap3.GwtBootstrap3" />
 
-    <stylesheet src="css/bootstrap-theme-3.4.1.min.cache.css"/>
+    <stylesheet src="css/bootstrap-theme-3.4.1.min.cache.css" />
 </module>

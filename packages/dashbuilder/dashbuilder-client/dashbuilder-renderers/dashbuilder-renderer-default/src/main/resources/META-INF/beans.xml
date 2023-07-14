@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="none">
   <scan>
-    <exclude name="org.dashbuilder.renderer.client.**"/>
+    <exclude name="org.dashbuilder.renderer.client.**" />
   </scan>
 </beans>

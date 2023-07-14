@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,8 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -159,7 +162,7 @@
     <!-- Properties from ERRAI parent POM -->
     <!-- The version from kie-parent is not compatible with errai-validation -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
-    <gwtArgs></gwtArgs>
+    <gwtArgs />
     <argLine>-Dgwt.args="${gwtArgs}"</argLine>
     <illegaltransitivereportonly>false</illegaltransitivereportonly>
 
@@ -179,8 +182,10 @@
     <version.org.webjars.bower.jqueryui>1.12.1</version.org.webjars.bower.jqueryui>
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
-    <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
-    <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
+    <jboss.releases.repo.url
+    >https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
+    <jboss.snapshots.repo.url
+    >https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
     <revapi.oldUberFireVersion>${version.org.uberfire.latestFinal.release}</revapi.oldUberFireVersion>
@@ -191,7 +196,8 @@
     <!-- Properties from KIE-WB-COMMON parent POM -->
 
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
-    <checkstyle.header.template><![CDATA[
+    <checkstyle.header.template
+    ><![CDATA[
 ^\/\*$\n^
 \* Copyright \d\d\d\d Red Hat, Inc\. and\/or its affiliates\.$\n^
 \*$\n^
@@ -291,7 +297,8 @@
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.org.jboss.maven-jdocbook-plugin>2.3.5</version.org.jboss.maven-jdocbook-plugin>
     <version.org.jboss.pressbang>2.0.0</version.org.jboss.pressbang>
-    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
+    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec
+    >1.0.0.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
     <version.org.jsoup>1.15.3</version.org.jsoup>
     <version.org.ow2.asm>7.1</version.org.ow2.asm>
     <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
@@ -777,10 +784,14 @@
             <phase>process-resources</phase>
             <configuration>
               <target>
-                <copy todir="${project.build.directory}/classes"
-                      includeemptydirs="false" failonerror="false" quiet="true">
-                  <fileset dir="${project.build.directory}/classes"/>
-                  <globmapper from="*Constants.properties" to="*Constants_default.properties"/>
+                <copy
+                  todir="${project.build.directory}/classes"
+                  includeemptydirs="false"
+                  failonerror="false"
+                  quiet="true"
+                >
+                  <fileset dir="${project.build.directory}/classes" />
+                  <globmapper from="*Constants.properties" to="*Constants_default.properties" />
                 </copy>
               </target>
             </configuration>
@@ -887,34 +898,38 @@
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
                     <module name="FileTabCharacter">
-                      <property name="severity" value="error"/>
-                      <property name="eachLine" value="true"/>
+                      <property name="severity" value="error" />
+                      <property name="eachLine" value="true" />
                     </module>
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport"/>
+                      <module name="RedundantImport" />
                       <module name="AvoidStarImport">
-                        <property name="allowClassImports" value="false"/>
-                        <property name="allowStaticMemberImports" value="false"/>
+                        <property name="allowClassImports" value="false" />
+                        <property name="allowStaticMemberImports" value="false" />
                       </module>
                       <module name="CustomImportOrder">
-                        <property name="customImportOrderRules"
-                                  value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"/>
-                        <property name="specialImportsRegExp" value="^javax\."/>
-                        <property name="standardPackageRegExp" value="^java\."/>
-                        <property name="sortImportsInGroupAlphabetically" value="true"/>
-                        <property name="separateLineBetweenGroups" value="true"/>
+                        <property
+                          name="customImportOrderRules"
+                          value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"
+                        />
+                        <property name="specialImportsRegExp" value="^javax\." />
+                        <property name="standardPackageRegExp" value="^java\." />
+                        <property name="sortImportsInGroupAlphabetically" value="true" />
+                        <property name="separateLineBetweenGroups" value="true" />
                       </module>
-                      <module name="UnusedImports"/>
+                      <module name="UnusedImports" />
                       <module name="NeedBraces">
-                        <property name="tokens"
-                                  value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
+                        <property
+                          name="tokens"
+                          value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"
+                        />
                       </module>
-                      <module name="EqualsHashCode"/>
+                      <module name="EqualsHashCode" />
                     </module>
                     <module name="RegexpHeader">
-                      <property name="header" value="${checkstyle.header.template}"/>
-                      <property name="fileExtensions" value="${checkstyle.header.extensions}"/>
+                      <property name="header" value="${checkstyle.header.template}" />
+                      <property name="fileExtensions" value="${checkstyle.header.extensions}" />
                     </module>
                   </module>
                 </checkstyleRules>
@@ -1017,8 +1032,7 @@
               <phase>initialize</phase>
               <configuration>
                 <rules>
-                  <requireManagedDeps
-                      implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                  <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
                     <checkProfiles>true</checkProfiles>
                     <failOnViolation>true</failOnViolation>
                   </requireManagedDeps>
@@ -1034,7 +1048,8 @@
               <configuration>
                 <rules>
                   <illegalTransitiveDependencyCheck
-                      implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                    implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck"
+                  >
                     <reportOnly>${illegaltransitivereportonly}</reportOnly>
                     <regexIgnoredClasses combine.children="append">
                       <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
@@ -1186,7 +1201,7 @@
               </goals>
               <configuration>
                 <rules>
-                  <banDuplicatePomDependencyVersions/>
+                  <banDuplicatePomDependencyVersions />
                 </rules>
               </configuration>
             </execution>
@@ -1952,7 +1967,8 @@
     <profile>
       <id>sonarcloud-analysis</id>
       <properties>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths
+        >${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>kiegroup</sonar.organization>
         <!--suppress UnresolvedMavenProperty -->
@@ -1984,16 +2000,16 @@
                     https://groups.google.com/forum/#!topic/jacoco/oMxNZs_DNII
                   -->
                   <target>
-                    <echo message="Generating JaCoCo Reports"/>
-                    <taskdef name="report" classname="org.jacoco.ant.ReportTask"/>
-                    <mkdir dir="${project.reporting.outputDirectory}/jacoco"/>
+                    <echo message="Generating JaCoCo Reports" />
+                    <taskdef name="report" classname="org.jacoco.ant.ReportTask" />
+                    <mkdir dir="${project.reporting.outputDirectory}/jacoco" />
                     <report>
                       <executiondata>
                         <fileset dir="${project.root.dir}/target">
                           <!--
                             Include a single jacoco.exec file, which should be used in append mode by every module.
                           -->
-                          <include name="jacoco.exec"/>
+                          <include name="jacoco.exec" />
                         </fileset>
                       </executiondata>
                       <structure name="Coverage Report">
@@ -2003,21 +2019,23 @@
                               <!--
                                 Include class files from every module.
                               -->
-                              <include name="**/target/classes/**/*.class"/>
+                              <include name="**/target/classes/**/*.class" />
                               <!--
                                 Following classes are excluded as they are present in multiple modules. Usually they
                                 are a product of tests or 3rd party dependencies that got unwrapped in target/classes
                                 folder during the build. These are not a subject of test coverage measurement.
                               -->
-                              <exclude name="**/target/**/target/classes/**/*.class"/>
-                              <exclude name="**/.errai/**/*.class"/>
-                              <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
+                              <exclude name="**/target/**/target/classes/**/*.class" />
+                              <exclude name="**/.errai/**/*.class" />
+                              <exclude name="**/target/classes/org/jboss/errai/**/*.class" />
                               <!--
                                 TODO: there are multiple classes of the same fully qualified name in kie-server modules.
                                 They need to be renamed to enable coverage reporting for them.
                                 -->
-                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class"/>
-                              <exclude name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"/>
+                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class" />
+                              <exclude
+                                name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"
+                              />
                             </fileset>
                           </classfiles>
                           <sourcefiles encoding="UTF-8">
@@ -2025,13 +2043,13 @@
                               <!--
                                 Include source files from every module.
                               -->
-                              <include name="**/src/main/**/*.java"/>
+                              <include name="**/src/main/**/*.java" />
                             </fileset>
                           </sourcefiles>
                         </group>
                       </structure>
                       <!-- The same report is generated in each module -->
-                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml"/>
+                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml" />
                     </report>
                   </target>
                 </configuration>
