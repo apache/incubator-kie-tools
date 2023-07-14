@@ -20,6 +20,7 @@
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
+    "@prettier/plugin-xml": "^2",
     "@types/node": "^18.13.0",
     "filemanager-webpack-plugin": "^7.0.0",
     "husky": "^6.0.0",
