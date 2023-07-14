@@ -25,10 +25,6 @@
   <inherits name="com.google.gwt.http.HTTP"/>
   <inherits name="com.google.gwt.user.User"/>
 
-  <inherits name="org.hibernate.validator.HibernateValidator"/>
-
-  <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
-
   <inherits name="org.uberfire.UberfireAPI"/>
 
 </module>

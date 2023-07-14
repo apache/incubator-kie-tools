@@ -23,7 +23,6 @@ import javax.inject.Named;
 import com.google.gwt.dom.client.DivElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 
 /**
@@ -36,7 +35,7 @@ public class Elemental2InjectionApp {
   HTMLDivElement elemental2HtmlDivElement; //works because of ElementProviderExtension
 
   @Inject
-  Div erraiDomWrapperDiv; //works because of ElementProviderExtension
+  HTMLDivElement erraiDomWrapperDiv; //works because of ElementProviderExtension
 
   @Inject
   DivElement gwtElementDiv; //works because of ElementProviderExtension
@@ -51,7 +50,7 @@ public class Elemental2InjectionApp {
 
   @Inject
   @Named("div")
-  org.jboss.errai.common.client.dom.HTMLElement erraiDomWrapperHTMLElementDiv; //works because of HTMLElementProvider
+  HTMLElement erraiDomWrapperHTMLElementDiv; //works because of HTMLElementProvider
 
   @PostConstruct
   public void setup() {

@@ -81,8 +81,6 @@
     <module>errai-codegen</module>
     <module>errai-cdi</module>
     <module>errai-ui</module>
-    <module>errai-data-binding</module>
-    <module>errai-validation</module>
     <module>errai-reflections</module>
     <module>errai-config</module>
     <module>errai-codegen-gwt</module>
@@ -153,8 +151,6 @@
 
   <properties>
     <!-- Properties from ERRAI parent POM -->
-    <!-- The version from kie-parent is not compatible with errai-validation -->
-    <version.javax.validation>1.0.0.GA</version.javax.validation>
     <gwtArgs></gwtArgs>
     <argLine>-Dgwt.args="${gwtArgs}"</argLine>
     <illegaltransitivereportonly>false</illegaltransitivereportonly>
@@ -280,8 +276,6 @@
     <version.org.freemarker>2.3.31</version.org.freemarker>
     <version.org.hisrc.jsonix.jsonix-scripts>3.0.0</version.org.hisrc.jsonix.jsonix-scripts>
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
-    <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
-    <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
     <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
     <version.org.jboss.errai.wildfly>19.1.0.SP1</version.org.jboss.errai.wildfly> <!--  WildFly version used together with  the GWT's Super Dev Mode  -->
@@ -548,18 +542,6 @@
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>${version.org.javassist}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3-extras</artifactId>
-        <version>${version.org.gwtbootstrap3-extras}</version>
       </dependency>
 
       <dependency>
@@ -1151,6 +1133,8 @@
                       <ignoreClass>org.dominokit.domino.logger.ConsoleLoggerAdapter</ignoreClass>
                       <ignoreClass>org.slf4j.*</ignoreClass>
                       <ignoreClass>org.antlr.v4.runtime.*</ignoreClass>
+                      <ignoreClass>javax.validation.*</ignoreClass>
+                      <ignoreClass>javax.servlet.*</ignoreClass>
                       <ignoreClass>jakarta.json.*</ignoreClass>
 
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->

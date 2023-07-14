@@ -19,8 +19,10 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { Breadcrumb } from "@patternfly/react-core/components/Breadcrumb";
-import { BreadcrumbItem, Checkbox, Dropdown, DropdownToggle, ToolbarItem } from "@patternfly/react-core/dist/js";
+import { BreadcrumbItem, Breadcrumb } from "@patternfly/react-core/components/Breadcrumb";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";

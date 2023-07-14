@@ -25,7 +25,7 @@ export default class GitHubEditorPage extends EditorPage {
   private static readonly COPY_LINK_ALERT_LOCATOR = By.xpath("//div[@data-testid='link-copied-alert']");
   private static readonly SEE_AS_DIAGRAM_BUTTON_LOCATOR = By.xpath("//button[@data-testid='see-as-diagram-button']");
   private static readonly FULL_SCREEN_BUTTON_LOCATOR = By.xpath("//button[@data-testid='go-fullscreen-button']");
-  private static readonly SOURCE_VIEW_LOCATOR = By.xpath("//div[@itemprop='text']");
+  private static readonly SOURCE_VIEW_LOCATOR = By.xpath("//textarea[@id='read-only-cursor-text-area']");
   private static readonly KOGITO_CONTAINER_LOCATOR = By.className("kogito-iframe-container");
   private static readonly KOGITO_TOOLBAR_LOCATOR = By.className("kogito-toolbar-container");
 

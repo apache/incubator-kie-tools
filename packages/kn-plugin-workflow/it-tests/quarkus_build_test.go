@@ -25,10 +25,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 )
 
 var cfgTestInputPrepareQuarkusCreateBuild = CfgTestInputQuarkusCreate{
@@ -104,34 +103,38 @@ func transformQuarkusBuildCmdCfgToArgs(cfg quarkus.BuildCmdConfig) []string {
 func TestQuarkusBuildCommand(t *testing.T) {
 	for testIndex, test := range cfgTestInputQuarkusBuild_Success {
 		t.Run(fmt.Sprintf("Test build project success index: %d", testIndex), func(t *testing.T) {
+			defer CleanUpAndChdirTemp(t)
 			RunQuarkusBuildTest(t, cfgTestInputPrepareQuarkusCreateBuild, test, true)
 		})
 	}
 }
 
-func RunQuarkusBuildTest(t *testing.T, cfgTestInputCreate CfgTestInputQuarkusCreate, test CfgTestInputQuarkusBuild, cleanUp bool) {
+func RunQuarkusBuildTest(t *testing.T, cfgTestInputQuarkusCreate CfgTestInputQuarkusCreate, test CfgTestInputQuarkusBuild, cleanUp bool) string {
 	var err error
 
 	// Create the project
-	RunQuarkusCreateTest(t, cfgTestInputCreate, false)
-	projectName := GetQuarkusCreateProjectName(t, cfgTestInputCreate)
-
-	projectPath, err := os.Getwd()
-	assert.NoError(t, err, "Expected nil error, got %v", err)
-	fmt.Println("Current working directory:", projectPath)
-
-	projectDir := filepath.Join(projectPath, projectName)
-	dirExists := assert.DirExists(t, projectDir)
+	projectName := RunQuarkusCreateTest(t, cfgTestInputQuarkusCreate)
+	projectDir := filepath.Join(TempTestsPath, projectName)
 
 	err = os.Chdir(projectDir)
-	assert.NoErrorf(t, err, "Expected nil error, got %v", err)
+	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
-	// Run `build` command
+	// Run `quarkus build` command
 	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusBuildCmdCfgToArgs(test.input)...)
-	assert.NoErrorf(t, err, "Expected nil error, got %v", err)
+	require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
-	assert.FileExists(t, filepath.Join("target", "kubernetes", "knative.yml"))
+	require.FileExists(t, filepath.Join("target", "kubernetes", "knative.yml"))
 
+	// Clean up images from docker and podman
+	if cleanUp {
+		CleanUpDockerPodman(t, test)
+	}
+
+	return projectName
+}
+
+func CleanUpDockerPodman(t *testing.T, test CfgTestInputQuarkusBuild) {
+	var err error
 	expectedImageName := ExpectedImageName(test.input)
 	var removeCmd *exec.Cmd
 	if test.input.JibPodman {
@@ -141,12 +144,8 @@ func RunQuarkusBuildTest(t *testing.T, cfgTestInputCreate CfgTestInputQuarkusCre
 		// Remove built image from docker
 		removeCmd = exec.Command("docker", "image", "rm", expectedImageName) // docker takes both `rm` and `remove` for removing images
 	}
-	fmt.Println("Removing image:", removeCmd.Args)
-	err = removeCmd.Run()
-	assert.NoErrorf(t, err, "Error when removing image: %s. Expected nil error, got %v", expectedImageName, err)
-
-	os.Chdir(projectPath)
-	if dirExists && cleanUp {
-		common.DeleteFolderStructure(t, projectDir)
-	}
+	t.Log("Removing image:", removeCmd.Args)
+	out, err := removeCmd.Output()
+	fmt.Print(string(out))
+	require.NoErrorf(t, err, "Error when removing image: %s. Expected nil error, got %v", expectedImageName, err)
 }

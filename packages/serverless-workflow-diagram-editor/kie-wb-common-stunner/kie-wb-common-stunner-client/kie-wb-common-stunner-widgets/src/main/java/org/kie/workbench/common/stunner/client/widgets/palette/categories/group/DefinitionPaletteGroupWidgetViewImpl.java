@@ -23,8 +23,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -38,11 +38,11 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Inject
     @DataField
-    private ListItem moreAnchor;
+    private HTMLLIElement moreAnchor;
 
     @Inject
     @DataField
-    private ListItem lessAnchor;
+    private HTMLLIElement lessAnchor;
 
     private Presenter presenter;
 
@@ -64,9 +64,9 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Override
     public void addAnchors() {
-        moreAnchor.getStyle().setProperty("display",
+        moreAnchor.style.setProperty("display",
                                           "none");
-        lessAnchor.getStyle().setProperty("display",
+        lessAnchor.style.setProperty("display",
                                           "none");
         this.getElement().appendChild(moreAnchor);
         this.getElement().appendChild(lessAnchor);
@@ -74,17 +74,17 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Override
     public void showMoreAnchor() {
-        moreAnchor.getStyle().setProperty("display",
+        moreAnchor.style.setProperty("display",
                                           "block");
-        lessAnchor.getStyle().setProperty("display",
+        lessAnchor.style.setProperty("display",
                                           "none");
     }
 
     @Override
     public void showLessAnchor() {
-        moreAnchor.getStyle().setProperty("display",
+        moreAnchor.style.setProperty("display",
                                           "none");
-        lessAnchor.getStyle().setProperty("display",
+        lessAnchor.style.setProperty("display",
                                           "block");
     }
 

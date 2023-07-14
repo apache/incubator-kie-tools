@@ -43,7 +43,6 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./ListExpression.css";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import _ from "lodash";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -87,7 +86,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
         ],
       },
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },

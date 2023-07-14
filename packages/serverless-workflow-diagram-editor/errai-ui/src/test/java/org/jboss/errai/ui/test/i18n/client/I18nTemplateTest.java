@@ -100,26 +100,26 @@ public class I18nTemplateTest extends AbstractErraiCDITest {
   public void testPrefixedKeyUsedWhenAvailableForLocale() throws Exception {
     TranslationService.setCurrentLocale("fr_fr");
     final I18nPrefixingTestBean bean = IOCUtil.getInstance(I18nPrefixingTestBean.class);
-    assertEquals("Accueil spécifique!", bean.welcome.getTextContent());
+    assertEquals("Accueil spécifique!", bean.welcome.textContent);
   }
 
   @Test
   public void testUnprefixedKeyUsedWhenNoPrefixedKeyDefinedForLocale() throws Exception {
     TranslationService.setCurrentLocale("fr_fr");
     final I18nPrefixingTestBean bean = IOCUtil.getInstance(I18nPrefixingTestBean.class);
-    assertEquals("Au revoir générique!", bean.farewell.getTextContent());
+    assertEquals("Au revoir générique!", bean.farewell.textContent);
   }
 
   @Test
   public void testPrefixedDefaultBundleUsedBeforeUnprefixedDefaultBundle() throws Exception {
     final I18nPrefixingTestBean bean = IOCUtil.getInstance(I18nPrefixingTestBean.class);
-    assertEquals("Specific goodbye!", bean.farewell.getTextContent());
+    assertEquals("Specific goodbye!", bean.farewell.textContent);
   }
 
   @Test
   public void testUnprefixedDefaultBundleWhenNoPrefixedKeyExists() throws Exception {
     final I18nPrefixingTestBean bean = IOCUtil.getInstance(I18nPrefixingTestBean.class);
-    assertEquals("Translation of UI element was wrong.", "Generic welcome!", bean.welcome.getTextContent());
+    assertEquals("Translation of UI element was wrong.", "Generic welcome!", bean.welcome.textContent);
   }
 
   private void localeListBoxAssertions(final I18nTemplateTestApp app) {

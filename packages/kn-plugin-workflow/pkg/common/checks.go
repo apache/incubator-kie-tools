@@ -17,6 +17,7 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -24,6 +25,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
@@ -87,14 +90,18 @@ func checkMaven() error {
 
 func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	dockerCheck := ExecCommand("docker", "stats", "--no-stream")
-	if err := dockerCheck.Run(); err != nil {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		fmt.Println("Error creating docker client")
+		return err
+	}
+	_, err = cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
 		fmt.Println("If it's already installed, check if the docker daemon is running")
 		return err
 	}
-
 	fmt.Println(" - Docker is running")
 	return nil
 }

@@ -18,6 +18,5 @@
         "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module>
     <inherits name='org.jboss.errai.ui.UI'/>
-    <inherits name="org.jboss.errai.databinding.DataBinding"/>
     <inherits name="org.jboss.errai.ui.test.common.UITestCommon"/>
 </module>

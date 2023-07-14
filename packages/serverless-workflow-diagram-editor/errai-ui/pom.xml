@@ -49,11 +49,6 @@
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-data-binding</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
     </dependency>
 
@@ -126,7 +121,7 @@
 
     <dependency>
       <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>      
+      <artifactId>jsoup</artifactId>
     </dependency>
 
     <dependency>
@@ -139,7 +134,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <!-- Replacement for commons-logging-api excluded from the above org.apache.stanbol.enhancer.engines.htmlextractor -->
     <dependency>
       <groupId>org.slf4j</groupId>

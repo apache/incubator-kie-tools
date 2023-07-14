@@ -18,7 +18,7 @@ package org.jboss.errai.ui.test.basic.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Span;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -31,6 +31,6 @@ public class LessStyledComponentRelative {
 
   @Inject
   @DataField
-  public Span styled;
+  public HTMLElement styled;
 
 }

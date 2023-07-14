@@ -28,20 +28,24 @@ import (
 )
 
 var parentPath string
+var TempTestsPath string
 var KnExecutable string
 
 func TestMain(m *testing.M) {
+
 	// Create temp directory for tests and switch inside it
 	workingPath, _ := os.Getwd()
 	parentPath = filepath.Dir(workingPath)
-	KnExecutable = build()
-
 	tempDirName := "temp-tests"
 	_, err := os.Stat(tempDirName)
 	if os.IsNotExist(err) == false {
 		cleanUpTemp(workingPath, tempDirName)
 	}
 	setUpTempDir(tempDirName)
+	TempTestsPath = filepath.Join(workingPath, tempDirName)
+
+	// Build the executable inside the 'dist' folder that is later used for testing.
+	KnExecutable = build()
 
 	// Run tests
 	exitCode := m.Run()

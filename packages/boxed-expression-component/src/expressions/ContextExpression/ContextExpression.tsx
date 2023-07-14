@@ -50,7 +50,6 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import "./ContextExpression.css";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
-import _ from "lodash";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
@@ -202,7 +201,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         ],
       },
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },

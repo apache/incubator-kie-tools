@@ -19,24 +19,26 @@ package common
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 )
 
 func ReadyCheck(healthCheckURL string, pollInterval time.Duration, portMapping string) {
 	ready := make(chan bool)
 
-	go pollReadyCheckURL(healthCheckURL, pollInterval, ready)
-
+	go PollReadyCheckURL(healthCheckURL, pollInterval, ready)
 	select {
 	case <-ready:
 		fmt.Println("✅ SonataFlow project is up and running")
-		OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev", portMapping))
+		if os.Getenv("KN_PLUGIN_WORKFLOW__suppressBrowserWindow") == "false" {
+			OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev", portMapping))
+		}
 	case <-time.After(10 * time.Minute):
 		fmt.Printf("Timeout reached. Server at %s is not ready.", healthCheckURL)
 	}
 }
 
-func pollReadyCheckURL(healthCheckURL string, interval time.Duration, ready chan<- bool) {
+func PollReadyCheckURL(healthCheckURL string, interval time.Duration, ready chan<- bool) {
 	client := http.Client{
 		Timeout: 5 * time.Second,
 	}

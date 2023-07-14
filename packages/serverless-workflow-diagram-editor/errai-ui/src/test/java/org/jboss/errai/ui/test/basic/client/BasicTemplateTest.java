@@ -258,7 +258,7 @@ public class BasicTemplateTest extends AbstractErraiCDITest {
     try {
       final LessStyledComponent bean = IOCUtil.getInstance(LessStyledComponent.class);
       StyleInjector.flush();
-      assertTrue("Element does not have correct CSS class.", bean.styled.getClassList().contains("styled"));
+      assertTrue("Element does not have correct CSS class.", bean.styled.classList.contains("styled"));
       assertEquals("rgb(255,0,0)", getPropertyValue(bean.styled, "color").replaceAll("\\s+", ""));
     } catch (final AssertionError ae) {
       throw ae;
@@ -272,7 +272,7 @@ public class BasicTemplateTest extends AbstractErraiCDITest {
     try {
       final LessStyledComponentRelative bean = IOCUtil.getInstance(LessStyledComponentRelative.class);
       StyleInjector.flush();
-      assertTrue("Element does not have correct CSS class.", bean.styled.getClassList().contains("styled"));
+      assertTrue("Element does not have correct CSS class.", bean.styled.classList.contains("styled"));
       assertEquals("rgb(255,0,0)", getPropertyValue(bean.styled, "color").replaceAll("\\s+", ""));
     } catch (final AssertionError ae) {
       throw ae;
@@ -286,7 +286,7 @@ public class BasicTemplateTest extends AbstractErraiCDITest {
     try {
       final LessStyledComponentAbsolute bean = IOCUtil.getInstance(LessStyledComponentAbsolute.class);
       StyleInjector.flush();
-      assertTrue("Element does not have correct CSS class.", bean.styled.getClassList().contains("styled"));
+      assertTrue("Element does not have correct CSS class.", bean.styled.classList.contains("styled"));
       assertEquals("rgb(255,0,0)", getPropertyValue(bean.styled, "color").replaceAll("\\s+", ""));
     } catch (final AssertionError ae) {
       throw ae;
@@ -300,7 +300,7 @@ public class BasicTemplateTest extends AbstractErraiCDITest {
     try {
       final LessStyledComponentWithImport bean = IOCUtil.getInstance(LessStyledComponentWithImport.class);
       StyleInjector.flush();
-      assertTrue("Element does not have correct CSS class.", bean.styled.getClassList().contains("styled"));
+      assertTrue("Element does not have correct CSS class.", bean.styled.classList.contains("styled"));
       assertEquals("rgb(255,0,0)", getPropertyValue(bean.styled, "color").replaceAll("\\s+", ""));
       assertEquals("rgb(0,0,255)", getPropertyValue(bean.styled, "background-color").replaceAll("\\s+", ""));
     } catch (final AssertionError ae) {
