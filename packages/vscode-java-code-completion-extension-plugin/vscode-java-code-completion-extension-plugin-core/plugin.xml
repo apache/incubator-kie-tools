@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <?eclipse version="3.5"?>
 <!--
   ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
@@ -15,7 +15,6 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
 <plugin>
   <extension point="org.eclipse.jdt.ls.core.delegateCommandHandler">
     <delegateCommandHandler class="org.kogito.core.internal.DelegateHandler">

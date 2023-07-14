@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
@@ -15,23 +15,23 @@
   ~ limitations under the License.
   -->
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='com.google.gwt.user.User' />
 
   <!-- Errai -->
-  <inherits name="org.jboss.errai.ui.UI"/>
+  <inherits name="org.jboss.errai.ui.UI" />
 
   <!-- Stunner -->
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
-  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
-  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi" />
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon" />
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets" />
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient" />
 
   <!-- Kogito -->
-  <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
+  <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge" />
 
-  <source path="client"/>
+  <source path="client" />
 
 </module>

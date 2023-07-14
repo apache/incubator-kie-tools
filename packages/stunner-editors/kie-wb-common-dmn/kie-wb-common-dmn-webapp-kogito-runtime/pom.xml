@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,9 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>kie-wb-common-dmn</artifactId>
@@ -35,7 +37,8 @@
     <kogito.large.model.it.tests>**/large/model/*IT.java</kogito.large.model.it.tests>
     <kogito.backward.compatibility.it.tests>**/backward/compatibility/*IT.java</kogito.backward.compatibility.it.tests>
     <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
-    <gwt.helper.rootDirectories>${project.parent.basedir}/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/</gwt.helper.rootDirectories>
+    <gwt.helper.rootDirectories
+    >${project.parent.basedir}/,${maven.multiModuleProjectDirectory}/kie-wb-common-stunner/</gwt.helper.rootDirectories>
     <gwt.helper.excludes>BPMN,Bpmn,Emf,Emulation</gwt.helper.excludes>
 
     <!-- this module is just and "integration" of components, to minimize CI times, we skip sonar here -->
@@ -517,8 +520,10 @@
             <exclude>${kogito.large.model.it.tests}</exclude>
           </excludes>
           <systemPropertyVariables>
-            <org.kie.dmn.kogito.browser.headless>${org.kie.dmn.kogito.browser.headless}</org.kie.dmn.kogito.browser.headless>
-            <org.kie.dmn.kogito.screenshots.dir>${project.build.directory}/screenshots</org.kie.dmn.kogito.screenshots.dir>
+            <org.kie.dmn.kogito.browser.headless
+            >${org.kie.dmn.kogito.browser.headless}</org.kie.dmn.kogito.browser.headless>
+            <org.kie.dmn.kogito.screenshots.dir
+            >${project.build.directory}/screenshots</org.kie.dmn.kogito.screenshots.dir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -531,7 +536,8 @@
           <localWorkers>4</localWorkers>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <module>org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp</module>
-          <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs
+          >-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <optimizationLevel>9</optimizationLevel>
           <style>OBFUSCATED</style>
           <noServer>false</noServer>
@@ -547,7 +553,8 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
@@ -560,42 +567,66 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-core-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
 
             <!-- Forms -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-base</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-fields</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-crud-component</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-crud-component</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
 
             <!-- Stunner -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-widgets</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-widgets</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
 
             <!-- DMN Editor -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-wires-core-grids</compileSourcesArtifact>
 
             <!-- Appformer -->
@@ -672,7 +703,7 @@
               <target>
                 <copy todir="${basedir}/src/main/webapp/model" flatten="true">
                   <fileset dir="${project.build.directory}/DMNMarshaller">
-                    <include name="**/*.js"/>
+                    <include name="**/*.js" />
                   </fileset>
                 </copy>
               </target>
@@ -752,8 +783,10 @@
                   <goal>add-source</goal>
                 </goals>
                 <configuration>
-                  <excludes>${gwt.helper.excludes}</excludes> <!-- will exclude all GWT module whose configuration file name match that pattern -->
-                  <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+                  <excludes
+                  >${gwt.helper.excludes}</excludes> <!-- will exclude all GWT module whose configuration file name match that pattern -->
+                  <rootDirectories
+                  >${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
                 </configuration>
               </execution>
             </executions>

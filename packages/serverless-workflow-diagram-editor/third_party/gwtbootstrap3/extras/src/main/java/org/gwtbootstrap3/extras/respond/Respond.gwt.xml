@@ -18,10 +18,10 @@
   #L%
   -->
 <module rename-to='respond'>
-    <inherits name="com.google.gwt.user.User"/>
-    <inherits name="com.google.gwt.resources.Resources"/>
+    <inherits name="com.google.gwt.user.User" />
+    <inherits name="com.google.gwt.resources.Resources" />
 
-    <source path='client'/>
+    <source path='client' />
 
-    <entry-point class="org.gwtbootstrap3.extras.respond.client.RespondEntryPoint"/>
+    <entry-point class="org.gwtbootstrap3.extras.respond.client.RespondEntryPoint" />
 </module>

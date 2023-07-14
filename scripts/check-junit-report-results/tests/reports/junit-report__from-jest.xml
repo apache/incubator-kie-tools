@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <testsuites name="jest tests" tests="33" failures="0" errors="0" time="4.805">
   <testsuite name="cached" errors="0" failures="0" skipped="0" timestamp="2023-02-14T20:09:38" time="3.165" tests="24">
     <testcase classname="cached returns the same instance" name="cached returns the same instance" time="0.004">
@@ -19,7 +19,11 @@
     </testcase>
     <testcase classname="shared set owned" name="shared set owned" time="0">
     </testcase>
-    <testcase classname="shared set consumed with subscriptions" name="shared set consumed with subscriptions" time="0.001">
+    <testcase
+      classname="shared set consumed with subscriptions"
+      name="shared set consumed with subscriptions"
+      time="0.001"
+    >
     </testcase>
     <testcase classname="shared set owned with subscriptions" name="shared set owned with subscriptions" time="0.001">
     </testcase>
@@ -33,13 +37,25 @@
     </testcase>
     <testcase classname="receive response with no requestId" name="receive response with no requestId" time="0.007">
     </testcase>
-    <testcase classname="receive response with no corresponding request" name="receive response with no corresponding request" time="0.001">
+    <testcase
+      classname="receive response with no corresponding request"
+      name="receive response with no corresponding request"
+      time="0.001"
+    >
     </testcase>
     <testcase classname="receive simple notification" name="receive simple notification" time="0">
     </testcase>
-    <testcase classname="receive normal notification subscription" name="receive normal notification subscription" time="0">
+    <testcase
+      classname="receive normal notification subscription"
+      name="receive normal notification subscription"
+      time="0"
+    >
     </testcase>
-    <testcase classname="receive notification subscription with no api handler" name="receive notification subscription with no api handler" time="0.001">
+    <testcase
+      classname="receive notification subscription with no api handler"
+      name="receive notification subscription with no api handler"
+      time="0.001"
+    >
     </testcase>
     <testcase classname="receive notification unsubscription" name="receive notification unsubscription" time="0">
     </testcase>
@@ -50,24 +66,64 @@
     <testcase classname="receive shared value subscription" name="receive shared value subscription" time="0">
     </testcase>
   </testsuite>
-  <testsuite name="new instance" errors="0" failures="0" skipped="0" timestamp="2023-02-14T20:09:41" time="1.048" tests="9">
+  <testsuite
+    name="new instance"
+    errors="0"
+    failures="0"
+    skipped="0"
+    timestamp="2023-02-14T20:09:41"
+    time="1.048"
+    tests="9"
+  >
     <testcase classname="new instance does nothing" name="new instance does nothing" time="0.003">
     </testcase>
-    <testcase classname="startInitPolling polls for init response" name="startInitPolling polls for init response" time="0.205">
+    <testcase
+      classname="startInitPolling polls for init response"
+      name="startInitPolling polls for init response"
+      time="0.205"
+    >
     </testcase>
-    <testcase classname="startInitPolling stops polling after timeout" name="startInitPolling stops polling after timeout" time="0.502">
+    <testcase
+      classname="startInitPolling stops polling after timeout"
+      name="startInitPolling stops polling after timeout"
+      time="0.502"
+    >
     </testcase>
-    <testcase classname="receive any request with different targetEnvelopeServerId" name="receive any request with different targetEnvelopeServerId" time="0.001">
+    <testcase
+      classname="receive any request with different targetEnvelopeServerId"
+      name="receive any request with different targetEnvelopeServerId"
+      time="0.001"
+    >
     </testcase>
-    <testcase classname="receive any request with targetEnvelopeId" name="receive any request with targetEnvelopeId" time="0">
+    <testcase
+      classname="receive any request with targetEnvelopeId"
+      name="receive any request with targetEnvelopeId"
+      time="0"
+    >
     </testcase>
-    <testcase classname="receive any request with the same targetEnvelopeServerId" name="receive any request with the same targetEnvelopeServerId" time="0.008">
+    <testcase
+      classname="receive any request with the same targetEnvelopeServerId"
+      name="receive any request with the same targetEnvelopeServerId"
+      time="0.008"
+    >
     </testcase>
-    <testcase classname="receive any notification with different targetEnvelopeServerId" name="receive any notification with different targetEnvelopeServerId" time="0">
+    <testcase
+      classname="receive any notification with different targetEnvelopeServerId"
+      name="receive any notification with different targetEnvelopeServerId"
+      time="0"
+    >
     </testcase>
-    <testcase classname="receive any notification with the same targetEnvelopeServerId" name="receive any notification with the same targetEnvelopeServerId" time="0">
+    <testcase
+      classname="receive any notification with the same targetEnvelopeServerId"
+      name="receive any notification with the same targetEnvelopeServerId"
+      time="0"
+    >
     </testcase>
-    <testcase classname="receive any request from another EnvelopeServer" name="receive any request from another EnvelopeServer" time="0.002">
+    <testcase
+      classname="receive any request from another EnvelopeServer"
+      name="receive any request from another EnvelopeServer"
+      time="0.002"
+    >
     </testcase>
   </testsuite>
 </testsuites>

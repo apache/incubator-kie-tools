@@ -7,8 +7,8 @@
     "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
     "bootstrap:root": "pnpm install --use-lockfile-v6 --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
-    "format": "prettier --write . '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
-    "format:check": "prettier --check . '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
+    "format": "prettier --write . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
+    "format:check": "prettier --check . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
     "prepare": "husky install",
     "update-version-to": "kie-tools--update-version-to"
   },

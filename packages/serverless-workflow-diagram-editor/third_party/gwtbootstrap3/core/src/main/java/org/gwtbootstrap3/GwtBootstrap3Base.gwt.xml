@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
   GwtBootstrap3
@@ -19,9 +19,9 @@
   #L%
   -->
 <module>
-    <inherits name="com.google.gwt.user.User"/>
-    <inherits name="com.google.gwt.user.UserAgent"/>
-    <inherits name="com.google.gwt.i18n.I18N"/>
+    <inherits name="com.google.gwt.user.User" />
+    <inherits name="com.google.gwt.user.UserAgent" />
+    <inherits name="com.google.gwt.i18n.I18N" />
 
     <!-- Fall through to this rule is the browser isn't IE 8 -->
     <replace-with class="org.gwtbootstrap3.client.ui.impl.SimpleCheckBoxImpl">
@@ -40,8 +40,7 @@
     </replace-with>
 
     <!-- IE 8 uses a different implementation -->
-    <replace-with
-        class="org.gwtbootstrap3.client.ui.impl.SimpleRadioButtonImplIE8">
+    <replace-with class="org.gwtbootstrap3.client.ui.impl.SimpleRadioButtonImplIE8">
         <when-type-is class="org.gwtbootstrap3.client.ui.impl.SimpleRadioButtonImpl" />
         <when-property-is name="user.agent" value="ie8" />
     </replace-with>
@@ -52,8 +51,7 @@
     </replace-with>
 
     <!-- IE 8 uses a different implementation -->
-    <replace-with
-        class="org.gwtbootstrap3.client.ui.impl.CheckBoxImplIE8">
+    <replace-with class="org.gwtbootstrap3.client.ui.impl.CheckBoxImplIE8">
         <when-type-is class="org.gwtbootstrap3.client.ui.impl.CheckBoxImpl" />
         <when-property-is name="user.agent" value="ie8" />
     </replace-with>
@@ -64,8 +62,7 @@
     </replace-with>
 
     <!-- IE 8 uses a different implementation -->
-    <replace-with
-        class="org.gwtbootstrap3.client.ui.impl.RadioImplIE8">
+    <replace-with class="org.gwtbootstrap3.client.ui.impl.RadioImplIE8">
         <when-type-is class="org.gwtbootstrap3.client.ui.impl.RadioImpl" />
         <when-property-is name="user.agent" value="ie8" />
     </replace-with>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2022 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,9 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>dashbuilder-renderers</artifactId>
     <groupId>org.dashbuilder</groupId>
@@ -137,10 +139,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/echarts/client/exports/js</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/dashbuilder/renderer/echarts/client/exports/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/echarts/META-INF/resources/webjars/echarts/${version.org.webjars.npm.echarts}/dist/</directory>
+                  <directory
+                  >${project.build.directory}/echarts/META-INF/resources/webjars/echarts/${version.org.webjars.npm.echarts}/dist/</directory>
                   <includes>
                     <include>echarts.min.js</include>
                   </includes>

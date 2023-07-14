@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
   GwtBootstrap3
@@ -18,17 +18,15 @@
   limitations under the License.
   #L%
   -->
-
 <!--
 Inherit this module if you want to load up your own custom bootstrap css, just
 use <stylesheet src=""> in your gwt.xml. This will put all the needed JS/main CSS
 for you.
 -->
-
 <module rename-to="GwtBootstrap3NoTheme">
-	<inherits name="org.gwtbootstrap3.GwtBootstrap3Base"/>
-    <inherits name="com.google.gwt.resources.Resources"/>
-    <inherits name="org.gwtbootstrap3.client.NoThemeResources"/>
+	<inherits name="org.gwtbootstrap3.GwtBootstrap3Base" />
+    <inherits name="com.google.gwt.resources.Resources" />
+    <inherits name="org.gwtbootstrap3.client.NoThemeResources" />
 
-    <entry-point class="org.gwtbootstrap3.client.GwtBootstrap3EntryPoint"/>
+    <entry-point class="org.gwtbootstrap3.client.GwtBootstrap3EntryPoint" />
 </module>

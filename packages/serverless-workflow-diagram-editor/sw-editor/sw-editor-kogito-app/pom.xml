@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2022 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,10 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>sw-editor</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -371,25 +372,39 @@
           <compileSourcesArtifacts>
             <!-- UberFire -->
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:uberfire-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client</compileSourcesArtifact>
             <!-- Errai, Drools etc -->
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-ui</compileSourcesArtifact>
             <!-- UF-ext -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-client</compileSourcesArtifact>
             <!-- Appformer -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-kogito-bridge</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:appformer-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:appformer-kogito-bridge</compileSourcesArtifact>
             <!-- Stunner -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-widgets</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-widgets</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:sw-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:sw-editor-client</compileSourcesArtifact>
           </compileSourcesArtifacts>
@@ -451,8 +466,10 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <systemPropertyVariables>
-            <org.kie.sw.editor.browser.headless>${org.kie.sw.editor.browser.headless}</org.kie.sw.editor.browser.headless>
-            <org.kie.sw.editor.screenshots.dir>${project.build.directory}/screenshots</org.kie.sw.editor.screenshots.dir>
+            <org.kie.sw.editor.browser.headless
+            >${org.kie.sw.editor.browser.headless}</org.kie.sw.editor.browser.headless>
+            <org.kie.sw.editor.screenshots.dir
+            >${project.build.directory}/screenshots</org.kie.sw.editor.screenshots.dir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -497,11 +514,13 @@
                 <configuration>
                   <webResources>
                     <resource>
-                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/src</directory>
+                      <directory
+                      >${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/src</directory>
                       <targetPath>sourcemaps</targetPath>
                     </resource>
                     <resource>
-                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/symbolMaps</directory>
+                      <directory
+                      >${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/symbolMaps</directory>
                       <includes>
                         <include>*.json</include>
                       </includes>
