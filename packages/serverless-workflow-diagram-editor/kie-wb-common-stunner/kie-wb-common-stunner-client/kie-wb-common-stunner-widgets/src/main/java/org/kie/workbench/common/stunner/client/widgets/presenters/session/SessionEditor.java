@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Editor;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -42,6 +42,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  */
 public interface SessionEditor<S extends ClientSession, H extends CanvasHandler, D extends Diagram>
         extends SessionViewer<S, H, D>,
-                Editor<S, H, IsWidget, SessionViewer.SessionViewerCallback<D>> {
+                Editor<S, H, IsElement, SessionViewer.SessionViewerCallback<D>> {
 
 }

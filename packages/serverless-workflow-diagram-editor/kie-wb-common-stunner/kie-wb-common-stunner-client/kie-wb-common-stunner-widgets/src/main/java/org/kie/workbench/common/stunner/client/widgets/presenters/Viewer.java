@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
 /**
@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
  * @param <V> The view type.
  * @param <C> The callback type.
  */
-public interface Viewer<T, H, V extends IsWidget, C extends Viewer.Callback> {
+public interface Viewer<T, H, V extends IsElement, C extends Viewer.Callback> {
 
     /**
      * A viewer callback type.

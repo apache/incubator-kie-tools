@@ -24,6 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import elemental2.dom.CSSProperties;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
@@ -156,8 +157,8 @@ public class DefaultDiagramViewer
     @Override
     protected void scalePanel(final int width,
                               final int height) {
-        getLienzoCanvas().getView().setPixelSize(width,
-                                                 height);
+        getLienzoCanvas().getView().getElement().style.width = CSSProperties.WidthUnionType.of(width + "px");
+        getLienzoCanvas().getView().getElement().style.height = CSSProperties.HeightUnionType.of(height + "px");
     }
 
     @SuppressWarnings("unchecked")

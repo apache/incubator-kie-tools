@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
@@ -61,7 +61,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
         GRABBING
     }
 
-    public interface CanvasView<C extends CanvasView> extends IsWidget {
+    public interface CanvasView<C extends CanvasView> extends IsElement {
 
         C initialize(CanvasPanel panel,
                      CanvasSettings canvasSettings);

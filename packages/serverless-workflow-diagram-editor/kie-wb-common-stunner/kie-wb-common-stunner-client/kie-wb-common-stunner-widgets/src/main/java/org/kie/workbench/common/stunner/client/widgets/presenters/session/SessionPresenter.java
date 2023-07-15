@@ -18,15 +18,11 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
 import java.util.function.Predicate;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -66,27 +62,12 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
         }
     }
 
-    interface View extends IsWidget,
-                           RequiresResize,
-                           ProvidesResize {
+    interface View extends IsElement {
 
-        IsWidget getCanvasWidget();
-
-        IsWidget getToolbarWidget();
-
-        IsWidget getSessionHeaderContainer();
-
-        IsWidget getPaletteWidget();
 
         ScrollType getContentScrollType();
 
-        View setCanvasWidget(final IsWidget widget);
-
-        View setToolbarWidget(final IsWidget widget);
-
-        View setSessionHeaderContainer(final IsWidget widget);
-
-        View setPaletteWidget(final PaletteWidget<PaletteDefinition> paletteWidget);
+        View setCanvasWidget(final IsElement widget);
 
         void setContentScrollType(final ScrollType handler);
 
@@ -96,9 +77,6 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
         View showError(final String message);
 
-        void showSessionHeaderContainer(final int sessionHeaderHeight);
-
-        void hideSessionHeaderContainer();
 
         void destroy();
 
@@ -111,10 +89,6 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
     @Override
     View getView();
 
-    SessionPresenter<S, H, D> withToolbar(final boolean hasToolbar);
-
-    SessionPresenter<S, H, D> withPalette(final boolean hasPalette);
-
     SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate);
 
     SessionPresenter<S, H, D> hideNotifications();
@@ -126,5 +100,4 @@ public interface SessionPresenter<S extends ClientSession, H extends CanvasHandl
 
     void lostFocus();
 
-    PaletteWidget<PaletteDefinition> getPalette();
 }

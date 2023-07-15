@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -107,7 +107,7 @@ public abstract class AbstractSessionViewer<S extends AbstractSession>
     }
 
     @Override
-    public IsWidget getView() {
+    public IsElement getView() {
         return getDiagramViewer().getView();
     }
 

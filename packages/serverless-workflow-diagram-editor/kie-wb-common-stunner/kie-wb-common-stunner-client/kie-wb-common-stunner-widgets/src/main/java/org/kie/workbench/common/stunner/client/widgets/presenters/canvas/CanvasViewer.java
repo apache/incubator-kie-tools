@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.canvas;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsCon
  * @param <V> The view type.
  * @param <K> The callback type.
  */
-public interface CanvasViewer<T, H extends CanvasHandler, V extends IsWidget, K extends Viewer.Callback> extends Viewer<T, H, V, K> {
+public interface CanvasViewer<T, H extends CanvasHandler, V extends IsElement, K extends Viewer.Callback> extends Viewer<T, H, V, K> {
 
     /**
      * Returns a canvas mediators control enabled and available to use.

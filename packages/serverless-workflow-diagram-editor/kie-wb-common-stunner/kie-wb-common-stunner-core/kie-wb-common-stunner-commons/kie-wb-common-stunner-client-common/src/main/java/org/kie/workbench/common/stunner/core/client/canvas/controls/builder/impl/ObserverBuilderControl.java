@@ -26,6 +26,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -42,6 +44,9 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+
+import static org.jboss.errai.common.client.dom.DOMUtil.getAbsoluteLeft;
+import static org.jboss.errai.common.client.dom.DOMUtil.getAbsoluteTop;
 
 @Default
 @Observer
@@ -131,8 +136,8 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
      * @return the relative x-position
      */
     private double getRelativeX(final double clientX) {
-        return clientX - getCanvasElement().getAbsoluteLeft() + getCanvasElement().getScrollLeft() +
-                getCanvasElement().getOwnerDocument().getScrollLeft();
+        return clientX - getAbsoluteLeft(getCanvasElement()) + getCanvasElement().scrollLeft +
+                (Js.<HTMLElement>uncheckedCast(getCanvasElement().ownerDocument)).scrollLeft;
     }
 
     /**
@@ -141,11 +146,11 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
      * @return the relative y-position
      */
     private double getRelativeY(final double clientY) {
-        return clientY - getCanvasElement().getAbsoluteTop() + getCanvasElement().getScrollTop() +
-                getCanvasElement().getOwnerDocument().getScrollTop();
+        return clientY - getAbsoluteTop(getCanvasElement()) + getCanvasElement().scrollTop +
+                (Js.<HTMLElement>uncheckedCast(getCanvasElement().ownerDocument)).scrollTop;
     }
 
-    private com.google.gwt.user.client.Element getCanvasElement() {
-        return canvasHandler.getAbstractCanvas().getView().asWidget().getElement();
+    private HTMLElement getCanvasElement() {
+        return canvasHandler.getAbstractCanvas().getView().getElement();
     }
 }

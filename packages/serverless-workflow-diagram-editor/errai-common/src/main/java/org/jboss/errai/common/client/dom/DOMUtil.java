@@ -449,4 +449,34 @@ public abstract class DOMUtil {
   private static native HTMLElement nativeCast(com.google.gwt.dom.client.Element gwtElement)/*-{
     return gwtElement;
   }-*/;
+
+  public static int getAbsoluteLeft(HTMLElement elem) {
+    int left = 0;
+    HTMLElement curr = elem;
+    // This intentionally excludes body which has a null offsetParent.
+    while (curr.offsetParent != null) {
+      left -= curr.scrollLeft;
+      curr = (HTMLElement) curr.parentNode;
+    }
+    while (elem != null) {
+      left += elem.offsetLeft;
+      elem = (HTMLElement) elem.offsetParent;
+    }
+    return left;
+  }
+
+  public static int getAbsoluteTop(HTMLElement elem) {
+    int top = 0;
+    HTMLElement curr = elem;
+    // This intentionally excludes body which has a null offsetParent.
+    while (curr.offsetParent != null) {
+      top -= curr.scrollTop;
+      curr = (HTMLElement) curr.parentNode;
+    }
+    while (elem != null) {
+      top += elem.offsetTop;
+      elem = (HTMLElement) elem.offsetParent;
+    }
+    return top;
+  }
 }
