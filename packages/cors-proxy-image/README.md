@@ -39,12 +39,12 @@ $ export CORS_PROXY__selfSignedCertificates=true
 $ export CORS_PROXY__verbose=false
 ```
 
-Default values can be found [here](../build-env/index.js).
+Default values can be found [here](./env/index.js).
 
 After setting up the environment variables, run the following in the root folder of the repository to build the package:
 
 ```bash
-$ pnpm build:prod @kie-tools/cors-proxy-image...
+$ pnpm @kie-tools/cors-proxy-image... build:prod
 ```
 
 Then check out the image:
