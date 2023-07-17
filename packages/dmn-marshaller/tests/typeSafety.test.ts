@@ -33,7 +33,7 @@ const files = [
   // "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const tmpDir = path.join(os.tmpdir(), "dmn-marshaller-type-safety-tests");
+const tmpDir = path.join(__dirname, "..", "dist-tests", "dmn-marshaller-type-safety-tests");
 
 describe("type safety", () => {
   beforeAll(() => {
@@ -42,10 +42,6 @@ describe("type safety", () => {
     }
     fs.mkdirSync(tmpDir, { recursive: true });
     console.log(`[dmn-marshaller] Type safety tests running on '${tmpDir}'.`);
-  });
-
-  afterAll(() => {
-    fs.rmdirSync(tmpDir, { recursive: true });
   });
 
   for (const file of files) {
@@ -62,21 +58,17 @@ describe("type safety", () => {
 import { DMN1${minorVersion}__tDefinitions } from "${thisPath}/../dist/schemas/dmn-1_${minorVersion}/ts-gen/types";
 import "${thisPath}/../dist/kie-extensions";
 
-const dmn: DMN1${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions, undefined, 2)};`;
+const dmn: DMN12${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions, undefined, 2)};`;
 
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
 
-      const tsc = child_process.spawnSync("tsc", ["--noEmit", "--strict", tmpFilePath], {
+      const tsc = child_process.execSync(`tsc --noEmit --strict ${tmpFilePath}`, {
         stdio: "pipe",
-        shell: "true",
+        shell: true as any,
       });
-      const tscOutput = tsc.output
-        .map((line) => line?.toString())
-        .join("\n")
-        .trim();
 
-      expect(tscOutput).toStrictEqual("");
+      expect(tsc.toString()).toStrictEqual("");
     });
   }
 });

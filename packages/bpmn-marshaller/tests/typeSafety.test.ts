@@ -28,7 +28,7 @@ const files: string[] = [
   "../tests-data--manual/other/sample-sanitized.bpmn",
 ];
 
-const tmpDir = path.join(os.tmpdir(), "bpmn-marshaller-type-safety-tests");
+const tmpDir = path.join(__dirname, "..", "dist-tests", "bpmn-marshaller-type-safety-tests");
 
 describe("type safety", () => {
   beforeAll(() => {
@@ -37,10 +37,6 @@ describe("type safety", () => {
     }
     fs.mkdirSync(tmpDir, { recursive: true });
     console.log(`[bpmn-marshaller] Type safety tests running on '${tmpDir}'.`);
-  });
-
-  afterAll(() => {
-    fs.rmdirSync(tmpDir, { recursive: true });
   });
 
   for (const file of files) {
@@ -61,16 +57,12 @@ const bpmn: BPMN2${minorVersion}__tDefinitions = ${JSON.stringify(json.definitio
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
 
-      const tsc = child_process.spawnSync("tsc", ["--noEmit", "--strict", tmpFilePath], {
+      const tsc = child_process.execSync(`tsc --noEmit --strict ${tmpFilePath}`, {
         stdio: "pipe",
-        shell: "true",
+        shell: true as any,
       });
-      const tscOutput = tsc.output
-        .map((line) => line?.toString())
-        .join("\n")
-        .trim();
 
-      expect(tscOutput).toStrictEqual("");
+      expect(tsc.toString()).toStrictEqual("");
     });
   }
 });
