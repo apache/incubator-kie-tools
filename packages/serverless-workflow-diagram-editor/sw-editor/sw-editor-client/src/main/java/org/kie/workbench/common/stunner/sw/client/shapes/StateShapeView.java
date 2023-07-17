@@ -44,6 +44,7 @@ public class StateShapeView
     private final static double LABEL_WIDTH = 150;
     private final static double LABEL_POSITION_X = 80;
     private final static double LABEL_POSITION_Y = 5;
+    private final static double FONT_SIZE = 12;
     private Text title;
 
     public StateShapeView(String name) {
@@ -57,8 +58,12 @@ public class StateShapeView
     public StateShapeView setTitle(String name) {
         title.setText(name);
         // Text widget can't be centered vertically, so we need to manually set Y position
-        title.setY(40 - title.getBoundingBox().getHeight() / 2);
+        title.setY(calculateTitleCenterY());
         return this;
+    }
+
+    private double calculateTitleCenterY() {
+        return (STATE_SHAPE_HEIGHT / 2) - (FONT_SIZE / 2) - (title.getBoundingBox().getHeight() / 2);
     }
 
     @Override
@@ -70,12 +75,13 @@ public class StateShapeView
     private void initialize(String name) {
         title = new Text(name)
                 .setX(LABEL_POSITION_X)
+                // Y is set based on the size of the Text widget after it is initialized, see calculateTitleCenterY()
                 .setStrokeWidth(0)
                 .setFillColor("#383B3D")
                 .setFontFamily("Open Sans")
                 .setTextAlign(CENTER)
                 .setTextBaseLine(MIDDLE)
-                .setFontSize(12)
+                .setFontSize(FONT_SIZE)
                 .setListening(false);
         TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, LABEL_WIDTH, STATE_SHAPE_HEIGHT));
 

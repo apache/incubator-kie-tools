@@ -90,8 +90,6 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     private static final String ALIGN_TOP = "TOP";
     private static final String POSITION_INSIDE = "INSIDE";
     private static final String POSITION_OUTSIDE = "OUTSIDE";
-    private static final String ORIENTATION_VERTICAL = "VERTICAL";
-    private static final String ORIENTATION_HORIZONTAL = "HORIZONTAL";
 
     @Mock
     protected FloatingView<IsWidget> floatingView;
@@ -234,7 +232,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     private void initHasTitle(final Point2D titlePosition,
                               final String fontFamily,
                               final double fontSize) {
-        when(hasTitle.getTitlePosition()) .thenReturn(titlePosition);
+        when(hasTitle.getTitlePosition()).thenReturn(titlePosition);
         when(hasTitle.getTitleFontSize()).thenReturn(fontSize);
         when(hasTitle.getTitleFontFamily()).thenReturn(fontFamily);
     }
@@ -407,7 +405,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         verify(testShapeView).setTitleAlpha(eq(AbstractCanvasInlineTextEditorControl.TITLE_EDIT_ALPHA));
         verify(textEditorBox).show(eq(element), anyDouble(), anyDouble());
         verify(textEditorBox).setFontFamily(FONT_FAMILY);
-        verify(textEditorBox).setFontSize(FONT_SIZE / 3 * 4);
+        verify(textEditorBox).setFontSize(ptToPx(FONT_SIZE));
         verify(textEditorBox).setMultiline(multiline);
         verify(textEditorBox).setTextBoxInternalAlignment(textBoxAlignment);
         verify(floatingView).clearTimeOut();
@@ -430,6 +428,10 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
 
         // Update Shape UI
         verify(hasTitle).batch();
+    }
+
+    private double ptToPx(double pt) {
+        return pt * 4 / 3;
     }
 
     private void assertHide(final int t) {
