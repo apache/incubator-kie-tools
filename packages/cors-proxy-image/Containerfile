@@ -47,4 +47,4 @@ WORKDIR $HOME/cors-proxy
 
 USER 1000
 
-CMD node $HOME/cors-proxy/dist/index.js
+CMD node $HOME/cors-proxy/index.js
