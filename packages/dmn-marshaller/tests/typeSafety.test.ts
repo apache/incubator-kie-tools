@@ -58,7 +58,7 @@ describe("type safety", () => {
 import { DMN1${minorVersion}__tDefinitions } from "${thisPath}/../dist/schemas/dmn-1_${minorVersion}/ts-gen/types";
 import "${thisPath}/../dist/kie-extensions";
 
-const dmn: DMN12${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions, undefined, 2)};`;
+const dmn: DMN1${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions, undefined, 2)};`;
 
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
