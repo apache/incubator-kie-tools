@@ -103,8 +103,8 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
-                    cloud.prepareForDockerMultiplatformBuild()
-                    cloud.startLocalRegistry()
+                    String localRegistry = cloud.startLocalRegistry()
+                    cloud.prepareForDockerMultiplatformBuild([localRegistry],[cloud.getDockerIOMirrorRegistryConfig()], false)
 
                     // Generate the Dockerfile
                     runPythonCommand("make build-image ${getMakeBuildImageArgs()} image_name=${getBuildImageName()} ignore_test=true ignore_tag=true build_options='--dry-run'")
