@@ -19,8 +19,8 @@
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:cors-proxy-package": "run-script-os",
-    "copy:cors-proxy-package:linux:darwin": "cp -R ./node_modules/@kie-tools/cors-proxy/ dist-dev/cors-proxy/",
-    "copy:git-cors-proxy-package:win32": "pnpm powershell \"Copy-Item -R ../node_modules/@kie-tools/cors-proxy/ dist-dev/cors-proxy/\"",
+    "copy:cors-proxy-package:linux:darwin": "cp -R ./node_modules/@kie-tools/cors-proxy/dist/ dist-dev/cors-proxy/",
+    "copy:cors-proxy-package:win32": "pnpm powershell \"Copy-Item -R ../node_modules/@kie-tools/cors-proxy/dist/ dist-dev/cors-proxy/\"",
     "docker:build": "kie-tools--image-builder -r \"$(build-env corsProxy.image.registry)\" -a \"$(build-env corsProxy.image.account)\" -n \"$(build-env corsProxy.image.name)\" -t \"$(build-env corsProxy.image.buildTags)\" --build-arg CORS_PROXY_HTTP_PORT=$(build-env corsProxy.config.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.config.origin) CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES=$(build-env corsProxy.config.selfSignedCertificates) CORS_PROXY_VERBOSE=$(build-env corsProxy.config.verbose)",
     "podman:build": "kie-tools--image-builder -r \"$(build-env corsProxy.image.registry)\" -a \"$(build-env corsProxy.image.account)\" -n \"$(build-env corsProxy.image.name)\" -t \"$(build-env corsProxy.image.buildTags)\" --build-arg CORS_PROXY_HTTP_PORT=$(build-env corsProxy.config.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.config.origin) CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES=$(build-env corsProxy.config.selfSignedCertificates) CORS_PROXY_VERBOSE=$(build-env corsProxy.config.verbose) -e podman"
   },
