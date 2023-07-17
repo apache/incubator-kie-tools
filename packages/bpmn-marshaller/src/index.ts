@@ -1,11 +1,3 @@
-import { Meta, XmlParserTs, getInstanceNs, domParser, getParser } from "@kie-tools/xml-parser-ts";
-import {
-  meta as bpmn20meta,
-  elements as bpmn20elements,
-  subs as bpmn20subs,
-  root as bpmn20root,
-  ns as bpmn20ns,
-} from "./schemas/bpmn-2_0/ts-gen/meta";
 /*
  * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
@@ -21,6 +13,15 @@ import {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { Meta, getInstanceNs, domParser, getParser } from "@kie-tools/xml-parser-ts";
+import {
+  meta as bpmn20meta,
+  elements as bpmn20elements,
+  subs as bpmn20subs,
+  root as bpmn20root,
+  ns as bpmn20ns,
+} from "./schemas/bpmn-2_0/ts-gen/meta";
 
 import { BPMN20__tDefinitions } from "./schemas/bpmn-2_0/ts-gen/types";
 
@@ -56,6 +57,3 @@ export function getMarshaller(xml: string): BpmnMarshaller {
     builder: { build: (json: BpmnDefinitions) => p.build({ json, instanceNs }) },
   };
 }
-
-export const foo = "bar";
-console.log("BPMN Marshaller is alive.");

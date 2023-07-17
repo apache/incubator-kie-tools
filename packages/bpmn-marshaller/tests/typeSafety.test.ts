@@ -40,7 +40,7 @@ describe("type safety", () => {
   });
 
   afterAll(() => {
-    // fs.rmdirSync(tmpDir, { recursive: true });
+    fs.rmdirSync(tmpDir, { recursive: true });
   });
 
   for (const file of files) {

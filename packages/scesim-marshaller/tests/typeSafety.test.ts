@@ -20,7 +20,7 @@ import * as os from "os";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
-const files = ["../tests-data--manual/TrafficViolationTest.scesim"];
+const files = ["../tests-data--manual/TrafficViolationTest.scesim", "../tests-data--manual/simple.scesim"];
 
 const tmpDir = path.join(os.tmpdir(), "scesim-marshaller-type-safety-tests");
 
@@ -34,7 +34,7 @@ describe("type safety", () => {
   });
 
   afterAll(() => {
-    // fs.rmdirSync(tmpDir, { recursive: true });
+    fs.rmdirSync(tmpDir, { recursive: true });
   });
 
   for (const file of files) {
