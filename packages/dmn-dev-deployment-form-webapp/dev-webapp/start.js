@@ -20,8 +20,6 @@ const { env } = require("../env");
 
 const buildEnv = env;
 
-// mvn -f ${path.join(__dirname, "./quarkus-app")} clean quarkus:dev -Dmaven.test.skip -Dquarkus.platform.version=${buildEnv.quarkusPlatform.version} -Dquarkus.http.port=${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort} -Dquarkus.http.root-path=/ -Dversion.org.kie.kogito=${buildEnv.kogitoRuntime.version} -Dkogito.service.url=http://localhost:${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}
-
 const mvn = spawn(
   "mvn",
   [
@@ -60,8 +58,6 @@ let mode = "dev";
 if (process.argv.indexOf("--env") !== -1 && process.argv[process.argv.indexOf("--env") + 1] === "live") {
   mode = "live";
 }
-
-// `npx webpack serve -c ${path.join(__dirname, "./webapp/webpack.config.js")} --host 0.0.0.0 --env ${mode}`
 
 const webpack = spawn(
   "npx",
