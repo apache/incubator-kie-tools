@@ -17,7 +17,10 @@
 import "@patternfly/react-core/dist/styles/base.css";
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+
+import { getMarshaller } from "@kie-tools/scesim-marshaller";
+import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
@@ -49,12 +52,25 @@ export type TestScenarioEditorRef = {
 };
 
 export const TestScenarioEditor = React.forwardRef((props: { xml: string }, ref: React.Ref<TestScenarioEditorRef>) => {
+  const marshaller = useMemo(() => getMarshaller(props.xml.trim()), [props.xml]);
+
+  const scesimInitial: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = useMemo(() => {
+    const parsed: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = marshaller.parser.parse();
+    console.log(JSON.stringify(parsed));
+    return parsed;
+  }, [marshaller.parser]);
+
+  const [scesim, setScesim] = useState(scesimInitial);
+  useEffect(() => {
+    setScesim(scesimInitial);
+  }, [scesimInitial]);
+
   useImperativeHandle(
     ref,
     () => ({
-      getContent: () => "",
+      getContent: () => marshaller.builder.build(scesim),
     }),
-    []
+    [scesim, marshaller.builder]
   );
 
   const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
@@ -100,7 +116,12 @@ export const TestScenarioEditor = React.forwardRef((props: { xml: string }, ref:
                   }
                 >
                   <DrawerContentBody>
-                    <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
+                    <div className={"kie-scesim-editor--grid-container"}>
+                      Scenario Grid{" "}
+                      {scesim?.ScenarioSimulationModel != null
+                        ? scesim?.ScenarioSimulationModel["@_version"] ?? ""
+                        : ""}
+                    </div>
                   </DrawerContentBody>
                 </DrawerContent>
               </Drawer>

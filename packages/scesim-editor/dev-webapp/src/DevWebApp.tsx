@@ -72,12 +72,9 @@ export function DevWebApp() {
               <h5>(Drag & drop a file anywhere to open it)</h5>
             </FlexItem>
             <FlexItem shrink={{ default: "shrink" }}>
-              {/**
-}               Restore it after integration with Marshaller
-                <button onClick={copyAsXml}>Copy as XML</button>
-                &nbsp; &nbsp;
-                <button onClick={downloadAsXml}>Download as XML</button>
-              */}
+              <button onClick={copyAsXml}>Copy as XML</button>
+              &nbsp; &nbsp;
+              <button onClick={downloadAsXml}>Download as XML</button>
             </FlexItem>
           </Flex>
           <a ref={downloadRef} />
