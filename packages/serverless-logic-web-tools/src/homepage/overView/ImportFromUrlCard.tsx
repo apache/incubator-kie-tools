@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
-import { useCallback, useMemo, useState } from "react";
-import { UrlType, useImportableUrl } from "../../workspace/hooks/ImportableUrlHooks";
+import React from "react";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
-import { ImportFromUrlForm } from "../../workspace/components/ImportFromUrlForm";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
+import { useCallback, useState } from "react";
+import { useHistory } from "react-router";
+import { useRoutes } from "../../navigation/Hooks";
+import { ImportFromUrlForm } from "../../workspace/components/ImportFromUrlForm";
+import { ImportFromUrlButton } from "./ImportFromUrlButton";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
   const history = useHistory();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const [url, setUrl] = useState("");
   const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
 
@@ -40,19 +37,6 @@ export function ImportFromUrlCard() {
       search: routes.importModel.queryString({ url: url }),
     });
   }, [history, routes, url]);
-
-  const importableUrl = useImportableUrl({
-    isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
-    urlString: url,
-  });
-
-  const buttonLabel = useMemo(() => {
-    if (importableUrl.type === UrlType.GITHUB || importableUrl.type === UrlType.GIST) {
-      return "Clone";
-    }
-
-    return "Import";
-  }, [importableUrl]);
 
   return (
     <Card isFullHeight={true} isPlain={true} isSelected={url.length > 0} isCompact>
@@ -72,14 +56,7 @@ export function ImportFromUrlCard() {
         <ImportFromUrlForm url={url} onChange={setUrl} onSubmit={importFromUrl} onValidate={setIsUrlValid} />
       </CardBody>
       <CardFooter>
-        <Button
-          variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
-          onClick={importFromUrl}
-          isDisabled={isUrlValid !== ValidatedOptions.success}
-          ouiaId="import-from-url-button"
-        >
-          {buttonLabel}
-        </Button>
+        <ImportFromUrlButton url={url} isUrlValid={isUrlValid} onClick={importFromUrl} />
       </CardFooter>
     </Card>
   );

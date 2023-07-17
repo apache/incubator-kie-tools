@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useMemo, useCallback, useEffect, useRef, useState } from "react";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -27,7 +27,6 @@ import {
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
@@ -38,14 +37,17 @@ import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/E
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useGlobalAlert } from "../alerts/GlobalAlertsContext";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+import { useHistory } from "react-router";
+import { CreateWorkspaceFromUploadedFolder } from "./CreateWorkspaceFromUploadedFolder";
+import { ImportFromUrlButton } from "../homepage/overView/ImportFromUrlButton";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
 export function NewFileDropdownMenu(props: {
   destinationDirPath: string;
-  workspaceId: string;
-  onAddFile: (file?: WorkspaceFile) => Promise<void>;
+  workspaceId?: string;
+  onAddFile?: (file?: WorkspaceFile) => Promise<void>;
 }) {
   const uploadFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,6 +57,12 @@ export function NewFileDropdownMenu(props: {
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
   const [url, setUrl] = useState("");
   const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
+  const history = useHistory();
+
+  const allowedUrlTypes = useMemo(
+    () => (!props.workspaceId ? undefined : [UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]),
+    [props]
+  );
 
   const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
@@ -82,14 +90,18 @@ export function NewFileDropdownMenu(props: {
 
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
+      if (!props.workspaceId) {
+        return history.push(routes.newModel.path({ extension }));
+      }
+
       const file = await workspaces.addEmptyFile({
         workspaceId: props.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
       });
-      await props.onAddFile(file);
+      await props.onAddFile?.(file);
     },
-    [props, workspaces]
+    [props, workspaces, routes, history]
   );
 
   const urlInputRef = useRef<HTMLInputElement>(null);
@@ -108,6 +120,13 @@ export function NewFileDropdownMenu(props: {
     async (urlString?: string) => {
       if (!urlString) {
         return;
+      }
+
+      if (!props.workspaceId) {
+        return history.push({
+          pathname: routes.importModel.path({}),
+          search: routes.importModel.queryString({ url: urlString }),
+        });
       }
 
       setImporting(true);
@@ -133,26 +152,14 @@ export function NewFileDropdownMenu(props: {
           content,
           destinationDirRelativePath: props.destinationDirPath,
         });
-        await props.onAddFile(file);
+        await props.onAddFile?.(file);
       } catch (e) {
         setImportingError(e.toString());
       } finally {
         // setImporting(false);
       }
     },
-    [props, workspaces]
-  );
-
-  const addSample = useCallback(
-    (name: string, extension: SupportedFileExtensions) => {
-      importFromUrl(
-        `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-          type: extension,
-          name: name,
-        })}`
-      );
-    },
-    [importFromUrl, routes]
+    [props, workspaces, history, routes]
   );
 
   const successfullyUploadedAlert = useGlobalAlert(
@@ -168,10 +175,10 @@ export function NewFileDropdownMenu(props: {
     { durationInSeconds: 4 }
   );
 
-  const handleFileUpload = useCallback(
-    async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const uploadFilesIntoWorkspace = useCallback(
+    async (workspaceId: string, files: FileList | null) => {
       const filesToUpload = await Promise.all(
-        Array.from(e.target.files ?? []).map(async (file: File) => {
+        Array.from(files ?? []).map(async (file: File) => {
           return {
             path: file.name,
             content: await new Promise<string>((res) => {
@@ -188,8 +195,9 @@ export function NewFileDropdownMenu(props: {
         filesToUpload.map(async (file) => {
           const extension = extractExtension(file.path);
           const name = decodeURIComponent(basename(file.path, `.${extension}`));
+
           return workspaces.addFile({
-            workspaceId: props.workspaceId,
+            workspaceId,
             name: name,
             extension: extension,
             content: file.content,
@@ -200,10 +208,40 @@ export function NewFileDropdownMenu(props: {
 
       const fileToGoTo = uploadedFiles.filter((file) => isEditable(file.relativePath)).pop();
 
-      await props.onAddFile(fileToGoTo);
+      await props.onAddFile?.(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
     },
     [workspaces, props, successfullyUploadedAlert]
+  );
+
+  const uploadFilesIntoNewWorkspace = useCallback(
+    async (files: FileList | null) => {
+      const filesToUpload = Array.from(files ?? []);
+      const workspaceData = await CreateWorkspaceFromUploadedFolder({ files: filesToUpload, workspaces });
+
+      if (!workspaceData) {
+        return;
+      }
+
+      history.push({
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: workspaceData.workspaceId,
+          fileRelativePath: workspaceData.fileRelativePath,
+          extension: workspaceData.extension,
+        }),
+      });
+    },
+    [history, routes, workspaces]
+  );
+
+  const handleFileUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (!props.workspaceId) {
+        return uploadFilesIntoNewWorkspace(e.target.files);
+      }
+      await uploadFilesIntoWorkspace(props.workspaceId, e.target.files);
+    },
+    [uploadFilesIntoWorkspace, props, uploadFilesIntoNewWorkspace]
   );
 
   const NewJsonYamlDrilldownMenuItem = useCallback(
@@ -277,7 +315,7 @@ export function NewFileDropdownMenu(props: {
                 <MenuInput>
                   <ImportFromUrlForm
                     importingError={importingError}
-                    allowedTypes={[UrlType.FILE, UrlType.GIST_FILE, UrlType.GITHUB_FILE]}
+                    allowedTypes={allowedUrlTypes}
                     urlInputRef={urlInputRef}
                     url={url}
                     onChange={(url) => {
@@ -289,14 +327,13 @@ export function NewFileDropdownMenu(props: {
                   />
                 </MenuInput>
                 <MenuInput>
-                  <Button
-                    variant={url.length > 0 ? ButtonVariant.primary : ButtonVariant.secondary}
+                  <ImportFromUrlButton
+                    allowedTypes={allowedUrlTypes}
+                    url={url}
+                    isUrlValid={isUrlValid}
                     isLoading={isImporting}
                     onClick={() => importFromUrl(url)}
-                    isDisabled={isUrlValid !== ValidatedOptions.success}
-                  >
-                    Import
-                  </Button>
+                  />
                 </MenuInput>
               </DrilldownMenu>
             }
