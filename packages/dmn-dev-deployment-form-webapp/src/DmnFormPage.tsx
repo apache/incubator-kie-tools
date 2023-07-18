@@ -32,6 +32,7 @@ import { useDmnFormI18n } from "./i18n";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { resolveReferencesAndCheckForRecursion, getDefaultValues } from "@kie-tools/dmn-runner/dist/jsonSchema";
 import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
+import { useApp } from "./AppContext";
 
 interface Props {
   formData: FormData;
@@ -55,6 +56,7 @@ export function DmnFormPage(props: Props) {
   const [openAlert, setOpenAlert] = useState(AlertTypes.NONE);
   const [pageError, setPageError] = useState<boolean>(false);
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
+  const app = useApp();
 
   useCancelableEffect(
     useCallback(
@@ -85,6 +87,7 @@ export function DmnFormPage(props: Props) {
   const onSubmit = useCallback(async () => {
     try {
       const formOutputs = await fetchDmnResult({
+        baseUrl: app?.data?.baseUrl,
         modelName: props.formData.modelName,
         inputs: formInputs,
       });
