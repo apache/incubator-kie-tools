@@ -1,28 +1,27 @@
-import "reactflow/dist/style.css";
 import "@patternfly/react-core/dist/styles/base.css";
+import "reactflow/dist/style.css";
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
-import { BoxedExpression } from "./BoxedExpression";
-import { Diagram } from "./Diagram";
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
-import { IncludedModels } from "./IncludedModels";
-import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { DataTypes } from "./DataTypes";
-import { Documentation } from "./Documentation";
-import { PropertiesPanel } from "./PropertiesPanel";
-import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
+import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
+import { DataTypes } from "./dataTypes/DataTypes";
+import { Diagram } from "./diagram/Diagram";
+import { DmnNodeWithExpression } from "./diagram/DmnNodeWithExpression";
+import { Documentation } from "./documentation/Documentation";
+import { IncludedModels } from "./includedModels/IncludedModels";
+import { PropertiesPanel } from "./propertiesPanel/PropertiesPanel";
+import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { DmnVersionLabel } from "./DmnVersionLabel";
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -43,7 +42,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
   const marshaller = useMemo(() => getMarshaller(props.xml.trim() || EMPTY_DMN_14), [props.xml]);
 
   const dmnInitial: { definitions: DMN14__tDefinitions } = useMemo(
-    () => marshaller.parser.parse() as { definitions: DMN14__tDefinitions }, // FIXME: Casting to the latest version, but... what should we do?
+    () => marshaller.parser.parse(),
     [marshaller.parser]
   );
 
@@ -68,6 +67,9 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
 
   const [isPropertiesPanelOpen, setPropertiesPanelOpen] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
+  useEffect(() => {
+    setSelectedNodes([]);
+  }, [dmn]);
 
   const diagramContainerRef = useRef<HTMLDivElement>(null);
 

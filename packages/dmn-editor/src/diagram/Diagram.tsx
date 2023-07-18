@@ -591,20 +591,10 @@ export function ResizerHandle(props: {}) {
 }
 
 export function EditExpressionButton(props: { isVisible: boolean; onClick: () => void }) {
-  const onClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-  }, []);
-
   return (
     <>
       {props.isVisible && (
-        <Label
-          onMouseDownCapture={onClick}
-          onMouseUpCapture={onClick}
-          onClick={props.onClick}
-          className={"kie-dmn-editor--edit-expression-label"}
-        >
+        <Label onClick={props.onClick} className={"kie-dmn-editor--edit-expression-label"}>
           Edit
         </Label>
       )}
