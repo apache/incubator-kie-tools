@@ -53,16 +53,21 @@ void setupPrJob(boolean isProdCI = false) {
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
         disable_status_message_failure: true,
+        commitContext: 'Retrieve and Launch Image Checks',
+        contextShowtestResults: false,
     ])
     if (isProdCI) {
         jobParams.job.name += '.prod'
         jobParams.pr.trigger_phrase = '.*[j|J]enkins,?.*(rerun|run) [prod|Prod|PROD].*'
         jobParams.pr.trigger_phrase_only = true
-        jobParams.pr.commitContext = 'Prod'
+        jobParams.pr.commitContext = '(Prod) Retrieve and Launch Image Checks'
         jobParams.env.put('PROD_CI', true)
     } else if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
         jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
     }
+    jobParams.env.putAll([
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+    ])
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
@@ -183,6 +188,9 @@ void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = f
         MAX_REGISTRY_RETRIES: 3,
         TARGET_AUTHOR: Utils.getGitAuthor(this), // In case of a PR to merge with target branch
         PROD_CI: prodCI,
+
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        AUTHOR_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         logRotator {

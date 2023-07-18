@@ -36,16 +36,18 @@ pipeline {
                     sh 'printenv'
 
                     assert getBuildImageName() : 'Please provide `BUILD_IMAGE_NAME` parameter'
-
                     currentBuild.displayName = params.DISPLAY_NAME ?: currentBuild.displayName
 
                     if (getTargetBranch()) {
                         echo 'Got a target branch ... Trying to merge the source with the target'
-                        githubscm.checkoutIfExists(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getTargetBranch(), true)
+                        githubscm.checkoutIfExists(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getTargetBranch(), true, [ token: getGitAuthorTokenCredentialsId(), usernamePassword: getGitAuthorCredentialsId() ])
+                        githubscm.prepareCommitStatusInformationForPullRequest(getRepoName(), getSourceAuthor(), getSourceBranch(), getTargetAuthor(), getGitAuthorCredentialsId())
                     } else {
                         echo 'No target branch ... Checking out simply'
-                        checkout(githubscm.resolveRepository(getRepoName(), getSourceAuthor(), getSourceBranch(), false))
+                        checkout(githubscm.resolveRepository(getRepoName(), getSourceAuthor(), getSourceBranch(), false, getGitAuthorCredentialsId()))
+                        githubscm.prepareCommitStatusInformation(getRepoName(), getSourceAuthor(), getSourceBranch(), getGitAuthorCredentialsId())
                     }
+                    updateGithubCommitStatus('PENDING', 'Started')
 
                     if (isProdCI()) {
                         // Prod fix to be able to build the image as a community one
@@ -103,6 +105,8 @@ pipeline {
         stage('Build image') {
             steps {
                 script {
+                    updateGithubCommitStatus('PENDING', 'Build in progress')
+
                     String localRegistry = cloud.startLocalRegistry()
                     cloud.prepareForDockerMultiplatformBuild([localRegistry],[cloud.getDockerIOMirrorRegistryConfig()], false)
 
@@ -177,6 +181,8 @@ pipeline {
             }
             steps {
                 script {
+                    updateGithubCommitStatus('PENDING', 'Tests in progress')
+
                     String testImageTag = "quay.io/kiegroup/${getBuildImageName()}:${getImageVersion()}"
                     String builtImageTag = getBuiltImageTag()
                     // Pull and tag to test image
@@ -199,6 +205,8 @@ pipeline {
     post {
         always {
             script {
+                updateGithubCommitStatusFromBuildResult()
+
                 clean()
             }
         }
@@ -315,6 +323,14 @@ String getTargetBranch() {
     return params.TARGET_BRANCH
 }
 
+String getGitAuthorCredentialsId() {
+    return env.AUTHOR_CREDS_ID
+}
+
+String getGitAuthorTokenCredentialsId() {
+    return env.AUTHOR_TOKEN_CREDS_ID
+}
+
 boolean shouldDeployImage() {
     return params.DEPLOY_IMAGE
 }
@@ -353,4 +369,21 @@ boolean isProdCI() {
 
 String getQuarkusPlatformURL() {
     return params.QUARKUS_PLATFORM_URL
+}
+
+def updateGithubCommitStatus(String state, String message) {
+    githubscm.updateGithubCommitStatus(getBuildImageName(), state, message)
+}
+
+def updateGithubCommitStatusFromBuildResult() {
+    githubscm.updateGithubCommitStatusFromBuildResult(getBuildImageName())
+}
+
+Map getRepositoryInfo() {
+    return [
+        repository: getRepoName(),
+        author: getSourceAuthor(),
+        branch: getSourceBranch(),
+        credentials_id: getGitAuthorCredentialsId(),
+    ]
 }

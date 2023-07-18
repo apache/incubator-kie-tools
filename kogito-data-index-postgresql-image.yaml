@@ -5,6 +5,7 @@ version: "2.0.0-snapshot"
 from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 description: "Runtime image for Kogito Data Index Service for PostgreSQL persistence provider"
 
+
 labels:
   - name: "org.kie.kogito.version"
     value: "2.0.0-SNAPSHOT"
