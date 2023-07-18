@@ -16,9 +16,17 @@
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { DashbuilderEditorFactory } from "@kie-tools/dashbuilder-editor";
+import {
+  DashbuilderEditorApi,
+  DashbuilderEditorEnvelopeApi,
+  DashbuilderEditorChannelApi,
+} from "@kie-tools/dashbuilder-editor/dist/api";
+import { DashbuilderEditorEnvelopeApiImpl } from "@kie-tools/dashbuilder-editor/dist/impl";
 
-EditorEnvelope.init({
+EditorEnvelope.initCustom<DashbuilderEditorApi, DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>({
   container: document.getElementById("dashbuilder-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new DashbuilderEditorFactory(),
+  apiImplFactory: {
+    create: (args) => new DashbuilderEditorEnvelopeApiImpl(args, new DashbuilderEditorFactory()),
+  },
 });

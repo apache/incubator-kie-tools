@@ -21,9 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 
-import javax.lang.model.SourceVersion;
-
-import io.serverlessworkflow.api.Workflow;
 import org.kie.kogito.api.FileValidation;
 import org.kie.kogito.model.FileValidationResult;
 import org.kie.kogito.serverless.workflow.utils.ServerlessWorkflowUtils;
@@ -39,14 +36,10 @@ public class ServerlessWorkflowValidation implements FileValidation {
             if (format == null) {
                 return FileValidationResult.createInvalidResult(path, "Not a valid Serverless Workflow file format");
             }
-            final Workflow workflow = ServerlessWorkflowUtils.getWorkflow(
+            ServerlessWorkflowUtils.getWorkflow(
                     new InputStreamReader(new FileInputStream(path.toAbsolutePath().toString())),
                     format);
-            if (SourceVersion.isName(workflow.getId())) {
-                return FileValidationResult.createValidResult(path);
-            } else {
-                return FileValidationResult.createInvalidResult(path, workflow.getId() + " is not a valid ID for a Serverless Workflow");
-            }
+            return FileValidationResult.createValidResult(path);
         } catch (IOException e) {
             return FileValidationResult.createInvalidResult(path, e.getMessage());
         }

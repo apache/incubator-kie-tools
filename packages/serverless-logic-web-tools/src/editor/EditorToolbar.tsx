@@ -96,6 +96,7 @@ import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/Global
 import { Link } from "react-router-dom";
 import { routes } from "../navigation/Routes";
 import { isEditable } from "../extension";
+import { ConfirmDeleteModal } from "../table";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -155,6 +156,7 @@ export function EditorToolbar(props: Props) {
     isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
     urlString: workspacePromise.data?.descriptor.origin.url?.toString(),
   });
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
@@ -844,7 +846,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const deleteFileDropdownItem = useMemo(() => {
     return (
-      <DropdownItem key={"delete-dropdown-item"} onClick={deleteWorkspaceFile} ouiaId={"delete-file-button"}>
+      <DropdownItem
+        key={"delete-dropdown-item"}
+        onClick={() => setIsConfirmDeleteModalOpen(true)}
+        ouiaId={"delete-file-button"}
+      >
         <Flex flexWrap={{ default: "nowrap" }}>
           <FlexItem>
             <TrashIcon />
@@ -858,7 +864,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         </Flex>
       </DropdownItem>
     );
-  }, [deleteWorkspaceFile, props.workspaceFile]);
+  }, [props.workspaceFile]);
 
   const pushingAlert = useGlobalAlert(
     useCallback(
@@ -1284,6 +1290,36 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       workspacePromise.data?.descriptor.origin.kind !== WorkspaceKind.LOCAL || workspacePromise.data?.files.length > 1,
     [workspacePromise.data?.descriptor.origin.kind, workspacePromise.data?.files.length]
   );
+
+  const deleteSuccessAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }) => {
+      return <Alert variant="success" title={`File deleted successfully`} />;
+    }, []),
+    { durationInSeconds: 2 }
+  );
+
+  const deleteErrorAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          variant="danger"
+          title={`Oops, something went wrong while trying to delete the selected file. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const onConfirmDeleteModalDelete = useCallback(async () => {
+    setIsConfirmDeleteModalOpen(false);
+
+    try {
+      await deleteWorkspaceFile();
+      deleteSuccessAlert.show();
+    } catch (e) {
+      deleteErrorAlert.show();
+    }
+  }, [deleteSuccessAlert, deleteErrorAlert, deleteWorkspaceFile]);
 
   return (
     <PromiseStateWrapper
@@ -1729,6 +1765,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           <a ref={downloadRef} />
           <a ref={downloadAllRef} />
           <a ref={downloadPreviewRef} />
+          <ConfirmDeleteModal
+            isOpen={isConfirmDeleteModalOpen}
+            onClose={() => setIsConfirmDeleteModalOpen(false)}
+            onDelete={() => onConfirmDeleteModalDelete()}
+            elementsTypeName="file"
+            deleteMessage={
+              <>
+                Deleting this <b>{props.workspaceFile.nameWithoutExtension}</b> file.
+              </>
+            }
+          />
         </>
       )}
     />

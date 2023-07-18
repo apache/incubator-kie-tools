@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
@@ -17,7 +33,7 @@ const files = [
   // "../tests-data--manual/dmn-1_4--examples/Chapter 11 Example 1 Originations/Chapter 11 Example.dmn",
 ];
 
-const tmpDir = path.join(os.tmpdir(), "dmn-marshaller-type-safety-tests");
+const tmpDir = path.join(__dirname, "..", "dist-tests", "dmn-marshaller-type-safety-tests");
 
 describe("type safety", () => {
   beforeAll(() => {
@@ -26,10 +42,6 @@ describe("type safety", () => {
     }
     fs.mkdirSync(tmpDir, { recursive: true });
     console.log(`[dmn-marshaller] Type safety tests running on '${tmpDir}'.`);
-  });
-
-  afterAll(() => {
-    // fs.rmdirSync(tmpDir, { recursive: true });
   });
 
   for (const file of files) {
@@ -53,13 +65,12 @@ const dmn: DMN1${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions
       // fs.writeFileSync(path.join(tmpDir, `${path.basename(file)}.xml`), builder.build(json));
       // fs.writeFileSync(path.join(tmpDir, `${path.basename(file)}.original.xml`), xml);
 
-      const tsc = child_process.spawnSync("tsc", ["--noEmit", "--strict", tmpFilePath], { stdio: "pipe" });
-      const tscOutput = tsc.output
-        .map((line) => line?.toString())
-        .join("\n")
-        .trim();
+      const tsc = child_process.execSync(`tsc --noEmit --strict ${tmpFilePath}`, {
+        stdio: "pipe",
+        shell: true as any,
+      });
 
-      expect(tscOutput).toStrictEqual("");
+      expect(tsc.toString()).toStrictEqual("");
     });
   }
 });

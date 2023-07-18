@@ -1,5 +1,6 @@
 .kie-dmn-editor--diagram-container {
   height: 100%;
+  position: relative;
 }
 
 .kie-dmn-editor--node {

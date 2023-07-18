@@ -61,6 +61,10 @@ describe("Serverless Logic Web Tools - Recent model test", () => {
     cy.ouia({ ouiaId: "kebab-sm" }).click();
     cy.ouia({ ouiaId: "delete-file-button" }).click();
 
+    // confirm deletion in the modal
+    cy.ouia({ ouiaId: "confirm-delete-checkbox" }).click();
+    cy.ouia({ ouiaId: "confirm-delete-button" }).click();
+
     // check the file is deleted (recent section is emtpy)
     cy.goToSidebarLink({ ouiaId: "recent-models-nav" });
     cy.get(".pf-l-bullseye").should("contain.text", "Nothing here");

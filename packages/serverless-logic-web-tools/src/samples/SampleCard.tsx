@@ -14,37 +14,21 @@
  * limitations under the License.
  */
 
-import { Button, Modal, ModalVariant, Skeleton } from "@patternfly/react-core/dist/js";
-import { Card, CardBody, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
-import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
-import { Sample, SampleCategory } from "./types";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { FileIcon, FolderIcon, MonitoringIcon, SearchPlusIcon } from "@patternfly/react-icons/dist/js/icons";
+import { SearchPlusIcon } from "@patternfly/react-icons/dist/js/icons";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
-
-const tagMap: Record<SampleCategory, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
-  ["serverless-workflow"]: {
-    label: "Serverless Workflow",
-    icon: FileIcon,
-    color: "orange",
-  },
-  ["serverless-decision"]: {
-    label: "Serverless Decision",
-    icon: FolderIcon,
-    color: "blue",
-  },
-  ["dashbuilder"]: {
-    label: "Dashboard",
-    icon: MonitoringIcon,
-    color: "purple",
-  },
-};
+import { SampleCategoryComponent } from "./SampleCategoryComponent";
+import { Sample } from "./types";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 
 function SampleSvgImg(props: {
   sample: Sample;
@@ -75,18 +59,11 @@ function SampleSvgImg(props: {
   );
 }
 
-export function SampleCard(props: { sample: Sample; cover: string | undefined }) {
+type SampleCardProps = { sample: Sample; cover?: string; onClick?: (sample: Sample) => void };
+
+export function SampleCard(props: SampleCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const routes = useRoutes();
-  const tag = useMemo(() => tagMap[props.sample.definition.category], [props.sample.definition.category]);
-  const history = useHistory();
-
-  const onCardClick = useCallback(() => {
-    history.push({
-      pathname: routes.sampleShowcase.path({}),
-      search: routes.sampleShowcase.queryString({ sampleId: props.sample.sampleId }),
-    });
-  }, [props.sample, history, routes]);
 
   const handleModalToggle = useCallback((e?) => {
     e?.stopPropagation();
@@ -95,7 +72,14 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
 
   return (
     <>
-      <Card isCompact={true} isFullHeight={true} onClick={onCardClick} isSelectable>
+      <Card
+        isCompact={true}
+        isFullHeight={true}
+        onClick={() => {
+          props.onClick?.(props.sample);
+        }}
+        isSelectable
+      >
         <Grid style={{ height: "100%" }}>
           <GridItem
             lg={6}
@@ -120,10 +104,7 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
                   <SearchPlusIcon size="sm" />
                 </Button>
               )}
-              <Label color={tag.color}>
-                <tag.icon />
-                &nbsp;&nbsp;<b>{tag.label}</b>
-              </Label>
+              <SampleCategoryComponent category={props.sample.definition.category} />
             </div>
             <Bullseye style={{ padding: "0px 8px 30px 8px" }}>
               <SampleSvgImg sample={props.sample} svgBlob={props.cover} height="370px" />
@@ -148,6 +129,18 @@ export function SampleCard(props: { sample: Sample; cover: string | undefined })
                 </Text>
               </Tooltip>
             </CardBody>
+            <CardFooter>
+              <Link
+                to={{
+                  pathname: routes.sampleShowcase.path({}),
+                  search: routes.sampleShowcase.queryString({ sampleId: props.sample.sampleId }),
+                }}
+              >
+                <Button variant={ButtonVariant.tertiary} ouiaId={props.sample.sampleId + `-try-sample-button`}>
+                  Try it out!
+                </Button>
+              </Link>
+            </CardFooter>
           </GridItem>
         </Grid>
       </Card>

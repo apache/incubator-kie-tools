@@ -18,13 +18,14 @@ package command
 
 import (
 	"fmt"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"os"
-	"sync"
-	"time"
 )
 
 type RunCmdConfig struct {
@@ -117,11 +118,8 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 
 	go func() {
 		defer wg.Done()
-		if err := common.RunCommand(
-			common.RunContainerCommand(containerTool, cfg.PortMapping, path),
-			"container run",
-		); err != nil {
-			err = fmt.Errorf("❌ Error running SonataFlow project: %w", err)
+		if err := common.RunContainerCommand(containerTool, cfg.PortMapping, path); err != nil {
+			fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 		}
 	}()
 

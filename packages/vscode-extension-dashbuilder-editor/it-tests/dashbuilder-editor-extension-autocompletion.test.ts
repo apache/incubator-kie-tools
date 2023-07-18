@@ -79,8 +79,7 @@ describe("Dashbuilder editor - autocompletion tests", () => {
     const content = await textEditor.toggleContentAssist(true);
     const items = await content?.getItems();
     const itemNames = await Promise.all(items?.map(async (i) => await i.getText()) ?? []);
-    expect(itemNames).to.have.length(12);
-    expect(itemNames).to.contain.members(["date", "label", "number", "text"]);
-    expect(itemNames).to.contain.members(["date", "Date", "DATE"]);
+    expect(itemNames).to.have.length(4);
+    expect(itemNames).to.contain.members(["LABEL", "NUMBER", "DATE", "TEXT"]);
   });
 });

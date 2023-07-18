@@ -73,25 +73,9 @@ export default class SwfEditorTestHelper extends EditorTestHelper {
     return result;
   }
 
-  public async getAllNodesInMermaidDiagram(): Promise<WebElement[]> {
-    await this.switchToEditorFrame();
-    const result = await this.webview.findWebElements(
-      By.xpath(".//*[name()='svg']//*[name()='g' and (@class='node statediagram-state' or @class='node default')]")
-    );
-    await this.switchBack();
-    return Promise.resolve(result);
-  }
-
   public async getSvgElement(): Promise<WebElement> {
     await this.switchToEditorFrame();
     const result = await this.webview.findWebElement(By.xpath(".//*[name()='svg']"));
-    await this.switchBack();
-    return Promise.resolve(result);
-  }
-
-  public async getMermaidDivElement(): Promise<WebElement> {
-    await this.switchToEditorFrame();
-    const result = await this.webview.findWebElement(By.xpath(".//div[@class='mermaid']"));
     await this.switchBack();
     return Promise.resolve(result);
   }

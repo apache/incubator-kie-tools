@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSes
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SaveDiagramSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SwitchGridSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.UndoSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ValidateSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.VisitGraphSessionCommand;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -77,7 +76,6 @@ public class EditorSessionCommandsTest {
         inOrder.verify(commands).register(DeleteSelectionSessionCommand.class);
         inOrder.verify(commands).register(UndoSessionCommand.class);
         inOrder.verify(commands).register(RedoSessionCommand.class);
-        inOrder.verify(commands).register(ValidateSessionCommand.class);
         inOrder.verify(commands).register(ExportToPngSessionCommand.class);
         inOrder.verify(commands).register(ExportToJpgSessionCommand.class);
         inOrder.verify(commands).register(ExportToPdfSessionCommand.class);
@@ -155,13 +153,6 @@ public class EditorSessionCommandsTest {
         editorSessionCommands.getRedoSessionCommand();
 
         verify(commands).get(eq(RedoSessionCommand.class));
-    }
-
-    @Test
-    public void testGetValidateSessionCommand() {
-        editorSessionCommands.getValidateSessionCommand();
-
-        verify(commands).get(eq(ValidateSessionCommand.class));
     }
 
     @Test

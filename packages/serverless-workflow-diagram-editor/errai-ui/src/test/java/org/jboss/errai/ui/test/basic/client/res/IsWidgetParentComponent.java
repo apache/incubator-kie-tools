@@ -19,7 +19,7 @@ package org.jboss.errai.ui.test.basic.client.res;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -28,7 +28,7 @@ public class IsWidgetParentComponent extends Composite {
 
     @Inject
     @DataField("parentTestDiv")
-    private Div parentTestDiv;
+    private HTMLDivElement parentTestDiv;
 
     @Inject
     @DataField("isWidgetComponent")

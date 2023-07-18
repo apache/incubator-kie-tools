@@ -15,7 +15,7 @@
  */
 
 import { setDiagnosticsOptions } from "monaco-yaml";
-import { DASHBUILDER_SCHEMA } from "../schemas";
+import { DASHBUILDER_SCHEMA } from "@kie-tools/dashbuilder-language-service/dist/assets/schemas";
 import { JSONSchema7 } from "json-schema";
 
 export function initYamlSchemaDiagnostics() {

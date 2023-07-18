@@ -94,9 +94,11 @@ export enum BeeTableHeaderVisibility {
 export enum BeeTableOperation {
   ColumnInsertLeft,
   ColumnInsertRight,
+  ColumnInsertN,
   ColumnDelete,
   RowInsertAbove,
   RowInsertBelow,
+  RowInsertN,
   RowDelete,
   RowReset,
   RowDuplicate,

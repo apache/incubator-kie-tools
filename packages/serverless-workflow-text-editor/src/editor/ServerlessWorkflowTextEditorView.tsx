@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-import { Editor, EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
 import * as React from "react";
-import { ServerlessWorkflowTextEditorChannelApi } from "../api";
+import { ServerlessWorkflowTextEditorApi, ServerlessWorkflowTextEditorChannelApi } from "../api";
 import { ServerlessWorkflowTextEditor } from "./ServerlessWorkflowTextEditor";
-
-export interface ServerlessWorkflowTextEditorApi extends Editor {
-  moveCursorToNode(nodeName: string): void;
-  moveCursorToPosition(position: Position): void;
-}
 
 export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextEditorApi {
   private readonly editorRef: React.RefObject<ServerlessWorkflowTextEditorApi>;

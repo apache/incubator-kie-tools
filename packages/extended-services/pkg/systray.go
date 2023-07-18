@@ -25,7 +25,7 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/getlantern/systray"
+	"fyne.io/systray"
 	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/images"
 	"github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
 )

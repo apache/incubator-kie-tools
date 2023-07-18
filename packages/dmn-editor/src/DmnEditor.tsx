@@ -103,7 +103,9 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
                 >
                   <DrawerContentBody>
                     <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                      <Label style={{ position: "absolute", bottom: "10px" }}>{`DMN ${marshaller.version}`}</Label>
+                      <Label
+                        style={{ position: "absolute", bottom: "8px", left: "8px", zIndex: 100 }}
+                      >{`DMN ${marshaller.version}`}</Label>
                       {!openNodeWithExpression && (
                         <Diagram
                           dmn={dmn}

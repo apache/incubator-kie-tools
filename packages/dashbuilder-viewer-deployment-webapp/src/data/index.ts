@@ -23,6 +23,7 @@ export interface Dashboard {
 export interface AppData {
   primary: Dashboard;
   secondary: Dashboard[];
+  showDisclaimer?: boolean;
 }
 
 export async function fetchAppData(): Promise<AppData> {

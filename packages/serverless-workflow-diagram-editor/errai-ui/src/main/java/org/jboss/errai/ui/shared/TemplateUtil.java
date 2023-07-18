@@ -43,9 +43,10 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.common.client.util.CreationalCallback;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -53,7 +54,6 @@ import org.jboss.errai.ioc.client.container.IOCResolutionException;
 import org.jboss.errai.ui.client.local.spi.TemplateProvider;
 import org.jboss.errai.ui.client.local.spi.TemplateRenderingCallback;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.client.widget.ListWidget;
 import org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrategy;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.jboss.errai.ui.shared.api.style.StyleBindingsRegistry;
@@ -148,7 +148,7 @@ public final class TemplateUtil {
                 && (hasI18nKey || hasI18nPrefix))
           continue;
 
-        mergeAttribute(meta, field.getElement().cast(), element.cast(), name, value);
+        mergeAttribute(meta, Js.uncheckedCast(field.getElement()), Js.uncheckedCast(element), name, value);
 
         final Element previous = dataFieldElements.put(fieldName, field.getElement());
         final Element root = dataFieldElements.get("this");
@@ -167,23 +167,23 @@ public final class TemplateUtil {
     final ConflictStrategy strategy = meta.getStrategy(name);
     // Merge all class names regardless of strategy
     if (name.equals("class")) {
-      DOMUtil.tokenStream(templateElement.getClassList())
-        .filter(token -> !beanElement.getClassList().contains(token))
-        .forEach(token -> beanElement.getClassList().add(token));
+      DOMUtil.tokenStream(templateElement.classList)
+        .filter(token -> !beanElement.classList.contains(token))
+        .forEach(token -> beanElement.classList.add(token));
     }
     // Merge individual properties in style only using the strategy when both elements have a value.
     else if (name.equals("style")) {
-      Stream<String> propertyNameStream = DOMUtil.cssPropertyNameStream(templateElement.getStyle());
+      Stream<String> propertyNameStream = DOMUtil.cssPropertyNameStream(templateElement.style);
       if (ConflictStrategy.USE_BEAN.equals(strategy)) {
         propertyNameStream = propertyNameStream
                 .filter(propertyName -> {
-                  final String beanPropertyValue = beanElement.getStyle().getPropertyValue(propertyName);
+                  final String beanPropertyValue = beanElement.style.getPropertyValue(propertyName);
                   return beanPropertyValue == null || beanPropertyValue.isEmpty();
                  });
       }
 
       propertyNameStream
-        .forEach(propertyName -> beanElement.getStyle().setProperty(propertyName, templateElement.getStyle().getPropertyValue(propertyName), ""));
+        .forEach(propertyName -> beanElement.style.setProperty(propertyName, templateElement.style.getPropertyValue(propertyName), ""));
     }
     // Use strategy to decide which value is used.
     else {
@@ -249,9 +249,8 @@ public final class TemplateUtil {
   public static void initWidget(final Composite component, final Element wrapped, final Collection<Widget> dataFields) {
     // All template fragments are contained in a single element, during initialization.
     wrapped.removeFromParent();
-    if (!(component instanceof ListWidget)) {
-      initWidgetNative(component, new TemplateWidget(wrapped, dataFields));
-    }
+    initWidgetNative(component, new TemplateWidget(wrapped, dataFields));
+
     if (!component.isAttached()) {
       onAttachNative(component);
       RootPanel.detachOnWindowClose(component);
@@ -473,7 +472,7 @@ public final class TemplateUtil {
   }
 
   public static void setupBrowserEventListener(final Object component, final HTMLElement element,
-          final org.jboss.errai.common.client.dom.EventListener<?> listener, final String browserEventType) {
+          final elemental2.dom.EventListener listener, final String browserEventType) {
     if (element == null) {
       throw new RuntimeException("A browser event source was specified in " + component.getClass().getName()
               + " but the corresponding data-field does not exist!");
@@ -485,12 +484,12 @@ public final class TemplateUtil {
   }
 
   public static void setupBrowserEventListener(final Object component, final Object element,
-          final org.jboss.errai.common.client.dom.EventListener<?> listener, final String browserEventType) {
+          final elemental2.dom.EventListener listener, final String browserEventType) {
     setupBrowserEventListener(component, TemplateUtil.asErraiElement(element), listener, browserEventType);
   }
 
   public static void setupBrowserEventListener(final Object component, final Widget widget,
-          final org.jboss.errai.common.client.dom.EventListener<?> listener, final String browserEventType) {
+          final elemental2.dom.EventListener listener, final String browserEventType) {
     setupBrowserEventListener(component, widget.getElement(), listener, browserEventType);
   }
 

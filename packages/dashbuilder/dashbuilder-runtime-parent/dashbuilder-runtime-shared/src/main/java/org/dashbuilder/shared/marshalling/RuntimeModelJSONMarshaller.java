@@ -83,8 +83,6 @@ public class RuntimeModelJSONMarshaller {
         jsonObject.set(LAYOUT_TEMPLATES, ltArray);
 
         i.set(0);
-        // TODO: Make the global dataset DEF here - grab global datasset conf and apply to the parsed object, 
-        // letting the parsed ds with global values when it lacks its own attribute
         model.getClientDataSets()
                 .forEach(def -> externalDefsArray.set(i.getAndIncrement(), defMarshaller.toJsonObject(def)));
         jsonObject.set(EXTERNAL_DATASET_DEFS, externalDefsArray);
@@ -140,6 +138,7 @@ public class RuntimeModelJSONMarshaller {
         var layoutTemplates = new ArrayList<LayoutTemplate>();
         var externalDefs = new ArrayList<ExternalDataSetDef>();
         var global = retrieveGlobalSettings(jsonObject);
+        var globalDefOp = global.getDataSetDef();
         var nPages = 0;
         if (ltArray == null) {
             ltArray = jsonObject.getArray(PAGES);
@@ -177,12 +176,13 @@ public class RuntimeModelJSONMarshaller {
             } catch (Exception e) {
                 throw new RuntimeException("Data sets must be a list of data set definitions", e);
             }
+
             for (int i = 0; i < nDatasets; i++) {
                 try {
                     var defJson = externalDefsArray.getObject(i).toJson();
                     ExternalDataSetDef externalDef = null;
-                    if (global.getDataSetDef().isPresent()) {
-                        var globalDef = global.getDataSetDef().get().clone();
+                    if (globalDefOp.isPresent()) {
+                        var globalDef = globalDefOp.get().clone();
                         externalDef = (ExternalDataSetDef) defMarshaller.fromJson(globalDef, defJson);
                     } else {
                         externalDef = (ExternalDataSetDef) defMarshaller.fromJson(defJson);
@@ -195,6 +195,12 @@ public class RuntimeModelJSONMarshaller {
                 }
             }
         }
+        // Users may want to declare a single global dataset.
+        if (externalDefs.isEmpty() && globalDefOp.isPresent()) {
+            var globalDef = (ExternalDataSetDef) globalDefOp.get().clone();
+            globalDef.validate();
+            externalDefs.add(globalDef);
+        }
 
         var navTree = NavTreeJSONMarshaller.get().fromJson(navTreeJSONObject);
 
@@ -204,14 +210,12 @@ public class RuntimeModelJSONMarshaller {
 
         var properties = extractProperties(jsonObject);
 
-        var globalSettings = retrieveGlobalSettings(jsonObject);
-
         return new RuntimeModel(navTree,
                 layoutTemplates,
                 lastModified.longValue(),
                 externalDefs,
                 properties,
-                globalSettings);
+                global);
     }
 
     private HashMap<String, String> extractProperties(JsonObject jsonObject) {

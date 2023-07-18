@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "bin": {
-    "xml-parser-ts-codegen": "dist/codegen.js"
+    "xml-parser-ts-codegen": "bin.js"
   },
   "files": [
     "dist",
@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "@kie-tools/xml-parser-ts": "workspace:*",
-    "fast-xml-parser": "^4.2.4",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

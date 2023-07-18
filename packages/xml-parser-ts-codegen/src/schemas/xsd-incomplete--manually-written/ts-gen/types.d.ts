@@ -1,4 +1,20 @@
-export type XsdPrimitives = "xsd:int" | "xsd:string" | "xsd:token";
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+export type XsdPrimitives = "xsd:int" | "xsd:string" | "xsd:token" | "xsd:integer" | "xsd:anyURI";
 
 export interface XsdImport {
   "@_schemaLocation": string;
@@ -11,6 +27,7 @@ export interface XsdImport {
 export interface XsdSimpleType {
   "@_name": string;
   "xsd:union"?: {
+    "@_memberTypes": XsdPrimitives;
     "xsd:simpleType"?: XsdSimpleType[];
   };
   "xsd:restriction"?: {
@@ -76,7 +93,7 @@ export interface XsdElement {
   "xsd:complexType"?: XsdComplexType; // mutualy exclusive with @_type and @_ref and xsd:simpleType
   "xsd:simpleType"?: XsdSimpleType; // mutualy exclusive with xsd:complexType
 
-  "@_substitutionGroup": string;
+  "@_substitutionGroup"?: string;
   "@_minOccurs": number; // default is 1
   "@_maxOccurs": number | "unbounded"; // default is 1
 }

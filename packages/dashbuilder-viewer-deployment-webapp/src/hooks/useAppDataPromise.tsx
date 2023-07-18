@@ -20,7 +20,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { AppData, fetchAppData } from "../data";
 
 export function useAppDataPromise() {
-  const [appDataPromise, setAppDataPromise] = usePromiseState<{ appData: AppData }>();
+  const [appDataPromise, setAppDataPromise] = usePromiseState<AppData>();
 
   useCancelableEffect(
     useCallback(
@@ -41,7 +41,7 @@ export function useAppDataPromise() {
               return;
             }
 
-            setAppDataPromise({ data: { appData } });
+            setAppDataPromise({ data: appData });
           })
           .catch((e) => {
             setAppDataPromise({ error: e });

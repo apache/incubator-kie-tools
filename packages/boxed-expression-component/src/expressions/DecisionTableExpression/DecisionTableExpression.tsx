@@ -81,6 +81,7 @@ export function DecisionTableExpression(
         items: [
           { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
           { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.insert, type: BeeTableOperation.ColumnInsertN },
           { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
         ],
       },
@@ -89,12 +90,13 @@ export function DecisionTableExpression(
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
           { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
         ],
       },
       {
-        group: _.upperCase(i18n.terms.selection),
+        group: i18n.terms.selection.toUpperCase(),
         items: [
           { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
           { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
@@ -222,7 +224,8 @@ export function DecisionTableExpression(
           decisionTableExpression.output?.length == 1
             ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
             : outputClause.name,
-        dataType: outputClause.dataType,
+        dataType:
+          decisionTableExpression.output?.length == 1 ? decisionTableExpression.dataType : outputClause.dataType,
         width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
         setWidth: setOutputColumnWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
@@ -698,6 +701,7 @@ export function DecisionTableExpression(
           : [
               BeeTableOperation.ColumnInsertLeft,
               BeeTableOperation.ColumnInsertRight,
+              BeeTableOperation.ColumnInsertN,
               ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
             ];
 
@@ -711,6 +715,7 @@ export function DecisionTableExpression(
           ? [
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
               ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
               BeeTableOperation.RowReset,
               BeeTableOperation.RowDuplicate,

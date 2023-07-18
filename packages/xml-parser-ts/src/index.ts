@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 export type XmlParserTs<T extends object> = {
   parse: (args: { xml: string | Buffer; domdoc?: Document; instanceNs?: Map<string, string> }) => {
     json: T;
@@ -20,9 +36,9 @@ export type Elements = Record<string, string>;
 
 export const domParser = {
   getDomDocument: (xml: string | Buffer) => {
-    console.time("parsing dom took (DOMParser)");
+    // console.time("parsing dom took (DOMParser)");
     const domdoc = new DOMParser().parseFromString(xml.toString(), "application/xml");
-    console.timeEnd("parsing dom took (DOMParser)");
+    // console.timeEnd("parsing dom took (DOMParser)");
     return domdoc;
   },
 };
@@ -33,37 +49,36 @@ export const domParser = {
  *      "https://www.omg.org/spec/DMN/20211108/MODEL/" => "dmn:"
  */
 export function getInstanceNs(domdoc: Document): Map<string, string> {
-  console.time("instanceNs took");
-  // Find the root element. As there can be only one root element, we're safe looking for the first node with type 1 (element).
-  const rootElement: Element = [...domdoc.children].find((child) => child.nodeType === 1 /* element */)!;
+  // console.time("instanceNs took");
 
   const nsMap = new Map<string, string>(
-    [...rootElement.attributes]
-      .filter((attr) => attr.name.startsWith("xmlns"))
-      .flatMap((attr) => {
-        const s = attr.name.split(":");
+    [...domdoc.documentElement.attributes].flatMap((attr) => {
+      if (!attr.name.startsWith("xmlns")) {
+        return [];
+      }
 
-        const nsUri = attr.value;
+      const nsUri = attr.value;
 
-        if (s.length === 1) {
-          // That's the default namespace.
-          return [
-            [nsUri, ""],
-            ["", nsUri],
-          ];
-        } else if (s.length === 2) {
-          // Normal namespace mapping.
-          return [
-            [nsUri, `${s[1]}:`],
-            [`${s[1]}:`, nsUri],
-          ];
-        } else {
-          throw new Error(`Invalid xmlns mapping attribute '${attr.name}'`);
-        }
-      })
+      const s = attr.name.split(":");
+      if (s.length === 1) {
+        // That's the default namespace.
+        return [
+          [nsUri, ""],
+          ["", nsUri],
+        ];
+      } else if (s.length === 2) {
+        // Normal namespace mapping.
+        return [
+          [nsUri, `${s[1]}:`],
+          [`${s[1]}:`, nsUri],
+        ];
+      } else {
+        throw new Error(`Invalid xmlns mapping attribute '${attr.name}'`);
+      }
+    })
   );
 
-  console.timeEnd("instanceNs took");
+  // console.timeEnd("instanceNs took");
   return nsMap;
 }
 
@@ -84,18 +99,17 @@ export function getParser<T extends object>(args: {
       domdoc = domdoc ?? domParser.getDomDocument(xml);
       instanceNs = instanceNs ?? getInstanceNs(domdoc);
 
-      console.time("parsing overhead took");
-      const rootElementName = args.root.element;
-      const rootType = { [rootElementName]: { type: args.root.type, isArray: false } };
+      // console.time("parsing overhead took");
+      const rootType = { [args.root.element]: { type: args.root.type, isArray: false } };
       const json = parse({ ...args, instanceNs, node: domdoc, nodeType: rootType });
-      console.timeEnd("parsing overhead took");
+      // console.timeEnd("parsing overhead took");
 
       return { json, instanceNs };
     },
     build: ({ json, instanceNs }) => {
-      console.time("building took");
+      // console.time("building took");
       const xml = build({ json, ns: args.ns, instanceNs, indent: "" });
-      console.timeEnd("building took");
+      // console.timeEnd("building took");
       return xml;
     },
   };
@@ -121,7 +135,7 @@ export function parse(args: {
     const elemNode = children[ii];
 
     if (elemNode.nodeType === 1 /* element */) {
-      const { nsedName, subsedName } = normalizeNamespace(elemNode.nodeName, args.nodeType, args);
+      const { nsedName, subsedName } = resolveElement(elemNode.nodeName, args.nodeType, args);
 
       const elemPropType = args.nodeType?.[subsedName ?? nsedName];
 
@@ -179,7 +193,7 @@ export function parse(args: {
       } else if (currentValue) {
         if (elemPropType && !elemPropType.isArray) {
           console.warn(
-            `Accumulating values on known non-array property '${subsedName}' (${nsedName}) of type '${elemPropType.type}'.`
+            `[xml-parser-ts] Accumulating values on known non-array property '${subsedName}' (${nsedName}) of type '${elemPropType.type}'.`
           );
         }
 
@@ -197,7 +211,7 @@ export function parse(args: {
   return json;
 }
 
-function normalizeNamespace(
+function resolveElement(
   name: string,
   parentType: Record<string, MetaTypeDef | undefined> | undefined,
   {

@@ -15,7 +15,9 @@
  */
 
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { Position } from "monaco-editor";
 
 export interface ServerlessWorkflowCombinedEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
   kogitoSwfCombinedEditor_colorNodes(args: { nodeNames: string[]; color: string; colorConnectedEnds: boolean }): void;
+  kogitoSwfCombinedEditor_moveCursorToPosition(position: Position): void;
 }

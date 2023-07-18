@@ -16,10 +16,10 @@
 
 import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
 import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "../api/ServerlessWorkflowCombinedEditorEnvelopeApi";
-import { ServerlessWorkflowCombinedEditorApi, ServerlessWorkflowCombinedEditorView } from "../editor";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
+import { ServerlessWorkflowCombinedEditorApi, ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 import { EditorFactory, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
+import { Position } from "monaco-editor";
 
 export type ServerlessWorkflowCombinedEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   ServerlessWorkflowCombinedEditorEnvelopeApi,
@@ -42,11 +42,16 @@ export class ServerlessWorkflowCombinedEditorEnvelopeApiImpl
   ) {
     super(serverlessWorkflowArgs, editorFactory);
   }
+
   public kogitoSwfCombinedEditor_colorNodes(args: {
     nodeNames: string[];
     color: string;
     colorConnectedEnds: boolean;
   }): void {
     this.getEditorOrThrowError().colorNodes(args.nodeNames, args.color, args.colorConnectedEnds);
+  }
+
+  public kogitoSwfCombinedEditor_moveCursorToPosition(position: Position): void {
+    this.getEditorOrThrowError().moveCursorToPosition(position);
   }
 }

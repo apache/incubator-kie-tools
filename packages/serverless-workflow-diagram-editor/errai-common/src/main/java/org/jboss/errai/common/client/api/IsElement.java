@@ -18,12 +18,12 @@ package org.jboss.errai.common.client.api;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 
 /**
  *
  * @deprecated Use Elemental 2 for new development
- * 
+ *
  * This interface is analogous to {@link IsWidget}, but for views built with native DOM wrappers.
  *
  * Extended by view interfaces that are likely to be implemented by native elements.

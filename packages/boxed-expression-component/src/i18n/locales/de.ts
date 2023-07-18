@@ -74,6 +74,13 @@ export const de: BoxedExpressionEditorI18n = {
       "Sammelt die Ausgabe von mehreren Regeln in einer Liste, die nach demselben Sortiermechanismus wie die Trefferrichtlinie 'Priorität' geordnet ist.",
   },
   inputClause: "EINGANGS-KLAUSEL",
+  insert: "Insert",
+  insertDirections: {
+    above: "Above",
+    below: "Below",
+    toTheLeft: "To the left",
+    toTheRight: "To the right",
+  },
   invocation: "Aufruf",
   list: "Liste",
   literal: "Literal",

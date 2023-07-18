@@ -17,8 +17,9 @@
 package org.kie.workbench.common.stunner.client.lienzo.components.views;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.common.client.dom.Span;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -28,9 +29,10 @@ public class AlertView implements IsElement {
 
     @Inject
     @DataField
-    Span text;
+    @Named("span")
+    HTMLElement text;
 
     public void setText(final String text) {
-        this.text.setTextContent(text);
+        this.text.textContent = (text);
     }
 }

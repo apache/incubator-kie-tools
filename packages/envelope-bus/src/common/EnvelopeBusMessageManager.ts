@@ -299,7 +299,13 @@ export class EnvelopeBusMessageManager<
 
       let response;
       try {
-        response = apiImpl[request.type].apply(apiImpl, request.data);
+        const api = apiImpl[request.type];
+        if (api !== undefined) {
+          response = api.apply(apiImpl, request.data);
+        } else {
+          console.warn(`API '${String(request.type)}' was not found. Request will be ignored.`);
+          return;
+        }
       } catch (err) {
         console.error(err);
         this.respond(request, undefined, err);

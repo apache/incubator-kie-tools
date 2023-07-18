@@ -243,9 +243,8 @@ public class LayoutTemplateJSONMarshaller {
                 .getCssProperties()));
         if (settings != null) {
             try {
-                component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
+                component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings, false));
             } catch (Exception e) {
-                // just log the error and let displayers handle missing configuration
                 LOGGER.warn("Error reading component settings", e);
                 var _displayer = new DisplayerSettings();
                 _displayer.setError(e.getMessage());

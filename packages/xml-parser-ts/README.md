@@ -10,10 +10,4 @@ This lets you parse/build XML strings from/to JSON using types and metadata gene
 
 ### Some characteristics:
 
-1. Namespaces declared on the original XML are preserved when building from the JSON.
-
-## Usage:
-
-```typescript
-// TODO: Tiago --> Write
-```
+1. Namespaces declared on the original XML can be preserved when building from the JSON.

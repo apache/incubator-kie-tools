@@ -21,9 +21,9 @@ import { DashbuilderEditorChannelApiImpl } from "@kie-tools/dashbuilder-editor/d
 import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import { DashbuilderLanguageServiceChannelApiImpl } from "../api/DashbuilderLanguageServiceChannelApiImpl";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { DashbuilderEditorChannelApi } from "@kie-tools/dashbuilder-editor";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
+import { DashbuilderEditorEnvelopeApi } from "@kie-tools/dashbuilder-editor/dist/api";
 
 const RefForwardingDashChannelComponent: ForwardRefRenderFunction<
   EditorChannelComponentRef,
@@ -43,10 +43,10 @@ const RefForwardingDashChannelComponent: ForwardRefRenderFunction<
         return;
       }
 
-      const messageBusClient = editor.getEnvelopeServer()
-        .envelopeApi as unknown as MessageBusClientApi<DashbuilderEditorChannelApi>;
+      const dashbuilderEditorEnvelopeApi = editor.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<DashbuilderEditorEnvelopeApi>;
 
-      messageBusClient.notifications.kogitoDashbuilderTextEditor_moveCursorToPosition.send(
+      dashbuilderEditorEnvelopeApi.notifications.dashbuilderTextEditor_moveCursorToPosition.send(
         new Position(notification.position.startLineNumber, notification.position.startColumn)
       );
     },

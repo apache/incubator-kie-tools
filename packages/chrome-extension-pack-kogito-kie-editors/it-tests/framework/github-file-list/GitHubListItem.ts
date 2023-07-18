@@ -20,7 +20,7 @@ import GitHubEditorPage from "../github-editor/GitHubEditorPage";
 import PageFragment from "../PageFragment";
 
 export default class GitHubListItem extends PageFragment {
-  private static readonly LINK_LOCATOR: By = By.className("js-navigation-open");
+  private static readonly LINK_LOCATOR: By = By.xpath(`.//a[@class='Link--primary']`);
 
   public async waitUntilLoaded(): Promise<void> {
     return await this.tools.by(GitHubListItem.LINK_LOCATOR).wait(5000).untilPresent();

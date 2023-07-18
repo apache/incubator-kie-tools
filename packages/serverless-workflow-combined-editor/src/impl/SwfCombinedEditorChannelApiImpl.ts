@@ -35,21 +35,13 @@ import {
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { Position as MonacoPosition } from "monaco-editor";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import {
-  ServerlessWorkflowCombinedEditorChannelApi,
-  SwfFeatureToggle,
-  SwfFeatureToggleChannelApi,
-  SwfPreviewOptions,
-  SwfPreviewOptionsChannelApi,
-} from "../api";
+import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions, SwfPreviewOptionsChannelApi } from "../api";
 import { SwfStaticEnvelopeContentProviderChannelApi } from "../api/SwfStaticEnvelopeContentProviderChannelApi";
 
 export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
     private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
@@ -152,14 +144,6 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
 
-  public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
-    return (
-      this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
-        defaultValue: { stunnerEnabled: true },
-      }
-    );
-  }
-
   kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
     return (
       this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
@@ -176,20 +160,10 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     );
   }
 
-  public kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
-    return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetMermaidEnvelopeContent() ?? { defaultValue: "" }
-    );
-  }
-
   public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
     return (
       this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ?? { defaultValue: "" }
     );
-  }
-
-  public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
-    // no-op
   }
 
   kogitoSwfCombinedEditor_combinedEditorReady(): void {

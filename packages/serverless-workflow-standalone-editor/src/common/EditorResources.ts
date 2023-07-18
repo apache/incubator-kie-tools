@@ -19,6 +19,7 @@ import * as fs from "fs";
 export interface JsResource {
   path: string;
   content: string;
+  userAgentCondition?: string;
 }
 
 export interface CssResource {
@@ -42,6 +43,7 @@ export interface ReferencedResource {
   path: string;
   prefix?: string;
   suffix?: string;
+  userAgentCondition?: string;
 }
 
 export interface EditorResources {
@@ -83,7 +85,11 @@ export abstract class BaseEditorResources {
       });
     }
 
-    return { path: resource.path, content: (resource.prefix ?? "") + content + (resource.suffix ?? "") };
+    return {
+      path: resource.path,
+      content: (resource.prefix ?? "") + content + (resource.suffix ?? ""),
+      userAgentCondition: resource.userAgentCondition,
+    };
   }
 
   public createFontSource(path: string) {
@@ -97,5 +103,21 @@ export abstract class BaseEditorResources {
 
   public getBase64FromFile(path: string) {
     return Buffer.from(fs.readFileSync(path)).toString("base64");
+  }
+
+  public getUserAgentCondition(editorDirPath: string, gwtJsFileName: string) {
+    const compilationMapping = fs.readFileSync(`${editorDirPath}/compilation-mappings.txt`).toString();
+    const regex = new RegExp(gwtJsFileName + "\\nuser.agent (\\w+)");
+    const match = regex.exec(compilationMapping);
+    if (match) {
+      const userAgent = match[1];
+      if (userAgent === "gecko1_8") {
+        return "navigator.userAgent.toLowerCase().indexOf('webkit') == -1 && (navigator.userAgent.toLowerCase().indexOf('gecko') != -1 || document.documentMode >= 11)";
+      }
+      if (userAgent === "safari") {
+        return "navigator.userAgent.toLowerCase().indexOf('webkit') != -1";
+      }
+    }
+    return undefined;
   }
 }
