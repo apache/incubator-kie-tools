@@ -110,7 +110,7 @@ export const routes = {
 
   dataJson: new Route<{}>(() => "./data.json"),
 
-  swaggerUi: new Route<{}>(({}, baseUrl) => `${baseUrl}/q/swagger-ui`),
+  swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
 
   dmnResult: new Route<{
     pathParams: PathParams.MODEL_NAME;
@@ -126,7 +126,7 @@ export const routes = {
 
   static: {
     images: {
-      appLogoReverse: new Route<{}>(({}, baseUrl) => `${baseUrl}/images/app_logo_rgb_fullcolor_reverse.svg`),
+      appLogoReverse: new Route<{}>((_, baseUrl) => `${baseUrl}/images/app_logo_rgb_fullcolor_reverse.svg`),
     },
   },
 };
