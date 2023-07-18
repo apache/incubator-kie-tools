@@ -17,6 +17,16 @@
 import { getMarshaller } from "../dist";
 
 describe("invalid", () => {
+  test("empty content", () => {
+    try {
+      getMarshaller(``);
+
+      fail(`An exception should've been thrown.`);
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
   test("invalid content", () => {
     try {
       getMarshaller(`invalid content`);

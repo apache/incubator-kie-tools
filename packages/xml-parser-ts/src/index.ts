@@ -36,9 +36,9 @@ export type Elements = Record<string, string>;
 
 export const domParser = {
   getDomDocument: (xml: string | Buffer) => {
-    console.time("parsing dom took (DOMParser)");
+    // console.time("parsing dom took (DOMParser)");
     const domdoc = new DOMParser().parseFromString(xml.toString(), "application/xml");
-    console.timeEnd("parsing dom took (DOMParser)");
+    // console.timeEnd("parsing dom took (DOMParser)");
     return domdoc;
   },
 };
@@ -49,8 +49,7 @@ export const domParser = {
  *      "https://www.omg.org/spec/DMN/20211108/MODEL/" => "dmn:"
  */
 export function getInstanceNs(domdoc: Document): Map<string, string> {
-  console.time("instanceNs took");
-  // Find the root element. As there can be only one root element, we're safe looking for the first node with type 1 (element).
+  // console.time("instanceNs took");
 
   const nsMap = new Map<string, string>(
     [...domdoc.documentElement.attributes].flatMap((attr) => {
@@ -79,7 +78,7 @@ export function getInstanceNs(domdoc: Document): Map<string, string> {
     })
   );
 
-  console.timeEnd("instanceNs took");
+  // console.timeEnd("instanceNs took");
   return nsMap;
 }
 
@@ -100,17 +99,17 @@ export function getParser<T extends object>(args: {
       domdoc = domdoc ?? domParser.getDomDocument(xml);
       instanceNs = instanceNs ?? getInstanceNs(domdoc);
 
-      console.time("parsing overhead took");
+      // console.time("parsing overhead took");
       const rootType = { [args.root.element]: { type: args.root.type, isArray: false } };
       const json = parse({ ...args, instanceNs, node: domdoc, nodeType: rootType });
-      console.timeEnd("parsing overhead took");
+      // console.timeEnd("parsing overhead took");
 
       return { json, instanceNs };
     },
     build: ({ json, instanceNs }) => {
-      console.time("building took");
+      // console.time("building took");
       const xml = build({ json, ns: args.ns, instanceNs, indent: "" });
-      console.timeEnd("building took");
+      // console.timeEnd("building took");
       return xml;
     },
   };
@@ -136,7 +135,7 @@ export function parse(args: {
     const elemNode = children[ii];
 
     if (elemNode.nodeType === 1 /* element */) {
-      const { nsedName, subsedName } = normalizeNamespace(elemNode.nodeName, args.nodeType, args);
+      const { nsedName, subsedName } = resolveElement(elemNode.nodeName, args.nodeType, args);
 
       const elemPropType = args.nodeType?.[subsedName ?? nsedName];
 
@@ -194,7 +193,7 @@ export function parse(args: {
       } else if (currentValue) {
         if (elemPropType && !elemPropType.isArray) {
           console.warn(
-            `Accumulating values on known non-array property '${subsedName}' (${nsedName}) of type '${elemPropType.type}'.`
+            `[xml-parser-ts] Accumulating values on known non-array property '${subsedName}' (${nsedName}) of type '${elemPropType.type}'.`
           );
         }
 
@@ -212,7 +211,7 @@ export function parse(args: {
   return json;
 }
 
-function normalizeNamespace(
+function resolveElement(
   name: string,
   parentType: Record<string, MetaTypeDef | undefined> | undefined,
   {
