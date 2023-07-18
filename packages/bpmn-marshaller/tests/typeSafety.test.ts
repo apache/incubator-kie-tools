@@ -16,7 +16,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import * as os from "os";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/bpmn-marshaller";
 
@@ -46,21 +45,16 @@ describe("type safety", () => {
       const { parser, version } = getMarshaller(xml);
       const json = parser.parse();
 
-      const thisPath = path.resolve(__dirname);
-
       const minorVersion = version.split(".")[1];
       const tmpFile = `
-import { BPMN2${minorVersion}__tDefinitions } from "${thisPath}/../dist/schemas/bpmn-2_${minorVersion}/ts-gen/types";
+import { BPMN2${minorVersion}__tDefinitions } from "@kie-tools/bpmn-marshaller/dist/schemas/bpmn-2_${minorVersion}/ts-gen/types";
 
 const bpmn: BPMN2${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions, undefined, 2)};`;
 
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
 
-      const tsc = child_process.execSync(`tsc --noEmit --strict ${tmpFilePath}`, {
-        stdio: "pipe",
-        shell: true as any,
-      });
+      const tsc = child_process.execSync(`pnpm tsc --noEmit --strict ${tmpFilePath}`, { stdio: "pipe" });
 
       expect(tsc.toString()).toStrictEqual("");
     });
