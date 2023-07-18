@@ -23,6 +23,7 @@ module.exports = (env, argv) => [
       index: "./src/index.ts",
     },
     target: "node",
+    // FIXME: Ignoring warnings for express due to: https://github.com/webpack/webpack/issues/1576
     ignoreWarnings: [/express/],
   }),
 ];
