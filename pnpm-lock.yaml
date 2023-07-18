@@ -6539,6 +6539,9 @@ importers:
       monaco-yaml:
         specifier: ^4.0.0
         version: 4.0.0(monaco-editor@0.33.0)
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -6582,6 +6585,9 @@ importers:
       "@types/json-schema":
         specifier: ^7.0.11
         version: 7.0.11
+      "@types/path-browserify":
+        specifier: ^1.0.0
+        version: 1.0.0
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -6824,6 +6830,9 @@ importers:
       jsonc-parser:
         specifier: ^3.0.0
         version: 3.0.0
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
       vscode-json-languageservice:
         specifier: ^4.2.1
         version: 4.2.1
@@ -6867,6 +6876,9 @@ importers:
       "@types/json-to-ast":
         specifier: ^2.1.2
         version: 2.1.2
+      "@types/path-browserify":
+        specifier: ^1.0.0
+        version: 1.0.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -6903,6 +6915,9 @@ importers:
       openapi-types:
         specifier: ^7.0.1
         version: 7.2.3
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -6934,6 +6949,9 @@ importers:
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
+      "@types/path-browserify":
+        specifier: ^1.0.0
+        version: 1.0.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -16549,6 +16567,11 @@ packages:
   /@types/parse-json@4.0.0:
     resolution:
       { integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA== }
+    dev: true
+
+  /@types/path-browserify@1.0.0:
+    resolution:
+      { integrity: sha512-XMCcyhSvxcch8b7rZAtFAaierBYdeHXVvg2iYnxOV0MCQHmPuRRmGZPFDRzPayxcGiiSL1Te9UIO+f3cuj0tfw== }
     dev: true
 
   /@types/prettier@2.2.3:

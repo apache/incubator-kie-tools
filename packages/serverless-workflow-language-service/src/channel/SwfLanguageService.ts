@@ -29,7 +29,7 @@ import {
   SwfServiceCatalogService,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { posix as posixPath } from "path";
+import { posix as posixPath } from "path-browserify";
 import { JSONSchema } from "vscode-json-languageservice";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, Diagnostic, DiagnosticSeverity, Position, Range } from "vscode-languageserver-types";
