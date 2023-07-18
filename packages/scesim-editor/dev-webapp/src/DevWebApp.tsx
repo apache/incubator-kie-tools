@@ -23,8 +23,6 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 export function DevWebApp() {
-  const [xml, setXml] = useState("");
-
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
 
@@ -33,7 +31,9 @@ export function DevWebApp() {
       [...e.dataTransfer.items].forEach((item, i) => {
         if (item.kind === "file") {
           const reader = new FileReader();
-          reader.addEventListener("load", ({ target }) => setXml(target?.result as string));
+          reader.addEventListener("load", ({ target }) =>
+            ref.current?.setContent(item.getAsFile()?.name ?? "", target?.result as string)
+          );
           reader.readAsText(item.getAsFile() as any);
         }
       });
@@ -81,7 +81,7 @@ export function DevWebApp() {
         </PageSection>
         <hr />
         <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true}>
-          <TestScenarioEditor ref={ref} xml={xml} />
+          <TestScenarioEditor ref={ref} />
         </PageSection>
       </Page>
     </>

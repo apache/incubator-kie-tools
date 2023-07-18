@@ -19,6 +19,10 @@
   height: 100%;
 }
 
+.kie-scesim-editor--creation-form {
+  margin-top: 50px;
+}
+
 .kie-scesim-editor--grid-container {
   height: 100%;
 }
