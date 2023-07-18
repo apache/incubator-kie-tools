@@ -48,7 +48,7 @@ export const startServer = (args: ServerArgs): void => {
 
   // Ping handler
   app.use("/ping", (_req: express.Request, res: express.Response) => {
-    res.status(200).send("pong!");
+    res.status(200).send("pong");
   });
 
   // Default handler
