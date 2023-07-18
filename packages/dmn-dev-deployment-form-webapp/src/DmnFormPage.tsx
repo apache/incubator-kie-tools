@@ -104,7 +104,7 @@ export function DmnFormPage(props: Props) {
       setOpenAlert(AlertTypes.ERROR);
       console.error(error);
     }
-  }, [formInputs, props.formData.modelName]);
+  }, [formInputs, props.formData.modelName, app?.data?.baseUrl]);
 
   const pageErrorMessage = useMemo(
     () => (

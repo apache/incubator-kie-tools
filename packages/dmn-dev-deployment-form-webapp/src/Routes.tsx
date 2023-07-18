@@ -67,8 +67,8 @@ export class Route<
     return queryString;
   }
 
-  public path(pathParams: { [k in T["pathParams"]]: string }, baseUrl = ".") {
-    return this.pathDelegate(pathParams, baseUrl);
+  public path(pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) {
+    return this.pathDelegate(pathParams, baseUrl ?? ".");
   }
 }
 
