@@ -190,6 +190,24 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
 
+  const [assetType, setAssetType] = React.useState("please choose");
+
+  const onAssetTypeChange = useCallback((value: string) => {
+    setAssetType(value);
+  }, []);
+
+  const [skipFile, setSkipFile] = React.useState(false);
+
+  const onSkipFileChange = useCallback((value: boolean) => {
+    setSkipFile(value);
+  }, []);
+
+  const options = [
+    { value: "select one", label: "Select a type", disabled: false },
+    { value: "DMN", label: "Decision (DMN)", disabled: false },
+    { value: "RULE", label: "Rule (DRL)", disabled: true },
+  ];
+
   const onCreateScesimButtonClicked = useCallback(
     () =>
       setScesim((prevState) => ({
@@ -197,20 +215,13 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
           ...prevState.ScenarioSimulationModel,
           ["settings"]: {
             ...prevState.ScenarioSimulationModel["settings"],
-            ["type"]: "DMN",
+            ["type"]: assetType,
+            ["skipFromBuild"]: skipFile,
           },
         },
       })),
-    [setScesim]
+    [assetType, setScesim, skipFile]
   );
-
-  const [option, setOption] = React.useState("please choose");
-
-  const options = [
-    { value: "select one", label: "Select one", disabled: false },
-    { value: "DMN", label: "Decision (DMN)", disabled: false },
-    { value: "RULE", label: "Rule (DRL)", disabled: true },
-  ];
 
   return (
     <>
@@ -309,13 +320,10 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
           <Form isHorizontal className="kie-scesim-editor--creation-form">
             <FormGroup label="Asset type" isRequired>
               <FormSelect
-                value={option}
-                onChange={(value: string, _event: React.FormEvent<HTMLSelectElement>) => {
-                  setOption(value);
-                }}
+                value={assetType}
+                onChange={onAssetTypeChange}
                 id="asset-type-select"
                 name="asset-type-select"
-                aria-label="Your title"
               >
                 {options.map((option, index) => (
                   <FormSelectOption
@@ -328,13 +336,17 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
               </FormSelect>
             </FormGroup>
             <FormGroup label="Select DMN" isRequired>
-              <FormSelect id="dmn-select" name="dmn-select"></FormSelect>
+              <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
+                <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
+              </FormSelect>
             </FormGroup>
             <FormGroup>
               <Checkbox
-                label="Skip this Test Scenario during the test"
                 id="skip-scesim-checkbox"
+                isChecked={skipFile}
+                label="Skip this Test Scenario during the test"
                 name="skip-scesim-checkbox"
+                onChange={onSkipFileChange}
               />
             </FormGroup>
           </Form>
