@@ -56,7 +56,7 @@ export function DmnFormToolbar(props: Props) {
 
   const onOpenSwaggerUI = useCallback(() => {
     window.open(routes.swaggerUi.path({}, app?.data?.baseUrl), "_blank");
-  }, []);
+  }, [app?.data?.baseUrl]);
 
   const openForm = useCallback(
     (uri: string) => {
@@ -64,7 +64,7 @@ export function DmnFormToolbar(props: Props) {
         pathname: routes.form.path({ filePath: uri.slice(1) }, app?.data?.baseUrl),
       });
     },
-    [history]
+    [history, app?.data?.baseUrl]
   );
 
   const filename = useMemo(() => {
