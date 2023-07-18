@@ -15,7 +15,7 @@
  */
 
 import * as fs from "fs";
-import * as path from "path";
+import * as path from "path-browserify";
 import { SwfCatalogSourceType, SwfServiceCatalogService, SwfServiceCatalogServiceType } from "../../../dist/api";
 import { parseApiContent } from "../../../dist/channel";
 

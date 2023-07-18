@@ -23,7 +23,7 @@ import {
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { basename, extname } from "path";
+import { basename, extname } from "path-browserify";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import "./App.scss";

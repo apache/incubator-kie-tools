@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as fs from "fs";
-import * as path from "path";
+import * as path from "path-browserify";
 import { parseJsonSchema } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import {
   SwfServiceCatalogService,
