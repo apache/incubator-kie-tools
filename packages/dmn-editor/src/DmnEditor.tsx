@@ -22,6 +22,7 @@ import { PropertiesPanel } from "./PropertiesPanel";
 import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { DmnVersionLabel } from "./DmnVersionLabel";
 
 const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
@@ -103,9 +104,7 @@ export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Re
                 >
                   <DrawerContentBody>
                     <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                      <Label
-                        style={{ position: "absolute", bottom: "8px", left: "8px", zIndex: 100 }}
-                      >{`DMN ${marshaller.version}`}</Label>
+                      <DmnVersionLabel version={marshaller.version} />
                       {!openNodeWithExpression && (
                         <Diagram
                           dmn={dmn}
