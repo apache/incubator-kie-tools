@@ -1,11 +1,11 @@
 import * as React from "react";
 import { useCallback, useRef, useState } from "react";
 
-import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
-import { DmnEditor, DmnEditorRef } from "../../src/DmnEditor";
-
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+
+import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
+import { DmnEditor, DmnEditorRef } from "../../src/DmnEditor";
 
 export function DevWebApp() {
   const [xml, setXml] = useState(DEFAULT_DEV_WEBAPP_DMN);
@@ -67,7 +67,7 @@ export function DevWebApp() {
           <a ref={downloadRef} />
         </PageSection>
         <hr />
-        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true}>
+        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
           <DmnEditor ref={ref} xml={xml} />
         </PageSection>
       </Page>

@@ -48,7 +48,7 @@ export function SingleNodeProperties({
       dmn.definitions.drgElement?.find((s) => s["@_id"] === nodeId) ??
       dmn.definitions.artifact?.find((s) => s["@_id"] === nodeId)
     );
-  }, [nodeId]);
+  }, [dmn.definitions.artifact, dmn.definitions.drgElement, nodeId]);
 
   return (
     <>

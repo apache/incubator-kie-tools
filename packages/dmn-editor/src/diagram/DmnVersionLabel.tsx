@@ -22,7 +22,7 @@ export function DmnVersionLabel(props: { version: string }) {
       bodyContent={
         <div>
           This DMN was originally imported as DMN {props.version}, but was converted to DMN {latest} to enable new
-          features. <a href="#">See what's new on DMN {latest}.</a>
+          features. <a href="#">{`See what's new on DMN ${latest}`}.</a>
         </div>
       }
     >
