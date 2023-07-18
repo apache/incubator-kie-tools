@@ -701,6 +701,7 @@
       { "source": "@kie-tools/scesim-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/cors-proxy", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",

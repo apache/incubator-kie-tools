@@ -18,54 +18,31 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    CORS_PROXY__imageRegistry: {
+    CORS_PROXY_IMAGE__imageRegistry: {
       default: "quay.io",
       description: "",
     },
-    CORS_PROXY__imageAccount: {
+    CORS_PROXY_IMAGE__imageAccount: {
       default: "kie-tools",
       description: "",
     },
-    CORS_PROXY__imageName: {
+    CORS_PROXY_IMAGE__imageName: {
       default: "cors-proxy-image",
       description: "",
     },
-    CORS_PROXY__imageBuildTags: {
+    CORS_PROXY_IMAGE__imageBuildTags: {
       default: "latest",
       description: "",
-    },
-    CORS_PROXY__port: {
-      default: 8080,
-      description: "HTTP Port the proxy should listen to",
-    },
-    CORS_PROXY__origin: {
-      default: "*",
-      description: "Value to set on the 'Access-Control-Allow-Origin' header",
-    },
-    CORS_PROXY__selfSignedCertificates: {
-      default: false,
-      description:
-        "Allows the proxy supporting self-signed certificates, useful for local development. It disables the certificate validation, not recommended for production environments",
-    },
-    CORS_PROXY__verbose: {
-      default: false,
-      description: "Allows the proxy to run in verbose mode... useful to trace requests on development environments",
     },
   }),
   get env() {
     return {
-      corsProxy: {
-        config: {
-          port: getOrDefault(this.vars.CORS_PROXY__port),
-          origin: getOrDefault(this.vars.CORS_PROXY__origin),
-          selfSignedCertificates: getOrDefault(this.vars.CORS_PROXY__selfSignedCertificates),
-          verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
-        },
+      corsProxyImage: {
         image: {
-          registry: getOrDefault(this.vars.CORS_PROXY__imageRegistry),
-          account: getOrDefault(this.vars.CORS_PROXY__imageAccount),
-          name: getOrDefault(this.vars.CORS_PROXY__imageName),
-          buildTags: getOrDefault(this.vars.CORS_PROXY__imageBuildTags),
+          registry: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageRegistry),
+          account: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAccount),
+          name: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageName),
+          buildTags: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageBuildTags),
         },
       },
     };

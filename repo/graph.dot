@@ -357,6 +357,7 @@ digraph G {
   "@kie-tools/scesim-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/cors-proxy" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];

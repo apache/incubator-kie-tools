@@ -66,10 +66,10 @@ jobs:
       KIE_SANDBOX_EXTENDED_SERVICES__imageName: "kie-sandbox-extended-services-image"
       KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
-      CORS_PROXY__imageRegistry: "quay.io"
-      CORS_PROXY__imageAccount: "kie-tools"
-      CORS_PROXY__imageName: "cors-proxy-image"
-      CORS_PROXY__imageBuildTags: "${{ inputs.tag }}-prerelease"
+      CORS_PROXY_IMAGE__imageRegistry: "quay.io"
+      CORS_PROXY_IMAGE__imageAccount: "kie-tools"
+      CORS_PROXY_IMAGE__imageName: "cors-proxy-image"
+      CORS_PROXY_IMAGE__imageBuildTags: "${{ inputs.tag }}-prerelease"
 
       DEPLOY_TAG: "${{ inputs.tag }}-prerelease"
 
@@ -523,10 +523,10 @@ jobs:
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.CORS_PROXY__imageName }}"
-          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
-          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
-          username: "${{ env.CORS_PROXY__imageAccount }}"
+          image: "${{ env.CORS_PROXY_IMAGE__imageName }}"
+          tags: "${{ env.CORS_PROXY_IMAGE__imageBuildTags }}"
+          registry: "${{ env.CORS_PROXY_IMAGE__imageRegistry }}/${{ env.CORS_PROXY_IMAGE__imageAccount }}"
+          username: "${{ env.CORS_PROXY_IMAGE__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Deploy cors-proxy-image to OpenShift (Ubuntu only)"
@@ -535,7 +535,7 @@ jobs:
         uses: ./kie-tools/.github/actions/deploy-openshift
         with:
           image_tag: ${{ env.DEPLOY_TAG }}
-          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ env.DEPLOY_TAG }}"
+          image_url: "${{ env.CORS_PROXY_IMAGE__imageRegistry }}/${{ env.CORS_PROXY_IMAGE__imageAccount }}/${{ env.CORS_PROXY_IMAGE__imageName }}:${{ env.DEPLOY_TAG }}"
           app_name: "staging-cors-proxy"
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}
@@ -547,7 +547,7 @@ jobs:
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          podman image ls -q --filter reference=${{ env.CORS_PROXY__imageName }} | xargs podman rmi
+          podman image ls -q --filter reference=${{ env.CORS_PROXY_IMAGE__imageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F cors-proxy-image cleanup
 
