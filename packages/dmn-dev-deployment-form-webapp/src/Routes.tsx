@@ -15,7 +15,6 @@
  */
 
 const IS_HASH_ROUTER = true;
-const QUARKUS_BASE_URL = process.env.WEBPACK_REPLACE__quarkusBaseUrl;
 
 export enum QueryParams {}
 
@@ -31,7 +30,9 @@ export class Route<
     queryParams?: any;
   }
 > {
-  constructor(private readonly pathDelegate: (pathParams: { [k in T["pathParams"]]: string }) => string) {}
+  constructor(
+    private readonly pathDelegate: (pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) => string
+  ) {}
 
   public url(args: {
     base?: string;
@@ -66,8 +67,8 @@ export class Route<
     return queryString;
   }
 
-  public path(pathParams: { [k in T["pathParams"]]: string }) {
-    return this.pathDelegate(pathParams);
+  public path(pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) {
+    return this.pathDelegate(pathParams, baseUrl ?? ".");
   }
 }
 
@@ -109,11 +110,11 @@ export const routes = {
 
   dataJson: new Route<{}>(() => "./data.json"),
 
-  swaggerUi: new Route<{}>(() => `${QUARKUS_BASE_URL}/q/swagger-ui`),
+  swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
 
   dmnResult: new Route<{
     pathParams: PathParams.MODEL_NAME;
-  }>(({ modelName }) => `${QUARKUS_BASE_URL}/${modelName}/dmnresult`),
+  }>(({ modelName }, baseUrl) => `${baseUrl}/${modelName}/dmnresult`),
 
   form: new Route<{
     pathParams: PathParams.FILE_PATH;
@@ -121,11 +122,11 @@ export const routes = {
 
   model: new Route<{
     pathParams: PathParams.FILE_PATH;
-  }>(({ filePath }) => `${QUARKUS_BASE_URL}/${filePath}`),
+  }>(({ filePath }, baseUrl) => `${baseUrl}/${filePath}`),
 
   static: {
     images: {
-      appLogoReverse: new Route<{}>(() => `${QUARKUS_BASE_URL}/images/app_logo_rgb_fullcolor_reverse.svg`),
+      appLogoReverse: new Route<{}>((_, baseUrl) => `${baseUrl}/images/app_logo_rgb_fullcolor_reverse.svg`),
     },
   },
 };

@@ -24,7 +24,7 @@
     "copy:dmn-dev-deployment-quarkus-app": "cp -R ../dmn-dev-deployment-quarkus-app ./dist-dev/dmn-dev-deployment-quarkus-app",
     "create-test-image": "pnpm cleanup && pnpm copy:assets && node scripts/createTestImage.js",
     "create-test-image:build-only": "pnpm create-test-image build-only $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1)",
-    "create-test-image:kind": "pnpm create-test-image kind $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1) --k kie-sandbox-dev-cluster",
+    "create-test-image:kind": "pnpm create-test-image kind $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1) --kind-cluster-name kie-sandbox-dev-cluster",
     "create-test-image:minikube": "pnpm create-test-image minikube $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1)",
     "create-test-image:openshift": "pnpm create-test-image openshift $(pnpm image:tag | tail -1) $(pnpm image:args | tail -1)",
     "image:args": "echo \"--build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/\"",

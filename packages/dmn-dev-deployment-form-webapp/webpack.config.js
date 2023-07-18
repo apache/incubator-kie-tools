@@ -20,6 +20,9 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
+const { env } = require("./env");
+
+const buildEnv = env;
 
 module.exports = async (env) => {
   return merge(common(env), {
