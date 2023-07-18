@@ -43,8 +43,6 @@ COPY --chown=1000:0 dist-dev/cors-proxy $HOME/cors-proxy
 
 EXPOSE $CORS_PROXY_HTTP_PORT
 
-WORKDIR $HOME/cors-proxy
-
 USER 1000
 
 CMD node $HOME/cors-proxy/index.js

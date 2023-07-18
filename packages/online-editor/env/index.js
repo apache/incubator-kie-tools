@@ -61,7 +61,7 @@ module.exports = composeEnv(
       },
       ONLINE_EDITOR__corsProxyUrl: {
         default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
-        description: "Git CORS Proxy URL.",
+        description: "CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,

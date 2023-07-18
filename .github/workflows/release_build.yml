@@ -320,10 +320,10 @@ jobs:
   cors_proxy_image:
     env:
       OPENSHIFT_APP_NAME: "cors-proxy"
-      CORS_PROXY__imageRegistry: "quay.io"
-      CORS_PROXY__imageAccount: "kie-tools"
-      CORS_PROXY__imageName: "cors-proxy-image"
-      CORS_PROXY__imageBuildTags: "latest ${{ inputs.tag }}"
+      CORS_PROXY_IMAGE__imageRegistry: "quay.io"
+      CORS_PROXY_IMAGE__imageAccount: "kie-tools"
+      CORS_PROXY_IMAGE__imageName: "cors-proxy-image"
+      CORS_PROXY_IMAGE__imageBuildTags: "latest ${{ inputs.tag }}"
 
     outputs:
       cors_proxy_url: ${{ steps.deploy_cors_proxy_image.outputs.route_url }}
@@ -359,10 +359,10 @@ jobs:
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.CORS_PROXY__imageName }}"
-          tags: "${{ env.CORS_PROXY__imageBuildTags }}"
-          registry: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}"
-          username: "${{ env.CORS_PROXY__imageAccount }}"
+          image: "${{ env.CORS_PROXY_IMAGE__imageName }}"
+          tags: "${{ env.CORS_PROXY_IMAGE__imageBuildTags }}"
+          registry: "${{ env.CORS_PROXY_IMAGE__imageRegistry }}/${{ env.CORS_PROXY_IMAGE__imageAccount }}"
+          username: "${{ env.CORS_PROXY_IMAGE__imageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "Deploy cors-proxy-image to OpenShift"
@@ -371,7 +371,7 @@ jobs:
         uses: ./.github/actions/deploy-openshift
         with:
           image_tag: ${{ inputs.tag }}
-          image_url: "${{ env.CORS_PROXY__imageRegistry }}/${{ env.CORS_PROXY__imageAccount }}/${{ env.CORS_PROXY__imageName }}:${{ inputs.tag }}"
+          image_url: "${{ env.CORS_PROXY_IMAGE__imageRegistry }}/${{ env.CORS_PROXY_IMAGE__imageAccount }}/${{ env.CORS_PROXY_IMAGE__imageName }}:${{ inputs.tag }}"
           app_name: ${{ env.OPENSHIFT_APP_NAME }}
           part_of: ${{ env.OPENSHIFT_PART_OF }}
           openshift_server: ${{ secrets.openshift_server }}

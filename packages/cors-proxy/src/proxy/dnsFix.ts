@@ -19,7 +19,7 @@ import * as os from "os";
 
 /* 
 Fix to allow the cors-proxy to correctly connect with local applications when running in macOs. More info: https://github.com/nodejs/node/issues/40702 
-TODO: this is already fixed on Node 20... please remove this after upgrade!
+TODO: this is already fixed on Node 20: Remove this as part of https://github.com/kiegroup/kie-issues/issues/392
 */
 export const dnsFix = () => {
   const nodeVersion = +process.versions.node.split(".")[0];

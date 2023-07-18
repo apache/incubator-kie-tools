@@ -17,14 +17,33 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    CORS_PROXY__port: {
+      default: 8080,
+      description: "HTTP Port the proxy should listen to",
+    },
+    CORS_PROXY__origin: {
+      default: "*",
+      description: "Value to set on the 'Access-Control-Allow-Origin' header",
+    },
+    CORS_PROXY__selfSignedCertificates: {
+      default: true,
+      description:
+        "Allows the proxy supporting self-signed certificates, useful for local development. It disables the certificate validation, not recommended for production environments",
+    },
+    CORS_PROXY__verbose: {
+      default: true,
+      description: "Allows the proxy to run in verbose mode... useful to trace requests on development environments",
+    },
+  }),
   get env() {
     return {
       corsProxy: {
         dev: {
-          port: 8080,
-          selfSignedCertificates: true,
-          verbose: true,
+          port: getOrDefault(this.vars.CORS_PROXY__port),
+          origin: getOrDefault(this.vars.CORS_PROXY__origin),
+          selfSignedCertificates: getOrDefault(this.vars.CORS_PROXY__selfSignedCertificates),
+          verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
         },
       },
     };

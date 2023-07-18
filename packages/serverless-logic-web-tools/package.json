@@ -36,6 +36,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools-core/workspaces-git-fs": "workspace:*",
+    "@kie-tools/cors-proxy": "workspace:*",
     "@kie-tools/dashbuilder-editor": "workspace:*",
     "@kie-tools/dashbuilder-language-service": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
