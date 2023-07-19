@@ -20,7 +20,7 @@ import {
   getJsonStateNameFromOffset,
 } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import * as fs from "fs";
-import * as path from "path-browserify";
+import * as path from "path";
 import { getLineFromOffset } from "./testUtils";
 
 describe("SwfJsonOffsets tests", () => {

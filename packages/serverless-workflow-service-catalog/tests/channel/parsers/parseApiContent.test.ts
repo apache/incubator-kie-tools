@@ -15,12 +15,12 @@
  */
 
 import * as fs from "fs";
-import { posix as posixPath } from "path-browserify";
+import * as path from "path";
 import { SwfCatalogSourceType, SwfServiceCatalogService, SwfServiceCatalogServiceType } from "../../../dist/api";
 import { parseApiContent } from "../../../dist/channel";
 
 function parseContent(fileName: string): SwfServiceCatalogService {
-  const filePath = posixPath.resolve(__dirname, `examples/${fileName}`);
+  const filePath = path.resolve(__dirname, `examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
 
   return parseApiContent({
