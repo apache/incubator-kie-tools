@@ -15,7 +15,7 @@
  */
 
 import * as fs from "fs";
-import * as path from "path-browserify";
+import { posix as posixPath } from "path-browserify";
 import * as yaml from "js-yaml";
 import { parseCamelRoutes } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import {
@@ -27,7 +27,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 function doParse(fileName: string): SwfServiceCatalogService {
-  const filePath = path.resolve(__dirname, `../examples/${fileName}`);
+  const filePath = posixPath.resolve(__dirname, `../examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
   const serviceCamelRoutesDocument = yaml.load(content) as any;
 

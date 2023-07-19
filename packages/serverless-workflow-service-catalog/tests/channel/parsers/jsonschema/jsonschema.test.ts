@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as fs from "fs";
-import * as path from "path-browserify";
+import { posix as posixPath } from "path-browserify";
 import { parseJsonSchema } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import {
   SwfServiceCatalogService,
@@ -22,7 +22,7 @@ import {
   SwfServiceCatalogFunctionArgumentType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 function doParse(fileName: string): SwfServiceCatalogService {
-  const filePath = path.resolve(__dirname, `../examples/${fileName}`);
+  const filePath = posixPath.resolve(__dirname, `../examples/${fileName}`);
   const content = fs.readFileSync(filePath).toString("utf-8");
   const jsonSchemaDocument = JSON.parse(content) as any;
 
