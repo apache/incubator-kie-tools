@@ -26,6 +26,7 @@
     "build:win32": "make win32",
     "install": "go mod tidy",
     "pack-app": "run-script-os",
+    "serve": "npx http-server dist --port 8092",
     "start": "make start",
     "test": "pnpm build:prod && docker run -it -p 8091:8091 $(docker build -q . -f ./Containerfile)"
   },

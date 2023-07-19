@@ -2882,6 +2882,22 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  packages/dmn-dev-deployment-accelerator:
+    dependencies:
+      "@kie-tools/dev-deployments-upload-service":
+        specifier: workspace:*
+        version: link:../dev-deployments-upload-service
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/dmn-dev-deployment-base-image:
     dependencies:
       "@kie-tools/dmn-dev-deployment-form-webapp":

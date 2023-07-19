@@ -1,0 +1,46 @@
+{
+  "private": true,
+  "name": "@kie-tools/dmn-dev-deployment-accelerator",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build-quarkus:dev": "run-script-os",
+    "build-quarkus:dev:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests",
+    "build-quarkus:dev:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests\"",
+    "build-quarkus:prod": "pnpm lint && run-script-os",
+    "build-quarkus:prod:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
+    "build-quarkus:prod:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "build:dev": "pnpm copy-assets && docker build . -f Containerfile -t dmn-dev-deployment-accelerator:latest",
+    "copy-assets": "cp -R ../dev-deployments-upload-service/dist/linux dist-dev",
+    "install": "cd quarkus-app && node install.js",
+    "install:mvnw": "run-script-os",
+    "install:mvnw:darwin:linux": "cd quarkus-app && mvn wrapper:wrapper",
+    "install:mvnw:win32": "pnpm powershell \"cd quarkus-app && mvn wrapper:wrapper\"",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "quarkus:dev": "cd quarkus-app && mvn clean package quarkus:dev -DskipTests"
+  },
+  "dependencies": {
+    "@kie-tools/dev-deployments-upload-service": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}

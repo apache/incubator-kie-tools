@@ -86,6 +86,7 @@
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
       { "id": "@kie-tools/dev-deployments-upload-service" },
+      { "id": "@kie-tools/dmn-dev-deployment-accelerator" },
       { "id": "@kie-tools/dmn-dev-deployment-base-image" },
       { "id": "@kie-tools/dmn-dev-deployment-form-webapp" },
       { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
@@ -569,6 +570,16 @@
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dev-deployments-upload-service", "target": "@kie-tools/root-env", "weight": 1 },
       {
+        "source": "@kie-tools/dmn-dev-deployment-accelerator",
+        "target": "@kie-tools/dev-deployments-upload-service",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-dev-deployment-accelerator",
+        "target": "@kie-tools/maven-config-setup-helper",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/dmn-dev-deployment-base-image",
         "target": "@kie-tools/dmn-dev-deployment-form-webapp",
         "weight": 1
@@ -899,6 +910,7 @@
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
     ["@kie-tools/dev-deployments-upload-service", "packages/dev-deployments-upload-service"],
+    ["@kie-tools/dmn-dev-deployment-accelerator", "packages/dmn-dev-deployment-accelerator"],
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],
     ["@kie-tools/dmn-dev-deployment-quarkus-app", "packages/dmn-dev-deployment-quarkus-app"],
