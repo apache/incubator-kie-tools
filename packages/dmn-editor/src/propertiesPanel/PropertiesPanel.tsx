@@ -29,8 +29,8 @@ import { BkmProperties } from "./BkmProperties";
 import { DecisionServiceProperties } from "./DecisionServiceProperties";
 import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
-import "./PropertiesPanel.css";
 import { useMemo } from "react";
+import "./PropertiesPanel.css";
 
 export type NodeType = "inputData" | "decision" | "bkm" | "decisionService" | "knowledgeSource" | "textAnnotation";
 
