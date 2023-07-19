@@ -1,0 +1,11 @@
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
+
+EXPOSE 8091
+
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=/tmp/unzip-at
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8091
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
+
+COPY dist/linux/dev-deployments-upload-service /bin
+
+CMD ["/bin/bash", "-c", "/bin/dev-deployments-upload-service && cd /tmp/unzip-at && echo 'Done!'"]

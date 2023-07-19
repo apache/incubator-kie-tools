@@ -2815,6 +2815,18 @@ importers:
         specifier: workspace:*
         version: link:../root-env
 
+  packages/dev-deployments-upload-service:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   packages/dmn-dev-deployment-base-image:
     dependencies:
       "@kie-tools/dmn-dev-deployment-form-webapp":
@@ -4320,6 +4332,57 @@ importers:
         version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
       typescript:
         specifier: ^4.6.2
+        version: 4.8.4
+
+  packages/k8s-yaml-to-apiserver-requests:
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.18.10
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.18.10(@babel/core@7.18.10)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/js-yaml":
+        specifier: ^4.0.5
+        version: 4.0.5
+      "@types/react-router":
+        specifier: ^5.1.14
+        version: 5.1.14
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+      react-router:
+        specifier: ^5.2.1
+        version: 5.2.1
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.4.2
         version: 4.8.4
 
   packages/keyboard-shortcuts:
@@ -26874,6 +26937,19 @@ packages:
     engines: { node: ">=4" }
     dev: true
 
+  /mini-create-react-context@0.4.1(prop-types@15.8.1):
+    resolution:
+      { integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ== }
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    peerDependencies:
+      prop-types: ^15.0.0
+      react: ^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      "@babel/runtime": 7.18.9
+      prop-types: 15.8.1
+      tiny-warning: 1.0.3
+    dev: true
+
   /mini-create-react-context@0.4.1(prop-types@15.8.1)(react@17.0.2):
     resolution:
       { integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ== }
@@ -29977,6 +30053,24 @@ packages:
       react-router: 5.2.1(react@17.0.2)
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
+
+  /react-router@5.2.1:
+    resolution:
+      { integrity: sha512-lIboRiOtDLFdg1VTemMwud9vRVuOCZmUIT/7lUoZiSpPODiiH1UQlfXy+vPLC/7IWdFYnhRwAyNqA/+I7wnvKQ== }
+    peerDependencies:
+      react: ">=15"
+    dependencies:
+      "@babel/runtime": 7.16.7
+      history: 4.10.1
+      hoist-non-react-statics: 3.3.2
+      loose-envify: 1.4.0
+      mini-create-react-context: 0.4.1(prop-types@15.8.1)
+      path-to-regexp: 1.8.0
+      prop-types: 15.8.1
+      react-is: 16.13.1
+      tiny-invariant: 1.1.0
+      tiny-warning: 1.0.3
+    dev: true
 
   /react-router@5.2.1(react@17.0.2):
     resolution:
