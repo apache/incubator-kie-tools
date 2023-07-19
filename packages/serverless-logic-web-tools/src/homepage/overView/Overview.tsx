@@ -14,68 +14,23 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
-import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { Button, ButtonVariant, Card } from "@patternfly/react-core/dist/js";
+import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { NewModelCard } from "./NewModelCard";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
-import { ImportFromUrlCard } from "./ImportFromUrlCard";
-import { UploadCard } from "./UploadCard";
-import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
-import { QueryParams } from "../../navigation/Routes";
-import { useEffect, useCallback, useContext, useMemo } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
-import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
-import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
+import * as React from "react";
+import { useEffect } from "react";
 import { SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL } from "../../AppConstants";
 import { setPageTitle } from "../../PageTitle";
+import { CreateOrImportModelGrid } from "./CreateOrImportModelGrid";
 
 const PAGE_TITLE = "Overview";
 
 export function Overview(props: { isNavOpen: boolean }) {
-  const routes = useRoutes();
-  const history = useHistory();
-  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
-  const queryParams = useQueryParams();
-  const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
-
-  const force12Cols = useMemo(
-    () => props.isNavOpen && !!qsContext.activeQuickStartID,
-    [props.isNavOpen, qsContext.activeQuickStartID]
-  );
-
-  const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: routes.home.path({}),
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, routes, queryParams]);
-
-  const expandWorkspace = useCallback(
-    (workspaceId: string) => {
-      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
-      if (!expand) {
-        closeExpandedWorkspace();
-        return;
-      }
-
-      history.replace({
-        pathname: routes.home.path({}),
-        search: routes.home.queryString({ expand }),
-      });
-    },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
-  );
-
   useEffect(() => {
     setPageTitle([PAGE_TITLE]);
   }, []);
@@ -123,63 +78,9 @@ export function Overview(props: { isNavOpen: boolean }) {
           </StackItem>
         </Stack>
       </PageSection>
-      <PageSection className="appsrv-marketing--page-section--marketing" isWidthLimited>
-        <Grid hasGutter>
-          <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
-            <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
-              <CardHeader>
-                <CardHeaderMain>
-                  <CardTitle>
-                    <Title headingLevel="h2">Create</Title>
-                  </CardTitle>
-                </CardHeaderMain>
-              </CardHeader>
-              <CardBody>
-                <Grid>
-                  <NewModelCard
-                    title={"Workflow"}
-                    jsonExtension={FileTypes.SW_JSON}
-                    yamlExtension={FileTypes.SW_YAML}
-                    description={"Define orchestration logic for services."}
-                  />
-                  <NewModelCard
-                    title={"Decision"}
-                    jsonExtension={FileTypes.YARD_JSON}
-                    yamlExtension={FileTypes.YARD_YAML}
-                    description={"Define decision logic for services."}
-                  />
-                  <NewModelCard
-                    title={"Dashboard"}
-                    yamlExtension={FileTypes.DASH_YAML}
-                    description={"Define data visualization from data extracted from applications."}
-                  />
-                </Grid>
-              </CardBody>
-            </Card>
-          </GridItem>
-          <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
-            <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
-              <CardHeader>
-                <CardHeaderMain>
-                  <CardTitle>
-                    <Title headingLevel="h2">Import</Title>
-                  </CardTitle>
-                </CardHeaderMain>
-              </CardHeader>
-              <CardBody>
-                <Gallery
-                  hasGutter={true}
-                  // 16px is the "Gutter" width.
-                  minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
-                  style={{ height: "calc(100% - 32px)" }}
-                >
-                  <ImportFromUrlCard />
-                  <UploadCard expandWorkspace={expandWorkspace} />
-                </Gallery>
-              </CardBody>
-            </Card>
-          </GridItem>
-        </Grid>
+
+      <PageSection className="appsrv-marketing--page-section--marketing">
+        <CreateOrImportModelGrid isNavOpen={props.isNavOpen} />
       </PageSection>
 
       <PageSection isWidthLimited className="appsrv-marketing--page-section--marketing" variant="light">

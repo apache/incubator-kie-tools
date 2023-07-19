@@ -37,7 +37,7 @@ export type TableToolbarProps = TablePaginationProps & {
 
 export function TableToolbar(props: TableToolbarProps) {
   const {
-    itemCount: itemCount,
+    itemCount,
     onDeleteActionButtonClick: onDeleteActionButtonClick,
     selectedElementsCount,
     searchValue,

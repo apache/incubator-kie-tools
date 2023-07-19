@@ -344,6 +344,7 @@ digraph G {
   "@kie-tools/scesim-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/scesim-marshaller" [ style = "dashed", color = "blue" ];
   "@kie-tools/scesim-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
+  "@kie-tools/scesim-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
