@@ -11,7 +11,7 @@ export function BaseEdge(props: RF.EdgeProps) {
   const dmnShapeSource = props.data.dmnShapeSource as DMNDI13__DMNShape | undefined;
   const dmnShapeTarget = props.data.dmnShapeTarget as DMNDI13__DMNShape | undefined;
 
-  const path = useMemo(
+  const { path, points } = useMemo(
     () =>
       getSnappedMultiPointAnchoredEdgePath({
         dmnEdge,
@@ -24,14 +24,34 @@ export function BaseEdge(props: RF.EdgeProps) {
   );
 
   return (
-    <>{path && <path d={path} markerEnd={props.markerEnd} markerStart={props.markerStart} style={props.style} />}</>
+    <>
+      {path && (
+        <>
+          <path d={path} markerEnd={props.markerEnd} markerStart={props.markerStart} style={props.style} />
+        </>
+      )}
+
+      {points.map((p, i) => (
+        <circle
+          key={i}
+          cx={p["@_x"]}
+          cy={p["@_y"]}
+          r={5}
+          fill={i === 0 || i === points.length - 1 ? "lightblue" : "black"}
+        />
+      ))}
+
+      {/* {(dmnEdge?.["di:waypoint"] ?? []).map((p, i) => (
+        <circle key={i} cx={p["@_x"]} cy={p["@_y"]} r={5} fill={"red"} />
+      ))} */}
+    </>
   );
 }
 
 export function InformationRequirementEdge(props: RF.EdgeProps) {
   return (
     <>
-      <BaseEdge {...props} style={{ strokeWidth: 1, stroke: "black" }} />;
+      <BaseEdge {...props} style={{ strokeWidth: 1, stroke: "black" }} />
     </>
   );
 }

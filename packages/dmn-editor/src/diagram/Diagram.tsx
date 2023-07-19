@@ -33,6 +33,7 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
+import { ConnectionLine } from "./edges/ConnectionLine";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -59,6 +60,10 @@ export function Diagram({
 }) {
   const [nodes, setNodes, onNodesChange] = RF.useNodesState([]);
   const [edges, setEdges, onEdgesChange] = RF.useEdgesState([]);
+
+  const onEdgeUpdate = useCallback(() => {
+    /** */
+  }, []);
 
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
 
@@ -214,6 +219,7 @@ export function Diagram({
                 dmnShapeSource: shapesById.get(source),
                 dmnShapeTarget: shapesById.get(target),
               },
+              updatable: true,
               id: id ?? "",
               type: "informationRequirement",
               source,
@@ -237,6 +243,7 @@ export function Diagram({
                 dmnShapeSource: shapesById.get(source),
                 dmnShapeTarget: shapesById.get(target),
               },
+              updatable: true,
               id: id ?? "",
               type: "knowledgeRequirement",
               source,
@@ -268,6 +275,7 @@ export function Diagram({
                 dmnShapeSource: shapesById.get(source),
                 dmnShapeTarget: shapesById.get(target),
               },
+              updatable: true,
               id: id ?? "",
               type: "authorityRequirement",
               source,
@@ -291,6 +299,7 @@ export function Diagram({
               dmnShapeSource: shapesById.get(source),
               dmnShapeTarget: shapesById.get(target),
             },
+            updatable: true,
             id: id ?? "",
             type: "association",
             source,
@@ -350,6 +359,9 @@ export function Diagram({
         selectionMode={RF.SelectionMode.Partial}
         onNodesChange={onNodesChange} // FIXME: Selection is getting lost when dragging if I change to _onNodesChange.
         onEdgesChange={onEdgesChange}
+        edgesUpdatable={true}
+        connectionLineComponent={ConnectionLine}
+        onEdgeUpdate={onEdgeUpdate}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         snapToGrid={true}
