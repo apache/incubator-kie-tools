@@ -61,9 +61,9 @@ The service will be up at http://localhost:8080
 
 ### Container configuration
 
-It's passible to configure certain parameters of the container usingsing the following env variables:
+It's possible to configure certain parameters of the container using the following env variables:
 
-- _CORS_PROXY_PORT_: Configures the HTTP Port for the proxy, defaults to `8080`
+- _CORS_PROXY_HTTP_PORT_: Configures the HTTP Port for the proxy, defaults to `8080`
 - _CORS_PROXY_ORIGIN_: Sets the value of the 'Access-Control-Allow-Origin' header, defaults to `*`
 - _CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES_: Allows the proxy supporting self-signed certificates, useful for local development. It disables the certificate validation, not recommended for production environments. Defaults to `false`.
 - _CORS_PROXY_VERBOSE_: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
@@ -71,7 +71,7 @@ It's passible to configure certain parameters of the container usingsing the fol
 For example setting an `.env` file like:
 
 ```bash
-CORS_PROXY_PORT=8080
+CORS_PROXY_HTTP_PORT=8080
 CORS_PROXY_ORIGIN=*
 CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES=true
 CORS_PROXY_VERBOSE=false
@@ -80,5 +80,5 @@ CORS_PROXY_VERBOSE=false
 or by passing the variables as arguments like
 
 ```bash
-$ docker run -p 8080:8080 -e CORS_PROXY_PORT=8080 -e CORS_PROXY_ORIGIN=* -e CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES=true -e CORS_PROXY_VERBOSE=false-i --rm quay.io/kie-tools/cors-proxy-image:latest
+$ docker run -p 8080:8080 -e CORS_PROXY_HTTP_PORT=8080 -e CORS_PROXY_ORIGIN=* -e CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES=true -e CORS_PROXY_VERBOSE=false-i --rm quay.io/kie-tools/cors-proxy-image:latest
 ```
