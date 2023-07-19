@@ -1106,6 +1106,9 @@ importers:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
+      "@kie-tools/chrome-extension-test-helper":
+        specifier: workspace:*
+        version: link:../chrome-extension-test-helper
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -1280,6 +1283,30 @@ importers:
       zip-webpack-plugin:
         specifier: ^4.0.1
         version: 4.0.1(webpack@5.70.0)
+
+  packages/chrome-extension-test-helper:
+    devDependencies:
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/chai":
+        specifier: ^4.2.17
+        version: 4.2.18
+      "@types/selenium-webdriver":
+        specifier: ^4.1.12
+        version: 4.1.12
+      chai:
+        specifier: ^4.3.4
+        version: 4.3.4
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      selenium-webdriver:
+        specifier: ^4.8.1
+        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
 
   packages/dashbuilder:
     dependencies:
