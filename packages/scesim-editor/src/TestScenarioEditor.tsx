@@ -39,109 +39,11 @@ import EditIcon from "@patternfly/react-icons/dist/esm/icons/edit-alt-icon";
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-import { TestToolsPanel } from "../panels/TestToolsPanel";
+import { TestToolsPanel } from "./panels/TestToolsPanel";
+
+import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
-
-const EMPTY_SCENARIO = `<?xml version="1.0" encoding="UTF-8"?>
-<ScenarioSimulationModel version="1.8">
-  <simulation>
-    <scesimModelDescriptor>
-      <factMappings>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>Index</name>
-            <type>OTHER</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>#</name>
-            <className>java.lang.Integer</className>
-          </factIdentifier>
-          <className>java.lang.Integer</className>
-          <factAlias>#</factAlias>
-          <columnWidth>70</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>Description</name>
-            <type>OTHER</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Scenario description</name>
-            <className>java.lang.String</className>
-          </factIdentifier>
-          <className>java.lang.String</className>
-          <factAlias>Scenario description</factAlias>
-          <columnWidth>300</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-        </FactMapping>
-      </factMappings>
-    </scesimModelDescriptor>
-    <scesimData>
-      <Scenario>
-        <factMappingValues>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Scenario description</name>
-              <className>java.lang.String</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>Description</name>
-              <type>OTHER</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-        </factMappingValues>
-      </Scenario>
-    </scesimData>
-  </simulation>
-      <background>
-        <scesimModelDescriptor>
-          <factMappings>
-            <FactMapping>
-              <expressionElements/>
-              <expressionIdentifier>
-                <name>1|1</name>
-                <type>GIVEN</type>
-              </expressionIdentifier>
-              <factIdentifier>
-                <name>Empty</name>
-                <className>java.lang.Void</className>
-              </factIdentifier>
-              <className>java.lang.Void</className>
-              <factAlias>INSTANCE 1</factAlias>
-              <expressionAlias>PROPERTY 1</expressionAlias>
-              <columnWidth>114</columnWidth>
-              <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-            </FactMapping>
-          </factMappings>
-        </scesimModelDescriptor>
-        <scesimData>
-          <BackgroundData>
-            <factMappingValues>
-              <FactMappingValue>
-                <factIdentifier>
-                  <name>Empty</name>
-                  <className>java.lang.Void</className>
-                </factIdentifier>
-                <expressionIdentifier>
-                  <name>1|1</name>
-                  <type>GIVEN</type>
-                </expressionIdentifier>
-              </FactMappingValue>
-            </factMappingValues>
-          </BackgroundData>
-        </scesimData>
-      </background>
-      <settings>
-        <skipFromBuild>false</skipFromBuild>
-      </settings>
-      <imports>
-        <imports/>
-      </imports>
-    </ScenarioSimulationModel>`;
 
 export enum TestScenarioEditorTab {
   EDITOR,
@@ -159,13 +61,70 @@ export type TestScenarioEditorRef = {
   setContent(path: string, content: string): void;
 };
 
-export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<TestScenarioEditorRef>) => {
-  const [scesimXMLContent, setScesimXMLContent] = useState(EMPTY_SCENARIO);
+export function TestScenarioCreationPanel({
+  assetType,
+  onAssetTypeChange,
+  onCreateScesimButtonClicked,
+  onSkipFileChange,
+  skipFile,
+}: {
+  assetType: string;
+  onAssetTypeChange: (value: string) => void;
+  onCreateScesimButtonClicked: () => void;
+  onSkipFileChange: (value: boolean) => void;
+  skipFile: boolean;
+}) {
+  const assetsOption = [
+    { value: "select one", label: "Select a type", disabled: true },
+    { value: "DMN", label: "Decision (DMN)", disabled: false },
+    { value: "RULE", label: "Rule (DRL)", disabled: true },
+  ];
 
-  const marshaller = useMemo(() => getMarshaller(scesimXMLContent.trim()), [scesimXMLContent]);
+  return (
+    <EmptyState>
+      <EmptyStateIcon icon={CubesIcon} />
+      <Title headingLevel={"h6"} size={"md"}>
+        Create a new Test Scenario
+      </Title>
+      <Form isHorizontal className="kie-scesim-editor--creation-form">
+        <FormGroup label="Asset type" isRequired>
+          <FormSelect value={assetType} onChange={onAssetTypeChange} id="asset-type-select" name="asset-type-select">
+            {assetsOption.map((option, index) => (
+              <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
+            ))}
+          </FormSelect>
+        </FormGroup>
+        <FormGroup label="Select DMN" isRequired>
+          <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
+            <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
+          </FormSelect>
+        </FormGroup>
+        <FormGroup>
+          <Checkbox
+            id="skip-scesim-checkbox"
+            isChecked={skipFile}
+            label="Skip this file during the test"
+            name="skip-scesim-checkbox"
+            onChange={onSkipFileChange}
+          />
+        </FormGroup>
+      </Form>
+      <Button variant="primary" icon={<AddIcon />} onClick={onCreateScesimButtonClicked}>
+        Create
+      </Button>
+    </EmptyState>
+  );
+}
+
+export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<TestScenarioEditorRef>) => {
+  /** Test Scenario File, Model and Marshaller Management  */
+
+  const [scesimFile, setScesimFile] = useState({ content: EMPTY_ONE_EIGHT, path: "" });
+
+  const marshaller = useMemo(() => getMarshaller(scesimFile.content.trim()), [scesimFile]);
 
   const scesimInitial: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = useMemo(
-    () => marshaller.parser.parse() as { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType },
+    () => marshaller.parser.parse(),
     [marshaller.parser]
   );
 
@@ -174,21 +133,30 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
     setScesim(scesimInitial);
   }, [scesimInitial]);
 
+  /** Implementing Editor APIs */
+
   useImperativeHandle(
     ref,
     () => ({
       getContent: () => marshaller.builder.build(scesim),
-      setContent: (path, content) => setScesimXMLContent(content || EMPTY_SCENARIO),
+      setContent: (path, content) => setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: path }),
     }),
-    [scesim, marshaller.builder]
+    [marshaller.builder, scesim]
   );
 
-  const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
-  const onTabChanged = useCallback((e, tab) => {
+  /** Test Scenario Right Dock Panel  */
+
+  const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
+
+  const onTabChanged = useCallback((event, tab) => {
     setTab(tab);
   }, []);
 
+  /** Test Scenario Right Dock Panel  */
+
   const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
+
+  /** Test Scenario Creation Panel  */
 
   const [assetType, setAssetType] = React.useState("please choose");
 
@@ -201,12 +169,6 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
   const onSkipFileChange = useCallback((value: boolean) => {
     setSkipFile(value);
   }, []);
-
-  const options = [
-    { value: "select one", label: "Select a type", disabled: false },
-    { value: "DMN", label: "Decision (DMN)", disabled: false },
-    { value: "RULE", label: "Rule (DRL)", disabled: true },
-  ];
 
   const onCreateScesimButtonClicked = useCallback(
     () =>
@@ -312,48 +274,13 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
           </div>
         </>
       ) : (
-        <EmptyState>
-          <EmptyStateIcon icon={CubesIcon} />
-          <Title headingLevel={"h6"} size={"md"}>
-            Create a new Test Scenario
-          </Title>
-          <Form isHorizontal className="kie-scesim-editor--creation-form">
-            <FormGroup label="Asset type" isRequired>
-              <FormSelect
-                value={assetType}
-                onChange={onAssetTypeChange}
-                id="asset-type-select"
-                name="asset-type-select"
-              >
-                {options.map((option, index) => (
-                  <FormSelectOption
-                    isDisabled={option.disabled}
-                    key={index}
-                    value={option.value}
-                    label={option.label}
-                  />
-                ))}
-              </FormSelect>
-            </FormGroup>
-            <FormGroup label="Select DMN" isRequired>
-              <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
-                <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
-              </FormSelect>
-            </FormGroup>
-            <FormGroup>
-              <Checkbox
-                id="skip-scesim-checkbox"
-                isChecked={skipFile}
-                label="Skip this Test Scenario during the test"
-                name="skip-scesim-checkbox"
-                onChange={onSkipFileChange}
-              />
-            </FormGroup>
-          </Form>
-          <Button variant="primary" icon={<AddIcon />} onClick={onCreateScesimButtonClicked}>
-            Create
-          </Button>
-        </EmptyState>
+        <TestScenarioCreationPanel
+          assetType={assetType}
+          onAssetTypeChange={onAssetTypeChange}
+          onCreateScesimButtonClicked={onCreateScesimButtonClicked}
+          onSkipFileChange={onSkipFileChange}
+          skipFile={skipFile}
+        />
       )}
     </>
   );
