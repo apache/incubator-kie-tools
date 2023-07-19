@@ -12,7 +12,7 @@ $ pnpm @kie-tools/cors-proxy... build:prod
 
 The `cors-proxy` can be cofingured via environment variables:
 
-- _CORS_PROXY_PORT_: Configures the HTTP Port for the proxy, defaults to `8080`
+- _CORS_PROXY_HTTP_PORT_: Configures the HTTP Port for the proxy, defaults to `8080`
 - _CORS_PROXY_ORIGIN_: Sets the value of the 'Access-Control-Allow-Origin' header, defaults to `*`
 - _CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES_: Allows the proxy supporting self-signed certificates, useful for local development. It disables the certificate validation, not recommended for production environments. Defaults to `false`.
 - _CORS_PROXY_VERBOSE_: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
@@ -20,7 +20,7 @@ The `cors-proxy` can be cofingured via environment variables:
 For example:
 
 ```bash
-$ export CORS_PROXY_PORT=8080
+$ export CORS_PROXY_HTTP_PORT=8080
 $ export CORS_PROXY_ORIGIN=*
 $ export CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES=true
 $ export CORS_PROXY_VERBOSE=false
