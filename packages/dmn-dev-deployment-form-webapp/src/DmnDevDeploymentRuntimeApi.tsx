@@ -18,12 +18,13 @@ import { DecisionResult } from "@kie-tools/extended-services-api";
 import { routes } from "./Routes";
 
 export interface FetchDmnResultArgs {
+  baseUrl?: string;
   modelName: string;
   inputs: any;
 }
 
 export async function fetchDmnResult(args: FetchDmnResultArgs): Promise<DecisionResult[]> {
-  const response = await fetch(routes.dmnResult.path({ modelName: args.modelName }), {
+  const response = await fetch(routes.dmnResult.path({ modelName: args.modelName }, args.baseUrl), {
     method: "POST",
     headers: {
       Accept: "application/json",

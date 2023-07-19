@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  targetNamespace="http://www.drools.org/kie/dmn/1.2"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified">
+
+  <xsd:element name="ComponentsWidthsExtension" type="kie:tComponentsWidthsExtension" />
+  <xsd:element name="ComponentWidths" type="kie:tComponentWidths" />
+  <xsd:element name="attachment" type="kie:tAttachment" />
+
+  <xsd:complexType name="tComponentsWidthsExtension">
+    <xsd:sequence>
+      <xsd:element type="kie:tComponentWidths" name="ComponentWidths" maxOccurs="unbounded"
+        minOccurs="0" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="tComponentWidths">
+    <xsd:sequence>
+      <xsd:element type="xsd:float" name="width" maxOccurs="unbounded" minOccurs="0" />
+    </xsd:sequence>
+    <xsd:attribute type="xsd:string" name="dmnElementRef" />
+  </xsd:complexType>
+
+  <xsd:complexType name="tAttachment">
+    <xsd:attribute type="xsd:anyURI" name="url" />
+    <xsd:attribute type="xsd:string" name="name" />
+  </xsd:complexType>
+
+</xsd:schema>

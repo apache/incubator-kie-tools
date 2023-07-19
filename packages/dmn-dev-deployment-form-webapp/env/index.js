@@ -17,12 +17,7 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({
-    DMN_DEV_DEPLOYMENTS_FORM_WEBAPP_QUARKUS_BASE_URL: {
-      default: ".",
-      description: "Sets the Quarkus base URL",
-    },
-  }),
+  vars: varsWithName({}),
   get env() {
     return {
       dmnDevDeploymentFormWebapp: {
@@ -30,7 +25,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           webpackPort: 9008,
           quarkusPort: 9009,
         },
-        quarkusBaseUrl: getOrDefault(this.vars.DMN_DEV_DEPLOYMENTS_FORM_WEBAPP_QUARKUS_BASE_URL),
       },
     };
   },

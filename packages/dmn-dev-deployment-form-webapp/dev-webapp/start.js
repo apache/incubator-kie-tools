@@ -20,18 +20,22 @@ const { env } = require("../env");
 
 const buildEnv = env;
 
-const mvn = spawn("mvn", [
-  "-f",
-  path.join(__dirname, "./quarkus-app"),
-  "clean",
-  "quarkus:dev",
-  "-Dmaven.test.skip",
-  `-Dquarkus.platform.version=${buildEnv.quarkusPlatform.version}`,
-  `-Dversion.org.kie.kogito=${buildEnv.kogitoRuntime.version}`,
-  `-Dquarkus.http.port=${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}`,
-  `-Dkogito.service.url=http://localhost:${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}`,
-  "-Dquarkus.http.root-path=/",
-]);
+const mvn = spawn(
+  "mvn",
+  [
+    "-f",
+    path.join(__dirname, "./quarkus-app"),
+    "clean",
+    "quarkus:dev",
+    "-Dmaven.test.skip",
+    `-Dquarkus.platform.version=${buildEnv.quarkusPlatform.version}`,
+    `-Dversion.org.kie.kogito=${buildEnv.kogitoRuntime.version}`,
+    `-Dquarkus.http.port=${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}`,
+    `-Dkogito.service.url=http://localhost:${buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort}`,
+    "-Dquarkus.http.root-path=/",
+  ],
+  { shell: true }
+);
 
 mvn.stdout.on("data", (data) => {
   console.log(`[QUARKUS STDOUT]: ${data}`);
@@ -46,7 +50,7 @@ mvn.on("close", (code) => {
 });
 
 mvn.on("error", (error) => {
-  console.log(`[WEBPACK ERROR]: ${error}`);
+  console.log(`[QUARKUS ERROR]: ${error}`);
 });
 
 let mode = "dev";
@@ -55,16 +59,11 @@ if (process.argv.indexOf("--env") !== -1 && process.argv[process.argv.indexOf("-
   mode = "live";
 }
 
-const webpack = spawn("npx", [
-  "webpack",
-  "serve",
-  "-c",
-  path.join(__dirname, "./webapp/webpack.config.js"),
-  "--host",
-  "0.0.0.0",
-  "--env",
-  mode,
-]);
+const webpack = spawn(
+  "npx",
+  ["webpack", "serve", "-c", path.join(__dirname, "./webapp/webpack.config.js"), "--host", "0.0.0.0", "--env", mode],
+  { shell: true }
+);
 
 webpack.stdout.on("data", (data) => {
   console.log(`[WEBPACK STDOUT]: ${data}`);
