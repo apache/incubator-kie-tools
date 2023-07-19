@@ -147,7 +147,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		if err != nil {
 			return err
 		}
-		handler.AddResourceAt(filepath.Base(dashboardFile), "dashboards", specIO)
+		handler.AddResourceAt(filepath.Base(dashboardFile), metadata.DashboardsDefaultDirName, specIO)
 	}
 
 	_, err = handler.AsObjects()
