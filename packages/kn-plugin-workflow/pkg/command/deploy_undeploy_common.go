@@ -33,7 +33,9 @@ type DeployUndeployCmdConfig struct {
 	TempDir                   string
 	ApplicationPropertiesPath string
 	SupportFileFolder         string
+	DefaultDashboardsFolder   string
 	SupportFilesPath          []string
+	DashboardsPath            []string
 }
 
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
@@ -92,15 +94,28 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		fmt.Printf(" - ✅ Properties file found: %s\n", cfg.ApplicationPropertiesPath)
 	}
 
-	extensions := []string{".json", ".yaml", ".yml"}
+	supportFileExtensions := []string{".json", ".yaml", ".yml"}
 
-	files, err := common.FindFilesWithExtensions(cfg.SupportFileFolder, extensions)
+	files, err := common.FindFilesWithExtensions(cfg.SupportFileFolder, supportFileExtensions)
 	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
+		return fmt.Errorf("❌ ERROR: failed to get supportFiles directory: %w", err)
 	}
 	cfg.SupportFilesPath = files
 	for _, file := range cfg.SupportFilesPath {
 		fmt.Printf(" - ✅ Support file found: %s\n", file)
+	}
+
+	fmt.Println("🔍 Looking for your dashboard files...")
+
+	dashboardExtensions := []string{".yaml", ".yml"}
+
+	files, err = common.FindFilesWithExtensions(cfg.DefaultDashboardsFolder, dashboardExtensions)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to get dashboards directory: %w", err)
+	}
+	cfg.DashboardsPath = files
+	for _, file := range cfg.DashboardsPath {
+		fmt.Printf(" - ✅ Dashboard found: %s\n", file)
 	}
 
 	fmt.Println("🚚️ Generating your Kubernetes manifest files..")
@@ -119,12 +134,20 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.WithAppProperties(appIO)
 	}
 
-	for _, supportfile := range cfg.SupportFilesPath {
-		specIO, err := common.MustGetFile(supportfile)
+	for _, supportFile := range cfg.SupportFilesPath {
+		specIO, err := common.MustGetFile(supportFile)
 		if err != nil {
 			return err
 		}
-		handler.AddResource(filepath.Base(supportfile), specIO)
+		handler.AddResource(filepath.Base(supportFile), specIO)
+	}
+
+	for _, dashboardFile := range cfg.DashboardsPath {
+		specIO, err := common.MustGetFile(dashboardFile)
+		if err != nil {
+			return err
+		}
+		handler.AddResourceAt(filepath.Base(dashboardFile), "dashboards", specIO)
 	}
 
 	_, err = handler.AsObjects()
