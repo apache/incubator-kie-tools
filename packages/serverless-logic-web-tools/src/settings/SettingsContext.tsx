@@ -188,7 +188,7 @@ export function SettingsContextProvider(props: any) {
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${extendedServices.config.buildUrl()}/${"cors-proxy"}`,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
     [openshiftConfig, extendedServices.config]
   );
@@ -200,7 +200,7 @@ export function SettingsContextProvider(props: any) {
       new SwfServiceCatalogStore({
         serviceAccount: serviceAccountConfig,
         serviceRegistry: serviceRegistryConfig,
-        extendedServicesConfig: extendedServices.config,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
     [extendedServices.config, serviceAccountConfig, serviceRegistryConfig]
   );
