@@ -1,0 +1,16 @@
+id: onboardcustomer
+version: "1.0"
+specVersion: "0.8"
+name: Onboard Customer
+description: Onboard a Customer
+start: Onboard
+states:
+  - name: Onboard
+    type: operation
+    actions:
+      - subFlowRef:
+          workflowId: sendcustomeremail
+          version: "1.0"
+          invoke: async
+          onParentComplete: continue
+    end: true

@@ -47,6 +47,13 @@ public class Binding extends DMNModelInstrumentedBase implements HasExpression,
         return bindingCloned;
     }
 
+    public Binding exactCopy() {
+        final Binding exactelyClonedBinding = new Binding();
+        exactelyClonedBinding.parameter = Optional.ofNullable(parameter).map(InformationItem::exactCopy).orElse(null);
+        exactelyClonedBinding.expression = Optional.ofNullable(expression).map(Expression::exactCopy).orElse(null);
+        return exactelyClonedBinding;
+    }
+
     public InformationItem getParameter() {
         return parameter;
     }

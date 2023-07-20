@@ -42,6 +42,7 @@ export interface PrInfo {
   targetGitRef: string;
   org: string;
   gitRef: string;
+  commitSHA: string;
 }
 
 export function IsolatedPrEditor(props: {
@@ -280,11 +281,19 @@ function iframeContainer(id: string, container: HTMLElement) {
 }
 
 function getModifiedFileContents(octokit: Octokit, prInfo: PrInfo, modifiedFilePath: string) {
-  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath);
+  return fetchFile(octokit, prInfo.org, prInfo.repo, prInfo.gitRef, modifiedFilePath, undefined, prInfo.commitSHA);
 }
 
 function getOriginalFileContents(octokit: Octokit, prInfo: PrInfo, originalFilePath: string) {
-  return fetchFile(octokit, prInfo.targetOrg, prInfo.repo, prInfo.targetGitRef, originalFilePath);
+  return fetchFile(
+    octokit,
+    prInfo.targetOrg,
+    prInfo.repo,
+    prInfo.targetGitRef,
+    originalFilePath,
+    undefined,
+    prInfo.commitSHA
+  );
 }
 
 function viewOriginalFileHref(prInfo: PrInfo, originalFilePath: string) {

@@ -19,7 +19,6 @@ package org.uberfire.client.mvp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
@@ -37,8 +36,8 @@ import org.mockito.stubbing.Answer;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.events.PerspectiveChange;
-import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.DockingWorkbenchPanelPresenter;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelPresenter;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -108,32 +107,28 @@ public class PerspectiveManagerTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setup() {
-        ozDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        ozDefinition = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
 
         oz = mock(PerspectiveActivity.class);
         pr = mock(PlaceRequest.class);
         when(oz.getDefaultPerspectiveLayout()).thenReturn(ozDefinition);
         when(oz.getIdentifier()).thenReturn("oz_perspective");
         when(oz.isTransient()).thenReturn(true);
-        doAnswer((Answer<Void>) invocationOnMock -> {
-            invocationOnMock.getArgument(0, Consumer.class).accept(null);
-            return null;
-        }).when(oz).getMenus(any());
-
         doWhenFinished = mock(ParameterizedCommand.class);
         doAfterFetch = spy(new ParameterizedCommand<PerspectiveDefinition>() {
+
             @Override
-            public void execute(final PerspectiveDefinition parameter) {
-            }
+            public void execute(final PerspectiveDefinition parameter) {}
         });
         doWhenFinishedSave = mock(Command.class);
 
         fetchCommand = spy(perspectiveManager.new FetchPerspectiveCommand(pr,
-                                                                          oz,
-                                                                          doAfterFetch));
+                oz,
+                doAfterFetch));
 
         // simulate "finished saving" callback on wbServices.save()
         doAnswer(new Answer<Void>() {
+
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 Command callback = (Command) invocation.getArguments()[2];
@@ -141,11 +136,12 @@ public class PerspectiveManagerTest {
                 return null;
             }
         }).when(wbServices).save(any(),
-                                 any(),
-                                 any());
+                any(),
+                any());
 
         // simulate "no saved state found" result on wbServices.loadPerspective()
         doAnswer(new Answer<Void>() {
+
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 ParameterizedCommand<?> callback = (ParameterizedCommand<?>) invocation.getArguments()[1];
@@ -153,18 +149,19 @@ public class PerspectiveManagerTest {
                 return null;
             }
         }).when(wbServices).loadPerspective(any(),
-                                            any());
+                any());
 
         // XXX should look at why PanelManager needs to return an alternative panel sometimes.
         // would be better if addWorkbenchPanel returned void.
         when(panelManager.addWorkbenchPanel(any(),
-                                            any(),
-                                            any())).thenAnswer(new Answer<PanelDefinition>() {
-            @Override
-            public PanelDefinition answer(InvocationOnMock invocation) {
-                return (PanelDefinition) invocation.getArguments()[1];
-            }
-        });
+                any(),
+                any())).thenAnswer(new Answer<PanelDefinition>() {
+
+                    @Override
+                    public PanelDefinition answer(InvocationOnMock invocation) {
+                        return (PanelDefinition) invocation.getArguments()[1];
+                    }
+                });
     }
 
     @Test
@@ -175,16 +172,17 @@ public class PerspectiveManagerTest {
     @Test
     public void shouldReportNewPerspectiveAsCurrentAfterSwitching() throws Exception {
         perspectiveManager.switchToPerspective(pr,
-                                               oz,
-                                               doWhenFinished);
+                oz,
+                doWhenFinished);
 
         assertSame(oz,
-                   perspectiveManager.getCurrentPerspective());
+                perspectiveManager.getCurrentPerspective());
     }
 
     @Test
     public void shouldSaveNonTransientPerspectives() throws Exception {
-        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class
+                .getName());
 
         PerspectiveActivity kansas = mock(PerspectiveActivity.class);
         when(kansas.getDefaultPerspectiveLayout()).thenReturn(kansasDefinition);
@@ -192,32 +190,33 @@ public class PerspectiveManagerTest {
         when(kansas.isTransient()).thenReturn(false);
 
         perspectiveManager.switchToPerspective(pr,
-                                               kansas,
-                                               doWhenFinished);
+                kansas,
+                doWhenFinished);
         perspectiveManager.savePerspectiveState(doWhenFinishedSave);
 
         verify(wbServices).save(eq("kansas_perspective"),
-                                eq(kansasDefinition),
-                                eq(doWhenFinishedSave));
+                eq(kansasDefinition),
+                eq(doWhenFinishedSave));
     }
 
     @Test
     public void shouldNotSaveTransientPerspectives() throws Exception {
-        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        PerspectiveDefinition kansasDefinition = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class
+                .getName());
 
         PerspectiveActivity kansas = mock(PerspectiveActivity.class);
         when(kansas.getDefaultPerspectiveLayout()).thenReturn(kansasDefinition);
         when(kansas.isTransient()).thenReturn(true);
 
         perspectiveManager.switchToPerspective(pr,
-                                               kansas,
-                                               doWhenFinished);
+                kansas,
+                doWhenFinished);
         perspectiveManager.savePerspectiveState(doWhenFinishedSave);
 
         verify(wbServices,
-               never()).save(any(String.class),
-                             eq(kansasDefinition),
-                             any(Command.class));
+                never()).save(any(String.class),
+                        eq(kansasDefinition),
+                        any(Command.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -250,8 +249,8 @@ public class PerspectiveManagerTest {
     @Test
     public void shouldExecuteCallbackWhenDoneLaunchingPerspective() throws Exception {
         perspectiveManager.switchToPerspective(pr,
-                                               oz,
-                                               doWhenFinished);
+                oz,
+                doWhenFinished);
 
         verify(doWhenFinished).execute(ozDefinition);
     }
@@ -259,64 +258,64 @@ public class PerspectiveManagerTest {
     @Test
     public void shouldFireEventWhenLaunchingNewPerspective() throws Exception {
         perspectiveManager.switchToPerspective(pr,
-                                               oz,
-                                               doWhenFinished);
+                oz,
+                doWhenFinished);
 
         verify(perspectiveChangeEvent).fire(refEq(new PerspectiveChange(pr,
-                                                                        ozDefinition,
-                                                                        null,
-                                                                        "oz_perspective")));
+                ozDefinition,
+                "oz_perspective")));
     }
 
     @Test
     public void shouldAddAllPanelsToPanelManager() throws Exception {
-        PanelDefinition westPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition eastPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition northPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition southPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
-        PanelDefinition southWestPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        PanelDefinition westPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition eastPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition northPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition southPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
+        PanelDefinition southWestPanel = new PanelDefinitionImpl(DockingWorkbenchPanelPresenter.class.getName());
 
         ozDefinition.getRoot().appendChild(CompassPosition.WEST,
-                                           westPanel);
+                westPanel);
         ozDefinition.getRoot().appendChild(CompassPosition.EAST,
-                                           eastPanel);
+                eastPanel);
         ozDefinition.getRoot().appendChild(CompassPosition.NORTH,
-                                           northPanel);
+                northPanel);
         ozDefinition.getRoot().appendChild(CompassPosition.SOUTH,
-                                           southPanel);
+                southPanel);
         southPanel.appendChild(CompassPosition.WEST,
-                               southWestPanel);
+                southWestPanel);
 
         // we assume this will be set correctly (verified elsewhere)
         perspectiveManager.switchToPerspective(pr,
-                                               oz,
-                                               doWhenFinished);
+                oz,
+                doWhenFinished);
 
         verify(panelManager).addWorkbenchPanel(ozDefinition.getRoot(),
-                                               westPanel,
-                                               CompassPosition.WEST);
+                westPanel,
+                CompassPosition.WEST);
         verify(panelManager).addWorkbenchPanel(ozDefinition.getRoot(),
-                                               eastPanel,
-                                               CompassPosition.EAST);
+                eastPanel,
+                CompassPosition.EAST);
         verify(panelManager).addWorkbenchPanel(ozDefinition.getRoot(),
-                                               northPanel,
-                                               CompassPosition.NORTH);
+                northPanel,
+                CompassPosition.NORTH);
         verify(panelManager).addWorkbenchPanel(ozDefinition.getRoot(),
-                                               southPanel,
-                                               CompassPosition.SOUTH);
+                southPanel,
+                CompassPosition.SOUTH);
         verify(panelManager).addWorkbenchPanel(southPanel,
-                                               southWestPanel,
-                                               CompassPosition.WEST);
+                southWestPanel,
+                CompassPosition.WEST);
     }
 
     @Test
     public void shouldDestroyAllOldPanelsWhenSwitchingRoot() throws Exception {
-        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        PerspectiveDefinition fooPerspectiveDef = new PerspectiveDefinitionImpl(DockingWorkbenchPanelPresenter.class
+                .getName());
         PanelDefinition rootPanel = fooPerspectiveDef.getRoot();
-        PanelDefinition fooPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        PanelDefinition fooChildPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        PanelDefinition barPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
-        PanelDefinition bazPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition fooPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
+        PanelDefinition fooChildPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
+        PanelDefinition barPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
+        PanelDefinition bazPanel = new PanelDefinitionImpl(LayoutPanelPresenter.class.getName());
 
         rootPanel.appendChild(fooPanel);
         rootPanel.appendChild(barPanel);
@@ -329,18 +328,18 @@ public class PerspectiveManagerTest {
         when(fooPerspective.isTransient()).thenReturn(true);
 
         perspectiveManager.switchToPerspective(pr,
-                                               fooPerspective,
-                                               doWhenFinished);
+                fooPerspective,
+                doWhenFinished);
         perspectiveManager.switchToPerspective(pr,
-                                               oz,
-                                               doWhenFinished);
+                oz,
+                doWhenFinished);
 
         verify(panelManager).removeWorkbenchPanel(fooPanel);
         verify(panelManager).removeWorkbenchPanel(fooChildPanel);
         verify(panelManager).removeWorkbenchPanel(barPanel);
         verify(panelManager).removeWorkbenchPanel(bazPanel);
         verify(panelManager,
-               never()).removeWorkbenchPanel(rootPanel);
+                never()).removeWorkbenchPanel(rootPanel);
     }
 
     @Test
@@ -362,7 +361,7 @@ public class PerspectiveManagerTest {
         fetchCommand.execute();
 
         assertEquals(oz,
-                     perspectiveManager.getCurrentPerspective());
+                perspectiveManager.getCurrentPerspective());
         verify(doAfterFetch).execute(eq(ozDefinition));
     }
 
@@ -374,7 +373,7 @@ public class PerspectiveManagerTest {
 
         assertTrue(fetchCommand.isAValidDefinition(createPerspectiveDefinition()));
         verify(activityBeansCache,
-               times(getTotalOfPartDefinitions())).hasActivity(any());
+                times(getTotalOfPartDefinitions())).hasActivity(any());
     }
 
     @Test
@@ -394,10 +393,12 @@ public class PerspectiveManagerTest {
     @Test
     public void getDefaultPerspectiveIdentifierTest() {
         List<SyncBeanDef<AbstractWorkbenchPerspectiveActivity>> perspectives = new ArrayList<>();
-        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> otherPerspectiveBeanDef = getPerspectiveBeanDef("otherPerspectiveBeanDef",
-                                                                          false);
-        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> homePerspectiveBeanDef = getPerspectiveBeanDef("homePerspectiveBeanDef",
-                                                                         true);
+        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> otherPerspectiveBeanDef = getPerspectiveBeanDef(
+                "otherPerspectiveBeanDef",
+                false);
+        final SyncBeanDef<AbstractWorkbenchPerspectiveActivity> homePerspectiveBeanDef = getPerspectiveBeanDef(
+                "homePerspectiveBeanDef",
+                true);
         perspectives.add(otherPerspectiveBeanDef);
         perspectives.add(homePerspectiveBeanDef);
         doReturn(perspectives.iterator()).when(perspectiveManager).getPerspectivesIterator();
@@ -405,15 +406,16 @@ public class PerspectiveManagerTest {
         final String defaultPerspectiveIdentifier = perspectiveManager.getDefaultPerspectiveIdentifier();
 
         assertEquals(homePerspectiveBeanDef.getInstance().getIdentifier(),
-                     defaultPerspectiveIdentifier);
+                defaultPerspectiveIdentifier);
         verify(iocManager).destroyBean(otherPerspectiveBeanDef.getInstance());
         verify(iocManager,
-               never()).destroyBean(homePerspectiveBeanDef.getInstance());
+                never()).destroyBean(homePerspectiveBeanDef.getInstance());
     }
 
     private SyncBeanDef<AbstractWorkbenchPerspectiveActivity> getPerspectiveBeanDef(final String identifier,
                                                                                     final boolean isDefault) {
-        final AbstractWorkbenchPerspectiveActivity perspectiveActivity = mock(AbstractWorkbenchPerspectiveActivity.class);
+        final AbstractWorkbenchPerspectiveActivity perspectiveActivity = mock(
+                AbstractWorkbenchPerspectiveActivity.class);
         doReturn(identifier).when(perspectiveActivity).getIdentifier();
         doReturn(isDefault).when(perspectiveActivity).isDefault();
 
@@ -428,49 +430,53 @@ public class PerspectiveManagerTest {
         PanelDefinition root = perspectiveDefinition.getRoot();
         partDefinitionsRoot.forEach(p -> root.addPart(p));
 
-        PanelDefinitionImpl rootChild1 = new PanelDefinitionImpl("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
+        PanelDefinitionImpl rootChild1 = new PanelDefinitionImpl(
+                "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
         partDefinitionRootChild1.forEach(p -> rootChild1.addPart(p));
 
-        PanelDefinitionImpl rootChild2 = new PanelDefinitionImpl("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
+        PanelDefinitionImpl rootChild2 = new PanelDefinitionImpl(
+                "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
         partDefinitionRootChild2.forEach(p -> rootChild2.addPart(p));
 
-        PanelDefinitionImpl rootChild2Child = new PanelDefinitionImpl("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
+        PanelDefinitionImpl rootChild2Child = new PanelDefinitionImpl(
+                "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
 
         partDefinitionRootChild2Child.forEach(p -> rootChild2Child.addPart(p));
 
         root.insertChild(mock(Position.class),
-                         rootChild1);
+                rootChild1);
         rootChild2.insertChild(mock(Position.class),
-                               rootChild2Child);
+                rootChild2Child);
         root.insertChild(mock(Position.class),
-                         rootChild2);
+                rootChild2);
 
         return perspectiveDefinition;
     }
 
     private void createPartDefinitions() {
         partDefinitionsRoot = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1")),
-                                            new PartDefinitionImpl(new DefaultPlaceRequest("part2")));
+                new PartDefinitionImpl(new DefaultPlaceRequest("part2")));
 
         partDefinitionRootChild1 = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1-rootChild1")),
-                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild1")),
-                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild1")));
+                new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild1")),
+                new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild1")));
 
         partDefinitionRootChild2 = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1-rootChild2")),
-                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild2")),
-                                                 new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild2")));
+                new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild2")),
+                new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild2")));
 
-        partDefinitionRootChild2Child = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest("part1-rootChild2Child")),
-                                                      new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild2Child")),
-                                                      new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild2Child")),
-                                                      new PartDefinitionImpl(new DefaultPlaceRequest("part4-rootChild2Child")));
+        partDefinitionRootChild2Child = Arrays.asList(new PartDefinitionImpl(new DefaultPlaceRequest(
+                "part1-rootChild2Child")),
+                new PartDefinitionImpl(new DefaultPlaceRequest("part2-rootChild2Child")),
+                new PartDefinitionImpl(new DefaultPlaceRequest("part3-rootChild2Child")),
+                new PartDefinitionImpl(new DefaultPlaceRequest("part4-rootChild2Child")));
     }
 
     private int getTotalOfPartDefinitions() {
         int total = partDefinitionsRoot.size() +
-                partDefinitionRootChild1.size() +
-                partDefinitionRootChild2.size() +
-                partDefinitionRootChild2Child.size();
+                    partDefinitionRootChild1.size() +
+                    partDefinitionRootChild2.size() +
+                    partDefinitionRootChild2Child.size();
         return total;
     }
 }

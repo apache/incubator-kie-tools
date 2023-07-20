@@ -1,0 +1,27 @@
+id: customerbankingtransactions
+version: "1.0"
+specVersion: "0.8"
+name: Customer Banking Transactions Workflow
+states:
+  - name: ProcessTransactions
+    type: foreach
+    actions:
+      - name: Process Larger Transaction
+        functionRef: "Banking Service - Larger Tx"
+        condition: "${ .tx >= $CONST.largetxamount }"
+      - name: Process Smaller Transaction
+        functionRef: "Banking Service - Smaller Tx"
+        condition: "${ .tx < $CONST.largetxamount }"
+    inputCollection: "${ .customer.transactions }"
+    iterationParam: "${ .tx }"
+    end: true
+constants:
+  largetxamount: 5000
+functions:
+  - name: "Banking Service - Larger Tx"
+    operation: "banking.yaml#largerTransation"
+    type: asyncapi
+  - name: "Banking Service - Smaller T"
+    operation: "banking.yaml#smallerTransation"
+    type: asyncapi
+autoRetries: true

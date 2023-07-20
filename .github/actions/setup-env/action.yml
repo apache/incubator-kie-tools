@@ -17,13 +17,20 @@ runs:
         cd ${{ inputs.working_dir }}
         du -sh .
 
+    - name: "Create temp dir"
+      shell: bash
+      run: |
+        echo "STEP: Create tmp dir"
+        cd ${{ inputs.working_dir }}
+        mkdir tmp
+
     - name: "Setup pnpm"
       uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd
       with:
         version: 7.26.3
 
     - name: "Setup Node"
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 18.14.0
 
@@ -33,15 +40,30 @@ runs:
         java-version: 11
         distribution: "zulu"
 
-    - name: "Set up GOLANG 1.19"
+    - name: "Set up GOLANG 1.20.5"
       uses: actions/setup-go@v3
       with:
-        go-version: "1.19"
+        go-version: "1.20.5"
 
     - name: "Set up Maven"
-      uses: stCarolas/setup-maven@417e1a9899611c0350621d1fb0c2770f35105c69
+      uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f #v4.5
       with:
         maven-version: 3.8.6
+
+    - name: Setup docker (macOS only)
+      if: runner.os == 'macOS'
+      shell: bash
+      env:
+        HOMEBREW_NO_INSTALL_FROM_API:
+      run: |
+        brew untap homebrew/core homebrew/cask
+        brew update
+        brew install docker docker-compose
+        mkdir -p ~/.docker/cli-plugins
+        ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
+        brew install docker-Buildx
+        ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
+        colima start --memory 4 --network-address
 
     - name: "Setup network timeout"
       shell: bash
@@ -56,7 +78,8 @@ runs:
         echo "STEP: Setup default Maven args"
         cd ${{ inputs.working_dir }}
         pnpm -r exec 'bash' '-c' 'mkdir .mvn'
-        pnpm -r exec 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
+        pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
+        pnpm -r exec 'bash' '-c' 'echo -ntp >> .mvn/maven.config'
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
     - name: "Install Fluxbox (Ubuntu only)"
@@ -88,7 +111,7 @@ runs:
 
     - name: "Configure Pagefile (Windows only)"
       if: runner.os == 'Windows'
-      uses: al-cheb/configure-pagefile-action@7e234852c937eea04d6ee627c599fb24a5bfffee
+      uses: al-cheb/configure-pagefile-action@86589fd789a4de3e62ba628dda2cb10027b66d67 #v1.3
       with:
         minimum-size: 16GB
         maximum-size: 16GB
@@ -113,7 +136,7 @@ runs:
           sudo apt install -y \
           build-essential \
           libgtk-3-dev \
-          libappindicator3-dev \
+          libayatana-appindicator3-dev \
           gir1.2-appindicator3-0.1
         fi
 

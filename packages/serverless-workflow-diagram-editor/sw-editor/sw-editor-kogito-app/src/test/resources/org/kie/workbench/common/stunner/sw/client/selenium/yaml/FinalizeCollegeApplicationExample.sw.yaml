@@ -1,0 +1,40 @@
+id: finalizeCollegeApplication
+version: "1.0"
+specVersion: "0.8"
+name: Finalize College Application
+start: FinalizeApplication
+states:
+  - name: FinalizeApplication
+    type: event
+    end:
+      terminate: true
+    exclusive: false
+    onEvents:
+      - actions:
+          - functionRef:
+              refName: finalizeApplicationFunction
+              arguments:
+                student: "${ .applicantId }"
+        eventRefs:
+          - "- ApplicationSubmitted"
+          - SATScoresReceived
+          - "- RecommendationLetterReceived"
+events:
+  - name: ApplicationSubmitted
+    source: applicationsource
+    type: org.application.submitted
+    correlation:
+      - contextAttributeName: applicantId
+  - name: SATScoresReceived
+    source: applicationsource
+    type: org.application.satscores
+    correlation:
+      - contextAttributeName: applicantId
+  - name: RecommendationLetterReceived
+    source: applicationsource
+    type: org.application.recommendationLetter
+    correlation:
+      - contextAttributeName: applicantId
+functions:
+  - name: finalizeApplicationFunction
+    operation: "http://myapis.org/collegeapplicationapi.json#finalize"

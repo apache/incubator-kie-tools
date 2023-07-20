@@ -26,6 +26,12 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.Node;
+import elemental2.dom.NodeList;
 
 /**
  * Provides utility methods for interacting with the DOM.
@@ -45,7 +51,7 @@ public abstract class DOMUtil {
    *         Otherwise return an empty optional.
    */
   public static Optional<Element> getFirstChildElement(final Element element) {
-    for (final Node child : nodeIterable(element.getChildNodes())) {
+    for (final Node child : nodeIterable(element.childNodes)) {
       if (isElement(child)) {
         return Optional.ofNullable((Element) child);
       }
@@ -61,9 +67,9 @@ public abstract class DOMUtil {
    *         Otherwise return an empty optional.
    */
   public static Optional<Element> getLastChildElement(final Element element) {
-    final NodeList children = element.getChildNodes();
+    final NodeList children = element.childNodes;
     for (int i = children.getLength()-1; i > -1; i--) {
-      if (isElement(children.item(i))) {
+      if (isElement((Node) children.item(i))) {
         return Optional.ofNullable((Element) children.item(i));
       }
     }
@@ -77,7 +83,7 @@ public abstract class DOMUtil {
    * @return True iff the given node is an element.
    */
   public static boolean isElement(final Node node) {
-    return node.getNodeType() == Node.ELEMENT_NODE;
+    return node.nodeType == Node.ELEMENT_NODE;
   }
 
   /**
@@ -106,7 +112,7 @@ public abstract class DOMUtil {
       @Override
       public Node next() {
         if (hasNext()) {
-          return nodeList.item(index++);
+          return (Node) nodeList.item(index++);
         }
         else {
           throw new NoSuchElementException();
@@ -141,7 +147,7 @@ public abstract class DOMUtil {
 
       @Override
       public boolean hasNext() {
-        while (i < nodeList.getLength() && !isElement(nodeList.item(i))) {
+        while (i < nodeList.getLength() && !isElement((Node) nodeList.item(i))) {
           i++;
         }
         return i < nodeList.getLength();
@@ -173,8 +179,8 @@ public abstract class DOMUtil {
    *         be removed from.
    */
   public static boolean removeFromParent(final Element element) {
-    if (element.getParentElement() != null) {
-      element.getParentElement().removeChild(element);
+    if (element.parentElement != null) {
+      element.parentElement.removeChild(element);
 
       return true;
     }
@@ -191,9 +197,9 @@ public abstract class DOMUtil {
    * @return True iff any children were detached by this call.
    */
   public static boolean removeAllChildren(final Node node) {
-    final boolean hadChildren = node.getLastChild() != null;
-    while (node.getLastChild() != null) {
-      node.removeChild(node.getLastChild());
+    final boolean hadChildren = node.lastChild != null;
+    while (node.lastChild != null) {
+      node.removeChild(node.lastChild);
     }
 
     return hadChildren;
@@ -208,7 +214,7 @@ public abstract class DOMUtil {
    */
   public static boolean removeAllElementChildren(final Node node) {
     boolean elementRemoved = false;
-    for (final Element child : elementIterable(node.getChildNodes())) {
+    for (final Element child : elementIterable(node.childNodes)) {
       node.removeChild(child);
       elementRemoved = true;
     }
@@ -228,7 +234,7 @@ public abstract class DOMUtil {
    */
   public static boolean removeCSSClass(final HTMLElement element, final String className) {
     if (hasCSSClass(element, className)) {
-      element.getClassList().remove(className);
+      element.classList.remove(className);
 
       return true;
     }
@@ -252,7 +258,7 @@ public abstract class DOMUtil {
       return false;
     }
     else {
-      element.getClassList().add(className);
+      element.classList.add(className);
 
       return true;
     }
@@ -266,7 +272,7 @@ public abstract class DOMUtil {
    * @return True iff the given element has the given CSS class as part of its class list.
    */
   public static boolean hasCSSClass(final HTMLElement element, final String className) {
-    return element.getClassList().contains(className);
+    return element.classList.contains(className);
   }
 
   /**
@@ -288,8 +294,8 @@ public abstract class DOMUtil {
    */
   public static Stream<String> cssPropertyNameStream(final CSSStyleDeclaration styleDeclaration) {
     return Arrays
-            .stream(styleDeclaration.getCssText() != null
-                    ? styleDeclaration.getCssText().split(";") : new String[0])
+            .stream(styleDeclaration.cssText != null
+                    ? styleDeclaration.cssText.split(";") : new String[0])
             .map(style -> style.split(":", 2)[0].trim())
             .filter(propertyName -> !propertyName.isEmpty());
   }

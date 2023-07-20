@@ -17,14 +17,15 @@ package org.dashbuilder.displayer.json;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetLookup;
-import org.dashbuilder.dataset.json.DataSetJSONMarshaller;
 import org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller;
+import org.dashbuilder.dataset.json.ExternalDataSetJSONParser;
 import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerType;
@@ -47,23 +48,25 @@ public class DisplayerSettingsJSONMarshaller {
     private static final String COLUMN_EMPTY = "empty";
     private static final String SETTINGS_UUID = "uuid";
 
-    private static DisplayerSettingsJSONMarshaller SINGLETON = new DisplayerSettingsJSONMarshaller();
+    int displayerId = 0;
+
+    private static final DisplayerSettingsJSONMarshaller SINGLETON = new DisplayerSettingsJSONMarshaller();
 
     public static DisplayerSettingsJSONMarshaller get() {
         return SINGLETON;
     }
 
-    private DataSetJSONMarshaller dataSetJsonMarshaller;
+    private ExternalDataSetJSONParser dataSetJsonParser;
     private DataSetLookupJSONMarshaller dataSetLookupJsonMarshaller;
 
     public DisplayerSettingsJSONMarshaller() {
-        this(DataSetJSONMarshaller.get(), DataSetLookupJSONMarshaller.get());
+        this(DataSetLookupJSONMarshaller.get(), new ExternalDataSetJSONParser(s -> new Date(Long.parseLong(s))));
     }
 
-    public DisplayerSettingsJSONMarshaller(DataSetJSONMarshaller dataSetJsonMarshaller,
-                                           DataSetLookupJSONMarshaller dataSetLookupJsonMarshaller) {
-        this.dataSetJsonMarshaller = dataSetJsonMarshaller;
+    public DisplayerSettingsJSONMarshaller(DataSetLookupJSONMarshaller dataSetLookupJsonMarshaller,
+                                           ExternalDataSetJSONParser externalDataSetJSONParser) {
         this.dataSetLookupJsonMarshaller = dataSetLookupJsonMarshaller;
+        dataSetJsonParser = externalDataSetJSONParser;
     }
 
     public DisplayerSettings fromJsonString(String jsonString) {
@@ -96,11 +99,17 @@ public class DisplayerSettingsJSONMarshaller {
 
         if (jsonObject == null ||
             jsonObject.getType() != JsonType.OBJECT) {
-            throw new IllegalArgumentException("Displayer Settings is not using a valid object");
+            // returns an empty displayer
+            return ds;
         }
 
         // UUID
-        ds.setUUID(jsonObject.getString(SETTINGS_UUID));
+        var uuid = jsonObject.getString(SETTINGS_UUID);
+        if (uuid == null) {
+            uuid = "D" + displayerId++;
+        }
+
+        ds.setUUID(uuid);
         jsonObject.put(SETTINGS_UUID, (String) null);
 
         // First look if a dataset 'on-the-fly' has been specified
@@ -109,10 +118,10 @@ public class DisplayerSettingsJSONMarshaller {
                 DATASET_LOOKUP_PREFIX.toUpperCase(),
                 "datasetLookup",
                 "lookup");
-        var data = jsonObject.getObject(DATASET_PREFIX);
+        var data = jsonObject.getString(DATASET_PREFIX);
         var lookup = dataSetLookupJsonMarshaller.fromJson(jsonObject.getObject(lookupNames));
         if (data != null) {
-            var dataSet = dataSetJsonMarshaller.fromJson(data);
+            var dataSet = dataSetJsonParser.parseDataSet(data);
             ds.setDataSet(dataSet);
 
             // Remove from the json input so that it doesn't end up in the settings map.
@@ -173,7 +182,7 @@ public class DisplayerSettingsJSONMarshaller {
         DataSetLookup dataSetLookup = displayerSettings.getDataSetLookup();
         DataSet dataSet = displayerSettings.getDataSet();
         if (dataSet != null) {
-            json.put(DATASET_PREFIX, dataSetJsonMarshaller.toJson(dataSet));
+            json.put(DATASET_PREFIX, dataSetJsonParser.toJsonArray(dataSet));
         } else if (dataSetLookup != null) {
             json.put(DATASET_LOOKUP_PREFIX, dataSetLookupJsonMarshaller.toJson(dataSetLookup));
         } else {
@@ -187,6 +196,10 @@ public class DisplayerSettingsJSONMarshaller {
         }
 
         return json;
+    }
+
+    public void setDataSetJsonParser(ExternalDataSetJSONParser dataSetJsonParser) {
+        this.dataSetJsonParser = dataSetJsonParser;
     }
 
     private void setNodeValue(JsonObject node, String path, String value) {

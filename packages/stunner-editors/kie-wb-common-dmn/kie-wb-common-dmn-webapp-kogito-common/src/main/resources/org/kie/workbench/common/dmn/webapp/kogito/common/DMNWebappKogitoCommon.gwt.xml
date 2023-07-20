@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,38 +14,37 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN" "http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
-
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.8.0//EN"
+  "http://gwtproject.org/doctype/2.8.0/gwt-module.dtd">
 <module>
 
   <!-- Uberfire dependencies -->
-  <inherits name="org.uberfire.client.views.PatternFlyTheme"/>
-  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
-  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.client.views.PatternFlyTheme" />
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore" />
+  <inherits name="org.uberfire.UberfireAPI" />
 
   <!-- Appformer Kogito Bridge -->
-  <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
+  <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge" />
 
   <!-- Errai, Drools etc -->
-  <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
-  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.kie.workbench.common.kogito.KogitoClient" />
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon" />
 
   <!-- Stunner -->
-  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
-  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient"/>
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets" />
+  <inherits name="org.kie.workbench.common.stunner.kogito.StunnerKogitoClient" />
 
   <!-- Form modeler -->
-  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
-  <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient"/>
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient" />
+  <inherits name="org.kie.workbench.common.forms.dynamic.DynamicFormsClient" />
 
   <!-- DMN Editor -->
-  <inherits name="org.kie.workbench.common.dmn.DMNClient"/>
-  <inherits name="org.kie.workbench.common.dmn.webapp.kogito.marshaller.DMNMarshaller"/>
+  <inherits name="org.kie.workbench.common.dmn.DMNClient" />
+  <inherits name="org.kie.workbench.common.dmn.webapp.kogito.marshaller.DMNMarshaller" />
 
   <inherits name="org.kie.workbench.common.kogito.webapp.base.KogitoWebappBase" />
 
   <!-- Specify the paths for translatable code -->
-  <source path="client"/>
+  <source path="client" />
 
 </module>

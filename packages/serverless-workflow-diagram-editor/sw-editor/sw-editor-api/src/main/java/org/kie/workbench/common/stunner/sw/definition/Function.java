@@ -18,18 +18,20 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 
 @JSONMapper
+@YAMLMapper
 @JsType
 public class Function {
 
-    private String name;
+    public String name;
 
-    private String operation;
+    public String operation;
 
-    private FunctionType type;
+    public FunctionType type;
 
-    private String authRef;
+    public String authRef;
 
     public final String getName() {
         return name;

@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { Editor, EditorTheme } from "@kie-tools-core/editor/dist/api";
-import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 export class DummyEditor implements Editor {
@@ -31,10 +30,6 @@ export class DummyEditor implements Editor {
 
   public getContent() {
     return this.ref!.getContent();
-  }
-
-  public getElementPosition(selector: string) {
-    return Promise.resolve(DEFAULT_RECT);
   }
 
   public undo() {

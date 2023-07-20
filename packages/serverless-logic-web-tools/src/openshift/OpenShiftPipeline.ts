@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OpenShiftService } from "@kie-tools-core/openshift/dist/service/OpenShiftService";
+import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export interface OpenShiftPipelineArgs {
   openShiftService: OpenShiftService;

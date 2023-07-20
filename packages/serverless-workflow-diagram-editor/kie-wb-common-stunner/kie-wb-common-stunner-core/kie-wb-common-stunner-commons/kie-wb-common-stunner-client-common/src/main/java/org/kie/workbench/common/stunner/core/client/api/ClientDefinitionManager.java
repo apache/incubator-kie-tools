@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.stunner.core.api.AbstractDefinitionManager;
-import org.kie.workbench.common.stunner.core.definition.DefinitionSetProxy;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
@@ -88,13 +87,6 @@ public class ClientDefinitionManager extends AbstractDefinitionManager {
         for (SyncBeanDef<MorphAdapter> morphAdapter : beanMorphAdapters) {
             MorphAdapter morphAdapterInstance = morphAdapter.getInstance();
             addAdapter(morphAdapterInstance);
-        }
-        // Once adapters present, add the Definition Sets found on current context.
-        Collection<SyncBeanDef<DefinitionSetProxy>> beanDefSets = beanManager.lookupBeans(DefinitionSetProxy.class);
-        for (SyncBeanDef<DefinitionSetProxy> defSet : beanDefSets) {
-            DefinitionSetProxy definitionSetProxy = defSet.getInstance();
-            Object definitionSet = definitionSetProxy.getDefinitionSet();
-            addDefinitionSet(definitionSet);
         }
     }
 }

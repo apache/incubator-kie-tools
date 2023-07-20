@@ -1,0 +1,82 @@
+id: order
+version: "1.0"
+specVersion: "0.8"
+name: Purchase Order Workflow
+start: StartNewOrder
+states:
+  - name: StartNewOrder
+    type: event
+    onEvents:
+      - actions:
+          - functionRef:
+              refName: LogNewOrderCreated
+        eventRefs:
+          - OrderCreatedEvent
+    transition:
+      nextState: WaitForOrderConfirmation
+  - name: WaitForOrderConfirmation
+    type: event
+    onEvents:
+      - actions:
+          - functionRef:
+              refName: LogOrderConfirmed
+        eventRefs:
+          - OrderConfirmedEvent
+    transition:
+      nextState: WaitOrderShipped
+  - name: WaitOrderShipped
+    type: event
+    end:
+      terminate: true
+      produceEvents:
+        - eventRef: OrderFinishedEvent
+    onEvents:
+      - actions:
+          - functionRef:
+              refName: LogOrderShipped
+        eventRefs:
+          - ShipmentSentEvent
+  - name: CancelOrder
+    type: operation
+    actions:
+      - functionRef:
+          refName: CancelOrder
+    end:
+      terminate: true
+      produceEvents:
+        - eventRef: OrderCancelledEvent
+events:
+  - name: OrderCreatedEvent
+    source: /orders/new
+    type: my.company.orders
+    correlation:
+      - contextAttributeName: orderid
+  - name: OrderConfirmedEvent
+    source: /orders/confirmed
+    type: my.company.orders
+    correlation:
+      - contextAttributeName: orderid
+  - name: ShipmentSentEvent
+    source: /orders/shipped
+    type: my.company.orders
+    correlation:
+      - contextAttributeName: orderid
+  - name: OrderFinishedEvent
+    type: my.company.orders
+    kind: produced
+  - name: OrderCancelledEvent
+    type: my.company.orders
+    kind: produced
+functions:
+  - name: LogNewOrderCreated
+    operation: "http.myorg.io/ordersservices.json#logcreated"
+  - name: LogOrderConfirmed
+    operation: "http.myorg.io/ordersservices.json#logconfirmed"
+  - name: LogOrderShipped
+    operation: "http.myorg.io/ordersservices.json#logshipped"
+  - name: CancelOrder
+    operation: "http.myorg.io/ordersservices.json#calcelorder"
+timeouts:
+  workflowExecTimeout:
+    duration: PT30D
+    runBefore: CancelOrder

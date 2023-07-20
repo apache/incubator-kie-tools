@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+
 public class DefinitionAdapterBindings {
 
     private Class<?> baseType;
@@ -32,6 +34,7 @@ public class DefinitionAdapterBindings {
     private List<String> propertiesFieldNames;
     private List<Boolean> typedPropertyFields;
     private PropertyMetaTypes metaTypes;
+    private Class<? extends ElementFactory> elementFactory;
 
     public DefinitionAdapterBindings() {
         this.baseType = Object.class;
@@ -100,6 +103,15 @@ public class DefinitionAdapterBindings {
         return this;
     }
 
+    public DefinitionAdapterBindings setElementFactory(Class<? extends ElementFactory> factory) {
+        this.elementFactory = factory;
+        return this;
+    }
+
+    public Class<? extends ElementFactory> getElementFactory() {
+        return elementFactory;
+    }
+
     public String getDescriptionField() {
         return descriptionField;
     }
@@ -164,18 +176,6 @@ public class DefinitionAdapterBindings {
                 case NAME:
                     setNameIndex(index);
                     break;
-                case WIDTH:
-                    setWidthIndex(index);
-                    break;
-                case HEIGHT:
-                    setHeightIndex(index);
-                    break;
-                case RADIUS:
-                    setRadiusIndex(index);
-                    break;
-                case ID:
-                    setIdIndex(index);
-                    break;
             }
         }
 
@@ -183,14 +183,6 @@ public class DefinitionAdapterBindings {
             switch (type) {
                 case NAME:
                     return getNameIndex();
-                case WIDTH:
-                    return getWidthIndex();
-                case HEIGHT:
-                    return getHeightIndex();
-                case RADIUS:
-                    return getRadiusIndex();
-                case ID:
-                    return getIdIndex();
             }
             return -1;
         }

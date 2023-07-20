@@ -21,13 +21,15 @@
       <a data-field="refreshLink" class="fa fa-refresh" style="float: right; visibility: hidden"> </a>
     </div>
     <p data-field="errorBody" class="displayer-error-body"></p>
-    <div>
-      <a data-field="chevronDown" hidden><em class="glyphicon glyphicon-chevron-down"></em></a>
-      <a data-field="chevronRight"><em class="glyphicon glyphicon-chevron-right"></em></a>
-      <span class="chevron-title" data-i18n-key="errorDetails"></span>
-    </div>
-    <div data-field="errorDetailsSection" hidden>
-      <textarea data-field="errorDetails" class="error-details form-control" readonly></textarea>
+    <div data-field="errorDetailsContainer">
+      <div>
+        <a data-field="chevronDown" hidden><em class="glyphicon glyphicon-chevron-down"></em></a>
+        <a data-field="chevronRight"><em class="glyphicon glyphicon-chevron-right"></em></a>
+        <span class="chevron-title" data-i18n-key="errorDetails"></span>
+      </div>
+      <div data-field="errorDetailsSection" hidden>
+        <textarea data-field="errorDetails" class="error-details form-control" readonly></textarea>
+      </div>
     </div>
   </div>
 </div>

@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useMemo, useState } from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import React, { useMemo, useState } from "react";
+import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { KieSandboxOpenShiftService } from "../../openshift/KieSandboxOpenShiftService";
-import {
-  DependentFeature,
-  useExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { obfuscate } from "../git/ConnectToGitSection";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
-import { EMPTY_OPENSHIFT_CONNECTION } from "@kie-tools-core/openshift/dist/service/OpenShiftConnection";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
@@ -52,11 +45,11 @@ export function ConnectToOpenShiftSection() {
   const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<OpenShiftAuthSession>();
   const [status, setStatus] = useState(
-    extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
+    extendedServices.status === ExtendedServicesStatus.RUNNING
       ? OpenShiftInstanceStatus.DISCONNECTED
       : OpenShiftInstanceStatus.UNAVAILABLE
   );
-  const [connection, setConnection] = useState(EMPTY_OPENSHIFT_CONNECTION);
+  const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
 
   const openshiftService = useMemo(
     () =>
@@ -101,7 +94,7 @@ export function ConnectToOpenShiftSection() {
                   whiteSpace: "break-spaces",
                 }}
               >
-                {`Please setup KIE Sandbox Extended Services to be able to connect to OpenShift.`}
+                {`Please setup Extended Services to be able to connect to OpenShift.`}
               </Title>
               <br />
               <Button

@@ -23,3 +23,12 @@ Cypress.on("uncaught:exception", (err, runnable) => {
   // failing the test
   return false;
 });
+
+/**
+ * Delete all indexed DBs
+ */
+export const deleteAllIndexedDBs = async () => {
+  (await window.indexedDB.databases())
+    .filter((db) => db.name)
+    .forEach((db) => window.indexedDB.deleteDatabase(db.name!));
+};

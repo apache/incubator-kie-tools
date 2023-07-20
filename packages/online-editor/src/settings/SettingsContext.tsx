@@ -22,11 +22,10 @@ import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { useHistory } from "react-router";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 
-export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
-export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
-const GUIDED_TOUR_ENABLED_COOKIE_NAME = "kie-tools-COOKIE__guided-tour--is-enabled";
+export const EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
+export const EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 
 export class ExtendedServicesConfig {
   constructor(public readonly host: string, public readonly port: string) {}
@@ -50,26 +49,16 @@ export class ExtendedServicesConfig {
 export interface SettingsContextType {
   isOpen: boolean;
   activeTab: SettingsTabs;
-  kieSandboxExtendedServices: {
+  extendedServices: {
     config: ExtendedServicesConfig;
-  };
-  general: {
-    guidedTour: {
-      isEnabled: boolean;
-    };
   };
 }
 
 export interface SettingsDispatchContextType {
   open: (activeTab?: SettingsTabs) => void;
   close: () => void;
-  kieSandboxExtendedServices: {
+  extendedServices: {
     setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
-  };
-  general: {
-    guidedTour: {
-      setEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-    };
   };
 }
 
@@ -102,28 +91,14 @@ export function SettingsContextProvider(props: any) {
     });
   }, [history, queryParams]);
 
-  //guided tour
-  const [isGuidedTourEnabled, setGuidedTourEnabled] = useState(
-    getBooleanCookieInitialValue(GUIDED_TOUR_ENABLED_COOKIE_NAME, true)
-  );
-
-  useEffect(() => {
-    setCookie(GUIDED_TOUR_ENABLED_COOKIE_NAME, `${isGuidedTourEnabled}`);
-  }, [isGuidedTourEnabled]);
-
   const extendedServices = useExtendedServices();
 
   const dispatch = useMemo(() => {
     return {
       open,
       close,
-      kieSandboxExtendedServices: {
+      extendedServices: {
         setConfig: extendedServices.saveNewConfig,
-      },
-      general: {
-        guidedTour: {
-          setEnabled: setGuidedTourEnabled,
-        },
       },
     };
   }, [close, extendedServices.saveNewConfig, open]);
@@ -132,16 +107,11 @@ export function SettingsContextProvider(props: any) {
     return {
       isOpen,
       activeTab,
-      kieSandboxExtendedServices: {
+      extendedServices: {
         config: extendedServices.config,
       },
-      general: {
-        guidedTour: {
-          isEnabled: isGuidedTourEnabled,
-        },
-      },
     };
-  }, [activeTab, isGuidedTourEnabled, isOpen, extendedServices.config]);
+  }, [activeTab, isOpen, extendedServices.config]);
 
   return (
     <SettingsContext.Provider value={value}>

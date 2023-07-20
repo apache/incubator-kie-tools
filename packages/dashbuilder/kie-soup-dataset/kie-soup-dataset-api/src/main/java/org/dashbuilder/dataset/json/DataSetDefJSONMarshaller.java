@@ -21,12 +21,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.def.DataColumnDef;
 import org.dashbuilder.dataset.def.DataSetDef;
-import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonArray;
 import org.dashbuilder.json.JsonException;
@@ -55,45 +53,48 @@ public class DataSetDefJSONMarshaller {
     public static final String REFRESH_ALWAYS = "refreshAlways";
 
     public static final List<String> ROOT_KEYS = Arrays.asList(
-                                                               UUID,
-                                                               NAME,
-                                                               PROVIDER,
-                                                               ISPUBLIC,
-                                                               PUSH_ENABLED,
-                                                               PUSH_MAXSIZE,
-                                                               COLUMNS,
-                                                               FILTERS,
-                                                               ALL_COLUMNS,
-                                                               CACHE_ENABLED,
-                                                               CACHE_MAXROWS,
-                                                               REFRESH_TIME,
-                                                               REFRESH_ALWAYS);
+            UUID,
+            NAME,
+            PROVIDER,
+            ISPUBLIC,
+            PUSH_ENABLED,
+            PUSH_MAXSIZE,
+            COLUMNS,
+            FILTERS,
+            ALL_COLUMNS,
+            CACHE_ENABLED,
+            CACHE_MAXROWS,
+            REFRESH_TIME,
+            REFRESH_ALWAYS);
 
-    protected DataSetProviderRegistry dataSetProviderRegistry;
-    protected DataSetLookupJSONMarshaller dataSetLookupJSONMarshaller;
+    private DataSetProviderType type;
 
-    public DataSetDefJSONMarshaller(DataSetProviderRegistry dataSetProviderRegistry) {
-        this(dataSetProviderRegistry, DataSetLookupJSONMarshaller.get());
-    }
-
-    public DataSetDefJSONMarshaller(DataSetProviderRegistry dataSetProviderRegistry, DataSetLookupJSONMarshaller dataSetLookupJSONMarshaller) {
-        this.dataSetProviderRegistry = dataSetProviderRegistry;
-        this.dataSetLookupJSONMarshaller = dataSetLookupJSONMarshaller;
+    public DataSetDefJSONMarshaller(DataSetProviderType type) {
+        super();
+        this.type = type;
     }
     
     public DataSetDef fromJson(String jsonString) throws Exception {
         JsonObject json = Json.parse(jsonString);
         return fromJsonObj(json);
     }
+    
+    
+    public DataSetDef fromJson(DataSetDef dataSetDef, String jsonString) throws Exception {
+        JsonObject json = Json.parse(jsonString);
+        return fromJsonObj(dataSetDef, json);
+    }
 
     public DataSetDef fromJsonObj(JsonObject json) throws Exception {
-        DataSetProviderType type = readProviderType(json);
         DataSetDef dataSetDef = type.createDataSetDef();
         dataSetDef.setProvider(type);
-
+        return fromJsonObj(dataSetDef, json);
+    }
+    
+    public DataSetDef fromJsonObj(DataSetDef dataSetDef, JsonObject json) throws Exception {
         readGeneralSettings(dataSetDef, json);
 
-        DataSetDefJSONMarshallerExt marshaller = type.getJsonMarshaller();
+        var marshaller = type.getJsonMarshaller();
         if (marshaller != null) {
             marshaller.fromJson(dataSetDef, json);
         } else {
@@ -105,18 +106,6 @@ public class DataSetDefJSONMarshaller {
             }
         }
         return dataSetDef;
-    }
-
-    public DataSetProviderType<?> readProviderType(JsonObject json) throws Exception {
-        String provider = json.getString(PROVIDER);
-        if (isBlank(provider)) {
-            provider = DataSetProviderType.EXTERNAL.getName();
-        }
-        var type = dataSetProviderRegistry.getProviderTypeByName(provider);
-        if (type == null) {
-            throw new IllegalArgumentException("Provider not supported: " + provider);
-        }
-        return type;
     }
 
     public DataSetDef readGeneralSettings(DataSetDef def, JsonObject json) throws Exception {
@@ -133,9 +122,7 @@ public class DataSetDefJSONMarshaller {
 
         if (!isBlank(uuid)) {
             def.setUUID(uuid);
-        } else {
-            throw new IllegalArgumentException("Data Sets require the uuid field.");
-        }
+        } 
         if (!isBlank(name)) {
             def.setName(name);
         }
@@ -175,17 +162,23 @@ public class DataSetDefJSONMarshaller {
                 if (isBlank(columnId)) {
                     throw new IllegalArgumentException("Column id. attribute is mandatory.");
                 }
-                if (isBlank(columnType)) {
-                    throw new IllegalArgumentException("Missing column 'type' attribute: " + columnId);
-                }
-
-                ColumnType type = ColumnType.TEXT;
-                if (columnType.equalsIgnoreCase("label")) {
-                    type = ColumnType.LABEL;
-                } else if (columnType.equalsIgnoreCase("date")) {
-                    type = ColumnType.DATE;
-                } else if (columnType.equalsIgnoreCase("number")) {
-                    type = ColumnType.NUMBER;
+                ColumnType type = ColumnType.LABEL;
+                if (!isBlank(columnType)) {
+                    var normalizedType = columnType.toLowerCase();
+                    switch (normalizedType) {
+                        case "text":
+                            type = ColumnType.TEXT;
+                            break;
+                        case "date":
+                            type = ColumnType.DATE;
+                            break;
+                        case "number":
+                            type = ColumnType.NUMBER;
+                            break;
+                        case "label":
+                        default:
+                            type = ColumnType.LABEL;
+                    }
                 }
 
                 def.addColumn(columnId, type);
@@ -194,11 +187,6 @@ public class DataSetDefJSONMarshaller {
                     def.setPattern(columnId, columnPattern);
                 }
             }
-        }
-        if (json.has(FILTERS)) {
-            JsonArray array = json.getArray(FILTERS);
-            DataSetFilter dataSetFilter = dataSetLookupJSONMarshaller.parseFilterOperation(array);
-            def.setDataSetFilter(dataSetFilter);
         }
         return def;
     }
@@ -247,19 +235,6 @@ public class DataSetDefJSONMarshaller {
             final JsonArray columnsArray = toJsonObject(columns, dataSetDef);
             if (columnsArray != null) {
                 json.put(COLUMNS, columnsArray);
-            }
-        }
-
-        // Initial filter
-        final DataSetFilter filter = dataSetDef.getDataSetFilter();
-        if (filter != null) {
-            try {
-                final JsonArray filters = dataSetLookupJSONMarshaller.formatColumnFilters(filter.getColumnFilterList());
-                if (filters != null) {
-                    json.put(FILTERS, filters);
-                }
-            } catch (Exception e) {
-                throw new JsonException(e);
             }
         }
 
@@ -314,7 +289,7 @@ public class DataSetDefJSONMarshaller {
         }
         return true;
     }
-    
+
     private static <T> void transferValue(String key, Function<String, T> extractor, Consumer<T> setter) {
         T value = extractor.apply(key);
         if (value != null && !isBlank(value.toString())) {

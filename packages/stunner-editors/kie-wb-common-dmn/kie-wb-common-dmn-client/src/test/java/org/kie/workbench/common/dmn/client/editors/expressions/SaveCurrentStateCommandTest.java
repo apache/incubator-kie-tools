@@ -66,7 +66,6 @@ public class SaveCurrentStateCommandTest {
     public void setup() {
         command = spy(new SaveCurrentStateCommand(hasExpression,
                                                   editorSelectedEvent,
-                                                  view,
                                                   NODE_UUID,
                                                   hasName,
                                                   updateCanvasNodeNameCommand));
@@ -91,7 +90,7 @@ public class SaveCurrentStateCommandTest {
 
         verify(stateBeforeUndo).apply();
         assertEquals(CanvasCommandResultBuilder.SUCCESS, result);
-        assertEquals(stateBeforeUndo, command.getStateBeforeUndo());
+        assertNull(command.getStateBeforeUndo());
     }
 
     @Test
@@ -127,7 +126,6 @@ public class SaveCurrentStateCommandTest {
 
         assertEquals(hasExpression, stateBeforeUndo.getHasExpression());
         assertEquals(editorSelectedEvent, stateBeforeUndo.getEditorSelectedEvent());
-        assertEquals(view, stateBeforeUndo.getView());
         assertEquals(NODE_UUID, stateBeforeUndo.getNodeUUID());
         assertEquals(CanvasCommandResultBuilder.SUCCESS, result);
     }

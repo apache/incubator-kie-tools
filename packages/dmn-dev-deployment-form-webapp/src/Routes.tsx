@@ -30,7 +30,9 @@ export class Route<
     queryParams?: any;
   }
 > {
-  constructor(private readonly pathDelegate: (pathParams: { [k in T["pathParams"]]: string }) => string) {}
+  constructor(
+    private readonly pathDelegate: (pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) => string
+  ) {}
 
   public url(args: {
     base?: string;
@@ -65,8 +67,8 @@ export class Route<
     return queryString;
   }
 
-  public path(pathParams: { [k in T["pathParams"]]: string }) {
-    return this.pathDelegate(pathParams);
+  public path(pathParams: { [k in T["pathParams"]]: string }, baseUrl?: string) {
+    return this.pathDelegate(pathParams, baseUrl ?? ".");
   }
 }
 
@@ -102,17 +104,17 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  root: new Route<{}>(() => "/"),
+  root: new Route<{}>(() => "./"),
 
   error: new Route<{}>(() => "/error"),
 
-  dataJson: new Route<{}>(() => "/data.json"),
+  dataJson: new Route<{}>(() => "./data.json"),
 
-  swaggerUi: new Route<{}>(() => "/q/swagger-ui"),
+  swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
 
   dmnResult: new Route<{
     pathParams: PathParams.MODEL_NAME;
-  }>(({ modelName }) => `/${modelName}/dmnresult`),
+  }>(({ modelName }, baseUrl) => `${baseUrl}/${modelName}/dmnresult`),
 
   form: new Route<{
     pathParams: PathParams.FILE_PATH;
@@ -120,11 +122,11 @@ export const routes = {
 
   model: new Route<{
     pathParams: PathParams.FILE_PATH;
-  }>(({ filePath }) => `/${filePath}`),
+  }>(({ filePath }, baseUrl) => `${baseUrl}/${filePath}`),
 
   static: {
     images: {
-      kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
+      appLogoReverse: new Route<{}>((_, baseUrl) => `${baseUrl}/images/app_logo_rgb_fullcolor_reverse.svg`),
     },
   },
 };

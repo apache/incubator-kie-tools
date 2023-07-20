@@ -1,0 +1,48 @@
+id: roomreadings
+version: "1.0"
+specVersion: "0.8"
+name: Room Temp and Humidity Workflow
+start: ConsumeReading
+states:
+  - name: ConsumeReading
+    type: event
+    end: true
+    onEvents:
+      - eventDataFilter:
+          toStateData: "${ .readings }"
+        actions:
+          - functionRef:
+              refName: LogReading
+        eventRefs:
+          - TemperatureEvent
+          - HumidityEvent
+  - name: GenerateReport
+    type: operation
+    actions:
+      - functionRef:
+          refName: ProduceReport
+          arguments:
+            data: "${ .readings }"
+    end:
+      terminate: true
+events:
+  - name: TemperatureEvent
+    source: /home/rooms/+
+    type: my.home.sensors
+    correlation:
+      - contextAttributeName: roomId
+  - name: HumidityEvent
+    source: /home/rooms/+
+    type: my.home.sensors
+    correlation:
+      - contextAttributeName: roomId
+keepActive: true
+functions:
+  - name: LogReading
+    operation: "http.myorg.io/ordersservices.json#logreading"
+  - name: ProduceReport
+    operation: "http.myorg.io/ordersservices.json#produceReport"
+timeouts:
+  workflowExecTimeout:
+    duration: PT1H
+    runBefore: GenerateReport

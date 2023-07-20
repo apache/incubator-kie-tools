@@ -14,33 +14,28 @@
  * limitations under the License.
  */
 
-import {
-  FEEL_CONTEXT,
-  DAYS_AND_TIME_DURATION_FORMAT,
-  YEARS_AND_MONTHS_DURATION_FORMAT,
-} from "@kie-tools/form-dmn/dist/uniforms";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
 import { UnitablesJsonSchemaBridge } from "@kie-tools/unitables/dist/uniforms";
+import { DmnInputFieldProperties, ExtendedServicesDmnJsonSchema, X_DMN_TYPE } from "@kie-tools/extended-services-api";
 
 export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
+  schema: ExtendedServicesDmnJsonSchema;
+
   public getField(name: string) {
-    const field = super.getField(name);
+    const field = super.getField(name) as DmnInputFieldProperties;
     if (field.format === DAYS_AND_TIME_DURATION_FORMAT) {
       field.placeholder = "P1DT5H or P2D or PT1H2M10S";
     }
     if (field.format === YEARS_AND_MONTHS_DURATION_FORMAT) {
       field.placeholder = "P1Y5M or P2Y or P1M";
     }
-    if (field["x-dmn-type"] === FEEL_CONTEXT) {
+    if (field["x-dmn-type"] === X_DMN_TYPE.CONTEXT) {
       field.placeholder = `{ "x": <value> }`;
     }
     return field;
   }
 
-  public getBoxedFieldType(field: Record<string, any>): string {
-    let extractedType = (field["x-dmn-type"] ?? "").split("FEEL:").pop();
-    if ((extractedType?.length ?? 0) > 1) {
-      extractedType = (field["x-dmn-type"] ?? "").split(":").pop()?.split("}").join("").trim();
-    }
-    return extractedType;
+  public getFieldDataType(field: DmnInputFieldProperties) {
+    return super.getFieldDataType(field);
   }
 }

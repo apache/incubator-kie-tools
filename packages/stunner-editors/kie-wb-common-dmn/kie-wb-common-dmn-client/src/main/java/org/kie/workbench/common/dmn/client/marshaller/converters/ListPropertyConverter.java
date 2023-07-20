@@ -34,6 +34,8 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSITList;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.kie.JSITComponentWidths;
 
+import static org.kie.workbench.common.dmn.client.marshaller.common.WrapperUtils.getWrappedJSITExpression;
+
 public class ListPropertyConverter {
 
     public static List wbFromDMN(final JSITList dmn,
@@ -74,7 +76,13 @@ public class ListPropertyConverter {
 
         for (HasExpression hasExpression : wb.getExpression()) {
             final Expression e = hasExpression.getExpression();
-            final JSITExpression eConverted = ExpressionPropertyConverter.dmnFromWB(e, componentWidthsConsumer);
+            JSITExpression eConverted = ExpressionPropertyConverter.dmnFromWB(e, componentWidthsConsumer);
+
+            if (Objects.isNull(eConverted)) {
+                final JSITExpression mockExpression = JSITExpression.newInstance();
+                eConverted = getWrappedJSITExpression(mockExpression, "dmn", "expression");
+            }
+
             result.addExpression(eConverted);
         }
 

@@ -18,107 +18,122 @@ package command
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
-	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
+	"os"
+	"path"
 )
-
-type DeployCmdConfig struct {
-	// Deploy options
-	Path string // service name
-}
 
 func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "deploy",
-		Short: "Deploy a Kogito Serverless Workflow project",
+		Short: "Deploy a SonataFlow project on Kubernetes via SonataFlow Operator",
 		Long: `
-	Deploys a Kogito Serverless Workflow project in the current directory. 
-	By default, this command uses the ./target/kubernetes folder to find
-	the deployment files generated in the build process. The build step
-	is required before using the deploy command.
-
-	Before you use the deploy command, ensure that your cluster have 
-	access to the build output image.
-		`,
+	Deploy a SonataFlow project in Kubernetes via the SonataFlow Operator. 
+	`,
 		Example: `
-	# Deploy the workflow from the current directory's project. 
-	# Deploy as Knative service.
-	{{.Name}} deploy
-	
-	# Specify the path of the directory containing the "knative.yml" 
-	{{.Name}} deploy --path ./kubernetes
+	# Deploy the workflow project from the current directory's project. 
+	# You must provide target namespace.
+	{{.Name}} deploy --namespace <your_namespace>
+	# Persist the generated Kubernetes manifests on a given path and deploy the 
+	# workflow from the current directory's project. 
+	{{.Name}} deploy --manifestPath=<full_directory_path>
+    # Specify a custom support files folder. 
+	{{.Name}} deploy --supportFiles=<full_directory_path>
 		`,
+
+		PreRunE:    common.BindEnv("namespace", "manifestPath", "supportFilesFolder"),
 		SuggestFor: []string{"delpoy", "deplyo"},
-		PreRunE:    common.BindEnv("path"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runDeploy(cmd, args)
+		return runDeployUndeploy(cmd, args)
 	}
 
-	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deployment files", cmd.Name()))
+	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
+	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Kubernetes manifests.")
+	cmd.Flags().StringP("supportFilesFolder", "s", "", "Specify a custom support files folder")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
 
-func runDeploy(cmd *cobra.Command, args []string) error {
-	start := time.Now()
+func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 
 	cfg, err := runDeployCmdConfig(cmd)
-	if err != nil {
-		return fmt.Errorf("initializing deploy config: %w", err)
-	}
-
-	if _, err := exec.LookPath("kubectl"); err != nil {
-		fmt.Println("ERROR: kubectl is required for deploy")
-		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
-		os.Exit(1)
-	}
-
-	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
-	if err := common.RunCommand(
-		createService,
-		"deploy",
-	); err != nil {
-		return err
-	}
-	fmt.Println("✅ Knative service sucessufully created")
-
-	// Check if kogito.yml file exists
-	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
-		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
-		if err := common.RunCommand(
-			deploy,
-			"deploy",
-		); err != nil {
-			return err
+	//temp dir cleanup
+	defer func(cfg *DeployUndeployCmdConfig) {
+		if cfg.TempDir != "" {
+			if err := os.RemoveAll(cfg.TempDir); err != nil {
+				fmt.Errorf("❌ ERROR: failed to remove temp dir: %v", err)
+			}
 		}
-		fmt.Println("✅ Knative Eventing bindings successfully created")
+	}(&cfg)
+
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: initializing deploy config: %w", err)
 	}
 
-	finish := time.Since(start)
-	fmt.Printf("🚀 Deploy took: %s \n", finish)
+	fmt.Println("🛠️️ Deploy a SonataFlow project on Kubernetes via the SonataFlow Operator...")
+
+	if err := checkEnvironment(&cfg); err != nil {
+		return fmt.Errorf("❌ ERROR: checking deploy environment: %w", err)
+	}
+
+	if err := generateManifests(&cfg); err != nil {
+		return fmt.Errorf("❌ ERROR: generating deploy environment: %w", err)
+	}
+
+	if err = deploy(&cfg); err != nil {
+		return fmt.Errorf("❌ ERROR: applying deploy: %w", err)
+	}
+
+	fmt.Printf("\n🎉 SonataFlow project successfully deployed.\n")
+
 	return nil
 }
 
-func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
-	cfg = DeployCmdConfig{
-		Path: viper.GetString("path"),
+func deploy(cfg *DeployUndeployCmdConfig) error {
+	fmt.Printf("🛠 Deploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
+
+	manifestExtension := []string{".yaml"}
+
+	files, err := common.FindFilesWithExtensions(cfg.ManifestPath, manifestExtension)
+	if err != nil {
+		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
 	}
-	return
+	for _, file := range files {
+		if err = common.ExecuteKubectlApply(file, cfg.NameSpace); err != nil {
+			return fmt.Errorf("❌ ERROR: failed to deploy manifest %s,  %w", file, err)
+		}
+		fmt.Printf(" - ✅ Manifest %s successfully deployed in namespace %s\n", path.Base(file), cfg.NameSpace)
+
+	}
+	return nil
 }
 
-func checkIfKogitoFileExists(cfg DeployCmdConfig) (bool, error) {
-	if _, err := os.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
-		return true, nil
-	} else {
-		return false, err
+func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err error) {
+
+	cfg = DeployUndeployCmdConfig{
+		NameSpace:         viper.GetString("namespace"),
+		SupportFileFolder: viper.GetString("supportFilesFolder"),
+		ManifestPath:      viper.GetString("manifestPath"),
 	}
+
+	if len(cfg.SupportFileFolder) == 0 {
+		dir, err := os.Getwd()
+		cfg.SupportFileFolder = dir + "/specs"
+		if err != nil {
+			return cfg, fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
+		}
+	}
+	//setup manifest path
+	if err := setupConfigManifestPath(&cfg); err != nil {
+		return cfg, err
+	}
+
+	return cfg, nil
 }

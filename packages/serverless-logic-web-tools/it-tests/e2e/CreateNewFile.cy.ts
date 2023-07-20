@@ -28,7 +28,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
     cy.ouia({ ouiaId: "new-yard.yaml-button" }).should("have.text", "YAML");
 
     cy.ouia({ ouiaId: "Dashboard-card" }).find("button").should("have.length", 1);
-    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "New Dashboard");
+    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "YAML");
   });
 
   it("should create a new JSON serverless workflow", () => {
@@ -43,11 +43,11 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
       cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
         // create basic JSON structure
         cy.get(".codelens-decoration a:contains('Create a Serverless Workflow')").click();
-        cy.get("[aria-label='Create your first Serverless Workflow'] a").click();
+        cy.get("[aria-label='Serverless Workflow Example'] a").click();
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
-          .should("contain.value", '"id": "Workflow unique identifier",')
+          .should("contain.value", '"id": "workflow_unique_identifier",')
           .should("contain.value", '"name": "Workflow name",')
           .should("contain.value", '"start": "StartState",');
 
@@ -82,11 +82,11 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
       cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
         // create basic YAML structure
         cy.get(".codelens-decoration a:contains('Create a Serverless Workflow')").click();
-        cy.get("[aria-label='Create your first Serverless Workflow'] a").click();
+        cy.get("[aria-label='Serverless Workflow Example'] a").click();
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
-          .should("contain.value", "id: 'Workflow unique identifier'")
+          .should("contain.value", "id: 'workflow_unique_identifier'")
           .should("contain.value", "name: 'Workflow name'")
           .should("contain.value", "start: 'StartState'");
 
@@ -100,12 +100,8 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
       });
 
       // check YAML diagram state
-      cy.iframe("#kogito-iframe[src='./serverless-workflow-mermaid-viewer-envelope.html']").within(() => {
-        cy.get(".nodeLabel").should(($nodes) => {
-          expect($nodes.length).eq(2);
-          expect($nodes.eq(0)).text("StartState");
-          expect($nodes.eq(1)).contain("type = Operation State");
-        });
+      cy.iframe("#kogito-iframe[src='./serverless-workflow-diagram-editor-envelope.html']").within(() => {
+        cy.get("#canvasPanel").should("contain.html", "<canvas id");
       });
     });
 
@@ -136,5 +132,8 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
         cy.ouia({ ouiaId: "hello-text" }).should("have.text", "Hello");
       });
     });
+
+    // check there are no problems in dashbuilder file
+    cy.get("#total-notifications").should("have.text", 0);
   });
 });

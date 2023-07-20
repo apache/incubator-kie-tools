@@ -48,7 +48,7 @@ public class ClientRuntimeError {
         }
 
         Throwable root = getRootCause();
-        return root.toString();
+        return root != null ? root.toString() : "";
     }
 
     public String getCause() {

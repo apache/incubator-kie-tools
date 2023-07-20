@@ -1,6 +1,17 @@
 <?xml version="1.0" ?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_D4D66ED7-F5CB-4F14-995F-41E2B92AB857" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" id="_B24137D5-C82C-4266-B42F-5396EC8F352E" name="complex-data-types" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_D4D66ED7-F5CB-4F14-995F-41E2B92AB857">
-  <dmn:extensionElements/>
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kiegroup.org/dmn/_D4D66ED7-F5CB-4F14-995F-41E2B92AB857"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  id="_B24137D5-C82C-4266-B42F-5396EC8F352E"
+  name="complex-data-types"
+  expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kiegroup.org/dmn/_D4D66ED7-F5CB-4F14-995F-41E2B92AB857"
+>
+  <dmn:extensionElements />
   <dmn:itemDefinition id="_ACF068EC-7FC4-434E-9CE0-7E384332897B" name="tNationalPeopleSurvey" isCollection="false">
     <dmn:itemComponent id="_1D1F7B5C-E937-41AC-B492-1A8CCEE9F3A8" name="Records" isCollection="true">
       <dmn:typeRef>tRecord</dmn:typeRef>
@@ -33,7 +44,7 @@
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_F9BF90D9-8F44-495D-A2E8-220B2BB4F9E5" name="DRG">
       <di:extension>
-        <kie:ComponentsWidthsExtension/>
+        <kie:ComponentsWidthsExtension />
       </di:extension>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

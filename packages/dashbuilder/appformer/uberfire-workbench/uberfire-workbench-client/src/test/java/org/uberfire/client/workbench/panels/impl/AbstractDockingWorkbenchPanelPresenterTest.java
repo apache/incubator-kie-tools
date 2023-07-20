@@ -51,8 +51,8 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest extends Abstrac
 
     @Test
     public void removingLastPartFromPanelShouldRemovePanelToo() throws Exception {
-        WorkbenchPanelPresenter westChildPanelPresenter = mock(SimpleWorkbenchPanelPresenter.class);
-        WorkbenchPanelPresenter parentPanelPresenter = mock(SimpleWorkbenchPanelPresenter.class);
+        WorkbenchPanelPresenter westChildPanelPresenter = mock(LayoutPanelPresenter.class);
+        WorkbenchPanelPresenter parentPanelPresenter = mock(LayoutPanelPresenter.class);
 
         AbstractDockingWorkbenchPanelPresenter<?> panelPresenter = getPresenterToTest();
         panelPresenter.setDefinition(panelPresenterPanelDefinition);
@@ -70,8 +70,8 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest extends Abstrac
 
     @Test
     public void childrenOfRemovedPanelsShouldBeRescued() throws Exception {
-        WorkbenchPanelPresenter westChildPanelPresenter = mock(SimpleWorkbenchPanelPresenter.class);
-        WorkbenchPanelPresenter westChildChild = mock(SimpleWorkbenchPanelPresenter.class);
+        WorkbenchPanelPresenter westChildPanelPresenter = mock(LayoutPanelPresenter.class);
+        WorkbenchPanelPresenter westChildChild = mock(LayoutPanelPresenter.class);
 
         when(westChildPanelPresenter.getPanels()).thenReturn(ImmutableMap.of((Position) CompassPosition.WEST,
                                                                              westChildChild));
@@ -91,8 +91,8 @@ public abstract class AbstractDockingWorkbenchPanelPresenterTest extends Abstrac
         AbstractDockingWorkbenchPanelPresenter<?> panelPresenter = getPresenterToTest();
         panelPresenter.setDefinition(panelPresenterPanelDefinition);
 
-        WorkbenchPanelPresenter southRootChild1 = mock(SimpleWorkbenchPanelPresenter.class);
-        WorkbenchPanelPresenter southRootChild2 = mock(SimpleWorkbenchPanelPresenter.class);
+        WorkbenchPanelPresenter southRootChild1 = mock(LayoutPanelPresenter.class);
+        WorkbenchPanelPresenter southRootChild2 = mock(LayoutPanelPresenter.class);
 
         final PanelDefinition southRootChild1PanelDefinition = new PanelDefinitionImpl();
         final PanelDefinition southRootChild2PanelDefinition = new PanelDefinitionImpl();

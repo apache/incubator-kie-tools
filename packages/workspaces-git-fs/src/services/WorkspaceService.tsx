@@ -15,7 +15,7 @@
  */
 
 import { encoder } from "../encoderdecoder/EncoderDecoder";
-import JSZip from "jszip";
+import { downloadZip, predictLength } from "client-zip";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
 import { basename, join, relative } from "path";
@@ -159,21 +159,18 @@ export class WorkspaceService {
   ): Promise<Blob> {
     const wwfds = await this.getFilteredWorkspaceFileDescriptors(schema, workspaceId);
 
-    const filesToZip = await Promise.all(
-      wwfds
-        .filter((wwfd) => !onlyExtensions || onlyExtensions.includes(extractExtension(wwfd.relativePath)))
-        .map(async (wwfd) => ({
-          relativePath: wwfd.relativePath,
-          content: await this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)),
-        }))
-    );
+    const filesToZip = (
+      await Promise.all(
+        wwfds
+          .filter((wwfd) => !onlyExtensions || onlyExtensions.includes(extractExtension(wwfd.relativePath)))
+          .map(async (wwfd) => ({
+            relativePath: wwfd.relativePath,
+            content: await this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)),
+          }))
+      )
+    ).map((file) => ({ name: file.relativePath, input: file.content }));
 
-    const zip = new JSZip();
-    for (const file of filesToZip) {
-      zip.file(file.relativePath, file.content);
-    }
-
-    return zip.generateAsync({ type: "blob" });
+    return downloadZip(filesToZip, { length: predictLength(filesToZip) }).blob();
   }
 
   public async createOrOverwriteFile(

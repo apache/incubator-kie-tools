@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-999/schema#",
+  "type": "objec",
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 3
+    },
+    "age": {
+      "type": "int"
+    }
+  },
+  "required": ["name"]
+}

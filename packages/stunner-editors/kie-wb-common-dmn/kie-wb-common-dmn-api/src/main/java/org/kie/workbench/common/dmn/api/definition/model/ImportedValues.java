@@ -94,6 +94,17 @@ public class ImportedValues extends Import implements DMNPropertySet,
         return clonedImportedValues;
     }
 
+    public ImportedValues exactCopy() {
+        ImportedValues clonedImportedValues = new ImportedValues();
+        clonedImportedValues.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        clonedImportedValues.namespace = namespace;
+        clonedImportedValues.locationURI = Optional.ofNullable(locationURI).map(LocationURI::copy).orElse(null);
+        clonedImportedValues.importType = importType;
+        clonedImportedValues.importedElement = importedElement;
+        clonedImportedValues.expressionLanguage = Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null);
+        return clonedImportedValues;
+    }
+
     // -----------------------
     // Stunner core properties
     // -----------------------

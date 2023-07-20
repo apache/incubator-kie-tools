@@ -52,6 +52,7 @@ import static org.kie.workbench.common.dmn.client.editors.included.modal.dropdow
 public class AddIncludedModelCommand extends AbstractCanvasCommand {
 
     private final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent;
+    private final Event<RefreshDecisionComponents> refreshPMMLComponentsEvent;
 
     private final KieAssetsDropdownItem value;
     private final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent;
@@ -65,6 +66,7 @@ public class AddIncludedModelCommand extends AbstractCanvasCommand {
     public AddIncludedModelCommand(final KieAssetsDropdownItem value,
                                    final IncludedModelsPagePresenter presenter,
                                    final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                                   final Event<RefreshDecisionComponents> refreshPMMLComponentsEvent,
                                    final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent,
                                    final ImportRecordEngine recordEngine,
                                    final DMNIncludeModelsClient client,
@@ -72,6 +74,7 @@ public class AddIncludedModelCommand extends AbstractCanvasCommand {
         this.value = value;
         this.presenter = presenter;
         this.refreshDecisionComponentsEvent = refreshDecisionComponentsEvent;
+        this.refreshPMMLComponentsEvent = refreshPMMLComponentsEvent;
         this.refreshDataTypesListEvent = refreshDataTypesListEvent;
         this.recordEngine = recordEngine;
         this.client = client;
@@ -114,7 +117,7 @@ public class AddIncludedModelCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
         this.created = createIncludedModel(value);
         refreshPresenter();
-        refreshDecisionComponents();
+        refreshDecisionComponents(created instanceof PMMLIncludedModelActiveRecord ? DMNImportTypes.PMML : DMNImportTypes.DMN);
         refreshDataTypesList(getCreated());
         return CanvasCommandResultBuilder.SUCCESS;
     }
@@ -123,7 +126,7 @@ public class AddIncludedModelCommand extends AbstractCanvasCommand {
     public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
         getCreated().destroy();
         refreshPresenter();
-        refreshDecisionComponents();
+        refreshDecisionComponents(created instanceof PMMLIncludedModelActiveRecord ? DMNImportTypes.PMML : DMNImportTypes.DMN);
         return CanvasCommandResultBuilder.SUCCESS;
     }
 
@@ -163,8 +166,12 @@ public class AddIncludedModelCommand extends AbstractCanvasCommand {
         return new DefaultIncludedModelActiveRecord(recordEngine);
     }
 
-    void refreshDecisionComponents() {
-        this.refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
+    void refreshDecisionComponents(DMNImportTypes dmnImportTypes) {
+        if (Objects.equals(dmnImportTypes, DMNImportTypes.PMML)) {
+            this.refreshPMMLComponentsEvent.fire(new RefreshDecisionComponents());
+        } else {
+            this.refreshDecisionComponentsEvent.fire(new RefreshDecisionComponents());
+        }
     }
 
     void refreshPresenter() {

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,8 +14,11 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.kiegroup.kie.tools</groupId>
   <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
@@ -35,7 +38,8 @@
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
     <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <jdt.ls.version>1.7.0.20211216164144</jdt.ls.version>
+    <!-- Using a SNAPSHOT version because of https://github.com/eclipse/eclipse.jdt.ls/issues/1970 -->
+    <jdt.ls.version>1.26.0-SNAPSHOT</jdt.ls.version>
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
 
@@ -55,11 +59,11 @@
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.7.0/repository/</url>
+      <url>https://download.eclipse.org/jdtls/snapshots/repository/latest/</url>
     </repository>
     <repository>
       <id>jdt.ls.maven</id>
-      <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
+      <url>https://repo.eclipse.org/content/repositories/jdtls-snapshots/</url>
     </repository>
   </repositories>
   <build>

@@ -20,39 +20,33 @@ import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowFunctionsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowFunctionsYamlSerializer;
 
-/**
- * Used to define events and their correlations.
- */
 @JSONMapper
+@YAMLMapper
 @JsType
 public class Event {
 
-    /**
-     * Unique event name.
-     */
-    private String name;
+    public String name;
 
-    /**
-     * {@link CloudEvent } source
-     */
-    private String source;
+    public String source;
 
-    /**
-     * @link CloudEvent type
-     */
-    private String type;
+    public String type;
 
-    private Kind kind;
+    public Kind kind;
 
-    private Boolean dataOnly;
+    public Boolean dataOnly;
 
-    private Correlation[] correlation;
+    public Correlation[] correlation;
 
     @JsonbTypeSerializer(WorkflowFunctionsJsonSerializer.class)
-    @JsonbTypeDeserializer(WorkflowFunctionsJsonDeserializer.class)
+    @JsonbTypeDeserializer(WorkflowFunctionsJsonSerializer.class)
+    @YamlTypeSerializer(WorkflowFunctionsYamlSerializer.class)
+    @YamlTypeDeserializer(WorkflowFunctionsYamlSerializer.class)
     private Object functions;
 
     public final String getName() {

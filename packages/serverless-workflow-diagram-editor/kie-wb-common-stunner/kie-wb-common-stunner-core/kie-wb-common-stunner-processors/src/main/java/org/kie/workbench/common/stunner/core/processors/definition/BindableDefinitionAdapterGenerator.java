@@ -55,14 +55,6 @@ public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterG
             String baseType = processingDefinitionAnnotations.getBaseTypes().get(type);
             baseType = null != baseType && baseType.trim().length() > 0 ? baseType : "java.lang.Object";
             String graphFactory = processingDefinitionAnnotations.getGraphFactory().get(type);
-            String idField = processingDefinitionAnnotations.getIdFieldNames().get(type);
-            idField = null != idField && idField.trim().length() > 0 ? "\"" + idField + "\"" : null;
-            String titleField = processingDefinitionAnnotations.getTitleFieldNames().get(type);
-            titleField = null != titleField && titleField.trim().length() > 0 ? "\"" + titleField + "\"" : null;
-            String labelsField = "\"" + processingDefinitionAnnotations.getLabelsFieldNames().get(type) + "\"";
-            String categoryField = "\"" + processingDefinitionAnnotations.getCategoryFieldNames().get(type) + "\"";
-            String descriptionField = processingDefinitionAnnotations.getDescriptionFieldNames().get(type);
-            descriptionField = null != descriptionField && descriptionField.trim().length() > 0 ? "\"" + descriptionField + "\"" : null;
             List<String> propertyFields = processingDefinitionAnnotations.getPropertyFieldNames().get(type);
             String propertyFieldsArray = propertyFields.stream().map(f -> "\"" + f + "\"").collect(Collectors.joining(","));
             List<Boolean> typedPropertyFields = processingDefinitionAnnotations.getTypedPropertyFields().get(type);
@@ -72,11 +64,6 @@ public class BindableDefinitionAdapterGenerator extends AbstractBindableAdapterG
                                    "new DefinitionAdapterBindings()" +
                                            ".setBaseType(" + baseType + ".class)" +
                                            ".setGraphFactory(" + graphFactory + ".class)" +
-                                           ".setIdField(" + idField + ")" +
-                                           ".setTitleField(" + titleField + ")" +
-                                           ".setLabelsField(" + labelsField + ")" +
-                                           ".setCategoryField(" + categoryField + ")" +
-                                           ".setDescriptionField(" + descriptionField + ")" +
                                            ".setPropertiesFieldNames(Arrays.asList(" + propertyFieldsArray + "))" +
                                            ".setTypedPropertyFields(Arrays.asList(" + typedPropertyFieldsArray + "))" +
                                            ".setMetaTypes(DefinitionAdapterBindings.PropertyMetaTypes.parse(\"" + metaTypes.format() + "\"))"

@@ -29,6 +29,7 @@ import { DashbuilderMonacoEditor } from "../monaco/DashbuilderMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Dashbuilder } from "../dashbuilder/Dashbuilder";
 import { Toolbar } from "./Toolbar";
+import { Position } from "monaco-editor";
 
 const INITIAL_CONTENT = `datasets:
 - uuid: products
@@ -113,6 +114,7 @@ const UPDATE_TIME = 1000;
 
 export type DashbuilderEditorRef = {
   setContent(path: string, content: string): Promise<void>;
+  moveCursorToPosition(position: Position): void;
 };
 
 const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<DashbuilderEditorRef | undefined, Props> = (
@@ -131,7 +133,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
     return () => clearTimeout(timer);
   }, [renderContent]);
 
-  const isVSCode = useCallback(() => {
+  const isVsCode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
   }, [props]);
 
@@ -152,7 +154,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent() || ""));
+          return Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
           // TODO: implement it on Dashbuilder
@@ -170,6 +172,9 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
         setTheme: (theme: EditorTheme): Promise<void> => {
           return dashbuilderMonacoEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
+        moveCursorToPosition: (position: Position) => {
+          dashbuilderMonacoEditorRef.current?.moveCursorToPosition(position);
+        },
       };
     },
     []
@@ -180,18 +185,18 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
       if (operation === MonacoEditorOperation.EDIT) {
         props.onNewEdit(new WorkspaceEdit(newContent));
       } else if (operation === MonacoEditorOperation.UNDO) {
-        if (!isVSCode()) {
+        if (!isVsCode()) {
           dashbuilderMonacoEditorRef.current?.undo();
         }
         props.onStateControlCommandUpdate(StateControlCommand.UNDO);
       } else if (operation === MonacoEditorOperation.REDO) {
-        if (!isVSCode()) {
+        if (!isVsCode()) {
           dashbuilderMonacoEditorRef.current?.redo();
         }
         props.onStateControlCommandUpdate(StateControlCommand.REDO);
       }
     },
-    [props, isVSCode]
+    [props, isVsCode]
   );
 
   useEffect(() => {

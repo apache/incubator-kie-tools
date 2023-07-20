@@ -1,0 +1,30 @@
+id: eventbasedgreeting
+version: "1.0"
+specVersion: "0.8"
+name: Event Based Greeting Workflow
+description: Event Based Greeting
+start: Greet
+states:
+  - name: Greet
+    type: event
+    stateDataFilter:
+      output: "${ .payload.greeting }"
+    end: true
+    onEvents:
+      - eventDataFilter:
+          data: "${ .greet }"
+          toStateData: "${ .greet }"
+        actions:
+          - functionRef:
+              refName: greetingFunction
+              arguments:
+                name: "${ .greet.name }"
+        eventRefs:
+          - GreetingEvent
+events:
+  - name: GreetingEvent
+    source: greetingEventSource
+    type: greetingEventType
+functions:
+  - name: greetingFunction
+    operation: "file://myapis/greetingapis.json#greeting"

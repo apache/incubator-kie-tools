@@ -13,33 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { basename, extname, parse } from "path";
+import { isOfKind } from "../constants/ExtensionHelper";
 
-export function parseWorkspaceFileRelativePath(relativePath: string) {
+export interface ParsedWorkspaceFileRelativePath {
+  relativePathWithoutExtension: string;
+  relativeDirPath: string;
+  extension: string;
+  nameWithoutExtension: string;
+  name: string;
+}
+
+export function parseWorkspaceFileRelativePath(relativePath: string): ParsedWorkspaceFileRelativePath {
   const extension = extractExtension(relativePath);
+  const extensionIndex = relativePath.lastIndexOf("." + extension);
+  const name = basename(relativePath);
   return {
-    relativePathWithoutExtension: relativePath.replace(`.${extension}`, ""),
+    relativePathWithoutExtension: extensionIndex !== -1 ? relativePath.substring(0, extensionIndex) : relativePath,
     relativeDirPath: parse(relativePath).dir,
     extension: extension,
-    nameWithoutExtension: basename(relativePath, `.${extension}`),
-    name: basename(relativePath),
+    nameWithoutExtension: name !== `.${extension}` ? basename(relativePath, `.${extension}`) : "",
+    name,
   };
 }
 
 export function extractExtension(relativePath: string) {
   const fileName = basename(relativePath);
-  if (fileName.startsWith(".")) {
-    return fileName.slice(1);
+  const ultimateExtension = fileName.substring(fileName.lastIndexOf("."));
+  const fileWithoutUltimateExtension = fileName.substring(0, fileName.lastIndexOf(ultimateExtension));
+  const penultimateExtension = fileWithoutUltimateExtension.substring(fileWithoutUltimateExtension.lastIndexOf("."));
+  if (fileName.includes(".")) {
+    if (isOfKind("supportedSingleExtensions", fileName)) {
+      //technically not needed as the else statement does the same thing. Only here for clarity
+      return ultimateExtension.replace(".", "");
+    }
+    if (isOfKind("supportedDoubleExtensions", fileName)) {
+      return penultimateExtension.replace(".", "") + ultimateExtension;
+    } else {
+      return ultimateExtension.replace(".", "");
+    }
+  } else {
+    return extname(relativePath);
   }
-
-  const matchDots = fileName.match(/\./g);
-  if (matchDots && matchDots.length > 1) {
-    return fileName
-      .split(/\.(.*)/s)
-      .slice(1)
-      .join("");
-  }
-
-  return extname(relativePath).replace(".", "");
 }

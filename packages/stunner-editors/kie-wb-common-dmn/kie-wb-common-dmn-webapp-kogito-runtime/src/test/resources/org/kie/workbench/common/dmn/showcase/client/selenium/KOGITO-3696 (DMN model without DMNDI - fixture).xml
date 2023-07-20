@@ -1,19 +1,27 @@
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_FD3D17D0-D23E-457E-B41A-380644F030A8" id="_0A66FB20-34AD-4ED7-A150-0B5C22E17AB9" name="Can Drink?" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_FD3D17D0-D23E-457E-B41A-380644F030A8">
-  <dmn:extensionElements/>
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kiegroup.org/dmn/_FD3D17D0-D23E-457E-B41A-380644F030A8"
+  id="_0A66FB20-34AD-4ED7-A150-0B5C22E17AB9"
+  name="Can Drink?"
+  expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kiegroup.org/dmn/_FD3D17D0-D23E-457E-B41A-380644F030A8"
+>
+  <dmn:extensionElements />
   <dmn:itemDefinition id="_24A858CF-C26C-4EE0-9D94-F590FA558DCF" name="tPerson" isCollection="false">
     <dmn:itemComponent id="_78DAD12F-709D-4F52-B661-9A647273CC6E" name="age" isCollection="false">
       <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
   <dmn:inputData id="_9E7EF613-318B-4E51-A001-271ABF375A6C" name="a person">
-    <dmn:extensionElements/>
-    <dmn:variable id="_E9897BA9-470C-488D-AFB0-9E41924031FA" name="a person" typeRef="tPerson"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_E9897BA9-470C-488D-AFB0-9E41924031FA" name="a person" typeRef="tPerson" />
   </dmn:inputData>
   <dmn:decision id="_76551D85-48DF-40F8-8D99-C4996014887B" name="Can Drink?">
-    <dmn:extensionElements/>
-    <dmn:variable id="_A0DBCF3D-D243-48F1-9790-A610897E2822" name="Can Drink?" typeRef="boolean"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_A0DBCF3D-D243-48F1-9790-A610897E2822" name="Can Drink?" typeRef="boolean" />
     <dmn:informationRequirement id="_19C24205-6E8B-45BE-811B-867A993339C0">
-      <dmn:requiredInput href="#_9E7EF613-318B-4E51-A001-271ABF375A6C"/>
+      <dmn:requiredInput href="#_9E7EF613-318B-4E51-A001-271ABF375A6C" />
     </dmn:informationRequirement>
     <dmn:decisionTable id="_E3375D4A-93AA-4580-B3DA-63FB0B794FAA" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
       <dmn:input id="_A8B0D99C-DEF3-44E3-82EB-225060911CE9">
@@ -21,8 +29,8 @@
           <dmn:text>a person.age</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id="_63883B3C-C562-4DAE-B908-85AF195567C3"/>
-      <dmn:annotation name="annotation-1"/>
+      <dmn:output id="_63883B3C-C562-4DAE-B908-85AF195567C3" />
+      <dmn:annotation name="annotation-1" />
       <dmn:rule id="_F95E8AA4-0E89-4306-AC73-DC6222E1F742">
         <dmn:inputEntry id="_F69B3D6C-6D5B-441A-8AAC-37FBB4B7A7C2">
           <dmn:text>&gt;=18</dmn:text>
@@ -31,7 +39,7 @@
           <dmn:text>true</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text/>
+          <dmn:text />
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_3ED6B377-C8C9-4972-A6D3-FF3EF52532AB">

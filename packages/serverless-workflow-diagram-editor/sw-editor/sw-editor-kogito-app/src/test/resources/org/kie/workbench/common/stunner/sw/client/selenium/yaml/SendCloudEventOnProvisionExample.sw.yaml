@@ -1,0 +1,27 @@
+id: sendcloudeventonprovision
+version: "1.0"
+specVersion: "0.8"
+name: Send CloudEvent on provision completion
+start: ProvisionOrdersState
+states:
+  - name: ProvisionOrdersState
+    type: foreach
+    actions:
+      - functionRef:
+          refName: provisionOrderFunction
+          arguments:
+            order: "${ .singleorder }"
+    inputCollection: "${ .orders }"
+    outputCollection: "${ .provisionedOrders }"
+    iterationParam: singleorder
+    end:
+      produceEvents:
+        - eventRef: provisioningCompleteEvent
+          data: "${ .provisionedOrders }"
+events:
+  - name: provisioningCompleteEvent
+    type: provisionCompleteType
+    kind: produced
+functions:
+  - name: provisionOrderFunction
+    operation: "http://myapis.org/provisioning.json#doProvision"

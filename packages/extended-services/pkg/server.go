@@ -71,7 +71,7 @@ func (p *Proxy) Start() {
 	p.RunnerPort = strconv.Itoa(port)
 	p.URL = "http://127.0.0.1:" + p.RunnerPort
 
-	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort)
+	p.cmd = exec.Command(p.jitexecutorPath, "-Dquarkus.http.port="+p.RunnerPort, "-Dquarkus.http.cors=true", "-Dquarkus.http.cors.origins=/.*/")
 	stdout, _ := p.cmd.StdoutPipe()
 	go func() {
 		scanner := bufio.NewScanner(stdout)
@@ -174,6 +174,8 @@ func (p *Proxy) corsProxyHandler() func(rw http.ResponseWriter, req *http.Reques
 		emptyUrl, _ := url.Parse("")
 		req.URL = emptyUrl
 		req.Host = req.URL.Host
+
+		req.Header.Del("Origin")
 
 		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 

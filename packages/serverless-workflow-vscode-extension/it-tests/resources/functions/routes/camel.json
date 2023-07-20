@@ -1,0 +1,29 @@
+[
+  {
+    "route": {
+      "id": "routeJson",
+      "from": {
+        "uri": "direct:routeJson",
+        "steps": [
+          {
+            "toD": {
+              "uri": "cxf://testRouteJson"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "from": {
+      "uri": "direct:fromJson",
+      "steps": [
+        {
+          "toD": {
+            "uri": "cxf://testFromJson"
+          }
+        }
+      ]
+    }
+  }
+]

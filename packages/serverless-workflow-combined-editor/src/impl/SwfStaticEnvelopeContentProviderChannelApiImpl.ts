@@ -21,17 +21,12 @@ export class SwfStaticEnvelopeContentProviderChannelApiImpl implements SwfStatic
   constructor(
     private readonly args: {
       diagramEditorEnvelopeContent: string;
-      mermaidEnvelopeContent: string;
       textEditorEnvelopeContent: string;
     }
   ) {}
 
   public kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string> {
     return { defaultValue: this.args.diagramEditorEnvelopeContent };
-  }
-
-  public kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
-    return { defaultValue: this.args.mermaidEnvelopeContent };
   }
 
   public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {

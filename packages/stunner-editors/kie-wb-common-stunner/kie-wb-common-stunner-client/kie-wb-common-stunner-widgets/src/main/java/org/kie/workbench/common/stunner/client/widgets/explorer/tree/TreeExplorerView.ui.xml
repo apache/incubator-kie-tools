@@ -13,11 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:uf="urn:import:org.uberfire.ext.widgets.core.client.tree">
+<ui:UiBinder
+  xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:g="urn:import:com.google.gwt.user.client.ui"
+  xmlns:uf="urn:import:org.uberfire.ext.widgets.core.client.tree"
+>
 
   <ui:style>
 
@@ -25,7 +26,7 @@
 
   <g:FlowPanel>
 
-    <uf:Tree ui:field="tree"/>
+    <uf:Tree ui:field="tree" />
 
   </g:FlowPanel>
 

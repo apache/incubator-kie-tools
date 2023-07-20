@@ -14,33 +14,48 @@
  * limitations under the License.
  */
 
-import {
-  EditorEnvelopeLocator,
-  EnvelopeContentType,
-  EnvelopeMapping,
-} from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
+import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { EditorConfig } from "./EditorEnvelopeLocatorApi";
+
+export const GLOB_PATTERN = {
+  all: "**/*",
+  dmn: "**/*.dmn",
+  bpmn: "**/*.bpmn?(2)",
+  scesim: "**/*.scesim",
+  pmml: "**/*.pmml",
+};
+
+export const supportedFileExtensionArray = [
+  FileTypes.DMN,
+  FileTypes.BPMN,
+  FileTypes.BPMN2,
+  FileTypes.SCESIM,
+  FileTypes.PMML,
+];
+
+export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
+
+export function isModel(path: string): boolean {
+  return isOfKind("dmn", path) || isOfKind("bpmn", path) || isOfKind("pmml", path);
+}
+
+export function isEditable(path: string): boolean {
+  return isModel(path) || isOfKind("scesim", path);
+}
 
 export class EditorEnvelopeLocatorFactory {
-  public create(args: { targetOrigin: string }) {
-    return new EditorEnvelopeLocator(args.targetOrigin, [
-      new EnvelopeMapping({
-        type: "bpmn",
-        filePathGlob: "**/*.bpmn?(2)",
-        resourcesPathPrefix: "gwt-editors/bpmn",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "bpmn-envelope.html" },
-      }),
-      new EnvelopeMapping({
-        type: "dmn",
-        filePathGlob: "**/*.dmn",
-        resourcesPathPrefix: "gwt-editors/dmn",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "dmn-envelope.html" },
-      }),
-      new EnvelopeMapping({
-        type: "pmml",
-        filePathGlob: "**/*.pmml",
-        resourcesPathPrefix: "",
-        envelopeContent: { type: EnvelopeContentType.PATH, path: "pmml-envelope.html" },
-      }),
-    ]);
+  public create(args: { targetOrigin: string; editorsConfig: EditorConfig[] }) {
+    return new EditorEnvelopeLocator(
+      args.targetOrigin,
+      args.editorsConfig.map((config) => {
+        return new EnvelopeMapping({
+          type: config.extension,
+          filePathGlob: config.filePathGlob,
+          resourcesPathPrefix: config.editor.resourcesPathPrefix,
+          envelopeContent: { type: EnvelopeContentType.PATH, path: config.editor.path },
+        });
+      })
+    );
   }
 }

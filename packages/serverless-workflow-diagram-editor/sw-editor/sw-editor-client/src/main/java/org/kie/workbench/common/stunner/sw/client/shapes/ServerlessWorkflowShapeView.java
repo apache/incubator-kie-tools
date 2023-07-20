@@ -22,11 +22,11 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
@@ -43,7 +43,7 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
     private ServerlessWorkflowShape<VIEW> controller;
 
     private ShapeStateDefaultHandler shapeStateHandler = new ShapeStateDefaultHandler().setBorderShape((() -> this))
-            .setBackgroundShape(() -> this);
+            .setBackgroundShape(this);
 
     private HandlerRegistration mouseEnterHandler;
 
@@ -71,8 +71,6 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
                       .setStrokeWidth(SHAPE_STROKE_WIDTH), new WiresLayoutContainer());
 
         setEventHandlerManager(new ViewEventHandlerManager(getShape(), getShape(), ShapeViewSupportedEvents.ALL_DESKTOP_EVENT_TYPES));
-
-        getShape().setEventPropagationMode(EventPropagationMode.NO_ANCESTORS);
     }
 
     public void setController(ServerlessWorkflowShape<VIEW> controller) {
@@ -89,15 +87,19 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
         return controller.getEnterHandler();
     }
 
-    public ShapeStateHandler getShapeStateHandler() {
-        return shapeStateHandler;
+    public void applyState(ShapeState state) {
+        this.asAbstractShape().applyState(state);
+    }
+
+    public ShapeState getShapeState() {
+        return shapeStateHandler.getShapeState();
     }
 
     public AbstractShape<ServerlessWorkflowShapeView<VIEW>> asAbstractShape() {
         return new AbstractShape<ServerlessWorkflowShapeView<VIEW>>() {
             @Override
             public ShapeStateHandler getShapeStateHandler() {
-                return ServerlessWorkflowShapeView.this.getShapeStateHandler();
+                return ServerlessWorkflowShapeView.this.shapeStateHandler;
             }
 
             @Override
@@ -113,6 +115,12 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
             @Override
             public ServerlessWorkflowShapeView<VIEW> getShapeView() {
                 return ServerlessWorkflowShapeView.this;
+            }
+
+            @Override
+            public void applyState(ShapeState state) {
+                super.applyState(state);
+                getShapeView().getShape().getLayer().batch();
             }
         };
     }

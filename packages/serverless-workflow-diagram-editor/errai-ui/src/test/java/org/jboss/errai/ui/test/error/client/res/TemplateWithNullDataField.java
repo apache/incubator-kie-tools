@@ -16,7 +16,7 @@
 
 package org.jboss.errai.ui.test.error.client.res;
 
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -28,6 +28,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class TemplateWithNullDataField {
 
   @DataField("field")
-  private Div myNullField;
+  private HTMLDivElement myNullField;
 
 }

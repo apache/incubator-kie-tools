@@ -224,40 +224,6 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
     }
 
     @Test
-    public void testWorkbenchScreenWorkbenchMenuAnnotationCorrectReturnType() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest9";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest9.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
-                getProcessorUnderTest(),
-                pathCompilationUnit);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getExpectedCode(),
-                     result.getActualCode());
-    }
-
-    @Test
-    public void testWorkbenchScreenWorkbenchMenuAnnotationWrongReturnType() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest10";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest10.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
-                getProcessorUnderTest(),
-                pathCompilationUnit);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getActualCode(),
-                     result.getExpectedCode());
-    }
-
-    @Test
     public void testWorkbenchScreenOnStart0Parameter() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest11";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest11.expected";
@@ -304,40 +270,6 @@ public class WorkbenchScreenProcessorTest extends AbstractProcessorTest {
                                  24,
                                  17,
                                  "Found multiple @OnStartup methods. Each class can declare at most one.");
-    }
-
-    @Test
-    public void testWorkbenchScreenWorkbenchToolBarAnnotationCorrectReturnType() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest14";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest14.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
-                getProcessorUnderTest(),
-                pathCompilationUnit);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getExpectedCode(),
-                     result.getActualCode());
-    }
-
-    @Test
-    public void testWorkbenchScreenWorkbenchToolBarAnnotationWrongReturnType() throws FileNotFoundException {
-        final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchScreenTest15";
-        final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchScreenTest15.expected";
-
-        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
-
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
-                getProcessorUnderTest(),
-                pathCompilationUnit);
-        assertSuccessfulCompilation(diagnostics);
-        assertNotNull(result.getActualCode());
-        assertNotNull(result.getExpectedCode());
-        assertEquals(result.getActualCode(),
-                     result.getExpectedCode());
     }
 
     @Test

@@ -188,7 +188,14 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
         uiModelMapper.fromDMNModel(0, 0);
 
         expressionColumn.setWidthInternal(getExistingEditorWidth());
-        selectExpressionEditorFirstCell();
+    }
+
+    public void clearExpression(final String nodeUUID) {
+        //Clear cache first as its content is used by the UIModelMapper to retrieve existing BaseExpressionGrid
+        expressionGridCache.get().removeExpressionGrid(nodeUUID);
+
+        //Use UIModelMapper to get cell value for null Expressions
+        uiModelMapper.fromDMNModel(parent.getRowIndex(), parent.getColumnIndex());
     }
 
     double getExistingEditorWidth() {

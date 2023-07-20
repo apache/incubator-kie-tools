@@ -31,4 +31,14 @@ export function setCookie(name: string, value: string) {
   document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
 }
 
-export const makeCookieName = (group: string, name: string) => `KIE-TOOLS__serverless-logic-sandbox__${group}--${name}`;
+export const makeCookieName = (group: string, name: string) =>
+  `KIE-TOOLS__serverless-logic-web-tools__${group}--${name}`;
+
+/**
+ * Delete all cookies
+ */
+export const deleteAllCookies = () => {
+  document.cookie.split(";").forEach(function (c) {
+    document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+};

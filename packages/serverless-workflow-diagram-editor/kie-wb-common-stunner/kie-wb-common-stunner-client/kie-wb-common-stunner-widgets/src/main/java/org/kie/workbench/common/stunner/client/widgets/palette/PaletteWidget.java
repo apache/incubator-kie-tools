@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.palette;
 
 import java.util.function.Consumer;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;

@@ -22,8 +22,9 @@ import java.util.function.Supplier;
 import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IDrawable;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.LienzoShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+
+import static java.util.Objects.isNull;
 
 /**
  * This class is responsible to encode the {@link ShapeView} properties within the {@link ShapeView#getUserData()}
@@ -42,31 +43,33 @@ public class ShapeViewUserDataEncoder {
         return new ShapeViewUserDataEncoder();
     }
 
-    public void applyShapeViewType(final Supplier<LienzoShapeView<?>> shapeSupplier, ShapeStateDefaultHandler.ShapeType shapeType) {
-        if (Objects.isNull(shapeType)) {
+    public void applyShapeViewType(final Supplier<ShapeView> shapeSupplier, ShapeStateDefaultHandler.ShapeType shapeType) {
+        if (isNull(shapeSupplier)) {
             return;
         }
-        applyShapeViewUserData(shapeSupplier, "shapeType", shapeType.name());
+
+        applyShapeViewType(shapeSupplier.get(), shapeType);
     }
 
-    public void applyShapeViewRenderType(final Supplier<LienzoShapeView<?>> shapeSupplier, ShapeStateDefaultHandler.RenderType renderType) {
-        if (Objects.isNull(renderType)) {
+    public void applyShapeViewType(final ShapeView shapeView, ShapeStateDefaultHandler.ShapeType shapeType) {
+        if (isNull(shapeType)) {
             return;
         }
-        applyShapeViewUserData(shapeSupplier, "renderType", renderType.name());
+
+        applyShapeViewUserData(shapeView, "shapeType", shapeType.name());
     }
 
-    public void applyShapeViewUserData(final Supplier<LienzoShapeView<?>> shapeSupplier, String key, String value) {
-        if (Objects.isNull(shapeSupplier) || Objects.isNull(shapeSupplier.get())) {
+    public void applyShapeViewUserData(final ShapeView shapeView, String key, String value) {
+        if (isNull(shapeView)) {
             return;
         }
-        Object previousUserData = shapeSupplier.get().getUserData();
-        if (Objects.isNull(previousUserData) || String.valueOf(previousUserData).contains(key)) {
+        Object previousUserData = shapeView.getUserData();
+        if (isNull(previousUserData) || String.valueOf(previousUserData).contains(key)) {
             previousUserData = "?";
         } else {
             previousUserData += "&";
         }
-        shapeSupplier.get().setUserData(previousUserData + key + "=" + value);
+        shapeView.setUserData(previousUserData + key + "=" + value);
     }
 
     @SuppressWarnings("all")
@@ -86,7 +89,7 @@ public class ShapeViewUserDataEncoder {
                     String suffix = "";
                     if (null != drawable.getUserData()) {
                         suffix = drawable.getUserData().toString();
-                    } else if (null != drawable.getID()){
+                    } else if (null != drawable.getID()) {
                         suffix = "_" + drawable.getID();
                     }
                     drawable.setID(uuid + suffix);

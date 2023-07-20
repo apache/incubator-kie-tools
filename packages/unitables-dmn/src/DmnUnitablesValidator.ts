@@ -14,41 +14,23 @@
  * limitations under the License.
  */
 
-import Ajv from "ajv";
-import metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { DmnUnitablesI18n } from "./i18n";
-import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/dist/uniforms";
-import { DmnSchema } from "@kie-tools/form-dmn";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/dmn-runner/dist/constants";
+import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { UnitablesValidator } from "@kie-tools/unitables/dist/UnitablesValidator";
-
-const DAYS_AND_TIME = /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
-const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
+import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 
 export class DmnUnitablesValidator extends UnitablesValidator {
-  protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
-  private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
+  protected readonly dmnRunnerAjv = new DmnRunnerAjv();
 
   constructor(i18n: DmnUnitablesI18n) {
     super(i18n);
-    this.setupValidator();
-  }
-
-  private setupValidator() {
-    this.ajv.addMetaSchema(metaSchemaDraft04);
-    this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
-      type: "string",
-      validate: (data: string) => !!data.match(DAYS_AND_TIME),
-    });
-
-    this.ajv.addFormat(YEARS_AND_MONTHS_DURATION_FORMAT, {
-      type: "string",
-      validate: (data: string) => !!data.match(YEARS_AND_MONTHS),
-    });
   }
 
   public createValidator(jsonSchema: any) {
-    const validator = this.ajv.compile(jsonSchema);
+    const validator = this.dmnRunnerAjv.getAjv().compile(jsonSchema);
 
     return (model: any) => {
       // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.
@@ -73,8 +55,8 @@ export class DmnUnitablesValidator extends UnitablesValidator {
     };
   }
 
-  public getBridge(formSchema: DmnSchema): DmnUnitablesJsonSchemaBridge {
-    const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
+  public getBridge(formSchema: ExtendedServicesDmnJsonSchema): DmnUnitablesJsonSchemaBridge {
+    const formDraft4 = { ...formSchema, $schema: SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
     return new DmnUnitablesJsonSchemaBridge(formDraft4, validator, this.i18n);
   }

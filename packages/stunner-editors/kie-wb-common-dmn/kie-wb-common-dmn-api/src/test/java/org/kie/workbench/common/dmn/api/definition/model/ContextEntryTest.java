@@ -97,6 +97,23 @@ public class ContextEntryTest {
     }
 
     @Test
+    public void testExactCopy() {
+        final ContextEntry source = new ContextEntry();
+        final InformationItem informationItem = new InformationItem(new Id(ITEM_ID), new Description(DESCRIPTION), new Name(INFORMATION_ITEM_NAME), BuiltInType.BOOLEAN.asQName());
+        source.setVariable(informationItem);
+
+        final ContextEntry target = source.exactCopy();
+
+        assertNotNull(target);
+        assertNull(target.getExpression());
+        assertNotNull(target.getVariable());
+        assertEquals(ITEM_ID, target.getVariable().getId().getValue());
+        assertEquals(DESCRIPTION, target.getVariable().getDescription().getValue());
+        assertEquals(INFORMATION_ITEM_NAME, target.getVariable().getName().getValue());
+        assertEquals(BuiltInType.BOOLEAN.asQName(), target.getVariable().getTypeRef());
+    }
+
+    @Test
     public void testFindDomainObject_WhenVariableMatches() {
 
         final ContextEntry contextEntry = new ContextEntry();

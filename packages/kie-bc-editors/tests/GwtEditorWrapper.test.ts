@@ -58,6 +58,11 @@ describe("GwtEditorWrapper", () => {
     expect(mockEditor.setContent).toHaveBeenCalledWith("path", "a content");
   });
 
+  test("selectStateByName", async () => {
+    await wrapper.selectStateByName("stateName");
+    expect(mockEditor.selectStateByName).toHaveBeenCalledWith("stateName");
+  });
+
   test("af_onOpen removes header", () => {
     const parent = document.createElement("div");
     const workbenchHeaderPanel = document.createElement("div");

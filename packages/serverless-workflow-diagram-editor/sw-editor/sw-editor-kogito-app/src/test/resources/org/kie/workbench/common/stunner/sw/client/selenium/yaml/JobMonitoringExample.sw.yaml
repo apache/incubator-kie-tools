@@ -1,0 +1,73 @@
+id: jobmonitoring
+version: "1.0"
+specVersion: "0.8"
+name: Job Monitoring
+description: Monitor finished execution of a submitted job
+start: SubmitJob
+states:
+  - name: SubmitJob
+    type: operation
+    actions:
+      - functionRef:
+          refName: submitJob
+          arguments:
+            name: "${ .job.name }"
+        actionDataFilter:
+          results: "${ .jobuid }"
+    transition: WaitForCompletion
+    stateDataFilter:
+      output: "${ .jobuid }"
+    actionMode: sequential
+  - duration: PT5S
+    name: WaitForCompletion
+    type: sleep
+    transition: GetJobStatus
+  - name: GetJobStatus
+    type: operation
+    actions:
+      - functionRef:
+          refName: checkJobStatus
+          arguments:
+            name: "${ .jobuid }"
+        actionDataFilter:
+          results: "${ .jobstatus }"
+    transition: DetermineCompletion
+    stateDataFilter:
+      output: "${ .jobstatus }"
+    actionMode: sequential
+  - name: DetermineCompletion
+    type: switch
+    dataConditions:
+      - condition: '${ .jobStatus == "SUCCEEDED" }'
+        transition: JobSucceeded
+      - condition: '${ .jobStatus == "FAILED" }'
+        transition: JobFailed
+    defaultCondition:
+      transition: WaitForCompletion
+  - name: JobSucceeded
+    type: operation
+    actions:
+      - functionRef:
+          refName: reportJobSuceeded
+          arguments:
+            name: "${ .jobuid }"
+    end: true
+    actionMode: sequential
+  - name: JobFailed
+    type: operation
+    actions:
+      - functionRef:
+          refName: reportJobFailed
+          arguments:
+            name: "${ .jobuid }"
+    end: true
+    actionMode: sequential
+functions:
+  - name: submitJob
+    operation: "http://myapis.org/monitorapi.json#doSubmit"
+  - name: checkJobStatus
+    operation: "http://myapis.org/monitorapi.json#checkStatus"
+  - name: reportJobSuceeded
+    operation: "http://myapis.org/monitorapi.json#reportSucceeded"
+  - name: reportJobFailed
+    operation: "http://myapis.org/monitorapi.json#reportFailure"

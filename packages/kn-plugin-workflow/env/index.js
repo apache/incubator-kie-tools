@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,17 +22,32 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     KN_PLUGIN_WORKFLOW__version: {
       name: "KN_PLUGIN_WORKFLOW__version",
       default: packageJson.version,
-      description: "Knative Workflow plugin version",
+      description: "Knative SonataFlow plugin version",
     },
     KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId: {
       name: "KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId",
       default: "io.quarkus.platform",
-      description: "Quarkus group to be used when creating the Kogito Serverless Workflow project",
+      description: "Quarkus group to be used when creating the SonataFlow project",
     },
     KN_PLUGIN_WORKFLOW__quarkusVersion: {
       name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
-      default: "2.15.0.Final",
-      description: "Quarkus version to be used when creating the Kogito Serverless Workflow project",
+      default: "2.16.7.Final",
+      description: "Quarkus version to be used when creating the SonataFlow project",
+    },
+    KN_PLUGIN_WORKFLOW__devModeImage: {
+      name: "KN_PLUGIN_WORKFLOW__devModeImage",
+      default: "quay.io/kiegroup/kogito-swf-devmode:1.40",
+      description: "SonataFlow dev mode image (used on cli run)",
+    },
+    KN_PLUGIN_WORKFLOW__testPrintCmdOutput: {
+      name: "KN_PLUGIN_WORKFLOW__testPrintCmdOutput",
+      default: "false",
+      description: "Print output of commands during test execution of kn-workflow.",
+    },
+    KN_PLUGIN_WORKFLOW__suppressBrowserWindow: {
+      name: "KN_PLUGIN_WORKFLOW__suppressBrowserWindow",
+      default: "false",
+      description: "Do not open browser window after project is run.",
     },
   }),
   get env() {
@@ -41,6 +56,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         version: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__version),
         quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
         quarkusVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusVersion),
+        devModeImage: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__devModeImage),
+        testPrintCmdOutput: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__testPrintCmdOutput),
+        suppressBrowserWindow: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__suppressBrowserWindow),
       },
     };
   },

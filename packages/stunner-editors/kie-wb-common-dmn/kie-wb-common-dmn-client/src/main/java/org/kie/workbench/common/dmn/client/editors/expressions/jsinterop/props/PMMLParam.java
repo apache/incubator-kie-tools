@@ -21,10 +21,10 @@ import jsinterop.annotations.JsType;
 @JsType
 public class PMMLParam {
     public final String document;
-    public final ModelsFromDocument[] modelsFromDocuments;
+    public final ModelsFromDocument[] modelsFromDocument;
 
-    public PMMLParam(String document, ModelsFromDocument[] modelsFromDocuments) {
+    public PMMLParam(String document, ModelsFromDocument[] modelsFromDocument) {
         this.document = document;
-        this.modelsFromDocuments = modelsFromDocuments;
+        this.modelsFromDocument = modelsFromDocument;
     }
 }

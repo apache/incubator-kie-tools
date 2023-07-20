@@ -1,0 +1,31 @@
+id: checkInbox
+version: "1.0"
+specVersion: "0.8"
+name: Check Inbox Workflow
+description: Periodically Check Inbox
+start:
+  stateName: CheckInbox
+  schedule:
+    cron: "0 0/15 * * * ?"
+states:
+  - name: CheckInbox
+    type: operation
+    actions:
+      - functionRef: checkInboxFunction
+    transition: SendTextForHighPriority
+    actionMode: sequential
+  - name: SendTextForHighPriority
+    type: foreach
+    actions:
+      - functionRef:
+          refName: sendTextFunction
+          arguments:
+            message: "${ .singlemessage }"
+    inputCollection: "${ .messages }"
+    iterationParam: singlemessage
+    end: true
+functions:
+  - name: checkInboxFunction
+    operation: "http://myapis.org/inboxapi.json#checkNewMessages"
+  - name: sendTextFunction
+    operation: "http://myapis.org/inboxapi.json#sendText"

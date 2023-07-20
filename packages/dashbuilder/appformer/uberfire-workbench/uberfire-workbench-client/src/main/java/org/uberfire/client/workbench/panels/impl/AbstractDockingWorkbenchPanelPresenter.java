@@ -102,7 +102,7 @@ public abstract class AbstractDockingWorkbenchPanelPresenter<P extends AbstractW
                 return false;
             }
 
-            List<AbstractDockingWorkbenchPanelPresenter<?>> rescuedOrphans = new ArrayList<AbstractDockingWorkbenchPanelPresenter<?>>();
+            List<AbstractDockingWorkbenchPanelPresenter<?>> rescuedOrphans = new ArrayList<>();
             AbstractDockingWorkbenchPanelPresenter<?> dockingChild = (AbstractDockingWorkbenchPanelPresenter<?>) child;
             for (Map.Entry<Position, WorkbenchPanelPresenter> entry : dockingChild.getPanels().entrySet()) {
                 dockingChild.removeWithoutOrphanRescue(entry.getValue());

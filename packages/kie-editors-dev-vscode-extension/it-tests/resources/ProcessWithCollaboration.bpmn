@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns:xsi="xsi" id="_cTZLEM3gEDqH6NkmX_nDEw" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_m_varItem" structureRef="java.util.List&lt;String&gt;"/>
+  <bpmn2:itemDefinition id="boundaryTaskMessageType" structureRef=""/>
+  <bpmn2:itemDefinition id="_082D6BE3-A7F0-4E04-BB49-D2298E9B9EB7" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="_45444097-4F0E-4C4C-9B18-3D3F199949A2" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="startProcessMessageType" structureRef=""/>
+  <bpmn2:itemDefinition id="_4F56F51C-592F-49E4-A73D-B2CE4A74D558" structureRef="Object"/>
+  <bpmn2:itemDefinition id="_31F03F40-7C85-4378-A23E-FB5BFBB1BDAB" structureRef="Object"/>
+  <bpmn2:itemDefinition id="endProcessCatchMessageType" structureRef=""/>
+  <bpmn2:itemDefinition id="_13179CC2-0AC8-4254-9A0F-120E1539DC4A" structureRef="java.util.ArrayList&lt;String&gt;"/>
+  <bpmn2:itemDefinition id="_BFBFF195-94FD-43C9-972C-81625419B60F" structureRef="java.util.ArrayList&lt;String&gt;"/>
+  <bpmn2:message id="_cTaZMM3gEDqH6NkmX_nDEw" itemRef="boundaryTaskMessageType" name="boundaryTaskMessage"/>
+  <bpmn2:message id="_cTaZMc3gEDqH6NkmX_nDEw" itemRef="startProcessMessageType" name="startProcessMessage"/>
+  <bpmn2:message id="_cTaZMs3gEDqH6NkmX_nDEw" itemRef="endProcessCatchMessageType" name="endProcessCatchMessage"/>
+  <bpmn2:itemDefinition id="CP_ID_1_Type" structureRef="Object"/>
+  <bpmn2:itemDefinition id="CP_ID_2_Type" structureRef="Integer"/>
+  <bpmn2:itemDefinition id="CP_ID_3_Type" structureRef="Boolean"/>
+  <bpmn2:itemDefinition id="CP_ID_4_Type" structureRef="java.util.ArrayList&lt;String&gt;"/>
+  <bpmn2:correlationProperty id="CP_ID_1" name="CP Name 1" type="CP_ID_1_Type">
+    <bpmn2:correlationPropertyRetrievalExpression id="_5871194A-5EA2-47AA-8E69-E480BB276B93" messageRef="_cTaZMc3gEDqH6NkmX_nDEw">
+      <bpmn2:messagePath id="_CFAB4B55-84DF-473B-8423-72090F9E8CC8" evaluatesToTypeRef="_4F56F51C-592F-49E4-A73D-B2CE4A74D558" language="java">"Message Expression"</bpmn2:messagePath>
+    </bpmn2:correlationPropertyRetrievalExpression>
+  </bpmn2:correlationProperty>
+  <bpmn2:correlationProperty id="CP_ID_2" name="CP Name 2" type="CP_ID_2_Type">
+    <bpmn2:correlationPropertyRetrievalExpression id="_CC179DF2-DDE3-469C-93E4-AD229921D32C" messageRef="_cTaZMM3gEDqH6NkmX_nDEw">
+      <bpmn2:messagePath id="_7CA45E3E-8B7F-4B34-B6DB-045AB4220091" evaluatesToTypeRef="_082D6BE3-A7F0-4E04-BB49-D2298E9B9EB7" language="java">1</bpmn2:messagePath>
+    </bpmn2:correlationPropertyRetrievalExpression>
+  </bpmn2:correlationProperty>
+  <bpmn2:correlationProperty id="CP_ID_3" name="CP Name 3" type="CP_ID_3_Type">
+    <bpmn2:correlationPropertyRetrievalExpression id="_1E062698-923A-4183-A255-B6A04EEE8C5E"/>
+  </bpmn2:correlationProperty>
+  <bpmn2:correlationProperty id="CP_ID_4" name="CP Name 4" type="CP_ID_4_Type">
+    <bpmn2:correlationPropertyRetrievalExpression id="_5B829791-0BA9-4DFB-B0C8-E9D2FF47553D" messageRef="_cTaZMs3gEDqH6NkmX_nDEw">
+      <bpmn2:messagePath id="_38F88063-6349-4EA5-9CE1-0114F8D35C99" evaluatesToTypeRef="_13179CC2-0AC8-4254-9A0F-120E1539DC4A" language="java"/>
+    </bpmn2:correlationPropertyRetrievalExpression>
+  </bpmn2:correlationProperty>
+  <bpmn2:collaboration id="_51463AC3-905A-4A86-ADA8-20B0CB079CC0" name="Default Collaboration">
+    <bpmn2:participant id="_AB2393D2-5096-4EA3-9FE7-8336F5340D4C" name="Pool Participant" processRef="ProcessWithCollaboration"/>
+    <bpmn2:correlationKey id="CK_ID_1" name="CK Name 1">
+      <bpmn2:correlationPropertyRef>CP_ID_1</bpmn2:correlationPropertyRef>
+      <bpmn2:correlationPropertyRef>CP_ID_2</bpmn2:correlationPropertyRef>
+    </bpmn2:correlationKey>
+    <bpmn2:correlationKey id="CK_ID_2" name="CK Name 2">
+      <bpmn2:correlationPropertyRef>CP_ID_3</bpmn2:correlationPropertyRef>
+    </bpmn2:correlationKey>
+    <bpmn2:correlationKey id="CK_ID_3" name="CK Name 3">
+      <bpmn2:correlationPropertyRef>CP_ID_4</bpmn2:correlationPropertyRef>
+    </bpmn2:correlationKey>
+  </bpmn2:collaboration>
+  <bpmn2:process id="ProcessWithCollaboration" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="ProcessWithCollaboration" isExecutable="true" processType="Public">
+    <bpmn2:extensionElements>
+      <drools:import/>
+    </bpmn2:extensionElements>
+    <bpmn2:property id="m_var" itemSubjectRef="_m_varItem" name="m_var"/>
+    <bpmn2:sequenceFlow id="_DCFEEB02-32C7-4C6D-B80F-A28A6A30659A" sourceRef="_0C5FA072-FD14-4F46-B16F-B39DA4683790" targetRef="_71ADA2CC-F9B9-4043-BC3A-37C27A093108"/>
+    <bpmn2:sequenceFlow id="_A084E597-01C7-4A39-93F8-E0A013907265" sourceRef="_118F2B01-290D-414C-8F42-530B52DD591D" targetRef="_0C5FA072-FD14-4F46-B16F-B39DA4683790"/>
+    <bpmn2:sequenceFlow id="_BAD67FC8-4FE8-476B-A42B-8B4D9ADCA1A8" sourceRef="_75229D42-B811-4F0F-B6B0-F9344E9C4660" targetRef="_118F2B01-290D-414C-8F42-530B52DD591D"/>
+    <bpmn2:sequenceFlow id="_AFF90966-B994-4FC8-B883-22AE53DC6028" sourceRef="_6C813642-8057-4F66-959F-B643EACCB6D0" targetRef="_EBEF9C68-4299-4ED9-A55C-A7A00291FD0C"/>
+    <bpmn2:endEvent id="_71ADA2CC-F9B9-4043-BC3A-37C27A093108">
+      <bpmn2:incoming>_DCFEEB02-32C7-4C6D-B80F-A28A6A30659A</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:endEvent id="_EBEF9C68-4299-4ED9-A55C-A7A00291FD0C">
+      <bpmn2:incoming>_AFF90966-B994-4FC8-B883-22AE53DC6028</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:intermediateCatchEvent id="_0C5FA072-FD14-4F46-B16F-B39DA4683790" name="catchMessage">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[catchMessage]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_A084E597-01C7-4A39-93F8-E0A013907265</bpmn2:incoming>
+      <bpmn2:outgoing>_DCFEEB02-32C7-4C6D-B80F-A28A6A30659A</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition drools:msgref="endProcessCatchMessage" messageRef="_cTaZMs3gEDqH6NkmX_nDEw"/>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:scriptTask id="_118F2B01-290D-414C-8F42-530B52DD591D" name="Task" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Task]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_BAD67FC8-4FE8-476B-A42B-8B4D9ADCA1A8</bpmn2:incoming>
+      <bpmn2:outgoing>_A084E597-01C7-4A39-93F8-E0A013907265</bpmn2:outgoing>
+    </bpmn2:scriptTask>
+    <bpmn2:startEvent id="_75229D42-B811-4F0F-B6B0-F9344E9C4660" name="startMessage">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[startMessage]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_BAD67FC8-4FE8-476B-A42B-8B4D9ADCA1A8</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition drools:msgref="startProcessMessage" messageRef="_cTaZMc3gEDqH6NkmX_nDEw"/>
+    </bpmn2:startEvent>
+    <bpmn2:boundaryEvent id="_6C813642-8057-4F66-959F-B643EACCB6D0" drools:dockerinfo="35.97872340425532^74|" drools:boundaryca="true" name="boundaryEventMessage" attachedToRef="_118F2B01-290D-414C-8F42-530B52DD591D">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[boundaryEventMessage]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_AFF90966-B994-4FC8-B883-22AE53DC6028</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition drools:msgref="boundaryTaskMessage" messageRef="_cTaZMM3gEDqH6NkmX_nDEw"/>
+    </bpmn2:boundaryEvent>
+    <bpmn2:correlationSubscription id="_2557B0F9-F22A-4487-A8E9-EA92140683F2" correlationKeyRef="CK_ID_1">
+      <bpmn2:correlationPropertyBinding id="_59B0FEED-ED4F-43C1-9D9F-73B30243781E" correlationPropertyRef="CP_ID_1">
+        <bpmn2:dataPath id="_1CD38EC8-311F-44DA-951B-8AA97C35EFD4" evaluatesToTypeRef="_31F03F40-7C85-4378-A23E-FB5BFBB1BDAB" language="java">"Data expression"</bpmn2:dataPath>
+      </bpmn2:correlationPropertyBinding>
+      <bpmn2:correlationPropertyBinding id="_A3457AD3-895B-43E6-8AE3-69A213DBD1BA" correlationPropertyRef="CP_ID_2">
+        <bpmn2:dataPath id="_360F8C43-3CA3-4F7F-BDB6-F2B2DA2B6D5F" evaluatesToTypeRef="_45444097-4F0E-4C4C-9B18-3D3F199949A2" language="java">2</bpmn2:dataPath>
+      </bpmn2:correlationPropertyBinding>
+    </bpmn2:correlationSubscription>
+    <bpmn2:correlationSubscription id="_7D13054A-D7E6-46C0-9F69-BF987628B582" correlationKeyRef="CK_ID_2">
+      <bpmn2:correlationPropertyBinding id="_72AA79D0-ED95-40DA-9548-4F220DDF2270" correlationPropertyRef="CP_ID_3"/>
+    </bpmn2:correlationSubscription>
+    <bpmn2:correlationSubscription id="_E0CAE6EE-C54C-4EB9-99B4-8AA1176FE8FA" correlationKeyRef="CK_ID_3">
+      <bpmn2:correlationPropertyBinding id="_99ADA1E7-4A46-4C57-A8FF-F41E67568887" correlationPropertyRef="CP_ID_4">
+        <bpmn2:dataPath id="_DA80411E-F78E-466A-9611-7F1C03D4BFDB" evaluatesToTypeRef="_BFBFF195-94FD-43C9-972C-81625419B60F" language="java"/>
+      </bpmn2:correlationPropertyBinding>
+    </bpmn2:correlationSubscription>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="ProcessWithCollaboration">
+      <bpmndi:BPMNShape id="shape__6C813642-8057-4F66-959F-B643EACCB6D0" bpmnElement="_6C813642-8057-4F66-959F-B643EACCB6D0">
+        <dc:Bounds height="56" width="56" x="307.97872340425533" y="260"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__75229D42-B811-4F0F-B6B0-F9344E9C4660" bpmnElement="_75229D42-B811-4F0F-B6B0-F9344E9C4660">
+        <dc:Bounds height="56" width="56" x="136" y="209"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__118F2B01-290D-414C-8F42-530B52DD591D" bpmnElement="_118F2B01-290D-414C-8F42-530B52DD591D">
+        <dc:Bounds height="102" width="154" x="272" y="186"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__0C5FA072-FD14-4F46-B16F-B39DA4683790" bpmnElement="_0C5FA072-FD14-4F46-B16F-B39DA4683790">
+        <dc:Bounds height="56" width="56" x="506" y="209"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__EBEF9C68-4299-4ED9-A55C-A7A00291FD0C" bpmnElement="_EBEF9C68-4299-4ED9-A55C-A7A00291FD0C">
+        <dc:Bounds height="56" width="56" x="307.97872340425533" y="374"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__71ADA2CC-F9B9-4043-BC3A-37C27A093108" bpmnElement="_71ADA2CC-F9B9-4043-BC3A-37C27A093108">
+        <dc:Bounds height="56" width="56" x="642" y="209"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__6C813642-8057-4F66-959F-B643EACCB6D0_to_shape__EBEF9C68-4299-4ED9-A55C-A7A00291FD0C" bpmnElement="_AFF90966-B994-4FC8-B883-22AE53DC6028">
+        <di:waypoint x="335.97872340425533" y="288"/>
+        <di:waypoint x="335.97872340425533" y="402"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__75229D42-B811-4F0F-B6B0-F9344E9C4660_to_shape__118F2B01-290D-414C-8F42-530B52DD591D" bpmnElement="_BAD67FC8-4FE8-476B-A42B-8B4D9ADCA1A8">
+        <di:waypoint x="164" y="237"/>
+        <di:waypoint x="349" y="237"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__118F2B01-290D-414C-8F42-530B52DD591D_to_shape__0C5FA072-FD14-4F46-B16F-B39DA4683790" bpmnElement="_A084E597-01C7-4A39-93F8-E0A013907265">
+        <di:waypoint x="349" y="237"/>
+        <di:waypoint x="534" y="237"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__0C5FA072-FD14-4F46-B16F-B39DA4683790_to_shape__71ADA2CC-F9B9-4043-BC3A-37C27A093108" bpmnElement="_DCFEEB02-32C7-4C6D-B80F-A28A6A30659A">
+        <di:waypoint x="534" y="237"/>
+        <di:waypoint x="670" y="237"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

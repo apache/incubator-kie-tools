@@ -1,0 +1,40 @@
+id: notifycustomerworkflow
+version: "1.0"
+specVersion: "0.8"
+name: Notify Customer
+start: WaitForCustomerEvent
+states:
+  - name: WaitForCustomerEvent
+    type: event
+    stateDataFilter:
+      output: "${ .count = .count + 1 }"
+    onEvents:
+      - eventDataFilter:
+          data: "${ .customerId }"
+          toStateData: "${ .eventCustomerId }"
+        actions:
+          - functionRef:
+              refName: NotifyCustomerFunction
+              arguments:
+                customerId: "${ .eventCustomerId }"
+        eventRefs:
+          - CustomerEvent
+    transition: CheckEventQuota
+  - name: CheckEventQuota
+    type: switch
+    dataConditions:
+      - condition: "${ try(.customerCount) != null and .customerCount > .quota.maxConsumedEvents }"
+        end:
+          continueAs:
+            workflowId: notifycustomerworkflow
+            version: "1.0"
+            data: "${ del(.customerCount) }"
+    defaultCondition:
+      transition: WaitForCustomerEvent
+events:
+  - name: CustomerEvent
+    source: customerSource
+    type: org.events.customerEvent
+functions:
+  - name: NotifyCustomerFunction
+    operation: "http://myapis.org/customerapis.json#notifyCustomer"

@@ -42,10 +42,10 @@ public class JsonbSubtypeSerializer<T> extends JsonSerializer<T> {
     }
     if (types.containsKey(obj.getClass())) {
       AbstractBeanJsonSerializer serializer =
-              (AbstractBeanJsonSerializer) types.get(obj.getClass()).ser;
+          (AbstractBeanJsonSerializer) types.get(obj.getClass()).ser;
       serializer.properties.add(
-              (JsonbPropertySerializer<?>)
-                      (s, u, context) -> u.write(typeFieldName, types.get(obj.getClass()).alias));
+          (JsonbPropertySerializer<?>)
+              (s, u, context) -> u.write(typeFieldName, types.get(obj.getClass()).alias));
       serializer.serialize(obj, property, generator, ctx);
     } else {
       throw new Error("Unable to find ser for " + obj.getClass());
@@ -60,10 +60,10 @@ public class JsonbSubtypeSerializer<T> extends JsonSerializer<T> {
     }
     if (types.containsKey(obj.getClass())) {
       AbstractBeanJsonSerializer serializer =
-              (AbstractBeanJsonSerializer) types.get(obj.getClass()).ser;
+          (AbstractBeanJsonSerializer) types.get(obj.getClass()).ser;
       serializer.properties.add(
-              (JsonbPropertySerializer<?>)
-                      (s, u, context) -> u.write(typeFieldName, types.get(obj.getClass()).alias));
+          (JsonbPropertySerializer<?>)
+              (s, u, context) -> u.write(typeFieldName, types.get(obj.getClass()).alias));
       serializer.serialize(obj, generator, ctx);
     } else {
       throw new Error("Unable to find ser for " + obj.getClass());

@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
+import { DmnDocumentData } from "./DmnDocumentData";
+import { DmnDecision } from "./DmnDecision";
+
+export * from "./DmnDocumentData";
+
 const IMPORT = "import";
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
 const LOCATION_URI_ATTRIBUTE = "locationURI";
+const DECISION_NAME_ATTRIBUTE = "name";
+const NAMESPACE = "namespace";
+const DMN_NAME = "name";
+const DECISION = "decision";
+const DEFINITIONS = "definitions";
 
 export interface DmnLanguageServiceImportedModel {
   content: string;
@@ -28,6 +38,8 @@ export class DmnLanguageService {
   private readonly parser = new DOMParser();
   private readonly importTagRegExp = new RegExp(`([a-z]*:)?(${IMPORT})`);
   private readonly inputDataRegEx = new RegExp(`([a-z]*:)?(${INPUT_DATA})`);
+  private readonly decisionsTagRegExp = new RegExp(`([a-z]*:)?(${DECISION})`);
+  private readonly definitionsTagRegExp = new RegExp(`([a-z]*:)?(${DEFINITIONS})`);
 
   constructor(
     private readonly args: {
@@ -38,7 +50,7 @@ export class DmnLanguageService {
   private getImportedModelRelativePath(model: string): string[] {
     const xmlContent = this.parser.parseFromString(model, XML_MIME);
     const importTag = this.importTagRegExp.exec(model);
-    const importedModels = xmlContent.getElementsByTagName(importTag?.at(0) ?? IMPORT);
+    const importedModels = xmlContent.getElementsByTagName(importTag?.[0] ?? IMPORT);
     return Array.from(importedModels)
       .map((importedModel) => importedModel.getAttribute(LOCATION_URI_ATTRIBUTE))
       .filter((e) => e !== null) as string[];
@@ -57,7 +69,7 @@ export class DmnLanguageService {
     for (const resourceContent of resourceContents) {
       const xmlContent = this.parser.parseFromString(resourceContent.content ?? "", XML_MIME);
       const inputDataTag = this.inputDataRegEx.exec(resourceContent.content ?? "");
-      const inputs = xmlContent.getElementsByTagName(inputDataTag?.at(0) ?? INPUT_DATA);
+      const inputs = xmlContent.getElementsByTagName(inputDataTag?.[0] ?? INPUT_DATA);
       for (const input of Array.from(inputs)) {
         if (input.id === nodeId) {
           return resourceContent.relativePath;
@@ -65,6 +77,23 @@ export class DmnLanguageService {
       }
     }
     return "";
+  }
+
+  public getDmnDocumentData(dmnContent: string): DmnDocumentData {
+    const xmlContent = this.parser.parseFromString(dmnContent, XML_MIME);
+    const definitionsTag = this.definitionsTagRegExp.exec(dmnContent);
+    const definitions = xmlContent.getElementsByTagName(definitionsTag ? definitionsTag[0] : DEFINITIONS);
+    const definition = definitions[0];
+    const namespace = definition.getAttribute(NAMESPACE);
+    const dmnModelName = definition.getAttribute(DMN_NAME);
+
+    const dmnDecisions = this.decisionsTagRegExp.exec(dmnContent);
+    const dmnDecisionsContent = xmlContent.getElementsByTagName(dmnDecisions ? dmnDecisions[0] : DECISION);
+
+    const decisions = Array.from(dmnDecisionsContent)
+      .map((decision) => decision.getAttribute(DECISION_NAME_ATTRIBUTE))
+      .flatMap((decisionName) => (decisionName ? [new DmnDecision(decisionName)] : []));
+    return new DmnDocumentData(namespace ?? "", dmnModelName ?? "", decisions);
   }
 
   // recursively get imported models

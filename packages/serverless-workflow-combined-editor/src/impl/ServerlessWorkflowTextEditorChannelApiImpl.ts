@@ -21,7 +21,6 @@ import {
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
   WorkspaceEdit,
@@ -61,14 +60,6 @@ export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWor
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
     this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
-  }
-
-  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  }
-
-  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {
@@ -126,6 +117,13 @@ export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWor
     documentUri: string;
   }): void {
     this.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
+  }
+
+  public kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_importEventFromCompletionItem.send(args);
   }
 
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {

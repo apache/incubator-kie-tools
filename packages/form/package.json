@@ -26,13 +26,14 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools/dmn-runner": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
-    "deep-object-diff": "^1.1.0",
+    "deep-object-diff": "^1.1.9",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -59,6 +60,6 @@
     "jest-when": "^3.5.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.6",
-    "typescript": "^4.4.2"
+    "typescript": "^4.6.2"
   }
 }

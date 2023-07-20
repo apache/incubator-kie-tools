@@ -1,4 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -8,7 +12,7 @@
   <artifactId>errai-api</artifactId>
   <name>Errai::API</name>
   <description>An aggregate jar of public API (annotations and interfaces) from various Errai modules.</description>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -58,7 +62,6 @@
                 <include>org/jboss/errai/ui/client/widget/UnOrderedList.*</include>
                 <include>org/jboss/errai/ui/client/widget/Table.*</include>
                 <include>org/jboss/errai/ui/shared/api/annotations/*</include>
-                <include>org/jboss/errai/validation/client/shared/GwtCompatibleEmail.*</include>
               </includes>
             </filter>
           </filters>

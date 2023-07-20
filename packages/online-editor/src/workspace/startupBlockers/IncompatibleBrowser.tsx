@@ -22,12 +22,14 @@ import * as Bowser from "bowser";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { KieIcon } from "./KieIcon";
+import { useEnv } from "../../env/hooks/EnvContext";
 
 export const LATEST_VERSION_COMPATIBLE_WITH_LFS = "0.23.0";
 
 const hasNecessaryApis = window["SharedWorker"] && window["BroadcastChannel"];
 const isCompatibleBrowser = Bowser.getParser(window.navigator.userAgent).satisfies({
   chrome: ">4",
+  edge: ">=79",
   safari: ">=16",
   mobile: {
     safari: ">=16",
@@ -40,13 +42,14 @@ export async function isTrue() {
 }
 
 export function Component() {
+  const { env } = useEnv();
   return (
     <StartupBlockerTemplate>
       <Modal isOpen={true} onClose={() => {}} variant={ModalVariant.small} title={"Oops!"} titleIconVariant={KieIcon}>
         <br />
         <TextContent>
           <Text component={TextVariants.h4}>
-            KIE Sandbox is not compatible with this browser.{" "}
+            ${env.KIE_SANDBOX_APP_NAME} is not compatible with this browser.{" "}
             <small style={{ display: "inline" }}>
               ({browserInfo.browser.name} {browserInfo.browser.version})
             </small>
@@ -59,6 +62,7 @@ export function Component() {
           <Text component={TextVariants.p}>Compatible browsers are:</Text>
           <List>
             <ListItem>Chrome</ListItem>
+            <ListItem>Edge</ListItem>
             <ListItem>Safari 16 or newer</ListItem>
           </List>
         </TextContent>

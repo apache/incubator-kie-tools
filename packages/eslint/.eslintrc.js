@@ -37,6 +37,7 @@ module.exports = {
         "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/no-empty-interface": ["error", { allowSingleExtends: true }],
         "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-unnecessary-type-constraint": "off",
         "no-fallthrough": "off",
         "no-case-declarations": "off",
         "react/prop-types": "off",

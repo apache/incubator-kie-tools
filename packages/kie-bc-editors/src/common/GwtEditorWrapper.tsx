@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { getGuidedTourElementPosition, GwtEditor } from "./consumedInteropApi/GwtAppFormerConsumedInteropApi";
+import { GwtEditor } from "./consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { Editor, EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { TextFormatter } from "./TextFormatter";
@@ -82,16 +82,12 @@ export class GwtEditorWrapper implements Editor {
     return this.gwtEditor.getContent().then((content) => this.textFormatter.format(content));
   }
 
-  public getElementPosition(selector: string) {
-    return Promise.resolve(getGuidedTourElementPosition(selector));
-  }
-
   public setContent(path: string, content: string) {
     setTimeout(() => this.removeBusinessCentralPanelHeader(), 100);
     return this.gwtEditor.setContent(path, content.trim());
   }
 
-  public selectStateByName(name: string) {
+  public selectStateByName(name: string | null) {
     return this.gwtEditor.selectStateByName(name);
   }
 

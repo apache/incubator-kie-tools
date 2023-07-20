@@ -15,12 +15,12 @@
  */
 import * as vscode from "vscode";
 import { FileLanguage } from "@kie-tools/dashbuilder-language-service/dist/api";
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 
 export class VsCodeDashbuilderLanguageService {
-  private readonly dashbuilderLs: DashbuilderLanguageService;
+  private readonly dashbuilderLs: DashbuilderYamlLanguageService;
   constructor() {
-    this.dashbuilderLs = new DashbuilderLanguageService();
+    this.dashbuilderLs = new DashbuilderYamlLanguageService();
   }
 
   private getFileLanguage = (fileName: string): FileLanguage | null => {
@@ -30,10 +30,10 @@ export class VsCodeDashbuilderLanguageService {
     return null;
   };
 
-  public getLs(document: vscode.TextDocument): DashbuilderLanguageService {
+  public getLs(document: vscode.TextDocument): DashbuilderYamlLanguageService {
     const fileLanguage = this.getFileLanguage(document.fileName);
     if (fileLanguage === FileLanguage.YAML) {
-      return new DashbuilderLanguageService();
+      return new DashbuilderYamlLanguageService();
     } else {
       throw new Error(`Could not determine LS for ${document.fileName}`);
     }

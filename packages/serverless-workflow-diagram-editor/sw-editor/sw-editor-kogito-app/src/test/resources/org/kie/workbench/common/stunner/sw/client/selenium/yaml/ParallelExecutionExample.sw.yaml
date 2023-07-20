@@ -1,0 +1,18 @@
+id: parallelexec
+version: "1.0"
+specVersion: "0.8"
+name: Parallel Execution Workflow
+description: Executes two branches in parallel
+start: ParallelExec
+states:
+  - name: ParallelExec
+    type: parallel
+    branches:
+      - name: ShortDelayBranch
+        actions:
+          - subFlowRef: shortdelayworkflowid
+      - name: LongDelayBranch
+        actions:
+          - subFlowRef: longdelayworkflowid
+    end: true
+    completionType: allOf

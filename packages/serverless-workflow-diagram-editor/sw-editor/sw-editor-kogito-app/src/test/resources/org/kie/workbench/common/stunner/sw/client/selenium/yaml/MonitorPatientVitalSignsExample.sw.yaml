@@ -1,0 +1,56 @@
+id: patientVitalsWorkflow
+version: "1.0"
+specVersion: "0.8"
+name: Monitor Patient Vitals
+start: MonitorVitals
+states:
+  - name: MonitorVitals
+    type: event
+    end:
+      terminate: true
+    exclusive: true
+    onEvents:
+      - actions:
+          - functionRef:
+              refName: sendTylenolOrder
+              arguments:
+                patientid: "${ .patientId }"
+        eventRefs:
+          - HighBodyTemperature
+      - actions:
+          - functionRef:
+              refName: callNurse
+              arguments:
+                patientid: "${ .patientId }"
+        eventRefs:
+          - HighBloodPressure
+      - actions:
+          - functionRef:
+              refName: callPulmonologist
+              arguments:
+                patientid: "${ .patientId }"
+        eventRefs:
+          - HighRespirationRate
+events:
+  - name: HighBodyTemperature
+    source: monitoringSource
+    type: org.monitor.highBodyTemp
+    correlation:
+      - contextAttributeName: patientId
+  - name: HighBloodPressure
+    source: monitoringSource
+    type: org.monitor.highBloodPressure
+    correlation:
+      - contextAttributeName: patientId
+  - name: HighRespirationRate
+    source: monitoringSource
+    type: org.monitor.highRespirationRate
+    correlation:
+      - contextAttributeName: patientId
+functions:
+  - name: callPulmonologist
+    operation: "http://myapis.org/patientapis.json#callPulmonologist"
+  - name: sendTylenolOrder
+    operation: "http://myapis.org/patientapis.json#tylenolOrder"
+  - name: callNurse
+    operation: "http://myapis.org/patientapis.json#callNurse"

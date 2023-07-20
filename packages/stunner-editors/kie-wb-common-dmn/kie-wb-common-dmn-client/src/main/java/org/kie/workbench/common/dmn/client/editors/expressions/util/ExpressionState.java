@@ -24,11 +24,13 @@ import javax.enterprise.event.Event;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasName;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
+import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
+import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.InformationItemPrimary;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
-import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.expressions.commands.UpdateCanvasNodeNameCommand;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.ExpressionEditorChanged;
 
@@ -36,7 +38,6 @@ public class ExpressionState {
 
     private final HasExpression hasExpression;
     private final Event<ExpressionEditorChanged> editorSelectedEvent;
-    private final ExpressionEditorView view;
     private final String nodeUUID;
     private final Optional<HasName> hasName;
     private final UpdateCanvasNodeNameCommand updateCanvasNodeCommand;
@@ -47,13 +48,11 @@ public class ExpressionState {
 
     public ExpressionState(final HasExpression hasExpression,
                            final Event<ExpressionEditorChanged> editorSelectedEvent,
-                           final ExpressionEditorView view,
                            final String nodeUUID,
                            final Optional<HasName> hasName,
                            final UpdateCanvasNodeNameCommand updateCanvasNodeNameCommand) {
         this.hasExpression = hasExpression;
         this.editorSelectedEvent = editorSelectedEvent;
-        this.view = view;
         this.nodeUUID = nodeUUID;
         this.hasName = hasName;
         this.updateCanvasNodeCommand = updateCanvasNodeNameCommand;
@@ -61,10 +60,6 @@ public class ExpressionState {
 
     public Optional<HasName> getHasName() {
         return hasName;
-    }
-
-    public ExpressionEditorView getView() {
-        return view;
     }
 
     public String getNodeUUID() {
@@ -108,7 +103,6 @@ public class ExpressionState {
         restoreTypeRef();
         restoreExpressionName();
         fireEditorSelectedEvent();
-        getView().reloadEditor();
     }
 
     void fireEditorSelectedEvent() {
@@ -130,7 +124,14 @@ public class ExpressionState {
     }
 
     void restoreExpression() {
-        getHasExpression().setExpression(getSavedExpression());
+        if (getHasExpression().asDMNModelInstrumentedBase() instanceof BusinessKnowledgeModel) {
+            BusinessKnowledgeModel bkModel = ((BusinessKnowledgeModel) getHasExpression().asDMNModelInstrumentedBase());
+            DMNModelInstrumentedBase bkModelParent = bkModel.getEncapsulatedLogic().getParent();
+            bkModel.setEncapsulatedLogic((FunctionDefinition) getSavedExpression());
+            bkModel.getEncapsulatedLogic().setParent(bkModelParent);
+        } else if (getHasExpression() instanceof HasExpression) {
+            getHasExpression().setExpression(getSavedExpression());
+        }
     }
 
     void restoreTypeRef() {
@@ -167,7 +168,7 @@ public class ExpressionState {
         if (Objects.isNull(getHasExpression().getExpression())) {
             setSavedExpression(null);
         } else {
-            setSavedExpression(getHasExpression().getExpression().copy());
+            setSavedExpression(getHasExpression().getExpression().exactCopy());
         }
     }
 }

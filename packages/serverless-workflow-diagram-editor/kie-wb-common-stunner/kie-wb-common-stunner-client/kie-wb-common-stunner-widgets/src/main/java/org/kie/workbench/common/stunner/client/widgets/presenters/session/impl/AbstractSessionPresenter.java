@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Level;
@@ -35,7 +34,6 @@ import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFac
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
@@ -62,7 +60,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent;
 
     private D diagram;
-    private Toolbar<S> toolbar;
     private PaletteWidget<PaletteDefinition> palette;
     private boolean hasToolbar = false;
     private boolean hasPalette = false;
@@ -94,18 +91,12 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     protected abstract Class<? extends AbstractSession> getSessionType();
 
-    protected abstract Toolbar<S> newToolbar(Annotation qualifier);
-
-    protected abstract void destroyToolbarInstace(Toolbar<S> toolbar);
-
     @Override
     @SuppressWarnings("unchecked")
     public void open(final D diagram,
                      final SessionPresenterCallback<D> callback) {
         this.diagram = diagram;
         notificationsObserver.onCommandExecutionFailed(this::showCommandError);
-        notificationsObserver.onValidationSuccess(this::showNotificationMessage);
-        notificationsObserver.onValidationFailed(this::showValidationError);
         sessionManager.newSession(diagram.getMetadata(),
                                   getSessionType(),
                                   session -> open((S) session,
@@ -184,16 +175,12 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         if (null != palette) {
             palette.unbind();
         }
-        if (null != toolbar) {
-            destroyToolbar();
-        }
         getDisplayer().clear();
         diagram = null;
     }
 
     @Override
     public void destroy() {
-        destroyToolbar();
         destroyPalette();
         getSession().ifPresent(sessionManager::destroy);
         getDisplayer().destroy();
@@ -202,16 +189,14 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     public S getInstance() {
+        if (getDisplayer() == null) {
+            return null;
+        }
         return getDisplayer().getInstance();
     }
 
     public Optional<S> getSession() {
         return Optional.ofNullable(getInstance());
-    }
-
-    @Override
-    public Toolbar<S> getToolbar() {
-        return toolbar;
     }
 
     @Override
@@ -244,9 +229,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     @SuppressWarnings("unchecked")
     protected void onSessionOpened(final S session) {
-        destroyToolbar();
         destroyPalette();
-        initToolbar(session);
         initPalette(session);
         getView().setCanvasWidget(getDisplayer().getView());
     }
@@ -258,19 +241,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private void fireSessionFocused(final ClientSession session) {
         sessionFocusedEvent.fire(new SessionFocusedEvent(session));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void initToolbar(final S session) {
-        if (hasToolbar) {
-            final Annotation qualifier =
-                    definitionUtils.getQualifier(session.getCanvasHandler().getDiagram().getMetadata().getDefinitionSetId());
-            toolbar = newToolbar(qualifier);
-            if (null != toolbar) {
-                toolbar.load(session);
-            }
-            getView().setToolbarWidget(toolbar.getView());
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -322,14 +292,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
             return paletteFactory.newPalette((H) session.getCanvasHandler());
         }
         return null;
-    }
-
-    private void destroyToolbar() {
-        if (null != toolbar) {
-            toolbar.destroy();
-            destroyToolbarInstace(toolbar);
-            toolbar = null;
-        }
     }
 
     private void destroyPalette() {

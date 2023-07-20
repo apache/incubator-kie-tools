@@ -32,10 +32,10 @@ public class RemovePMMLIncludedModelCommand extends RemoveIncludedModelCommand<P
     public RemovePMMLIncludedModelCommand(final DMNCardsGridComponent grid,
                                           final PMMLIncludedModelActiveRecord includedModel,
                                           final DMNIncludeModelsClient client,
-                                          final Event<RefreshDecisionComponents> refreshDecisionComponentsEvent,
+                                          final Event<RefreshDecisionComponents> refreshPMMLComponentsEvent,
                                           final ImportRecordEngine recordEngine,
                                           final Event<RefreshDataTypesListEvent> refreshDataTypesListEvent) {
-        super(grid, includedModel, client, refreshDecisionComponentsEvent, recordEngine, refreshDataTypesListEvent);
+        super(grid, includedModel, client, refreshPMMLComponentsEvent, recordEngine, refreshDataTypesListEvent);
     }
 
     public Integer getModelCount() {

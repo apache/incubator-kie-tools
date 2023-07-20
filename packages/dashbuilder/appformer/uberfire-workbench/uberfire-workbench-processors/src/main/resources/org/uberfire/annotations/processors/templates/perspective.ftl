@@ -40,14 +40,6 @@ import org.uberfire.client.mvp.PlaceManager;
 
 import org.uberfire.mvp.PlaceRequest;
 
-<#if getMenuBarMethodName??>
-import org.uberfire.workbench.model.menu.Menus;
-
-</#if>
-<#if getToolBarMethodName??>
-import org.uberfire.workbench.model.toolbar.ToolBar;
-
-</#if>
 <#if isTemplate>
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -170,19 +162,6 @@ public class ${className} extends AbstractWorkbenchPerspectiveActivity<#if isTem
         return realPresenter.${getPerspectiveMethodName}();
     }
 
-</#if>
-<#if getMenuBarMethodName??>
-    @Override
-    public void getMenus(final Consumer<Menus> menusConsumer) {
-        realPresenter.${getMenuBarMethodName}(menusConsumer);
-    }
-
-</#if>
-<#if getToolBarMethodName??>
-    @Override
-    public ToolBar getToolBar() {
-        return realPresenter.${getToolBarMethodName}();
-    }    
 </#if>
 <#if isTemplate>
     @Override

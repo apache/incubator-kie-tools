@@ -17,19 +17,16 @@
 package org.kie.workbench.common.stunner.core.graph.impl;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-@Portable
 @JsType
 public class EdgeImpl<C> extends AbstractElement<C> implements Edge<C, Node> {
 
     private Node sourceNode;
     private Node targetNode;
 
-    public EdgeImpl(final @MapsTo("uuid") String uuid) {
+    public EdgeImpl(final String uuid) {
         super(uuid);
     }
 

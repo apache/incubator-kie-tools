@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.s
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -25,12 +26,21 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.inject.Default;
 
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bound;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
+import org.kie.workbench.common.stunner.core.graph.processing.layout.GraphProcessor;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.OrientedEdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.ReorderedGraph;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Vertex;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.GraphLayer;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.LayeredGraph;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.OrientedEdge;
+
+import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.SugiyamaLayoutService.DEFAULT_INNER_HORIZONTAL_PADDING;
+import static org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.SugiyamaLayoutService.DEFAULT_PARENT_NODE_HEIGHT;
 
 /**
  * Calculate position for each vertex in a graph using the simplest approach.
@@ -45,6 +55,7 @@ public class DefaultVertexPositioning implements VertexPositioning {
     private static final int DEFAULT_LAYER_SPACE = 125;
     static final int DEFAULT_LAYER_HORIZONTAL_PADDING = 50;
     static final int DEFAULT_LAYER_VERTICAL_PADDING = 50;
+    private static final double CLOSE_TO_ZERO_TOLERANCE = 0.1;
 
     /*
      * Pre:
@@ -53,7 +64,9 @@ public class DefaultVertexPositioning implements VertexPositioning {
      */
     @Override
     public void calculateVerticesPositions(final ReorderedGraph graph,
-                                           final LayerArrangement arrangement) {
+                                           final LayerArrangement arrangement,
+                                           final GraphProcessor graphProcessor,
+                                           final Graph<?, ?> stunnerGraph) {
         final LayeredGraph layered = (LayeredGraph) graph;
         deReverseEdges(graph);
 
@@ -61,7 +74,8 @@ public class DefaultVertexPositioning implements VertexPositioning {
 
         removeVirtualVertices(graph.getEdges(), vertices);
         removeVirtualVerticesFromLayers(layered.getLayers(), vertices);
-        arrangeVertices(layered.getLayers(), arrangement, graph);
+
+        arrangeVertices(layered.getLayers(), arrangement, graph, stunnerGraph, graphProcessor);
     }
 
     Set<Vertex> getVertices(final LayeredGraph layered) {
@@ -79,8 +93,11 @@ public class DefaultVertexPositioning implements VertexPositioning {
 
     void arrangeVertices(final List<GraphLayer> layers,
                          final LayerArrangement arrangement,
-                         final ReorderedGraph graph) {
+                         final ReorderedGraph graph,
+                         final Graph<?, ?> stunnerGraph,
+                         final GraphProcessor graphProcessor) {
 
+        calculateParentVerticesSize(stunnerGraph, graphProcessor, graph);
         final HashMap<Integer, Integer> layersWidth = createHashForLayersWidth();
 
         int largestWidth = calculateLayersWidth(layers, layersWidth);
@@ -252,5 +269,65 @@ public class DefaultVertexPositioning implements VertexPositioning {
                 }
             }
         }
+    }
+
+    void calculateParentVerticesSize(final Graph<?, ?> graph,
+                                     final GraphProcessor graphProcessor,
+                                     final ReorderedGraph reorderedGraph) {
+
+        final Map<String, String> replacedNodes = graphProcessor.getReplacedNodes();
+        final Map<String, Integer> parentVertexWidth = calculateParentVerticesWidth(replacedNodes);
+
+        for (final Map.Entry<String, Integer> entry : parentVertexWidth.entrySet()) {
+            final String parentId = entry.getKey();
+
+            final Optional<Node> parentNode = graphProcessor.getNodeFromGraph(parentId, graph);
+
+            parentNode.ifPresent(n -> {
+                if (!hasPositionSet(n)) {
+                    reorderedGraph.setVertexSize(parentId, entry.getValue(), DEFAULT_PARENT_NODE_HEIGHT);
+                }
+            });
+        }
+    }
+
+    Map<String, Integer> calculateParentVerticesWidth(final Map<String, String> replacedNodes) {
+        final Map<String, Integer> parentWidth = new HashMap<>();
+        for (final Map.Entry<String, String> entry : replacedNodes.entrySet()) {
+            final String parentId = entry.getValue();
+            final Integer width = parentWidth.getOrDefault(parentId, 0) + DEFAULT_VERTEX_WIDTH + DEFAULT_INNER_HORIZONTAL_PADDING;
+            parentWidth.put(parentId, width);
+        }
+        return parentWidth;
+    }
+
+    boolean hasPositionSet(final Node node) {
+        final Optional<Bounds> optionalBounds = getBounds(node);
+        if (!optionalBounds.isPresent()) {
+            return false;
+        }
+
+        final Bounds bounds = optionalBounds.get();
+        return bounds.hasUpperLeft()
+                && (isXSet(bounds.getUpperLeft()) || isYSet(bounds.getUpperLeft()));
+    }
+
+    Optional<Bounds> getBounds(final Node node) {
+        if (node.getContent() instanceof HasBounds) {
+            return Optional.of(((HasBounds) node.getContent()).getBounds());
+        }
+        return Optional.empty();
+    }
+
+    boolean isXSet(final Bound bound) {
+        return bound.hasX() && !isCloseToZero(bound.getX());
+    }
+
+    boolean isYSet(final Bound bound) {
+        return bound.hasY() && !isCloseToZero(bound.getY());
+    }
+
+    protected static boolean isCloseToZero(final double value) {
+        return Math.abs(value - 0) < CLOSE_TO_ZERO_TOLERANCE;
     }
 }

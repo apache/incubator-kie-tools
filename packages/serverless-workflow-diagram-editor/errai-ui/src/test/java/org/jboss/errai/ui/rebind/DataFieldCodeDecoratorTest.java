@@ -20,10 +20,10 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.codegen.Statement;
 import org.jboss.errai.codegen.meta.MetaClass;
 import org.jboss.errai.codegen.meta.MetaClassFactory;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.Decorable;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.FactoryController;
 import org.jboss.errai.ioc.rebind.ioc.injector.api.InjectionContext;
@@ -96,7 +96,7 @@ public class DataFieldCodeDecoratorTest {
     final DataFieldCodeDecorator decorator = new DataFieldCodeDecorator(DataField.class);
 
     // Setup
-    when(decorable.getType()).thenReturn(MetaClassFactory.get(Div.class));
+    when(decorable.getType()).thenReturn(MetaClassFactory.get(HTMLDivElement.class));
 
     when(decorable.getDecorableDeclaringType()).thenReturn(type1);
     when(decorable.getName()).thenReturn("d1");

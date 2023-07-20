@@ -16,7 +16,8 @@
 
 package org.jboss.errai.ui.client.local.api;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.jboss.errai.ui.shared.TemplateWidgetMapper;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -30,7 +31,7 @@ public interface IsElement extends org.jboss.errai.common.client.api.IsElement {
   @Override
   default HTMLElement getElement() {
     try {
-      return TemplateWidgetMapper.get(this).getElement().cast();
+      return Js.uncheckedCast(TemplateWidgetMapper.get(this).getElement());
     } catch (final Throwable t) {
       throw new RuntimeException(
               "An error occurred while invoking getElement."

@@ -1,11 +1,10 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
-        "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module>
-    <inherits name='com.google.gwt.user.User'/>
-    <inherits name='org.jboss.errai.databinding.DataBinding'/>
+    <inherits name='com.google.gwt.user.User' />
+    <inherits name='org.jboss.errai.databinding.DataBinding' />
 
     <generate-with class="org.jboss.errai.validation.rebind.ValidatorFactoryGenerator">
-        <when-type-assignable
-                class="javax.validation.ValidatorFactory"/>
+        <when-type-assignable class="javax.validation.ValidatorFactory" />
     </generate-with>
 </module>

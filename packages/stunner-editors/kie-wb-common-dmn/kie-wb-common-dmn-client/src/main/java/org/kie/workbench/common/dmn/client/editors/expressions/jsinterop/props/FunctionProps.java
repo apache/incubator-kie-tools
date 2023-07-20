@@ -24,12 +24,12 @@ import static org.kie.workbench.common.dmn.client.editors.expressions.types.Expr
 public class FunctionProps extends ExpressionProps {
     public final EntryInfo[] formalParameters;
     public final String functionKind;
-    public final Double parametersWidth;
+    public final Double classAndMethodNamesWidth;
 
-    public FunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double parametersWidth, final String functionKind) {
+    public FunctionProps(final String id, final String name, final String dataType, final EntryInfo[] formalParameters, final Double classAndMethodNamesWidth, final String functionKind) {
         super(id, name, dataType, FUNCTION.getText());
         this.formalParameters = formalParameters;
         this.functionKind = functionKind;
-        this.parametersWidth = parametersWidth;
+        this.classAndMethodNamesWidth = classAndMethodNamesWidth;
     }
 }

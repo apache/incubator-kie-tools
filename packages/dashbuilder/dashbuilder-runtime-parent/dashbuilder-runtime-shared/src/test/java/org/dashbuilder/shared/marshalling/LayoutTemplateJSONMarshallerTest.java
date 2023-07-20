@@ -129,7 +129,7 @@ public class LayoutTemplateJSONMarshallerTest {
             "    }\n" +
             "  ]\n" +
             "}";
-    
+
     String LT_JSON_HTML_SHORTCUT = "{\n" +
             "  \"style\": \"PAGE\",\n" +
             "  \"name\": \"test Layout Template\",\n" +
@@ -173,7 +173,6 @@ public class LayoutTemplateJSONMarshallerTest {
     public void fromReadableJsonTest() {
         var lt = LayoutTemplateJSONMarshaller.get().fromJson(LT_JSON_READABLE);
         checkLayoutTemplate(lt);
-
     }
 
     @Test
@@ -250,6 +249,21 @@ public class LayoutTemplateJSONMarshallerTest {
         object.set("dragTypeName", Json.create("custom"));
         var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
         assertEquals("custom", dragType);
+    }
+
+    @Test
+    public void findElementByShortcutTest() {
+        final var PROP = "prop";
+        final var SHORTCUT = "shortcut";
+        final var DRAGTYPE = "drag";
+        final var PROP_VAL = "short cut value";
+
+        var object = Json.createObject();
+        object.set(SHORTCUT, Json.create(PROP_VAL));
+
+        var comp = LayoutTemplateJSONMarshaller.get().elementShortcut(object, SHORTCUT, PROP, DRAGTYPE).get();
+        assertEquals(PROP_VAL, comp.getProperties().get(PROP));
+        assertEquals(DRAGTYPE, comp.getDragTypeName());
     }
 
 }

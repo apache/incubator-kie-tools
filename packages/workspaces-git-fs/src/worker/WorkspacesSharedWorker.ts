@@ -52,6 +52,10 @@ export class WorkspacesSharedWorker {
     return callback(this.workspacesWorkerBus);
   }
 
+  public closeWorkerPort() {
+    this.workspacesWorker?.port.close();
+  }
+
   private createWorker() {
     this.workspacesWorker = new SharedWorker(this.args.workerScriptUrl, this.args.workerName);
     this.workspacesWorker.port.start();
@@ -63,9 +67,6 @@ export class WorkspacesSharedWorker {
         this.workspacesWorkerBus.server.receive(m.data, {
           kieToolsWorkspacesWorker_ready() {
             res();
-          },
-          async kieToolsWorkspacesWorker_ping() {
-            return "pong";
           },
         });
       };

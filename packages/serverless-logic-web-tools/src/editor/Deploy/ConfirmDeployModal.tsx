@@ -22,18 +22,17 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { useCallback, useMemo, useState } from "react";
-import { AlertsController, useAlert } from "../../alerts/Alerts";
-import { isDashbuilder, isServerlessWorkflow } from "../../extension";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { useAppI18n } from "../../i18n";
 import { CompletedDeployOperation } from "../../openshift/deploy/types";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { SwfDeployOptions } from "./ConfirmOptions/SwfDeployOptions";
 import { DashDeployOptions } from "./ConfirmOptions/DashDeployOptions";
+import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 
 interface ConfirmDeployModalProps {
   workspace: ActiveWorkspace;
   workspaceFile: WorkspaceFile;
-  alerts: AlertsController | undefined;
 }
 
 export interface ConfirmDeployOptionsRef {
@@ -51,9 +50,9 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
   const optionsComponent = useMemo(() => {
     let DeployOptionsComponent = null;
 
-    if (isServerlessWorkflow(props.workspaceFile.name)) {
+    if (isOfKind("sw", props.workspaceFile.name)) {
       DeployOptionsComponent = SwfDeployOptions;
-    } else if (isDashbuilder(props.workspaceFile.name)) {
+    } else if (isOfKind("dash", props.workspaceFile.name)) {
       DeployOptionsComponent = DashDeployOptions;
     }
 
@@ -68,8 +67,7 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
     );
   }, [deployOptionsRef, props.workspace, props.workspaceFile]);
 
-  const deployStartedErrorAlert = useAlert(
-    props.alerts,
+  const deployStartedErrorAlert = useGlobalAlert(
     useCallback(({ close }) => {
       return (
         <Alert
@@ -87,8 +85,7 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
     { durationInSeconds: 5 }
   );
 
-  const deployStartedSuccessAlert = useAlert(
-    props.alerts,
+  const deployStartedSuccessAlert = useGlobalAlert(
     useCallback(({ close }) => {
       return (
         <Alert

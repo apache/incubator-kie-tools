@@ -39,6 +39,9 @@ public class AggregateFunctionManagerImpl implements AggregateFunctionManager {
         registerFunction(new MedianFunction());
         registerFunction(new MaxFunction());
         registerFunction(new MinFunction());
+        registerFunction(new JoinFunction());
+        registerFunction(new JoinCommaFunction());
+        registerFunction(new JoinHyphenFunction());
     }
 
     public Collection<AggregateFunction> getAllFunctions() {

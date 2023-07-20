@@ -18,6 +18,7 @@ import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
+import { SupportedActions } from "../workspace/components/GitStatusIndicatorActions";
 
 interface OnlineDictionary extends ReferenceDictionary {
   editorPage: {
@@ -47,6 +48,11 @@ interface OnlineDictionary extends ReferenceDictionary {
         proceedAnyway: string;
       };
     };
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"jira">>;
+    };
   };
   editorToolbar: {
     closeAndReturnHome: string;
@@ -63,6 +69,25 @@ interface OnlineDictionary extends ReferenceDictionary {
     cantUpdateSnippetTooltip: string;
     share: string;
     embed: string;
+  };
+  accelerators: {
+    commitMessage: (appName: string, acceleratorName: string) => string;
+    loadingAlert: (acceleratorName: string) => string;
+    successAlert: (acceleratorName: string) => string;
+    failAlert: (acceleratorName: string) => string;
+    acceleratorDescription: string;
+    acceleratorDetails: string;
+    dmnFilesMove: string;
+    dmnFilesLocation: string;
+    pmmlFilesMove: string;
+    pmmlFilesLocation: string;
+    bpmnFilesMove: string;
+    bpmnFilesLocation: string;
+    otherFilesMove: string;
+    otherFilesLocation: string;
+    applyAccelerator: string;
+    appliedAt: string;
+    applyDisclaimer: string;
   };
   devDeployments: {
     common: {
@@ -100,8 +125,11 @@ interface OnlineDictionary extends ReferenceDictionary {
       tokenInfo: string;
       validationError: string;
       connectionError: string;
+      missingPermissions: string;
+      namespaceNotFound: (namespace: string) => string;
       configExpiredWarning: string;
-      useWizard: string;
+      useOpenShiftWizard: string;
+      useKubernetesWizard: string;
     };
     deployConfirmModal: {
       title: string;
@@ -117,7 +145,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       deleteError: string;
       deleteSuccess: string;
     };
-    configWizard: {
+    openShiftConfigWizard: {
       header: {
         provider: string;
       };
@@ -158,6 +186,61 @@ interface OnlineDictionary extends ReferenceDictionary {
         };
       };
     };
+    kubernetesConfigWizard: {
+      header: {
+        provider: string;
+      };
+      fields: {
+        namespace: string;
+        namespaceInfo: string;
+        kubernetesApiServerUrl: string;
+        kubernetesApiServerUrlInfo: string;
+        tokenInfo: string;
+      };
+      steps: {
+        first: {
+          name: string;
+          introduction: string;
+          installFlavor: (flavor: string) => string;
+          installKubectl: string;
+          runCommandsTerminal: string;
+          createCluster: string;
+          installIngress: string;
+          installKieSandboxYaml: string;
+        };
+        second: {
+          name: string;
+          introduction: string;
+          disclaimer: string;
+          hostInputReason: string;
+          namespaceInputReason: string;
+          namespacePlaceholder: string;
+          hostPlaceholder: string;
+        };
+        third: {
+          name: string;
+          introduction: string;
+          getToken: string;
+          tokenPlaceholder: string;
+          tokenInputReason: string;
+        };
+        final: {
+          name: string;
+          connectionError: string;
+          connectionSuccess: string;
+          introduction: string;
+          configNote: string;
+          connectionErrorLong: string;
+          checkInfo: string;
+          possibleErrorReasons: {
+            introduction: string;
+            emptyField: string;
+            clusterNotCreatedCorrectly: string;
+            tokenExpired: string;
+          };
+        };
+      };
+    };
   };
   embedModal: {
     title: string;
@@ -169,6 +252,7 @@ interface OnlineDictionary extends ReferenceDictionary {
         description: string;
       };
       gist: {
+        alert: string;
         tooltip: string;
         label: string;
         description: string;
@@ -250,7 +334,6 @@ interface OnlineDictionary extends ReferenceDictionary {
       description: string;
     };
     dropdown: {
-      getHub: string;
       onlineForum: string;
     };
     bpmnCard: {
@@ -271,32 +354,6 @@ interface OnlineDictionary extends ReferenceDictionary {
     trySample: string;
     chooseLocalFile: string;
   };
-  guidedTour: {
-    init: {
-      title: string;
-      learnMore: string;
-      dmnRunnerIntro: string;
-      takeTour: string;
-      skipTour: string;
-      skipTourAndUseDmnRunner: string;
-    };
-    end: {
-      title: string;
-      motivational: string;
-      nextSteps: {
-        title: string;
-        firstStep: string;
-        secondStep: string;
-        thirdStep: string;
-        startDmnRunner: string;
-      };
-      findUsefulInfo: string;
-      learnDMN: string;
-      courseOr: string;
-      kogitoDoc: string;
-      finish: string;
-    };
-  };
   alerts: {
     gistError: string;
     goToHomePage: string;
@@ -312,12 +369,10 @@ interface OnlineDictionary extends ReferenceDictionary {
     };
   };
   dmnRunner: {
-    drawer: {
-      error: {
-        title: string;
-        explanation: string;
-        message: Array<string | Wrapped<"jira">>;
-      };
+    error: {
+      title: string;
+      explanation: string;
+      message: Array<string | Wrapped<"jira">>;
     };
     table: DmnUnitablesI18n;
     modal: {
@@ -346,7 +401,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -356,7 +411,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               openInstruction: Array<string | Wrapped<"file" | "again">>;
             };
             alreadyRanBefore: string;
-            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            launchExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -371,7 +426,7 @@ interface OnlineDictionary extends ReferenceDictionary {
           start: {
             stopped: {
               startInstruction: string;
-              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: Array<string | Wrapped<"file">>;
             };
             firstTime: {
               title: string;
@@ -379,7 +434,7 @@ interface OnlineDictionary extends ReferenceDictionary {
               runAnyway: string;
             };
             alreadyRanBefore: string;
-            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            launchExtendedServices: Array<string | Wrapped<"file">>;
             advanced: {
               title: string;
               runFollowingCommand: string;
@@ -430,7 +485,7 @@ interface OnlineDictionary extends ReferenceDictionary {
       expandAll: string;
     };
   };
-  kieSandboxExtendedServices: {
+  extendedServices: {
     dropdown: {
       shortConnected: (port: string) => string;
       tooltip: {
@@ -514,6 +569,14 @@ interface OnlineDictionary extends ReferenceDictionary {
     [key in SupportedGitAuthProviders]: {
       user: string;
       organizations: string;
+    };
+  };
+  gitStatusIndicatorActions: {
+    [key in SupportedActions]: {
+      title: string;
+      warning: string;
+      description: string;
+      confirmButtonText: string;
     };
   };
 }

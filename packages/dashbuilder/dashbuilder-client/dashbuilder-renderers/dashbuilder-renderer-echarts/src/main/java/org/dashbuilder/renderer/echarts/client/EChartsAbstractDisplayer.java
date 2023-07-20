@@ -62,6 +62,8 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
 
         void configureChart(ChartBootstrapParams bootstrapParams);
 
+        void close();
+
     }
 
     @Inject
@@ -196,19 +198,10 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         toolbox.setShow(true);
         toolbox.setFeature(toolboxFeature);
 
-        switch (legendPosition) {
-            case BOTTOM:
-            case TOP:
-                legend.setLeft("center");
-                break;
-            case IN:
-                break;
-            case LEFT:
-                legend.setLeft("left");
-                break;
-            case RIGHT:
-                legend.setLeft("right");
-                break;
+        if (legendPosition == Position.BOTTOM || legendPosition == Position.TOP) {
+            legend.setLeft("center");
+        } else {
+            legend.setLeft(legendPosition.toString().toLowerCase());
         }
 
         if (bgColor != null && !bgColor.isEmpty()) {
@@ -303,6 +296,13 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
             singleColumnsNames.add(columnName);
         }
         return singleColumnsNames.stream().toArray(String[]::new);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+
+        view.close();
     }
 
     abstract DataSetLookupConstraints getDataSetLookupConstraints();

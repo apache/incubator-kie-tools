@@ -1,0 +1,29 @@
+id: VetAppointmentWorkflow
+version: "1.0"
+specVersion: "0.8"
+name: Vet Appointment Workflow
+description: Vet service call via events
+start: MakeVetAppointmentState
+states:
+  - name: MakeVetAppointmentState
+    type: operation
+    actions:
+      - name: MakeAppointmentAction
+        eventRef:
+          produceEventRef: MakeVetAppointment
+          consumeEventRef: VetAppointmentInfo
+          data: "${ .patientInfo }"
+        actionDataFilter:
+          results: "${ .appointmentInfo }"
+    end: true
+    timeouts:
+      actionExecTimeout: PT15M
+events:
+  - name: MakeVetAppointment
+    source: VetServiceSource
+    type: events.vet.appointments
+    kind: produced
+  - name: VetAppointmentInfo
+    source: VetServiceSource
+    type: events.vet.appointments
+    kind: consumed

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,24 +14,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
-
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
+  <inherits name='com.google.gwt.user.User' />
   <inherits name="org.gwtbootstrap3.extras.datetimepicker.DateTimePicker" />
-  <inherits name="org.uberfire.UberfireClientAPI"/>
-  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
-  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi"/>
-  <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient"/>
-  <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
-  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
-  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets"/>
-  <inherits name="org.kie.workbench.common.forms.processing.FormProcessingEngine"/>
-  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.UberfireClientAPI" />
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient" />
+  <inherits name="org.kie.workbench.common.stunner.bpmn.StunnerBpmnApi" />
+  <inherits name="org.kie.workbench.common.stunner.shapes.StunnerShapesClient" />
+  <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient" />
+  <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient" />
+  <inherits name="org.kie.workbench.common.stunner.client.StunnerWidgets" />
+  <inherits name="org.kie.workbench.common.forms.processing.FormProcessingEngine" />
+  <inherits name="org.uberfire.UberfireAPI" />
 
-  <source path="client"/>
-  <source path="" includes="StunnerBPMNEntryPoint.java"/>
+  <source path="client" />
+  <source path="" includes="StunnerBPMNEntryPoint.java" />
 
 </module>

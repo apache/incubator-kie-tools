@@ -37,7 +37,7 @@ Available parameters:
   - `Promise.resolve("")`
   - `Promise.resolve("<SWF_CONTENT_DIRECTLY_HERE>")`
 - `readOnly` (optional, defaults to `false`): Use `false` to allow content edition, and `true` for read-only mode, in which the Editor will not allow changes.
-- `languageType` (required, defaults to `json`): Use `json` to render text editor with serverless workflow content in json format and stunner editor to display diagram. Use `yaml` to render text editor with serverless workflow content in yaml format and mermaid editor to display diagram.
+- `languageType` (required, defaults to `json`): Use `json`/`yaml` to render text editor with serverless workflow content in json/yaml format and stunner editor to display diagram.
 - `swfPreviewOptions` (optional, defaults to `{ editorMode: "full", defaultWidth: "50%" }`): You can use this option to change the `editorMode` (optional, defaults to `full`) and `defaultWidth` (optional, defaults to `50%`). If you want to render only the diagram editors into the web application and hide the text editor, you can use this parameter and set the value `diagram`. To render the text editor and hide the diagram editor, you can use set the value `text`. To render both `diagram` and `text` together, you can set the value `full`.
 
 The returned object will contain the methods needed to manipulate the Editor:
@@ -49,4 +49,3 @@ The returned object will contain the methods needed to manipulate the Editor:
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `validate(): Promise<Notification[]>`: Validates the serverless workflow json/yaml content based on its schemas and it also includes custom validations specific to serverless workflow rules.
 - `setTheme(theme: EditorTheme): Promise<void>`: This sets theme to the editors on the web application.
-- `getElementPosition(selector: string): Promise<Rect>`: Provides an alternative for extending the standard query selector when the element lives inside a canvas or even a video component. The `selector` parameter must follow the format of "\<PROVIDER\>:::\<SELECT\>“, e.g. “Canvas:::MySquare” or “Video:::PresenterHand”. Returns a `Rect` representing the element position.

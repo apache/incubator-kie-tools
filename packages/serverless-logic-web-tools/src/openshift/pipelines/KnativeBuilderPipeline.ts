@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-import { CreateKafkaSource, DeleteKafkaSource } from "@kie-tools-core/openshift/dist/api/knative/KafkaSource";
-import { CreateKnativeService, DeleteKnativeService } from "@kie-tools-core/openshift/dist/api/knative/KnativeService";
+import { ResourceFetch, ResourceFetcher } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
   CreateBuildConfig,
+  CreateImageStream,
+  CreateKnativeService,
   DeleteBuildConfig,
+  DeleteImageStream,
+  DeleteKnativeService,
+  DeleteSecret,
   InstantiateBinary,
-} from "@kie-tools-core/openshift/dist/api/kubernetes/BuildConfig";
-import { CreateImageStream, DeleteImageStream } from "@kie-tools-core/openshift/dist/api/kubernetes/ImageStream";
-import { CreateSecret, DeleteSecret } from "@kie-tools-core/openshift/dist/api/kubernetes/Secret";
-import { ResourceFetch } from "@kie-tools-core/openshift/dist/fetch/ResourceFetch";
-import { ResourceFetcher } from "@kie-tools-core/openshift/dist/fetch/ResourceFetcher";
-import {
-  KAFKA_SOURCE_CLIENT_ID_KEY,
-  KAFKA_SOURCE_CLIENT_MECHANISM_KEY,
-  KAFKA_SOURCE_CLIENT_MECHANISM_PLAIN,
-  KAFKA_SOURCE_CLIENT_SECRET_KEY,
-} from "@kie-tools-core/openshift/dist/template/TemplateConstants";
+  ResourceDataSource,
+} from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { RESOURCE_OWNER } from "../OpenShiftConstants";
-import { KafkaSourceArgs } from "../deploy/types";
 import { OpenShiftPipeline, OpenShiftPipelineArgs } from "../OpenShiftPipeline";
 
 interface KnativeBuilderPipelineArgs {
@@ -40,7 +34,6 @@ interface KnativeBuilderPipelineArgs {
   targetUri: string;
   workspaceName: string;
   workspaceZipBlob: Blob;
-  kafkaSourceArgs?: KafkaSourceArgs;
 }
 
 export class KnativeBuilderPipeline extends OpenShiftPipeline {
@@ -56,7 +49,6 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
     };
 
     const rollbacks: ResourceFetch[] = [
-      new DeleteKafkaSource(resourceArgs),
       new DeleteSecret(resourceArgs),
       new DeleteKnativeService(resourceArgs),
       new DeleteBuildConfig(resourceArgs),
@@ -66,10 +58,15 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
     let rollbacksCount = rollbacks.length;
 
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateImageStream(resourceArgs) })
+      fetcher.execute({
+        target: new CreateImageStream({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+      })
     );
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute({ target: new CreateBuildConfig(resourceArgs), rollbacks: rollbacks.slice(--rollbacksCount) })
+      fetcher.execute({
+        target: new CreateBuildConfig({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
+        rollbacks: rollbacks.slice(--rollbacksCount),
+      })
     );
     await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({
@@ -83,42 +80,10 @@ export class KnativeBuilderPipeline extends OpenShiftPipeline {
           ...resourceArgs,
           uri: this.args.targetUri,
           workspaceName: this.args.workspaceName,
+          resourceDataSource: ResourceDataSource.TEMPLATE,
         }),
         rollbacks: rollbacks.slice(rollbacksCount),
       })
     );
-
-    if (this.args.kafkaSourceArgs) {
-      const secretData = {
-        [KAFKA_SOURCE_CLIENT_ID_KEY]: this.args.kafkaSourceArgs.serviceAccount.clientId,
-        [KAFKA_SOURCE_CLIENT_SECRET_KEY]: this.args.kafkaSourceArgs.serviceAccount.clientSecret,
-        [KAFKA_SOURCE_CLIENT_MECHANISM_KEY]: KAFKA_SOURCE_CLIENT_MECHANISM_PLAIN,
-      };
-      await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.execute({
-          target: new CreateSecret({ ...resourceArgs, data: secretData }),
-          rollbacks: rollbacks.slice(--rollbacksCount),
-        })
-      );
-
-      const { bootstrapServers, topics } = this.args.kafkaSourceArgs;
-      await this.args.openShiftService.withFetch((fetcher: ResourceFetcher) =>
-        fetcher.execute({
-          target: new CreateKafkaSource({
-            ...resourceArgs,
-            sinkService: this.args.resourceName,
-            bootstrapServers,
-            topics,
-            secret: {
-              name: this.args.resourceName,
-              keyId: KAFKA_SOURCE_CLIENT_ID_KEY,
-              keySecret: KAFKA_SOURCE_CLIENT_SECRET_KEY,
-              keyMechanism: KAFKA_SOURCE_CLIENT_MECHANISM_KEY,
-            },
-          }),
-          rollbacks: rollbacks.slice(--rollbacksCount),
-        })
-      );
-    }
   }
 }

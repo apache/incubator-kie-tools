@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 
 import javax.xml.XMLConstants;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.showcase.client.common.DMNDesignerBaseIT;
@@ -425,7 +426,7 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
                                   "/dmn:text[text()='null // auto-filled by the editor to avoid missing empty expression.']");
     }
 
-    @Test
+    @Ignore("No more compatible with React Based Boxed Expression")
     public void testDecisionExpressionDecisionTable() throws Exception {
         final String expected = loadResource("decision-expression-decision-table.xml");
         setContent(expected);
@@ -1873,7 +1874,7 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
                                   "/dc:Bounds[@x='930' and @y='265' and @width='100' and @height='50']");
     }
 
-    @Test
+    @Ignore("No more compatible with React Based Boxed Expression")
     public void testListExpression_DROOLS5131() throws Exception {
         final String expected = loadResource("DROOLS-5131 (List expression).xml");
         setContent(expected);

@@ -52,7 +52,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.DefinitionAdapterBindings;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty;
@@ -81,7 +80,6 @@ import org.uberfire.annotations.processors.GenerationException;
 @SupportedAnnotationTypes({
         MainProcessor.ANNOTATION_DEFINITION_SET,
         MainProcessor.ANNOTATION_DEFINITION,
-        MainProcessor.ANNOTATION_PROPERTY,
         MainProcessor.ANNOTATION_RULE_CAN_CONTAIN,
         MainProcessor.ANNOTATION_RULE_CAN_DOCK,
         MainProcessor.ANNOTATION_RULE_EXTENSIONS,
@@ -94,9 +92,6 @@ import org.uberfire.annotations.processors.GenerationException;
         MainProcessor.ANNOTATION_RULE_OCCS})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class MainProcessor extends AbstractErrorAbsorbingProcessor {
-
-    public static final String ANNOTATION_DESCRIPTION = "org.kie.workbench.common.stunner.core.definition.annotation.Description";
-    public static final String ANNOTATION_NAME = "org.kie.workbench.common.stunner.core.definition.annotation.Name";
 
     public static final String ANNOTATION_DEFINITION_SET = "org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet";
 
@@ -113,11 +108,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             ANNOTATION_DEFINITION_TITLE
     };
 
-    public static final String ANNOTATION_PROPERTY = "org.kie.workbench.common.stunner.core.definition.annotation.Property";
-    public static final String ANNOTATION_PROPERTY_VALUE = "org.kie.workbench.common.stunner.core.definition.annotation.property.Value";
-
-    public static final String ANNOTATION_MORPH = "org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph";
-    public static final String ANNOTATION_MORPH_BASE = "org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase";
     public static final String ANNOTATION_MORPH_PROPERTY = "org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphProperty";
 
     public static final String ANNOTATION_RULE_CAN_CONTAIN = "org.kie.workbench.common.stunner.core.rule.annotation.CanContain";
@@ -245,14 +235,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             processDefinitionSets(e);
         }
 
-        // 2- Properties.
-        final Set<? extends Element> propertyElements = new LinkedHashSet<Element>() {{
-            addAll(roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_PROPERTY)));
-        }};
-        for (Element e : propertyElements) {
-            processProperties(e);
-        }
-
         // 3- Definitions.
         for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_DEFINITION))) {
             processDefinitions(e);
@@ -320,12 +302,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             processingContext.setDefinitionSet(packageName,
                                                className);
             String defSetClassName = packageName + "." + className;
-            // Description fields.
-            processFieldName(classElement,
-                             defSetClassName,
-                             ANNOTATION_DESCRIPTION,
-                             processingContext.getDefSetAnnotations().getDescriptionFieldNames(),
-                             false);
             // Definitions identifiers.
             DefinitionSet definitionSetAnn = e.getAnnotation(DefinitionSet.class);
             List<? extends TypeMirror> mirrors = null;
@@ -394,36 +370,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 baseTypes.put(defintionClassName,
                               baseClassName);
             }
-            // Id field.
-            processFieldName(classElement,
-                             defintionClassName,
-                             ANNOTATION_DEFINITION_ID,
-                             processingContext.getDefinitionAnnotations().getIdFieldNames(),
-                             false);
-            // Category field.
-            processFieldName(classElement,
-                             defintionClassName,
-                             ANNOTATION_DEFINITION_CATEGORY,
-                             processingContext.getDefinitionAnnotations().getCategoryFieldNames(),
-                             true);
-            // Title field.
-            processFieldName(classElement,
-                             defintionClassName,
-                             ANNOTATION_DEFINITION_TITLE,
-                             processingContext.getDefinitionAnnotations().getTitleFieldNames(),
-                             false);
-            // Description field.
-            processFieldName(classElement,
-                             defintionClassName,
-                             ANNOTATION_DESCRIPTION,
-                             processingContext.getDefinitionAnnotations().getDescriptionFieldNames(),
-                             false);
-            // Labels field.
-            processFieldName(classElement,
-                             defintionClassName,
-                             ANNOTATION_DEFINITION_LABELS,
-                             processingContext.getDefinitionAnnotations().getLabelsFieldNames(),
-                             true);
             // Builder class.
             processDefinitionModelBuilder(e,
                                           defintionClassName,
@@ -444,30 +390,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                                                                                fqcn);
 
             // Properties fields.
-            Map<String, VariableElement> propertyFields = visitVariables("",
-                                                                         classElement,
-                                                                         variableElement -> hasAnnotation(variableElement, ANNOTATION_PROPERTY));
             List<String> propertyFieldNames = new ArrayList<>();
             List<Boolean> typedPropertyFields = new ArrayList<>();
             DefinitionAdapterBindings.PropertyMetaTypes defMetaTypes = new DefinitionAdapterBindings.PropertyMetaTypes();
-            propertyFields.forEach((field, variable) -> {
-                TypeMirror type = variable.asType();
-                TypeElement element = (TypeElement) ((DeclaredType) type).asElement();
-                String elementClassName = GeneratorUtils.getTypeMirrorDeclaredName(element.asType());
-                boolean isTypedProperty = processingContext.getPropertyAnnotations().getValueFieldNames().containsKey(elementClassName);
-                int index = propertyFieldNames.size();
-                Property propertyAnnotation = variable.getAnnotation(Property.class);
-                // Populate the context collections.
-                propertyFieldNames.add(field);
-                typedPropertyFields.add(isTypedProperty);
-                org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes propertyMetaType = propertyAnnotation.meta();
-                if (org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes.NONE.equals(propertyMetaType)) {
-                    propertyMetaType = getDeclaredMetaType(elementClassName);
-                }
-                if (null != propertyMetaType) {
-                    defMetaTypes.setIndex(propertyMetaType, index);
-                }
-            });
             processingContext.getDefinitionAnnotations().getPropertyFieldNames().put(defintionClassName, propertyFieldNames);
             processingContext.getDefinitionAnnotations().getTypedPropertyFields().put(defintionClassName, typedPropertyFields);
             processingContext.getMetaPropertyTypesFields().put(defintionClassName, defMetaTypes);
@@ -668,50 +593,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         }
     }
 
-    private boolean processProperties(final Element e) {
-        final boolean isClass = e.getKind() == ElementKind.CLASS;
-        if (isClass) {
-            TypeElement classElement = (TypeElement) e;
-            PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
-            String propertyClassName = packageElement.getQualifiedName().toString() + "." + classElement.getSimpleName();
-            // Meta-properties
-            Property metaProperty = e.getAnnotation(Property.class);
-            if (null != metaProperty) {
-                org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes type = metaProperty.meta();
-                if (!org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes.NONE.equals(type)) {
-                    processingContext.getMetaPropertyTypes().put(type,
-                                                                 propertyClassName + ".class");
-                }
-            }
-            // Value fields.
-            processFieldName(classElement,
-                             propertyClassName,
-                             ANNOTATION_PROPERTY_VALUE,
-                             processingContext.getPropertyAnnotations().getValueFieldNames(),
-                             true);
-        }
-        return false;
-    }
-
-    private boolean processFieldName(final TypeElement classElement,
-                                     final String propertyClassName,
-                                     final String annotation,
-                                     final Map<String, String> ctxMap,
-                                     final boolean mandatory) {
-        Map<String, Element> fieldNames = getClassFieldsAnnotatedWith(classElement,
-                                                                      annotation);
-        boolean empty = fieldNames.isEmpty();
-        if (mandatory && empty) {
-            throw new RuntimeException("No annotation of type [" + annotation + "] for Property of class [" + classElement + "]");
-        }
-        if (!empty) {
-            ctxMap.put(propertyClassName,
-                       fieldNames.keySet().iterator().next());
-            return true;
-        }
-        return false;
-    }
-
     private boolean hasAnnotation(Element annotationTarget,
                                   String annotationName) {
         return GeneratorUtils.getAnnotation(processingEnv.getElementUtils(),
@@ -739,7 +620,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
         String fqcn = classElement.getQualifiedName().toString();
 
         if (ClassUtils.isJavaRuntimeClassname(fqcn) ||
-                hasAnnotation(classElement, ANNOTATION_PROPERTY) ||
                 processedTypes.contains(fqcn)) {
             return Collections.emptyMap();
         }
@@ -787,15 +667,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             }
             classElement = getParent(classElement);
         }
-    }
-
-    private Map<String, Element> getClassFieldsAnnotatedWith(TypeElement classElement,
-                                                             String annotation) {
-        Map<String, Element> result = new LinkedHashMap<>();
-        putFields(result,
-                  classElement,
-                  variableElement -> hasAnnotation(variableElement, annotation));
-        return result;
     }
 
     private void putFields(Map<String, Element> result,
@@ -1228,11 +1099,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
 
     private String getSetClassPrefix() {
         return processingContext.getDefinitionSet().getId();
-    }
-
-    private void note(String message) {
-        log(Diagnostic.Kind.NOTE,
-            message);
     }
 
     private void log(Diagnostic.Kind kind,

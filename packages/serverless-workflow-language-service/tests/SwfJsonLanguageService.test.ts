@@ -14,361 +14,25 @@
  * limitations under the License.
  */
 
-import * as jsonc from "jsonc-parser";
-import {
-  hasNodeComma,
-  isOffsetAtLastChild,
-  JsonCodeCompletionStrategy,
-  SwfJsonLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, Position } from "vscode-languageserver-types";
-import { defaultConfig, defaultServiceCatalogConfig, testRelativeService1 } from "./SwfLanguageServiceConfigs";
-import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
+import {
+  getJqBuiltInFunctionTests,
+  getJqReusableFunctionTests,
+  getJqVariableTests,
+  getJsonLsForJqExpressionTests,
+} from "./SwfJqExpressionTestUtils";
+import {
+  defaultConfig,
+  defaultJqCompletionsConfig,
+  defaultServiceCatalogConfig,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
+import { codeCompletionTester, ContentWithCursor, trim } from "./testUtils";
 
 const documentUri = "test.sw.json";
 
-describe("JsonCodeCompletionStrategy", () => {
-  describe("getStartNodeValuePosition", () => {
-    const codeCompletionStrategy = new JsonCodeCompletionStrategy();
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-    });
-
-    test("string value", async () => {
-      expect(
-        getStartNodeValuePositionTester({
-          content: `{
-          "name": "Greeting workflow"
-        }`,
-          path: ["name"],
-          codeCompletionStrategy,
-          documentUri,
-          ls,
-        })
-      ).toStrictEqual({ line: 1, character: 19 });
-    });
-
-    test("boolean value", async () => {
-      expect(
-        getStartNodeValuePositionTester({
-          content: `{
-          "end": true
-        }`,
-          path: ["end"],
-          codeCompletionStrategy,
-          documentUri,
-          ls,
-        })
-      ).toStrictEqual({ line: 1, character: 17 });
-    });
-
-    describe("arrays", () => {
-      test("single line declaration", async () => {
-        expect(
-          getStartNodeValuePositionTester({
-            content: `{
-          "functions": []
-        }`,
-            path: ["functions"],
-            codeCompletionStrategy,
-            documentUri,
-            ls,
-          })
-        ).toStrictEqual({ line: 1, character: 24 });
-      });
-
-      test("two lines declaration", async () => {
-        expect(
-          getStartNodeValuePositionTester({
-            content: `{
-          "functions": 
-          []
-        }`,
-            path: ["functions"],
-            codeCompletionStrategy,
-            documentUri,
-            ls,
-          })
-        ).toStrictEqual({ line: 2, character: 11 });
-      });
-
-      test("single line declaration / with one function / with content before and after", async () => {
-        expect(
-          getStartNodeValuePositionTester({
-            content: `{
-          "name": "Greeting workflow",
-          "functions": [
-            {
-                "name": "getGreetingFunction",
-                "operation": "openapi.yml#getGreeting"
-              }
-          ],
-          "states": []
-        }`,
-            path: ["functions"],
-            codeCompletionStrategy,
-            documentUri,
-            ls,
-          })
-        ).toStrictEqual({ line: 2, character: 24 });
-      });
-    });
-
-    describe("objects", () => {
-      test("single line declaration", async () => {
-        expect(
-          getStartNodeValuePositionTester({
-            content: `{
-          "data": {}
-        }`,
-            path: ["data"],
-            codeCompletionStrategy,
-            documentUri,
-            ls,
-          })
-        ).toStrictEqual({ line: 1, character: 19 });
-      });
-
-      test("two lines declaration", async () => {
-        expect(
-          getStartNodeValuePositionTester({
-            content: `{
-            "data": 
-            {
-              "language": "Portuguese"
-            }
-        }`,
-            path: ["data"],
-            codeCompletionStrategy,
-            documentUri,
-            ls,
-          })
-        ).toStrictEqual({ line: 2, character: 13 });
-      });
-
-      test("single line declaration / with one attribute / with content before and after", async () => {
-        expect(
-          getStartNodeValuePositionTester({
-            content: `{
-            "name": "GreetInPortuguese",
-            "data": {
-              "language": "Portuguese"
-            },
-            "transition": "GetGreeting"
-        }`,
-            path: ["data"],
-            codeCompletionStrategy,
-            documentUri,
-            ls,
-          })
-        ).toStrictEqual({ line: 2, character: 21 });
-      });
-    });
-  });
-});
-
 describe("SWF LS JSON", () => {
-  describe("isOffsetAtLastChild", () => {
-    test.each([
-      ["empty content", `🎯`, true],
-      ["empty content with spaces", ` 🎯 `, true],
-      [
-        "no value / with comma",
-        `{
-        "start": 🎯 ,
-        "states" []
-      }`,
-        false,
-      ],
-      [
-        "no value / without comma",
-        `{
-        "start": 🎯 
-        "states" []
-      }`,
-        false,
-      ],
-      [
-        "emtpy quotes / without comma",
-        `{
-        "start": "🎯" 
-        "states" []
-      }`,
-        false,
-      ],
-      [
-        "emtpy quotes",
-        `{
-        "start": "🎯" , 
-        "states" []
-      }`,
-        false,
-      ],
-      [
-        "empty quotes / with newline",
-        `{
-        "start": "🎯"
-        , "states" []
-      }`,
-        false,
-      ],
-      [
-        "at the end of the object",
-        `{
-        "states" [],
-        "start": 🎯
-      }`,
-        true,
-      ],
-      [
-        "at the beginning of the array",
-        `{
-        "states" [🎯 {}]
-      }`,
-        false,
-      ],
-      [
-        "at the beginning of the array / with comma",
-        `{
-        "states" [🎯 , {}]
-      }`,
-        false,
-      ],
-      [
-        "in the middle of the array",
-        `{
-        "states" [{},
-        🎯 
-        {}]
-      }`,
-        false,
-      ],
-      [
-        "at the end of the array",
-        `{
-        "states" [{}, 🎯]
-      }`,
-        true,
-      ],
-    ])("%s", async (_description: string, contentWithCursor: ContentWithCursor, expectedValue: boolean) => {
-      const { cursorOffset, content } = treat(contentWithCursor);
-      expect(isOffsetAtLastChild(content, cursorOffset)).toBe(expectedValue);
-    });
-  });
-
-  describe("hasNodeComma", () => {
-    test.each([
-      ["empty content", `🎯`, false],
-      ["empty content with spaces", ` 🎯 `, false],
-      [
-        "no value / with comma",
-        `{
-        "start": 🎯 ,
-        "states" []
-      }`,
-        true,
-      ],
-      [
-        "no value / without comma",
-        `{
-        "start": 🎯 
-        "states" []
-      }`,
-        false,
-      ],
-      [
-        "emtpy quotes / without comma",
-        `{
-        "start": "🎯" 
-        "states" []
-      }`,
-        false,
-      ],
-      [
-        "emtpy quotes",
-        `{
-        "start": "🎯" , 
-        "states" []
-      }`,
-        true,
-      ],
-      [
-        "empty quotes / with newline",
-        `{
-        "start": "🎯"
-        , "states" []
-      }`,
-        true,
-      ],
-      [
-        "at the end of the object",
-        `{
-        "states" [],
-        "start": 🎯
-      }`,
-        false,
-      ],
-      [
-        "at the beginning of the array",
-        `{
-        "states" [🎯 {}]
-      }`,
-        false,
-      ],
-      [
-        "at the beginning of the array / with comma",
-        `{
-        "states" [🎯 , {}]
-      }`,
-        true,
-      ],
-      [
-        "in the middle of the array",
-        `{
-        "states" [{},
-        🎯 
-        {}]
-      }`,
-        false,
-      ],
-      [
-        "at the end of the array",
-        `{
-        "states" [{}, 🎯]
-      }`,
-        false,
-      ],
-    ])("%s", async (_description: string, contentWithCursor: ContentWithCursor, expectedValue: boolean) => {
-      const { cursorOffset, content } = treat(contentWithCursor);
-      expect(hasNodeComma(content, cursorOffset)).toBe(expectedValue);
-    });
-  });
-
-  test("basic", async () => {
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-    });
-
-    const completionItems = await ls.getCompletionItems({
-      uri: documentUri,
-      content: "{}",
-      cursorPosition: { line: 0, character: 0 },
-      cursorWordRange: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
-    });
-
-    const codeLenses = await ls.getCodeLenses({
-      uri: documentUri,
-      content: "{}",
-    });
-
-    expect(completionItems).toStrictEqual([]);
-    expect(codeLenses).toStrictEqual([]);
-  });
-
   describe("code lenses", () => {
     describe("emtpy file code lenses", () => {
       test.each([
@@ -380,6 +44,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -396,6 +61,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
@@ -406,7 +72,7 @@ describe("SWF LS JSON", () => {
           range: { start: position, end: position },
           command: {
             title: "Create a Serverless Workflow",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: position }],
           },
         } as CodeLens);
@@ -419,6 +85,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`
@@ -433,7 +100,7 @@ describe("SWF LS JSON", () => {
           range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
           command: {
             title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
           },
         } as CodeLens);
@@ -444,6 +111,7 @@ describe("SWF LS JSON", () => {
           fs: {},
           serviceCatalog: defaultServiceCatalogConfig,
           config: defaultConfig,
+          jqCompletions: defaultJqCompletionsConfig,
         });
 
         const { content } = trim(`{"functions":[]}`);
@@ -455,7 +123,7 @@ describe("SWF LS JSON", () => {
           range: { start: { line: 0, character: 13 }, end: { line: 0, character: 13 } },
           command: {
             title: "+ Add function...",
-            command: "swf.ls.commands.OpenCompletionItems",
+            command: "editor.ls.commands.OpenCompletionItems",
             arguments: [{ newCursorPosition: { character: 14, line: 0 } }],
           },
         } as CodeLens);
@@ -467,6 +135,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`{"events":[]}`);
@@ -478,7 +147,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 0, character: 10 }, end: { line: 0, character: 10 } },
         command: {
           title: "+ Add event...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 11, line: 0 } }],
         },
       } as CodeLens);
@@ -489,6 +158,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`{"states":[]}`);
@@ -500,7 +170,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 0, character: 10 }, end: { line: 0, character: 10 } },
         command: {
           title: "+ Add state...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 11, line: 0 } }],
         },
       } as CodeLens);
@@ -517,6 +187,7 @@ describe("SWF LS JSON", () => {
           shouldServiceRegistriesLogIn: () => true,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -531,7 +202,7 @@ describe("SWF LS JSON", () => {
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -542,6 +213,7 @@ describe("SWF LS JSON", () => {
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -552,7 +224,7 @@ describe("SWF LS JSON", () => {
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           command: "swf.ls.commands.LogInServiceRegistries",
@@ -560,11 +232,11 @@ describe("SWF LS JSON", () => {
           arguments: [{ position: { character: 15, line: 1 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -578,6 +250,7 @@ describe("SWF LS JSON", () => {
           ...defaultConfig,
           shouldConfigureServiceRegistries: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -588,7 +261,7 @@ describe("SWF LS JSON", () => {
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           command: "swf.ls.commands.OpenServiceRegistriesConfig",
@@ -596,11 +269,11 @@ describe("SWF LS JSON", () => {
           arguments: [{ position: { character: 15, line: 1 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -614,6 +287,7 @@ describe("SWF LS JSON", () => {
           ...defaultConfig,
           canRefreshServices: () => true,
         },
+        jqCompletions: defaultJqCompletionsConfig,
       });
 
       const { content } = trim(`
@@ -624,7 +298,7 @@ describe("SWF LS JSON", () => {
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
-      expect(codeLenses[0]).toStrictEqual({
+      expect(codeLenses[1]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           command: "swf.ls.commands.RefreshServiceRegistries",
@@ -632,11 +306,11 @@ describe("SWF LS JSON", () => {
           arguments: [{ position: { character: 15, line: 1 } }],
         },
       });
-      expect(codeLenses[1]).toStrictEqual({
+      expect(codeLenses[0]).toStrictEqual({
         range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
         command: {
           title: "+ Add function...",
-          command: "swf.ls.commands.OpenCompletionItems",
+          command: "editor.ls.commands.OpenCompletionItems",
           arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
         },
       } as CodeLens);
@@ -651,6 +325,7 @@ describe("SWF LS JSON", () => {
         relative: { getServices: async () => [testRelativeService1] },
       },
       config: defaultConfig,
+      jqCompletions: defaultJqCompletionsConfig,
     });
 
     describe("empty file completion", () => {
@@ -697,7 +372,356 @@ describe("SWF LS JSON", () => {
         expect(completionItems).toMatchSnapshot();
       });
     });
-
+    describe("Jq completions", () => {
+      describe("operations completion", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqBuiltInFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+                "dataInputSchema": "path/to/schema",
+                "functions": [
+                    {
+                        "name": "testFunc1",
+                        "type": "asyncapi",
+                        "operation": "http://path_to_remote_asyncApiFile/"
+                    },
+                    {
+                        "name": "testFunc2",
+                        "type": "rest",
+                        "operation": "http://path_to_remote_openApiFile/"
+                    },
+                    {
+                        "name": "expressionFunc1",
+                        "type": "expression",
+                        "operation": "."
+                    },
+                    {
+                        "name": "expressionFunc2",
+                        "type": "expression",
+                        "operation": "."
+                    },
+                    {
+                      "name": "expressionFunc3",
+                      "type": "expression",
+                      "operation": ${nodeValue}
+                  }
+                ]
+            }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("state data filter completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testName",
+                "type": "inject",
+                "stateDataFilter": {
+                  "output": ${nodeValue}
+                }
+              }
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("event data filter completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testState",
+                "type": "callback",
+                "eventDataFilter": {
+                  "data": ${nodeValue},
+                  "toStateData": ${nodeValue}
+                }
+              },
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("data filter inside on onEvents completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states":[
+              {
+                "name": "testEvent",
+                "type": "event",
+                "onEvents": [
+                  {
+                    "eventDataFilter": {
+                      "data": ${nodeValue},
+                      "toStateData": ${nodeValue}
+                    },
+                  }
+                ],
+              }
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("data filter completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testState",
+                "type": "operation",
+                "actions": [
+                  {
+                    "name": "testAction",
+                    "functionRef": {
+                      "refName": "testRefName"
+                    },
+                    "actionDataFilter": {
+                       "results" : ${nodeValue}, 
+                       "toStateData" : ${nodeValue}
+                    }
+                  }
+                ],
+              },
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("functionRef arguments completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+              {
+                "name": "testState",
+                "type": "operation",
+                "actions": [
+                  {
+                    "functionRef": {
+                      "refName": "testRefName",
+                      "arguments": {
+                        "numberOfRunningPods": ${nodeValue},
+                      }
+                    }
+                  }
+                ],
+              },
+            ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+      describe("data condition completions", () => {
+        describe.each([["built-in functions"], ["reusable functions"], ["variables"]])(`%s completion`, () => {
+          test.each([...getJqBuiltInFunctionTests(), ...getJqReusableFunctionTests(), ...getJqVariableTests()])(
+            "%s",
+            async (_description, nodeValue) => {
+              const content = `{
+            "dataInputSchema": "/path/to/json_schema.json",
+            "functions":[
+              {
+                "name": "testFunc",
+                "type": "rest",
+                "operation":"http://path_to_remote_asyncApiFile/"
+              },
+              {
+                "name": "expressionFunc1",
+                "type": "expression",
+                "operation": "."
+              },
+              {
+                  "name": "expressionFunc2",
+                  "type": "expression",
+                  "operation": "."
+              }
+            ],
+            "states": [
+            {
+              "name": "testState",
+              "type": "switch",
+              "dataConditions": [
+                {
+                  "condition": ${nodeValue},
+                  "transition": "Scale up on Ansible"
+                }
+              ],
+            }
+          ]
+        }` as ContentWithCursor;
+              const { completionItems } = await codeCompletionTester(
+                getJsonLsForJqExpressionTests(),
+                documentUri,
+                content,
+                false
+              );
+              expect(completionItems.length).toMatchSnapshot();
+              expect(completionItems.slice(0, 5)).toMatchSnapshot();
+            }
+          );
+        });
+      });
+    });
     describe("functionRef completion", () => {
       test.each([
         ["without same level content after", ` 🎯`],
@@ -983,110 +1007,6 @@ describe("SWF LS JSON", () => {
         expect(completionItems.length).toMatchSnapshot();
         expect(completionItems).toMatchSnapshot();
       });
-    });
-  });
-
-  describe("diagnostic", () => {
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: {
-        ...defaultServiceCatalogConfig,
-        relative: { getServices: async () => [] },
-      },
-      config: defaultConfig,
-    });
-
-    test.each([
-      ["empty file", ``],
-      [
-        "valid",
-        `{
-        "id": "hello_world", 
-        "specVersion": "0.1",
-        "start": "Inject Hello World", 
-        "states": [ 
-          {
-            "name": "Inject Hello World",
-            "type": "inject", 
-            "data": {},
-            "end":true
-          }
-        ]
-      }`,
-      ],
-      [
-        "unclosed brackets",
-        `{
-        "id": "hello_world", 
-        "specVersion": "0.1",
-        "start": "Inject Hello World", 
-        "states": [ 
-          {
-            "name": "Inject Hello World",
-            "type": "inject", 
-            "data": {},
-            "end": true
-        ]
-      }`,
-      ],
-      [
-        "missing property value",
-        `{
-        "id": "hello_world", 
-        "specVersion": "0.1",
-        "start": "Inject Hello World", 
-        "states": [ 
-          {
-            "name": "Inject Hello World",
-            "duration": "PT15M",
-            "end": true,
-            "type": 
-          }]
-      }`,
-      ],
-      [
-        "missing state type",
-        `{
-        "id": "hello_world", 
-        "specVersion": "0.1",
-        "start": "Inject Hello World", 
-        "states": [ 
-          {
-            "name": "Inject Hello World",
-            "duration": "PT15M",
-            "end": true
-          }
-        ]
-      }`,
-      ],
-      [
-        "wrong states type",
-        `{
-        "id": "hello_world", 
-        "specVersion": "0.1",
-        "states": "Wrong states type"
-      }`,
-      ],
-      [
-        "wrong start state",
-        `{
-        "id": "hello_world", 
-        "specVersion": "0.1",
-        "start": "Wrong state name", 
-        "states": [ 
-          {
-            "name": "Inject Hello World",
-            "type": "inject", 
-            "data": {},
-            "end":true
-          }
-        ]}`,
-      ],
-    ])("%s", async (_description, content) => {
-      const diagnostic = await ls.getDiagnostics({ uriPath: documentUri, content });
-
-      expect(diagnostic.length).toMatchSnapshot();
-      expect(diagnostic).toMatchSnapshot();
     });
   });
 });

@@ -16,11 +16,11 @@
 package org.kie.workbench.common.stunner.sw.client.shapes.icons;
 
 import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.PrimitiveTextTooltip;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 
 public class CornerIcon extends Group {
@@ -28,6 +28,7 @@ public class CornerIcon extends Group {
     private final HandlerRegistration mouseEnterHandler;
     private final HandlerRegistration mouseExitHandler;
     private final HandlerRegistration mouseClickHandler;
+    PrimitiveTextTooltip tooltipElement;
     private final String tooltipText;
 
     private final Rectangle border = new Rectangle(20, 20)
@@ -36,22 +37,13 @@ public class CornerIcon extends Group {
             .setStrokeAlpha(0.001)
             .setStrokeColor("white")
             .setCornerRadius(9)
-            .setEventPropagationMode(EventPropagationMode.NO_ANCESTORS)
             .setListening(true);
 
-    public CornerIcon(String icon, Point2D position, String tooltip) {
+    public CornerIcon(String icon, Point2D position, final String tooltip) {
         setLocation(position);
         setListening(true);
         add(border);
         this.tooltipText = tooltip;
-
-        PrimitiveTextTooltip tooltipElement = PrimitiveTextTooltip.Builder.build(tooltipText);
-        tooltipElement.withText(t -> {
-            t.setText(tooltipText);
-            t.setFontSize(12);
-        });
-        add(tooltipElement.asPrimitive());
-        tooltipElement.forComputedBoundingBox(border::getBoundingBox);
 
         MultiPath clockIcon = new MultiPath(icon)
                 .setScale(2)
@@ -61,24 +53,46 @@ public class CornerIcon extends Group {
         add(clockIcon);
 
         mouseEnterHandler = border.addNodeMouseEnterHandler(event -> {
-            this.getParent().moveToTop();
-            this.moveToTop();
-            tooltipElement.show();
+            createToolTip();
             clockIcon.setFillColor("#4F5255");
+            border.getLayer().batch();
         });
         mouseExitHandler = border.addNodeMouseExitHandler(event -> {
-            tooltipElement.hide();
+            tooltipElement.destroy();
+            tooltipElement = null;
             clockIcon.setFillColor("#CCC");
             border.getLayer().batch();
         });
         mouseClickHandler = border.addNodeMouseClickHandler(
-                event -> this.getParent().asGroup().getChildren().get(0).fireEvent(event)
+                event -> {
+                    this.getParent().asGroup().getChildren().get(0).fireEvent(event);
+                    if (null != tooltipElement) {
+                        tooltipElement.asPrimitive().moveToTop();
+                    }
+                }
         );
+    }
+
+    private void createToolTip() {
+        tooltipElement = PrimitiveTextTooltip.Builder.build(tooltipText);
+        tooltipElement.withText(t -> {
+            t.setText(tooltipText);
+            t.setFontSize(12);
+        });
+        final Layer topLayer = getLayer().getScene().getTopLayer();
+        topLayer.add(tooltipElement.asPrimitive());
+        tooltipElement.offset(CornerIcon.this::getComputedLocation);
+        tooltipElement.forComputedBoundingBox(border::getBoundingBox);
+        tooltipElement.show();
     }
 
     @Override
     public void destroy() {
         super.destroy();
+        if (tooltipElement != null) {
+            tooltipElement.destroy();
+            tooltipElement = null;
+        }
         mouseEnterHandler.removeHandler();
         mouseExitHandler.removeHandler();
         mouseClickHandler.removeHandler();

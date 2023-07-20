@@ -16,5 +16,4 @@
 
 export interface WorkspacesWorkerChannelApi {
   kieToolsWorkspacesWorker_ready(): void;
-  kieToolsWorkspacesWorker_ping(): Promise<"pong">;
 }

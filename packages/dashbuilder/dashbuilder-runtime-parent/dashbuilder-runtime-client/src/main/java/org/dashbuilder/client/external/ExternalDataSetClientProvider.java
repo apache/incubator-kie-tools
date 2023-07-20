@@ -24,25 +24,27 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.dev.util.HttpHeaders;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.FormData;
 import elemental2.dom.Headers;
 import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
+import elemental2.dom.URL;
 import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSet;
-import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
+import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
-import org.dashbuilder.dataset.json.ExternalDataSetJSONParser;
+import org.dashbuilder.dataset.def.HttpMethod;
 import org.jboss.resteasy.util.HttpResponseCodes;
+
+import static org.dashbuilder.common.client.StringUtils.isBlank;
 
 @ApplicationScoped
 public class ExternalDataSetClientProvider {
@@ -51,74 +53,28 @@ public class ExternalDataSetClientProvider {
     ClientDataSetManager clientDataSetManager;
 
     @Inject
-    CSVParser csvParser;
-
-    @Inject
     ExternalDataCallbackCoordinator dataSetCallbackCoordinator;
 
-    ExternalDataSetJSONParser externalParser;
+    @Inject
+    ExternalDataSetParserProvider externalParserProvider;
 
     private Map<String, ExternalDataSetDef> externalDataSets;
 
     private Map<String, Double> scheduledTimeouts;
 
-    SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
+    private static final SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
 
     @PostConstruct
     public void setup() {
         externalDataSets = new HashMap<>();
         scheduledTimeouts = new HashMap<>();
-
-        var format = DateTimeFormat.getFormat(PredefinedFormat.ISO_8601);
-        externalParser = new ExternalDataSetJSONParser(format::parse);
     }
 
     public void fetchAndRegister(String uuid, DataSetLookup lookup, DataSetReadyCallback listener) {
         var defOp = get(uuid);
         if (defOp.isPresent()) {
             var def = defOp.get();
-            if (def.getContent() != null && def.getUrl() == null) {
-                register(def, new DataSetReadyCallback() {
-
-                    @Override
-                    public boolean onError(ClientRuntimeError error) {
-                        return listener.onError(error);
-                    }
-
-                    @Override
-                    public void notFound() {
-                        listener.notFound();
-
-                    }
-
-                    @Override
-                    public void callback(DataSet dataSet) {
-                        doLookup(lookup, listener);
-                    }
-                }, def.getContent(), SupportedMimeType.JSON);
-
-            } else {
-                dataSetCallbackCoordinator.getCallback(def,
-                        new DataSetReadyCallback() {
-
-                            @Override
-                            public boolean onError(ClientRuntimeError error) {
-                                return listener.onError(error);
-                            }
-
-                            @Override
-                            public void notFound() {
-                                listener.notFound();
-                            }
-
-                            @Override
-                            public void callback(DataSet dataSet) {
-                                doLookup(lookup, listener);
-                            }
-                        },
-                        callback -> fetch(def, callback),
-                        () -> handleCache(def.getUUID()));
-            }
+            fetchAndRegisterDefinition(def, lookup, listener);
         } else {
             listener.notFound();
         }
@@ -146,52 +102,161 @@ public class ExternalDataSetClientProvider {
         externalDataSets.clear();
     }
 
+    private void fetchAndRegisterDefinition(ExternalDataSetDef def,
+                                            DataSetLookup lookup,
+                                            DataSetReadyCallback listener) {
+        if (def.getContent() != null) {
+            register(def, new DataSetReadyCallbackWrapper(listener) {
+
+                @Override
+                public void callback(DataSet dataSet) {
+                    doLookup(lookup, listener);
+                }
+            }, def.getContent(), SupportedMimeType.JSON);
+            return;
+        }
+
+        if (def.getUrl() != null) {
+            dataSetCallbackCoordinator.getCallback(def,
+                    new DataSetReadyCallbackWrapper(listener) {
+
+                        @Override
+                        public void callback(DataSet dataSet) {
+                            doLookup(lookup, listener);
+                        }
+                    },
+                    callback -> fetch(def, callback),
+                    () -> handleCache(def.getUUID()));
+            return;
+        }
+
+        var errorMessage = "Not enough information to retrieve data. A 'content', 'url' or 'join' is required.";
+        if (def.getJoin() != null && !def.getJoin().isEmpty()) {
+            errorMessage = "Nested Join is not supported";
+        }
+        listener.onError(new ClientRuntimeError(errorMessage));
+    }
+
     private void fetch(ExternalDataSetDef def, DataSetReadyCallback callback) {
         var req = RequestInit.create();
+        URL url = null;
+
+        try {
+            url = new URL(def.getUrl());
+        } catch (Exception e) {
+            // relative URLs
+            url = new URL(def.getUrl(), DomGlobal.location.href);
+        }
+
+        if (!isBlank(def.getPath())) {
+            url = new URL(def.getPath(), url);
+        }
+
         if (def.getHeaders() != null) {
             var headers = new Headers();
             def.getHeaders().forEach(headers::append);
             req.setHeaders(headers);
         }
 
-        DomGlobal.fetch(def.getUrl(), req).then((Response response) -> {
+        if (def.getQuery() != null) {
+            def.getQuery().forEach(url.searchParams::set);
+        }
+        if (def.getMethod() != null) {
+            req.setMethod(def.getMethod().name());
+        }
+
+        if (def.getMethod() == HttpMethod.POST && def.getForm() != null && !def.getForm().isEmpty()) {
+            var form = new FormData();
+            def.getForm().forEach(form::set);
+            req.setBody(form);
+        }
+        final var finalUrl = url.toString();
+        DomGlobal.fetch(finalUrl, req).then((Response response) -> {
             var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
-            var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, def.getUrl())
-                    .orElse(DEFAULT_TYPE);
+            var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, finalUrl).orElse(DEFAULT_TYPE);
             return response.text().then(responseText -> {
                 if (response.status == HttpResponseCodes.SC_OK) {
                     return register(def, callback, responseText, mimeType);
                 } else {
-                    return notAbleToRetrieveDataSet(def, callback);
+                    var exception = buildExceptionForResponse(responseText, response);
+                    return notAbleToRetrieveDataSet(def, callback, exception);
                 }
 
             }, error -> notAbleToRetrieveDataSet(def, callback));
-        }).catch_(e -> notAbleToRetrieveDataSet(def, callback));
+        }).catch_(e -> notAbleToRetrieveDataSet(def, callback,
+                new RuntimeException("Request not started, make sure that CORS is enabled.\nMessage: " + e)));
+    }
+
+    private Throwable buildExceptionForResponse(String responseText, Response response) {
+        var sb = new StringBuilder("The dataset URL is unreachable with status ");
+        sb.append(response.status);
+        sb.append(" - ");
+        sb.append(response.statusText);
+
+        if (responseText != null && !responseText.trim().isEmpty()) {
+            sb.append("\n");
+            sb.append("Response Text: ");
+            sb.append(responseText);
+        }
+        return new RuntimeException(sb.toString());
     }
 
     private IThenable<Object> register(ExternalDataSetDef def,
                                        final DataSetReadyCallback callback,
                                        final String responseText,
                                        final SupportedMimeType contentType) {
+        DataSet dataSet = null;
         var content = contentType.tranformer.apply(responseText);
 
-        if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
+        if (def.getType() != null) {
+            var type = def.getType();
+            try {
+                content = applyExpression(type.getExpression(), content);
+            } catch (Exception e) {
+                callback.onError(new ClientRuntimeError("Error evaluating type \"" + type + "\" expression", e));
+                return null;
+            }
+        }
+
+        if (!isBlank(def.getExpression())) {
             try {
                 content = applyExpression(def.getExpression(), content);
             } catch (Exception e) {
                 callback.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
                 return null;
             }
+        } else if (def.getColumns().isEmpty()) {
+            var columns = contentType.columnsFunction.apply(responseText);
+            def.setColumns(columns);
         }
-        var dataSet = DataSetFactory.newEmptyDataSet();
+
         try {
-            dataSet = externalParser.parseDataSet(content);
+            dataSet = externalParserProvider.get().parseDataSet(content);
         } catch (Exception e) {
             callback.onError(new ClientRuntimeError("Error parsing dataset: " + e.getMessage(), e));
             return null;
         }
 
-        if (def != null && !def.getColumns().isEmpty()) {
+        applyColumnsToDataSet(def, dataSet);
+
+        var existingDs = clientDataSetManager.getDataSet(def.getUUID());
+        if (def.isAccumulate() && existingDs != null) {
+            // no new data, so keep existing data set
+            if (dataSet.getRowCount() == 0) {
+                dataSet = existingDs;
+            } else {
+                accumulateDataSet(dataSet, existingDs);
+            }
+        }
+        dataSet.setDefinition(def);
+        dataSet.setUUID(def.getUUID());
+        clientDataSetManager.registerDataSet(dataSet);
+        callback.callback(dataSet);
+        return null;
+    }
+
+    public void applyColumnsToDataSet(ExternalDataSetDef def, DataSet dataSet) {
+        if (!def.getColumns().isEmpty()) {
             for (int i = 0; i < def.getColumns().size(); i++) {
                 var defColumn = def.getColumns().get(i);
                 var dsColumn = dataSet.getColumnByIndex(i);
@@ -199,29 +264,25 @@ public class ExternalDataSetClientProvider {
                 dsColumn.setColumnType(defColumn.getColumnType());
             }
         }
-
-        dataSet.setUUID(def.getUUID());
-        clientDataSetManager.registerDataSet(dataSet);
-        callback.callback(dataSet);
-        return null;
     }
 
-    private void doLookup(DataSetLookup lookup, DataSetReadyCallback listener) {
-        try {
-            var result = clientDataSetManager.lookupDataSet(lookup);
-            listener.callback(result);
-        } catch (Exception e) {
-            listener.onError(new ClientRuntimeError("Error during data set lookup", e));
-        }
+    public String applyExpression(String expression, String responseText) {
+        JSONAtaInjector.ensureJSONAtaInjected();
+        var json = Global.JSON.parse(responseText);
+        var result = JSONAtaTransformer.jsonata(expression).evaluate(json);
+        return Global.JSON.stringify(result);
     }
 
-    private void handleCache(String uuid) {
+    public void handleCache(String uuid) {
         var def = externalDataSets.get(uuid);
+        if (def == null || def.isAccumulate()) {
+            return;
+        }
         scheduledTimeouts.computeIfPresent(uuid, (k, v) -> {
             DomGlobal.clearTimeout(v);
             return null;
         });
-        if (def != null && def.isCacheEnabled()) {
+        if (def.isCacheEnabled()) {
             var refreshTimeAmount = def.getRefreshTimeAmount();
             if (refreshTimeAmount != null) {
                 var id = DomGlobal.setTimeout(params -> {
@@ -232,6 +293,30 @@ public class ExternalDataSetClientProvider {
             }
         } else {
             clientDataSetManager.removeDataSet(uuid);
+        }
+    }
+
+    void accumulateDataSet(DataSet dataSet, DataSet existingDs) {
+        if (dataSet.getRowCount() > 0 && !existingDs.getColumns().equals(dataSet.getColumns())) {
+            throw new RuntimeException("New data is not compatible with existing data.");
+        }
+        for (int i = dataSet.getRowCount(), j = 0; i < existingDs.getDefinition().getCacheMaxRows() && j < existingDs
+                .getRowCount(); i++, j++) {
+            final int row = j;
+            var values = existingDs.getColumns()
+                    .stream()
+                    .map(cl -> existingDs.getValueAt(row, cl.getId()))
+                    .toArray(Object[]::new);
+            dataSet.addValues(values);
+        }
+    }
+
+    private void doLookup(DataSetLookup lookup, DataSetReadyCallback listener) {
+        try {
+            var result = clientDataSetManager.lookupDataSet(lookup);
+            listener.callback(result);
+        } catch (Exception e) {
+            listener.onError(new ClientRuntimeError("Error during data set lookup", e));
         }
     }
 
@@ -249,14 +334,8 @@ public class ExternalDataSetClientProvider {
         return null;
     }
 
-    private String applyExpression(String expression, String responseText) {
-        JSONAtaInjector.ensureJSONAtaInjected();
-        var json = Global.JSON.parse(responseText);
-        var result = JSONAtaTransformer.jsonata(expression).evaluate(json);
-        return Global.JSON.stringify(result);
-    }
-
     private void clearRegisteredDataSets() {
         externalDataSets.keySet().forEach(d -> clientDataSetManager.removeDataSet(d));
     }
+
 }

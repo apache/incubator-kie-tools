@@ -73,19 +73,6 @@ public class ExternalComponentMessageHelperTest {
     }
     
     @Test
-    public void testFunctionCallRequest() {
-        Optional<FunctionCallRequest> functionCallRequestOp = helper.functionCallRequest(message);
-        assertFalse(functionCallRequestOp.isPresent());
-        
-        FunctionCallRequest request = mock(FunctionCallRequest.class);
-        when(properties.get(eq(ExternalComponentMessageHelper.FUNCTION_CALL_PROP))).thenReturn(request);
-        
-        functionCallRequestOp = helper.functionCallRequest(message);
-        
-        assertEquals(request, functionCallRequestOp.get());
-    }
-    
-    @Test
     public void testDataSetMessage() {
         ExternalDataSet ds = mock(ExternalDataSet.class);
         ExternalComponentMessage newDataSetMessage = helper.newDataSetMessage(ds, Collections.emptyMap());

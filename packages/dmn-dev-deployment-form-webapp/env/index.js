@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({
-    DMN_DEV_DEPLOYMENT__gtmId: {
-      default: undefined,
-      description: "",
-    },
-  }),
+  vars: varsWithName({}),
   get env() {
     return {
       dmnDevDeploymentFormWebapp: {
-        gtmId: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT__gtmId),
         dev: {
-          port: 9008,
+          webpackPort: 9008,
+          quarkusPort: 9009,
         },
       },
     };

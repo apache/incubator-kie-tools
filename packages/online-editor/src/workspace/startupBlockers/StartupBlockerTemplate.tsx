@@ -29,20 +29,17 @@ export function StartupBlockerTemplate(props: { children?: React.ReactNode }) {
       header={
         <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
-            <PageHeaderToolsItem className={"pf-l-flex"}>
+            <PageHeaderToolsItem className={"kie-sandbox--logo"}>
               <MastheadBrand style={{ textDecoration: "none" }}>
                 <Flex alignItems={{ default: "alignItemsCenter" }}>
                   <FlexItem style={{ display: "flex", alignItems: "center" }}>
                     <Brand
-                      src={routes.static.images.kieHorizontalLogoReverse.path({})}
+                      src={routes.static.images.appLogoReverse.path({})}
                       alt={"Logo"}
-                      style={{ display: "inline", height: "38px" }}
-                    />
-                  </FlexItem>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h3}>Sandbox</Text>
-                    </TextContent>
+                      heights={{ default: "38px" }}
+                    >
+                      <source srcSet={routes.static.images.appLogoReverse.path({})} />
+                    </Brand>
                   </FlexItem>
                 </Flex>
               </MastheadBrand>

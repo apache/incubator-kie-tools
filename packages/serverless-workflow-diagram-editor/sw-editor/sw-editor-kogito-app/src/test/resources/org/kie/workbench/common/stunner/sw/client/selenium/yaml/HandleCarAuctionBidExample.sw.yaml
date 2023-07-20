@@ -1,0 +1,28 @@
+id: handleCarAuctionBid
+version: "1.0"
+specVersion: "0.8"
+name: Car Auction Bidding Workflow
+description: Store a single bid whole the car auction is active
+start:
+  stateName: StoreCarAuctionBid
+  schedule: R/PT2H
+states:
+  - name: StoreCarAuctionBid
+    type: event
+    end: true
+    exclusive: true
+    onEvents:
+      - actions:
+          - functionRef:
+              refName: StoreBidFunction
+              arguments:
+                bid: "${ .bid }"
+        eventRefs:
+          - CarBidEvent
+events:
+  - name: CarBidEvent
+    source: carBidEventSource
+    type: carBidMadeType
+functions:
+  - name: StoreBidFunction
+    operation: "http://myapis.org/carauctionapi.json#storeBid"

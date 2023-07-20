@@ -25,7 +25,6 @@ import java.util.stream.StreamSupport;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
@@ -33,6 +32,7 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
+import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -65,7 +65,7 @@ import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.definition.Workflow_JsonMapperImpl;
-import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
+import org.kie.workbench.common.stunner.sw.definition.Workflow_YamlMapperImpl;
 import org.uberfire.client.promise.Promises;
 
 import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.ACTIONS_UNMARSHALLER;
@@ -108,31 +108,39 @@ public class Marshaller {
 
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
+    private final DiagramFactory diagramFactory;
     private final Parser parser;
     private final Promises promises;
 
     private Context context;
     private Workflow workflow;
+    private DocType docType;
 
-    private final Workflow_JsonMapperImpl mapper = Workflow_JsonMapperImpl.INSTANCE;
+    private final Workflow_JsonMapperImpl jsonMapper = Workflow_JsonMapperImpl.INSTANCE;
+    private final Workflow_YamlMapperImpl yamlMapper = Workflow_YamlMapperImpl.INSTANCE;
 
     @Inject
     public Marshaller(DefinitionManager definitionManager,
                       FactoryManager factoryManager,
+                      DiagramFactory diagramFactory,
                       Parser parser,
                       Promises promises) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
+        this.diagramFactory = diagramFactory;
         this.parser = parser;
         this.promises = promises;
         workflow = null;
+        docType = null;
     }
 
     @SuppressWarnings("all")
-    public Promise<ParseResult> unmarshallGraph(String raw) {
+    public Promise<ParseResult> unmarshallGraph(String raw, DocType docType) {
         try {
-            workflow = parser.parse(mapper.fromJSON(raw));
-            MarshallerUtils.onPostDeserialize(raw, workflow);
+            Workflow result = docType.equals(DocType.JSON) ? jsonMapper.fromJSON(raw) : yamlMapper.read(raw);
+            this.docType = docType;
+            workflow = parser.parse(result);
+            MarshallerUtils.onPostDeserialize(raw, workflow, docType);
         } catch (Exception e) {
             return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
@@ -219,7 +227,7 @@ public class Marshaller {
                         @Override
                         public IThenable<Object> onInvoke(Node node) {
                             success.onInvoke(
-                                    new ParseResult(new DiagramFactory().build("diagram", new MetadataImpl(), (Graph) graph),
+                                    new ParseResult(diagramFactory.build("diagram", new MetadataImpl(), (Graph) graph),
                                                     context.getMessages()));
                             return null;
                         }
@@ -286,32 +294,13 @@ public class Marshaller {
     }
 
     @SuppressWarnings("all")
-    public Promise<String> marshallGraph(Graph graph) {
+    public Promise<String> marshallGraph(Graph graph, DocType docType) {
         // TODO: Obtain the root node from the graph argument.
-        return marshallNode(context.getWorkflowRootNode());
+        return marshallNode(context.getWorkflowRootNode(), docType);
     }
 
     public Context getContext() {
         return context;
-    }
-
-    public static Object parse(String raw) {
-        return Global.JSON.parse(raw);
-    }
-
-    public static String stringify(Object jsonObj) {
-        return Global.JSON.stringify(jsonObj, (key, value) -> {
-            if (null == value) {
-                return Global.undefined;
-            }
-            if (key.contains("hashCode") ||
-                    key.contains("host") ||
-                    key.contains("labels") ||
-                    key.startsWith("$")) {
-                return Global.undefined;
-            }
-            return value;
-        }, SPACING_LEVEL);
     }
 
     /* +++++++++++++++++ UN-MARSHALLING +++++++++++++++++ */
@@ -407,11 +396,11 @@ public class Marshaller {
     /* +++++++++++++++++ MARSHALLING +++++++++++++++++ */
 
     @SuppressWarnings("all")
-    public Promise<String> marshallNode(Node node) {
+    public Promise<String> marshallNode(Node node, DocType docType) {
         Workflow bean = marshallNode(context, node);
-        String raw = mapper.toJSON(bean);
-        String result = MarshallerUtils.onPostSerialize(raw, bean);
-        return promises.resolve(result);
+        String raw = docType.equals(DocType.JSON) ? jsonMapper.toJSON(bean) : yamlMapper.write(bean);
+        String result = MarshallerUtils.onPostSerialize(raw, bean, docType);
+        return promises.resolve(raw);
     }
 
     @FunctionalInterface

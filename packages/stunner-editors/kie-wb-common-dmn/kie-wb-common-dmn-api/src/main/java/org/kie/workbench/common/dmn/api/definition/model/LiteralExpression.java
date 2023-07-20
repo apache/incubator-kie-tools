@@ -106,6 +106,19 @@ public class LiteralExpression extends Expression implements IsLiteralExpression
     }
 
     @Override
+    public LiteralExpression exactCopy() {
+        final LiteralExpression exactelyClonedLiteralExpression = new LiteralExpression();
+        exactelyClonedLiteralExpression.id = Optional.ofNullable(id).map(Id::copy).orElse(null);
+        exactelyClonedLiteralExpression.description = Optional.ofNullable(description).map(Description::copy).orElse(null);
+        exactelyClonedLiteralExpression.typeRef = Optional.ofNullable(typeRef).map(QName::copy).orElse(null);
+        exactelyClonedLiteralExpression.componentWidths = new ArrayList<>(componentWidths);
+        exactelyClonedLiteralExpression.text = Optional.ofNullable(text).map(Text::copy).orElse(null);
+        exactelyClonedLiteralExpression.importedValues = Optional.ofNullable(importedValues).map(ImportedValues::exactCopy).orElse(null);
+        exactelyClonedLiteralExpression.expressionLanguage = Optional.ofNullable(expressionLanguage).map(ExpressionLanguage::copy).orElse(null);
+        return exactelyClonedLiteralExpression;
+    }
+
+    @Override
     public Optional<DomainObject> findDomainObject(final String uuid) {
         if (matches(this, uuid)) {
             return Optional.of(this);

@@ -20,7 +20,6 @@ import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefau
 import org.kie.workbench.common.stunner.core.client.shape.common.DashArray;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ConnectorShape;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
-import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
@@ -38,9 +37,8 @@ public class TransitionShape<W>
     public TransitionShape(TransitionView view) {
         super(view,
               new ShapeStateDefaultHandler()
-                      .setRenderType(ShapeStateDefaultHandler.RenderType.STROKE)
                       .setBorderShape(() -> view)
-                      .setBackgroundShape(() -> view));
+                      .setBackgroundShape(view));
     }
 
     public TransitionShape<W> setAppearance(Object transitionType) {
@@ -49,7 +47,7 @@ public class TransitionShape<W>
             final ErrorTransition definition = (ErrorTransition) transitionType;
             getShapeView().setTitle(definition.getErrorRef());
             getShapeView().setTitleBackgroundColor("red");
-        } else if (transitionType instanceof ActionTransition || transitionType instanceof CompensationTransition) {
+        } else if (transitionType instanceof CompensationTransition) {
             getShapeView().setDashArray(DOT_ARRAY);
         } else if (transitionType instanceof EventConditionTransition) {
             final EventConditionTransition definition = (EventConditionTransition) transitionType;
@@ -85,8 +83,6 @@ public class TransitionShape<W>
             return "#757575";
         } else if (clazz.equals(DefaultConditionTransition.class)) {
             return "#12DE70";
-        } else if (clazz.equals(ActionTransition.class)) {
-            return "#757575";
         } else if (clazz.equals(CompensationTransition.class)) {
             return "#f0ab00";
         }
@@ -100,7 +96,6 @@ public class TransitionShape<W>
                 || object instanceof EventConditionTransition
                 || object instanceof DataConditionTransition
                 || object instanceof DefaultConditionTransition
-                || object instanceof ActionTransition
                 || object instanceof CompensationTransition;
     }
 }

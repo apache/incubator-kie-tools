@@ -377,7 +377,7 @@ public class ListGridTest {
         setupGrid();
 
         assertComponentWidths(50.0,
-                              ExpressionEditorColumn.DEFAULT_WIDTH);
+                              ListGrid.LIST_DEFAULT_WIDTH);
     }
 
     @Test
@@ -658,7 +658,7 @@ public class ListGridTest {
         clearExpressionTypeCommand.undo(canvasHandler);
 
         //Verify Expression has been restored and LiteralExpressionEditor resized
-        assertThat(grid.getModel().getColumns().get(EXPRESSION_COLUMN_INDEX).getWidth()).isEqualTo(ExpressionEditorColumn.DEFAULT_WIDTH);
+        assertThat(grid.getModel().getColumns().get(EXPRESSION_COLUMN_INDEX).getWidth()).isEqualTo(ListGrid.LIST_DEFAULT_WIDTH);
         verify(grid).resize(BaseExpressionGrid.RESIZE_EXISTING_MINIMUM);
 
         verify(grid).selectExpressionEditorFirstCell(eq(0), eq(ListUIModelMapperHelper.EXPRESSION_COLUMN_INDEX));

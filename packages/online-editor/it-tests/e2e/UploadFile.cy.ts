@@ -95,9 +95,6 @@ describe("Upload file test", () => {
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModel");
 
-    // close DMN guided tour dialog
-    cy.get("[data-ouia-component-id='dmn-guided-tour'] button[aria-label='Close']").click();
-
     cy.getEditor().within(() => {
       // open properties panel and check values
       cy.get("[data-title='Properties']").click();
@@ -165,9 +162,6 @@ describe("Upload file test", () => {
 
     // check editor title name
     cy.get("[aria-label='Edit file name']").should("have.value", "testModelBroken");
-
-    // DMN guided tour dialog can't be shown for invalid models
-    cy.get("[data-ouia-component-id='dmn-guided-tour']").should("not.be.visible");
 
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
   });

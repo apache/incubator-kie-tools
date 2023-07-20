@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-import { GLOB_PATTERN, isDashbuilder } from "../../../extension";
+import { zipFiles } from "../../../zip";
+import { GLOB_PATTERN } from "../../../extension";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { OpenShiftPipeline } from "../../OpenShiftPipeline";
 import { KnativeBuilderPipeline } from "../../pipelines/KnativeBuilderPipeline";
 import { DashbuilderViewer } from "../BaseContainerImages";
@@ -32,7 +34,7 @@ export class DashboardWorkspaceDeployment extends DeploymentStrategy {
     const dockerIgnoreFile = await this.createDockerignoreFile();
 
     const otherDashFiles = filesToBeDeployed.filter(
-      (f) => isDashbuilder(f.name) && f.relativePath !== this.args.targetFile.relativePath
+      (f) => isOfKind("dash", f.name) && f.relativePath !== this.args.targetFile.relativePath
     );
 
     const appDataFile = createDashbuilderViewerAppDataFile({
@@ -43,7 +45,7 @@ export class DashboardWorkspaceDeployment extends DeploymentStrategy {
 
     filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile, this.args.targetFile, appDataFile);
 
-    const workspaceZipBlob = await this.createZipBlob(filesToBeDeployed);
+    const workspaceZipBlob = await zipFiles(filesToBeDeployed);
 
     return new KnativeBuilderPipeline({
       workspaceName: this.resolveWorkspaceName(filesToBeDeployed),
@@ -52,7 +54,6 @@ export class DashboardWorkspaceDeployment extends DeploymentStrategy {
       targetUri: this.args.targetFile.relativePath,
       namespace: this.args.namespace,
       openShiftService: this.args.openShiftService,
-      kafkaSourceArgs: this.args.kafkaSourceArgs,
     });
   }
 

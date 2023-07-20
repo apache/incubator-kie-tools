@@ -46,14 +46,13 @@ public class ExternalDataSetJSONParser {
 
     private static final String COLUMN_PREFIX = "Column ";
     private static final ColumnType DEFAULT_COLUMN_TYPE = ColumnType.LABEL;
-    
-    
+
     private Function<String, Date> dateParser;
-    
+
     public ExternalDataSetJSONParser() {
         this(s -> null);
-    }         
-    
+    }
+
     public ExternalDataSetJSONParser(Function<String, Date> dateParser) {
         super();
         this.dateParser = dateParser;
@@ -81,14 +80,13 @@ public class ExternalDataSetJSONParser {
             columnTypes.add(type);
         }
 
-        var dataSetMetadata = new DataSetMetadataImpl(null,
+        return new DataSetMetadataImpl(null,
                 DEFAULT_COLUMN_ID,
                 numberOfRows,
                 columnTypes.size(),
                 columnIds,
                 columnTypes,
                 estimatedSize);
-        return dataSetMetadata;
     }
 
     public DataSet parseDataSet(String json) {
@@ -107,12 +105,30 @@ public class ExternalDataSetJSONParser {
                 }
 
             } else if (trimedJson.startsWith(ARRAY_START_TOKEN)) {
-                JsonArray dataSetArray = Json.instance().parse(json);
-                fillDataSetColumns(dataSet, dataSetArray);
-                addValues(dataSet, dataSetArray);
+                try {
+                    JsonArray dataSetArray = Json.instance().parse(json);
+                    fillDataSetColumns(dataSet, dataSetArray);
+                    addValues(dataSet, dataSetArray);
+                } catch (Exception e) {
+                    throw new IllegalArgumentException(
+                            "DataSet JSON is invalid. Please check that the data is in correct format.", e);
+                }
             }
         }
         return dataSet;
+    }
+
+    public String toJsonArray(DataSet dataSet) {
+        var resultArray = Json.createArray();
+        for (var i = 0; i < dataSet.getRowCount(); i++) {
+            var row = Json.createArray();
+            for (var j = 0; j < dataSet.getColumns().size(); j++) {
+                var value = dataSet.getValueAt(i, j);
+                row.set(j, Json.create(value == null ? "" : value.toString()));
+            }
+            resultArray.set(i, row);
+        }
+        return resultArray.toJson();
     }
 
     private void fillDataSetColumns(DataSet dataSet, JsonArray dataSetArray) {
@@ -131,7 +147,7 @@ public class ExternalDataSetJSONParser {
         }
     }
 
-    private void addColumns(DataSet dataSet, JsonObject dataSetObject) {
+    public void addColumns(DataSet dataSet, JsonObject dataSetObject) {
         var columnsArray = dataSetObject.getArray(COLUMNS);
         if (columnsArray != null) {
             for (int i = 0; i < columnsArray.length(); i++) {
@@ -141,12 +157,11 @@ public class ExternalDataSetJSONParser {
                 dataSet.addColumn(id, type);
             }
         }
-
     }
 
-    private void addValues(DataSet dataSet, JsonArray valuesArray) {
+    public void addValues(DataSet dataSet, JsonArray valuesArray) {
         if (valuesArray != null && valuesArray.length() > 0) {
-            if (dataSet.getColumns().size() == 0 && valuesArray.length() != 0) {
+            if (dataSet.getColumns().isEmpty() && valuesArray.length() != 0) {
                 throw new IllegalArgumentException("DataSet is missing columns.");
             }
 
@@ -215,7 +230,7 @@ public class ExternalDataSetJSONParser {
         } catch (NumberFormatException e) {
             // empty
         }
-        
+
         try {
             convertToDate(value);
             return ColumnType.DATE;
@@ -225,7 +240,7 @@ public class ExternalDataSetJSONParser {
 
         return DEFAULT_COLUMN_TYPE;
     }
-    
+
     protected Date convertToDate(String value) {
         return dateParser.apply(value);
     }

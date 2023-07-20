@@ -1,0 +1,46 @@
+id: patientonboarding
+version: "1.0"
+specVersion: "0.8"
+name: Patient Onboarding Workflow
+start: Onboard
+states:
+  - name: Onboard
+    type: event
+    end: true
+    onEvents:
+      - actions:
+          - functionRef: StorePatient
+            retryRef: ServicesNotAvailableRetryStrategy
+            retryableErrors:
+              - ServiceNotAvailable
+          - functionRef: AssignDoctor
+            retryRef: ServicesNotAvailableRetryStrategy
+            retryableErrors:
+              - ServiceNotAvailable
+          - functionRef: ScheduleAppt
+            retryRef: ServicesNotAvailableRetryStrategy
+            retryableErrors:
+              - ServiceNotAvailable
+        eventRefs:
+          - NewPatientEvent
+    onErrors:
+      - errorRef: ServiceNotAvailable
+        end: true
+events:
+  - name: StorePatient
+    source: newpatient/+
+    type: new.patients.event
+functions:
+  - name: StoreNewPatientInfo
+    operation: "api/services.json#addPatient"
+  - name: AssignDoctor
+    operation: "api/services.json#assignDoctor"
+  - name: ScheduleAppt
+    operation: "api/services.json#scheduleAppointment"
+errors:
+  - name: ServiceNotAvailable
+    code: "503"
+retries:
+  - name: ServicesNotAvailableRetryStrategy
+    delay: PT3S
+    maxAttempts: 10

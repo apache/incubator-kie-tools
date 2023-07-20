@@ -38,6 +38,7 @@ import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClause;
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;
 import org.kie.workbench.common.dmn.api.definition.model.UnaryTests;
+import org.kie.workbench.common.dmn.api.property.dmn.Description;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
 import org.kie.workbench.common.dmn.api.property.dmn.QName;
@@ -106,12 +107,14 @@ public class ExpressionPropsFillerTest {
         final Relation relationExpression = new Relation();
         final String firstColumnId = "First Column id";
         final String firstColumnName = "First Column";
+        final String firstColumnDescription = "First Description";
         final QName firstColumnDataType = BuiltInType.BOOLEAN.asQName();
-        relationExpression.getColumn().add(new InformationItem(new Id(firstColumnId), null, new Name(firstColumnName), firstColumnDataType));
+        relationExpression.getColumn().add(new InformationItem(new Id(firstColumnId), new Description(firstColumnDescription), new Name(firstColumnName), firstColumnDataType));
         final String secondColumnId = "Second Column id";
         final String secondColumnName = "Second Column";
+        final String secondColumnDescription = "Second Description";
         final QName secondColumnDataType = BuiltInType.NUMBER.asQName();
-        relationExpression.getColumn().add(new InformationItem(new Id(secondColumnId), null, new Name(secondColumnName), secondColumnDataType));
+        relationExpression.getColumn().add(new InformationItem(new Id(secondColumnId), new Description(secondColumnDescription), new Name(secondColumnName), secondColumnDataType));
         final String firstCellValue = "first cell value";
         final String secondCellValue = "second cell value";
         relationExpression.getRow().add(buildListWithTwoLiteralExpressions(firstCellValue, secondCellValue));
@@ -127,15 +130,17 @@ public class ExpressionPropsFillerTest {
         assertThat(((RelationProps) expressionProps).columns[0].name).isEqualTo(firstColumnName);
         assertThat(((RelationProps) expressionProps).columns[0].dataType).isEqualTo(firstColumnDataType.getLocalPart());
         assertThat(((RelationProps) expressionProps).columns[0].width).isEqualTo(relationExpression.getComponentWidths().get(1));
+        assertThat(((RelationProps) expressionProps).columns[0].description).isEqualTo(firstColumnDescription);
         assertThat(((RelationProps) expressionProps).columns[1].name).isEqualTo(secondColumnName);
         assertThat(((RelationProps) expressionProps).columns[1].dataType).isEqualTo(secondColumnDataType.getLocalPart());
         assertThat(((RelationProps) expressionProps).columns[1].width).isEqualTo(relationExpression.getComponentWidths().get(2));
+        assertThat(((RelationProps) expressionProps).columns[1].description).isEqualTo(secondColumnDescription);
         assertThat(((RelationProps) expressionProps).rows)
                 .isNotNull()
                 .hasSize(1);
         assertThat(((RelationProps) expressionProps).rows[0].cells).hasSize(2);
-        assertThat(((RelationProps) expressionProps).rows[0].cells[0]).isEqualTo(firstCellValue);
-        assertThat(((RelationProps) expressionProps).rows[0].cells[1]).isEqualTo(secondCellValue);
+        assertThat(((RelationProps) expressionProps).rows[0].cells[0].content).isEqualTo(firstCellValue);
+        assertThat(((RelationProps) expressionProps).rows[0].cells[1].content).isEqualTo(secondCellValue);
     }
 
     @Test
@@ -149,7 +154,6 @@ public class ExpressionPropsFillerTest {
         assertThat(expressionProps)
                 .isNotNull()
                 .isExactlyInstanceOf(ListProps.class);
-        assertThat(((ListProps) expressionProps).width).isEqualTo(listExpression.getComponentWidths().get(1));
         assertThat(((ListProps) expressionProps).items)
                 .isNotNull()
                 .hasSize(2);
@@ -167,7 +171,9 @@ public class ExpressionPropsFillerTest {
         final Invocation invocationExpression = new Invocation();
         final LiteralExpression invokedFunctionExpression = new LiteralExpression();
         final String invokedFunctionText = "Invoked function text";
+        final String invokedFunctionID = "ID-F";
         invokedFunctionExpression.setText(new Text(invokedFunctionText));
+        invokedFunctionExpression.setId(new Id(invokedFunctionID));
         invocationExpression.setExpression(invokedFunctionExpression);
         final Binding binding = new Binding();
         binding.setVariable(buildVariable());
@@ -179,7 +185,8 @@ public class ExpressionPropsFillerTest {
         assertThat(expressionProps)
                 .isNotNull()
                 .isExactlyInstanceOf(InvocationProps.class);
-        assertThat(((InvocationProps) expressionProps).invokedFunction).isEqualTo(invokedFunctionText);
+        assertThat(((InvocationProps) expressionProps).invokedFunction.name).isEqualTo(invokedFunctionText);
+        assertThat(((InvocationProps) expressionProps).invokedFunction.id).isEqualTo(invokedFunctionID);
         assertThat(((InvocationProps) expressionProps).bindingEntries)
                 .isNotNull()
                 .hasSize(1);
@@ -215,7 +222,7 @@ public class ExpressionPropsFillerTest {
         assertFormalParameters((PmmlFunctionProps) expressionProps);
         assertThat(((PmmlFunctionProps) expressionProps).document).isEqualTo(documentName);
         assertThat(((PmmlFunctionProps) expressionProps).model).isEqualTo(modelName);
-        assertThat(((PmmlFunctionProps) expressionProps).parametersWidth).isEqualTo(pmmlFunctionExpression.getComponentWidths().get(1));
+        assertThat(((PmmlFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(pmmlFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test
@@ -240,7 +247,7 @@ public class ExpressionPropsFillerTest {
         assertFormalParameters((JavaFunctionProps) expressionProps);
         assertThat(((JavaFunctionProps) expressionProps).className).isEqualTo(className);
         assertThat(((JavaFunctionProps) expressionProps).methodName).isEqualTo(methodName);
-        assertThat(((JavaFunctionProps) expressionProps).parametersWidth).isEqualTo(javaFunctionExpression.getComponentWidths().get(1));
+        assertThat(((JavaFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(javaFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test
@@ -258,7 +265,7 @@ public class ExpressionPropsFillerTest {
         assertThat(((FeelFunctionProps) expressionProps).functionKind).isEqualTo(FunctionDefinition.Kind.FEEL.name());
         assertFormalParameters((FeelFunctionProps) expressionProps);
         assertThat(((FeelFunctionProps) expressionProps).expression).isExactlyInstanceOf(RelationProps.class);
-        assertThat(((FeelFunctionProps) expressionProps).parametersWidth).isEqualTo(feelFunctionExpression.getComponentWidths().get(1));
+        assertThat(((FeelFunctionProps) expressionProps).classAndMethodNamesWidth).isEqualTo(feelFunctionExpression.getComponentWidths().get(1));
     }
 
     @Test

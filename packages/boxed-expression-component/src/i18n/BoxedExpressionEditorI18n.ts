@@ -20,6 +20,13 @@ import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   addParameter: string;
   builtInAggregator: string;
+  builtInAggregatorHelp: {
+    sum: string;
+    count: string;
+    min: string;
+    max: string;
+    none: string;
+  };
   choose: string;
   columns: string;
   columnOperations: {
@@ -28,12 +35,11 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
     insertRight: string;
   };
   class: string;
-  clear: string;
   context: string;
   contextEntry: string;
   dataType: string;
   dataTypeDropDown: {
-    default: string;
+    builtIn: string;
     custom: string;
   };
   decisionRule: string;
@@ -44,24 +50,38 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
     output: string;
   };
   editContextEntry: string;
-  editExpression: string;
-  editHitPolicy: string;
   editParameter: string;
-  editParameters: string;
   editRelation: string;
   enterFunction: string;
   enterText: string;
   delete: string;
   function: string;
   hitPolicy: string;
+  hitPolicyHelp: {
+    unique: string;
+    first: string;
+    priority: string;
+    any: string;
+    collect: string;
+    ruleOrder: string;
+    outputOrder: string;
+  };
   inputClause: string;
   invocation: string;
+  insert: string;
+  insertDirections: {
+    toTheRight: string;
+    toTheLeft: string;
+    above: string;
+    below: string;
+  };
   list: string;
-  literalExpression: string;
+  literal: string;
   manage: string;
   methodSignature: string;
   model: string;
   name: string;
+  noParametersDefined: string;
   parameters: string;
   outputClause: string;
   pmml: {
@@ -71,7 +91,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   relation: string;
   rows: string;
   rowOperations: {
-    clear: string;
+    reset: string;
     delete: string;
     duplicate: string;
     insertAbove: string;
@@ -79,7 +99,6 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   };
   ruleAnnotation: string;
   selectExpression: string;
-  selectFunctionKind: string;
   selectLogicType: string;
 }
 

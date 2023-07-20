@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2022 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,12 +14,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <module rename-to="org.kie.workbench.common.stunner.sw.KogitoSWEditor">
 
-  <inherits name="org.kie.workbench.common.stunner.sw.KogitoSWEditor"/>
+  <inherits name="org.kie.workbench.common.stunner.sw.KogitoSWEditor" />
 
-  <set-property name="compiler.useSourceMaps" value="true"/>
-  <set-configuration-property name="includeSourceMapUrl"
-                              value="sourcemaps/__HASH___sourceMap__FRAGMENT__.json"/>
+  <set-property name="compiler.useSourceMaps" value="true" />
+  <set-configuration-property name="includeSourceMapUrl" value="sourcemaps/__HASH___sourceMap__FRAGMENT__.json" />
 </module>

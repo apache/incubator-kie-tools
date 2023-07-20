@@ -1,0 +1,34 @@
+id: checkcarvitals
+version: "1.0"
+specVersion: "0.8"
+name: Check Car Vitals Workflow
+start: WhenCarIsOn
+states:
+  - name: WhenCarIsOn
+    type: event
+    onEvents:
+      - eventRefs:
+          - CarTurnedOnEvent
+    transition: DoCarVitalChecks
+  - name: DoCarVitalChecks
+    type: operation
+    actions:
+      - subFlowRef: vitalscheck
+        sleep:
+          after: PT1S
+    transition: CheckContinueVitalChecks
+  - name: CheckContinueVitalChecks
+    type: switch
+    eventConditions:
+      - name: Car Turned Off Condition
+        eventRef: CarTurnedOffEvent
+        end: true
+    defaultCondition:
+      transition: DoCarVitalChecks
+events:
+  - name: CarTurnedOnEvent
+    source: my/car
+    type: car.events
+  - name: CarTurnedOffEvent
+    source: my/car
+    type: car.events

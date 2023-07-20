@@ -19,14 +19,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ApplicationScoped;
 
 import elemental2.dom.DomGlobal;
-import org.dashbuilder.dataprovider.DataSetProvider;
-import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
@@ -62,26 +59,7 @@ public class RuntimeModelJSONMarshaller {
 
     static {
         instance = new RuntimeModelJSONMarshaller();
-        instance.defMarshaller = new DataSetDefJSONMarshaller(new DataSetProviderRegistry() {
-
-            @Override
-            public void registerDataProvider(DataSetProvider dataProvider) {}
-
-            @Override
-            public DataSetProviderType getProviderTypeByName(String name) {
-                return DataSetProviderType.EXTERNAL;
-            }
-
-            @Override
-            public DataSetProvider getDataSetProvider(DataSetProviderType type) {
-                return null;
-            }
-
-            @Override
-            public Set<DataSetProviderType> getAvailableTypes() {
-                return null;
-            }
-        });
+        instance.defMarshaller = new DataSetDefJSONMarshaller(DataSetProviderType.EXTERNAL);
     }
 
     public static RuntimeModelJSONMarshaller get() {
@@ -159,6 +137,8 @@ public class RuntimeModelJSONMarshaller {
         var lastModified = jsonObject.getNumber(LAST_MODIFIED);
         var layoutTemplates = new ArrayList<LayoutTemplate>();
         var externalDefs = new ArrayList<ExternalDataSetDef>();
+        var global = retrieveGlobalSettings(jsonObject);
+        var globalDefOp = global.getDataSetDef();
         var nPages = 0;
         if (ltArray == null) {
             ltArray = jsonObject.getArray(PAGES);
@@ -196,15 +176,30 @@ public class RuntimeModelJSONMarshaller {
             } catch (Exception e) {
                 throw new RuntimeException("Data sets must be a list of data set definitions", e);
             }
+
             for (int i = 0; i < nDatasets; i++) {
                 try {
                     var defJson = externalDefsArray.getObject(i).toJson();
-                    externalDefs.add((ExternalDataSetDef) defMarshaller.fromJson(defJson));
+                    ExternalDataSetDef externalDef = null;
+                    if (globalDefOp.isPresent()) {
+                        var globalDef = globalDefOp.get().clone();
+                        externalDef = (ExternalDataSetDef) defMarshaller.fromJson(globalDef, defJson);
+                    } else {
+                        externalDef = (ExternalDataSetDef) defMarshaller.fromJson(defJson);
+                    }
+                    externalDef.validate();
+                    externalDefs.add(externalDef);
                 } catch (Exception e) {
                     throw new RuntimeException("Error reading data set definition " + (i + 1) + "\n" + e.getMessage(),
                             e);
                 }
             }
+        }
+        // Users may want to declare a single global dataset.
+        if (externalDefs.isEmpty() && globalDefOp.isPresent()) {
+            var globalDef = (ExternalDataSetDef) globalDefOp.get().clone();
+            globalDef.validate();
+            externalDefs.add(globalDef);
         }
 
         var navTree = NavTreeJSONMarshaller.get().fromJson(navTreeJSONObject);
@@ -215,14 +210,12 @@ public class RuntimeModelJSONMarshaller {
 
         var properties = extractProperties(jsonObject);
 
-        var globalSettings = retrieveGlobalSettings(jsonObject);
-
         return new RuntimeModel(navTree,
                 layoutTemplates,
                 lastModified.longValue(),
                 externalDefs,
                 properties,
-                globalSettings);
+                global);
     }
 
     private HashMap<String, String> extractProperties(JsonObject jsonObject) {

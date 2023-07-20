@@ -19,13 +19,18 @@ import { HashRouter } from "react-router-dom";
 import { EnvContextProvider } from "./env/EnvContextProvider";
 import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/EditorEnvelopeLocatorContext";
 import { AppI18nContextProvider } from "./i18n";
-import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
+import { ExtendedServicesContextProvider } from "./extendedServices/ExtendedServicesContextProvider";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { OpenShiftContextProvider } from "./openshift/OpenShiftContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { VirtualServiceRegistryContextProvider } from "./virtualServiceRegistry/VirtualServiceRegistryContextProvider";
-import { WorkspacesContextProvider } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContextProvider";
+import { SampleContextProvider } from "./samples/hooks/SampleContext";
+import { DevModeContextProvider } from "./openshift/swfDevMode/DevModeContext";
+import { GlobalAlertsContextProvider } from "./alerts/GlobalAlertsContext";
+import { EditorContextProvider } from "./editor/hooks/EditorContext";
+import { WebToolsWorkspaceContextProvider } from "./workspace/hooks/WebToolsWorkspaceContextProvider";
+import { UpgradeContextProvider } from "./upgrade/UpgradeContext";
 
 export const App = () => (
   <HashRouter>
@@ -33,15 +38,17 @@ export const App = () => (
       [AppI18nContextProvider, {}],
       [EditorEnvelopeLocatorContextProvider, {}],
       [EnvContextProvider, {}],
-      [KieSandboxExtendedServicesContextProvider, {}],
+      [ExtendedServicesContextProvider, {}],
       [SettingsContextProvider, {}],
-      [
-        WorkspacesContextProvider,
-        { workspacesSharedWorkerScriptUrl: "workspace/worker/sharedWorker.js", shouldRequireCommitMessage: false },
-      ],
+      [GlobalAlertsContextProvider, []],
+      [WebToolsWorkspaceContextProvider, []],
+      [UpgradeContextProvider, []],
       [OpenShiftContextProvider, {}],
+      [DevModeContextProvider, {}],
       [VirtualServiceRegistryContextProvider, {}],
+      [SampleContextProvider, {}],
       [NavigationContextProvider, {}],
+      [EditorContextProvider, {}],
       [RoutesSwitch, {}]
     )}
   </HashRouter>

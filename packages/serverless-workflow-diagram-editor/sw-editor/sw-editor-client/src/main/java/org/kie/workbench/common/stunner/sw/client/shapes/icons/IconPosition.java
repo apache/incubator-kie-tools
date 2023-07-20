@@ -21,4 +21,7 @@ public interface IconPosition {
 
     Point2D RIGHT_TOP_CORNER = new Point2D(224, 6);
     Point2D LEFT_FROM_RIGHT_TOP_CORNER = new Point2D(202, 6);
+    Point2D CENTER_TOP = new Point2D(180, 6);
+    Point2D RIGHT_BOTTOM = new Point2D(224, 50);
+    Point2D BOTTOM_FROM_RIGHT_TOP_CORNER = new Point2D(224, 28);
 }

@@ -28,7 +28,7 @@ public class ModelUtils {
             workflow.setName((String) Js.undefined());
             workflow.setStart((String) Js.undefined());
             if (null != workflow.getEvents()) {
-                if(workflow.getEvents() instanceof Event[]) {
+                if (workflow.getEvents() instanceof Event[]) {
                     Event[] events = (Event[]) workflow.getEvents();
                     for (int i = 0; i < events.length; i++) {
                         cleanEvent(events[i]);
@@ -42,6 +42,8 @@ public class ModelUtils {
                     workflow.getStates()[i] = (State) Js.undefined();
                 }
             }
+
+            workflow.setFunctions((Object) Js.undefined());
             workflow.setEvents((Event[]) Js.undefined());
             workflow.setStates((State[]) Js.undefined());
         }
@@ -74,7 +76,6 @@ public class ModelUtils {
             } else if (CallbackState.TYPE_CALLBACK.equals(state.getType())) {
                 cleanCallbackState((CallbackState) state);
             }
-
 
             state.setName((String) Js.undefined());
             state.setType((String) Js.undefined());
@@ -153,7 +154,7 @@ public class ModelUtils {
 
     public static void cleanInjectState(InjectState injectState) {
         if (injectState != null) {
-            injectState.setData((Data) Js.undefined());
+            injectState.setData(Js.undefined());
             injectState.setUsedForCompensation(false);
         }
     }

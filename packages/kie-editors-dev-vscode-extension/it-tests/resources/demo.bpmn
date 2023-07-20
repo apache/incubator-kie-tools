@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions id="_39AFD39D-F520-4128-A6A1-502B72E82198" exporter="jBPM Process Modeler"
+  exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20"
+  xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools">
+  <bpmn2:process id="_CE1BB60F-238E-443C-89B2-A4EFD15A3CAF" drools:version="1.0"
+    drools:adHoc="false" name="_CE1BB60F-238E-443C-89B2-A4EFD15A3CAF" isExecutable="true">
+    <bpmn2:sequenceFlow id="_DF895919-2754-40EA-91F0-A8A00984E8D5"
+      sourceRef="_2E76F5F7-288D-4C91-92A9-230DA1DA161A"
+      targetRef="_5608A4FB-F7C1-45D7-BDE2-FEE3299BF346">
+      <bpmn2:extensionElements>
+        <drools:metaData name="isAutoConnection.source">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+        <drools:metaData name="isAutoConnection.target">
+          <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+    </bpmn2:sequenceFlow>
+    <bpmn2:endEvent id="_5608A4FB-F7C1-45D7-BDE2-FEE3299BF346">
+      <bpmn2:incoming>_DF895919-2754-40EA-91F0-A8A00984E8D5</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="_2E76F5F7-288D-4C91-92A9-230DA1DA161A">
+      <bpmn2:outgoing>_DF895919-2754-40EA-91F0-A8A00984E8D5</bpmn2:outgoing>
+    </bpmn2:startEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="_CE1BB60F-238E-443C-89B2-A4EFD15A3CAF">
+      <bpmndi:BPMNShape id="shape__2E76F5F7-288D-4C91-92A9-230DA1DA161A"
+        bpmnElement="_2E76F5F7-288D-4C91-92A9-230DA1DA161A">
+        <dc:Bounds height="56" width="56" x="100" y="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__5608A4FB-F7C1-45D7-BDE2-FEE3299BF346"
+        bpmnElement="_5608A4FB-F7C1-45D7-BDE2-FEE3299BF346">
+        <dc:Bounds height="56" width="56" x="385" y="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge
+        id="edge_shape__2E76F5F7-288D-4C91-92A9-230DA1DA161A_to_shape__5608A4FB-F7C1-45D7-BDE2-FEE3299BF346"
+        bpmnElement="_DF895919-2754-40EA-91F0-A8A00984E8D5">
+        <di:waypoint x="156" y="128" />
+        <di:waypoint x="385" y="128" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

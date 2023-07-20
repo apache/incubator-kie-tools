@@ -69,19 +69,27 @@ import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "../importFromUrl/ImportFromUrlHomePageCard";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { NewFileDropdownMenu } from "../editor/NewFileDropdownMenu";
+import { NewFileDropdownMenu } from "../editor/Toolbar/NewFileDropdownMenu";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { VariableSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
-import { FileDataList, FileLink, getFileDataListHeight, SingleFileWorkspaceListItem } from "../filesList/FileDataList";
+import {
+  FileDataList,
+  FileLink,
+  FileListItemDisplayMode,
+  getFileDataListHeight,
+  SingleFileWorkspaceListItem,
+} from "../filesList/FileDataList";
 import { WorkspaceListItem } from "../workspace/components/WorkspaceListItem";
 import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCard";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
+import { useEditorsConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEnv } from "../env/hooks/EnvContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -89,6 +97,8 @@ export function HomePage() {
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
+  const editorsConfig = useEditorsConfig();
+  const { env } = useEnv();
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -114,12 +124,8 @@ export function HomePage() {
   );
 
   useEffect(() => {
-    document.title = "KIE Sandbox :: Home";
-  }, []);
-
-  const buildInfo = useMemo(() => {
-    return process.env["WEBPACK_REPLACE__buildInfo"];
-  }, []);
+    document.title = `${env.KIE_SANDBOX_APP_NAME} :: Home`;
+  }, [env.KIE_SANDBOX_APP_NAME]);
 
   return (
     <OnlineEditorPage>
@@ -141,24 +147,21 @@ export function HomePage() {
               <Gallery
                 hasGutter={true}
                 // var(--pf-c-page__main-section--PaddingTop) is the "Gutter" width.
-                minWidths={{ default: "calc(33% - var(--pf-c-page__main-section--PaddingTop))" }}
+                minWidths={{
+                  default: "calc(" + 100 / editorsConfig.length + "% - var(--pf-c-page__main-section--PaddingTop))",
+                }}
                 style={{ height: "calc(100% - 32px)", gridAutoFlow: "column" }}
               >
-                <NewModelCard
-                  title={"Workflow"}
-                  extension={"bpmn"}
-                  description={"BPMN files are used to generate business workflows."}
-                />
-                <NewModelCard
-                  title={"Decision"}
-                  extension={"dmn"}
-                  description={"DMN files are used to generate decision models"}
-                />
-                <NewModelCard
-                  title={"Scorecard"}
-                  extension={"pmml"}
-                  description={"PMML files are used to generate scorecards"}
-                />
+                {editorsConfig.map((config, index) => {
+                  return (
+                    <NewModelCard
+                      key={index}
+                      title={config.card.title}
+                      extension={config.extension}
+                      description={config.card.description}
+                    />
+                  );
+                })}
               </Gallery>
             </PageSection>
           </GridItem>
@@ -218,6 +221,9 @@ export function HomePage() {
                                   workspaceId={workspace.workspaceId}
                                   onSelect={() => expandWorkspace(workspace.workspaceId)}
                                   isSelected={workspace.workspaceId === expandedWorkspaceId}
+                                  onDelete={() =>
+                                    workspace.workspaceId === expandedWorkspaceId && closeExpandedWorkspace()
+                                  }
                                 />
                               </ErrorBoundary>
                             </StackItem>
@@ -243,11 +249,6 @@ export function HomePage() {
           }}
         />
       </PageSection>
-      {buildInfo && (
-        <div className={"kie-tools--build-info"}>
-          <Label>{buildInfo}</Label>
-        </div>
-      )}
     </OnlineEditorPage>
   );
 }
@@ -291,7 +292,12 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   );
 }
 
-export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
+export function WorkspaceCard(props: {
+  workspaceId: string;
+  isSelected: boolean;
+  onSelect: () => void;
+  onDelete?: () => void;
+}) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const routes = useRoutes();
   const history = useHistory();
@@ -346,6 +352,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
+                      props.onDelete?.();
                       workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
                     }}
                     item={
@@ -392,6 +399,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
+                      props.onDelete?.();
                       workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
                     }}
                     item={
@@ -431,7 +439,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   );
 }
 
-export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
+export function NewModelCard(props: { title: string; extension: string; description: string }) {
   const routes = useRoutes();
 
   return (
@@ -569,7 +577,9 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   {({ index, style }) => (
                     <FileDataList
                       file={arrayWithModelsThenOtherFiles[index]}
-                      isEditable={index < models.length}
+                      displayMode={
+                        index < models.length ? FileListItemDisplayMode.enabled : FileListItemDisplayMode.readonly
+                      }
                       style={style}
                     />
                   )}

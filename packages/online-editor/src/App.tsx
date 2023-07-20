@@ -22,7 +22,7 @@ import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/hooks/Ed
 import { EditorPage } from "./editor/EditorPage";
 import { OnlineI18nContextProvider } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
-import { KieSandboxExtendedServicesContextProvider } from "./kieSandboxExtendedServices/KieSandboxExtendedServicesContextProvider";
+import { ExtendedServicesContextProvider } from "./extendedServices/ExtendedServicesContextProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { HomePage } from "./home/HomePage";
 import { NewWorkspaceWithEmptyFilePage } from "./importFromUrl/NewWorkspaceWithEmptyFilePage";
@@ -31,7 +31,7 @@ import { DevDeploymentsContextProvider } from "./devDeployments/DevDeploymentsCo
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { useRoutes } from "./navigation/Hooks";
 import { EnvContextProvider } from "./env/hooks/EnvContextProvider";
-import { DmnRunnerInputsDispatchContextProvider } from "./dmnRunnerInputs/DmnRunnerInputsDispatchContextProvider";
+import { DmnRunnerPersistenceDispatchContextProvider } from "./dmnRunnerPersistence/DmnRunnerPersistenceDispatchContextProvider";
 import { PreviewSvgsContextProvider } from "./previewSvgs/PreviewSvgsContext";
 import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext";
 import { AccountsContextProvider } from "./accounts/AccountsContext";
@@ -43,15 +43,15 @@ export function App() {
     <HashRouter>
       {nest(
         [OnlineI18nContextProvider, {}],
-        [EditorEnvelopeLocatorContextProvider, {}],
         [EnvContextProvider, {}],
-        [KieSandboxExtendedServicesContextProvider, {}],
+        [EditorEnvelopeLocatorContextProvider, {}],
+        [ExtendedServicesContextProvider, {}],
         [SettingsContextProvider, {}],
         [AuthSessionsContextProvider, {}],
         [AccountsContextProvider, {}],
         [GlobalAlertsContextProvider, []],
         [WorkspacesContextProviderWithCustomCommitMessagesModal, {}],
-        [DmnRunnerInputsDispatchContextProvider, {}],
+        [DmnRunnerPersistenceDispatchContextProvider, {}],
         [DevDeploymentsContextProvider, {}],
         [NavigationContextProvider, {}],
         [PreviewSvgsContextProvider, {}],

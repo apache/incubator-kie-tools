@@ -23,7 +23,7 @@ Some minimal tests may be done in the following way:
 1. clone https://github.com/kiegroup/kie-tools
 2. Launch pnpm init on kie-tools directory
 3. Launch pnpm build:prod (pnpm build:fast to skip tests)
-4. Launch VSCode (you can find it in a path similar to: `kie-tools/packages/vscode-extension-pack-kogito-kie-editors/.vscode-test/vscode-1.43.0/VSCode-linux-x64/bin/code` ) with `--enable-proposed-api kiegroup.vscode-extension-pack-kogito-kie-editors` parameter
-5. In VSCode, open kie-tools/packages/vscode-extension-pack-kogito-kie-editors/ folder
+4. Launch VS Code (you can find it in a path similar to: `kie-tools/packages/kie-editors-dev-vscode-extension/.vscode-test/vscode-1.43.0/VSCode-linux-x64/bin/code` ) with `--enable-proposed-api kiegroup.kie-editors-dev-vscode-extension` parameter
+5. In VS Code, open kie-tools/packages/kie-editors-dev-vscode-extension/ folder
 6. Launch DEBUG MODE (F5)
 7. Try to open a SCESIM file or to create a new one

@@ -16,7 +16,6 @@
 
 package org.dashbuilder.displayer.external;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -95,20 +94,6 @@ public class ExternalComponentMessageHelper {
         return Optional.empty();
     }
 
-    /**
-     * 
-     * Retrieves a function call object from a message.
-     * 
-     * @param message
-     */
-    public Optional<FunctionCallRequest> functionCallRequest(ExternalComponentMessage message) {
-        Object functionCallObj = message.getProperty(FUNCTION_CALL_PROP);
-        if (functionCallObj != null) {
-            FunctionCallRequest functionCallRequest = Js.cast(functionCallObj);
-            return Optional.ofNullable(functionCallRequest);
-        }
-        return Optional.empty();
-    }
 
     /**
      * Builds a message that contains dataset and component properties.
@@ -134,61 +119,6 @@ public class ExternalComponentMessageHelper {
      */
     public ExternalComponentMessage newInitMessage(Map<String, Object> componentProperties) {
         return ExternalComponentMessage.create(ExternalComponentMessageType.INIT.name(), componentProperties);
-    }
-
-    public ExternalComponentMessage newFunctionError(FunctionCallRequest functionCallRequest, String errorMessage) {
-        Map<String, Object> props = Collections.singletonMap(FUNCTION_RESPONSE_PROP,
-                                                             FunctionResponse.create(functionCallRequest,
-                                                                                     FunctionResultType.ERROR.name(),
-                                                                                     FUNCTION_EXECUTION_ERROR_FOUND,
-                                                                                     errorMessage));
-        return ExternalComponentMessage.create(ExternalComponentMessageType.FUNCTION_RESPONSE.name(), props);
-    }
-
-    /**
-     * 
-     * Produces a message to respond function call requests here the function could not be found.
-     * @param functionCallRequest
-     * @return
-     */
-    public ExternalComponentMessage newFunctionNotFound(FunctionCallRequest functionCallRequest) {
-        Map<String, Object> props = Collections.singletonMap(FUNCTION_RESPONSE_PROP,
-                                                             FunctionResponse.create(functionCallRequest,
-                                                                                     FunctionResultType.NOT_FOUND.name(),
-                                                                                     FUNCTION_NOT_FOUND,
-                                                                                     null));
-        return ExternalComponentMessage.create(ExternalComponentMessageType.FUNCTION_RESPONSE.name(), props);
-    }
-
-    /**
-     * Generate messages for function call message types that does not specify a function call request.
-     * @return
-     */
-    public ExternalComponentMessage newFunctionRequestNotFound() {
-        Map<String, Object> props = Collections.singletonMap(FUNCTION_RESPONSE_PROP,
-                                                             FunctionResponse.create(null,
-                                                                                     FunctionResultType.ERROR.name(),
-                                                                                     FUNCTION_CALL_REQUEST_NOT_FOUND,
-                                                                                     null));
-        return ExternalComponentMessage.create(ExternalComponentMessageType.FUNCTION_RESPONSE.name(), props);
-    }
-
-    /**
-     * 
-     * Messages to sent when a function is called with success
-     * 
-     * @param functionCallRequest
-     * @param result
-     * The function execution result.
-     * @return
-     */
-    public ExternalComponentMessage newFunctionSuccess(FunctionCallRequest functionCallRequest, Object result) {
-        Map<String, Object> props = Collections.singletonMap(FUNCTION_RESPONSE_PROP,
-                                                             FunctionResponse.create(functionCallRequest,
-                                                                                     FunctionResultType.SUCCESS.name(),
-                                                                                     FUNCTION_CALL_SUCESS,
-                                                                                     result));
-        return ExternalComponentMessage.create(ExternalComponentMessageType.FUNCTION_RESPONSE.name(), props);
     }
 
     /**

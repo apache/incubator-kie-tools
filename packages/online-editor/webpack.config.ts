@@ -40,18 +40,12 @@ const buildEnv: any = env; // build-env is not typed
 export default async (env: any, argv: any) => {
   const buildInfo = getBuildInfo();
   const [
-    kieSandboxExtendedServices_linuxDownloadUrl,
-    kieSandboxExtendedServices_macOsDownloadUrl,
-    kieSandboxExtendedServices_windowsDownloadUrl,
-    kieSandboxExtendedServices_compatibleVersion,
-  ] = getKieSandboxExtendedServicesArgs();
-  const [
-    dmnDevDeployment_baseImageRegistry,
-    dmnDevDeployment_baseImageAccount,
-    dmnDevDeployment_baseImageName,
-    dmnDevDeployment_baseImageTag,
-    devDeployments_onlineEditorUrl,
-  ] = getDevDeploymentsArgs();
+    extendedServices_linuxDownloadUrl,
+    extendedServices_macOsDownloadUrl,
+    extendedServices_windowsDownloadUrl,
+    extendedServices_compatibleVersion,
+  ] = getExtendedServicesArgs();
+  const dmnDevDeployment_imagePullPolicy = getDmnDevDeploymentImagePullPolicy();
   const gtmResource = getGtmResource();
 
   let lastCommitHash = "";
@@ -105,13 +99,11 @@ export default async (env: any, argv: any) => {
           new EnvironmentPlugin({
             WEBPACK_REPLACE__commitHash: lastCommitHash,
             WEBPACK_REPLACE__buildInfo: buildInfo,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl:
-              kieSandboxExtendedServices_windowsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-            WEBPACK_REPLACE__dmnDevDeployment_baseImageFullUrl: `${dmnDevDeployment_baseImageRegistry}/${dmnDevDeployment_baseImageAccount}/${dmnDevDeployment_baseImageName}:${dmnDevDeployment_baseImageTag}`,
-            WEBPACK_REPLACE__devDeployments_onlineEditorUrl: devDeployments_onlineEditorUrl,
+            WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl: extendedServices_linuxDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
+            WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
+            WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy: dmnDevDeployment_imagePullPolicy,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
           }),
@@ -120,6 +112,7 @@ export default async (env: any, argv: any) => {
               { from: "./static/resources", to: "./resources" },
               { from: "./static/images", to: "./images" },
               { from: "./static/samples", to: "./samples" },
+              { from: "./static/kubernetes", to: "./kubernetes" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               {
                 from: "./static/env.json",
@@ -146,6 +139,7 @@ export default async (env: any, argv: any) => {
             ],
           }),
           new ProvidePlugin({
+            process: require.resolve("process/browser.js"),
             Buffer: ["buffer", "Buffer"],
           }),
         ],
@@ -160,6 +154,12 @@ export default async (env: any, argv: any) => {
         module: {
           rules: [...patternflyBase.webpackModuleRules],
         },
+        ignoreWarnings: [
+          {
+            // The @kubernetes-models sub-packages source maps are not published, so we need to ignore their warnings for now.
+            module: /@kubernetes-models/,
+          },
+        ],
       }),
       devServer: {
         https: true,
@@ -211,32 +211,22 @@ function getBuildInfo() {
   return buildInfo;
 }
 
-function getKieSandboxExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.onlineEditor.kieSandboxExtendedServices.compatibleVersion;
+function getExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.extendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.extendedServices.compatibleVersion;
 
-  console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Windows download URL: " + windowsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
+  console.info("Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }
 
-function getDevDeploymentsArgs() {
-  const baseImageRegistry = buildEnv.dmnDevDeploymentBaseImageEnv.registry;
-  const baseImageAccount = buildEnv.dmnDevDeploymentBaseImageEnv.account;
-  const baseImageName = buildEnv.dmnDevDeploymentBaseImageEnv.name;
-  const baseImageTag = buildEnv.devDeployments.dmn.baseImage.tag;
-  const onlineEditorUrl = buildEnv.devDeployments.onlineEditorUrl;
-
-  console.info("DMN Dev deployment :: Base Image Registry: " + baseImageRegistry);
-  console.info("DMN Dev deployment :: Base Image Account: " + baseImageAccount);
-  console.info("DMN Dev deployment :: Base Image Name: " + baseImageName);
-  console.info("DMN Dev deployment :: Base Image Tag: " + baseImageTag);
-  console.info("Dev deployments :: Online Editor Url: " + onlineEditorUrl);
-
-  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
+function getDmnDevDeploymentImagePullPolicy() {
+  const baseImagePullPolicy = buildEnv.devDeployments.dmn.imagePullPolicy;
+  console.info("DMN Dev deployment :: Image pull policy: " + baseImagePullPolicy);
+  return baseImagePullPolicy;
 }

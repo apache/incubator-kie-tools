@@ -1,0 +1,28 @@
+id: fillglassofwater
+version: "1.0"
+specVersion: "0.8"
+name: Fill glass of water workflow
+start: Check if full
+states:
+  - name: Check if full
+    type: switch
+    dataConditions:
+      - name: Need to fill more
+        condition: "${ .counts.current < .counts.max }"
+        transition: Add Water
+      - name: Glass full
+        condition: ".counts.current >= .counts.max"
+        end: true
+    defaultCondition:
+      end: true
+  - name: Add Water
+    type: operation
+    actions:
+      - functionRef: Increment Current Count Function
+        actionDataFilter:
+          toStateData: .counts.current
+    transition: Check if full
+functions:
+  - name: Increment Current Count Function
+    operation: ".counts.current += 1 | .counts.current"
+    type: expression

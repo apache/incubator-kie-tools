@@ -12,20 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG KOGITO_VERSION
+ARG KOGITO_IMAGE_TAG
 
-FROM --platform=linux/amd64 quay.io/kiegroup/kogito-swf-builder:$KOGITO_VERSION
+FROM --platform=linux/amd64 quay.io/kiegroup/kogito-swf-builder:$KOGITO_IMAGE_TAG
 
 ENV PATH="${PATH}:/usr/share/maven/bin"
 
-COPY dist-dev/metrics/ serverless-workflow-project/src/main/resources/META-INF/resources/metrics/
-COPY dist-dev/webapp/ serverless-workflow-project/src/main/resources/META-INF/resources/
+COPY dist-dev/metrics/ src/main/resources/META-INF/resources/metrics/
+COPY dist-dev/webapp/ src/main/resources/META-INF/resources/
 
-RUN cd serverless-workflow-project/ \
-  && rm src/main/resources/greet.sw.json .dockerignore .gitignore README.md mvnw mvnw.cmd \
-  && rm -rf .mvn/ src/main/docker/ src/main/java/ src/test/ \
+RUN rm .dockerignore .gitignore README.md \
+  && rm -rf .mvn/ src/main/java/ \
   && mvn quarkus:add-extension -Dextensions="quarkus-jsonp,quarkus-smallrye-openapi,quarkus-resteasy,smallrye-health" \
-  && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true' >> src/main/resources/application.properties \
+  && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true\nquarkus.http.cors.origins=*' >> src/main/resources/application.properties \
   && sed  -i "s/<dependencies>/<dependencies>\n    <dependency>\n      <groupId>org.kie.kogito<\/groupId>\n      <artifactId>kogito-addons-quarkus-monitoring-prometheus<\/artifactId>\n      <version>1.22.1.Final<\/version>\n    <\/dependency>/g" pom.xml \
   && mvn clean package -B -ntp \
   && rm -rf target/

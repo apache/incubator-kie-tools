@@ -28,13 +28,7 @@ public class ProcessingDefinitionAnnotations {
     private final Map<String, List<String>> propertyFieldNames = new HashMap<>();
     private final Map<String, List<Boolean>> typedPropertyFields = new HashMap<>();
     private final Map<String, String> graphFactoryFieldNames = new HashMap<>();
-    private final Map<String, String> idFieldNames = new HashMap<>();
-    private final Map<String, String> labelsFieldNames = new HashMap<>();
-    private final Map<String, String> titleFieldNames = new HashMap<>();
-    private final Map<String, String> categoryFieldNames = new HashMap<>();
-    private final Map<String, String> descriptionFieldNames = new HashMap<>();
     private final Map<String, TypeConstructor> builderFieldNames = new HashMap<>();
-    private final Map<String, String[]> shapeDefs = new HashMap<>();
 
     public Map<String, String> getBaseTypes() {
         return baseTypes;
@@ -52,31 +46,8 @@ public class ProcessingDefinitionAnnotations {
         return graphFactoryFieldNames;
     }
 
-    public Map<String, String> getIdFieldNames() {
-        return idFieldNames;
-    }
-
-    public Map<String, String> getLabelsFieldNames() {
-        return labelsFieldNames;
-    }
-
-    public Map<String, String> getTitleFieldNames() {
-        return titleFieldNames;
-    }
-
-    public Map<String, String> getCategoryFieldNames() {
-        return categoryFieldNames;
-    }
-
-    public Map<String, String> getDescriptionFieldNames() {
-        return descriptionFieldNames;
-    }
-
     public Map<String, TypeConstructor> getBuilderFieldNames() {
         return builderFieldNames;
     }
 
-    public Map<String, String[]> getShapeDefinitions() {
-        return shapeDefs;
-    }
 }

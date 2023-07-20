@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,30 +14,29 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
-
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.uberfire.UberfireAPI"/>
+  <inherits name="org.uberfire.UberfireAPI" />
 
-  <inherits name="org.jboss.errai.common.ErraiCommon"/>
-  <inherits name="org.jboss.errai.databinding.DataBinding"/>
+  <inherits name="org.jboss.errai.common.ErraiCommon" />
+  <inherits name="org.jboss.errai.databinding.DataBinding" />
 
-  <source path="api"/>
-  <source path="command"/>
-  <source path="definition"/>
-  <source path="diagram"/>
-  <source path="documentation"/>
-  <source path="domainobject"/>
-  <source path="graph"/>
-  <source path="factory"/>
-  <source path="lookup"/>
-  <source path="registry"/>
-  <source path="rule"/>
-  <source path="validation"/>
-  <source path="util"/>
-  <source path="i18n"/>
-  <source path="preferences"/>
+  <source path="api" />
+  <source path="command" />
+  <source path="definition" />
+  <source path="diagram" />
+  <source path="documentation" />
+  <source path="domainobject" />
+  <source path="graph" />
+  <source path="factory" />
+  <source path="lookup" />
+  <source path="registry" />
+  <source path="rule" />
+  <source path="validation" />
+  <source path="util" />
+  <source path="i18n" />
+  <source path="preferences" />
 
 </module>

@@ -19,7 +19,7 @@ import { debounce } from "../debounce";
 import { DashbuilderVsCodeExtensionConfiguration } from "./configuration";
 import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 import { VsCodeDashbuilderLanguageService } from "./languageService/VsCodeDashbuilderLanguageService";
-import { DashbuilderLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
+import { DashbuilderYamlLanguageService } from "@kie-tools/dashbuilder-language-service/dist/channel";
 import {
   DashbuilderLanguageServiceCommandHandlers,
   DashbuilderLanguageServiceCommandTypes,
@@ -37,7 +37,7 @@ export function setupBuiltInVsCodeEditorDashbuilderContributions(args: {
   kieEditorsStore: VsCodeKieEditorStore;
 }) {
   const dashbuilderLsCommandHandlers: DashbuilderLanguageServiceCommandHandlers = {
-    "dashbuilder.ls.commands.OpenCompletionItems": (cmdArgs: any) => {
+    "editor.ls.commands.OpenCompletionItems": (cmdArgs: any) => {
       if (!vscode.window.activeTextEditor) {
         return;
       }
@@ -198,7 +198,7 @@ export function setupBuiltInVsCodeEditorDashbuilderContributions(args: {
 }
 
 async function setDashbuilderDiagnostics(
-  dashbuilderLanguageService: DashbuilderLanguageService,
+  dashbuilderLanguageService: DashbuilderYamlLanguageService,
   document: vscode.TextDocument,
   diagnosticsCollection: vscode.DiagnosticCollection
 ) {

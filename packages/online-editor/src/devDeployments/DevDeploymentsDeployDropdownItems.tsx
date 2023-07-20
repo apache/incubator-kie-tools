@@ -18,9 +18,9 @@ import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import { DependentFeature, useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { FeatureDependentOnExtendedServices } from "../extendedServices/FeatureDependentOnExtendedServices";
+import { DependentFeature, useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { FileLabel } from "../filesList/FileLabel";
@@ -29,7 +29,7 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/Acc
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
-import { openshiftAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
+import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
@@ -39,23 +39,26 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
   const { authSessions } = useAuthSessions();
 
   const suggestedAuthSessionForDeployment = useMemo(() => {
-    return [...authSessions.values()].find((authSession) => authSession.type === "openshift");
+    return [...authSessions.values()].find(
+      (authSession) => authSession.type === "openshift" || authSession.type === "kubernetes"
+    );
   }, [authSessions]);
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>();
 
   useEffect(() => {
-    if (suggestedAuthSessionForDeployment) {
-      setAuthSessionId(suggestedAuthSessionForDeployment.id);
-    }
-
-    if (authSessionId && !authSessions.has(authSessionId)) {
-      setAuthSessionId(undefined);
-    }
-  }, [authSessionId, authSessions, suggestedAuthSessionForDeployment]);
+    setAuthSessionId((currentAuthSessionId) => {
+      if (suggestedAuthSessionForDeployment) {
+        return suggestedAuthSessionForDeployment.id;
+      } else if (currentAuthSessionId && !authSessions.has(currentAuthSessionId)) {
+        return undefined;
+      }
+      return currentAuthSessionId;
+    });
+  }, [authSessions, suggestedAuthSessionForDeployment]);
 
   const isExtendedServicesRunning = useMemo(
-    () => extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
     [extendedServices.status]
   );
 
@@ -72,7 +75,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
     return [
       <React.Fragment key={"dmn-dev-deployment-dropdown-items"}>
         {workspace && (
-          <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
+          <FeatureDependentOnExtendedServices isLight={false} position="left">
             <div style={{ padding: "8px 16px" }}>
               <AuthSessionSelect
                 position={SelectPosition.right}
@@ -86,7 +89,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                 }}
                 isPlain={false}
                 title={"Select Cloud provider for this Dev deployment..."}
-                filter={openshiftAuthSessionSelectFilter()}
+                filter={cloudAuthSessionSelectFilter()}
                 showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
               />
             </div>
@@ -121,7 +124,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                 </Flex>
               )}
             </DropdownItem>
-          </FeatureDependentOnKieSandboxExtendedServices>
+          </FeatureDependentOnExtendedServices>
         )}
       </React.Fragment>,
     ];

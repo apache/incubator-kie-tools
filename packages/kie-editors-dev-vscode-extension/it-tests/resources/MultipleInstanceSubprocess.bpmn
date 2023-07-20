@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns:xsi="xsi" id="_fqtUgON-EDq5mtNWq6uPRg" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd " exporter="jBPM Process Modeler" exporterVersion="2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_subProcessOutputItem" structureRef="java.util.List&lt;String&gt;"/>
+  <bpmn2:itemDefinition id="_subProcessInputItem" structureRef="java.util.List&lt;String&gt;"/>
+  <bpmn2:itemDefinition id="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_multiInstanceItemType_f" structureRef="String"/>
+  <bpmn2:itemDefinition id="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_multiInstanceItemType_" structureRef="Object"/>
+  <bpmn2:collaboration id="_605F8A9B-3059-4E20-A2B0-D57D8C6B4428" name="Default Collaboration">
+    <bpmn2:participant id="_EE33A983-A76B-47F5-A5DA-4BA1400CB687" name="Pool Participant" processRef="MultipleInstanceSubprocess"/>
+  </bpmn2:collaboration>
+  <bpmn2:process id="MultipleInstanceSubprocess" drools:packageName="com.example" drools:version="1.0" drools:adHoc="false" name="MultipleInstanceSubprocess" isExecutable="true" processType="Public">
+    <bpmn2:property id="subProcessOutput" itemSubjectRef="_subProcessOutputItem" name="subProcessOutput"/>
+    <bpmn2:property id="subProcessInput" itemSubjectRef="_subProcessInputItem" name="subProcessInput"/>
+    <bpmn2:sequenceFlow id="_16096D51-148C-4316-B4D0-B1BB4E4AF32E" sourceRef="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC" targetRef="_5557A492-DE2F-40D9-B6C3-6B4DABF92B06"/>
+    <bpmn2:sequenceFlow id="_EE37CBD6-7504-46C7-9862-D65495D754A4" sourceRef="_0F7AA593-8FA4-455C-9E81-86D59A7199A9" targetRef="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC"/>
+    <bpmn2:endEvent id="_5557A492-DE2F-40D9-B6C3-6B4DABF92B06">
+      <bpmn2:incoming>_16096D51-148C-4316-B4D0-B1BB4E4AF32E</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:startEvent id="_0F7AA593-8FA4-455C-9E81-86D59A7199A9">
+      <bpmn2:outgoing>_EE37CBD6-7504-46C7-9862-D65495D754A4</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:subProcess id="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC" name="Multiple Instance Sub-Process">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Multiple Instance Sub-Process]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_EE37CBD6-7504-46C7-9862-D65495D754A4</bpmn2:incoming>
+      <bpmn2:outgoing>_16096D51-148C-4316-B4D0-B1BB4E4AF32E</bpmn2:outgoing>
+      <bpmn2:ioSpecification>
+        <bpmn2:dataInput id="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_fInputX" itemSubjectRef="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_multiInstanceItemType_f" name="f"/>
+        <bpmn2:dataOutput id="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_OutputX" itemSubjectRef="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_multiInstanceItemType_" name=""/>
+        <bpmn2:inputSet>
+          <bpmn2:dataInputRefs>_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_fInputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet>
+          <bpmn2:dataOutputRefs>_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_OutputX</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+      </bpmn2:ioSpecification>
+      <bpmn2:multiInstanceLoopCharacteristics>
+        <bpmn2:inputDataItem id="f" itemSubjectRef="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_multiInstanceItemType_f" name="f"/>
+        <bpmn2:outputDataItem id="" itemSubjectRef="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_multiInstanceItemType_" name=""/>
+      </bpmn2:multiInstanceLoopCharacteristics>
+      <bpmn2:sequenceFlow id="_46C8423D-4799-4D44-A43B-1D62E51F6705" sourceRef="_6BF618E1-CF30-4041-8F9A-765AD6CB9112" targetRef="_0B36EE86-EB98-4716-A340-AE535A12289B"/>
+      <bpmn2:endEvent id="_0B36EE86-EB98-4716-A340-AE535A12289B">
+        <bpmn2:incoming>_46C8423D-4799-4D44-A43B-1D62E51F6705</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:startEvent id="_6BF618E1-CF30-4041-8F9A-765AD6CB9112">
+        <bpmn2:outgoing>_46C8423D-4799-4D44-A43B-1D62E51F6705</bpmn2:outgoing>
+      </bpmn2:startEvent>
+    </bpmn2:subProcess>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="MultipleInstanceSubprocess">
+      <bpmndi:BPMNShape id="shape__8347DA8F-DD89-4CD9-9D2E-38E604F06ECC" bpmnElement="_8347DA8F-DD89-4CD9-9D2E-38E604F06ECC">
+        <dc:Bounds height="249" width="461" x="335.5" y="111"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__6BF618E1-CF30-4041-8F9A-765AD6CB9112" bpmnElement="_6BF618E1-CF30-4041-8F9A-765AD6CB9112">
+        <dc:Bounds height="56" width="56" x="407.5" y="199"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__0B36EE86-EB98-4716-A340-AE535A12289B" bpmnElement="_0B36EE86-EB98-4716-A340-AE535A12289B">
+        <dc:Bounds height="56" width="56" x="543.5" y="199"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__6BF618E1-CF30-4041-8F9A-765AD6CB9112_to_shape__0B36EE86-EB98-4716-A340-AE535A12289B" bpmnElement="_46C8423D-4799-4D44-A43B-1D62E51F6705">
+        <di:waypoint x="435.5" y="227"/>
+        <di:waypoint x="571.5" y="227"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="shape__0F7AA593-8FA4-455C-9E81-86D59A7199A9" bpmnElement="_0F7AA593-8FA4-455C-9E81-86D59A7199A9">
+        <dc:Bounds height="56" width="56" x="215" y="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="shape__5557A492-DE2F-40D9-B6C3-6B4DABF92B06" bpmnElement="_5557A492-DE2F-40D9-B6C3-6B4DABF92B06">
+        <dc:Bounds height="56" width="56" x="861" y="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="edge_shape__0F7AA593-8FA4-455C-9E81-86D59A7199A9_to_shape__8347DA8F-DD89-4CD9-9D2E-38E604F06ECC" bpmnElement="_EE37CBD6-7504-46C7-9862-D65495D754A4">
+        <di:waypoint x="243" y="236"/>
+        <di:waypoint x="335.5" y="235.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="edge_shape__8347DA8F-DD89-4CD9-9D2E-38E604F06ECC_to_shape__5557A492-DE2F-40D9-B6C3-6B4DABF92B06" bpmnElement="_16096D51-148C-4316-B4D0-B1BB4E4AF32E">
+        <di:waypoint x="566" y="235.5"/>
+        <di:waypoint x="889" y="236"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

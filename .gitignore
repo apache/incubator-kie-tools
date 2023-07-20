@@ -23,7 +23,6 @@ package-lock.json
 **/logs/
 **/screenshots/
 
-## guided-tour
 # builds
 **/build
 **/.rpt2_cache
@@ -34,6 +33,7 @@ package-lock.json
 **/.env.development.local
 **/.env.test.local
 **/.env.production.local
+!packages/kie-sandbox-distribution/.env
 
 ## kie-editors-standalone
 **/it-tests/**/videos
@@ -43,7 +43,10 @@ package-lock.json
 
 ## online-editor
 **/videos/
-!packages/online-editor/build
+!packages/online-editor/build/**
+
+## serverless-logic-web-tools
+!packages/serverless-logic-web-tools/build/**
 
 ## vscode-*
 **/.vscode-test/
@@ -63,9 +66,9 @@ package-lock.json
 **/jitexecutor
 
 # Language Server Extension
-packages/vscode-extension-dmn-editor/server
-packages/vscode-extension-bpmn-editor/server
-packages/vscode-extension-pack-kogito-kie-editors/server
+packages/dmn-vscode-extension/server
+packages/bpmn-vscode-extension/server
+packages/kie-editors-dev-vscode-extension/server
 packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/lib
 
 # imported from kogito-editors-java
@@ -141,6 +144,7 @@ packages/stunner-editors/**/src/main/webapp/WEB-INF/lib/
 packages/stunner-editors/**/src/main/webapp/WEB-INF/model/
 packages/stunner-editors/**/src/main/webapp/model/
 packages/stunner-editors/**/kie-wb-common-dmn-webapp
+packages/stunner-editors/.idea
 
 # serverless-workflow-diagram-editor
 packages/serverless-workflow-diagram-editor/**/dependency-reduced-pom.xml
@@ -258,3 +262,8 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+
+# xml-parser-ts-codegen on some packages
+packages/bpmn-marshaller/**/ts-gen
+packages/dmn-marshaller/**/ts-gen
+packages/scesim-marshaller/**/ts-gen

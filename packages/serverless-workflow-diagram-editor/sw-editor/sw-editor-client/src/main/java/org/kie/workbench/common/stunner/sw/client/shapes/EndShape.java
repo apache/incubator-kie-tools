@@ -16,10 +16,14 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.SHAPE_END;
+
 public class EndShape extends ServerlessWorkflowShape<EndShapeView> {
 
-    public EndShape() {
-        super(new EndShapeView().asAbstractShape());
+    public EndShape(TranslationService translationService) {
+        super(new EndShapeView(translationService.getTranslation(SHAPE_END)).asAbstractShape(), translationService);
         getShape().getShapeView().setController(this);
     }
 }

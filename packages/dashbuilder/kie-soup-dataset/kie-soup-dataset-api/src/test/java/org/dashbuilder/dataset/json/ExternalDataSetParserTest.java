@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
+import org.dashbuilder.dataset.DataSetFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -276,6 +277,44 @@ public class ExternalDataSetParserTest {
         var dataset = parser.parseDataSet(null);
         assertEquals(0, dataset.getColumns().size());
         assertEquals(0, dataset.getRowCount());
+    }
+
+    @Test
+    public void testDataSetToJsonArray() {
+        var d1 = new Date(0l);
+        var d2 = new Date(1l);
+        var dataset = DataSetFactory.newDataSetBuilder()
+                .label("C1")
+                .label("C2")
+                .label("C3")
+                .row("A", 1.0, d1)
+                .row("B", 2.0, d2)
+                .buildDataSet();
+        ;
+        var result = parser.toJsonArray(dataset);
+        var parsedDataSet = parser.parseDataSet(result);
+
+        assertEquals("A", parsedDataSet.getValueAt(0, 0));
+        assertEquals(1.0, parsedDataSet.getValueAt(0, 1));
+        assertEquals(d1.toString(), parsedDataSet.getValueAt(0, 2));
+
+        assertEquals("B", parsedDataSet.getValueAt(1, 0));
+        assertEquals(2.0, parsedDataSet.getValueAt(1, 1));
+        assertEquals(d2.toString(), parsedDataSet.getValueAt(1, 2));
+        assertEquals(2, parsedDataSet.getRowCount());
+        assertEquals(3, parsedDataSet.getColumns().size());
+    }
+
+    @Test
+    public void testDataSetToJsonArrayContent() {
+        var dataset = DataSetFactory.newDataSetBuilder()
+                .label("C1")
+                .label("C2")
+                .row("A", 1.0)
+                .row("B", 2.0)
+                .buildDataSet();
+        var result = parser.toJsonArray(dataset);
+        assertEquals("[[\"A\",\"1.0\"],[\"B\",\"2.0\"]]", result);
     }
 
     @Test(expected = IllegalArgumentException.class)
