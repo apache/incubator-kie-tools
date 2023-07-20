@@ -61,8 +61,8 @@ export function Diagram({
   const [nodes, setNodes, onNodesChange] = RF.useNodesState([]);
   const [edges, setEdges, onEdgesChange] = RF.useEdgesState([]);
 
-  const onEdgeUpdate = useCallback(() => {
-    /** */
+  const onEdgeUpdate = useCallback((args) => {
+    console.log("Edge updated! --> ", args);
   }, []);
 
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
@@ -219,7 +219,6 @@ export function Diagram({
                 dmnShapeSource: shapesById.get(source),
                 dmnShapeTarget: shapesById.get(target),
               },
-              updatable: true,
               id: id ?? "",
               type: "informationRequirement",
               source,
@@ -243,7 +242,6 @@ export function Diagram({
                 dmnShapeSource: shapesById.get(source),
                 dmnShapeTarget: shapesById.get(target),
               },
-              updatable: true,
               id: id ?? "",
               type: "knowledgeRequirement",
               source,
@@ -275,7 +273,6 @@ export function Diagram({
                 dmnShapeSource: shapesById.get(source),
                 dmnShapeTarget: shapesById.get(target),
               },
-              updatable: true,
               id: id ?? "",
               type: "authorityRequirement",
               source,
@@ -299,7 +296,6 @@ export function Diagram({
               dmnShapeSource: shapesById.get(source),
               dmnShapeTarget: shapesById.get(target),
             },
-            updatable: true,
             id: id ?? "",
             type: "association",
             source,
@@ -346,6 +342,26 @@ export function Diagram({
     [container, reactFlowInstance]
   );
 
+  const [connectionHandleParams, setConnectionHandeParams] = useState<RF.OnConnectStartParams | undefined>(undefined);
+
+  const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => {
+    setConnectionHandeParams(b);
+  }, []);
+
+  const onConnectEnd = useCallback(
+    (event) => {
+      const targetIsPane = event.target.classList.contains("react-flow__pane");
+      if (targetIsPane && container.current && connectionHandleParams) {
+        // we need to remove the wrapper bounds, in order to get the correct position
+        const { top, left } = container.current.getBoundingClientRect();
+        const dropPoint = { x: event.clientX - left, y: event.clientY - top };
+        console.log(`Creating node at ${dropPoint.x},${dropPoint.y}`);
+        console.log(connectionHandleParams);
+      }
+    },
+    [connectionHandleParams, container]
+  );
+
   return (
     <>
       <RF.ReactFlow
@@ -363,6 +379,9 @@ export function Diagram({
         edgesUpdatable={true}
         connectionLineComponent={ConnectionLine}
         onEdgeUpdate={onEdgeUpdate}
+        onConnectStart={onConnectStart}
+        onConnect={onEdgeUpdate}
+        onConnectEnd={onConnectEnd}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         snapToGrid={true}
@@ -373,7 +392,7 @@ export function Diagram({
         attributionPosition={"bottom-right"}
         onInit={setReactFlowInstance}
         onDrop={onDrop}
-        onDragOver={onDragOver}
+        // onDragOver={onDragOver}
       >
         <SelectionStatus />
         <Pallete />
@@ -572,41 +591,94 @@ const handleStyle: React.CSSProperties = {
 };
 
 export function OutgoingStuffToolbar(props: { isVisible: boolean }) {
+  const style: React.CSSProperties = useMemo(
+    () => ({
+      visibility: props.isVisible ? undefined : "hidden",
+    }),
+    [props.isVisible]
+  );
+
   return (
     <>
-      {props.isVisible && (
-        <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"}>
-          <FlexItem>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              I
-            </RF.Handle>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              K
-            </RF.Handle>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              A
-            </RF.Handle>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              -
-            </RF.Handle>
-          </FlexItem>
+      <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"} style={style}>
+        <FlexItem>
+          <RF.Handle
+            id={"source-information-requirement"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            I
+          </RF.Handle>
+          <RF.Handle
+            id={"source-knowledge-requirement"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            K
+          </RF.Handle>
+          <RF.Handle
+            id={"source-authority-requirement"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            A
+          </RF.Handle>
+          <RF.Handle
+            id={"source-association"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            -
+          </RF.Handle>
+        </FlexItem>
 
-          <FlexItem>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              D
-            </RF.Handle>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              K
-            </RF.Handle>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              T
-            </RF.Handle>
-            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
-              B
-            </RF.Handle>
-          </FlexItem>
-        </Flex>
-      )}
+        <FlexItem>
+          <RF.Handle
+            id={"source-decision"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            D
+          </RF.Handle>
+          <RF.Handle
+            id={"source-knowledge-source"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            K
+          </RF.Handle>
+          <RF.Handle
+            id={"source-text-annotation"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            T
+          </RF.Handle>
+          <RF.Handle
+            id={"source-bkm"}
+            isConnectableEnd={false}
+            type={"source"}
+            style={handleStyle}
+            position={RF.Position.Top}
+          >
+            B
+          </RF.Handle>
+        </FlexItem>
+      </Flex>
     </>
   );
 }
@@ -701,13 +773,16 @@ export function InputDataNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== inputData["@_id"] && isHovered;
+
   return (
     <>
-      <NsweHandles />
+      <NsweHandles isTargeted={isTargeted} />
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}>
-        <OutgoingStuffToolbar isVisible={isHovered || selected} />
-        <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
+        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
+        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
       </div>
       {selected && <ResizerHandle />}
@@ -731,17 +806,20 @@ export function DecisionNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== decision["@_id"] && isHovered;
+
   return (
     <>
-      <NsweHandles />
+      <NsweHandles isTargeted={isTargeted} />
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}>
         <EditExpressionButton
-          isVisible={isHovered || selected}
+          isVisible={!isTargeted && (isHovered || selected)}
           onClick={() => setOpenNodeWithExpression({ type: "decision", content: decision })}
         />
-        <OutgoingStuffToolbar isVisible={isHovered || selected} />
-        <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
+        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
+        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
       </div>
       {selected && <ResizerHandle />}
@@ -765,18 +843,21 @@ export function BkmNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== bkm["@_id"] && isHovered;
+
   return (
     <>
-      <NsweHandles />
-      <OutgoingStuffToolbar isVisible={isHovered || selected} />
+      <NsweHandles isTargeted={isTargeted} />
+      <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}>
         <EditExpressionButton
-          isVisible={isHovered || selected}
+          isVisible={!isTargeted && (isHovered || selected)}
           onClick={() => setOpenNodeWithExpression({ type: "bkm", content: bkm })}
         />
-        <OutgoingStuffToolbar isVisible={isHovered || selected} />
-        <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
+        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
+        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
       </div>
       {selected && <ResizerHandle />}
@@ -795,12 +876,15 @@ export function TextAnnotationNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== textAnnotation["@_id"] && isHovered;
+
   return (
     <>
-      <NsweHandles />
+      <NsweHandles isTargeted={isTargeted} />
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}>
-        <OutgoingStuffToolbar isVisible={isHovered || selected} />
-        <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
+        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
+        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
       </div>
       {selected && <ResizerHandle />}
@@ -815,14 +899,17 @@ export function DecisionServiceNode({
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
 
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== decisionService["@_id"] && isHovered;
+
   return (
     <>
-      <NsweHandles />
+      <NsweHandles isTargeted={isTargeted} />
       {selected && <ResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}>
-        <OutgoingStuffToolbar isVisible={isHovered || selected} />
-        <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
+        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
+        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -840,12 +927,15 @@ export function KnowledgeSourceNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== knowledgeSource["@_id"] && isHovered;
+
   return (
     <>
-      <NsweHandles />
+      <NsweHandles isTargeted={isTargeted} />
       <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}>
-        <OutgoingStuffToolbar isVisible={isHovered || selected} />
-        <InfoButton isVisible={isHovered || selected} onClick={onInfo} />
+        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
+        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
       </div>
       {selected && <ResizerHandle />}

@@ -31,7 +31,7 @@ export function BaseEdge(props: RF.EdgeProps) {
         </>
       )}
 
-      {points.map((p, i) => (
+      {/* {points.map((p, i) => (
         <circle
           key={i}
           cx={p["@_x"]}
@@ -39,7 +39,7 @@ export function BaseEdge(props: RF.EdgeProps) {
           r={5}
           fill={i === 0 || i === points.length - 1 ? "lightblue" : "black"}
         />
-      ))}
+      ))} */}
 
       {/* {(dmnEdge?.["di:waypoint"] ?? []).map((p, i) => (
         <circle key={i} cx={p["@_x"]} cy={p["@_y"]} r={5} fill={"red"} />
