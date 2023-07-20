@@ -324,6 +324,7 @@ export function Diagram({
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
+      e.stopPropagation();
 
       if (!container.current || !reactFlowInstance) {
         return;
@@ -564,23 +565,45 @@ export function DataTypeToolbar(props: {
   );
 }
 
+const handleStyle: React.CSSProperties = {
+  display: "flex",
+  position: "unset",
+  transform: "unset",
+};
+
 export function OutgoingStuffToolbar(props: { isVisible: boolean }) {
   return (
     <>
       {props.isVisible && (
         <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"}>
           <FlexItem>
-            <div>I</div>
-            <div>K</div>
-            <div>A</div>
-            <div>-</div>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              I
+            </RF.Handle>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              K
+            </RF.Handle>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              A
+            </RF.Handle>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              -
+            </RF.Handle>
           </FlexItem>
 
           <FlexItem>
-            <div>D</div>
-            <div>K</div>
-            <div>T</div>
-            <div>B</div>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              D
+            </RF.Handle>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              K
+            </RF.Handle>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              T
+            </RF.Handle>
+            <RF.Handle type="source" style={handleStyle} position={RF.Position.Top}>
+              B
+            </RF.Handle>
           </FlexItem>
         </Flex>
       )}

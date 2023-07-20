@@ -2,15 +2,17 @@ import * as React from "react";
 import { ConnectionLineComponentProps } from "reactflow";
 
 export const ConnectionLine = ({
-  fromX,
-  fromY,
   fromPosition,
   toX,
   toY,
+  fromNode,
   toPosition,
   connectionLineType,
   connectionLineStyle,
 }: ConnectionLineComponentProps) => {
+  const fromX = (fromNode?.position.x ?? 0) + (fromNode?.width ?? 0) / 2;
+  const fromY = (fromNode?.position.y ?? 0) + (fromNode?.height ?? 0) / 2;
+
   return (
     <g>
       <path
