@@ -20,7 +20,7 @@ module.exports = {
   overrides: [
     ...baseConfig.overrides,
     {
-      files: ["*.ts", "*.tsx", "*.jsx"],
+      files: ["src/**/*.{js,jsx,ts,tsx}"],
       plugins: ["import"],
       rules: {
         "import/no-nodejs-modules": [
