@@ -182,6 +182,15 @@ func moveSWFFilesToQuarkusProject(cfg CreateQuarkusProjectConfig, rootFolder str
 				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
 			}
 		}
+
+		// Move /dashboards directory to target
+		if file.IsDir() && file.Name() == metadata.DashboardsDefaultDirName {
+			oldPath := filepath.Join(rootFolder, file.Name())
+			newPath := filepath.Join(targetFolder, file.Name())
+			if err := os.Rename(oldPath, newPath); err != nil {
+				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
+			}
+		}
 	}
 	return nil
 }
