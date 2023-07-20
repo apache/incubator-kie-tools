@@ -14,6 +14,10 @@ pipeline {
         timestamps()
     }
 
+    tools {
+        go 'golang-1.19'
+    }
+
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
@@ -92,9 +96,27 @@ pipeline {
                             githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
                         }
 
-                        if (helper.getGitTag()) {
-                            helper.createRelease()
+                        // Tag api / container-builder
+                        helper.createTag("api/${helper.getGitTag()}")
+                        helper.createTag("container-builder/${helper.getGitTag()}")
+
+                        // Update api in workflowproj
+                        dir('workflowproj') {
+                            updateInternalGoModuleWithTag('api', "api/${helper.getGitTag()}")
                         }
+                        sh 'make generate-all'
+                        commitAndPush('origin', "[${helper.getBuildBranch()}] Update api module version in workflowproj") { sh 'git add .' }
+                        helper.createTag("workflowproj/${helper.getGitTag()}")
+
+                        // Update api / workflowproj / container-builder in operator, `make generate-all`, commit, tag and push
+                        updateInternalGoModuleWithTag('api', "api/${helper.getGitTag()}")
+                        updateInternalGoModuleWithTag('container-builder', "container-builder/${helper.getGitTag()}")
+                        updateInternalGoModuleWithTag('workflowproj', "workflowproj/${helper.getGitTag()}")
+                        sh 'make generate-all'
+                        commitAndPush('origin', "[${helper.getBuildBranch()}] Update internal dependency modules version in go.mod") { sh 'git add .' }
+
+                        // Create final and release
+                        helper.createRelease()
                     }
                 }
             }
@@ -110,15 +132,13 @@ pipeline {
                         // Update version to next snapshot
                         sh "make bump-version new_version=${nextVersion}"
 
-                        def commitMsg = "[${helper.getBuildBranch()}] Update snapshot version to ${nextVersion}\n\nCommitted by build ${BUILD_TAG}: ${BUILD_URL}"
-                        githubscm.commitChanges(commitMsg, {
+                        commitAndPush('origin', "[${helper.getBuildBranch()}] Update snapshot version to ${nextVersion}\n\nCommitted by build ${BUILD_TAG}: ${BUILD_URL}") {
                             sh '''
                                 git add .
                                 git reset -- go.mod
                                 git reset -- go.sum
                             '''
-                        })
-                        githubscm.pushObject('origin', helper.getBuildBranch(), helper.getGitAuthorCredsID())
+                        }
                     }
                 }
             }
@@ -148,4 +168,20 @@ void sendNotification() {
 
 void promoteImage(String oldImageName, String newImageName) {
     cloud.skopeoCopyRegistryImages(oldImageName, newImageName, Integer.parseInt(env.MAX_REGISTRY_RETRIES))
+}
+
+void updateInternalGoModuleWithTag(String moduleName, String tagName) {
+    sh """
+        go get github.com/kiegroup/kogito-serverless-operator/${moduleName}@${githubscm.getTagCommitHash(tagName)}
+        go mod tidy
+    """
+}
+
+void commitAndPush(String remote, String commitMsg, Closure preCommit) {
+    if (githubscm.isThereAnyChanges()) {
+        githubscm.commitChanges(commitMsg, preCommit)
+        githubscm.pushObject(remote, helper.getBuildBranch(), helper.getGitAuthorCredsID())
+    } else {
+        echo "No change... Skipping commit and push"
+    }
 }

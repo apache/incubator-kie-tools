@@ -69,6 +69,10 @@ void loginRegistry(String paramsPrefix = defaultImageParamsPrefix) {
     }
 }
 
+void createTag(String tagName = getGitTag()) {
+    githubscm.tagLocalAndRemoteRepository('origin', tagName, getGitAuthorCredsID(), '', true)
+}
+
 void createRelease() {
     if (isReleaseExist()) {
         deleteRelease()
