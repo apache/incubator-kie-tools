@@ -3,6 +3,12 @@ import { env } from "./env";
 
 const buildEnv: any = env;
 
+const ciReporters = [
+  ["github"],
+  ["junit", { outputFile: "./dist-tests/playwright-junit-report.xml" }],
+  ["html", { outputFolder: "./dist-tests", open: "never" }],
+];
+
 export default defineConfig({
   testDir: "./tests/e2e",
   /* Run tests in files in parallel */
@@ -10,11 +16,17 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: [["junit", { outputFile: "./dist-tests/playwright-report.xml" }]],
+  reporter: process.env.CI
+    ? [
+        ["github"],
+        ["junit", { outputFile: "./dist-tests/playwright-junit-report.xml" }],
+        ["html", { outputFolder: "./dist-tests", open: "never" }],
+      ]
+    : [["html", { outputFolder: "./dist-tests", open: "never" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
@@ -22,9 +34,11 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     screenshot: "only-on-failure",
     /* automatically record video on retry  */
-    video: "retry-with-video",
+    video: "on-first-retry",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+
+    locale: "en-US",
   },
 
   /* Configure projects for major browsers */
@@ -32,6 +46,7 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      fullyParallel: true,
     },
 
     // {

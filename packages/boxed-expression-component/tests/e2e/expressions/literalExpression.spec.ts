@@ -100,5 +100,19 @@ test.describe("Literal Expression", () => {
 
     const nexBox = await literalExpression.boundingBox();
     expect(nexBox?.x).toEqual(box!.x + 50);
+    await page.goto("http://localhost:3015/");
+    await page.getByText("Select expression").click();
+    await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
+    await page.locator(".feel-input > div").click();
+    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).fill("test");
+    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Escape");
+    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Enter");
+    await page
+      .locator("div")
+      .filter({ hasText: /^testtest$/ })
+      .locator("div")
+      .nth(1)
+      .click();
+    await page.getByText("testtest").press("Escape");
   });
 });

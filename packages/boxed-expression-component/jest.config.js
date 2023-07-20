@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export default {
+module.exports = {
   globals: {
     "ts-jest": {
       tsconfig: "<rootDir>/tsconfig.json",

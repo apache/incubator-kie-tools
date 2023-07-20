@@ -16,6 +16,7 @@
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:it": "pnpm test:it:run",
+    "test:it:open": "pnpm exec playwright show-report dist-tests",
     "test:it:run": "pnpm exec playwright test"
   },
   "dependencies": {
