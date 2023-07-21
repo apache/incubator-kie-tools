@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/dmn-dev-deployment-accelerator",
+  "name": "@kie-tools/dmn-dev-deployment-sample",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -19,7 +19,7 @@
     "build-quarkus:prod": "pnpm lint && run-script-os",
     "build-quarkus:prod:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build-quarkus:prod:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
-    "build:dev": "pnpm copy-assets && docker build . -f Containerfile -t dmn-dev-deployment-accelerator:latest",
+    "build:dev": "pnpm copy-assets && docker build . -f Containerfile -t dmn-dev-deployment-sample-image:latest",
     "copy-assets": "cp -R ../dev-deployments-upload-service/dist/linux dist-dev",
     "install": "cd quarkus-app && node install.js",
     "install:mvnw": "run-script-os",

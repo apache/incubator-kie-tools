@@ -2906,6 +2906,9 @@ importers:
       "@kie-tools/dmn-dev-deployment-quarkus-app":
         specifier: workspace:*
         version: link:../dmn-dev-deployment-quarkus-app
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -2913,9 +2916,6 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
-      run-script-os:
-        specifier: ^1.1.6
-        version: 1.1.6
       yargs:
         specifier: ^17.0.1
         version: 17.3.1
@@ -3063,6 +3063,38 @@ importers:
         version: 5.8.0
 
   packages/dmn-dev-deployment-quarkus-app:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/dmn-dev-deployment-sample:
+    dependencies:
+      "@kie-tools/dev-deployments-upload-service":
+        specifier: workspace:*
+        version: link:../dev-deployments-upload-service
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/dmn-dev-deployment-sample-image:
+    dependencies:
+      "@kie-tools/dev-deployments-upload-service":
+        specifier: workspace:*
+        version: link:../dev-deployments-upload-service
     devDependencies:
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
@@ -4213,6 +4245,9 @@ importers:
         specifier: ^17.0.1
         version: 17.5.1
     devDependencies:
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
       "@types/yargs":
         specifier: ^17.0.1
         version: 17.0.24
