@@ -21,7 +21,6 @@ import { ExtendedServicesBridge } from "./ExtendedServicesBridge";
 import { DependentFeature, ExtendedServicesContext } from "./ExtendedServicesContext";
 import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { ExtendedServicesModal } from "./ExtendedServicesModal";
 import { useEnv } from "../env/EnvContext";
 
 interface Props {
@@ -136,10 +135,5 @@ export function ExtendedServicesContextProvider(props: Props) {
     [config, installTriggeredBy, isModalOpen, outdated, saveNewConfig, status, version]
   );
 
-  return (
-    <ExtendedServicesContext.Provider value={value}>
-      {props.children}
-      <ExtendedServicesModal />
-    </ExtendedServicesContext.Provider>
-  );
+  return <ExtendedServicesContext.Provider value={value}>{props.children}</ExtendedServicesContext.Provider>;
 }
