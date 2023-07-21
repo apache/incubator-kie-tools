@@ -1,0 +1,29 @@
+{
+  "name": "@kie-tools/chrome-extension-test-helper",
+  "version": "0.0.0",
+  "description": "Chrome extension test helper",
+  "license": "Apache-2.0",
+  "publisher": "kie-group",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "prepare": "pnpm run build"
+  },
+  "devDependencies": {
+    "@kie-tools/tsconfig": "workspace:*",
+    "@types/chai": "^4.2.17",
+    "@types/selenium-webdriver": "^4.1.12",
+    "chai": "^4.3.4",
+    "rimraf": "^3.0.2",
+    "selenium-webdriver": "^4.8.1",
+    "typescript": "^4.6.2"
+  }
+}

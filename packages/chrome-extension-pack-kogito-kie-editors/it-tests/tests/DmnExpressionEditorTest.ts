@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
-import DmnEditor from "../framework/editor/dmn/DmnEditor";
-import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import GitHubListItem from "../framework/github-file-list/GitHubListItem";
-import GitHubListPage from "../framework/github-file-list/GitHubListPage";
-import Tools from "../utils/Tools";
-import DmnExpressionEditor from "../framework/editor/dmn/DmnExpressionEditor";
+import DecisionNavigator from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DecisionNavigator";
+import DmnEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnEditor";
+import DmnSideBar from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnSideBar";
+import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import GitHubListItem from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListItem";
+import GitHubListPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListPage";
+import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
+import DmnExpressionEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnExpressionEditor";
 
 const TEST_NAME = "DmnExpressionEditorTest";
 
