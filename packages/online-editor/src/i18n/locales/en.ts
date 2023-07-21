@@ -315,7 +315,7 @@ export const en: OnlineI18n = {
         subtitle: `Set up your ${en_common.names.bitbucket} App Password so you can interact with Bitbucket.`,
       },
       footer: {
-        createNewToken: "Generate new App Passord",
+        createNewToken: "Generate new App Password",
         placeHolder: "Paste your App Password here",
       },
       body: {

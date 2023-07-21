@@ -38,7 +38,7 @@ function getDmnDevDeploymentBaseImageUrl() {
 
 export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_VERSION: buildEnv.root.version,
-  KIE_SANDBOX_GIT_CORS_PROXY_URL: buildEnv.onlineEditor.gitCorsProxyUrl,
+  KIE_SANDBOX_CORS_PROXY_URL: buildEnv.onlineEditor.corsProxyUrl,
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
   KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDmnDevDeploymentBaseImageUrl(),
   KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE: buildEnv.onlineEditor.requireCustomCommitMessage,

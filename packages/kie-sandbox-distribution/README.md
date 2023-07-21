@@ -39,11 +39,11 @@ This package contains the `docker-compose` file to run KIE Sandbox and all relat
   export KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName=<extendedServicesImageName>
   export KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag=<extendedServicesImageTag>
   export KIE_SANDBOX_DISTRIBUTION__extendedServicesPort=<extendedServicesPort>
-  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageRegistry=<gitCorsProxyImageRegistry>
-  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageAccount=<gitCorsProxyImageAccount>
-  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageName=<gitCorsProxyImageName>
-  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyImageTag=<gitCorsProxyImageTag>
-  export KIE_SANDBOX_DISTRIBUTION__gitCorsProxyPort=<gitCorsProxyPort>
+  export KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry=<corsProxyImageRegistry>
+  export KIE_SANDBOX_DISTRIBUTION__corsProxyImageAccount=<corsProxyImageAccount>
+  export KIE_SANDBOX_DISTRIBUTION__corsProxyImageName=<corsProxyImageName>
+  export KIE_SANDBOX_DISTRIBUTION__corsProxyImageTag=<corsProxyImageTag>
+  export KIE_SANDBOX_DISTRIBUTION__corsProxyPort=<corsProxyPort>
   ```
 
 ## Run
