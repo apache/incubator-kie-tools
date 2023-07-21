@@ -83,7 +83,7 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { FileSwitcher } from "./FileSwitcher";
 import { ExtendedServicesButtons } from "./ExtendedServices/ExtendedServicesButtons";
-import { ExtendedServicesDropdownGroup } from "./ExtendedServices/ExtendedServicesDropdownGroup";
+import { DeployDropdownGroup } from "./Deploy/DeployDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
@@ -1737,7 +1737,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             ? []
                             : [
                                 <Divider key={"divider-2"} />,
-                                <ExtendedServicesDropdownGroup
+                                <DeployDropdownGroup
                                   workspace={workspace}
                                   workspaceFile={props.workspaceFile}
                                   key="extended-services-group"

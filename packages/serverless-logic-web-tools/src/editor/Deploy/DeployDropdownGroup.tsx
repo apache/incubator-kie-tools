@@ -25,7 +25,7 @@ interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-export function ExtendedServicesDropdownGroup(props: Props) {
+export function DeployDropdownGroup(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,

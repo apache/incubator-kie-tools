@@ -96,8 +96,8 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
               >
                 <ExclamationIcon
                   data-testid="not-chromium-icon"
-                  className="kogito--editor__extended-services-dropdown-icon-outdated static-opacity"
-                  id="extended-services-not-chromium-icon"
+                  className="static-opacity"
+                  id="browser-not-chromium-icon"
                   style={{ cursor: "pointer" }}
                 />
               </Tooltip>
