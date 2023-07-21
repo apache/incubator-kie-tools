@@ -432,18 +432,6 @@
   }
 }
 
-.kogito--editor__extended-services-dropdown-icon-outdated {
-  color: var(--pf-global--warning-color--100);
-}
-
-.kogito--editor__extended-services-dropdown-icon-outdated:focus {
-  outline: none;
-}
-
-.kogito--editor__extended-services-dropdown-icon-connected {
-  color: var(--pf-global--palette--green-300);
-}
-
 .kogito--editor__light-tooltip {
   --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
   --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);

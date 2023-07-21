@@ -16,7 +16,6 @@
 
 import { DropdownGroup } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
-import { ExtendedServicesIcon } from "../../extendedServices/ExtendedServicesIcon";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../hooks/useDeployDropdownItems";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
@@ -34,15 +33,7 @@ export function ExtendedServicesDropdownGroup(props: Props) {
 
   return (
     <>
-      <DropdownGroup
-        key={"deploy-group"}
-        label={
-          <>
-            {"Try on OpenShift"}
-            <ExtendedServicesIcon />
-          </>
-        }
-      >
+      <DropdownGroup key={"deploy-group"} label={"Try on OpenShift"}>
         {deployDropdownItems}
       </DropdownGroup>
     </>

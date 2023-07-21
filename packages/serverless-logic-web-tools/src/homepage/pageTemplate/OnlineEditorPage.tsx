@@ -33,7 +33,6 @@ import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons
 import { useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import { useLocation } from "react-router-dom";
-import { ExtendedServicesIcon } from "../../extendedServices/ExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -85,9 +84,6 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           </ToolbarItem>
           <ToolbarItem>
             <SettingsButton />
-          </ToolbarItem>
-          <ToolbarItem>
-            <ExtendedServicesIcon />
           </ToolbarItem>
           {!isChromiumBased && (
             <ToolbarItem>
