@@ -43,7 +43,7 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message: {\"messageCode\": " +  messageCode + ", \"value\": " + value + "}";
+        return "Message: {\"messageCode\": " + messageCode + ", \"value\": " + value + "}";
     }
 
     @Override

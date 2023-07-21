@@ -31,7 +31,7 @@ public class StartTransition {
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     public StartTransition() {
     }

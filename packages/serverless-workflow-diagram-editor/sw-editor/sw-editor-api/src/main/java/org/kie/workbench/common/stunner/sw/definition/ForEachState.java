@@ -37,7 +37,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSer
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "actions", "inputCollection", "outputCollection", "iterationParam", "transition", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
-public class ForEachState extends State<ForEachState> implements HasEnd<ForEachState>, HasMetadata<ForEachState>, HasErrors<ForEachState>, HasCompensatedBy<ForEachState> {
+public class ForEachState extends State<ForEachState> {
 
     public static final String TYPE_FOR_EACH = "foreach";
 
@@ -65,13 +65,13 @@ public class ForEachState extends State<ForEachState> implements HasEnd<ForEachS
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public ErrorTransition[] onErrors;
 
@@ -79,7 +79,7 @@ public class ForEachState extends State<ForEachState> implements HasEnd<ForEachS
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
     @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     public String compensatedBy;
 
@@ -90,6 +90,7 @@ public class ForEachState extends State<ForEachState> implements HasEnd<ForEachS
     public void setMode(String mode) {
         this.mode = mode;
     }
+
     public Object getBatchSize() {
         return batchSize;
     }

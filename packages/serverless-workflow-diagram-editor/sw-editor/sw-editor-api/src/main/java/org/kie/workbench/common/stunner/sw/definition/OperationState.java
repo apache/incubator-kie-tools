@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSer
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "actions", "usedForCompensation", "transition", "end", "onErrors", "compensatedBy", "stateDataFilter", "timeouts", "eventTimeout", "actionMode", "metadata"})
-public class OperationState extends State<OperationState> implements HasEnd<OperationState>, HasMetadata<OperationState>, HasErrors<OperationState>, HasCompensatedBy<OperationState> {
+public class OperationState extends State<OperationState> {
 
     public static final String TYPE_OPERATION = "operation";
 
@@ -53,13 +53,13 @@ public class OperationState extends State<OperationState> implements HasEnd<Oper
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public ErrorTransition[] onErrors;
 
@@ -67,7 +67,7 @@ public class OperationState extends State<OperationState> implements HasEnd<Oper
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
     @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     public String compensatedBy;
 
@@ -78,6 +78,7 @@ public class OperationState extends State<OperationState> implements HasEnd<Oper
     public String getActionMode() {
         return actionMode;
     }
+
     public OperationState setActionMode(String actionMode) {
         this.actionMode = actionMode;
         return this;

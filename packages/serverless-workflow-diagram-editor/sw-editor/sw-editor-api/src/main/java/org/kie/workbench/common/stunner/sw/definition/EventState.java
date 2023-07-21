@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSer
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "compensatedBy", "stateDataFilter", "timeouts", "end", "exclusive", "onEvents", "onErrors", "eventTimeout", "transition", "metadata"})
-public class EventState extends State<EventState> implements HasEnd<EventState>, HasMetadata<EventState>, HasErrors<EventState>, HasCompensatedBy<EventState> {
+public class EventState extends State<EventState> {
 
     public static final String TYPE_EVENT = "event";
 
@@ -51,13 +51,13 @@ public class EventState extends State<EventState> implements HasEnd<EventState>,
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public ErrorTransition[] onErrors;
 
@@ -65,7 +65,7 @@ public class EventState extends State<EventState> implements HasEnd<EventState>,
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
     @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     public String compensatedBy;
 

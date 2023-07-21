@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import java.util.ArrayList;
 import java.util.List;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -37,9 +39,6 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
-import org.kie.workbench.common.stunner.sw.definition.HasCompensatedBy;
-import org.kie.workbench.common.stunner.sw.definition.HasEnd;
-import org.kie.workbench.common.stunner.sw.definition.HasErrors;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
@@ -73,7 +72,8 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                if (state instanceof HasEnd && ((HasEnd<?>) state).toEnd()) {
+                JsPropertyMap<Object> map = Js.asPropertyMap(state);
+                if (map.has("end") && GraphUtils.toEnd(map.get("end"))) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -84,8 +84,8 @@ public interface StateMarshalling {
                 }
 
                 // Parse transition.
-                if (state instanceof HasEnd) {
-                    String transition = getTransition(((HasEnd) state).getTransition());
+                if (map.has("transition")) {
+                    String transition = getTransition(map.get("transition"));
                     if (isValidString(transition)) {
                         final Transition t = new Transition();
                         t.setTo(transition);
@@ -93,21 +93,19 @@ public interface StateMarshalling {
                     }
                 }
 
-                if (state instanceof HasCompensatedBy) {
-                    HasCompensatedBy hasCompensatedBy = (HasCompensatedBy) state;
+                if (map.has("compensatedBy")) {
+                    String compensatedBy = (String) map.get("compensatedBy");
                     // Parse compensation transition.
-                    if (isValidString(hasCompensatedBy.getCompensatedBy())) {
+                    if (isValidString(compensatedBy)) {
                         CompensationTransition compensationTransition = new CompensationTransition();
-                        compensationTransition.setTransition(hasCompensatedBy.getCompensatedBy());
+                        compensationTransition.setTransition(compensatedBy);
                         Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
                     }
                 }
 
-
-                if (state instanceof HasErrors) {
-                    HasErrors hasErrors = (HasErrors) state;
+                if (map.has("onErrors")) {
                     // Parse on-errors.
-                    ErrorTransition[] onErrors = hasErrors.getOnErrors();
+                    ErrorTransition[] onErrors = (ErrorTransition[]) map.get("onErrors");
                     if (null != onErrors && onErrors.length > 0) {
                         for (int i = 0; i < onErrors.length; i++) {
                             ErrorTransition onError = onErrors[i];
@@ -141,9 +139,9 @@ public interface StateMarshalling {
                     }
                 }
 
-                if (state instanceof HasErrors) {
-                    HasErrors hasErrors = (HasErrors) state;
-                    hasErrors.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+                JsPropertyMap<Object> map = Js.asPropertyMap(state);
+                if (map.has("onErrors")) {
+                    map.set("onErrors", errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
                 }
                 return state;
             };

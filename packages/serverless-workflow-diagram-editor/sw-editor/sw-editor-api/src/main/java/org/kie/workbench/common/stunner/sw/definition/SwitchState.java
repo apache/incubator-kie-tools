@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSer
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "dataConditions", "eventConditions", "transition", "end", "onErrors", "usedForCompensation", "compensatedBy", "dataConditions", "stateDataFilter", "timeouts", "eventTimeout", "metadata"})
-public class SwitchState extends State<SwitchState> implements HasMetadata<SwitchState>, HasErrors<SwitchState>, HasCompensatedBy<SwitchState> {
+public class SwitchState extends State<SwitchState> {
 
     public static final String TYPE_SWITCH = "switch";
 
@@ -53,7 +53,7 @@ public class SwitchState extends State<SwitchState> implements HasMetadata<Switc
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
     @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     public String compensatedBy;
 
@@ -68,6 +68,7 @@ public class SwitchState extends State<SwitchState> implements HasMetadata<Switc
     public void setDefaultCondition(DefaultConditionTransition defaultCondition) {
         this.defaultCondition = defaultCondition;
     }
+
     public EventConditionTransition[] getEventConditions() {
         return eventConditions;
     }

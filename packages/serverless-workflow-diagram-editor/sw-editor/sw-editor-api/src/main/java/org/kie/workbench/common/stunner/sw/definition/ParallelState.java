@@ -36,8 +36,8 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSer
 @JSONMapper
 @YAMLMapper
 @JsType
-@YamlPropertyOrder({"name", "type", "transition", "stateDataFilter", "compensatedBy", "branches", "timeouts", "eventTimeout", "onErrors", "end",  "metadata"})
-public class ParallelState extends State<ParallelState> implements HasEnd<ParallelState>, HasMetadata<ParallelState>, HasErrors<ParallelState>, HasCompensatedBy<ParallelState> {
+@YamlPropertyOrder({"name", "type", "transition", "stateDataFilter", "compensatedBy", "branches", "timeouts", "eventTimeout", "onErrors", "end", "metadata"})
+public class ParallelState extends State<ParallelState> {
 
     public static final String TYPE_PARALLEL = "parallel";
 
@@ -51,7 +51,7 @@ public class ParallelState extends State<ParallelState> implements HasEnd<Parall
     @JsonbTypeDeserializer(NumCompletedJsonTypeSerializer.class)
     @YamlTypeSerializer(StringNumberYamlTypeSerializer.class)
     @YamlTypeDeserializer(StringNumberYamlTypeSerializer.class)
-    private Object numCompleted;
+    public Object numCompleted;
 
     public ParallelStateBranch[] branches;
 
@@ -63,13 +63,13 @@ public class ParallelState extends State<ParallelState> implements HasEnd<Parall
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public ErrorTransition[] onErrors;
 
@@ -77,7 +77,7 @@ public class ParallelState extends State<ParallelState> implements HasEnd<Parall
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
     @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     public String compensatedBy;
 
@@ -88,6 +88,7 @@ public class ParallelState extends State<ParallelState> implements HasEnd<Parall
     public void setCompletionType(String completionType) {
         this.completionType = completionType;
     }
+
     public ParallelStateBranch[] getBranches() {
         return branches;
     }

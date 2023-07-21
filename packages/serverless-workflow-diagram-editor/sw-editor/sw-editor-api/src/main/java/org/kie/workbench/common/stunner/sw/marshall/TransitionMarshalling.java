@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
@@ -26,8 +28,6 @@ import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
-import org.kie.workbench.common.stunner.sw.definition.HasCompensatedBy;
-import org.kie.workbench.common.stunner.sw.definition.HasEnd;
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
@@ -69,28 +69,26 @@ public interface TransitionMarshalling {
 
                 State sourceState = getElementDefinition(sourceNode);
                 Object targetDef = getElementDefinition(targetNode);
-                if (!(sourceState instanceof HasEnd)) {
+                JsPropertyMap<Object> map = Js.asPropertyMap(sourceState);
+                if (!(map.has("end"))) {
                     return edge;
                 }
 
-                HasEnd source = ((HasEnd) sourceState);
-
                 if (targetDef instanceof End) {
-                    source.setTransition(null);
-
-                    if (source.getEnd() instanceof Boolean) {
-                        source.setEnd(true);
+                    map.set("transition", null);
+                    if (map.get("end") instanceof Boolean) {
+                        map.set("end", true);
                     } // else is Object
                 } else {
-                    if (null == source.getTransition() ||
-                            source.getTransition() instanceof String) {
-                        source.setTransition(getStateNodeName(targetNode));
+                    if (null == map.get("transition") ||
+                            map.get("transition") instanceof String) {
+                        map.set("transition", getStateNodeName(targetNode));
                     } else {
-                        ((StateTransition) source.getTransition()).setNextState(getStateNodeName(targetNode));
+                        ((StateTransition) map.get("transition")).setNextState(getStateNodeName(targetNode));
                     }
 
-                    if (source.getEnd() instanceof Boolean) {
-                        source.setEnd(false);
+                    if (map.get("end") instanceof Boolean) {
+                        map.set("end", false);
                     }
                 }
 
@@ -115,9 +113,11 @@ public interface TransitionMarshalling {
                 if (null != sourceNode) {
                     Node targetNode = edge.getTargetNode();
                     ViewImpl view = (ViewImpl) sourceNode.getContent();
-                    if (null != targetNode && view != null && view.getDefinition() instanceof HasCompensatedBy) {
-                        HasCompensatedBy<?> sourceState = getElementDefinition(sourceNode);
-                        sourceState.setCompensatedBy(getStateNodeName(targetNode));
+                    JsPropertyMap<Object> map = Js.asPropertyMap(view.getDefinition());
+                    if (null != targetNode && view != null && map.has("compensatedBy")) {
+                        Object sourceState = getElementDefinition(sourceNode);
+                        JsPropertyMap<Object> sourceMap = Js.asPropertyMap(sourceState);
+                        sourceMap.set("compensatedBy", getStateNodeName(targetNode));
                     }
                 }
 
@@ -126,11 +126,10 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<DataConditionTransition> DATA_CONDITION_TRANSITION_UNMARSHALLER =
             (context, dataConditionTransition) -> {
-                boolean end = dataConditionTransition.toEnd();
                 String transition = getTransition(dataConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (end) {
+                if (GraphUtils.toEnd(dataConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -179,7 +178,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(defaultConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (defaultConditionTransition.toEnd()) {
+                if (GraphUtils.toEnd(defaultConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -229,7 +228,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(errorTransition.getTransition());
 
                 Edge edge = null;
-                if (errorTransition.toEnd()) {
+                if (GraphUtils.toEnd(errorTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -279,7 +278,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(eventConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (eventConditionTransition.toEnd()) {
+                if (GraphUtils.toEnd(eventConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);

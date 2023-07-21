@@ -39,7 +39,7 @@ public class StateEnd {
     @JsonbTypeDeserializer(ContinueAsJsonbTypeSerializer.class)
     @YamlTypeSerializer(ContinueAsYamlTypeSerializer.class)
     @YamlTypeDeserializer(ContinueAsYamlTypeSerializer.class)
-    private Object continueAs;
+    public Object continueAs;
 
     public ProducedEvent[] produceEvents;
 

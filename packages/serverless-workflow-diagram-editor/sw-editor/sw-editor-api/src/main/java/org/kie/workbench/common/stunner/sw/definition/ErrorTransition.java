@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.StateEndDefinitionYamlT
 import org.kie.workbench.common.stunner.sw.marshall.yaml.StateTransitionDefinitionYamlTypeSerializer;
 
 @JsType
-public class ErrorTransition implements HasEnd {
+public class ErrorTransition {
 
     public String errorRef;
 
@@ -35,13 +35,13 @@ public class ErrorTransition implements HasEnd {
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public ErrorTransition() {
     }

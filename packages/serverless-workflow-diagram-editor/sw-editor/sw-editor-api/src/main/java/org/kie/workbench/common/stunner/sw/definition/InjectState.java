@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.StringOrValueHolderYaml
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "usedForCompensation", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "data", "metadata"})
-public class InjectState extends State<InjectState> implements HasEnd<InjectState>, HasMetadata<InjectState>, HasCompensatedBy<InjectState> {
+public class InjectState extends State<InjectState> {
 
     public static final String TYPE_INJECT = "inject";
 
@@ -46,7 +46,7 @@ public class InjectState extends State<InjectState> implements HasEnd<InjectStat
     @JsonbTypeDeserializer(StringOrValueHolderJsonbTypeSerializer.class)
     @YamlTypeSerializer(StringOrValueHolderYamlTypeSerializer.class)
     @YamlTypeDeserializer(StringOrValueHolderYamlTypeSerializer.class)
-    private Object data;
+    public Object data;
 
     public Boolean usedForCompensation;
 
@@ -58,13 +58,13 @@ public class InjectState extends State<InjectState> implements HasEnd<InjectStat
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public String compensatedBy;
 

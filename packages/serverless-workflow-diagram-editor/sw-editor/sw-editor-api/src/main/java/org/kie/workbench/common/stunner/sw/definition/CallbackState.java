@@ -35,7 +35,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSer
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "action", "eventRef", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
-public class CallbackState extends State<CallbackState> implements HasEnd<CallbackState>, HasMetadata<CallbackState>, HasErrors<CallbackState>, HasCompensatedBy<CallbackState> {
+public class CallbackState extends State<CallbackState> {
 
     public static final String TYPE_CALLBACK = "callback";
 
@@ -43,7 +43,7 @@ public class CallbackState extends State<CallbackState> implements HasEnd<Callba
 
     public ActionNode action;
 
-    EventDataFilter eventDataFilter;
+    public EventDataFilter eventDataFilter;
 
     public StateDataFilter stateDataFilter;
 
@@ -53,13 +53,13 @@ public class CallbackState extends State<CallbackState> implements HasEnd<Callba
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public ErrorTransition[] onErrors;
 
@@ -67,7 +67,7 @@ public class CallbackState extends State<CallbackState> implements HasEnd<Callba
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonSerializer.class)
     @YamlTypeSerializer(WorkflowTimeoutsYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowTimeoutsYamlSerializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     public String compensatedBy;
 
@@ -78,6 +78,7 @@ public class CallbackState extends State<CallbackState> implements HasEnd<Callba
     public String getEventRef() {
         return eventRef;
     }
+
     public void setEventRef(String eventRef) {
         this.eventRef = eventRef;
     }

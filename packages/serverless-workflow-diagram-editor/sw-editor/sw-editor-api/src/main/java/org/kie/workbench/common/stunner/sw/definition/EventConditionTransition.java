@@ -27,7 +27,7 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.StateEndDefinitionYamlT
 import org.kie.workbench.common.stunner.sw.marshall.yaml.StateTransitionDefinitionYamlTypeSerializer;
 
 @JsType
-public class EventConditionTransition implements HasEnd {
+public class EventConditionTransition {
 
     public String name;
 
@@ -37,13 +37,13 @@ public class EventConditionTransition implements HasEnd {
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
-    private Object transition;
+    public Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
     @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
     @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
-    private Object end;
+    public Object end;
 
     public EventConditionTransition() {
     }
