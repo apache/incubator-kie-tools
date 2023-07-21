@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import BpmnEditor from "../framework/editor/bpmn/BpmnEditor";
-import Explorer from "../framework/editor/Explorer";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import GitHubListItem from "../framework/github-file-list/GitHubListItem";
-import GitHubListPage from "../framework/github-file-list/GitHubListPage";
-import Properties from "../framework/editor/Properties";
-import SideBar from "../framework/editor/SideBar";
-import Tools from "../utils/Tools";
+import BpmnEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/bpmn/BpmnEditor";
+import Explorer from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/Explorer";
+import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import GitHubListItem from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListItem";
+import GitHubListPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListPage";
+import Properties from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/Properties";
+import SideBar from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/SideBar";
+import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
 
 const TEST_NAME = "BpmnTest";
 

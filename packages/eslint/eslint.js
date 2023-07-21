@@ -17,10 +17,15 @@
 const execSync = require("child_process").execSync;
 const path = require("path");
 const fs = require("fs");
+const configFileName = ".eslintrc.js";
 
 const lintPath = path.resolve(process.argv[2]);
-const configPath = require.resolve("./.eslintrc.js");
+const localConfigPath = path.resolve(".", configFileName);
+const localConfigPathExists = fs.existsSync(localConfigPath);
+const configPath = localConfigPathExists ? localConfigPath : require.resolve(`./${configFileName}`);
 const potentialIgnorePath = path.resolve(".", ".eslintignore");
+
+const config = require(configPath);
 
 console.info("[kie-tools--eslint] Lint path: " + lintPath);
 console.info("[kie-tools--eslint] Config path: " + configPath);

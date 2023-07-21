@@ -13,12 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+const baseConfig = require("@kie-tools/eslint/.eslintrc.js");
 
-const buildEnv = require("./env");
-const { setup } = require("@kie-tools/maven-config-setup-helper");
-
-setup(`
-    -Drevision=${buildEnv.env.swfDeploymentQuarkusApp.version}
-    -Dquarkus.platform.version=${buildEnv.env.swfDeploymentQuarkusApp.quarkusPlatform.version}
-    -Dkogito.version=${buildEnv.env.swfDeploymentQuarkusApp.kogito.version}
-`);
+module.exports = {
+  ...baseConfig,
+  overrides: [
+    ...baseConfig.overrides,
+    {
+      files: ["src/**/*.{js,jsx,ts,tsx}"],
+      plugins: ["import"],
+      rules: {
+        "import/no-nodejs-modules": [
+          "error",
+          {
+            allow: ["path-browserify"],
+          },
+        ],
+      },
+    },
+  ],
+};

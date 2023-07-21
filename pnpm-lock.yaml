@@ -1161,6 +1161,9 @@ importers:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
+      "@kie-tools/chrome-extension-test-helper":
+        specifier: workspace:*
+        version: link:../chrome-extension-test-helper
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -1335,6 +1338,30 @@ importers:
       zip-webpack-plugin:
         specifier: ^4.0.1
         version: 4.0.1(webpack@5.70.0)
+
+  packages/chrome-extension-test-helper:
+    devDependencies:
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/chai":
+        specifier: ^4.2.17
+        version: 4.2.18
+      "@types/selenium-webdriver":
+        specifier: ^4.1.12
+        version: 4.1.12
+      chai:
+        specifier: ^4.3.4
+        version: 4.3.4
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      selenium-webdriver:
+        specifier: ^4.8.1
+        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
 
   packages/dashbuilder:
     dependencies:
@@ -3609,6 +3636,9 @@ importers:
       eslint-config-prettier:
         specifier: ^8.8.0
         version: 8.8.0(eslint@8.43.0)
+      eslint-plugin-import:
+        specifier: ^2.27.5
+        version: 2.27.5(@typescript-eslint/parser@5.60.1)(eslint@8.43.0)
       eslint-plugin-react:
         specifier: ^7.32.2
         version: 7.32.2(eslint@8.43.0)
@@ -6821,6 +6851,9 @@ importers:
       monaco-yaml:
         specifier: ^4.0.0
         version: 4.0.0(monaco-editor@0.33.0)
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -6864,6 +6897,9 @@ importers:
       "@types/json-schema":
         specifier: ^7.0.11
         version: 7.0.11
+      "@types/path-browserify":
+        specifier: ^1.0.0
+        version: 1.0.0
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -7106,6 +7142,9 @@ importers:
       jsonc-parser:
         specifier: ^3.0.0
         version: 3.0.0
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
       vscode-json-languageservice:
         specifier: ^4.2.1
         version: 4.2.1
@@ -7149,6 +7188,9 @@ importers:
       "@types/json-to-ast":
         specifier: ^2.1.2
         version: 2.1.2
+      "@types/path-browserify":
+        specifier: ^1.0.0
+        version: 1.0.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -7185,6 +7227,9 @@ importers:
       openapi-types:
         specifier: ^7.0.1
         version: 7.2.3
+      path-browserify:
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -7216,6 +7261,9 @@ importers:
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
+      "@types/path-browserify":
+        specifier: ^1.0.0
+        version: 1.0.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -16857,6 +16905,11 @@ packages:
       { integrity: sha512-GEjR5l9wZGS74KhL1a1tZuyRJqdLB7LGgOXzWspJx9xxC/iyCFTwwKv71Lz8fzZyGuVW8FjASQGoYFi6XZJWLQ== }
     dev: true
 
+  /@types/json5@0.0.29:
+    resolution:
+      { integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ== }
+    dev: true
+
   /@types/jsonfile@6.1.1:
     resolution:
       { integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png== }
@@ -16955,6 +17008,11 @@ packages:
   /@types/parse-json@4.0.0:
     resolution:
       { integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA== }
+    dev: true
+
+  /@types/path-browserify@1.0.0:
+    resolution:
+      { integrity: sha512-XMCcyhSvxcch8b7rZAtFAaierBYdeHXVvg2iYnxOV0MCQHmPuRRmGZPFDRzPayxcGiiSL1Te9UIO+f3cuj0tfw== }
     dev: true
 
   /@types/prettier@2.2.3:
@@ -18432,6 +18490,17 @@ packages:
     resolution:
       { integrity: sha512-SleRWjh9JUud2wH1hPs9rZBZ33H6T9HOiL0uwGnGx9FpE6wKGyfWugmbkEOIs6qWrZhg0LWeLziLrEwQJhs5mQ== }
     engines: { node: ">=0.10.0" }
+    dev: true
+
+  /array.prototype.flat@1.3.1:
+    resolution:
+      { integrity: sha512-roTU0KWIOmJ4DRLmwKd19Otg0/mT3qPNt0Qb3GWW8iObuZXxrjB/pzn0R3hqpRSWg4HCwqx+0vwOnWnvlOyeIA== }
+    engines: { node: ">= 0.4" }
+    dependencies:
+      call-bind: 1.0.2
+      define-properties: 1.2.0
+      es-abstract: 1.21.2
+      es-shim-unscopables: 1.0.0
     dev: true
 
   /array.prototype.flatmap@1.3.1:
@@ -22380,6 +22449,81 @@ packages:
       eslint: 8.43.0
     dev: true
 
+  /eslint-import-resolver-node@0.3.7:
+    resolution:
+      { integrity: sha512-gozW2blMLJCeFpBwugLTGyvVjNoeo1knonXAcatC6bjPBZitotxdWf7Gimr25N4c0AAOo4eOUfaG82IJPDpqCA== }
+    dependencies:
+      debug: 3.2.7
+      is-core-module: 2.12.0
+      resolve: 1.22.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /eslint-module-utils@2.8.0(@typescript-eslint/parser@5.60.1)(eslint-import-resolver-node@0.3.7)(eslint@8.43.0):
+    resolution:
+      { integrity: sha512-aWajIYfsqCKRDgUfjEXNN/JlrzauMuSEy5sbd7WXbtW3EH6A6MpwEh42c7qD+MqQo9QMJ6fWLAeIJynx0g6OAw== }
+    engines: { node: ">=4" }
+    peerDependencies:
+      "@typescript-eslint/parser": "*"
+      eslint: "*"
+      eslint-import-resolver-node: "*"
+      eslint-import-resolver-typescript: "*"
+      eslint-import-resolver-webpack: "*"
+    peerDependenciesMeta:
+      "@typescript-eslint/parser":
+        optional: true
+      eslint:
+        optional: true
+      eslint-import-resolver-node:
+        optional: true
+      eslint-import-resolver-typescript:
+        optional: true
+      eslint-import-resolver-webpack:
+        optional: true
+    dependencies:
+      "@typescript-eslint/parser": 5.60.1(eslint@8.43.0)
+      debug: 3.2.7
+      eslint: 8.43.0
+      eslint-import-resolver-node: 0.3.7
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /eslint-plugin-import@2.27.5(@typescript-eslint/parser@5.60.1)(eslint@8.43.0):
+    resolution:
+      { integrity: sha512-LmEt3GVofgiGuiE+ORpnvP+kAm3h6MLZJ4Q5HCyHADofsb4VzXFsRiWj3c0OFiV+3DWFh0qg3v9gcPlfc3zRow== }
+    engines: { node: ">=4" }
+    peerDependencies:
+      "@typescript-eslint/parser": "*"
+      eslint: ^2 || ^3 || ^4 || ^5 || ^6 || ^7.2.0 || ^8
+    peerDependenciesMeta:
+      "@typescript-eslint/parser":
+        optional: true
+    dependencies:
+      "@typescript-eslint/parser": 5.60.1(eslint@8.43.0)
+      array-includes: 3.1.6
+      array.prototype.flat: 1.3.1
+      array.prototype.flatmap: 1.3.1
+      debug: 3.2.7
+      doctrine: 2.1.0
+      eslint: 8.43.0
+      eslint-import-resolver-node: 0.3.7
+      eslint-module-utils: 2.8.0(@typescript-eslint/parser@5.60.1)(eslint-import-resolver-node@0.3.7)(eslint@8.43.0)
+      has: 1.0.3
+      is-core-module: 2.12.0
+      is-glob: 4.0.3
+      minimatch: 3.1.2
+      object.values: 1.1.6
+      resolve: 1.22.1
+      semver: 6.3.0
+      tsconfig-paths: 3.14.2
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+    dev: true
+
   /eslint-plugin-react-hooks@4.6.0(eslint@8.43.0):
     resolution:
       { integrity: sha512-oFc7Itz9Qxh2x4gNHStv3BqJq54ExXmfC+a1NjAta66IAN87Wu0R/QArgIS9qKzX3dXKPI9H5crl9QchNMY9+g== }
@@ -26264,6 +26408,14 @@ packages:
       code-error-fragment: 0.0.230
       grapheme-splitter: 1.0.4
     dev: false
+
+  /json5@1.0.2:
+    resolution:
+      { integrity: sha512-g1MWMLBiz8FKi1e4w0UyVL3w+iJceWAFBAaBnnGKOpNa5f8TLktkbre1+s6oICydWAm+HRUGTmI+//xv2hvXYA== }
+    hasBin: true
+    dependencies:
+      minimist: 1.2.8
+    dev: true
 
   /json5@2.2.1:
     resolution:
@@ -32530,6 +32682,12 @@ packages:
       ansi-regex: 6.0.1
     dev: true
 
+  /strip-bom@3.0.0:
+    resolution:
+      { integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA== }
+    engines: { node: ">=4" }
+    dev: true
+
   /strip-bom@4.0.0:
     resolution:
       { integrity: sha512-3xurFv5tEgii33Zi8Jtp55wEIILR9eh34FAW00PZf+JnSsTmV/ioewSgQl97JHvgjoRGwPShsWm+IdrxB35d0w== }
@@ -33275,6 +33433,16 @@ packages:
       typescript: 4.8.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    dev: true
+
+  /tsconfig-paths@3.14.2:
+    resolution:
+      { integrity: sha512-o/9iXgCYc5L/JxCHPe3Hvh8Q/2xm5Z+p18PESBU6Ff33695QnCHBEjcytY2q19ua7Mbl/DavtBOLq+oG0RCL+g== }
+    dependencies:
+      "@types/json5": 0.0.29
+      json5: 1.0.2
+      minimist: 1.2.8
+      strip-bom: 3.0.0
     dev: true
 
   /tslib@1.14.1:

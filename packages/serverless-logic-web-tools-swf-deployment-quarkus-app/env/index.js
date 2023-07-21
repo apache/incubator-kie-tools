@@ -19,8 +19,12 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS__quarkusPlatformVersion: {
-      default: "2.16.7.Final",
-      description: "",
+      default: "2.16.8.Final",
+      description: "Quarkus platform version",
+    },
+    SERVERLESS_LOGIC_WEB_TOOLS__kogitoVersion: {
+      default: "1.41.0.Final",
+      description: "Kogito version",
     },
   }),
   get env() {
@@ -29,6 +33,9 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         version: require("../package.json").version,
         quarkusPlatform: {
           version: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__quarkusPlatformVersion),
+        },
+        kogito: {
+          version: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kogitoVersion),
         },
       },
     };
