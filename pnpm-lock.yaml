@@ -2906,10 +2906,10 @@ importers:
       "@kie-tools/dmn-dev-deployment-quarkus-app":
         specifier: workspace:*
         version: link:../dmn-dev-deployment-quarkus-app
+    devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
         version: link:../image-builder
-    devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -3096,6 +3096,9 @@ importers:
         specifier: workspace:*
         version: link:../dev-deployments-upload-service
     devDependencies:
+      "@kie-tools/image-builder":
+        specifier: workspace:*
+        version: link:../image-builder
       "@kie-tools/maven-config-setup-helper":
         specifier: workspace:*
         version: link:../maven-config-setup-helper

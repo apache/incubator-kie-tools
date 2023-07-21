@@ -602,6 +602,7 @@
         "target": "@kie-tools/dev-deployments-upload-service",
         "weight": 1
       },
+      { "source": "@kie-tools/dmn-dev-deployment-sample", "target": "@kie-tools/image-builder", "weight": 1 },
       {
         "source": "@kie-tools/dmn-dev-deployment-sample",
         "target": "@kie-tools/maven-config-setup-helper",

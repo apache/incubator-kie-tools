@@ -30,10 +30,10 @@
   },
   "dependencies": {
     "@kie-tools/dmn-dev-deployment-form-webapp": "workspace:*",
-    "@kie-tools/dmn-dev-deployment-quarkus-app": "workspace:*",
-    "@kie-tools/image-builder": "workspace:*"
+    "@kie-tools/dmn-dev-deployment-quarkus-app": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
     "yargs": "^17.0.1"

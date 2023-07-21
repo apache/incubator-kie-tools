@@ -19,13 +19,21 @@
     "build-quarkus:prod": "pnpm lint && run-script-os",
     "build-quarkus:prod:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build-quarkus:prod:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
-    "build:dev": "pnpm copy-assets && docker build . -f Containerfile -t dmn-dev-deployment-sample-image:latest",
+    "build:dev": "pnpm copy-assets",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
     "copy-assets": "cp -R ../dev-deployments-upload-service/dist/linux dist-dev",
+    "create-test-image:build-only": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
+    "create-test-image:kind": "kie-tools--image-builder kind $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) --kind-cluster-name kie-sandbox-dev-cluster",
+    "create-test-image:minikube": "kie-tools--image-builder minikube $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
+    "create-test-image:openshift": "kie-tools--image-builder openshift $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
+    "image:build-args": "echo \"--build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/\"",
+    "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
+    "image:podman:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) -e podman",
+    "image:tag-info": "echo -r \"$(pnpm build-env dmnDevDeploymentSampleImage.registry)\" -a \"$(pnpm build-env dmnDevDeploymentSampleImage.account)\" -n \"$(pnpm build-env dmnDevDeploymentSampleImage.name)\" -t \"$(pnpm build-env dmnDevDeploymentSampleImage.tags)\"",
     "install": "cd quarkus-app && node install.js",
     "install:mvnw": "run-script-os",
     "install:mvnw:darwin:linux": "cd quarkus-app && mvn wrapper:wrapper",
     "install:mvnw:win32": "pnpm powershell \"cd quarkus-app && mvn wrapper:wrapper\"",
-    "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "quarkus:dev": "cd quarkus-app && mvn clean package quarkus:dev -DskipTests"
   },
@@ -33,6 +41,7 @@
     "@kie-tools/dev-deployments-upload-service": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "run-script-os": "^1.1.6"
