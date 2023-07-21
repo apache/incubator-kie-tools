@@ -1,16 +1,9 @@
 export const NODE_TYPES = {
-  inputData: "inputData",
-  decision: "decision",
-  bkm: "bkm",
-  decisionService: "decisionService",
-  knowledgeSource: "knowledgeSource",
-  textAnnotation: "textAnnotation",
-  group: "group",
-};
-
-export const EDGE_TYPES = {
-  informationRequirement: "informationRequirement",
-  knowledgeRequirement: "knowledgeRequirement",
-  authorityRequirement: "authorityRequirement",
-  association: "association",
+  inputData: "node_inputData" as const,
+  decision: "node_decision" as const,
+  bkm: "node_bkm" as const,
+  decisionService: "node_decisionService" as const,
+  knowledgeSource: "node_knowledgeSource" as const,
+  textAnnotation: "node_textAnnotation" as const,
+  group: "node_group" as const,
 };

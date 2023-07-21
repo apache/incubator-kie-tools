@@ -7,34 +7,25 @@ import {
   DMN14__tAssociation,
   DMN14__tBusinessKnowledgeModel,
   DMN14__tDecision,
-  DMN14__tDecisionService,
   DMN14__tDefinitions,
-  DMN14__tGroup,
-  DMN14__tInformationItem,
-  DMN14__tInputData,
   DMN14__tKnowledgeSource,
-  DMN14__tTextAnnotation,
   DMNDI13__DMNEdge,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
-import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
-import { v4 as uuid } from "uuid";
-import { DmnNodeWithExpression } from "./nodes/DmnNodeWithExpression";
-import { NsweHandles } from "./edges/NsweHandles";
-import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { Pallete } from "./Pallete";
+import { SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { ConnectionLine } from "./connections/ConnectionLine";
+import { EDGE_TYPES } from "./edges/EdgeTypes";
 import {
   AssociationEdge,
   AuthorityRequirementEdge,
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
-import { ConnectionLine } from "./edges/ConnectionLine";
-import { EDGE_TYPES, NODE_TYPES } from "./nodes/NodeTypes";
+import { DmnNodeWithExpression } from "./nodes/DmnNodeWithExpression";
+import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
   BkmNode,
   DecisionNode,
@@ -44,7 +35,8 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { checkIsValidConnection } from "./nodes/isValidConnection";
+import { checkIsValidConnection } from "./connections/isValidConnection";
+import { EdgeType, NodeType } from "./connections/graphStructure";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -73,7 +65,7 @@ export function Diagram({
   const [edges, setEdges, onEdgesChange] = RF.useEdgesState([]);
 
   const onEdgeUpdate = useCallback((args) => {
-    console.log("Edge updated! --> ", args);
+    console.log("TIAGO WRITE: Edge updated! --> ", args);
   }, []);
 
   const onInfo = useCallback(() => {
@@ -82,32 +74,41 @@ export function Diagram({
 
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
 
-  const nodeTypes = useMemo(
+  const nodeTypes: Record<NodeType, any> = useMemo(
     () => ({
       // grouping
-      decisionService: DecisionServiceNode,
-      group: GroupNode,
+      node_decisionService: DecisionServiceNode,
+      node_group: GroupNode,
 
       // logic
-      inputData: InputDataNode,
-      decision: DecisionNode,
-      bkm: BkmNode,
+      node_inputData: InputDataNode,
+      node_decision: DecisionNode,
+      node_bkm: BkmNode,
 
       // info
-      knowledgeSource: KnowledgeSourceNode,
-      textAnnotation: TextAnnotationNode,
+      node_knowledgeSource: KnowledgeSourceNode,
+      node_textAnnotation: TextAnnotationNode,
     }),
     []
   );
 
-  const edgeTypes = useMemo(() => {
+  const edgeTypes: Record<EdgeType, any> = useMemo(() => {
     return {
-      informationRequirement: InformationRequirementEdge,
-      authorityRequirement: AuthorityRequirementEdge,
-      knowledgeRequirement: KnowledgeRequirementEdge,
-      association: AssociationEdge,
+      edge_informationRequirement: InformationRequirementEdge,
+      edge_authorityRequirement: AuthorityRequirementEdge,
+      edge_knowledgeRequirement: KnowledgeRequirementEdge,
+      edge_association: AssociationEdge,
     };
   }, []);
+
+  const nodesById = useMemo(
+    () =>
+      nodes.reduce((acc, a) => {
+        acc.set(a.id, a);
+        return acc;
+      }, new Map<string, RF.Node>()),
+    [nodes]
+  );
 
   const { edgesById, shapesById } = useMemo(
     () =>
@@ -207,6 +208,17 @@ export function Diagram({
     ]);
   }, [dmn.definitions.drgElement, dmn.definitions.artifact, onInfo, setNodes, setOpenNodeWithExpression, shapesById]);
 
+  const getEdgeData = useCallback(
+    ({ id, source, target }: { id: string; source: string; target: string }) => {
+      return {
+        dmnEdge: id ? edgesById.get(id) : undefined,
+        dmnShapeSource: shapesById.get(source),
+        dmnShapeTarget: shapesById.get(target),
+      };
+    },
+    [edgesById, shapesById]
+  );
+
   useEffect(() => {
     const markerEnd = {
       width: 20,
@@ -223,14 +235,10 @@ export function Diagram({
           ...(decision.informationRequirement ?? []).map((ir) => {
             const source = (ir.requiredDecision?.["@_href"] ?? ir.requiredInput?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
             const target = decision["@_id"]!;
-            const id = ir["@_id"];
+            const id = ir["@_id"] ?? "";
             return {
-              data: {
-                dmnEdge: id ? edgesById.get(id) : undefined,
-                dmnShapeSource: shapesById.get(source),
-                dmnShapeTarget: shapesById.get(target),
-              },
-              id: id ?? "",
+              data: getEdgeData({ id, source, target }),
+              id,
               type: EDGE_TYPES.informationRequirement,
               source,
               target,
@@ -246,14 +254,10 @@ export function Diagram({
           ...(node.knowledgeRequirement ?? []).map((kr) => {
             const source = (kr.requiredKnowledge?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
             const target = node["@_id"]!;
-            const id = kr["@_id"];
+            const id = kr["@_id"] ?? "";
             return {
-              data: {
-                dmnEdge: id ? edgesById.get(id) : undefined,
-                dmnShapeSource: shapesById.get(source),
-                dmnShapeTarget: shapesById.get(target),
-              },
-              id: id ?? "",
+              data: getEdgeData({ id, source, target }),
+              id,
               type: EDGE_TYPES.knowledgeRequirement,
               source,
               target,
@@ -277,14 +281,10 @@ export function Diagram({
               "#"
             ).substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
             const target = node["@_id"]!;
-            const id = ar["@_id"];
+            const id = ar["@_id"] ?? "";
             return {
-              data: {
-                dmnEdge: id ? edgesById.get(id) : undefined,
-                dmnShapeSource: shapesById.get(source),
-                dmnShapeTarget: shapesById.get(target),
-              },
-              id: id ?? "",
+              data: getEdgeData({ id, source, target }),
+              id,
               type: EDGE_TYPES.authorityRequirement,
               source,
               target,
@@ -300,14 +300,10 @@ export function Diagram({
           const association = artifact as DMN14__tAssociation;
           const source = (association.sourceRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
           const target = (association.targetRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-          const id = artifact["@_id"];
+          const id = artifact["@_id"] ?? "";
           return {
-            data: {
-              dmnEdge: id ? edgesById.get(id) : undefined,
-              dmnShapeSource: shapesById.get(source),
-              dmnShapeTarget: shapesById.get(target),
-            },
-            id: id ?? "",
+            data: getEdgeData({ id, source, target }),
+            id,
             type: EDGE_TYPES.association,
             source,
             target,
@@ -315,7 +311,7 @@ export function Diagram({
           };
         }),
     ]);
-  }, [dmn.definitions.artifact, dmn.definitions.drgElement, setEdges, edgesById, shapesById]);
+  }, [dmn.definitions.artifact, dmn.definitions.drgElement, setEdges, getEdgeData]);
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
@@ -331,16 +327,17 @@ export function Diagram({
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
-      // e.stopPropagation();
 
       if (!container.current || !reactFlowInstance) {
         return;
       }
 
-      const type = e.dataTransfer.getData("application/reactflow");
+      const type = e.dataTransfer.getData("application/reactflow") as NodeType;
       if (typeof type === "undefined" || !type) {
         return;
       }
+
+      e.stopPropagation();
 
       const rfBounds = container.current.getBoundingClientRect();
       const position = reactFlowInstance.project({
@@ -348,37 +345,26 @@ export function Diagram({
         y: e.clientY - rfBounds.top,
       });
 
-      console.info(`Adding node of type '${type}' at position '${position.x},${position.y}'.`);
+      console.info(`TIAGO WRITE: Adding node of type '${type}' at position '${position.x},${position.y}'.`);
     },
     [container, reactFlowInstance]
   );
 
-  const [connectionHandleParams, setConnectionHandeParams] = useState<RF.OnConnectStartParams | undefined>(undefined);
-
-  const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => {
-    setConnectionHandeParams(b);
-  }, []);
+  const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
+  const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => setConnection(b), []);
 
   const onConnectEnd = useCallback(
     (event) => {
       const targetIsPane = event.target.classList.contains("react-flow__pane");
-      if (targetIsPane && container.current && connectionHandleParams) {
+      if (targetIsPane && container.current && connection) {
         // we need to remove the wrapper bounds, in order to get the correct position
         const { top, left } = container.current.getBoundingClientRect();
         const dropPoint = { x: event.clientX - left, y: event.clientY - top };
-        console.log(`Creating node at ${dropPoint.x},${dropPoint.y}`);
-        console.log(connectionHandleParams);
+        console.log(`TIAGO WRITE: Creating node at ${dropPoint.x},${dropPoint.y} -->${JSON.stringify(connection)}`);
       }
     },
-    [connectionHandleParams, container]
+    [connection, container]
   );
-
-  const nodesById = useMemo(() => {
-    return nodes.reduce((acc, a) => {
-      acc.set(a.id, a);
-      return acc;
-    }, new Map<string, RF.Node>());
-  }, [nodes]);
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
     (edge) => checkIsValidConnection(nodesById, edge),
@@ -492,63 +478,6 @@ export function SelectionStatus() {
   );
 }
 
-export function Pallete() {
-  const onDragStart = useCallback((event, nodeType) => {
-    event.dataTransfer.setData("application/reactflow", nodeType);
-    event.dataTransfer.effectAllowed = "move";
-  }, []);
-
-  return (
-    <RF.Panel position={"top-left"}>
-      <aside className={"kie-dmn-editor--pallete"}>
-        <button
-          className={"kie-dmn-editor--pallete-button dndnode input-data"}
-          onDragStart={(event) => onDragStart(event, "inputData")}
-          draggable={true}
-        >
-          I
-        </button>
-        <button
-          className={"kie-dmn-editor--pallete-button dndnode decision"}
-          onDragStart={(event) => onDragStart(event, "decision")}
-          draggable={true}
-        >
-          D
-        </button>
-        <button
-          className={"kie-dmn-editor--pallete-button dndnode bkm"}
-          onDragStart={(event) => onDragStart(event, "bkm")}
-          draggable={true}
-        >
-          B
-        </button>
-        <button
-          className={"kie-dmn-editor--pallete-button dndnode knowledge-source"}
-          onDragStart={(event) => onDragStart(event, "knowledgeSource")}
-          draggable={true}
-        >
-          K
-        </button>
-        <button
-          className={"kie-dmn-editor--pallete-button dndnode decision-service"}
-          onDragStart={(event) => onDragStart(event, "decisionService")}
-          draggable={true}
-        >
-          D
-        </button>
-        <button
-          className={"kie-dmn-editor--pallete-button dndnode text-annotation"}
-          onDragStart={(event) => onDragStart(event, "textAnnotation")}
-          draggable={true}
-        >
-          T
-        </button>
-        <button className={"kie-dmn-editor--pallete-button dndnode text-annotation"}>G</button>
-      </aside>
-    </RF.Panel>
-  );
-}
-
 export function PanWhenAltPressed() {
   const altPressed = RF.useKeyPress("Alt");
   const store = RF.useStoreApi();
@@ -563,181 +492,3 @@ export function PanWhenAltPressed() {
 
   return <></>;
 }
-
-export function EmptyLabel() {
-  return (
-    <span style={{ fontFamily: "serif" }}>
-      <i style={{ opacity: 0.8 }}>{`<Empty>`}</i>
-      <br />
-      <i style={{ opacity: 0.5, fontSize: "0.8em", lineHeight: "0.8em" }}>{`Double-click to name`}</i>
-    </span>
-  );
-}
-
-export function InfoToolbar(props: {}) {
-  return (
-    <RF.NodeToolbar position={RF.Position.Left} align={"center"}>
-      <Flex direction={{ default: "column" }}>
-        <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
-          <InfoAltIcon />
-        </Button>
-        <Button variant={ButtonVariant.plain} style={{ padding: 0, margin: 0 }}>
-          <BarsIcon size={"sm"} style={{ width: "0.5em" }} />
-        </Button>
-      </Flex>
-    </RF.NodeToolbar>
-  );
-}
-
-export function DataTypeToolbar(props: {
-  variable: DMN14__tInformationItem | undefined;
-  shape: DMNDI13__DMNShape | undefined;
-}) {
-  return (
-    <RF.NodeToolbar position={RF.Position.Bottom} align={"start"}>
-      <Label
-        style={{
-          maxWidth: (props.shape?.["dc:Bounds"]?.["@_width"] ?? 0) - 16,
-          background: "white",
-          fontFamily: "monospace",
-          paddingRight: "16px",
-        }}
-        isCompact={true}
-      >{`🔹 ${props.variable?.["@_typeRef"] ?? "<Undefined>"}`}</Label>
-    </RF.NodeToolbar>
-  );
-}
-
-const handleStyle: React.CSSProperties = {
-  display: "flex",
-  position: "unset",
-  transform: "unset",
-};
-
-export function OutgoingStuffToolbar(props: { isVisible: boolean; nodes: string[]; edges: string[] }) {
-  const style: React.CSSProperties = useMemo(
-    () => ({
-      visibility: props.isVisible ? undefined : "hidden",
-    }),
-    [props.isVisible]
-  );
-
-  return (
-    <>
-      <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"} style={style}>
-        <FlexItem>
-          {props.edges.map((e) => (
-            <RF.Handle
-              key={e}
-              id={e}
-              isConnectableEnd={false}
-              type={"source"}
-              style={handleStyle}
-              position={RF.Position.Top}
-            >
-              {e.charAt(0)}
-            </RF.Handle>
-          ))}
-        </FlexItem>
-
-        <FlexItem>
-          {props.nodes.map((n) => (
-            <RF.Handle
-              key={n}
-              id={n}
-              isConnectableEnd={false}
-              type={"source"}
-              style={handleStyle}
-              position={RF.Position.Top}
-            >
-              {n.charAt(0)}
-            </RF.Handle>
-          ))}
-        </FlexItem>
-      </Flex>
-    </>
-  );
-}
-
-const resizerControlStyle = {
-  background: "transparent",
-  border: "none",
-};
-
-export function ResizerHandle(props: {}) {
-  return (
-    <RF.NodeResizeControl
-      style={resizerControlStyle}
-      minWidth={MIN_SIZE_FOR_NODES.width}
-      minHeight={MIN_SIZE_FOR_NODES.height}
-    >
-      <div
-        style={{
-          position: "absolute",
-          top: "-10px",
-          left: "-10px",
-          width: "12px",
-          height: "12px",
-          backgroundColor: "black",
-          clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
-          borderRadius: "4px",
-        }}
-      />
-    </RF.NodeResizeControl>
-  );
-}
-
-export function EditExpressionButton(props: { isVisible: boolean; onClick: () => void }) {
-  return (
-    <>
-      {props.isVisible && (
-        <Label onClick={props.onClick} className={"kie-dmn-editor--edit-expression-label"}>
-          Edit
-        </Label>
-      )}
-    </>
-  );
-}
-
-export function InfoButton(props: { isVisible: boolean; onClick: () => void }) {
-  return (
-    <>
-      {props.isVisible && (
-        <div className={"kie-dmn-editor--info-label-toolbar"}>
-          <Label onClick={props.onClick} className={"kie-dmn-editor--info-label"}>
-            <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
-          </Label>
-        </div>
-      )}
-    </>
-  );
-}
-
-export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
-  const [isHovered, setHovered] = React.useState(false);
-
-  useEffect(() => {
-    function onEnter(e: MouseEvent) {
-      setHovered(true);
-    }
-
-    function onLeave() {
-      setHovered(false);
-    }
-
-    const r = ref.current;
-
-    r?.addEventListener("mouseenter", onEnter);
-    r?.addEventListener("mouseleave", onLeave);
-    return () => {
-      r?.removeEventListener("mouseleave", onLeave);
-      r?.removeEventListener("mouseenter", onEnter);
-    };
-  }, [ref]);
-
-  return isHovered;
-}
-
-export const generateUuid = () => {
-  return `_${uuid()}`.toLocaleUpperCase();
-};

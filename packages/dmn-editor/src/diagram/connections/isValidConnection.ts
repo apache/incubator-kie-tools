@@ -1,5 +1,5 @@
 import { Connection, Edge, Node } from "reactflow";
-import { outgoing } from "../edges/OutgoingHandleIds";
+import { EdgeType, NodeType, graphStructure } from "./graphStructure";
 
 export function checkIsValidConnection(nodesById: Map<string, Node>, edge: Edge | Connection) {
   if (!edge.source || !edge.target) {
@@ -21,5 +21,10 @@ export function _checkIsValidConnection(
     return false;
   }
 
-  return outgoing.get(sourceNode.type)?.get(sourceHandleId)?.has(targetNode.type) ?? false;
+  return (
+    graphStructure
+      .get(sourceNode.type as NodeType)
+      ?.get(sourceHandleId as EdgeType)
+      ?.has(targetNode.type as NodeType) ?? false
+  );
 }

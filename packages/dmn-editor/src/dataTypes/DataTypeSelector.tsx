@@ -10,7 +10,7 @@ export function DataTypeSelector(props: { typeRef: string | undefined }) {
   }, []);
 
   const setDataType = useCallback((dataType: string) => {
-    console.log(`Set data type --> ${dataType}`);
+    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
   }, []);
 
   return (

@@ -1,8 +1,8 @@
 import * as React from "react";
-import * as RF from "reactflow";
 import { useMemo } from "react";
+import * as RF from "reactflow";
 
-export function NsweHandles(props: { isTargeted: boolean }) {
+export function ConnectionTargetHandles(props: { isTargeted: boolean }) {
   const style: React.CSSProperties = useMemo(
     () => ({
       opacity: props.isTargeted ? 1 : 0,

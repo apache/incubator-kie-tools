@@ -13,7 +13,7 @@ export function DevWebApp() {
   const [xml, setXml] = useState(DEFAULT_DEV_WEBAPP_DMN);
 
   const onDrop = useCallback((e: React.DragEvent) => {
-    console.log("File(s) dropped");
+    console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
 
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
 

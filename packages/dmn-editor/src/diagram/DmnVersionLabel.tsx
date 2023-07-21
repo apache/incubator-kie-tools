@@ -1,5 +1,5 @@
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 
@@ -7,7 +7,11 @@ const latest = "1.4";
 
 export function DmnVersionLabel(props: { version: string }) {
   const label = useMemo(
-    () => <Label style={{ position: "absolute", bottom: "8px", left: "8px", zIndex: 100 }}>{`DMN ${latest}`}</Label>,
+    () => (
+      <Label
+        style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "8px", zIndex: 100 }}
+      >{`DMN ${latest}`}</Label>
+    ),
     []
   );
 
@@ -18,6 +22,7 @@ export function DmnVersionLabel(props: { version: string }) {
   return (
     <Popover
       aria-label="DMN version popover"
+      position={PopoverPosition.top}
       headerContent={<div>Version upgraded!</div>}
       bodyContent={
         <div>

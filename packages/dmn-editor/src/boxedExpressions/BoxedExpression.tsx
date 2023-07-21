@@ -16,7 +16,8 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DmnNodeWithExpression } from "../diagram/nodes/DmnNodeWithExpression";
 import { beeToDmn } from "./beeToDmn";
-import { dmnToBee } from "./dmnToBee";
+import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 
 export function BoxedExpression({
   dmn,
@@ -66,7 +67,7 @@ export function BoxedExpression({
   const setExpressionDefinition = useCallback(
     (beeExpression: ExpressionDefinition) => {
       setDmn((prev) => {
-        console.info(beeToDmn(beeExpression)); // TODO: Actually mutate the DMN JSON.
+        console.info(`TIAGO WRITE: Boxed Expression updated! ${beeToDmn(beeExpression)}`); // TODO: Actually mutate the DMN JSON.
         return prev;
       });
     },
@@ -93,19 +94,11 @@ export function BoxedExpression({
   );
 }
 
-export function getUndefinedExpressionDefinition(): ExpressionDefinition {
-  return {
-    id: generateUuid(),
-    logicType: ExpressionDefinitionLogicType.Undefined,
-    dataType: DmnBuiltInDataType.Undefined,
-  };
-}
-
 function dmnNodeToBoxedExpression(
   widthsById: Map<string, number[]>,
   dmnNode: DmnNodeWithExpression
 ): ExpressionDefinition {
-  if (dmnNode.type == "bkm") {
+  if (dmnNode.type == NODE_TYPES.bkm) {
     return {
       ...dmnToBee(widthsById, {
         expression: { __$$element: "functionDefinition", ...dmnNode.content.encapsulatedLogic },
@@ -113,7 +106,7 @@ function dmnNodeToBoxedExpression(
       dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
       name: dmnNode.content["@_name"],
     };
-  } else if (dmnNode.type == "decision") {
+  } else if (dmnNode.type == NODE_TYPES.decision) {
     return {
       ...dmnToBee(widthsById, dmnNode.content),
       dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
@@ -123,5 +116,3 @@ function dmnNodeToBoxedExpression(
     throw new Error(`Unknown type of node that has an expression '${(dmnNode as any).type}'.`);
   }
 }
-
-export type DmnExpression = DMN14__tDecision | DMN14__tFunctionDefinition;

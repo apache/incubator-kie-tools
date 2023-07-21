@@ -32,8 +32,6 @@ import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
 import "./PropertiesPanel.css";
 
-export type NodeType = "inputData" | "decision" | "bkm" | "decisionService" | "knowledgeSource" | "textAnnotation";
-
 export function SingleNodeProperties({
   dmn,
   setDmn,

@@ -11,7 +11,7 @@ import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
 export function DecisionProperties({ decision }: { decision: DMN14__tDecision }) {
   const setName = useCallback((dataType: string) => {
     // TODO: Remember to set the variable name here as well.
-    console.log(`Set data type --> ${dataType}`);
+    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
   }, []);
 
   return (

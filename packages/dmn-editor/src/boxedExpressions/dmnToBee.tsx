@@ -6,13 +6,14 @@ import {
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   FunctionExpressionDefinitionKind,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DMN14__tContext,
   DMN14__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { SPEC } from "../Spec";
-import { DmnExpression, getUndefinedExpressionDefinition } from "./BoxedExpression";
+import { DmnExpression } from "./DmnExpression";
 
 /** Converts a DMN JSON to an ExpressionDefinition. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
@@ -242,4 +243,12 @@ export function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpressi
   } else {
     return getUndefinedExpressionDefinition();
   }
+}
+
+export function getUndefinedExpressionDefinition(): ExpressionDefinition {
+  return {
+    id: generateUuid(),
+    logicType: ExpressionDefinitionLogicType.Undefined,
+    dataType: DmnBuiltInDataType.Undefined,
+  };
 }

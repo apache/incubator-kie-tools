@@ -2,13 +2,14 @@ import {
   DMN14__tBusinessKnowledgeModel,
   DMN14__tDecision,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { NODE_TYPES } from "./NodeTypes";
 
 export type DmnNodeWithExpression =
   | {
-      type: "bkm";
+      type: typeof NODE_TYPES.bkm;
       content: DMN14__tBusinessKnowledgeModel;
     }
   | {
-      type: "decision";
+      type: typeof NODE_TYPES.decision;
       content: DMN14__tDecision;
     };
