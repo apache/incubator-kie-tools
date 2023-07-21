@@ -9,11 +9,11 @@ Association - - - -
 
 --
 
-Input data          --(Authority)-->    Knowledge Source
 Input data          --(Information)-->  Decision
+Input data          --(Authority)-->    Knowledge Source
 
-Decision            --(Authority)-->    Knowledge Source
 Decision            --(Information)-->  Decision
+Decision            --(Authority)-->    Knowledge Source
 
 BKM                 --(Knowledge)-->    BKM
 BKM                 --(Knowledge)-->    Decision

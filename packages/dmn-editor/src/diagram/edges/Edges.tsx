@@ -4,7 +4,7 @@ import { useCallback, useMemo } from "react";
 import { DMNDI13__DMNEdge, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
 
-export function BaseEdge(props: RF.EdgeProps) {
+export function KieEdge(props: RF.EdgeProps) {
   const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source), [props.source]));
   const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target), [props.target]));
   const dmnEdge = props.data.dmnEdge as DMNDI13__DMNEdge | undefined;
@@ -51,7 +51,7 @@ export function BaseEdge(props: RF.EdgeProps) {
 export function InformationRequirementEdge(props: RF.EdgeProps) {
   return (
     <>
-      <BaseEdge {...props} style={{ strokeWidth: 1, stroke: "black" }} />
+      <KieEdge {...props} style={{ strokeWidth: 1, stroke: "black" }} />
     </>
   );
 }
@@ -59,7 +59,7 @@ export function InformationRequirementEdge(props: RF.EdgeProps) {
 export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
   return (
     <>
-      <BaseEdge {...props} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
+      <KieEdge {...props} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
     </>
   );
 }
@@ -67,7 +67,7 @@ export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
 export function AuthorityRequirementEdge(props: RF.EdgeProps) {
   return (
     <>
-      <BaseEdge {...props} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
+      <KieEdge {...props} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
     </>
   );
 }
@@ -75,7 +75,7 @@ export function AuthorityRequirementEdge(props: RF.EdgeProps) {
 export function AssociationEdge(props: RF.EdgeProps) {
   return (
     <>
-      <BaseEdge {...props} style={{ strokeDasharray: "2,10", strokeWidth: 1, stroke: "black" }} />
+      <KieEdge {...props} style={{ strokeDasharray: "2,10", strokeWidth: 1, stroke: "black" }} />
     </>
   );
 }

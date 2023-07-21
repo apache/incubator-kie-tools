@@ -24,7 +24,7 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons/bars-icon";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { v4 as uuid } from "uuid";
-import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
+import { DmnNodeWithExpression } from "./nodes/DmnNodeWithExpression";
 import { NsweHandles } from "./edges/NsweHandles";
 import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import {
@@ -34,6 +34,17 @@ import {
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
 import { ConnectionLine } from "./edges/ConnectionLine";
+import { EDGE_TYPES, NODE_TYPES } from "./nodes/NodeTypes";
+import {
+  BkmNode,
+  DecisionNode,
+  DecisionServiceNode,
+  GroupNode,
+  InputDataNode,
+  KnowledgeSourceNode,
+  TextAnnotationNode,
+} from "./nodes/Nodes";
+import { checkIsValidConnection } from "./nodes/isValidConnection";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -64,6 +75,10 @@ export function Diagram({
   const onEdgeUpdate = useCallback((args) => {
     console.log("Edge updated! --> ", args);
   }, []);
+
+  const onInfo = useCallback(() => {
+    setPropertiesPanelOpen(true);
+  }, [setPropertiesPanelOpen]);
 
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
 
@@ -116,10 +131,6 @@ export function Diagram({
     [dmn.definitions]
   );
 
-  const onInfo = useCallback(() => {
-    setPropertiesPanelOpen(true);
-  }, [setPropertiesPanelOpen]);
-
   useEffect(() => {
     setNodes([
       ...(dmn.definitions.drgElement ?? []).map((drgElement) => {
@@ -128,7 +139,7 @@ export function Diagram({
         if (drgElement.__$$element === "inputData") {
           return {
             id: drgElement["@_id"]!,
-            type: "inputData",
+            type: NODE_TYPES.inputData,
             position: snapShapePosition(shape),
             data: { inputData: drgElement, shape },
             style: { ...snapShapeDimensions(shape) },
@@ -136,7 +147,7 @@ export function Diagram({
         } else if (drgElement.__$$element === "decision") {
           return {
             id: drgElement["@_id"]!,
-            type: "decision",
+            type: NODE_TYPES.decision,
             position: snapShapePosition(shape),
             data: { decision: drgElement, shape, setOpenNodeWithExpression, onInfo },
             style: { ...snapShapeDimensions(shape) },
@@ -144,7 +155,7 @@ export function Diagram({
         } else if (drgElement.__$$element === "businessKnowledgeModel") {
           return {
             id: drgElement["@_id"]!,
-            type: "bkm",
+            type: NODE_TYPES.bkm,
             position: snapShapePosition(shape),
             data: { bkm: drgElement, shape, setOpenNodeWithExpression, onInfo },
             style: { ...snapShapeDimensions(shape) },
@@ -152,7 +163,7 @@ export function Diagram({
         } else if (drgElement.__$$element === "decisionService") {
           return {
             id: drgElement["@_id"]!,
-            type: "decisionService",
+            type: NODE_TYPES.decisionService,
             position: snapShapePosition(shape),
             data: { decisionService: drgElement, shape, onInfo },
             style: { zIndex: 1, ...snapShapeDimensions(shape) },
@@ -160,7 +171,7 @@ export function Diagram({
         } else if (drgElement.__$$element === "knowledgeSource") {
           return {
             id: drgElement["@_id"]!,
-            type: "knowledgeSource",
+            type: NODE_TYPES.knowledgeSource,
             position: snapShapePosition(shape),
             data: { knowledgeSource: drgElement, shape, onInfo },
             style: { ...snapShapeDimensions(shape) },
@@ -176,7 +187,7 @@ export function Diagram({
           if (artifact.__$$element === "group") {
             return {
               id: artifact["@_id"]!,
-              type: "group",
+              type: NODE_TYPES.group,
               position: snapShapePosition(shape),
               data: { group: artifact, shape, onInfo },
               style: { zIndex: 1, ...snapShapeDimensions(shape) },
@@ -184,7 +195,7 @@ export function Diagram({
           } else if (artifact.__$$element === "textAnnotation") {
             return {
               id: artifact["@_id"]!,
-              type: "textAnnotation",
+              type: NODE_TYPES.textAnnotation,
               position: snapShapePosition(shape),
               data: { textAnnotation: artifact, shape, onInfo },
               style: { ...snapShapeDimensions(shape) },
@@ -220,7 +231,7 @@ export function Diagram({
                 dmnShapeTarget: shapesById.get(target),
               },
               id: id ?? "",
-              type: "informationRequirement",
+              type: EDGE_TYPES.informationRequirement,
               source,
               target,
               markerEnd,
@@ -243,7 +254,7 @@ export function Diagram({
                 dmnShapeTarget: shapesById.get(target),
               },
               id: id ?? "",
-              type: "knowledgeRequirement",
+              type: EDGE_TYPES.knowledgeRequirement,
               source,
               target,
               markerEnd,
@@ -274,7 +285,7 @@ export function Diagram({
                 dmnShapeTarget: shapesById.get(target),
               },
               id: id ?? "",
-              type: "authorityRequirement",
+              type: EDGE_TYPES.authorityRequirement,
               source,
               target,
               markerEnd,
@@ -297,7 +308,7 @@ export function Diagram({
               dmnShapeTarget: shapesById.get(target),
             },
             id: id ?? "",
-            type: "association",
+            type: EDGE_TYPES.association,
             source,
             target,
             markerEnd,
@@ -320,7 +331,7 @@ export function Diagram({
   const onDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
-      e.stopPropagation();
+      // e.stopPropagation();
 
       if (!container.current || !reactFlowInstance) {
         return;
@@ -362,6 +373,18 @@ export function Diagram({
     [connectionHandleParams, container]
   );
 
+  const nodesById = useMemo(() => {
+    return nodes.reduce((acc, a) => {
+      acc.set(a.id, a);
+      return acc;
+    }, new Map<string, RF.Node>());
+  }, [nodes]);
+
+  const isValidConnection = useCallback<RF.IsValidConnection>(
+    (edge) => checkIsValidConnection(nodesById, edge),
+    [nodesById]
+  );
+
   return (
     <>
       <RF.ReactFlow
@@ -382,6 +405,7 @@ export function Diagram({
         onConnectStart={onConnectStart}
         onConnect={onEdgeUpdate}
         onConnectEnd={onConnectEnd}
+        isValidConnection={isValidConnection}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         snapToGrid={true}
@@ -392,7 +416,7 @@ export function Diagram({
         attributionPosition={"bottom-right"}
         onInit={setReactFlowInstance}
         onDrop={onDrop}
-        // onDragOver={onDragOver}
+        onDragOver={onDragOver}
       >
         <SelectionStatus />
         <Pallete />
@@ -590,7 +614,7 @@ const handleStyle: React.CSSProperties = {
   transform: "unset",
 };
 
-export function OutgoingStuffToolbar(props: { isVisible: boolean }) {
+export function OutgoingStuffToolbar(props: { isVisible: boolean; nodes: string[]; edges: string[] }) {
   const style: React.CSSProperties = useMemo(
     () => ({
       visibility: props.isVisible ? undefined : "hidden",
@@ -602,81 +626,33 @@ export function OutgoingStuffToolbar(props: { isVisible: boolean }) {
     <>
       <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"} style={style}>
         <FlexItem>
-          <RF.Handle
-            id={"source-information-requirement"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            I
-          </RF.Handle>
-          <RF.Handle
-            id={"source-knowledge-requirement"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            K
-          </RF.Handle>
-          <RF.Handle
-            id={"source-authority-requirement"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            A
-          </RF.Handle>
-          <RF.Handle
-            id={"source-association"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            -
-          </RF.Handle>
+          {props.edges.map((e) => (
+            <RF.Handle
+              key={e}
+              id={e}
+              isConnectableEnd={false}
+              type={"source"}
+              style={handleStyle}
+              position={RF.Position.Top}
+            >
+              {e.charAt(0)}
+            </RF.Handle>
+          ))}
         </FlexItem>
 
         <FlexItem>
-          <RF.Handle
-            id={"source-decision"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            D
-          </RF.Handle>
-          <RF.Handle
-            id={"source-knowledge-source"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            K
-          </RF.Handle>
-          <RF.Handle
-            id={"source-text-annotation"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            T
-          </RF.Handle>
-          <RF.Handle
-            id={"source-bkm"}
-            isConnectableEnd={false}
-            type={"source"}
-            style={handleStyle}
-            position={RF.Position.Top}
-          >
-            B
-          </RF.Handle>
+          {props.nodes.map((n) => (
+            <RF.Handle
+              key={n}
+              id={n}
+              isConnectableEnd={false}
+              type={"source"}
+              style={handleStyle}
+              position={RF.Position.Top}
+            >
+              {n.charAt(0)}
+            </RF.Handle>
+          ))}
         </FlexItem>
       </Flex>
     </>
@@ -760,200 +736,6 @@ export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
   }, [ref]);
 
   return isHovered;
-}
-
-export function InputDataNode({
-  data: { inputData, shape, onInfo },
-  selected,
-}: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
-
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
-
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== inputData["@_id"] && isHovered;
-
-  return (
-    <>
-      <NsweHandles isTargeted={isTargeted} />
-      {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}>
-        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
-        {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
-      </div>
-      {selected && <ResizerHandle />}
-    </>
-  );
-}
-
-export function DecisionNode({
-  data: { decision, shape, setOpenNodeWithExpression, onInfo },
-  selected,
-}: RF.NodeProps<{
-  decision: DMN14__tDecision;
-  shape: DMNDI13__DMNShape;
-  setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
-  onInfo: () => void;
-}>) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
-
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
-
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== decision["@_id"] && isHovered;
-
-  return (
-    <>
-      <NsweHandles isTargeted={isTargeted} />
-      {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}>
-        <EditExpressionButton
-          isVisible={!isTargeted && (isHovered || selected)}
-          onClick={() => setOpenNodeWithExpression({ type: "decision", content: decision })}
-        />
-        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
-        {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
-      </div>
-      {selected && <ResizerHandle />}
-    </>
-  );
-}
-
-export function BkmNode({
-  data: { bkm, shape, setOpenNodeWithExpression, onInfo },
-  selected,
-}: RF.NodeProps<{
-  bkm: DMN14__tBusinessKnowledgeModel;
-  shape: DMNDI13__DMNShape;
-  onInfo: () => void;
-  setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
-}>) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
-
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
-
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== bkm["@_id"] && isHovered;
-
-  return (
-    <>
-      <NsweHandles isTargeted={isTargeted} />
-      <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-      {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}>
-        <EditExpressionButton
-          isVisible={!isTargeted && (isHovered || selected)}
-          onClick={() => setOpenNodeWithExpression({ type: "bkm", content: bkm })}
-        />
-        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
-        {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
-      </div>
-      {selected && <ResizerHandle />}
-    </>
-  );
-}
-
-export function TextAnnotationNode({
-  data: { textAnnotation, shape, onInfo },
-  selected,
-}: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
-
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
-
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== textAnnotation["@_id"] && isHovered;
-
-  return (
-    <>
-      <NsweHandles isTargeted={isTargeted} />
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}>
-        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
-        {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
-      </div>
-      {selected && <ResizerHandle />}
-    </>
-  );
-}
-
-export function DecisionServiceNode({
-  data: { decisionService, shape, onInfo },
-  selected,
-}: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
-
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== decisionService["@_id"] && isHovered;
-
-  return (
-    <>
-      <NsweHandles isTargeted={isTargeted} />
-      {selected && <ResizerHandle />}
-      {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}>
-        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
-        {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
-      </div>
-    </>
-  );
-}
-
-export function KnowledgeSourceNode({
-  data: { knowledgeSource, shape, onInfo },
-  selected,
-}: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
-
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
-
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== knowledgeSource["@_id"] && isHovered;
-
-  return (
-    <>
-      <NsweHandles isTargeted={isTargeted} />
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}>
-        <OutgoingStuffToolbar isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)} />
-        <InfoButton isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
-        {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
-      </div>
-      {selected && <ResizerHandle />}
-    </>
-  );
-}
-
-export function GroupNode({
-  data: { group, shape },
-  selected,
-}: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
-  return (
-    <>
-      <div className={"kie-dmn-editor--node kie-dmn-editor--group-node"}>
-        {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
-      </div>
-    </>
-  );
 }
 
 export const generateUuid = () => {

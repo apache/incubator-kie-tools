@@ -29,20 +29,17 @@ export function getSnappedMultiPointAnchoredEdgePath({
   const discreteAuto = getDiscretelyAutoPositionedEdgeParams(sourceNode, targetNode);
 
   if (dmnEdge?.["@_id"]?.endsWith("-AUTO-SOURCE-AUTO-TARGET")) {
-    console.log("discrete - both");
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   }
 
   //
   else if (dmnEdge?.["@_id"]?.endsWith("-AUTO-SOURCE")) {
-    console.log("discrete - source");
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
   }
 
   //
   else if (dmnEdge?.["@_id"]?.endsWith("-AUTO-TARGET")) {
-    console.log("discrete - target");
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   }
 

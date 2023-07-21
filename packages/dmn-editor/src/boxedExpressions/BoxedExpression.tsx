@@ -14,7 +14,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DmnNodeWithExpression } from "../diagram/DmnNodeWithExpression";
+import { DmnNodeWithExpression } from "../diagram/nodes/DmnNodeWithExpression";
 import { beeToDmn } from "./beeToDmn";
 import { dmnToBee } from "./dmnToBee";
 

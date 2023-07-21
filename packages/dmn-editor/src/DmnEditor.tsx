@@ -15,7 +15,7 @@ import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon
 import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram } from "./diagram/Diagram";
-import { DmnNodeWithExpression } from "./diagram/DmnNodeWithExpression";
+import { DmnNodeWithExpression } from "./diagram/nodes/DmnNodeWithExpression";
 import { Documentation } from "./documentation/Documentation";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { PropertiesPanel } from "./propertiesPanel/PropertiesPanel";
