@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "name": "@kie-tools/kie-sandbox-extended-services-helm-chart",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:prod": "run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm package -d ./dist ./src\"",
+    "helm:delete": "run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm delete kie-sandbox-extended-services-helm-chart\"",
+    "helm:install": "run-script-if --bool $([ $(command -v helm) ] && echo true || echo false) --then \"helm install kie-sandbox-extended-services-helm-chart ./src\"",
+    "install": "node install.js"
+  },
+  "dependencies": {
+    "@kie-tools/kie-sandbox-extended-services-image": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/root-env": "workspace:*",
+    "js-yaml": "^4.1.0"
+  }
+}

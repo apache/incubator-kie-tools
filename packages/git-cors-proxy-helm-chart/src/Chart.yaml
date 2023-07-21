@@ -1,0 +1,6 @@
+apiVersion: v2
+name: git-cors-proxy-helm-chart
+description: A Helm chart to deploy Git CORS Proxy on Kubernetes
+type: application
+version: 0.0.0
+appVersion: 1.16.0

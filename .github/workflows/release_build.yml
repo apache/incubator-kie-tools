@@ -20,7 +20,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false"}'
+        default: '{"dmn_dev_deployment_base_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","git_cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"false", "git_cors_proxy_helm_chart":"false", "kie_sandbox_extended_services_helm_chart":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -62,6 +62,9 @@ jobs:
       kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}
       kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}
       git_cors_proxy_image: ${{ steps.set_runners.outputs.git_cors_proxy_image }}
+      kie_sandbox_helm_chart: ${{ steps.set_runners.outputs.kie_sandbox_helm_chart }}
+      git_cors_proxy_helm_chart: ${{ steps.set_runners.outputs.git_cors_proxy_helm_chart }}
+      kie_sandbox_extended_services_helm_chart: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_helm_chart }}
       online_editor: ${{ steps.set_runners.outputs.online_editor }}
       chrome_extensions: ${{ steps.set_runners.outputs.chrome_extensions }}
       vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}
@@ -85,6 +88,9 @@ jobs:
           echo "kie_sandbox_image=${{ fromJSON(inputs.runners).kie_sandbox_image }}" >> $GITHUB_OUTPUT
           echo "kie_sandbox_extended_services_image=${{ fromJSON(inputs.runners).kie_sandbox_extended_services_image }}" >> $GITHUB_OUTPUT
           echo "git_cors_proxy_image=${{ fromJSON(inputs.runners).git_cors_proxy_image }}" >> $GITHUB_OUTPUT
+          echo "kie_sandbox_helm_chart=${{ fromJSON(inputs.runners).kie_sandbox_helm_chart }}" >> $GITHUB_OUTPUT
+          echo "git_cors_proxy_helm_chart=${{ fromJSON(inputs.runners).git_cors_proxy_helm_chart }}" >> $GITHUB_OUTPUT
+          echo "kie_sandbox_extended_services_helm_chart=${{ fromJSON(inputs.runners).kie_sandbox_extended_services_helm_chart }}" >> $GITHUB_OUTPUT
           echo "online_editor=${{ fromJSON(inputs.runners).online_editor }}" >> $GITHUB_OUTPUT
           echo "chrome_extensions=${{ fromJSON(inputs.runners).chrome_extensions }}" >> $GITHUB_OUTPUT
           echo "vscode_extensions_dev=${{ fromJSON(inputs.runners).vscode_extensions_dev }}" >> $GITHUB_OUTPUT
@@ -106,6 +112,9 @@ jobs:
           echo "kie_sandbox_image: ${{ steps.set_runners.outputs.kie_sandbox_image }}"
           echo "kie_sandbox_extended_services_image: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_image }}"
           echo "git_cors_proxy_image: ${{ steps.set_runners.outputs.git_cors_proxy_image }}"
+          echo "kie_sandbox_helm_chart: ${{ steps.set_runners.outputs.kie_sandbox_helm_chart }}"
+          echo "git_cors_proxy_helm_chart: ${{ steps.set_runners.outputs.git_cors_proxy_helm_chart }}"
+          echo "kie_sandbox_extended_services_helm_chart: ${{ steps.set_runners.outputs.kie_sandbox_extended_services_helm_chart }}"
           echo "online_editor: ${{ steps.set_runners.outputs.online_editor }}"
           echo "chrome_extensions: ${{ steps.set_runners.outputs.chrome_extensions }}"
           echo "vscode_extensions_dev: ${{ steps.set_runners.outputs.vscode_extensions_dev }}"
@@ -378,6 +387,147 @@ jobs:
           openshift_token: ${{ secrets.openshift_token }}
           openshift_namespace: ${{ env.OPENSHIFT_NAMESPACE }}
           deployment_icon: "nodejs"
+
+  kie_sandbox_helm_chart:
+    env:
+      KIE_SANDBOX_HELM_CHART__name: "kie-sandbox"
+      KIE_SANDBOX_HELM_CHART__registry: "quay.io"
+      KIE_SANDBOX_HELM_CHART__tag: "${{ inputs.tag }}"
+      KIE_SANDBOX_HELM_CHART__account: "kie-tools"
+      HELM_EXPERIMENTAL_OCI: "1"
+
+    if: ${{ needs.extract_runners.outputs.kie_sandbox_helm_chart == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners, git_cors_proxy_helm_chart, kie_sandbox_extended_services_helm_chart]
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup environment"
+        id: setup_env
+        uses: ./.github/actions/setup-env
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/kie-sandbox-helm-chart...
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Push kie-sandbox-helm-chart to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/upload-helm-charts
+        with:
+          name: "${{ env.KIE_SANDBOX_HELM_CHART__name}}"
+          repository: "${{ env.KIE_SANDBOX_HELM_CHART__account}}"
+          tag: "${{ env.KIE_SANDBOX_HELM_CHART__tag }}"
+          path: ${{ github.workspace }}/kie-tools/packages/kie-sandbox-helm-chart/dist
+          registry: "${{ env.KIE_SANDBOX_HELM_CHART__registry }}"
+          registry_username: "${{ env.KIE_SANDBOX_HELM_CHART__account}}"
+          registry_password: "${{ secrets.quay_registry_password }}"
+
+  git_cors_proxy_helm_chart:
+    env:
+      GIT_CORS_PROXY_HELM_CHART__name: "git-cors-proxy"
+      GIT_CORS_PROXY_HELM_CHART__registry: "quay.io"
+      GIT_CORS_PROXY_HELM_CHART__tag: "${{ inputs.tag }}"
+      GIT_CORS_PROXY_HELM_CHART__account: "kie-tools"
+      HELM_EXPERIMENTAL_OCI: "1"
+
+    if: ${{ needs.extract_runners.outputs.git_cors_proxy_helm_chart == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup environment"
+        id: setup_env
+        uses: ./.github/actions/setup-env
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/git-cors-proxy-helm-chart...
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Push git-cors-proxy-helm-chart to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/upload-helm-charts
+        with:
+          name: "${{ env.GIT_CORS_PROXY_HELM_CHART__name}}"
+          repository: "${{ env.GIT_CORS_PROXY_HELM_CHART__account}}"
+          tag: "${{ env.GIT_CORS_PROXY_HELM_CHART__tag }}"
+          path: ${{ github.workspace }}/kie-tools/packages/git-cors-proxy-helm-chart/dist
+          registry: "${{ env.GIT_CORS_PROXY_HELM_CHART__registry }}"
+          registry_username: "${{ env.GIT_CORS_PROXY_HELM_CHART__account}}"
+          registry_password: "${{ secrets.quay_registry_password }}"
+
+  kie_sandbox_extended_services_helm_chart:
+    env:
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__name: "kie-sandbox-extended-services"
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__registry: "quay.io"
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__tag: "${{ inputs.tag }}"
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__account: "kie-tools"
+      HELM_EXPERIMENTAL_OCI: "1"
+
+    if: ${{ needs.extract_runners.outputs.kie_sandbox_extended_services_helm_chart == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup environment"
+        id: setup_env
+        uses: ./.github/actions/setup-env
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/kie-sandbox-extended-services-helm-chart...
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Push kie-sandbox-extended-services-helm-chart to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: ./.github/actions/upload-helm-charts
+        with:
+          name: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__name}}"
+          repository: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__account}}"
+          tag: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__tag }}"
+          path: ${{ github.workspace }}/kie-tools/packages/kie-sandbox-extended-services-helm-chart/dist
+          registry: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__registry }}"
+          registry_username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__account}}"
+          registry_password: "${{ secrets.quay_registry_password }}"
 
   online_editor:
     env:

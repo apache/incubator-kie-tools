@@ -55,6 +55,21 @@ jobs:
       GIT_CORS_PROXY__imageName: "git-cors-proxy-image"
       GIT_CORS_PROXY__imageBuildTags: "daily-dev"
 
+      KIE_SANDBOX_HELM_CHART__registry: "quay.io"
+      KIE_SANDBOX_HELM_CHART__account: "kie-tools"
+      KIE_SANDBOX_HELM_CHART__name: "kie-sandbox"
+      KIE_SANDBOX_HELM_CHART__tag: "daily-dev"
+
+      GIT_CORS_PROXY_HELM_CHART__registry: "quay.io"
+      GIT_CORS_PROXY_HELM_CHART__account: "kie-tools"
+      GIT_CORS_PROXY_HELM_CHART__name: "git-cors-proxy"
+      GIT_CORS_PROXY_HELM_CHART__tag: "daily-dev"
+
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__registry: "quay.io"
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__account: "kie-tools"
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__name: "kie_sandbox_extended_services"
+      KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__tag: "daily-dev"
+
       OPENSHIFT_NAMESPACE: "kie-sandbox"
       OPENSHIFT_PART_OF: "daily-dev-kie-sandbox-app"
       DEPLOY_TAG: "daily-dev"
@@ -445,3 +460,39 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           rm -rf serverless-logic-sandbox-deployment
+
+      - name: "Push kie-sandbox-helm-chart to quay.io (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: ./.github/actions/upload-helm-charts
+        with:
+          name: "${{ env.KIE_SANDBOX_HELM_CHART__name }}"
+          repository: "${{ env.KIE_SANDBOX_HELM_CHART__account }}"
+          tag: "${{ env.KIE_SANDBOX_HELM_CHART__tag}}"
+          path: ${{ github.workspace }}/kie-tools/packages/kie-sandbox-helm-chart/dist
+          registry: "${{ env.KIE_SANDBOX_HELM_CHART__registry }}"
+          registry_username: "${{ env.KIE_SANDBOX_HELM_CHART__account }}"
+          registry_password: "${{ secrets.quay_registry_password }}"
+
+      - name: "Push git-cors-proxy-helm-chart to quay.io (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: ./.github/actions/upload-helm-charts
+        with:
+          name: "${{ env.GIT_CORS_PROXY_HELM_CHART__name }}"
+          repository: "${{ env.GIT_CORS_PROXY_HELM_CHART__account }}"
+          tag: "${{ env.GIT_CORS_PROXY_HELM_CHART__tag}}"
+          path: ${{ github.workspace }}/kie-tools/packages/git-cors-proxy-helm-chart/dist
+          registry: "${{ env.GIT_CORS_PROXY_HELM_CHART__registry }}"
+          registry_username: "${{ env.GIT_CORS_PROXY_HELM_CHART__account }}"
+          registry_password: "${{ secrets.quay_registry_password }}"
+
+      - name: "Push kie-sandbox-extended-services-helm-chart to quay.io (Ubuntu only)"
+        if: runner.os == 'Linux'
+        uses: ./.github/actions/upload-helm-charts
+        with:
+          name: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__name }}"
+          repository: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__account }}"
+          tag: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__tag}}"
+          path: ${{ github.workspace }}/kie-tools/packages/kie-sandbox-extended-services-helm-chart/dist
+          registry: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__registry }}"
+          registry_username: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_HELM_CHART__account }}"
+          registry_password: "${{ secrets.quay_registry_password }}"

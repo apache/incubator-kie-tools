@@ -267,3 +267,15 @@ fabric.properties
 packages/bpmn-marshaller/**/ts-gen
 packages/dmn-marshaller/**/ts-gen
 packages/scesim-marshaller/**/ts-gen
+
+packages/git-cors-proxy-helm-chart/src/templates/**
+packages/kie-sandbox-extended-services-helm-chart/src/templates/**
+packages/kie-sandbox-helm-chart/src/templates/**
+
+# Helm distributable packages
+packages/kie-sandbox-helm-chart/src/charts/
+packages/git-cors-proxy-helm-chart/dist/*.tgz
+packages/kie-sandbox-extended-services-helm-chart/dist/*.tgz
+packages/kie-sandbox-helm-chart/dist/*.tgz
+
+packages/kie-sandbox-helm-chart/src/Chart.lock

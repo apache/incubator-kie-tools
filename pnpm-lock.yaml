@@ -4045,6 +4045,19 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0
 
+  packages/git-cors-proxy-helm-chart:
+    dependencies:
+      "@kie-tools/git-cors-proxy-image":
+        specifier: workspace:*
+        version: link:../git-cors-proxy-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+
   packages/git-cors-proxy-image:
     devDependencies:
       "@kie-tools/image-builder":
@@ -4949,6 +4962,19 @@ importers:
         specifier: ^4.6.2
         version: 4.8.4
 
+  packages/kie-sandbox-extended-services-helm-chart:
+    dependencies:
+      "@kie-tools/kie-sandbox-extended-services-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+
   packages/kie-sandbox-extended-services-image:
     dependencies:
       "@kie-tools/extended-services":
@@ -5040,6 +5066,34 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
+
+  packages/kie-sandbox-helm-chart:
+    dependencies:
+      "@kie-tools/git-cors-proxy-helm-chart":
+        specifier: workspace:*
+        version: link:../git-cors-proxy-helm-chart
+      "@kie-tools/git-cors-proxy-image":
+        specifier: workspace:*
+        version: link:../git-cors-proxy-image
+      "@kie-tools/kie-sandbox-extended-services-helm-chart":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-helm-chart
+      "@kie-tools/kie-sandbox-extended-services-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-extended-services-image
+      "@kie-tools/kie-sandbox-image":
+        specifier: workspace:*
+        version: link:../kie-sandbox-image
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
 
   packages/kie-sandbox-image:
     dependencies:

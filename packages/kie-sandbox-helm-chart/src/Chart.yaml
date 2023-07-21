@@ -1,0 +1,13 @@
+apiVersion: v2
+name: kie-sandbox-helm-chart
+description: A Helm chart to deploy KIE Sandbox and related services on Kubernetes
+type: application
+version: 0.0.0
+appVersion: 1.16.0
+dependencies:
+  - name: git-cors-proxy-helm-chart
+    repository: file://../../git-cors-proxy-helm-chart/src
+    version: 0.0.0
+  - name: kie-sandbox-extended-services-helm-chart
+    repository: file://../../kie-sandbox-extended-services-helm-chart/src
+    version: 0.0.0

@@ -1,0 +1,53 @@
+name: Helm OCI Chart Releaser
+description: Push Helm charts to OCI-based (Docker) registries
+inputs:
+  name:
+    required: true
+    description: Chart name
+  repository:
+    required: true
+    description: Chart repository name
+  tag:
+    required: true
+    description: Chart version
+  path:
+    required: false
+    description: Chart path
+  registry:
+    required: true
+    description: OCI registry
+  registry_username:
+    required: true
+    description: OCI registry username
+  registry_password:
+    required: true
+    description: OCI registry password
+outputs:
+  image:
+    value: ${{ steps.output.outputs.image }}
+    description: Chart image (Default '{registry}/{repository}/{image}:{tag}')
+runs:
+  using: composite
+  steps:
+    - name: Helm | Login
+      shell: bash
+      run: echo ${{ inputs.registry_password }} | helm registry login -u ${{ inputs.registry_username }} --password-stdin ${{ inputs.registry }}
+      env:
+        HELM_EXPERIMENTAL_OCI: "1"
+
+    - name: Helm | Push
+      shell: bash
+      run: helm push ${{ inputs.path }}/${{ inputs.name }}-${{ inputs.tag }}.tgz oci://${{ inputs.registry }}/${{ inputs.repository }}
+      env:
+        HELM_EXPERIMENTAL_OCI: "1"
+
+    - name: Helm | Logout
+      shell: bash
+      run: helm registry logout ${{ inputs.registry }}
+      env:
+        HELM_EXPERIMENTAL_OCI: "1"
+
+    - name: Helm | Output
+      id: output
+      shell: bash
+      run: echo "image=${{ inputs.registry }}/${{ inputs.repository }}/${{ inputs.name }}:${{ inputs.tag }}" >> $GITHUB_OUTPUT
