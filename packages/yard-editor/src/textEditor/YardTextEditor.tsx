@@ -22,6 +22,9 @@ import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { YardEditorChannelApi } from "../api";
 import { editor } from "monaco-editor";
 import { YardFile } from "../types";
+import { initCodeLenses } from "./augmentation/codeLenses";
+import { initAugmentationCommands } from "./augmentation/commands";
+import { initCompletion } from "./augmentation/completion";
 
 interface Props {
   file: YardFile;
@@ -66,19 +69,16 @@ const RefForwardingYardTextEditor: React.ForwardRefRenderFunction<YardTextEditor
       return;
     }
 
-    // TODO: Add support to JSON code completion and code lenses
     const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
-    // const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
-    // initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
-    // initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
+    const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
+    const completion = initCompletion(commands, editorEnvelopeCtx.channelApi);
+    const codeLenses = initCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
     return () => {
       controller.dispose();
+      codeLenses.dispose();
+      completion.dispose();
     };
-
-    // TODO: Add support to YAML
-    // initYamlCompletion(commands);
-    // initYamlWidgets(commands);
   }, [file, channelType, controller, theme, editorEnvelopeCtx.channelApi, editorEnvelopeCtx.operatingSystem]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);

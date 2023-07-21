@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { editor, KeyCode, KeyMod } from "monaco-editor";
+import { editor, KeyCode, KeyMod, Position } from "monaco-editor";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
@@ -27,6 +27,7 @@ export interface YardTextEditorApi {
   getContent: () => string;
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
+  moveCursorToPosition: (position: Position) => void;
   dispose: () => void;
 }
 
@@ -138,6 +139,16 @@ export class YardTextEditorController implements YardTextEditorApi {
       default:
         return "vs";
     }
+  }
+
+  public moveCursorToPosition(position: Position): void {
+    if (!this.editor) {
+      return;
+    }
+
+    this.editor.revealLineInCenter(position.lineNumber);
+    this.editor.setPosition(position);
+    this.editor.focus();
   }
 
   public dispose(): void {

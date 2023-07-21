@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-export const SW_SPEC_YARD_SCEMA = {
+export const YARD_SCHEMA = {
+  $id: "https://start.kubesmarts.org/schemas/yard/draft-07/YaRD-schema.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   definitions: {
     "DecisionTable-1": {

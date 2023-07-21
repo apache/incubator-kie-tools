@@ -20,7 +20,7 @@ const REGEX = {
   sw: /^.*\.sw\.(json|yml|yaml)$/i,
   swJson: /^.*\.sw\.json$/i,
   swYaml: /^.*\.sw\.yaml$/i,
-  yard: /^.*\.yard\.(json|yml|yaml)$/i,
+  yard: /^.*\.yard\.(yml|yaml)$/i,
   dash: /^.*\.dash\.(yml|yaml)$/i,
   dmn: /^.*\.dmn$/i,
   bpmn: /^.*\.(bpmn|bpmn2)$/i,
