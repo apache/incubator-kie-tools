@@ -4,12 +4,18 @@ import { useCallback, useMemo } from "react";
 import { DMNDI13__DMNEdge, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
 
-export function KieEdge(props: RF.EdgeProps) {
-  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source), [props.source]));
-  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target), [props.target]));
-  const dmnEdge = props.data.dmnEdge as DMNDI13__DMNEdge | undefined;
-  const dmnShapeSource = props.data.dmnShapeSource as DMNDI13__DMNShape | undefined;
-  const dmnShapeTarget = props.data.dmnShapeTarget as DMNDI13__DMNShape | undefined;
+export type EdgeData = {
+  dmnEdge: DMNDI13__DMNEdge | undefined;
+  dmnShapeSource: DMNDI13__DMNShape | undefined;
+  dmnShapeTarget: DMNDI13__DMNShape | undefined;
+};
+
+export function useKieEdgePath(source: string, target: string, data: EdgeData) {
+  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
+  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
+  const dmnEdge = data.dmnEdge as DMNDI13__DMNEdge | undefined;
+  const dmnShapeSource = data.dmnShapeSource as DMNDI13__DMNShape | undefined;
+  const dmnShapeTarget = data.dmnShapeTarget as DMNDI13__DMNShape | undefined;
 
   const { path, points } = useMemo(
     () =>
@@ -23,59 +29,64 @@ export function KieEdge(props: RF.EdgeProps) {
     [dmnEdge, dmnShapeSource, dmnShapeTarget, sourceNode, targetNode]
   );
 
+  return path;
+}
+
+export function InformationRequirementPath(props: React.SVGProps<SVGPathElement>) {
   return (
     <>
-      {path && (
-        <>
-          <path d={path} markerEnd={props.markerEnd} markerStart={props.markerStart} style={props.style} />
-        </>
-      )}
-
-      {/* {points.map((p, i) => (
-        <circle
-          key={i}
-          cx={p["@_x"]}
-          cy={p["@_y"]}
-          r={5}
-          fill={i === 0 || i === points.length - 1 ? "#0388ce" : "black"}
-        />
-      ))} */}
-
-      {/* {(dmnEdge?.["di:waypoint"] ?? []).map((p, i) => (
-        <circle key={i} cx={p["@_x"]} cy={p["@_y"]} r={5} fill={"red"} />
-      ))} */}
+      <path {...props} style={{ strokeWidth: 1, stroke: "black" }} markerEnd={"url(#closed-arrow)"} />
     </>
   );
 }
+
+export function KnowledgeRequirementPath(props: React.SVGProps<SVGPathElement>) {
+  return (
+    <>
+      <path
+        {...props}
+        style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
+        markerEnd={"url(#open-arrow)"}
+      />
+    </>
+  );
+}
+
+export function AuthorityRequirementPath(props: React.SVGProps<SVGPathElement>) {
+  return (
+    <>
+      <path
+        {...props}
+        style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
+        markerEnd={"url(#closed-circle)"}
+      />
+    </>
+  );
+}
+
+export function AssociationPath(props: React.SVGProps<SVGPathElement>) {
+  return (
+    <>
+      <path {...props} style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "2,10" }} />
+    </>
+  );
+}
+
+//
 
 export function InformationRequirementEdge(props: RF.EdgeProps) {
-  return (
-    <>
-      <KieEdge {...props} style={{ strokeWidth: 1, stroke: "black" }} />
-    </>
-  );
+  const path = useKieEdgePath(props.source, props.target, props.data);
+  return <InformationRequirementPath d={path} />;
 }
-
 export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
-  return (
-    <>
-      <KieEdge {...props} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
-    </>
-  );
+  const path = useKieEdgePath(props.source, props.target, props.data);
+  return <KnowledgeRequirementPath d={path} />;
 }
-
 export function AuthorityRequirementEdge(props: RF.EdgeProps) {
-  return (
-    <>
-      <KieEdge {...props} style={{ strokeDasharray: "5,5", strokeWidth: 1, stroke: "black" }} />
-    </>
-  );
+  const path = useKieEdgePath(props.source, props.target, props.data);
+  return <AuthorityRequirementPath d={path} />;
 }
-
 export function AssociationEdge(props: RF.EdgeProps) {
-  return (
-    <>
-      <KieEdge {...props} style={{ strokeDasharray: "2,10", strokeWidth: 1, stroke: "black" }} />
-    </>
-  );
+  const path = useKieEdgePath(props.source, props.target, props.data);
+  return <AuthorityRequirementPath d={path} />;
 }

@@ -21,6 +21,7 @@ import { EDGE_TYPES } from "./edges/EdgeTypes";
 import {
   AssociationEdge,
   AuthorityRequirementEdge,
+  EdgeData,
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
@@ -210,7 +211,7 @@ export function Diagram({
   }, [dmn.definitions.drgElement, dmn.definitions.artifact, onInfo, setNodes, setOpenNodeWithExpression, shapesById]);
 
   const getEdgeData = useCallback(
-    ({ id, source, target }: { id: string; source: string; target: string }) => {
+    ({ id, source, target }: { id: string; source: string; target: string }): EdgeData => {
       return {
         dmnEdge: id ? edgesById.get(id) : undefined,
         dmnShapeSource: shapesById.get(source),
@@ -235,7 +236,6 @@ export function Diagram({
               id,
               type: EDGE_TYPES.informationRequirement,
               source,
-              markerEnd: "closed-arrow",
               target,
             };
           }),
@@ -253,7 +253,6 @@ export function Diagram({
               data: getEdgeData({ id, source, target }),
               id,
               type: EDGE_TYPES.knowledgeRequirement,
-              markerEnd: "open-arrow",
               source,
               target,
             };
@@ -280,7 +279,6 @@ export function Diagram({
               data: getEdgeData({ id, source, target }),
               id,
               type: EDGE_TYPES.authorityRequirement,
-              markerEnd: "closed-circle",
               source,
               target,
             };

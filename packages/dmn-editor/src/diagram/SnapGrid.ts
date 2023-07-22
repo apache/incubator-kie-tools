@@ -40,9 +40,9 @@ export function snapShapeDimensions(shape: DMNDI13__DMNShape) {
   };
 }
 
-export function snapPoint(bounds: DC__Point): DC__Point {
+export function snapPoint(bounds: DC__Point, method: "floor" | "ceil" = "floor"): DC__Point {
   return {
-    "@_x": Math.floor((bounds?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
-    "@_y": Math.floor((bounds?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+    "@_x": Math[method]((bounds?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
+    "@_y": Math[method]((bounds?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
   };
 }

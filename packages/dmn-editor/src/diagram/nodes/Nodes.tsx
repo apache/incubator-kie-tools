@@ -435,3 +435,91 @@ export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean) 
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
   return isEdgeConnection && isConnecting && !isValidTarget ? "dimmed" : "normal";
 }
+
+//
+
+export function InputDataNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+  const rx =
+    typeof props.height === "number"
+      ? props.height / 2
+      : (() => {
+          throw new Error("Can't calculate rx based on a string height.");
+        })();
+
+  return <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} rx={rx} ry={"50%"} />;
+}
+
+export function DecisionNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+  return (
+    <g>
+      <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} />
+    </g>
+  );
+}
+
+export function BkmNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+  return (
+    <polygon
+      points={`20,0 0,20 0,${props.height} ${props.width - 20},${props.height} ${props.width},${props.height - 20}, ${
+        props.width
+      },0`}
+      fill={"#fff"}
+      stroke={"black"}
+      strokeWidth={1.5}
+      transform={`translate(${props.x},${props.y})`}
+    />
+  );
+}
+
+export function KnowledgeSourceNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+  const quarterX = props.width / 4;
+  const halfX = props.width / 2;
+  const amplitude = 20;
+  return (
+    <g>
+      <path
+        {...props}
+        d={`M1,${props.height - 1 - amplitude / 2} L1,1 M1,1 L${props.width - 1},1 M${props.width - 1},1 L${
+          props.width - 1
+        },${props.height - 1 - amplitude / 2}`}
+        stroke={"black"}
+        strokeWidth={1.5}
+        transform={`translate(${props.x},${props.y})`}
+      />
+
+      {/* <path d="M 0 80 Q 42.5 0, 85 80 T 170 80" stroke="black" fill="transparent"/> */}
+      <path
+        d={`M0,0 Q${quarterX},${amplitude} ${halfX},0 T${props.width},0`}
+        stroke={"black"}
+        fill={"transparent"}
+        strokeWidth={1.5}
+        transform={`translate(${props.x},${props.y - amplitude / 2 + props.height - 1})`}
+      />
+    </g>
+  );
+}
+
+export function DecisionServiceNodeSvg(props: RF.Dimensions & RF.XYPosition & { dividerLineY: number }) {
+  return (
+    <g>
+      <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} rx={40} ry={40} />
+      <path d={`M0,${props.dividerLineY} L${props.width},${props.dividerLineY}`} />
+    </g>
+  );
+}
+
+export function TextAnnotationNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+  return (
+    <path
+      {...props}
+      d={`M20,1 L1,1 M1,1 L1,${props.height - 1} M1,${props.height - 1} L20,${props.height - 1}`}
+      stroke={"black"}
+      strokeWidth={1.5}
+      transform={`translate(${props.x},${props.y})`}
+    />
+  );
+}
+
+export function GroupNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+  return <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} />;
+}
