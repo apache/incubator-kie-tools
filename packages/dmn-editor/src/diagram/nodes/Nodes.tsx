@@ -486,8 +486,6 @@ export function KnowledgeSourceNodeSvg(props: RF.Dimensions & RF.XYPosition) {
         strokeWidth={1.5}
         transform={`translate(${props.x},${props.y})`}
       />
-
-      {/* <path d="M 0 80 Q 42.5 0, 85 80 T 170 80" stroke="black" fill="transparent"/> */}
       <path
         d={`M0,0 Q${quarterX},${amplitude} ${halfX},0 T${props.width},0`}
         stroke={"black"}
