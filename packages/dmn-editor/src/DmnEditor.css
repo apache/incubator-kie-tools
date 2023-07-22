@@ -18,6 +18,7 @@
   -webkit-box-orient: vertical;
   text-align: center;
   background: white;
+  /* opacity: 0.5; */
 }
 
 .kie-dmn-editor--node.dimmed {

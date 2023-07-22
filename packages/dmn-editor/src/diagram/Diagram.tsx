@@ -37,6 +37,7 @@ import {
 } from "./nodes/Nodes";
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeType, NodeType } from "./connections/graphStructure";
+import { EdgeMarkers } from "./edges/EdgeMarkers";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -142,7 +143,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.inputData,
             position: snapShapePosition(shape),
-            data: { inputData: drgElement, shape },
+            data: { inputData: drgElement, shape, onInfo },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "decision") {
@@ -220,13 +221,6 @@ export function Diagram({
   );
 
   useEffect(() => {
-    const markerEnd = {
-      width: 20,
-      height: 20,
-      type: RF.MarkerType.ArrowClosed,
-      color: "black",
-    };
-
     setEdges([
       // information requirement
       ...(dmn.definitions.drgElement ?? [])
@@ -241,8 +235,8 @@ export function Diagram({
               id,
               type: EDGE_TYPES.informationRequirement,
               source,
+              markerEnd: "closed-arrow",
               target,
-              markerEnd,
             };
           }),
         ]),
@@ -259,9 +253,9 @@ export function Diagram({
               data: getEdgeData({ id, source, target }),
               id,
               type: EDGE_TYPES.knowledgeRequirement,
+              markerEnd: "open-arrow",
               source,
               target,
-              markerEnd,
             };
           }),
         ]),
@@ -286,9 +280,9 @@ export function Diagram({
               data: getEdgeData({ id, source, target }),
               id,
               type: EDGE_TYPES.authorityRequirement,
+              markerEnd: "closed-circle",
               source,
               target,
-              markerEnd,
             };
           }),
         ]),
@@ -307,7 +301,6 @@ export function Diagram({
             type: EDGE_TYPES.association,
             source,
             target,
-            markerEnd,
           };
         }),
     ]);
@@ -373,6 +366,7 @@ export function Diagram({
 
   return (
     <>
+      <EdgeMarkers />
       <RF.ReactFlow
         zoomOnDoubleClick={false}
         elementsSelectable={true}
