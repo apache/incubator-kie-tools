@@ -37,7 +37,7 @@ export function KieEdge(props: RF.EdgeProps) {
           cx={p["@_x"]}
           cy={p["@_y"]}
           r={5}
-          fill={i === 0 || i === points.length - 1 ? "lightblue" : "black"}
+          fill={i === 0 || i === points.length - 1 ? "#0388ce" : "black"}
         />
       ))} */}
 

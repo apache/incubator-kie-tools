@@ -21,6 +21,7 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { MIN_SIZE_FOR_NODES } from "../SnapGrid";
 import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 import { NODE_TYPES } from "./NodeTypes";
+import { EDGE_TYPES } from "../edges/EdgeTypes";
 
 export function InputDataNode({
   data: { inputData, shape, onInfo },
@@ -34,29 +35,17 @@ export function InputDataNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
 
   return (
     <>
-      <ConnectionTargetHandles
-        isTargeted={
-          isTargeted &&
-          (isValidConnection?.({
-            source: connectionNodeId,
-            target: id,
-            sourceHandle: connectionHandleId,
-            targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-          }) ??
-            false)
-        }
-      />
+      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--input-data-node"}>
+      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
           nodes={outgoing.inputData.nodes}
           edges={outgoing.inputData.edges}
         />
@@ -85,33 +74,21 @@ export function DecisionNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
 
   return (
     <>
-      <ConnectionTargetHandles
-        isTargeted={
-          isTargeted &&
-          (isValidConnection?.({
-            source: connectionNodeId,
-            target: id,
-            sourceHandle: connectionHandleId,
-            targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-          }) ??
-            false)
-        }
-      />
+      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-node"}>
+      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}>
         <EditExpressionNodePanel
           isVisible={!isTargeted && (isHovered || selected)}
           onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.decision, content: decision })}
         />
         <OutgoingStuffNodePanel
-          isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
           nodes={outgoing.decision.nodes}
           edges={outgoing.decision.edges}
         />
@@ -140,34 +117,21 @@ export function BkmNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
 
   return (
     <>
-      <ConnectionTargetHandles
-        isTargeted={
-          isTargeted &&
-          (isValidConnection?.({
-            source: connectionNodeId,
-            target: id,
-            sourceHandle: connectionHandleId,
-            targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-          }) ??
-            false)
-        }
-      />
+      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--bkm-node"}>
+      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className}`}>
         <EditExpressionNodePanel
           isVisible={!isTargeted && (isHovered || selected)}
           onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.bkm, content: bkm })}
         />
         <OutgoingStuffNodePanel
-          isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
           nodes={outgoing.bkm.nodes}
           edges={outgoing.bkm.edges}
         />
@@ -191,28 +155,16 @@ export function KnowledgeSourceNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
 
   return (
     <>
-      <ConnectionTargetHandles
-        isTargeted={
-          isTargeted &&
-          (isValidConnection?.({
-            source: connectionNodeId,
-            target: id,
-            sourceHandle: connectionHandleId,
-            targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-          }) ??
-            false)
-        }
-      />
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--knowledge-source-node"}>
+      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+
+      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
           nodes={outgoing.knowledgeSource.nodes}
           edges={outgoing.knowledgeSource.edges}
         />
@@ -236,28 +188,16 @@ export function TextAnnotationNode({
     ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
   }, [selected, isHovered]);
 
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
 
   return (
     <>
-      <ConnectionTargetHandles
-        isTargeted={
-          isTargeted &&
-          (isValidConnection?.({
-            source: connectionNodeId,
-            target: id,
-            sourceHandle: connectionHandleId,
-            targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-          }) ??
-            false)
-        }
-      />
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--text-annotation-node"}>
+      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+
+      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
           nodes={outgoing.textAnnotation.nodes}
           edges={outgoing.textAnnotation.edges}
         />
@@ -277,30 +217,18 @@ export function DecisionServiceNode({
   const ref = React.useRef<HTMLDivElement>(null);
   const isHovered = useHoveredInfo(ref);
 
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
 
   return (
     <>
-      <ConnectionTargetHandles
-        isTargeted={
-          isTargeted &&
-          (isValidConnection?.({
-            source: connectionNodeId,
-            target: id,
-            sourceHandle: connectionHandleId,
-            targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-          }) ??
-            false)
-        }
-      />
+      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+
       {selected && <NodeResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
-      <div ref={ref} className={"kie-dmn-editor--node kie-dmn-editor--decision-service-node"}>
+      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!connectionNodeId && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
           nodes={outgoing.decisionService.nodes}
           edges={outgoing.decisionService.edges}
         />
@@ -317,7 +245,7 @@ export function GroupNode({
 }: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
   return (
     <>
-      <div className={"kie-dmn-editor--node kie-dmn-editor--group-node"}>
+      <div className={`kie-dmn-editor--node kie-dmn-editor--group-node`}>
         {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -481,4 +409,29 @@ export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
   }, [ref]);
 
   return isHovered;
+}
+
+// Hooks
+
+export function useTargetStatus(id: string, isHovered: boolean) {
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
+  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
+  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+
+  const isValidTarget =
+    isValidConnection?.({
+      source: connectionNodeId,
+      target: id,
+      sourceHandle: connectionHandleId,
+      targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
+    }) ?? false;
+
+  return { isTargeted, isValidTarget, isConnecting: !!connectionNodeId };
+}
+
+export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean) {
+  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
+  const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
+  return isEdgeConnection && isConnecting && !isValidTarget ? "dimmed" : "normal";
 }

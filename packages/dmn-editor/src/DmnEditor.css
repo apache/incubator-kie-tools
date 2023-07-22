@@ -20,6 +20,11 @@
   background: white;
 }
 
+.kie-dmn-editor--node.dimmed {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .kie-dmn-editor--pallete {
   width: 42px;
   background: #fff;
@@ -111,6 +116,34 @@
   filter: brightness(90%);
 }
 
+.kie-dmn-editor--nswe-target-handle {
+  width: 14px;
+  height: 14px;
+  background: #0388ce;
+  border: 1px solid black;
+  pointer-events: none;
+}
+.kie-dmn-editor--nswe-target-handle.top {
+  top: -6px;
+  left: calc(50%);
+}
+.kie-dmn-editor--nswe-target-handle.right {
+  top: calc(50%);
+  right: -6px;
+}
+.kie-dmn-editor--nswe-target-handle.bottom {
+  bottom: -6px;
+  left: calc(50%);
+}
+.kie-dmn-editor--nswe-target-handle.left {
+  top: calc(50%);
+  left: -6px;
+}
+.kie-dmn-editor--nswe-target-handle.center {
+  top: calc(50% - 6px);
+  left: calc(50%);
+}
+
 .react-flow__node.selected::before {
   content: "";
   top: -20px;
@@ -124,8 +157,8 @@
   /* box-shadow: 0px 0px 40px 40px #ffffffd9; */
 }
 
-.react-flow__node:hover > .kie-dmn-editor--node,
-.react-flow__node.selected > .kie-dmn-editor--node {
+.react-flow__node:hover > .kie-dmn-editor--node.normal,
+.react-flow__node.selected > .kie-dmn-editor--node.normal {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
 
