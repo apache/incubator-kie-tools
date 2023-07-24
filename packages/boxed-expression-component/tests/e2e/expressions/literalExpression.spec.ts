@@ -8,42 +8,28 @@ test.describe("Literal Expression", () => {
   });
 
   test("Literal Expression editing by select context", async ({ page }) => {
-    await page.locator(".feel-input > div").click();
-    await page.locator(".boxed-expression").type('"test"');
-    await page.locator(".boxed-expression").press("Enter");
-    const json = page.locator(".updated-json");
+    await page.getByTestId("monaco-container").click();
+    await page.getByTestId("monaco-container").type("data");
+    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Escape");
+    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Enter");
 
-    // type
+    const json = page.getByTestId("boxed-expression-json");
     await expect(json).toContainText("Literal");
-
-    // nested
     await expect(json).toContainText("false");
-
-    // expression name
     await expect(json).toContainText("Expression Name");
-
-    // value
-    await expect(json).toContainText("test");
+    await expect(json).toContainText("data");
   });
 
-  test("Literal Expression editing double click", async ({ page }) => {
-    await page.locator(".feel-input > div").click();
-    await page.locator(".feel-input > div").dblclick();
-    await page.getByRole("textbox", { name: "Editor content" }).fill('"test"');
+  test("Literal Expression editing by double click", async ({ page }) => {
+    await page.getByTestId("monaco-container").dblclick();
+    await page.getByRole("textbox", { name: "Editor content" }).fill('"data"');
     await page.locator(".boxed-expression").press("Enter");
-    const json = page.locator(".updated-json");
 
-    // type
+    const json = page.getByTestId("boxed-expression-json");
     await expect(json).toContainText("Literal");
-
-    // nested
     await expect(json).toContainText("false");
-
-    // expression name
     await expect(json).toContainText("Expression Name");
-
-    // value
-    await expect(json).toContainText("test");
+    await expect(json).toContainText("data");
   });
 
   test("Literal Expression change expression name and type", async ({ page }) => {
@@ -58,13 +44,8 @@ test.describe("Literal Expression", () => {
     await literalExpression.getByRole("button", { name: "Options menu" }).press("Enter");
 
     const json = page.locator(".updated-json");
-    // type
     await expect(json).toContainText("Literal");
-
-    // dataType
     await expect(json).toContainText("context");
-
-    // expression name
     await expect(json).toContainText("My Expression");
   });
 
@@ -80,13 +61,8 @@ test.describe("Literal Expression", () => {
     await literalExpression.press("Escape");
 
     const json = page.locator(".updated-json");
-    // type
     await expect(json).toContainText("Literal");
-
-    // dataType
     await expect(json).toContainText("<Undefined>");
-
-    // expression name
     await expect(json).toContainText("Expression Name");
   });
 

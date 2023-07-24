@@ -150,7 +150,7 @@ export const App: React.FunctionComponent = () => {
         />
       </div>
 
-      <div className="updated-json">
+      <div data-testid={"boxed-expression-json"} className="updated-json">
         <div className="buttons">
           <Button
             variant="secondary"

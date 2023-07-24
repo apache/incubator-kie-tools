@@ -175,7 +175,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     return (
       <div className="feel-input">
-        <div ref={monacoContainer} />
+        <div ref={monacoContainer} role={"textbox"} data-testid={"monaco-container"} />
       </div>
     );
   }
