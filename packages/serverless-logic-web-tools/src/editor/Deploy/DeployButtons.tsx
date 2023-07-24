@@ -29,7 +29,7 @@ interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-export function ExtendedServicesButtons(props: Props) {
+export function DeployButtons(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
