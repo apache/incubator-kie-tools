@@ -117,32 +117,52 @@
   filter: brightness(90%);
 }
 
-.kie-dmn-editor--nswe-target-handle {
+/* 
+To make sure connection lines are steadly glued to the 
+handles, we make their indicators be :before elements. The handle 
+itself is a 0px by 0px div, as connection lines can move freely when
+the cursor is inside it. By making it adimensional, that never happens.
+ */
+.kie-dmn-editor--nswe-target-handle:before {
+  content: "";
   width: 14px;
   height: 14px;
+  position: absolute;
+  top: -7px;
+  left: -7px;
   background: #0388ce;
+  border-radius: 100%;
   border: 1px solid black;
   pointer-events: none;
 }
+.kie-dmn-editor--nswe-target-handle {
+  /* These 0px are is by design. See explanation above. */
+  width: 0px;
+  min-width: 0px;
+  height: 0px;
+  min-height: 0px;
+  border: 0;
+  transform: 0;
+}
 .kie-dmn-editor--nswe-target-handle.top {
-  top: -6px;
-  left: calc(50%);
+  top: 0;
+  left: 50%;
 }
 .kie-dmn-editor--nswe-target-handle.right {
-  top: calc(50%);
-  right: -6px;
+  top: 50%;
+  right: 0;
 }
 .kie-dmn-editor--nswe-target-handle.bottom {
-  bottom: -6px;
-  left: calc(50%);
+  bottom: 0;
+  left: 50%;
 }
 .kie-dmn-editor--nswe-target-handle.left {
-  top: calc(50%);
-  left: -6px;
+  top: 50%;
+  left: 0;
 }
 .kie-dmn-editor--nswe-target-handle.center {
-  top: calc(50% - 6px);
-  left: calc(50%);
+  top: 50%;
+  left: 50%;
 }
 
 .react-flow__node.selected::before {
