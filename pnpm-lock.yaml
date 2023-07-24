@@ -5421,6 +5421,9 @@ importers:
       "@kie-tools-core/i18n":
         specifier: workspace:*
         version: link:../i18n
+      "@kie-tools-core/k8s-yaml-to-apiserver-requests":
+        specifier: workspace:*
+        version: link:../k8s-yaml-to-apiserver-requests
       "@kie-tools-core/keyboard-shortcuts":
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -5451,6 +5454,9 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/dev-deployments-upload-service":
+        specifier: workspace:*
+        version: link:../dev-deployments-upload-service
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service

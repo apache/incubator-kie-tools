@@ -294,7 +294,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   command={clusterConfigCommands.createCluster(
                     `${window.location.origin}${
                       window.location.pathname
-                    }${routes.static.kubernetes.kindClusterConfig.path({})}`
+                    }${routes.static.devDeployments.kubernetes.clusterConfig.kindClusterConfig.path({})}`
                   )}
                 />
               </ListItem>
@@ -316,7 +316,9 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   command={clusterConfigCommands.applyDeploymentResources(
                     `${window.location.origin}${
                       window.location.pathname
-                    }${routes.static.kubernetes.kieSandboxDevDeploymentsResources.path({})}`
+                    }${routes.static.devDeployments.kubernetes.clusterConfig.kieSandboxDevDeploymentsResources.path(
+                      {}
+                    )}`
                   )}
                 />
               </ListItem>
@@ -330,7 +332,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       i18n.devDeployments.kubernetesConfigWizard.steps.first,
       kubernetesFlavor,
       operatingSystem,
-      routes.static.kubernetes,
+      routes.static.devDeployments.kubernetes.clusterConfig,
     ]
   );
 

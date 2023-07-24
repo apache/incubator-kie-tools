@@ -112,7 +112,7 @@ export default async (env: any, argv: any) => {
               { from: "./static/resources", to: "./resources" },
               { from: "./static/images", to: "./images" },
               { from: "./static/samples", to: "./samples" },
-              { from: "./static/kubernetes", to: "./kubernetes" },
+              { from: "./static/dev-deployments", to: "./dev-deployments" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
               {
                 from: "./static/env.json",
@@ -135,6 +135,13 @@ export default async (env: any, argv: any) => {
               {
                 from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
                 to: "./images",
+              },
+              {
+                from: path.join(
+                  path.dirname(require.resolve("@kie-tools/dev-deployments-upload-service/package.json")),
+                  "/dist"
+                ),
+                to: "./dev-deployments/upload-service",
               },
             ],
           }),

@@ -11,10 +11,10 @@ darwin:
 	cross-env GOOS=darwin GOARCH=$(GOARCH) CGO_ENABLED=1 go build -ldflags $(LDFLAGS) -o dist/darwin/dev-deployments-upload-service main.go
 
 darwin-amd64:
-	cross-env GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o dist/darwin/dev-deployments-upload-service main.go
+	cross-env GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o dist/darwin/amd64/dev-deployments-upload-service main.go
 
 darwin-arm64:
-	cross-env GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o dist/darwin/dev-deployments-upload-service main.go
+	cross-env GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o dist/darwin/arm64/dev-deployments-upload-service main.go
 
 linux:
 	cross-env GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o dist/linux/dev-deployments-upload-service main.go

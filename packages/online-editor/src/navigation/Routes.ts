@@ -154,9 +154,35 @@ export const routes = {
       bitbucketLogo: new Route<{}>(() => `images/bitbucket-logo.svg`),
       openshiftLogo: new Route<{}>(() => `images/openshift-logo.svg`),
     },
-    kubernetes: {
-      kindClusterConfig: new Route<{}>(() => `kubernetes/kind-cluster-config.yaml`),
-      kieSandboxDevDeploymentsResources: new Route<{}>(() => `kubernetes/kie-sandbox-dev-deployments-resources.yaml`),
+    devDeployments: {
+      kubernetes: {
+        clusterConfig: {
+          kindClusterConfig: new Route<{}>(() => `dev-deployments/kubernetes/cluster-config/kind-cluster-config.yaml`),
+          kieSandboxDevDeploymentsResources: new Route<{}>(
+            () => `dev-deployments/kubernetes/cluster-config/kie-sandbox-dev-deployments-resources.yaml`
+          ),
+        },
+        resources: {
+          deployment: new Route<{}>(() => `dev-deployments/kubernetes/resources/deployment.yaml`),
+          service: new Route<{}>(() => `dev-deployments/kubernetes/resources/service.yaml`),
+          ingress: new Route<{}>(() => `dev-deployments/kubernetes/resources/ingress.yaml`),
+        },
+      },
+      openshift: {
+        resources: {
+          deployment: new Route<{}>(() => `dev-deployments/openshift/resources/deployment.yaml`),
+          service: new Route<{}>(() => `dev-deployments/openshift/resources/service.yaml`),
+          ingress: new Route<{}>(() => `dev-deployments/openshift/resources/route.yaml`),
+        },
+      },
+      uploadService: {
+        linux: new Route<{}>(() => `dev-deployments/upload-service/linux/dev-deployments-upload-service`),
+        darwin: {
+          amd64: new Route<{}>(() => `dev-deployments/upload-service/darwin/amd64/dev-deployments-upload-service`),
+          arm64: new Route<{}>(() => `dev-deployments/upload-service/darwin/arm64/dev-deployments-upload-service`),
+        },
+        win32: new Route<{}>(() => `dev-deployments/upload-service/win32/dev-deployments-upload-service`),
+      },
     },
   },
 };
