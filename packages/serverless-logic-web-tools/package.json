@@ -88,7 +88,6 @@
     "@kie-tools/dashbuilder-client": "workspace:*",
     "@kie-tools/dashbuilder-viewer-image-env": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
-    "@kie-tools/extended-services": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-base-builder-image-env": "workspace:*",
     "@kie-tools/serverless-logic-web-tools-swf-builder-image-env": "workspace:*",

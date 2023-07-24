@@ -1740,7 +1740,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 <DeployDropdownGroup
                                   workspace={workspace}
                                   workspaceFile={props.workspaceFile}
-                                  key="extended-services-group"
+                                  key="deploy-group"
                                 />,
                               ]),
                         ]}
