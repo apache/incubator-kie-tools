@@ -12,7 +12,7 @@ import {
 import * as React from "react";
 import { useCallback, useEffect } from "react";
 import * as RF from "reactflow";
-import { ConnectionTargetHandles } from "../connections/ConnectionTargetHandles";
+import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -40,7 +40,7 @@ export function InputDataNode({
 
   return (
     <>
-      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+      <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className}`}>
@@ -79,7 +79,7 @@ export function DecisionNode({
 
   return (
     <>
-      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+      <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}>
@@ -122,7 +122,7 @@ export function BkmNode({
 
   return (
     <>
-      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+      <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className}`}>
@@ -160,7 +160,7 @@ export function KnowledgeSourceNode({
 
   return (
     <>
-      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+      <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}>
         <OutgoingStuffNodePanel
@@ -193,7 +193,7 @@ export function TextAnnotationNode({
 
   return (
     <>
-      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+      <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}>
         <OutgoingStuffNodePanel
@@ -222,7 +222,7 @@ export function DecisionServiceNode({
 
   return (
     <>
-      <ConnectionTargetHandles isTargeted={isTargeted && isValidTarget} />
+      <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {selected && <NodeResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}

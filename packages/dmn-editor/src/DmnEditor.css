@@ -123,7 +123,7 @@ handles, we make their indicators be :before elements. The handle
 itself is a 0px by 0px div, as connection lines can move freely when
 the cursor is inside it. By making it adimensional, that never happens.
  */
-.kie-dmn-editor--nswe-target-handle:before {
+.kie-dmn-editor--node-handle:before {
   content: "";
   width: 14px;
   height: 14px;
@@ -135,7 +135,7 @@ the cursor is inside it. By making it adimensional, that never happens.
   border: 1px solid black;
   pointer-events: none;
 }
-.kie-dmn-editor--nswe-target-handle {
+.kie-dmn-editor--node-handle {
   /* These 0px are is by design. See explanation above. */
   width: 0px;
   min-width: 0px;
@@ -144,23 +144,23 @@ the cursor is inside it. By making it adimensional, that never happens.
   border: 0;
   transform: 0;
 }
-.kie-dmn-editor--nswe-target-handle.top {
+.kie-dmn-editor--node-handle.top {
   top: 0;
   left: 50%;
 }
-.kie-dmn-editor--nswe-target-handle.right {
+.kie-dmn-editor--node-handle.right {
   top: 50%;
   right: 0;
 }
-.kie-dmn-editor--nswe-target-handle.bottom {
+.kie-dmn-editor--node-handle.bottom {
   bottom: 0;
   left: 50%;
 }
-.kie-dmn-editor--nswe-target-handle.left {
+.kie-dmn-editor--node-handle.left {
   top: 50%;
   left: 0;
 }
-.kie-dmn-editor--nswe-target-handle.center {
+.kie-dmn-editor--node-handle.center {
   top: 50%;
   left: 50%;
 }
