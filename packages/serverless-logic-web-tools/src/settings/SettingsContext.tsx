@@ -49,17 +49,6 @@ interface GithubUser {
   email: string;
 }
 
-export class ExtendedServicesConfig {
-  constructor(public readonly host: string, public readonly port: string) {}
-
-  public buildUrl(): string {
-    if (this.port.trim().length === 0) {
-      return this.host;
-    }
-    return `${this.host}:${this.port}`;
-  }
-}
-
 export interface SettingsContextType {
   openshift: {
     status: OpenShiftInstanceStatus;
