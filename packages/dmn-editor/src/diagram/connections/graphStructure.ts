@@ -88,10 +88,10 @@ export const outgoing = {
   },
 };
 
-function outgoingNodes(srcNodeType: NodeType) {
+function outgoingNodes(srcNodeType: NodeType): NodeType[] {
   return Array.from((graphStructure.get(srcNodeType) ?? new Map()).values()).flatMap((tgt) => [...tgt]);
 }
 
-function outgoingEdges(srcNodeType: NodeType) {
+function outgoingEdges(srcNodeType: NodeType): EdgeType[] {
   return Array.from((graphStructure.get(srcNodeType) ?? new Map()).keys());
 }

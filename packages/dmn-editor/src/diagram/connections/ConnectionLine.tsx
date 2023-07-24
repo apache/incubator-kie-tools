@@ -1,24 +1,17 @@
 import * as React from "react";
 import * as RF from "reactflow";
-import { NODE_TYPES } from "../nodes/NodeTypes";
+import { MIN_SIZE_FOR_NODES, snapPoint } from "../SnapGrid";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
-import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapPoint } from "../SnapGrid";
 import {
   AssociationPath,
   AuthorityRequirementPath,
   InformationRequirementPath,
   KnowledgeRequirementPath,
 } from "../edges/Edges";
-import {
-  BkmNodeSvg,
-  DecisionNodeSvg,
-  InputDataNode,
-  InputDataNodeSvg,
-  KnowledgeSourceNodeSvg,
-  TextAnnotationNodeSvg,
-} from "../nodes/Nodes";
+import { NODE_TYPES } from "../nodes/NodeTypes";
+import { BkmNodeSvg, DecisionNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/Nodes";
 
-export function ConnectionLine({ toX, toY, fromNode, fromHandle, connectionStatus }: RF.ConnectionLineComponentProps) {
+export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const { "@_x": fromX, "@_y": fromY } = snapPoint({
     "@_x": (fromNode?.position.x ?? 0) + (fromNode?.width ?? 0) / 2,
     "@_y": (fromNode?.position.y ?? 0) + (fromNode?.height ?? 0) / 2,
@@ -33,7 +26,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle, connectionStatu
   }
   //
   else if (fromHandle?.id === EDGE_TYPES.authorityRequirement) {
-    return <AuthorityRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
+    return <AuthorityRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} centerToConnectionPoint={true} />;
   }
   //
   else if (fromHandle?.id === EDGE_TYPES.association) {
@@ -69,7 +62,10 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle, connectionStatu
     const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
     return (
       <g>
-        <AuthorityRequirementPath d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`} />
+        <AuthorityRequirementPath
+          d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`}
+          centerToConnectionPoint={false}
+        />
         <KnowledgeSourceNodeSvg
           x={toXsnapped}
           y={toYsnapped}

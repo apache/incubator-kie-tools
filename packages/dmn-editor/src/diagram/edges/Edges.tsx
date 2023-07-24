@@ -3,6 +3,7 @@ import * as RF from "reactflow";
 import { useCallback, useMemo } from "react";
 import { DMNDI13__DMNEdge, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
+import { useTargetStatus } from "../nodes/Nodes";
 
 export type EdgeData = {
   dmnEdge: DMNDI13__DMNEdge | undefined;
@@ -52,22 +53,29 @@ export function KnowledgeRequirementPath(props: React.SVGProps<SVGPathElement>) 
   );
 }
 
-export function AuthorityRequirementPath(props: React.SVGProps<SVGPathElement>) {
+export function AuthorityRequirementPath(props: React.SVGProps<SVGPathElement> & { centerToConnectionPoint: boolean }) {
   return (
     <>
       <path
         {...props}
         style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
-        markerEnd={"url(#closed-circle)"}
+        markerEnd={props.centerToConnectionPoint ? `url(#closed-circle-at-center)` : `url(#closed-circle-at-border)`}
       />
     </>
   );
 }
 
 export function AssociationPath(props: React.SVGProps<SVGPathElement>) {
+  const strokeWidth = props.strokeWidth ?? 1.5;
   return (
     <>
-      <path {...props} style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "2,10" }} />
+      <path
+        {...props}
+        strokeWidth={strokeWidth}
+        strokeLinecap="butt"
+        strokeLinejoin="round"
+        style={{ stroke: "black", strokeDasharray: `${strokeWidth},10` }}
+      />
     </>
   );
 }
@@ -75,18 +83,42 @@ export function AssociationPath(props: React.SVGProps<SVGPathElement>) {
 //
 
 export function InformationRequirementEdge(props: RF.EdgeProps) {
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const path = useKieEdgePath(props.source, props.target, props.data);
-  return <InformationRequirementPath d={path} />;
+  return (
+    <>
+      <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`} />
+    </>
+  );
 }
 export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const path = useKieEdgePath(props.source, props.target, props.data);
-  return <KnowledgeRequirementPath d={path} />;
+  return (
+    <>
+      <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`} />
+    </>
+  );
 }
 export function AuthorityRequirementEdge(props: RF.EdgeProps) {
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const path = useKieEdgePath(props.source, props.target, props.data);
-  return <AuthorityRequirementPath d={path} />;
+  return (
+    <>
+      <AuthorityRequirementPath
+        d={path}
+        className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`}
+        centerToConnectionPoint={false}
+      />
+    </>
+  );
 }
 export function AssociationEdge(props: RF.EdgeProps) {
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const path = useKieEdgePath(props.source, props.target, props.data);
-  return <AuthorityRequirementPath d={path} />;
+  return (
+    <>
+      <AssociationPath d={path} className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`} />
+    </>
+  );
 }

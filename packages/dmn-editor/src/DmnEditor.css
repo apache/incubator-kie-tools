@@ -22,7 +22,7 @@
 }
 
 .kie-dmn-editor--node.dimmed {
-  opacity: 0.4;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -77,16 +77,15 @@
   filter: brightness(90%);
 }
 
-.kie-dmn-editor--node-outgoing-stuff-toolbar {
+.kie-dmn-editor--outgoing-stuff-node-panel {
   position: absolute;
   left: calc(100% - 10px); /* - 1px to make sure it is directly connected to the node */
   top: 0;
-  font-size: 0.7em;
   padding-left: 15px;
   height: 100%;
   align-content: flex-start;
 }
-.kie-dmn-editor--node-outgoing-stuff-toolbar > div {
+.kie-dmn-editor--outgoing-stuff-node-panel > div {
   display: flex;
   margin: 0 0 4px 0;
   background: #fff;
@@ -94,14 +93,14 @@
   border: 1px solid black;
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
-.kie-dmn-editor--node-outgoing-stuff-toolbar > div > div {
+.kie-dmn-editor--outgoing-stuff-node-panel > div > div {
   color: black;
   margin: 0;
   padding: 0;
-  width: 22px;
-  height: 22px;
-  max-width: 22px;
-  border-radius: 22px;
+  width: 34px;
+  height: 34px;
+  max-width: 34px;
+  border-radius: 34px;
   background: #fff;
   border: 0;
   cursor: pointer;
@@ -110,30 +109,42 @@
   align-items: center;
   justify-content: center;
 }
-.kie-dmn-editor--node-outgoing-stuff-toolbar > div > div:hover {
+.kie-dmn-editor--outgoing-stuff-node-panel > div > div:hover {
   filter: brightness(95%);
 }
-.kie-dmn-editor--node-outgoing-stuff-toolbar > div > div:active {
+.kie-dmn-editor--outgoing-stuff-node-panel > div > div:active {
   filter: brightness(90%);
 }
 
 /* 
 To make sure connection lines are steadly glued to the 
-handles, we make their indicators be :before elements. The handle 
+handles, we make their indicators be ::before elements. The handle 
 itself is a 0px by 0px div, as connection lines can move freely when
 the cursor is inside it. By making it adimensional, that never happens.
  */
-.kie-dmn-editor--node-handle:before {
+.kie-dmn-editor--node-handle.connecting::before {
   content: "";
-  width: 14px;
-  height: 14px;
   position: absolute;
-  top: -7px;
-  left: -7px;
   background: #0388ce;
   border-radius: 100%;
   border: 1px solid black;
   pointer-events: none;
+  width: 20px;
+  height: 20px;
+  top: -10px;
+  left: -10px;
+}
+.kie-dmn-editor--node-handle:not(.connecting)::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  top: -7px;
+  left: -7px;
 }
 .kie-dmn-editor--node-handle {
   /* These 0px are is by design. See explanation above. */
@@ -165,24 +176,6 @@ the cursor is inside it. By making it adimensional, that never happens.
   left: 50%;
 }
 
-.react-flow__node.selected::before {
-  content: "";
-  top: -20px;
-  left: -20px;
-  position: absolute;
-  width: calc(100% + 20px + 20px);
-  height: calc(100% + 20px + 20px);
-  border-radius: 36px;
-  z-index: -1;
-  /* background: #ffffffd9; */
-  /* box-shadow: 0px 0px 40px 40px #ffffffd9; */
-}
-
-.react-flow__node:hover > .kie-dmn-editor--node.normal,
-.react-flow__node.selected > .kie-dmn-editor--node.normal {
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
-}
-
 /* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-label {
   position: absolute;
@@ -211,7 +204,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 
 /* info button on all nodes */
-.kie-dmn-editor--info-label-toolbar {
+.kie-dmn-editor--info-node-panel {
   position: absolute;
   left: calc(-9.5px - 14px);
   top: 0;
@@ -310,11 +303,34 @@ the cursor is inside it. By making it adimensional, that never happens.
   border-left: 0;
 }
 
+.kie-dmn-editor--edge.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 /* react flow theming */
 
 /* .react-flow__edges { */
 /* z-index: 400 !important; */
 /* } */
+
+.react-flow__node.selected::before {
+  content: "";
+  top: -20px;
+  left: -20px;
+  position: absolute;
+  width: calc(100% + 20px + 20px);
+  height: calc(100% + 20px + 20px);
+  border-radius: 36px;
+  z-index: -1;
+  /* background: #ffffffd9; */
+  /* box-shadow: 0px 0px 40px 40px #ffffffd9; */
+}
+
+.react-flow__node:hover > .kie-dmn-editor--node.normal,
+.react-flow__node.selected > .kie-dmn-editor--node.normal {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
 
 .react-flow__nodesselection-rect {
   transform-origin: top left;

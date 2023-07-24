@@ -16,12 +16,12 @@ import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { MIN_SIZE_FOR_NODES } from "../SnapGrid";
 import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
+import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 
 export function InputDataNode({
   data: { inputData, shape, onInfo },
@@ -281,56 +281,12 @@ export function DataTypeToolbar(props: {
   );
 }
 
-const handleStyle: React.CSSProperties = {
+export const handleStyle: React.CSSProperties = {
   display: "flex",
   position: "unset",
   transform: "unset",
+  // position: "relative",
 };
-
-export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: string[]; edges: string[] }) {
-  const style: React.CSSProperties = React.useMemo(
-    () => ({
-      visibility: props.isVisible ? undefined : "hidden",
-    }),
-    [props.isVisible]
-  );
-
-  return (
-    <>
-      <Flex className={"kie-dmn-editor--node-outgoing-stuff-toolbar"} style={style}>
-        <FlexItem>
-          {props.edges.map((e) => (
-            <RF.Handle
-              key={e}
-              id={e}
-              isConnectableEnd={false}
-              type={"source"}
-              style={handleStyle}
-              position={RF.Position.Top}
-            >
-              {e.charAt(5)}
-            </RF.Handle>
-          ))}
-        </FlexItem>
-
-        <FlexItem>
-          {props.nodes.map((n) => (
-            <RF.Handle
-              key={n}
-              id={n}
-              isConnectableEnd={false}
-              type={"source"}
-              style={handleStyle}
-              position={RF.Position.Top}
-            >
-              {n.charAt(5)}
-            </RF.Handle>
-          ))}
-        </FlexItem>
-      </Flex>
-    </>
-  );
-}
 
 const resizerControlStyle = {
   background: "transparent",
@@ -376,7 +332,7 @@ export function InfoNodePanel(props: { isVisible: boolean; onClick: () => void }
   return (
     <>
       {props.isVisible && (
-        <div className={"kie-dmn-editor--info-label-toolbar"}>
+        <div className={"kie-dmn-editor--info-node-panel"}>
           <Label onClick={props.onClick} className={"kie-dmn-editor--info-label"}>
             <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
           </Label>
@@ -438,7 +394,7 @@ export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean) 
 
 //
 
-export function InputDataNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+export function InputDataNodeSvg(props: NodeSvgProps) {
   const rx =
     typeof props.height === "number"
       ? props.height / 2
@@ -446,18 +402,28 @@ export function InputDataNodeSvg(props: RF.Dimensions & RF.XYPosition) {
           throw new Error("Can't calculate rx based on a string height.");
         })();
 
-  return <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} rx={rx} ry={"50%"} />;
+  return (
+    <rect
+      {...props}
+      fill={"#fff"}
+      stroke={"black"}
+      strokeLinejoin="round"
+      strokeWidth={props.strokeWidth ?? 1.5}
+      rx={rx}
+      ry={"50%"}
+    />
+  );
 }
 
-export function DecisionNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+export function DecisionNodeSvg(props: NodeSvgProps) {
   return (
     <g>
-      <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} />
+      <rect {...props} fill={"#fff"} stroke={"black"} strokeLinejoin="round" strokeWidth={props.strokeWidth ?? 1.5} />
     </g>
   );
 }
 
-export function BkmNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+export function BkmNodeSvg(props: NodeSvgProps) {
   return (
     <polygon
       points={`20,0 0,20 0,${props.height} ${props.width - 20},${props.height} ${props.width},${props.height - 20}, ${
@@ -465,13 +431,14 @@ export function BkmNodeSvg(props: RF.Dimensions & RF.XYPosition) {
       },0`}
       fill={"#fff"}
       stroke={"black"}
-      strokeWidth={1.5}
+      strokeWidth={props.strokeWidth ?? 1.5}
+      strokeLinejoin="round"
       transform={`translate(${props.x},${props.y})`}
     />
   );
 }
 
-export function KnowledgeSourceNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+export function KnowledgeSourceNodeSvg(props: NodeSvgProps) {
   const quarterX = props.width / 4;
   const halfX = props.width / 2;
   const amplitude = 20;
@@ -483,41 +450,56 @@ export function KnowledgeSourceNodeSvg(props: RF.Dimensions & RF.XYPosition) {
           props.width - 1
         },${props.height - 1 - amplitude / 2}`}
         stroke={"black"}
-        strokeWidth={1.5}
+        strokeWidth={props.strokeWidth ?? 1.5}
+        strokeLinejoin="round"
         transform={`translate(${props.x},${props.y})`}
       />
       <path
         d={`M0,0 Q${quarterX},${amplitude} ${halfX},0 T${props.width},0`}
         stroke={"black"}
         fill={"transparent"}
-        strokeWidth={1.5}
+        strokeWidth={props.strokeWidth ?? 1.5}
+        strokeLinejoin="round"
         transform={`translate(${props.x},${props.y - amplitude / 2 + props.height - 1})`}
       />
     </g>
   );
 }
 
-export function DecisionServiceNodeSvg(props: RF.Dimensions & RF.XYPosition & { dividerLineY: number }) {
+export function DecisionServiceNodeSvg(props: NodeSvgProps & { dividerLineY: number }) {
   return (
     <g>
-      <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} rx={40} ry={40} />
-      <path d={`M0,${props.dividerLineY} L${props.width},${props.dividerLineY}`} />
+      <rect
+        {...props}
+        fill={"#fff"}
+        stroke={"black"}
+        strokeLinejoin="round"
+        strokeWidth={props.strokeWidth ?? 1.5}
+        rx={40}
+        ry={40}
+      />
+      <path d={`M0,${props.dividerLineY} L${props.width},${props.dividerLineY}`} strokeLinejoin="round" />
     </g>
   );
 }
 
-export function TextAnnotationNodeSvg(props: RF.Dimensions & RF.XYPosition) {
+export function TextAnnotationNodeSvg(props: NodeSvgProps) {
   return (
     <path
       {...props}
       d={`M20,1 L1,1 M1,1 L1,${props.height - 1} M1,${props.height - 1} L20,${props.height - 1}`}
       stroke={"black"}
-      strokeWidth={1.5}
+      strokeWidth={props.strokeWidth ?? 1.5}
+      strokeLinejoin="round"
       transform={`translate(${props.x},${props.y})`}
     />
   );
 }
 
-export function GroupNodeSvg(props: RF.Dimensions & RF.XYPosition) {
-  return <rect {...props} fill={"#fff"} stroke={"black"} strokeWidth={1.5} />;
+export function GroupNodeSvg(props: NodeSvgProps) {
+  return (
+    <rect {...props} fill={"#fff"} stroke={"black"} strokeLinejoin="round" strokeWidth={props.strokeWidth ?? 1.5} />
+  );
 }
+
+export type NodeSvgProps = RF.Dimensions & RF.XYPosition & { strokeWidth?: number };
