@@ -16,7 +16,7 @@
     "build-quarkus:dev": "run-script-os",
     "build-quarkus:dev:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests",
     "build-quarkus:dev:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests\"",
-    "build-quarkus:prod": "pnpm lint && run-script-os",
+    "build-quarkus:prod": "run-script-os",
     "build-quarkus:prod:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build-quarkus:prod:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
     "build:dev": "pnpm copy-assets && pnpm build-quarkus:dev",
