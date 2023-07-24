@@ -51,7 +51,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   else if (fromHandle?.id === NODE_TYPES.bkm) {
     const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
     return (
-      <g>
+      <g className={"pulse"}>
         <KnowledgeRequirementPath d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`} />
         <BkmNodeSvg x={toXsnapped} y={toYsnapped} width={MIN_SIZE_FOR_NODES.width} height={MIN_SIZE_FOR_NODES.height} />
       </g>

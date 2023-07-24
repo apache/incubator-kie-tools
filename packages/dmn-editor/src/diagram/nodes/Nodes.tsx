@@ -17,11 +17,23 @@ import { outgoing } from "../connections/graphStructure";
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import { MIN_SIZE_FOR_NODES } from "../SnapGrid";
+import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
+
+function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions {
+  const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
+  if (!node) {
+    throw new Error("Can't use nodeInternals of non-existent node " + id);
+  }
+
+  return {
+    width: node.width ?? snapShapeDimensions(shape).width,
+    height: node.height ?? snapShapeDimensions(shape).height,
+  };
+}
 
 export function InputDataNode({
   data: { inputData, shape, onInfo },
@@ -37,9 +49,13 @@ export function InputDataNode({
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget);
+  const nodeDimensions = useNodeDimensions(id, shape);
 
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
@@ -77,8 +93,13 @@ export function DecisionNode({
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget);
 
+  const nodeDimensions = useNodeDimensions(id, shape);
+
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <DecisionNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
@@ -120,8 +141,13 @@ export function BkmNode({
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget);
 
+  const nodeDimensions = useNodeDimensions(id, shape);
+
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
@@ -158,8 +184,13 @@ export function KnowledgeSourceNode({
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget);
 
+  const nodeDimensions = useNodeDimensions(id, shape);
+
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}>
@@ -191,8 +222,13 @@ export function TextAnnotationNode({
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget);
 
+  const nodeDimensions = useNodeDimensions(id, shape);
+
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}>
@@ -220,8 +256,13 @@ export function DecisionServiceNode({
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget);
 
+  const nodeDimensions = useNodeDimensions(id, shape);
+
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <DecisionServiceNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {selected && <NodeResizerHandle />}
@@ -242,15 +283,28 @@ export function DecisionServiceNode({
 export function GroupNode({
   data: { group, shape },
   selected,
+  id,
 }: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const isHovered = useHoveredInfo(ref);
+
+  const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+  const className = useNodeClassName(isConnecting, isValidTarget);
+
+  const nodeDimensions = useNodeDimensions(id, shape);
   return (
     <>
+      <svg className={`kie-dmn-editor--node-shape ${className}`}>
+        <GroupNodeSvg {...nodeDimensions} x={0} y={0} />
+      </svg>
       <div className={`kie-dmn-editor--node kie-dmn-editor--group-node`}>
         {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
       </div>
     </>
   );
 }
+
+///
 
 export function EmptyLabel() {
   return (
@@ -309,7 +363,6 @@ export function NodeResizerHandle(props: {}) {
           height: "12px",
           backgroundColor: "black",
           clipPath: "polygon(0 100%, 100% 100%, 100% 0)",
-          borderRadius: "4px",
         }}
       />
     </RF.NodeResizeControl>
@@ -394,111 +447,188 @@ export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean) 
 
 //
 
-export function InputDataNodeSvg(props: NodeSvgProps) {
+const DEFAULT_NODE_FILL = "white";
+const DEFAULT_NODE_STROKE_WIDTH = 1.5;
+const DEFAULT_NODE_STROKE_COLOR = "black";
+
+// This function makes sure that independent of strokeWidth, the size and position of the element is preserved. Much like `box-sizing: border-box`;
+export function normalize<T extends NodeSvgProps>(_props: T) {
+  const { strokeWidth: _strokeWidth, x: _x, y: _y, width: _width, height: _height, ...props } = _props;
+
+  const strokeWidth = _strokeWidth ?? DEFAULT_NODE_STROKE_WIDTH;
+  const halfStrokeWidth = strokeWidth / 2;
+
+  const x = _x + halfStrokeWidth;
+  const y = _y + halfStrokeWidth;
+  const width = _width - strokeWidth;
+  const height = _height - strokeWidth;
+
+  return { strokeWidth, x, y, width, height, props };
+}
+
+export function InputDataNodeSvg(_props: NodeSvgProps) {
+  const { strokeWidth, x, y, width, height, props } = normalize(_props);
   const rx =
-    typeof props.height === "number"
-      ? props.height / 2
+    typeof height === "number"
+      ? height / 2
       : (() => {
           throw new Error("Can't calculate rx based on a string height.");
         })();
 
-  return (
-    <rect
-      {...props}
-      fill={"#fff"}
-      stroke={"black"}
-      strokeLinejoin="round"
-      strokeWidth={props.strokeWidth ?? 1.5}
-      rx={rx}
-      ry={"50%"}
-    />
-  );
-}
+  const ry =
+    typeof width === "number"
+      ? width / 2
+      : (() => {
+          throw new Error("Can't calculate ry based on a string width.");
+        })();
 
-export function DecisionNodeSvg(props: NodeSvgProps) {
   return (
     <g>
-      <rect {...props} fill={"#fff"} stroke={"black"} strokeLinejoin="round" strokeWidth={props.strokeWidth ?? 1.5} />
+      <rect
+        {...props}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={DEFAULT_NODE_FILL}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        rx={rx}
+        ry={ry}
+      />
     </g>
   );
 }
 
-export function BkmNodeSvg(props: NodeSvgProps) {
+export function DecisionNodeSvg(_props: NodeSvgProps) {
   return (
-    <polygon
-      points={`20,0 0,20 0,${props.height} ${props.width - 20},${props.height} ${props.width},${props.height - 20}, ${
-        props.width
-      },0`}
-      fill={"#fff"}
-      stroke={"black"}
-      strokeWidth={props.strokeWidth ?? 1.5}
-      strokeLinejoin="round"
-      transform={`translate(${props.x},${props.y})`}
-    />
+    <g>
+      <rect
+        {...normalize(_props)}
+        fill={DEFAULT_NODE_FILL}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+      />
+    </g>
   );
 }
 
-export function KnowledgeSourceNodeSvg(props: NodeSvgProps) {
-  const quarterX = props.width / 4;
-  const halfX = props.width / 2;
+export function BkmNodeSvg(_props: NodeSvgProps) {
+  const { strokeWidth, x, y, width, height, props } = normalize(_props);
+  const bevel = 25;
+  return (
+    <g>
+      <polygon
+        {...props}
+        points={`${bevel},0 0,${bevel} 0,${height} ${width - bevel},${height} ${width},${height - bevel}, ${width},0`}
+        fill={DEFAULT_NODE_FILL}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeWidth={strokeWidth}
+        strokeLinejoin={"round"}
+        transform={`translate(${x},${y})`}
+      />
+    </g>
+  );
+}
+
+export function KnowledgeSourceNodeSvg(_props: NodeSvgProps) {
+  const { strokeWidth, x, y, width, height, props } = normalize(_props);
+  const quarterX = width / 4;
+  const halfX = width / 2;
   const amplitude = 20;
   return (
     <g>
       <path
         {...props}
-        d={`M1,${props.height - 1 - amplitude / 2} L1,1 M1,1 L${props.width - 1},1 M${props.width - 1},1 L${
-          props.width - 1
-        },${props.height - 1 - amplitude / 2}`}
-        stroke={"black"}
-        strokeWidth={props.strokeWidth ?? 1.5}
-        strokeLinejoin="round"
-        transform={`translate(${props.x},${props.y})`}
+        d={`M0,${height - amplitude / 2} L0,0 M0,0 L${width},0 M${width},0 L${width},${height - amplitude / 2} Z`}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeWidth={strokeWidth}
+        fill={DEFAULT_NODE_FILL}
+        strokeLinejoin={"round"}
+        transform={`translate(${x},${y})`}
       />
       <path
-        d={`M0,0 Q${quarterX},${amplitude} ${halfX},0 T${props.width},0`}
-        stroke={"black"}
-        fill={"transparent"}
-        strokeWidth={props.strokeWidth ?? 1.5}
-        strokeLinejoin="round"
-        transform={`translate(${props.x},${props.y - amplitude / 2 + props.height - 1})`}
+        d={`M0,0 Q${quarterX},${amplitude} ${halfX},0 T${width},0`}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        fill={DEFAULT_NODE_FILL}
+        strokeWidth={strokeWidth}
+        strokeLinejoin={"round"}
+        transform={`translate(${x},${y - amplitude / 2 + height})`}
       />
     </g>
   );
 }
 
-export function DecisionServiceNodeSvg(props: NodeSvgProps & { dividerLineY: number }) {
+export function DecisionServiceNodeSvg(__props: NodeSvgProps & { dividerLineY?: number }) {
+  const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
+  const { dividerLineY, ...props } = _props;
+  const cornerRadius = 40;
   return (
     <g>
       <rect
         {...props}
-        fill={"#fff"}
-        stroke={"black"}
-        strokeLinejoin="round"
-        strokeWidth={props.strokeWidth ?? 1.5}
-        rx={40}
-        ry={40}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={DEFAULT_NODE_FILL}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        rx={cornerRadius}
+        ry={cornerRadius}
       />
-      <path d={`M0,${props.dividerLineY} L${props.width},${props.dividerLineY}`} strokeLinejoin="round" />
+      <path
+        d={`M0,0 L${width},0`}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        transform={`translate(${x + strokeWidth / 2},${y + (dividerLineY ? dividerLineY : height / 2)})`}
+      />
     </g>
   );
 }
 
-export function TextAnnotationNodeSvg(props: NodeSvgProps) {
+export function TextAnnotationNodeSvg(_props: NodeSvgProps) {
+  const { strokeWidth, x, y, width, height, props } = normalize(_props);
   return (
-    <path
-      {...props}
-      d={`M20,1 L1,1 M1,1 L1,${props.height - 1} M1,${props.height - 1} L20,${props.height - 1}`}
-      stroke={"black"}
-      strokeWidth={props.strokeWidth ?? 1.5}
-      strokeLinejoin="round"
-      transform={`translate(${props.x},${props.y})`}
-    />
+    <g>
+      <path
+        {...props}
+        x={x}
+        y={y}
+        d={`M20,0 L0,0 M0,0 L0,${height} M0,${height} L20,${height}`}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeWidth={strokeWidth}
+        strokeLinejoin={"round"}
+        transform={`translate(${x},${y})`}
+      />
+    </g>
   );
 }
 
-export function GroupNodeSvg(props: NodeSvgProps) {
+export function GroupNodeSvg(_props: NodeSvgProps & { strokeDasharray?: string }) {
+  const { strokeWidth, x, y, width, height, props } = normalize(_props);
+  const strokeDasharray = props.strokeDasharray ?? "5,5";
+  const cornerRadius = 40;
   return (
-    <rect {...props} fill={"#fff"} stroke={"black"} strokeLinejoin="round" strokeWidth={props.strokeWidth ?? 1.5} />
+    <g>
+      <rect
+        {...props}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={DEFAULT_NODE_FILL}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        strokeDasharray={strokeDasharray}
+        rx={cornerRadius}
+        ry={cornerRadius}
+      />
+    </g>
   );
 }
 

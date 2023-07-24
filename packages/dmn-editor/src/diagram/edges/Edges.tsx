@@ -53,13 +53,16 @@ export function KnowledgeRequirementPath(props: React.SVGProps<SVGPathElement>) 
   );
 }
 
-export function AuthorityRequirementPath(props: React.SVGProps<SVGPathElement> & { centerToConnectionPoint: boolean }) {
+export function AuthorityRequirementPath(
+  _props: React.SVGProps<SVGPathElement> & { centerToConnectionPoint: boolean | undefined }
+) {
+  const { centerToConnectionPoint: center, ...props } = _props;
   return (
     <>
       <path
         {...props}
         style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
-        markerEnd={props.centerToConnectionPoint ? `url(#closed-circle-at-center)` : `url(#closed-circle-at-border)`}
+        markerEnd={center ? `url(#closed-circle-at-center)` : `url(#closed-circle-at-border)`}
       />
     </>
   );

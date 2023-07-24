@@ -10,18 +10,23 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid black;
   word-break: break-word;
   overflow: hidden;
   -webkit-line-clamp: 2; /* number of lines to show */
   line-clamp: 2;
   -webkit-box-orient: vertical;
   text-align: center;
-  background: white;
+
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  overflow: visible;
   /* opacity: 0.5; */
 }
 
-.kie-dmn-editor--node.dimmed {
+.kie-dmn-editor--node.dimmed,
+.kie-dmn-editor--node-shape.dimmed {
   opacity: 0.3;
   pointer-events: none;
 }
@@ -38,6 +43,7 @@
 
 .kie-dmn-editor--pallete-button {
   margin: 0;
+  padding: 0;
   width: 40px;
   height: 40px;
   max-width: 40px;
@@ -154,6 +160,7 @@ the cursor is inside it. By making it adimensional, that never happens.
   min-height: 0px;
   border: 0;
   transform: 0;
+  z-index: 20;
 }
 .kie-dmn-editor--node-handle.top {
   top: 0;
@@ -247,65 +254,35 @@ the cursor is inside it. By making it adimensional, that never happens.
   filter: brightness(90%);
 }
 
-.kie-dmn-editor--node.kie-dmn-editor--input-data-node {
-  border-radius: 9999px;
-}
-
-.kie-dmn-editor--node.kie-dmn-editor--decision-node {
-  border-radius: 0px;
-}
-
-.kie-dmn-editor--node.kie-dmn-editor--bkm-node {
-  border-top-left-radius: 40px;
-  border-bottom-right-radius: 40px;
-}
-
-.kie-dmn-editor--node.kie-dmn-editor--decision-service-node {
-  border-width: 2px;
-  border-radius: 40px;
-  align-items: start;
-}
-
-.kie-dmn-editor--node.kie-dmn-editor--decision-service-node::before {
-  content: "";
-  background: black;
+.kie-dmn-editor--node-shape {
   position: absolute;
-  top: 50px;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 1px;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.kie-dmn-editor--node.kie-dmn-editor--decision-service-node::after {
-  content: "";
-  position: absolute;
-  box-sizing: border-box;
-  border: 1px solid blue;
-  top: calc(50px - 5px);
-  left: calc(50% - 5px);
-  border-radius: 11px;
-  width: 11px;
-  height: 11px;
-}
+/* connection lines */
+/* TODO */
 
-.kie-dmn-editor--node.kie-dmn-editor--group-node {
-  border-radius: 9999px;
-  border: 1px dotted black;
-}
+/* node types */
 
-.kie-dmn-editor--node.kie-dmn-editor--text-annotation-node {
-  border: 0;
-  border-left: 1px solid black;
-}
-
-.kie-dmn-editor--node.kie-dmn-editor--knowledge-source-node {
-  border-bottom: 0;
-  border-left: 0;
+.kie-dmn-editor--text-annotation-node {
+  text-align: left;
+  display: block;
 }
 
 .kie-dmn-editor--edge.dimmed {
   opacity: 0.3;
   pointer-events: none;
+}
+
+.kie-dmn-editor--round-svg-container {
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 /* react flow theming */
@@ -323,13 +300,11 @@ the cursor is inside it. By making it adimensional, that never happens.
   height: calc(100% + 20px + 20px);
   border-radius: 36px;
   z-index: -1;
-  /* background: #ffffffd9; */
-  /* box-shadow: 0px 0px 40px 40px #ffffffd9; */
 }
 
-.react-flow__node:hover > .kie-dmn-editor--node.normal,
-.react-flow__node.selected > .kie-dmn-editor--node.normal {
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+.react-flow__node:hover > .kie-dmn-editor--node-shape,
+.react-flow__node.selected > .kie-dmn-editor--node-shape {
+  filter: drop-shadow(4px 4px 2px rgb(127, 127, 127));
 }
 
 .react-flow__nodesselection-rect {
