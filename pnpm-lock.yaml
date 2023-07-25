@@ -7,9 +7,9 @@ overrides:
 packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
 
 patchedDependencies:
-  selenium-webdriver@4.8.1:
+  selenium-webdriver@4.10.0:
     hash: lbqefch5nrzt5atgrk2dnw5phe
-    path: patches/selenium-webdriver@4.8.1.patch
+    path: patches/selenium-webdriver@4.10.0.patch
 
 importers:
   .:
@@ -1186,8 +1186,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/selenium-webdriver":
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.1.15
+        version: 4.1.15
       chai:
         specifier: ^4.3.4
         version: 4.3.4
@@ -1207,8 +1207,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       selenium-webdriver:
-        specifier: ^4.8.1
-        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+        specifier: ^4.10.0
+        version: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       start-server-and-test:
         specifier: ^1.12.1
         version: 1.12.1
@@ -7598,8 +7598,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/selenium-webdriver":
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.1.15
+        version: 4.1.15
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -7643,8 +7643,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       selenium-webdriver:
-        specifier: ^4.8.1
-        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+        specifier: ^4.10.0
+        version: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -8536,8 +8536,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       selenium-webdriver:
-        specifier: ^4.8.1
-        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+        specifier: ^4.10.0
+        version: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
     devDependencies:
       "@kie-tools/tsconfig":
         specifier: workspace:*
@@ -8555,8 +8555,8 @@ importers:
         specifier: ^18.13.0
         version: 18.13.0
       "@types/selenium-webdriver":
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.1.15
+        version: 4.1.15
       mocha:
         specifier: ^9.2.0
         version: 9.2.0
@@ -8643,8 +8643,8 @@ importers:
         specifier: ^17.0.6
         version: 17.0.21
       "@types/selenium-webdriver":
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.1.15
+        version: 4.1.15
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -8682,8 +8682,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       selenium-webdriver:
-        specifier: ^4.8.1
-        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+        specifier: ^4.10.0
+        version: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -9396,8 +9396,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/selenium-webdriver":
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.1.15
+        version: 4.1.15
       "@types/vscode":
         specifier: ^1.66.0
         version: 1.66.0
@@ -9438,8 +9438,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       selenium-webdriver:
-        specifier: ^4.8.1
-        version: 4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
+        specifier: ^4.10.0
+        version: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
@@ -16472,11 +16472,6 @@ packages:
       { integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q== }
     dev: true
 
-  /@types/cors@2.8.12:
-    resolution:
-      { integrity: sha512-vt+kDhq/M2ayberEtJcIN/hxXy1Pk+59g2FV/ZQceeaTyCtCucjL2Q7FXlFjtWn4n15KCr1NE2lNNFhp0lEThw== }
-    dev: true
-
   /@types/cors@2.8.13:
     resolution:
       { integrity: sha512-RG8AStHlUiV5ysZQKq97copd2UmVYw3/pRMLefISZ3S1hK104Cwm7iLQ3fTKx+lsUH2CE8FlLaYeEA2LSeqYUA== }
@@ -17044,9 +17039,9 @@ packages:
     resolution:
       { integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA== }
 
-  /@types/selenium-webdriver@4.1.12:
+  /@types/selenium-webdriver@4.1.15:
     resolution:
-      { integrity: sha512-3DxuYHEbzIyUtuICRtxXtJomdOOkBeCbkXAlAPm/h8ArIn/ArWNnVSC6tIj/ECZ/sdxBoI0F/wuwcpxBew3hGw== }
+      { integrity: sha512-oQ15G3q3EZ0dS049SB/5zx2tQkIS2kmDQWC/TSfAHJYKvXLZoUiLaPXnfSwbLP8Q5lcJeu5oYjKVSEV0t3H6Bg== }
     dependencies:
       "@types/ws": 8.5.4
     dev: true
@@ -21582,7 +21577,7 @@ packages:
     engines: { node: ">=10.0.0" }
     dependencies:
       "@types/cookie": 0.4.1
-      "@types/cors": 2.8.12
+      "@types/cors": 2.8.13
       "@types/node": 18.13.0
       accepts: 1.3.8
       base64id: 2.0.0
@@ -27598,7 +27593,7 @@ packages:
       clone-deep: 4.0.1
       compare-versions: 5.0.3
       fs-extra: 11.1.1
-      selenium-webdriver: 4.10.0
+      selenium-webdriver: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       ts-essentials: 9.3.2(typescript@4.8.4)
       typescript: 4.8.4
     dev: true
@@ -31293,7 +31288,7 @@ packages:
       { integrity: sha512-mEugaLK+YfkijB4fx0e6kImuJdCIt2LxCRcbEYPqRGCs4F2ogyfZU5IAZRdjCP8JPq2AtdNoC/Dux63d9Kiryg== }
     dev: true
 
-  /selenium-webdriver@4.10.0:
+  /selenium-webdriver@4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe):
     resolution:
       { integrity: sha512-hSQPw6jgc+ej/UEcdQPG/iBwwMeCEgZr9HByY/J8ToyXztEqXzU9aLsIyrlj1BywBcStO4JQK/zMUWWrV8+riA== }
     engines: { node: ">= 14.20.0" }
@@ -31301,19 +31296,6 @@ packages:
       jszip: 3.10.1
       tmp: 0.2.1
       ws: 8.13.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: true
-
-  /selenium-webdriver@4.8.1(patch_hash=lbqefch5nrzt5atgrk2dnw5phe):
-    resolution:
-      { integrity: sha512-p4MtfhCQdcV6xxkS7eI0tQN6+WNReRULLCAuT4RDGkrjfObBNXMJ3WT8XdK+aXTr5nnBKuh+PxIevM0EjJgkxA== }
-    engines: { node: ">= 14.20.0" }
-    dependencies:
-      jszip: 3.10.1
-      tmp: 0.2.1
-      ws: 8.12.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -32852,7 +32834,7 @@ packages:
     engines: { node: ">=6" }
     dependencies:
       psl: 1.8.0
-      punycode: 2.1.1
+      punycode: 2.3.0
       universalify: 0.2.0
       url-parse: 1.5.10
     dev: true
@@ -33933,7 +33915,7 @@ packages:
       selenium-webdriver: ^4.6.1
     dependencies:
       monaco-page-objects: 3.8.0(selenium-webdriver@4.10.0)(typescript@4.8.4)
-      selenium-webdriver: 4.10.0
+      selenium-webdriver: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
     dev: true
 
   /vscode-extension-tester@5.8.0(mocha@9.2.0)(typescript@4.8.4):
@@ -33944,7 +33926,7 @@ packages:
       mocha: ">=5.2.0"
       typescript: ">=4.6.2"
     dependencies:
-      "@types/selenium-webdriver": 4.1.12
+      "@types/selenium-webdriver": 4.1.15
       "@vscode/vsce": 2.19.0
       commander: 11.0.0
       compare-versions: 5.0.1
@@ -33956,7 +33938,7 @@ packages:
       mocha: 9.2.0
       monaco-page-objects: 3.8.0(selenium-webdriver@4.10.0)(typescript@4.8.4)
       sanitize-filename: 1.6.3
-      selenium-webdriver: 4.10.0
+      selenium-webdriver: 4.10.0(patch_hash=lbqefch5nrzt5atgrk2dnw5phe)
       targz: 1.0.1
       typescript: 4.8.4
       unzipper: 0.10.14
@@ -34880,6 +34862,7 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
+    dev: true
 
   /ws@8.13.0:
     resolution:
@@ -34893,7 +34876,6 @@ packages:
         optional: true
       utf-8-validate:
         optional: true
-    dev: true
 
   /ws@8.2.3:
     resolution:

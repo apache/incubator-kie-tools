@@ -385,6 +385,16 @@ jobs:
           pnpm -F dashbuilder-viewer-image cleanup
           cd -
 
+      - name: "Prune remaining docker/podman resources"
+        if: runner.os != 'Windows'
+        run: |
+          if command -v docker &> /dev/null; then
+            docker system prune -af
+          fi
+          if command -v podman &> /dev/null; then
+            podman system prune --all --force
+          fi
+
       - name: "Checkout kogito-online (Ubuntu only)"
         if: runner.os == 'Linux'
         uses: actions/checkout@v3
