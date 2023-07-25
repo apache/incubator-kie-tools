@@ -1,5 +1,6 @@
-import { DC__Bounds, DC__Point, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DC__Point, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
+// export const SNAP_GRID = { x: 1, y: 1 };
 export const SNAP_GRID = { x: 20, y: 20 };
 
 export const MIN_SIZE_FOR_NODES = {

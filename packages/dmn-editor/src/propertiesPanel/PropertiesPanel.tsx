@@ -31,6 +31,7 @@ import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
 import "./PropertiesPanel.css";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function SingleNodeProperties({
   dmn,
@@ -143,6 +144,11 @@ export function PropertiesPanel({
         )}
         {selectedNodes.length > 1 && (
           <>
+            <Flex justifyContent={{ default: "justifyContentCenter" }}>
+              <TextContent>
+                <Text component={TextVariants.h4}>Multiple nodes selected ({selectedNodes.length})</Text>
+              </TextContent>
+            </Flex>
             <Form>
               <StyleOptions startExpanded={true} />
             </Form>

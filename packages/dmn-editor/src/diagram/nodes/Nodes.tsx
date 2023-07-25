@@ -23,6 +23,14 @@ import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 
+function useNodeResizing(id: string): boolean {
+  const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
+  if (!node) {
+    throw new Error("Can't use nodeInternals of non-existent node " + id);
+  }
+
+  return node.resizing ?? false;
+}
 function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions {
   const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
   if (!node) {
@@ -38,14 +46,16 @@ function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions 
 export function InputDataNode({
   data: { inputData, shape, onInfo },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+  }, [isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -61,13 +71,13 @@ export function InputDataNode({
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.inputData.nodes}
           edges={outgoing.inputData.edges}
         />
-        <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
-        {(isHovered || selected) && <NodeResizerHandle />}
+        {isHovered && <NodeResizerHandle />}
       </div>
     </>
   );
@@ -76,6 +86,7 @@ export function InputDataNode({
 export function DecisionNode({
   data: { decision, shape, setOpenNodeWithExpression, onInfo },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{
   decision: DMN14__tDecision;
@@ -84,11 +95,12 @@ export function DecisionNode({
   onInfo: () => void;
 }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+  }, [isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -105,17 +117,17 @@ export function DecisionNode({
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}>
         <EditExpressionNodePanel
-          isVisible={!isTargeted && (isHovered || selected)}
+          isVisible={!isTargeted && isHovered}
           onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.decision, content: decision })}
         />
         <OutgoingStuffNodePanel
-          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.decision.nodes}
           edges={outgoing.decision.edges}
         />
-        <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
-        {(isHovered || selected) && <NodeResizerHandle />}
+        {isHovered && <NodeResizerHandle />}
       </div>
     </>
   );
@@ -124,6 +136,7 @@ export function DecisionNode({
 export function BkmNode({
   data: { bkm, shape, setOpenNodeWithExpression, onInfo },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{
   bkm: DMN14__tBusinessKnowledgeModel;
@@ -132,11 +145,12 @@ export function BkmNode({
   setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
 }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+  }, [isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -153,17 +167,17 @@ export function BkmNode({
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className}`}>
         <EditExpressionNodePanel
-          isVisible={!isTargeted && (isHovered || selected)}
+          isVisible={!isTargeted && isHovered}
           onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.bkm, content: bkm })}
         />
         <OutgoingStuffNodePanel
-          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.bkm.nodes}
           edges={outgoing.bkm.edges}
         />
-        <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
         {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
-        {(isHovered || selected) && <NodeResizerHandle />}
+        {isHovered && <NodeResizerHandle />}
       </div>
     </>
   );
@@ -172,14 +186,16 @@ export function BkmNode({
 export function KnowledgeSourceNode({
   data: { knowledgeSource, shape, onInfo },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+  }, [isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -195,13 +211,13 @@ export function KnowledgeSourceNode({
 
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.knowledgeSource.nodes}
           edges={outgoing.knowledgeSource.edges}
         />
-        <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
-        {(isHovered || selected) && <NodeResizerHandle />}
+        {isHovered && <NodeResizerHandle />}
       </div>
     </>
   );
@@ -210,14 +226,16 @@ export function KnowledgeSourceNode({
 export function TextAnnotationNode({
   data: { textAnnotation, shape, onInfo },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 200 : selected ? 100 : 10}`;
-  }, [selected, isHovered]);
+    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+  }, [isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -233,13 +251,13 @@ export function TextAnnotationNode({
 
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.textAnnotation.nodes}
           edges={outgoing.textAnnotation.edges}
         />
-        <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
         {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
-        {(isHovered || selected) && <NodeResizerHandle />}
+        {isHovered && <NodeResizerHandle />}
       </div>
     </>
   );
@@ -248,10 +266,12 @@ export function TextAnnotationNode({
 export function DecisionServiceNode({
   data: { decisionService, shape, onInfo },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -265,15 +285,15 @@ export function DecisionServiceNode({
       </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
-      {(isHovered || selected) && <NodeResizerHandle />}
+      {isHovered && <NodeResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}>
         <OutgoingStuffNodePanel
-          isVisible={!isConnecting && !isTargeted && (isHovered || selected)}
+          isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.decisionService.nodes}
           edges={outgoing.decisionService.edges}
         />
-        <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
         {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
       </div>
     </>
@@ -283,10 +303,12 @@ export function DecisionServiceNode({
 export function GroupNode({
   data: { group, shape },
   selected,
+  dragging,
   id,
 }: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovered = useHoveredInfo(ref);
+  const isResizing = useNodeResizing(id);
+  const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -395,7 +417,7 @@ export function InfoNodePanel(props: { isVisible: boolean; onClick: () => void }
   );
 }
 
-export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
+export function useNodeHovered(ref: React.RefObject<HTMLElement>) {
   const [isHovered, setHovered] = React.useState(false);
 
   useEffect(() => {

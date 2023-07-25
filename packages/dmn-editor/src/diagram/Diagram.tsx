@@ -311,6 +311,10 @@ export function Diagram({
   }, [nodes, onSelect]);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
+    if (!e.dataTransfer.types.find((s) => s === "application/reactflow")) {
+      return;
+    }
+
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
   }, []);

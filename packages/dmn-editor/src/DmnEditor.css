@@ -285,36 +285,33 @@ the cursor is inside it. By making it adimensional, that never happens.
   height: 100%;
 }
 
-/* react flow theming */
+/* *********************** */
+/* ⬇ react flow theming ⬇ */
+/* *********************** */
 
-/* .react-flow__edges { */
-/* z-index: 400 !important; */
-/* } */
+/* nodes selection / hover */
 
-.react-flow__node.selected::before {
-  content: "";
-  top: -20px;
-  left: -20px;
-  position: absolute;
-  width: calc(100% + 20px + 20px);
-  height: calc(100% + 20px + 20px);
-  border-radius: 36px;
-  z-index: -1;
+.react-flow__node.selected {
+  color: #006ba4 !important;
 }
-
-.react-flow__node:hover > .kie-dmn-editor--node-shape,
-.react-flow__node.selected > .kie-dmn-editor--node-shape {
+.react-flow__node:not(.selected):hover > .kie-dmn-editor--node-shape.normal {
   filter: drop-shadow(4px 4px 2px rgb(127, 127, 127));
 }
+.react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
+  border-color: #006ba4 !important;
+  filter: drop-shadow(4px 4px 2px #006ba477);
+}
+.react-flow__node.selected > .kie-dmn-editor--node-shape > g * {
+  stroke: #006ba4 !important;
+}
+
+/* selection rect */
 
 .react-flow__nodesselection-rect {
-  transform-origin: top left;
-  transform: translate(-20px, -20px);
-  box-sizing: content-box;
-  padding: 20px;
-  border-radius: 6px;
-  border: 2px dotted;
+  display: none;
 }
+
+/* controls */
 
 .react-flow__controls {
   border-radius: 20px;
@@ -332,18 +329,20 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__controls > button:active {
   filter: brightness(90%);
 }
-
-.react-flow__resize-control {
-  z-index: 100;
-}
-
 .react-flow__controls {
   border-radius: 1000px;
 }
-
 .react-flow__controls-button {
   width: 30px;
   height: 30px;
   border: 0;
   border-radius: 1000px;
+}
+.react-flow__resize-control {
+  z-index: 100;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__selection.react-flow__container {
+  pointer-events: none;
 }
