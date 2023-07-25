@@ -45,7 +45,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
       fullyParallel: true,
     },
 
@@ -56,12 +56,12 @@ export default defineConfig({
 
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: { ...devices["Desktop Safari"], permissions: ["clipboard-read"] },
     },
 
     {
       name: "Google Chrome",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
     },
   ],
   /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */

@@ -1,4 +1,5 @@
-import { Locator, Page, test as base } from "@playwright/test";
+import { Page, test as base } from "@playwright/test";
+import { ExpressionDefinitionBase } from "@kie-tools/boxed-expression-component/dist/api";
 
 type BoxedExpressionFixtures = {
   bee: BoxedExpression;
@@ -27,8 +28,16 @@ class BoxedExpression {
     return this.page.getByTestId("expression-container");
   }
 
-  public getJson() {
-    return this.page.getByTestId("boxed-expression-json");
+  public async getJson<T extends ExpressionDefinitionBase>() {
+    await this.page.getByTestId("boxed-expression-json").getByText("items").hover();
+    await this.page
+      .locator("span")
+      .filter({ hasText: "items" })
+      .getByTitle("Copy to clipboard")
+      .getByRole("img")
+      .click();
+    const clipboard: string = await this.page.evaluate("navigator.clipboard.readText()");
+    return JSON.parse(clipboard) as T;
   }
 }
 
