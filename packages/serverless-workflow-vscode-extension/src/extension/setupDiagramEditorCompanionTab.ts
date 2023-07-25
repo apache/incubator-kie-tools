@@ -76,6 +76,9 @@ export async function setupDiagramEditorCompanionTab(args: {
   args.context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
       if (args.kieEditorsStore.activeEditor) {
+        args.kieEditorsStore.openEditors.forEach((kieEditor) => {
+          kieEditor.close();
+        });
         return;
       }
 
