@@ -3,5 +3,12 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "ts-node": {
+    "esm": true,
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "CommonJS"
+    }
+  }
 }
