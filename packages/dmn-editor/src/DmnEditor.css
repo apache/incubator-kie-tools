@@ -332,3 +332,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__controls > button:active {
   filter: brightness(90%);
 }
+
+.react-flow__resize-control {
+  z-index: 100;
+}
