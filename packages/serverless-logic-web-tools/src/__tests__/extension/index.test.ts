@@ -123,10 +123,10 @@ describe("extension", () => {
         [false, "yaml file in the root", "foo.yaml"],
         [false, "yml file in the root", "foo.yml"],
         [false, "json file in the root", "foo.json"],
-        [true, "yard json file in the root", "foo.yard.json"],
+        [false, "yard json file in the root", "foo.yard.json"],
         [true, "yard yaml file in the root", "foo.yard.yaml"],
         [true, "yard yml file in the root", "foo.yard.yml"],
-        [true, "yard json file in a folder", "bar/foo.yard.json"],
+        [false, "yard json file in a folder", "bar/foo.yard.json"],
         [true, "yard yaml file in a folder", "bar/foo.yard.yaml"],
         [true, "yard yml file in a folder", "bar/foo.yard.yml"],
       ])("should be %s when path is %s", (result, _desc, path) => {

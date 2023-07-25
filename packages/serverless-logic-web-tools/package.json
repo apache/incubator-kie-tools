@@ -48,6 +48,8 @@
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
     "@kie-tools/serverless-workflow-text-editor": "workspace:*",
     "@kie-tools/text-editor": "workspace:*",
+    "@kie-tools/yard-editor": "workspace:*",
+    "@kie-tools/yard-language-service": "workspace:*",
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",
     "@octokit/rest": "^18.5.3",
     "@patternfly/quickstarts": "^2.3.2",

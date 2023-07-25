@@ -290,11 +290,15 @@ export function NewFileDropdownMenu(props: {
             description="Define orchestration logic for services."
             fileTypes={{ json: FileTypes.SW_JSON, yaml: FileTypes.SW_YAML }}
           />
-          <NewJsonYamlDrilldownMenuItem
-            prefixId="newSd"
+          <MenuItem
+            itemId={"newSdItemId"}
+            onClick={() => addEmptyFile(FileTypes.YARD_YAML)}
             description="Define decision logic for services."
-            fileTypes={{ json: FileTypes.YARD_JSON, yaml: FileTypes.YARD_YAML }}
-          />
+          >
+            <b>
+              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.YARD_YAML} />
+            </b>
+          </MenuItem>
           <MenuItem
             itemId={"newDashboardItemId"}
             onClick={() => addEmptyFile(FileTypes.DASH_YAML)}

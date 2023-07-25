@@ -15,5 +15,6 @@
  */
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { YardLanguageServiceChannelApi } from "@kie-tools/yard-language-service/dist/api";
 
-export interface YardEditorChannelApi extends KogitoEditorChannelApi {}
+export interface YardEditorChannelApi extends KogitoEditorChannelApi, YardLanguageServiceChannelApi {}

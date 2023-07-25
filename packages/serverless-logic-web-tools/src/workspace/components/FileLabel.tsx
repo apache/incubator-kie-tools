@@ -25,7 +25,6 @@ export const labelColors: Record<string, LabelColorType> = {
   [FileTypes.SW_JSON]: ServerlessCategoryMap["serverless-workflow"],
   [FileTypes.SW_YML]: ServerlessCategoryMap["serverless-workflow"],
   [FileTypes.SW_YAML]: ServerlessCategoryMap["serverless-workflow"],
-  [FileTypes.YARD_JSON]: ServerlessCategoryMap["serverless-decision"],
   [FileTypes.YARD_YML]: ServerlessCategoryMap["serverless-decision"],
   [FileTypes.YARD_YAML]: ServerlessCategoryMap["serverless-decision"],
   [FileTypes.DASH_YAML]: ServerlessCategoryMap["dashbuilder"],
