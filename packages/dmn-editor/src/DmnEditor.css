@@ -336,3 +336,14 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__resize-control {
   z-index: 100;
 }
+
+.react-flow__controls {
+  border-radius: 1000px;
+}
+
+.react-flow__controls-button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 1000px;
+}

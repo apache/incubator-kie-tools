@@ -67,8 +67,8 @@ export function InputDataNode({
         />
         <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
+        {(isHovered || selected) && <NodeResizerHandle />}
       </div>
-      {selected && <NodeResizerHandle />}
     </>
   );
 }
@@ -115,8 +115,8 @@ export function DecisionNode({
         />
         <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
+        {(isHovered || selected) && <NodeResizerHandle />}
       </div>
-      {selected && <NodeResizerHandle />}
     </>
   );
 }
@@ -163,8 +163,8 @@ export function BkmNode({
         />
         <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
+        {(isHovered || selected) && <NodeResizerHandle />}
       </div>
-      {selected && <NodeResizerHandle />}
     </>
   );
 }
@@ -201,8 +201,8 @@ export function KnowledgeSourceNode({
         />
         <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
+        {(isHovered || selected) && <NodeResizerHandle />}
       </div>
-      {selected && <NodeResizerHandle />}
     </>
   );
 }
@@ -239,8 +239,8 @@ export function TextAnnotationNode({
         />
         <InfoNodePanel isVisible={!isTargeted && (isHovered || selected)} onClick={onInfo} />
         {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
+        {(isHovered || selected) && <NodeResizerHandle />}
       </div>
-      {selected && <NodeResizerHandle />}
     </>
   );
 }
@@ -265,7 +265,7 @@ export function DecisionServiceNode({
       </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
-      {selected && <NodeResizerHandle />}
+      {(isHovered || selected) && <NodeResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
       <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}>
         <OutgoingStuffNodePanel
@@ -399,7 +399,7 @@ export function useHoveredInfo(ref: React.RefObject<HTMLElement>) {
   const [isHovered, setHovered] = React.useState(false);
 
   useEffect(() => {
-    function onEnter(e: MouseEvent) {
+    function onEnter() {
       setHovered(true);
     }
 
