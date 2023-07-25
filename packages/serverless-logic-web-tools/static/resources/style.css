@@ -360,6 +360,14 @@
   }
 }
 
+.kogito--editor__not-chromium-icon {
+  color: var(--pf-global--warning-color--100);
+}
+
+.kogito--editor__not-chromium-icon:focus {
+  outline: none;
+}
+
 .kogito--editor__light-tooltip {
   --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
   --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);

@@ -96,7 +96,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
               >
                 <ExclamationIcon
                   data-testid="not-chromium-icon"
-                  className="static-opacity"
+                  className="kogito--editor__not-chromium-icon static-opacity"
                   id="browser-not-chromium-icon"
                   style={{ cursor: "pointer" }}
                 />
