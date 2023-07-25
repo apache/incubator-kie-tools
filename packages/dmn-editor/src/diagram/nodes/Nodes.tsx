@@ -48,7 +48,7 @@ export function InputDataNode({
   }, [selected, isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
   const nodeDimensions = useNodeDimensions(id, shape);
 
   return (
@@ -91,7 +91,7 @@ export function DecisionNode({
   }, [selected, isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
@@ -139,7 +139,7 @@ export function BkmNode({
   }, [selected, isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
@@ -182,7 +182,7 @@ export function KnowledgeSourceNode({
   }, [selected, isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
@@ -220,7 +220,7 @@ export function TextAnnotationNode({
   }, [selected, isHovered]);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
@@ -254,7 +254,7 @@ export function DecisionServiceNode({
   const isHovered = useHoveredInfo(ref);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
@@ -289,7 +289,7 @@ export function GroupNode({
   const isHovered = useHoveredInfo(ref);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-  const className = useNodeClassName(isConnecting, isValidTarget);
+  const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
   return (
@@ -439,10 +439,21 @@ export function useTargetStatus(id: string, isHovered: boolean) {
   return { isTargeted, isValidTarget, isConnecting: !!connectionNodeId };
 }
 
-export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean) {
+export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean, id: string) {
   const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
-  return isEdgeConnection && isConnecting && !isValidTarget ? "dimmed" : "normal";
+  const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connectionHandleId);
+
+  if (isNodeConnection && isConnecting && connectionNodeId !== id) {
+    return "dimmed";
+  }
+
+  if (isEdgeConnection && isConnecting && !isValidTarget) {
+    return "dimmed";
+  }
+
+  return "normal";
 }
 
 //
@@ -590,7 +601,7 @@ export function DecisionServiceNodeSvg(__props: NodeSvgProps & { dividerLineY?: 
   );
 }
 
-export function TextAnnotationNodeSvg(_props: NodeSvgProps) {
+export function TextAnnotationNodeSvg(_props: NodeSvgProps & { showPlaceholder?: boolean }) {
   const { strokeWidth, x, y, width, height, props } = normalize(_props);
   return (
     <g>
@@ -604,6 +615,11 @@ export function TextAnnotationNodeSvg(_props: NodeSvgProps) {
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
+      {props.showPlaceholder && (
+        <text x={"20%"} y={"65%"} style={{ fontSize: "5em", fontWeight: "bold" }}>
+          Text
+        </text>
+      )}
     </g>
   );
 }

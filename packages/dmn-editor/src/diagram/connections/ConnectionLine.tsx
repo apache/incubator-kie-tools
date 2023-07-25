@@ -10,6 +10,7 @@ import {
 } from "../edges/Edges";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { BkmNodeSvg, DecisionNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/Nodes";
+import { getPositionalHandlePosition } from "../maths/Maths";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const { "@_x": fromX, "@_y": fromY } = snapPoint({
@@ -33,65 +34,69 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     return <AssociationPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
   }
   //
-  else if (fromHandle?.id === NODE_TYPES.decision) {
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
-    return (
-      <g>
-        <InformationRequirementPath d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`} />
-        <DecisionNodeSvg
-          x={toXsnapped}
-          y={toYsnapped}
-          width={MIN_SIZE_FOR_NODES.width}
-          height={MIN_SIZE_FOR_NODES.height}
-        />
-      </g>
-    );
-  }
-  //
-  else if (fromHandle?.id === NODE_TYPES.bkm) {
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
-    return (
-      <g className={"pulse"}>
-        <KnowledgeRequirementPath d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`} />
-        <BkmNodeSvg x={toXsnapped} y={toYsnapped} width={MIN_SIZE_FOR_NODES.width} height={MIN_SIZE_FOR_NODES.height} />
-      </g>
-    );
-  }
-  //
-  else if (fromHandle?.id === NODE_TYPES.knowledgeSource) {
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
-    return (
-      <g>
-        <AuthorityRequirementPath
-          d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`}
-          centerToConnectionPoint={false}
-        />
-        <KnowledgeSourceNodeSvg
-          x={toXsnapped}
-          y={toYsnapped}
-          width={MIN_SIZE_FOR_NODES.width}
-          height={MIN_SIZE_FOR_NODES.height}
-        />
-      </g>
-    );
-  }
-  //
-  else if (fromHandle?.id === NODE_TYPES.textAnnotation) {
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
-    return (
-      <g>
-        <AssociationPath d={`M${fromX},${fromY} L${toXsnapped},${toYsnapped}`} />
-        <TextAnnotationNodeSvg
-          x={toXsnapped}
-          y={toYsnapped}
-          width={MIN_SIZE_FOR_NODES.width}
-          height={MIN_SIZE_FOR_NODES.height}
-        />
-      </g>
-    );
-  }
-  //
   else {
-    throw new Error(`Unknown source of ConnectionLine '${fromHandle?.id}'.`);
+    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
+    const [toXauto, toYauto] = getPositionalHandlePosition(
+      { x: toXsnapped, y: toYsnapped, width: MIN_SIZE_FOR_NODES.width, height: MIN_SIZE_FOR_NODES.height },
+      { x: fromX, y: fromY, width: 1, height: 1 }
+    );
+
+    if (fromHandle?.id === NODE_TYPES.decision) {
+      return (
+        <g>
+          <InformationRequirementPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} />
+          <DecisionNodeSvg
+            x={toXsnapped}
+            y={toYsnapped}
+            width={MIN_SIZE_FOR_NODES.width}
+            height={MIN_SIZE_FOR_NODES.height}
+          />
+        </g>
+      );
+    }
+    //
+    else if (fromHandle?.id === NODE_TYPES.bkm) {
+      return (
+        <g className={"pulse"}>
+          <KnowledgeRequirementPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} />
+          <BkmNodeSvg
+            x={toXsnapped}
+            y={toYsnapped}
+            width={MIN_SIZE_FOR_NODES.width}
+            height={MIN_SIZE_FOR_NODES.height}
+          />
+        </g>
+      );
+    }
+    //
+    else if (fromHandle?.id === NODE_TYPES.knowledgeSource) {
+      return (
+        <g>
+          <AuthorityRequirementPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} centerToConnectionPoint={false} />
+          <KnowledgeSourceNodeSvg
+            x={toXsnapped}
+            y={toYsnapped}
+            width={MIN_SIZE_FOR_NODES.width}
+            height={MIN_SIZE_FOR_NODES.height}
+          />
+        </g>
+      );
+    }
+    //
+    else if (fromHandle?.id === NODE_TYPES.textAnnotation) {
+      return (
+        <g>
+          <AssociationPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} />
+          <TextAnnotationNodeSvg
+            x={toXsnapped}
+            y={toYsnapped}
+            width={MIN_SIZE_FOR_NODES.width}
+            height={MIN_SIZE_FOR_NODES.height}
+          />
+        </g>
+      );
+    }
   }
+
+  throw new Error(`Unknown source of ConnectionLine '${fromHandle?.id}'.`);
 }

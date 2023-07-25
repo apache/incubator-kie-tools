@@ -88,7 +88,7 @@ export function Pallete() {
             draggable={true}
           >
             <RoundSvg>
-              <TextAnnotationNodeSvg {...nodeSvgProps} />
+              <TextAnnotationNodeSvg {...nodeSvgProps} showPlaceholder={true} />
             </RoundSvg>
           </button>
         </aside>

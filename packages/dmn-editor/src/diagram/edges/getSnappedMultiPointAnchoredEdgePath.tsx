@@ -1,11 +1,12 @@
 import * as RF from "reactflow";
-import { getDiscretelyAutoPositionedEdgeParams } from "./getDiscretelyAutoPositionedEdgeParams";
+import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
 import {
   DC__Point,
   DMNDI13__DMNEdge,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { snapPoint } from "../SnapGrid";
+import { pointsToPath } from "../maths/DmnMaths";
 
 export function getSnappedMultiPointAnchoredEdgePath({
   dmnEdge,
@@ -26,7 +27,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
   const points: DC__Point[] = new Array(dmnEdge?.["di:waypoint"]?.length ?? 2);
 
-  const discreteAuto = getDiscretelyAutoPositionedEdgeParams(sourceNode, targetNode);
+  const discreteAuto = getDiscretelyAutoPositionedEdgeParamsForRfNodes(sourceNode, targetNode);
 
   if (dmnEdge?.["@_id"]?.endsWith("-AUTO-SOURCE-AUTO-TARGET")) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
@@ -88,16 +89,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
     points[i] = snapPoint({ ...(dmnEdge?.["di:waypoint"] ?? [])[i] });
   }
 
-  const start = points[0];
-  let path = `M ${start["@_x"]},${start["@_y"]}`;
-  for (let i = 1; i < points.length - 1; i++) {
-    const p = points[i];
-    path += ` L ${p["@_x"]},${p["@_y"]} M ${p["@_x"]},${p["@_y"]}`;
-  }
-  const end = points[points.length - 1];
-  path += ` L ${end["@_x"]},${end["@_y"]}`;
-
-  return { path, points };
+  return { path: pointsToPath(points), points };
 }
 
 export function getSnappedHandlePosition(

@@ -18,7 +18,7 @@ export function useKieEdgePath(source: string, target: string, data: EdgeData) {
   const dmnShapeSource = data.dmnShapeSource as DMNDI13__DMNShape | undefined;
   const dmnShapeTarget = data.dmnShapeTarget as DMNDI13__DMNShape | undefined;
 
-  const { path, points } = useMemo(
+  const { path } = useMemo(
     () =>
       getSnappedMultiPointAnchoredEdgePath({
         dmnEdge,
@@ -83,45 +83,57 @@ export function AssociationPath(props: React.SVGProps<SVGPathElement>) {
   );
 }
 
+export function useEdgeClassName() {
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  if (isConnecting) {
+    return "dimmed";
+  }
+
+  return "normal";
+}
+
 //
 
 export function InformationRequirementEdge(props: RF.EdgeProps) {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
-      <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`} />
+      <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
 }
+
 export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
-      <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`} />
+      <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
 }
+
 export function AuthorityRequirementEdge(props: RF.EdgeProps) {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
       <AuthorityRequirementPath
         d={path}
-        className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`}
+        className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
       />
     </>
   );
 }
+
 export function AssociationEdge(props: RF.EdgeProps) {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
-      <AssociationPath d={path} className={`kie-dmn-editor--edge ${isConnecting ? "dimmed" : "normal"}`} />
+      <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
 }
