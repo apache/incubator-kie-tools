@@ -122,9 +122,11 @@
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
+      { "id": "@kie-tools/yard-editor" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" },
+      { "id": "@kie-tools/yard-language-service" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
@@ -138,7 +140,6 @@
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
-      { "id": "@kie-tools/yard-editor" },
       { "id": "yard-vscode-extension" }
     ],
     "links": [
@@ -717,13 +718,13 @@
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/kubernetes-bridge", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools-core/workspaces-git-fs", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
-      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/yard-editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/dashbuilder-viewer-image-env",
@@ -746,6 +747,9 @@
         "weight": 1
       },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/yard-language-service", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
         "target": "@kie-tools/root-env",
@@ -761,6 +765,7 @@
         "target": "@kie-tools/root-env",
         "weight": 1
       },
+      { "source": "@kie-tools/yard-language-service", "target": "@kie-tools/json-yaml-language-service", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-base-builder-image",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
@@ -874,8 +879,6 @@
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/tsconfig", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "yard-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 }
@@ -1041,6 +1044,7 @@
     ["@kie-tools/xml-parser-ts-codegen", "packages/xml-parser-ts-codegen"],
     ["@kie-tools/yaml-language-server", "packages/yaml-language-server"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
+    ["@kie-tools/yard-language-service", "packages/yard-language-service"],
     ["yard-vscode-extension", "packages/yard-vscode-extension"],
     ["@kie-tools-scripts/bootstrap", "scripts/bootstrap"],
     ["@kie-tools-scripts/build-env", "scripts/build-env"],

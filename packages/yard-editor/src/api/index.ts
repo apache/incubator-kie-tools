@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
+export * from "./YardEditorApi";
 export * from "./YardEditorChannelApi";
+export * from "./YardEditorEnvelopeApi";

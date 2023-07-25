@@ -54,7 +54,6 @@ export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
               />
               <NewModelCard
                 title={"Decision"}
-                jsonExtension={FileTypes.YARD_JSON}
                 yamlExtension={FileTypes.YARD_YAML}
                 description={"Define decision logic for services."}
               />

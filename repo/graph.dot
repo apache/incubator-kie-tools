@@ -116,6 +116,7 @@ digraph G {
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -138,7 +139,7 @@ digraph G {
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yard-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "yard-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-scripts/build-env" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-scripts/bootstrap" [ style = "dashed", color = "black" ];
@@ -365,9 +366,9 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/yard-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
@@ -458,6 +459,8 @@ digraph G {
   "@kie-tools/yaml-language-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-editor" -> "@kie-tools/yard-language-service" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
