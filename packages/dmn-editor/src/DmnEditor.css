@@ -159,7 +159,6 @@ the cursor is inside it. By making it adimensional, that never happens.
   height: 0px;
   min-height: 0px;
   border: 0;
-  transform: 0;
   z-index: 20;
 }
 .kie-dmn-editor--node-handle.top {
@@ -345,4 +344,9 @@ the cursor is inside it. By making it adimensional, that never happens.
 /* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
 .react-flow__selection.react-flow__container {
   pointer-events: none;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__connectionline {
+  z-index: 2000;
 }

@@ -351,10 +351,16 @@ export function Diagram({
   const onConnectEnd = useCallback(
     (event) => {
       const targetIsPane = event.target.classList.contains("react-flow__pane");
-      if (targetIsPane && container.current && connection) {
-        // we need to remove the wrapper bounds, in order to get the correct position
-        const { top, left } = container.current.getBoundingClientRect();
-        const dropPoint = { x: event.clientX - left, y: event.clientY - top };
+      if (!targetIsPane || !container.current || !connection) {
+        return;
+      }
+
+      // we need to remove the wrapper bounds, in order to get the correct position
+      const { top, left } = container.current.getBoundingClientRect();
+      const dropPoint = { x: event.clientX - left, y: event.clientY - top };
+
+      // only try to create node if source handle is compatible
+      if (Object.values(NODE_TYPES).find((n) => n === connection.handleId)) {
         console.log(`TIAGO WRITE: Creating node at ${dropPoint.x},${dropPoint.y} -->${JSON.stringify(connection)}`);
       }
     },
@@ -384,8 +390,8 @@ export function Diagram({
         edgesUpdatable={true}
         connectionLineComponent={ConnectionLine}
         onEdgeUpdate={onEdgeUpdate}
-        onConnectStart={onConnectStart}
         onConnect={onEdgeUpdate}
+        onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         isValidConnection={isValidConnection}
         nodeTypes={nodeTypes}
@@ -407,6 +413,7 @@ export function Diagram({
           setPropertiesPanelOpen={setPropertiesPanelOpen}
         />
         <PanWhenAltPressed />
+        <KeyboardShortcuts />
         <RF.Background />
         <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
       </RF.ReactFlow>
@@ -472,6 +479,20 @@ export function SelectionStatus() {
       )) || <></>}
     </>
   );
+}
+
+export function KeyboardShortcuts() {
+  const { getState } = RF.useStoreApi();
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const escPressed = RF.useKeyPress("Escape");
+
+  useEffect(() => {
+    if (escPressed && isConnecting) {
+      getState().cancelConnection();
+    }
+  }, [getState, escPressed, isConnecting]);
+
+  return <></>;
 }
 
 export function PanWhenAltPressed() {
