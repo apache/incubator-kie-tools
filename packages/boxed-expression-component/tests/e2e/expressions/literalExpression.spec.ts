@@ -1,94 +1,107 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures/boxedExpression";
+
+/**
+ * Tests Summary
+ * Literal Expression
+ *
+ * set expression name and type
+ * cancel edit expression name and type
+ * resizing
+ * reset resing after double clicking
+ * editing by select context
+ * editing by double click
+ *
+ */
 
 test.describe("Literal Expression", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("http://localhost:3015/");
-    await page.getByText("Select expression").click();
-    await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
+  test.beforeEach(async ({ bee }) => {
+    await bee.open();
+    await bee.selectLiteralExpression();
   });
 
-  test("Literal Expression editing by select context", async ({ page }) => {
-    await page.getByTestId("monaco-container").click();
-    await page.getByTestId("monaco-container").type("data");
-    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Escape");
-    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Enter");
+  test("set expression name and type", async ({ bee }) => {
+    await bee.getExpression().getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+    await bee.getExpression().getByPlaceholder("Expression Name").click();
+    await bee.getExpression().getByPlaceholder("Expression Name").press("Control+a");
+    await bee.getExpression().getByPlaceholder("Expression Name").fill("My Expression");
+    await bee.getExpression().getByRole("button", { name: "Options menu" }).click();
+    await bee.getExpression().getByRole("option", { name: "context" }).click();
+    await bee.getExpression().getByPlaceholder("Expression Name").press("Enter");
 
-    const json = page.getByTestId("boxed-expression-json");
-    await expect(json).toContainText("Literal");
-    await expect(json).toContainText("false");
-    await expect(json).toContainText("Expression Name");
-    await expect(json).toContainText("data");
+    await expect(bee.getJson()).toContainText("Literal");
+    await expect(bee.getJson()).toContainText("context");
+    await expect(bee.getJson()).toContainText("My Expression");
   });
 
-  test("Literal Expression editing by double click", async ({ page }) => {
-    await page.getByTestId("monaco-container").dblclick();
-    await page.getByRole("textbox", { name: "Editor content" }).fill('"data"');
-    await page.locator(".boxed-expression").press("Enter");
+  test("cancel edit expression name and type", async ({ bee }) => {
+    await bee.getExpression().getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+    await bee.getExpression().getByPlaceholder("Expression Name").press("Control+a");
+    await bee.getExpression().getByPlaceholder("Expression Name").fill("My Expression");
 
-    const json = page.getByTestId("boxed-expression-json");
-    await expect(json).toContainText("Literal");
-    await expect(json).toContainText("false");
-    await expect(json).toContainText("Expression Name");
-    await expect(json).toContainText("data");
+    await bee.getExpression().getByRole("button", { name: "Options menu" }).click();
+    await bee.page.mouse.wheel(0, 100);
+    await bee.getExpression().getByRole("option", { name: "date and time" }).click();
+    await bee.getExpression().getByRole("button", { name: "Options menu" }).press("Escape");
+
+    await expect(bee.getJson()).toContainText("Literal");
+    await expect(bee.getJson()).toContainText("<Undefined>");
+    await expect(bee.getJson()).toContainText("Expression Name");
   });
 
-  test("Literal Expression change expression name and type", async ({ page }) => {
-    const literalExpression = page.getByTestId("literal-expression");
+  test("resizing", async ({ bee }) => {
+    await bee.getExpression().getByTestId("monaco-container").hover();
+    const resizerHandle = bee.getExpression().getByTestId("resizer-handle");
+    const resizerHandleBox = await resizerHandle.boundingBox();
 
-    await literalExpression.getByText("Expression Name").click();
-    await literalExpression.getByPlaceholder("Expression Name").press("Control+a");
-    await literalExpression.getByPlaceholder("Expression Name").fill("My Expression");
-    await literalExpression.getByRole("button", { name: "Options menu" }).click();
-    await literalExpression.getByPlaceholder("Choose...").fill("context");
-    await literalExpression.getByRole("option", { name: "context" }).click();
-    await literalExpression.getByRole("button", { name: "Options menu" }).press("Enter");
+    await bee.page.mouse.move(resizerHandleBox!.x, resizerHandleBox!.y);
+    await bee.page.mouse.down();
+    await bee.page.mouse.move(resizerHandleBox!.x + 50, resizerHandleBox!.y);
+    await bee.page.mouse.up();
 
-    const json = page.locator(".updated-json");
-    await expect(json).toContainText("Literal");
-    await expect(json).toContainText("context");
-    await expect(json).toContainText("My Expression");
+    await expect(bee.getJson()).toContainText('"width":int240');
   });
 
-  test("Literal Expression cancel expression name and type", async ({ page }) => {
-    const literalExpression = page.getByTestId("literal-expression");
+  test("reset resing after double clicking", async ({ bee }) => {
+    await bee.getExpression().getByTestId("monaco-container").hover();
+    const resizerHandle = bee.getExpression().getByTestId("resizer-handle");
+    const resizerHandleBox = await resizerHandle.boundingBox();
 
-    await literalExpression.getByText("Expression Name").click();
-    await literalExpression.getByPlaceholder("Expression Name").press("Control+a");
-    await literalExpression.getByPlaceholder("Expression Name").fill("My Expression");
-    await literalExpression.getByRole("button", { name: "Options menu" }).click();
-    await literalExpression.getByPlaceholder("Choose...").fill("string");
-    await literalExpression.getByRole("option", { name: "string" }).click();
-    await literalExpression.press("Escape");
+    await bee.page.mouse.move(resizerHandleBox!.x, resizerHandleBox!.y);
+    await bee.page.mouse.down();
+    await bee.page.mouse.move(resizerHandleBox!.x + 50, resizerHandleBox!.y);
+    await bee.page.mouse.up();
 
-    const json = page.locator(".updated-json");
-    await expect(json).toContainText("Literal");
-    await expect(json).toContainText("<Undefined>");
-    await expect(json).toContainText("Expression Name");
+    await expect(bee.getJson()).toContainText('"width":int240');
+
+    resizerHandle.dblclick();
+    await expect(bee.getJson()).toContainText('"width":int190');
   });
 
-  test.skip("Literal Expression resizing", async ({ page }) => {
-    const literalExpression = page.getByTestId("literal-expression");
+  test("editing by select context", async ({ bee }) => {
+    await bee.getExpression().getByTestId("monaco-container").click();
+    await bee.getExpression().getByTestId("monaco-container").type('"data"');
+    await bee
+      .getExpression()
+      .getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." })
+      .press("Enter");
 
-    const splitter = literalExpression.locator(".pf-c-drawer__splitter");
-    const box = await literalExpression.boundingBox();
+    await expect(bee.getJson()).toContainText("Literal");
+    await expect(bee.getJson()).toContainText("false");
+    await expect(bee.getJson()).toContainText("Expression Name");
+    await expect(bee.getJson()).toContainText("data");
+  });
 
-    await splitter.dragTo(splitter, { force: true, targetPosition: { x: box!.x + 50, y: box!.y } });
+  test("editing by double click", async ({ bee }) => {
+    await bee.getExpression().getByTestId("monaco-container").dblclick();
+    await bee.getExpression().getByRole("textbox", { name: "Editor content" }).fill('"data"');
+    await bee
+      .getExpression()
+      .getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." })
+      .press("Enter");
 
-    const nexBox = await literalExpression.boundingBox();
-    expect(nexBox?.x).toEqual(box!.x + 50);
-    await page.goto("http://localhost:3015/");
-    await page.getByText("Select expression").click();
-    await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
-    await page.locator(".feel-input > div").click();
-    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).fill("test");
-    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Escape");
-    await page.getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." }).press("Enter");
-    await page
-      .locator("div")
-      .filter({ hasText: /^testtest$/ })
-      .locator("div")
-      .nth(1)
-      .click();
-    await page.getByText("testtest").press("Escape");
+    await expect(bee.getJson()).toContainText("Literal");
+    await expect(bee.getJson()).toContainText("false");
+    await expect(bee.getJson()).toContainText("Expression Name");
+    await expect(bee.getJson()).toContainText("data");
   });
 });

@@ -16,9 +16,9 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 1 : 0,
+  retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI
     ? [
@@ -26,7 +26,7 @@ export default defineConfig({
         ["junit", { outputFile: "./dist-tests/playwright-junit-report.xml" }],
         ["html", { outputFolder: "./dist-tests", open: "never" }],
       ]
-    : [["html", { outputFolder: "./dist-tests", open: "never" }]],
+    : [["html", { outputFolder: "./dist-tests", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,

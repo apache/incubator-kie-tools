@@ -194,7 +194,7 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           className={"resizable-div"}
           axis={"x"}
           handle={
-            <div className="pf-c-drawer" onDoubleClick={onDoubleClick}>
+            <div className="pf-c-drawer" onDoubleClick={onDoubleClick} data-testid={"resizer-handle"}>
               <div className={`pf-c-drawer__splitter pf-m-vertical `}>
                 <div className={`pf-c-drawer__splitter-handle`} />
               </div>
