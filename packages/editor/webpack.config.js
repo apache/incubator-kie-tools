@@ -1,31 +1,67 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const common = require('@kie-tools-core/webpack-base');
-// const merge = require('webpack-merge');
+const { merge } = require("webpack-merge");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
-module.exports = {
-  entry: ["./src/api/index.ts", "./src/channel/index.ts", "./src/embedded/index.ts", "./src/envelope/index.ts"],
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "style.css",
-    }),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-      },
-      {
-        test: /\.(tsx|ts)?$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
-      },
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
+    entry: ["./src/api/index.ts", "./src/channel/index.ts", "./src/embedded/index.ts", "./src/envelope/index.ts"],
+    target: "node",
+    // output: {
+    //   filename: '[name].js',
+    //   libraryTarget: "commonjs2",
+    // },
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename: "style.css",
+      }),
     ],
-  },
-  resolve: {
-    extensions: [".ts", "tsx", ".js", "scss"],
-  },
-};
+    module: {
+      rules: [
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: "asset/resource",
+        },
+        {
+          test: /\.(css|sass|scss)$/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            require.resolve("style-loader"),
+            require.resolve("css-loader"),
+            require.resolve("sass-loader"),
+          ],
+        },
+      ],
+    },
+    output: {
+      libraryTarget: "commonjs2",
+    },
+  }),
+];
+
+// module.exports = {
+//   entry: ["./src/api/index.ts", "./src/channel/index.ts", "./src/embedded/index.ts", "./src/envelope/index.ts"],
+//   plugins: [
+//     new MiniCssExtractPlugin({
+//       filename: "style.css",
+//     }),
+//   ],
+//   module: {
+//     rules: [
+//       {
+//         test: /\.scss$/,
+//         use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+//       },
+//       {
+//         test: /\.(tsx|ts)?$/,
+//         use: "ts-loader",
+//         exclude: /node_modules/,
+//       },
+//     ],
+//   },
+//   resolve: {
+//     extensions: [".ts", "tsx", ".js", "scss"],
+//   },
+// };
 // export default async (env: any, argv: any) => {
 //   return [
 //     merge(common(env), {
