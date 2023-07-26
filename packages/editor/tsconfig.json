@@ -6,11 +6,4 @@
     "esModuleInterop": true
   },
   "include": ["src"]
-  //  "ts-node": {
-  //    "esm": true,
-  //    "compilerOptions": {
-  //      "esModuleInterop": true,
-  //      "module": "CommonJS"
-  //    }
-  //  }
 }

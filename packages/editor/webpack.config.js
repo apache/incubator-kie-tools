@@ -6,10 +6,6 @@ module.exports = (env, argv) => [
   merge(common(env, argv), {
     entry: ["./src/api/index.ts", "./src/channel/index.ts", "./src/embedded/index.ts", "./src/envelope/index.ts"],
     target: "node",
-    // output: {
-    //   filename: '[name].js',
-    //   libraryTarget: "commonjs2",
-    // },
     plugins: [
       new MiniCssExtractPlugin({
         filename: "style.css",
@@ -25,7 +21,7 @@ module.exports = (env, argv) => [
           test: /\.(css|sass|scss)$/,
           use: [
             MiniCssExtractPlugin.loader,
-            require.resolve("style-loader"),
+            // require.resolve("style-loader"),
             require.resolve("css-loader"),
             require.resolve("sass-loader"),
           ],
