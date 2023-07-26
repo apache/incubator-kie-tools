@@ -484,13 +484,17 @@ export function SelectionStatus() {
 export function KeyboardShortcuts() {
   const { getState } = RF.useStoreApi();
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const escPressed = RF.useKeyPress("Escape");
+  const esc = RF.useKeyPress("Escape");
 
   useEffect(() => {
-    if (escPressed && isConnecting) {
+    if (esc && isConnecting) {
       getState().cancelConnection();
     }
-  }, [getState, escPressed, isConnecting]);
+
+    if (esc && getState().nodesSelectionActive) {
+      getState().resetSelectedElements();
+    }
+  }, [getState, esc, isConnecting]);
 
   return <></>;
 }

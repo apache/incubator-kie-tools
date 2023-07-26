@@ -10,7 +10,7 @@ import {
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import * as React from "react";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import * as RF from "reactflow";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
@@ -22,6 +22,7 @@ import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
+import { EditableNodeLabel, useEditableNodeLabel as useEditableNodeLabel } from "./EditableNodeLabel";
 
 function useNodeResizing(id: string): boolean {
   const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
@@ -43,23 +44,36 @@ function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions 
   };
 }
 
+// FIXME: Minor blinking occurs when node is selected & hovered and Esc is pressed to deselect. Not always, though.
+function useHoveredNodeAlwaysOnTop(ref: React.RefObject<HTMLDivElement>, isHovered: boolean, selected: boolean) {
+  useEffect(() => {
+    setTimeout(() => {
+      ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+    }, 0);
+  }, [isHovered, ref, selected]);
+}
+
 export function InputDataNode({
   data: { inputData, shape, onInfo },
   selected,
   dragging,
   id,
 }: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
-  }, [isHovered]);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
   const nodeDimensions = useNodeDimensions(id, shape);
+
+  const setName = useCallback((name: string) => {
+    console.log(`TIAGO WRITE: Updating InputData name to ${name}`);
+  }, []);
+
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   return (
     <>
@@ -69,14 +83,25 @@ export function InputDataNode({
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={inputData.variable} shape={shape} /> */}
-      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className}`}>
+      <div
+        ref={ref}
+        className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className}`}
+        tabIndex={-1}
+        onDoubleClick={triggerEditing}
+        onKeyDown={triggerEditingIfEnter}
+      >
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.inputData.nodes}
           edges={outgoing.inputData.edges}
         />
         <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
-        {inputData["@_label"] ?? inputData["@_name"] ?? <EmptyLabel />}
+        <EditableNodeLabel
+          isEditing={isEditingLabel}
+          setEditing={setEditingLabel}
+          value={inputData["@_label"] ?? inputData["@_name"]}
+          onChange={setName}
+        />
         {isHovered && <NodeResizerHandle />}
       </div>
     </>
@@ -94,18 +119,22 @@ export function DecisionNode({
   setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
   onInfo: () => void;
 }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
-  }, [isHovered]);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
+
+  const setName = useCallback((name: string) => {
+    console.log(`TIAGO WRITE: Updating Decision name to ${name}`);
+  }, []);
+
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   return (
     <>
@@ -115,7 +144,13 @@ export function DecisionNode({
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={decision.variable} shape={shape} /> */}
-      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}>
+      <div
+        ref={ref}
+        className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}
+        tabIndex={-1}
+        onDoubleClick={triggerEditing}
+        onKeyDown={triggerEditingIfEnter}
+      >
         <EditExpressionNodePanel
           isVisible={!isTargeted && isHovered}
           onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.decision, content: decision })}
@@ -126,7 +161,12 @@ export function DecisionNode({
           edges={outgoing.decision.edges}
         />
         <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
-        {decision["@_label"] ?? decision["@_name"] ?? <EmptyLabel />}
+        <EditableNodeLabel
+          isEditing={isEditingLabel}
+          setEditing={setEditingLabel}
+          value={decision["@_label"] ?? decision["@_name"]}
+          onChange={setName}
+        />
         {isHovered && <NodeResizerHandle />}
       </div>
     </>
@@ -144,18 +184,22 @@ export function BkmNode({
   onInfo: () => void;
   setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
 }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
-  }, [isHovered]);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
+
+  const setName = useCallback((name: string) => {
+    console.log(`TIAGO WRITE: Updating Bkm name to ${name}`);
+  }, []);
+
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   return (
     <>
@@ -165,7 +209,13 @@ export function BkmNode({
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
       {/* <DataTypeToolbar variable={bkm.variable} shape={shape} /> */}
-      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className}`}>
+      <div
+        ref={ref}
+        className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className}`}
+        tabIndex={-1}
+        onDoubleClick={triggerEditing}
+        onKeyDown={triggerEditingIfEnter}
+      >
         <EditExpressionNodePanel
           isVisible={!isTargeted && isHovered}
           onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.bkm, content: bkm })}
@@ -176,7 +226,12 @@ export function BkmNode({
           edges={outgoing.bkm.edges}
         />
         <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
-        {bkm["@_label"] ?? bkm["@_name"] ?? <EmptyLabel />}
+        <EditableNodeLabel
+          isEditing={isEditingLabel}
+          setEditing={setEditingLabel}
+          value={bkm["@_label"] ?? bkm["@_name"]}
+          onChange={setName}
+        />
         {isHovered && <NodeResizerHandle />}
       </div>
     </>
@@ -189,18 +244,22 @@ export function KnowledgeSourceNode({
   dragging,
   id,
 }: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
-  }, [isHovered]);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
+
+  const setName = useCallback((name: string) => {
+    console.log(`TIAGO WRITE: Updating KnowledgeSource name to ${name}`);
+  }, []);
+
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   return (
     <>
@@ -209,14 +268,25 @@ export function KnowledgeSourceNode({
       </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
-      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}>
+      <div
+        ref={ref}
+        className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className}`}
+        tabIndex={-1}
+        onDoubleClick={triggerEditing}
+        onKeyDown={triggerEditingIfEnter}
+      >
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.knowledgeSource.nodes}
           edges={outgoing.knowledgeSource.edges}
         />
         <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
-        {knowledgeSource["@_label"] ?? knowledgeSource["@_name"] ?? <EmptyLabel />}
+        <EditableNodeLabel
+          isEditing={isEditingLabel}
+          setEditing={setEditingLabel}
+          value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
+          onChange={setName}
+        />
         {isHovered && <NodeResizerHandle />}
       </div>
     </>
@@ -229,18 +299,22 @@ export function TextAnnotationNode({
   dragging,
   id,
 }: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useEffect(() => {
-    ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
-  }, [isHovered]);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
+
+  const setName = useCallback((name: string) => {
+    console.log(`TIAGO WRITE: Updating TextAnnotation text to ${name}`);
+  }, []);
+
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   return (
     <>
@@ -249,14 +323,25 @@ export function TextAnnotationNode({
       </svg>
       <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
-      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}>
+      <div
+        ref={ref}
+        className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className}`}
+        tabIndex={-1}
+        onDoubleClick={triggerEditing}
+        onKeyDown={triggerEditingIfEnter}
+      >
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.textAnnotation.nodes}
           edges={outgoing.textAnnotation.edges}
         />
         <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
-        {textAnnotation["@_label"] ?? textAnnotation.text ?? <EmptyLabel />}
+        <EditableNodeLabel
+          isEditing={isEditingLabel}
+          setEditing={setEditingLabel}
+          value={textAnnotation["@_label"] ?? textAnnotation.text}
+          onChange={setName}
+        />
         {isHovered && <NodeResizerHandle />}
       </div>
     </>
@@ -269,7 +354,7 @@ export function DecisionServiceNode({
   dragging,
   id,
 }: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
@@ -277,6 +362,12 @@ export function DecisionServiceNode({
   const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
+
+  const setName = useCallback((name: string) => {
+    console.log(`TIAGO WRITE: Updating DecisionService name to ${name}`);
+  }, []);
+
+  const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   return (
     <>
@@ -287,14 +378,25 @@ export function DecisionServiceNode({
 
       {isHovered && <NodeResizerHandle />}
       {/* <DataTypeToolbar variable={decisionService.variable} shape={shape} /> */}
-      <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}>
+      <div
+        ref={ref}
+        className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}
+        tabIndex={-1}
+        onDoubleClick={triggerEditing}
+        onKeyDown={triggerEditingIfEnter}
+      >
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.decisionService.nodes}
           edges={outgoing.decisionService.edges}
         />
         <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
-        {decisionService["@_label"] ?? decisionService["@_name"] ?? <EmptyLabel />}
+        <EditableNodeLabel
+          isEditing={isEditingLabel}
+          setEditing={setEditingLabel}
+          value={decisionService["@_label"] ?? decisionService["@_name"]}
+          onChange={setName}
+        />
       </div>
     </>
   );
@@ -306,7 +408,7 @@ export function GroupNode({
   dragging,
   id,
 }: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 

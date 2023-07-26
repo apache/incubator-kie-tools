@@ -24,6 +24,9 @@
   overflow: visible;
   /* opacity: 0.5; */
 }
+.kie-dmn-editor--node:focus {
+  outline: none;
+}
 
 .kie-dmn-editor--node.dimmed,
 .kie-dmn-editor--node-shape.dimmed {
