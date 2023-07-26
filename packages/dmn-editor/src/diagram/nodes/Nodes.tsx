@@ -725,8 +725,9 @@ export function DecisionServiceNodeSvg(__props: NodeSvgProps & { dividerLineY?: 
   );
 }
 
-export function TextAnnotationNodeSvg(_props: NodeSvgProps & { showPlaceholder?: boolean }) {
-  const { strokeWidth, x, y, width, height, props } = normalize(_props);
+export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?: boolean }) {
+  const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
+  const { showPlaceholder, ...props } = _props;
   return (
     <g>
       <path
@@ -739,7 +740,7 @@ export function TextAnnotationNodeSvg(_props: NodeSvgProps & { showPlaceholder?:
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
       />
-      {props.showPlaceholder && (
+      {showPlaceholder && (
         <text x={"20%"} y={"65%"} style={{ fontSize: "5em", fontWeight: "bold" }}>
           Text
         </text>
