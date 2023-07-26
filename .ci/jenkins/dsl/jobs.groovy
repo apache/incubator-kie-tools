@@ -34,11 +34,11 @@ setupPromoteJob(JobType.RELEASE)
 if (Utils.isProductizedBranch(this)) {
     setupPrJob(true) // Prod CI job
     setupProdUpdateVersionJob()
+    setupQuarkusUpdateJob(true) // Prod CI job
 }
 
-KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
-    'source ~/virtenvs/cekit/bin/activate && python3 scripts/update-repository.py --quarkus-platform-version %new_version%'
-])
+// Update quarkus on community
+setupQuarkusUpdateJob()
 
 /////////////////////////////////////////////////////////////////
 // Methods
@@ -308,4 +308,11 @@ void setupProdUpdateVersionJob() {
             stringParam('PROD_PROJECT_VERSION', '', 'Which version to set ?')
         }
     }
+}
+
+void setupQuarkusUpdateJob(boolean isProdCI = false) {
+    def prodFlag = isProdCI ? '--prod' : ''
+    KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
+        "source ~/virtenvs/cekit/bin/activate && python3 scripts/update-repository.py --quarkus-platform-version %new_version% ${prodFlag}"
+    ])
 }
