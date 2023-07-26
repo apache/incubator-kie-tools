@@ -25,4 +25,5 @@ execute:
 
 packages:
   install:
+    - tzdata-java # Fix for new openjdk installations. See https://bugzilla.redhat.com/show_bug.cgi?id=2224411
     - java-11-openjdk-headless
