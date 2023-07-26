@@ -9,7 +9,6 @@ import {
   KnowledgeRequirementPath,
 } from "../edges/Edges";
 import {
-  handleStyle,
   InputDataNodeSvg,
   DecisionNodeSvg,
   BkmNodeSvg,
@@ -17,7 +16,7 @@ import {
   KnowledgeSourceNodeSvg,
   TextAnnotationNodeSvg,
   GroupNodeSvg,
-} from "./Nodes";
+} from "./NodeSvgs";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -26,6 +25,13 @@ const edgeSvgViewboxSize = 25;
 
 const nodeSvgProps = { width: 100, height: 70, x: 0, y: 15, strokeWidth: 8 };
 const nodeSvgViewboxSize = nodeSvgProps.width;
+
+export const handleStyle: React.CSSProperties = {
+  display: "flex",
+  position: "unset",
+  transform: "unset",
+  // position: "relative",
+};
 
 export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeType[]; edges: EdgeType[] }) {
   const style: React.CSSProperties = React.useMemo(

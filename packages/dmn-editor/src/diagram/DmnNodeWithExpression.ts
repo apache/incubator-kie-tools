@@ -2,7 +2,7 @@ import {
   DMN14__tBusinessKnowledgeModel,
   DMN14__tDecision,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { NODE_TYPES } from "./NodeTypes";
+import { NODE_TYPES } from "./nodes/NodeTypes";
 
 export type DmnNodeWithExpression =
   | {

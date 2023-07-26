@@ -9,8 +9,8 @@ import {
   KnowledgeRequirementPath,
 } from "../edges/Edges";
 import { NODE_TYPES } from "../nodes/NodeTypes";
-import { BkmNodeSvg, DecisionNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/Nodes";
 import { getPositionalHandlePosition } from "../maths/Maths";
+import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const { "@_x": fromX, "@_y": fromY } = snapPoint({

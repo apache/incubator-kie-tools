@@ -41,7 +41,7 @@
   border: 1px solid black;
 }
 .kie-dmn-editor--pallete:hover {
-  box-shadow: 5px 4px 2px 0px rgb(127 127 127);
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
 
 .kie-dmn-editor--pallete-button {
@@ -68,7 +68,7 @@
   border: 1px solid black;
 }
 .kie-dmn-editor--properties-panel-toggle:hover {
-  box-shadow: -5px 4px 2px 0px rgb(127 127 127);
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
 }
 .kie-dmn-editor--properties-panel-toggle-button {
   margin: 0;
@@ -184,26 +184,50 @@ the cursor is inside it. By making it adimensional, that never happens.
   top: 50%;
   left: 50%;
 }
-
-/* edit button on decision and bkm nodes */
-.kie-dmn-editor--edit-expression-label {
+/* data type selector on inputData, decision, bkm, and decisionService nodes */
+.kie-dmn-editor--data-type-node-panel {
   position: absolute;
+  max-width: 100%;
   padding: 4px 8px;
-  bottom: -16px;
+  bottom: 4px;
+  right: calc(100% + 4px);
   font-size: 0.7em;
-  box-shadow: 4px 6px 2px 0px rgb(127 127 127);
+  font-family: monospace;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
   cursor: pointer;
   background: white;
   color: black;
   font-weight: bold;
 }
-.kie-dmn-editor--edit-expression-label > .pf-c-label__content::before {
+.kie-dmn-editor--data-type-node-panel > .pf-c-label__content::before {
   border: 1px solid black;
 }
-.kie-dmn-editor--edit-expression-label:hover {
+.kie-dmn-editor--data-type-node-panel:hover {
   filter: brightness(95%);
 }
-.kie-dmn-editor--edit-expression-label:active {
+.kie-dmn-editor--data-type-node-panel:active {
+  filter: brightness(90%);
+}
+
+/* edit button on decision and bkm nodes */
+.kie-dmn-editor--edit-expression-node-panel {
+  position: absolute;
+  padding: 4px 8px;
+  bottom: -16px;
+  font-size: 0.7em;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  cursor: pointer;
+  background: white;
+  color: black;
+  font-weight: bold;
+}
+.kie-dmn-editor--edit-expression-node-panel > .pf-c-label__content::before {
+  border: 1px solid black;
+}
+.kie-dmn-editor--edit-expression-node-panel:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--edit-expression-node-panel:active {
   filter: brightness(90%);
 }
 
@@ -215,8 +239,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 /* info button on all nodes */
 .kie-dmn-editor--info-node-panel {
   position: absolute;
-  left: calc(-9.5px - 14px);
-  top: 0;
+  right: calc(100% + 4px - 21px);
   padding-right: 21px;
   height: 100%;
 }
@@ -320,7 +343,7 @@ the cursor is inside it. By making it adimensional, that never happens.
   border: 1px solid black;
 }
 .react-flow__controls:hover {
-  box-shadow: -5px -4px 2px 0px rgb(127 127 127);
+  box-shadow: -4px -4px 2px 0px rgb(127 127 127);
 }
 .react-flow__controls > button {
   border-radius: 20px;

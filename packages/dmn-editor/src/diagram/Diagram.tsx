@@ -25,7 +25,7 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
-import { DmnNodeWithExpression } from "./nodes/DmnNodeWithExpression";
+import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
   BkmNode,
@@ -71,7 +71,7 @@ export function Diagram({
   }, []);
 
   const onInfo = useCallback(() => {
-    setPropertiesPanelOpen(true);
+    setPropertiesPanelOpen((prev) => !prev);
   }, [setPropertiesPanelOpen]);
 
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
@@ -506,7 +506,7 @@ export function KeyboardShortcuts() {
     });
   }, [esc, isConnecting, setState]);
 
-  const selectAll = RF.useKeyPress(["Meta+a"]);
+  const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {
     if (!selectAll) {
       return;
