@@ -95,12 +95,17 @@ Feature: kogito-s2i-builder image JVM build tests
       | expected_phrase | ["hello","world"]     |
     And file /home/kogito/bin/quarkus-run.jar should exist
 
-  Scenario: Perform a incremental s2i build using quarkus runtime type
+  Scenario: Perform an incremental s2i build using quarkus runtime type
     Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
+      | variable     | value   |
+      | RUNTIME_TYPE | quarkus |
+      | NATIVE       | false   |
+    And s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
       | variable     | value   |
       | RUNTIME_TYPE | quarkus |
       | NATIVE       | false   |
     Then s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
+    And s2i build log should contain Expanding artifacts from incremental build...
     And file /home/kogito/bin/quarkus-run.jar should exist
     And check that page is served
       | property        | value                 |
@@ -111,26 +116,6 @@ Feature: kogito-s2i-builder image JVM build tests
       | request_body    | {"strings":["hello"]} |
       | wait            | 80                    |
       | expected_phrase | ["hello","world"]     |
-
-  # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
-  Scenario: Perform a second incremental s2i build using quarkus runtime type
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/rules-quarkus-helloworld with env and incremental using nightly-main
-      | variable     | value   |
-      | RUNTIME_TYPE | quarkus |
-      | NATIVE       | false   |
-    Then s2i build log should contain Expanding artifacts from incremental build...
-    And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
-    And file /home/kogito/bin/quarkus-run.jar should exist
-    And check that page is served
-      | property        | value                 |
-      | port            | 8080                  |
-      | path            | /hello                |
-      | request_method  | POST                  |
-      | content_type    | application/json      |
-      | request_body    | {"strings":["hello"]} |
-      | wait            | 80                    |
-      | expected_phrase | ["hello","world"]     |
-
 
 #### SpringBoot Scenarios
 
@@ -207,12 +192,19 @@ Feature: kogito-s2i-builder image JVM build tests
     And container log should contain Started DemoApplication
     And run sh -c 'echo $JAVA_OPTIONS' in container and immediately check its output for -Ddebug=true
 
-  Scenario: Perform a incremental s2i build using springboot runtime type
+  Scenario: Perform an incremental s2i build using springboot runtime type
     Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
       # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
       | variable     | value      |
       | RUNTIME_TYPE | springboot |
-    Then check that page is served
+    And s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
+      # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
+      | variable     | value      |
+      | RUNTIME_TYPE | springboot |
+    Then s2i build log should contain Expanding artifacts from incremental build...
+    And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
+    And file /home/kogito/bin/process-springboot-example.jar should exist
+    And check that page is served
       | property             | value                                                                         |
       | port                 | 8080                                                                          |
       | path                 | /orders                                                                       |
@@ -221,16 +213,6 @@ Feature: kogito-s2i-builder image JVM build tests
       | request_body         | {"approver" : "john", "order" : {"orderNumber" : "12345", "shipped" : false}} |
       | content_type         | application/json                                                              |
       | expected_status_code | 201                                                                           |
-    And file /home/kogito/bin/process-springboot-example.jar should exist
-
-  # Since the same image is used we can do a subsequent incremental build and verify if it is working as expected.
-  Scenario: Perform a second incremental s2i build using springboot runtime type
-    Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-springboot-examples/process-springboot-example with env and incremental using nightly-main
-      # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
-      | variable     | value      |
-      | RUNTIME_TYPE | springboot |
-    Then s2i build log should contain Expanding artifacts from incremental build...
-    And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
 
   Scenario: Verify if the s2i build is finished as expected with uber-jar package type built
     Given s2i build https://github.com/kiegroup/kogito-examples.git from kogito-quarkus-examples/process-quarkus-example using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
