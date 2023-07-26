@@ -74,43 +74,15 @@ void createTag(String tagName = getGitTag()) {
 }
 
 void createRelease() {
-    if (isReleaseExist()) {
-        deleteRelease()
+    if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
+        githubscm.deleteReleaseAndTag(getGitTag(), getGitAuthorCredsID())
     }
+    githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
+    githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
 
-    if (githubscm.isTagExist('origin', getGitTag())) {
-        githubscm.removeLocalTag(getGitTag())
-        githubscm.removeRemoteTag('origin', getGitTag(), getGitAuthorCredsID())
-    }
-
-    def releaseName = "Kogito Serverless Operator ${getGitTag()}"
-    def description = 'This is an Alpha release !!\n\nServerless Kogito Operator is a Kubernetes based operator for Serverless Workflow\' deployment.'
-    def yamlInstaller = 'operator.yaml'
-    withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
+    withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
         sh """
-            gh release create ${getGitTag()} --prerelease --target \"${getBuildBranch()}\" --title \"${releaseName}\" --notes \"${description}\" 
-            sleep 10
-            gh release upload ${getGitTag()} \"${yamlInstaller}\"
-        """
-    }
-}
-
-boolean isReleaseExist() {
-    releaseExistStatus = -1
-    withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
-        releaseExistStatus = sh(returnStatus: true, script: """
-            export GITHUB_USER=${getGitAuthor()}
-            github-release info --tag ${getGitTag()}
-        """)
-    }
-    return releaseExistStatus == 0
-}
-
-void deleteRelease() {
-    withCredentials([string(credentialsId: env.GITHUB_TOKEN_CREDS_ID, variable: 'GITHUB_TOKEN')]) {
-        sh """
-            export GITHUB_USER=${getGitAuthor()}
-            github-release delete --tag ${getGitTag()}
+            gh release upload ${getGitTag()} "operator.yaml"
         """
     }
 }
