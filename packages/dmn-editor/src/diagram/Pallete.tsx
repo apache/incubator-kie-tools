@@ -16,7 +16,7 @@ import {
 const radius = 34;
 const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
 
-const nodeSvgProps = { width: 200, height: 140, x: 16, y: 48, strokeWidth: 16 };
+const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
 const nodeSvgViewboxSize = nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
 
 export function Pallete() {
