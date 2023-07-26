@@ -491,7 +491,6 @@ export function KeyboardShortcuts() {
       return;
     }
 
-    console.info("ok");
     setState((prev) => {
       if (isConnecting) {
         prev.cancelConnection();
@@ -513,7 +512,6 @@ export function KeyboardShortcuts() {
       return;
     }
 
-    console.info("ble");
     setState((prev) => {
       const unselected = prev.getNodes().flatMap((n) => (!n.selected ? [n.id] : []));
       if (unselected.length > 0) {

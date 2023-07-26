@@ -1,0 +1,12 @@
+.kie-dmn-editor--editable-node-name-input {
+  border: 0;
+  width: 100%;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+}
+
+.kie-dmn-editor--editable-node-name-input:focus {
+  outline: 0;
+}
