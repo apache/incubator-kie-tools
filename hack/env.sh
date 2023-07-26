@@ -35,6 +35,6 @@ getCsvFile() {
   echo "${CSV_DIR}/sonataflow-operator.clusterserviceversion.yaml"
 }
 
-getBundleFile() {
+getBundleCsvFile() {
   echo "${BUNDLE_DIR}/sonataflow-operator.clusterserviceversion.yaml"
 }

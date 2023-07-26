@@ -94,7 +94,7 @@ metadata:
       ]
     capabilities: Basic Install
     categories: Application Runtime
-    containerImage: quay.io/kiegroup/kogito-serverless-operator:0.0.0
+    containerImage: quay.io/kiegroup/kogito-serverless-operator-nightly:latest
     description: SonataFlow Kubernetes Operator for deploying workflow applications
       based on the CNCF Serverless Workflow specification
     operators.operatorframework.io/builder: operator-sdk-v1.25.0
