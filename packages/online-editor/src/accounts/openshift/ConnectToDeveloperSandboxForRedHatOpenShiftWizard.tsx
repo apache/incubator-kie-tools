@@ -43,6 +43,7 @@ import {
   DEVELOPER_SANDBOX_GET_STARTED_URL,
   KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 
 enum WizardStepIds {
   NAMESPACE = "NAMESPACE",
@@ -116,6 +117,13 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   const onTokenInputChanged = useCallback(
     (newValue: string) => {
       props.setConnection((c) => ({ ...c, token: newValue }));
+    },
+    [props]
+  );
+
+  const onAllowSelfSignedCertificates = useCallback(
+    (checked: boolean) => {
+      props.setConnection({ ...props.connection, selfSignedCertificates: checked });
     },
     [props]
   );
@@ -327,6 +335,18 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+              </FormGroup>
+              <FormGroup fieldId="disable-tls-validation">
+                <Checkbox
+                  id="disable-tls-validation"
+                  name="disable-tls-validation"
+                  label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
+                  description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+                  aria-label="Disable TLS Certificate Validation"
+                  tabIndex={3}
+                  isChecked={props.connection.selfSignedCertificates}
+                  onChange={onAllowSelfSignedCertificates}
+                />
               </FormGroup>
             </Form>
             <br />

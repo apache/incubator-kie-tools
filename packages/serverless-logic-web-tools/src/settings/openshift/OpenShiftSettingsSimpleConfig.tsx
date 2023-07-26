@@ -138,6 +138,13 @@ export function OpenShiftSettingsSimpleConfig() {
     [config]
   );
 
+  const onAllowSelfSignedCertificates = useCallback(
+    (checked: boolean) => {
+      setConfig({ ...config, selfSignedCertificates: checked });
+    },
+    [config]
+  );
+
   const onEnableDevModeConfigChanged = useCallback(
     (isEnabled: boolean) => {
       setDevModeConfigEnabled(isEnabled);
@@ -317,6 +324,18 @@ export function OpenShiftSettingsSimpleConfig() {
               </Button>
             </InputGroupText>
           </InputGroup>
+        </FormGroup>
+        <FormGroup fieldId="disable-tls-validation">
+          <Checkbox
+            id="disable-tls-validation"
+            name="disable-tls-validation"
+            label={i18n.openshift.configModal.acceptSelfSignedCertificates}
+            description={i18n.openshift.configModal.acceptSelfSignedCertificatesInfo}
+            aria-label="Disable TLS Certificate Validation"
+            tabIndex={4}
+            isChecked={config.selfSignedCertificates}
+            onChange={onAllowSelfSignedCertificates}
+          />
           <br />
           <Button
             isInline={true}

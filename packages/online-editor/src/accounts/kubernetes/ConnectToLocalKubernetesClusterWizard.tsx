@@ -159,7 +159,12 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
 
   useEffect(() => {
     setPreviousConnection(props.connection);
-    props.setConnection({ namespace: DEFAULT_LOCAL_CLUSTER_NAMESPACE, host: DEFAULT_LOCAL_CLUSTER_HOST, token: "" });
+    props.setConnection({
+      namespace: DEFAULT_LOCAL_CLUSTER_NAMESPACE,
+      host: DEFAULT_LOCAL_CLUSTER_HOST,
+      token: "",
+      selfSignedCertificates: false,
+    });
   }, []);
 
   const isNamespaceValidated = useMemo(() => {
@@ -205,6 +210,12 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     },
     [props]
   );
+
+  /* 
+  TODO: enable when enabling kubernetes deployment use cors-proxy
+  const onAllowSelfSignedCertificates = useCallback((checked: boolean) => {
+    props.setConnection({ ...props.connection, selfSignedCertificates: checked });
+  }, [props]); */
 
   const onStepChanged = useCallback(
     async ({ id }) => {
@@ -488,6 +499,20 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   </InputGroupText>
                 </InputGroup>
               </FormGroup>
+              {/* 
+              TODO: enable when enabling kubernetes deployment use cors-proxy
+              <FormGroup fieldId="disable-tls-validation">
+                <Checkbox
+                  id="disable-tls-validation"
+                  name="disable-tls-validation"
+                  label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
+                  description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+                  aria-label="Disable TLS Certificate Validation"
+                  tabIndex={3}
+                  isChecked={props.connection.selfSignedCertificates}
+                  onChange={onAllowSelfSignedCertificates}
+                />
+              </FormGroup> */}
             </Form>
             <Text className="pf-u-my-md" component={TextVariants.p}>
               {i18n.devDeployments.kubernetesConfigWizard.steps.third.tokenInputReason}

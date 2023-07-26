@@ -20,12 +20,14 @@ import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/ser
 export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");
 export const OPENSHIFT_HOST_COOKIE_NAME = makeCookieName("openshift", "host");
 export const OPENSHIFT_TOKEN_COOKIE_NAME = makeCookieName("openshift", "token");
+export const OPENSHIFT_SELF_SIGNED_CERTIFICATES = makeCookieName("openshift", "selfSignedCertificates");
 export const OPENSHIFT_DEV_MODE_ENABLED_NAME = makeCookieName("openshift", "dev-mode-enabled");
 
 export const EMPTY_CONFIG: KubernetesConnection = {
   namespace: "",
   host: "",
   token: "",
+  selfSignedCertificates: false,
 };
 
 export function readOpenShiftConfigCookie(): KubernetesConnection {
@@ -33,6 +35,7 @@ export function readOpenShiftConfigCookie(): KubernetesConnection {
     namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
     host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
     token: getCookie(OPENSHIFT_TOKEN_COOKIE_NAME) ?? "",
+    selfSignedCertificates: getCookie(OPENSHIFT_SELF_SIGNED_CERTIFICATES) === "true",
   };
 }
 
@@ -52,10 +55,15 @@ export function saveTokenCookie(token: string): void {
   setCookie(OPENSHIFT_TOKEN_COOKIE_NAME, token);
 }
 
+export function saveSelfSignedCertificatesToken(selfSignedCertificates: boolean) {
+  setCookie(OPENSHIFT_SELF_SIGNED_CERTIFICATES, String(selfSignedCertificates));
+}
+
 export function saveConfigCookie(config: KubernetesConnection): void {
   saveNamespaceCookie(config.namespace);
   saveHostCookie(config.host);
   saveTokenCookie(config.token);
+  saveSelfSignedCertificatesToken(config.selfSignedCertificates);
 }
 
 export function readDevModeEnabledConfigCookie(): boolean {

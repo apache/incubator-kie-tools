@@ -38,6 +38,7 @@ import {
   KubernetesConnectionStatus,
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -112,6 +113,13 @@ export function ConnecToOpenShiftSimple(props: {
   const onTokenChanged = useCallback(
     (newValue: string) => {
       props.setConnection({ ...props.connection, token: newValue });
+    },
+    [props]
+  );
+
+  const onAllowSelfSignedCertificates = useCallback(
+    (checked: boolean) => {
+      props.setConnection({ ...props.connection, selfSignedCertificates: checked });
     },
     [props]
   );
@@ -301,6 +309,18 @@ export function ConnecToOpenShiftSimple(props: {
               </Button>
             </InputGroupText>
           </InputGroup>
+        </FormGroup>
+        <FormGroup fieldId="disable-tls-validation">
+          <Checkbox
+            id="disable-tls-validation"
+            name="disable-tls-validation"
+            label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
+            description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+            aria-label="Disable TLS Certificate Validation"
+            tabIndex={4}
+            isChecked={props.connection.selfSignedCertificates}
+            onChange={onAllowSelfSignedCertificates}
+          />
         </FormGroup>
         <ActionGroup>
           <Button

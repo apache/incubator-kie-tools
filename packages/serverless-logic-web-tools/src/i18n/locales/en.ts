@@ -62,6 +62,9 @@ export const en: AppI18n = {
       hostInfo: `The hostname associated with your instance.`,
       namespaceInfo: `The namespace (project) you want to deploy the model.`,
       tokenInfo: `The token associated with your instance.`,
+      acceptSelfSignedCertificates: "Disable TLS Certificate Verification.",
+      acceptSelfSignedCertificatesInfo:
+        "Checking this option will disable the TLS Certificate Verification for this account. This is only recommended when using Self-Signed Certificates in your cluster deployments.",
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       configExpiredWarning: "Token or account expired. Please update your configuration.",

@@ -123,6 +123,12 @@ export function ConnectToKubernetesSimple(props: {
     [props]
   );
 
+  /* 
+  TODO: enable when enabling kubernetes deployment use cors-proxy
+  const onAllowSelfSignedCertificates = useCallback((checked: boolean) => {
+    props.setConnection({ ...props.connection, selfSignedCertificates: checked });
+  }, [props]); */
+
   return (
     <>
       {isConnectionValidated === FormValiationOptions.INVALID && (
@@ -325,6 +331,20 @@ export function ConnectToKubernetesSimple(props: {
             </InputGroupText>
           </InputGroup>
         </FormGroup>
+        {/* 
+          TODO: enable when enabling kubernetes deployment use cors-proxy
+        <FormGroup fieldId="disable-tls-validation">
+          <Checkbox
+            id="disable-tls-validation"
+            name="disable-tls-validation"
+            label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
+            description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+            aria-label="Disable TLS Certificate Validation"
+            tabIndex={4}
+            isChecked={props.connection.selfSignedCertificates}
+            onChange={onAllowSelfSignedCertificates}
+          />
+        </FormGroup> */}
         <ActionGroup>
           <Button
             id="dev-deployments-config-save-button"

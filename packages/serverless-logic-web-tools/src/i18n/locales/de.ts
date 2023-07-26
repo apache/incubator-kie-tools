@@ -64,6 +64,9 @@ export const de: AppI18n = {
       hostInfo: `Der mit Ihrer Instanz verbundene Hostname.`,
       namespaceInfo: `Der Namespace (Projekt), in dem Sie das Modell bereitstellen möchten.`,
       tokenInfo: `Das mit Ihrer Instanz verknüpfte Token.`,
+      acceptSelfSignedCertificates: "Verifizierung des TLS Zertifikates deaktivieren.",
+      acceptSelfSignedCertificatesInfo:
+        "Bei Auswahl dieser Option wird die Verifizierung des TLS Zertifikates für dieses Konto deaktiviert. Dies ist nur bei Verwendung von selbst-signierten Zertifikaten in Ihrer Cluster Umgebung empfohlen.",
       validationError: "Sie müssen alle erforderlichen Felder ausfüllen, bevor Sie fortfahren können.",
       connectionError: "Verbindung abgelehnt. Bitte überprüfen Sie die angegebenen Informationen.",
       configExpiredWarning: "Token oder Konto ist abgelaufen. Bitte aktualisieren Sie Ihre Konfiguration.",

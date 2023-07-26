@@ -123,6 +123,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       hostInfo: string;
       namespaceInfo: string;
       tokenInfo: string;
+      acceptSelfSignedCertificates: string;
+      acceptSelfSignedCertificatesInfo: string;
       validationError: string;
       connectionError: string;
       missingPermissions: string;

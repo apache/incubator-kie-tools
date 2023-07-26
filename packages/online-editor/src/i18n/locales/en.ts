@@ -126,6 +126,9 @@ export const en: OnlineI18n = {
       hostInfo: `The hostname associated with your instance.`,
       namespaceInfo: `The Namespace (project) you want your Dev deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
+      acceptSelfSignedCertificates: "Disable TLS Certificate Verification.",
+      acceptSelfSignedCertificatesInfo:
+        "Checking this option will disable the TLS Certificate Verification for this account. This is only recommended when using Self-Signed Certificates in your cluster deployments.",
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       missingPermissions:
@@ -248,7 +251,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          introduction: "Now you are able to create Dev deployments on this Kubernetes instance.",
           configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your Kubernetes cluster could not be established.`,
           checkInfo: "Please check the information provided and try again.",

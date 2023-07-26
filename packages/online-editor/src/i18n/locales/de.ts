@@ -128,6 +128,9 @@ export const de: OnlineI18n = {
       hostInfo: `Der mit Ihrer Instanz verbundene Hostname.`,
       namespaceInfo: `Der Namespace (Projekt), in dem Sie Ihre Dev-Bereitstellungen durchführen möchten.`,
       tokenInfo: `Das mit Ihrer Instanz verbundene Token.`,
+      acceptSelfSignedCertificates: "Verifizierung des TLS Zertifikates deaktivieren.",
+      acceptSelfSignedCertificatesInfo:
+        "Bei Auswahl dieser Option wird die Verifizierung des TLS Zertifikates für dieses Konto deaktiviert. Dies ist nur bei Verwendung von selbst-signierten Zertifikaten in Ihrer Cluster Umgebung empfohlen.",
       validationError: "Sie müssen alle erforderlichen Felder ausfüllen, bevor Sie fortfahren können.",
       connectionError: "Verbindung abgelehnt. Bitte überprüfen Sie die angegebenen Details.",
       missingPermissions:
@@ -257,7 +260,7 @@ export const de: OnlineI18n = {
           name: "Verbinden",
           connectionSuccess: "Verbindung erfolgreich hergestellt.",
           connectionError: "Verbindung abgelehnt.",
-          introduction: "Jetzt können Sie Dev Deployments auf dieser OpenShift-Instanz erstellen.",
+          introduction: "Jetzt können Sie Dev Deployments auf dieser Kubernetes-Instanz erstellen.",
           configNote:
             "Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben..",
           connectionErrorLong: `Eine Verbindung mit Ihrem Kubernetes-Cluster konnte nicht hergestellt werden.`,

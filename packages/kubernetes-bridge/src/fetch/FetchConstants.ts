@@ -33,4 +33,5 @@ export const HeaderKeys = {
   ACCEPT: "Accept",
   CONTENT_TYPE: "Content-Type",
   TARGET_URL: "Target-Url",
+  ACCEPT_SELF_SIGNED_CERTIFICATES: "Accept-Self-Signed-Certificates",
 };

@@ -17,7 +17,7 @@
 import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
-import { CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
+import { ACCEPT_SELF_SIGNED_CERTIFICATES_HEADER, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 
 const HTTPS_PROTOCOL = "https:";
@@ -29,7 +29,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   constructor(
     private readonly args: {
       origin: string;
-      allowSelfSignedCertificates: boolean;
       verbose: boolean;
     }
   ) {
@@ -38,7 +37,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     this.logger.debug("");
     this.logger.debug("Proxy Configuration:");
     this.logger.debug("* Accept Origin Header: ", `"${args.origin}"`);
-    this.logger.debug("* Allow Self-Signed Certificates: ", args.allowSelfSignedCertificates);
     this.logger.debug("* Verbose: ", args.verbose);
     this.logger.debug("");
   }
@@ -135,11 +133,12 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       targetUrl,
       proxyUrl,
       corsConfig: this.resolveCorsConfig(targetUrl, request),
+      allowInsecure: request.headers[ACCEPT_SELF_SIGNED_CERTIFICATES_HEADER] === "true",
     });
   }
 
   private getProxyAgent(info: ProxyRequestInfo): https.Agent | undefined {
-    if (this.args.allowSelfSignedCertificates && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
+    if (info.allowInsecure && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
       return new https.Agent({
         rejectUnauthorized: false,
       });
@@ -162,6 +161,7 @@ class ProxyRequestInfo {
       targetUrl: string;
       proxyUrl?: string;
       corsConfig?: CorsConfig;
+      allowInsecure?: boolean;
     }
   ) {
     this._proxyUrl = new URL(args.proxyUrl ?? args.targetUrl);
@@ -177,6 +177,10 @@ class ProxyRequestInfo {
 
   get corsConfig(): CorsConfig | undefined {
     return this.args.corsConfig;
+  }
+
+  get allowInsecure() {
+    return this.args.allowInsecure;
   }
 }
 

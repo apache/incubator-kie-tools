@@ -26,11 +26,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "*",
       description: "Value to set on the 'Access-Control-Allow-Origin' header",
     },
-    CORS_PROXY__selfSignedCertificates: {
-      default: true,
-      description:
-        "Allows the proxy supporting self-signed certificates, useful for local development. It disables the certificate validation, not recommended for production environments",
-    },
     CORS_PROXY__verbose: {
       default: true,
       description: "Allows the proxy to run in verbose mode... useful to trace requests on development environments",
@@ -42,7 +37,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         dev: {
           port: getOrDefault(this.vars.CORS_PROXY__port),
           origin: getOrDefault(this.vars.CORS_PROXY__origin),
-          selfSignedCertificates: getOrDefault(this.vars.CORS_PROXY__selfSignedCertificates),
           verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
         },
       },
