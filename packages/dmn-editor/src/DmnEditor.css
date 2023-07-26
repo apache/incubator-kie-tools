@@ -16,7 +16,6 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   text-align: center;
-
   position: absolute;
   z-index: 10;
   top: 0;
@@ -197,7 +196,6 @@ the cursor is inside it. By making it adimensional, that never happens.
   cursor: pointer;
   background: white;
   color: black;
-  font-weight: bold;
 }
 .kie-dmn-editor--data-type-node-panel > .pf-c-label__content::before {
   border: 1px solid black;
