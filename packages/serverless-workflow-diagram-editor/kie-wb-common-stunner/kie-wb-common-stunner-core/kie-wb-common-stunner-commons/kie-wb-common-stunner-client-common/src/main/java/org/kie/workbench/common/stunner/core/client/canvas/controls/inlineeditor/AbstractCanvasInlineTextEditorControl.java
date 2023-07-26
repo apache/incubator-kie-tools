@@ -84,7 +84,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     protected double paletteOffsetX;
     protected double innerBoxOffsetY;
     protected EditorSession session;
-    private int EDIT_TEXBOX_BOTTOM_PADDING = 10;
+    private int EDIT_TEXTBOX_BOTTOM_PADDING = 10;
 
     protected abstract FloatingView<IsWidget> getFloatingView();
 
@@ -205,7 +205,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
         if (hasTitle != null) {
             Point shapePosition = getInnerLeftBoxPosition();
             editorBoxWidth = zoomFactor * hasTitle.getTextboxWidth();
-            editorBoxHeight = zoomFactor * (hasTitle.getTextboxHeight() - EDIT_TEXBOX_BOTTOM_PADDING);
+            editorBoxHeight = zoomFactor * (hasTitle.getTextboxHeight() - EDIT_TEXTBOX_BOTTOM_PADDING);
             floatingViewPositionX = (zoomFactor * (hasTitle.getTitlePosition().getX() - borderOffsetX)) + shapePosition.getX();
             floatingViewPositionY = (zoomFactor * (hasTitle.getTitlePosition().getY() - borderOffsetY)) + shapePosition.getY();
         } else {
