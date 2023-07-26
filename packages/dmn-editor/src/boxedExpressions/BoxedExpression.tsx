@@ -13,7 +13,7 @@ import {
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { DmnNodeWithExpression } from "../diagram/DmnNodeWithExpression";
 import { beeToDmn } from "./beeToDmn";
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
@@ -46,12 +46,18 @@ export function BoxedExpression({
     }, new Map<string, number[]>());
   }, [dmn.definitions]);
 
-  const expressionDefinition = useMemo<ExpressionDefinition>(
+  const [expressionDefinition, _setExpressionDefinition] = useState(
+    nodeWithExpression ? dmnNodeToBoxedExpression(widthsById, nodeWithExpression) : getUndefinedExpressionDefinition()
+  );
+
+  useEffect(
     () =>
-      nodeWithExpression
-        ? dmnNodeToBoxedExpression(widthsById, nodeWithExpression)
-        : getUndefinedExpressionDefinition(),
-    [nodeWithExpression, widthsById]
+      _setExpressionDefinition(
+        nodeWithExpression
+          ? dmnNodeToBoxedExpression(widthsById, nodeWithExpression)
+          : getUndefinedExpressionDefinition()
+      ),
+    [nodeWithExpression, _setExpressionDefinition, widthsById]
   );
 
   const dataTypes = useMemo(
@@ -66,6 +72,7 @@ export function BoxedExpression({
 
   const setExpressionDefinition = useCallback(
     (beeExpression: ExpressionDefinition) => {
+      _setExpressionDefinition(beeExpression);
       setDmn((prev) => {
         console.info(`TIAGO WRITE: Boxed Expression updated! ${beeToDmn(beeExpression)}`); // TODO: Actually mutate the DMN JSON.
         return prev;
