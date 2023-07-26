@@ -482,19 +482,49 @@ export function SelectionStatus() {
 }
 
 export function KeyboardShortcuts() {
-  const { getState } = RF.useStoreApi();
+  const { setState } = RF.useStoreApi();
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const esc = RF.useKeyPress("Escape");
 
+  const esc = RF.useKeyPress(["Escape"]);
   useEffect(() => {
-    if (esc && isConnecting) {
-      getState().cancelConnection();
+    if (!esc) {
+      return;
     }
 
-    if (esc && getState().nodesSelectionActive) {
-      getState().resetSelectedElements();
+    console.info("ok");
+    setState((prev) => {
+      if (isConnecting) {
+        prev.cancelConnection();
+      } else {
+        const selected = prev.getNodes().flatMap((n) => (n.selected ? [n.id] : []));
+        if (selected.length > 0) {
+          prev.resetSelectedElements();
+        }
+        (document.activeElement as any)?.blur?.();
+      }
+
+      return prev;
+    });
+  }, [esc, isConnecting, setState]);
+
+  const selectAll = RF.useKeyPress(["Meta+a"]);
+  useEffect(() => {
+    if (!selectAll) {
+      return;
     }
-  }, [getState, esc, isConnecting]);
+
+    console.info("ble");
+    setState((prev) => {
+      const unselected = prev.getNodes().flatMap((n) => (!n.selected ? [n.id] : []));
+      if (unselected.length > 0) {
+        prev.addSelectedNodes(unselected);
+      } else {
+        prev.resetSelectedElements();
+      }
+
+      return prev;
+    });
+  }, [selectAll, setState]);
 
   return <></>;
 }

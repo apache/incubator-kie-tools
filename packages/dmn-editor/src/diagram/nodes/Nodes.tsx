@@ -45,12 +45,17 @@ function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions 
 }
 
 // FIXME: Minor blinking occurs when node is selected & hovered and Esc is pressed to deselect. Not always, though.
-function useHoveredNodeAlwaysOnTop(ref: React.RefObject<HTMLDivElement>, isHovered: boolean, selected: boolean) {
+function useHoveredNodeAlwaysOnTop(
+  ref: React.RefObject<HTMLDivElement>,
+  isHovered: boolean,
+  dragging: boolean,
+  selected: boolean
+) {
   useEffect(() => {
     setTimeout(() => {
-      ref.current!.parentElement!.style.zIndex = `${isHovered ? 1200 : 10}`;
+      ref.current!.parentElement!.style.zIndex = `${isHovered || dragging ? 1200 : 10}`;
     }, 0);
-  }, [isHovered, ref, selected]);
+  }, [dragging, isHovered, ref, selected]);
 }
 
 export function InputDataNode({
@@ -63,7 +68,7 @@ export function InputDataNode({
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -123,7 +128,7 @@ export function DecisionNode({
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -188,7 +193,7 @@ export function BkmNode({
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -248,7 +253,7 @@ export function KnowledgeSourceNode({
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -303,7 +308,7 @@ export function TextAnnotationNode({
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-  useHoveredNodeAlwaysOnTop(ref, isHovered, selected);
+  useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
