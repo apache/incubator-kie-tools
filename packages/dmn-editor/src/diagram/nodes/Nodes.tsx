@@ -30,14 +30,14 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
-import { DmnNodeWithExpression } from "../../store/Store";
+import { DmnNodeWithExpression, useDmnEditor } from "../../store/Store";
 
 export function InputDataNode({
-  data: { inputData, shape, onInfo },
+  data: { inputData, shape, index },
   selected,
   dragging,
   id,
-}: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
+}: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; index: number }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -48,9 +48,13 @@ export function InputDataNode({
   const className = useNodeClassName(isConnecting, isValidTarget, id);
   const nodeDimensions = useNodeDimensions(id, shape);
 
-  const setName = useCallback((name: string) => {
-    console.log(`TIAGO WRITE: Updating InputData name to ${name}`);
-  }, []);
+  const { dispatch } = useDmnEditor();
+  const setName = useCallback(
+    (name: string) => {
+      dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
+    },
+    [dispatch.dmn, index]
+  );
 
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
@@ -88,15 +92,14 @@ export function InputDataNode({
 }
 
 export function DecisionNode({
-  data: { decision, shape, setOpenNodeWithExpression, onInfo },
+  data: { decision, shape, index },
   selected,
   dragging,
   id,
 }: RF.NodeProps<{
   decision: DMN14__tDecision;
   shape: DMNDI13__DMNShape;
-  setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
-  onInfo: () => void;
+  index: number;
 }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
@@ -109,9 +112,13 @@ export function DecisionNode({
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
-  const setName = useCallback((name: string) => {
-    console.log(`TIAGO WRITE: Updating Decision name to ${name}`);
-  }, []);
+  const { dispatch } = useDmnEditor();
+  const setName = useCallback(
+    (name: string) => {
+      dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
+    },
+    [dispatch.dmn, index]
+  );
 
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
@@ -153,15 +160,14 @@ export function DecisionNode({
 }
 
 export function BkmNode({
-  data: { bkm, shape, setOpenNodeWithExpression, onInfo },
+  data: { bkm, shape, index },
   selected,
   dragging,
   id,
 }: RF.NodeProps<{
   bkm: DMN14__tBusinessKnowledgeModel;
   shape: DMNDI13__DMNShape;
-  onInfo: () => void;
-  setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
+  index: number;
 }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
@@ -174,9 +180,13 @@ export function BkmNode({
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
-  const setLabel = useCallback((label: string) => {
-    console.log(`TIAGO WRITE: Updating Bkm label to ${label}`);
-  }, []);
+  const { dispatch } = useDmnEditor();
+  const setName = useCallback(
+    (name: string) => {
+      dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
+    },
+    [dispatch.dmn, index]
+  );
 
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
@@ -209,7 +219,7 @@ export function BkmNode({
           isEditing={isEditingLabel}
           setEditing={setEditingLabel}
           value={bkm["@_label"] ?? bkm["@_name"]}
-          onChange={setLabel}
+          onChange={setName}
         />
         {isHovered && <NodeResizerHandle />}
       </div>
@@ -218,11 +228,11 @@ export function BkmNode({
 }
 
 export function KnowledgeSourceNode({
-  data: { knowledgeSource, shape, onInfo },
+  data: { knowledgeSource, shape, index },
   selected,
   dragging,
   id,
-}: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
+}: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; index: number }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -234,9 +244,13 @@ export function KnowledgeSourceNode({
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
-  const setName = useCallback((name: string) => {
-    console.log(`TIAGO WRITE: Updating KnowledgeSource name to ${name}`);
-  }, []);
+  const { dispatch } = useDmnEditor();
+  const setName = useCallback(
+    (name: string) => {
+      dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
+    },
+    [dispatch.dmn, index]
+  );
 
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
@@ -273,11 +287,11 @@ export function KnowledgeSourceNode({
 }
 
 export function TextAnnotationNode({
-  data: { textAnnotation, shape, onInfo },
+  data: { textAnnotation, shape, index },
   selected,
   dragging,
   id,
-}: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
+}: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; index: number }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -289,9 +303,13 @@ export function TextAnnotationNode({
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
-  const setText = useCallback((name: string) => {
-    console.log(`TIAGO WRITE: Updating TextAnnotation text to ${name}`);
-  }, []);
+  const { dispatch } = useDmnEditor();
+  const setText = useCallback(
+    (newText: string) => {
+      dispatch.dmn.set((state) => ((state.definitions.artifact![index] as DMN14__tTextAnnotation).text = newText));
+    },
+    [dispatch.dmn, index]
+  );
 
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
@@ -328,23 +346,29 @@ export function TextAnnotationNode({
 }
 
 export function DecisionServiceNode({
-  data: { decisionService, shape, onInfo },
+  data: { decisionService, shape, index },
   selected,
   dragging,
   id,
-}: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; onInfo: () => void }>) {
+}: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; index: number }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+
+  useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
 
   const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
   const className = useNodeClassName(isConnecting, isValidTarget, id);
 
   const nodeDimensions = useNodeDimensions(id, shape);
 
-  const setName = useCallback((name: string) => {
-    console.log(`TIAGO WRITE: Updating DecisionService name to ${name}`);
-  }, []);
+  const { dispatch } = useDmnEditor();
+  const setName = useCallback(
+    (name: string) => {
+      dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
+    },
+    [dispatch.dmn, index]
+  );
 
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
@@ -382,11 +406,11 @@ export function DecisionServiceNode({
 }
 
 export function GroupNode({
-  data: { group, shape },
+  data: { group, shape, index },
   selected,
   dragging,
   id,
-}: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape }>) {
+}: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape; index: number }>) {
   const ref = useRef<HTMLDivElement>(null);
   const isResizing = useNodeResizing(id);
   const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;

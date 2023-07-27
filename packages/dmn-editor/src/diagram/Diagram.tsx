@@ -117,7 +117,7 @@ export function Diagram({
 
   useEffect(() => {
     setNodes([
-      ...(dmn.model.definitions.drgElement ?? []).map((drgElement) => {
+      ...(dmn.model.definitions.drgElement ?? []).map((drgElement, index) => {
         const shape = shapesById.get(drgElement["@_id"]!)!;
 
         if (drgElement.__$$element === "inputData") {
@@ -125,7 +125,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.inputData,
             position: snapShapePosition(shape),
-            data: { inputData: drgElement, shape },
+            data: { inputData: drgElement, shape, index },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "decision") {
@@ -133,7 +133,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.decision,
             position: snapShapePosition(shape),
-            data: { decision: drgElement, shape },
+            data: { decision: drgElement, shape, index },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "businessKnowledgeModel") {
@@ -141,7 +141,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.bkm,
             position: snapShapePosition(shape),
-            data: { bkm: drgElement, shape },
+            data: { bkm: drgElement, shape, index },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "decisionService") {
@@ -149,7 +149,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.decisionService,
             position: snapShapePosition(shape),
-            data: { decisionService: drgElement, shape },
+            data: { decisionService: drgElement, shape, index },
             style: { zIndex: 1, ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "knowledgeSource") {
@@ -157,7 +157,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.knowledgeSource,
             position: snapShapePosition(shape),
-            data: { knowledgeSource: drgElement, shape },
+            data: { knowledgeSource: drgElement, shape, index },
             style: { ...snapShapeDimensions(shape) },
           };
         } else {
@@ -166,14 +166,14 @@ export function Diagram({
       }),
       ...(dmn.model.definitions.artifact ?? [])
         .filter(({ __$$element }) => __$$element === "group" || __$$element === "textAnnotation")
-        .map((artifact) => {
+        .map((artifact, index) => {
           const shape = shapesById.get(artifact["@_id"]!)!;
           if (artifact.__$$element === "group") {
             return {
               id: artifact["@_id"]!,
               type: NODE_TYPES.group,
               position: snapShapePosition(shape),
-              data: { group: artifact, shape },
+              data: { group: artifact, shape, index },
               style: { zIndex: 1, ...snapShapeDimensions(shape) },
             };
           } else if (artifact.__$$element === "textAnnotation") {
@@ -181,7 +181,7 @@ export function Diagram({
               id: artifact["@_id"]!,
               type: NODE_TYPES.textAnnotation,
               position: snapShapePosition(shape),
-              data: { textAnnotation: artifact, shape },
+              data: { textAnnotation: artifact, shape, index },
               style: { ...snapShapeDimensions(shape) },
             };
           } else {
