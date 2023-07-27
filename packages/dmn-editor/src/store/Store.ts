@@ -9,8 +9,8 @@ import {
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Draft } from "immer";
 
-interface State {
-  dispatch: Actions;
+export interface State {
+  dispatch: Dispatch;
   dmn: {
     model: { definitions: DMN14__tDefinitions };
     marshaller: DmnMarshaller;
@@ -27,7 +27,7 @@ interface State {
   };
 }
 
-type Actions = {
+export type Dispatch = {
   dmn: {
     reset: (xml: string) => void;
     set: (state: (state: Draft<{ definitions: DMN14__tDefinitions }>) => void) => any;

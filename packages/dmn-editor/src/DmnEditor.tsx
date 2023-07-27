@@ -2,10 +2,8 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
@@ -15,11 +13,12 @@ import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon
 import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram } from "./diagram/Diagram";
+import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { Documentation } from "./documentation/Documentation";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { PropertiesPanel } from "./propertiesPanel/PropertiesPanel";
-import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { DmnEditorTab, useDmnEditor } from "./store/Store";
+
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
 export type DmnEditorRef = {
@@ -34,6 +33,7 @@ export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.
     dispatch.dmn.reset(xml);
   }, [dispatch.dmn, xml]);
 
+  // Allow imperativelly controlling this component.
   useImperativeHandle(
     ref,
     () => ({
@@ -45,9 +45,7 @@ export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.
   const onTabChanged = useCallback((e, tab) => dispatch.navigation.setTab(tab), [dispatch.navigation]);
 
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
-  useEffect(() => {
-    setSelectedNodes([]);
-  }, [dmn.model]);
+  useEffect(() => setSelectedNodes([]), [dmn.model]);
 
   const diagramContainerRef = useRef<HTMLDivElement>(null);
 

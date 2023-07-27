@@ -6,7 +6,8 @@ import {
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { snapPoint } from "../SnapGrid";
-import { pointsToPath } from "../maths/DmnMaths";
+import { getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
+import { AutoMarker } from "./AutoMarker";
 
 export function getSnappedMultiPointAnchoredEdgePath({
   dmnEdge,
@@ -29,18 +30,18 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
   const discreteAuto = getDiscretelyAutoPositionedEdgeParamsForRfNodes(sourceNode, targetNode);
 
-  if (dmnEdge?.["@_id"]?.endsWith("-AUTO-SOURCE-AUTO-TARGET")) {
+  if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.BOTH)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   }
 
   //
-  else if (dmnEdge?.["@_id"]?.endsWith("-AUTO-SOURCE")) {
+  else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.SOURCE)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
   }
 
   //
-  else if (dmnEdge?.["@_id"]?.endsWith("-AUTO-TARGET")) {
+  else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.TARGET)) {
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   }
 
@@ -159,35 +160,4 @@ function centerPoint(node: RF.Node): DC__Point {
   const hh = node.height ?? 0;
 
   return { "@_x": xx + ww / 2, "@_y": yy + hh / 2 };
-}
-
-// this helper function returns the intersection point
-// of the line between the center of the intersectionNode and `point`
-export function getNodeIntersection(intersectionNode: RF.Node, point: DC__Point | undefined): DC__Point {
-  // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
-  const { width: nodeW, height: nodeH, positionAbsolute: node } = intersectionNode;
-
-  const w = (nodeW ?? 0) / 2;
-  const h = (nodeH ?? 0) / 2;
-
-  const x2 = (node?.x ?? 0) + w;
-  const y2 = (node?.y ?? 0) + h;
-  const x1 = point?.["@_x"] ?? 0;
-  const y1 = point?.["@_y"] ?? 0;
-
-  const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
-  const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
-
-  const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-  if (!Number.isFinite(a)) {
-    return { "@_x": x1, "@_y": y1 };
-  }
-
-  const xx3 = a * xx1;
-  const yy3 = a * yy1;
-
-  const x = w * (xx3 + yy3) + x2;
-  const y = h * (-xx3 + yy3) + y2;
-
-  return { "@_x": x, "@_y": y };
 }

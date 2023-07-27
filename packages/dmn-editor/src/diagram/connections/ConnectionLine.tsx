@@ -11,12 +11,10 @@ import {
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { getPositionalHandlePosition } from "../maths/Maths";
 import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
+import { getNodeCenterPoint } from "../maths/DmnMaths";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
-  const { "@_x": fromX, "@_y": fromY } = snapPoint({
-    "@_x": (fromNode?.position.x ?? 0) + (fromNode?.width ?? 0) / 2,
-    "@_y": (fromNode?.position.y ?? 0) + (fromNode?.height ?? 0) / 2,
-  });
+  const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
 
   if (fromHandle?.id === EDGE_TYPES.informationRequirement) {
     return <InformationRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} />;

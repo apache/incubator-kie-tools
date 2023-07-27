@@ -95,3 +95,19 @@ function outgoingNodes(srcNodeType: NodeType): NodeType[] {
 function outgoingEdges(srcNodeType: NodeType): EdgeType[] {
   return Array.from((graphStructure.get(srcNodeType) ?? new Map()).keys());
 }
+
+export function getEdgeTypesBetween(source: NodeType, target: NodeType): EdgeType[] {
+  const sourceStructure = graphStructure.get(source);
+  if (!sourceStructure) {
+    return [];
+  }
+
+  const possibleEdges: EdgeType[] = [];
+  for (const [e, t] of [...sourceStructure.entries()]) {
+    if (t.has(target)) {
+      possibleEdges.push(e);
+    }
+  }
+
+  return possibleEdges;
+}

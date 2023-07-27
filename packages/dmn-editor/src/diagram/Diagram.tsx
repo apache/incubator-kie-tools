@@ -14,9 +14,14 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
+import { useDmnEditor } from "../store/Store";
 import { Pallete } from "./Pallete";
-import { SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { addNode } from "../mutations/addNode";
 import { ConnectionLine } from "./connections/ConnectionLine";
+import { EdgeType, NodeType, getEdgeTypesBetween } from "./connections/graphStructure";
+import { checkIsValidConnection } from "./connections/isValidConnection";
+import { EdgeMarkers } from "./edges/EdgeMarkers";
 import { EDGE_TYPES } from "./edges/EdgeTypes";
 import {
   AssociationEdge,
@@ -35,10 +40,6 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { checkIsValidConnection } from "./connections/isValidConnection";
-import { EdgeType, NodeType } from "./connections/graphStructure";
-import { EdgeMarkers } from "./edges/EdgeMarkers";
-import { useDmnEditor } from "../store/Store";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -53,13 +54,6 @@ export function Diagram({
   container: React.RefObject<HTMLElement>;
   onSelect: (nodes: string[]) => void;
 }) {
-  const [nodes, setNodes, onNodesChange] = RF.useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = RF.useEdgesState([]);
-
-  const onEdgeUpdate = useCallback((args) => {
-    console.log("TIAGO WRITE: Edge updated! --> ", args);
-  }, []);
-
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
 
   const nodeTypes: Record<NodeType, any> = useMemo(
@@ -89,203 +83,21 @@ export function Diagram({
     };
   }, []);
 
-  const nodesById = useMemo(() => nodes.reduce((acc, a) => acc.set(a.id, a), new Map<string, RF.Node>()), [nodes]);
+  const { dmn, dispatch } = useDmnEditor();
 
-  const { dmn } = useDmnEditor();
-
-  const { edgesById, shapesById } = useMemo(
-    () =>
-      (dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
-        .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
-        .reduce(
-          (acc, e) => {
-            if (e.__$$element === "dmndi:DMNShape") {
-              acc.shapesById.set(e["@_dmnElementRef"], e);
-            } else if (e.__$$element === "dmndi:DMNEdge") {
-              acc.edgesById.set(e["@_dmnElementRef"], e);
-            }
-
-            return acc;
-          },
-          {
-            edgesById: new Map<string, DMNDI13__DMNEdge>(),
-            shapesById: new Map<string, DMNDI13__DMNShape>(),
-          }
-        ),
-    [dmn.model.definitions]
-  );
-
+  const { shapesById, nodesById, nodes: nodesFromDmn, edges: edgesFromDmn } = useDmnDiagramData(dmn.model);
+  const [nodes, setNodes, onNodesChange] = RF.useNodesState(nodesFromDmn);
+  const [edges, setEdges, onEdgesChange] = RF.useEdgesState(edgesFromDmn);
   useEffect(() => {
-    setNodes([
-      ...(dmn.model.definitions.drgElement ?? []).map((drgElement, index) => {
-        const shape = shapesById.get(drgElement["@_id"]!)!;
-
-        if (drgElement.__$$element === "inputData") {
-          return {
-            id: drgElement["@_id"]!,
-            type: NODE_TYPES.inputData,
-            position: snapShapePosition(shape),
-            data: { inputData: drgElement, shape, index },
-            style: { ...snapShapeDimensions(shape) },
-          };
-        } else if (drgElement.__$$element === "decision") {
-          return {
-            id: drgElement["@_id"]!,
-            type: NODE_TYPES.decision,
-            position: snapShapePosition(shape),
-            data: { decision: drgElement, shape, index },
-            style: { ...snapShapeDimensions(shape) },
-          };
-        } else if (drgElement.__$$element === "businessKnowledgeModel") {
-          return {
-            id: drgElement["@_id"]!,
-            type: NODE_TYPES.bkm,
-            position: snapShapePosition(shape),
-            data: { bkm: drgElement, shape, index },
-            style: { ...snapShapeDimensions(shape) },
-          };
-        } else if (drgElement.__$$element === "decisionService") {
-          return {
-            id: drgElement["@_id"]!,
-            type: NODE_TYPES.decisionService,
-            position: snapShapePosition(shape),
-            data: { decisionService: drgElement, shape, index },
-            style: { zIndex: 1, ...snapShapeDimensions(shape) },
-          };
-        } else if (drgElement.__$$element === "knowledgeSource") {
-          return {
-            id: drgElement["@_id"]!,
-            type: NODE_TYPES.knowledgeSource,
-            position: snapShapePosition(shape),
-            data: { knowledgeSource: drgElement, shape, index },
-            style: { ...snapShapeDimensions(shape) },
-          };
-        } else {
-          throw new Error("Unknown type of drgElement for nodes.");
-        }
-      }),
-      ...(dmn.model.definitions.artifact ?? [])
-        .filter(({ __$$element }) => __$$element === "group" || __$$element === "textAnnotation")
-        .map((artifact, index) => {
-          const shape = shapesById.get(artifact["@_id"]!)!;
-          if (artifact.__$$element === "group") {
-            return {
-              id: artifact["@_id"]!,
-              type: NODE_TYPES.group,
-              position: snapShapePosition(shape),
-              data: { group: artifact, shape, index },
-              style: { zIndex: 1, ...snapShapeDimensions(shape) },
-            };
-          } else if (artifact.__$$element === "textAnnotation") {
-            return {
-              id: artifact["@_id"]!,
-              type: NODE_TYPES.textAnnotation,
-              position: snapShapePosition(shape),
-              data: { textAnnotation: artifact, shape, index },
-              style: { ...snapShapeDimensions(shape) },
-            };
-          } else {
-            throw new Error("Unknown type of artifact for nodes.");
-          }
-        }),
-    ]);
-  }, [dmn.model.definitions.drgElement, dmn.model.definitions.artifact, setNodes, shapesById]);
-
-  const getEdgeData = useCallback(
-    ({ id, source, target }: { id: string; source: string; target: string }): EdgeData => {
-      return {
-        dmnEdge: id ? edgesById.get(id) : undefined,
-        dmnShapeSource: shapesById.get(source),
-        dmnShapeTarget: shapesById.get(target),
-      };
-    },
-    [edgesById, shapesById]
-  );
-
-  useEffect(() => {
-    setEdges([
-      // information requirement
-      ...(dmn.model.definitions.drgElement ?? [])
-        .filter(({ __$$element }) => __$$element === "decision")
-        .flatMap((decision: DMN14__tDecision) => [
-          ...(decision.informationRequirement ?? []).map((ir) => {
-            const source = (ir.requiredDecision?.["@_href"] ?? ir.requiredInput?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-            const target = decision["@_id"]!;
-            const id = ir["@_id"] ?? "";
-            return {
-              data: getEdgeData({ id, source, target }),
-              id,
-              type: EDGE_TYPES.informationRequirement,
-              source,
-              target,
-            };
-          }),
-        ]),
-
-      // knowledge requirement
-      ...(dmn.model.definitions.drgElement ?? [])
-        .filter(({ __$$element }) => __$$element === "decision" || __$$element === "businessKnowledgeModel")
-        .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel) => [
-          ...(node.knowledgeRequirement ?? []).map((kr) => {
-            const source = (kr.requiredKnowledge?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-            const target = node["@_id"]!;
-            const id = kr["@_id"] ?? "";
-            return {
-              data: getEdgeData({ id, source, target }),
-              id,
-              type: EDGE_TYPES.knowledgeRequirement,
-              source,
-              target,
-            };
-          }),
-        ]),
-
-      // authority requirement
-      ...(dmn.model.definitions.drgElement ?? [])
-        .filter(
-          ({ __$$element }) =>
-            __$$element === "decision" || __$$element === "businessKnowledgeModel" || __$$element === "knowledgeSource"
-        )
-        .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel | DMN14__tKnowledgeSource) => [
-          ...(node.authorityRequirement ?? []).map((ar) => {
-            const source = (
-              ar.requiredInput?.["@_href"] ??
-              ar.requiredDecision?.["@_href"] ??
-              ar.requiredAuthority?.["@_href"] ??
-              "#"
-            ).substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-            const target = node["@_id"]!;
-            const id = ar["@_id"] ?? "";
-            return {
-              data: getEdgeData({ id, source, target }),
-              id,
-              type: EDGE_TYPES.authorityRequirement,
-              source,
-              target,
-            };
-          }),
-        ]),
-
-      // association
-      ...(dmn.model.definitions.artifact ?? [])
-        .filter(({ __$$element }) => __$$element === "association")
-        .flatMap((artifact) => {
-          const association = artifact as DMN14__tAssociation;
-          const source = (association.sourceRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-          const target = (association.targetRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
-          const id = artifact["@_id"] ?? "";
-          return {
-            data: getEdgeData({ id, source, target }),
-            id,
-            type: EDGE_TYPES.association,
-            source,
-            target,
-          };
-        }),
-    ]);
-  }, [dmn.model.definitions.artifact, dmn.model.definitions.drgElement, setEdges, getEdgeData]);
+    setNodes(nodesFromDmn);
+    setEdges(edgesFromDmn);
+  }, [edgesFromDmn, nodesFromDmn, setEdges, setNodes]);
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
+
+  const onEdgeUpdate = useCallback((args) => {
+    console.log("TIAGO WRITE: Edge updated! --> ", args);
+  }, []);
 
   useEffect(() => {
     onSelect(nodes.flatMap((n) => (n.selected ? [n.id] : [])));
@@ -328,7 +140,6 @@ export function Diagram({
 
   const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
   const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => setConnection(b), []);
-
   const onConnectEnd = useCallback(
     (event) => {
       const targetIsPane = event.target.classList.contains("react-flow__pane");
@@ -338,14 +149,65 @@ export function Diagram({
 
       // we need to remove the wrapper bounds, in order to get the correct position
       const { top, left } = container.current.getBoundingClientRect();
-      const dropPoint = { x: event.clientX - left, y: event.clientY - top };
+      const dropPoint = {
+        x: event.clientX - left - (reactFlowInstance?.getViewport().x ?? 0),
+        y: event.clientY - top - (reactFlowInstance?.getViewport().y ?? 0),
+      };
 
       // only try to create node if source handle is compatible
-      if (Object.values(NODE_TYPES).find((n) => n === connection.handleId)) {
-        console.log(`TIAGO WRITE: Creating node at ${dropPoint.x},${dropPoint.y} -->${JSON.stringify(connection)}`);
+      if (!Object.values(NODE_TYPES).find((n) => n === connection.handleId)) {
+        return;
       }
+
+      if (!connection.nodeId) {
+        return;
+      }
+
+      const sourceNode = nodesById.get(connection.nodeId);
+      if (!sourceNode) {
+        return;
+      }
+
+      const sourceNodeBounds = shapesById.get(sourceNode.id)?.["dc:Bounds"];
+      if (!sourceNodeBounds) {
+        return;
+      }
+
+      const edges = getEdgeTypesBetween(sourceNode.type as NodeType, connection.handleId as NodeType);
+      if (edges.length < 0) {
+        throw new Error(`Invalid structure: ${sourceNode.type} --> ${connection.handleId}`);
+      }
+
+      if (edges.length > 1) {
+        console.debug(
+          `Multiple edges possible for ${sourceNode.type} --> ${connection.handleId}. Choosing first one in structure definition: ${edges[0]}.`
+        );
+      }
+
+      const edge = edges[0];
+
+      // This is where we draw the line between the diagram and the model.
+
+      addNode({
+        dispatch: { dmn: dispatch.dmn },
+        edge,
+        sourceNode: {
+          id: sourceNode.id,
+          type: sourceNode.type as NodeType,
+          bounds: sourceNodeBounds,
+        },
+        newNode: {
+          type: connection.handleId as NodeType,
+          bounds: {
+            "@_x": dropPoint.x,
+            "@_y": dropPoint.y,
+            "@_width": MIN_SIZE_FOR_NODES.width,
+            "@_height": MIN_SIZE_FOR_NODES.height,
+          },
+        },
+      });
     },
-    [connection, container]
+    [connection, container, dispatch.dmn, nodesById, reactFlowInstance, shapesById]
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
@@ -357,6 +219,7 @@ export function Diagram({
     <>
       <EdgeMarkers />
       <RF.ReactFlow
+        onlyRenderVisibleElements={true}
         zoomOnDoubleClick={false}
         elementsSelectable={true}
         nodes={nodes}
@@ -513,4 +376,217 @@ export function PanWhenAltPressed() {
   }, [altPressed, store]);
 
   return <></>;
+}
+
+export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
+  const { edgesById, shapesById } = useMemo(
+    () =>
+      (model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
+        .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
+        .reduce(
+          (acc, e) => {
+            if (e.__$$element === "dmndi:DMNShape") {
+              acc.shapesById.set(e["@_dmnElementRef"], e);
+            } else if (e.__$$element === "dmndi:DMNEdge") {
+              acc.edgesById.set(e["@_dmnElementRef"], e);
+            }
+
+            return acc;
+          },
+          {
+            edgesById: new Map<string, DMNDI13__DMNEdge>(),
+            shapesById: new Map<string, DMNDI13__DMNShape>(),
+          }
+        ),
+    [model.definitions]
+  );
+
+  const getEdgeData = useCallback(
+    ({ id, source, target }: { id: string; source: string; target: string }): EdgeData => {
+      return {
+        dmnEdge: id ? edgesById.get(id) : undefined,
+        dmnShapeSource: shapesById.get(source),
+        dmnShapeTarget: shapesById.get(target),
+      };
+    },
+    [edgesById, shapesById]
+  );
+
+  const { nodes, edges, nodesById } = useMemo(() => {
+    const nodesById = new Map<string, RF.Node>();
+    return {
+      nodes: [
+        ...(model.definitions.drgElement ?? []).map((drgElement, index) => {
+          const shape = shapesById.get(drgElement["@_id"]!)!;
+
+          if (drgElement.__$$element === "inputData") {
+            const n = {
+              id: drgElement["@_id"]!,
+              type: NODE_TYPES.inputData,
+              position: snapShapePosition(shape),
+              data: { inputData: drgElement, shape, index },
+              style: { ...snapShapeDimensions(shape) },
+            };
+            nodesById.set(n.id, n);
+            return n;
+          } else if (drgElement.__$$element === "decision") {
+            const n = {
+              id: drgElement["@_id"]!,
+              type: NODE_TYPES.decision,
+              position: snapShapePosition(shape),
+              data: { decision: drgElement, shape, index },
+              style: { ...snapShapeDimensions(shape) },
+            };
+            nodesById.set(n.id, n);
+            return n;
+          } else if (drgElement.__$$element === "businessKnowledgeModel") {
+            const n = {
+              id: drgElement["@_id"]!,
+              type: NODE_TYPES.bkm,
+              position: snapShapePosition(shape),
+              data: { bkm: drgElement, shape, index },
+              style: { ...snapShapeDimensions(shape) },
+            };
+            nodesById.set(n.id, n);
+            return n;
+          } else if (drgElement.__$$element === "decisionService") {
+            const n = {
+              id: drgElement["@_id"]!,
+              type: NODE_TYPES.decisionService,
+              position: snapShapePosition(shape),
+              data: { decisionService: drgElement, shape, index },
+              style: { zIndex: 1, ...snapShapeDimensions(shape) },
+            };
+            nodesById.set(n.id, n);
+            return n;
+          } else if (drgElement.__$$element === "knowledgeSource") {
+            const n = {
+              id: drgElement["@_id"]!,
+              type: NODE_TYPES.knowledgeSource,
+              position: snapShapePosition(shape),
+              data: { knowledgeSource: drgElement, shape, index },
+              style: { ...snapShapeDimensions(shape) },
+            };
+            nodesById.set(n.id, n);
+            return n;
+          } else {
+            throw new Error("Unknown type of drgElement for nodes.");
+          }
+        }),
+        ...(model.definitions.artifact ?? [])
+          .filter(({ __$$element }) => __$$element === "group" || __$$element === "textAnnotation")
+          .map((artifact, index) => {
+            const shape = shapesById.get(artifact["@_id"]!)!;
+            if (artifact.__$$element === "group") {
+              const n = {
+                id: artifact["@_id"]!,
+                type: NODE_TYPES.group,
+                position: snapShapePosition(shape),
+                data: { group: artifact, shape, index },
+                style: { zIndex: 1, ...snapShapeDimensions(shape) },
+              };
+              nodesById.set(n.id, n);
+              return n;
+            } else if (artifact.__$$element === "textAnnotation") {
+              const n = {
+                id: artifact["@_id"]!,
+                type: NODE_TYPES.textAnnotation,
+                position: snapShapePosition(shape),
+                data: { textAnnotation: artifact, shape, index },
+                style: { ...snapShapeDimensions(shape) },
+              };
+              nodesById.set(n.id, n);
+              return n;
+            } else {
+              throw new Error("Unknown type of artifact for nodes.");
+            }
+          }),
+      ] as RF.Node[],
+      edges: [
+        // information requirement
+        ...(model.definitions.drgElement ?? [])
+          .filter(({ __$$element }) => __$$element === "decision")
+          .flatMap((decision: DMN14__tDecision) => [
+            ...(decision.informationRequirement ?? []).map((ir) => {
+              const source = (ir.requiredDecision?.["@_href"] ?? ir.requiredInput?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+              const target = decision["@_id"]!;
+              const id = ir["@_id"] ?? "";
+              return {
+                data: getEdgeData({ id, source, target }),
+                id,
+                type: EDGE_TYPES.informationRequirement,
+                source,
+                target,
+              };
+            }),
+          ]),
+
+        // knowledge requirement
+        ...(model.definitions.drgElement ?? [])
+          .filter(({ __$$element }) => __$$element === "decision" || __$$element === "businessKnowledgeModel")
+          .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel) => [
+            ...(node.knowledgeRequirement ?? []).map((kr) => {
+              const source = (kr.requiredKnowledge?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+              const target = node["@_id"]!;
+              const id = kr["@_id"] ?? "";
+              return {
+                data: getEdgeData({ id, source, target }),
+                id,
+                type: EDGE_TYPES.knowledgeRequirement,
+                source,
+                target,
+              };
+            }),
+          ]),
+
+        // authority requirement
+        ...(model.definitions.drgElement ?? [])
+          .filter(
+            ({ __$$element }) =>
+              __$$element === "decision" ||
+              __$$element === "businessKnowledgeModel" ||
+              __$$element === "knowledgeSource"
+          )
+          .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel | DMN14__tKnowledgeSource) => [
+            ...(node.authorityRequirement ?? []).map((ar) => {
+              const source = (
+                ar.requiredInput?.["@_href"] ??
+                ar.requiredDecision?.["@_href"] ??
+                ar.requiredAuthority?.["@_href"] ??
+                "#"
+              ).substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+              const target = node["@_id"]!;
+              const id = ar["@_id"] ?? "";
+              return {
+                data: getEdgeData({ id, source, target }),
+                id,
+                type: EDGE_TYPES.authorityRequirement,
+                source,
+                target,
+              };
+            }),
+          ]),
+
+        // association
+        ...(model.definitions.artifact ?? [])
+          .filter(({ __$$element }) => __$$element === "association")
+          .flatMap((artifact) => {
+            const association = artifact as DMN14__tAssociation;
+            const source = (association.sourceRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+            const target = (association.targetRef?.["@_href"] ?? "#").substring(1); // Remove a "#" that is added at the beginning of IDs on @_href's
+            const id = artifact["@_id"] ?? "";
+            return {
+              data: getEdgeData({ id, source, target }),
+              id,
+              type: EDGE_TYPES.association,
+              source,
+              target,
+            };
+          }),
+      ],
+      nodesById,
+    };
+  }, [getEdgeData, model.definitions.artifact, model.definitions.drgElement, shapesById]);
+
+  return { shapesById, edgesById, nodesById, nodes, edges };
 }

@@ -3,7 +3,6 @@ import * as RF from "reactflow";
 import { useCallback, useMemo } from "react";
 import { DMNDI13__DMNEdge, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
-import { useTargetStatus } from "../nodes/Nodes";
 
 export type EdgeData = {
   dmnEdge: DMNDI13__DMNEdge | undefined;
@@ -33,15 +32,15 @@ export function useKieEdgePath(source: string, target: string, data: EdgeData) {
   return path;
 }
 
-export function InformationRequirementPath(props: React.SVGProps<SVGPathElement>) {
+export const InformationRequirementPath = React.memo((props: React.SVGProps<SVGPathElement>) => {
   return (
     <>
       <path {...props} style={{ strokeWidth: 1, stroke: "black" }} markerEnd={"url(#closed-arrow)"} />
     </>
   );
-}
+});
 
-export function KnowledgeRequirementPath(props: React.SVGProps<SVGPathElement>) {
+export const KnowledgeRequirementPath = React.memo((props: React.SVGProps<SVGPathElement>) => {
   return (
     <>
       <path
@@ -51,24 +50,24 @@ export function KnowledgeRequirementPath(props: React.SVGProps<SVGPathElement>) 
       />
     </>
   );
-}
+});
 
-export function AuthorityRequirementPath(
-  _props: React.SVGProps<SVGPathElement> & { centerToConnectionPoint: boolean | undefined }
-) {
-  const { centerToConnectionPoint: center, ...props } = _props;
-  return (
-    <>
-      <path
-        {...props}
-        style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
-        markerEnd={center ? `url(#closed-circle-at-center)` : `url(#closed-circle-at-border)`}
-      />
-    </>
-  );
-}
+export const AuthorityRequirementPath = React.memo(
+  (_props: React.SVGProps<SVGPathElement> & { centerToConnectionPoint: boolean | undefined }) => {
+    const { centerToConnectionPoint: center, ...props } = _props;
+    return (
+      <>
+        <path
+          {...props}
+          style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
+          markerEnd={center ? `url(#closed-circle-at-center)` : `url(#closed-circle-at-border)`}
+        />
+      </>
+    );
+  }
+);
 
-export function AssociationPath(props: React.SVGProps<SVGPathElement>) {
+export const AssociationPath = React.memo((props: React.SVGProps<SVGPathElement>) => {
   const strokeWidth = props.strokeWidth ?? 1.5;
   return (
     <>
@@ -81,7 +80,7 @@ export function AssociationPath(props: React.SVGProps<SVGPathElement>) {
       />
     </>
   );
-}
+});
 
 export function useEdgeClassName() {
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
@@ -94,7 +93,7 @@ export function useEdgeClassName() {
 
 //
 
-export function InformationRequirementEdge(props: RF.EdgeProps) {
+export const InformationRequirementEdge = React.memo((props: RF.EdgeProps) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -102,9 +101,9 @@ export function InformationRequirementEdge(props: RF.EdgeProps) {
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
-}
+});
 
-export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
+export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -112,9 +111,9 @@ export function KnowledgeRequirementEdge(props: RF.EdgeProps) {
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
-}
+});
 
-export function AuthorityRequirementEdge(props: RF.EdgeProps) {
+export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -126,9 +125,9 @@ export function AuthorityRequirementEdge(props: RF.EdgeProps) {
       />
     </>
   );
-}
+});
 
-export function AssociationEdge(props: RF.EdgeProps) {
+export const AssociationEdge = React.memo((props: RF.EdgeProps) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -136,4 +135,4 @@ export function AssociationEdge(props: RF.EdgeProps) {
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
-}
+});
