@@ -2,7 +2,6 @@
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    //    "noEmit": true,
     "esModuleInterop": true
   },
   "include": ["src"]

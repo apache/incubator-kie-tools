@@ -27,7 +27,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/editor": "workspace:0.0.0",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",

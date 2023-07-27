@@ -19,7 +19,7 @@ import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { DefaultDashbuilderMonacoEditorController, DashbuilderMonacoEditorApi } from "./DashbuilderMonacoEditorApi";
 import { ChannelType, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { DashbuilderEditorChannelApi } from "../editor";
-import { EditorTheme } from "@kie-tools-core/editor/dist/api/EditorTheme";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { initCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { initCompletion } from "./augmentation/completion";
