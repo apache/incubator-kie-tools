@@ -3066,6 +3066,9 @@ importers:
       "@patternfly/react-styles":
         specifier: ^4.92.6
         version: 4.92.6
+      immer:
+        specifier: ^10.0.2
+        version: 10.0.2
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -3074,10 +3077,13 @@ importers:
         version: 17.0.2(react@17.0.2)
       reactflow:
         specifier: ^11.7.4
-        version: 11.7.4(react-dom@17.0.2)(react@17.0.2)
+        version: 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
+      zustand:
+        specifier: ^4.3.9
+        version: 4.3.9(immer@10.0.2)(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -15989,39 +15995,39 @@ packages:
       write-yaml-file: 4.2.0
     dev: true
 
-  /@reactflow/background@11.2.4(react-dom@17.0.2)(react@17.0.2):
+  /@reactflow/background@11.2.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-SYQbCRCU0GuxT/40Tm7ZK+l5wByGnNJSLtZhbL9C/Hl7JhsJXV3UGXr0vrlhVZUBEtkWA7XhZM/5S9XEA5XSFA== }
     peerDependencies:
       react: ">=17"
       react-dom: ">=17"
     dependencies:
-      "@reactflow/core": 11.7.4(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/core": 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       classcat: 5.0.4
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      zustand: 4.3.9(react@17.0.2)
+      zustand: 4.3.9(immer@10.0.2)(react@17.0.2)
     transitivePeerDependencies:
       - immer
     dev: false
 
-  /@reactflow/controls@11.1.15(react-dom@17.0.2)(react@17.0.2):
+  /@reactflow/controls@11.1.15(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-//33XfBYu8vQ6brfmlZwKrDoh+8hh93xO2d88XiqfIbrPEEb32SYjsb9mS9VuHKNlSIW+eB27fBA1Gt00mEj5w== }
     peerDependencies:
       react: ">=17"
       react-dom: ">=17"
     dependencies:
-      "@reactflow/core": 11.7.4(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/core": 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       classcat: 5.0.4
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      zustand: 4.3.9(react@17.0.2)
+      zustand: 4.3.9(immer@10.0.2)(react@17.0.2)
     transitivePeerDependencies:
       - immer
     dev: false
 
-  /@reactflow/core@11.7.4(react-dom@17.0.2)(react@17.0.2):
+  /@reactflow/core@11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-nt0T8ERp8TE7YCDQViaoEY9lb0StDPrWHVx3zBjhStFYET3wc88t8QRasZdf99xRTmyNtI3U3M40M5EBLNUpMw== }
     peerDependencies:
@@ -16038,19 +16044,19 @@ packages:
       d3-zoom: 3.0.0
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      zustand: 4.3.9(react@17.0.2)
+      zustand: 4.3.9(immer@10.0.2)(react@17.0.2)
     transitivePeerDependencies:
       - immer
     dev: false
 
-  /@reactflow/minimap@11.5.4(react-dom@17.0.2)(react@17.0.2):
+  /@reactflow/minimap@11.5.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-1tDBj2zX2gxu2oHU6qvH5RGNrOWRfRxu8369KhDotuuBN5yJrGXJzWIKikwhzjsNsQJYOB+B0cS44yWAfwSwzw== }
     peerDependencies:
       react: ">=17"
       react-dom: ">=17"
     dependencies:
-      "@reactflow/core": 11.7.4(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/core": 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       "@types/d3-selection": 3.0.5
       "@types/d3-zoom": 3.0.3
       classcat: 5.0.4
@@ -16058,41 +16064,41 @@ packages:
       d3-zoom: 3.0.0
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      zustand: 4.3.9(react@17.0.2)
+      zustand: 4.3.9(immer@10.0.2)(react@17.0.2)
     transitivePeerDependencies:
       - immer
     dev: false
 
-  /@reactflow/node-resizer@2.1.1(react-dom@17.0.2)(react@17.0.2):
+  /@reactflow/node-resizer@2.1.1(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-5Q+IBmZfpp/bYsw3+KRVJB1nUbj6W3XAp5ycx4uNWH+K98vbssymyQsW0vvKkIhxEPg6tkiMzO4UWRWvwBwt1g== }
     peerDependencies:
       react: ">=17"
       react-dom: ">=17"
     dependencies:
-      "@reactflow/core": 11.7.4(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/core": 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       classcat: 5.0.4
       d3-drag: 3.0.0
       d3-selection: 3.0.0
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      zustand: 4.3.9(react@17.0.2)
+      zustand: 4.3.9(immer@10.0.2)(react@17.0.2)
     transitivePeerDependencies:
       - immer
     dev: false
 
-  /@reactflow/node-toolbar@1.2.3(react-dom@17.0.2)(react@17.0.2):
+  /@reactflow/node-toolbar@1.2.3(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-uFQy9xpog92s0G1wsPLniwV9nyH4i/MmL7QoMsWdnKaOi7XMhd8SJcCzUdHC3imR21HltsuQITff/XQ51ApMbg== }
     peerDependencies:
       react: ">=17"
       react-dom: ">=17"
     dependencies:
-      "@reactflow/core": 11.7.4(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/core": 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       classcat: 5.0.4
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      zustand: 4.3.9(react@17.0.2)
+      zustand: 4.3.9(immer@10.0.2)(react@17.0.2)
     transitivePeerDependencies:
       - immer
     dev: false
@@ -18807,7 +18813,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9(debug@4.3.1)
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -23517,19 +23523,6 @@ packages:
       debug:
         optional: true
 
-  /follow-redirects@1.14.9(debug@4.3.1):
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.1
-    dev: true
-
   /for-each@0.3.3:
     resolution:
       { integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw== }
@@ -24778,6 +24771,11 @@ packages:
   /immediate@3.0.6:
     resolution:
       { integrity: sha512-XXOFtyqDjNDAQxVfYxuF7g9Il/IbWmmlQg2MYKOH8ExIT1qg6xc4zyS3HaEEATgs1btfzxq15ciUiY7gjSXRGQ== }
+
+  /immer@10.0.2:
+    resolution:
+      { integrity: sha512-Rx3CqeqQ19sxUtYV9CU911Vhy8/721wRFnJv3REVGWUmoAcIwzifTsdmJte/MV+0/XpM35LZdQMBGkRIoLPwQA== }
+    dev: false
 
   /immer@9.0.7:
     resolution:
@@ -30907,19 +30905,19 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
 
-  /reactflow@11.7.4(react-dom@17.0.2)(react@17.0.2):
+  /reactflow@11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-QI6+oc1Ft6oFeLSdHlp+SmgymbI5Tm49wj5JyE84O4A54yN/ImfYaBhLit9Cmfzxn9Tz6tDqmGMGbk4bdtB8/w== }
     peerDependencies:
       react: ">=17"
       react-dom: ">=17"
     dependencies:
-      "@reactflow/background": 11.2.4(react-dom@17.0.2)(react@17.0.2)
-      "@reactflow/controls": 11.1.15(react-dom@17.0.2)(react@17.0.2)
-      "@reactflow/core": 11.7.4(react-dom@17.0.2)(react@17.0.2)
-      "@reactflow/minimap": 11.5.4(react-dom@17.0.2)(react@17.0.2)
-      "@reactflow/node-resizer": 2.1.1(react-dom@17.0.2)(react@17.0.2)
-      "@reactflow/node-toolbar": 1.2.3(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/background": 11.2.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/controls": 11.1.15(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/core": 11.7.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/minimap": 11.5.4(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/node-resizer": 2.1.1(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
+      "@reactflow/node-toolbar": 1.2.3(immer@10.0.2)(react-dom@17.0.2)(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     transitivePeerDependencies:
@@ -35700,7 +35698,7 @@ packages:
       tslib: 2.3.0
     dev: false
 
-  /zustand@4.3.9(react@17.0.2):
+  /zustand@4.3.9(immer@10.0.2)(react@17.0.2):
     resolution:
       { integrity: sha512-Tat5r8jOMG1Vcsj8uldMyqYKC5IZvQif8zetmLHs9WoZlntTHmIoNM8TpLRY31ExncuUvUOXehd0kvahkuHjDw== }
     engines: { node: ">=12.7.0" }
@@ -35713,6 +35711,7 @@ packages:
       react:
         optional: true
     dependencies:
+      immer: 10.0.2
       react: 17.0.2
       use-sync-external-store: 1.2.0(react@17.0.2)
     dev: false

@@ -1,26 +1,15 @@
 import * as React from "react";
 import * as RF from "reactflow";
 
-import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-
-import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import {
   DrawerActions,
   DrawerCloseButton,
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import {
-  Form,
-  FormFieldGroupExpandable,
-  FormFieldGroupHeader,
-  FormGroup,
-} from "@patternfly/react-core/dist/js/components/Form";
+import { Form, FormFieldGroupExpandable, FormFieldGroupHeader } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
-import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
 import { StyleOptions } from "./StyleOptions";
 import { ShapeOptions } from "./ShapeOptions";
 import { InputDataProperties } from "./InputDataProperties";
@@ -30,24 +19,19 @@ import { DecisionServiceProperties } from "./DecisionServiceProperties";
 import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
-import "./PropertiesPanel.css";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { useDmnEditor } from "../store/Store";
+import "./PropertiesPanel.css";
+import { GlobalProperties } from "./GlobalProperties";
 
-export function SingleNodeProperties({
-  dmn,
-  setDmn,
-  nodeId,
-}: {
-  dmn: { definitions: DMN14__tDefinitions };
-  setDmn: React.Dispatch<React.SetStateAction<{ definitions: DMN14__tDefinitions }>>;
-  nodeId: string;
-}) {
+export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
+  const { dmn } = useDmnEditor();
   const node = useMemo(() => {
     return (
-      dmn.definitions.drgElement?.find((s) => s["@_id"] === nodeId) ??
-      dmn.definitions.artifact?.find((s) => s["@_id"] === nodeId)
+      dmn.model.definitions.drgElement?.find((s) => s["@_id"] === nodeId) ??
+      dmn.model.definitions.artifact?.find((s) => s["@_id"] === nodeId)
     );
-  }, [dmn.definitions.artifact, dmn.definitions.drgElement, nodeId]);
+  }, [dmn.model.definitions.artifact, dmn.model.definitions.drgElement, nodeId]);
 
   return (
     <>
@@ -123,23 +107,14 @@ export function SingleNodeProperties({
   );
 }
 
-export function PropertiesPanel({
-  dmn,
-  setDmn,
-  selectedNodes,
-  onClose,
-}: {
-  dmn: { definitions: DMN14__tDefinitions };
-  setDmn: React.Dispatch<React.SetStateAction<{ definitions: DMN14__tDefinitions }>>;
-  selectedNodes: string[];
-  onClose: () => void;
-}) {
+export function PropertiesPanel({ selectedNodes, onClose }: { selectedNodes: string[]; onClose: () => void }) {
+  const { dmn } = useDmnEditor();
   return (
     <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"500px"}>
       <DrawerHead>
         {selectedNodes.length === 1 && (
           <>
-            <SingleNodeProperties dmn={dmn} setDmn={setDmn} nodeId={selectedNodes[0]} />
+            <SingleNodeProperties nodeId={selectedNodes[0]} />
           </>
         )}
         {selectedNodes.length > 1 && (
@@ -154,76 +129,7 @@ export function PropertiesPanel({
             </Form>
           </>
         )}
-        {selectedNodes.length <= 0 && (
-          <Form>
-            <FormFieldGroupExpandable
-              isExpanded={true}
-              header={
-                <FormFieldGroupHeader
-                  titleText={{
-                    text: (
-                      <TextContent>
-                        <Text component={TextVariants.h4}>
-                          <DataSourceIcon />
-                          &nbsp;&nbsp;Global properties
-                        </Text>
-                      </TextContent>
-                    ),
-                    id: "properties-panel-shape-options",
-                  }}
-                />
-              }
-            >
-              <FormGroup label="Name">
-                <TextInput
-                  aria-label={"Name"}
-                  type={"text"}
-                  isDisabled={false}
-                  value={dmn.definitions["@_name"]}
-                  placeholder={"Enter a name..."}
-                />
-              </FormGroup>
-              <FormGroup label="Description">
-                <TextArea
-                  aria-label={"Description"}
-                  type={"text"}
-                  isDisabled={false}
-                  value={dmn.definitions["description"]}
-                  placeholder={"Enter a description..."}
-                  style={{ resize: "vertical", minHeight: "40px" }}
-                  rows={6}
-                />
-              </FormGroup>
-
-              <br />
-              <br />
-
-              <FormGroup label="Namespace">
-                <TextInput
-                  aria-label={"Namespace"}
-                  type={"text"}
-                  isDisabled={false}
-                  value={dmn.definitions["@_namespace"]}
-                  placeholder={"Enter a namespace..."}
-                />
-              </FormGroup>
-              <FormGroup label="Expression language">
-                <TextInput
-                  aria-label={"Expression language"}
-                  type={"text"}
-                  isDisabled={false}
-                  value={dmn.definitions["@_expressionLanguage"]}
-                  placeholder={"Enter an expression language..."}
-                />
-              </FormGroup>
-              <FormGroup label="ID">
-                <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
-                  {dmn.definitions["@_id"]}
-                </ClipboardCopy>
-              </FormGroup>
-            </FormFieldGroupExpandable>
-          </Form>
-        )}
+        {selectedNodes.length <= 0 && <GlobalProperties />}
         <DrawerActions>
           <DrawerCloseButton onClick={onClose} />
         </DrawerActions>

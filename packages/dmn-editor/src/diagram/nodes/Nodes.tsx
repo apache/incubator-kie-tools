@@ -9,12 +9,10 @@ import {
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import * as React from "react";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
-
-import { DmnNodeWithExpression } from "../DmnNodeWithExpression";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
@@ -32,6 +30,7 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
+import { DmnNodeWithExpression } from "../../store/Store";
 
 export function InputDataNode({
   data: { inputData, shape, onInfo },
@@ -69,7 +68,7 @@ export function InputDataNode({
         onDoubleClick={triggerEditing}
         onKeyDown={triggerEditingIfEnter}
       >
-        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} />
         <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={inputData.variable} shape={shape} />
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
@@ -130,11 +129,11 @@ export function DecisionNode({
         onDoubleClick={triggerEditing}
         onKeyDown={triggerEditingIfEnter}
       >
-        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} />
         <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decision.variable} shape={shape} />
         <EditExpressionNodePanel
           isVisible={!isTargeted && isHovered}
-          onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.decision, content: decision })}
+          nodeWithExpression={useMemo(() => ({ type: NODE_TYPES.decision, content: decision }), [decision])}
         />
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
@@ -195,11 +194,11 @@ export function BkmNode({
         onDoubleClick={triggerEditing}
         onKeyDown={triggerEditingIfEnter}
       >
-        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} />
         <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={bkm.variable} shape={shape} />
         <EditExpressionNodePanel
           isVisible={!isTargeted && isHovered}
-          onClick={() => setOpenNodeWithExpression({ type: NODE_TYPES.bkm, content: bkm })}
+          nodeWithExpression={useMemo(() => ({ type: NODE_TYPES.bkm, content: bkm }), [bkm])}
         />
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
@@ -255,7 +254,7 @@ export function KnowledgeSourceNode({
         onDoubleClick={triggerEditing}
         onKeyDown={triggerEditingIfEnter}
       >
-        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} />
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.knowledgeSource.nodes}
@@ -310,7 +309,7 @@ export function TextAnnotationNode({
         onDoubleClick={triggerEditing}
         onKeyDown={triggerEditingIfEnter}
       >
-        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} />
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}
           nodes={outgoing.textAnnotation.nodes}
@@ -364,7 +363,7 @@ export function DecisionServiceNode({
         onDoubleClick={triggerEditing}
         onKeyDown={triggerEditingIfEnter}
       >
-        <InfoNodePanel isVisible={!isTargeted && isHovered} onClick={onInfo} />
+        <InfoNodePanel isVisible={!isTargeted && isHovered} />
         <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decisionService.variable} shape={shape} />
         <OutgoingStuffNodePanel
           isVisible={!isConnecting && !isTargeted && isHovered}

@@ -8,17 +8,14 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
+import { useDmnEditor } from "../store/Store";
 
-export function IncludedModels({
-  dmn,
-  setDmn,
-}: {
-  dmn: { definitions: DMN14__tDefinitions };
-  setDmn: React.Dispatch<React.SetStateAction<{ definitions: DMN14__tDefinitions }>>;
-}) {
+export function IncludedModels() {
+  const { dmn } = useDmnEditor();
+
   const imports = useMemo(() => {
-    return dmn.definitions.import ?? [];
-  }, [dmn.definitions.import]);
+    return dmn.model.definitions.import ?? [];
+  }, [dmn.model.definitions.import]);
 
   const includeModel = useCallback(() => {
     // TODO: Implement

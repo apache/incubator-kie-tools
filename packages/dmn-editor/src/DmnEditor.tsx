@@ -15,168 +15,123 @@ import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon
 import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram } from "./diagram/Diagram";
-import { DmnNodeWithExpression } from "./diagram/DmnNodeWithExpression";
 import { Documentation } from "./documentation/Documentation";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { PropertiesPanel } from "./propertiesPanel/PropertiesPanel";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
-
+import { DmnEditorTab, useDmnEditor } from "./store/Store";
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-
-const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
-</definitions>`;
-
-export enum DmnEditorTab {
-  EDITOR,
-  DATA_TYPES,
-  INCLUDED_MODELS,
-  DOCUMENTATION,
-}
 
 export type DmnEditorRef = {
   getContent(): string;
 };
 
-export const DmnEditor = React.forwardRef((props: { xml: string }, ref: React.Ref<DmnEditorRef>) => {
-  const marshaller = useMemo(() => getMarshaller(props.xml.trim() || EMPTY_DMN_14), [props.xml]);
+export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.Ref<DmnEditorRef>) => {
+  const { propertiesPanel, boxedExpression, dmn, navigation, dispatch } = useDmnEditor();
 
-  const dmnInitial: { definitions: DMN14__tDefinitions } = useMemo(
-    () => marshaller.parser.parse(),
-    [marshaller.parser]
-  );
-
-  const [dmn, setDmn] = useState(dmnInitial);
+  // Make sure the DMN Editor reacts to props changing.
   useEffect(() => {
-    setDmn(dmnInitial);
-  }, [dmnInitial]);
+    dispatch.dmn.reset(xml);
+  }, [dispatch.dmn, xml]);
 
   useImperativeHandle(
     ref,
     () => ({
-      getContent: () => marshaller.builder.build(dmn),
+      getContent: () => dmn.marshaller.builder.build(dmn.model),
     }),
-    [dmn, marshaller.builder]
+    [dmn]
   );
 
-  const [openNodeWithExpression, setOpenNodeWithExpression] = useState<DmnNodeWithExpression | undefined>(undefined);
-  const [tab, setTab] = useState(DmnEditorTab.EDITOR);
-  const onTabChanged = useCallback((e, tab) => {
-    setTab(tab);
-  }, []);
+  const onTabChanged = useCallback((e, tab) => dispatch.navigation.setTab(tab), [dispatch.navigation]);
 
-  const [isPropertiesPanelOpen, setPropertiesPanelOpen] = useState(true);
   const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
   useEffect(() => {
     setSelectedNodes([]);
-  }, [dmn]);
+  }, [dmn.model]);
 
   const diagramContainerRef = useRef<HTMLDivElement>(null);
 
-  const onBackToDigram = useCallback(() => {
-    setOpenNodeWithExpression(undefined);
-  }, []);
-
   return (
     <>
-      <>
-        <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region" className={"kie-dmn-editor--tabs"}>
-          <Tab
-            eventKey={DmnEditorTab.EDITOR}
-            title={
-              <>
-                <TabTitleIcon>
-                  <PficonTemplateIcon />
-                </TabTitleIcon>
-                <TabTitleText>Editor</TabTitleText>
-              </>
-            }
-          >
-            {tab === DmnEditorTab.EDITOR && (
-              <Drawer isExpanded={isPropertiesPanelOpen} isInline={true} position={"right"}>
-                <DrawerContent
-                  panelContent={
-                    <PropertiesPanel
-                      dmn={dmn}
-                      setDmn={setDmn}
-                      selectedNodes={selectedNodes}
-                      onClose={() => setPropertiesPanelOpen(false)}
-                    />
-                  }
-                >
-                  <DrawerContentBody>
-                    <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                      <DmnVersionLabel version={marshaller.version} />
-                      {!openNodeWithExpression && (
-                        <Diagram
-                          dmn={dmn}
-                          setDmn={setDmn}
-                          container={diagramContainerRef}
-                          isPropertiesPanelOpen={isPropertiesPanelOpen}
-                          setOpenNodeWithExpression={setOpenNodeWithExpression}
-                          onSelect={setSelectedNodes}
-                          setPropertiesPanelOpen={setPropertiesPanelOpen}
-                        />
-                      )}
-                      {openNodeWithExpression && (
-                        <BoxedExpression
-                          dmn={dmn}
-                          setDmn={setDmn}
-                          container={diagramContainerRef}
-                          nodeWithExpression={openNodeWithExpression}
-                          onBackToDiagram={onBackToDigram}
-                        />
-                      )}
-                    </div>
-                  </DrawerContentBody>
-                </DrawerContent>
-              </Drawer>
-            )}
-          </Tab>
+      <Tabs
+        isFilled={true}
+        activeKey={navigation.tab}
+        onSelect={onTabChanged}
+        role="region"
+        className={"kie-dmn-editor--tabs"}
+      >
+        <Tab
+          eventKey={DmnEditorTab.EDITOR}
+          title={
+            <>
+              <TabTitleIcon>
+                <PficonTemplateIcon />
+              </TabTitleIcon>
+              <TabTitleText>Editor</TabTitleText>
+            </>
+          }
+        >
+          {navigation.tab === DmnEditorTab.EDITOR && (
+            <Drawer isExpanded={propertiesPanel.isOpen} isInline={true} position={"right"}>
+              <DrawerContent
+                panelContent={
+                  <PropertiesPanel selectedNodes={selectedNodes} onClose={dispatch.propertiesPanel.close} />
+                }
+              >
+                <DrawerContentBody>
+                  <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
+                    <DmnVersionLabel version={dmn.marshaller.version} />
+                    {!boxedExpression.node && <Diagram container={diagramContainerRef} onSelect={setSelectedNodes} />}
+                    {boxedExpression.node && <BoxedExpression container={diagramContainerRef} />}
+                  </div>
+                </DrawerContentBody>
+              </DrawerContent>
+            </Drawer>
+          )}
+        </Tab>
 
-          <Tab
-            eventKey={DmnEditorTab.DATA_TYPES}
-            title={
-              <>
-                <TabTitleIcon>
-                  <InfrastructureIcon />
-                </TabTitleIcon>
-                <TabTitleText>Data types</TabTitleText>
-              </>
-            }
-          >
-            {tab === DmnEditorTab.DATA_TYPES && <DataTypes />}
-          </Tab>
+        <Tab
+          eventKey={DmnEditorTab.DATA_TYPES}
+          title={
+            <>
+              <TabTitleIcon>
+                <InfrastructureIcon />
+              </TabTitleIcon>
+              <TabTitleText>Data types</TabTitleText>
+            </>
+          }
+        >
+          {navigation.tab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+        </Tab>
 
-          <Tab
-            eventKey={DmnEditorTab.INCLUDED_MODELS}
-            title={
-              <>
-                <TabTitleIcon>
-                  <FileIcon />
-                </TabTitleIcon>
-                <TabTitleText>Included models</TabTitleText>
-              </>
-            }
-          >
-            {tab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels dmn={dmn} setDmn={setDmn} />}
-          </Tab>
+        <Tab
+          eventKey={DmnEditorTab.INCLUDED_MODELS}
+          title={
+            <>
+              <TabTitleIcon>
+                <FileIcon />
+              </TabTitleIcon>
+              <TabTitleText>Included models</TabTitleText>
+            </>
+          }
+        >
+          {navigation.tab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
+        </Tab>
 
-          <Tab
-            eventKey={DmnEditorTab.DOCUMENTATION}
-            title={
-              <>
-                <TabTitleIcon>
-                  <CatalogIcon />
-                </TabTitleIcon>
-                <TabTitleText>Documentation</TabTitleText>
-              </>
-            }
-          >
-            {tab === DmnEditorTab.DOCUMENTATION && <Documentation />}
-          </Tab>
-        </Tabs>
-      </>
+        <Tab
+          eventKey={DmnEditorTab.DOCUMENTATION}
+          title={
+            <>
+              <TabTitleIcon>
+                <CatalogIcon />
+              </TabTitleIcon>
+              <TabTitleText>Documentation</TabTitleText>
+            </>
+          }
+        >
+          {navigation.tab === DmnEditorTab.DOCUMENTATION && <Documentation />}
+        </Tab>
+      </Tabs>
     </>
   );
 });

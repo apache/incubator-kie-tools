@@ -1,42 +1,22 @@
-import {
-  DmnBuiltInDataType,
-  ExpressionDefinition,
-  ExpressionDefinitionLogicType,
-  generateUuid,
-} from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
-import {
-  DMN14__tDecision,
-  DMN14__tDefinitions,
-  DMN14__tFunctionDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
-import { useCallback, useMemo, useState, useEffect } from "react";
-import { DmnNodeWithExpression } from "../diagram/DmnNodeWithExpression";
+import { useEffect, useMemo, useState } from "react";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { DmnNodeWithExpression, useDmnEditor } from "../store/Store";
 import { beeToDmn } from "./beeToDmn";
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
-import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 
-export function BoxedExpression({
-  dmn,
-  setDmn,
-  nodeWithExpression,
-  onBackToDiagram,
-  container,
-}: {
-  dmn: { definitions: DMN14__tDefinitions };
-  setDmn: React.Dispatch<React.SetStateAction<{ definitions: DMN14__tDefinitions }>>;
-  nodeWithExpression: DmnNodeWithExpression;
-  onBackToDiagram: () => void;
-  container: React.RefObject<HTMLElement>;
-}) {
+export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
+  const { dispatch, dmn, boxedExpression } = useDmnEditor();
+
   const widthsById = useMemo(() => {
     return (
-      dmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.["kie:ComponentsWidthsExtension"]?.[
-        "kie:ComponentWidths"
-      ] ?? []
+      dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.[
+        "kie:ComponentsWidthsExtension"
+      ]?.["kie:ComponentWidths"] ?? []
     ).reduce((acc, c) => {
       if (c["@_dmnElementRef"] === undefined) {
         return acc;
@@ -44,55 +24,53 @@ export function BoxedExpression({
         return acc.set(c["@_dmnElementRef"], c["kie:width"] ?? []);
       }
     }, new Map<string, number[]>());
-  }, [dmn.definitions]);
+  }, [dmn.model.definitions]);
 
-  const [expressionDefinition, _setExpressionDefinition] = useState(
-    nodeWithExpression ? dmnNodeToBoxedExpression(widthsById, nodeWithExpression) : getUndefinedExpressionDefinition()
-  );
+  const initial = useMemo(() => {
+    return boxedExpression.node
+      ? dmnNodeToBoxedExpression(widthsById, boxedExpression.node)
+      : getUndefinedExpressionDefinition();
+  }, [boxedExpression.node, widthsById]);
 
-  useEffect(
-    () =>
-      _setExpressionDefinition(
-        nodeWithExpression
-          ? dmnNodeToBoxedExpression(widthsById, nodeWithExpression)
-          : getUndefinedExpressionDefinition()
-      ),
-    [nodeWithExpression, _setExpressionDefinition, widthsById]
-  );
+  const [expression, setExpression] = useState(initial);
+  useEffect(() => setExpression(initial), [initial]); // Keeps internal state updated when boxedExpression.node changes.
+  useEffect(() => {
+    if (expression === initial) {
+      return;
+    }
+
+    dispatch.dmn.set((prev) => {
+      console.info(`TIAGO WRITE: Boxed Expression updated! ${beeToDmn(expression)}`); // TODO: Actually mutate the DMN JSON.
+      return prev;
+    });
+  }, [dispatch.dmn, expression, initial]);
 
   const dataTypes = useMemo(
     () =>
-      (dmn.definitions.itemDefinition ?? []).map((item) => ({
+      (dmn.model.definitions.itemDefinition ?? []).map((item) => ({
         isCustom: true,
         typeRef: item.typeRef!,
         name: item["@_name"]!,
       })),
-    [dmn.definitions.itemDefinition]
-  );
-
-  const setExpressionDefinition = useCallback(
-    (beeExpression: ExpressionDefinition) => {
-      _setExpressionDefinition(beeExpression);
-      setDmn((prev) => {
-        console.info(`TIAGO WRITE: Boxed Expression updated! ${beeToDmn(beeExpression)}`); // TODO: Actually mutate the DMN JSON.
-        return prev;
-      });
-    },
-    [setDmn]
+    [dmn.model.definitions.itemDefinition]
   );
 
   return (
     <>
-      <Label isCompact={true} className={"kie-dmn-editor--boxed-expression-back"} onClick={onBackToDiagram}>
+      <Label
+        isCompact={true}
+        className={"kie-dmn-editor--boxed-expression-back"}
+        onClick={dispatch.boxedExpression.close}
+      >
         Back to Diagram
       </Label>
       <Divider inset={{ default: "insetMd" }} />
       <br />
       <>
         <BoxedExpressionEditor
-          decisionNodeId={nodeWithExpression.content["@_id"]!}
-          expressionDefinition={expressionDefinition}
-          setExpressionDefinition={setExpressionDefinition}
+          decisionNodeId={boxedExpression.node!.content["@_id"]!}
+          expressionDefinition={expression}
+          setExpressionDefinition={setExpression}
           dataTypes={dataTypes}
           scrollableParentRef={container}
         />

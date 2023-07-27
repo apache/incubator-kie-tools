@@ -57,7 +57,7 @@ import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";
 import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
-type DmnMarshaller = {
+export type DmnMarshaller = {
   parser: { parse(): DmnDefinitions };
   builder: { build(json: DmnDefinitions): string };
   instanceNs: Map<string, string>;

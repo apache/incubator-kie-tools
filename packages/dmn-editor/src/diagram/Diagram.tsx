@@ -25,7 +25,6 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
-import { DmnNodeWithExpression } from "./DmnNodeWithExpression";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
   BkmNode,
@@ -39,6 +38,7 @@ import {
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeType, NodeType } from "./connections/graphStructure";
 import { EdgeMarkers } from "./edges/EdgeMarkers";
+import { useDmnEditor } from "../store/Store";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -47,20 +47,10 @@ const FIT_VIEW_OPTIONS = { maxZoom: 1, minZoom: 1, duration: 400 };
 const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
 
 export function Diagram({
-  dmn,
-  setDmn,
   container,
-  isPropertiesPanelOpen,
-  setOpenNodeWithExpression,
   onSelect,
-  setPropertiesPanelOpen,
 }: {
-  dmn: { definitions: DMN14__tDefinitions };
-  setDmn: React.Dispatch<React.SetStateAction<{ definitions: DMN14__tDefinitions }>>;
   container: React.RefObject<HTMLElement>;
-  isPropertiesPanelOpen: boolean;
-  setOpenNodeWithExpression: React.Dispatch<React.SetStateAction<DmnNodeWithExpression | undefined>>;
-  setPropertiesPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onSelect: (nodes: string[]) => void;
 }) {
   const [nodes, setNodes, onNodesChange] = RF.useNodesState([]);
@@ -69,10 +59,6 @@ export function Diagram({
   const onEdgeUpdate = useCallback((args) => {
     console.log("TIAGO WRITE: Edge updated! --> ", args);
   }, []);
-
-  const onInfo = useCallback(() => {
-    setPropertiesPanelOpen((prev) => !prev);
-  }, [setPropertiesPanelOpen]);
 
   const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
 
@@ -103,18 +89,13 @@ export function Diagram({
     };
   }, []);
 
-  const nodesById = useMemo(
-    () =>
-      nodes.reduce((acc, a) => {
-        acc.set(a.id, a);
-        return acc;
-      }, new Map<string, RF.Node>()),
-    [nodes]
-  );
+  const nodesById = useMemo(() => nodes.reduce((acc, a) => acc.set(a.id, a), new Map<string, RF.Node>()), [nodes]);
+
+  const { dmn } = useDmnEditor();
 
   const { edgesById, shapesById } = useMemo(
     () =>
-      (dmn.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
+      (dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
         .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
         .reduce(
           (acc, e) => {
@@ -131,12 +112,12 @@ export function Diagram({
             shapesById: new Map<string, DMNDI13__DMNShape>(),
           }
         ),
-    [dmn.definitions]
+    [dmn.model.definitions]
   );
 
   useEffect(() => {
     setNodes([
-      ...(dmn.definitions.drgElement ?? []).map((drgElement) => {
+      ...(dmn.model.definitions.drgElement ?? []).map((drgElement) => {
         const shape = shapesById.get(drgElement["@_id"]!)!;
 
         if (drgElement.__$$element === "inputData") {
@@ -144,7 +125,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.inputData,
             position: snapShapePosition(shape),
-            data: { inputData: drgElement, shape, onInfo },
+            data: { inputData: drgElement, shape },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "decision") {
@@ -152,7 +133,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.decision,
             position: snapShapePosition(shape),
-            data: { decision: drgElement, shape, setOpenNodeWithExpression, onInfo },
+            data: { decision: drgElement, shape },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "businessKnowledgeModel") {
@@ -160,7 +141,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.bkm,
             position: snapShapePosition(shape),
-            data: { bkm: drgElement, shape, setOpenNodeWithExpression, onInfo },
+            data: { bkm: drgElement, shape },
             style: { ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "decisionService") {
@@ -168,7 +149,7 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.decisionService,
             position: snapShapePosition(shape),
-            data: { decisionService: drgElement, shape, onInfo },
+            data: { decisionService: drgElement, shape },
             style: { zIndex: 1, ...snapShapeDimensions(shape) },
           };
         } else if (drgElement.__$$element === "knowledgeSource") {
@@ -176,14 +157,14 @@ export function Diagram({
             id: drgElement["@_id"]!,
             type: NODE_TYPES.knowledgeSource,
             position: snapShapePosition(shape),
-            data: { knowledgeSource: drgElement, shape, onInfo },
+            data: { knowledgeSource: drgElement, shape },
             style: { ...snapShapeDimensions(shape) },
           };
         } else {
           throw new Error("Unknown type of drgElement for nodes.");
         }
       }),
-      ...(dmn.definitions.artifact ?? [])
+      ...(dmn.model.definitions.artifact ?? [])
         .filter(({ __$$element }) => __$$element === "group" || __$$element === "textAnnotation")
         .map((artifact) => {
           const shape = shapesById.get(artifact["@_id"]!)!;
@@ -192,7 +173,7 @@ export function Diagram({
               id: artifact["@_id"]!,
               type: NODE_TYPES.group,
               position: snapShapePosition(shape),
-              data: { group: artifact, shape, onInfo },
+              data: { group: artifact, shape },
               style: { zIndex: 1, ...snapShapeDimensions(shape) },
             };
           } else if (artifact.__$$element === "textAnnotation") {
@@ -200,7 +181,7 @@ export function Diagram({
               id: artifact["@_id"]!,
               type: NODE_TYPES.textAnnotation,
               position: snapShapePosition(shape),
-              data: { textAnnotation: artifact, shape, onInfo },
+              data: { textAnnotation: artifact, shape },
               style: { ...snapShapeDimensions(shape) },
             };
           } else {
@@ -208,7 +189,7 @@ export function Diagram({
           }
         }),
     ]);
-  }, [dmn.definitions.drgElement, dmn.definitions.artifact, onInfo, setNodes, setOpenNodeWithExpression, shapesById]);
+  }, [dmn.model.definitions.drgElement, dmn.model.definitions.artifact, setNodes, shapesById]);
 
   const getEdgeData = useCallback(
     ({ id, source, target }: { id: string; source: string; target: string }): EdgeData => {
@@ -224,7 +205,7 @@ export function Diagram({
   useEffect(() => {
     setEdges([
       // information requirement
-      ...(dmn.definitions.drgElement ?? [])
+      ...(dmn.model.definitions.drgElement ?? [])
         .filter(({ __$$element }) => __$$element === "decision")
         .flatMap((decision: DMN14__tDecision) => [
           ...(decision.informationRequirement ?? []).map((ir) => {
@@ -242,7 +223,7 @@ export function Diagram({
         ]),
 
       // knowledge requirement
-      ...(dmn.definitions.drgElement ?? [])
+      ...(dmn.model.definitions.drgElement ?? [])
         .filter(({ __$$element }) => __$$element === "decision" || __$$element === "businessKnowledgeModel")
         .flatMap((node: DMN14__tDecision | DMN14__tBusinessKnowledgeModel) => [
           ...(node.knowledgeRequirement ?? []).map((kr) => {
@@ -260,7 +241,7 @@ export function Diagram({
         ]),
 
       // authority requirement
-      ...(dmn.definitions.drgElement ?? [])
+      ...(dmn.model.definitions.drgElement ?? [])
         .filter(
           ({ __$$element }) =>
             __$$element === "decision" || __$$element === "businessKnowledgeModel" || __$$element === "knowledgeSource"
@@ -286,7 +267,7 @@ export function Diagram({
         ]),
 
       // association
-      ...(dmn.definitions.artifact ?? [])
+      ...(dmn.model.definitions.artifact ?? [])
         .filter(({ __$$element }) => __$$element === "association")
         .flatMap((artifact) => {
           const association = artifact as DMN14__tAssociation;
@@ -302,7 +283,7 @@ export function Diagram({
           };
         }),
     ]);
-  }, [dmn.definitions.artifact, dmn.definitions.drgElement, setEdges, getEdgeData]);
+  }, [dmn.model.definitions.artifact, dmn.model.definitions.drgElement, setEdges, getEdgeData]);
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
@@ -408,10 +389,7 @@ export function Diagram({
       >
         <SelectionStatus />
         <Pallete />
-        <PropertiesPanelToggle
-          isPropertiesPanelOpen={isPropertiesPanelOpen}
-          setPropertiesPanelOpen={setPropertiesPanelOpen}
-        />
+        <PropertiesPanelToggle />
         <PanWhenAltPressed />
         <KeyboardShortcuts />
         <RF.Background />
@@ -421,21 +399,16 @@ export function Diagram({
   );
 }
 
-export function PropertiesPanelToggle({
-  setPropertiesPanelOpen,
-  isPropertiesPanelOpen,
-}: {
-  isPropertiesPanelOpen: boolean;
-  setPropertiesPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export function PropertiesPanelToggle() {
+  const { propertiesPanel, dispatch } = useDmnEditor();
   return (
     <>
-      {(!isPropertiesPanelOpen && (
+      {(!propertiesPanel.isOpen && (
         <RF.Panel position={"top-right"}>
           <aside className={"kie-dmn-editor--properties-panel-toggle"}>
             <button
               className={"kie-dmn-editor--properties-panel-toggle-button"}
-              onClick={() => setPropertiesPanelOpen((prev) => !prev)}
+              onClick={dispatch.propertiesPanel.toggle}
             >
               <InfoIcon size={"sm"} />
             </button>
