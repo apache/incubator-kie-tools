@@ -166,14 +166,17 @@ export function AuthSessionDescriptionList(props: { authSession: AuthSession; us
                 <DescriptionListTerm>Created at</DescriptionListTerm>
                 <DescriptionListDescription>{props.authSession.createdAtDateISO}</DescriptionListDescription>
               </DescriptionListGroup>
-              {props.authSession.type === "openshift" && (
-                <DescriptionListGroup>
-                  <DescriptionListTerm>TLS Certificate Verification:</DescriptionListTerm>
-                  <DescriptionListDescription>
-                    {props.authSession.selfSignedCertificates ? "Enabled" : "Disabled"}
-                  </DescriptionListDescription>
-                </DescriptionListGroup>
-              )}
+              {
+                // TODO: remove check when enabling kubernetes deployments to use cors-proxy
+                props.authSession.type === "openshift" && (
+                  <DescriptionListGroup>
+                    <DescriptionListTerm>TLS Certificate Verification</DescriptionListTerm>
+                    <DescriptionListDescription>
+                      {props.authSession.insecurelyDisableTlsCertificateValidation ? "Disabled" : "Enabled"}
+                    </DescriptionListDescription>
+                  </DescriptionListGroup>
+                )
+              }
             </>
           </DescriptionList>
         </>

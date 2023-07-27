@@ -121,9 +121,9 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     [props]
   );
 
-  const onAllowSelfSignedCertificates = useCallback(
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
     (checked: boolean) => {
-      props.setConnection({ ...props.connection, selfSignedCertificates: checked });
+      props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
     },
     [props]
   );
@@ -340,12 +340,14 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                 <Checkbox
                   id="disable-tls-validation"
                   name="disable-tls-validation"
-                  label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
-                  description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+                  label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
+                  description={
+                    <I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+                  }
                   aria-label="Disable TLS Certificate Validation"
                   tabIndex={3}
-                  isChecked={props.connection.selfSignedCertificates}
-                  onChange={onAllowSelfSignedCertificates}
+                  isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
+                  onChange={onInsecurelyDisableTlsCertificateValidationChange}
                 />
               </FormGroup>
             </Form>

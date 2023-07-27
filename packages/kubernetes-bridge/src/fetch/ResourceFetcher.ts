@@ -38,8 +38,8 @@ export class ResourceFetcher {
     if (this.args.proxyUrl) {
       headers[HeaderKeys.TARGET_URL] = targetUrl;
 
-      if (this.args.connection.selfSignedCertificates) {
-        headers[HeaderKeys.ACCEPT_SELF_SIGNED_CERTIFICATES] = "true";
+      if (this.args.connection.insecurelyDisableTlsCertificateValidation) {
+        headers[HeaderKeys.INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION] = "true";
       }
     }
 

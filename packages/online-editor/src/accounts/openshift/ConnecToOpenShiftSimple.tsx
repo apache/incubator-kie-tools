@@ -24,6 +24,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
@@ -117,9 +118,9 @@ export function ConnecToOpenShiftSimple(props: {
     [props]
   );
 
-  const onAllowSelfSignedCertificates = useCallback(
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
     (checked: boolean) => {
-      props.setConnection({ ...props.connection, selfSignedCertificates: checked });
+      props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
     },
     [props]
   );
@@ -314,12 +315,14 @@ export function ConnecToOpenShiftSimple(props: {
           <Checkbox
             id="disable-tls-validation"
             name="disable-tls-validation"
-            label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
-            description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+            label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
+            description={
+              <I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+            }
             aria-label="Disable TLS Certificate Validation"
             tabIndex={4}
-            isChecked={props.connection.selfSignedCertificates}
-            onChange={onAllowSelfSignedCertificates}
+            isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
+            onChange={onInsecurelyDisableTlsCertificateValidationChange}
           />
         </FormGroup>
         <ActionGroup>

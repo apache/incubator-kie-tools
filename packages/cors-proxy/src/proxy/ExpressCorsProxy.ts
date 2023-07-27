@@ -17,11 +17,11 @@
 import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
-import { ACCEPT_SELF_SIGNED_CERTIFICATES_HEADER, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
+import { INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 
 const HTTPS_PROTOCOL = "https:";
-const BANNED_PROXY_HEADERS = ["origin", "host", "target-url"];
+const BANNED_PROXY_HEADERS = ["origin", "host", TARGET_URL_HEADER, INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION];
 
 export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   private readonly logger: Logger;
@@ -133,12 +133,13 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       targetUrl,
       proxyUrl,
       corsConfig: this.resolveCorsConfig(targetUrl, request),
-      allowInsecure: request.headers[ACCEPT_SELF_SIGNED_CERTIFICATES_HEADER] === "true",
+      insecurelyDisableTLSCertificateValidation:
+        request.headers[INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION] === "true",
     });
   }
 
   private getProxyAgent(info: ProxyRequestInfo): https.Agent | undefined {
-    if (info.allowInsecure && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
+    if (info.insecurelyDisableTLSCertificateValidation && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
       return new https.Agent({
         rejectUnauthorized: false,
       });
@@ -161,7 +162,7 @@ class ProxyRequestInfo {
       targetUrl: string;
       proxyUrl?: string;
       corsConfig?: CorsConfig;
-      allowInsecure?: boolean;
+      insecurelyDisableTLSCertificateValidation?: boolean;
     }
   ) {
     this._proxyUrl = new URL(args.proxyUrl ?? args.targetUrl);
@@ -179,8 +180,8 @@ class ProxyRequestInfo {
     return this.args.corsConfig;
   }
 
-  get allowInsecure() {
-    return this.args.allowInsecure;
+  get insecurelyDisableTLSCertificateValidation() {
+    return this.args.insecurelyDisableTLSCertificateValidation;
   }
 }
 

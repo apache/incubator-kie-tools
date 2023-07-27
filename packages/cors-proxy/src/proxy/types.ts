@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const ACCEPT_SELF_SIGNED_CERTIFICATES_HEADER = "accept-self-signed-certificates";
+export const INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION = "insecurely-disable-tls-certificate-validation";
 export const TARGET_URL_HEADER = "target-url";
 
 export type CorsConfig = {

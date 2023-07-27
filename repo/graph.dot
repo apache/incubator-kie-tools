@@ -44,9 +44,9 @@ digraph G {
   "@kie-tools/chrome-extension-test-helper" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "chrome-extension-serverless-workflow-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-combined-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/tsconfig" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/cors-proxy" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/eslint" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/tsconfig" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-builder" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];

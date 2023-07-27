@@ -63,8 +63,8 @@ interface AppDictionary extends ReferenceDictionary {
       hostInfo: string;
       namespaceInfo: string;
       tokenInfo: string;
-      acceptSelfSignedCertificates: string;
-      acceptSelfSignedCertificatesInfo: string;
+      insecurelyDisableTlsCertificateValidation: string;
+      insecurelyDisableTlsCertificateValidationInfo: string;
       validationError: string;
       connectionError: string;
       configExpiredWarning: string;

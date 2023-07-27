@@ -23,6 +23,7 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
@@ -138,9 +139,9 @@ export function OpenShiftSettingsSimpleConfig() {
     [config]
   );
 
-  const onAllowSelfSignedCertificates = useCallback(
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
     (checked: boolean) => {
-      setConfig({ ...config, selfSignedCertificates: checked });
+      setConfig({ ...config, insecurelyDisableTlsCertificateValidation: checked });
     },
     [config]
   );
@@ -329,12 +330,14 @@ export function OpenShiftSettingsSimpleConfig() {
           <Checkbox
             id="disable-tls-validation"
             name="disable-tls-validation"
-            label={i18n.openshift.configModal.acceptSelfSignedCertificates}
-            description={i18n.openshift.configModal.acceptSelfSignedCertificatesInfo}
+            label={i18n.openshift.configModal.insecurelyDisableTlsCertificateValidation}
+            description={
+              <I18nHtml>{i18n.openshift.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+            }
             aria-label="Disable TLS Certificate Validation"
             tabIndex={4}
-            isChecked={config.selfSignedCertificates}
-            onChange={onAllowSelfSignedCertificates}
+            isChecked={config.insecurelyDisableTlsCertificateValidation}
+            onChange={onInsecurelyDisableTlsCertificateValidationChange}
           />
           <br />
           <Button

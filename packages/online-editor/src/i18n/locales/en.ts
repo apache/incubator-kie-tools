@@ -126,9 +126,9 @@ export const en: OnlineI18n = {
       hostInfo: `The hostname associated with your instance.`,
       namespaceInfo: `The Namespace (project) you want your Dev deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
-      acceptSelfSignedCertificates: "Disable TLS Certificate Verification.",
-      acceptSelfSignedCertificatesInfo:
-        "Checking this option will disable the TLS Certificate Verification for this account. This is only recommended when using Self-Signed Certificates in your cluster deployments.",
+      insecurelyDisableTlsCertificateValidation: "Insecurely disable TLS certificate validation.",
+      insecurelyDisableTlsCertificateValidationInfo:
+        "Checking this option will insecurely disable TLS certificate verification for this account. This is an alternative to not having to deal with the browser's restrictions when your cluster is behind an HTTPS endpoint with a self-signed certificate. Please be advised that the use of self-signed certificates is a weaker form of security, so consider contacting your cluster admins to use a trusted certificate. For more information, refer to <a href='https://cwe.mitre.org/data/definitions/295.html' target='_blank'>https://cwe.mitre.org/data/definitions/295.html</a>.",
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       missingPermissions:

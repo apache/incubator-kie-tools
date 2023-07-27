@@ -43,7 +43,7 @@ export type OpenShiftAuthSession = {
   token: string;
   namespace: string;
   host: string;
-  selfSignedCertificates: boolean;
+  insecurelyDisableTlsCertificateValidation: boolean;
 };
 
 export type KubernetesAuthSession = {
@@ -54,7 +54,7 @@ export type KubernetesAuthSession = {
   token: string;
   namespace: string;
   host: string;
-  selfSignedCertificates: boolean;
+  insecurelyDisableTlsCertificateValidation: boolean;
 };
 
 export type CloudAuthSession = OpenShiftAuthSession | KubernetesAuthSession;

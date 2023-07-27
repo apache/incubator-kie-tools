@@ -163,7 +163,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       namespace: DEFAULT_LOCAL_CLUSTER_NAMESPACE,
       host: DEFAULT_LOCAL_CLUSTER_HOST,
       token: "",
-      selfSignedCertificates: false,
+      insecurelyDisableTlsCertificateValidation: false,
     });
   }, []);
 
@@ -212,9 +212,9 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   );
 
   /* 
-  TODO: enable when enabling kubernetes deployment use cors-proxy
-  const onAllowSelfSignedCertificates = useCallback((checked: boolean) => {
-    props.setConnection({ ...props.connection, selfSignedCertificates: checked });
+  TODO: uncomment when enabling kubernetes deployment to use cors-proxy
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback((checked: boolean) => {
+    props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
   }, [props]); */
 
   const onStepChanged = useCallback(
@@ -500,17 +500,17 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 </InputGroup>
               </FormGroup>
               {/* 
-              TODO: enable when enabling kubernetes deployment use cors-proxy
+              TODO: uncomment when enabling kubernetes deployment to use cors-proxy
               <FormGroup fieldId="disable-tls-validation">
                 <Checkbox
                   id="disable-tls-validation"
                   name="disable-tls-validation"
-                  label={i18n.devDeployments.configModal.acceptSelfSignedCertificates}
-                  description={i18n.devDeployments.configModal.acceptSelfSignedCertificatesInfo}
+                  label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
+                  description={<I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>}
                   aria-label="Disable TLS Certificate Validation"
                   tabIndex={3}
-                  isChecked={props.connection.selfSignedCertificates}
-                  onChange={onAllowSelfSignedCertificates}
+                  isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
+                  onChange={onInsecurelyDisableTlsCertificateValidationChange}
                 />
               </FormGroup> */}
             </Form>

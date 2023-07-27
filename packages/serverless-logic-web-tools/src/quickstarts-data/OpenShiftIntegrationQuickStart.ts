@@ -160,7 +160,7 @@ If you find an issue or any misleading information, please feel free to report i
                   <p>Enter the value of API token in the <strong>Token</strong> field. </p>
                 </li>
                 <li>
-                  <p>If your OpenShift instance uses self-signed certificates, then you must also check the <code>Disable TLS Certificate Verification</code> option.</p>
+                  <p>If your OpenShift instance uses Self-Signed certificates, then you must also check the <code>Insecurely disable TLS certificate validation</code> option.</p>
                 </li>
                 <li>
                   <p>Click <strong>Connect</strong>. </p>
