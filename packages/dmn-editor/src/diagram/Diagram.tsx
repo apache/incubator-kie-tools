@@ -488,7 +488,7 @@ export function KeyboardShortcuts() {
     setState((prev) => {
       const unselected = prev.getNodes().flatMap((n) => (!n.selected ? [n.id] : []));
       if (unselected.length > 0) {
-        prev.addSelectedNodes(unselected);
+        prev.addSelectedNodes(prev.getNodes().map((s) => s.id));
       } else {
         prev.resetSelectedElements();
       }
