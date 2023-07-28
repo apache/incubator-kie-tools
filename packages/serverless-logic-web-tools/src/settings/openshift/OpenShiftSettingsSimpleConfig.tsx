@@ -43,6 +43,7 @@ import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstan
 import { routes } from "../../navigation/Routes";
 import { QuickStartIds } from "../../quickstarts-data";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -330,9 +331,28 @@ export function OpenShiftSettingsSimpleConfig() {
           <Checkbox
             id="disable-tls-validation"
             name="disable-tls-validation"
-            label={i18n.openshift.configModal.insecurelyDisableTlsCertificateValidation}
-            description={
-              <I18nHtml>{i18n.openshift.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+            label={
+              <>
+                {i18n.openshift.configModal.insecurelyDisableTlsCertificateValidation}
+                <Popover
+                  minWidth="500px"
+                  bodyContent={
+                    <div>
+                      <I18nHtml>{i18n.openshift.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+                    </div>
+                  }
+                >
+                  <button
+                    type="button"
+                    aria-label="Insecurely disable tls certificate validation info"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="disable-tls-validation"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <OutlinedQuestionCircleIcon />
+                  </button>
+                </Popover>
+              </>
             }
             aria-label="Disable TLS Certificate Validation"
             tabIndex={4}

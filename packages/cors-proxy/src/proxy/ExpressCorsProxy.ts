@@ -17,11 +17,11 @@
 import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
-import { INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
+import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 
 const HTTPS_PROTOCOL = "https:";
-const BANNED_PROXY_HEADERS = ["origin", "host", TARGET_URL_HEADER, INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION];
+const BANNED_PROXY_HEADERS = ["origin", "host", TARGET_URL_HEADER, INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION];
 
 export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   private readonly logger: Logger;
@@ -134,7 +134,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       proxyUrl,
       corsConfig: this.resolveCorsConfig(targetUrl, request),
       insecurelyDisableTLSCertificateValidation:
-        request.headers[INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION] === "true",
+        request.headers[INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true",
     });
   }
 

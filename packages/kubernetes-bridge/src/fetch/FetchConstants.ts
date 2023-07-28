@@ -33,5 +33,5 @@ export const HeaderKeys = {
   ACCEPT: "Accept",
   CONTENT_TYPE: "Content-Type",
   TARGET_URL: "Target-Url",
-  INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION: "Insecurely-Disable-TLS-Certificate-Validation",
+  INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION: "Insecurely-Disable-TLS-Certificate-Validation",
 };

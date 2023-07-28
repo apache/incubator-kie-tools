@@ -62,7 +62,7 @@ export const en: AppI18n = {
       hostInfo: `The hostname associated with your instance.`,
       namespaceInfo: `The namespace (project) you want to deploy the model.`,
       tokenInfo: `The token associated with your instance.`,
-      insecurelyDisableTlsCertificateValidation: "Insecurely disable TLS certificate validation.",
+      insecurelyDisableTlsCertificateValidation: "Insecurely disable TLS certificate validation",
       insecurelyDisableTlsCertificateValidationInfo:
         "Checking this option will insecurely disable TLS certificate verification for this account. This is an alternative to not having to deal with the browser's restrictions when your cluster is behind an HTTPS endpoint with a self-signed certificate. Please be advised that the use of self-signed certificates is a weaker form of security, so consider contacting your cluster admins to use a trusted certificate. For more information, refer to <a href='https://cwe.mitre.org/data/definitions/295.html' target='_blank'>https://cwe.mitre.org/data/definitions/295.html</a>.",
       validationError: "You must fill out all required fields before you can proceed.",

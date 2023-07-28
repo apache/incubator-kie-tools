@@ -1,6 +1,6 @@
 # cors-proxy
 
-This package contains a simple `cors-proxy` is a simple Node.js application intended to be used to solve cors issues while connecting our front end tools (online-editor, serverless-logic-web-tools) with external services (github, bitbucket, openshift, kubernetes...)
+This package contains a `cors-proxy`, which is a simple Node.js application intended to be used to solve CORS issues while connecting our front end tools (online-editor, serverless-logic-web-tools) with external services (GitHub, Bitbucket, OpenShift, Kubernetes...)
 
 # Build
 
@@ -10,7 +10,7 @@ $ pnpm @kie-tools/cors-proxy... build:prod
 
 # Configuration
 
-The `cors-proxy` can be cofingured via environment variables:
+The `cors-proxy` can be configured via environment variables:
 
 - _CORS_PROXY_ORIGIN_: Sets the value of the 'Access-Control-Allow-Origin' header, defaults to `*`
 - _CORS_PROXY_VERBOSE_: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
@@ -24,7 +24,7 @@ $ export CORS_PROXY_VERBOSE=false
 
 # Running `cors-proxy`
 
-After building the package and setting up the environment variables, in the package folcer run the following command:
+After building the package and setting up the environment variables, in the package folder run the following command:
 
 ```bash
 $ node ./dist/index.js

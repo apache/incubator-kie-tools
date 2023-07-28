@@ -39,7 +39,7 @@ export class ResourceFetcher {
       headers[HeaderKeys.TARGET_URL] = targetUrl;
 
       if (this.args.connection.insecurelyDisableTlsCertificateValidation) {
-        headers[HeaderKeys.INSECURELY_DISBABLE_TLS_CERTIFICATE_VALIDATION] = "true";
+        headers[HeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] = "true";
       }
     }
 
