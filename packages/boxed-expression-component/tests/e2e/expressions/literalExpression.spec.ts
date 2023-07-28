@@ -1,22 +1,7 @@
 import { test, expect } from "../fixtures/boxedExpression";
-import { LiteralExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
-
-/**
- * Tests Summary
- * Literal Expression
- *
- * set expression name and type
- * set expression big name
- * cancel edit expression name and type
- * resing and reseting after double clicking
- * editing by select context
- * editing by double click
- *
- */
 
 test.describe("Literal Expression", () => {
   test.beforeEach(async ({ bee }) => {
-    await bee.open();
     await bee.selectLiteralExpression();
   });
 
@@ -29,41 +14,39 @@ test.describe("Literal Expression", () => {
     await bee.getExpression().getByRole("option", { name: "context" }).click();
     await bee.getExpression().getByPlaceholder("Expression Name").press("Enter");
 
-    const json = await bee.getJson<LiteralExpressionDefinition>();
-    expect(json.logicType).toBe("Literal");
-    expect(json.dataType).toBe("context");
-    expect(json.name).toBe("My Expression");
+    await expect(bee.getExpression().getByText("My Expression (Literal)")).toBeAttached();
+    await expect(bee.getExpression().getByRole("columnheader", { name: "My Expression (context)" })).toBeAttached();
   });
 
-  test("set expression big name", async ({ bee }) => {
+  test("set expression big name and type", async ({ bee }) => {
     await bee.getExpression().getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await bee.getExpression().getByPlaceholder("Expression Name").click();
     await bee.getExpression().getByPlaceholder("Expression Name").press("Control+a");
     await bee.getExpression().getByPlaceholder("Expression Name").fill("My Expression with a big name");
     await bee.getExpression().getByRole("button", { name: "Options menu" }).click();
-    await bee.getExpression().getByRole("option", { name: "context" }).click();
+    await bee.getExpression().getByPlaceholder("Choose...").fill("number");
+    await bee.getExpression().getByRole("option", { name: "number" }).click();
     await bee.getExpression().getByPlaceholder("Expression Name").press("Enter");
 
-    const json = await bee.getJson<LiteralExpressionDefinition>();
-    expect(json.logicType).toBe("Literal");
-    expect(json.dataType).toBe("context");
-    expect(json.name).toBe("My Expression with a big name");
+    await expect(bee.getExpression().getByText("My Expression with a big name (Literal)")).toBeAttached();
+    await expect(
+      bee.getExpression().getByRole("columnheader", { name: "My Expression with a big name (number)" })
+    ).toBeAttached();
   });
 
   test("cancel edit expression name and type", async ({ bee }) => {
     await bee.getExpression().getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await bee.getExpression().getByPlaceholder("Expression Name").press("Control+a");
     await bee.getExpression().getByPlaceholder("Expression Name").fill("My Expression");
-
     await bee.getExpression().getByRole("button", { name: "Options menu" }).click();
     await bee.page.mouse.wheel(0, 100);
     await bee.getExpression().getByRole("option", { name: "date and time" }).click();
     await bee.getExpression().getByRole("button", { name: "Options menu" }).press("Escape");
 
-    const json = await bee.getJson<LiteralExpressionDefinition>();
-    expect(json.logicType).toBe("Literal");
-    expect(json.dataType).toBe("<Undefined>");
-    expect(json.name).toBe("Expression Name");
+    await expect(bee.getExpression().getByText("Expression Name (Literal)")).toBeAttached();
+    await expect(
+      bee.getExpression().getByRole("columnheader", { name: "Expression Name (<Undefined>)" })
+    ).toBeAttached();
   });
 
   test("resing and reseting after double clicking", async ({ bee }) => {
@@ -76,11 +59,9 @@ test.describe("Literal Expression", () => {
     await bee.page.mouse.move(resizerHandleBox!.x + 50, resizerHandleBox!.y);
     await bee.page.mouse.up();
 
-    const json = await bee.getJson<LiteralExpressionDefinition>();
-    expect(json.width).toBe(240);
-
-    resizerHandle.dblclick();
-    expect(json.width).toBe(190);
+    expect(await bee.getExpression().getByRole("cell").boundingBox()).toHaveProperty("width", 240);
+    await resizerHandle.dblclick();
+    expect(await bee.getExpression().getByRole("cell").boundingBox()).toHaveProperty("width", 190);
   });
 
   test("editing by select context", async ({ bee }) => {
@@ -91,11 +72,7 @@ test.describe("Literal Expression", () => {
       .getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." })
       .press("Enter");
 
-    const json = await bee.getJson<LiteralExpressionDefinition>();
-    expect(json.logicType).toBe("Literal");
-    expect(json.dataType).toBe("<Undefined>");
-    expect(json.name).toBe("Expression Name");
-    expect(json.content).toBe('"data"');
+    await expect(bee.getExpression().getByRole("cell")).toContainText('"data"');
   });
 
   test("editing by double click", async ({ bee }) => {
@@ -106,10 +83,6 @@ test.describe("Literal Expression", () => {
       .getByRole("textbox", { name: "Editor content;Press Alt+F1 for Accessibility Options." })
       .press("Enter");
 
-    const json = await bee.getJson<LiteralExpressionDefinition>();
-    expect(json.logicType).toBe("Literal");
-    expect(json.dataType).toBe("<Undefined>");
-    expect(json.name).toBe("Expression Name");
-    expect(json.content).toBe('"data"');
+    await expect(bee.getExpression().getByRole("cell")).toContainText('"data"');
   });
 });

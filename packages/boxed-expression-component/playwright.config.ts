@@ -3,12 +3,6 @@ import { env } from "./env";
 
 const buildEnv: any = env;
 
-const ciReporters = [
-  ["github"],
-  ["junit", { outputFile: "./dist-tests/playwright-junit-report.xml" }],
-  ["html", { outputFolder: "./dist-tests", open: "never" }],
-];
-
 export default defineConfig({
   testDir: "./tests/e2e",
   /* Run tests in files in parallel */
@@ -23,10 +17,10 @@ export default defineConfig({
   reporter: process.env.CI
     ? [
         ["github"],
-        ["junit", { outputFile: "./dist-tests/playwright-junit-report.xml" }],
-        ["html", { outputFolder: "./dist-tests", open: "never" }],
+        ["junit", { outputFile: "./dist-tests/reports/junit-report-e2e.xml" }],
+        ["html", { outputFolder: "./dist-tests/reports/", open: "never" }],
       ]
-    : [["html", { outputFolder: "./dist-tests", open: "never" }], ["list"]],
+    : [["html", { outputFolder: "./dist-tests/reports/", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
@@ -40,6 +34,8 @@ export default defineConfig({
 
     locale: "en-US",
   },
+
+  outputDir: "dist-tests/output",
 
   /* Configure projects for major browsers */
   projects: [
@@ -56,7 +52,7 @@ export default defineConfig({
 
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"], permissions: ["clipboard-read"] },
+      use: { ...devices["Desktop Safari"] },
     },
 
     {
