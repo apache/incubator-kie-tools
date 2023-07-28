@@ -30,11 +30,7 @@ export function addConnectedNode({
 
   dmn.set(({ definitions }) => {
     if (nature === NodeNature.DRG_ELEMENT) {
-      const requirements:
-        | Pick<DMN14__tDecision, "informationRequirement">
-        | Pick<DMN14__tDecision, "knowledgeRequirement">
-        | Pick<DMN14__tDecision, "authorityRequirement">
-        | undefined = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
+      const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
 
       definitions.drgElement ??= [];
       definitions.drgElement?.push(
