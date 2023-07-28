@@ -4,18 +4,18 @@ import { useCallback, useMemo } from "react";
 import { DMNDI13__DMNEdge, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
 
-export type EdgeData = {
-  dmnEdge: DMNDI13__DMNEdge | undefined;
+export type DmnEditorDiagramEdgeData = {
+  dmnEdge: (DMNDI13__DMNEdge & { index: number }) | undefined;
   dmnShapeSource: DMNDI13__DMNShape | undefined;
   dmnShapeTarget: DMNDI13__DMNShape | undefined;
 };
 
-export function useKieEdgePath(source: string, target: string, data: EdgeData) {
+export function useKieEdgePath(source: string, target: string, data: DmnEditorDiagramEdgeData | undefined) {
   const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
   const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
-  const dmnEdge = data.dmnEdge as DMNDI13__DMNEdge | undefined;
-  const dmnShapeSource = data.dmnShapeSource as DMNDI13__DMNShape | undefined;
-  const dmnShapeTarget = data.dmnShapeTarget as DMNDI13__DMNShape | undefined;
+  const dmnEdge = data?.dmnEdge;
+  const dmnShapeSource = data?.dmnShapeSource;
+  const dmnShapeTarget = data?.dmnShapeTarget;
 
   const { path } = useMemo(
     () =>
@@ -93,7 +93,7 @@ export function useEdgeClassName() {
 
 //
 
-export const InformationRequirementEdge = React.memo((props: RF.EdgeProps) => {
+export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -103,7 +103,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps) => {
   );
 });
 
-export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps) => {
+export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -113,7 +113,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps) => {
   );
 });
 
-export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps) => {
+export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
@@ -127,7 +127,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps) => {
   );
 });
 
-export const AssociationEdge = React.memo((props: RF.EdgeProps) => {
+export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (

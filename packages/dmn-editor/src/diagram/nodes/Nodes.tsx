@@ -32,14 +32,21 @@ import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { useDmnEditor } from "../../store/Store";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
+import { resizeNodes } from "../../mutations/resizeNodes";
+
+export type DmnEditorDiagramNodeData<T> = {
+  dmnObject: T;
+  shape: DMNDI13__DMNShape & { index: number };
+  index: number;
+};
 
 export const InputDataNode = React.memo(
   ({
-    data: { inputData, shape, index },
+    data: { dmnObject: inputData, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{ inputData: DMN14__tInputData; shape: DMNDI13__DMNShape; index: number }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -85,7 +92,7 @@ export const InputDataNode = React.memo(
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle />}
+          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -94,15 +101,11 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { decision, shape, index },
+    data: { dmnObject: decision, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{
-    decision: DMN14__tDecision;
-    shape: DMNDI13__DMNShape;
-    index: number;
-  }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -153,7 +156,7 @@ export const DecisionNode = React.memo(
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle />}
+          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -162,15 +165,11 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: { bkm, shape, index },
+    data: { dmnObject: bkm, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{
-    bkm: DMN14__tBusinessKnowledgeModel;
-    shape: DMNDI13__DMNShape;
-    index: number;
-  }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -221,7 +220,7 @@ export const BkmNode = React.memo(
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle />}
+          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -230,11 +229,11 @@ export const BkmNode = React.memo(
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { knowledgeSource, shape, index },
+    data: { dmnObject: knowledgeSource, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{ knowledgeSource: DMN14__tKnowledgeSource; shape: DMNDI13__DMNShape; index: number }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -280,7 +279,7 @@ export const KnowledgeSourceNode = React.memo(
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle />}
+          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -289,11 +288,11 @@ export const KnowledgeSourceNode = React.memo(
 
 export const TextAnnotationNode = React.memo(
   ({
-    data: { textAnnotation, shape, index },
+    data: { dmnObject: textAnnotation, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{ textAnnotation: DMN14__tTextAnnotation; shape: DMNDI13__DMNShape; index: number }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -339,7 +338,7 @@ export const TextAnnotationNode = React.memo(
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
           />
-          {isHovered && <NodeResizerHandle />}
+          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -348,11 +347,11 @@ export const TextAnnotationNode = React.memo(
 
 export const DecisionServiceNode = React.memo(
   ({
-    data: { decisionService, shape, index },
+    data: { dmnObject: decisionService, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{ decisionService: DMN14__tDecisionService; shape: DMNDI13__DMNShape; index: number }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tDecisionService>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -399,7 +398,7 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle />}
+          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -408,11 +407,11 @@ export const DecisionServiceNode = React.memo(
 
 export const GroupNode = React.memo(
   ({
-    data: { group, shape, index },
+    data: { dmnObject: group, shape, index },
     selected,
     dragging,
     id,
-  }: RF.NodeProps<{ group: DMN14__tGroup; shape: DMNDI13__DMNShape; index: number }>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tGroup>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -451,12 +450,32 @@ const resizerControlStyle = {
   border: "none",
 };
 
-export function NodeResizerHandle(props: {}) {
+export function NodeResizerHandle(props: { shapeIndex: number }) {
+  const { dispatch } = useDmnEditor();
+  const resizeNode = useCallback<RF.OnResizeEnd>(
+    (e, params) => {
+      resizeNodes({
+        dispatch: { dmn: dispatch.dmn },
+        changes: [
+          {
+            dmnDiagramElementIndex: props.shapeIndex,
+            dimension: {
+              "@_width": params.width,
+              "@_height": params.height,
+            },
+          },
+        ],
+      });
+    },
+    [dispatch.dmn, props.shapeIndex]
+  );
+
   return (
     <RF.NodeResizeControl
       style={resizerControlStyle}
       minWidth={MIN_SIZE_FOR_NODES.width}
       minHeight={MIN_SIZE_FOR_NODES.height}
+      onResizeEnd={resizeNode}
     >
       <div
         style={{

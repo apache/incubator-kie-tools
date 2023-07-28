@@ -29,7 +29,7 @@ import { EDGE_TYPES } from "./edges/EdgeTypes";
 import {
   AssociationEdge,
   AuthorityRequirementEdge,
-  EdgeData,
+  DmnEditorDiagramEdgeData,
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
@@ -39,11 +39,13 @@ import {
   BkmNode,
   DecisionNode,
   DecisionServiceNode,
+  DmnEditorDiagramNodeData,
   GroupNode,
   InputDataNode,
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
+import { repositionNodes as repositionDiagramElements } from "../mutations/repositionNodes";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -90,8 +92,8 @@ export function Diagram({
   const { dmn, dispatch } = useDmnEditor();
 
   const { shapesById, nodesById, nodes: nodesFromDmn, edges: edgesFromDmn } = useDmnDiagramData(dmn.model);
-  const [nodes, setNodes, onNodesChange] = RF.useNodesState(nodesFromDmn);
-  const [edges, setEdges, onEdgesChange] = RF.useEdgesState(edgesFromDmn);
+  const [nodes, setNodes, onNodesChange] = RF.useNodesState<DmnEditorDiagramNodeData<any>>(nodesFromDmn);
+  const [edges, setEdges, onEdgesChange] = RF.useEdgesState<DmnEditorDiagramEdgeData>(edgesFromDmn);
   useEffect(() => {
     setNodes(nodesFromDmn);
     setEdges(edgesFromDmn);
@@ -252,6 +254,22 @@ export function Diagram({
     [connection, container, dispatch.dmn, nodesById, reactFlowInstance, shapesById]
   );
 
+  const onNodeDragStop = useCallback<RF.NodeDragHandler>(
+    (e, node, nodes: RF.Node<DmnEditorDiagramNodeData<any>>[]) => {
+      repositionDiagramElements({
+        dispatch: { dmn: dispatch.dmn },
+        changes: nodes.map((node) => ({
+          dmnDiagramElementIndex: node.data.shape.index,
+          position: {
+            "@_x": node.positionAbsolute?.x ?? 0,
+            "@_y": node.positionAbsolute?.y ?? 0,
+          },
+        })),
+      });
+    },
+    [dispatch.dmn]
+  );
+
   const isValidConnection = useCallback<RF.IsValidConnection>(
     (edge) => checkIsValidConnection(nodesById, edge),
     [nodesById]
@@ -280,6 +298,7 @@ export function Diagram({
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         isValidConnection={isValidConnection}
+        onNodeDragStop={onNodeDragStop}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         snapToGrid={true}
@@ -426,25 +445,25 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
       (model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
         .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
         .reduce(
-          (acc, e) => {
+          (acc, e, index) => {
             if (e.__$$element === "dmndi:DMNShape") {
-              acc.shapesById.set(e["@_dmnElementRef"], e);
+              acc.shapesById.set(e["@_dmnElementRef"], { ...e, index });
             } else if (e.__$$element === "dmndi:DMNEdge") {
-              acc.edgesById.set(e["@_dmnElementRef"], e);
+              acc.edgesById.set(e["@_dmnElementRef"], { ...e, index });
             }
 
             return acc;
           },
           {
-            edgesById: new Map<string, DMNDI13__DMNEdge>(),
-            shapesById: new Map<string, DMNDI13__DMNShape>(),
+            edgesById: new Map<string, DMNDI13__DMNEdge & { index: number }>(),
+            shapesById: new Map<string, DMNDI13__DMNShape & { index: number }>(),
           }
         ),
     [model.definitions]
   );
 
   const getEdgeData = useCallback(
-    ({ id, source, target }: { id: string; source: string; target: string }): EdgeData => {
+    ({ id, source, target }: { id: string; source: string; target: string }): DmnEditorDiagramEdgeData => {
       return {
         dmnEdge: id ? edgesById.get(id) : undefined,
         dmnShapeSource: shapesById.get(source),
@@ -455,7 +474,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
   );
 
   const { nodes, edges, nodesById } = useMemo(() => {
-    const nodesById = new Map<string, RF.Node>();
+    const nodesById = new Map<string, RF.Node<DmnEditorDiagramNodeData<any>>>();
     return {
       nodes: [
         ...(model.definitions.drgElement ?? []).map((drgElement, index) => {
@@ -466,7 +485,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
               id: drgElement["@_id"]!,
               type: NODE_TYPES.inputData,
               position: snapShapePosition(shape),
-              data: { inputData: drgElement, shape, index },
+              data: { dmnObject: drgElement, shape, index },
               style: { ...snapShapeDimensions(shape) },
             };
             nodesById.set(n.id, n);
@@ -476,7 +495,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
               id: drgElement["@_id"]!,
               type: NODE_TYPES.decision,
               position: snapShapePosition(shape),
-              data: { decision: drgElement, shape, index },
+              data: { dmnObject: drgElement, shape, index },
               style: { ...snapShapeDimensions(shape) },
             };
             nodesById.set(n.id, n);
@@ -486,7 +505,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
               id: drgElement["@_id"]!,
               type: NODE_TYPES.bkm,
               position: snapShapePosition(shape),
-              data: { bkm: drgElement, shape, index },
+              data: { dmnObject: drgElement, shape, index },
               style: { ...snapShapeDimensions(shape) },
             };
             nodesById.set(n.id, n);
@@ -496,7 +515,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
               id: drgElement["@_id"]!,
               type: NODE_TYPES.decisionService,
               position: snapShapePosition(shape),
-              data: { decisionService: drgElement, shape, index },
+              data: { dmnObject: drgElement, shape, index },
               style: { zIndex: 1, ...snapShapeDimensions(shape) },
             };
             nodesById.set(n.id, n);
@@ -506,7 +525,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
               id: drgElement["@_id"]!,
               type: NODE_TYPES.knowledgeSource,
               position: snapShapePosition(shape),
-              data: { knowledgeSource: drgElement, shape, index },
+              data: { dmnObject: drgElement, shape, index },
               style: { ...snapShapeDimensions(shape) },
             };
             nodesById.set(n.id, n);
@@ -524,7 +543,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
                 id: artifact["@_id"]!,
                 type: NODE_TYPES.group,
                 position: snapShapePosition(shape),
-                data: { group: artifact, shape, index },
+                data: { dmnObject: artifact, shape, index },
                 style: { zIndex: 1, ...snapShapeDimensions(shape) },
               };
               nodesById.set(n.id, n);
@@ -534,7 +553,7 @@ export function useDmnDiagramData(model: { definitions: DMN14__tDefinitions }) {
                 id: artifact["@_id"]!,
                 type: NODE_TYPES.textAnnotation,
                 position: snapShapePosition(shape),
-                data: { textAnnotation: artifact, shape, index },
+                data: { dmnObject: artifact, shape, index },
                 style: { ...snapShapeDimensions(shape) },
               };
               nodesById.set(n.id, n);
