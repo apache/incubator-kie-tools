@@ -92,6 +92,7 @@ export const useDmnEditor = create(
       dmn: {
         reset: (xml) => {
           set((state) => {
+            xml ??= "";
             const marshaller = getMarshaller(xml.trim().length <= 0 ? EMPTY_DMN_14 : xml);
             state.dmn.marshaller = marshaller;
             state.dmn.model = marshaller.parser.parse();
