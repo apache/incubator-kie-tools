@@ -28,9 +28,9 @@ beforeEach(async () => {
 });
 
 test(TEST_NAME, async () => {
-  const processUrl: string =
-    "https://github.com/tomasdavidorg/kie-tools/blob/KOGITO-9644/packages/chrome-extension-serverless-workflow-editor/it-tests/samples/chrome_sample.sw.yaml";
-  let swfPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, processUrl);
+  const workflowUrl: string =
+    "https://github.com/kiegroup/kie-tools/blob/main/packages/chrome-extension-serverless-workflow-editor/it-tests/samples/chrome_sample.sw.yaml";
+  let swfPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, workflowUrl);
   const fullScreenPage: FullScreenPage = await swfPage.fullScreen();
   const fullScreenEditor: SwfEditor = await fullScreenPage.getSwfEditor();
   await fullScreenEditor.enter();
@@ -48,7 +48,7 @@ test(TEST_NAME, async () => {
 
   await fullScreenEditor.leave();
 
-  expect(await fullScreenPage.getExitFullScreenUrl()).toBe(processUrl + "#");
+  expect(await fullScreenPage.getExitFullScreenUrl()).toBe(workflowUrl + "#");
 
   await fullScreenPage.scrollToTop();
   swfPage = await fullScreenPage.exitFullScreen();

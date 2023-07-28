@@ -31,7 +31,7 @@ beforeEach(async () => {
 test(TEST_NAME, async () => {
   const gitHubListPage: GitHubListPage = await tools.openPage(
     GitHubListPage,
-    "https://github.com/tomasdavidorg/kie-tools/tree/KOGITO-9644/packages/chrome-extension-serverless-workflow-editor/it-tests/samples"
+    "https://github.com/kiegroup/kie-tools/tree/main/packages/chrome-extension-serverless-workflow-editor/it-tests/samples"
   );
   const gitHubFile: GitHubListItem = await gitHubListPage.getFile("chrome_sample.sw.json");
   const editorPage: GitHubEditorPage = await gitHubFile.open();
