@@ -26,4 +26,7 @@ public class NoOpDiagramApiService implements DiagramApi {
 
     @Override
     public void setContentSuccess() {}
+
+    @Override
+    public void onDiagramChanged(String newContent, String nodeName) {}
 }

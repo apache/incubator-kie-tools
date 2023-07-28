@@ -32,4 +32,11 @@ public class DiagramApiService implements DiagramApi {
     public void setContentSuccess() {
         DiagramApiInteropWrapper.get().setContentSuccess();
     }
+
+    @Override
+    public void onDiagramChanged(String newContent, String nodeName) {
+        if (newContent != null) {
+            DiagramApiInteropWrapper.get().onDiagramChanged(newContent, nodeName);
+        }
+    }
 }

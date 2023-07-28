@@ -22,6 +22,7 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.types.JsCanvas;
@@ -44,6 +45,7 @@ import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
@@ -61,6 +63,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
+import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.marshall.DocType;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
 import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
@@ -91,6 +94,7 @@ public class DiagramEditor {
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final DiagramApi diagramApi;
     private DocType currentDocType = DocType.JSON;
+    String postUpdateNodeSelection;
 
     @Inject
     private TranslationService translationService;
@@ -235,36 +239,56 @@ public class DiagramEditor {
 
     public Promise<Void> updateContent(final String path, final String value, final DocType docType) {
         return promises.create((success, failure) -> {
-            stunnerEditor.clearAlerts();
-            diagramService.transform(path,
-                                     value,
-                                     docType,
-                                     new ServiceCallback<ParseResult>() {
+                    stunnerEditor.clearAlerts();
+                    diagramService.transform(path,
+                                             value,
+                                             docType,
+                                             new ServiceCallback<ParseResult>() {
 
-                                         @Override
-                                         public void onSuccess(final ParseResult parseResult) {
-                                             renderDiagram = parseResult.getDiagram();
-                                             updateDiagram(parseResult.getDiagram());
-                                             if (parseResult.getMessages().length > 0) {
-                                                 for (Message m : parseResult.getMessages()) {
-                                                     stunnerEditor.addError(m.translateMessage(translationService));
+                                                 @Override
+                                                 public void onSuccess(final ParseResult parseResult) {
+                                                     renderDiagram = parseResult.getDiagram();
+                                                     updateDiagram(parseResult.getDiagram());
+                                                     if (parseResult.getMessages().length > 0) {
+                                                         for (Message m : parseResult.getMessages()) {
+                                                             stunnerEditor.addError(m.translateMessage(translationService));
+                                                         }
+                                                     }
+                                                     success.onInvoke((Void) null);
                                                  }
-                                             }
-                                             success.onInvoke((Void) null);
-                                         }
 
-                                         @Override
-                                         public void onError(final ClientRuntimeError error) {
-                                             handleParseErrors(error, stunnerEditor);
-                                             DomGlobal.console.error(error);
-                                             success.onInvoke((Void) null);
-                                         }
-                                     });
-        });
+                                                 @Override
+                                                 public void onError(final ClientRuntimeError error) {
+                                                     handleParseErrors(error, stunnerEditor);
+                                                     DomGlobal.console.error(error);
+                                                     failure.onInvoke(null);
+                                                 }
+                                             });
+                }).then(v -> processPostUpdateOperations())
+                .catch_(error -> promises.create((success, failure) -> {
+                    clearPostOperations();
+                    success.onInvoke((Void) null);
+                }));
+    }
+
+    @SuppressWarnings("all")
+    public Promise<Void> processPostUpdateOperations() {
+        // Select node then clear node selection flag
+        return selectStateByName(postUpdateNodeSelection)
+                .then(v -> promises.create((success, failure) -> {
+                    clearPostOperations();
+                    success.onInvoke((Void) null);
+                }));
     }
 
     JsCanvas getJsCanvas() {
         return Js.uncheckedCast(JsWindow.editor.canvas);
+    }
+
+    private void clearPostOperations() {
+        if (null != postUpdateNodeSelection) {
+            postUpdateNodeSelection = null;
+        }
     }
 
     @SuppressWarnings("all")
@@ -412,5 +436,45 @@ public class DiagramEditor {
             }
             lienzoPanel.setPostResizeCallback(null);
         }));
+    }
+
+    void onUpdateExternalContent(final @Observes UpdateExternalContentEvent event) {
+        if (null != event) {
+            String nodeName;
+            if (null != event.getNodeName() && !event.getNodeName().isEmpty()) {
+                nodeName = event.getNodeName();
+            } else if (null != event.getNodeUuid() && !event.getNodeUuid().isEmpty()) {
+                nodeName = obtainNodeName(event.getCanvasHandler(), event.getNodeUuid());
+            } else {
+                nodeName = null;
+            }
+
+            promises.resolve(getContent()
+                                     .then(content -> updateExternalContent(content, nodeName)));
+        }
+    }
+
+    private Promise<Void> updateExternalContent(final String content, final String nodeName) {
+        postUpdateNodeSelection = nodeName;
+        diagramApi.onDiagramChanged(content, nodeName);
+
+        return null;
+    }
+
+    public static String obtainNodeName(final CanvasHandler canvasHandler, String identifier) {
+        if (null != canvasHandler && null != identifier && !identifier.isEmpty()) {
+            Node<?, ?> node = canvasHandler.getDiagram().getGraph().getNode(identifier);
+            if (null != node) {
+                Object content = node.getContent();
+                if (content instanceof View) {
+                    Object bean = ((View) content).getDefinition();
+                    if (bean instanceof State) {
+                        return ((State) bean).getName();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

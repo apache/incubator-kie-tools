@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
@@ -33,11 +34,13 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -87,6 +90,9 @@ public class DeleteNodeToolboxActionTest {
     @Mock
     private EventSourceMock<CanvasClearSelectionEvent> clearSelectionEventEventSourceMock;
 
+    @Mock
+    private EventSourceMock<UpdateExternalContentEvent> updateEvent;
+
     @Before
     public void setup() throws Exception {
         commandFactories = new ManagedInstanceStub<>(commandFactory);
@@ -101,7 +107,8 @@ public class DeleteNodeToolboxActionTest {
                                                   commandFactories,
                                                   definitionUtils,
                                                   action -> true,
-                                                  clearSelectionEventEventSourceMock);
+                                                  clearSelectionEventEventSourceMock,
+                                                  updateEvent);
     }
 
     @Test
@@ -118,6 +125,13 @@ public class DeleteNodeToolboxActionTest {
         verify(commandFactory, times(1)).deleteNode(eq(element));
         verify(sessionCommandManager, times(1)).execute(eq(canvasHandler), eq(deleteNodeCommand));
         verify(clearSelectionEventEventSourceMock).fire(any(CanvasClearSelectionEvent.class));
+
+        final ArgumentCaptor<UpdateExternalContentEvent> eventArgumentCaptor = ArgumentCaptor.forClass(UpdateExternalContentEvent.class);
+        verify(updateEvent).fire(eventArgumentCaptor.capture());
+
+        final UpdateExternalContentEvent eCaptured = eventArgumentCaptor.getValue();
+        assertNull(eCaptured.getNodeUuid());
+        assertNull(eCaptured.getNodeName());
     }
 
     @Test
@@ -128,11 +142,13 @@ public class DeleteNodeToolboxActionTest {
                                                   commandFactories,
                                                   definitionUtils,
                                                   action -> false,
-                                                  clearSelectionEventEventSourceMock);
+                                                  clearSelectionEventEventSourceMock,
+                                                  updateEvent);
         final MouseClickEvent event = mock(MouseClickEvent.class);
         final ToolboxAction<AbstractCanvasHandler> cascade = tested.onMouseClick(canvasHandler, E_UUID, event);
         assertEquals(tested, cascade);
         verify(sessionCommandManager, never()).execute(eq(canvasHandler), any(CanvasCommand.class));
         verify(clearSelectionEventEventSourceMock, never()).fire(any(CanvasClearSelectionEvent.class));
+        verify(updateEvent, never()).fire(any(UpdateExternalContentEvent.class));
     }
 }

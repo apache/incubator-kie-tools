@@ -31,4 +31,9 @@ public interface DiagramApi {
      * Notify that the diagram finished setting its content
      */
     void setContentSuccess();
+
+    /**
+     * Notify that diagram was directly changed
+     */
+    void onDiagramChanged(String newContent, String nodeName);
 }

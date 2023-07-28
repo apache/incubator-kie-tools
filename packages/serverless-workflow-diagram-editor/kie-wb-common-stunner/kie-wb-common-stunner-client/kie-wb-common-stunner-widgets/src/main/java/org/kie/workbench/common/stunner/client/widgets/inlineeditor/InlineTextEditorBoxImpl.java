@@ -17,23 +17,34 @@
 package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditorBox;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 
 @Dependent
 @InlineTextEditorBox
 public class InlineTextEditorBoxImpl extends AbstractInlineTextEditorBox {
 
     private final InlineEditorBoxView view;
+    private final Event<UpdateExternalContentEvent> updateEvent;
 
     @Inject
-    public InlineTextEditorBoxImpl(final @InlineTextEditorBox InlineTextEditorBoxViewImpl view) {
+    public InlineTextEditorBoxImpl(final @InlineTextEditorBox InlineTextEditorBoxViewImpl view,
+                                   final Event<UpdateExternalContentEvent> updateEvent) {
         this.view = view;
+        this.updateEvent = updateEvent;
     }
 
     @Override
     protected InlineEditorBoxView getView() {
         return view;
+    }
+
+    @Override
+    public void onSave() {
+        super.onSave();
+        this.updateEvent.fire(new UpdateExternalContentEvent(canvasHandler).setNodeName(getNameValue()));
     }
 }

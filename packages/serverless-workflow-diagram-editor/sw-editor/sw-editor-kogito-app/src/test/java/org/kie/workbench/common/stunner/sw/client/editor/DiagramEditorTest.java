@@ -49,6 +49,7 @@ import org.kie.workbench.common.stunner.core.client.api.JsStunnerEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
@@ -72,6 +73,7 @@ import org.uberfire.promise.SyncPromises;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -220,7 +222,7 @@ public class DiagramEditorTest {
         doCallRealMethod().when(viewport).getTransform();
         viewport.setTransform(transform);
 
-        promises = new SyncPromises();
+        promises = spy(new SyncPromises());
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
                                .setTitle("testDiagram")
                                .build());
@@ -423,5 +425,46 @@ public class DiagramEditorTest {
 
         verify(selectionControl).addSelection("uuid");
         verify(jsCanvas).center("uuid");
+    }
+
+    @Test
+    public void testOnUpdateExternalContentGetContentSuccess() {
+        String content = "{Any_Content}";
+        String nodeName = "nodeName";
+        UpdateExternalContentEvent event = spy(new UpdateExternalContentEvent(canvasHandler).setNodeName(nodeName));
+        Promise<String> promise = promises.create((success, failure) -> success.onInvoke(content));
+
+        doReturn(promise).when(tested).getContent();
+
+        tested.onUpdateExternalContent(event);
+
+        assertEquals(nodeName, tested.postUpdateNodeSelection);
+        verify(diagramApi).onDiagramChanged(content, nodeName);
+    }
+
+    @Test
+    public void testOnUpdateExternalContentGetContentFailure() {
+        String content = "{Any_Content}";
+        String nodeName = "nodeName";
+        UpdateExternalContentEvent event = spy(new UpdateExternalContentEvent(canvasHandler).setNodeName(nodeName));
+        Promise<String> promise = spy(promises.create((success, failure) -> failure.onInvoke(content)));
+
+        doReturn(promise).when(tested).getContent();
+
+        tested.onUpdateExternalContent(event);
+
+        assertNull(tested.postUpdateNodeSelection);
+        verify(diagramApi, times(0)).onDiagramChanged(content, nodeName);
+    }
+
+    @Test
+    public void testProcessPostUpdateOperations() {
+        doReturn(promises.create((success, failure) -> success.onInvoke((Void) null))).when(tested).selectStateByName(anyString());
+        tested.postUpdateNodeSelection = "nodeName";
+
+        tested.processPostUpdateOperations();
+
+        verify(tested).selectStateByName(anyString());
+        assertNull(tested.postUpdateNodeSelection);
     }
 }

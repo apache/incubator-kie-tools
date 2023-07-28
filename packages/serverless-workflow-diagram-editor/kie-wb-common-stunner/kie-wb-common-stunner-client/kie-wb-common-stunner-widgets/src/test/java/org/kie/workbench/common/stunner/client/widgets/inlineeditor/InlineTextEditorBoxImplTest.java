@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,14 +24,17 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.DefaultTextPropertyProviderImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -73,6 +77,9 @@ public class InlineTextEditorBoxImplTest {
     private Definition definition;
     @Mock
     private TextPropertyProvider textPropertyProvider;
+    @Mock
+    private EventSourceMock<UpdateExternalContentEvent> updateEvent;
+
     private Object objectDefinition = new Object();
 
     @Before
@@ -89,7 +96,7 @@ public class InlineTextEditorBoxImplTest {
         when(canvasHandler.getTextPropertyProviderFactory()).thenReturn(textPropertyProviderFactory);
         when(textPropertyProviderFactory.getProvider(any(Element.class))).thenReturn(textPropertyProvider);
 
-        presenter = new InlineTextEditorBoxImpl(view);
+        presenter = new InlineTextEditorBoxImpl(view, updateEvent);
         presenter.setup();
         verify(view).init(presenter);
         presenter.initialize(canvasHandler,
@@ -238,6 +245,13 @@ public class InlineTextEditorBoxImplTest {
         verifyNameFlushed();
         verify(view).hide();
         verify(closeCallback).execute();
+
+        final ArgumentCaptor<UpdateExternalContentEvent> eventArgumentCaptor = ArgumentCaptor.forClass(UpdateExternalContentEvent.class);
+        verify(updateEvent).fire(eventArgumentCaptor.capture());
+
+        final UpdateExternalContentEvent eCaptured = eventArgumentCaptor.getValue();
+        Assertions.assertThat(presenter.getNameValue()).isEqualTo(eCaptured.getNodeName());
+        assertNull(eCaptured.getNodeUuid());
     }
 
     @SuppressWarnings("unchecked")

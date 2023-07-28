@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -36,6 +37,8 @@ import org.kie.workbench.common.stunner.core.client.command.SessionCommandManage
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.resources.StunnerCommonIconsGlyphFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseClickEvent;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -58,19 +61,22 @@ public class DeleteNodeToolboxAction implements ToolboxAction<AbstractCanvasHand
     private final DefinitionUtils definitionUtils;
     private final Predicate<DeleteNodeToolboxAction> confirmDelete;
     private final Event<CanvasClearSelectionEvent> clearSelectionEvent;
+    private final Event<UpdateExternalContentEvent> updateEvent;
 
     @Inject
     public DeleteNodeToolboxAction(final ClientTranslationService translationService,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final @Any ManagedInstance<DefaultCanvasCommandFactory> commandFactories,
                                    final DefinitionUtils definitionUtils,
-                                   final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
+                                   final Event<CanvasClearSelectionEvent> clearSelectionEvent,
+                                   Event<UpdateExternalContentEvent> updateEvent) {
         this(translationService,
              sessionCommandManager,
              commandFactories,
              definitionUtils,
              deleteNodeAction -> true,
-             clearSelectionEvent);
+             clearSelectionEvent,
+             updateEvent);
     }
 
     DeleteNodeToolboxAction(final ClientTranslationService translationService,
@@ -78,13 +84,15 @@ public class DeleteNodeToolboxAction implements ToolboxAction<AbstractCanvasHand
                             final ManagedInstance<DefaultCanvasCommandFactory> commandFactories,
                             final DefinitionUtils definitionUtils,
                             final Predicate<DeleteNodeToolboxAction> confirmDelete,
-                            final Event<CanvasClearSelectionEvent> clearSelectionEvent) {
+                            final Event<CanvasClearSelectionEvent> clearSelectionEvent,
+                            Event<UpdateExternalContentEvent> updateEvent) {
         this.translationService = translationService;
         this.sessionCommandManager = sessionCommandManager;
         this.commandFactories = commandFactories;
         this.definitionUtils = definitionUtils;
         this.confirmDelete = confirmDelete;
         this.clearSelectionEvent = clearSelectionEvent;
+        this.updateEvent = updateEvent;
     }
 
     @Override
@@ -114,7 +122,11 @@ public class DeleteNodeToolboxAction implements ToolboxAction<AbstractCanvasHand
 
             clearSelectionEvent.fire(new CanvasClearSelectionEvent(canvasHandler));
 
-            sessionCommandManager.execute(canvasHandler, commandFactory.deleteNode(node));
+            final CommandResult result = sessionCommandManager.execute(canvasHandler, commandFactory.deleteNode(node));
+
+            if (!CommandUtils.isError(result)) {
+                this.updateEvent.fire(new UpdateExternalContentEvent(canvasHandler));
+            }
         }
         return this;
     }

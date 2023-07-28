@@ -36,6 +36,13 @@ public class DiagramApiInteropWrapper {
      */
     public native void setContentSuccess();
 
+    /**
+     * Notify that diagram was directly changed
+     * @param newContent diagram content
+     * @param nodeName node to be selected
+     */
+    public native void onDiagramChanged(String newContent, String nodeName);
+
     @JsProperty(name = "diagramService")
     public static native DiagramApiInteropWrapper get();
 }

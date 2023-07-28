@@ -33,8 +33,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CreateNodeAction;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
+import org.kie.workbench.common.stunner.core.client.canvas.event.UpdateExternalContentEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
@@ -62,28 +61,21 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
 
     private final DefinitionUtils definitionUtils;
     private final ClientFactoryManager clientFactoryManager;
-    private final CanvasLayoutUtils canvasLayoutUtils;
-    private final Event<CanvasSelectionEvent> selectionEvent;
-    private final Event<InlineTextEditEvent> inlineTextEditEventEvent;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories;
-    public static double OFFSET_Y = 200d;
+    private final Event<UpdateExternalContentEvent> updateEvent;
 
     @Inject
     public GeneralCreateNodeAction(final DefinitionUtils definitionUtils,
                                    final ClientFactoryManager clientFactoryManager,
-                                   final CanvasLayoutUtils canvasLayoutUtils,
-                                   final Event<CanvasSelectionEvent> selectionEvent,
-                                   final Event<InlineTextEditEvent> inlineTextEditEventEvent,
+                                   final Event<UpdateExternalContentEvent> updateEvent,
                                    final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                    final @Any ManagedInstance<DefaultCanvasCommandFactory> canvasCommandFactories) {
         this.definitionUtils = definitionUtils;
         this.clientFactoryManager = clientFactoryManager;
-        this.canvasLayoutUtils = canvasLayoutUtils;
-        this.selectionEvent = selectionEvent;
-        this.inlineTextEditEventEvent = inlineTextEditEventEvent;
         this.sessionCommandManager = sessionCommandManager;
         this.canvasCommandFactories = canvasCommandFactories;
+        this.updateEvent = updateEvent;
     }
 
     @Override
@@ -118,8 +110,7 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                     commandFactory,
                                                     sourceNode,
                                                     targetNode))
-                        .deferCommand(() -> updateNodeLocation(canvasHandler,
-                                                               commandFactory,
+                        .deferCommand(() -> updateNodeLocation(commandFactory,
                                                                sourceNode,
                                                                targetNode))
                         .deferCommand(() -> addEdge(canvasHandler,
@@ -137,10 +128,7 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                               builder.build());
 
         if (!CommandUtils.isError(result)) {
-            CanvasLayoutUtils.fireElementSelectedEvent(selectionEvent,
-                                                       canvasHandler,
-                                                       targetNode.getUUID());
-            this.inlineTextEditEventEvent.fire(new InlineTextEditEvent(targetNode.getUUID()));
+            this.updateEvent.fire(new UpdateExternalContentEvent(canvasHandler).setNodeUuid(targetNode.getUUID()));
         }
     }
 
@@ -149,13 +137,12 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
         canvasCommandFactories.destroyAll();
     }
 
-    private CanvasCommand<AbstractCanvasHandler> updateNodeLocation(final AbstractCanvasHandler canvasHandler,
-                                                                    final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
+    private CanvasCommand<AbstractCanvasHandler> updateNodeLocation(final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                                                     final Node<View<?>, Edge> sourceNode,
                                                                     final Node<View<?>, Edge> targetNode) {
 
         final Point2D location = new Point2D(sourceNode.getContent().getBounds().getX(),
-                                             sourceNode.getContent().getBounds().getY() + OFFSET_Y);
+                                             sourceNode.getContent().getBounds().getY());
 
         return commandFactory.updatePosition(targetNode,
                                              location);
