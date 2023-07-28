@@ -26,7 +26,7 @@
     "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then  \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start https-get://0.0.0.0:$(build-env serverlessLogicWebTools.dev.port) cy:run\" \"pnpm postreport\""
   },
   "dependencies": {
-    "@kie-tools-core/editor": "workspace:0.0.0",
+    "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
