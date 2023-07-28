@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools-examples/ping-pong-view-react",
-  "version": "0.0.0",
+  "version": "0.31.0",
   "license": "Apache-2.0",
   "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
