@@ -4,6 +4,7 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { Dispatch } from "../store/Store";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { NodeNature, nodeNatures } from "./types";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 
 export function addStandaloneNode({
   newNode,
@@ -20,27 +21,27 @@ export function addStandaloneNode({
       definitions.drgElement ??= [];
       definitions.drgElement?.push(
         switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation">, {
-          node_bkm: {
+          [NODE_TYPES.bkm]: {
             __$$element: "businessKnowledgeModel",
             "@_name": "New BKM",
             "@_id": newNodeId,
           },
-          node_decision: {
+          [NODE_TYPES.decision]: {
             __$$element: "decision",
             "@_name": "New Decision",
             "@_id": newNodeId,
           },
-          node_decisionService: {
+          [NODE_TYPES.decisionService]: {
             __$$element: "decisionService",
             "@_name": "New Decision Service",
             "@_id": newNodeId,
           },
-          node_inputData: {
+          [NODE_TYPES.inputData]: {
             __$$element: "inputData",
             "@_name": "New Input Data",
             "@_id": newNodeId,
           },
-          node_knowledgeSource: {
+          [NODE_TYPES.knowledgeSource]: {
             __$$element: "knowledgeSource",
             "@_name": "New Knowledge Source",
             "@_id": newNodeId,
@@ -51,14 +52,14 @@ export function addStandaloneNode({
       definitions.artifact ??= [];
       definitions.artifact?.push(
         ...switchExpression(newNode.type as Extract<NodeType, "node_group" | "node_textAnnotation">, {
-          node_textAnnotation: [
+          [NODE_TYPES.textAnnotation]: [
             {
               "@_id": newNodeId,
               __$$element: "textAnnotation" as const,
               text: "New text annotation",
             },
           ],
-          node_group: [
+          [NODE_TYPES.group]: [
             {
               "@_id": newNodeId,
               __$$element: "group" as const,

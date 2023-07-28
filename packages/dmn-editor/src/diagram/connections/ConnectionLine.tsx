@@ -45,10 +45,10 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     const path = `M${fromX},${fromY} L${toXauto},${toYauto}`;
 
     const edgeSvg = switchExpression(edge, {
-      edge_informationRequirement: <InformationRequirementPath d={path} />,
-      edge_knowledgeRequirement: <KnowledgeRequirementPath d={path} />,
-      edge_authorityRequirement: <AuthorityRequirementPath d={path} centerToConnectionPoint={false} />,
-      edge_association: <AssociationPath d={path} />,
+      [EDGE_TYPES.informationRequirement]: <InformationRequirementPath d={path} />,
+      [EDGE_TYPES.knowledgeRequirement]: <KnowledgeRequirementPath d={path} />,
+      [EDGE_TYPES.authorityRequirement]: <AuthorityRequirementPath d={path} centerToConnectionPoint={false} />,
+      [EDGE_TYPES.association]: <AssociationPath d={path} />,
     });
 
     if (fromHandle?.id === NODE_TYPES.decision) {

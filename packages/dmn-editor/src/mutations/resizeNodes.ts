@@ -18,6 +18,8 @@ export function resizeNodes({
 
       bounds!["@_width"] = change.dimension["@_width"];
       bounds!["@_height"] = change.dimension["@_height"];
+
+      //FIXME: Reposition all incoming/outgoing edges too.
     }
   });
 }

@@ -6,6 +6,7 @@ import { _checkIsValidConnection } from "../diagram/connections/isValidConnectio
 import { getBoundsCenterPoint, getPointForHandle } from "../diagram/maths/DmnMaths";
 import { Dispatch } from "../store/Store";
 import { getRequirementsFromEdge } from "./addConnectedNode";
+import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 
 export function addEdge({
   sourceNode,
@@ -26,7 +27,7 @@ export function addEdge({
 
   dmn.set((model) => {
     // Associations
-    if (edge.type === "edge_association") {
+    if (edge.type === EDGE_TYPES.association) {
       model.definitions.artifact ??= [];
       // Remove potentially existing edge
       const existingIndex = model.definitions.artifact.findIndex(
@@ -45,7 +46,7 @@ export function addEdge({
         targetRef: { "@_href": `#${targetNode.id}` },
       });
     }
-    // DRG Elements
+    // Requirements
     else {
       const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
       const drgElement = model.definitions.drgElement![targetNode.index] as DMN14__tDecision; // We cast to tDecision here because it has all three types of requirement.

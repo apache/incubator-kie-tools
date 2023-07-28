@@ -17,6 +17,8 @@ import {
   TextAnnotationNodeSvg,
   GroupNodeSvg,
 } from "./NodeSvgs";
+import { NODE_TYPES } from "./NodeTypes";
+import { EDGE_TYPES } from "../edges/EdgeTypes";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -59,19 +61,19 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
                   viewBox={`0 0 ${edgeSvgViewboxSize} ${edgeSvgViewboxSize}`}
                   style={{ padding: `${svgViewboxPadding}px` }}
                 >
-                  {e === "edge_informationRequirement" && (
+                  {e === EDGE_TYPES.informationRequirement && (
                     <InformationRequirementPath d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize - 2},0`} />
                   )}
-                  {e === "edge_knowledgeRequirement" && (
+                  {e === EDGE_TYPES.knowledgeRequirement && (
                     <KnowledgeRequirementPath d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize - 2},0`} />
                   )}
-                  {e === "edge_authorityRequirement" && (
+                  {e === EDGE_TYPES.authorityRequirement && (
                     <AuthorityRequirementPath
                       d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize - 2},2`}
                       centerToConnectionPoint={false}
                     />
                   )}
-                  {e === "edge_association" && (
+                  {e === EDGE_TYPES.association && (
                     <AssociationPath d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize},0`} strokeWidth={2} />
                   )}
                 </svg>
@@ -96,15 +98,15 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
                   viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
                   style={{ padding: `${svgViewboxPadding}px` }}
                 >
-                  {n === "node_inputData" && <InputDataNodeSvg {...nodeSvgProps} />}
-                  {n === "node_decision" && <DecisionNodeSvg {...nodeSvgProps} />}
-                  {n === "node_bkm" && <BkmNodeSvg {...nodeSvgProps} />}
-                  {n === "node_decisionService" && (
+                  {n === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} />}
+                  {n === NODE_TYPES.decision && <DecisionNodeSvg {...nodeSvgProps} />}
+                  {n === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} />}
+                  {n === NODE_TYPES.decisionService && (
                     <DecisionServiceNodeSvg {...nodeSvgProps} y={0} height={nodeSvgProps.width} />
                   )}
-                  {n === "node_knowledgeSource" && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
-                  {n === "node_textAnnotation" && <TextAnnotationNodeSvg {...nodeSvgProps} />}
-                  {n === "node_group" && <GroupNodeSvg {...nodeSvgProps} />}
+                  {n === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
+                  {n === NODE_TYPES.textAnnotation && <TextAnnotationNodeSvg {...nodeSvgProps} />}
+                  {n === NODE_TYPES.group && <GroupNodeSvg {...nodeSvgProps} />}
                 </svg>
               </RF.Handle>
             ))}

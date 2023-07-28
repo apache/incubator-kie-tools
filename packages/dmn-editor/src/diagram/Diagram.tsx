@@ -65,27 +65,27 @@ export function Diagram({
   const nodeTypes: Record<NodeType, any> = useMemo(
     () => ({
       // grouping
-      node_decisionService: DecisionServiceNode,
-      node_group: GroupNode,
+      [NODE_TYPES.decisionService]: DecisionServiceNode,
+      [NODE_TYPES.group]: GroupNode,
 
       // logic
-      node_inputData: InputDataNode,
-      node_decision: DecisionNode,
-      node_bkm: BkmNode,
+      [NODE_TYPES.inputData]: InputDataNode,
+      [NODE_TYPES.decision]: DecisionNode,
+      [NODE_TYPES.bkm]: BkmNode,
 
       // info
-      node_knowledgeSource: KnowledgeSourceNode,
-      node_textAnnotation: TextAnnotationNode,
+      [NODE_TYPES.knowledgeSource]: KnowledgeSourceNode,
+      [NODE_TYPES.textAnnotation]: TextAnnotationNode,
     }),
     []
   );
 
   const edgeTypes: Record<EdgeType, any> = useMemo(() => {
     return {
-      edge_informationRequirement: InformationRequirementEdge,
-      edge_authorityRequirement: AuthorityRequirementEdge,
-      edge_knowledgeRequirement: KnowledgeRequirementEdge,
-      edge_association: AssociationEdge,
+      [EDGE_TYPES.informationRequirement]: InformationRequirementEdge,
+      [EDGE_TYPES.authorityRequirement]: AuthorityRequirementEdge,
+      [EDGE_TYPES.knowledgeRequirement]: KnowledgeRequirementEdge,
+      [EDGE_TYPES.association]: AssociationEdge,
     };
   }, []);
 

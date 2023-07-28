@@ -18,6 +18,8 @@ export function repositionNodes({
 
       bounds!["@_x"] = change.position["@_x"];
       bounds!["@_y"] = change.position["@_y"];
+
+      //FIXME: Reposition all incoming/outgoing edges too.
     }
   });
 }
