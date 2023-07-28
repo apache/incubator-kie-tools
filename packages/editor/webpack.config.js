@@ -6,10 +6,7 @@ const path = require("path");
 module.exports = (env, argv) => [
   merge(common(env, argv), {
     entry: {
-      api: "./src/api/index.ts",
-      channel: "./src/channel/index.ts",
-      embedded: "./src/embedded/index.ts",
-      envelope: "./src/envelope/index.ts",
+      index: "./src/index.ts",
     },
     plugins: [
       new MiniCssExtractPlugin({
