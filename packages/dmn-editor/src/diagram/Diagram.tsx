@@ -64,16 +64,11 @@ export function Diagram({
 
   const nodeTypes: Record<NodeType, any> = useMemo(
     () => ({
-      // grouping
       [NODE_TYPES.decisionService]: DecisionServiceNode,
       [NODE_TYPES.group]: GroupNode,
-
-      // logic
       [NODE_TYPES.inputData]: InputDataNode,
       [NODE_TYPES.decision]: DecisionNode,
       [NODE_TYPES.bkm]: BkmNode,
-
-      // info
       [NODE_TYPES.knowledgeSource]: KnowledgeSourceNode,
       [NODE_TYPES.textAnnotation]: TextAnnotationNode,
     }),

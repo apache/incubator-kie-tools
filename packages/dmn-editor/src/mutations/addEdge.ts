@@ -31,10 +31,10 @@ export function addEdge({
       model.definitions.artifact ??= [];
       // Remove potentially existing edge
       const existingIndex = model.definitions.artifact.findIndex(
-        (association) =>
-          association.__$$element === "association" &&
-          association.sourceRef["@_href"] === `#${sourceNode.id}` &&
-          association.targetRef["@_href"] === `#${targetNode.id}`
+        (a) =>
+          a.__$$element === "association" &&
+          ((a.sourceRef["@_href"] === `#${sourceNode.id}` && a.targetRef["@_href"] === `#${targetNode.id}`) ||
+            (a.sourceRef["@_href"] === `#${targetNode.id}` && a.targetRef["@_href"] === `#${sourceNode.id}`)) // Associations are bi-directional
       );
       model.definitions.artifact.splice(existingIndex, existingIndex >= 0 ? 1 : 0);
 
@@ -70,8 +70,8 @@ export function addEdge({
       model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.findIndex(
         (edge) =>
           edge.__$$element === "dmndi:DMNEdge" &&
-          edge["@_sourceElement"] === sourceNode.id &&
-          edge["@_targetElement"] === targetNode.id
+          ((edge["@_sourceElement"] === sourceNode.id && edge["@_targetElement"] === targetNode.id) ||
+            (edge["@_sourceElement"] === targetNode.id && edge["@_targetElement"] === sourceNode.id)) // Associations are bi-directional
       ) ?? -1;
     model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.splice(
       existingIndex,
