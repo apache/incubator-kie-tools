@@ -84,7 +84,9 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
     @Override
     public void applyProperties(Node<View<State>, Edge> element, MutationContext mutationContext) {
         super.applyProperties(element, mutationContext);
+
         State state = element.getContent().getDefinition();
+        getView().setTitle(state.getName());
         if (state.metadata == null) {
             shapeView.setSvgIcon(getIconColor(), getIconSvg());
             return;

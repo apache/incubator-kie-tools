@@ -25,11 +25,15 @@ import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.Text;
 import com.ait.lienzo.client.core.shape.TextLineBreakTruncateWrapper;
 import com.ait.lienzo.client.core.types.BoundingBox;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static com.ait.lienzo.shared.core.types.TextAlign.CENTER;
 import static com.ait.lienzo.shared.core.types.TextBaseLine.MIDDLE;
 
-public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> {
+public class StateShapeView
+        extends ServerlessWorkflowShapeView<StateShapeView>
+        implements HasTitle<StateShapeView> {
 
     private Group iconImage;
     private Circle backgroundCircle;
@@ -37,6 +41,11 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
     public final static double STATE_SHAPE_HEIGHT = 90;
     public final static double STATE_SHAPE_ICON_RADIUS = 25;
     public final static double STATE_CORNER_RADIUS = 5.00;
+    private final static double LABEL_WIDTH = 150;
+    private final static double LABEL_POSITION_X = 80;
+    private final static double LABEL_POSITION_Y = 5;
+    private final static double FONT_SIZE = 12;
+    private Text title;
 
     public StateShapeView(String name) {
         super(new MultiPath()
@@ -45,18 +54,36 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
         initialize(name);
     }
 
+    @Override
+    public StateShapeView setTitle(String name) {
+        title.setText(name);
+        // Text widget can't be centered vertically, so we need to manually set Y position
+        title.setY(calculateTitleCenterY());
+        return this;
+    }
+
+    private double calculateTitleCenterY() {
+        return (STATE_SHAPE_HEIGHT / 2) - (FONT_SIZE / 2) - (title.getBoundingBox().getHeight() / 2);
+    }
+
+    @Override
+    public StateShapeView setTitleAlpha(double alpha) {
+        title.setAlpha(alpha);
+        return this;
+    }
+
     private void initialize(String name) {
-        Text title = new Text(name)
-                .setX(90)
-                .setY(35)
+        title = new Text(name)
+                .setX(LABEL_POSITION_X)
+                // Y is set based on the size of the Text widget after it is initialized, see calculateTitleCenterY()
                 .setStrokeWidth(0)
                 .setFillColor("#383B3D")
                 .setFontFamily("Open Sans")
                 .setTextAlign(CENTER)
                 .setTextBaseLine(MIDDLE)
-                .setFontSize(12)
+                .setFontSize(FONT_SIZE)
                 .setListening(false);
-        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, 140, 44));
+        TextLineBreakTruncateWrapper textWrapper = new TextLineBreakTruncateWrapper(title, BoundingBox.fromDoubles(0, 0, LABEL_WIDTH, STATE_SHAPE_HEIGHT));
 
         title.setWrapper(textWrapper);
         addChild(title);
@@ -103,5 +130,74 @@ public class StateShapeView extends ServerlessWorkflowShapeView<StateShapeView> 
 
     public boolean isIconEmpty() {
         return iconImage.getChildNodes().isEmpty();
+    }
+
+    @Override
+    public StateShapeView setTitleFontFamily(String fontFamily) {
+        title.setFontFamily(fontFamily);
+        return this;
+    }
+
+    @Override
+    public StateShapeView setTitleFontSize(double fontSize) {
+        title.setFontSize(fontSize);
+        return this;
+    }
+
+    @Override
+    public StateShapeView setTitleFontColor(String fillColor) {
+        title.setFillColor(fillColor);
+        return this;
+    }
+
+    @Override
+    public StateShapeView setTitleStrokeWidth(double strokeWidth) {
+        title.setStrokeWidth(strokeWidth);
+        return this;
+    }
+
+    @Override
+    public double getTextboxWidth() {
+        return LABEL_WIDTH;
+    }
+
+    @Override
+    public double getTextboxHeight() {
+        return STATE_SHAPE_HEIGHT;
+    }
+
+    @Override
+    public StateShapeView setTitleStrokeColor(String color) {
+        title.setStrokeColor(color);
+        return this;
+    }
+
+    @Override
+    public String getTitleFontFamily() {
+        return title.getFontFamily();
+    }
+
+    @Override
+    public double getTitleFontSize() {
+        return title.getFontSize();
+    }
+
+    @Override
+    public Point2D getTitlePosition() {
+        return new Point2D(LABEL_POSITION_X, LABEL_POSITION_Y);
+    }
+
+    @Override
+    public StateShapeView moveTitleToTop() {
+        title.moveToTop();
+        return this;
+    }
+
+    @Override
+    public void batch() {
+        title.refresh();
+        if (title.getLayer() != null) {
+            title.getLayer().batch();
+        }
     }
 }

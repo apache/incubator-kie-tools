@@ -25,20 +25,18 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayoutContainer;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import org.kie.workbench.common.stunner.client.lienzo.shape.impl.ShapeStateDefaultHandler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.ViewEventHandlerManager;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.StunnerWiresShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractShape;
 import org.kie.workbench.common.stunner.core.client.shape.impl.ShapeStateHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
-public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflowShapeView<VIEW>> extends WiresShapeViewExt<VIEW> {
+public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflowShapeView<VIEW>>
+        extends StunnerWiresShapeView<VIEW> {
 
     protected final static String SHAPE_STROKE_COLOR = "#ccc";
     protected final static String SHAPE_FILL_COLOR = "#fff";
     protected final static double SHAPE_STROKE_WIDTH = 2.00;
-    protected final static String SHAPE_TITLE_FONT_COLOR = "#929292";
-    protected final static double SHAPE_TITLE_FONT_SIZE = 12.00;
-    protected final static String SHAPE_TITLE_FONT_FAMILY = "Open Sans";
 
     private ServerlessWorkflowShape<VIEW> controller;
 
@@ -48,18 +46,6 @@ public abstract class ServerlessWorkflowShapeView<VIEW extends ServerlessWorkflo
     private HandlerRegistration mouseEnterHandler;
 
     private HandlerRegistration mouseExitHandler;
-
-    public ServerlessWorkflowShapeView(MultiPath path, String title) {
-        this(path);
-        setTitle(title);
-        setTitlePosition(VerticalAlignment.MIDDLE, HorizontalAlignment.CENTER, ReferencePosition.INSIDE, Orientation.HORIZONTAL);
-        setTitleFontColor(SHAPE_TITLE_FONT_COLOR);
-        setTitleFontFamily(SHAPE_TITLE_FONT_FAMILY);
-        setTitleFontSize(SHAPE_TITLE_FONT_SIZE);
-        setTitleStrokeWidth(0);
-        setTitleStrokeAlpha(0);
-        isTitleListening(false);
-    }
 
     public ServerlessWorkflowShapeView(MultiPath path) {
         super(path
