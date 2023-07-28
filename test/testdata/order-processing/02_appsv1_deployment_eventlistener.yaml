@@ -52,6 +52,6 @@ spec:
                 - ALL
             seccompProfile:
               type: "RuntimeDefault"
-          image: gcr.io/knative-releases/knative.dev/eventing-contrib/cmd/event_display:latest
+          image: gcr.io/knative-releases/knative.dev/eventing/cmd/event_display:latest
           ports:
             - containerPort: 8080
