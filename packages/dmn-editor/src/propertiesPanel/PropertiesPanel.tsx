@@ -110,7 +110,12 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
 export function PropertiesPanel({ selectedNodes, onClose }: { selectedNodes: string[]; onClose: () => void }) {
   const { dmn } = useDmnEditor();
   return (
-    <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"500px"}>
+    <DrawerPanelContent
+      isResizable={true}
+      minSize={"300px"}
+      defaultSize={"500px"}
+      onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+    >
       <DrawerHead>
         {selectedNodes.length === 1 && (
           <>

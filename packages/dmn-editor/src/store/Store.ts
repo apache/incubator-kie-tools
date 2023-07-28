@@ -8,6 +8,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Draft } from "immer";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export interface State {
   dispatch: Dispatch;
@@ -46,11 +47,16 @@ export type Dispatch = {
   };
 };
 
-const EMPTY_DMN_14 = `<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/">
+const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/"
+  expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kiegroup.org/dmn/${generateUuid()}"
+  id="${generateUuid()}"
+  name="DMN${generateUuid()}">
 </definitions>`;
 
-const defaultMarshaller = getMarshaller(EMPTY_DMN_14);
+const defaultMarshaller = getMarshaller(EMPTY_DMN_14());
 
 export enum DmnEditorTab {
   EDITOR,
@@ -93,7 +99,7 @@ export const useDmnEditor = create(
         reset: (xml) => {
           set((state) => {
             xml ??= "";
-            const marshaller = getMarshaller(xml.trim().length <= 0 ? EMPTY_DMN_14 : xml);
+            const marshaller = getMarshaller(xml.trim().length <= 0 ? EMPTY_DMN_14() : xml);
             state.dmn.marshaller = marshaller;
             state.dmn.model = marshaller.parser.parse();
           });
