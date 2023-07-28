@@ -17,11 +17,9 @@
 import { startServer } from "./proxy";
 
 function getPort(): number {
-  if (process.env.CORS_PROXY_HTTP_PORT) {
-    const port = Number(process.env.CORS_PROXY_HTTP_PORT);
-    if (!isNaN(port)) {
-      return port;
-    }
+  const port = Number(process.env.CORS_PROXY_HTTP_PORT);
+  if (!isNaN(port)) {
+    return port;
   }
   return 8080;
 }
@@ -30,7 +28,6 @@ export const run = () => {
   startServer({
     port: getPort(),
     origin: process.env.CORS_PROXY_ORIGIN ?? "*",
-    allowSelfSignedCertificates: process.env.CORS_PROXY_ALLOW_SELF_SIGNED_CERTIFICATES === "true",
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
   });
 };

@@ -23,7 +23,6 @@ import { dnsFix } from "./dnsFix";
 export type ServerArgs = {
   port: number;
   origin: string;
-  allowSelfSignedCertificates: boolean;
   verbose: boolean;
 };
 

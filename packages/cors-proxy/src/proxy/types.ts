@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+export const INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurely-disable-tls-certificate-validation";
 export const TARGET_URL_HEADER = "target-url";
 
 export type CorsConfig = {

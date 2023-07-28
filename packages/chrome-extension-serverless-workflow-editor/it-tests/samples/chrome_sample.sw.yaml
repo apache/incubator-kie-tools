@@ -1,0 +1,25 @@
+id: "chrome_extension_sample_yaml"
+version: "1.0"
+specVersion: "0.8"
+name: "Chrome Extension Sample YAML"
+description: "This YAML sample is created for testing purposes."
+start: "StartState"
+functions:
+  - name: "ChromeFunction"
+    operation: "localhost#operation"
+    type: "rest"
+events:
+  - name: "ChromeEvent"
+    source: "CloudEvent source"
+    type: "CloudEvent type"
+states:
+  - name: "StartState"
+    type: "operation"
+    actions:
+      - name: "ChromeAction"
+        functionRef:
+          refName: "ChromeFunction"
+          arguments:
+            firstArgument: ""
+            secondArgument: ""
+    end: true

@@ -78,6 +78,7 @@ export default async (env: any, argv: any) => {
       ...merge(common(env), {
         entry: {
           index: "./src/index.tsx",
+          "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",
           "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
           "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
           "serverless-workflow-combined-editor-envelope":
@@ -129,6 +130,7 @@ export default async (env: any, argv: any) => {
                 from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
                 to: "./serverless-workflow-text-editor-envelope.html",
               },
+              { from: "./static/envelope/yard-editor-envelope.html", to: "./yard-editor-envelope.html" },
               { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
               { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },

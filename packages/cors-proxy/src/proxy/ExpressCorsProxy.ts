@@ -17,11 +17,11 @@
 import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
-import { CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
+import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 
 const HTTPS_PROTOCOL = "https:";
-const BANNED_PROXY_HEADERS = ["origin", "host", "target-url"];
+const BANNED_PROXY_HEADERS = ["origin", "host", TARGET_URL_HEADER, INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION];
 
 export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   private readonly logger: Logger;
@@ -29,7 +29,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   constructor(
     private readonly args: {
       origin: string;
-      allowSelfSignedCertificates: boolean;
       verbose: boolean;
     }
   ) {
@@ -38,7 +37,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     this.logger.debug("");
     this.logger.debug("Proxy Configuration:");
     this.logger.debug("* Accept Origin Header: ", `"${args.origin}"`);
-    this.logger.debug("* Allow Self-Signed Certificates: ", args.allowSelfSignedCertificates);
     this.logger.debug("* Verbose: ", args.verbose);
     this.logger.debug("");
   }
@@ -135,11 +133,13 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       targetUrl,
       proxyUrl,
       corsConfig: this.resolveCorsConfig(targetUrl, request),
+      insecurelyDisableTLSCertificateValidation:
+        request.headers[INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true",
     });
   }
 
   private getProxyAgent(info: ProxyRequestInfo): https.Agent | undefined {
-    if (this.args.allowSelfSignedCertificates && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
+    if (info.insecurelyDisableTLSCertificateValidation && info.proxyUrl.protocol === HTTPS_PROTOCOL) {
       return new https.Agent({
         rejectUnauthorized: false,
       });
@@ -162,6 +162,7 @@ class ProxyRequestInfo {
       targetUrl: string;
       proxyUrl?: string;
       corsConfig?: CorsConfig;
+      insecurelyDisableTLSCertificateValidation?: boolean;
     }
   ) {
     this._proxyUrl = new URL(args.proxyUrl ?? args.targetUrl);
@@ -177,6 +178,10 @@ class ProxyRequestInfo {
 
   get corsConfig(): CorsConfig | undefined {
     return this.args.corsConfig;
+  }
+
+  get insecurelyDisableTLSCertificateValidation() {
+    return this.args.insecurelyDisableTLSCertificateValidation;
   }
 }
 

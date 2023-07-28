@@ -27,6 +27,12 @@ export class EditorEnvelopeLocatorFactory {
         envelopeContent: { type: EnvelopeContentType.PATH, path: "serverless-workflow-combined-editor-envelope.html" },
       }),
       new EnvelopeMapping({
+        type: "yard",
+        filePathGlob: GLOB_PATTERN.yard,
+        resourcesPathPrefix: "",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "yard-editor-envelope.html" },
+      }),
+      new EnvelopeMapping({
         type: "dash",
         filePathGlob: GLOB_PATTERN.dash,
         resourcesPathPrefix: "",
