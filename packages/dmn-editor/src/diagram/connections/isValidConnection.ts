@@ -15,16 +15,16 @@ export function checkIsValidConnection(nodesById: Map<string, Node>, edge: Edge 
 export function _checkIsValidConnection(
   sourceNode: { type?: string } | undefined,
   targetNode: { type?: string } | undefined,
-  sourceHandleId: string | null | undefined
+  edge: string | null | undefined
 ) {
-  if (!sourceNode?.type || !targetNode?.type || !sourceHandleId) {
+  if (!sourceNode?.type || !targetNode?.type || !edge) {
     return false;
   }
 
   return (
     graphStructure
       .get(sourceNode.type as NodeType)
-      ?.get(sourceHandleId as EdgeType)
+      ?.get(edge as EdgeType)
       ?.has(targetNode.type as NodeType) ?? false
   );
 }

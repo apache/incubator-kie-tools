@@ -15,9 +15,9 @@ import {
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { useDmnEditor } from "../store/Store";
-import { Pallete } from "./Pallete";
+import { PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
 import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
-import { addNode } from "../mutations/addNode";
+import { addConnectedNode } from "../mutations/addConnectedNode";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { EdgeType, NodeType, getEdgeTypesBetween } from "./connections/graphStructure";
 import { checkIsValidConnection } from "./connections/isValidConnection";
@@ -40,6 +40,11 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
+import { addEdge } from "../mutations/addEdge";
+import { TargetHandleId } from "./connections/NodeHandles";
+import { addStandaloneNode } from "../mutations/addStandaloneNode";
+import { DEFAULT_NODE_SIZES } from "./nodes/DefaultSizes";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -95,16 +100,45 @@ export function Diagram({
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
-  const onEdgeUpdate = useCallback((args) => {
-    console.log("TIAGO WRITE: Edge updated! --> ", args);
-  }, []);
+  const onEdgeUpdate: RF.OnEdgeUpdateFunc = useCallback((args) => {}, []);
+
+  const onConnect: RF.OnConnect = useCallback(
+    (args) => {
+      const sourceNode = nodesById.get(args.source!);
+      const targetNode = nodesById.get(args.target!);
+      if (!sourceNode || !targetNode) {
+        throw new Error("Cannot create connection without target and source nodes!");
+      }
+
+      const sourceBounds = shapesById.get(sourceNode.id)?.["dc:Bounds"];
+      const targetBounds = shapesById.get(targetNode.id)?.["dc:Bounds"];
+      if (!sourceBounds || !targetBounds) {
+        throw new Error("Cannot create connection without target bounds!");
+      }
+
+      // --------- This is where we draw the line between the diagram and the model.
+
+      addEdge({
+        dispatch: { dmn: dispatch.dmn },
+        edge: { type: args.sourceHandle as EdgeType, handle: args.targetHandle as TargetHandleId },
+        sourceNode: { type: sourceNode.type as NodeType, id: sourceNode.id, bounds: sourceBounds },
+        targetNode: {
+          type: targetNode.type as NodeType,
+          id: targetNode.id,
+          bounds: targetBounds,
+          index: targetNode.data.index,
+        },
+      });
+    },
+    [dispatch.dmn, nodesById, shapesById]
+  );
 
   useEffect(() => {
     onSelect(nodes.flatMap((n) => (n.selected ? [n.id] : [])));
   }, [nodes, onSelect]);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
-    if (!e.dataTransfer.types.find((s) => s === "application/reactflow")) {
+    if (!e.dataTransfer.types.find((t) => t === PALLETE_ELEMENT_MIME_TYPE)) {
       return;
     }
 
@@ -120,38 +154,52 @@ export function Diagram({
         return;
       }
 
-      const type = e.dataTransfer.getData("application/reactflow") as NodeType;
+      const type = e.dataTransfer.getData(PALLETE_ELEMENT_MIME_TYPE) as NodeType;
       if (typeof type === "undefined" || !type) {
         return;
       }
 
       e.stopPropagation();
 
+      // we need to remove the wrapper bounds, in order to get the correct position
       const rfBounds = container.current.getBoundingClientRect();
-      const position = reactFlowInstance.project({
-        x: e.clientX - rfBounds.left,
-        y: e.clientY - rfBounds.top,
-      });
+      const dropPoint = {
+        x: e.clientX - rfBounds.left - reactFlowInstance.getViewport().x,
+        y: e.clientY - rfBounds.top - reactFlowInstance.getViewport().y,
+      };
 
-      console.info(`TIAGO WRITE: Adding node of type '${type}' at position '${position.x},${position.y}'.`);
+      // --------- This is where we draw the line between the diagram and the model.
+
+      addStandaloneNode({
+        dispatch: { dmn: dispatch.dmn },
+        newNode: {
+          type,
+          bounds: {
+            "@_x": dropPoint.x,
+            "@_y": dropPoint.y,
+            "@_width": DEFAULT_NODE_SIZES[type]["@_width"],
+            "@_height": DEFAULT_NODE_SIZES[type]["@_height"],
+          },
+        },
+      });
     },
-    [container, reactFlowInstance]
+    [container, dispatch.dmn, reactFlowInstance]
   );
 
   const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
   const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => setConnection(b), []);
   const onConnectEnd = useCallback(
-    (event) => {
-      const targetIsPane = event.target.classList.contains("react-flow__pane");
-      if (!targetIsPane || !container.current || !connection) {
+    (e: MouseEvent) => {
+      const targetIsPane = (e.target as Element | null)?.classList?.contains("react-flow__pane");
+      if (!targetIsPane || !container.current || !connection || !reactFlowInstance) {
         return;
       }
 
       // we need to remove the wrapper bounds, in order to get the correct position
-      const { top, left } = container.current.getBoundingClientRect();
+      const rfBounds = container.current.getBoundingClientRect();
       const dropPoint = {
-        x: event.clientX - left - (reactFlowInstance?.getViewport().x ?? 0),
-        y: event.clientY - top - (reactFlowInstance?.getViewport().y ?? 0),
+        x: e.clientX - rfBounds.left - reactFlowInstance.getViewport().x,
+        y: e.clientY - rfBounds.top - reactFlowInstance.getViewport().y,
       };
 
       // only try to create node if source handle is compatible
@@ -175,7 +223,7 @@ export function Diagram({
 
       const edges = getEdgeTypesBetween(sourceNode.type as NodeType, connection.handleId as NodeType);
       if (edges.length < 0) {
-        throw new Error(`Invalid structure: ${sourceNode.type} --> ${connection.handleId}`);
+        throw new Error(`Invalid structure: ${sourceNode.type} --(any)--> ${connection.handleId}`);
       }
 
       if (edges.length > 1) {
@@ -186,9 +234,9 @@ export function Diagram({
 
       const edge = edges[0];
 
-      // This is where we draw the line between the diagram and the model.
+      // --------- This is where we draw the line between the diagram and the model.
 
-      addNode({
+      addConnectedNode({
         dispatch: { dmn: dispatch.dmn },
         edge,
         sourceNode: {
@@ -234,7 +282,7 @@ export function Diagram({
         edgesUpdatable={true}
         connectionLineComponent={ConnectionLine}
         onEdgeUpdate={onEdgeUpdate}
-        onConnect={onEdgeUpdate}
+        onConnect={onConnect}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         isValidConnection={isValidConnection}

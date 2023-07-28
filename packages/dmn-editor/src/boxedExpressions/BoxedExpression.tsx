@@ -8,6 +8,7 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { DmnNodeWithExpression, useDmnEditor } from "../store/Store";
 import { beeToDmn } from "./beeToDmn";
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
+import { updateExpression } from "../mutations/updateExpression";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const { dispatch, dmn, boxedExpression } = useDmnEditor();
@@ -39,10 +40,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       return;
     }
 
-    dispatch.dmn.set((prev) => {
-      console.info(`TIAGO WRITE: Boxed Expression updated! ${beeToDmn(expression)}`); // TODO: Actually mutate the DMN JSON.
-      return prev;
-    });
+    updateExpression({ dispatch: { dmn: dispatch.dmn }, expression, index: 0 });
   }, [dispatch.dmn, expression, initial]);
 
   const dataTypes = useMemo(

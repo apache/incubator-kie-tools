@@ -6,7 +6,7 @@ import {
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { snapPoint } from "../SnapGrid";
-import { getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
+import { getDistance, getNodeCenterPoint, getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
 import { AutoMarker } from "./AutoMarker";
 
 export function getSnappedMultiPointAnchoredEdgePath({
@@ -26,22 +26,16 @@ export function getSnappedMultiPointAnchoredEdgePath({
     return { path: undefined, points: [] };
   }
 
-  const points: DC__Point[] = new Array(dmnEdge?.["di:waypoint"]?.length ?? 2);
+  const points: DC__Point[] = new Array(Math.max(2, dmnEdge?.["di:waypoint"]?.length ?? 0));
 
   const discreteAuto = getDiscretelyAutoPositionedEdgeParamsForRfNodes(sourceNode, targetNode);
 
   if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.BOTH)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
-  }
-
-  //
-  else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.SOURCE)) {
+  } else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.SOURCE)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
-  }
-
-  //
-  else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.TARGET)) {
+  } else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.TARGET)) {
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   }
 
@@ -51,24 +45,18 @@ export function getSnappedMultiPointAnchoredEdgePath({
     console.warn("No waypoints found. Creating a default straight line.");
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
-  }
-
-  //
-  else if (dmnEdge?.["di:waypoint"].length < 2) {
+  } else if (dmnEdge?.["di:waypoint"].length < 2) {
     console.warn("Invalid waypoints for edge. Creating a default straight line.");
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
-  }
-
-  //
-  else {
+  } else {
     const firstWaypoint = dmnEdge["di:waypoint"][0];
     const secondWaypoint = points[1] ?? dmnEdge["di:waypoint"][1];
     const src = getSnappedHandlePosition(
       dmnShapeSource!,
       firstWaypoint,
       sourceNode,
-      points.length === 2 ? centerPoint(targetNode) : snapPoint(secondWaypoint)
+      points.length === 2 ? getNodeCenterPoint(targetNode) : snapPoint(secondWaypoint)
     );
     points[0] ??= src.point;
 
@@ -78,7 +66,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
       dmnShapeTarget!,
       lastWaypoint,
       targetNode,
-      points.length === 2 ? centerPoint(sourceNode) : snapPoint(secondToLastWaypoint)
+      points.length === 2 ? getNodeCenterPoint(sourceNode) : snapPoint(secondToLastWaypoint)
     );
     points[points.length - 1] ??= tgt.point;
   }
@@ -115,27 +103,27 @@ export function getSnappedHandlePosition(
   const top = { "@_x": x + w / 2, "@_y": y };
   const bottom = { "@_x": x + w / 2, "@_y": y + h };
 
-  if (distance(center, waypoint) <= 1) {
+  if (getDistance(center, waypoint) <= 1) {
     return {
       pos: "center",
       point: getNodeIntersection(snappedNode, snappedWaypoint2),
     };
-  } else if (distance(top, waypoint) <= 1) {
+  } else if (getDistance(top, waypoint) <= 1) {
     return {
       pos: "top",
       point: { "@_x": xx + ww / 2, "@_y": yy },
     };
-  } else if (distance(right, waypoint) <= 1) {
+  } else if (getDistance(right, waypoint) <= 1) {
     return {
       pos: "right",
       point: { "@_x": xx + ww, "@_y": yy + hh / 2 },
     };
-  } else if (distance(bottom, waypoint) <= 1) {
+  } else if (getDistance(bottom, waypoint) <= 1) {
     return {
       pos: "bottom",
       point: { "@_x": xx + ww / 2, "@_y": yy + hh },
     };
-  } else if (distance(left, waypoint) <= 1) {
+  } else if (getDistance(left, waypoint) <= 1) {
     return {
       pos: "left",
       point: { "@_x": xx, "@_y": yy + hh / 2 },
@@ -147,17 +135,4 @@ export function getSnappedHandlePosition(
       point: getNodeIntersection(snappedNode, snappedWaypoint2),
     };
   }
-}
-
-function distance(a: DC__Point, b: DC__Point) {
-  return Math.sqrt(Math.pow(a["@_x"] - b["@_x"], 2) + Math.pow(a["@_y"] - b["@_y"], 2));
-}
-
-function centerPoint(node: RF.Node): DC__Point {
-  const xx = node.positionAbsolute?.x ?? 0;
-  const yy = node.positionAbsolute?.y ?? 0;
-  const ww = node.width ?? 0;
-  const hh = node.height ?? 0;
-
-  return { "@_x": xx + ww / 2, "@_y": yy + hh / 2 };
 }

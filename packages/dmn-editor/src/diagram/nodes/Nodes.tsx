@@ -31,6 +31,7 @@ import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { useDmnEditor } from "../../store/Store";
+import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
 
 export const InputDataNode = React.memo(
   ({
@@ -51,9 +52,7 @@ export const InputDataNode = React.memo(
 
     const { dispatch } = useDmnEditor();
     const setName = useCallback(
-      (name: string) => {
-        dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
-      },
+      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
       [dispatch.dmn, index]
     );
 
@@ -117,9 +116,7 @@ export const DecisionNode = React.memo(
 
     const { dispatch } = useDmnEditor();
     const setName = useCallback(
-      (name: string) => {
-        dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
-      },
+      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
       [dispatch.dmn, index]
     );
 
@@ -187,9 +184,7 @@ export const BkmNode = React.memo(
 
     const { dispatch } = useDmnEditor();
     const setName = useCallback(
-      (name: string) => {
-        dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
-      },
+      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
       [dispatch.dmn, index]
     );
 
@@ -253,9 +248,7 @@ export const KnowledgeSourceNode = React.memo(
 
     const { dispatch } = useDmnEditor();
     const setName = useCallback(
-      (name: string) => {
-        dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
-      },
+      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
       [dispatch.dmn, index]
     );
 
@@ -314,9 +307,7 @@ export const TextAnnotationNode = React.memo(
 
     const { dispatch } = useDmnEditor();
     const setText = useCallback(
-      (newText: string) => {
-        dispatch.dmn.set((state) => ((state.definitions.artifact![index] as DMN14__tTextAnnotation).text = newText));
-      },
+      (newText: string) => updateTextAnnotation({ dispatch: { dmn: dispatch.dmn }, newText, index }),
       [dispatch.dmn, index]
     );
 
@@ -375,9 +366,7 @@ export const DecisionServiceNode = React.memo(
 
     const { dispatch } = useDmnEditor();
     const setName = useCallback(
-      (name: string) => {
-        dispatch.dmn.set((state) => (state.definitions.drgElement![index]["@_name"] = name));
-      },
+      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
       [dispatch.dmn, index]
     );
 
@@ -390,7 +379,6 @@ export const DecisionServiceNode = React.memo(
         </svg>
         <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
-        {isHovered && <NodeResizerHandle />}
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}
@@ -411,6 +399,7 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
           />
+          {isHovered && <NodeResizerHandle />}
         </div>
       </>
     );

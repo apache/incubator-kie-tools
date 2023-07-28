@@ -30,7 +30,6 @@ export const handleStyle: React.CSSProperties = {
   display: "flex",
   position: "unset",
   transform: "unset",
-  // position: "relative",
 };
 
 export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeType[]; edges: EdgeType[] }) {

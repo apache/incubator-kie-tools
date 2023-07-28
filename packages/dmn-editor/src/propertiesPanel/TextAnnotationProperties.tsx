@@ -38,7 +38,7 @@ export function TextAnnotationProperties({ textAnnotation }: { textAnnotation: D
           value={textAnnotation.description}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
-          rows={4}
+          rows={2}
         />
       </FormGroup>
 
