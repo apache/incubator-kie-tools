@@ -14,12 +14,15 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
+import { addConnectedNode } from "../mutations/addConnectedNode";
+import { addEdge } from "../mutations/addEdge";
+import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { useDmnEditor } from "../store/Store";
 import { PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
 import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
-import { addConnectedNode } from "../mutations/addConnectedNode";
 import { ConnectionLine } from "./connections/ConnectionLine";
-import { EdgeType, NodeType, getEdgeTypesBetween } from "./connections/graphStructure";
+import { TargetHandleId } from "./connections/NodeHandles";
+import { EdgeType, NodeType, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeMarkers } from "./edges/EdgeMarkers";
 import { EDGE_TYPES } from "./edges/EdgeTypes";
@@ -30,6 +33,7 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
+import { DEFAULT_NODE_SIZES } from "./nodes/DefaultSizes";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
   BkmNode,
@@ -40,11 +44,6 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { addEdge } from "../mutations/addEdge";
-import { TargetHandleId } from "./connections/NodeHandles";
-import { addStandaloneNode } from "../mutations/addStandaloneNode";
-import { DEFAULT_NODE_SIZES } from "./nodes/DefaultSizes";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -221,18 +220,13 @@ export function Diagram({
         return;
       }
 
-      const edges = getEdgeTypesBetween(sourceNode.type as NodeType, connection.handleId as NodeType);
-      if (edges.length < 0) {
-        throw new Error(`Invalid structure: ${sourceNode.type} --(any)--> ${connection.handleId}`);
-      }
+      const newNodeType = connection.handleId as NodeType;
+      const sourceNodeType = sourceNode.type as NodeType;
 
-      if (edges.length > 1) {
-        console.debug(
-          `Multiple edges possible for ${sourceNode.type} --> ${connection.handleId}. Choosing first one in structure definition: ${edges[0]}.`
-        );
+      const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
+      if (!edge) {
+        throw new Error(`Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
       }
-
-      const edge = edges[0];
 
       // --------- This is where we draw the line between the diagram and the model.
 
@@ -241,16 +235,16 @@ export function Diagram({
         edge,
         sourceNode: {
           id: sourceNode.id,
-          type: sourceNode.type as NodeType,
+          type: sourceNodeType as NodeType,
           bounds: sourceNodeBounds,
         },
         newNode: {
-          type: connection.handleId as NodeType,
+          type: newNodeType,
           bounds: {
             "@_x": dropPoint.x,
             "@_y": dropPoint.y,
-            "@_width": MIN_SIZE_FOR_NODES.width,
-            "@_height": MIN_SIZE_FOR_NODES.height,
+            "@_width": DEFAULT_NODE_SIZES[newNodeType]["@_width"],
+            "@_height": DEFAULT_NODE_SIZES[newNodeType]["@_height"],
           },
         },
       });

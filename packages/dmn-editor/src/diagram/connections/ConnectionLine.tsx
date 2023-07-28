@@ -12,26 +12,24 @@ import { NODE_TYPES } from "../nodes/NodeTypes";
 import { getPositionalHandlePosition } from "../maths/Maths";
 import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
 import { getNodeCenterPoint } from "../maths/DmnMaths";
+import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
+import { switchExpression } from "../../switchExpression/switchExpression";
+import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
 
+  // Edges
   if (fromHandle?.id === EDGE_TYPES.informationRequirement) {
     return <InformationRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
-  }
-  //
-  else if (fromHandle?.id === EDGE_TYPES.knowledgeRequirement) {
+  } else if (fromHandle?.id === EDGE_TYPES.knowledgeRequirement) {
     return <KnowledgeRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
-  }
-  //
-  else if (fromHandle?.id === EDGE_TYPES.authorityRequirement) {
+  } else if (fromHandle?.id === EDGE_TYPES.authorityRequirement) {
     return <AuthorityRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} centerToConnectionPoint={true} />;
-  }
-  //
-  else if (fromHandle?.id === EDGE_TYPES.association) {
+  } else if (fromHandle?.id === EDGE_TYPES.association) {
     return <AssociationPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
   }
-  //
+  // Nodes
   else {
     const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
     const [toXauto, toYauto] = getPositionalHandlePosition(
@@ -39,57 +37,65 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       { x: fromX, y: fromY, width: 1, height: 1 }
     );
 
+    const edge = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, fromHandle?.id as NodeType);
+    if (!edge) {
+      throw new Error(`Invalid structure: ${fromNode?.type} --(any)--> ${fromHandle?.id}`);
+    }
+
+    const path = `M${fromX},${fromY} L${toXauto},${toYauto}`;
+
+    const edgeSvg = switchExpression(edge, {
+      edge_informationRequirement: <InformationRequirementPath d={path} />,
+      edge_knowledgeRequirement: <KnowledgeRequirementPath d={path} />,
+      edge_authorityRequirement: <AuthorityRequirementPath d={path} centerToConnectionPoint={false} />,
+      edge_association: <AssociationPath d={path} />,
+    });
+
     if (fromHandle?.id === NODE_TYPES.decision) {
       return (
         <g>
-          <InformationRequirementPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} />
+          {edgeSvg}
           <DecisionNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_SIZE_FOR_NODES.width}
-            height={MIN_SIZE_FOR_NODES.height}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.decision]["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.decision]["@_height"]}
           />
         </g>
       );
-    }
-    //
-    else if (fromHandle?.id === NODE_TYPES.bkm) {
+    } else if (fromHandle?.id === NODE_TYPES.bkm) {
       return (
         <g className={"pulse"}>
-          <KnowledgeRequirementPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} />
+          {edgeSvg}
           <BkmNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_SIZE_FOR_NODES.width}
-            height={MIN_SIZE_FOR_NODES.height}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.bkm]["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.bkm]["@_height"]}
           />
         </g>
       );
-    }
-    //
-    else if (fromHandle?.id === NODE_TYPES.knowledgeSource) {
+    } else if (fromHandle?.id === NODE_TYPES.knowledgeSource) {
       return (
         <g>
-          <AuthorityRequirementPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} centerToConnectionPoint={false} />
+          {edgeSvg}
           <KnowledgeSourceNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_SIZE_FOR_NODES.width}
-            height={MIN_SIZE_FOR_NODES.height}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.knowledgeSource]["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.knowledgeSource]["@_height"]}
           />
         </g>
       );
-    }
-    //
-    else if (fromHandle?.id === NODE_TYPES.textAnnotation) {
+    } else if (fromHandle?.id === NODE_TYPES.textAnnotation) {
       return (
         <g>
-          <AssociationPath d={`M${fromX},${fromY} L${toXauto},${toYauto}`} />
+          {edgeSvg}
           <TextAnnotationNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_SIZE_FOR_NODES.width}
-            height={MIN_SIZE_FOR_NODES.height}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.textAnnotation]["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.textAnnotation]["@_height"]}
           />
         </g>
       );

@@ -96,6 +96,17 @@ function outgoingEdges(srcNodeType: NodeType): EdgeType[] {
   return Array.from((graphStructure.get(srcNodeType) ?? new Map()).keys());
 }
 
+export function getDefaultEdgeTypeBetween(source: NodeType, target: NodeType): EdgeType | undefined {
+  const edges = getEdgeTypesBetween(source, target);
+  if (edges.length > 1) {
+    console.debug(
+      `Multiple edges possible for ${source} --> ${target}. Choosing first one in structure definition: ${edges[0]}.`
+    );
+  }
+
+  return edges[0];
+}
+
 export function getEdgeTypesBetween(source: NodeType, target: NodeType): EdgeType[] {
   const sourceStructure = graphStructure.get(source);
   if (!sourceStructure) {

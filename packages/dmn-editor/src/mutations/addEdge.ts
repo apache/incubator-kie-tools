@@ -25,6 +25,7 @@ export function addEdge({
   const newEdgeId = generateUuid();
 
   dmn.set((model) => {
+    // Associations
     if (edge.type === "edge_association") {
       model.definitions.artifact ??= [];
       // Remove potentially existing edge
@@ -43,7 +44,9 @@ export function addEdge({
         sourceRef: { "@_href": `#${sourceNode.id}` },
         targetRef: { "@_href": `#${targetNode.id}` },
       });
-    } else {
+    }
+    // DRG Elements
+    else {
       const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
       const drgElement = model.definitions.drgElement![targetNode.index] as DMN14__tDecision; // We cast to tDecision here because it has all three types of requirement.
       if (requirements?.informationRequirement) {
@@ -61,9 +64,20 @@ export function addEdge({
       }
     }
 
-    // FIXME: Tiago -->  Remove potentially existing edge
+    // Remove existing
+    const existingIndex =
+      model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.findIndex(
+        (edge) =>
+          edge.__$$element === "dmndi:DMNEdge" &&
+          edge["@_sourceElement"] === sourceNode.id &&
+          edge["@_targetElement"] === targetNode.id
+      ) ?? -1;
+    model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.splice(
+      existingIndex,
+      existingIndex >= 0 ? 1 : 0
+    );
 
-    // Add the new edge shape
+    // Replace with the new one.
     model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
       __$$element: "dmndi:DMNEdge",
       "@_id": generateUuid(),
