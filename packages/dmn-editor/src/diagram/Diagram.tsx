@@ -17,9 +17,10 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addEdge } from "../mutations/addEdge";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
+import { repositionNodes } from "../mutations/repositionNodes";
 import { useDmnEditor } from "../store/Store";
 import { PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
-import { MIN_SIZE_FOR_NODES, SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { SNAP_GRID, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/NodeHandles";
 import { EdgeType, NodeType, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
@@ -45,7 +46,6 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { repositionNodes as repositionDiagramElements } from "../mutations/repositionNodes";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -117,12 +117,18 @@ export function Diagram({
       addEdge({
         dispatch: { dmn: dispatch.dmn },
         edge: { type: args.sourceHandle as EdgeType, handle: args.targetHandle as TargetHandleId },
-        sourceNode: { type: sourceNode.type as NodeType, id: sourceNode.id, bounds: sourceBounds },
+        sourceNode: {
+          type: sourceNode.type as NodeType,
+          id: sourceNode.id,
+          bounds: sourceBounds,
+          shapeId: sourceNode.data.shape["@_id"],
+        },
         targetNode: {
           type: targetNode.type as NodeType,
           id: targetNode.id,
           bounds: targetBounds,
           index: targetNode.data.index,
+          shapeId: targetNode.data.shape["@_id"],
         },
       });
     },
@@ -234,6 +240,7 @@ export function Diagram({
           id: sourceNode.id,
           type: sourceNodeType as NodeType,
           bounds: sourceNodeBounds,
+          shapeId: sourceNode.data.shape["@_id"],
         },
         newNode: {
           type: newNodeType,
@@ -251,9 +258,15 @@ export function Diagram({
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
     (e, node, nodes: RF.Node<DmnEditorDiagramNodeData<any>>[]) => {
-      repositionDiagramElements({
+      repositionNodes({
         dispatch: { dmn: dispatch.dmn },
         changes: nodes.map((node) => ({
+          sourceEdgeIndexes: edges.flatMap((e) =>
+            e.source === node.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+          ),
+          targetEdgeIndexes: edges.flatMap((e) =>
+            e.target === node.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+          ),
           dmnDiagramElementIndex: node.data.shape.index,
           position: {
             "@_x": node.positionAbsolute?.x ?? 0,
@@ -262,7 +275,7 @@ export function Diagram({
         })),
       });
     },
-    [dispatch.dmn]
+    [dispatch.dmn, edges]
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(

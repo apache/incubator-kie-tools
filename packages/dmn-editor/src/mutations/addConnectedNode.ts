@@ -7,7 +7,7 @@ import {
   DMN14__tKnowledgeRequirement,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
-import { AutoMarker } from "../diagram/edges/AutoMarker";
+import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
 import { Dispatch } from "../store/Store";
 import { switchExpression } from "../switchExpression/switchExpression";
@@ -16,13 +16,13 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 
 export function addConnectedNode({
+  dispatch: { dmn },
   sourceNode,
   newNode,
   edge,
-  dispatch: { dmn },
 }: {
   dispatch: { dmn: Dispatch["dmn"] };
-  sourceNode: { type: NodeType; id: string; bounds: DC__Bounds };
+  sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
   edge: EdgeType;
 }) {
@@ -82,6 +82,7 @@ export function addConnectedNode({
             {
               "@_id": newEdgeId,
               __$$element: "association" as const,
+              "@_associationDirection": "Both" as const,
               sourceRef: { "@_href": `#${sourceNode.id}` },
               targetRef: { "@_href": `#${newNodeId}` },
             },
@@ -99,10 +100,11 @@ export function addConnectedNode({
       throw new Error(`Unknown node usage '${nature}'.`);
     }
 
+    const newShapeId = generateUuid();
     // Add the new node shape
     definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
       __$$element: "dmndi:DMNShape",
-      "@_id": generateUuid(),
+      "@_id": newShapeId,
       "@_dmnElementRef": newNodeId,
       "@_isCollapsed": false,
       "@_isListedInputData": false,
@@ -112,10 +114,10 @@ export function addConnectedNode({
     // Add the new edge shape
     definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
       __$$element: "dmndi:DMNEdge",
-      "@_id": generateUuid() + AutoMarker.TARGET,
+      "@_id": generateUuid() + AutoPositionedEdgeMarker.TARGET,
       "@_dmnElementRef": newEdgeId,
-      "@_sourceElement": sourceNode.id,
-      "@_targetElement": newNodeId,
+      "@_sourceElement": sourceNode.shapeId,
+      "@_targetElement": newShapeId,
       "di:waypoint": [getBoundsCenterPoint(sourceNode.bounds), getBoundsCenterPoint(newNode.bounds)],
     });
   });

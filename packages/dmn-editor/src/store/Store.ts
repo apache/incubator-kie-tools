@@ -9,12 +9,14 @@ import {
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Draft } from "immer";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnIndex, createDmnIndex } from "./DmnIndex";
 
 export interface State {
   dispatch: Dispatch;
   dmn: {
     model: { definitions: DMN14__tDefinitions };
     marshaller: DmnMarshaller;
+    index: DmnIndex;
   };
   boxedExpression: {
     node: DmnNodeWithExpression | undefined;
@@ -31,7 +33,7 @@ export interface State {
 export type Dispatch = {
   dmn: {
     reset: (xml: string) => void;
-    set: (state: (state: Draft<{ definitions: DMN14__tDefinitions }>) => void) => any;
+    set: (state: (state: Draft<{ definitions: DMN14__tDefinitions }>, index: DmnIndex) => void) => any;
   };
   boxedExpression: {
     open: (nodeWithExpression: DmnNodeWithExpression) => void;
@@ -57,7 +59,7 @@ const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
 </definitions>`;
 
 const defaultMarshaller = getMarshaller(EMPTY_DMN_14());
-
+const defaultModel = defaultMarshaller.parser.parse();
 export enum DmnEditorTab {
   EDITOR,
   DATA_TYPES,
@@ -82,7 +84,8 @@ export const useDmnEditor = create(
   immer<State>((set) => ({
     dmn: {
       marshaller: defaultMarshaller,
-      model: defaultMarshaller.parser.parse(),
+      model: defaultModel,
+      index: createDmnIndex(defaultModel),
     },
     boxedExpression: {
       node: undefined,
@@ -100,13 +103,16 @@ export const useDmnEditor = create(
           set((state) => {
             xml ??= "";
             const marshaller = getMarshaller(xml.trim().length <= 0 ? EMPTY_DMN_14() : xml);
+            const model = marshaller.parser.parse();
             state.dmn.marshaller = marshaller;
-            state.dmn.model = marshaller.parser.parse();
+            state.dmn.model = model;
+            state.dmn.index = createDmnIndex(defaultModel);
           });
         },
         set: (mutate) => {
           set((state) => {
-            mutate(state.dmn.model);
+            mutate(state.dmn.model, state.dmn.index);
+            state.dmn.index = createDmnIndex(state.dmn.model);
           });
         },
       },

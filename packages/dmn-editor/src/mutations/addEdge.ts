@@ -1,22 +1,29 @@
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DC__Bounds, DMN14__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import {
+  DC__Bounds,
+  DMN14__tAssociation,
+  DMN14__tAuthorityRequirement,
+  DMN14__tDecision,
+  DMN14__tInformationRequirement,
+  DMN14__tKnowledgeRequirement,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { TargetHandleId } from "../diagram/connections/NodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { _checkIsValidConnection } from "../diagram/connections/isValidConnection";
+import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { getBoundsCenterPoint, getPointForHandle } from "../diagram/maths/DmnMaths";
 import { Dispatch } from "../store/Store";
 import { getRequirementsFromEdge } from "./addConnectedNode";
-import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 
 export function addEdge({
+  dispatch: { dmn },
   sourceNode,
   targetNode,
   edge,
-  dispatch: { dmn },
 }: {
   dispatch: { dmn: Dispatch["dmn"] };
-  sourceNode: { type: NodeType; id: string; bounds: DC__Bounds };
-  targetNode: { type: NodeType; id: string; bounds: DC__Bounds; index: number };
+  sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
+  targetNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined; index: number };
   edge: { type: EdgeType; handle: TargetHandleId };
 }) {
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
@@ -25,25 +32,31 @@ export function addEdge({
 
   const newEdgeId = generateUuid();
 
+  let existingEdgeId: string | undefined = undefined;
+
   dmn.set((model) => {
     // Associations
     if (edge.type === EDGE_TYPES.association) {
       model.definitions.artifact ??= [];
-      // Remove potentially existing edge
-      const existingIndex = model.definitions.artifact.findIndex(
-        (a) =>
-          a.__$$element === "association" &&
-          ((a.sourceRef["@_href"] === `#${sourceNode.id}` && a.targetRef["@_href"] === `#${targetNode.id}`) ||
-            (a.sourceRef["@_href"] === `#${targetNode.id}` && a.targetRef["@_href"] === `#${sourceNode.id}`)) // Associations are bi-directional
+
+      const newAssociation: DMN14__tAssociation = {
+        "@_id": newEdgeId,
+        "@_associationDirection": "Both",
+        sourceRef: { "@_href": `#${sourceNode.id}` },
+        targetRef: { "@_href": `#${targetNode.id}` },
+      };
+
+      // Remove previously existing association
+      const removed = removeFirstMatchIfPresent(
+        model.definitions.artifact,
+        (a) => a.__$$element === "association" && areAssociationsEquivalent(a, newAssociation)
       );
-      model.definitions.artifact.splice(existingIndex, existingIndex >= 0 ? 1 : 0);
+      existingEdgeId = removed?.["@_id"];
 
       // Replace with the new one.
       model.definitions.artifact?.push({
-        "@_id": newEdgeId,
         __$$element: "association",
-        sourceRef: { "@_href": `#${sourceNode.id}` },
-        targetRef: { "@_href": `#${targetNode.id}` },
+        ...newAssociation,
       });
     }
     // Requirements
@@ -51,44 +64,88 @@ export function addEdge({
       const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
       const drgElement = model.definitions.drgElement![targetNode.index] as DMN14__tDecision; // We cast to tDecision here because it has all three types of requirement.
       if (requirements?.informationRequirement) {
-        // FIXME: Tiago -->  Remove potentially existing edge
         drgElement.informationRequirement ??= [];
+        const removed = removeFirstMatchIfPresent(drgElement.informationRequirement, (ir) =>
+          doesInformationRequirementsPointTo(ir, sourceNode.id)
+        );
+        existingEdgeId = removed?.["@_id"];
         drgElement.informationRequirement?.push(...(requirements?.informationRequirement ?? []));
-      } else if (requirements?.knowledgeRequirement) {
-        // FIXME: Tiago -->  Remove potentially existing edge
+      }
+      //
+      else if (requirements?.knowledgeRequirement) {
         drgElement.knowledgeRequirement ??= [];
+        const removed = removeFirstMatchIfPresent(drgElement.knowledgeRequirement, (kr) =>
+          doesKnowledgeRequirementsPointTo(kr, sourceNode.id)
+        );
+        existingEdgeId = removed?.["@_id"];
         drgElement.knowledgeRequirement?.push(...(requirements?.knowledgeRequirement ?? []));
-      } else if (requirements?.authorityRequirement) {
-        // FIXME: Tiago -->  Remove potentially existing edge
+      }
+      //
+      else if (requirements?.authorityRequirement) {
         drgElement.authorityRequirement ??= [];
+        const removed = removeFirstMatchIfPresent(drgElement.authorityRequirement, (ar) =>
+          doesAuthorityRequirementsPointTo(ar, sourceNode.id)
+        );
+        existingEdgeId = removed?.["@_id"];
         drgElement.authorityRequirement?.push(...(requirements?.authorityRequirement ?? []));
       }
     }
 
+    model.definitions["dmndi:DMNDI"] ??= {};
+    model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
+    model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0] ??= {};
+    model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"] ??= [];
+
     // Remove existing
-    const existingIndex =
-      model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.findIndex(
-        (edge) =>
-          edge.__$$element === "dmndi:DMNEdge" &&
-          ((edge["@_sourceElement"] === sourceNode.id && edge["@_targetElement"] === targetNode.id) ||
-            (edge["@_sourceElement"] === targetNode.id && edge["@_targetElement"] === sourceNode.id)) // Associations are bi-directional
-      ) ?? -1;
-    model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.splice(
-      existingIndex,
-      existingIndex >= 0 ? 1 : 0
+    removeFirstMatchIfPresent(
+      model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"],
+      (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
     );
 
     // Replace with the new one.
-    model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
+    model.definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"].push({
       __$$element: "dmndi:DMNEdge",
       "@_id": generateUuid(),
       "@_dmnElementRef": newEdgeId,
-      "@_sourceElement": sourceNode.id,
-      "@_targetElement": targetNode.id,
+      "@_sourceElement": sourceNode.shapeId,
+      "@_targetElement": targetNode.shapeId,
       "di:waypoint": [
         getBoundsCenterPoint(sourceNode.bounds),
         getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle }),
       ],
     });
   });
+}
+
+function doesInformationRequirementsPointTo(a: DMN14__tInformationRequirement, drgElementId: string) {
+  return (
+    a.requiredInput?.["@_href"] === `#${drgElementId}` || //
+    a.requiredDecision?.["@_href"] === `#${drgElementId}`
+  );
+}
+
+function doesKnowledgeRequirementsPointTo(a: DMN14__tKnowledgeRequirement, drgElementId: string) {
+  return a.requiredKnowledge?.["@_href"] === `#${drgElementId}`;
+}
+
+function doesAuthorityRequirementsPointTo(a: DMN14__tAuthorityRequirement, drgElementId: string) {
+  return (
+    a.requiredInput?.["@_href"] === `#${drgElementId}` ||
+    a.requiredDecision?.["@_href"] === `#${drgElementId}` ||
+    a.requiredAuthority?.["@_href"] === `#${drgElementId}`
+  );
+}
+
+function areAssociationsEquivalent(a: DMN14__tAssociation, b: DMN14__tAssociation) {
+  return (
+    (a.sourceRef["@_href"] === b.sourceRef["@_href"] && a.targetRef["@_href"] === b.targetRef["@_href"]) ||
+    (a.sourceRef["@_href"] === b.targetRef["@_href"] && a.targetRef["@_href"] === b.sourceRef["@_href"])
+  );
+}
+
+function removeFirstMatchIfPresent<T>(arr: T[], predicate: Parameters<Array<T>["findIndex"]>[0]): T | undefined {
+  const index = arr.findIndex(predicate);
+  const removed = arr[index] ?? undefined;
+  arr.splice(index, index >= 0 ? 1 : 0);
+  return removed;
 }

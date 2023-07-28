@@ -1,7 +1,7 @@
-import * as RF from "reactflow";
 import { DC__Bounds, DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { getCenter } from "./Maths";
+import * as RF from "reactflow";
 import { TargetHandleId } from "../connections/NodeHandles";
+import { getCenter } from "./Maths";
 
 export function getDistance(a: DC__Point, b: DC__Point) {
   return Math.sqrt(Math.pow(a["@_x"] - b["@_x"], 2) + Math.pow(a["@_y"] - b["@_y"], 2));
@@ -30,6 +30,40 @@ export function getPointForHandle({ handle, bounds }: { bounds: DC__Bounds; hand
     return { "@_x": bounds["@_x"], "@_y": bounds["@_y"] + bounds["@_height"] / 2 };
   } else {
     throw new Error(`Invalid target handle id '${handle}'.`);
+  }
+}
+
+export function getHandlePosition({
+  shapeBounds,
+  waypoint,
+}: {
+  shapeBounds: DC__Bounds | undefined;
+  waypoint: DC__Point;
+}) {
+  const x = shapeBounds?.["@_x"] ?? 0;
+  const y = shapeBounds?.["@_y"] ?? 0;
+  const w = shapeBounds?.["@_width"] ?? 0;
+  const h = shapeBounds?.["@_height"] ?? 0;
+
+  const center = { "@_x": x + w / 2, "@_y": y + h / 2 };
+  const left = { "@_x": x, "@_y": y + h / 2 };
+  const right = { "@_x": x + w, "@_y": y + h / 2 };
+  const top = { "@_x": x + w / 2, "@_y": y };
+  const bottom = { "@_x": x + w / 2, "@_y": y + h };
+
+  if (getDistance(center, waypoint) <= 1) {
+    return TargetHandleId.TargetCenter;
+  } else if (getDistance(top, waypoint) <= 1) {
+    return TargetHandleId.TargetTop;
+  } else if (getDistance(right, waypoint) <= 1) {
+    return TargetHandleId.TargetRight;
+  } else if (getDistance(bottom, waypoint) <= 1) {
+    return TargetHandleId.TargetBottom;
+  } else if (getDistance(left, waypoint) <= 1) {
+    return TargetHandleId.TargetLeft;
+  } else {
+    console.warn("Can't find a match of NSWE/Center handles. Using Center as default.");
+    return TargetHandleId.TargetCenter;
   }
 }
 

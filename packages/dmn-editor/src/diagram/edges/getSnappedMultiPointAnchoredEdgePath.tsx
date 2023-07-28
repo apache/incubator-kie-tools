@@ -1,13 +1,15 @@
-import * as RF from "reactflow";
-import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
 import {
   DC__Point,
   DMNDI13__DMNEdge,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import * as RF from "reactflow";
+import { switchExpression } from "../../switchExpression/switchExpression";
 import { snapPoint } from "../SnapGrid";
-import { getDistance, getNodeCenterPoint, getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
-import { AutoMarker } from "./AutoMarker";
+import { TargetHandleId } from "../connections/NodeHandles";
+import { getHandlePosition, getNodeCenterPoint, getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
+import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
+import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
 
 export function getSnappedMultiPointAnchoredEdgePath({
   dmnEdge,
@@ -30,12 +32,12 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
   const discreteAuto = getDiscretelyAutoPositionedEdgeParamsForRfNodes(sourceNode, targetNode);
 
-  if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.BOTH)) {
+  if (dmnEdge?.["@_id"]?.endsWith(AutoPositionedEdgeMarker.BOTH)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
-  } else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.SOURCE)) {
+  } else if (dmnEdge?.["@_id"]?.endsWith(AutoPositionedEdgeMarker.SOURCE)) {
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
-  } else if (dmnEdge?.["@_id"]?.endsWith(AutoMarker.TARGET)) {
+  } else if (dmnEdge?.["@_id"]?.endsWith(AutoPositionedEdgeMarker.TARGET)) {
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   }
 
@@ -52,23 +54,23 @@ export function getSnappedMultiPointAnchoredEdgePath({
   } else {
     const firstWaypoint = dmnEdge["di:waypoint"][0];
     const secondWaypoint = points[1] ?? dmnEdge["di:waypoint"][1];
-    const src = getSnappedHandlePosition(
+    const sourceHandlePoint = getSnappedHandlePosition(
       dmnShapeSource!,
       firstWaypoint,
       sourceNode,
       points.length === 2 ? getNodeCenterPoint(targetNode) : snapPoint(secondWaypoint)
     );
-    points[0] ??= src.point;
+    points[0] ??= sourceHandlePoint;
 
     const lastWaypoint = dmnEdge["di:waypoint"][dmnEdge["di:waypoint"].length - 1];
     const secondToLastWaypoint = points[points.length - 2] ?? dmnEdge["di:waypoint"][dmnEdge["di:waypoint"].length - 2];
-    const tgt = getSnappedHandlePosition(
+    const targetHandlePoint = getSnappedHandlePosition(
       dmnShapeTarget!,
       lastWaypoint,
       targetNode,
       points.length === 2 ? getNodeCenterPoint(sourceNode) : snapPoint(secondToLastWaypoint)
     );
-    points[points.length - 1] ??= tgt.point;
+    points[points.length - 1] ??= targetHandlePoint;
   }
 
   ///////
@@ -83,56 +85,22 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
 export function getSnappedHandlePosition(
   shape: DMNDI13__DMNShape,
-  waypoint: DC__Point,
+  handleWaypoint: DC__Point,
   snappedNode: RF.Node,
-  snappedWaypoint2: DC__Point
-) {
-  const x = shape?.["dc:Bounds"]?.["@_x"] ?? 0;
-  const y = shape?.["dc:Bounds"]?.["@_y"] ?? 0;
-  const w = shape?.["dc:Bounds"]?.["@_width"] ?? 0;
-  const h = shape?.["dc:Bounds"]?.["@_height"] ?? 0;
+  snappedSecondWaypoint: DC__Point
+): DC__Point {
+  const position = getHandlePosition({ shapeBounds: shape["dc:Bounds"], waypoint: handleWaypoint });
 
   const xx = snappedNode.positionAbsolute?.x ?? 0;
   const yy = snappedNode.positionAbsolute?.y ?? 0;
   const ww = snappedNode.width ?? 0;
   const hh = snappedNode.height ?? 0;
 
-  const center = { "@_x": x + w / 2, "@_y": y + h / 2 };
-  const left = { "@_x": x, "@_y": y + h / 2 };
-  const right = { "@_x": x + w, "@_y": y + h / 2 };
-  const top = { "@_x": x + w / 2, "@_y": y };
-  const bottom = { "@_x": x + w / 2, "@_y": y + h };
-
-  if (getDistance(center, waypoint) <= 1) {
-    return {
-      pos: "center",
-      point: getNodeIntersection(snappedNode, snappedWaypoint2),
-    };
-  } else if (getDistance(top, waypoint) <= 1) {
-    return {
-      pos: "top",
-      point: { "@_x": xx + ww / 2, "@_y": yy },
-    };
-  } else if (getDistance(right, waypoint) <= 1) {
-    return {
-      pos: "right",
-      point: { "@_x": xx + ww, "@_y": yy + hh / 2 },
-    };
-  } else if (getDistance(bottom, waypoint) <= 1) {
-    return {
-      pos: "bottom",
-      point: { "@_x": xx + ww / 2, "@_y": yy + hh },
-    };
-  } else if (getDistance(left, waypoint) <= 1) {
-    return {
-      pos: "left",
-      point: { "@_x": xx, "@_y": yy + hh / 2 },
-    };
-  } else {
-    console.warn("Can't find match of NSWE/Center handles. Using Center as default.");
-    return {
-      pos: "center",
-      point: getNodeIntersection(snappedNode, snappedWaypoint2),
-    };
-  }
+  return switchExpression(position, {
+    [TargetHandleId.TargetCenter]: getNodeIntersection(snappedNode, snappedSecondWaypoint),
+    [TargetHandleId.TargetTop]: { "@_x": xx + ww / 2, "@_y": yy },
+    [TargetHandleId.TargetRight]: { "@_x": xx + ww, "@_y": yy + hh / 2 },
+    [TargetHandleId.TargetBottom]: { "@_x": xx + ww / 2, "@_y": yy + hh },
+    [TargetHandleId.TargetLeft]: { "@_x": xx, "@_y": yy + hh / 2 },
+  });
 }

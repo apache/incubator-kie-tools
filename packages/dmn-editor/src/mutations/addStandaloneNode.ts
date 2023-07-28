@@ -7,8 +7,8 @@ import { NodeNature, nodeNatures } from "./types";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 
 export function addStandaloneNode({
-  newNode,
   dispatch: { dmn },
+  newNode,
 }: {
   dispatch: { dmn: Dispatch["dmn"] };
   newNode: { type: NodeType; bounds: DC__Bounds };

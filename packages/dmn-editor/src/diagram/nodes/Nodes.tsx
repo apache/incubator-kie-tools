@@ -11,10 +11,14 @@ import {
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
+import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
+import { resizeNodes } from "../../mutations/resizeNodes";
+import { useDmnEditor } from "../../store/Store";
+import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
-import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
+import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
 import { EditableNodeLabel, useEditableNodeLabel } from "./EditableNodeLabel";
 import { InfoNodePanel } from "./InfoNodePanel";
@@ -29,10 +33,6 @@ import {
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
-import { DataTypeNodePanel } from "./DataTypeNodePanel";
-import { useDmnEditor } from "../../store/Store";
-import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
-import { resizeNodes } from "../../mutations/resizeNodes";
 
 export type DmnEditorDiagramNodeData<T> = {
   dmnObject: T;
@@ -92,7 +92,7 @@ export const InputDataNode = React.memo(
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -156,7 +156,7 @@ export const DecisionNode = React.memo(
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -220,7 +220,7 @@ export const BkmNode = React.memo(
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -279,7 +279,7 @@ export const KnowledgeSourceNode = React.memo(
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -338,7 +338,7 @@ export const TextAnnotationNode = React.memo(
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
           />
-          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -398,7 +398,7 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle shapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -450,15 +450,23 @@ const resizerControlStyle = {
   border: "none",
 };
 
-export function NodeResizerHandle(props: { shapeIndex: number }) {
+export function NodeResizerHandle(props: { nodeId: string; nodeShapeIndex: number }) {
   const { dispatch } = useDmnEditor();
+  const edges = RF.useStore(useCallback((state) => state.edges, []));
+
   const resizeNode = useCallback<RF.OnResizeEnd>(
     (e, params) => {
       resizeNodes({
         dispatch: { dmn: dispatch.dmn },
         changes: [
           {
-            dmnDiagramElementIndex: props.shapeIndex,
+            dmnDiagramElementIndex: props.nodeShapeIndex,
+            sourceEdgeIndexes: edges.flatMap((e) =>
+              e.source === props.nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+            ),
+            targetEdgeIndexes: edges.flatMap((e) =>
+              e.target === props.nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+            ),
             dimension: {
               "@_width": params.width,
               "@_height": params.height,
@@ -467,7 +475,7 @@ export function NodeResizerHandle(props: { shapeIndex: number }) {
         ],
       });
     },
-    [dispatch.dmn, props.shapeIndex]
+    [dispatch.dmn, edges, props.nodeId, props.nodeShapeIndex]
   );
 
   return (
