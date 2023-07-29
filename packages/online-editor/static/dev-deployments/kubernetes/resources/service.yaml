@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${{ name }}-${{ uniqueId }}
+  namespace: ${{ namespace }}
+  labels:
+    app: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/component: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/instance: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/name: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/part-of: ${{ name }}-${{ uniqueId }}
+    ${{ createdByLabel }}: kie-tools
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: ${{ name }}-${{ uniqueId }}
+    deploymentconfig: ${{ name }}-${{ uniqueId }}
+  type: ClusterIP

@@ -1,0 +1,26 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: ${{ name }}-${{ uniqueId }}
+  namespace: ${{ namespace }}
+  labels:
+    app: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/component: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/instance: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/name: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/part-of: ${{ name }}-${{ uniqueId }}
+    ${{ createdByLabel }}: kie-tools
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /${{ name }}-${{ uniqueId }}
+            pathType: Prefix
+            backend:
+              service:
+                name: ${{ name }}-${{ uniqueId }}
+                port:
+                  number: 8080

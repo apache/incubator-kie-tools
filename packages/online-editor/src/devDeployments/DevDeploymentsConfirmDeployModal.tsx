@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import * as React from "react";
+import React, { useCallback, useState } from "react";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { useCallback, useState } from "react";
 import { useOnlineI18n } from "../i18n";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useDevDeployments } from "./DevDeploymentsContext";

@@ -1,0 +1,43 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: ${{ name }}-${{ uniqueId }}
+  namespace: ${{ namespace }}
+  labels:
+    app: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/component: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/instance: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/name: ${{ name }}-${{ uniqueId }}
+    app.kubernetes.io/part-of: ${{ name }}-${{ uniqueId }}
+    ${{ createdByLabel }}: kie-tools
+  annotations:
+    ${{ uriAnnotation }}: ${{ resourceName }}
+    ${{ workspaceIdAnnotation }}: ${{ workspaceId }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${{ name }}-${{ uniqueId }}
+  template:
+    metadata:
+      labels:
+        app: ${{ name }}-${{ uniqueId }}
+        deploymentconfig: ${{ name }}-${{ uniqueId }}
+    spec:
+      containers:
+        - name: ${{ name }}-${{ uniqueId }}
+          image: quay.io/kie-tools/dmn-dev-deployment-base-image:daily-dev
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: BASE_URL
+              value: http://localhost/${{ name }}-${{ uniqueId }}
+            - name: QUARKUS_PLATFORM_VERSION
+              value: 2.16.7.Final
+            - name: KOGITO_RUNTIME_VERSION
+              value: 1.40.0.Final
+            - name: ROOT_PATH
+              value: /${{ name }}-${{ uniqueId }}
+          resources: {}
+          imagePullPolicy: Always

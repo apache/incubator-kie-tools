@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useRoutes } from "../navigation/Hooks";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { KieSandboxOpenShiftService } from "./services/openshift/KieSandboxOpenShiftService";
 import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
@@ -27,6 +26,7 @@ import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesServ
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
+import { buildK8sApiServerEndpointsByResourceKind } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist/k8sApiServerEndpointsByResourceKind";
 
 interface Props {
   children: React.ReactNode;
@@ -134,6 +134,45 @@ export function DevDeploymentsContextProvider(props: Props) {
       }
     },
     [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, getService, workspaces]
+  );
+
+  const dynamicDeploy = useCallback(
+    async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
+      const service = getService(authSession);
+
+      if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
+        return false;
+      }
+
+      const zipBlob = await workspaces.prepareZip({
+        workspaceId: workspaceFile.workspaceId,
+        onlyExtensions: ["dmn"],
+      });
+
+      const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
+
+      const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
+      const workspaceId = workspace.workspaceId;
+
+      const k8sApiServerEndpointsByResourceKind = await buildK8sApiServerEndpointsByResourceKind(
+        authSession.host,
+        authSession.token
+      );
+
+      // try {
+      //   await service.deploy({
+      //     targetFilePath: workspaceFile.relativePath,
+      //     workspaceName,
+      //     workspaceZipBlob: zipBlob,
+      //     containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+      //   });
+      //   return true;
+      // } catch (error) {
+      //   console.error(error);
+      //   return false;
+      // }
+    },
+    [getService, workspaces]
   );
 
   const value = useMemo(
