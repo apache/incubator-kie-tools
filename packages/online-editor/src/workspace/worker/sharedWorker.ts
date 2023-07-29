@@ -25,10 +25,10 @@ import { EditorConfig } from "../../envelopeLocator/EditorEnvelopeLocatorApi";
 declare const importScripts: any;
 importScripts("fsMain.js");
 
-async function gitCorsProxyUrl(): Promise<string> {
+async function corsProxyUrl(): Promise<string> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
-  return env.KIE_SANDBOX_GIT_CORS_PROXY_URL;
+  return env.KIE_SANDBOX_CORS_PROXY_URL;
 }
 
 async function fetchEditorsConfig(): Promise<EditorConfig[]> {
@@ -43,7 +43,7 @@ async function fetchAppName(): Promise<string> {
   return env.KIE_SANDBOX_APP_NAME;
 }
 
-const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
+const workspaceServices = createWorkspaceServices({ corsProxyUrl: corsProxyUrl() });
 
 declare let onconnect: any;
 

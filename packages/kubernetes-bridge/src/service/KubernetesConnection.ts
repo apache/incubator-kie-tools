@@ -18,12 +18,14 @@ export interface KubernetesConnection {
   namespace: string;
   host: string;
   token: string;
+  insecurelyDisableTlsCertificateValidation: boolean;
 }
 
 export const EMPTY_KUBERNETES_CONNECTION = {
   namespace: "",
   host: "",
   token: "",
+  insecurelyDisableTlsCertificateValidation: false,
 };
 
 export enum KubernetesConnectionStatus {

@@ -160,6 +160,9 @@ If you find an issue or any misleading information, please feel free to report i
                   <p>Enter the value of API token in the <strong>Token</strong> field. </p>
                 </li>
                 <li>
+                  <p>If your OpenShift instance uses Self-Signed certificates, then you must also check the <code>Insecurely disable TLS certificate validation</code> option.</p>
+                </li>
+                <li>
                   <p>Click <strong>Connect</strong>. </p>
                   <div class="paragraph">
                     <p>If the entered values are correct, then the tab updates and displays <strong>You&rsquo;re connected to OpenShift</strong> message. </p>
@@ -169,23 +172,6 @@ If you find an issue or any misleading information, please feel free to report i
             </div>
             <div class="paragraph">
               <p>After connecting to OpenShift, you are ready to deploy your Serverless Workflow projects using Serverless Logic Web Tools. For more information about deploying your projects, see <a class="xref page" href="serverless-logic-web-tools-deploy-projects.html" aria-invalid="true">Deploying your Serverless Workflow projects using Serverless Logic Web Tools</a>. </p>
-            </div>
-            <div class="admonitionblock note">
-              <table>
-                <tbody>
-                  <tr>
-                    <td class="icon">&nbsp;</td>
-                    <td class="content">
-                      <div class="paragraph">
-                        <p>
-                          <b>NOTE</b>
-                          <br />If your OpenShift instance uses self-signed certificates, then you must enable the <code>InsecureSkipVerify</code> on Extended Services.
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>`,

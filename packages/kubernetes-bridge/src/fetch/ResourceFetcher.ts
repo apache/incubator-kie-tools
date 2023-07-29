@@ -37,6 +37,10 @@ export class ResourceFetcher {
 
     if (this.args.proxyUrl) {
       headers[HeaderKeys.TARGET_URL] = targetUrl;
+
+      if (this.args.connection.insecurelyDisableTlsCertificateValidation) {
+        headers[HeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] = "true";
+      }
     }
 
     let error;
