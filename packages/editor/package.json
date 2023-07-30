@@ -19,8 +19,9 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.json && pnpm test",
+    "build-css": "node-sass src/**/*.scss -o dist/",
+    "build:dev": "rimraf dist  && pnpm copy:css && tsc -p tsconfig.json && pnpm build-css",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.json && pnpm test && pnpm build-css",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
@@ -64,6 +65,7 @@
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
+    "node-sass": "^9.0.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2"
