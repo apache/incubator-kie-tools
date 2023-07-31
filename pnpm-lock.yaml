@@ -815,6 +815,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@playwright/test":
+        specifier: ^1.35.1
+        version: 1.36.2
       "@storybook/addon-essentials":
         specifier: ^7.1.1
         version: 7.1.1(react-dom@17.0.2)(react@17.0.2)
