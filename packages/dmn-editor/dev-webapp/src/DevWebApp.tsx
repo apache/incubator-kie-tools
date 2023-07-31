@@ -10,8 +10,6 @@ import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
 import { DmnEditor, DmnEditorRef } from "../../src/DmnEditor";
 
 export function DevWebApp() {
-  const [xml, setXml] = useState(DEFAULT_DEV_WEBAPP_DMN);
-
   const onDrop = useCallback((e: React.DragEvent) => {
     console.log("DMN Editor :: Dev webapp :: File(s) dropped! Opening it.");
 
@@ -22,7 +20,7 @@ export function DevWebApp() {
       [...e.dataTransfer.items].forEach((item, i) => {
         if (item.kind === "file") {
           const reader = new FileReader();
-          reader.addEventListener("load", ({ target }) => setXml(target?.result as string));
+          reader.addEventListener("load", ({ target }) => setState({ stack: [target?.result as string], pointer: 0 }));
           reader.readAsText(item.getAsFile() as any);
         }
       });
@@ -38,8 +36,9 @@ export function DevWebApp() {
   const copyAsXml = useCallback(() => {
     navigator.clipboard.writeText(ref.current?.getContent() || "");
   }, []);
+
   const reset = useCallback(() => {
-    setXml("");
+    setState({ stack: [""], pointer: 0 });
   }, []);
 
   const downloadRef = useRef<HTMLAnchorElement>(null);
@@ -50,6 +49,24 @@ export function DevWebApp() {
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
+  }, []);
+
+  const [state, setState] = useState<{ stack: string[]; pointer: number }>({
+    stack: [DEFAULT_DEV_WEBAPP_DMN],
+    pointer: 0,
+  });
+
+  const undo = useCallback(() => {
+    setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
+  }, []);
+
+  const redo = useCallback(() => {
+    setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
+  }, []);
+
+  const onModelChange = useCallback((model) => {
+    console.info("Model changed!");
+    console.info(model);
   }, []);
 
   return (
@@ -64,6 +81,10 @@ export function DevWebApp() {
               <h5>(Drag & drop a file anywhere to open it)</h5>
             </FlexItem>
             <FlexItem shrink={{ default: "shrink" }}>
+              <button onClick={undo}>Undo</button>
+              &nbsp; &nbsp;
+              <button onClick={redo}>Redo</button>
+              &nbsp; &nbsp; | &nbsp; &nbsp;
               <button onClick={reset}>Reset</button>
               &nbsp; &nbsp;
               <button onClick={copyAsXml}>Copy as XML</button>
@@ -75,7 +96,7 @@ export function DevWebApp() {
         </PageSection>
         <hr />
         <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
-          <DmnEditor ref={ref} xml={xml} />
+          <DmnEditor ref={ref} xml={state.stack[state.pointer]} onModelChange={onModelChange} />
         </PageSection>
       </Page>
     </>

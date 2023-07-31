@@ -44,7 +44,8 @@
       }
     },
     "patchedDependencies": {
-      "selenium-webdriver@4.8.1": "patches/selenium-webdriver@4.8.1.patch"
+      "selenium-webdriver@4.8.1": "patches/selenium-webdriver@4.8.1.patch",
+      "zustand@4.3.9": "patches/zustand@4.3.9.patch"
     }
   },
   "kieTools": {

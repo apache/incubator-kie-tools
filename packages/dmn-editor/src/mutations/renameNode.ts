@@ -1,26 +1,28 @@
-import { DMN14__tTextAnnotation } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { Dispatch } from "../store/Store";
+import {
+  DMN14__tDefinitions,
+  DMN14__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
 export function renameDrgElement({
-  dispatch: { dmn },
+  definitions,
   newName,
   index,
 }: {
-  dispatch: { dmn: Dispatch["dmn"] };
+  definitions: DMN14__tDefinitions;
   newName: string;
   index: number;
 }) {
-  dmn.set((model) => (model.definitions.drgElement![index]["@_name"] = newName));
+  definitions.drgElement![index]["@_name"] = newName;
 }
 
 export function updateTextAnnotation({
-  dispatch: { dmn },
+  definitions,
   newText,
   index,
 }: {
-  dispatch: { dmn: Dispatch["dmn"] };
+  definitions: DMN14__tDefinitions;
   newText: string;
   index: number;
 }) {
-  dmn.set((model) => ((model.definitions.artifact![index] as DMN14__tTextAnnotation).text = newText));
+  (definitions.artifact![index] as DMN14__tTextAnnotation).text = newText;
 }

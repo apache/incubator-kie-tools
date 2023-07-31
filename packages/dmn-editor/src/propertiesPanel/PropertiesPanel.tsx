@@ -20,12 +20,13 @@ import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { useDmnEditor } from "../store/Store";
+import { useDmnEditorStore } from "../store/Store";
 import "./PropertiesPanel.css";
 import { GlobalProperties } from "./GlobalProperties";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
-  const { dmn } = useDmnEditor();
+  const { dmn } = useDmnEditorStore();
+
   const node = useMemo(() => {
     return (
       dmn.model.definitions.drgElement?.find((s) => s["@_id"] === nodeId) ??
@@ -107,8 +108,9 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   );
 }
 
-export function PropertiesPanel({ selectedNodes, onClose }: { selectedNodes: string[]; onClose: () => void }) {
-  const { dmn } = useDmnEditor();
+export function PropertiesPanel() {
+  const { diagram, dispatch } = useDmnEditorStore();
+
   return (
     <DrawerPanelContent
       isResizable={true}
@@ -117,16 +119,16 @@ export function PropertiesPanel({ selectedNodes, onClose }: { selectedNodes: str
       onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
     >
       <DrawerHead>
-        {selectedNodes.length === 1 && (
+        {diagram.selected.length === 1 && (
           <>
-            <SingleNodeProperties nodeId={selectedNodes[0]} />
+            <SingleNodeProperties nodeId={diagram.selected[0]} />
           </>
         )}
-        {selectedNodes.length > 1 && (
+        {diagram.selected.length > 1 && (
           <>
             <Flex justifyContent={{ default: "justifyContentCenter" }}>
               <TextContent>
-                <Text component={TextVariants.h4}>Multiple nodes selected ({selectedNodes.length})</Text>
+                <Text component={TextVariants.h4}>Multiple nodes selected ({diagram.selected.length})</Text>
               </TextContent>
             </Flex>
             <Form>
@@ -134,9 +136,9 @@ export function PropertiesPanel({ selectedNodes, onClose }: { selectedNodes: str
             </Form>
           </>
         )}
-        {selectedNodes.length <= 0 && <GlobalProperties />}
+        {diagram.selected.length <= 0 && <GlobalProperties />}
         <DrawerActions>
-          <DrawerCloseButton onClick={onClose} />
+          <DrawerCloseButton onClick={() => dispatch.propertiesPanel.close()} />
         </DrawerActions>
       </DrawerHead>
     </DrawerPanelContent>

@@ -3,7 +3,6 @@ import "reactflow/dist/style.css";
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
@@ -17,35 +16,64 @@ import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { Documentation } from "./documentation/Documentation";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { PropertiesPanel } from "./propertiesPanel/PropertiesPanel";
-import { DmnEditorTab, useDmnEditor } from "./store/Store";
+import {
+  DmnEditorStoreApiContext,
+  DmnEditorTab,
+  State,
+  StoreApiType,
+  createDmnEditorStore,
+  useDmnEditorStore,
+} from "./store/Store";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 
 export type DmnEditorRef = {
   getContent(): string;
 };
 
-export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.Ref<DmnEditorRef>) => {
-  const { propertiesPanel, boxedExpression, dmn, navigation, dispatch } = useDmnEditor();
+export type DmnEditorProps = {
+  xml: string;
+  onModelChange?: (model: State["dmn"]["model"]) => void;
+};
 
-  // Make sure the DMN Editor reacts to props changing.
-  useEffect(() => {
-    dispatch.dmn.reset(xml);
-  }, [dispatch.dmn, xml]);
+export const DmnEditorInternal = ({
+  xml,
+  onModelChange,
+  forwardRef,
+}: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
+  const { propertiesPanel, boxedExpression, dmn, navigation, dispatch, diagram } = useDmnEditorStore();
 
-  // Allow imperativelly controlling this component.
+  // Allow imperativelly controlling the Editor.
   useImperativeHandle(
-    ref,
+    forwardRef,
     () => ({
       getContent: () => dmn.marshaller.builder.build(dmn.model),
     }),
-    [dmn]
+    [dmn.marshaller, dmn.model]
   );
 
-  const onTabChanged = useCallback((e, tab) => dispatch.navigation.setTab(tab), [dispatch.navigation]);
+  // Make sure the DMN Editor reacts to props changing.
+  useEffectAfterFirstRender(() => {
+    dispatch.dmn.reset(xml);
+  }, [dispatch.dmn, xml]);
 
-  const [selectedNodes, setSelectedNodes] = useState<string[]>([]);
-  useEffect(() => setSelectedNodes([]), [dmn.model]);
+  // Only notify changes when dragging/resizing operations are not happening.
+  useEffectAfterFirstRender(() => {
+    const isChanging = diagram.dragging.length > 0 || diagram.resizing.length > 0;
+    if (isChanging) {
+      return;
+    }
+
+    onModelChange?.(dmn.model);
+  }, [diagram.dragging.length, diagram.resizing.length, dmn.model, onModelChange]);
+
+  const onTabChanged = useCallback(
+    (e, tab) => {
+      return dispatch.navigation.setTab(tab);
+    },
+    [dispatch.navigation]
+  );
 
   const diagramContainerRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +83,7 @@ export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.
         isFilled={true}
         activeKey={navigation.tab}
         onSelect={onTabChanged}
-        role="region"
+        role={"region"}
         className={"kie-dmn-editor--tabs"}
       >
         <Tab
@@ -71,15 +99,11 @@ export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.
         >
           {navigation.tab === DmnEditorTab.EDITOR && (
             <Drawer isExpanded={propertiesPanel.isOpen} isInline={true} position={"right"}>
-              <DrawerContent
-                panelContent={
-                  <PropertiesPanel selectedNodes={selectedNodes} onClose={dispatch.propertiesPanel.close} />
-                }
-              >
+              <DrawerContent panelContent={<PropertiesPanel />}>
                 <DrawerContentBody>
                   <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
                     <DmnVersionLabel version={dmn.marshaller.version} />
-                    {!boxedExpression.node && <Diagram container={diagramContainerRef} onSelect={setSelectedNodes} />}
+                    {!boxedExpression.node && <Diagram container={diagramContainerRef} />}
                     {boxedExpression.node && <BoxedExpression container={diagramContainerRef} />}
                   </div>
                 </DrawerContentBody>
@@ -131,5 +155,15 @@ export const DmnEditor = React.forwardRef(({ xml }: { xml: string }, ref: React.
         </Tab>
       </Tabs>
     </>
+  );
+};
+
+export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref<DmnEditorRef>) => {
+  const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.xml));
+
+  return (
+    <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+      <DmnEditorInternal forwardRef={ref} {...props} />
+    </DmnEditorStoreApiContext.Provider>
   );
 });

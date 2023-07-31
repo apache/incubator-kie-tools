@@ -8,10 +8,10 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { useDmnEditor } from "../store/Store";
+import { useDmnEditorStore } from "../store/Store";
 
 export function IncludedModels() {
-  const { dmn } = useDmnEditor();
+  const { dmn } = useDmnEditorStore();
 
   const imports = useMemo(() => {
     return dmn.model.definitions.import ?? [];

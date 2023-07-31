@@ -10,10 +10,12 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
-import { useDmnEditor } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 
 export function GlobalProperties() {
-  const { dmn, dispatch } = useDmnEditor();
+  const { dmn } = useDmnEditorStore();
+
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   return (
     <Form>
@@ -42,7 +44,11 @@ export function GlobalProperties() {
             isDisabled={false}
             placeholder={"Enter a name..."}
             value={dmn.model.definitions["@_name"]}
-            onChange={(newName) => dispatch.dmn.set((model) => (model.definitions["@_name"] = newName))}
+            onChange={(newName) =>
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions["@_name"] = newName;
+              })
+            }
           />
         </FormGroup>
         <FormGroup label="Description">
@@ -54,7 +60,11 @@ export function GlobalProperties() {
             rows={6}
             placeholder={"Enter a description..."}
             value={dmn.model.definitions["description"]}
-            onChange={(newDescription) => dispatch.dmn.set((model) => (model.definitions.description = newDescription))}
+            onChange={(newDescription) =>
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions.description = newDescription;
+              })
+            }
           />
         </FormGroup>
 
@@ -68,7 +78,11 @@ export function GlobalProperties() {
             isDisabled={false}
             placeholder={"Enter a namespace..."}
             value={dmn.model.definitions["@_namespace"]}
-            onChange={(newNamespace) => dispatch.dmn.set((model) => (model.definitions["@_namespace"] = newNamespace))}
+            onChange={(newNamespace) =>
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions["@_namespace"] = newNamespace;
+              })
+            }
           />
         </FormGroup>
         <FormGroup label="Expression language">
@@ -79,7 +93,9 @@ export function GlobalProperties() {
             placeholder={"Enter an expression language..."}
             value={dmn.model.definitions["@_expressionLanguage"]}
             onChange={(newExprLang) =>
-              dispatch.dmn.set((model) => (model.definitions["@_expressionLanguage"] = newExprLang))
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions["@_expressionLanguage"] = newExprLang;
+              })
             }
           />
         </FormGroup>

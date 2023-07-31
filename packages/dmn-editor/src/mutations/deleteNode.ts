@@ -1,15 +1,11 @@
-import { DMN14__tTextAnnotation } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { Dispatch } from "../store/Store";
-import { NodeType } from "../diagram/connections/graphStructure";
+import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
 export function deleteNode({
-  dispatch: { dmn },
+  definitions,
   node,
 }: {
-  dispatch: { dmn: Dispatch["dmn"] };
+  definitions: DMN14__tDefinitions;
   node: { id: string; index: number };
 }) {
-  dmn.set((model) => {
-    // TODO: Implement
-  });
+  // TODO: Implement
 }

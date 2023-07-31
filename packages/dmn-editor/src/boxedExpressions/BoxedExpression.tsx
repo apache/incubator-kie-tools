@@ -5,13 +5,14 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { DmnNodeWithExpression, useDmnEditor } from "../store/Store";
-import { beeToDmn } from "./beeToDmn";
-import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
 import { updateExpression } from "../mutations/updateExpression";
+import { DmnNodeWithExpression, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
-  const { dispatch, dmn, boxedExpression } = useDmnEditor();
+  const { dispatch, dmn, boxedExpression } = useDmnEditorStore();
+
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const widthsById = useMemo(() => {
     return (
@@ -40,8 +41,10 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       return;
     }
 
-    updateExpression({ dispatch: { dmn: dispatch.dmn }, expression, index: 0 });
-  }, [dispatch.dmn, expression, initial]);
+    dmnEditorStoreApi.setState((state) => {
+      updateExpression({ definitions: state.dmn.model.definitions, expression, index: 0 });
+    });
+  }, [dmnEditorStoreApi, expression, initial]);
 
   const dataTypes = useMemo(
     () =>

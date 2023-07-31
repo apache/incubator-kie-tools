@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { DmnNodeWithExpression, useDmnEditor } from "../../store/Store";
+import { DmnNodeWithExpression, useDmnEditorStore } from "../../store/Store";
 
 export function EditExpressionNodePanel(props: { isVisible: boolean; nodeWithExpression: DmnNodeWithExpression }) {
-  const { dispatch } = useDmnEditor();
+  const { dispatch } = useDmnEditorStore();
 
   return (
     <>

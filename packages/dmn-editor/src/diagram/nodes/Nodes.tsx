@@ -12,8 +12,8 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
-import { resizeNodes } from "../../mutations/resizeNodes";
-import { useDmnEditor } from "../../store/Store";
+import { resizeNode } from "../../mutations/resizeNode";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
@@ -57,10 +57,14 @@ export const InputDataNode = React.memo(
     const className = useNodeClassName(isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(id, shape);
 
-    const { dispatch } = useDmnEditor();
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const setName = useCallback(
-      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
-      [dispatch.dmn, index]
+      (newName: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
     );
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
@@ -117,10 +121,14 @@ export const DecisionNode = React.memo(
 
     const nodeDimensions = useNodeDimensions(id, shape);
 
-    const { dispatch } = useDmnEditor();
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const setName = useCallback(
-      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
-      [dispatch.dmn, index]
+      (newName: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
     );
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
@@ -181,10 +189,14 @@ export const BkmNode = React.memo(
 
     const nodeDimensions = useNodeDimensions(id, shape);
 
-    const { dispatch } = useDmnEditor();
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const setName = useCallback(
-      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
-      [dispatch.dmn, index]
+      (newName: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
     );
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
@@ -245,10 +257,14 @@ export const KnowledgeSourceNode = React.memo(
 
     const nodeDimensions = useNodeDimensions(id, shape);
 
-    const { dispatch } = useDmnEditor();
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const setName = useCallback(
-      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
-      [dispatch.dmn, index]
+      (newName: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
     );
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
@@ -304,10 +320,14 @@ export const TextAnnotationNode = React.memo(
 
     const nodeDimensions = useNodeDimensions(id, shape);
 
-    const { dispatch } = useDmnEditor();
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const setText = useCallback(
-      (newText: string) => updateTextAnnotation({ dispatch: { dmn: dispatch.dmn }, newText, index }),
-      [dispatch.dmn, index]
+      (newText: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          updateTextAnnotation({ definitions: state.dmn.model.definitions, newText, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
     );
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
@@ -363,12 +383,15 @@ export const DecisionServiceNode = React.memo(
 
     const nodeDimensions = useNodeDimensions(id, shape);
 
-    const { dispatch } = useDmnEditor();
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const setName = useCallback(
-      (newName: string) => renameDrgElement({ dispatch: { dmn: dispatch.dmn }, newName, index }),
-      [dispatch.dmn, index]
+      (newName: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
     );
-
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
@@ -451,39 +474,11 @@ const resizerControlStyle = {
 };
 
 export function NodeResizerHandle(props: { nodeId: string; nodeShapeIndex: number }) {
-  const { dispatch } = useDmnEditor();
-  const edges = RF.useStore(useCallback((state) => state.edges, []));
-
-  const resizeNode = useCallback<RF.OnResizeEnd>(
-    (e, params) => {
-      resizeNodes({
-        dispatch: { dmn: dispatch.dmn },
-        changes: [
-          {
-            dmnDiagramElementIndex: props.nodeShapeIndex,
-            sourceEdgeIndexes: edges.flatMap((e) =>
-              e.source === props.nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-            ),
-            targetEdgeIndexes: edges.flatMap((e) =>
-              e.target === props.nodeId && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-            ),
-            dimension: {
-              "@_width": params.width,
-              "@_height": params.height,
-            },
-          },
-        ],
-      });
-    },
-    [dispatch.dmn, edges, props.nodeId, props.nodeShapeIndex]
-  );
-
   return (
     <RF.NodeResizeControl
       style={resizerControlStyle}
       minWidth={MIN_SIZE_FOR_NODES.width}
       minHeight={MIN_SIZE_FOR_NODES.height}
-      onResizeEnd={resizeNode}
     >
       <div
         style={{
@@ -556,6 +551,9 @@ function useHoveredNodeAlwaysOnTop(
 ) {
   useEffect(() => {
     setTimeout(() => {
+      if (selected) {
+        ref.current?.focus();
+      }
       ref.current!.parentElement!.style.zIndex = `${isHovered || dragging ? 1200 : 10}`;
     }, 0);
   }, [dragging, isHovered, ref, selected]);

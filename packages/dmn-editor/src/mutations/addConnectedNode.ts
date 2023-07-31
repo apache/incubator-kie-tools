@@ -3,25 +3,25 @@ import {
   DC__Bounds,
   DMN14__tAuthorityRequirement,
   DMN14__tDecision,
+  DMN14__tDefinitions,
   DMN14__tInformationRequirement,
   DMN14__tKnowledgeRequirement,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
-import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
-import { Dispatch } from "../store/Store";
-import { switchExpression } from "../switchExpression/switchExpression";
-import { NodeNature, nodeNatures } from "./types";
-import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
+import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { switchExpression } from "../switchExpression/switchExpression";
+import { NodeNature, nodeNatures } from "./NodeNature";
 
 export function addConnectedNode({
-  dispatch: { dmn },
+  definitions,
   sourceNode,
   newNode,
   edge,
 }: {
-  dispatch: { dmn: Dispatch["dmn"] };
+  definitions: DMN14__tDefinitions;
   sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
   edge: EdgeType;
@@ -30,97 +30,97 @@ export function addConnectedNode({
   const newEdgeId = generateUuid();
   const nature = nodeNatures[newNode.type];
 
-  dmn.set(({ definitions }) => {
-    if (nature === NodeNature.DRG_ELEMENT) {
-      const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
+  if (nature === NodeNature.DRG_ELEMENT) {
+    const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
 
-      definitions.drgElement ??= [];
-      definitions.drgElement?.push(
-        switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation">, {
-          [NODE_TYPES.bkm]: {
-            __$$element: "businessKnowledgeModel",
-            "@_name": "New BKM",
+    definitions.drgElement ??= [];
+    definitions.drgElement?.push(
+      switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation">, {
+        [NODE_TYPES.bkm]: {
+          __$$element: "businessKnowledgeModel",
+          "@_name": "New BKM",
+          "@_id": newNodeId,
+          ...requirements,
+        },
+        [NODE_TYPES.decision]: {
+          __$$element: "decision",
+          "@_name": "New Decision",
+          "@_id": newNodeId,
+          ...requirements,
+        },
+        [NODE_TYPES.decisionService]: {
+          __$$element: "decisionService",
+          "@_name": "New Decision Service",
+          "@_id": newNodeId,
+          ...requirements,
+        },
+        [NODE_TYPES.inputData]: {
+          __$$element: "inputData",
+          "@_name": "New Input Data",
+          "@_id": newNodeId,
+          ...requirements,
+        },
+        [NODE_TYPES.knowledgeSource]: {
+          __$$element: "knowledgeSource",
+          "@_name": "New Knowledge Source",
+          "@_id": newNodeId,
+          ...requirements,
+        },
+      })
+    );
+  } else if (nature === NodeNature.ARTIFACT) {
+    definitions.artifact ??= [];
+    definitions.artifact?.push(
+      ...switchExpression(newNode.type as Extract<NodeType, "node_group" | "node_textAnnotation">, {
+        [NODE_TYPES.textAnnotation]: [
+          {
             "@_id": newNodeId,
-            ...requirements,
+            __$$element: "textAnnotation" as const,
+            text: "New text annotation",
           },
-          [NODE_TYPES.decision]: {
-            __$$element: "decision",
-            "@_name": "New Decision",
+          {
+            "@_id": newEdgeId,
+            __$$element: "association" as const,
+            "@_associationDirection": "Both" as const,
+            sourceRef: { "@_href": `#${sourceNode.id}` },
+            targetRef: { "@_href": `#${newNodeId}` },
+          },
+        ],
+        [NODE_TYPES.group]: [
+          {
             "@_id": newNodeId,
-            ...requirements,
+            __$$element: "group" as const,
+            "@_name": "New group",
           },
-          [NODE_TYPES.decisionService]: {
-            __$$element: "decisionService",
-            "@_name": "New Decision Service",
-            "@_id": newNodeId,
-            ...requirements,
-          },
-          [NODE_TYPES.inputData]: {
-            __$$element: "inputData",
-            "@_name": "New Input Data",
-            "@_id": newNodeId,
-            ...requirements,
-          },
-          [NODE_TYPES.knowledgeSource]: {
-            __$$element: "knowledgeSource",
-            "@_name": "New Knowledge Source",
-            "@_id": newNodeId,
-            ...requirements,
-          },
-        })
-      );
-    } else if (nature === NodeNature.ARTIFACT) {
-      definitions.artifact ??= [];
-      definitions.artifact?.push(
-        ...switchExpression(newNode.type as Extract<NodeType, "node_group" | "node_textAnnotation">, {
-          [NODE_TYPES.textAnnotation]: [
-            {
-              "@_id": newNodeId,
-              __$$element: "textAnnotation" as const,
-              text: "New text annotation",
-            },
-            {
-              "@_id": newEdgeId,
-              __$$element: "association" as const,
-              "@_associationDirection": "Both" as const,
-              sourceRef: { "@_href": `#${sourceNode.id}` },
-              targetRef: { "@_href": `#${newNodeId}` },
-            },
-          ],
-          [NODE_TYPES.group]: [
-            {
-              "@_id": newNodeId,
-              __$$element: "group" as const,
-              "@_name": "New group",
-            },
-          ],
-        })
-      );
-    } else {
-      throw new Error(`Unknown node usage '${nature}'.`);
-    }
+        ],
+      })
+    );
+  } else {
+    throw new Error(`Unknown node usage '${nature}'.`);
+  }
 
-    const newShapeId = generateUuid();
-    // Add the new node shape
-    definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
-      __$$element: "dmndi:DMNShape",
-      "@_id": newShapeId,
-      "@_dmnElementRef": newNodeId,
-      "@_isCollapsed": false,
-      "@_isListedInputData": false,
-      "dc:Bounds": newNode.bounds,
-    });
-
-    // Add the new edge shape
-    definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
-      __$$element: "dmndi:DMNEdge",
-      "@_id": generateUuid() + AutoPositionedEdgeMarker.TARGET,
-      "@_dmnElementRef": newEdgeId,
-      "@_sourceElement": sourceNode.shapeId,
-      "@_targetElement": newShapeId,
-      "di:waypoint": [getBoundsCenterPoint(sourceNode.bounds), getBoundsCenterPoint(newNode.bounds)],
-    });
+  const newShapeId = generateUuid();
+  // Add the new node shape
+  definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
+    __$$element: "dmndi:DMNShape",
+    "@_id": newShapeId,
+    "@_dmnElementRef": newNodeId,
+    "@_isCollapsed": false,
+    "@_isListedInputData": false,
+    "dc:Bounds": newNode.bounds,
   });
+
+  // Add the new edge shape
+  definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
+    __$$element: "dmndi:DMNEdge",
+    "@_id": generateUuid() + AutoPositionedEdgeMarker.TARGET,
+    "@_dmnElementRef": newEdgeId,
+    "@_sourceElement": sourceNode.shapeId,
+    "@_targetElement": newShapeId,
+    "di:waypoint": [getBoundsCenterPoint(sourceNode.bounds), getBoundsCenterPoint(newNode.bounds)],
+  });
+
+  return newNodeId;
 }
 
 export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string }, newEdgeId: string, edge: EdgeType) {

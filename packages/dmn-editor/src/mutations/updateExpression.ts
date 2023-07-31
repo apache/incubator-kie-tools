@@ -1,13 +1,13 @@
 import { ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
+import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { beeToDmn } from "../boxedExpressions/beeToDmn";
-import { Dispatch } from "../store/Store";
 
 export function updateExpression({
-  dispatch: { dmn },
+  definitions,
   expression,
   index,
 }: {
-  dispatch: { dmn: Dispatch["dmn"] };
+  definitions: DMN14__tDefinitions;
   expression: ExpressionDefinition;
   index: number;
 }) {

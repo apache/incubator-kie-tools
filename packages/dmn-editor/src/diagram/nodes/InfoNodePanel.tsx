@@ -1,10 +1,10 @@
 import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import { useDmnEditor } from "../../store/Store";
+import { useDmnEditorStore } from "../../store/Store";
 
 export function InfoNodePanel(props: { isVisible: boolean }) {
-  const { dispatch } = useDmnEditor();
+  const { dispatch } = useDmnEditorStore();
 
   return (
     <>

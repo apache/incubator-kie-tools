@@ -7,6 +7,9 @@ overrides:
 packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
 
 patchedDependencies:
+  zustand@4.3.9:
+    hash: d4icmijfkrp7ecjwqsefznvq3a
+    path: patches/zustand@4.3.9.patch
   selenium-webdriver@4.8.1:
     hash: lbqefch5nrzt5atgrk2dnw5phe
     path: patches/selenium-webdriver@4.8.1.patch
