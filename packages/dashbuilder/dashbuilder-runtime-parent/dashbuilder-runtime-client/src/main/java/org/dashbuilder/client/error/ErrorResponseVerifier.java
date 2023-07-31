@@ -22,7 +22,6 @@ import javax.ws.rs.core.MediaType;
 import elemental2.dom.Response;
 import elemental2.dom.XMLHttpRequest;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback.DefaultErrorType;
-import org.jboss.resteasy.util.HttpResponseCodes;
 
 /**
  * Verify if HTTP responses contains a timeout 
@@ -30,6 +29,10 @@ import org.jboss.resteasy.util.HttpResponseCodes;
  */
 @ApplicationScoped
 public class ErrorResponseVerifier {
+
+    private static final int UNAUTHORIZED_HTTP_CODE = 401;
+
+    private static final int FORBIDDEN_ERROR_CODE = 403;
 
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     
@@ -45,11 +48,11 @@ public class ErrorResponseVerifier {
     }
 
     private void verify(int status, String contentType, String statusText) {
-        if (status == HttpResponseCodes.SC_UNAUTHORIZED || MediaType.TEXT_HTML.equals(contentType)) {
+        if (status == UNAUTHORIZED_HTTP_CODE || MediaType.TEXT_HTML.equals(contentType)) {
             errorCallback.error(DefaultErrorType.NOT_LOGGED);
         }
 
-        if (status == HttpResponseCodes.SC_FORBIDDEN) {
+        if (status == FORBIDDEN_ERROR_CODE) {
             errorCallback.error(DefaultErrorType.NOT_AUTHORIZED);
         }
     }

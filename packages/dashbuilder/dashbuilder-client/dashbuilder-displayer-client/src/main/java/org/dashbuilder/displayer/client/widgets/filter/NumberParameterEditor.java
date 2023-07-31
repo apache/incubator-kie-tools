@@ -19,13 +19,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.UberView;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
 @Dependent
 public class NumberParameterEditor implements FunctionParameterEditor {
 
-    public interface View extends UberView<NumberParameterEditor> {
+    public interface View extends UberElemental<NumberParameterEditor> {
 
         String getValue();
 
@@ -50,7 +51,7 @@ public class NumberParameterEditor implements FunctionParameterEditor {
 
     @Override
     public Widget asWidget() {
-        return view.asWidget();
+        return ElementWrapperWidget.getWidget(view.getElement());
     }
 
     public void setOnChangeCommand(Command onChangeCommand) {

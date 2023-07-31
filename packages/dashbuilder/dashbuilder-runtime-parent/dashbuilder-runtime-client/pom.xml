@@ -46,6 +46,11 @@
         <artifactId>jsonata</artifactId>
         <version>${version.org.webjars.npm.jsonata}</version>
       </dependency>
+      <dependency>
+        <groupId>org.webjars.npm</groupId>
+        <artifactId>patternfly__patternfly</artifactId>
+        <version>${version.org.webjars.npm.patternfly}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -81,6 +86,11 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-patternfly</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
@@ -103,12 +113,6 @@
     <dependency>
       <groupId>org.dashbuilder</groupId>
       <artifactId>dashbuilder-renderer-default</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.dashbuilder</groupId>
-      <artifactId>dashbuilder-renderer-c3</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -138,12 +142,6 @@
     </dependency>
 
     <!-- UberFire -->
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-api</artifactId>
@@ -183,24 +181,6 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-widgets-table</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -257,8 +237,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-cdi</artifactId>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-cdi-client</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -297,18 +277,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3-extras</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>provided</scope>
@@ -330,6 +298,11 @@
     <dependency>
       <groupId>org.webjars.npm</groupId>
       <artifactId>jsonata</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>patternfly__patternfly</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -417,11 +390,11 @@
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-services-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.soup:kie-soup-dataset-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.soup:kie-soup-dataset-shared</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-patternfly</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-displayer-editor</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-default</compileSourcesArtifact>
-            <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-c3</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-renderer-echarts</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-client</compileSourcesArtifact>
@@ -430,17 +403,13 @@
             <compileSourcesArtifact>org.uberfire:uberfire-runtime-plugins-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-layout-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-widgets-table</compileSourcesArtifact>
 
             <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
 
             <!-- UberFire -->
-            <compileSourcesArtifact>org.uberfire:uberfire-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
 
           </compileSourcesArtifacts>
           <compileReport>true</compileReport>
@@ -518,6 +487,27 @@
             </configuration>
           </execution>
           <execution>
+            <id>unpack-patternfly</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.npm</groupId>
+		  <artifactId>patternfly__patternfly</artifactId>
+                  <version>${version.org.webjars.npm.patternfly}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/patternfly</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+          <execution>
             <id>unpack-js-yaml</id>
             <phase>process-resources</phase>
             <goals>
@@ -554,10 +544,28 @@
 	      <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory
-                  >${project.build.directory}/jsonata/META-INF/resources/webjars/jsonata/${version.org.webjars.npm.jsonata}</directory>
+                  <directory>${project.build.directory}/jsonata/META-INF/resources/webjars/jsonata/${version.org.webjars.npm.jsonata}</directory>
                   <includes>
                     <include>jsonata.min.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-patternfly-resources</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+	      <outputDirectory>${project.build.directory}/${project.build.finalName}/org.dashbuilder.DashbuilderRuntime/css</outputDirectory>
+              <resources>
+                <resource>
+			<directory>${project.build.directory}/patternfly/META-INF/resources/webjars/patternfly__patternfly/${version.org.webjars.npm.patternfly}</directory>
+                  <includes>
+                    <include>patternfly.min.css</include>
+		    <include>assets/</include>
                   </includes>
                 </resource>
               </resources>

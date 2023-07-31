@@ -69,13 +69,11 @@ public class NavTreeWidget extends TargetDivNavWidget {
     protected void showItem(NavItem navItem) {
         NavWorkbenchCtx ctx = NavWorkbenchCtx.get(navItem);
         if (pluginManager.isRuntimePerspective(ctx.getResourceId())) {
-            view.addRuntimePerspective(navItem.getId(), navItem.getName(), navItem.getDescription(), () -> {
-                onItemClicked(navItem);
-            });
+            view.addRuntimePerspective(navItem.getId(), navItem.getName(), navItem.getDescription(),
+                    () -> onItemClicked(navItem));
         } else {
-            view.addPerspective(navItem.getId(), navItem.getName(), navItem.getDescription(), () -> {
-                onItemClicked(navItem);
-            });
+            view.addPerspective(navItem.getId(), navItem.getName(), navItem.getDescription(), () -> onItemClicked(
+                    navItem));
         }
     }
 }

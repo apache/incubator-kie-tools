@@ -22,15 +22,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
-import org.dashbuilder.navigation.layout.LayoutRecursionIssueI18n;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
-import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
@@ -44,9 +43,9 @@ import org.uberfire.workbench.model.ActivityResourceType;
 @Dependent
 public class NavTilesWidget extends BaseNavWidget {
 
-    public interface View extends NavWidgetView<NavTilesWidget>, LayoutRecursionIssueI18n {
+    public interface View extends NavWidgetView<NavTilesWidget>, ClientLayoutRecursionIssueI18n {
 
-        void addTileWidget(IsElement tileWidget);
+        void addTileWidget(HTMLElement tileWidget);
 
         void showTileContent(IsWidget tileContent);
 
@@ -122,7 +121,7 @@ public class NavTilesWidget extends BaseNavWidget {
         NavItemTileWidget tileWidget = beanManager.lookupBean(NavItemTileWidget.class).getInstance();
         tileWidget.setOnClick(() -> this.openItem(navItem));
         tileWidget.show(navItem);
-        view.addTileWidget(tileWidget);
+        view.addTileWidget(tileWidget.getElement());
     }
 
     @Override
@@ -198,7 +197,6 @@ public class NavTilesWidget extends BaseNavWidget {
         }
         openItem(navItem);
     }
-
 
     private void clearBreadcrumb() {
         navItemStack.clear();

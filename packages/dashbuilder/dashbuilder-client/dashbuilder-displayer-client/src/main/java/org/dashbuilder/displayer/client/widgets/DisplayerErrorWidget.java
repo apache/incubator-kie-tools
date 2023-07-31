@@ -15,18 +15,16 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.Composite;
-import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLParagraphElement;
-import elemental2.dom.HTMLTextAreaElement;
+import org.dashbuilder.patternfly.code.CodeView;
+import org.dashbuilder.patternfly.panel.Panel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
@@ -39,53 +37,33 @@ public class DisplayerErrorWidget extends Composite {
 
     @Inject
     @DataField
-    private HTMLParagraphElement errorBody;
-
-    @Inject
-    @DataField
-    private HTMLDivElement errorDetailsSection;
-
-    @Inject
-    @DataField
-    private HTMLTextAreaElement errorDetails;
-
-    @Inject
-    @DataField
-    private HTMLAnchorElement chevronRight;
-
-    @Inject
-    @DataField
-    private HTMLAnchorElement chevronDown;
-
-    @Inject
-    @DataField
-    private HTMLAnchorElement refreshLink;
+    private HTMLDivElement errorBody;
 
     @Inject
     @DataField
     private HTMLDivElement errorDetailsContainer;
 
+    @Inject
+    Panel panel;
+
+    @Inject
+    CodeView code;
+
+    @PostConstruct
+    public void init() {
+        errorDetailsContainer.appendChild(panel.getElement());
+        panel.setContent(code.getElement());
+        panel.setTitle("Details");
+        panel.setCollapsed(true);
+    }
+
     public void show(String message, Throwable t) {
         errorBody.textContent = message;
         if (t != null) {
-            hideErrorDetails(false);
-            errorDetails.value = buildErrorDetails(t);
-        } else {
-            hideErrorDetails(true);
+            var errorDetails = buildErrorDetails(t);
+            code.setContent(errorDetails);
+            DomGlobal.console.debug(t);
         }
-    }
-
-    private void hideErrorDetails(boolean b) {
-        var visibility = b ? Visibility.HIDDEN : Visibility.VISIBLE;
-        errorDetailsContainer.style.visibility = visibility.getCssName();
-    }
-
-    public void setRefreshAction(Runnable refreshAction) {
-        refreshLink.style.visibility = Visibility.VISIBLE.getCssName();
-        refreshLink.onclick = e -> {
-            refreshAction.run();
-            return null;
-        };
     }
 
     private String buildErrorDetails(Throwable t) {
@@ -97,22 +75,6 @@ public class DisplayerErrorWidget extends Composite {
             cause = cause.getCause();
         }
         return sb.toString();
-    }
-
-    @EventHandler("chevronRight")
-    public void onChevronRightClicked(final ClickEvent event) {
-        showErrorDetails(true);
-    }
-
-    @EventHandler("chevronDown")
-    public void onChevronDownClicked(final ClickEvent event) {
-        showErrorDetails(false);
-    }
-
-    private void showErrorDetails(final boolean isVisible) {
-        chevronRight.hidden = isVisible;
-        chevronDown.hidden = !isVisible;
-        errorDetailsSection.hidden = !isVisible;
     }
 
 }

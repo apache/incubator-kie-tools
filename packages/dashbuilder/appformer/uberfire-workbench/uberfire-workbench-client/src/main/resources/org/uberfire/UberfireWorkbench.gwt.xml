@@ -28,15 +28,11 @@
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI" />
 
-  <inherits name="org.uberfire.commons.UberfireCommons" />
-
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 
-  <!-- GWT-DnD module inherits -->
-  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
-
   <!-- GuvnorNG API common interfaces -->
+  <inherits name="org.uberfire.UberfireAPI" />
   <inherits name="org.uberfire.UberfireClientAPI" />
 
   <!-- Google Guava -->

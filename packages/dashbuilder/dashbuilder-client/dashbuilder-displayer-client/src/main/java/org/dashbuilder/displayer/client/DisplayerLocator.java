@@ -72,7 +72,6 @@ public class DisplayerLocator {
         var dataSetLookup = target.getDataSetLookup();
         if (target.getDataSet() != null) {
             var dataSet = target.getDataSet();
-            var uuid = dataSet.getUUID();
             clientDataSetManager.registerDataSet(dataSet);
             dataSetLookup = new DataSetLookup(dataSet.getUUID());
         }

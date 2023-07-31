@@ -15,35 +15,35 @@
  */
 package org.dashbuilder.client;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.StyleInjector;
 import elemental2.dom.DomGlobal;
-import org.dashbuilder.client.resources.NativeLibraryResources;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
+import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
 
 @ApplicationScoped
 public class GlobalSettingsChangeListener {
 
+    private static final String PF5_DARK_MODE = "pf-v5-theme-dark";
     @Inject
     GlobalDisplayerSettings globalDisplayerSettings;
-
-    @PostConstruct
-    void injectDarkModeCss() {
-        final var darkModeCss = NativeLibraryResources.INSTANCE.cssDarkMode().getText();
-        StyleInjector.inject(darkModeCss);
-    }
 
     void onNewGlobalSettings(@Observes UpdatedGlobalSettingsEvent event) {
         var settings = event.getGlobalSettings();
 
         globalDisplayerSettings.setDisplayerSettings(settings.getSettings());
 
-        DomGlobal.document.body.setAttribute("dashbuilder-mode", settings.getMode().name().toLowerCase());
+        var html = DomGlobal.document.getElementsByTagName("html");
+        if (html.length > 0) {
+            if (settings.getMode() == Mode.DARK) {
+                html.getAt(0).classList.add(PF5_DARK_MODE);
+            } else {
+                html.getAt(0).classList.remove(PF5_DARK_MODE);
+            }
+        }
     }
 
 }

@@ -16,11 +16,13 @@
 package org.dashbuilder.renderer.client.selector;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.ListItem;
-import org.jboss.errai.common.client.dom.Span;
+import elemental2.dom.CSSProperties.OpacityUnionType;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -29,21 +31,25 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Templated
 public class SelectorDropDownItemView implements SelectorDropDownItem.View, IsElement {
 
-    @Inject
-    @DataField
-    ListItem item;
+    private static final String SHOW_ICON_CLASS = "pf-v5-c-menu__item.pf-m-selected";
 
     @Inject
     @DataField
-    Anchor itemAnchor;
+    HTMLLIElement item;
 
     @Inject
     @DataField
-    Span itemText;
+    HTMLButtonElement itemButton;
 
     @Inject
     @DataField
-    Span itemIcon;
+    @Named("span")
+    HTMLElement itemText;
+
+    @Inject
+    @DataField
+    @Named("span")
+    HTMLElement itemIcon;
 
     SelectorDropDownItem presenter;
     boolean iconVisible = true;
@@ -55,38 +61,43 @@ public class SelectorDropDownItemView implements SelectorDropDownItem.View, IsEl
 
     @Override
     public void setValue(String value) {
-        itemText.setTextContent(value);
+        itemText.textContent = value;
     }
 
     @Override
     public void setDescription(String description) {
-        item.setTitle(description);
+        item.title = description;
     }
 
     @Override
     public void select() {
-        item.setClassName("selector-dditem selected");
-        if (iconVisible) {
-            itemIcon.getStyle().removeProperty("display");
-        }
+        showIcon();
     }
 
     @Override
     public void reset() {
-        item.setClassName("selector-dditem");
-        itemIcon.getStyle().setProperty("display", "none");
+        hideIcon();
     }
 
     @Override
     public void setSelectionIconVisible(boolean visible) {
-        iconVisible = visible;
-        if (!iconVisible) {
-            itemIcon.getStyle().setProperty("display", "none");
+        if (visible) {
+            showIcon();
+        } else {
+            hideIcon();
         }
     }
 
-    @EventHandler("itemAnchor")
+    @EventHandler("itemButton")
     public void onItemClick(ClickEvent event) {
         presenter.onItemClick();
+    }
+
+    private void hideIcon() {
+        itemIcon.style.opacity = OpacityUnionType.of(0);
+    }
+
+    private void showIcon() {
+        itemIcon.style.opacity = OpacityUnionType.of(1);
     }
 }

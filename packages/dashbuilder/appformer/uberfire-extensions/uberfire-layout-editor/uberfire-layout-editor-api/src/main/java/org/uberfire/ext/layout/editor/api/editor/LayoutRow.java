@@ -28,15 +28,16 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class LayoutRow {
 
     private String height;
-    private Map<String,String> properties = new HashMap<>();
+    private Map<String, String> properties = new HashMap<>();
     private List<LayoutColumn> layoutColumns = new ArrayList<>();
+    int index;
 
     public LayoutRow() {
 
     }
 
     public LayoutRow(@MapsTo("height") String height,
-            @MapsTo("properties") Map<String,String> properties) {
+                     @MapsTo("properties") Map<String, String> properties) {
         this.height = height;
         this.properties = properties;
     }
@@ -77,6 +78,14 @@ public class LayoutRow {
 
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     @Override

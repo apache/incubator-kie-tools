@@ -16,121 +16,117 @@
 package org.dashbuilder.renderer.client.selector;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import jsinterop.base.Js;
 import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.dom.UnorderedList;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
 public class SelectorDropDownDisplayerView extends AbstractErraiDisplayerView<SelectorDropDownDisplayer>
-        implements SelectorDropDownDisplayer.View {
+                                           implements SelectorDropDownDisplayer.View {
+
+    private static final String MIN_WIDTH_ATTR = "min-width";
+    private static final String MAX_WIDTH_ATTR = "max-width";
 
     @Inject
     @DataField
-    Div containerDiv;
+    HTMLDivElement containerDiv;
 
     @Inject
     @DataField
-    Span titleSpan;
+    @Named("span")
+    HTMLElement titleSpan;
 
     @Inject
     @DataField
-    Div dropDownDiv;
+    HTMLDivElement dropDownDiv;
 
     @Inject
     @DataField
-    Button dropDownButton;
+    HTMLButtonElement dropDownButton;
 
     @Inject
     @DataField
-    Div dropDownText;
+    HTMLDivElement dropDownText;
 
     @Inject
     @DataField
-    UnorderedList resetMenu;
+    HTMLUListElement dropDownMenu;
 
     @Inject
-    @DataField
-    UnorderedList dropDownMenu;
+    Elemental2DomUtil domUtil;
 
-    @Inject
-    @DataField
-    Anchor resetAnchor;
+    private boolean menuVisible;
 
     @Override
     public void init(SelectorDropDownDisplayer presenter) {
         super.setPresenter(presenter);
-        super.setVisualization((Element) containerDiv);
+        super.setVisualization(Js.cast(containerDiv));
+        DomGlobal.document.addEventListener("click", e -> {
+            if (!containerDiv.contains(Js.cast(e.target))) {
+                hideItems();
+            }
+        });
     }
 
     @Override
     public void showTitle(String title) {
-        titleSpan.setTextContent(title);
+        titleSpan.textContent = title;
     }
 
     @Override
     public void margins(int top, int bottom, int left, int right) {
-        containerDiv.getStyle().setProperty("margin-top", top + "px");
-        containerDiv.getStyle().setProperty("margin-bottom", bottom + "px");
-        containerDiv.getStyle().setProperty("margin-left", left + "px");
-        containerDiv.getStyle().setProperty("margin-right", right + "px");
+        containerDiv.style.setProperty("margin-top", top + "px");
+        containerDiv.style.setProperty("margin-bottom", bottom + "px");
+        containerDiv.style.setProperty("margin-left", left + "px");
+        containerDiv.style.setProperty("margin-right", right + "px");
     }
 
     @Override
     public void setWidth(int width) {
-        if (width > 0) {
-            dropDownButton.getStyle().setProperty("width", width + "px");
-            dropDownMenu.getStyle().setProperty("width", width + "px");
-            resetMenu.getStyle().setProperty("width", width + "px");
-            dropDownText.getStyle().setProperty("max-width", (width - 30) + "px");
-        } else {
-            dropDownButton.getStyle().removeProperty("width");
-            dropDownMenu.getStyle().removeProperty("width");
-            resetMenu.getStyle().removeProperty("width");
-            dropDownText.getStyle().removeProperty("max-width");
-        }
+        var widthStr = width + "px";
+        containerDiv.style.setProperty(MAX_WIDTH_ATTR, widthStr);
+        dropDownMenu.style.setProperty(MAX_WIDTH_ATTR, widthStr);
+        containerDiv.style.setProperty(MIN_WIDTH_ATTR, widthStr);
+        dropDownMenu.style.setProperty(MIN_WIDTH_ATTR, widthStr);
     }
 
     @Override
     public void showSelectHint(String column, boolean multiple) {
         String hint = "- " + SelectorConstants.INSTANCE.selectorDisplayer_select() + " " + column + " - ";
-        dropDownText.setTextContent(hint);
-        resetMenu.getStyle().setProperty("display", "none");
+        dropDownText.textContent = hint;
     }
 
     @Override
     public void showResetHint(String column, boolean multiple) {
-        String resetAction = multiple ? SelectorConstants.INSTANCE.selectorDisplayer_clearAll() : SelectorConstants.INSTANCE.selectorDisplayer_reset();
-        resetAnchor.setTextContent(resetAction);
-        resetMenu.getStyle().removeProperty("display");
-        int n = dropDownMenu.getChildNodes().getLength() * 25;
-        resetMenu.getStyle().setProperty("margin-top", (n > 250 ? 250 : n) + "px");
+        // empty
     }
 
     @Override
     public void showCurrentSelection(String text, String hint) {
-        dropDownText.setTextContent(text);
-        dropDownButton.setTitle(hint);
+        dropDownText.textContent = text;
+        dropDownButton.title = hint;
     }
 
     @Override
     public void clearItems() {
-        DOMUtil.removeAllChildren(dropDownMenu);
+        domUtil.removeAllElementChildren(dropDownMenu);
     }
 
     @Override
     public void addItem(SelectorDropDownItem item) {
-        dropDownMenu.appendChild(item.getView().getElement());
+        dropDownMenu.appendChild(Js.cast(item.getView().getElement()));
     }
 
     @Override
@@ -143,8 +139,21 @@ public class SelectorDropDownDisplayerView extends AbstractErraiDisplayerView<Se
         return SelectorConstants.INSTANCE.selectorDisplayer_columnsTitle();
     }
 
-    @EventHandler("resetAnchor")
-    private void onResetClicked(ClickEvent event) {
-        presenter.onResetSelections();
+    @Override
+    public void hideItems() {
+        menuVisible = false;
+        updateMenuVisibility();
     }
+
+    @EventHandler("dropDownButton")
+    public void onMenuClicked(ClickEvent event) {
+        menuVisible = !menuVisible;
+        updateMenuVisibility();
+        dropDownMenu.focus();
+    }
+
+    private void updateMenuVisibility() {
+        dropDownMenu.style.display = menuVisible ? "inline" : "none";
+    }
+
 }

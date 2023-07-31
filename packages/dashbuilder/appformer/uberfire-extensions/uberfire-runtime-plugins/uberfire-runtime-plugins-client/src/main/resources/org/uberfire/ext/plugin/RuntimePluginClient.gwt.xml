@@ -19,7 +19,6 @@
 <module>
   <inherits name="com.google.gwt.editor.Editor" />
   <inherits name="org.uberfire.UberfireClientAll" />
-  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons" />
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient" />
 
   <source path='client' />

@@ -45,6 +45,7 @@
   </dependencyManagement>
 
   <modules>
+    <module>dashbuilder-patternfly</module>
     <module>dashbuilder-common-client</module>
     <module>dashbuilder-dataset-client</module>
     <module>dashbuilder-displayer-client</module>

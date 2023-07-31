@@ -14,12 +14,32 @@
   limitations under the License.
 -->
 <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2" id="dashboardCardRoot">
-  <div class="card-pf card-pf-view card-pf-view-select card-pf-view-single-select">
-    <div class="card-pf-body">
-      <div class="card-pf-top-element">
-        <span class="fa fa-cubes card-pf-icon-circle"></span>
+  <div class="pf-v5-c-card pf-m-clickable pf-m-display-lg pf-m-rounded" id="card-dashboard">
+    <div class="pf-v5-c-card__header">
+      <div class="pf-v5-c-card__actions pf-m-no-offset">
+        <div class="pf-v5-c-card__selectable-actions">
+          <div class="pf-v5-c-radio pf-m-standalone">
+            <input
+              class="pf-v5-c-radio__input pf-v5-screen-reader"
+              type="radio"
+              id="card-dashboard-radio"
+              name="card-dashboard-radio"
+              aria-labelledby="card-dashboard"
+            />
+            <label
+              class="pf-v5-c-radio__label"
+              id="card-dashboard-radio-label"
+              name="card-dashboard-radio"
+              for="card-dashboard-radio"
+            ></label>
+          </div>
+        </div>
       </div>
-      <h2 class="card-pf-title text-center dashboardCardTitle" id="cardTitle"></h2>
+      <div class="pf-v5-c-card__header-main">
+        <div class="pf-v5-c-card__title" id="card-dashboard-title">
+          <h2 class="pf-v5-c-card__title-text" id="cardTitle"></h2>
+        </div>
+      </div>
     </div>
   </div>
 </div>

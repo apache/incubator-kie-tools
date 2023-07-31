@@ -18,9 +18,7 @@ package org.uberfire.client.workbench;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
-import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
@@ -65,7 +63,6 @@ public interface BeanFactory {
      */
     public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition);
 
-    public CompassDropController newDropController(final WorkbenchPanelView<?> view);
 
     /**
      * Destroys the entire graph of beans that were created and returned via a call to any of the <tt>newXXX()</tt>

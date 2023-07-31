@@ -19,43 +19,53 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.dashbuilder.common.client.widgets.AlertBox;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.UnorderedList;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import jsinterop.base.Js;
+import org.dashbuilder.patternfly.alert.Alert;
+import org.dashbuilder.patternfly.menu.MenuItem;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
 public class NavMenuBarWidgetView extends TargetDivNavWidgetView<NavMenuBarWidget>
-        implements NavMenuBarWidget.View {
+                                  implements NavMenuBarWidget.View {
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    UnorderedList navBar;
+    HTMLUListElement navBar;
 
     @Inject
     @DataField
     @Named("nav")
     HTMLElement nav;
 
+    @Inject
+    Elemental2DomUtil domUtil;
+
+    @Inject
+    protected SyncBeanManager beanManager;
+
     NavMenuBarWidget presenter;
 
     @Inject
-    public NavMenuBarWidgetView(AlertBox alertBox) {
+    public NavMenuBarWidgetView(Alert alertBox) {
         super(alertBox);
     }
 
     @Override
     public void init(NavMenuBarWidget presenter) {
         this.presenter = presenter;
-        super.navWidget = navBar;
+        super.navWidget = Js.cast(navBar);
         setNavHeaderVisible(true);
     }
 
@@ -67,19 +77,36 @@ public class NavMenuBarWidgetView extends TargetDivNavWidgetView<NavMenuBarWidge
     @Override
     public void clearItems() {
         super.clearItems();
-        DOMUtil.removeAllChildren(mainDiv);
-        mainDiv.appendChild(navBar.getParentElement().getParentElement());
+        domUtil.removeAllElementChildren(mainDiv);
+        mainDiv.appendChild(navBar.parentElement);
     }
 
     @Override
     public void error(String message) {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(message);
-        mainDiv.appendChild(alertBox.getElement());
+        mainDiv.appendChild(Js.cast(alertBox.getElement()));
+    }
+
+    @Override
+    public void addItem(String id, String name, String description, Command onItemSelected) {
+        var menuItem = beanManager.lookupBean(MenuItem.class).newInstance();
+        menuItem.setText(name);
+        if (navBar.childElementCount == 0) { 
+            selectItem(navBar, menuItem.getElement());
+        }
+        menuItem.setOnSelect(() -> {
+            selectItem(navBar, menuItem.getElement());
+            onItemSelected.execute();
+        });
+        navBar.appendChild(menuItem.getElement());
+        super.itemMap.put(id, Js.cast(menuItem.getElement()));
     }
 
     @Override
     public void setNavHeaderVisible(boolean visible) {
-        nav.setClassName(visible ? "navbar navbar-default navbar-pf" : "");
+        // TODO: Is this still necessary?        
+        //nav.setClassName(visible ? "navbar navbar-default navbar-pf" : "");
     }
+
 }

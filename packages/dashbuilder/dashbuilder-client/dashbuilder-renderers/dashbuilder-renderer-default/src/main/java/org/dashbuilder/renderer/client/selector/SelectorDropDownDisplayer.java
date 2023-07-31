@@ -61,6 +61,8 @@ public class SelectorDropDownDisplayer extends AbstractErraiDisplayer<SelectorDr
         String getGroupsTitle();
 
         String getColumnsTitle();
+
+        void hideItems();
     }
 
     protected View view;
@@ -224,6 +226,7 @@ public class SelectorDropDownDisplayer extends AbstractErraiDisplayer<SelectorDr
     }
 
     protected void onItemSelected(SelectorDropDownItem item) {
+        view.hideItems();
         if (displayerSettings.isFilterEnabled()) {
 
             String firstColumnId = getFirstColumnId();
@@ -247,6 +250,7 @@ public class SelectorDropDownDisplayer extends AbstractErraiDisplayer<SelectorDr
     }
 
     protected void onItemReset(SelectorDropDownItem item) {
+        view.hideItems();
         if (displayerSettings.isFilterEnabled()) {
 
             String firstColumnId = getFirstColumnId();

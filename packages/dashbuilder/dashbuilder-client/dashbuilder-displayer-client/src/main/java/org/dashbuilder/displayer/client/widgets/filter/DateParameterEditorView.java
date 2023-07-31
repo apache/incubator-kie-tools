@@ -18,56 +18,36 @@ package org.dashbuilder.displayer.client.widgets.filter;
 import java.util.Date;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Button;
-import org.uberfire.ext.widgets.common.client.common.DatePicker;
+import elemental2.dom.CSSProperties.WidthUnionType;
+import org.dashbuilder.patternfly.date.DatePicker;
 
+// TODO: create new view
 @Dependent
 public class DateParameterEditorView extends Composite implements DateParameterEditor.View {
 
-    interface Binder extends UiBinder<Widget, DateParameterEditorView> {}
-    private static Binder uiBinder = GWT.create(Binder.class);
-
     DateParameterEditor presenter;
 
-    @UiField
+    @Inject
     DatePicker input;
 
-    @UiField
-    Button icon;
-
     protected boolean show = false;
-
-    public DateParameterEditorView() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
 
     @Override
     public void init(final DateParameterEditor presenter) {
         this.presenter = presenter;
-        input.addValueChangeHandler(e -> {
-            presenter.onChange();
-        });
-        input.addBlurHandler(e -> {
-            presenter.onBlur();
-        });
-        input.addShowHandler(e -> {
+        input.addValueChangeHandler(
+                presenter::onChange);
+        input.addBlurHandler(
+                presenter::onBlur);
+        input.addShowHandler(() -> {
             presenter.onFocus();
             show = true;
         });
-        input.addHideHandler(e -> {
+        input.addHideHandler(() -> {
             show = false;
-        });
-        icon.addClickHandler(e -> {
-            if (!show) {
-                input.onShow(null);
-            }
         });
     }
 
@@ -83,6 +63,6 @@ public class DateParameterEditorView extends Composite implements DateParameterE
 
     @Override
     public void setWidth(int width) {
-        input.asWidget().getElement().getStyle().setWidth(width, Style.Unit.PX);
+        input.getElement().style.width = WidthUnionType.of(width + "px");
     }
 }

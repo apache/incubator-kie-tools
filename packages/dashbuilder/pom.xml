@@ -52,6 +52,7 @@
     <version.org.webjars.bower.d3geoprojection>2.5.1</version.org.webjars.bower.d3geoprojection>
     <version.org.webjars.npm.marked>4.3.0</version.org.webjars.npm.marked>
     <version.org.webjars.npm.jsonata>1.8.0</version.org.webjars.npm.jsonata>
+    <version.org.webjars.npm.patternfly>5.0.2</version.org.webjars.npm.patternfly>
     <version.javax.validation>1.0.0.GA</version.javax.validation>
 
     <!-- Resolved artifacts -->
@@ -59,13 +60,10 @@
     <version.org.assertj>3.14.0</version.org.assertj>
     <version.org.mockito>3.6.0</version.org.mockito>
     <version.org.kie>7.59.0.Final</version.org.kie>
-    <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.commons-io>2.7</version.commons-io>
     <version.commons-codec>1.11</version.commons-codec>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
-    <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
-    <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
     <version.net.sf.opencsv>2.3</version.net.sf.opencsv>
     <version.org.apache.tomcat>6.0.32</version.org.apache.tomcat>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
@@ -74,21 +72,16 @@
     <version.org.jboss.xnio>3.8.4.Final</version.org.jboss.xnio>
     <version.io.netty>4.1.59.Final</version.io.netty>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
     <version.org.freemarker>2.3.30</version.org.freemarker>
     <version.jakarta.activation-api>1.2.2</version.jakarta.activation-api>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
     <version.com.google.jsinterop.annotations>2.0.0</version.com.google.jsinterop.annotations>
     <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.jboss.narayana.tomcat>5.9.0.Final</version.org.jboss.narayana.tomcat>
-    <version.org.jboss.arquillian.container.weld>1.0.0.CR5</version.org.jboss.arquillian.container.weld>
     <version.org.ow2.asm>7.1</version.org.ow2.asm>
-    <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4.6</version.org.apache.httpcomponents.httpcore>
     <version.com.gwtmockito>1.1.9</version.com.gwtmockito>
     <version.org.wildfly>23.0.2.Final</version.org.wildfly>
     <version.org.jboss.errai.wildfly>${version.org.wildfly}</version.org.jboss.errai.wildfly>
-    <version.org.javassist>3.26.0-GA</version.org.javassist>
 
     <!-- Plugins -->
     <version.source.plugin>3.1.0</version.source.plugin>
@@ -129,7 +122,6 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
-    <version.org.maven.dependency.plugin>3.1.2</version.org.maven.dependency.plugin>
 
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
@@ -139,12 +131,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.javassist</groupId>
-        <artifactId>javassist</artifactId>
-        <version>${version.org.javassist}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.kie.soup</groupId>
         <artifactId>kie-soup-commons</artifactId>
@@ -172,118 +158,6 @@
         <artifactId>mockito-core</artifactId>
         <version>${version.org.mockito}</version>
       </dependency>
-      <!-- RESTEASY -->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxrs</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-          </exclusion>
-          <!-- Collides with org.javassist:javassist -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:provided -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.activation:jakarta.activation-api:jar:1.2.2:provided -->
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-multipart-provider</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-          </exclusion>
-          <!-- Collides with org.javassist:javassist -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:provided -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.activation:jakarta.activation-api:jar:1.2.2:provided -->
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-client</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
       <!-- Errai -->
       <dependency>
         <groupId>org.jboss.errai.bom</groupId>
@@ -308,21 +182,6 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${version.com.google.gwt}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3-extras</artifactId>
-        <version>${version.org.gwtbootstrap3-extras}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.allen-sauer.gwt.dnd</groupId>
-        <artifactId>gwt-dnd</artifactId>
-        <version>${version.com.allen-sauer.gwt.dnd}</version>
       </dependency>
       <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
@@ -443,11 +302,6 @@
             <artifactId>jboss-connector-api_1.7_spec</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.arquillian.container</groupId>
-        <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-        <version>${version.org.jboss.arquillian.container.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.webjars.npm</groupId>
@@ -766,9 +620,6 @@
 
                       <exclude
                       >log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' 
-                        instead -->
-                      <exclude
-                      >javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' 
                         instead -->
                       <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
                       <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
@@ -1163,10 +1014,6 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${version.org.apache.maven.plugins.dependency}</version>
         </plugin>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-	<version>${version.org.maven.dependency.plugin}</version>
-      </plugin>
       </plugins>
     </pluginManagement>
     <plugins>

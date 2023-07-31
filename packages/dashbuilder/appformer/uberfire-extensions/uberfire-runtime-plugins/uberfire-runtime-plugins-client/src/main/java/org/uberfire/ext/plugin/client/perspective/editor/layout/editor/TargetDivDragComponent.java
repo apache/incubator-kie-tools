@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.core.client.GWT;
@@ -31,10 +30,6 @@ public class TargetDivDragComponent implements LayoutDragComponent {
     public static final String ID_PARAMETER = "ID_PARAMETER";
     public static final String DIV_ID = "divId";
 
-
-    @PostConstruct
-    public void setup() {}
-
     @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
         String id = ctx.getComponent().getProperties().get(ID_PARAMETER);
@@ -47,7 +42,6 @@ public class TargetDivDragComponent implements LayoutDragComponent {
     private FlowPanel createDiv(String id) {
         FlowPanel panel = GWT.create(FlowPanel.class);
         panel.asWidget().getElement().addClassName("uf-perspective-col");
-        panel.asWidget().getElement().addClassName("screen dnd component");
         panel.getElement().setId(id);
         return panel;
     }

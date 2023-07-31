@@ -18,7 +18,6 @@ package org.dashbuilder.client.navigation.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -27,7 +26,6 @@ import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
-import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.uberfire.mvp.Command;
 
 public abstract class BaseNavWidget implements NavWidget {
@@ -305,13 +303,6 @@ public abstract class BaseNavWidget implements NavWidget {
     public void dispose() {
         view.clearItems();
         navSubgroupList.forEach(NavWidget::dispose);
-    }
-
-    // Listen to changes in the navigation tree
-
-    public void onNavTreeChanged(@Observes final NavTreeChangedEvent event) {
-        navigationManager.update(event.getNavTree());
-        refresh();
     }
 
 }

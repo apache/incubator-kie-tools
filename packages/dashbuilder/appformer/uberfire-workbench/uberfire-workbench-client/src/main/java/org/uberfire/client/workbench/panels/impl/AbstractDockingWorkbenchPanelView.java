@@ -19,7 +19,6 @@ package org.uberfire.client.workbench.panels.impl;
 import java.util.IdentityHashMap;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
@@ -32,7 +31,6 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.panels.DockingWorkbenchPanelView;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 import org.uberfire.client.workbench.widgets.split.WorkbenchSplitLayoutPanel;
 import org.uberfire.workbench.model.CompassPosition;
@@ -66,9 +64,6 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
         extends AbstractWorkbenchPanelView<P> implements DockingWorkbenchPanelView<P> {
 
     private final IdentityHashMap<WorkbenchPanelView<?>, WorkbenchSplitLayoutPanel> viewSplitters = new IdentityHashMap<>();
-
-    @Inject
-    protected WorkbenchDragAndDropManager dndManager;
 
     @Inject
     protected BeanFactory factory;
@@ -174,18 +169,8 @@ public abstract class AbstractDockingWorkbenchPanelView<P extends WorkbenchPanel
         topLevelWidget.add(partViewContainer);
         setToFillParent(topLevelWidget);
         setToFillParent(partViewContainer);
-        if (getPartDropRegion() != null) {
-            dndManager.registerDropController(this,
-                                              factory.newDropController(this));
-        }
     }
 
-    @PreDestroy
-    private void tearDownDockingPanel() {
-        if (getPartDropRegion() != null) {
-            dndManager.unregisterDropController(this);
-        }
-    }
 
     /**
      * Overridden to ensure subclasses don't return the partViewContainer by mistake (this would interfere with nested

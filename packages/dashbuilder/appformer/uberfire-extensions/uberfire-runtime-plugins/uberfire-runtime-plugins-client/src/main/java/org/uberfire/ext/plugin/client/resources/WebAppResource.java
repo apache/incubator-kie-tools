@@ -18,7 +18,6 @@ package org.uberfire.ext.plugin.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.DataResource;
 import com.google.gwt.resources.client.TextResource;
 
 public interface WebAppResource
@@ -26,15 +25,6 @@ public interface WebAppResource
                                 ClientBundle {
 
     WebAppResource INSTANCE = GWT.create(WebAppResource.class);
-
-    @Source("css/plugin.css")
-    PluginCss CSS();
-
-    @Source("images/handle-v.png")
-    DataResource handleVertical();
-
-    @Source("images/handle-h.png")
-    DataResource handleHorizontal();
 
     @Source("js/marked.min.js")
     TextResource markedJs();

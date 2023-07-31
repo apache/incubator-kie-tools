@@ -25,7 +25,6 @@ import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
-import org.dashbuilder.navigation.layout.LayoutRecursionIssueI18n;
 import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.uberfire.client.mvp.PlaceManager;
@@ -35,13 +34,14 @@ import org.uberfire.client.mvp.PlaceManager;
  */
 public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTargetDiv, HasDefaultNavItem {
 
-    public interface View<T extends TargetDivNavWidget> extends NavWidgetView<T>, LayoutRecursionIssueI18n {
+    public interface View<T extends TargetDivNavWidget> extends NavWidgetView<T>, ClientLayoutRecursionIssueI18n {
 
         void clearContent(String targetDivId);
 
         void showContent(String targetDivId, IsWidget content);
 
         void infiniteRecursionError(String targetDivId, String cause);
+        
     }
 
     View view;
@@ -60,10 +60,6 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
         this.view = view;
         this.pluginManager = pluginManager;
         this.placeManager = placeManager;
-    }
-
-    public View getView() {
-        return view;
     }
 
     public void setGotoItemEnabled(boolean enabled) {

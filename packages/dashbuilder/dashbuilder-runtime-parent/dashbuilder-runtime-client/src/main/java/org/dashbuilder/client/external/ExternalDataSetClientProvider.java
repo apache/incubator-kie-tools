@@ -42,12 +42,13 @@ import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.def.HttpMethod;
-import org.jboss.resteasy.util.HttpResponseCodes;
 
 import static org.dashbuilder.common.client.StringUtils.isBlank;
 
 @ApplicationScoped
 public class ExternalDataSetClientProvider {
+
+    private static final int OK_RESPONSE_CODE = 200;
 
     @Inject
     ClientDataSetManager clientDataSetManager;
@@ -175,7 +176,7 @@ public class ExternalDataSetClientProvider {
             var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
             var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, finalUrl).orElse(DEFAULT_TYPE);
             return response.text().then(responseText -> {
-                if (response.status == HttpResponseCodes.SC_OK) {
+                if (response.status == OK_RESPONSE_CODE) {
                     return register(def, callback, responseText, mimeType);
                 } else {
                     var exception = buildExceptionForResponse(responseText, response);

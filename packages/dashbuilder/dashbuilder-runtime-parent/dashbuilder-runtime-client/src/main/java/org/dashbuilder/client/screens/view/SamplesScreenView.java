@@ -38,9 +38,9 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 public class SamplesScreenView implements SamplesScreen.View {
 
-    private static final String ACTIVE_CLASS = "active";
+    private static final String ACTIVE_CLASS = "pf-m-current";
 
-    private static final double MARGIN_SCROLL_COMPENSATION = 100;
+    private static final double MARGIN_SCROLL_COMPENSATION = 70;
 
     @Inject
     @DataField
@@ -52,7 +52,7 @@ public class SamplesScreenView implements SamplesScreen.View {
 
     @Inject
     @DataField
-    HTMLDivElement samplesCategoriesNav;
+    HTMLDivElement samplesSideBar;
 
     @Inject
     @DataField
@@ -90,15 +90,15 @@ public class SamplesScreenView implements SamplesScreen.View {
     private void appendCategory(String category) {
         var li = DomGlobal.document.createElement("li");
         var a = (HTMLAnchorElement) DomGlobal.document.createElement("a");
-        li.classList.add("list-group-item");
-        a.classList.add("list-group-item-value");
+        li.classList.add("pf-v5-c-nav__item");
+        a.classList.add("pf-v5-c-nav__link");
         a.textContent = category;
         a.title = category;
-        a.href = "#" + category;
+        a.href = "#" + SamplesCardRow.produceCategoryTitleId(category);
         a.onclick = e -> {
             Scheduler.get().scheduleDeferred(() -> {
                 clearActiveNavItems();
-                a.parentElement.classList.add(ACTIVE_CLASS);
+                a.classList.add(ACTIVE_CLASS);
             });
             return e;
         };
@@ -108,8 +108,7 @@ public class SamplesScreenView implements SamplesScreen.View {
 
     @EventHandler("toggleCategoriesNavigation")
     void toggleCategoriesNavigation(ClickEvent e) {
-        samplesCategoriesNav.classList.toggle("catNavCollapse");
-        rowsContainer.classList.toggle("catNavCollapsed");
+        samplesSideBar.classList.toggle("pf-m-collapsed");
     }
 
     private void registerScrollListener() {
@@ -119,15 +118,15 @@ public class SamplesScreenView implements SamplesScreen.View {
             navLinks.forEach((item, i, listObj) -> {
                 var a = (HTMLAnchorElement) item;
                 var catId = a.title;
-                var section = (HTMLElement)  DomGlobal.document.getElementById(catId);
+                var section = (HTMLElement) DomGlobal.document.getElementById(catId);
                 var bounds = section.parentElement.getBoundingClientRect();
                 var minY = section.offsetTop - MARGIN_SCROLL_COMPENSATION;
                 var maxY = minY + bounds.height;
 
                 if (yPos >= minY && yPos < maxY) {
-                    item.parentElement.classList.add(ACTIVE_CLASS);
+                    a.classList.add(ACTIVE_CLASS);
                 } else {
-                    a.parentElement.classList.remove(ACTIVE_CLASS);
+                    a.classList.remove(ACTIVE_CLASS);
                 }
                 return item;
             });
@@ -136,7 +135,7 @@ public class SamplesScreenView implements SamplesScreen.View {
     }
 
     private void clearActiveNavItems() {
-        var navLinks = samplesCategoriesGroup.querySelectorAll("li");
+        var navLinks = samplesCategoriesGroup.querySelectorAll("li > a");
         navLinks.forEach((item, i, listObj) -> {
             item.classList.remove(ACTIVE_CLASS);
             return item;

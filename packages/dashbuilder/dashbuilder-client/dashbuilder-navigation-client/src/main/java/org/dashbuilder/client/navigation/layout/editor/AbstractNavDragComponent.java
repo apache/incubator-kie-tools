@@ -18,8 +18,6 @@ package org.dashbuilder.client.navigation.layout.editor;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.enterprise.event.Observes;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
@@ -28,7 +26,6 @@ import org.dashbuilder.client.navigation.widget.HasTargetDiv;
 import org.dashbuilder.client.navigation.widget.NavWidget;
 import org.dashbuilder.client.navigation.widget.TargetDivNavWidget;
 import org.dashbuilder.navigation.NavGroup;
-import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
@@ -107,11 +104,5 @@ public abstract class AbstractNavDragComponent implements NavDragComponent {
                 }
             });
         }
-    }
-
-    // Check the layout template every time the navigation tree changes
-
-    public void onNavTreeChanged(@Observes final NavTreeChangedEvent event) {
-        checkLayoutTemplate();
     }
 }

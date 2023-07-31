@@ -160,6 +160,8 @@ public class LayoutTemplateJSONMarshaller {
         } else if (components != null) {
             var row = new LayoutRow(DEFAULT_HEIGHT, Collections.emptyMap());
             var column = new LayoutColumn(DEFAULT_SPAN);
+            row.setIndex(1);
+            column.setIndex(1);
             row.add(column);
             extractComponents(components, column::add);
             template.addRow(row);
@@ -183,6 +185,7 @@ public class LayoutTemplateJSONMarshaller {
         var row = new LayoutRow(height == null ? DEFAULT_HEIGHT : height,
                 extractProperties(object.getObject(PROPERTIES)));
         var ltColumns = Optional.ofNullable(object.getArray(LAYOUT_COLUMNS)).orElse(object.getArray(COLUMNS));
+        row.setIndex(i);
         extractColumns(ltColumns, i, row::add);
         return row;
     }
@@ -210,7 +213,7 @@ public class LayoutTemplateJSONMarshaller {
         var column = new LayoutColumn(span,
                 height == null ? DEFAULT_HEIGHT : height,
                 extractProperties(object.getObject(PROPERTIES)));
-
+        column.setIndex(i);
         extractRows(object.getArray(ROWS), column::addRow);
         var componentsArray = Optional.ofNullable(object.getArray(LAYOUT_COMPONENTS)).orElse(object.getArray(
                 COMPONENTS));

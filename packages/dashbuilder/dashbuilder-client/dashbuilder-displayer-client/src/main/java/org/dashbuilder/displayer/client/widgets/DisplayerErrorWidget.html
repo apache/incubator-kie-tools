@@ -13,23 +13,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div class="card-pf card-pf-view card-pf-view-xs displayer-error" data-field="displayerErrorRoot">
-  <div class="card-pf-body">
-    <div class="card-pf-heading">
-      <span class="pficon pficon-warning-triangle-o displayer-error-title-icon"></span
-      ><span class="card-pf-title" data-i18n-key="displayerErrorTitle"></span>
-      <a data-field="refreshLink" class="fa fa-refresh" style="float: right; visibility: hidden"> </a>
-    </div>
-    <p data-field="errorBody" class="displayer-error-body"></p>
-    <div data-field="errorDetailsContainer">
-      <div>
-        <a data-field="chevronDown" hidden><em class="glyphicon glyphicon-chevron-down"></em></a>
-        <a data-field="chevronRight"><em class="glyphicon glyphicon-chevron-right"></em></a>
-        <span class="chevron-title" data-i18n-key="errorDetails"></span>
-      </div>
-      <div data-field="errorDetailsSection" hidden>
-        <textarea data-field="errorDetails" class="error-details form-control" readonly></textarea>
-      </div>
-    </div>
+<div class="pf-v5-c-card pf-m-compact pf-m-rounded" data-field="displayerErrorRoot">
+  <div class="pf-v5-c-card__title">
+    <span class="fas fa-exclamation-triangle displayer-error-title-icon"></span
+    ><span class="card-pf-title" data-i18n-key="displayerErrorTitle"> </span>
   </div>
+  <div class="pf-v5-c-card__body" data-field="errorBody"></div>
+  <div class="pf-v5-c-card__footer" data-field="errorDetailsContainer"></div>
 </div>

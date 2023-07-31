@@ -24,7 +24,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.dashbuilder.common.client.widgets.AlertBox;
+import org.dashbuilder.patternfly.alert.Alert;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -35,15 +35,23 @@ import org.uberfire.mvp.Command;
 @Templated
 public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
     implements NavTreeWidget.View {
+    
+    private static final String RUNTIME_ICON = "fas fa-tachometer-alt";
+
+    private static final String PERSPECTIVE_ICON = "pficon-screen";
+
+    private static final String GROUP_ICON = "fas fa-folder-open";
 
     @Inject
     @DataField
     Div mainDiv;
 
     NavTreeWidget presenter;
+    
+    
 
     @Inject
-    public NavTreeWidgetView(AlertBox alertBox) {
+    public NavTreeWidgetView(Alert alertBox) {
         super(alertBox);
     }
 
@@ -69,17 +77,17 @@ public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
 
     @Override
     public void addRuntimePerspective(String id, String name, String description, Command onClicked) {
-        this.addItem("fa fa-tachometer", id, name, description, onClicked);
+        this.addItem(RUNTIME_ICON, id, name, description, onClicked);
     }
 
     @Override
     public void addPerspective(String id, String name, String description, Command onClicked) {
-        this.addItem("pficon-screen", id, name, description, onClicked);
+        this.addItem(PERSPECTIVE_ICON, id, name, description, onClicked);
     }
 
     @Override
     public void addGroupItem(String id, String name, String description, IsWidget widget) {
-        this.addItem("pficon-folder-open",id, name, description, null);
+        this.addItem(GROUP_ICON,id, name, description, null);
         super.addGroupItem(id, name, description, widget);
     }
 

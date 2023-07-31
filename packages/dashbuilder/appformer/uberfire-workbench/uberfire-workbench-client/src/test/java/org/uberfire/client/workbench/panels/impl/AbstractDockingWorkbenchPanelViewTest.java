@@ -25,10 +25,9 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -42,9 +41,6 @@ public abstract class AbstractDockingWorkbenchPanelViewTest {
 
     @Mock(answer = Answers.RETURNS_MOCKS)
     SimpleLayoutPanel topLevelWidget;
-
-    @Mock
-    WorkbenchDragAndDropManager dndManager;
 
     @Mock
     BeanFactory factory;

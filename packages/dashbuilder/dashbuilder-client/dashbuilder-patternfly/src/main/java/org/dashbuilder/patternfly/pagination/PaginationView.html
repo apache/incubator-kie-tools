@@ -1,0 +1,60 @@
+<div class="pf-v5-c-pagination pf-m-top" data-field="paginationContainer">
+  <div class="pf-v5-c-options-menu pf-m-top">
+    <button
+      class="pf-v5-c-options-menu__toggle pf-m-text pf-m-plain"
+      type="button"
+      id="pagination-options-menu-bottom-example-toggle"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+    >
+      <span class="pf-v5-c-options-menu__toggle-text">
+        <b>
+          <span data-field="lblOffsetBegin"></span>
+          -
+          <span data-field="lblOffsetEnd"></span> </b
+        >&nbsp;of&nbsp;
+        <b data-field="lblTotal"></b>
+      </span>
+    </button>
+  </div>
+  <nav class="pf-v5-c-pagination__nav" aria-label="Pagination nav - bottom example" data-field="paginationNav">
+    <div class="pf-v5-c-pagination__nav-control pf-m-first">
+      <button
+        class="pf-v5-c-button pf-m-plain"
+        type="button"
+        disabled
+        aria-label="Go to first page"
+        data-field="btnFirstPage"
+      >
+        <i class="fas fa-angle-double-left" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="pf-v5-c-pagination__nav-control pf-m-prev">
+      <button
+        class="pf-v5-c-button pf-m-plain"
+        type="button"
+        disabled
+        aria-label="Go to previous page"
+        data-field="btnPreviousPage"
+      >
+        <i class="fas fa-angle-left" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="pf-v5-c-pagination__nav-page-select">
+      <span class="pf-v5-c-form-control">
+        <input aria-label="Current page" type="number" min="1" value="1" data-field="txtSelectedPage" />
+      </span>
+      <span aria-hidden="true">of <span data-field="lblTotalPages"></span></span>
+    </div>
+    <div class="pf-v5-c-pagination__nav-control pf-m-next">
+      <button class="pf-v5-c-button pf-m-plain" type="button" aria-label="Go to next page" data-field="btnNextPage">
+        <i class="fas fa-angle-right" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="pf-v5-c-pagination__nav-control pf-m-last">
+      <button class="pf-v5-c-button pf-m-plain" type="button" aria-label="Go to last page" data-field="btnLastPage">
+        <i class="fas fa-angle-double-right" aria-hidden="true"></i>
+      </button>
+    </div>
+  </nav>
+</div>

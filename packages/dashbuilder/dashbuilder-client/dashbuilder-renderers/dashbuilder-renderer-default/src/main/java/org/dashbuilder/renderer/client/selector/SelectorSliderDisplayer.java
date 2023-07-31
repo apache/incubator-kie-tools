@@ -34,14 +34,14 @@ import org.dashbuilder.dataset.impl.DataColumnImpl;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
+import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
 import org.dashbuilder.displayer.client.widgets.filter.DateParameterEditor;
 import org.dashbuilder.displayer.client.widgets.filter.NumberParameterEditor;
 
 @Dependent
-public class SelectorSliderDisplayer extends AbstractGwtDisplayer<SelectorSliderDisplayer.View> {
+public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSliderDisplayer.View> {
 
-    public interface View extends AbstractGwtDisplayer.View<SelectorSliderDisplayer> {
+    public interface View extends AbstractErraiDisplayer.View<SelectorSliderDisplayer> {
 
         void showTitle(String title);
 

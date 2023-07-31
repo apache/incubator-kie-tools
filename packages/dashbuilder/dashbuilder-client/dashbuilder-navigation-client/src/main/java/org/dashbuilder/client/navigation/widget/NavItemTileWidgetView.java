@@ -16,66 +16,67 @@
 package org.dashbuilder.client.navigation.widget;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class NavItemTileWidgetView implements NavItemTileWidget.View, IsElement {
+public class NavItemTileWidgetView implements NavItemTileWidget.View {
+
+    private static final String RUNTIME_ICON = "fas fa-tachometer-alt";
+
+    private static final String PERSPECTIVE_ICON = "pficon-screen";
+
+    private static final String GROUP_ICON = "fas fa-folder-open";
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    Div iconDiv;
+    HTMLDivElement iconDiv;
 
     @Inject
     @DataField
-    Span iconSpan;
+    @Named("span")
+    HTMLElement iconSpan;
 
     @Inject
     @DataField
-    Span textSpan;
-
-    NavItemTileWidget presenter;
+    HTMLDivElement textSpan;
 
     @Override
     public void init(NavItemTileWidget presenter) {
-        this.presenter = presenter;
+        mainDiv.onclick = e -> {
+            presenter.onClick();
+            return null;
+        };
     }
 
     @Override
     public void show(String name, String descr, ItemType type) {
-        textSpan.setTextContent(name);
-        mainDiv.getStyle().setProperty("title", descr);
+        textSpan.textContent = name;
+        mainDiv.style.setProperty("title", descr);
 
         if (ItemType.GROUP == type) {
-            mainDiv.setClassName("uf-navitem-tile-body uf-navitem-tile-group");
-            iconSpan.setClassName("pficon-folder-open");
-            mainDiv.setTitle(NavigationConstants.INSTANCE.openNavItem(name));
-        }
-        else if (ItemType.PERSPECTIVE == type) {
-            mainDiv.setClassName("uf-navitem-tile-body uf-navitem-tile-perspective");
-            iconSpan.setClassName("pficon-screen");
-            mainDiv.setTitle(NavigationConstants.INSTANCE.gotoNavItem(name));
-        }
-        else if (ItemType.RUNTIME_PERSPECTIVE == type) {
-            mainDiv.setClassName("uf-navitem-tile-body uf-navitem-tile-runtime-perspective");
-            iconSpan.setClassName("fa fa-tachometer");
-            mainDiv.setTitle(NavigationConstants.INSTANCE.showNavItem(name));
+            iconSpan.className = GROUP_ICON;
+            mainDiv.title = NavigationConstants.INSTANCE.openNavItem(name);
+        } else if (ItemType.PERSPECTIVE == type) {
+            iconSpan.className = PERSPECTIVE_ICON;
+            mainDiv.title = NavigationConstants.INSTANCE.gotoNavItem(name);
+        } else if (ItemType.RUNTIME_PERSPECTIVE == type) {
+            iconSpan.className = RUNTIME_ICON;
+            mainDiv.title = NavigationConstants.INSTANCE.showNavItem(name);
         }
     }
 
-    @EventHandler("mainDiv")
-    public void onMainDivClick(ClickEvent event) {
-        presenter.onClick();
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
     }
 }

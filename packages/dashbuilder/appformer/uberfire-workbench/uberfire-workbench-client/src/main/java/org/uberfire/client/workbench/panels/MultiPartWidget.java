@@ -23,7 +23,6 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
@@ -34,7 +33,6 @@ public interface MultiPartWidget extends IsWidget,
 
     void setPresenter(final WorkbenchPanelPresenter presenter);
 
-    void setDndManager(final WorkbenchDragAndDropManager dndManager);
 
     /**
      * Removes all contained WorkbenchParts from this multi-part panel. Part Activities are not closed and part Presenters

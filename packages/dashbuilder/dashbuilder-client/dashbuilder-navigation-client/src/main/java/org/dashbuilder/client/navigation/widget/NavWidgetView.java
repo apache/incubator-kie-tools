@@ -16,6 +16,7 @@
 package org.dashbuilder.client.navigation.widget;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
@@ -33,7 +34,14 @@ public interface NavWidgetView<T> extends UberView<T> {
 
     void clearSelectedItem();
 
-    void errorNavGroupNotFound();
+    default void errorNavGroupNotFound() {
+        addItem("error", NavigationConstants.INSTANCE.navGroupNotFound(), null, () -> {
+        });
+    }
 
-    void errorNavItemsEmpty();
+    default void errorNavItemsEmpty() {
+        addItem("error", NavigationConstants.INSTANCE.navItemsEmpty(), null, () -> {
+        });
+    }
+
 }

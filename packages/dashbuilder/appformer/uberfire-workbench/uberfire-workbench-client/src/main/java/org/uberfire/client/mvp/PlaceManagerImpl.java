@@ -339,10 +339,6 @@ public class PlaceManagerImpl implements PlaceManager {
                 resolvedPlaceRequest);
     }
 
-    private void closeLazyLoadingScreenAndGoToPlace(final PlaceRequest place) {
-        this.closePlace(new DefaultPlaceRequest("LazyLoadingScreen"), () -> this.goTo(place));
-    }
-
     private PlaceRequest resolvePlaceRequest(PlaceRequest place) {
         if (isaConditionalPlaceRequest(place)) {
             return resolveConditionalPlaceRequest((ConditionalPlaceRequest) place);

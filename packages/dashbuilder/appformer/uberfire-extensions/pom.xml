@@ -34,7 +34,6 @@
   <name>Extensions to UberFire</name>
 
   <modules>
-    <module>uberfire-widgets</module>
     <module>uberfire-runtime-plugins</module>
     <module>uberfire-layout-editor</module>
   </modules>

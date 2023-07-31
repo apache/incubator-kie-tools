@@ -21,6 +21,10 @@ public class ResourcesInjector {
 
     static boolean markedJsInjected;
 
+    private ResourcesInjector() {
+        // empty
+    }
+
     public static void ensureMarkedJsInjected() {
         if (!markedJsInjected) {
             injectMarkedResources();

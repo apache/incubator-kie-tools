@@ -13,23 +13,31 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="samplesScreenRoot">
-  <div class="samplesNavBarContainer">
-    <nav class="navbar navbar-pf-vertical samplesVerticalNavBar">
-      <button type="button" class="navbar-toggle" id="toggleCategoriesNavigation">
-        <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+<div class="pf-v5-c-page samplesScreenRoot">
+  <header class="pf-v5-c-masthead samplesNavBarContainer">
+    <span class="pf-v5-c-masthead__toggle">
+      <button class="pf-v5-c-button pf-m-plain" id="toggleCategoriesNavigation" type="button">
+        <i class="fas fa-bars"></i>
       </button>
-      <div class="navbar-header">
-        <a href="/" class="navbar-brand"> <img class="navbar-brand-icon" src="images/samples_brand.png" alt="" /> </a>
-      </div>
-    </nav>
-  </div>
+    </span>
+    <div class="pf-v5-c-masthead__main">
+      <a class="pf-v5-c-masthead__brand" href="#">
+        <img class="pf-v5-c-brand" src="images/samples_brand.png" style="--pf-v5-c-brand--Height: 36px" />
+      </a>
+    </div>
+    <div class="pf-v5-c-masthead__content">
+      <div class="pf-v5-c-toolbar pf-m-full-height pf-m-static"></div>
+    </div>
+  </header>
   <!-- Samples NavBar -->
-  <div class="nav-pf-vertical samplesCategoriesNav hidden-icons-pf">
-    <ul class="list-group" id="samplesCategoriesGroup"></ul>
+  <div class="pf-v5-c-page__sidebar" data-field="samplesSideBar">
+    <div class="pf-v5-c-page__sidebar-body samplesCategoriesNav">
+      <nav class="pf-v5-c-nav">
+        <ul class="pf-v5-c-nav__list" id="samplesCategoriesGroup"></ul>
+      </nav>
+    </div>
   </div>
 
   <!-- Samples Row Container -->
-  <div class="container-fluid rowsContainer"></div>
+  <main class="pf-v5-c-page__main rowsContainer"></main>
 </div>

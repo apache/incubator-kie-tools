@@ -17,7 +17,7 @@
   background-color: #dfdfdf !important;
 }
 [mode="dark"] .selected-row {
-  background-color: #393555 !important;
+  background-color: #454545 !important;
 }
 [mode="dark"] {
   --pf-global--Color--100: #eef1fa !important;
@@ -26,7 +26,7 @@
   --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
   --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
   --pf-global--link--Color--hover: var(--pf-global--link--Color--light) !important;
-  --pf-global--BackgroundColor--100: #100c2a !important;
+  --pf-global--BackgroundColor--100: rgb(27, 29, 33) !important;
 }
 
 [mode="dark"] body,
@@ -39,25 +39,25 @@
   --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
   --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
   --pf-global--link--Color--hover: var(--pf-global--link--Color--light) !important;
-  --pf-global--BackgroundColor--100: #100c2a !important;
+  --pf-global--BackgroundColor--100: rgb(27, 29, 33) !important;
 }
 
 [mode="dark"] .pf-c-options-menu__menu,
 [mode="dark"] .pf-c-pagination__nav,
 [mode="dark"] .pf-c-pagination__total-items {
-  background-color: #100c2a !important;
+  background-color: rgb(27, 29, 33) !important;
   color: #eef1fa;
 }
 
 [mode="dark"] .pf-c-options-menu__menu-item:hover,
 [mode="dark"] .pf-c-table tr.pf-m-hoverable:hover {
-  background-color: #393555;
+  background-color: #454545;
   color: #eef1fa;
 }
 
 [mode="dark"] .pf-c-form-control {
   --pf-global--Color--100: #eef1fa !important;
-  --pf-global--BackgroundColor--100: #100c2a !important;
+  --pf-global--BackgroundColor--100: rgb(27, 29, 33) !important;
 }
 
 [mode="dark"] .pf-c-form-control:disabled {

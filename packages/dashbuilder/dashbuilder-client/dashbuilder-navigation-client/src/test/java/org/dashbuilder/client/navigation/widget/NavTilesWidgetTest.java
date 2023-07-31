@@ -29,8 +29,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
@@ -86,7 +86,7 @@ public class NavTilesWidgetTest {
         presenter.openItem(navItem);
         assertEquals(presenter.getNavItemStack().size(), 2);
 
-        verify(view, times(3)).addTileWidget(tileWidget);
+        verify(view, times(3)).addTileWidget(tileWidget.getElement());
         verify(view).clearBreadcrumb();
         verify(view).addBreadcrumbItem(eq("Home"), any());
         verify(view).addBreadcrumbItem(eq("A"));
@@ -96,7 +96,7 @@ public class NavTilesWidgetTest {
         presenter.openItem(navItem);
         assertEquals(presenter.getNavItemStack().size(), 3);
 
-        verify(view, times(1)).addTileWidget(tileWidget);
+        verify(view, times(1)).addTileWidget(tileWidget.getElement());
         verify(view).clearBreadcrumb();
         verify(view).addBreadcrumbItem(eq("Home"), any());
         verify(view).addBreadcrumbItem(eq("A"), any());
@@ -113,7 +113,7 @@ public class NavTilesWidgetTest {
         presenter.gotoBreadcrumbItem(homeItem);
         assertEquals(presenter.getNavItemStack().size(), 0);
 
-        verify(view, times(1)).addTileWidget(tileWidget);
+        verify(view, times(1)).addTileWidget(tileWidget.getElement());
         verify(view).clearBreadcrumb();
         verify(view, never()).addBreadcrumbItem(any(), any());
     }

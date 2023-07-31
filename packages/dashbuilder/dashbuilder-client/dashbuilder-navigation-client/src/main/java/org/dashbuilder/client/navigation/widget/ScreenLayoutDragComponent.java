@@ -19,37 +19,37 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
+import elemental2.dom.CSSProperties.HeightUnionType;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @ApplicationScoped
-public class ScreenLayoutDragComponent implements LayoutDragComponent {
+public class ScreenLayoutDragComponent extends SinglePageNavigationDragComponent {
 
     public static final String SCREEN_NAME_PARAMETER = "Screen Name";
-    PerspectivePluginManager perspectivePluginManager;
 
     @Inject
-    public ScreenLayoutDragComponent(PerspectivePluginManager perspectivePluginManager) {
-        this.perspectivePluginManager = perspectivePluginManager;
+    public ScreenLayoutDragComponent(SyncBeanManager beanManager,
+                                     PerspectivePluginManager perspectivePluginManager) {
+        super(beanManager, perspectivePluginManager);
     }
 
     @Override
-    public IsWidget getShowWidget(RenderingContext ctx) {
-        FlowPanel panel = GWT.create(FlowPanel.class);
-        panel.asWidget().getElement().addClassName("uf-perspective-col");
-        var perspectiveId = ctx.getComponent().getProperties().get(SCREEN_NAME_PARAMETER);
-        if (perspectiveId == null) {
-            return null;
-        }
+    String getPageParameterName() {
+        return SCREEN_NAME_PARAMETER;
+    }
 
-        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, screen -> panel.add(screen), issue -> panel
-                .add(new Label("Error with infinite recursion. Review the embedded page")));
-        return panel;
+    @Override
+    ComponentBuilder getComponentBuilder() {
+        HTMLDivElement div = Js.cast(DomGlobal.document.createElement("div"));
+        div.classList.add("uf-perspective-col");
+        return componentBuilder(div, (name, page) -> {
+            page.style.height = HeightUnionType.of("auto");
+            div.appendChild(page);
+        });
     }
 
 }

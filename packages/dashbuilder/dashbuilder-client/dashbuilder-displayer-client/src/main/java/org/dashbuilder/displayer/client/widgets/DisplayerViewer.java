@@ -30,7 +30,6 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerListener;
 import org.dashbuilder.displayer.client.DisplayerLocator;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
-import org.uberfire.mvp.Command;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -41,12 +40,10 @@ public class DisplayerViewer extends Composite {
     protected Panel container = new FlowPanel();
     protected Label label = new Label();
     protected Displayer displayer;
-    protected Boolean isShowRendererSelector = false;
     @Inject
     protected DisplayerErrorWidget errorWidget;
     protected boolean error = true;
     protected DisplayerLocator displayerLocator;
-    protected RendererSelector rendererSelector;
     ClientRuntimeError displayerInitializationError;
     CommonConstants i18n = CommonConstants.INSTANCE;
 
@@ -71,19 +68,13 @@ public class DisplayerViewer extends Composite {
     };
 
     @Inject
-    public DisplayerViewer(DisplayerLocator displayerLocator,
-                           RendererSelector rendererSelector) {
+    public DisplayerViewer(DisplayerLocator displayerLocator) {
         this.displayerLocator = displayerLocator;
-        this.rendererSelector = rendererSelector;
         initWidget(container);
     }
 
     public DisplayerSettings getDisplayerSettings() {
         return displayerSettings;
-    }
-
-    public void setIsShowRendererSelector(Boolean isShowRendererSelector) {
-        this.isShowRendererSelector = isShowRendererSelector;
     }
 
     public Displayer getDisplayer() {
@@ -110,28 +101,7 @@ public class DisplayerViewer extends Composite {
     protected void show() {
         // Add the displayer into a container
         container.clear();
-        final FlowPanel displayerContainer = new FlowPanel();
-        displayerContainer.add(displayer);
-
-        // Add the renderer selector (if enabled)
-        if (isShowRendererSelector) {
-            rendererSelector.init(displayerSettings,
-                    RendererSelector.SelectorType.TAB,
-                    300,
-                    new Command() {
-
-                        public void execute() {
-                            displayerSettings.setRenderer(rendererSelector.getRendererLibrary().getUUID());
-                            displayer = displayerLocator.lookupDisplayer(displayerSettings);
-                            displayer.draw();
-
-                            displayerContainer.clear();
-                            displayerContainer.add(displayer);
-                        }
-                    });
-            container.add(rendererSelector);
-        }
-        container.add(displayerContainer);
+        container.add(displayer);
         error = false;
     }
 
@@ -172,13 +142,6 @@ public class DisplayerViewer extends Composite {
         container.clear();
         container.add(errorWidget);
         errorWidget.show(message, e.getThrowable());
-        if (displayerSettings != null) {
-            errorWidget.setRefreshAction(() -> {                
-                init(displayerSettings);
-                draw();
-            });
-        }
-
         error = true;
         GWT.log(e.getMessage(),
                 e.getThrowable());

@@ -30,9 +30,10 @@ public class LayoutColumn {
     public static final String DEFAULT_COLUMN_HEIGHT = "12";
     private String span;
     private String height;
-    private Map<String,String> properties = new HashMap<>();
+    private Map<String, String> properties = new HashMap<>();
     private List<LayoutRow> rows = new ArrayList<>();
     private List<LayoutComponent> layoutComponents = new ArrayList<>();
+    private int index;
 
     public LayoutColumn(String span) {
         this.span = span;
@@ -41,7 +42,7 @@ public class LayoutColumn {
 
     public LayoutColumn(@MapsTo("span") String span,
                         @MapsTo("height") String height,
-                        @MapsTo("properties") Map<String,String> properties) {
+                        @MapsTo("properties") Map<String, String> properties) {
         this.span = span;
         this.height = height;
         this.properties = properties;
@@ -79,6 +80,14 @@ public class LayoutColumn {
         return !rows.isEmpty() || !layoutComponents.isEmpty();
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -96,7 +105,8 @@ public class LayoutColumn {
         if (rows != null ? !rows.equals(that.rows) : that.rows != null) {
             return false;
         }
-        return !(layoutComponents != null ? !layoutComponents.equals(that.layoutComponents) : that.layoutComponents != null);
+        return !(layoutComponents != null ? !layoutComponents.equals(that.layoutComponents)
+                : that.layoutComponents != null);
     }
 
     @Override

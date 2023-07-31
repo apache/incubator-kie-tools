@@ -179,17 +179,6 @@
       </dependency>
       <dependency>
         <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-workbench-processors</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -223,18 +212,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- UberFire Commons (former KIE Commons) -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-commons</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
       <!-- UberFire Packaging -->
       <dependency>
         <groupId>org.uberfire</groupId>
@@ -320,49 +297,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- Widget commons -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-commons</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-commons</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-table</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-table</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Widget core -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
       <!-- Widget Ace and Editors -->
 
       <dependency>
@@ -435,6 +369,18 @@
       </dependency>
 
       <!-- Dashbuilder APIs -->
+      <dependency>
+        <groupId>org.dashbuilder</groupId>
+        <artifactId>dashbuilder-patternfly</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dashbuilder</groupId>
+        <artifactId>dashbuilder-patternfly</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
       <dependency>
         <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-displayer-api</artifactId>
@@ -557,13 +503,6 @@
 
       <dependency>
         <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-renderer-c3</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-renderer-echarts</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
@@ -572,12 +511,6 @@
       <dependency>
         <groupId>org.dashbuilder</groupId>
         <artifactId>dashbuilder-renderer-echarts</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.dashbuilder</groupId>
-        <artifactId>dashbuilder-renderer-c3</artifactId>
         <version>${project.version}</version>
       </dependency>
 

@@ -51,11 +51,15 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
             "width", "height", "marginTop", "marginBottom", "marginRight", "marginLeft", "bgColor",
             "isFilterEnabled", "isFilterOn", "isEmpty", "doFilter");
 
-    public static final String DEFAULT_HTML_TEMPLATE = "<div id=\"${this}\" class=\"card-pf card-pf-accented card-pf-aggregate-status\" " +
-            "style=\"background-color:${bgColor}; width:${width}px; height:${height}px; " +
+    public static final String DEFAULT_HTML_TEMPLATE = "<div id=\"${this}\""  +    
+            "style=\"background-color:${bgColor}; width:${width}px; height: auto; " +
             "margin-top:${marginTop}px; margin-right:${marginRight}px; margin-bottom:${marginBottom}px; margin-left:${marginLeft}px;\">\n" +
-            "  <h3>${title}</h3>\n" +
-            "  <h2>${value}</h2>\n" +
+            "  <div class=\"pf-v5-c-card pf-m-compact pf-m-rounded\">" + 
+            "    <div class=\"pf-v5-c-card__title\">\n" + 
+            "      <h3 class=\"pf-v5-c-card__title-text\">${title}</h3>\n" + 
+            "    </div>" +
+            "    <div class=\"pf-v5-c-card__body\"><h2>${value}</h2></div>\n" +
+            "  </div>" + 
             "</div>";
 
     public static final String DEFAULT_JS_TEMPLATE = "if (${isFilterEnabled}) {  \n" +
@@ -75,7 +79,7 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
             "  };\n" +
             "}";
     
-    private static final String DARK_MODE_DEFAULT_COLOR = "#211d3b";
+    private static final String DARK_MODE_DEFAULT_COLOR = "rgb(27, 29, 33)";
 
     protected View view;
     protected boolean filterOn = false;

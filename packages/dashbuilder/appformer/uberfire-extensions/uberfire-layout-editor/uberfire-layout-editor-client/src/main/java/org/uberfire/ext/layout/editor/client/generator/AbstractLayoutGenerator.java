@@ -35,11 +35,6 @@ import org.uberfire.ext.layout.editor.client.infra.LayoutEditorCssHelper;
 
 public abstract class AbstractLayoutGenerator implements LayoutGenerator {
 
-    private static final String ROW_CLASS_PREFIX = "uf-perspective-row-";
-
-    private static final String UF_LE_OVERFLOW = "uf-le-overflow";
-
-    private static final String COLUMN_CLASS = "uf-perspective-col";
 
     public static final String CONTAINER_ID = "mainContainer";
 
@@ -72,23 +67,11 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
             var row = driver.createRow(layoutRow);
             applyCssToElement(layoutRow.getProperties(), row);
 
-            if (layoutTemplate.isPageStyle()) {
-                row.classList.add(buildRowSize(layoutRow.getHeight()));
-                row.classList.add(UF_LE_OVERFLOW);
-            }
             for (LayoutColumn layoutColumn : layoutRow.getLayoutColumns()) {
                 var column = driver.createColumn(layoutColumn);
                 applyCssToElement(layoutColumn.getProperties(), column);
 
-                if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                    column.classList.add(COLUMN_CLASS);
-                }
                 if (columnHasNestedRows(layoutColumn)) {
-                    if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                        column.classList.add(COLUMN_CLASS);
-                    } else if (!layoutColumn.getHeight().isEmpty()) {
-                        column.classList.add(ROW_CLASS_PREFIX + layoutColumn.getHeight());
-                    }
                     generateRows(layoutTemplate,
                             layoutInstance,
                             driver,
@@ -100,7 +83,6 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                             layoutColumn,
                             column);
                 }
-                column.classList.add("uf-perspective-rendered-col");
                 row.appendChild(column);
             }
             row.classList.add("uf-perspective-rendered-row");
@@ -115,11 +97,6 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
         for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents()) {
             final IsWidget componentWidget = driver.createComponent(column, layoutComponent);
             if (componentWidget != null) {
-                if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                    componentWidget.asWidget().getElement().addClassName(COLUMN_CLASS);
-                } else if (!layoutColumn.getHeight().isEmpty()) {
-                    column.classList.add(ROW_CLASS_PREFIX + layoutColumn.getHeight());
-                }
 
                 elemental2Util.appendWidgetToElement(column, componentWidget.asWidget());
                 applyCssToElement(layoutComponent.getProperties(), componentWidget);
@@ -160,7 +137,4 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
         }
     }
 
-    public static String buildRowSize(final String value) {
-        return ROW_CLASS_PREFIX + value;
-    }
 }

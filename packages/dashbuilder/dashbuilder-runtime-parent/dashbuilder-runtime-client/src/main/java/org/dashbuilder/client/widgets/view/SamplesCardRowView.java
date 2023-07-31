@@ -60,7 +60,7 @@ public class SamplesCardRowView implements SamplesCardRow.View {
     @Override
     public void setTitleAndSamples(String title,
                                    List<SampleCard> sampleCards) {
-        samplesCardRowContainer.id = title + "-container";
+        samplesCardRowContainer.id = SamplesCardRow.produceCategoryTitleId(title);
         rowTitle.textContent = title;
         rowTitle.id = title;
         sampleCards.forEach(card -> samplesRowLine.appendChild(card.getElement()));

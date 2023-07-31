@@ -30,10 +30,10 @@ import elemental2.dom.Response;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.widgets.UploadWidget;
+import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 @Dependent
 @Templated
@@ -67,7 +67,7 @@ public class UploadWidgetView implements UploadWidget.View {
     RuntimeCommunication runtimeCommunication;
 
     @Inject
-    BusyIndicatorView loading;
+    BusyIndicator busyIndicator;
 
     @Override
     public void init(UploadWidget presenter) {
@@ -76,12 +76,12 @@ public class UploadWidgetView implements UploadWidget.View {
 
     @Override
     public void loading() {
-        loading.showBusyIndicator(i18n.uploadingDashboards());
+        busyIndicator.show(i18n.uploadingDashboards());
     }
 
     @Override
     public void stopLoading() {
-        loading.hideBusyIndicator();
+        busyIndicator.hide();
     }
 
     @Override

@@ -213,8 +213,7 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         }
 
         tooltip.setValueFormatter(buildNumberLabelFormatterForColumn(1));
-
-        option.setColor(COLOR_PATTERN);
+        
         option.setTooltip(tooltip);
         option.setDataset(echartsDataSet);
         option.setTitle(title);

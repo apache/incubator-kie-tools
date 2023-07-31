@@ -27,12 +27,11 @@ import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
-import org.dashbuilder.navigation.layout.LayoutRecursionIssueI18n;
 
 @Dependent
 public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavItem {
 
-    public interface View extends NavWidgetView<NavCarouselWidget>, LayoutRecursionIssueI18n {
+    public interface View extends NavWidgetView<NavCarouselWidget>, ClientLayoutRecursionIssueI18n {
 
         void addContentSlide(IsWidget widget);
 

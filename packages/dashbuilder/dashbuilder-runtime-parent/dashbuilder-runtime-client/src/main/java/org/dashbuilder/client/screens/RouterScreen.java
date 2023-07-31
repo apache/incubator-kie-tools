@@ -166,6 +166,7 @@ public class RouterScreen {
     }
 
     public void goToContentError(Throwable contentException) {
+        DomGlobal.console.debug(contentException);
         contentErrorScreen.showContentError(contentException.getMessage());
         placeManager.goTo(ContentErrorPerspective.ID);
     }

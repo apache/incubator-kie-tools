@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.model.Pair;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

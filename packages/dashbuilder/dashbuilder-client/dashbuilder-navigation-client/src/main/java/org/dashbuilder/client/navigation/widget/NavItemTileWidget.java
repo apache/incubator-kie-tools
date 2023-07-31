@@ -18,13 +18,12 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.ActivityResourceType;
 
@@ -32,9 +31,9 @@ import org.uberfire.workbench.model.ActivityResourceType;
  * A widget that shows a tile representing a {@link NavItem}
  */
 @Dependent
-public class NavItemTileWidget implements IsElement {
+public class NavItemTileWidget {
 
-    public interface View extends UberElement<NavItemTileWidget> {
+    public interface View extends UberElemental<NavItemTileWidget> {
 
         enum ItemType {
             GROUP,
@@ -56,7 +55,6 @@ public class NavItemTileWidget implements IsElement {
         this.view.init(this);
     }
 
-    @Override
     public HTMLElement getElement() {
         return view.getElement();
     }
@@ -71,8 +69,7 @@ public class NavItemTileWidget implements IsElement {
 
         if (navItem instanceof NavGroup) {
             view.show(name, descr, View.ItemType.GROUP);
-        }
-        else {
+        } else {
             NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
             String resourceId = navCtx.getResourceId();
             if (resourceId != null && ActivityResourceType.PERSPECTIVE.equals(navCtx.getResourceType())) {

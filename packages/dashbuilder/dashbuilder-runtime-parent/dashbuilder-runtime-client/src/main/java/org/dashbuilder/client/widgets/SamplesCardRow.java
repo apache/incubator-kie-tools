@@ -64,4 +64,8 @@ public class SamplesCardRow implements IsElement {
         return category;
     }
 
+    public static String produceCategoryTitleId(String title) {
+        return title + "-container";
+    }
+
 }

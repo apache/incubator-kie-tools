@@ -37,6 +37,7 @@ public class NavTreeJSONMarshaller {
     private static final String NAV_ITEM_PAGE = "page";
     private static final String NAV_TREE_ROOT_ITEMS = "root_items";
     private static final String NAV_GROUP_CHILDREN = "children";
+    private static  int GROUP_IDX = 1;
 
     private static NavTreeJSONMarshaller SINGLETON = new NavTreeJSONMarshaller();
 
@@ -127,6 +128,7 @@ public class NavTreeJSONMarshaller {
         }
         NavItem navItem = null;
         String type = json.getString(NAV_ITEM_TYPE);
+        String id = json.getString(NAV_ITEM_ID);
         if (type == null) {
             type = NavItem.Type.ITEM.toString();
         }
@@ -135,10 +137,12 @@ public class NavTreeJSONMarshaller {
             navItem = NavFactory.get().createDivider();
         } else if (NavItem.Type.GROUP.toString().equals(type)) {
             navItem = NavFactory.get().createNavGroup();
+            if (id == null) {
+                id = "Group " + GROUP_IDX++;
+            }
         } else {
             navItem = NavFactory.get().createNavItem();
         }
-        String id = json.getString(NAV_ITEM_ID);
         String name = json.getString(NAV_ITEM_NAME);
         String desc = json.getString(NAV_ITEM_DESC);
         String modif = json.getString(NAV_ITEM_MODIF);
@@ -146,7 +150,7 @@ public class NavTreeJSONMarshaller {
         String page = json.getString(NAV_ITEM_PAGE);
 
         if (name == null) {
-            name = id;
+            name = id;            
         }
 
         if (isItem(navItem)) {

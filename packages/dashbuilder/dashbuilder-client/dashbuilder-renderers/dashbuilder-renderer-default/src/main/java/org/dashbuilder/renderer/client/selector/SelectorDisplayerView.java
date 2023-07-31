@@ -15,24 +15,25 @@
  */
 package org.dashbuilder.renderer.client.selector;
 
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import jsinterop.base.Js;
+import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.dashbuilder.patternfly.select.Select;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
-import org.gwtbootstrap3.client.ui.ListBox;
 
-public class SelectorDisplayerView extends AbstractGwtDisplayerView<SelectorDisplayer> implements SelectorDisplayer.View {
+@Dependent
+public class SelectorDisplayerView extends AbstractErraiDisplayerView<SelectorDisplayer> implements
+                                   SelectorDisplayer.View {
 
-    protected ListBox listBox = new ListBox();
-    protected boolean hintEnabled = false;
+    @Inject
+    protected Select select;
 
     @Override
     public void init(SelectorDisplayer presenter) {
         super.setPresenter(presenter);
-        super.setVisualization(listBox);
+        super.setVisualization(Js.cast(select.getElement()));
     }
 
     @Override
@@ -46,61 +47,41 @@ public class SelectorDisplayerView extends AbstractGwtDisplayerView<SelectorDisp
     }
 
     protected void showHint(String hint) {
-        if (hintEnabled) {
-            SelectElement selectElement = SelectElement.as(listBox.getElement());
-            NodeList<OptionElement> options = selectElement.getOptions();
-            options.getItem(0).setText(hint);
-        } else {
-            listBox.addItem(hint);
-            hintEnabled = true;
-        }
+        select.setPromptText(hint);
     }
 
     @Override
     public void clearItems() {
-        listBox.clear();
-        hintEnabled = false;
+        select.clear();
     }
 
     @Override
     public void addItem(String id, String value, boolean selected) {
-        listBox.addItem(value, id);
+        select.addItem(value, id);
         if (selected) {
-            listBox.setSelectedIndex(listBox.getItemCount()-1);
+            select.setSelectedIndex(select.getItemCount() - 1);
         }
     }
 
     @Override
     public String getSelectedId() {
-        if (hintEnabled && listBox.getSelectedIndex() == 0) {
-            return null;
-        }
-        return listBox.getSelectedValue();
+        return select.getSelectedId();
     }
 
     @Override
     public int getItemCount() {
-        return listBox.getItemCount() - (hintEnabled ? 1 : 0);
+        return select.getItemCount();
     }
 
     @Override
     public void setItemTitle(int index, String title) {
-        SelectElement selectElement = SelectElement.as(listBox.getElement());
-        NodeList<OptionElement> options = selectElement.getOptions();
-        OptionElement optionElement = options.getItem(index + (hintEnabled ? 1: 0));
-        if (optionElement != null) {
-            optionElement.setTitle(title);
-        }
+        select.setItemTitle(index, title);
     }
 
     @Override
     public void setFilterEnabled(boolean enabled) {
         if (enabled) {
-            listBox.addChangeHandler(new ChangeHandler() {
-                public void onChange(ChangeEvent event) {
-                    getPresenter().onItemSelected();
-                }
-            });
+            select.addChangeAction(getPresenter()::onItemSelected);
         }
     }
 

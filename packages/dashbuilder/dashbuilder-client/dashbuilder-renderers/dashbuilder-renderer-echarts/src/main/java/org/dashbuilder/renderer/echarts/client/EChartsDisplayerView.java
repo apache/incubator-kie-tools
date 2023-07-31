@@ -25,18 +25,22 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
+import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
+import org.dashbuilder.patternfly.label.Label;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Chart;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 import org.dashbuilder.renderer.echarts.client.resources.i18n.EChartsDisplayerConstants;
-import org.gwtbootstrap3.client.ui.Label;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 @Dependent
 public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
                                  extends AbstractGwtDisplayerView<P>
                                  implements EChartsAbstractDisplayer.View<P> {
+
+    private static final String DARK_MODE_BG_COLOR = "rgb(27, 29, 33)";
 
     protected Panel displayerPanel = GWT.create(FlowPanel.class);
 
@@ -50,6 +54,9 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
     @Inject
     EChartsResizeHandlerRegister eChartsResizeHandlerRegister;
 
+    @Inject
+    Label lblNoData;
+
     @Override
     public void init(P presenter) {
         super.setPresenter(presenter);
@@ -58,16 +65,13 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
 
     @Override
     public void noData() {
-        FlowPanel noDataPanel = GWT.create(FlowPanel.class);
-        Label lblNoData = GWT.create(Label.class);
         lblNoData.setText(EChartsDisplayerConstants.INSTANCE.common_noData());
-        noDataPanel.add(lblNoData);
 
         disposeChart();
         chart = null;
 
         displayerPanel.clear();
-        displayerPanel.add(noDataPanel);
+        displayerPanel.add(ElementWrapperWidget.getWidget(lblNoData.getElement()));
     }
 
     @Override
@@ -76,6 +80,12 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
             initChart();
         }
         Scheduler.get().scheduleDeferred(() -> {
+            // Needs to differ the default dark theme background to match PF5
+            // This is a workaround since a custom theme is failing 
+            // possibly related https://github.com/chartjs/Chart.js/issues/7761
+            if(bootstrapParams.getMode() == Mode.DARK && option.getBackgroundColor() == null) {
+                option.setBackgroundColor(DARK_MODE_BG_COLOR);
+            }
             chart.setOption(option);
             chart.resize();
         });

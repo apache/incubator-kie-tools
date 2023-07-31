@@ -19,8 +19,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
-import org.dashbuilder.common.client.widgets.AlertBox;
+import org.dashbuilder.patternfly.alert.Alert;
+import org.dashbuilder.patternfly.alert.AlertType;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Window;
@@ -45,14 +47,13 @@ public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
     Div slidesDiv;
 
     NavCarouselWidget presenter;
-    AlertBox alertBox;
+    Alert alertBox;
 
     @Inject
-    public NavCarouselWidgetView(AlertBox alertBox) {
+    public NavCarouselWidgetView(Alert alertBox) {
         this.alertBox = alertBox;
-        alertBox.setLevel(AlertBox.Level.WARNING);
-        alertBox.setCloseEnabled(false);
-        alertBox.getElement().getStyle().setProperty("width", "96%");
+        alertBox.setType(AlertType.WARNING);
+        alertBox.getElement().style.setProperty("width", "96%");
     }
 
     @Override
@@ -81,14 +82,14 @@ public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
     public void errorNavGroupNotFound() {
         DOMUtil.removeAllChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navGroupNotFound());
-        mainDiv.appendChild(alertBox.getElement());
+        mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void errorNavItemsEmpty() {
         DOMUtil.removeAllChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navCarouselDragComponentEmptyError());
-        mainDiv.appendChild(alertBox.getElement());
+        mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
@@ -96,7 +97,7 @@ public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
         Div div = (Div) Window.getDocument().createElement("div");
         div.setClassName(slidesDiv.getChildNodes().getLength() == 0 ? "item active" : "item");
         alertBox.setMessage(NavigationConstants.INSTANCE.navCarouselDragComponentInfiniteRecursion() + " " + cause);
-        div.appendChild(alertBox.getElement());
+        div.appendChild(Js.cast(alertBox.getElement()));
         slidesDiv.appendChild(div);
     }
 }

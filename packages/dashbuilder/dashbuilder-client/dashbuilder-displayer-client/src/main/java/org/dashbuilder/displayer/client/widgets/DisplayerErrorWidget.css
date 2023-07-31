@@ -13,27 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.displayer-error {
-  margin: 10px;
-}
-
-.displayer-error-body {
-  overflow-wrap: break-word;
-  overflow: auto;
-  max-height: 110px;
-}
-
 .displayer-error-title-icon {
   margin-right: 10px;
-}
-
-.error-details {
-  resize: none;
-  white-space: pre;
-  cursor: text;
-  border: none;
-}
-
-.chevron-title {
-  margin-left: 5px;
 }

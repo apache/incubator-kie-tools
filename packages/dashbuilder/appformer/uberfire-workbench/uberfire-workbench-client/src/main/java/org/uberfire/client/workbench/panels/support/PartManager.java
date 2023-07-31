@@ -25,7 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.panels.impl.LayoutPanelView;
-import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.model.Pair;
 import org.uberfire.workbench.model.PartDefinition;
 
 /**

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 .sampleCardContainer {
-  padding: 10px;
   margin-bottom: 20px;
+  width: 280px;
 }
 
 .sampleImportLink {
@@ -48,15 +48,13 @@
 }
 
 .sampleUrlLinkDiv {
-  float: right;
   margin-top: 10px;
-  font-size: 13px;
 }
 
 .sampleNameDiv {
+  max-width: 200px;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 10px 10px 0px 5px;
   margin: 0;
   overflow: hidden;
   display: block;

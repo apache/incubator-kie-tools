@@ -27,7 +27,6 @@ import org.dashbuilder.navigation.NavTree;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 @Dependent
 @Templated
@@ -39,9 +38,6 @@ public class RuntimeScreenView implements RuntimeScreen.View {
 
     @Inject
     RuntimeCommunication runtimeCommunication;
-
-    @Inject
-    BusyIndicatorView loading;
 
     @Inject
     NavTilesWidget tilesWidget;

@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.eclipse.jetty.server.Authentication.User;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
@@ -38,8 +37,6 @@ import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
-import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -66,10 +63,6 @@ public class WorkbenchStartupTest {
 
     @Mock
     SyncBeanManager bm;
-    @Mock
-    WorkbenchPickupDragController dragController;
-    @Mock
-    WorkbenchDragAndDropManager dndManager;
     @Mock
     PanelManager panelManager;
     @Mock
@@ -100,7 +93,6 @@ public class WorkbenchStartupTest {
     @Before
     public void setup() {
         when(bm.lookupBeans(any(Class.class))).thenReturn(Collections.emptyList());
-        when(dragController.getBoundaryPanel()).thenReturn(new AbsolutePanel());
         doNothing().when(workbench).addLayoutToRootPanel(any(WorkbenchLayout.class));
         when(bm.lookupBeans(PerspectiveActivity.class)).thenReturn(Arrays.asList(perspectiveBean1,
                                                                                  perspectiveBean2));
@@ -114,11 +106,11 @@ public class WorkbenchStartupTest {
     @Test
     public void shouldNotStartWhenBlocked() throws Exception {
         verify(appReadyEvent,
-               never()).fire(any(ApplicationReadyEvent.class));
+                never()).fire(any(ApplicationReadyEvent.class));
         workbench.addStartupBlocker(WorkbenchStartupTest.class);
         workbench.startIfNotBlocked();
         verify(appReadyEvent,
-               never()).fire(any(ApplicationReadyEvent.class));
+                never()).fire(any(ApplicationReadyEvent.class));
     }
 
     @Test
@@ -126,14 +118,14 @@ public class WorkbenchStartupTest {
         workbench.addStartupBlocker(WorkbenchStartupTest.class);
         workbench.removeStartupBlocker(WorkbenchStartupTest.class);
         verify(appReadyEvent,
-               times(1)).fire(any(ApplicationReadyEvent.class));
+                times(1)).fire(any(ApplicationReadyEvent.class));
     }
 
     @Test
     public void shouldStartOnAfterInitIfNeverBlocked() throws Exception {
         workbench.startIfNotBlocked();
         verify(appReadyEvent,
-               times(1)).fire(any(ApplicationReadyEvent.class));
+                times(1)).fire(any(ApplicationReadyEvent.class));
     }
 
     @Test
