@@ -1,12 +1,8 @@
 import * as React from "react";
 import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
-import {
-  DmnBuiltInDataType,
-  BeeTableHeaderVisibility,
-  BeeTableProps,
-} from "@kie-tools/boxed-expression-component/dist/api";
+import { ResizerStopBehavior } from "../src/resizing/ResizingWidthsContext";
+import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../src/api";
 import { StandaloneBeeTable } from "../src/table/BeeTable";
 import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 
