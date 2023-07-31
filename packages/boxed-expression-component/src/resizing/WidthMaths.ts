@@ -114,8 +114,9 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
 }
 
 /**
- * This function gous recursively trough all `expression` nested expressions and sum either `entryInfoWidth` or default minimal width, returned by `getExpressionMinWidth`, if it is last nested expression in the chain.
- * This function returns maximal sum found bewteen all `expression` nested expressions
+ * This function goes recursively through all `expression`'s nested expressions and sums either `entryInfoWidth` or default minimal width, returned by `getExpressionMinWidth`, if it is the last nested expression in the chain.
+ *
+ * This function returns maximal sum found in all `expression`'s nested expressions.
  */
 export function getExpressionTotalMinimalWidth(currentWidth: number, expression: ExpressionDefinition): number {
   if (expression.logicType === ExpressionDefinitionLogicType.Context) {
