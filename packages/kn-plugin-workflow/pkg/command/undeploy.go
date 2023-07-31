@@ -18,6 +18,7 @@ package command
 
 import (
 	"fmt"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
@@ -125,6 +126,13 @@ func runUndeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err 
 			return cfg, fmt.Errorf("❌ ERROR: failed to get current directory: %w", err)
 		}
 	}
+
+	dir, err := os.Getwd()
+	cfg.DefaultDashboardsFolder = dir + "/" + metadata.DashboardsDefaultDirName
+	if err != nil {
+		return cfg, fmt.Errorf("❌ ERROR: failed to get default dashboards files folder: %w", err)
+	}
+
 	//setup manifest path
 	if err := setupConfigManifestPath(&cfg); err != nil {
 		return cfg, err

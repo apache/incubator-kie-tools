@@ -126,6 +126,9 @@ export const en: OnlineI18n = {
       hostInfo: `The hostname associated with your instance.`,
       namespaceInfo: `The Namespace (project) you want your Dev deployments to be.`,
       tokenInfo: `The token associated with your instance.`,
+      insecurelyDisableTlsCertificateValidation: "Insecurely disable TLS certificate validation",
+      insecurelyDisableTlsCertificateValidationInfo:
+        "Checking this option will insecurely disable TLS certificate verification for this account. This is an alternative to not having to deal with the browser's restrictions when your cluster is behind an HTTPS endpoint with a self-signed certificate. Please be advised that the use of self-signed certificates is a weaker form of security, so consider contacting your cluster admins to use a trusted certificate. For more information, refer to <a href='https://cwe.mitre.org/data/definitions/295.html' target='_blank'>https://cwe.mitre.org/data/definitions/295.html</a>.",
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",
       missingPermissions:
@@ -248,7 +251,7 @@ export const en: OnlineI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to create Dev deployments on this OpenShift instance.",
+          introduction: "Now you are able to create Dev deployments on this Kubernetes instance.",
           configNote: "The token you provide is locally stored in this browser and is never shared with anyone.",
           connectionErrorLong: `A connection with your Kubernetes cluster could not be established.`,
           checkInfo: "Please check the information provided and try again.",
@@ -315,7 +318,7 @@ export const en: OnlineI18n = {
         subtitle: `Set up your ${en_common.names.bitbucket} App Password so you can interact with Bitbucket.`,
       },
       footer: {
-        createNewToken: "Generate new App Passord",
+        createNewToken: "Generate new App Password",
         placeHolder: "Paste your App Password here",
       },
       body: {

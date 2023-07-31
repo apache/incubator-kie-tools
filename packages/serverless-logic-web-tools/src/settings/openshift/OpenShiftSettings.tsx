@@ -55,6 +55,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
       namespace: settings.openshift.config.namespace,
       host: settings.openshift.config.host,
       token: "",
+      insecurelyDisableTlsCertificateValidation: false,
     };
     settingsDispatch.openshift.setConfig(newConfig);
     saveConfigCookie(newConfig);
@@ -116,6 +117,9 @@ export function OpenShiftSettings(props: SettingsPageProps) {
                 <br />
                 <b>Namespace (project): </b>
                 <i>{settings.openshift.config.namespace}</i>
+                <br />
+                <b>TLS Certificate Verification: </b>
+                <i>{settings.openshift.config.insecurelyDisableTlsCertificateValidation ? "Disabled" : "Enabled"}</i>
                 <br />
                 <br />
                 <Button variant={ButtonVariant.tertiary} onClick={onDisconnect}>

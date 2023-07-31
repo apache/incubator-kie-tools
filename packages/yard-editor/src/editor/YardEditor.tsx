@@ -32,6 +32,7 @@ import { editor } from "monaco-editor";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { YardUIEditor } from "../uiEditor";
 import { YardFile } from "../types";
+import { Position } from "monaco-editor";
 import "./YardEditor.css";
 
 interface Props {
@@ -67,6 +68,7 @@ interface Props {
 
 export type YardEditorRef = {
   setContent(path: string, content: string): Promise<void>;
+  moveCursorToPosition(position: Position): void;
 };
 
 const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | undefined, Props> = (
@@ -109,6 +111,9 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
         },
         setTheme: (theme: EditorTheme): Promise<void> => {
           return yardTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+        },
+        moveCursorToPosition: (position: Position) => {
+          yardTextEditorRef.current?.moveCursorToPosition(position);
         },
       };
     },
@@ -194,23 +199,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
     </I18nDictionariesProvider>
   );
 
-  return (
-    <>
-      {(isVscode() && yardUIContainer) || (
-        <Drawer className={"yard-drawer"} isExpanded={true} isInline={true}>
-          <DrawerContent
-            panelContent={
-              <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody>{yardUIContainer}</DrawerPanelBody>
-              </DrawerPanelContent>
-            }
-          >
-            <DrawerContentBody className={"drawer-content-body"}>{yardTextEditor}</DrawerContentBody>
-          </DrawerContent>
-        </Drawer>
-      )}
-    </>
-  );
+  return <>{(isVscode() && yardUIContainer) || yardTextEditor}</>;
 };
 
 export const YardEditor = React.forwardRef(RefForwardingYardEditor);

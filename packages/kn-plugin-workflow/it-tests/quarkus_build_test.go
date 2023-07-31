@@ -53,10 +53,10 @@ var cfgTestInputQuarkusBuild_Success = []CfgTestInputQuarkusBuild{
 		Image: "dev.local/my-project",
 		Jib:   true,
 	}},
-	{input: quarkus.BuildCmdConfig{
-		Image:     "dev.local/my-project",
-		JibPodman: true,
-	}},
+	//{input: quarkus.BuildCmdConfig{
+	//	Image:     "dev.local/my-project",
+	//	JibPodman: true,
+	//}},
 	// {input: quarkus.BuildCmdConfig{
 	// 	Image: "dev.local/my-project",
 	// 	Jib:   true,

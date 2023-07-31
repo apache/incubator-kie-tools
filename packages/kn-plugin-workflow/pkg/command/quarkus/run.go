@@ -27,6 +27,7 @@ import (
 
 type RunCmdConfig struct {
 	PortMapping string
+	OpenDevUI   bool
 }
 
 func NewRunCommand() *cobra.Command {
@@ -43,13 +44,14 @@ func NewRunCommand() *cobra.Command {
 	{{.Name}} run --port 8081
 	 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
-		PreRunE:    common.BindEnv("port"),
+		PreRunE:    common.BindEnv("port", "open-dev-ui"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return run(cmd, args)
 	}
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different port to Quarkus dev mode.")
+	cmd.Flags().Bool("open-dev-ui", true, "If false, disables automatic browser launch of SonataFlow Dev UI")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -72,6 +74,7 @@ func run(cmd *cobra.Command, args []string) error {
 func runDevCmdConfig(cmd *cobra.Command) (cfg RunCmdConfig, err error) {
 	cfg = RunCmdConfig{
 		PortMapping: viper.GetString("port"),
+		OpenDevUI:   viper.GetBool("open-dev-ui"),
 	}
 	return cfg, nil
 }
@@ -106,7 +109,7 @@ func runQuarkusProjectDevMode(cfg RunCmdConfig) (err error) {
 
 	readyCheckURL := fmt.Sprintf("http://localhost:%s/q/health/ready", cfg.PortMapping)
 	pollInterval := 5 * time.Second
-	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping)
+	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping, cfg.OpenDevUI)
 
 	wg.Wait()
 	return err

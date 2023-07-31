@@ -13,20 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Editor,
-  EditorApi,
-  EditorInitArgs,
-  EditorTheme,
-  KogitoEditorEnvelopeContextType,
-} from "@kie-tools-core/editor/dist/api";
+import { Editor, EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { YardEditor } from "./YardEditor";
-import { YardEditorChannelApi } from "../api";
+import { YardEditorApi, YardEditorChannelApi } from "../api";
+import { Position } from "monaco-editor";
 
 export class YardEditorView implements Editor {
-  private readonly editorRef: React.RefObject<EditorApi>;
+  private readonly editorRef: React.RefObject<YardEditorApi>;
   private readonly initArgs: EditorInitArgs;
   public af_isReact = true;
   public af_componentId: "yard-editor";
@@ -36,7 +31,7 @@ export class YardEditorView implements Editor {
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
-    this.editorRef = React.createRef<EditorApi>();
+    this.editorRef = React.createRef<YardEditorApi>();
     this.initArgs = initArgs;
   }
 
@@ -81,5 +76,9 @@ export class YardEditorView implements Editor {
 
   public async setTheme(theme: EditorTheme) {
     return this.editorRef.current!.setTheme(theme);
+  }
+
+  public moveCursorToPosition(position: Position): void {
+    this.editorRef.current!.moveCursorToPosition(position);
   }
 }

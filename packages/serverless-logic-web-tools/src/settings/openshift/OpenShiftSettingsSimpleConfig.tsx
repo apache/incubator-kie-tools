@@ -23,6 +23,7 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useCallback, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
@@ -42,6 +43,7 @@ import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstan
 import { routes } from "../../navigation/Routes";
 import { QuickStartIds } from "../../quickstarts-data";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -134,6 +136,13 @@ export function OpenShiftSettingsSimpleConfig() {
   const onTokenChanged = useCallback(
     (newValue: string) => {
       setConfig({ ...config, token: newValue });
+    },
+    [config]
+  );
+
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
+    (checked: boolean) => {
+      setConfig({ ...config, insecurelyDisableTlsCertificateValidation: checked });
     },
     [config]
   );
@@ -317,6 +326,39 @@ export function OpenShiftSettingsSimpleConfig() {
               </Button>
             </InputGroupText>
           </InputGroup>
+        </FormGroup>
+        <FormGroup fieldId="disable-tls-validation">
+          <Checkbox
+            id="disable-tls-validation"
+            name="disable-tls-validation"
+            label={
+              <>
+                {i18n.openshift.configModal.insecurelyDisableTlsCertificateValidation}
+                <Popover
+                  minWidth="500px"
+                  bodyContent={
+                    <div>
+                      <I18nHtml>{i18n.openshift.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+                    </div>
+                  }
+                >
+                  <button
+                    type="button"
+                    aria-label="Insecurely disable tls certificate validation info"
+                    onClick={(e) => e.preventDefault()}
+                    aria-describedby="disable-tls-validation"
+                    className="pf-c-form__group-label-help"
+                  >
+                    <OutlinedQuestionCircleIcon />
+                  </button>
+                </Popover>
+              </>
+            }
+            aria-label="Disable TLS Certificate Validation"
+            tabIndex={4}
+            isChecked={config.insecurelyDisableTlsCertificateValidation}
+            onChange={onInsecurelyDisableTlsCertificateValidationChange}
+          />
           <br />
           <Button
             isInline={true}

@@ -16,7 +16,7 @@
 
 import { setDiagnosticsOptions } from "monaco-yaml";
 import { JSONSchema7 } from "json-schema";
-import { SW_SPEC_YARD_SCEMA } from "../schemas/yardSchema";
+import { YARD_SCHEMA } from "@kie-tools/yard-language-service/dist/assets/schemas";
 
 export function initYamlSchemaDiagnostics() {
   setDiagnosticsOptions({
@@ -28,7 +28,7 @@ export function initYamlSchemaDiagnostics() {
       {
         uri: "https://start.kubesmarts.org/schemas/yard/draft-07/YaRD-schema.json",
         fileMatch: ["*"],
-        schema: SW_SPEC_YARD_SCEMA as JSONSchema7,
+        schema: YARD_SCHEMA as JSONSchema7,
       },
     ],
   });

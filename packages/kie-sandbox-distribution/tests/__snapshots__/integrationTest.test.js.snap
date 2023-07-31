@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Test built images individually cors-proxy homepage 1`] = `
+"<!DOCTYPE html>
+    <html>
+      <title>@kie-tools/cors-proxy</title>
+      <h1>@kie-tools/cors-proxy</h1>
+      <p>This is a Cors-Proxy software intended to be used to proxy requests .</p>
+      <p>The source code is hosted on Github at <a href=\\"https://github.com/kiegroup/kie-tools/packages/cors-proxy\\">@kie-tools/cors-proxy</a></p>
+      <p>It can also be installed from npm with <code>npm install <a href=\\"https://npmjs.org/package/@kie-tools/cors-proxy\\">@kie-tools/cors-proxy</a></code></p>
+    </html>"
+`;
+
 exports[`Test built images individually extended-services homepage 1`] = `
 "<!doctype html>
 <html lang=\\"en\\">
@@ -22,27 +33,4 @@ exports[`Test built images individually extended-services homepage 1`] = `
     
   </body>
 </html>"
-`;
-
-exports[`Test built images individually git-cors-proxy homepage 1`] = `
-"<!DOCTYPE html>
-      <html>
-        <title>@thiagoelg/cors-proxy</title>
-        <h1>@thiagoelg/cors-proxy (forked from @isopmorphic-git/cors-proxy)</h1>
-        <p>This is the server software for users of <a href=\\"https://isomorphic-git.org\\">isomorphic-git</a> that enables cloning and pushing repos in the browser.</p>
-        <p>The source code is hosted on Github at <a href=\\"https://github.com/thiagoelg/cors-proxy\\">https://github.com/thiagoelg/cors-proxy</a></p>
-        <p>It can also be installed from npm with <code>npm install <a href=\\"https://npmjs.org/package/@thiagoelg/cors-proxy\\">@thiagoelg/cors-proxy</a></code></p>
-
-        <h2>Terms of Use</h2>
-        <p><b>This free service is provided to you AS IS with no guarantees.
-        By using this free service, you promise not to use excessive amounts of bandwidth.
-        </b></p>
-
-        <p><b>If you are cloning or pushing large amounts of data your IP address may be banned.
-        Please run your own instance of the software if you need to make heavy use this service.</b></p>
-
-        <h2>Allowed Origins</h2>
-        This proxy allows git clone / fetch / push / getRemoteInfo requests from these domains: <code>*</code>
-      </html>
-      "
 `;

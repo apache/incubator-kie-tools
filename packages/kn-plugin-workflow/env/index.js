@@ -39,16 +39,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "quay.io/kiegroup/kogito-swf-devmode:1.40",
       description: "SonataFlow dev mode image (used on cli run)",
     },
-    KN_PLUGIN_WORKFLOW__testPrintCmdOutput: {
-      name: "KN_PLUGIN_WORKFLOW__testPrintCmdOutput",
-      default: "false",
-      description: "Print output of commands during test execution of kn-workflow.",
-    },
-    KN_PLUGIN_WORKFLOW__suppressBrowserWindow: {
-      name: "KN_PLUGIN_WORKFLOW__suppressBrowserWindow",
-      default: "false",
-      description: "Do not open browser window after project is run.",
-    },
   }),
   get env() {
     return {
@@ -57,8 +47,6 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
         quarkusVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusVersion),
         devModeImage: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__devModeImage),
-        testPrintCmdOutput: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__testPrintCmdOutput),
-        suppressBrowserWindow: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__suppressBrowserWindow),
       },
     };
   },

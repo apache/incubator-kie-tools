@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
-import DmnEditor from "../framework/editor/dmn/DmnEditor";
-import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import GitHubListItem from "../framework/github-file-list/GitHubListItem";
-import GitHubListPage from "../framework/github-file-list/GitHubListPage";
-import Properties from "../framework/editor/Properties";
-import Tools from "../utils/Tools";
+import DecisionNavigator from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DecisionNavigator";
+import DmnEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnEditor";
+import DmnSideBar from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnSideBar";
+import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import GitHubListItem from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListItem";
+import GitHubListPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-file-list/GitHubListPage";
+import Properties from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/Properties";
+import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
 
 const TEST_NAME = "DmnTest";
 
