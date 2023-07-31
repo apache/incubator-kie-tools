@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.HTMLButtonElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -37,7 +37,7 @@ public class CollapsedDefinitionPaletteItemWidgetViewImpl implements CollapsedDe
                                                                      IsElement {
 
     @DataField
-    private Button icon;
+    private HTMLButtonElement icon;
 
     private DOMGlyphRenderers domGlyphRenderers;
 
@@ -48,7 +48,7 @@ public class CollapsedDefinitionPaletteItemWidgetViewImpl implements CollapsedDe
     }
 
     @Inject
-    public CollapsedDefinitionPaletteItemWidgetViewImpl(final Button icon,
+    public CollapsedDefinitionPaletteItemWidgetViewImpl(final HTMLButtonElement icon,
                                                         final DOMGlyphRenderers domGlyphRenderers) {
         this.icon = icon;
         this.domGlyphRenderers = domGlyphRenderers;
@@ -68,9 +68,9 @@ public class CollapsedDefinitionPaletteItemWidgetViewImpl implements CollapsedDe
 
         final String tooltip = presenter.getItem().getTooltip();
         if (!StringUtils.isEmpty(tooltip)) {
-            icon.setTitle(tooltip);
+            icon.title = tooltip;
         } else {
-            icon.setTitle("");
+            icon.title = "";
         }
     }
 

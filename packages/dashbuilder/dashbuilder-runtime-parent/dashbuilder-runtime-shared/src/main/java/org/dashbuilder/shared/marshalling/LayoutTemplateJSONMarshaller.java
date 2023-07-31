@@ -92,6 +92,11 @@ public class LayoutTemplateJSONMarshaller {
     static final String MARKDOWN = "MARKDOWN";
     static final String MARKDOWN_CODE_PROP = "MARKDOWN_CODE";
 
+    static final String PANEL_DRAG_TYPE =
+            "org.dashbuilder.client.navigation.widget.PanelLayoutDragComponent";
+    static final String PANEL = "PANEL";
+    static final String PANEL_CODE_PROP = "Page Name";
+
     // to make the json more user friendly
     // replacement for Drag type
     private static final String TYPE = "type";
@@ -238,9 +243,8 @@ public class LayoutTemplateJSONMarshaller {
                 .getCssProperties()));
         if (settings != null) {
             try {
-                component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
+                component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings, false));
             } catch (Exception e) {
-                // just log the error and let displayers handle missing configuration
                 LOGGER.warn("Error reading component settings", e);
                 var _displayer = new DisplayerSettings();
                 _displayer.setError(e.getMessage());
@@ -374,7 +378,8 @@ public class LayoutTemplateJSONMarshaller {
                 elementShortcut(object, HTML, HTML_CODE_PROP, HTML_DRAG_TYPE),
                 elementShortcut(object, SCREEN, SCREEN_NAME_PROP, SCREEN_DRAG_TYPE),
                 elementShortcut(object, DIV, DIV_ID_PROP, DIV_DRAG_TYPE),
-                elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE))
+                elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE),
+                elementShortcut(object, PANEL, PANEL_CODE_PROP, PANEL_DRAG_TYPE))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .findAny();

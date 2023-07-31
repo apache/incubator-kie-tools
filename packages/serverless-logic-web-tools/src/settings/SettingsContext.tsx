@@ -24,7 +24,6 @@ import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStat
 import { readDevModeEnabledConfigCookie, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
-import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettings";
 import { readServiceAccountConfigCookie, ServiceAccountSettingsConfig } from "./serviceAccount/ServiceAccountConfig";
 import {
@@ -84,9 +83,6 @@ export interface SettingsContextType {
   serviceRegistry: {
     config: ServiceRegistrySettingsConfig;
   };
-  featurePreview: {
-    config: FeaturePreviewSettingsConfig;
-  };
 }
 
 export interface SettingsDispatchContextType {
@@ -109,9 +105,6 @@ export interface SettingsDispatchContextType {
   serviceRegistry: {
     setConfig: React.Dispatch<React.SetStateAction<ServiceRegistrySettingsConfig>>;
     catalogStore: SwfServiceCatalogStore;
-  };
-  featurePreview: {
-    setConfig: React.Dispatch<React.SetStateAction<FeaturePreviewSettingsConfig>>;
   };
 }
 
@@ -184,7 +177,6 @@ export function SettingsContextProvider(props: any) {
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState(readServiceAccountConfigCookie());
   const [serviceRegistryConfig, setServiceRegistryConfig] = useState(readServiceRegistryConfigCookie());
-  const [featurePreviewConfig, setFeaturePreviewConfig] = useState(readFeaturePreviewConfigCookie());
 
   const [openshiftStatus, setOpenshiftStatus] = useState(
     extendedServices.status === ExtendedServicesStatus.AVAILABLE
@@ -196,7 +188,7 @@ export function SettingsContextProvider(props: any) {
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${extendedServices.config.buildUrl()}/${"cors-proxy"}`,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
     [openshiftConfig, extendedServices.config]
   );
@@ -208,7 +200,7 @@ export function SettingsContextProvider(props: any) {
       new SwfServiceCatalogStore({
         serviceAccount: serviceAccountConfig,
         serviceRegistry: serviceRegistryConfig,
-        extendedServicesConfig: extendedServices.config,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
     [extendedServices.config, serviceAccountConfig, serviceRegistryConfig]
   );
@@ -235,9 +227,6 @@ export function SettingsContextProvider(props: any) {
         setConfig: setServiceRegistryConfig,
         catalogStore: serviceCatalogStore,
       },
-      featurePreview: {
-        setConfig: setFeaturePreviewConfig,
-      },
     };
   }, [githubAuthService, githubOctokit, openshiftService, extendedServices.saveNewConfig, serviceCatalogStore]);
 
@@ -263,9 +252,6 @@ export function SettingsContextProvider(props: any) {
       serviceRegistry: {
         config: serviceRegistryConfig,
       },
-      featurePreview: {
-        config: featurePreviewConfig,
-      },
     };
   }, [
     openshiftStatus,
@@ -278,7 +264,6 @@ export function SettingsContextProvider(props: any) {
     extendedServices.config,
     serviceAccountConfig,
     serviceRegistryConfig,
-    featurePreviewConfig,
   ]);
 
   return (

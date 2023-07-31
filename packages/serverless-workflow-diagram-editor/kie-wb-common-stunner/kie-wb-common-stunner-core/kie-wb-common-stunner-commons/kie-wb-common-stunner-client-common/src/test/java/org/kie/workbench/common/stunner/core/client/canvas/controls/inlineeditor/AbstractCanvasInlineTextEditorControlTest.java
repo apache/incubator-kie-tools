@@ -17,7 +17,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,8 +90,6 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     private static final String ALIGN_TOP = "TOP";
     private static final String POSITION_INSIDE = "INSIDE";
     private static final String POSITION_OUTSIDE = "OUTSIDE";
-    private static final String ORIENTATION_VERTICAL = "VERTICAL";
-    private static final String ORIENTATION_HORIZONTAL = "HORIZONTAL";
 
     @Mock
     protected FloatingView<IsWidget> floatingView;
@@ -231,16 +229,10 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         when(transform.getScale()).thenReturn(new Point2D(zoom, zoom));
     }
 
-    private void initHasTitle(final String titlePosition,
-                              final String orientation,
+    private void initHasTitle(final Point2D titlePosition,
                               final String fontFamily,
-                              final String fontAlignment,
-                              final double fontSize,
-                              final double marginX) {
+                              final double fontSize) {
         when(hasTitle.getTitlePosition()).thenReturn(titlePosition);
-        when(hasTitle.getOrientation()).thenReturn(orientation);
-        when(hasTitle.getFontAlignment()).thenReturn(fontAlignment);
-        when(hasTitle.getMarginX()).thenReturn(marginX);
         when(hasTitle.getTitleFontSize()).thenReturn(fontSize);
         when(hasTitle.getTitleFontFamily()).thenReturn(fontFamily);
     }
@@ -306,7 +298,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     public void testRegisterDoubleClickHandler() {
         initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
         initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
+        initHasTitle(new Point2D(0, 0), FONT_FAMILY, FONT_SIZE);
         control.bind(session);
         control.init(canvasHandler);
 
@@ -353,70 +345,10 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     }
 
     @Test
-    public void testShowInsideMiddleShape() {
-        initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
-        initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
-        control.isMultiline = true;
-        control.bind(session);
-
-        control.init(canvasHandler);
-        when(textEditorBox.isVisible()).thenReturn(false);
-        control.show(element);
-
-        assertShow(true, ALIGN_MIDDLE, POSITION_INSIDE);
-    }
-
-    @Test
-    public void testShowOutsideShape() {
-        initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
-        initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_OUTSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_TOP, FONT_SIZE, 0);
-        control.isMultiline = true;
-        control.bind(session);
-
-        control.init(canvasHandler);
-        when(textEditorBox.isVisible()).thenReturn(false);
-        control.show(element);
-
-        assertShow(true, ALIGN_TOP, POSITION_OUTSIDE);
-    }
-
-    @Test
-    public void testShowInsideLeftShape() {
-        initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
-        initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_VERTICAL, FONT_FAMILY, ALIGN_TOP, FONT_SIZE, 0);
-        control.isMultiline = true;
-        control.bind(session);
-
-        control.init(canvasHandler);
-
-        when(textEditorBox.isVisible()).thenReturn(false);
-        control.show(element);
-        assertShow(true, ALIGN_LEFT, POSITION_INSIDE);
-    }
-
-    @Test
-    public void testShowInsideTopShape() {
-        initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
-        initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_TOP, FONT_SIZE, 0);
-        control.isMultiline = true;
-        control.bind(session);
-
-        control.init(canvasHandler);
-        when(textEditorBox.isVisible()).thenReturn(false);
-        control.show(element);
-
-        assertShow(true, ALIGN_TOP, POSITION_INSIDE);
-    }
-
-    @Test
     public void testShowWhenAlreadyShown() {
         initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
         initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
+        initHasTitle(new Point2D(0, 0), FONT_FAMILY, FONT_SIZE);
         control.isMultiline = true;
         control.bind(session);
 
@@ -424,14 +356,14 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         when(textEditorBox.isVisible()).thenReturn(true);
         control.show(element);
 
-        assertShow(true, ALIGN_MIDDLE, POSITION_INSIDE);
+        assertShow(true, ALIGN_LEFT, POSITION_INSIDE);
     }
 
     @Test
     public void testHideWhenIsVisible() {
         initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
         initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
+        initHasTitle(new Point2D(0, 0), FONT_FAMILY, FONT_SIZE);
         control.bind(session);
 
         control.init(canvasHandler);
@@ -448,7 +380,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     public void testHideWhenIsNotVisible() {
         initCanvas(CANVAS_X, CANVAS_Y, CANVAS_WIDTH, CANVAS_HEIGHT);
         initShape(SHAPE_X, SHAPE_Y, SCROLL_X, SCROLL_Y, ZOOM);
-        initHasTitle(POSITION_INSIDE, ORIENTATION_HORIZONTAL, FONT_FAMILY, ALIGN_MIDDLE, FONT_SIZE, 0);
+        initHasTitle(new Point2D(0, 0), FONT_FAMILY, FONT_SIZE);
         control.bind(session);
 
         control.init(canvasHandler);
@@ -466,32 +398,6 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         verify(textEditorBox).setCommandManagerProvider(eq(commandManagerProvider));
     }
 
-    // TODO @Test
-    /*public void testAllowOnlyVisualChanges() {
-        final Element element = mock(Element.class);
-        final Definition definition = mock(Definition.class);
-        final DynamicReadOnly dynamicReadOnly = mock(DynamicReadOnly.class);
-        when(element.getContent()).thenReturn(definition);
-        when(definition.getDefinition()).thenReturn(dynamicReadOnly);
-
-        boolean actual = control.allowOnlyVisualChanges(element);
-
-        assertFalse(actual);
-
-        when(dynamicReadOnly.isAllowOnlyVisualChange()).thenReturn(true);
-        actual = control.allowOnlyVisualChanges(element);
-
-        assertTrue(actual);
-    }*/
-
-    // TODO @Test
-//    @Test
-//    public void testAllowOnlyVisualChangesDefaultValue() {
-//        final Element element = mock(Element.class);
-//        final boolean actual = control.allowOnlyVisualChanges(element);
-//        assertFalse(actual);
-//    }
-
     private void assertShow(final boolean multiline, final String textBoxAlignment, final String position) {
         final HasTitle hasTitle = (HasTitle) testShapeView;
 
@@ -499,7 +405,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         verify(testShapeView).setTitleAlpha(eq(AbstractCanvasInlineTextEditorControl.TITLE_EDIT_ALPHA));
         verify(textEditorBox).show(eq(element), anyDouble(), anyDouble());
         verify(textEditorBox).setFontFamily(FONT_FAMILY);
-        verify(textEditorBox).setFontSize(FONT_SIZE);
+        verify(textEditorBox).setFontSize(ptToPx(FONT_SIZE));
         verify(textEditorBox).setMultiline(multiline);
         verify(textEditorBox).setTextBoxInternalAlignment(textBoxAlignment);
         verify(floatingView).clearTimeOut();
@@ -522,6 +428,10 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
 
         // Update Shape UI
         verify(hasTitle).batch();
+    }
+
+    private double ptToPx(double pt) {
+        return pt * 4 / 3;
     }
 
     private void assertHide(final int t) {

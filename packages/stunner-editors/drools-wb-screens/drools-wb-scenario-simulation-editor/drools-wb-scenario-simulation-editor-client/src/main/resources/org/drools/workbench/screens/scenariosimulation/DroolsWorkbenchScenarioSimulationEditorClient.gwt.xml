@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
   ~
@@ -16,26 +15,26 @@
   ~ limitations under the License.
   -->
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
-    "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+  "http://www.gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <module>
 
-  <source path="client"/>
-  <source path="service"/>
+  <source path="client" />
+  <source path="service" />
 
   <!-- Inherit the core Web Toolkit stuff. -->
-  <inherits name="com.google.gwt.i18n.I18N"/>
-  <inherits name="com.google.gwt.http.HTTP"/>
-  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="com.google.gwt.i18n.I18N" />
+  <inherits name="com.google.gwt.http.HTTP" />
+  <inherits name="com.google.gwt.user.User" />
 
   <!-- This is to directly inherit Lienzo-related stuff -->
-  <inherits name="com.ait.lienzo.Lienzo"/>
-  <inherits name="org.uberfire.ext.wires.core.grids.WiresCoreGrids"/>
+  <inherits name="com.ait.lienzo.Lienzo" />
+  <inherits name="org.uberfire.ext.wires.core.grids.WiresCoreGrids" />
 
-  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
+  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient" />
 
-  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
+  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon" />
 
-  <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI'/>
-  <inherits name='org.drools.scenariosimulation.ScenarioSimulationAPI'/>
+  <inherits name='org.drools.workbench.screens.scenariosimulation.DroolsWorkbenchScenarioSimulationEditorAPI' />
+  <inherits name='org.drools.scenariosimulation.ScenarioSimulationAPI' />
 
 </module>

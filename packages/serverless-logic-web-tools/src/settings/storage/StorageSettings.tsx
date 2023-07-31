@@ -15,81 +15,33 @@
  */
 
 import React from "react";
-import { Alert, AlertActionCloseButton, Button } from "@patternfly/react-core/dist/js";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Form } from "@patternfly/react-core/dist/js/components/Form";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useState } from "react";
-import { APP_NAME } from "../../AppConstants";
-import { routes } from "../../navigation/Routes";
-import { setPageTitle } from "../../PageTitle";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
-import { deleteAllCookies } from "../../cookies";
-import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
 import { useHistory } from "react-router";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
+import { APP_NAME } from "../../AppConstants";
+import { routes } from "../../navigation/Routes";
 import { ConfirmDeleteModal } from "../../table";
+import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
+import { SettingsPageContainer } from "../SettingsPageContainer";
+import { useStorage } from "./useStorage";
 
 const PAGE_TITLE = "Storage";
-/**
- * delete alert delay in seconds before reloading the app.
- */
-const DELETE_ALERT_DELAY = 5;
-
-/**
- * Delete all indexed DBs
- */
-const deleteAllIndexedDBs = async () => {
-  (await window.indexedDB.databases())
-    .filter((db) => db.name)
-    .forEach((db) => window.indexedDB.deleteDatabase(db.name!));
-};
-
-function Timer(props: { delay: number }) {
-  const [delay, setDelay] = useState(props.delay);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setDelay((prevDelay) => prevDelay - 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
-  return <>{delay}</>;
-}
 
 export function StorageSettings() {
-  const [isDeleteCookiesChecked, setIsDeleteCookiesChecked] = useState(false);
-  const [isDeleteLocalStorageChecked, setIsDeleteLocalStorageChecked] = useState(false);
-  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const history = useHistory();
+  const { wipeOutStorage } = useStorage();
+  const [isDeleteCookiesChecked, setDeleteCookiesChecked] = useState(false);
+  const [isDeleteLocalStorageChecked, setDeleteLocalStorageChecked] = useState(false);
+  const [isConfirmDeleteModalOpen, setConfirmDeleteModalOpen] = useState(false);
 
   const toggleConfirmModal = useCallback(() => {
-    setIsConfirmDeleteModalOpen((isOpen) => !isOpen);
+    setConfirmDeleteModalOpen((isOpen) => !isOpen);
   }, []);
-
-  const deleteSuccessAlert = useGlobalAlert(
-    useCallback(({ close }) => {
-      setTimeout(() => {
-        window.location.href = window.location.origin + window.location.pathname;
-      }, DELETE_ALERT_DELAY * 1000);
-      return (
-        <Alert
-          variant="success"
-          title={
-            <>
-              Data deleted successfully. <br />
-              You will be redirected to the home page in <Timer delay={DELETE_ALERT_DELAY} /> seconds
-            </>
-          }
-        />
-      );
-    }, [])
-  );
 
   const deleteErrorAlert = useGlobalAlert(
     useCallback(({ close }) => {
@@ -107,88 +59,80 @@ export function StorageSettings() {
     toggleConfirmModal();
 
     try {
-      await deleteAllIndexedDBs();
-      if (isDeleteLocalStorageChecked) {
-        localStorage.clear();
-      }
-      if (isDeleteCookiesChecked) {
-        deleteAllCookies();
-      }
-      deleteSuccessAlert.show();
+      await wipeOutStorage({
+        includeCookies: isDeleteCookiesChecked,
+        includeLocalStorage: isDeleteLocalStorageChecked,
+      });
     } catch (e) {
+      console.error(e);
       deleteErrorAlert.show();
     }
-  }, [toggleConfirmModal, deleteSuccessAlert, isDeleteLocalStorageChecked, deleteErrorAlert, isDeleteCookiesChecked]);
+  }, [toggleConfirmModal, wipeOutStorage, isDeleteCookiesChecked, isDeleteLocalStorageChecked, deleteErrorAlert]);
 
   useEffect(() => {
     if (!isBrowserChromiumBased()) {
       history.replace(routes.settings.home.path({}));
     }
-    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
   }, [history]);
 
   return (
-    <>
-      <Page>
-        <PageSection variant={"light"} isWidthLimited>
-          <TextContent>
-            <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-            <Text component={TextVariants.p}>
-              Here, you have the ability to completely erase all stored data in your browser.
+    <SettingsPageContainer
+      pageTitle={PAGE_TITLE}
+      subtitle={
+        <>
+          Here, you have the ability to completely erase all stored data in your browser.
+          <br />
+          Safely delete your cookies, modules, settings and all information locally stored in your browser, giving a
+          fresh start to {APP_NAME}.
+        </>
+      }
+    >
+      <PageSection>
+        <PageSection variant={"light"}>
+          <Form>
+            <Checkbox
+              id="delete-indexedDB"
+              label="Storage"
+              description={"Delete all databases. You will lose all your modules and workspaces."}
+              isChecked
+              isDisabled
+            />
+            <Alert
+              variant="warning"
+              isInline
+              title="By selecting the cookies and local storage, all your saved settings will be permanently erased."
+            >
               <br />
-              Safely delete your cookies, modules, settings and all information locally stored in your browser, giving a
-              fresh start to {APP_NAME}.
-            </Text>
-          </TextContent>
-        </PageSection>
-
-        <PageSection>
-          <PageSection variant={"light"}>
-            <Form>
               <Checkbox
-                id="delete-indexedDB"
-                label="Storage"
-                description={"Delete all databases. You will lose all your modules and workspaces."}
-                isChecked
-                isDisabled
+                id="delete-cookies"
+                label="Cookies"
+                description={"Delete all cookies."}
+                isChecked={isDeleteCookiesChecked}
+                onChange={setDeleteCookiesChecked}
               />
-              <Alert
-                variant="warning"
-                isInline
-                title="By selecting the cookies and local storage, all your saved settings will be permanently erased."
-              >
-                <br />
-                <Checkbox
-                  id="delete-cookies"
-                  label="Cookies"
-                  description={"Delete all cookies."}
-                  isChecked={isDeleteCookiesChecked}
-                  onChange={setIsDeleteCookiesChecked}
-                />
-                <br />
-                <Checkbox
-                  id="delete-localStorage"
-                  label="LocalStorage"
-                  description={"Delete all localStorage information."}
-                  isChecked={isDeleteLocalStorageChecked}
-                  onChange={setIsDeleteLocalStorageChecked}
-                />
-              </Alert>
-            </Form>
-            <br />
-            <Button variant="danger" onClick={toggleConfirmModal}>
-              Delete data
-            </Button>
-          </PageSection>
+              <br />
+              <Checkbox
+                id="delete-localStorage"
+                label="LocalStorage"
+                description={"Delete all localStorage information."}
+                isChecked={isDeleteLocalStorageChecked}
+                onChange={setDeleteLocalStorageChecked}
+              />
+            </Alert>
+          </Form>
+          <br />
+          <Button variant="danger" onClick={toggleConfirmModal}>
+            Delete data
+          </Button>
         </PageSection>
-        <ConfirmDeleteModal
-          isOpen={isConfirmDeleteModalOpen}
-          onClose={toggleConfirmModal}
-          onDelete={onConfirmDeleteModalDelete}
-          elementsTypeName="data"
-          deleteMessage="By deleting this data will permanently erase your stored information."
-        />
-      </Page>
-    </>
+      </PageSection>
+      <ConfirmDeleteModal
+        isOpen={isConfirmDeleteModalOpen}
+        onClose={toggleConfirmModal}
+        onDelete={onConfirmDeleteModalDelete}
+        elementsTypeName="data"
+        deleteMessage="All stored information will be permanently deleted and you will be redirected to the Overview page."
+      />
+    </SettingsPageContainer>
   );
 }

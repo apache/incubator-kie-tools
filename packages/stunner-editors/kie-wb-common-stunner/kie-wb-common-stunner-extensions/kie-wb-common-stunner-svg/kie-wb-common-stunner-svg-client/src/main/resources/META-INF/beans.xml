@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,9 +14,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="none">
   <scan>
-    <exclude name="org.kie.workbench.common.stunner.svg.client.**"/>
+    <exclude name="org.kie.workbench.common.stunner.svg.client.**" />
   </scan>
 </beans>

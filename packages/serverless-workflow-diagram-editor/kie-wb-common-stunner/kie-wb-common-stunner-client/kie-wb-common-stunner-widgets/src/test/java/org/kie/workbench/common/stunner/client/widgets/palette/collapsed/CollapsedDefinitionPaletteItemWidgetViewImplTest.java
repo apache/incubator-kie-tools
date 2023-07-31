@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.client.widgets.palette.collapsed;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,7 +50,7 @@ public class CollapsedDefinitionPaletteItemWidgetViewImplTest {
     private static final int Y = 1;
 
     @Mock
-    private Button icon;
+    private HTMLButtonElement icon;
 
     @Mock
     private DOMGlyphRenderers domGlyphRenderers;
@@ -95,8 +95,6 @@ public class CollapsedDefinitionPaletteItemWidgetViewImplTest {
         this.view.render(glyph, GLYPH_WIDTH, GLYPH_HEIGHT);
 
         verify(icon).appendChild(eq(glyphHtmlElement));
-
-        verify(icon).setTitle(eq(""));
     }
 
     @Test
@@ -106,8 +104,6 @@ public class CollapsedDefinitionPaletteItemWidgetViewImplTest {
         this.view.render(glyph, GLYPH_WIDTH, GLYPH_HEIGHT);
 
         verify(icon).appendChild(eq(glyphHtmlElement));
-
-        verify(icon).setTitle(eq(GLYPH_TOOLTIP));
     }
 
     @Test

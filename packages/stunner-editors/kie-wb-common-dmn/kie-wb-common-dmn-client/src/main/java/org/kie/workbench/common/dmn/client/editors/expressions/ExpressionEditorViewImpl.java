@@ -360,6 +360,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
+    public void unmountNewBoxedExpressionEditor() {
+        DMNLoader.unmountBoxedExpressionEditor(".kie-dmn-new-expression-editor");
+    }
+
+    @Override
     public void selectDomainObject(final String uuid) {
         this.selectedUUID = uuid;
         fireDomainObjectSelectionEvent(findDomainObject(uuid));
@@ -640,7 +645,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         return modelName -> {
             final EntryInfo[] parametersFromModel = pmmlDocumentMetadataProvider.getPMMLDocumentModelParameterNames(documentName, modelName)
                     .stream()
-                    .map(parameter -> new EntryInfo(new Id().getValue(), parameter, BuiltInType.ANY.getName()))
+                    .map(parameter -> new EntryInfo(new Id().getValue(), parameter, BuiltInType.ANY.getName(), null))
                     .toArray(EntryInfo[]::new);
             return new ModelsFromDocument(modelName, parametersFromModel);
         };

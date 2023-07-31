@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,10 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>kie-wb-common-stunner-bpmn</artifactId>
     <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -552,7 +553,8 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <configuration>
-          <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <extraJvmArgs
+          >-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <module>org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor</module>
           <localWorkers>8</localWorkers>
           <noServer>false</noServer>
@@ -572,7 +574,8 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
@@ -583,7 +586,8 @@
 
             <!-- UF-ext -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-table</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-core-client</compileSourcesArtifact>
@@ -591,35 +595,60 @@
             <!-- Forms -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-base</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-fields</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-crud-component</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-forms-crud-component</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
 
             <!-- Stunner -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-common</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-common</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-widgets</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-emf</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-marshalling</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-widgets</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-emf</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-marshalling</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-bpmn-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
 
             <!-- Appformer -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:appformer-client-api</compileSourcesArtifact>
@@ -684,8 +713,10 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
           <systemPropertyVariables>
-            <org.kie.bpmn.kogito.browser.headless>${org.kie.bpmn.kogito.browser.headless}</org.kie.bpmn.kogito.browser.headless>
-            <org.kie.bpmn.kogito.screenshots.dir>${project.build.directory}/screenshots</org.kie.bpmn.kogito.screenshots.dir>
+            <org.kie.bpmn.kogito.browser.headless
+            >${org.kie.bpmn.kogito.browser.headless}</org.kie.bpmn.kogito.browser.headless>
+            <org.kie.bpmn.kogito.screenshots.dir
+            >${project.build.directory}/screenshots</org.kie.bpmn.kogito.screenshots.dir>
           </systemPropertyVariables>
         </configuration>
       </plugin>
@@ -731,11 +762,13 @@
                 <configuration>
                   <webResources>
                     <resource>
-                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/src</directory>
+                      <directory
+                      >${basedir}/target/extra/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/src</directory>
                       <targetPath>sourcemaps</targetPath>
                     </resource>
                     <resource>
-                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/symbolMaps</directory>
+                      <directory
+                      >${basedir}/target/extra/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/symbolMaps</directory>
                       <includes>
                         <include>*.json</include>
                       </includes>

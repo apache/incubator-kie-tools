@@ -20,9 +20,8 @@ import java.util.Collection;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLSerializationException;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.DefaultYAMLSequenceWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for {@link Collection}.
@@ -64,22 +63,21 @@ public class CollectionYAMLSerializer<C extends Collection<T>, T>
 
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, C values, YAMLSerializationContext ctx)
+      YamlMapping writer, String propertyName, C values, YAMLSerializationContext ctx)
       throws YAMLSerializationException {
     if (!ctx.isWriteEmptyYAMLArrays() && isEmpty(values)) {
-      writer.nullValue(propertyName);
+      writer.addScalarNode(propertyName, "~");
       return;
     }
 
-    YAMLSequenceWriter yamlSequenceWriter = new DefaultYAMLSequenceWriter();
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (T value : (Collection<T>) values) {
-      serializer.serialize(yamlSequenceWriter, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
-    writer.value(propertyName, yamlSequenceWriter.getWriter());
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, C value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, C value, YAMLSerializationContext ctx) {
     throw new UnsupportedOperationException();
   }
 

@@ -32,16 +32,16 @@ type CreateCmdConfig struct {
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
-		Short: "Creates a new Workflow project",
+		Short: "Creates a new SonataFlow project",
 		Long: `
 	Creates a Workflow file in the specified directory (new-project is the default).
 
-	This plain Serverless Workflow project targets use cases requiring a single Serverless
+	This SonataFlow project targets use cases requiring a single Serverless
 	Workflow file definition.
 
 	Additionally, you can define the configurable parameters of your application in the 
 	"application.properties" file (inside the root directory). 
-	You can also store your spec files (i.e., Open API files)inside the "specs" folder.
+	You can also store your spec files (i.e., Open API files) inside the "specs" folder.
 	`,
 		Example: `
 	# Create a project in the local directory
@@ -70,18 +70,18 @@ func NewCreateCommand() *cobra.Command {
 }
 
 func runCreate(cfg CreateCmdConfig) error {
-	fmt.Println("🔨 Creating workflow project")
+	fmt.Println("🛠️ Creating SonataFlow project")
 
 	if err := os.Mkdir(cfg.ProjectName, os.ModePerm); err != nil {
-		return fmt.Errorf("❌ Error creating project directory: %w", err)
+		return fmt.Errorf("❌ ERROR: Error creating project directory: %w", err)
 	}
 
 	workflowPath := fmt.Sprintf("./%s/%s", cfg.ProjectName, metadata.WorkflowSwJson)
 	if err := common.CreateWorkflow(workflowPath); err != nil {
-		return fmt.Errorf("❌ Error creating workflow file: %w", err)
+		return fmt.Errorf("❌ ERROR: Error creating workflow file: %w", err)
 	}
 
-	fmt.Println("✅ Kogito Serverless Workflow project successfully created")
+	fmt.Println("🎉 SonataFlow project successfully created")
 
 	return nil
 

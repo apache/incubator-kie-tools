@@ -13,10 +13,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
-        "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module>
-    <inherits name='org.jboss.errai.ui.UI'/>
-    <inherits name="org.jboss.errai.ui.test.common.UITestCommon"/>
+    <inherits name='org.jboss.errai.ui.UI' />
+    <inherits name="org.jboss.errai.ui.test.common.UITestCommon" />
 </module>

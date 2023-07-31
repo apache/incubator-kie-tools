@@ -37,7 +37,6 @@
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
-    "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",
     "@kie-tools/serverless-workflow-text-editor": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/chrome": "^0.0.193",

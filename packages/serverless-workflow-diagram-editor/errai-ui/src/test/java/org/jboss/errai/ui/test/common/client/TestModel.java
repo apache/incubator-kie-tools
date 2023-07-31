@@ -21,14 +21,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.databinding.client.api.Bindable;
 
 /**
  * Simple bindable model for testing purposes.
  *
  * @author Christian Sadilek <csadilek@redhat.com>
  */
-@Bindable
 @Portable
 public class TestModel {
 

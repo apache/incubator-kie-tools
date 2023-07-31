@@ -18,6 +18,7 @@ import * as React from "react";
 import * as ReactTable from "react-table";
 import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
+import { BeeTableSelection } from "../selection/BeeTableSelectionContext";
 
 export interface BeeTableCellProps<R extends object> {
   data: readonly R[];
@@ -51,6 +52,8 @@ export interface BeeTableProps<R extends object> {
   onColumnUpdates?: (columnUpdates: BeeTableColumnUpdate<R>[]) => void;
   /** Custom configuration for the table context menu */
   operationConfig?: BeeTableOperationConfig;
+  /** Collection of allowed operations that are allowed for current table 'conditions' */
+  allowedOperations: (conditions: BeeTableContextMenuAllowedOperationsConditions) => BeeTableOperation[];
   /** The way in which the header will be rendered */
   headerVisibility?: BeeTableHeaderVisibility;
   /** Number of levels in the header, 0-based */
@@ -91,12 +94,18 @@ export enum BeeTableHeaderVisibility {
 export enum BeeTableOperation {
   ColumnInsertLeft,
   ColumnInsertRight,
+  ColumnInsertN,
   ColumnDelete,
   RowInsertAbove,
   RowInsertBelow,
+  RowInsertN,
   RowDelete,
   RowReset,
   RowDuplicate,
+  SelectionCopy,
+  SelectionCut,
+  SelectionPaste,
+  SelectionReset,
 }
 
 export interface BeeTableOperationGroup {
@@ -114,3 +123,9 @@ export interface BeeTableOperationGroup {
 export type BeeTableOperationConfig =
   | BeeTableOperationGroup[]
   | { [columnGroupType: string]: BeeTableOperationGroup[] };
+
+export type BeeTableContextMenuAllowedOperationsConditions = {
+  selection: BeeTableSelection;
+  column: ReactTable.ColumnInstance<any> | undefined;
+  columns: ReactTable.ColumnInstance<any>[] | undefined;
+};

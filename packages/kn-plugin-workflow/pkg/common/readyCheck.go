@@ -22,21 +22,22 @@ import (
 	"time"
 )
 
-func ReadyCheck(healthCheckURL string, pollInterval time.Duration, portMapping string) {
+func ReadyCheck(healthCheckURL string, pollInterval time.Duration, portMapping string, openDevUI bool) {
 	ready := make(chan bool)
 
-	go pollReadyCheckURL(healthCheckURL, pollInterval, ready)
-
+	go PollReadyCheckURL(healthCheckURL, pollInterval, ready)
 	select {
 	case <-ready:
-		fmt.Println("✅ Kogito Serverless Workflow project is up and running")
-		OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev", portMapping))
+		fmt.Println("\n✅ SonataFlow project is up and running")
+		if openDevUI {
+			OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev", portMapping))
+		}
 	case <-time.After(10 * time.Minute):
 		fmt.Printf("Timeout reached. Server at %s is not ready.", healthCheckURL)
 	}
 }
 
-func pollReadyCheckURL(healthCheckURL string, interval time.Duration, ready chan<- bool) {
+func PollReadyCheckURL(healthCheckURL string, interval time.Duration, ready chan<- bool) {
 	client := http.Client{
 		Timeout: 5 * time.Second,
 	}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,10 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>kie-wb-common-stunner-client</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -82,25 +83,6 @@
     </dependency>
 
     <!-- GWT and GWT Extensions -->
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3-extras</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
@@ -150,6 +132,11 @@
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.gwtbootstrap3</groupId>
+      <artifactId>extras</artifactId>
     </dependency>
 
     <dependency>

@@ -15,17 +15,13 @@
  */
 
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { basename } from "path";
-import { PROJECT_FILES } from "../project";
 import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-
-const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
 
 export const GLOB_PATTERN = {
   all: "**/*",
   allExceptDockerfiles: "**/!(Dockerfile|.dockerignore)",
   sw: "**/*.sw.+(json|yml|yaml)",
-  yard: "**/*.yard.+(json|yml|yaml)",
+  yard: "**/*.yard.+(yml|yaml)",
   dash: "**/*.dash.+(yml|yaml)",
   spec: "**/+(*.spec?(s)|spec?(s)).+(yml|yaml|json)",
   sw_spec: "**/+(*.sw|*.spec?(s)|spec?(s)).+(yml|yaml|json)",
@@ -35,7 +31,6 @@ export const supportedFileExtensionArray = [
   FileTypes.SW_JSON,
   FileTypes.SW_YML,
   FileTypes.SW_YAML,
-  FileTypes.YARD_JSON,
   FileTypes.YARD_YML,
   FileTypes.YARD_YAML,
   FileTypes.DASH_YAML,
@@ -47,7 +42,7 @@ export function isModel(path: string): boolean {
 }
 
 export function isEditable(path: string): boolean {
-  return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path)) || isOfKind("yaml", path);
+  return isModel(path) || isApplicationProperties(path) || isOfKind("yaml", path) || isOfKind("json", path);
 }
 
 export function isSupportedByVirtualServiceRegistry(path: string): boolean {

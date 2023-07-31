@@ -43,6 +43,11 @@ class BootstrapDefinitionAdapter implements DefinitionAdapter<Object> {
     }
 
     @Override
+    public Class<? extends ElementFactory> getElementFactory(final Object pojo) {
+        return getWrapped(pojo).getElementFactory(pojo);
+    }
+
+    @Override
     public String getTitle(final Object pojo) {
         return getWrapped(pojo).getTitle(pojo);
     }

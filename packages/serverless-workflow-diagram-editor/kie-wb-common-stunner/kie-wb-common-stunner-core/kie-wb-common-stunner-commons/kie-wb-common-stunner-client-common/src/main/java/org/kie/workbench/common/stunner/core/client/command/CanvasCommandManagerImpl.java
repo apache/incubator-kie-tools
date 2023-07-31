@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandAllowedEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -46,7 +45,6 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
 
     private final ClientFactoryManager clientFactoryManager;
     private final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent;
-    private final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent;
     private final Event<CanvasCommandUndoneEvent> canvasUndoCommandExecutedEvent;
 
     private final CommandManager<H, CanvasViolation> commandManager;
@@ -54,18 +52,15 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
     protected CanvasCommandManagerImpl() {
         this(null,
              null,
-             null,
              null);
     }
 
     @Inject
     public CanvasCommandManagerImpl(final ClientFactoryManager clientFactoryManager,
                                     final Event<CanvasCommandAllowedEvent> isCanvasCommandAllowedEvent,
-                                    final Event<CanvasCommandExecutedEvent> canvasCommandExecutedEvent,
                                     final Event<CanvasCommandUndoneEvent> canvasUndoCommandExecutedEvent) {
         this.clientFactoryManager = clientFactoryManager;
         this.isCanvasCommandAllowedEvent = isCanvasCommandAllowedEvent;
-        this.canvasCommandExecutedEvent = canvasCommandExecutedEvent;
         this.canvasUndoCommandExecutedEvent = canvasUndoCommandExecutedEvent;
         this.commandManager = new CommandManagerImpl<>();
     }
@@ -80,8 +75,7 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
     @Override
     public CommandResult<CanvasViolation> execute(final H context,
                                                   final Command<H, CanvasViolation> command) {
-        return runInContext(context,
-                            () -> postExecute(context, command, commandManager.execute(context, command)));
+        return runInContext(context, () -> commandManager.execute(context, command));
     }
 
     @Override
@@ -141,18 +135,6 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
                                                      final CommandResult<CanvasViolation> result) {
         if (null != result && null != isCanvasCommandAllowedEvent) {
             isCanvasCommandAllowedEvent.fire(new CanvasCommandAllowedEvent(context,
-                                                                           command,
-                                                                           result));
-        }
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private CommandResult<CanvasViolation> postExecute(final H context,
-                                                       final Command<H, CanvasViolation> command,
-                                                       final CommandResult<CanvasViolation> result) {
-        if (null != result && null != canvasCommandExecutedEvent) {
-            canvasCommandExecutedEvent.fire(new CanvasCommandExecutedEvent(context,
                                                                            command,
                                                                            result));
         }

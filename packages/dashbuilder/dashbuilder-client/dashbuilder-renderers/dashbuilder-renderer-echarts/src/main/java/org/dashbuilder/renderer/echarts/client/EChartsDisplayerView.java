@@ -124,6 +124,7 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
 
     @Override
     public void close() {
+        disposeChart();
         if (chart != null) {
             eChartsResizeHandlerRegister.remove(chart);
         }

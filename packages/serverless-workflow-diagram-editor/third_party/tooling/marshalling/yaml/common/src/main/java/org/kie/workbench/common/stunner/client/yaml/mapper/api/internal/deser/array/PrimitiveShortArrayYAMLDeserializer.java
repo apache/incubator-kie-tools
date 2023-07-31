@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.a
 
 import java.util.List;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.BaseNumberYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
 
 /**
  * Default {@link YAMLDeserializer} implementation for array of short.
@@ -40,7 +40,9 @@ public class PrimitiveShortArrayYAMLDeserializer extends AbstractArrayYAMLDeseri
   public short[] doDeserializeArray(YamlMapping yaml, String key, YAMLDeserializationContext ctx) {
     List<Short> list =
         deserializeIntoList(
-            yaml.yamlSequence(key), BaseNumberYAMLDeserializer.ShortYAMLDeserializer.INSTANCE, ctx);
+            yaml.getSequenceNode(key),
+            BaseNumberYAMLDeserializer.ShortYAMLDeserializer.INSTANCE,
+            ctx);
 
     short[] result = new short[list.size()];
     int i = 0;

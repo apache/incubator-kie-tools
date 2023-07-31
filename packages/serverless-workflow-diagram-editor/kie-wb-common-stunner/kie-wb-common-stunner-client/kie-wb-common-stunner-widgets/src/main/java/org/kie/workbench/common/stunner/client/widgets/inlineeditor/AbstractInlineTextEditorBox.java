@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;

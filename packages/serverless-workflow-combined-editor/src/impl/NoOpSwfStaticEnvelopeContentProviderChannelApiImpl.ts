@@ -22,10 +22,6 @@ export class NoOpSwfStaticEnvelopeContentProviderChannelApiImpl implements SwfSt
     return { defaultValue: "" };
   }
 
-  kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
-    return { defaultValue: "" };
-  }
-
   kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
     return { defaultValue: "" };
   }

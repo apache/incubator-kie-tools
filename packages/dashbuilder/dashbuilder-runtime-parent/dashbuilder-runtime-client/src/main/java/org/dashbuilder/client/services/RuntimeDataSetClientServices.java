@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.services;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,7 +28,6 @@ import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
-import org.dashbuilder.client.marshalling.ClientDataSetMetadataJSONMarshaller;
 import org.dashbuilder.dataprovider.DataSetProviderType;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.DataSetMetadata;
@@ -44,9 +45,6 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     @Inject
-    ClientDataSetMetadataJSONMarshaller dataSetMetadataJsonMarshaller;
-
-    @Inject
     ErrorResponseVerifier verifier;
 
     @Inject
@@ -61,6 +59,9 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Inject
     ExternalDataSetClientProvider externalDataSetClientProvider;
 
+    @Inject
+    JoinDataSetsService joinDataSetsService;
+
     public RuntimeDataSetClientServices() {
         // empty
     }
@@ -72,7 +73,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
     @Override
     public void fetchMetadata(String uuid, DataSetMetadataCallback listener) throws Exception {
-        // empty
+        // empty        
     }
 
     @Override
@@ -84,16 +85,20 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
     @Override
     public void lookupDataSet(DataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) throws Exception {
         var clientDataSet = clientDataSetManager.lookupDataSet(lookup);
-        if (!isAccumulate(lookup.getDataSetUUID()) && clientDataSet != null) {
+        var uuid = lookup.getDataSetUUID();
+        if (!isAccumulate(uuid) && clientDataSet != null) {
             listener.callback(clientDataSet);
             return;
         }
 
-        externalDataSetClientProvider.fetchAndRegister(lookup.getDataSetUUID(), lookup, listener);
-    }
+        var join = getJoin(uuid);
+        if (!join.isEmpty()) {
+            var externalDef = externalDataSetClientProvider.get(uuid).get();
+            joinDataSetsService.joinDataSets(externalDef, lookup, listener);
+            return;
+        }
 
-    private boolean isAccumulate(String uuid) {
-        return externalDataSetClientProvider.get(uuid).map(def -> def.isAccumulate()).orElse(false);
+        externalDataSetClientProvider.fetchAndRegister(uuid, lookup, listener);
     }
 
     @Override
@@ -128,6 +133,17 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
             clientDataSetManager.removeDataSet(uuid);
         }
 
+    }
+
+    private Collection<String> getJoin(String uuid) {
+        return externalDataSetClientProvider.get(uuid).filter(def -> def.getJoin() != null)
+                .map(def -> def.getJoin())
+                .orElse(Collections.emptyList());
+
+    }
+
+    private boolean isAccumulate(String uuid) {
+        return externalDataSetClientProvider.get(uuid).map(def -> def.isAccumulate()).orElse(false);
     }
 
 }

@@ -110,11 +110,25 @@ public class ExternalDataSetJSONParser {
                     fillDataSetColumns(dataSet, dataSetArray);
                     addValues(dataSet, dataSetArray);
                 } catch (Exception e) {
-                    throw new IllegalArgumentException("DataSet JSON is invalid. Please check that the data is in correct format.", e);
+                    throw new IllegalArgumentException(
+                            "DataSet JSON is invalid. Please check that the data is in correct format.", e);
                 }
             }
         }
         return dataSet;
+    }
+
+    public String toJsonArray(DataSet dataSet) {
+        var resultArray = Json.createArray();
+        for (var i = 0; i < dataSet.getRowCount(); i++) {
+            var row = Json.createArray();
+            for (var j = 0; j < dataSet.getColumns().size(); j++) {
+                var value = dataSet.getValueAt(i, j);
+                row.set(j, Json.create(value == null ? "" : value.toString()));
+            }
+            resultArray.set(i, row);
+        }
+        return resultArray.toJson();
     }
 
     private void fillDataSetColumns(DataSet dataSet, JsonArray dataSetArray) {
@@ -147,7 +161,7 @@ public class ExternalDataSetJSONParser {
 
     public void addValues(DataSet dataSet, JsonArray valuesArray) {
         if (valuesArray != null && valuesArray.length() > 0) {
-            if (dataSet.getColumns().size() == 0 && valuesArray.length() != 0) {
+            if (dataSet.getColumns().isEmpty() && valuesArray.length() != 0) {
                 throw new IllegalArgumentException("DataSet is missing columns.");
             }
 

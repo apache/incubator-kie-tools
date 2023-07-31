@@ -37,10 +37,6 @@ module.exports = (env) =>
         __dirname,
         "./envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts"
       ),
-      "serverless-workflow-mermaid-viewer-envelope": path.resolve(
-        __dirname,
-        "./envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts"
-      ),
       "serverless-workflow-combined-editor-envelope": path.resolve(
         __dirname,
         "./envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts"
@@ -66,10 +62,6 @@ module.exports = (env) =>
           {
             from: path.resolve(__dirname, "./static/envelope/serverless-workflow-diagram-editor-envelope.html"),
             to: "./serverless-workflow-diagram-editor-envelope.html",
-          },
-          {
-            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html"),
-            to: "./serverless-workflow-mermaid-viewer-envelope.html",
           },
           {
             from: path.resolve(__dirname, "./static/envelope/serverless-workflow-combined-editor-envelope.html"),

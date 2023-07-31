@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
+export * from "./DashbuilderEditorApi";
 export * from "./DashbuilderEditorChannelApi";
+export * from "./DashbuilderEditorEnvelopeApi";

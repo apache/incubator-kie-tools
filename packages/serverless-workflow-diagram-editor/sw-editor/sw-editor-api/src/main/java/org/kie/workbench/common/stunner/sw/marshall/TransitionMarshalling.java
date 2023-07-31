@@ -70,7 +70,9 @@ public interface TransitionMarshalling {
                                 sourceState.setEnd(true);
                             } // else is Object
                         } else {
-                            if (sourceState.getTransition() instanceof String) {
+                            // New states created from the canvas have null transition
+                            if (null == sourceState.getTransition() ||
+                                    sourceState.getTransition() instanceof String) {
                                 sourceState.setTransition(getStateNodeName(targetNode));
                             } else {
                                 ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
@@ -145,7 +147,9 @@ public interface TransitionMarshalling {
                                 dataConditionTransition.setEnd(true);
                             }
                         } else {
-                            if (dataConditionTransition.getTransition() instanceof String) {
+                            // New states created from the canvas have null transition
+                            if (null == dataConditionTransition.getTransition() ||
+                                    dataConditionTransition.getTransition() instanceof String) {
                                 dataConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
                                 ((StateTransition) dataConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
@@ -194,7 +198,9 @@ public interface TransitionMarshalling {
                                 defaultConditionTransition.setEnd(true);
                             }
                         } else {
-                            if (defaultConditionTransition.getTransition() instanceof String) {
+                            // New states created from the canvas have null transition
+                            if (null == defaultConditionTransition.getTransition() ||
+                                    defaultConditionTransition.getTransition() instanceof String) {
                                 defaultConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
                                 ((StateTransition) defaultConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
@@ -242,7 +248,9 @@ public interface TransitionMarshalling {
                                 errorTransition.setEnd(true);
                             }
                         } else {
-                            if (errorTransition.getTransition() instanceof String) {
+                            // New states created from the canvas have null transition
+                            if (null == errorTransition.getTransition() ||
+                                    errorTransition.getTransition() instanceof String) {
                                 errorTransition.setTransition(getStateNodeName(targetNode));
                             } else {
                                 ((StateTransition) errorTransition.getTransition())
@@ -292,7 +300,9 @@ public interface TransitionMarshalling {
                                 eventConditionTransition.setEnd(true);
                             }
                         } else {
-                            if (eventConditionTransition.getTransition() instanceof String) {
+                            // New states created from the canvas have null transition
+                            if (null == eventConditionTransition.getTransition() ||
+                                    eventConditionTransition.getTransition() instanceof String) {
                                 eventConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
                                 ((StateTransition) eventConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));

@@ -17,14 +17,16 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
@@ -88,14 +90,18 @@ func checkMaven() error {
 
 func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	dockerCheck := ExecCommand("docker", "stats", "--no-stream")
-	if err := dockerCheck.Run(); err != nil {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		fmt.Println("Error creating docker client")
+		return err
+	}
+	_, err = cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
 		fmt.Println("If it's already installed, check if the docker daemon is running")
 		return err
 	}
-
 	fmt.Println(" - Docker is running")
 	return nil
 }
@@ -111,21 +117,6 @@ func CheckPodman() error {
 	}
 
 	fmt.Println(" - Podman is running")
-	return nil
-}
-
-func CheckKubectl() error {
-	fmt.Println("✅ Checking if kubectl is available...")
-	_, kubectlCheck := exec.LookPath("kubectl")
-	if err := kubectlCheck; err != nil {
-		fmt.Println("ERROR: kubectl not found")
-		fmt.Println("kubectl is required for deploy")
-		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
-		os.Exit(1)
-		return err
-	}
-
-	fmt.Println(" - kubectl is available")
 	return nil
 }
 
@@ -163,14 +154,14 @@ func CheckIfDirExists(dirName string) (bool, error) {
 	return false, err
 }
 
-func IsQuarkusSWFProject() bool {
+func IsQuarkusSonataFlowProject() bool {
 	if fileExists("pom.xml") {
 		return true
 	}
 	return false
 }
 
-func IsSWFProject() bool {
+func IsSonataFlowProject() bool {
 	if anyFileExists("*.sw.*") {
 		return true
 	}
@@ -199,6 +190,7 @@ func CheckProjectName(name string) (err error) {
 	if !matched {
 		fmt.Printf("The project name (\"%s\") contains invalid characters. Valid characters are alphanumeric (A-Za-z), underscore, dash and dot.", name)
 		err = fmt.Errorf("invalid project name")
+
 	}
 	return
 }

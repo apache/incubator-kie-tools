@@ -37,7 +37,7 @@ export type TableToolbarProps = TablePaginationProps & {
 
 export function TableToolbar(props: TableToolbarProps) {
   const {
-    itemCount: itemCount,
+    itemCount,
     onDeleteActionButtonClick: onDeleteActionButtonClick,
     selectedElementsCount,
     searchValue,
@@ -54,7 +54,7 @@ export function TableToolbar(props: TableToolbarProps) {
   const [isActionDropdownOpen, setIsActionDropdownOpen] = React.useState(false);
 
   const isBulkCheckBoxChecked = useMemo(
-    () => (itemCount === selectedElementsCount ? true : selectedElementsCount === 0 ? false : null),
+    () => (itemCount && itemCount === selectedElementsCount ? true : selectedElementsCount === 0 ? false : null),
     [itemCount, selectedElementsCount]
   );
 

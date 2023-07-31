@@ -30,8 +30,6 @@ import org.jboss.errai.codegen.meta.MetaMethod;
 import org.jboss.errai.codegen.meta.MetaParameter;
 import org.jboss.errai.codegen.util.Refs;
 import org.jboss.errai.codegen.util.Stmt;
-import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
-import org.jboss.errai.databinding.rebind.DataBindingUtil;
 import org.jboss.errai.ioc.client.api.CodeDecorator;
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.RefHolder;
@@ -43,7 +41,6 @@ import org.jboss.errai.ui.shared.TemplateWidgetMapper;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.jboss.errai.ui.shared.api.annotations.style.StyleBinding;
 import org.jboss.errai.ui.shared.api.style.BindingRegistrationHandle;
-import org.jboss.errai.ui.shared.api.style.StyleBindingChangeHandler;
 import org.jboss.errai.ui.shared.api.style.StyleBindingExecutor;
 import org.jboss.errai.ui.shared.api.style.StyleBindingsRegistry;
 
@@ -122,14 +119,10 @@ public class StyleBindingCodeDecorator extends IOCDecoratorExtension<StyleBindin
   }
 
   private static void addCleanup(final Decorable decorable, final FactoryController controller, final List<Statement> destructionStmts) {
-    final DataBindingUtil.DataBinderRef dataBinder = DataBindingUtil.lookupDataBinderRef(decorable, controller);
 
     if (!controller.hasAttribute(STYLE_BINDING_HOUSEKEEPING_ATTR)) {
       destructionStmts.add(
               Stmt.invokeStatic(StyleBindingsRegistry.class, "get").invoke("cleanAllForBean", Refs.get("instance")));
-      if (dataBinder != null) {
-        destructionStmts.add(controller.getReferenceStmt("styleBindingChangeHandlerUnsub", PropertyChangeUnsubscribeHandle.class).invoke("unsubscribe"));
-      }
       controller.setAttribute(STYLE_BINDING_HOUSEKEEPING_ATTR, Boolean.TRUE);
     }
   }
@@ -169,22 +162,9 @@ public class StyleBindingCodeDecorator extends IOCDecoratorExtension<StyleBindin
     }
 
 
-    final DataBindingUtil.DataBinderRef dataBinder = DataBindingUtil.lookupDataBinderRef(decorable, controller);
-
     final List<Statement> initStmts = new ArrayList<Statement>();
     final List<Statement> destructionStmts = new ArrayList<Statement>();
 
-    if (dataBinder != null) {
-      if (!controller.hasAttribute(DATA_BINDING_CONFIG_ATTR)) {
-        final String handlerVarName = "bindingChangeHandler";
-        controller.setAttribute(DATA_BINDING_CONFIG_ATTR, Boolean.TRUE);
-
-        initStmts.add(controller.setReferenceStmt(handlerVarName, newObject(StyleBindingChangeHandler.class)));
-        // ERRAI-817 deferred initialization
-        initStmts.add(controller.setReferenceStmt("styleBindingChangeHandlerUnsub", nestedCall(dataBinder.getValueAccessor()).invoke("addPropertyChangeHandler",
-                controller.getReferenceStmt(handlerVarName, StyleBindingChangeHandler.class))));
-      }
-    }
     // ERRAI-821 deferred initialization
     if (decorable.getType().isAssignableTo(Widget.class)) {
       initStmts.add(invokeStatic(StyleBindingsRegistry.class, "get")

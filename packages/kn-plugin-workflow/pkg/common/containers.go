@@ -18,21 +18,41 @@ package common
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/stdcopy"
+	"github.com/docker/go-connections/nat"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
 const (
 	Docker = "docker"
 	Podman = "podman"
 )
+
+type DockerLogMessage struct {
+	Status string `json:"status,omitempty"`
+	ID     string `json:"id,omitempty"`
+}
+
+func getDockerClient() (*client.Client, error) {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Docker client: %s", err)
+	}
+	return cli, nil
+}
 
 func GetContainerID(containerTool string) (string, error) {
 
@@ -51,7 +71,7 @@ func getPodmanContainerID() (string, error) {
 		"ps",
 		"-a",
 		"--filter",
-		fmt.Sprintf("ancestor=%s", metadata.KogitoImage),
+		fmt.Sprintf("ancestor=%s", metadata.DevModeImage),
 		"--format", "{{.ID}}")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
@@ -62,7 +82,7 @@ func getPodmanContainerID() (string, error) {
 }
 
 func getDockerContainerID() (string, error) {
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := getDockerClient()
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +94,7 @@ func getDockerContainerID() (string, error) {
 
 	for _, container := range containers {
 		// Check if the container has the expected image name or other identifying information
-		if strings.Contains(container.Image, metadata.KogitoImage) {
+		if strings.Contains(container.Image, metadata.DevModeImage) {
 			return container.ID, nil
 		}
 	}
@@ -83,28 +103,55 @@ func getDockerContainerID() (string, error) {
 }
 
 func StopContainer(containerTool string, containerID string) error {
-	stopCmd := exec.Command(containerTool, "stop", containerID)
-	err := stopCmd.Run()
-	if err != nil {
-		fmt.Printf("Error stopping container: %v\n", err)
-		return err
+	if containerTool == Podman {
+		stopCmd := exec.Command(containerTool, "stop", containerID)
+		if err := stopCmd.Run(); err != nil {
+			fmt.Printf("Unable to stop container %s: %s", containerID, err)
+			return err
+		}
+	} else if containerTool == Docker {
+		cli, err := getDockerClient()
+		if err != nil {
+			fmt.Printf("unable to create client for docker")
+			return err
+		}
+		if err := cli.ContainerStop(context.Background(), containerID, container.StopOptions{}); err != nil {
+			fmt.Printf("Unable to stop container %s: %s", containerID, err)
+			return err
+		}
+	} else {
+		return errors.New(fmt.Sprintf("The specified containerTool:%s does not exist", containerTool))
 	}
-	fmt.Printf("Container %s stopped successfully.\n", containerID)
+	fmt.Printf("\n🛑 Container %s stopped successfully.\n", containerID)
 	return nil
 }
 
-func RunContainerCommand(containerTool string, portMapping string, path string) *exec.Cmd {
-	fmt.Println("🕒 Warming up Kogito containers, this could take some time...")
-	return exec.Command(
-		containerTool,
-		"run",
-		"--rm",
-		"-p",
-		fmt.Sprintf("%s:8080", portMapping),
-		"-v",
-		fmt.Sprintf("%s:/home/kogito/serverless-workflow-project/src/main/resources:z", path),
-		fmt.Sprintf("%s", metadata.KogitoImage),
-	)
+func RunContainerCommand(containerTool string, portMapping string, path string) error {
+	fmt.Printf("🔎 Warming up SonataFlow containers (%s), this could take some time...\n", metadata.DevModeImage)
+	if containerTool == Podman {
+		if err := RunCommand(
+			exec.Command(
+				containerTool,
+				"run",
+				"--rm",
+				"-p",
+				fmt.Sprintf("%s:8080", portMapping),
+				"-v",
+				fmt.Sprintf("%s:%s", path, metadata.VolumeBindPath),
+				fmt.Sprintf("%s", metadata.DevModeImage),
+			),
+			"container run",
+		); err != nil {
+			return err
+		}
+	} else if containerTool == Docker {
+		if err := runDockerContainer(portMapping, path); err != nil {
+			return err
+		}
+	} else {
+		return errors.New(fmt.Sprintf("The specified containerTool:%s does not exist", containerTool))
+	}
+	return nil
 }
 
 func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
@@ -116,21 +163,150 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 
 		containerID, err := GetContainerID(containerTool)
 		if err != nil {
-			fmt.Printf("error getting container id: %v\n", err)
+			fmt.Printf("\nerror getting container id: %v\n", err)
 			os.Exit(1) // Exit the program with error
 		}
 
-		fmt.Println("🕒 Stopping the container id: " + containerID)
+		fmt.Println("\n🔨 Stopping the container id: " + containerID)
 		if containerID != "" {
 			err := StopContainer(containerTool, containerID)
 			if err != nil {
-				fmt.Println("❌ Error stopping container id: " + containerID)
+				fmt.Println("❌ ERROR: Error stopping container id: " + containerID)
 				os.Exit(1)
 			} else {
-				fmt.Println("✅ Successfully stopped container id: " + containerID)
+				fmt.Println("🎉 Successfully stopped container id: " + containerID)
 			}
 		}
 
 		os.Exit(0) // Exit the program gracefully
 	}()
+}
+func pullDockerImage(cli *client.Client, ctx context.Context) (io.ReadCloser, error) {
+	reader, err := cli.ImagePull(ctx, metadata.DevModeImage, types.ImagePullOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("\nError pulling image: %s. Error is: %s", metadata.DevModeImage, err)
+	}
+	return reader, nil
+}
+
+func processDockerImagePullLogs(reader io.ReadCloser) error {
+	for {
+		err := processDockerLog(reader)
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return fmt.Errorf("error decoding ImagePull JSON: %s", err)
+		}
+	}
+	return nil
+}
+
+func createDockerContainer(cli *client.Client, ctx context.Context, portMapping string, path string) (container.ContainerCreateCreatedBody, error) {
+	containerConfig := &container.Config{
+		Image: metadata.DevModeImage,
+	}
+	hostConfig := &container.HostConfig{
+		AutoRemove: true,
+		PortBindings: nat.PortMap{
+			metadata.DockerInternalPort: []nat.PortBinding{
+				{
+					HostIP:   "0.0.0.0",
+					HostPort: portMapping,
+				},
+			},
+		},
+		Binds: []string{
+			fmt.Sprintf("%s:%s", path, metadata.VolumeBindPath),
+		},
+	}
+
+	resp, err := cli.ContainerCreate(ctx, containerConfig, hostConfig, nil, nil, "")
+	if err != nil {
+		return resp, fmt.Errorf("\nUnable to create container %s: %s", metadata.DevModeImage, err)
+	}
+	return resp, nil
+}
+
+func startDockerContainer(cli *client.Client, ctx context.Context, resp container.ContainerCreateCreatedBody) error {
+	fmt.Printf("\nCreated container with ID %s", resp.ID)
+	fmt.Println("\n⏳ Starting your container and SonataFlow project...")
+
+	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		return fmt.Errorf("\nUnable to start container %s", resp.ID)
+	}
+
+	return nil
+}
+
+func runDockerContainer(portMapping string, path string) error {
+	ctx := context.Background()
+	cli, err := getDockerClient()
+	if err != nil {
+		return err
+	}
+
+	reader, err := pullDockerImage(cli, ctx)
+	if err != nil {
+		return err
+	}
+
+	if err := processDockerImagePullLogs(reader); err != nil {
+		return err
+	}
+
+	resp, err := createDockerContainer(cli, ctx, portMapping, path)
+	if err != nil {
+		return err
+	}
+
+	if err := startDockerContainer(cli, ctx, resp); err != nil {
+		return err
+	}
+
+	if err := processOutputDuringContainerExecution(cli, ctx, resp); err != nil {
+		return err
+	}
+
+	return nil
+}
+func processOutputDuringContainerExecution(cli *client.Client, ctx context.Context, resp container.CreateResponse) error {
+	statusCh, errCh := cli.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
+
+	//Print all container logs
+	out, err := cli.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true, ShowStderr: true, Follow: true})
+	if err != nil {
+		return fmt.Errorf("\nError getting container logs: %s", err)
+	}
+
+	go func() {
+		_, err := stdcopy.StdCopy(os.Stdout, os.Stderr, out)
+		if err != nil {
+			fmt.Errorf("\nError copying container logs to stdout: %s", err)
+		}
+	}()
+
+	select {
+	case err := <-errCh:
+		if err != nil {
+			return fmt.Errorf("\nError starting the container %s: %s", resp.ID, err)
+		}
+	case <-statusCh:
+		//state of the container matches the condition, in our case WaitConditionNotRunning
+	}
+
+	return nil
+}
+
+func processDockerLog(reader io.ReadCloser) error {
+	var message DockerLogMessage
+	decoder := json.NewDecoder(reader)
+	if err := decoder.Decode(&message); err != nil {
+		return err
+	}
+
+	if message.Status != "" {
+		fmt.Println(message.Status)
+	}
+
+	return nil
 }

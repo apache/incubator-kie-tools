@@ -1,6 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>stunner-editors-parent</artifactId>
@@ -118,7 +121,8 @@
             <configuration>
               <skipTests>false</skipTests>
               <additionalClasspathElements>
-                <additionalClasspathElement>${basedir}/${project.build.testOutputDirectory}/</additionalClasspathElement>
+                <additionalClasspathElement
+                >${basedir}/${project.build.testOutputDirectory}/</additionalClasspathElement>
                 <additionalClasspathElement>${basedir}/src/main/java/</additionalClasspathElement>
                 <additionalClasspathElement>${basedir}/src/test/java/</additionalClasspathElement>
               </additionalClasspathElements>
@@ -127,7 +131,8 @@
 <!-- http://maven.apache.org/surefire/maven-surefire-plugin/examples/fork-options-and-parallel-execution.html#Migrating_the_Deprecated_forkMode_Parameter_to_forkCount_and_reuseForks -->
               <forkCount>1</forkCount>
               <reuseForks>false</reuseForks>
-              <argLine>${argLine} -Xmx1500m -Derrai.devel.nocache=true -Derrai.codegen.permissive=false -Derrai.dynamic_validation.enabled=true</argLine>
+              <argLine
+              >${argLine} -Xmx1500m -Derrai.devel.nocache=true -Derrai.codegen.permissive=false -Derrai.dynamic_validation.enabled=true</argLine>
 
               <systemProperties>
                 <!-- Must disable long polling for automated tests to succeed -->

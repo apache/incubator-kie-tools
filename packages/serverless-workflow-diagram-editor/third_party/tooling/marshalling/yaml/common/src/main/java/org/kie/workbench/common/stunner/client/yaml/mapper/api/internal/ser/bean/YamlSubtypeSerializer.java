@@ -22,8 +22,8 @@ import java.util.Map;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.StringYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 public class YamlSubtypeSerializer<T> implements YAMLSerializer<T> {
   private final Map<Class, Info> types = new HashMap<>();
@@ -41,17 +41,17 @@ public class YamlSubtypeSerializer<T> implements YAMLSerializer<T> {
 
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, T value, YAMLSerializationContext ctx) {
+      YamlMapping writer, String propertyName, T value, YAMLSerializationContext ctx) {
     if (value == null) {
       return;
     }
     if (types.containsKey(value.getClass())) {
       Info info = types.get(value.getClass());
       AbstractBeanYAMLSerializer<T> serializer = (AbstractBeanYAMLSerializer) info.ser;
-      YAMLWriter objWriter = ctx.newYAMLWriter();
+
+      YamlMapping objWriter = writer.addMappingNode(propertyName);
       stringSerializer.serialize(objWriter, typeFieldName, info.alias, ctx);
       serializer.serialize(objWriter, value, ctx);
-      writer.value(propertyName, objWriter.getWriter().build());
     } else {
       throw new Error("Unable to find ser for " + value.getClass());
     }
@@ -59,7 +59,7 @@ public class YamlSubtypeSerializer<T> implements YAMLSerializer<T> {
 
   // TODO remove code dups
   @Override
-  public void serialize(YAMLSequenceWriter writer, T value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, T value, YAMLSerializationContext ctx) {
     if (value == null) {
       return;
     }

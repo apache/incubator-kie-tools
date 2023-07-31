@@ -23,7 +23,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette;
 import org.kie.workbench.common.stunner.core.client.components.palette.DefaultPaletteItem;
 import org.kie.workbench.common.stunner.core.client.components.palette.PaletteItemMouseEvent;

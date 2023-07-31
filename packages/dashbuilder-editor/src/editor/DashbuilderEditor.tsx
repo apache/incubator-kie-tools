@@ -26,17 +26,10 @@ import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { MonacoEditorOperation, DashbuilderMonacoEditorApi } from "../monaco/DashbuilderMonacoEditorApi";
 import { DashbuilderMonacoEditor } from "../monaco/DashbuilderMonacoEditor";
-import {
-  ChannelType,
-  EditorTheme,
-  StateControlCommand,
-  useKogitoEditorEnvelopeContext,
-} from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Dashbuilder } from "../dashbuilder/Dashbuilder";
 import { Toolbar } from "./Toolbar";
 import { Position } from "monaco-editor";
-import { useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { DashbuilderEditorChannelApi } from "../api";
 
 const INITIAL_CONTENT = `datasets:
 - uuid: products
@@ -121,6 +114,7 @@ const UPDATE_TIME = 1000;
 
 export type DashbuilderEditorRef = {
   setContent(path: string, content: string): Promise<void>;
+  moveCursorToPosition(position: Position): void;
 };
 
 const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<DashbuilderEditorRef | undefined, Props> = (
@@ -131,7 +125,6 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   const [renderContent, setRenderContent] = useState("");
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const dashbuilderMonacoEditorRef = useRef<DashbuilderMonacoEditorApi>(null);
-  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<DashbuilderEditorChannelApi>();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -161,7 +154,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent() || ""));
+          return Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
           // TODO: implement it on Dashbuilder
@@ -179,16 +172,12 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
         setTheme: (theme: EditorTheme): Promise<void> => {
           return dashbuilderMonacoEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
+        moveCursorToPosition: (position: Position) => {
+          dashbuilderMonacoEditorRef.current?.moveCursorToPosition(position);
+        },
       };
     },
     []
-  );
-
-  useSubscription(
-    editorEnvelopeCtx.channelApi.notifications.kogitoDashbuilderTextEditor_moveCursorToPosition,
-    useCallback((position: Position) => {
-      dashbuilderMonacoEditorRef.current?.moveCursorToPosition(position);
-    }, [])
   );
 
   const onContentChanged = useCallback(

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Button, Checkbox, Modal, ModalProps, Skeleton } from "@patternfly/react-core/dist/js";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { Modal, ModalProps } from "@patternfly/react-core/dist/js/components/Modal";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -57,7 +60,14 @@ export function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
         aria-describedby="modal-custom-icon-description"
         actions={[
           dataLoaded ? (
-            <Button key="confirm" variant="danger" onClick={onDelete} isDisabled={!isDeleteCheck} aria-label="Delete">
+            <Button
+              key="confirm"
+              variant="danger"
+              onClick={onDelete}
+              isDisabled={!isDeleteCheck}
+              aria-label="Delete"
+              ouiaId="confirm-delete-button"
+            >
               Delete {elementsTypeName}
             </Button>
           ) : (
@@ -78,6 +88,7 @@ export function ConfirmDeleteModal(props: ConfirmDeleteModalProps) {
           isChecked={isDeleteCheck}
           onChange={onDeleteCheckChange}
           aria-label="Confirm checkbox delete model"
+          ouiaId="confirm-delete-checkbox"
         />
       </Modal>
 

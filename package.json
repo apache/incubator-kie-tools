@@ -7,8 +7,8 @@
     "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
     "bootstrap:root": "pnpm install --use-lockfile-v6 --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
-    "format": "prettier --write . '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
-    "format:check": "prettier --check . '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
+    "format": "prettier --write . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
+    "format:check": "prettier --check . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
     "prepare": "husky install",
     "update-version-to": "kie-tools--update-version-to"
   },
@@ -20,6 +20,7 @@
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
+    "@prettier/plugin-xml": "^2",
     "@types/node": "^18.13.0",
     "filemanager-webpack-plugin": "^7.0.0",
     "husky": "^6.0.0",
@@ -44,7 +45,7 @@
       }
     },
     "patchedDependencies": {
-      "selenium-webdriver@4.8.1": "patches/selenium-webdriver@4.8.1.patch"
+      "selenium-webdriver@4.10.0": "patches/selenium-webdriver@4.10.0.patch"
     }
   },
   "kieTools": {

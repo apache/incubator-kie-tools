@@ -21,7 +21,6 @@ export enum QueryParams {
   SETTINGS = "settings",
   URL = "url",
   BRANCH = "branch",
-  EXPAND = "expand",
   REMOVE_REMOTE = "removeRemote",
   RENAME_WORKSPACE = "renameWorkspace",
   SAMPLE_ID = "sampleId",
@@ -112,9 +111,7 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  home: new Route<{
-    queryParams: QueryParams.EXPAND;
-  }>(() => `/`),
+  home: new Route<{}>(() => `/`),
 
   newModel: new Route<{
     pathParams: PathParams.EXTENSION;
@@ -147,7 +144,6 @@ export const routes = {
     extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/extended-services`),
     service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/service-account`),
     service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
-    feature_preview: new Route<{}>(() => `${SETTINGS_ROUTE}/feature-preview`),
     storage: new Route<{}>(() => `${SETTINGS_ROUTE}/storage`),
   },
 
@@ -156,7 +152,6 @@ export const routes = {
     images: {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
-      kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
   },

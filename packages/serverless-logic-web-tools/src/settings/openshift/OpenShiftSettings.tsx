@@ -20,20 +20,19 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { SETTINGS_PAGE_SECTION_TITLE } from "../SettingsContext";
 import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { setPageTitle } from "../../PageTitle";
 import { obfuscate } from "../github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
 import { saveConfigCookie } from "./OpenShiftSettingsConfig";
 import { OpenShiftSettingsSimpleConfig } from "./OpenShiftSettingsSimpleConfig";
@@ -56,6 +55,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
       namespace: settings.openshift.config.namespace,
       host: settings.openshift.config.host,
       token: "",
+      insecurelyDisableTlsCertificateValidation: false,
     };
     settingsDispatch.openshift.setConfig(newConfig);
     saveConfigCookie(newConfig);
@@ -66,23 +66,17 @@ export function OpenShiftSettings(props: SettingsPageProps) {
     [settings.openshift.isDevModeEnabled]
   );
 
-  useEffect(() => {
-    setPageTitle([SETTINGS_PAGE_SECTION_TITLE, PAGE_TITLE]);
-  }, []);
-
   return (
-    <Page>
-      <PageSection variant={"light"} isWidthLimited>
-        <TextContent>
-          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-          <Text component={TextVariants.p}>
-            Data you provide here is necessary for deploying models you design to your OpenShift instance.
-            <br />
-            All information is locally stored in your browser and never shared with anyone.
-          </Text>
-        </TextContent>
-      </PageSection>
-
+    <SettingsPageContainer
+      pageTitle={PAGE_TITLE}
+      subtitle={
+        <>
+          Data you provide here is necessary for deploying models you design to your OpenShift instance.
+          <br />
+          All information is locally stored in your browser and never shared with anyone.
+        </>
+      }
+    >
       <PageSection>
         {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
           <>
@@ -124,6 +118,9 @@ export function OpenShiftSettings(props: SettingsPageProps) {
                 <b>Namespace (project): </b>
                 <i>{settings.openshift.config.namespace}</i>
                 <br />
+                <b>TLS Certificate Verification: </b>
+                <i>{settings.openshift.config.insecurelyDisableTlsCertificateValidation ? "Disabled" : "Enabled"}</i>
+                <br />
                 <br />
                 <Button variant={ButtonVariant.tertiary} onClick={onDisconnect}>
                   Disconnect
@@ -164,6 +161,6 @@ export function OpenShiftSettings(props: SettingsPageProps) {
           <OpenShiftSettingsSimpleConfig />
         </Modal>
       )}
-    </Page>
+    </SettingsPageContainer>
   );
 }

@@ -474,6 +474,25 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
         assertThat(jsHelper.getGetBackgroundColor(nodeId)).isEqualTo("red");
     }
 
+    @Test
+    // End nodes defined as objects in transitions must be shown
+    public void testEndNodeCreationFomObject() throws Exception {
+        String resource = "NotifyCustomerWorkflowExample.sw.json";
+        final String expected = loadResource(resource);
+        setContent(expected);
+        waitCanvasPanel();
+
+        List<String> nodeIds = jsHelper.getNodeIds();
+        // Number of states in the diagram
+        assertThat(nodeIds.size()).isEqualTo(4);
+
+        // Pick End state location
+        List<Object> location = jsHelper.getLocation(nodeIds.get(3));
+
+        assertThat(location.get(0)).isEqualTo(152L); // X
+        assertThat(location.get(1)).isEqualTo(663L); // Y
+    }
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);

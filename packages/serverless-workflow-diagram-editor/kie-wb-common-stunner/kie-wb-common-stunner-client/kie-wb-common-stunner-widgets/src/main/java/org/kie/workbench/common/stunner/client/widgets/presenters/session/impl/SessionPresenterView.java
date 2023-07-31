@@ -32,12 +32,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
-import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
-import org.gwtbootstrap3.extras.notify.client.ui.Notify;
-import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -52,9 +46,6 @@ import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 import static com.google.gwt.dom.client.Style.Display.BLOCK;
 import static com.google.gwt.dom.client.Style.Display.NONE;
-import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Error;
-import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Info;
-import static org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants.SessionPresenterView_Warning;
 
 // TODO: i18n.
 @Dependent
@@ -67,11 +58,11 @@ public class SessionPresenterView extends Composite
 
     @Inject
     @DataField
-    private FlowPanel sessionHeaderContainer;
+    private ResizeFlowPanel sessionHeaderContainer;
 
     @Inject
     @DataField
-    private FlowPanel toolbarPanel;
+    private ResizeFlowPanel toolbarPanel;
 
     @Inject
     @DataField
@@ -79,7 +70,7 @@ public class SessionPresenterView extends Composite
 
     @Inject
     @DataField
-    private FlowPanel palettePanel;
+    private ResizeFlowPanel palettePanel;
 
     @Inject
     @DataField
@@ -87,8 +78,6 @@ public class SessionPresenterView extends Composite
 
     @Inject
     private TranslationService translationService;
-
-    private final NotifySettings settings = NotifySettings.newSettings();
 
     private ScrollType scrollType = ScrollType.AUTO;
     private double paletteInitialTop;
@@ -101,12 +90,6 @@ public class SessionPresenterView extends Composite
 
     @PostConstruct
     public void init() {
-        settings.setShowProgressbar(false);
-        settings.setPauseOnMouseOver(true);
-        settings.setNewestOnTop(true);
-        settings.setAllowDismiss(true);
-        settings.setDelay(DELAY);
-        settings.setAnimation(Animation.NO_ANIMATION, Animation.FADE_OUT);
         handlerRegistration = addDomHandler((e) -> {
                                                 e.preventDefault();
                                                 e.stopPropagation();
@@ -220,9 +203,6 @@ public class SessionPresenterView extends Composite
 
     @Override
     public SessionPresenterView showError(final String message) {
-        getSettings().setType(kieNotificationCssClass(NotifyType.DANGER));
-        showNotification(translate(SessionPresenterView_Error), message, IconType.EXCLAMATION_CIRCLE);
-
         return this;
     }
 
@@ -242,12 +222,6 @@ public class SessionPresenterView extends Composite
 
     @Override
     public SessionPresenter.View showWarning(final String message) {
-        singleNotify(() -> {
-            getSettings().setType(kieNotificationCssClass(NotifyType.WARNING));
-            showNotification(translate(SessionPresenterView_Warning),
-                             message,
-                             IconType.EXCLAMATION_TRIANGLE);
-        });
         return this;
     }
 
@@ -263,25 +237,13 @@ public class SessionPresenterView extends Composite
                 }
             }.schedule(NOTIFICATION_LOCK_TIMEOUT);
 
-            Notify.hideAll();
             notification.run();
         }
     }
 
     @Override
     public SessionPresenterView showMessage(final String message) {
-        getSettings().setType(kieNotificationCssClass(NotifyType.SUCCESS));
-        showNotification(translate(SessionPresenterView_Info), message, IconType.INFO_CIRCLE);
         return this;
-    }
-
-    void showNotification(final String title,
-                          final String message,
-                          final IconType icon) {
-        Notify.notify(title,
-                      buildHtmlEscapedText(message),
-                      icon,
-                      settings);
     }
 
     @Override
@@ -321,10 +283,6 @@ public class SessionPresenterView extends Composite
         this.removeFromParent();
     }
 
-    NotifySettings getSettings() {
-        return settings;
-    }
-
     TranslationService getTranslationService() {
         return translationService;
     }
@@ -337,7 +295,4 @@ public class SessionPresenterView extends Composite
         return new SafeHtmlBuilder().appendEscapedLines(message).toSafeHtml().asString();
     }
 
-    private String kieNotificationCssClass(final NotifyType notifyType) {
-        return notifyType.getCssName() + " kie-session-notification";
-    }
 }

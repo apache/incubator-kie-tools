@@ -15,6 +15,7 @@
  */
 
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableCellProps,
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -89,6 +90,14 @@ export function UnitablesBeeTable({
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
+        group: i18n.terms.selection.toUpperCase(),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionPaste },
+        ],
+      },
+      {
         group: i18n.rows,
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
@@ -100,6 +109,26 @@ export function UnitablesBeeTable({
       },
     ],
     [i18n]
+  );
+
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      return [
+        BeeTableOperation.SelectionCopy,
+        ...((conditions.selection.active?.rowIndex ?? -1) > -1
+          ? [
+              BeeTableOperation.SelectionCut,
+              BeeTableOperation.SelectionPaste,
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowDuplicate,
+              BeeTableOperation.RowReset,
+            ]
+          : []),
+        ...(rows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+      ];
+    },
+    [rows.length]
   );
 
   const uuid = useMemo(() => {
@@ -282,6 +311,7 @@ export function UnitablesBeeTable({
       headerLevelCountForAppendingRowIndexColumn={1}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={beeTableOperationConfig}
+      allowedOperations={allowedOperations}
       columns={beeTableColumns}
       rows={rows}
       enableKeyboardNavigation={true}

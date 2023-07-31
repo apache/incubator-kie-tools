@@ -68,7 +68,7 @@ export default async (env: any, argv: any) => {
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
-          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -84,13 +84,13 @@ export default async (env: any, argv: any) => {
       ...merge(common(env), {
         entry: {
           index: "./src/index.tsx",
+          "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",
           "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
           "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
           "serverless-workflow-combined-editor-envelope":
             "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
           "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
           "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
-          "serverless-workflow-mermaid-viewer-envelope": "./src/envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
         },
         plugins: [
           new HtmlWebpackPlugin({
@@ -115,7 +115,7 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
-            WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+            WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
             WEBPACK_REPLACE__samplesRepositoryRef: buildEnv.serverlessLogicWebTools.samplesRepositoryRef,
           }),
           new CopyPlugin({
@@ -137,13 +137,10 @@ export default async (env: any, argv: any) => {
                 to: "./serverless-workflow-diagram-editor-envelope.html",
               },
               {
-                from: "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html",
-                to: "./serverless-workflow-mermaid-viewer-envelope.html",
-              },
-              {
                 from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
                 to: "./serverless-workflow-text-editor-envelope.html",
               },
+              { from: "./static/envelope/yard-editor-envelope.html", to: "./yard-editor-envelope.html" },
               { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
               { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },

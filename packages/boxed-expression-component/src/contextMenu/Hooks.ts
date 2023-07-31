@@ -38,7 +38,10 @@ export function useCustomContextMenuHandler(domEventTargetRef: React.RefObject<H
   const hide = useCallback(
     (e: MouseEvent) => {
       e.preventDefault();
-      if (!isOpen) {
+      /* In SAFARI only, CTRL + click shortcut used to open the Menu, results in two distinct mouse events: "contextmenu" and “click“, in this order.
+         Considering this hide() function is currently bound with both event handlers, the second event (click) will suddenly close the menu. 
+         To prevent this, if ctrlKey is actually pressed, the event is ignored. */
+      if (!isOpen || e.ctrlKey) {
         return;
       }
 

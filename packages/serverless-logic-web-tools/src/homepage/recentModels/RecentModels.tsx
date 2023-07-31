@@ -13,117 +13,108 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { useController } from "@kie-tools-core/react-hooks/dist/useController";
+import React from "react";
+import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
+import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
+import { Dropdown, DropdownToggle, ToolbarItem } from "@patternfly/react-core/dist/js";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { CaretDownIcon, PlusIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import * as React from "react";
+import Fuse from "fuse.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { NewFileDropdownMenu } from "../../editor/NewFileDropdownMenu";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { splitFiles } from "../../extension";
+import { routes } from "../../navigation/Routes";
 import { setPageTitle } from "../../PageTitle";
 import { ConfirmDeleteModal, defaultPerPageOptions, TablePagination, TableToolbar } from "../../table";
-import { WorkspacesTable } from "./WorkspacesTable";
+import { useAllWorkspacesWithFilesPromise } from "./hooks/useAllWorkspacesWithFilesPromise";
+import { WorkspacesTable, WorkspacesTableRowData } from "./WorkspacesTable";
 
 const PAGE_TITLE = "Recent models";
 
 export function RecentModels() {
-  const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const [selectedWorkspaceIds, setSelectedWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
+  const [deletingWorkspaceIds, setDeletingWorkspaceIds] = useState<WorkspaceDescriptor["workspaceId"][]>([]);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
-  const [searchValue, setSearchValue] = React.useState("");
-  const [page, setPage] = React.useState(1);
-  const [perPage, setPerPage] = React.useState(5);
+  const [searchValue, setSearchValue] = useState("");
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
   const workspaces = useWorkspaces();
-  const [selectedFoldersCount, setSelectedFoldersCount] = useState(0);
-  const [firstSelectedWorkspaceName, setFirstSelectedWorkspaceName] = useState("");
+  const [deletingFoldersCount, setDeletingFoldersCount] = useState(0);
+  const [firstDeletingWorkspaceName, setFirstDeletingWorkspaceName] = useState("");
   const [deleteModalDataLoaded, setDeleteModalDataLoaded] = useState(false);
   const [deleteModalFetchError, setDeleteModalFetchError] = useState(false);
-  const isSelectedWorkspacePlural = useMemo(() => selectedWorkspaceIds.length > 1, [selectedWorkspaceIds]);
+  const [fuseSearch, setFuseSearch] = useState<Fuse<WorkspacesTableRowData>>();
+  const isDeletingWorkspacePlural = useMemo(() => deletingWorkspaceIds.length > 1, [deletingWorkspaceIds]);
+  const workspacesWithFilesPromise = useAllWorkspacesWithFilesPromise();
+  const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
 
-  const selectedElementTypesName = useMemo(() => {
-    if (selectedWorkspaceIds.length > 1) {
-      return selectedFoldersCount ? "workspaces" : "models";
+  const deletingElementTypesName = useMemo(() => {
+    if (deletingWorkspaceIds.length > 1) {
+      return deletingFoldersCount ? "workspaces" : "models";
     }
-    return selectedFoldersCount ? "workspace" : "model";
-  }, [selectedFoldersCount, selectedWorkspaceIds]);
+    return deletingFoldersCount ? "workspace" : "model";
+  }, [deletingFoldersCount, deletingWorkspaceIds]);
 
   const deleteModalMessage = useMemo(
     () => (
       <>
-        Deleting {isSelectedWorkspacePlural ? "these" : "this"}{" "}
-        <b>{isSelectedWorkspacePlural ? selectedWorkspaceIds.length : firstSelectedWorkspaceName}</b>{" "}
-        {selectedElementTypesName}
-        {selectedFoldersCount ? ` removes the ${selectedElementTypesName} and all the models inside.` : "."}
+        Deleting {isDeletingWorkspacePlural ? "these" : "this"}{" "}
+        <b>{isDeletingWorkspacePlural ? deletingWorkspaceIds.length : firstDeletingWorkspaceName}</b>{" "}
+        {deletingElementTypesName}
+        {deletingFoldersCount ? ` removes the ${deletingElementTypesName} and all the files inside.` : "."}
       </>
     ),
     [
-      isSelectedWorkspacePlural,
-      selectedWorkspaceIds,
-      firstSelectedWorkspaceName,
-      selectedElementTypesName,
-      selectedFoldersCount,
+      isDeletingWorkspacePlural,
+      deletingWorkspaceIds,
+      firstDeletingWorkspaceName,
+      deletingElementTypesName,
+      deletingFoldersCount,
     ]
   );
 
-  const onConfirmDeleteModalClose = useCallback(() => setIsConfirmDeleteModalOpen(false), []);
+  const onSingleConfirmDeleteModalOpen = useCallback((workspaceId: WorkspaceDescriptor["workspaceId"]) => {
+    setIsConfirmDeleteModalOpen(true);
+    setDeletingWorkspaceIds([workspaceId]);
+  }, []);
 
-  const deleteSuccessAlert = useGlobalAlert<{ modelsWord: string }>(
-    useCallback(({ close }, { modelsWord }) => {
-      return <Alert variant="success" title={`${capitalizeString(modelsWord)} deleted successfully`} />;
+  const onBulkConfirmDeleteModalOpen = useCallback(() => {
+    setIsConfirmDeleteModalOpen(true);
+    setDeletingWorkspaceIds(selectedWorkspaceIds);
+  }, [selectedWorkspaceIds]);
+
+  const onConfirmDeleteModalClose = useCallback(() => {
+    setIsConfirmDeleteModalOpen(false);
+    setDeletingWorkspaceIds([]);
+  }, []);
+
+  const deleteSuccessAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }, { elementsTypeName }) => {
+      return <Alert variant="success" title={`${capitalizeString(elementsTypeName)} deleted successfully`} />;
     }, []),
     { durationInSeconds: 2 }
   );
 
-  const deleteErrorAlert = useGlobalAlert<{ modelsWord: string }>(
-    useCallback(({ close }, { modelsWord }) => {
+  const deleteErrorAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }, { elementsTypeName }) => {
       return (
         <Alert
           variant="danger"
-          title={`Oops, something went wrong while trying to delete the selected ${modelsWord}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          title={`Oops, something went wrong while trying to delete the selected ${elementsTypeName}. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
     }, [])
-  );
-
-  const onWorkspaceDelete = useCallback(() => {
-    setSelectedWorkspaceIds([]);
-    setPage(1);
-  }, []);
-
-  const onConfirmDeleteModalDelete = useCallback(
-    async (workspaceDescriptors: WorkspaceDescriptor[]) => {
-      const modelsWord = selectedWorkspaceIds.length > 1 ? "Models" : "Model";
-      setIsConfirmDeleteModalOpen(false);
-
-      Promise.all(
-        workspaceDescriptors
-          .filter((w) => selectedWorkspaceIds.includes(w.workspaceId))
-          .map((w) => workspaces.deleteWorkspace(w))
-      )
-        .then(() => {
-          deleteSuccessAlert.show({ modelsWord });
-        })
-        .catch((e) => {
-          console.error(e);
-          deleteErrorAlert.show({ modelsWord });
-        })
-        .finally(() => {
-          setSelectedWorkspaceIds([]);
-          setPage(1);
-        });
-    },
-    [selectedWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert]
   );
 
   const onWsToggle = useCallback((workspaceId: WorkspaceDescriptor["workspaceId"], checked: boolean) => {
@@ -131,10 +122,6 @@ export function RecentModels() {
       const otherSelectedIds = prevSelected.filter((r) => r !== workspaceId);
       return checked ? [...otherSelectedIds, workspaceId] : otherSelectedIds;
     });
-  }, []);
-
-  const onToggleAllElements = useCallback((checked: boolean, workspaceDescriptors: WorkspaceDescriptor[]) => {
-    setSelectedWorkspaceIds(checked ? workspaceDescriptors.map((e) => e.workspaceId) : []);
   }, []);
 
   const onClearFilters = useCallback(() => {
@@ -152,7 +139,7 @@ export function RecentModels() {
 
   const getWorkspaceName = useCallback(
     async (workspaceId: WorkspaceDescriptor["workspaceId"]) => {
-      if (selectedWorkspaceIds.length !== 1) {
+      if (deletingWorkspaceIds.length !== 1) {
         return "";
       }
       const workspaceData = await workspaces.getWorkspace({ workspaceId });
@@ -160,7 +147,7 @@ export function RecentModels() {
         ? workspaceData.name
         : (await workspaces.getFiles({ workspaceId }))[0].nameWithoutExtension;
     },
-    [isWsFolder, selectedWorkspaceIds, workspaces]
+    [isWsFolder, deletingWorkspaceIds, workspaces]
   );
 
   useEffect(() => {
@@ -169,104 +156,206 @@ export function RecentModels() {
 
   useEffect(() => {
     Promise.all([
-      Promise.all(selectedWorkspaceIds.map(isWsFolder)).then((results) => {
+      Promise.all(deletingWorkspaceIds.map(isWsFolder)).then((results) => {
         const foldersCount = results.filter((r) => r).length;
-        setSelectedFoldersCount(foldersCount);
+        setDeletingFoldersCount(foldersCount);
       }),
-      getWorkspaceName(selectedWorkspaceIds[0]).then(setFirstSelectedWorkspaceName),
+      getWorkspaceName(deletingWorkspaceIds[0]).then(setFirstDeletingWorkspaceName),
     ])
       .then(() => setDeleteModalDataLoaded(true))
       .catch(() => setDeleteModalFetchError(true));
-  }, [getWorkspaceName, selectedWorkspaceIds, isWsFolder]);
+  }, [getWorkspaceName, deletingWorkspaceIds, isWsFolder]);
 
   useEffect(() => {
     setPageTitle([PAGE_TITLE]);
   }, []);
 
+  const tableData = useMemo<WorkspacesTableRowData[]>(
+    () =>
+      workspacesWithFilesPromise.data?.map((item) => {
+        if (!item.success) {
+          return {
+            descriptor: {
+              workspaceId: item.workspaceId,
+              name: item.name ?? "Unknown workspace",
+              origin: item.origin ?? { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
+              createdDateISO: item.createdDateISO ?? new Date().toISOString(),
+              lastUpdatedDateISO: item.lastUpdatedDateISO ?? new Date().toISOString(),
+              gitAuthSessionId: undefined,
+            },
+            editableFiles: [],
+            hasErrors: true,
+            isWsFolder: true,
+            totalFiles: 0,
+          };
+        }
+        const { editableFiles, readonlyFiles } = splitFiles(item.files ?? []);
+        const isWsFolder =
+          editableFiles.length > 1 || readonlyFiles.length > 0 || item.descriptor.origin.kind !== WorkspaceKind.LOCAL;
+        const name = !isWsFolder && editableFiles.length ? editableFiles[0].nameWithoutExtension : item.descriptor.name;
+
+        return {
+          descriptor: { ...item.descriptor, name },
+          editableFiles: editableFiles,
+          hasErrors: false,
+          isWsFolder,
+          totalFiles: item.files.length,
+        };
+      }) ?? [],
+    [workspacesWithFilesPromise]
+  );
+
+  const filteredTableData = useMemo(() => {
+    return !searchValue.trim() || !fuseSearch ? tableData : fuseSearch.search(searchValue).map((r) => r.item);
+  }, [tableData, searchValue, fuseSearch]);
+
+  const onToggleAllElements = useCallback(
+    (checked: boolean) => {
+      setSelectedWorkspaceIds(checked ? filteredTableData.map((e) => e.descriptor.workspaceId) : []);
+    },
+    [filteredTableData]
+  );
+
+  const onConfirmDeleteModalDelete = useCallback(async () => {
+    const elementsTypeName = deletingWorkspaceIds.length > 1 ? "Models" : "Model";
+    setIsConfirmDeleteModalOpen(false);
+
+    Promise.all(
+      tableData
+        .filter((w) => deletingWorkspaceIds.includes(w.descriptor.workspaceId))
+        .map((w) => workspaces.deleteWorkspace(w.descriptor))
+    )
+      .then(() => {
+        deleteSuccessAlert.show({ elementsTypeName });
+      })
+      .catch((e) => {
+        console.error(e);
+        deleteErrorAlert.show({ elementsTypeName });
+      })
+      .finally(async () => {
+        setSelectedWorkspaceIds([]);
+        setDeletingWorkspaceIds([]);
+        setPage(1);
+      });
+  }, [deletingWorkspaceIds, workspaces, deleteErrorAlert, deleteSuccessAlert, tableData]);
+
+  useEffect(() => {
+    setSelectedWorkspaceIds((selectedIds) =>
+      selectedIds.filter((id) => tableData.some((element) => element.descriptor.workspaceId === id))
+    );
+
+    setFuseSearch(
+      new Fuse(tableData || [], {
+        keys: ["descriptor.name"],
+        shouldSort: false,
+        threshold: 0.3,
+      })
+    );
+  }, [tableData]);
+
   return (
-    <PromiseStateWrapper
-      promise={workspaceDescriptorsPromise}
-      rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
-      resolved={(workspaceDescriptors: WorkspaceDescriptor[]) => {
-        const itemCount = workspaceDescriptors.length;
+    <>
+      <Page>
+        <PageSection variant={"light"}>
+          <TextContent>
+            <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
+            <Text component={TextVariants.p}>
+              Use your recent models from GitHub Repository, a GitHub Gist or saved in your browser.
+            </Text>
+          </TextContent>
+        </PageSection>
 
-        return (
-          <>
-            <Page>
-              <PageSection variant={"light"}>
-                <TextContent>
-                  <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-                  <Text component={TextVariants.p}>
-                    Use your recent models from GitHub Repository, a GitHub Gist or saved in your browser.
-                  </Text>
-                </TextContent>
-              </PageSection>
-
-              <PageSection isFilled aria-label="workspaces-table-section">
-                <PageSection variant={"light"} padding={{ default: "noPadding" }}>
-                  {itemCount > 0 && (
-                    <>
-                      <TableToolbar
-                        itemCount={itemCount}
-                        onDeleteActionButtonClick={() => setIsConfirmDeleteModalOpen(true)}
-                        onToggleAllElements={(checked) => onToggleAllElements(checked, workspaceDescriptors)}
-                        searchValue={searchValue}
-                        selectedElementsCount={selectedWorkspaceIds.length}
-                        setSearchValue={setSearchValue}
-                        page={page}
-                        perPage={perPage}
-                        perPageOptions={defaultPerPageOptions}
-                        setPage={setPage}
-                        setPerPage={setPerPage}
-                      />
-                      <WorkspacesTable
-                        page={page}
-                        perPage={perPage}
-                        onClearFilters={onClearFilters}
-                        onWsToggle={onWsToggle}
-                        searchValue={searchValue}
-                        selectedWorkspaceIds={selectedWorkspaceIds}
-                        workspaceDescriptors={workspaceDescriptors}
-                        onWsDelete={onWorkspaceDelete}
-                      />
-                      <TablePagination
-                        itemCount={itemCount}
-                        page={page}
-                        perPage={perPage}
-                        perPageOptions={defaultPerPageOptions}
-                        setPage={setPage}
-                        setPerPage={setPerPage}
-                        variant="bottom"
-                      />
-                    </>
-                  )}
-                  {workspaceDescriptors.length === 0 && (
-                    <Bullseye>
-                      <EmptyState>
-                        <EmptyStateIcon icon={CubesIcon} />
-                        <Title headingLevel="h4" size="lg">
-                          {`Nothing here`}
-                        </Title>
-                        <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                      </EmptyState>
-                    </Bullseye>
-                  )}
-                </PageSection>
-              </PageSection>
-            </Page>
-            <ConfirmDeleteModal
-              isOpen={isConfirmDeleteModalOpen}
-              onClose={onConfirmDeleteModalClose}
-              onDelete={() => onConfirmDeleteModalDelete(workspaceDescriptors)}
-              elementsTypeName={selectedElementTypesName}
-              deleteMessage={deleteModalMessage}
-              dataLoaded={deleteModalDataLoaded}
-              fetchError={deleteModalFetchError}
+        <PageSection isFilled aria-label="workspaces-table-section">
+          <PageSection variant={"light"} padding={{ default: "noPadding" }}>
+            <TableToolbar
+              itemCount={filteredTableData.length}
+              onDeleteActionButtonClick={onBulkConfirmDeleteModalOpen}
+              onToggleAllElements={(checked) => onToggleAllElements(checked)}
+              searchValue={searchValue}
+              selectedElementsCount={selectedWorkspaceIds.length}
+              setSearchValue={setSearchValue}
+              page={page}
+              perPage={perPage}
+              perPageOptions={defaultPerPageOptions}
+              setPage={setPage}
+              setPerPage={setPerPage}
+              additionalComponents={
+                <ToolbarItem>
+                  <Dropdown
+                    position={"right"}
+                    isOpen={isNewFileDropdownMenuOpen}
+                    toggle={
+                      <DropdownToggle
+                        onToggle={setNewFileDropdownMenuOpen}
+                        toggleIndicator={CaretDownIcon}
+                        toggleVariant="primary"
+                      >
+                        <PlusIcon />
+                        &nbsp;&nbsp;New model
+                      </DropdownToggle>
+                    }
+                  >
+                    <NewFileDropdownMenu destinationDirPath={""} />
+                  </Dropdown>
+                </ToolbarItem>
+              }
             />
-          </>
-        );
-      }}
-    />
+            {tableData.length > 0 && (
+              <WorkspacesTable
+                page={page}
+                perPage={perPage}
+                onClearFilters={onClearFilters}
+                onWsToggle={onWsToggle}
+                selectedWorkspaceIds={selectedWorkspaceIds}
+                tableData={filteredTableData}
+                onDelete={onSingleConfirmDeleteModalOpen}
+              />
+            )}
+            {workspacesWithFilesPromise.data && tableData.length === 0 && (
+              <>
+                <PageSection variant={"light"} padding={{ default: "noPadding" }}>
+                  <Bullseye>
+                    <EmptyState>
+                      <EmptyStateIcon icon={CubesIcon} />
+                      <Title headingLevel="h4" size="lg">
+                        {`Nothing here`}
+                      </Title>
+                      <EmptyStateBody>
+                        <TextContent>
+                          <Text>
+                            Start by adding a <Link to={routes.home.path({})}>new model</Link> or{" "}
+                            <Link to={routes.sampleCatalog.path({})}>try a sample</Link>
+                          </Text>
+                        </TextContent>
+                      </EmptyStateBody>
+                    </EmptyState>
+                  </Bullseye>
+                </PageSection>
+                <br />
+              </>
+            )}
+            <TablePagination
+              itemCount={filteredTableData.length}
+              page={page}
+              perPage={perPage}
+              perPageOptions={defaultPerPageOptions}
+              setPage={setPage}
+              setPerPage={setPerPage}
+              variant="bottom"
+            />
+          </PageSection>
+        </PageSection>
+      </Page>
+      <ConfirmDeleteModal
+        isOpen={isConfirmDeleteModalOpen}
+        onClose={onConfirmDeleteModalClose}
+        onDelete={() => onConfirmDeleteModalDelete()}
+        elementsTypeName={deletingElementTypesName}
+        deleteMessage={deleteModalMessage}
+        dataLoaded={deleteModalDataLoaded}
+        fetchError={deleteModalFetchError}
+      />
+    </>
   );
 }
 

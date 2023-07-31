@@ -31,13 +31,12 @@ import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerCont
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
-import { InputRow, extractDifferences } from "@kie-tools/form-dmn";
+import { InputRow } from "@kie-tools/form-dmn";
 import {
   DecisionResult,
   ExtendedServicesDmnJsonSchema,
   DmnEvaluationMessages,
   ExtendedServicesModelPayload,
-  DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
@@ -68,10 +67,13 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import getObjectValueByPath from "lodash/get";
-import unsetObjectValueByPath from "lodash/unset";
-
-const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
+import { diff } from "deep-object-diff";
+import {
+  resolveReferencesAndCheckForRecursion,
+  removeChangedPropertiesAndAdditionalProperties,
+  getDefaultValues,
+} from "@kie-tools/dmn-runner/dist/jsonSchema";
+import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 
 interface Props {
   isEditorReady?: boolean;
@@ -108,7 +110,7 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
       resultsDifference: dmnRunnerResults.resultsDifference,
     };
   } else if (action.type === DmnRunnerResultsActionType.DEFAULT) {
-    const differences = extractDifferences(action.newResults ?? [], dmnRunnerResults.results);
+    const differences = extractDifferencesFromArray(action.newResults ?? [], dmnRunnerResults.results);
     return {
       results: action.newResults ? [...action.newResults] : [],
       resultsDifference: [...differences],
@@ -174,10 +176,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     setExtendedServicesError(false);
   }, [jsonSchema]);
 
-  // Reset JSON Schema and PersistenceJson;
+  // Refer to effect responsible for getting decision results
+  const hasJsonSchema = useRef<boolean>(false);
+  // Reset JSON Schema;
   useLayoutEffect(() => {
     setJsonSchema(undefined);
+    hasJsonSchema.current = false;
   }, [props.workspaceFile.relativePath]);
+
+  useLayoutEffect(() => {
+    if (jsonSchema) {
+      hasJsonSchema.current = true;
+    }
+  }, [jsonSchema]);
 
   // Control the isExpaded state based on the extended services status;
   useLayoutEffect(() => {
@@ -217,10 +228,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         context: formInputs,
       } as ExtendedServicesModelPayload;
     },
-    [props.workspaceFile, workspaces, props.dmnLanguageService]
+    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
-  // Responsible for get decision results;
+  // Responsible for getting decision results
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -228,7 +239,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           return;
         }
 
-        Promise.all(dmnRunnerInputs.map((inputs) => extendedServicesModelPayload(inputs)))
+        Promise.all(
+          dmnRunnerInputs.map((dmnRunnerInput) => {
+            // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
+            // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+            const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
+            return extendedServicesModelPayload(input);
+          })
+        )
           .then((payloads) =>
             Promise.all(
               payloads.map((payload) => {
@@ -257,6 +275,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
           })
           .catch((err) => {
+            console.log(err);
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT });
           });
       },
@@ -424,43 +443,6 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [setDmnRunnerPersistenceJson]
   );
 
-  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties):
-    | string
-    | boolean
-    | []
-    | object
-    | undefined => {
-    if (dmnField?.type === "string") {
-      return "";
-    }
-    if (dmnField?.type === "number") {
-      return undefined;
-    }
-    if (dmnField?.type === "boolean") {
-      return false;
-    }
-    if (dmnField?.type === "array") {
-      return [];
-    }
-    if (dmnField?.type === "object") {
-      return {};
-    }
-    return undefined;
-  }, []);
-
-  const getDefaultValues = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema) => {
-      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_INPUT_SET_PATH) ?? {})?.reduce(
-        (acc, [key, field]: [string, Record<string, string>]) => {
-          acc[key] = getFieldDefaultValue(field);
-          return acc;
-        },
-        {} as Record<string, any>
-      );
-    },
-    [getFieldDefaultValue]
-  );
-
   // The refreshCallback is called after a CompanionFS event;
   // When another TAB updates the FS, this callback will sync up;
   useCompanionFsFileSyncedWithWorkspaceFile(
@@ -485,18 +467,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             dmnRunnerPersistenceJson.inputs.forEach((input) => {
               // save id;
               const id = input.id;
-              const validation = validate(input);
-              if (!validation && validate.errors) {
-                validate.errors.forEach((error) => {
-                  const pathList = error.dataPath
-                    .replace(/\[(\d+)\]/g, ".$1")
-                    .split(".")
-                    .slice(1);
-
-                  const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
-                  unsetObjectValueByPath(input, path);
-                });
-              }
+              removeChangedPropertiesAndAdditionalProperties(validate, input);
               input.id = id;
             });
           } catch (error) {
@@ -541,33 +512,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerAjv, dmnRunnerPersistenceService, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
+      [dmnRunnerAjv, dmnRunnerPersistenceService, jsonSchema, setDmnRunnerPersistenceJson]
     )
-  );
-
-  const removeChangedPropertiesAndAdditionalProperties = useCallback(
-    <T extends ((obj: Record<string, any>) => boolean) & { errors: [{ keyword: string; dataPath: string }] }>(
-      validator: T,
-      toValidate: Record<string, any>
-    ) => {
-      const validation = validator(toValidate);
-      if (!validation && validator.errors) {
-        validator.errors.forEach((error) => {
-          if (error.keyword === "required") {
-            return;
-          }
-
-          const pathList = error.dataPath
-            .replace(/\['([^']+)'\]/g, "$1")
-            .replace(/\[(\d+)\]/g, ".$1")
-            .split(".");
-
-          const path = pathList.length === 1 ? pathList.join(".") : pathList.slice(0, -1).join(".");
-          unsetObjectValueByPath(toValidate, path);
-        });
-      }
-    },
-    []
   );
 
   // Responsible to set the JSON schema based on the DMN model;
@@ -597,33 +543,53 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 ...jsonSchema,
               };
 
-              setJsonSchema((previousJsonSchema) => {
-                // On the first render the previous will be undefined;
-                if (!previousJsonSchema) {
-                  return jsonSchemaDraft4;
-                }
+              resolveReferencesAndCheckForRecursion(jsonSchemaDraft4, canceled)
+                .then((resolvedSchema) => {
+                  if (canceled.get() || !resolvedSchema) {
+                    return;
+                  }
 
-                const validateInputs = dmnRunnerAjv.compile(jsonSchemaDraft4);
+                  setJsonSchema((previousJsonSchema) => {
+                    // Early bailout in the DMN first render;
+                    // This prevents to set the inputs from the previous DMN
+                    if (!previousJsonSchema) {
+                      return resolvedSchema;
+                    }
 
-                // Add default values and delete changed data types;
-                setDmnRunnerPersistenceJson({
-                  newConfigInputs: (previousConfigInputs) => {
-                    const newConfigInputs = cloneDeep(previousConfigInputs);
-                    removeChangedPropertiesAndAdditionalProperties(validateInputs as any, newConfigInputs);
-                    return newConfigInputs;
-                  },
-                  newInputsRow: (previousInputs) => {
-                    return cloneDeep(previousInputs).map((input) => {
-                      const id = input.id;
-                      removeChangedPropertiesAndAdditionalProperties(validateInputs as any, input);
-                      input.id = id;
-                      return input;
+                    const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+
+                    // Add default values and delete changed data types;
+                    setDmnRunnerPersistenceJson({
+                      newConfigInputs: (previousConfigInputs) => {
+                        const newConfigInputs = cloneDeep(previousConfigInputs);
+                        removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
+                        return newConfigInputs;
+                      },
+                      newInputsRow: (previousInputs) => {
+                        return cloneDeep(previousInputs).map((input) => {
+                          const id = input.id;
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
+                          input.id = id;
+                          return { ...getDefaultValues(resolvedSchema), ...input };
+                        });
+                      },
+                      cancellationToken: canceled,
                     });
-                  },
-                  cancellationToken: canceled,
+
+                    // This should be done to remove any previous errors or to add new errors
+                    if (Object.keys(diff(previousJsonSchema, resolvedSchema)).length > 0) {
+                      forceDmnRunnerReRender();
+                    }
+                    return resolvedSchema;
+                  });
+                })
+                .catch((err) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  console.log(err);
+                  setJsonSchema(undefined);
                 });
-                return jsonSchemaDraft4;
-              });
             });
           })
           .catch((err) => {
@@ -637,43 +603,17 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.status,
         extendedServicesModelPayload,
         props.workspaceFile.extension,
-        removeChangedPropertiesAndAdditionalProperties,
         setDmnRunnerPersistenceJson,
       ]
     )
   );
 
-  const getDefaultValuesForInputs = useCallback((inputs: InputRow) => {
-    return Object.entries(inputs).reduce(
-      (acc, [key, value]) => {
-        if (key === "id") {
-          return acc;
-        }
-        if (typeof value === "string") {
-          acc[key] = "";
-        } else if (typeof value === "number") {
-          acc[key] = null;
-        } else if (typeof value === "boolean") {
-          acc[key] = false;
-        } else if (Array.isArray(value)) {
-          acc[key] = [];
-        } else if (typeof value === "object") {
-          acc[key] = {};
-        }
-        return acc;
-      },
-      { id: generateUuid() } as Record<string, any>
-    );
-  }, []);
-
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setDmnRunnerInputs((previousInputs) => {
         const newInputs = cloneDeep(previousInputs);
-        const index = args.beforeIndex === 0 ? 0 : args.beforeIndex - 1;
-
-        const newInputsRow = getDefaultValuesForInputs(newInputs[index]);
-        newInputs.splice(args.beforeIndex, 0, newInputsRow);
+        const defaultValues = getDefaultValues(jsonSchema ?? {});
+        newInputs.splice(args.beforeIndex, 0, { id: generateUuid(), ...defaultValues });
         return newInputs;
       });
       setDmnRunnerContextProviderState({
@@ -682,7 +622,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       });
       setDmnRunnerResults({ type: DmnRunnerResultsActionType.CLONE_LAST });
     },
-    [setDmnRunnerInputs, getDefaultValuesForInputs]
+    [setDmnRunnerInputs, jsonSchema]
   );
 
   const onRowDuplicated = useCallback(
@@ -704,12 +644,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     (args: { rowIndex: number }) => {
       setDmnRunnerInputs((previousInputs) => {
         const newInputs = cloneDeep(previousInputs);
-        const resetedInputRows = getDefaultValuesForInputs(newInputs[args.rowIndex]);
-        newInputs[args.rowIndex] = resetedInputRows;
+        const defaultValues = getDefaultValues(jsonSchema ?? {});
+        newInputs[args.rowIndex] = { id: generateUuid(), ...defaultValues };
         return newInputs;
       });
     },
-    [setDmnRunnerInputs, getDefaultValuesForInputs]
+    [jsonSchema, setDmnRunnerInputs]
   );
 
   const onRowDeleted = useCallback(

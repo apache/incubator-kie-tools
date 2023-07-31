@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.definition.custom.yaml;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
@@ -27,12 +25,12 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.ar
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.StringYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.array.ArrayYAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.NodeType;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.Error_YamlDeserializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.Error_YamlSerializerImpl;
-
-import static com.amihaiemil.eoyaml.Node.SCALAR;
 
 public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
 
@@ -48,7 +46,7 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
 
     @Override
     public Object deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) throws YAMLDeserializationException {
-        YamlNode value = yaml.value(key);
+        YamlNode value = yaml.getNode(key);
         if (value == null) {
             return null;
         }
@@ -60,7 +58,7 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
         if (node == null) {
             return null;
         }
-        if(node.type() == SCALAR) {
+        if(node.type() == NodeType.SCALAR) {
             return stringYAMLDeserializer.deserialize(node, ctx);
         } else {
             return ArrayYAMLDeserializer.newInstance(deserializer, org.kie.workbench.common.stunner.sw.definition.Error[]::new).deserialize(node, ctx);
@@ -69,7 +67,7 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
     }
 
     @Override
-    public void serialize(YAMLWriter writer, String propertyName, Object obj, YAMLSerializationContext ctx) {
+    public void serialize(YamlMapping writer, String propertyName, Object obj, YAMLSerializationContext ctx) {
         if (obj instanceof String) {
             stringYAMLSerializer.serialize(writer, propertyName, (String) obj, ctx);
         } else if (obj instanceof org.kie.workbench.common.stunner.sw.definition.Error[]) {
@@ -80,7 +78,7 @@ public class ErrorYamlSerializer implements YAMLDeserializer, YAMLSerializer {
     }
 
     @Override
-    public void serialize(YAMLSequenceWriter writer, Object value, YAMLSerializationContext ctx) {
+    public void serialize(YamlSequence writer, Object value, YAMLSerializationContext ctx) {
         throw new RuntimeException("Not implemented");
     }
 }

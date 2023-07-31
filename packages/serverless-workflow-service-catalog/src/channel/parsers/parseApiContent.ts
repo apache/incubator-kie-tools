@@ -15,7 +15,7 @@
  */
 
 import * as yaml from "js-yaml";
-import { posix as posixPath } from "path";
+import { posix as posixPath } from "path-browserify";
 import { SupportArtifactTypes, SwfServiceCatalogService, SwfServiceCatalogServiceSource } from "../../api";
 import { AsyncApiParser } from "./impl/asyncapi/AsyncApiParser";
 import { JsonSchemaParser } from "./impl/jsonschema/JsonSchemaParser";

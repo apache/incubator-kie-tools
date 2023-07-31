@@ -1,6 +1,6 @@
 id: patientonboarding
-version: 1.0
-specVersion: 0.8
+version: "1.0"
+specVersion: "0.8"
 name: Patient Onboarding Workflow
 start: Onboard
 states:
@@ -39,7 +39,7 @@ functions:
     operation: "api/services.json#scheduleAppointment"
 errors:
   - name: ServiceNotAvailable
-    code: 503
+    code: "503"
 retries:
   - name: ServicesNotAvailableRetryStrategy
     delay: PT3S

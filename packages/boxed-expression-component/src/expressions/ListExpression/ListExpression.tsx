@@ -18,6 +18,7 @@ import * as React from "react";
 import * as ReactTable from "react-table";
 import { useCallback, useMemo } from "react";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -80,7 +81,17 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+        ],
+      },
+      {
+        group: i18n.terms.selection.toUpperCase(),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ],
@@ -181,6 +192,28 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     [setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      return [
+        BeeTableOperation.SelectionCopy,
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression.id} list-expression`}>
@@ -193,6 +226,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
           columns={beeTableColumns}
           rows={beeTableRows}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           getRowKey={getRowKey}
           onRowAdded={onRowAdded}
           onRowDeleted={onRowDeleted}

@@ -15,19 +15,17 @@
  */
 package org.dashbuilder.dataset.def;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import org.dashbuilder.dataprovider.DataSetProviderType;
-import org.dashbuilder.dataset.validation.groups.ExternalDataSetDefValidation;
+
+import static org.dashbuilder.dataset.json.DataSetDefJSONMarshaller.isBlank;
 
 public class ExternalDataSetDef extends DataSetDef {
 
-    @NotNull(groups = {ExternalDataSetDefValidation.class})
-    @Size(min = 4, groups = {ExternalDataSetDefValidation.class})
     private String url;
 
     private boolean dynamic;
@@ -36,11 +34,21 @@ public class ExternalDataSetDef extends DataSetDef {
 
     private String content;
 
-    private Map<String, String> headers;
+    private Map<String, String> headers = new HashMap<>();
+
+    private Map<String, String> query = new HashMap<>();
+
+    private Map<String, String> form = new HashMap<>();
 
     private boolean accumulate;
 
     private ExternalServiceType type;
+
+    private HttpMethod method = HttpMethod.GET;
+
+    private String path = "";
+
+    private Collection<String> join;
 
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
@@ -78,11 +86,12 @@ public class ExternalDataSetDef extends DataSetDef {
         this.content = content;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(),
-                url,
-                dynamic);
+    public Collection<String> getJoin() {
+        return join;
+    }
+
+    public void setJoin(Collection<String> join) {
+        this.join = join;
     }
 
     public Map<String, String> getHeaders() {
@@ -109,6 +118,45 @@ public class ExternalDataSetDef extends DataSetDef {
         this.type = type;
     }
 
+    public void setQuery(Map<String, String> query) {
+        this.query = query;
+    }
+
+    public Map<String, String> getQuery() {
+        return query;
+    }
+
+    public Map<String, String> getForm() {
+        return form;
+    }
+
+    public void setForm(Map<String, String> form) {
+        this.form = form;
+    }
+
+    public void setMethod(HttpMethod method) {
+        this.method = method;
+    }
+
+    public HttpMethod getMethod() {
+        return method;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void validate() {
+        super.validate();
+        if (isBlank(url) && isBlank(content) && (join == null || join.isEmpty())) {
+            throw new IllegalArgumentException("Data Sets must have \"url\", \"content\" or \"join\" field");
+        }
+    }
+
     @Override
     public DataSetDef clone() {
         var def = new ExternalDataSetDef();
@@ -117,7 +165,13 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setDynamic(isDynamic());
         def.setHeaders(getHeaders());
         def.setAccumulate(isAccumulate());
+        def.setContent(getContent());
         def.setType(getType());
+        def.setJoin(getJoin());
+        def.setQuery(getQuery());
+        def.setForm(getForm());
+        def.setMethod(getMethod());
+        def.setPath(getPath());
         return def;
     }
 
@@ -136,7 +190,12 @@ public class ExternalDataSetDef extends DataSetDef {
                Objects.equals(headers, other.headers) &&
                Objects.equals(url, other.url) &&
                Objects.equals(accumulate, other.accumulate) &&
-               Objects.equals(type, other.type);
+               Objects.equals(type, other.type) &&
+               Objects.equals(join, other.join) &&
+               Objects.equals(query, other.query) &&
+               Objects.equals(form, other.form) &&
+               Objects.equals(method, other.method) &&
+               Objects.equals(path, other.path);
     }
 
     public String toString() {
@@ -152,8 +211,30 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("Content=").append(content).append("\n");
         out.append("Headers=").append(headers).append("\n");
         out.append("Accumulate=").append(accumulate).append("\n");
-        out.append("Type=").append(type);
+        out.append("Type=").append(type).append("\n");
+        out.append("Join=").append(join).append("\n");
+        out.append("Query=").append(query).append("\n");
+        out.append("Form=").append(form).append("\n");
+        out.append("Method=").append(method).append("\n");
+        out.append("Path=").append(path);
         return out.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(),
+                url,
+                dynamic,
+                expression,
+                content,
+                headers,
+                accumulate,
+                type,
+                join,
+                query,
+                form,
+                method,
+                path);
     }
 
 }

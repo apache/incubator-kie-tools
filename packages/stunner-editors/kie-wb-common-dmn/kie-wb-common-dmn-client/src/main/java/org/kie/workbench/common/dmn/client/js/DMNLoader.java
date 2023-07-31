@@ -37,6 +37,13 @@ public class DMNLoader {
     public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean isClearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
 
     /**
+     * Method used to unmount the boxed-expression-component (TS/React world) from the DMN Editor (Java/GWT world)
+     * @param selector DOM selector, where the component will be removed
+     */
+    @JsMethod(namespace = "__KIE__DMN_LOADER__")
+    public static native void unmountBoxedExpressionEditor(final String selector);
+
+    /**
      * Method used to render the import-java-classes component (TS/React world) in the DMN Editor (Java/GWT world)
      * @param selector DOM selector, where the component will be placed
      */

@@ -34,8 +34,8 @@ type RootCmdConfig struct {
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   cfg.Name,
-		Short: "Serverless Workflow",
-		Long:  "Manage Kogito Serverless Workflow projects",
+		Short: "SonataFlow",
+		Long:  "Manage SonataFlow projects",
 	}
 
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
@@ -47,6 +47,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.AddCommand(command.NewCreateCommand())
 	cmd.AddCommand(command.NewRunCommand())
 	cmd.AddCommand(command.NewDeployCommand())
+	cmd.AddCommand(command.NewUndeployCommand())
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 

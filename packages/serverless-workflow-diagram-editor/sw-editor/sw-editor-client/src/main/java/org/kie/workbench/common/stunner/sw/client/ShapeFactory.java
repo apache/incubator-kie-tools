@@ -93,13 +93,13 @@ public class ShapeFactory
         } else if (definitionId.equals(getDefinitionId(OperationState.class))) {
             return GlyphFactory.STATE_OPERATION;
         } else if (definitionId.equals(getDefinitionId(SleepState.class))) {
-            return GlyphFactory.STATE_INJECT;
+            return GlyphFactory.STATE_SLEEP;
         } else if (definitionId.equals(getDefinitionId(ParallelState.class))) {
-            return GlyphFactory.STATE_INJECT;
+            return GlyphFactory.STATE_PARALLEL;
         } else if (definitionId.equals(getDefinitionId(ForEachState.class))) {
-            return GlyphFactory.STATE_INJECT;
+            return GlyphFactory.STATE_FOREACH;
         } else if (definitionId.equals(getDefinitionId(CallbackState.class))) {
-            return GlyphFactory.STATE_INJECT;
+            return GlyphFactory.STATE_CALLBACK;
         } else if (definitionId.equals(getDefinitionId(Workflow.class))) {
             return GlyphFactory.TRANSITION;
         } else if (definitionId.equals(getDefinitionId(Start.class))) {
@@ -125,11 +125,11 @@ public class ShapeFactory
         } else if (definitionId.equals(getDefinitionId(ErrorTransition.class))) {
             return GlyphFactory.TRANSITION_ERROR;
         } else if (definitionId.equals(getDefinitionId(EventConditionTransition.class))) {
-            return GlyphFactory.TRANSITION_CONDITION;
+            return GlyphFactory.TRANSITION_EVENT_CONDITION;
         } else if (definitionId.equals(getDefinitionId(DataConditionTransition.class))) {
-            return GlyphFactory.TRANSITION_CONDITION;
+            return GlyphFactory.TRANSITION_DATA_CONDITION;
         } else if (definitionId.equals(getDefinitionId(DefaultConditionTransition.class))) {
-            return GlyphFactory.TRANSITION_CONDITION;
+            return GlyphFactory.TRANSITION_DEFAULT_CONDITION;
         } else if (definitionId.equals(getDefinitionId(ActionTransition.class))) {
             return GlyphFactory.TRANSITION_ACTION;
         } else if (definitionId.equals(getDefinitionId(CompensationTransition.class))) {

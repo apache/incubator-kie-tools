@@ -48,6 +48,8 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
 
         void handleCanvasElementUpdated(final CanvasElementUpdatedEvent event);
 
+        void unmountNewBoxedExpressionEditor();
+
         void setExitCommand(final Command exitCommand);
 
         ExpressionEditorView getView();
@@ -73,6 +75,8 @@ public interface ExpressionEditorView extends org.jboss.errai.ui.client.local.ap
     void setFocus();
 
     void reloadEditor();
+
+    void unmountNewBoxedExpressionEditor();
 
     void selectDomainObject(final String uuid);
 }

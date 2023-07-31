@@ -15,7 +15,7 @@
  */
 
 export const emptyWorkflowCompletion = {
-  id: "${1:Workflow unique identifier}",
+  id: "${1:workflow_unique_identifier}",
   version: "${2:0.1}",
   specVersion: "${3:0.8}",
   name: "${4:Workflow name}",

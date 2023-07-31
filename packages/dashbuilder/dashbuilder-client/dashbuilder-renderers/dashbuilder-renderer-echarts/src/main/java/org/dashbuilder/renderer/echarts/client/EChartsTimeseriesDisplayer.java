@@ -23,6 +23,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Dataset;
@@ -90,7 +91,19 @@ public class EChartsTimeseriesDisplayer extends EChartsXYDisplayer {
     }
 
     private Object getValue(DataColumn column, int i) {
-        return column.getValues().get(i);
+        var value = column.getValues().get(i);
+        if (column.getColumnType() != ColumnType.NUMBER) {
+            return super.formatValue(value, column);
+        } else {
+            var settings = displayerSettings.getColumnSettings(column);
+            var valueStr = super.evaluateValueToString(value, settings);
+            try {
+                return Double.parseDouble(valueStr);
+            } catch (Exception e) {
+                // just ignore this edge case
+            }
+        }
+        return value;
     }
 
 }

@@ -1,21 +1,51 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <testsuites name="Boxed Expression" time="16.999" tests="6" failures="0">
   <testsuite name="" timestamp="2023-02-14T20:37:52" tests="0" file="e2e/popover.cy.ts" time="0.000" failures="0">
   </testsuite>
   <testsuite name="Root Suite.PopoverMenu Tests" timestamp="2023-02-14T20:37:52" tests="3" time="0.000" failures="0">
-    <testcase name="Cancel edit of expression data type by pressing escape" time="5.181" classname="PopoverMenu Tests Cancel edit of expression data type by pressing escape">
+    <testcase
+      name="Cancel edit of expression data type by pressing escape"
+      time="5.181"
+      classname="PopoverMenu Tests Cancel edit of expression data type by pressing escape"
+    >
     </testcase>
-    <testcase name="Cancel edit of expression name by pressing escape" time="2.159" classname="PopoverMenu Tests Cancel edit of expression name by pressing escape">
+    <testcase
+      name="Cancel edit of expression name by pressing escape"
+      time="2.159"
+      classname="PopoverMenu Tests Cancel edit of expression name by pressing escape"
+    >
     </testcase>
-    <testcase name="The header cell&apos;s in the popover should have original values" time="1.677" classname="PopoverMenu Tests The header cell&apos;s in the popover should have original values">
+    <testcase
+      name="The header cell&apos;s in the popover should have original values"
+      time="1.677"
+      classname="PopoverMenu Tests The header cell&apos;s in the popover should have original values"
+    >
     </testcase>
   </testsuite>
-  <testsuite name="Root Suite.PopoverMenu Tests.Keyboard interaction with header&apos;s contextMenu in nested decision table" timestamp="2023-02-14T20:38:02" tests="3" time="6.195" failures="0">
-    <testcase name="Edit expression name field and type esc to cancel" time="2.083" classname="PopoverMenu Tests Keyboard interaction with header&apos;s contextMenu in nested decision table Edit expression name field and type esc to cancel">
+  <testsuite
+    name="Root Suite.PopoverMenu Tests.Keyboard interaction with header&apos;s contextMenu in nested decision table"
+    timestamp="2023-02-14T20:38:02"
+    tests="3"
+    time="6.195"
+    failures="0"
+  >
+    <testcase
+      name="Edit expression name field and type esc to cancel"
+      time="2.083"
+      classname="PopoverMenu Tests Keyboard interaction with header&apos;s contextMenu in nested decision table Edit expression name field and type esc to cancel"
+    >
     </testcase>
-    <testcase name="Edit expression name field and type enter to save" time="1.896" classname="PopoverMenu Tests Keyboard interaction with header&apos;s contextMenu in nested decision table Edit expression name field and type enter to save">
+    <testcase
+      name="Edit expression name field and type enter to save"
+      time="1.896"
+      classname="PopoverMenu Tests Keyboard interaction with header&apos;s contextMenu in nested decision table Edit expression name field and type enter to save"
+    >
     </testcase>
-    <testcase name="Edit expression data type" time="2.190" classname="PopoverMenu Tests Keyboard interaction with header&apos;s contextMenu in nested decision table Edit expression data type">
+    <testcase
+      name="Edit expression data type"
+      time="2.190"
+      classname="PopoverMenu Tests Keyboard interaction with header&apos;s contextMenu in nested decision table Edit expression data type"
+    >
     </testcase>
   </testsuite>
 </testsuites>

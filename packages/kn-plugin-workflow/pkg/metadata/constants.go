@@ -27,6 +27,7 @@ const (
 	KogitoAddonsQuarkusKnativeEventingExtension = "kogito-addons-quarkus-knative-eventing"
 	KogitoQuarkusServerlessWorkflowDevUi        = "kogito-quarkus-serverless-workflow-devui"
 	KogitoAddonsQuarkusSourceFiles              = "kogito-addons-quarkus-source-files"
+	KogitoDataIndexInMemory                     = "kogito-addons-quarkus-data-index-inmemory"
 
 	JavaVersion       = 11
 	MavenMajorVersion = 3
@@ -35,5 +36,19 @@ const (
 	DefaultTag     = "latest"
 	WorkflowSwJson = "workflow.sw.json"
 
-	KogitoImage = "quay.io/kiegroup/kogito-swf-devmode-nightly:latest"
+	OperatorName       = "sonataflow-operator-system"
+	OperatorManagerPod = "sonataflow-operator-controller-manager"
+
+	YAMLExtension         = "sw.yaml"
+	YAMLExtensionShort    = "sw.yml"
+	JSONExtension         = "sw.json"
+	ApplicationProperties = "application.properties"
+
+	ManifestServiceFilesKind = "SonataFlow"
+
+	DockerInternalPort = "8080/tcp"
+	// VolumeBindPath The :z is to let docker know that the volume content can be shared between containers(SELinux)
+	VolumeBindPath = "/home/kogito/serverless-workflow-project/src/main/resources:z"
+
+	DashboardsDefaultDirName = "dashboards"
 )

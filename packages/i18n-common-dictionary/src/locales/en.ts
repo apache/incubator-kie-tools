@@ -70,6 +70,7 @@ export const en: CommonI18n = {
     reset: "Reset",
     run: "Run",
     save: "Save",
+    selection: "Selection",
     setup: "Setup",
     start: "Start",
     token: "Token",

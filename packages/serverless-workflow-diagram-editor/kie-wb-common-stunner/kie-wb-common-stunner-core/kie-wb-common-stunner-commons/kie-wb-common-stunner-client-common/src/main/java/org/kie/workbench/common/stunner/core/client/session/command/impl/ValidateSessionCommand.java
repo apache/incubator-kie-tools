@@ -16,46 +16,32 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
-import org.kie.workbench.common.stunner.core.validation.Violation;
 
 @Dependent
 @Default
 public class ValidateSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
-    private final CanvasDiagramValidator<AbstractCanvasHandler> validator;
-
-    protected ValidateSessionCommand() {
-        this(null);
-    }
 
     @Inject
-    public ValidateSessionCommand(final CanvasDiagramValidator<AbstractCanvasHandler> validator) {
+    public ValidateSessionCommand() {
         super(true);
-        this.validator = validator;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
         Objects.requireNonNull(callback, "Parameter named 'callback' should be not null!");
-        final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
-        validator.validate(canvasHandler,
-                           elementViolations -> fireCallback(elementViolations,
-                                                             callback));
+        //validation is disabled for now
+        callback.onSuccess();
     }
 
     @Override
@@ -63,17 +49,4 @@ public class ValidateSessionCommand extends AbstractClientSessionCommand<EditorS
         return session instanceof EditorSession;
     }
 
-    @SuppressWarnings("unchecked")
-    private <V> void fireCallback(final Collection<DiagramElementViolation<RuleViolation>> violations,
-                                  final Callback<V> callback) {
-        final boolean areViolations = violations.stream()
-                .filter(v -> Violation.Type.ERROR.equals(v.getViolationType()))
-                .findAny()
-                .isPresent();
-        if (!areViolations) {
-            callback.onSuccess();
-        } else {
-            callback.onError((V) violations);
-        }
-    }
 }

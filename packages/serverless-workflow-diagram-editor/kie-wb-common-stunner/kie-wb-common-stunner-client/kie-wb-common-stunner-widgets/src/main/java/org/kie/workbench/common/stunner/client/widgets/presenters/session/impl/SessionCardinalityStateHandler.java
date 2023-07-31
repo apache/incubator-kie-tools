@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.client.widgets.views.session.EmptyStateView;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -74,14 +73,6 @@ public class SessionCardinalityStateHandler {
     @PreDestroy
     public void destroy() {
         session = null;
-    }
-
-    @SuppressWarnings("unchecked")
-    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
-        if (null != session &&
-                Objects.equals(session.getCanvasHandler(), commandExecutedEvent.getCanvasHandler())) {
-            refresh();
-        }
     }
 
     @SuppressWarnings("unchecked")

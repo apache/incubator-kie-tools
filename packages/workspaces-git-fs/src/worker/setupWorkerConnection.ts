@@ -32,23 +32,7 @@ export function setupWorkerConnection(args: {
   args.port.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
   bus.clientApi.notifications.kieToolsWorkspacesWorker_ready.send();
 
-  const flushManagerSubscription = args.fsFlushManager.subscribable.subscribe((flushes) => {
+  args.fsFlushManager.subscribable.subscribe((flushes) => {
     bus.shared.kieSandboxWorkspacesStorage_flushes.set(flushes);
   });
-
-  const keepalive = setInterval(() => {
-    let ping: "ping" | "pong" = "ping";
-    bus.clientApi.requests.kieToolsWorkspacesWorker_ping().then((pong) => (ping = pong));
-    setTimeout(() => {
-      if (ping !== "pong") {
-        // This connection is no longer active, as the corresponding bus did not respond in 200ms. Tear it down.
-        console.log("Disconnecting from Workspaces Shared Worker");
-        args.port.close();
-        args.fsFlushManager.subscribable.unsubscribe(flushManagerSubscription);
-        clearInterval(keepalive);
-      } else {
-        console.debug("Connection is still alive.");
-      }
-    }, 200); // pong timeout
-  }, 60000); // interval for keepalive check
 }

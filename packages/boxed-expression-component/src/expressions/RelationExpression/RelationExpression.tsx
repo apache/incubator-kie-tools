@@ -16,9 +16,10 @@
 
 import "@patternfly/react-styles/css/utilities/Text/text.css";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -26,8 +27,6 @@ import {
   generateUuid,
   getNextAvailablePrefixedName,
   RelationExpressionDefinition,
-  RelationExpressionDefinitionCell,
-  RelationExpressionDefinitionColumn,
   RelationExpressionDefinitionRow,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -59,6 +58,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         items: [
           { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
           { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.insert, type: BeeTableOperation.ColumnInsertN },
           { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
         ],
       },
@@ -67,7 +67,18 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+          { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
+        ],
+      },
+      {
+        group: i18n.terms.selection.toUpperCase(),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ],
@@ -163,7 +174,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
           const newRows = [...(n.rows ?? [])];
 
           const newCells = [...newRows[u.rowIndex].cells];
-          newCells[u.columnIndex] = { id: generateUuid(), content: u.value };
+          newCells[u.columnIndex].content = u.value;
 
           newRows[u.rowIndex] = {
             ...newRows[u.rowIndex],
@@ -297,9 +308,73 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     },
     [setExpression]
   );
+
+  const onRowDuplicated = useCallback(
+    (args: { rowIndex: number }) => {
+      setExpression((prev: RelationExpressionDefinition) => {
+        const duplicatedRow = {
+          id: generateUuid(),
+          cells: prev.rows![args.rowIndex].cells.map((cell) => ({
+            ...cell,
+            id: generateUuid(),
+          })),
+        };
+
+        const newRows = [...(prev.rows ?? [])];
+        newRows.splice(args.rowIndex, 0, duplicatedRow);
+        return {
+          ...prev,
+          rows: newRows,
+        };
+      });
+    },
+    [setExpression]
+  );
+
   const beeTableHeaderVisibility = useMemo(() => {
     return relationExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [relationExpression.isNested]);
+
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      const columnIndex = conditions.selection.selectionStart.columnIndex;
+
+      const columnCanBeDeleted = (conditions.columns?.length ?? 0) > 2; // That's a regular column and the rowIndex column
+
+      const columnOperations =
+        columnIndex === 0 // This is the rowIndex column
+          ? []
+          : [
+              BeeTableOperation.ColumnInsertLeft,
+              BeeTableOperation.ColumnInsertRight,
+              BeeTableOperation.ColumnInsertN,
+              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+            ];
+
+      return [
+        ...columnOperations,
+        BeeTableOperation.SelectionCopy,
+        ...(columnIndex > 0 && conditions.selection.selectionStart.rowIndex >= 0
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
+          : []),
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
 
   return (
     <div className={`relation-expression`}>
@@ -316,7 +391,9 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         onCellUpdates={onCellUpdates}
         onColumnUpdates={onColumnUpdates}
         operationConfig={beeTableOperationConfig}
+        allowedOperations={allowedOperations}
         onRowAdded={onRowAdded}
+        onRowDuplicated={onRowDuplicated}
         onRowDeleted={onRowDeleted}
         onColumnAdded={onColumnAdded}
         onColumnDeleted={onColumnDeleted}

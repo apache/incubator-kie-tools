@@ -27,7 +27,9 @@ import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
+  BeeTableOperation,
   BeeTableOperationConfig,
   DmnBuiltInDataType,
   generateUuid,
@@ -130,8 +132,8 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
-        group: i18n.rows,
-        items: [],
+        group: i18n.terms.selection.toUpperCase(),
+        items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
       },
     ],
     [i18n]
@@ -390,9 +392,14 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
     return row.original.id;
   }, []);
 
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    return [BeeTableOperation.SelectionCopy];
+  }, []);
+
   return (
     <StandaloneBeeTable
       scrollableParentRef={scrollableParentRef}
+      allowedOperations={allowedOperations}
       getColumnKey={getColumnKey}
       getRowKey={getRowKey}
       tableId={id}

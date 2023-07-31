@@ -51,6 +51,7 @@ function variant(severity: NotificationSeverity) {
 }
 
 export const NotificationPanelTabContent = React.forwardRef<NotificationsChannelApi, Props>((props, forwardedRef) => {
+  const { onNotificationsLengthChange, name } = props;
   const [tabNotifications, setTabNotifications] = useState<Notification[]>([]);
 
   const createNotification = useCallback(
@@ -62,10 +63,10 @@ export const NotificationPanelTabContent = React.forwardRef<NotificationsChannel
 
   const setNotifications = useCallback(
     (path: string, notifications: Notification[]) => {
-      props.onNotificationsLengthChange(props.name, notifications.length);
+      onNotificationsLengthChange(name, notifications.length);
       setTabNotifications(notifications);
     },
-    [props.onNotificationsLengthChange, props.name]
+    [onNotificationsLengthChange, name]
   );
 
   const removeNotifications = useCallback((path: string) => {
@@ -145,11 +146,12 @@ interface NotificationDrawerGroupProps {
 }
 
 export function NotificationTabDrawerGroup(props: NotificationDrawerGroupProps) {
+  const { setAllExpanded } = props;
   const [isExpanded, setIsExpanded] = useState(false);
   const onExpand = useCallback(() => {
     setIsExpanded((prevExpanded) => !prevExpanded);
-    props.setAllExpanded(undefined);
-  }, []);
+    setAllExpanded(undefined);
+  }, [setAllExpanded]);
 
   useEffect(() => {
     if (props.allExpanded !== undefined) {

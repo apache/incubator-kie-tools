@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.a
 
 import java.util.List;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.CharacterYAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
 
 /**
  * Default {@link YAMLDeserializer} implementation for array of char.
@@ -39,7 +39,7 @@ public class PrimitiveCharacterArrayYAMLDeserializer extends AbstractArrayYAMLDe
   @Override
   public char[] doDeserializeArray(YamlMapping yaml, String key, YAMLDeserializationContext ctx) {
     List<Character> list =
-        deserializeIntoList(yaml.yamlSequence(key), CharacterYAMLDeserializer.INSTANCE, ctx);
+        deserializeIntoList(yaml.getSequenceNode(key), CharacterYAMLDeserializer.INSTANCE, ctx);
 
     char[] result = new char[list.size()];
     int i = 0;

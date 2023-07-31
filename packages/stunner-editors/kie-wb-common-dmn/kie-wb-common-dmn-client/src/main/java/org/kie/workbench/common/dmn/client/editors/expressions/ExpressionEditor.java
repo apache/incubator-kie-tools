@@ -131,6 +131,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     }
 
     @Override
+    public void unmountNewBoxedExpressionEditor() {
+        view.unmountNewBoxedExpressionEditor();
+    }
+
+    @Override
     public void setExitCommand(final Command exitCommand) {
         this.exitCommand = Optional.ofNullable(exitCommand);
     }

@@ -29,10 +29,10 @@ export const GitHubTokenQuickStart: QuickStart = {
     description: "",
     introduction: `The Serverless Logic Web Tools implements a web version of a Git client, enabling you to clone, create, commit, push, and pull repositories. This process synchronizes your workspaces remotely.
 
-This document describes how you can configure the integration and sychronize your projects.`,
+This document describes how you can configure the integration and synchronize your projects.`,
 
     conclusion: `**Found an issue?**
-    
+
 If you find an issue or any misleading information, please feel free to report it [here](https://github.com/kiegroup/kogito-docs/issues/new). We really appreciate it!`,
 
     tasks: [
@@ -62,13 +62,16 @@ If you find an issue or any misleading information, please feel free to report i
             </div>
             <ol class="arabic">
               <li>
-                <p>Go to <a href="https://start.kubesmarts.org/">Serverless Logic Web Tools</a> web application, and click on the <strong>Cog wheel</strong> (⚙️) on the top-right corner of the screen. </p>
+                <p>Go to <a href="https://start.kubesmarts.org/">Serverless Logic Web Tools</a> web application, and click the <strong>Cogwheel</strong> (⚙️) on the top-right corner of the screen. </p>
               </li>
               <li>
                 <p>Go to the <strong>GitHub</strong> tab. </p>
               </li>
               <li>
-                <p>In the <strong>GitHub</strong> tab, click <strong>Create a new token</strong> option. </p>
+                <p>In the <strong>GitHub</strong> tab, click the <strong>Add access token</strong> button and a window will be shown.</p>
+              </li>
+              <li>
+                <p>Click <strong>Create a new token</strong> option.</p>
                 <div class="openblock">
                   <div class="content">
                     <div class="paragraph">

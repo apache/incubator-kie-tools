@@ -18,26 +18,28 @@ package command
 
 import (
 	"fmt"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"os"
-	"sync"
-	"time"
 )
 
 type RunCmdConfig struct {
 	PortMapping string
+	OpenDevUI   bool
 }
 
 func NewRunCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "run",
-		Short: "Run a Workflow project in development mode",
+		Short: "Run a SonataFlow project in development mode",
 		Long: `
-	 Run a Workflow project in development mode.
-	 By default, it runs over ` + metadata.KogitoImage + ` on Docker.
+	 Run a SonataFlow project in development mode.
+	 By default, it runs over ` + metadata.DevModeImage + ` on Docker.
 	 Alternatively, you can run the same image with Podman.
 		
 		 `,
@@ -47,9 +49,12 @@ func NewRunCommand() *cobra.Command {
 
 	 # Run the local directory mapping a different host port to the running container port.
 	{{.Name}} run --port 8081
+
+ 	# Disable automatic browser launch of SonataFlow  Dev UI 
+	{{.Name}} run --open-dev-ui=false
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
-		PreRunE:    common.BindEnv("port"),
+		PreRunE:    common.BindEnv("port", "open-dev-ui"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -57,6 +62,7 @@ func NewRunCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different host port to the running container port.")
+	cmd.Flags().Bool("open-dev-ui", true, "Disable automatic browser launch of SonataFlow  Dev UI")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -68,21 +74,22 @@ func run() error {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
 
-	if common.IsSWFProject() {
+	if common.IsSonataFlowProject() {
 		if err := runSWFProject(cfg); err != nil {
 			return err
 		}
 		return nil
-	} else if common.IsQuarkusSWFProject() {
-		return fmt.Errorf("Looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command.")
+	} else if common.IsQuarkusSonataFlowProject() {
+		return fmt.Errorf("looks like you are inside a Quarkus project. If that is the case, you should run it with \"quarkus run\" command")
 	} else {
-		return fmt.Errorf("cannot find Serverless Workflow project")
+		return fmt.Errorf("cannot find SonataFlow project")
 	}
 }
 
 func runDevCmdConfig() (cfg RunCmdConfig, err error) {
 	cfg = RunCmdConfig{
 		PortMapping: viper.GetString("port"),
+		OpenDevUI:   viper.GetBool("open-dev-ui"),
 	}
 	return
 }
@@ -104,10 +111,10 @@ func runSWFProject(cfg RunCmdConfig) error {
 }
 
 func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
-	fmt.Println("🔨 Starting your Kogito Serverless Workflow in dev mode...")
+	fmt.Println("⏳ Starting your SonataFlow project in dev mode...")
 	path, err := os.Getwd()
 	if err != nil {
-		fmt.Errorf("❌ Error running Kogito project: %w", err)
+		fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 	}
 
 	common.GracefullyStopTheContainerWhenInterrupted(containerTool)
@@ -117,17 +124,14 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 
 	go func() {
 		defer wg.Done()
-		if err := common.RunCommand(
-			common.RunContainerCommand(containerTool, cfg.PortMapping, path),
-			"container run",
-		); err != nil {
-			err = fmt.Errorf("❌ Error running Kogito project: %w", err)
+		if err := common.RunContainerCommand(containerTool, cfg.PortMapping, path); err != nil {
+			fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 		}
 	}()
 
 	readyCheckURL := fmt.Sprintf("http://localhost:%s/q/health/ready", cfg.PortMapping)
 	pollInterval := 5 * time.Second
-	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping)
+	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping, cfg.OpenDevUI)
 
 	wg.Wait()
 	return err

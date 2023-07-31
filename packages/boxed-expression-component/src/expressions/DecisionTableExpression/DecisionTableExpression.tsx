@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -53,6 +54,7 @@ import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
 import "./DecisionTableExpression.css";
+import _ from "lodash";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
@@ -79,6 +81,7 @@ export function DecisionTableExpression(
         items: [
           { name: i18n.columnOperations.insertLeft, type: BeeTableOperation.ColumnInsertLeft },
           { name: i18n.columnOperations.insertRight, type: BeeTableOperation.ColumnInsertRight },
+          { name: i18n.insert, type: BeeTableOperation.ColumnInsertN },
           { name: i18n.columnOperations.delete, type: BeeTableOperation.ColumnDelete },
         ],
       },
@@ -87,8 +90,18 @@ export function DecisionTableExpression(
         items: [
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
           { name: i18n.rowOperations.duplicate, type: BeeTableOperation.RowDuplicate },
+        ],
+      },
+      {
+        group: i18n.terms.selection.toUpperCase(),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ],
@@ -97,7 +110,7 @@ export function DecisionTableExpression(
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     const config: BeeTableOperationConfig = {};
-    config[""] = generateOperationConfig(i18n.inputClause);
+    config[""] = generateOperationConfig(i18n.outputClause);
     config[DecisionTableColumnType.InputClause] = generateOperationConfig(i18n.inputClause);
     config[DecisionTableColumnType.OutputClause] = generateOperationConfig(i18n.outputClause);
     config[DecisionTableColumnType.Annotation] = generateOperationConfig(i18n.ruleAnnotation);
@@ -211,7 +224,8 @@ export function DecisionTableExpression(
           decisionTableExpression.output?.length == 1
             ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
             : outputClause.name,
-        dataType: outputClause.dataType,
+        dataType:
+          decisionTableExpression.output?.length == 1 ? decisionTableExpression.dataType : outputClause.dataType,
         width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
         setWidth: setOutputColumnWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
@@ -296,19 +310,13 @@ export function DecisionTableExpression(
           switch (groupType) {
             case DecisionTableColumnType.InputClause:
               const newInputEntries = [...newRules[u.rowIndex].inputEntries];
-              newInputEntries[u.columnIndex] = {
-                id: generateUuid(),
-                content: u.value,
-              };
+              newInputEntries[u.columnIndex].content = u.value;
               newRules[u.rowIndex].inputEntries = newInputEntries;
               n.rules = newRules;
               break;
             case DecisionTableColumnType.OutputClause:
               const newOutputEntries = [...newRules[u.rowIndex].outputEntries];
-              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)] = {
-                id: generateUuid(),
-                content: u.value,
-              };
+              newOutputEntries[u.columnIndex - (prev.input?.length ?? 0)].content = u.value;
               newRules[u.rowIndex].outputEntries = newOutputEntries;
               n.rules = newRules;
               break;
@@ -338,6 +346,10 @@ export function DecisionTableExpression(
           if (u.column.depth === 0 && u.column.groupType === DecisionTableColumnType.OutputClause) {
             n.name = u.name;
             n.dataType = u.dataType;
+            // Single output column is merged with the aggregator column and should have the same datatype
+            if (n.output?.length === 1) {
+              n.output[0].dataType = u.dataType;
+            }
             continue;
           }
 
@@ -665,6 +677,55 @@ export function DecisionTableExpression(
     return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
   }, [decisionTableExpression.isNested]);
 
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      const columnIndex = conditions.selection.selectionStart.columnIndex;
+
+      const atLeastTwoColumnsOfTheSameGroupType = conditions.column?.groupType
+        ? _.groupBy(conditions.columns, (column) => column?.groupType)[conditions.column.groupType].length > 1
+        : true;
+
+      const columnCanBeDeleted =
+        columnIndex > 0 &&
+        atLeastTwoColumnsOfTheSameGroupType &&
+        (conditions.columns?.length ?? 0) > 2 && // That's a regular column and the rowIndex column
+        (conditions.column?.columns?.length ?? 0) <= 0;
+
+      const columnOperations =
+        columnIndex === 0 // This is the rowIndex column
+          ? []
+          : [
+              BeeTableOperation.ColumnInsertLeft,
+              BeeTableOperation.ColumnInsertRight,
+              BeeTableOperation.ColumnInsertN,
+              ...(columnCanBeDeleted ? [BeeTableOperation.ColumnDelete] : []),
+            ];
+
+      return [
+        ...columnOperations,
+        BeeTableOperation.SelectionCopy,
+        ...(conditions.selection.selectionStart.rowIndex >= 0 && columnIndex > 0
+          ? [BeeTableOperation.SelectionCut, BeeTableOperation.SelectionPaste, BeeTableOperation.SelectionReset]
+          : []),
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+              BeeTableOperation.RowDuplicate,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression.id}`}>
       <BeeTable
@@ -676,6 +737,7 @@ export function DecisionTableExpression(
         headerVisibility={beeTableHeaderVisibility}
         editColumnLabel={getEditColumnLabel}
         operationConfig={beeTableOperationConfig}
+        allowedOperations={allowedOperations}
         columns={beeTableColumns}
         rows={beeTableRows}
         onColumnUpdates={onColumnUpdates}

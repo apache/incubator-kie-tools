@@ -22,7 +22,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.StunnerWiresShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -45,7 +45,7 @@ public class LienzoResizeNodeCommandTest {
     private Shape shape;
 
     @Mock
-    private WiresShapeViewExt shapeView;
+    private StunnerWiresShapeView shapeView;
 
     @Mock
     private MagnetManager.Magnets magnets;

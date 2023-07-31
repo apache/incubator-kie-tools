@@ -70,10 +70,12 @@ public class ExpressionModelFillerTest {
     public static final String DATA_TYPE = BuiltInType.UNDEFINED.asQName().getLocalPart();
     private static final String ENTRY_INFO_NAME = "Entry Info";
     private static final String ENTRY_INFO_DATA_TYPE = BuiltInType.STRING.asQName().getLocalPart();
+    private static final String ENTRY_INFO_DESCRIPTION = "This is an entry info";
     private static final String ENTRY_EXPRESSION_CONTENT = "content";
+    private static final String ENTRY_EXPRESSION_DESCRIPTION = "This is a content";
+    private static final String ENTRY_EXPRESSION_EXPRESSION_LANGUAGE = "expLan";
     private static final Double ENTRY_INFO_WIDTH = 200d;
     private static final Double ENTRY_EXPRESSION_WIDTH = 350d;
-
     private static final Double EMPTY_EXPRESSION_WIDTH = 190d;
     private static final Double PARAMETERS_WIDTH = 450d;
     private static final String PARAM_ID = "param-id";
@@ -84,8 +86,10 @@ public class ExpressionModelFillerTest {
     public void testFillLiteralExpression() {
         final LiteralExpression literalExpression = new LiteralExpression();
         final String content = "content";
+        final String description = "desc";
+        final String expressionLanguage = "eL";
         final double width = 100d;
-        final LiteralProps literalProps = new LiteralProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, content, width);
+        final LiteralProps literalProps = new LiteralProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, content, description, expressionLanguage, width);
 
         ExpressionModelFiller.fillLiteralExpression(literalExpression, literalProps);
 
@@ -98,6 +102,10 @@ public class ExpressionModelFillerTest {
         assertThat(literalExpression.getComponentWidths())
                 .isNotEmpty()
                 .first().isEqualTo(width);
+        assertThat(literalExpression.getDescription().getValue())
+                .isNotNull().isEqualTo(description);
+        assertThat(literalExpression.getExpressionLanguage().getValue())
+                .isNotNull().isEqualTo(expressionLanguage);
     }
 
     @Test
@@ -106,7 +114,7 @@ public class ExpressionModelFillerTest {
         final ContextEntryProps[] contextEntries = new ContextEntryProps[]{
                 buildContextEntryProps()
         };
-        final ExpressionProps result = new LiteralProps("result-id", "Result Expression", BuiltInType.DATE.asQName().getLocalPart(), "", null);
+        final ExpressionProps result = new LiteralProps("result-id", "Result Expression", BuiltInType.DATE.asQName().getLocalPart(), "", "", "", null);
         final ContextProps contextProps = new ContextProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, contextEntries, result, ENTRY_INFO_WIDTH, ENTRY_EXPRESSION_WIDTH);
 
         ExpressionModelFiller.fillContextExpression(contextExpression, contextProps, qName -> qName);
@@ -121,9 +129,12 @@ public class ExpressionModelFillerTest {
                     assertThat(contextEntry).extracting(ContextEntry::getVariable).isNotNull();
                     assertThat(contextEntry).extracting(entry -> entry.getVariable().getValue().getValue()).isEqualTo(ENTRY_INFO_NAME);
                     assertThat(contextEntry).extracting(entry -> entry.getVariable().getTypeRef().getLocalPart()).isEqualTo(ENTRY_INFO_DATA_TYPE);
+                    assertThat(contextEntry).extracting(entry -> entry.getVariable().getDescription().getValue()).isEqualTo(ENTRY_INFO_DESCRIPTION);
                     assertThat(contextEntry).extracting(ContextEntry::getExpression)
                             .isNotNull()
                             .isExactlyInstanceOf(LiteralExpression.class);
+                    assertThat(contextEntry).extracting(entry -> entry.getExpression().getDescription().getValue()).isEqualTo(ENTRY_EXPRESSION_DESCRIPTION);
+                    assertThat(contextEntry).extracting(entry -> ((LiteralExpression) entry.getExpression()).getExpressionLanguage().getValue()).isEqualTo(ENTRY_EXPRESSION_EXPRESSION_LANGUAGE);
                 });
 
         assertThat(contextExpression.getContextEntry())
@@ -145,15 +156,17 @@ public class ExpressionModelFillerTest {
         final String firstColumnName = "Column Name";
         final String firstColumnDataType = BuiltInType.BOOLEAN.asQName().getLocalPart();
         final double firstColumnWidth = 200d;
+        final String firstColumnDescription = "1st";
         final String secondColumnId = "Another Column Name";
         final String secondColumnName = "Another Column Name";
         final String secondColumnDataType = BuiltInType.DATE.asQName().getLocalPart();
         final double secondColumnWidth = 315d;
-        final Cell firstCell = new Cell("firstCellId", "first cell");
-        final Cell secondCell = new Cell("secondCellId", "second cell");
-        final Cell thirdCell = new Cell("thirdCellId", "third cell");
-        final Cell fourthCell = new Cell("fourthCellId", "fourth cell");
-        final Column[] columns = new Column[]{new Column(firstColumnId, firstColumnName, firstColumnDataType, firstColumnWidth), new Column(secondColumnId, secondColumnName, secondColumnDataType, secondColumnWidth)};
+        final String secondColumnDescription = "2nd";
+        final Cell firstCell = new Cell("firstCellId", "first cell", "", "");
+        final Cell secondCell = new Cell("secondCellId", "second cell", "", "");
+        final Cell thirdCell = new Cell("thirdCellId", "third cell", "", "");
+        final Cell fourthCell = new Cell("fourthCellId", "fourth cell", "", "");
+        final Column[] columns = new Column[]{new Column(firstColumnId, firstColumnName, firstColumnDataType, firstColumnDescription, firstColumnWidth), new Column(secondColumnId, secondColumnName, secondColumnDataType, secondColumnDescription, secondColumnWidth)};
         final Row[] rows = new Row[]{new Row("first-row", new Cell[]{firstCell, secondCell}), new Row("second-id", new Cell[]{thirdCell, fourthCell})};
         final RelationProps relationProps = new RelationProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, columns, rows);
 
@@ -165,10 +178,10 @@ public class ExpressionModelFillerTest {
                 .hasSize(2);
         assertThat(relationExpression.getColumn())
                 .first()
-                .satisfies(checkRelationColumn(firstColumnName, firstColumnDataType));
+                .satisfies(checkRelationColumn(firstColumnName, firstColumnDataType, firstColumnDescription));
         assertThat(relationExpression.getColumn())
                 .last()
-                .satisfies(checkRelationColumn(secondColumnName, secondColumnDataType));
+                .satisfies(checkRelationColumn(secondColumnName, secondColumnDataType, secondColumnDescription));
 
         assertThat(relationExpression.getRow())
                 .isNotNull()
@@ -187,8 +200,7 @@ public class ExpressionModelFillerTest {
     public void testFillListExpression() {
         final List listExpression = new List();
         final String nestedContent = "nested content";
-        final ExpressionProps[] items = new ExpressionProps[]{new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null)};
-        final Double width = 600d;
+        final ExpressionProps[] items = new ExpressionProps[]{new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, "", "", null)};
         final ListProps listProps = new ListProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, items);
 
         ExpressionModelFiller.fillListExpression(listExpression, listProps, qName -> qName);
@@ -242,7 +254,7 @@ public class ExpressionModelFillerTest {
         final FunctionDefinition functionExpression = new FunctionDefinition();
         final String documentName = "document name";
         final String modelName = "model name";
-        final PmmlFunctionProps functionProps = new PmmlFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH, documentName, modelName, "document-id", "model-id");
+        final PmmlFunctionProps functionProps = new PmmlFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE, null)}, PARAMETERS_WIDTH, documentName, modelName, "document-id", "model-id");
 
         ExpressionModelFiller.fillFunctionExpression(functionExpression, functionProps, qName -> qName);
 
@@ -257,7 +269,7 @@ public class ExpressionModelFillerTest {
         final FunctionDefinition functionExpression = new FunctionDefinition();
         final String className = "class name";
         final String methodName = "method name";
-        final JavaFunctionProps functionProps = new JavaFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH, className, methodName, "class-id", "method-id");
+        final JavaFunctionProps functionProps = new JavaFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE, null)}, PARAMETERS_WIDTH, className, methodName, "class-id", "method-id");
 
         ExpressionModelFiller.fillFunctionExpression(functionExpression, functionProps, qName -> qName);
 
@@ -271,8 +283,10 @@ public class ExpressionModelFillerTest {
     public void testFillFeelFunctionExpression() {
         final FunctionDefinition functionExpression = new FunctionDefinition();
         final String nestedContent = "Nested Content";
-        final FeelFunctionProps functionProps = new FeelFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE)}, PARAMETERS_WIDTH,
-                                                                      new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, null));
+        final String literalDescription = "Nested Description";
+        final String literalExpressionLanguage = "Nested Literal Expression";
+        final FeelFunctionProps functionProps = new FeelFunctionProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, new EntryInfo[]{new EntryInfo(PARAM_ID, PARAM_NAME, PARAM_DATA_TYPE, null)}, PARAMETERS_WIDTH,
+                                                                      new LiteralProps("nested-literal", "Nested Literal Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), nestedContent, literalDescription, literalExpressionLanguage, null));
 
         ExpressionModelFiller.fillFunctionExpression(functionExpression, functionProps, qName -> qName);
 
@@ -283,6 +297,8 @@ public class ExpressionModelFillerTest {
                 .isNotNull()
                 .isExactlyInstanceOf(LiteralExpression.class);
         assertThat(((LiteralExpression) functionExpression.getExpression()).getText().getValue()).isEqualTo(nestedContent);
+        assertThat(functionExpression.getExpression().getDescription().getValue()).isEqualTo(literalDescription);
+        assertThat(((LiteralExpression) functionExpression.getExpression()).getExpressionLanguage().getValue()).isEqualTo(literalExpressionLanguage);
     }
 
     @Test
@@ -295,24 +311,28 @@ public class ExpressionModelFillerTest {
         final String inputLiteralExpressionId = "Input le id";
         final String inputColumn = "Input column";
         final String inputDataType = BuiltInType.DATE_TIME.asQName().getLocalPart();
+        final String inputDescription = "First Input";
         final double inputWidth = 123d;
         final String inputId2 = "Input id2";
         final String inputLiteralExpressionId2 = "Input le id2";
         final String inputColumn2 = "Input column 2";
         final String inputDataType2 = "tCustom";
+        final String inputDescription2 = "Second Input";
         final double inputWidth2 = 234d;
         final String inputClauseUnaryTestsId = "icud id";
         final String inputClauseUnaryTestsText = "text";
         final String inputClauseUnaryTestsConstraintType = "enumeration";
         final ClauseUnaryTests inputClauseUnaryTest = new ClauseUnaryTests(inputClauseUnaryTestsId, inputClauseUnaryTestsText, inputClauseUnaryTestsConstraintType);
-        final InputClauseProps[] input = new InputClauseProps[]{new InputClauseProps(inputId, inputColumn, inputDataType, inputWidth, inputClauseUnaryTest, inputLiteralExpressionId), new InputClauseProps(inputId2, inputColumn2, inputDataType2, inputWidth2, null, inputLiteralExpressionId2)};
+        final InputClauseProps[] input = new InputClauseProps[]{new InputClauseProps(inputId, inputColumn, inputDataType, inputWidth, inputClauseUnaryTest, inputLiteralExpressionId, inputDescription), new InputClauseProps(inputId2, inputColumn2, inputDataType2, inputWidth2, null, inputLiteralExpressionId2, inputDescription2)};
         final String outputId = "Output id";
         final String outputColumn = "Output column";
         final String outputDataType = BuiltInType.STRING.asQName().getLocalPart();
+        final String outputDescription = "First description";
         final double outputWidth = 223d;
         final String outputId2 = "Output id2";
         final String outputColumn2 = "Output column 2";
         final String outputDataType2 = "tTest";
+        final String outputDescription2 = "Second description";
         final double outputWidth2 = 432d;
         final String outputClauseUnaryTestsId = "ocud id";
         final String outputClauseUnaryTestsText = "";
@@ -320,12 +340,14 @@ public class ExpressionModelFillerTest {
         final ClauseUnaryTests outputClauseUnaryTest = new ClauseUnaryTests(outputClauseUnaryTestsId, outputClauseUnaryTestsText, outputClauseUnaryTestsConstraintType);
         final String defaultOutputValueId = "dovID";
         final String defaultOutputValueContent = "Default-Test";
-        final LiteralProps defaultOutputValue = new LiteralProps(defaultOutputValueId, null, BuiltInType.UNDEFINED.asQName().getLocalPart(), defaultOutputValueContent, null);
-        final OutputClauseProps[] output = new OutputClauseProps[]{new OutputClauseProps(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest, defaultOutputValue), new OutputClauseProps(outputId2, outputColumn2, outputDataType2, outputWidth2, null, null)};
+        final LiteralProps defaultOutputValue = new LiteralProps(defaultOutputValueId, null, BuiltInType.UNDEFINED.asQName().getLocalPart(), defaultOutputValueContent, null, null, null);
+        final OutputClauseProps[] output = new OutputClauseProps[]{new OutputClauseProps(outputId, outputColumn, outputDataType, outputWidth, outputClauseUnaryTest, defaultOutputValue, outputDescription), new OutputClauseProps(outputId2, outputColumn2, outputDataType2, outputWidth2, null, null, outputDescription2)};
         final String inputValue = "input value";
+        final String inputDesc = "input description";
         final String outputValue = "output value";
+        final String outputDesc = "output description";
         final String annotationValue = "annotation value";
-        DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule("rule-1", new RuleEntry[]{new RuleEntry("someId", inputValue)}, new RuleEntry[]{new RuleEntry("anotherId", outputValue)}, new String[]{annotationValue})};
+        DecisionTableRule[] rules = new DecisionTableRule[]{new DecisionTableRule("rule-1", new RuleEntry[]{new RuleEntry("someId", inputValue, inputDesc, "")}, new RuleEntry[]{new RuleEntry("anotherId", outputValue, outputDesc, "")}, new String[]{annotationValue})};
         final DecisionTableProps decisionTableProps = new DecisionTableProps(EXPRESSION_ID, EXPRESSION_NAME, DATA_TYPE, HitPolicy.COLLECT.value(), BuiltinAggregator.MAX.getCode(), annotations, input, output, rules);
 
         ExpressionModelFiller.fillDecisionTableExpression(decisionTableExpression, decisionTableProps, qName -> qName);
@@ -343,9 +365,9 @@ public class ExpressionModelFillerTest {
                 .satisfies(inputRef -> {
                     assertThat(inputRef).extracting(InputClause::getInputExpression).isNotNull();
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getText().getValue()).isEqualTo(inputColumn);
+                    assertThat(inputRef).extracting(inputClause -> inputClause.getDescription().getValue()).isEqualTo(inputDescription);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getTypeRef().getLocalPart()).isEqualTo(inputDataType);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getId().getValue()).isEqualTo(inputLiteralExpressionId);
-
                     assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getId().getValue()).isEqualTo(inputClauseUnaryTestsId);
                     assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getText().getValue()).isEqualTo(inputClauseUnaryTestsText);
                     assertThat(inputRef).extracting(InputClause::getInputValues).extracting(inputClauseUnaryTests -> inputClauseUnaryTests.getConstraintType().value()).isEqualTo(inputClauseUnaryTestsConstraintType);
@@ -354,6 +376,7 @@ public class ExpressionModelFillerTest {
                 .satisfies(inputRef -> {
                     assertThat(inputRef).extracting(InputClause::getInputExpression).isNotNull();
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getText().getValue()).isEqualTo(inputColumn2);
+                    assertThat(inputRef).extracting(inputClause -> inputClause.getDescription().getValue()).isEqualTo(inputDescription2);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getTypeRef().getLocalPart()).isEqualTo(inputDataType2);
                     assertThat(inputRef).extracting(inputClause -> inputClause.getInputExpression().getId().getValue()).isEqualTo(inputLiteralExpressionId2);
 
@@ -365,6 +388,7 @@ public class ExpressionModelFillerTest {
                 .satisfies(outputRef -> {
                     assertThat(outputRef).extracting(OutputClause::getName).isEqualTo(outputColumn);
                     assertThat(outputRef).extracting(outputClause -> outputClause.getTypeRef().getLocalPart()).isEqualTo(outputDataType);
+                    assertThat(outputRef).extracting(outputClause -> outputClause.getDescription().getValue()).isEqualTo(outputDescription);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getId().getValue()).isEqualTo(outputClauseUnaryTestsId);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getText().getValue()).isEqualTo(outputClauseUnaryTestsText);
                     assertThat(outputRef).extracting(OutputClause::getOutputValues).extracting(outputClauseUnaryTests -> outputClauseUnaryTests.getConstraintType().value()).isEqualTo(outputClauseUnaryTestsConstraintType);
@@ -375,6 +399,7 @@ public class ExpressionModelFillerTest {
                 .satisfies(outputRef -> {
                     assertThat(outputRef).extracting(OutputClause::getName).isEqualTo(outputColumn2);
                     assertThat(outputRef).extracting(outputClause -> outputClause.getTypeRef().getLocalPart()).isEqualTo(outputDataType2);
+                    assertThat(outputRef).extracting(outputClause -> outputClause.getDescription().getValue()).isEqualTo(outputDescription2);
                 });
 
         assertThat(decisionTableExpression.getRule())
@@ -395,7 +420,7 @@ public class ExpressionModelFillerTest {
     }
 
     private ContextEntryProps buildContextEntryProps() {
-        return new ContextEntryProps(new EntryInfo("entry-info-id", ENTRY_INFO_NAME, ENTRY_INFO_DATA_TYPE), new LiteralProps("nested-literal", "Nested Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), ENTRY_EXPRESSION_CONTENT, null));
+        return new ContextEntryProps(new EntryInfo("entry-info-id", ENTRY_INFO_NAME, ENTRY_INFO_DATA_TYPE, ENTRY_INFO_DESCRIPTION), new LiteralProps("nested-literal", "Nested Expression", BuiltInType.UNDEFINED.asQName().getLocalPart(), ENTRY_EXPRESSION_CONTENT, ENTRY_EXPRESSION_DESCRIPTION, ENTRY_EXPRESSION_EXPRESSION_LANGUAGE, null));
     }
 
     private void assertEntryWidths(final Collection<Double> componentWidths) {
@@ -415,10 +440,11 @@ public class ExpressionModelFillerTest {
         };
     }
 
-    private Consumer<InformationItem> checkRelationColumn(final String columnName, final String columnDataType) {
+    private Consumer<InformationItem> checkRelationColumn(final String columnName, final String columnDataType, final String columnDescription) {
         return param -> {
             assertThat(param).extracting(HasName::getValue).isNotNull();
             assertThat(param).extracting(informationItem -> informationItem.getValue().getValue()).isEqualTo(columnName);
+            assertThat(param).extracting(informationItem -> informationItem.getDescription().getValue()).isEqualTo(columnDescription);
             assertThat(param).extracting(informationItem -> informationItem.getTypeRef().getLocalPart()).isEqualTo(columnDataType);
         };
     }
