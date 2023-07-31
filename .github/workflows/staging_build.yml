@@ -155,7 +155,7 @@ jobs:
         with:
           working_dir: kie-tools
 
-      - name: "Build"
+      - name: "Build (without some images)"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
           KIE_TOOLS_BUILD__runEndToEndTests: "false"
@@ -183,8 +183,31 @@ jobs:
           SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: "${{ inputs.tag }}"
           SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
           SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl: "https://staging-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
+        run: >-
+          pnpm 
+          -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image' 
+          -F='!@kie-tools/dmn-dev-deployment-base-image' 
+          -F='!@kie-tools/serverless-logic-web-tools-base-builder-image' 
+          -F='!@kie-tools/dashbuilder-viewer-image' 
+          -r --workspace-concurrency=1 build:prod
+
+      - name: "STAGING: Push serverless-logic-web-tools-swf-builder-image to quay.io (Ubuntu only)"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Clean up serverless-logic-web-tools-swf-builder-image"
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
+        working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          pnpm -r build:prod
+          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }} | xargs podman rmi
+          rm -rf ${{ env.TMPDIR }}/*
+          pnpm -F serverless-logic-web-tools-swf-builder-image cleanup
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
@@ -465,24 +488,6 @@ jobs:
           asset_name: "STAGING__kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }}"
-          tags: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags }}"
-          registry: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry }}/${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
-          username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
-          password: "${{ secrets.quay_registry_password }}"
-
-      - name: "STAGING: Clean up dmn-dev-deployment-base-image"
-        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        working-directory: ${{ github.workspace }}/kie-tools
-        run: |
-          podman image ls -q --filter reference=${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }} | xargs podman rmi
-          rm -rf ${{ env.TMPDIR }}/*
-          pnpm -F dmn-dev-deployment-base-image cleanup
-
       - name: "STAGING: Push kie-sandbox-extended-services-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -586,41 +591,95 @@ jobs:
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F kie-sandbox-image cleanup
 
-      - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
+      - name: "Build → serverless-logic-web-tools-swf-dev-mode-image"
+        if: ${{ runner.os == 'Linux' }}
+        working-directory: ${{ github.workspace }}/kie-tools
+        env:
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+        run: |
+          echo "Clean up container image resources"
+          if command -v docker &> /dev/null; then
+            docker system prune -af
+          fi
+          if command -v podman &> /dev/null; then
+            podman system prune --all --force
+          fi
+          echo "Build @kie-tools/serverless-logic-web-tools-swf-dev-mode-image"
+          pnpm -F @kie-tools/serverless-logic-web-tools-swf-dev-mode-image... --workspace-concurrency=1 build:prod
+
+      - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.DASHBUILDER__viewerImageName }}"
-          tags: "${{ env.DASHBUILDER__viewerImageBuildTags }}"
-          registry: "${{ env.DASHBUILDER__viewerImageRegistry }}/${{ env.DASHBUILDER__viewerImageAccount }}"
-          username: "${{ env.DASHBUILDER__viewerImageAccount }}"
+          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Clean up dashbuilder-viewer-image"
+      - name: "STAGING: Clean up serverless-logic-web-tools-swf-dev-mode-image"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          podman image ls -q --filter reference=${{ env.DASHBUILDER__viewerImageName }} | xargs podman rmi
+          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
-          pnpm -F dashbuilder-viewer-image cleanup
+          pnpm -F serverless-logic-web-tools-swf-dev-mode-image cleanup
 
-      - name: "STAGING: Push serverless-logic-web-tools-swf-builder-image to quay.io (Ubuntu only)"
+      - name: "Build → dmn-dev-deployment-base-image"
+        if: ${{ runner.os == 'Linux' }}
+        working-directory: ${{ github.workspace }}/kie-tools
+        env:
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+        run: |
+          echo "Clean up container image resources"
+          if command -v docker &> /dev/null; then
+            docker system prune -af
+          fi
+          if command -v podman &> /dev/null; then
+            podman system prune --all --force
+          fi
+          echo "Build @kie-tools/dmn-dev-deployment-base-image"
+          pnpm -F @kie-tools/dmn-dev-deployment-base-image... --workspace-concurrency=1 build:prod
+
+      - name: "STAGING: Push dmn-dev-deployment-base-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount }}"
+          image: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }}"
+          tags: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags }}"
+          registry: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry }}/${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
+          username: "${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Clean up serverless-logic-web-tools-swf-builder-image"
+      - name: "STAGING: Clean up dmn-dev-deployment-base-image"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName }} | xargs podman rmi
+          podman image ls -q --filter reference=${{ env.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
-          pnpm -F serverless-logic-web-tools-swf-builder-image cleanup
+          pnpm -F dmn-dev-deployment-base-image cleanup
+
+      - name: "Build → serverless-logic-web-tools-base-builder-image"
+        if: ${{ runner.os == 'Linux' }}
+        working-directory: ${{ github.workspace }}/kie-tools
+        env:
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+        run: |
+          echo "Clean up container image resources"
+          if command -v docker &> /dev/null; then
+            docker system prune -af
+          fi
+          if command -v podman &> /dev/null; then
+            podman system prune --all --force
+          fi
+          echo "Build @kie-tools/serverless-logic-web-tools-base-builder-image"
+          pnpm -F @kie-tools/serverless-logic-web-tools-base-builder-image... --workspace-concurrency=1 build:prod
 
       - name: "STAGING: Push serverless-logic-web-tools-base-builder-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
@@ -640,20 +699,38 @@ jobs:
           rm -rf ${{ env.TMPDIR }}/*
           pnpm -F serverless-logic-web-tools-base-builder-image cleanup
 
-      - name: "STAGING: Push serverless-logic-web-tools-swf-dev-mode-image to quay.io (Ubuntu only)"
+      - name: "Build → dashbuilder-viewer-image"
+        if: ${{ runner.os == 'Linux' }}
+        working-directory: ${{ github.workspace }}/kie-tools
+        env:
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+        run: |
+          echo "Clean up container image resources"
+          if command -v docker &> /dev/null; then
+            docker system prune -af
+          fi
+          if command -v podman &> /dev/null; then
+            podman system prune --all --force
+          fi
+          echo "Build @kie-tools/dashbuilder-viewer-image"
+          pnpm -F @kie-tools/dashbuilder-viewer-image... --workspace-concurrency=1 build:prod
+
+      - name: "STAGING: Push dashbuilder-viewer-image to quay.io (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }}"
-          tags: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags }}"
-          registry: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry }}/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
-          username: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount }}"
+          image: "${{ env.DASHBUILDER__viewerImageName }}"
+          tags: "${{ env.DASHBUILDER__viewerImageBuildTags }}"
+          registry: "${{ env.DASHBUILDER__viewerImageRegistry }}/${{ env.DASHBUILDER__viewerImageAccount }}"
+          username: "${{ env.DASHBUILDER__viewerImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Clean up serverless-logic-web-tools-swf-dev-mode-image"
+      - name: "STAGING: Clean up dashbuilder-viewer-image"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          podman image ls -q --filter reference=${{ env.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName }} | xargs podman rmi
+          podman image ls -q --filter reference=${{ env.DASHBUILDER__viewerImageName }} | xargs podman rmi
           rm -rf ${{ env.TMPDIR }}/*
-          pnpm -F serverless-logic-web-tools-swf-dev-mode-image cleanup
+          pnpm -F dashbuilder-viewer-image cleanup
