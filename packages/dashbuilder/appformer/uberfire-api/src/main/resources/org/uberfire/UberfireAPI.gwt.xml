@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,25 +14,24 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='org.jboss.errai.ioc.Container'/>
+  <inherits name='org.jboss.errai.ioc.Container' />
 
-  <source path='annotations'/>
-  <source path='backend'/>
-  <source path='debug'/>
-  <source path='lifecycle'/>
-  <source path='mvp'/>
-  <source path='paging'/>
-  <source path='plugin'/>
-  <source path='rpc'/>
-  <source path='spaces'/>
-  <source path='security'/>
-  <source path='workbench'/>
+  <source path='annotations' />
+  <source path='backend' />
+  <source path='debug' />
+  <source path='lifecycle' />
+  <source path='mvp' />
+  <source path='paging' />
+  <source path='plugin' />
+  <source path='rpc' />
+  <source path='spaces' />
+  <source path='security' />
+  <source path='workbench' />
 
-  <super-source path="jre"/>
+  <super-source path="jre" />
 
 </module>

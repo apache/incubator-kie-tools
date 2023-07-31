@@ -18,7 +18,7 @@ package org.jboss.errai.ui.test.error.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -31,6 +31,6 @@ public abstract class AbstractTemplatedWithPublicField {
 
   @Inject
   @DataField
-  public Div field;
+  public HTMLDivElement field;
 
 }

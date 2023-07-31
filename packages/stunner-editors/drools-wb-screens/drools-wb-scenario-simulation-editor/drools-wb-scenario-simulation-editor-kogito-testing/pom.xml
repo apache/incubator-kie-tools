@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>drools-wb-scenario-simulation-editor</artifactId>
     <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -337,8 +339,10 @@
               <goal>add-source</goal>
             </goals>
             <configuration>
-              <includes>${gwt.helper.includes}</includes> <!-- will include all GWT module whose configuration file name match that pattern -->
-              <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+              <includes
+              >${gwt.helper.includes}</includes> <!-- will include all GWT module whose configuration file name match that pattern -->
+              <rootDirectories
+              >${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
             </configuration>
           </execution>
         </executions>
@@ -351,7 +355,8 @@
             <fileset>
               <directory>${basedir}</directory>
               <includes>
-                <include>src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting/</include>
+                <include
+                >src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting/</include>
                 <include>src/main/webapp/WEB-INF/deploy/</include>
                 <include>src/main/webapp/WEB-INF/classes/</include>
                 <include>src/main/webapp/WEB-INF/lib/</include>
@@ -382,13 +387,15 @@
               <outputDirectory>${basedir}/src/main/webapp/model</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.parent.basedir}/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/</directory>
+                  <directory
+                  >${project.parent.basedir}/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/</directory>
                   <includes>
                     <include>**/*.js</include>
                   </includes>
                 </resource>
                 <resource>
-                  <directory>${project.build.directory}/Marshaller/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js</directory>
+                  <directory
+                  >${project.build.directory}/Marshaller/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js</directory>
                   <includes>
                     <include>**/*.js</include>
                   </includes>
@@ -405,8 +412,10 @@
         <configuration>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <localWorkers>4</localWorkers>
-          <module>org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting</module>
-          <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
+          <module
+          >org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting</module>
+          <extraJvmArgs
+          >-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
           <optimizationLevel>9</optimizationLevel>
           <style>OBFUSCATED</style>
           <logLevel>INFO</logLevel>
@@ -422,7 +431,8 @@
             <!-- UberFire -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
@@ -432,14 +442,17 @@
 
             <!-- UF-ext -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-commons</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-table</compileSourcesArtifact>
 
             <!-- Uberfire Experimentals -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-wires-core-grids</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:drools-wb-scenario-simulation-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:drools-wb-scenario-simulation-editor-client</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
 
             <!-- Appformer -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-api</compileSourcesArtifact>
@@ -447,10 +460,12 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:appformer-kogito-bridge</compileSourcesArtifact>
 
             <!-- drools-wb -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:drools-wb-scenario-simulation-editor-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-scenario-simulation-api</compileSourcesArtifact>
             <!-- DMN Marshaller -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
+            <compileSourcesArtifact
+            >org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
           </compileSourcesArtifacts>
         </configuration>
         <executions>

@@ -77,6 +77,7 @@ import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.ONEV
 import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.OPERATION_STATE_UNMARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.STATE_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.STATE_UNMARSHALLER;
+import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.SWITCH_STATE_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.SWITCH_STATE_UNMARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.ANY_EDGE_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.COMPENSATION_TRANSITION_MARSHALLER;
@@ -469,7 +470,7 @@ public class Marshaller {
         } else if (OperationState.class.equals(type)) {
             return (NodeMarshaller<T>) STATE_MARSHALLER;
         } else if (SwitchState.class.equals(type)) {
-            return (NodeMarshaller<T>) STATE_MARSHALLER;
+            return (NodeMarshaller<T>) SWITCH_STATE_MARSHALLER;
         } else if (SleepState.class.equals(type)) {
             return (NodeMarshaller<T>) STATE_MARSHALLER;
         } else if (ParallelState.class.equals(type)) {

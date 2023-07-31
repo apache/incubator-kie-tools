@@ -1,5 +1,9 @@
 // Updates the GitHub editor with the content on the `kogito-content` `pre` tag.
-
-document
-  .querySelector(".file-editor-textarea + .CodeMirror")
-  .CodeMirror.setValue(`${document.getElementById("kogito-content").textContent ?? ""}`);
+var kieTools_cm = document.querySelector(".cm-content").cmView.view;
+kieTools_cm.dispatch({
+  changes: {
+    from: 0,
+    to: kieTools_cm.state.doc.length,
+    insert: `${document.getElementById("kogito-content").textContent ?? ""}`,
+  },
+});

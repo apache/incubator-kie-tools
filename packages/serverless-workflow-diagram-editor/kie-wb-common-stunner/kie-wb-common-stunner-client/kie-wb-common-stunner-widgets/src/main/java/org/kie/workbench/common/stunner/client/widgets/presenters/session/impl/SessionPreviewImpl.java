@@ -49,7 +49,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsCon
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -309,20 +308,6 @@ public class SessionPreviewImpl<S extends AbstractSession>
     @Override
     protected Diagram getDiagram() {
         return null != getSessionHandler() ? getSessionHandler().getDiagram() : null;
-    }
-
-    @SuppressWarnings("unchecked")
-    void commandExecutedFired(@Observes CanvasCommandExecutedEvent commandExecutedEvent) {
-        checkNotNull("commandExecutedEvent",
-                     commandExecutedEvent);
-        final Command<AbstractCanvasHandler, CanvasViolation> command = commandExecutedEvent.getCommand();
-        if (isCommandAllowed.test(command)) {
-            final AbstractCanvasHandler context = (AbstractCanvasHandler) commandExecutedEvent.getCanvasHandler();
-            final CommandResult<CanvasViolation> result = commandExecutedEvent.getResult();
-            onExecute(context,
-                      command,
-                      result);
-        }
     }
 
     @SuppressWarnings("unchecked")

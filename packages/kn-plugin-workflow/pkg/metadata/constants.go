@@ -45,4 +45,10 @@ const (
 	ApplicationProperties = "application.properties"
 
 	ManifestServiceFilesKind = "SonataFlow"
+
+	DockerInternalPort = "8080/tcp"
+	// VolumeBindPath The :z is to let docker know that the volume content can be shared between containers(SELinux)
+	VolumeBindPath = "/home/kogito/serverless-workflow-project/src/main/resources:z"
+
+	DashboardsDefaultDirName = "dashboards"
 )

@@ -27,7 +27,8 @@
     "@types/js-yaml": "^4.0.5",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
-    "openapi-types": "^7.0.1"
+    "openapi-types": "^7.0.1",
+    "path-browserify": "^1.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -40,6 +41,7 @@
     "@types/jest-when": "^2.7.4",
     "@types/json-schema": "^7.0.11",
     "@types/lodash": "^4.14.168",
+    "@types/path-browserify": "^1.0.0",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",

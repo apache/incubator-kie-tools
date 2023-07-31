@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
@@ -10,11 +9,10 @@
     </encoder>
   </appender>
 
-  <logger name="org.uberfire" level="info"/>
+  <logger name="org.uberfire" level="info" />
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>
 
 </configuration>
-

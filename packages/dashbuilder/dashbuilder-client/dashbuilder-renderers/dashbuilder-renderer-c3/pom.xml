@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>dashbuilder-renderers</artifactId>
     <groupId>org.dashbuilder</groupId>
@@ -213,7 +215,8 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/</directory>
@@ -231,10 +234,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
+              <outputDirectory
+              >${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/d3geoprojection/META-INF/resources/webjars/d3-geo-projection/${version.org.webjars.bower.d3geoprojection}/dist/</directory>
+                  <directory
+                  >${project.build.directory}/d3geoprojection/META-INF/resources/webjars/d3-geo-projection/${version.org.webjars.bower.d3geoprojection}/dist/</directory>
                   <includes>
                     <include>d3-geo-projection.min.js</include>
                   </includes>

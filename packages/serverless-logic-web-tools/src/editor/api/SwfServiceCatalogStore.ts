@@ -65,11 +65,11 @@ export class SwfServiceCatalogStore {
     private readonly configs: {
       serviceAccount: ServiceAccountSettingsConfig;
       serviceRegistry: ServiceRegistrySettingsConfig;
-      extendedServicesConfig: ExtendedServicesConfig;
+      proxyUrl: string;
     }
   ) {
     this.remoteArtifactCatalogApi = new RemoteArtifactCatalogApi({
-      proxyEndpoint: `${configs.extendedServicesConfig.buildUrl()}/cors-proxy`,
+      proxyEndpoint: configs.proxyUrl,
       baseUrl: configs.serviceRegistry.coreRegistryApi,
       auth: {
         clientId: configs.serviceAccount.clientId,

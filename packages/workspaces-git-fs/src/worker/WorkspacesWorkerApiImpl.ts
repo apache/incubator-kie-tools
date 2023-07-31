@@ -214,7 +214,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       async ({ fs, broadcaster }) => {
         for (let i = 0; i < this.MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
           const index = i === 0 ? "" : `-${i}`;
-          const fileName = `${args.name}${index}.${args.extension}`;
+          const fileName = `${args.name}${index}${args.extension ? "." : ""}${args.extension}`;
           const relativePath = join(args.destinationDirRelativePath, fileName);
           if (
             await this.args.services.workspaceService.existsFile({ fs, workspaceId: args.workspaceId, relativePath })

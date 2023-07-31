@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,29 +14,28 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
-
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="com.google.gwt.regexp.RegExp"/>
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name="com.google.gwt.regexp.RegExp" />
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon" />
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi" />
 
-  <source path="validation"/>
-  <source path="definition"/>
-  <source path="documentation"/>
-  <source path="factory"/>
-  <source path="profile"/>
-  <source path="forms"/>
-  <source path="qualifiers"/>
-  <source path="resource"/>
-  <source path="rule"/>
-  <source path="service"/>
-  <source path="shape/def"/>
-  <source path="util"/>
-  <source path="workitem"/>
-  <source path="" includes="BPMNDefinitionSet.java"/>
+  <source path="validation" />
+  <source path="definition" />
+  <source path="documentation" />
+  <source path="factory" />
+  <source path="profile" />
+  <source path="forms" />
+  <source path="qualifiers" />
+  <source path="resource" />
+  <source path="rule" />
+  <source path="service" />
+  <source path="shape/def" />
+  <source path="util" />
+  <source path="workitem" />
+  <source path="" includes="BPMNDefinitionSet.java" />
 
 </module>

@@ -23,24 +23,24 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 )
 
-type cfgTestInputCreate struct {
+type CfgTestInputCreate struct {
 	input command.CreateCmdConfig
 }
 
-var cfgTestInputCreate_Success = []cfgTestInputCreate{
+var CfgTestInputCreate_Success = []CfgTestInputCreate{
 	{input: command.CreateCmdConfig{}},
 	{input: command.CreateCmdConfig{
 		ProjectName: "my-project",
 	}},
 }
 
-var cfgTestInputCreate_Fail = []cfgTestInputCreate{
+var CfgTestInputCreate_Fail = []CfgTestInputCreate{
 	{input: command.CreateCmdConfig{
 		ProjectName: "wrong/project-name",
 	}},
@@ -54,26 +54,37 @@ func transformCreateCmdCfgToArgs(cfg command.CreateCmdConfig) []string {
 	return args
 }
 
+func GetCreateProjectName(t *testing.T, config CfgTestInputCreate) string {
+	if config.input.ProjectName != "" {
+		return config.input.ProjectName
+	} else {
+		projectDefaultName, err := LookupFlagDefaultValue("name", command.NewCreateCommand())
+		require.NoErrorf(t, err, "Error: %v", err)
+		return projectDefaultName
+	}
+}
+
 func TestCreateProjectSuccess(t *testing.T) {
-	for testIndex, test := range cfgTestInputCreate_Success {
+	for testIndex, test := range CfgTestInputCreate_Success {
 		t.Run(fmt.Sprintf("Test create project success index: %d", testIndex), func(t *testing.T) {
-			RunCreateTest(t, test, true)
+			defer CleanUpAndChdirTemp(t)
+			RunCreateTest(t, test)
 		})
 	}
 }
 
-func RunCreateTest(t *testing.T, test cfgTestInputCreate, cleanUp bool) {
+func RunCreateTest(t *testing.T, test CfgTestInputCreate) string {
 	var err error
 
-	projectName := getCreateProjectName(t, test)
-	projectDir := filepath.Join(projectName)
+	projectName := GetCreateProjectName(t, test)
+	projectDir := filepath.Join(TempTestsPath, projectName)
 
 	// Run `create` command
 	_, err = ExecuteKnWorkflow(transformCreateCmdCfgToArgs(test.input)...)
-	assert.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
 
 	// Check if the project directory was created
-	assert.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
+	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
 
 	expectedFiles := []string{"workflow.sw.json"}
 	VerifyFilesExist(t, projectDir, expectedFiles)
@@ -83,35 +94,24 @@ func RunCreateTest(t *testing.T, test cfgTestInputCreate, cleanUp bool) {
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, filepath.Join(projectDir, "workflow.sw.json"), expectedFileContent)
 
-	if cleanUp {
-		common.DeleteFolderStructure(t, projectDir)
-	}
+	return projectName
 }
 
 func TestCreateProjectFail(t *testing.T) {
-	for testIndex, test := range cfgTestInputCreate_Fail {
+	for testIndex, test := range CfgTestInputCreate_Fail {
 		t.Run(fmt.Sprintf("Test create project fail index: %d", testIndex), func(t *testing.T) {
+			defer CleanUpAndChdirTemp(t)
 			projectName := test.input.ProjectName
-			projectDir := filepath.Join(projectName)
+			projectDir := filepath.Join(TempTestsPath, projectName)
 
 			_, err := ExecuteKnWorkflow(transformCreateCmdCfgToArgs(test.input)...)
-			assert.Errorf(t, err, "Expected error, got nil")
+			require.Errorf(t, err, "Expected error, got nil")
 
 			// Check if the project directory was not created
-			assert.NoDirExistsf(t, projectDir, "Expected project directory '%s' not to be created", projectDir)
+			require.NoDirExistsf(t, projectDir, "Expected project directory '%s' not to be created", projectDir)
 
 			// Cleanup (if necessary)
 			common.DeleteFolderStructure(t, projectDir)
 		})
-	}
-}
-
-func getCreateProjectName(t *testing.T, config cfgTestInputCreate) string {
-	if config.input.ProjectName != "" {
-		return config.input.ProjectName
-	} else {
-		projectDefaultName, err := LookupFlagDefaultValue("name", command.NewCreateCommand())
-		assert.NoErrorf(t, err, "Error: %v", err)
-		return projectDefaultName
 	}
 }

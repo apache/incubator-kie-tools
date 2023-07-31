@@ -4,8 +4,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
 ## Additional requirements
 
-- podman (for Linux)
-- docker (for macOS)
+- docker or podman
 
 ## Build
 
@@ -35,12 +34,24 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - Then check if the image is correctly stored:
 
   ```bash
+  docker images
+  ```
+
+  or
+
+  ```bash
   podman images
   ```
 
 ## Run
 
 - Start up a clean container with:
+
+  ```bash
+  docker run -t -p 8080:8080 -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+  ```
+
+  or
 
   ```bash
   podman run -t -p 8080:8080 -i --rm quay.io/kie-tools/kie-sandbox-image:latest
@@ -57,7 +68,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    |                            Name                             |                                                         Description                                                         |                               Default                               |
    | :---------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
    |             `KIE_SANDBOX_EXTENDED_SERVICES_URL`             |                                        The URL that points to the Extended Services.                                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
-   |              `KIE_SANDBOX_GIT_CORS_PROXY_URL`               |                        The URL that points to the Git CORS proxy for interacting with Git providers.                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
+   |                `KIE_SANDBOX_CORS_PROXY_URL`                 |                        The URL that points to the CORS proxy for interacting with external services.                        | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |       `KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL`       |                           The URL that points to base image that is used on DMN Dev deployments.                            | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    |         `KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE`         |                          Require users to type a custom commit message when creating a new commit.                          | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
    | `KIE_SANDBOX_CUSTOM_COMMIT_MESSAGES_VALIDATION_SERVICE_URL` |                                          Service URL to validate commit messages.                                           | See [ defaultEnvJson.ts ](../online-editor/build/defaultEnvJson.ts) |
@@ -71,13 +82,15 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    1. Using a different Extended Services deployment.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value> -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
+
+      _NOTE: Replace `docker` with `podman` if necessary._
 
    2. Enabling authentication with a GitHub Enterprise Server instance.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_AUTH_PROVIDERS='[{
         "id":"github_at_my_company", \
         "domain":"github.my-company.com", \
         "supportedGitRemoteDomains":["github.my-company.com","gist.github.my-company.com"], \
@@ -88,22 +101,28 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
+      _NOTE: Replace `docker` with `podman` if necessary._
+
    3. Requiring users to input a custom commit message on every commit.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
+
+      _NOTE: Replace `docker` with `podman` if necessary._
 
    4. Requiring users to input a custom commit message on every commit and validate it via the example [Commit Message Validation Service](../../examples/commit-message-validation-service/README.md).
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE='true' KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL='http://localhost:8090/validate' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
+
+      _NOTE: Replace `docker` with `podman` if necessary._
 
    5. Adding Accelerators available for your users.
 
       ```bash
-      podman run -t -p 8080:8080 -e KIE_SANDBOX_ACCELERATORS='[{ \
+      docker run -t -p 8080:8080 -e KIE_SANDBOX_ACCELERATORS='[{ \
         name: "Quarkus", \
         iconUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator/raw/0.0.0/quarkus-logo.png", \
         gitRepositoryUrl: "https://github.com/kiegroup/kie-sandbox-quarkus-accelerator", \
@@ -114,13 +133,15 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
       }]' -i --rm quay.io/kie-tools/kie-sandbox-image:latest
       ```
 
+      _NOTE: Replace `docker` with `podman` if necessary._
+
 2. Write a custom `Containerfile/Dockerfile` from the image:
 
    ```docker
    FROM quay.io/kie-tools/kie-sandbox-image:latest
 
    ENV KIE_SANDBOX_EXTENDED_SERVICES_URL=<my_value>
-   ENV KIE_SANDBOX_GIT_CORS_PROXY_URL=<my_value>
+   ENV KIE_SANDBOX_CORS_PROXY_URL=<my_value>
    ENV KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL=<my_value>
    ENV KIE_SANDBOX_REQUIRE_CUSTOM_COMMIT_MESSAGE=<my_value>
    ENV KIE_SANDBOX_CUSTOM_COMMIT_MESSAGE_VALIDATION_SERVICE_URL=<my_value>

@@ -47,7 +47,7 @@ import {
   DrawerPanelBody,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { basename, extname } from "path";
+import { basename, extname } from "path-browserify";
 import * as React from "react";
 import {
   forwardRef,

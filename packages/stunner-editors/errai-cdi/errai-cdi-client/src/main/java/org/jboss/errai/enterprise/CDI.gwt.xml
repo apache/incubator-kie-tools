@@ -13,18 +13,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0.1//EN"
-        "http://google-web-toolkit.googlecode.com/svn/tags/2.0.1/distro-source/core/src/gwt-module.dtd">
-
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.0.1/distro-source/core/src/gwt-module.dtd">
 <module>
-    <inherits name="org.jboss.errai.ioc.Container"/>
-    <inherits name="javax.enterprise.Support"/>
-    <inherits name="org.jboss.errai.enterprise.CDIShared"/>
+    <inherits name="org.jboss.errai.ioc.Container" />
+    <inherits name="javax.enterprise.Support" />
+    <inherits name="org.jboss.errai.enterprise.CDIShared" />
 
-    <entry-point class='org.jboss.errai.enterprise.client.cdi.CDIClientBootstrap'/>
+    <entry-point class='org.jboss.errai.enterprise.client.cdi.CDIClientBootstrap' />
 
     <generate-with class="org.jboss.errai.enterprise.rebind.EventQualifierSerializerGenerator">
-      <when-type-is class="org.jboss.errai.enterprise.client.cdi.EventQualifierSerializer"/>
+      <when-type-is class="org.jboss.errai.enterprise.client.cdi.EventQualifierSerializer" />
     </generate-with>
 </module>

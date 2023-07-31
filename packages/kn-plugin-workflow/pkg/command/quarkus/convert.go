@@ -73,14 +73,13 @@ func loadConvertCmdConfig() (cfg CreateQuarkusProjectConfig, err error) {
 	quarkusVersion := viper.GetString("quarkus-version")
 
 	cfg = CreateQuarkusProjectConfig{
-		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s,%s",
+		Extensions: fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s,%s",
 			metadata.KogitoQuarkusServerlessWorkflowExtension,
 			metadata.KogitoAddonsQuarkusKnativeEventingExtension,
 			metadata.QuarkusKubernetesExtension,
 			metadata.QuarkusResteasyJacksonExtension,
 			metadata.KogitoQuarkusServerlessWorkflowDevUi,
 			metadata.KogitoAddonsQuarkusSourceFiles,
-			metadata.KogitoDataIndexInMemory,
 			metadata.SmallryeHealth,
 			viper.GetString("extension"),
 		),
@@ -177,6 +176,15 @@ func moveSWFFilesToQuarkusProject(cfg CreateQuarkusProjectConfig, rootFolder str
 
 		// Move /specs directory to target
 		if file.IsDir() && file.Name() == "specs" {
+			oldPath := filepath.Join(rootFolder, file.Name())
+			newPath := filepath.Join(targetFolder, file.Name())
+			if err := os.Rename(oldPath, newPath); err != nil {
+				return fmt.Errorf("error moving directory %s: %w", oldPath, err)
+			}
+		}
+
+		// Move /dashboards directory to target
+		if file.IsDir() && file.Name() == metadata.DashboardsDefaultDirName {
 			oldPath := filepath.Join(rootFolder, file.Name())
 			newPath := filepath.Join(targetFolder, file.Name())
 			if err := os.Rename(oldPath, newPath); err != nil {

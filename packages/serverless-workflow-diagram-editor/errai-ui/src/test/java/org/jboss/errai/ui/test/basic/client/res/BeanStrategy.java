@@ -16,11 +16,11 @@
 
 package org.jboss.errai.ui.test.basic.client.res;
 
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-import static org.jboss.errai.common.client.dom.Window.getDocument;
 import static org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrategy.USE_BEAN;
 
 /**
@@ -31,26 +31,26 @@ import static org.jboss.errai.ui.shared.api.annotations.DataField.ConflictStrate
 public class BeanStrategy {
 
   public BeanStrategy() {
-    div1 = (Div) getDocument().createElement("div");
-    div2 = (Div) getDocument().createElement("div");
+    div1 = (HTMLDivElement) DomGlobal.document.createElement("div");
+    div2 = (HTMLDivElement) DomGlobal.document.createElement("div");
 
-    div1.setTitle("bean");
-    div2.setTitle("bean");
+    div1.title = "bean";
+    div2.title = "bean";
 
-    div1.setLang("bean");
-    div2.setLang("bean");
+    div1.lang = "bean";
+    div2.lang = "bean";
 
-    div1.setClassName("bean");
-    div2.setClassName("bean");
+    div1.className = "bean";
+    div2.className = "bean";
 
-    div1.getStyle().setCssText("width: 100px; height: 100px;");
-    div2.getStyle().setCssText("width: 100px; height: 100px");
+    div1.style.cssText = "width: 100px; height: 100px;";
+    div2.style.cssText = "width: 100px; height: 100px";
   }
 
   @DataField(defaultStrategy = USE_BEAN)
-  public Div div1;
+  public HTMLDivElement div1;
 
   @DataField(defaultStrategy = USE_BEAN)
-  public Div div2;
+  public HTMLDivElement div2;
 
 }

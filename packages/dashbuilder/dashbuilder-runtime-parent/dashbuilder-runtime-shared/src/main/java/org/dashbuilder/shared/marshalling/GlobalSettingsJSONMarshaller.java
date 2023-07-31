@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.shared.marshalling;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.dashbuilder.dataprovider.DataSetProviderType;
@@ -32,7 +33,7 @@ public class GlobalSettingsJSONMarshaller {
     private static final String MODE = "mode";
     private static final String DATASET = "dataset";
     private static final String ALLOW_URL_PROPERTIES = "allowUrlProperties";
-    private static final Mode DEFAULT_MODE = Mode.LIGHT;    
+    private static final Mode DEFAULT_MODE = Mode.LIGHT;
 
     private static GlobalSettingsJSONMarshaller instance;
 
@@ -58,22 +59,23 @@ public class GlobalSettingsJSONMarshaller {
         if (json != null) {
             mode = retrieveMode(json);
             allowUrlProperties = retrieveAllowUrlProperties(json);
-            var displayerSettingsObj = json.getObject(LayoutTemplateJSONMarshaller.SETTINGS);
+            var displayerSettingsObj = json.getObject(Arrays.asList(LayoutTemplateJSONMarshaller.SETTINGS,
+                    LayoutTemplateJSONMarshaller.DISPLAYER));
             try {
                 displayerSettings = DisplayerSettingsJSONMarshaller.get().fromJsonObject(displayerSettingsObj, false);
             } catch (Exception e) {
-                // ignore settings and use a empty global settings                
+                displayerSettings.setError("Error on global dataset declaration: " + e.getMessage());
             }
-            
+
             var datasetDefJson = json.getObject(DATASET);
             try {
-                DataSetDefJSONMarshaller marshaller = new DataSetDefJSONMarshaller(DataSetProviderType.EXTERNAL);
+                var marshaller = new DataSetDefJSONMarshaller(DataSetProviderType.EXTERNAL);
                 dataSetDef = (ExternalDataSetDef) marshaller.fromJsonObj(datasetDefJson);
-                
-            }  catch (Exception e) {
+
+            } catch (Exception e) {
                 // ignore def and use empty global settings
             }
-            
+
         }
 
         displayerSettings.setMode(mode);

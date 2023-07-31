@@ -18,7 +18,7 @@ const { varsWithName, getOrDefault, composeEnv, str2bool } = require("@kie-tools
 
 const buildEnv = require("@kie-tools/root-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
-const gitCorsProxyImageEnv = require("@kie-tools/git-cors-proxy-image/env");
+const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 const devPort = 9001;
 
 module.exports = composeEnv(
@@ -26,7 +26,7 @@ module.exports = composeEnv(
     // dependencies
     buildEnv,
     extendedServicesEnv,
-    gitCorsProxyImageEnv,
+    corsProxyEnv,
   ],
   {
     vars: varsWithName({
@@ -59,9 +59,9 @@ module.exports = composeEnv(
         default: `https://localhost:${devPort}/`,
         description: "Cypress URL to be used on integrationt tests.",
       },
-      ONLINE_EDITOR__gitCorsProxyUrl: {
-        default: `http://localhost:${gitCorsProxyImageEnv.env.gitCorsProxy.dev.port}`,
-        description: "Git CORS Proxy URL.",
+      ONLINE_EDITOR__corsProxyUrl: {
+        default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
+        description: "CORS Proxy URL.",
       },
       ONLINE_EDITOR__extendedServicesUrl: {
         default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
@@ -119,7 +119,7 @@ module.exports = composeEnv(
           },
           appName: getOrDefault(this.vars.ONLINE_EDITOR__appName),
           extendedServicesUrl: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesUrl),
-          gitCorsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__gitCorsProxyUrl),
+          corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
           requireCustomCommitMessage: str2bool(getOrDefault(this.vars.ONLINE_EDITOR__requireCustomCommitMessage)),
           customCommitMessageValidationServiceUrl: getOrDefault(
             this.vars.ONLINE_EDITOR__customCommitMessageValidationServiceUrl

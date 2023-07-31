@@ -11,6 +11,9 @@ concurrency:
   group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-main-{0}', github.sha) }}
   cancel-in-progress: true
 
+env:
+  TMPDIR: "${{ github.workspace }}/tmp"
+
 jobs:
   run:
     environment: ci
@@ -80,7 +83,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full'
         uses: ./.github/actions/bootstrap
 
-      - name: "FULL → Build"
+      - name: "FULL → Build (without some images)"
         if: steps.setup_build_mode.outputs.mode == 'full'
         env:
           WEBPACK__minimize: "false"
@@ -88,14 +91,14 @@ jobs:
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
           KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
-        run: |
+        run: >-
           pnpm -r --workspace-concurrency=1 -F boxed-expression-component... build:prod
 
       - name: "PARTIAL → Bootstrap"
@@ -108,7 +111,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'partial'
         shell: bash
         env:
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
           export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
@@ -124,7 +127,7 @@ jobs:
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
@@ -185,6 +188,7 @@ jobs:
             https://analytics-api.buildkite.com/v1/uploads
 
       - name: "Print storage usage (after build)"
+        if: always() && !cancelled()
         shell: bash
         run: |
           du -sh .

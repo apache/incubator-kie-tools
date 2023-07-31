@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ /*
   ~  * Copyright 2016 Red Hat, Inc. and/or its affiliates.
@@ -16,12 +16,11 @@
   ~  * the License.
   ~  */
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
-  <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name="org.uberfire.client.views.PatternFly" />
 
-  <stylesheet src="css/patternfly.min.css"/>
-  <stylesheet src="css/patternfly-additions.min.css"/>
+  <stylesheet src="css/patternfly.min.css" />
+  <stylesheet src="css/patternfly-additions.min.css" />
 </module>

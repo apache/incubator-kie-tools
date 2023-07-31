@@ -45,7 +45,10 @@ const testFileInfo = {
 
 function newDivOnBody() {
   const div = document.createElement("div");
+  const turboDiv = document.createElement("div");
+  turboDiv.setAttribute("data-turbo-body", "");
   document.body.appendChild(div);
+  document.body.appendChild(turboDiv);
   return div;
 }
 

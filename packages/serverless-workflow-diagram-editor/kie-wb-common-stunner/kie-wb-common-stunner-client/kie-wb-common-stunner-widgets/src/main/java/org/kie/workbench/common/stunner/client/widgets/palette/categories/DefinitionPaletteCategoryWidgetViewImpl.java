@@ -25,12 +25,13 @@ import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseUpEvent;
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.Document;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.ListItem;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -50,24 +51,23 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
 
     private static final int DRAG_DELTA = 2;
 
-    @Inject
-    private Document document;
+    private Document document = DomGlobal.document;
 
     @Inject
     @DataField
-    private ListItem listGroupItem;
+    private HTMLLIElement listGroupItem;
 
     @Inject
     @DataField
-    private Button categoryIcon;
+    private HTMLButtonElement categoryIcon;
 
     @Inject
     @DataField
-    private Div floatingPanel;
+    private HTMLDivElement floatingPanel;
 
     @Inject
     @DataField
-    private Button closeCategoryButton;
+    private HTMLButtonElement closeCategoryButton;
 
     @Inject
     private DOMGlyphRenderers domGlyphRenderers;
@@ -92,7 +92,7 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
                        double width,
                        double height) {
         DefaultPaletteCategory category = presenter.getCategory();
-        categoryIcon.setTitle(category.getTitle());
+        categoryIcon.title = category.getTitle();
         final org.jboss.errai.common.client.api.IsElement glyphElement =
                 domGlyphRenderers.render(glyph,
                                          width,
@@ -107,9 +107,9 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
 
     @Override
     public void addGroup(DefinitionPaletteGroupWidget groupWidget) {
-        HTMLElement groupHeader = document.createElement("h5");
+        HTMLElement groupHeader = (HTMLElement) document.createElement("h5");
 
-        groupHeader.setTextContent(groupWidget.getItem().getTitle());
+        groupHeader.textContent = groupWidget.getItem().getTitle();
         floatingPanel.appendChild(groupHeader);
 
         floatingPanel.appendChild(groupWidget.getElement());
@@ -202,9 +202,9 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
     }
 
     private void setCloseButtonVisible(boolean visible) {
-        closeCategoryButton.getStyle().removeProperty("display");
+        closeCategoryButton.style.removeProperty("display");
         if (!visible) {
-            closeCategoryButton.getStyle().setProperty("display", "none");
+            closeCategoryButton.style.setProperty("display", "none");
         }
     }
 

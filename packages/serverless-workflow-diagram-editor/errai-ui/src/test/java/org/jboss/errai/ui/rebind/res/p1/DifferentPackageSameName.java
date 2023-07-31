@@ -16,7 +16,7 @@
 
 package org.jboss.errai.ui.rebind.res.p1;
 
-import org.jboss.errai.common.client.dom.Div;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -28,6 +28,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class DifferentPackageSameName {
 
   @DataField
-  private Div d1;
+  private HTMLDivElement d1;
 
 }

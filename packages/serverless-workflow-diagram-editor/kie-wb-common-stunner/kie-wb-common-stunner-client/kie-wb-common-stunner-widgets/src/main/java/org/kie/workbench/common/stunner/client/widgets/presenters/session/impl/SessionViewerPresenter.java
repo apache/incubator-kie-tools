@@ -16,23 +16,17 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import java.lang.annotation.Annotation;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.ViewerToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
@@ -59,14 +53,12 @@ public class SessionViewerPresenter<S extends ViewerSession>
 
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent;
     private final SessionViewerImpl<S> viewer;
-    private final ManagedInstance<ViewerToolbar> toolbars;
 
     @Inject
     @SuppressWarnings("unchecked")
     public SessionViewerPresenter(final DefinitionUtils definitionUtils,
                                   final SessionManager sessionManager,
                                   final SessionViewerImpl<S> viewer,
-                                  final @Any ManagedInstance<ViewerToolbar> toolbars,
                                   final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
@@ -82,7 +74,6 @@ public class SessionViewerPresenter<S extends ViewerSession>
               sessionLostFocusEvent,
               canvasLostFocusEventEvent);
         this.viewer = viewer;
-        this.toolbars = toolbars;
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
     }
 
@@ -111,15 +102,4 @@ public class SessionViewerPresenter<S extends ViewerSession>
         sessionDiagramOpenedEvent.fire(new SessionDiagramOpenedEvent(session));
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected Toolbar<S> newToolbar(final Annotation qualifier) {
-        return (Toolbar<S>) toolbars.get();
-    }
-
-    @Override
-    protected void destroyToolbarInstace(final Toolbar<S> toolbar) {
-        toolbars.destroy((ViewerToolbar) toolbar);
-        toolbars.destroyAll();
-    }
 }

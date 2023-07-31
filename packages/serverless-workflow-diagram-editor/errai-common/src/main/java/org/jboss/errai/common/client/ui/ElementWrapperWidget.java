@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.NativeHasValueAccessors.Accessor;
 
 /**
@@ -46,10 +45,6 @@ public abstract class ElementWrapperWidget<T> extends Widget {
   private static Map<Object, ElementWrapperWidget<?>> widgetMap = new HashMap<>();
 
   public static ElementWrapperWidget<?> getWidget(final Element element) {
-    return getWidget(element, null);
-  }
-
-  public static ElementWrapperWidget<?> getWidget(final HTMLElement element) {
     return getWidget(element, null);
   }
 

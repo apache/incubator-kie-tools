@@ -19,13 +19,8 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 import java.util.Collection;
 import java.util.Optional;
 
-import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
-import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
-import org.kie.workbench.common.stunner.core.validation.Violation;
-import org.kie.workbench.common.stunner.core.validation.impl.ValidationUtils;
 
 public final class ValidationFailedNotification extends AbstractNotification<Collection<DiagramElementViolation<RuleViolation>>> {
 
@@ -47,31 +42,4 @@ public final class ValidationFailedNotification extends AbstractNotification<Col
         return Optional.of(violations);
     }
 
-    public static class Builder {
-
-        public static Optional<ValidationFailedNotification> build(final ClientTranslationService translationService,
-                                                         final NotificationContext context,
-                                                         final Collection<DiagramElementViolation<RuleViolation>> errors) {
-            final Violation.Type type = ValidationUtils.getMaxSeverity(errors);
-            final Optional<String> message = CoreTranslationMessages.getDiagramValidationsErrorMessage(
-                    translationService,
-                    errors
-            );
-
-            return message.map(m-> new ValidationFailedNotification(errors,
-                                                    context,
-                                                    m,
-                                                    getNotificationType(type)));
-        }
-
-        public static Notification.Type getNotificationType(final CanvasViolation.Type type) {
-            switch (type) {
-                case ERROR:
-                    return Type.ERROR;
-                case WARNING:
-                    return Type.WARNING;
-            }
-            return Type.INFO;
-        }
-    }
 }

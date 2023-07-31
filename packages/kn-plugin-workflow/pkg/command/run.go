@@ -18,17 +18,19 @@ package command
 
 import (
 	"fmt"
+	"os"
+	"sync"
+	"time"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"os"
-	"sync"
-	"time"
 )
 
 type RunCmdConfig struct {
 	PortMapping string
+	OpenDevUI   bool
 }
 
 func NewRunCommand() *cobra.Command {
@@ -47,9 +49,12 @@ func NewRunCommand() *cobra.Command {
 
 	 # Run the local directory mapping a different host port to the running container port.
 	{{.Name}} run --port 8081
+
+ 	# Disable automatic browser launch of SonataFlow  Dev UI 
+	{{.Name}} run --open-dev-ui=false
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
-		PreRunE:    common.BindEnv("port"),
+		PreRunE:    common.BindEnv("port", "open-dev-ui"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -57,6 +62,7 @@ func NewRunCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different host port to the running container port.")
+	cmd.Flags().Bool("open-dev-ui", true, "Disable automatic browser launch of SonataFlow  Dev UI")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -83,6 +89,7 @@ func run() error {
 func runDevCmdConfig() (cfg RunCmdConfig, err error) {
 	cfg = RunCmdConfig{
 		PortMapping: viper.GetString("port"),
+		OpenDevUI:   viper.GetBool("open-dev-ui"),
 	}
 	return
 }
@@ -117,17 +124,14 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 
 	go func() {
 		defer wg.Done()
-		if err := common.RunCommand(
-			common.RunContainerCommand(containerTool, cfg.PortMapping, path),
-			"container run",
-		); err != nil {
-			err = fmt.Errorf("❌ Error running SonataFlow project: %w", err)
+		if err := common.RunContainerCommand(containerTool, cfg.PortMapping, path); err != nil {
+			fmt.Errorf("❌ Error running SonataFlow project: %w", err)
 		}
 	}()
 
 	readyCheckURL := fmt.Sprintf("http://localhost:%s/q/health/ready", cfg.PortMapping)
 	pollInterval := 5 * time.Second
-	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping)
+	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping, cfg.OpenDevUI)
 
 	wg.Wait()
 	return err

@@ -122,7 +122,8 @@ export enum BeeTableSelectionPosition {
   Right = "right",
 }
 
-const CLIPBOARD_ROW_SEPARATOR = "\n";
+const TEXT_TO_CLIPBOARD_ROW_SEPARATOR = "\n";
+const CLIPBOARD_TO_TEXT_ROW_SEPARATOR = /\r?\n/;
 const CLIPBOARD_COLUMN_SEPARATOR = "\t";
 
 const NEUTRAL_SELECTION = {
@@ -261,7 +262,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     }
 
     const clipboardMatrix = clipboardValue
-      .split(CLIPBOARD_ROW_SEPARATOR)
+      .split(CLIPBOARD_TO_TEXT_ROW_SEPARATOR)
       .map((r) => r.split(CLIPBOARD_COLUMN_SEPARATOR));
 
     const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
@@ -596,7 +597,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
 
         const clipboardValue = clipboardMatrix
           .map((r) => r.join(CLIPBOARD_COLUMN_SEPARATOR))
-          .join(CLIPBOARD_ROW_SEPARATOR);
+          .join(TEXT_TO_CLIPBOARD_ROW_SEPARATOR);
         navigator.clipboard.writeText(clipboardValue);
       },
       cut: () => {
@@ -622,7 +623,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
 
         const clipboardValue = clipboardMatrix
           .map((row) => row.join(CLIPBOARD_COLUMN_SEPARATOR))
-          .join(CLIPBOARD_ROW_SEPARATOR);
+          .join(TEXT_TO_CLIPBOARD_ROW_SEPARATOR);
 
         navigator.clipboard.writeText(clipboardValue);
       },
