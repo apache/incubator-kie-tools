@@ -33,7 +33,7 @@ import com.ait.lienzo.client.core.types.Shadow;
 import com.ait.lienzo.shared.core.types.ColorName;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.StunnerWiresShapeView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DeleteNodeCommand;
@@ -147,7 +147,7 @@ public class StateDetailsPresenter {
             dropDecorator();
         }
         decorator = new Group();
-        Group sourceGroup = ((WiresShapeViewExt) sourceShape.getShapeView()).getGroup();
+        Group sourceGroup = ((StunnerWiresShapeView) sourceShape.getShapeView()).getGroup();
         sourceGroup.getLayer().add(decorator);
 
         drawBoundingPoints(sourceShape, parentShape, decorator);
@@ -155,7 +155,7 @@ public class StateDetailsPresenter {
 
     private static void presentModalContainer(Shape parentShape,
                                               Runnable onDrawn) {
-        WiresShapeViewExt wiresParent = (WiresShapeViewExt) parentShape.getShapeView();
+        StunnerWiresShapeView wiresParent = (StunnerWiresShapeView) parentShape.getShapeView();
         Group parentGroup = wiresParent.getGroup();
         wiresParent.getShape().setShadow(new Shadow(ColorName.GREY, 5, 5, 5));
         if (true) {
@@ -191,8 +191,8 @@ public class StateDetailsPresenter {
     private static void drawBoundingPoints(Shape sourceShape,
                                            Shape parentShape,
                                            Group decoratorGroup) {
-        WiresShapeViewExt wiresSource = (WiresShapeViewExt) sourceShape.getShapeView();
-        WiresShapeViewExt wiresParent = (WiresShapeViewExt) parentShape.getShapeView();
+        StunnerWiresShapeView wiresSource = (StunnerWiresShapeView) sourceShape.getShapeView();
+        StunnerWiresShapeView wiresParent = (StunnerWiresShapeView) parentShape.getShapeView();
         Group sourceGroup = wiresSource.getGroup();
         BoundingBox sourceBox = sourceGroup.getComputedBoundingPoints().getBoundingBox();
 

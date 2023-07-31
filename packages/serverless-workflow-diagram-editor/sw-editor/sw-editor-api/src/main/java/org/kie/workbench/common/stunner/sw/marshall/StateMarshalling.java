@@ -141,6 +141,48 @@ public interface StateMarshalling {
                 return state;
             };
 
+    NodeMarshaller<SwitchState> SWITCH_STATE_MARSHALLER =
+            (context, stateNode) -> {
+                SwitchState state = stateNode.getContent().getDefinition();
+
+                // Iterate and marshaller edges.
+                List<EventConditionTransition> eventConditions = new ArrayList<>();
+                List<DataConditionTransition> dataConditionTransitions = new ArrayList<>();
+                List<ErrorTransition> errors = new ArrayList<>();
+
+                List<Edge> outEdges = stateNode.getOutEdges();
+                for (Edge edge : outEdges) {
+                    if (edge.getContent() instanceof Dock) {
+                    } else {
+                        Object def = getElementDefinition(edge);
+
+                        if (def instanceof EventConditionTransition) {
+                            eventConditions.add((EventConditionTransition) def);
+                        }
+
+                        if (def instanceof DataConditionTransition) {
+                            dataConditionTransitions.add((DataConditionTransition) def);
+                        }
+
+                        if (def instanceof ErrorTransition) {
+                            errors.add((ErrorTransition) def);
+                        }
+
+                        if (def instanceof DefaultConditionTransition) {
+                            state.setDefaultCondition((DefaultConditionTransition) def);
+                        }
+
+                        marshallEdge(context, edge);
+                    }
+                }
+
+                state.setEventConditions(eventConditions.isEmpty() ? null : eventConditions.toArray(new EventConditionTransition[eventConditions.size()]));
+                state.setDataConditions(dataConditionTransitions.isEmpty() ? null : dataConditionTransitions.toArray(new DataConditionTransition[dataConditionTransitions.size()]));
+                state.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+
+                return state;
+            };
+
     NodeUnmarshaller<OnEvent[]> ONEVENTS_UNMARSHALLER =
             (context, onEvents) -> {
                 // TODO: Only parsing a SINGLE (FIRST) onEvent def.

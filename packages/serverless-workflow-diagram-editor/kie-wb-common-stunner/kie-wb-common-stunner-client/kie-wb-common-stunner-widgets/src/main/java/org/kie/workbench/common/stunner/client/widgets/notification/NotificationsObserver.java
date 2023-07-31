@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.AbstractCanvasCommandEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -80,12 +79,6 @@ public class NotificationsObserver {
     }
 
     @SuppressWarnings("unchecked")
-    void onGraphCommandExecuted(final @Observes CanvasCommandExecutedEvent<? extends CanvasHandler> commandExecutedEvent) {
-        final Notification notification = translateCommand(commandExecutedEvent);
-        fireCommandNotification(notification);
-    }
-
-    @SuppressWarnings("unchecked")
     void onCanvasCommandUndoneEvent(final @Observes CanvasCommandUndoneEvent<? extends CanvasHandler> commandUndoneEvent) {
         final Notification notification = translateCommand(commandUndoneEvent);
         fireCommandNotification(notification);
@@ -127,7 +120,6 @@ public class NotificationsObserver {
         Notification createCommandNotification(final NotificationContext context,
                                                final Command<?, CanvasViolation> command,
                                                final CommandResult<CanvasViolation> result);
-
     }
 
     private final class NotificationBuilderImpl implements NotificationBuilder {
@@ -141,6 +133,5 @@ public class NotificationsObserver {
                                                      command,
                                                      result);
         }
-
     }
 }
