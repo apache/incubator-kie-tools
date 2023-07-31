@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
     "install": "node install.js",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --env dev",
