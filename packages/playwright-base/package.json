@@ -18,7 +18,7 @@
     "index.js"
   ],
   "scripts": {
-    "install": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm playwright install-deps\""
+    "install": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm playwright install --with-deps\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
