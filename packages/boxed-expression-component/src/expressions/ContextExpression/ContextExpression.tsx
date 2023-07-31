@@ -50,7 +50,7 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ContextEntryInfoCell } from "./ContextEntryInfoCell";
 import "./ContextExpression.css";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
-import { getExpressionTotalMinimalWidth } from "../../resizing/WidthMaths";
+import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 
 const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
 
@@ -95,11 +95,11 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
         const entriesWidths = contextExpression.contextEntries.map((e) =>
-          getExpressionTotalMinimalWidth(0, e.entryExpression)
+          getExpressionTotalMinWidth(0, e.entryExpression)
         );
-        const resultWidth = getExpressionTotalMinimalWidth(0, contextExpression.result);
+        const resultWidth = getExpressionTotalMinWidth(0, contextExpression.result);
 
-        const biggestWidth = Math.max(...entriesWidths, resultWidth);
+        const maxNestedExpressionMinWidth = Math.max(...entriesWidths, resultWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
 
         return {
           nestedExpressions: [
@@ -109,12 +109,12 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
           fixedColumnActualWidth: entryInfoWidth,
           fixedColumnResizingWidth: entryInfoResizingWidth,
           fixedColumnMinWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-          nestedExpressionMinWidth: biggestWidth > 0 ? biggestWidth : CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+          nestedExpressionMinWidth: maxNestedExpressionMinWidth,
           extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
           expression: contextExpression,
           flexibleColumnIndex: 2,
         };
-      }, [contextExpression, entryInfoResizingWidth, entryInfoWidth, getExpressionTotalMinimalWidth])
+      }, [contextExpression, entryInfoResizingWidth, entryInfoWidth])
     );
 
   /// //////////////////////////////////////////////////////
