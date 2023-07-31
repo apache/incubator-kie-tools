@@ -806,15 +806,15 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
+      "@kie-tools/playwright-base":
+        specifier: workspace:*
+        version: link:../playwright-base
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
-      "@playwright/test":
-        specifier: ^1.35.1
-        version: 1.36.2
       "@storybook/addon-essentials":
         specifier: ^7.1.1
         version: 7.1.1(react-dom@17.0.2)(react@17.0.2)
@@ -5741,6 +5741,21 @@ importers:
       webpack:
         specifier: ^5.36.2
         version: 5.70.0
+
+  packages/playwright-base:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@playwright/test":
+        specifier: ^1.35.1
+        version: 1.36.2
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
 
   packages/pmml-editor:
     dependencies:
