@@ -33,6 +33,8 @@ export default defineConfig({
     trace: "on-first-retry",
 
     locale: "en-US",
+
+    headless: true,
   },
 
   outputDir: "dist-tests/output",
