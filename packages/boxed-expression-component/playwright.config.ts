@@ -17,11 +17,11 @@ export default defineConfig({
   reporter: process.env.CI
     ? [
         ["github"],
-        ["junit", { outputFile: "./dist-tests/reports/junit-report-e2e.xml" }],
-        ["html", { outputFolder: "./dist-tests/reports/", open: "never" }],
+        ["junit", { outputFile: "./dist-e2e/junit-report-e2e.xml" }],
+        ["html", { outputFolder: "./dist-e2e/reports/", open: "never" }],
         ["list"],
       ]
-    : [["html", { outputFolder: "./dist-tests/reports/", open: "never" }], ["list"]],
+    : [["html", { outputFolder: "./dist-e2e/reports/", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
@@ -38,7 +38,7 @@ export default defineConfig({
     headless: true,
   },
 
-  outputDir: "dist-tests/output",
+  outputDir: "dist-e2e/output",
 
   /* Configure projects for major browsers */
   projects: [

@@ -143,7 +143,7 @@ jobs:
         env:
           KIE_TOOLS_CI__JUNIT_REPORT_RESULTS_PATTERNS: |-
             ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
-            ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
+            ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns }}
         with:
           result-encoding: string
           script: |
@@ -166,7 +166,7 @@ jobs:
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
 
-      - name: "Upload integration tests results to Buildkite (`main` only)"
+      - name: "Upload end-to-end tests results to Buildkite (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         shell: bash
         env:
@@ -174,9 +174,9 @@ jobs:
           BUILDKITE_BRANCH: ${{ github.ref_name }}
           BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
         run: |
-          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}"
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns_for_find }}"
           echo "---------------------------- starting upload -----------------------"
-          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
             -H "Authorization: Token token=\"$BUILDKITE_ANALYTICS_TOKEN\"" \
             -F "format=junit" \
             -F "data=@{}" \
