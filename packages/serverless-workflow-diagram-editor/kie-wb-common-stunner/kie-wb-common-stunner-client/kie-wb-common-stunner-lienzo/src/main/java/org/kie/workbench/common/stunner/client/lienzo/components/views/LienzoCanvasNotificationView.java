@@ -21,19 +21,17 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import elemental2.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 
 @Dependent
 public class LienzoCanvasNotificationView implements LienzoCanvasNotification.View {
 
-    private final FloatingView<IsWidget> floatingView;
+    private final FloatingView<IsElement> floatingView;
     private final AlertView alertView;
 
     @Inject
-    public LienzoCanvasNotificationView(final FloatingView<IsWidget> floatingView,
+    public LienzoCanvasNotificationView(final FloatingView<IsElement> floatingView,
                                         final AlertView alertView) {
         this.floatingView = floatingView;
         this.alertView = alertView;
@@ -46,7 +44,7 @@ public class LienzoCanvasNotificationView implements LienzoCanvasNotification.Vi
                 .setOffsetX(0)
                 .setOffsetY(0)
                 .hide()
-                .add(wrap(alertView.getElement()));
+                .add(alertView);
     }
 
     @Override
@@ -75,7 +73,4 @@ public class LienzoCanvasNotificationView implements LienzoCanvasNotification.Vi
         floatingView.destroy();
     }
 
-    private static IsWidget wrap(final HTMLElement element) {
-        return ElementWrapperWidget.getWidget(element);
-    }
 }

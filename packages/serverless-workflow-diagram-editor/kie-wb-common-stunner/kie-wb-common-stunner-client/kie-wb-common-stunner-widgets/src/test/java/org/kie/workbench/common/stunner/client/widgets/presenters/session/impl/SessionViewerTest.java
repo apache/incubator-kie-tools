@@ -111,7 +111,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         verify(canvasHandler,
                times(1)).draw(eq(diagram),
                               any(ParameterizedCommand.class));
-        verify(view, //TODO
+        verify(view,
                times(1)).setWidget(any(IsElement.class));
         verify(canvasPanelView, times(1)).onResize();
     }

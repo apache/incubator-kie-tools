@@ -46,7 +46,7 @@ public abstract class LienzoElementGlyphRenderer<G extends Glyph> implements DOM
         final LienzoPanelWidget panel = newPanel(glyph,
                                                  (int) width,
                                                  (int) height);
-        return view.setWidget(panel);
+        return view.setWidget(panel.getElement());
     }
 
     private LienzoPanelWidget newPanel(final G glyph,

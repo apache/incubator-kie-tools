@@ -29,10 +29,9 @@ import com.ait.lienzo.tools.client.event.EventType;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
-import jsinterop.base.Js;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
@@ -60,7 +59,7 @@ public class ZoomLevelSelectorPresenter {
     static final String ON_MOUSE_OVER = EventType.MOUSE_OVER.getType();
 
     private final ClientTranslationService translationService;
-    private final FloatingView<IsWidget> floatingView;
+    private final FloatingView<IsElement> floatingView;
     private final ZoomLevelSelector selector;
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final Element selectorElement;
@@ -77,14 +76,14 @@ public class ZoomLevelSelectorPresenter {
 
     @Inject
     public ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
-                                      final FloatingView<IsWidget> floatingView,
+                                      final FloatingView<IsElement> floatingView,
                                       final ZoomLevelSelector selector,
                                       final Event<TogglePreviewEvent> togglePreviewEvent) {
-        this(translationService, floatingView, selector, togglePreviewEvent, Js.cast(selector.asWidget().getElement()));
+        this(translationService, floatingView, selector, togglePreviewEvent, selector.getElement());
     }
 
     ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
-                               final FloatingView<IsWidget> floatingView,
+                               final FloatingView<IsElement> floatingView,
                                final ZoomLevelSelector selector,
                                final Event<TogglePreviewEvent> togglePreviewEvent,
                                final Element selectorElement) {
@@ -239,8 +238,8 @@ public class ZoomLevelSelectorPresenter {
         final LienzoPanel panel = getPanel();
         final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(panel.getView().getElement());
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
-        final int zoomLevelSelectorWidth = selector.asWidget().getElement().getOffsetWidth();
-        final int zoomLevelSelectorHeight = selector.asWidget().getElement().getOffsetHeight();
+        final int zoomLevelSelectorWidth = selector.getElement().offsetWidth;
+        final int zoomLevelSelectorHeight = selector.getElement().offsetHeight;
         final double x = absoluteLeft + width - zoomLevelSelectorWidth - MARGIN;
         final double y = absoluteTop + height - zoomLevelSelectorHeight - MARGIN;
         return at(x, y);

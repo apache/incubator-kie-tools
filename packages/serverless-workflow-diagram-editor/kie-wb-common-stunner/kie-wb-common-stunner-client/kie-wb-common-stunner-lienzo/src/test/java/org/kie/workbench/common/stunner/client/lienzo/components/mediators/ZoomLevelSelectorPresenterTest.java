@@ -26,12 +26,12 @@ import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +54,7 @@ import org.uberfire.mvp.Command;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -110,14 +111,17 @@ public class ZoomLevelSelectorPresenterTest {
     private com.google.gwt.user.client.Element gwtElement;
 
     @Mock
-    private Widget widget;
+    private HTMLElement widget;
 
     @Mock
     private Event<TogglePreviewEvent> togglePreviewEvent;
 
+    @Mock
+    private HTMLElement rootPanel;
+
     private ZoomLevelSelectorPresenter tested;
     private ClientTranslationService translationService;
-    private FloatingView<IsWidget> floatingView;
+    private FloatingView<IsElement> floatingView;
     private Layer layer;
     private ZoomLevelSelector selector;
 
@@ -135,10 +139,12 @@ public class ZoomLevelSelectorPresenterTest {
         when(panel.getView()).thenReturn(panelView);
         when(panelView.getElement()).thenReturn(panelElement);
 
-        when(selectorView.asWidget()).thenReturn(widget);
-        when(widget.getElement()).thenReturn(gwtElement);
+        when(selectorView.getElement()).thenReturn(widget);
 
         floatingView = spy(new FloatingWidgetView());
+
+        doReturn(rootPanel).when(((FloatingWidgetView)floatingView)).getRootPanel();
+        //when(((FloatingWidgetView)floatingView).getRootPanel()).thenReturn(rootPanel);
 
         tested = new ZoomLevelSelectorPresenter(translationService,
                                                 floatingView,

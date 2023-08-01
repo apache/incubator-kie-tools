@@ -23,8 +23,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
@@ -37,7 +37,7 @@ import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages
 import static org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages.WARNINGS;
 
 @Dependent
-public class Alerts implements IsWidget {
+public class Alerts implements IsElement {
 
     public interface View extends UberView<Alerts> {
 
@@ -94,8 +94,8 @@ public class Alerts implements IsWidget {
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public HTMLElement getElement(){
+        return view.getElement();
     }
 
     @PreDestroy
