@@ -37,6 +37,7 @@ import {
   TextAnnotationNode,
 } from "./nodes/Nodes";
 import { useDmnDiagramData } from "./useDmnDiagramData";
+import { deleteNode } from "../mutations/deleteNode";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -298,6 +299,14 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               }
               break;
             case "remove":
+              deleteNode({
+                definitions: state.dmn.model.definitions,
+                node: {
+                  id: change.id,
+                  index: nodesById.get(change.id)!.data.index,
+                  shapeIndex: nodesById.get(change.id)!.data.shape.index,
+                },
+              });
               state.dispatch.diagram.setNodeStatus(state, change.id, {
                 selected: false,
                 dragging: false,
