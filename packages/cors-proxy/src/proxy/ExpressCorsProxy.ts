@@ -60,6 +60,10 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         }
       });
 
+      if (req.baseUrl.includes("testing")) {
+        outHeaders["accept-encoding"] = "identity";
+      }
+
       this.logger.log("Proxying to: ", info.proxyUrl.toString());
       this.logger.debug("Proxy Method: ", req.method);
       this.logger.debug("Proxy Headers: ", outHeaders);

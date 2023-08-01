@@ -18,6 +18,7 @@ import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { useEnv } from "../env/hooks/EnvContext";
+import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS } from "../authProviders/AuthProvidersApi";
 
 export enum AuthOptionsType {
   UNDEFINED = "UNDEFINED",
@@ -40,6 +41,7 @@ export interface Options {
   domain?: string;
   auth?: AuthOptions;
   headers?: Record<string, string>;
+  proxyUrl?: string;
 }
 
 type GetRepositoryContentsArgsType = {
@@ -96,9 +98,10 @@ export class BitbucketClient implements BitbucketClientApi {
   constructor(options: Options) {
     this.appName = options.appName;
     this.domain = options?.domain ?? "bitbucket.org";
-    this.headers = options?.headers ?? {
+    this.headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...options?.headers,
     };
     this.auth = options?.auth ?? undefinedAuthOptions;
     this.username = options.username ?? (options?.auth as BasicAuthOptions)?.username;
@@ -135,8 +138,8 @@ export class BitbucketClient implements BitbucketClientApi {
       body: props.body,
     });
   };
-  getApiUrl = () => {
-    return `https://api.${this.domain}/2.0`;
+  getApiUrl = (proxyUrl?: string) => {
+    return `${proxyUrl ? `${proxyUrl}/` : "https://"}api.${this.domain}/2.0`;
   };
   getAuthedUser = () => {
     return this.request({ urlContext: "/user" });
@@ -232,6 +235,12 @@ export function useBitbucketClient(authSession: AuthSession | undefined): Bitbuc
         username: authSession.login,
         password: authSession.token,
       },
+      proxyUrl: authProvider.insecurelyDisableTlsCertificateValidation ? env.KIE_SANDBOX_CORS_PROXY_URL : undefined,
+      headers: {
+        ...(authProvider.insecurelyDisableTlsCertificateValidation
+          ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS
+          : {}),
+      },
     });
-  }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME]);
+  }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]);
 }

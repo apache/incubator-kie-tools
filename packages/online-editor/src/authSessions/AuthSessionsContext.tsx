@@ -22,11 +22,18 @@ import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-gi
 import * as React from "react";
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
+import {
+  AuthenticatedUserResponse,
+  fetchAuthenticatedBitbucketUser,
+  fetchAuthenticatedGitHubUser,
+} from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
-import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
-import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
+import {
+  GitAuthProvider,
+  SupportedGitAuthProviders,
+  isSupportedGitAuthProviderType,
+} from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
@@ -64,7 +71,6 @@ const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
-  const extendedServices = useExtendedServices();
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
@@ -137,18 +143,29 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
         const newAuthSessionStatus: [string, AuthSessionStatus][] = await Promise.all(
           [...(authSessions?.values() ?? [])].map(async (authSession) => {
             if (authSession.type === "git") {
-              const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
+              const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId) as GitAuthProvider;
               if (isSupportedGitAuthProviderType(authProvider?.type)) {
                 try {
-                  const fetchUser = switchExpression(authProvider?.type, {
-                    bitbucket: async () =>
+                  const fetchUser = switchExpression<
+                    SupportedGitAuthProviders,
+                    () => Promise<AuthenticatedUserResponse>
+                  >(authProvider?.type, {
+                    bitbucket: () =>
                       fetchAuthenticatedBitbucketUser(
                         env.KIE_SANDBOX_APP_NAME,
                         authSession.login,
                         authSession.token,
-                        authProvider?.domain
+                        authProvider?.domain,
+                        env.KIE_SANDBOX_CORS_PROXY_URL,
+                        authProvider?.insecurelyDisableTlsCertificateValidation
                       ),
-                    github: async () => fetchAuthenticatedGitHubUser(authSession.token, authProvider?.domain),
+                    github: () =>
+                      fetchAuthenticatedGitHubUser(
+                        authSession.token,
+                        authProvider?.domain,
+                        env.KIE_SANDBOX_CORS_PROXY_URL,
+                        authProvider?.insecurelyDisableTlsCertificateValidation
+                      ),
                   });
                   await fetchUser();
                   return [authSession.id, AuthSessionStatus.VALID];
@@ -242,6 +259,7 @@ export function useAuthSession(authSessionId: string | undefined): {
   gitConfig: GitConfig | undefined;
 } {
   const { authSessions } = useAuthSessions();
+
   const authSession = useMemo(() => {
     if (!authSessionId) {
       return undefined;

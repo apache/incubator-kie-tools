@@ -27,6 +27,10 @@ export enum AuthProviderType {
   kubernetes = "kubernetes",
 }
 
+export const INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS = {
+  "insecurely-disable-tls-certificate-validation": "true",
+};
+
 const supportedGitAuthProvidersKeys = [AuthProviderType.bitbucket, AuthProviderType.github] as const;
 export type SupportedGitAuthProviders = typeof supportedGitAuthProvidersKeys[number];
 export const isSupportedGitAuthProviderType = (
@@ -68,6 +72,7 @@ export type GitAuthProvider = {
   enabled: boolean;
   supportedGitRemoteDomains: string[];
   group: AuthProviderGroup.GIT;
+  insecurelyDisableTlsCertificateValidation?: boolean;
 };
 
 export type AuthProvider = OpenShiftAuthProvider | KubernetesAuthProvider | GitAuthProvider;

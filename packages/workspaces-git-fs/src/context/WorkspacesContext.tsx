@@ -116,6 +116,7 @@ export interface WorkspacesContextType {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void>;
 
   push(args: {
@@ -128,6 +129,7 @@ export interface WorkspacesContextType {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void>;
 
   deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
@@ -150,6 +152,7 @@ export interface WorkspacesContextType {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<GitServerRef[]>;
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
@@ -180,7 +183,12 @@ export interface WorkspacesContextType {
 
   stageFile: (args: { workspaceId: string; relativePath: string }) => Promise<void>;
 
-  fetch(args: { workspaceId: string; remote: string; ref: string }): Promise<FetchResult>;
+  fetch(args: {
+    workspaceId: string;
+    remote: string;
+    ref: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<FetchResult>;
 
   // storage
 

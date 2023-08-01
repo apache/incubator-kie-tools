@@ -94,6 +94,19 @@ export const defaultEnvJson: EnvJson = {
       iconPath: routes.static.images.kubernetesLogo.path({}),
       group: AuthProviderGroup.CLOUD,
     },
+    {
+      enabled: true,
+      id: "GitHub_at_Local",
+      domain: "proxy.testing:9091",
+      supportedGitRemoteDomains: [
+        "proxy.testing:9091",
+        "gist.proxy.testing:9091"
+      ],
+      type: AuthProviderType.github,
+      name: "GitHub at Local",
+      group: AuthProviderGroup.GIT,
+      insecurelyDisableTlsCertificateValidation: true
+    }
   ],
   KIE_SANDBOX_ACCELERATORS: [
     {

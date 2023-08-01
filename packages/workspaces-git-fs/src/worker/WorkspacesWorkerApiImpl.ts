@@ -483,6 +483,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<GitServerRef[]> {
     return this.args.services.gitService.listServerRefs(args);
   }
@@ -492,6 +493,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
     gitAuthSessionId: string | undefined;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     return this.createWorkspace({
       preferredName: new URL(args.origin.url).pathname.substring(1), // Remove slash
@@ -505,6 +507,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           gitConfig: args.gitConfig,
           authInfo: args.authInfo,
           sourceBranch: args.origin.branch,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
         });
         return this.args.services.workspaceService.getFilteredWorkspaceFileDescriptors(schema, workspace.workspaceId);
       },
@@ -623,6 +626,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     workspaceId: string;
     remote: string;
     ref: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<FetchResult> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
@@ -721,6 +725,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void> {
     const workspace = await this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.get(fs, args.workspaceId);
@@ -738,6 +743,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
             email: args.gitConfig?.email ?? this.GIT_DEFAULT_USER.email,
           },
           authInfo: args.authInfo,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
         });
 
         broadcaster.broadcast({
@@ -761,6 +767,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,

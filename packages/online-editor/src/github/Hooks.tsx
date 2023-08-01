@@ -18,22 +18,58 @@ import { Octokit } from "@octokit/rest";
 import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
+import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS } from "../authProviders/AuthProvidersApi";
+import { useEnv } from "../env/hooks/EnvContext";
+
+export function getOctokitClient(args: {
+  githubToken?: string;
+  domain?: string;
+  proxyUrl?: string;
+  insecurelyDisableTlsCertificateValidation?: boolean;
+}) {
+  return new Octokit({
+    auth: args.githubToken,
+    baseUrl: args.domain === "proxy.testing:9091" ? "proxy.testing:9092" : getGithubInstanceApiUrl(args.domain),
+    request: {
+      fetch: (url: RequestInfo | URL, options: RequestInit) => {
+        const newUrl = args.insecurelyDisableTlsCertificateValidation
+          ? `${args.proxyUrl}/${url.toString().replace(/^https?:\/\//, "")}`
+          : url;
+        return fetch(newUrl, {
+          ...options,
+          headers: {
+            ...options.headers,
+            ...(args.insecurelyDisableTlsCertificateValidation
+              ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS
+              : {}),
+          },
+        });
+      },
+    },
+  });
+}
 
 export function useGitHubClient(authSession: AuthSession | undefined): Octokit {
   const authProviders = useAuthProviders();
+  const { env } = useEnv();
 
   return useMemo(() => {
     if (authSession?.type !== "git") {
-      return new Octokit();
+      return getOctokitClient({});
     }
 
     const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
     if (authProvider?.type !== "github") {
-      return new Octokit();
+      return getOctokitClient({});
     }
 
-    return new Octokit({ baseUrl: getGithubInstanceApiUrl(authProvider.domain), auth: authSession.token });
-  }, [authProviders, authSession]);
+    return getOctokitClient({
+      domain: authProvider.domain,
+      githubToken: authSession.token,
+      proxyUrl: authProvider.insecurelyDisableTlsCertificateValidation ? env.KIE_SANDBOX_CORS_PROXY_URL : undefined,
+      insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
+    });
+  }, [authProviders, env.KIE_SANDBOX_CORS_PROXY_URL, authSession]);
 }
 
 export const getGithubInstanceApiUrl = (domain?: string) => {
