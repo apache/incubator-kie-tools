@@ -24,7 +24,7 @@ test.describe("Resizing Expressions", () => {
       await expressionSelector.literalExpression(page);
     });
 
-    test("resing the header and reset", async ({ expressionSelector, resizer }) => {
+    test("resing the header and reset to default width", async ({ expressionSelector, resizer }) => {
       await expressionSelector.getBee(page).getByRole("columnheader").hover();
       const handle = expressionSelector.getBee(page).getByTestId("resizer-handle");
       await handle.dragTo(handle, {
@@ -37,14 +37,15 @@ test.describe("Resizing Expressions", () => {
         "width",
         240
       );
-      await resizer.reset(handle);
+      await expressionSelector.getBee(page).getByRole("columnheader").hover();
+      await handle.dblclick();
       expect(await expressionSelector.getBee(page).getByRole("columnheader").boundingBox()).toHaveProperty(
         "width",
         190
       );
     });
 
-    test("resing the textbox and reset", async ({ expressionSelector, resizer }) => {
+    test("resing the textbox and reset to default width", async ({ expressionSelector, resizer }) => {
       const target = expressionSelector.getBee(page).getByRole("cell");
       await target.hover();
       const handle = expressionSelector.getBee(page).getByTestId("resizer-handle");
@@ -55,6 +56,7 @@ test.describe("Resizing Expressions", () => {
       });
 
       expect(await target.boundingBox()).toHaveProperty("width", 240);
+      await expressionSelector.getBee(page).getByRole("cell").hover();
       await resizer.reset(handle);
       expect(await target.boundingBox()).toHaveProperty("width", 190);
     });
@@ -63,6 +65,10 @@ test.describe("Resizing Expressions", () => {
   test.describe("Context Expression", () => {
     test.beforeEach(async ({ expressionSelector }) => {
       await expressionSelector.contextExpression(page);
+    });
+
+    test.afterEach(() => {
+      page.reload();
     });
 
     test.skip("resize header column and reset", async ({ expressionSelector, resizer }) => {
@@ -98,8 +104,7 @@ test.describe("Resizing Expressions", () => {
     });
 
     test("resize results column and reset", async ({ expressionSelector, resizer }) => {
-      const result = expressionSelector.getBee(page).getByRole("cell", { name: "<result>" });
-      await result.hover();
+      await expressionSelector.getBee(page).getByRole("cell", { name: "<result>" }).hover();
       const handle = expressionSelector.getBee(page).getByTestId("resizer-handle");
       await handle.dragTo(handle, {
         force: true,
@@ -107,21 +112,38 @@ test.describe("Resizing Expressions", () => {
         targetPosition: { x: 50, y: 0 },
       });
 
-      const firstEntry = expressionSelector.getBee(page).getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" });
-      const secondEntry = expressionSelector.getBee(page).getByRole("cell", { name: "ContextEntry-2 (<Undefined>)" });
-      const header = expressionSelector
-        .getBee(page)
-        .getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
+      expect(
+        await expressionSelector.getBee(page).getByRole("cell", { name: "<result>" }).boundingBox()
+      ).toHaveProperty("width", 170);
+      expect(
+        await expressionSelector.getBee(page).getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).boundingBox()
+      ).toHaveProperty("width", 170);
+      expect(
+        await expressionSelector.getBee(page).getByRole("cell", { name: "ContextEntry-2 (<Undefined>)" }).boundingBox()
+      ).toHaveProperty("width", 170);
+      expect(
+        await expressionSelector
+          .getBee(page)
+          .getByRole("columnheader", { name: "Expression Name (<Undefined>)" })
+          .boundingBox()
+      ).toHaveProperty("width", 382);
 
-      expect(await result.boundingBox()).toHaveProperty("width", 170);
-      expect(await firstEntry.boundingBox()).toHaveProperty("width", 170);
-      expect(await secondEntry.boundingBox()).toHaveProperty("width", 170);
-      expect(await header.boundingBox()).toHaveProperty("width", 382);
       await resizer.reset(handle);
-      expect(await result.boundingBox()).toHaveProperty("width", 120);
-      expect(await firstEntry.boundingBox()).toHaveProperty("width", 120);
-      expect(await secondEntry.boundingBox()).toHaveProperty("width", 120);
-      expect(await header.boundingBox()).toHaveProperty("width", 332);
+      expect(
+        await expressionSelector.getBee(page).getByRole("cell", { name: "<result>" }).boundingBox()
+      ).toHaveProperty("width", 120);
+      expect(
+        await expressionSelector.getBee(page).getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).boundingBox()
+      ).toHaveProperty("width", 120);
+      expect(
+        await expressionSelector.getBee(page).getByRole("cell", { name: "ContextEntry-2 (<Undefined>)" }).boundingBox()
+      ).toHaveProperty("width", 120);
+      expect(
+        await expressionSelector
+          .getBee(page)
+          .getByRole("columnheader", { name: "Expression Name (<Undefined>)" })
+          .boundingBox()
+      ).toHaveProperty("width", 332);
     });
   });
 });

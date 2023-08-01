@@ -18,7 +18,7 @@
     "index.js"
   ],
   "scripts": {
-    "install": "pnpm playwright install --with-deps"
+    "install": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
