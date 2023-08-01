@@ -19,6 +19,7 @@ export default defineConfig({
         ["github"],
         ["junit", { outputFile: "./dist-tests/reports/junit-report-e2e.xml" }],
         ["html", { outputFolder: "./dist-tests/reports/", open: "never" }],
+        ["list"],
       ]
     : [["html", { outputFolder: "./dist-tests/reports/", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -44,7 +45,6 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
-      fullyParallel: true,
     },
 
     // {
