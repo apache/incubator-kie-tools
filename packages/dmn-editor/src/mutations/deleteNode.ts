@@ -37,13 +37,15 @@ export function deleteNode({
     // Deleting the requirement
     requirements.splice(edge.data!.dmnObject.requirementIndex, 1);
 
-    // Deleting the DMNEdge
+    // Deleting the DMNEdge's
     diagramElements?.splice(edge.data!.dmnEdge!.index, 1);
   }
 
   // FIXME: Tiago --> nodes need to be deleted in reverse order, otherwise we end up deleting the wrong stuff, as indexes shift.
 
-  // delete DMNShape
+  // FIXME: Tiago --> delete extension elements when deleting nodes that contain expressions.
+
+  // delete the DMNShape
   diagramElements?.splice(node.shapeIndex, 1);
 
   // delete the dmnObject itself
