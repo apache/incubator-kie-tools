@@ -14,35 +14,30 @@
  * limitations under the License.
  */
 
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { useCallback, useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
-import { useAppI18n } from "../../i18n";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
 import {
   isKubernetesConnectionValid,
   KubernetesConnection,
   KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { useSettings, useSettingsDispatch } from "../SettingsContext";
-import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
-import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstants";
-import { routes } from "../../navigation/Routes";
-import { QuickStartIds } from "../../quickstarts-data";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { useAppI18n } from "../../i18n";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { DEV_MODE_FEATURE_NAME } from "../../openshift/swfDevMode/DevModeConstants";
+import { QuickStartIds } from "../../quickstarts-data";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 
 enum FormValiationOptions {
@@ -59,7 +54,6 @@ export function OpenShiftSettingsSimpleConfig() {
   const [config, setConfig] = useState(settings.openshift.config);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
-  const extendedServices = useExtendedServices();
   const [isDevModeConfigEnabled, setDevModeConfigEnabled] = useState(settings.openshift.isDevModeEnabled);
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
@@ -159,21 +153,6 @@ export function OpenShiftSettingsSimpleConfig() {
   return (
     <>
       <Form>
-        {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
-          <FormAlert>
-            <Alert
-              variant="danger"
-              title={
-                <Text>
-                  Connect to <Link to={routes.settings.extended_services.path({})}>Extended Services</Link> before
-                  configuring your OpenShift instance
-                </Text>
-              }
-              aria-live="polite"
-              isInline
-            />
-          </FormAlert>
-        )}
         {isConfigValidated === FormValiationOptions.INVALID && (
           <FormAlert>
             <Alert
@@ -412,7 +391,6 @@ export function OpenShiftSettingsSimpleConfig() {
             onClick={onConnect}
             data-testid="save-config-button"
             isLoading={isConnecting}
-            isDisabled={extendedServices.status !== ExtendedServicesStatus.RUNNING}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}

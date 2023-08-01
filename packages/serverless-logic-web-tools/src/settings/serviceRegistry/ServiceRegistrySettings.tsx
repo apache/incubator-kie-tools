@@ -16,10 +16,9 @@
 
 import React from "react";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -32,8 +31,6 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { routes } from "../../navigation/Routes";
 import { QuickStartIds } from "../../quickstarts-data";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
@@ -52,7 +49,6 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceRegistry.config);
-  const extendedServices = useExtendedServices();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const qsContext = useContext<QuickStartContextValues>(QuickStartContext);
 
@@ -60,20 +56,12 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
   }, []);
 
-  const isExtendedServicesRunning = useMemo(
-    () => extendedServices.status === ExtendedServicesStatus.RUNNING,
-    [extendedServices.status]
-  );
-
   const isStoredConfigValid = useMemo(
-    () => isExtendedServicesRunning && isServiceRegistryConfigValid(settings.serviceRegistry.config),
-    [isExtendedServicesRunning, settings.serviceRegistry.config]
+    () => isServiceRegistryConfigValid(settings.serviceRegistry.config),
+    [settings.serviceRegistry.config]
   );
 
-  const isCurrentConfigValid = useMemo(
-    () => isExtendedServicesRunning && isServiceRegistryConfigValid(config),
-    [isExtendedServicesRunning, config]
-  );
+  const isCurrentConfigValid = useMemo(() => isServiceRegistryConfigValid(config), [config]);
 
   const onClearName = useCallback(() => setConfig({ ...config, name: "" }), [config]);
 
@@ -110,25 +98,6 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
       }
     >
       <PageSection>
-        {!isExtendedServicesRunning && (
-          <>
-            <Alert
-              variant="danger"
-              title={
-                <Text>
-                  Connect to <Link to={routes.settings.extended_services.path({})}>Extended Services</Link> before
-                  configuring your Service Registry instance
-                </Text>
-              }
-              aria-live="polite"
-              isInline
-            >
-              Extended Services is necessary for uploading Open API specs associated with models you design to your
-              Service Registry instance.
-            </Alert>
-            <br />
-          </>
-        )}
         <PageSection variant={"light"}>
           {isStoredConfigValid ? (
             <EmptyState>
@@ -173,27 +142,12 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
       {props.pageContainerRef.current && (
         <Modal
           title="Add Service Registry"
-          isOpen={isModalOpen && extendedServices.status !== ExtendedServicesStatus.STOPPED && !isStoredConfigValid}
+          isOpen={isModalOpen && !isStoredConfigValid}
           onClose={handleModalToggle}
           variant={ModalVariant.large}
           appendTo={props.pageContainerRef.current || document.body}
         >
           <Form>
-            {!isExtendedServicesRunning && (
-              <FormAlert>
-                <Alert
-                  variant="danger"
-                  title={
-                    <Text>
-                      Connect to <Link to={routes.settings.extended_services.path({})}>Extended Services</Link> before
-                      configuring your Service Registry instance
-                    </Text>
-                  }
-                  aria-live="polite"
-                  isInline
-                />
-              </FormAlert>
-            )}
             <FormGroup
               label={"Name"}
               labelIcon={
