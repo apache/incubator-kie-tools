@@ -19,7 +19,7 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     PLAYWRIGHT_BASE__installDeps: {
-      default: false,
+      default: "true",
       description: "Should install Playwright dependencies",
     },
   }),
