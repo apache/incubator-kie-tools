@@ -27,6 +27,7 @@ import {
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 export type DmnEditorRef = {
   getContent(): string;
@@ -119,7 +120,10 @@ export const DmnEditorInternal = ({
               <TabTitleIcon>
                 <InfrastructureIcon />
               </TabTitleIcon>
-              <TabTitleText>Data types</TabTitleText>
+              <TabTitleText>
+                Data types&nbsp;&nbsp;
+                <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.itemDefinition?.length ?? 0}</Label>
+              </TabTitleText>
             </>
           }
         >
@@ -133,7 +137,10 @@ export const DmnEditorInternal = ({
               <TabTitleIcon>
                 <FileIcon />
               </TabTitleIcon>
-              <TabTitleText>Included models</TabTitleText>
+              <TabTitleText>
+                Included models&nbsp;&nbsp;
+                <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.import?.length ?? 0}</Label>
+              </TabTitleText>
             </>
           }
         >

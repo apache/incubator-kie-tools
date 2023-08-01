@@ -6,6 +6,12 @@ import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnch
 
 export type DmnEditorDiagramEdgeData = {
   dmnEdge: (DMNDI13__DMNEdge & { index: number }) | undefined;
+  dmnObject: {
+    type: string;
+    index: number;
+    requirementType: "ir" | "kr" | "ar" | "a";
+    requirementIndex: number;
+  };
   dmnShapeSource: DMNDI13__DMNShape | undefined;
   dmnShapeTarget: DMNDI13__DMNShape | undefined;
 };
