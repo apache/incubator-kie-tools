@@ -34,21 +34,18 @@ func IsDeploymentAvailable(deployment *appsv1.Deployment) bool {
 	return false
 }
 
-// IsDeploymentProgressing checks if the Deployment is progressing/scaling its replicas.
-// Not progressing doesn't necessarily mean that the deployment is in a failure state.
-// It might be running under the required replicas, always check IsDeploymentAvailable and GetDeploymentUnavailabilityMessage to understand the real condition.
-func IsDeploymentProgressing(deployment *appsv1.Deployment) bool {
-	if !IsDeploymentAvailable(deployment) {
-		// it's not available, so let's check if it's progressing
-		for _, condition := range deployment.Status.Conditions {
-			if condition.Type == appsv1.DeploymentProgressing &&
-				condition.Status == v1.ConditionTrue {
-				return true
-			}
+// IsDeploymentFailed returns true in case of Deployment not available (IsDeploymentAvailable returns false) or it has a condition of
+// DeploymentReplicaFailure == true.
+func IsDeploymentFailed(deployment *appsv1.Deployment) bool {
+	if IsDeploymentAvailable(deployment) {
+		return false
+	}
+	for _, condition := range deployment.Status.Conditions {
+		if condition.Type == appsv1.DeploymentReplicaFailure &&
+			condition.Status == v1.ConditionTrue {
+			return true
 		}
 	}
-
-	// it might be either a failure or it's available
 	return false
 }
 

@@ -264,7 +264,7 @@ func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, wor
 		return ctrl.Result{RequeueAfter: requeueAfterIsRunning}, nil, nil
 	}
 
-	if kubeutil.IsDeploymentProgressing(deployment) {
+	if !kubeutil.IsDeploymentFailed(deployment) {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 		f.logger.Info("Workflow is in WaitingForDeployment Condition")
 		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
