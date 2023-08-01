@@ -40,10 +40,10 @@ class Resizer {
 }
 
 export const test = base.extend<BoxedExpressionFixtures>({
-  page: async ({ baseURL, page }, use) => {
-    await page.goto(baseURL ?? "");
-    await use(page);
-  },
+  // page: async ({ baseURL, page }, use) => {
+  //   await page.goto(baseURL ?? "");
+  //   await use(page);
+  // },
   expressionSelector: async ({ page }, use) => {
     await use(new ExpressionSelector(page));
   },
