@@ -223,6 +223,10 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
+      - name: "Load docker built images to podman local registry"
+        if: ${{ !inputs.dry_run }}
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.KIE_SANDBOX__imageName }}' | grep -v '<none>' | xargs podman pull
+
       - name: "Push kie-sandbox-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -293,6 +297,10 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
+      - name: "Load docker built images to podman local registry"
+        if: ${{ !inputs.dry_run }}
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }}' | grep -v '<none>' | xargs podman pull
+
       - name: "Push kie-sandbox-extended-services-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -354,6 +362,10 @@ jobs:
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Load docker built images to podman local registry"
+        if: ${{ !inputs.dry_run }}
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.GIT_CORS_PROXY__imageName }}' | grep -v '<none>' | xargs podman pull
 
       - name: "Push git-cors-proxy-image to quay.io"
         if: ${{ !inputs.dry_run }}
