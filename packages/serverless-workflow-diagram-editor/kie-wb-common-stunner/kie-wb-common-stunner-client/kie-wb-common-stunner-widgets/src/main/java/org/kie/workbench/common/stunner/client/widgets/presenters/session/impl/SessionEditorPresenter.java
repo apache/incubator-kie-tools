@@ -95,7 +95,7 @@ public class SessionEditorPresenter<S extends EditorSession>
         sessionDiagramOpenedEvent.fire(new SessionDiagramOpenedEvent(session));
     }
 
-
+    
     void commandUndoExecutedFired(@Observes final CanvasCommandUndoneEvent event) {
         refreshOnEvent(event);
     }
