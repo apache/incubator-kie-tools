@@ -85,7 +85,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
 
       const sourceBounds = sourceNode.data.shape["dc:Bounds"];
-      const targetBounds = sourceNode.data.shape["dc:Bounds"];
+      const targetBounds = targetNode.data.shape["dc:Bounds"];
       if (!sourceBounds || !targetBounds) {
         throw new Error("Cannot create connection without target bounds!");
       }
@@ -330,9 +330,13 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi, edges, nodesById, reactFlowInstance]
   );
 
-  const onEdgeUpdate: RF.OnEdgeUpdateFunc = useCallback((args) => {}, []);
+  const onEdgeUpdate: RF.OnEdgeUpdateFunc = useCallback((args) => {
+    //
+  }, []);
 
-  const onEdgesChange = useCallback<RF.OnEdgesChange>(() => {}, []);
+  const onEdgesChange = useCallback<RF.OnEdgesChange>(() => {
+    //
+  }, []);
 
   return (
     <>

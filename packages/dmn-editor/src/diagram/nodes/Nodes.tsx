@@ -554,7 +554,9 @@ function useHoveredNodeAlwaysOnTop(
       if (selected) {
         ref.current?.focus();
       }
-      ref.current!.parentElement!.style.zIndex = `${isHovered || dragging ? 1200 : 10}`;
+      if (ref.current) {
+        ref.current.parentElement!.style.zIndex = `${isHovered || dragging ? 1200 : 10}`;
+      }
     }, 0);
   }, [dragging, isHovered, ref, selected]);
 }
