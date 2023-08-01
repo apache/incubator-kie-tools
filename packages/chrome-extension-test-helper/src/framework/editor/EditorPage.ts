@@ -20,6 +20,7 @@ import DmnEditor from "./dmn/DmnEditor";
 import Element from "../Element";
 import Page from "../Page";
 import Locator from "../Locator";
+import SwfEditor from "./swf/SwfEditor";
 
 export default abstract class EditorPage extends Page {
   protected static readonly FRAME_LOCATOR = By.xpath(
@@ -42,5 +43,10 @@ export default abstract class EditorPage extends Page {
   public async getBpmnEditor(): Promise<BpmnEditor> {
     const editor: Element = await this.getEditor();
     return await this.tools.createPageFragment(BpmnEditor, editor);
+  }
+
+  public async getSwfEditor(): Promise<SwfEditor> {
+    const editor: Element = await this.getEditor();
+    return await this.tools.createPageFragment(SwfEditor, editor);
   }
 }
