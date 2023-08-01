@@ -17,9 +17,6 @@
 import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { FeatureDependentExtendedServices } from "../../extendedServices/FeatureDependentOnExtendedServices";
-import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../../settings/SettingsContext";
@@ -32,8 +29,7 @@ interface Props {
   workspaceFile: WorkspaceFile;
 }
 
-export function ExtendedServicesButtons(props: Props) {
-  const extendedServices = useExtendedServices();
+export function DeployButtons(props: Props) {
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
     workspaceFile: props.workspaceFile,
@@ -43,39 +39,29 @@ export function ExtendedServicesButtons(props: Props) {
 
   const toggleDeployDropdown = useCallback(
     (isOpen: boolean) => {
-      if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
-        openshift.setDeployDropdownOpen(isOpen);
-        return;
-      }
-      extendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-      extendedServices.setModalOpen(true);
+      openshift.setDeployDropdownOpen(isOpen);
     },
-    [extendedServices, openshift]
+    [openshift]
   );
 
   const isOpenShiftEnabled = useMemo(() => {
-    return (
-      extendedServices.status === ExtendedServicesStatus.RUNNING &&
-      settings.openshift.status === OpenShiftInstanceStatus.CONNECTED
-    );
-  }, [extendedServices.status, settings.openshift.status]);
+    return settings.openshift.status === OpenShiftInstanceStatus.CONNECTED;
+  }, [settings.openshift.status]);
 
   return (
     <>
-      <FeatureDependentExtendedServices isLight={true} position="top">
-        <Dropdown
-          className={isOpenShiftEnabled ? "pf-m-active" : ""}
-          onSelect={() => openshift.setDeployDropdownOpen(false)}
-          toggle={
-            <DropdownToggle id="deploy-dropdown-button" onToggle={toggleDeployDropdown} data-testid="deploy-button">
-              Try on OpenShift
-            </DropdownToggle>
-          }
-          isOpen={openshift.isDeployDropdownOpen}
-          position={DropdownPosition.right}
-          dropdownItems={deployDropdownItems}
-        />
-      </FeatureDependentExtendedServices>
+      <Dropdown
+        className={isOpenShiftEnabled ? "pf-m-active" : ""}
+        onSelect={() => openshift.setDeployDropdownOpen(false)}
+        toggle={
+          <DropdownToggle id="deploy-dropdown-button" onToggle={toggleDeployDropdown} data-testid="deploy-button">
+            Try on OpenShift
+          </DropdownToggle>
+        }
+        isOpen={openshift.isDeployDropdownOpen}
+        position={DropdownPosition.right}
+        dropdownItems={deployDropdownItems}
+      />
     </>
   );
 }
