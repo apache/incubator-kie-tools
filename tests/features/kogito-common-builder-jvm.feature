@@ -201,8 +201,8 @@ Feature: kogito-s2i-builder image JVM build tests
       # Leave those here as placeholder for scripts adding variable to the test. No impact on tests if empty.
       | variable     | value      |
       | RUNTIME_TYPE | springboot |
-    Then s2i build log should contain Expanding artifacts from incremental build...
-    And s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
+    Then s2i build log should not contain WARNING: Clean build will be performed because of error saving previous build artifacts
+    And s2i build log should contain Expanding artifacts from incremental build...
     And file /home/kogito/bin/process-springboot-example.jar should exist
     And check that page is served
       | property             | value                                                                         |
