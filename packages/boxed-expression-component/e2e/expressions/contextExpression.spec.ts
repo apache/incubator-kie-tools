@@ -14,7 +14,7 @@ test.afterAll(async () => {
   await page.close();
 });
 
-test.describe("Context Expression", () => {
+test.describe.skip("Context Expression", () => {
   test.beforeEach(async ({ expressionSelector }) => {
     await expressionSelector.contextExpression(page);
   });

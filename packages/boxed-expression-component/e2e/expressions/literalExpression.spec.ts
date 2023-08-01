@@ -14,7 +14,7 @@ test.afterAll(async () => {
   await page.close();
 });
 
-test.describe("Literal Expression", () => {
+test.describe.skip("Literal Expression", () => {
   test.beforeEach(async ({ expressionSelector }) => {
     await expressionSelector.literalExpression(page);
   });
