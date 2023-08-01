@@ -53,8 +53,8 @@ export function repositionNode({
       wapoint["@_x"] += deltaX;
       wapoint["@_y"] += deltaY;
     }
-
-    offsetEdges({ edgeIndexes: change.sourceEdgeIndexes, waypoint: "first" });
-    offsetEdges({ edgeIndexes: change.targetEdgeIndexes, waypoint: "last" });
   };
+
+  offsetEdges({ edgeIndexes: change.sourceEdgeIndexes, waypoint: "first" });
+  offsetEdges({ edgeIndexes: change.targetEdgeIndexes, waypoint: "last" });
 }

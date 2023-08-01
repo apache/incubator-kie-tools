@@ -291,8 +291,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                       e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
                     ),
                     position: {
-                      "@_x": change.positionAbsolute.x ?? 0,
-                      "@_y": change.positionAbsolute.y ?? 0,
+                      "@_x": change.positionAbsolute.x,
+                      "@_y": change.positionAbsolute.y,
                     },
                   },
                 });
