@@ -1,18 +1,18 @@
 import { test, expect } from "../fixtures/boxedExpression";
-import { Page } from "@playwright/test";
+// import { Page } from "@playwright/test";
 
-test.describe.configure({ mode: "serial" });
+// test.describe.configure({ mode: "serial" });
 
-let page: Page;
+// let page: Page;
 
-test.beforeAll(async ({ browser }) => {
-  page = await browser.newPage();
-  await page.goto("http://localhost:3015");
-});
+// test.beforeAll(async ({ browser }) => {
+//   page = await browser.newPage();
+//   await page.goto("http://localhost:3015");
+// });
 
-test.afterAll(async () => {
-  await page.close();
-});
+// test.afterAll(async () => {
+//   await page.close();
+// });
 
 test.describe("Resizing Expressions", () => {
   test.afterEach(() => {
@@ -20,11 +20,11 @@ test.describe("Resizing Expressions", () => {
   });
 
   test.describe("Literal Expression", () => {
-    test.beforeEach(async ({ expressionSelector }) => {
+    test.beforeEach(async ({ expressionSelector, page }) => {
       await expressionSelector.literalExpression(page);
     });
 
-    test("resing the header and reset to default width", async ({ expressionSelector, resizer }) => {
+    test("resing the header and reset to default width", async ({ expressionSelector, resizer, page }) => {
       await expressionSelector.getBee(page).getByRole("columnheader").hover();
       const handle = expressionSelector.getBee(page).getByTestId("resizer-handle");
       await handle.dragTo(handle, {
@@ -38,14 +38,14 @@ test.describe("Resizing Expressions", () => {
         240
       );
       await expressionSelector.getBee(page).getByRole("columnheader").hover();
-      await handle.dblclick();
+      await resizer.reset(handle);
       expect(await expressionSelector.getBee(page).getByRole("columnheader").boundingBox()).toHaveProperty(
         "width",
         190
       );
     });
 
-    test("resing the textbox and reset to default width", async ({ expressionSelector, resizer }) => {
+    test("resing the textbox and reset to default width", async ({ expressionSelector, resizer, page }) => {
       const target = expressionSelector.getBee(page).getByRole("cell");
       await target.hover();
       const handle = expressionSelector.getBee(page).getByTestId("resizer-handle");
@@ -63,15 +63,15 @@ test.describe("Resizing Expressions", () => {
   });
 
   test.describe("Context Expression", () => {
-    test.beforeEach(async ({ expressionSelector }) => {
+    test.beforeEach(async ({ expressionSelector, page }) => {
       await expressionSelector.contextExpression(page);
     });
 
-    test.afterEach(() => {
-      page.reload();
-    });
+    // test.afterEach(() => {
+    //   page.reload();
+    // });
 
-    test.skip("resize header column and reset", async ({ expressionSelector, resizer }) => {
+    test.skip("resize header column and reset", async ({ expressionSelector, resizer, page }) => {
       test.info().annotations.push({ type: "kie-issue", description: "<link>" });
 
       const header = expressionSelector
@@ -103,7 +103,7 @@ test.describe("Resizing Expressions", () => {
       expect(await result.boundingBox()).toHaveProperty("width", 120);
     });
 
-    test("resize results column and reset", async ({ expressionSelector, resizer }) => {
+    test("resize results column and reset", async ({ expressionSelector, resizer, page }) => {
       await expressionSelector.getBee(page).getByRole("cell", { name: "<result>" }).hover();
       const handle = expressionSelector.getBee(page).getByTestId("resizer-handle");
       await handle.dragTo(handle, {
@@ -128,6 +128,7 @@ test.describe("Resizing Expressions", () => {
           .boundingBox()
       ).toHaveProperty("width", 382);
 
+      await expressionSelector.getBee(page).getByRole("cell", { name: "<result>" }).hover();
       await resizer.reset(handle);
       expect(
         await expressionSelector.getBee(page).getByRole("cell", { name: "<result>" }).boundingBox()
