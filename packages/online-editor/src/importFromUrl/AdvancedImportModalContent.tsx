@@ -35,6 +35,8 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { useOnlineI18n } from "../i18n";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -137,21 +139,36 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   )}
                 />
               </FormGroup>
-              <Tooltip
-                content={<I18nHtml>{i18n.connectToGitModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>}
-              >
-                <FormGroup fieldId="disable-tls-validation">
-                  <Checkbox
-                    id="disable-tls-validation"
-                    name="disable-tls-validation"
-                    label={i18n.connectToGitModal.insecurelyDisableTlsCertificateValidation}
-                    aria-label="Disable TLS Certificate Validation"
-                    tabIndex={4}
-                    isChecked={props.insecurelyDisableTlsCertificateValidation}
-                    onChange={props.setInsecurelyDisableTlsCertificateValidation}
-                  />
-                </FormGroup>
-              </Tooltip>
+              <FormGroup fieldId="disable-tls-validation">
+                <Checkbox
+                  id="disable-tls-validation"
+                  name="disable-tls-validation"
+                  label={
+                    <>
+                      {i18n.connectToGitModal.insecurelyDisableTlsCertificateValidation}
+                      <Popover
+                        bodyContent={
+                          <I18nHtml>{i18n.connectToGitModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+                        }
+                      >
+                        <button
+                          type="button"
+                          aria-label="More info for disable-tls-validation field"
+                          onClick={(e) => e.preventDefault()}
+                          aria-describedby="disable-tls-validation-field"
+                          className="pf-c-form__group-label-help"
+                        >
+                          <HelpIcon noVerticalAlign />
+                        </button>
+                      </Popover>
+                    </>
+                  }
+                  aria-label="Disable TLS Certificate Validation"
+                  tabIndex={4}
+                  isChecked={props.insecurelyDisableTlsCertificateValidation}
+                  onChange={props.setInsecurelyDisableTlsCertificateValidation}
+                />
+              </FormGroup>
               <FormGroup
                 fieldId="url"
                 label="URL"

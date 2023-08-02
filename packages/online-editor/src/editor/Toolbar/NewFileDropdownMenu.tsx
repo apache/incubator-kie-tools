@@ -217,7 +217,7 @@ export function NewFileDropdownMenu(props: {
       return;
     }
 
-    const urlDomain = importableUrl.url?.hostname;
+    const urlDomain = importableUrl.url?.host;
 
     const { compatible } = getCompatibleAuthSessionWithUrlDomain({
       authProviders,

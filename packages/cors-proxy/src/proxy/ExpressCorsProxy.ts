@@ -60,7 +60,8 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
         }
       });
 
-      if (req.baseUrl.includes("testing")) {
+      // TO DO: Remove this workaround!
+      if (info.targetUrl.includes("testing")) {
         outHeaders["accept-encoding"] = "identity";
       }
 
