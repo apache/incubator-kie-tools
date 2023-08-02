@@ -175,21 +175,19 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     }
 
     if (props.workspace.descriptor.origin.kind === WorkspaceKind.GIT) {
-      return authSessionsSelectFilterCompatibleWithGitUrlDomain(
-        new URL(props.workspace.descriptor.origin.url).hostname
-      );
+      return authSessionsSelectFilterCompatibleWithGitUrlDomain(new URL(props.workspace.descriptor.origin.url).host);
     }
 
     if (props.workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST) {
       return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
-        new URL(props.workspace.descriptor.origin.url).hostname,
+        new URL(props.workspace.descriptor.origin.url).host,
         gitHubGist?.owner?.login
       );
     }
 
     if (props.workspace.descriptor.origin.kind === WorkspaceKind.BITBUCKET_SNIPPET) {
       return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
-        new URL(props.workspace.descriptor.origin.url).hostname,
+        new URL(props.workspace.descriptor.origin.url).host,
         bitbucketSnippet?.owner?.login
       );
     }

@@ -217,7 +217,6 @@ export function NewWorkspaceFromUrlPage() {
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
-      console.log(args);
       const res = await workspaces.createWorkspaceFromGitRepository(args);
 
       const { workspace, suggestedFirstFile } = res;
@@ -287,8 +286,6 @@ export function NewWorkspaceFromUrlPage() {
 
   const doImport = useCallback(async () => {
     const singleFile = isSingleFile(importableUrl.type);
-
-    console.log({ importableUrl, queryParamAuthSessionId, queryParamInsecurelyDisableTlsCertificateValidation });
 
     try {
       if (queryParamAuthSessionId && !authSession) {
