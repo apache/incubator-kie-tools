@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ResizerStopBehavior } from "../src/resizing/ResizingWidthsContext";
-import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../src/api";
-import { StandaloneBeeTable } from "../src/table/BeeTable";
-import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
+import { ResizerStopBehavior } from "../../src/resizing/ResizingWidthsContext";
+import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../../src/api";
+import { StandaloneBeeTable } from "../../src/table/BeeTable";
 
 const defaultProps: BeeTableProps<object> = {
   columns: [
@@ -31,7 +30,7 @@ const defaultProps: BeeTableProps<object> = {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof StandaloneBeeTable> = {
-  title: "Components/StandaloneBeeTable",
+  title: "Components/Table/StandaloneBeeTable",
   component: StandaloneBeeTable,
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout

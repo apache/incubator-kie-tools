@@ -9,7 +9,6 @@ import {
   generateUuid,
 } from "../../src/api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions/";
-import "../../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,

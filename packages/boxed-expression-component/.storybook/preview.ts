@@ -1,4 +1,5 @@
 import type { Preview } from "@storybook/react";
+import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 
 const preview: Preview = {
   parameters: {

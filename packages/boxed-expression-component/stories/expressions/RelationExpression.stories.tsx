@@ -3,7 +3,6 @@ import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions/";
-import "../../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 
 const defaultProps: Partial<BoxedExpressionEditorProps> = {
   decisionNodeId: "nodeId",
