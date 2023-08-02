@@ -22,6 +22,7 @@ export enum QueryParams {
   BRANCH = "branch",
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
+  INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurelyDisableTlsCertificateValidation",
   CONFIRM = "confirm",
 }
 

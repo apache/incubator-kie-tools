@@ -51,6 +51,7 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -65,11 +66,23 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
   const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
+  const queryParamInsecurelyDisableTlsCertificateValidation = useQueryParam(
+    QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
+  );
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
   const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
+  const authProvider = useAuthProvider(authSession);
+  const insecurelyDisableTlsCertificateValidation = useMemo(() => {
+    if (typeof queryParamInsecurelyDisableTlsCertificateValidation === "string") {
+      return queryParamInsecurelyDisableTlsCertificateValidation === "true";
+    }
+    return authProvider?.group === AuthProviderGroup.GIT
+      ? authProvider.insecurelyDisableTlsCertificateValidation
+      : false;
+  }, [queryParamInsecurelyDisableTlsCertificateValidation, authProvider]);
 
   const importableUrl = useImportableUrl(queryParamUrl);
   const clonableUrlObject = useClonableUrl(queryParamUrl, authInfo, queryParamBranch);
@@ -138,6 +151,30 @@ export function NewWorkspaceFromUrlPage() {
       });
     },
     [history, queryParams, routes.import, selectedGitRefName]
+  );
+
+  const setInsecurelyDisableTlsCertificateValidation = useCallback(
+    (newInsecurelyDisableTlsCertificateValidation) => {
+      if (!newInsecurelyDisableTlsCertificateValidation) {
+        history.replace({
+          pathname: routes.import.path({}),
+          search: queryParams.without(QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION).toString(),
+        });
+        return;
+      }
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams
+          .with(
+            QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION,
+            typeof newInsecurelyDisableTlsCertificateValidation === "function"
+              ? newInsecurelyDisableTlsCertificateValidation(insecurelyDisableTlsCertificateValidation ?? false)
+              : newInsecurelyDisableTlsCertificateValidation
+          )
+          .toString(),
+      });
+    },
+    [history, insecurelyDisableTlsCertificateValidation, queryParams, routes.import]
   );
 
   // Startup the page. Only import if those are set.
@@ -443,9 +480,11 @@ export function NewWorkspaceFromUrlPage() {
               authSessionId={queryParamAuthSessionId}
               url={queryParamUrl ?? ""}
               gitRefName={selectedGitRefName ?? ""}
+              insecurelyDisableTlsCertificateValidation={insecurelyDisableTlsCertificateValidation ?? false}
               setAuthSessionId={setAuthSessionId}
               setUrl={setUrl}
               setGitRefName={setGitRefName}
+              setInsecurelyDisableTlsCertificateValidation={setInsecurelyDisableTlsCertificateValidation}
             />
           )}
         </PageSection>

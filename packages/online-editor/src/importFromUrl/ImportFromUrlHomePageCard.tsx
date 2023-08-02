@@ -27,13 +27,14 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
@@ -42,11 +43,13 @@ export function ImportFromUrlCard() {
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>(AUTH_SESSION_NONE.id);
   const [url, setUrl] = useState("");
+  const [insecurelyDisableTlsCertificateValidation, setInsecurelyDisableTlsCertificateValidation] = useState(false);
   const [gitRefName, setGitRef] = useState("");
 
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
 
   const { authInfo, authSession } = useAuthSession(authSessionId);
+  const authProvider = useAuthProvider(authSession);
 
   const importableUrl = useImportableUrl(url);
   const clonableUrl = useClonableUrl(url, authInfo, gitRefName);
@@ -70,6 +73,12 @@ export function ImportFromUrlCard() {
   useEffect(() => {
     setGitRef(clonableUrl.selectedGitRefName ?? "");
   }, [clonableUrl.selectedGitRefName]);
+
+  useEffect(() => {
+    if (authProvider && authProvider.group === AuthProviderGroup.GIT) {
+      setInsecurelyDisableTlsCertificateValidation(authProvider.insecurelyDisableTlsCertificateValidation ?? false);
+    }
+  }, [authProvider, authSessionId]);
 
   const validation = useImportableUrlValidation(authSession, url, gitRefName, clonableUrl, advancedImportModalRef);
 
@@ -188,6 +197,8 @@ export function ImportFromUrlCard() {
         setUrl={setUrl}
         gitRefName={gitRefName}
         setGitRefName={setGitRef}
+        insecurelyDisableTlsCertificateValidation={insecurelyDisableTlsCertificateValidation}
+        setInsecurelyDisableTlsCertificateValidation={setInsecurelyDisableTlsCertificateValidation}
       />
     </>
   );

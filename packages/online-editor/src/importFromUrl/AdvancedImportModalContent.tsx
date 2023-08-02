@@ -31,6 +31,10 @@ import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
+import { useOnlineI18n } from "../i18n";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -47,12 +51,15 @@ export interface AdvancedImportModalProps {
   setAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
   gitRefName: string;
   setGitRefName: React.Dispatch<React.SetStateAction<string>>;
+  insecurelyDisableTlsCertificateValidation: boolean;
+  setInsecurelyDisableTlsCertificateValidation: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, AdvancedImportModalProps>(
   (props, forwardedRef) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isGitRefNameSelectorOpen, setGitRefNameSelectorOpen] = useState(false);
+    const { i18n } = useOnlineI18n();
 
     useImperativeHandle(
       forwardedRef,
@@ -130,6 +137,21 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   )}
                 />
               </FormGroup>
+              <Tooltip
+                content={<I18nHtml>{i18n.connectToGitModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>}
+              >
+                <FormGroup fieldId="disable-tls-validation">
+                  <Checkbox
+                    id="disable-tls-validation"
+                    name="disable-tls-validation"
+                    label={i18n.connectToGitModal.insecurelyDisableTlsCertificateValidation}
+                    aria-label="Disable TLS Certificate Validation"
+                    tabIndex={4}
+                    isChecked={props.insecurelyDisableTlsCertificateValidation}
+                    onChange={props.setInsecurelyDisableTlsCertificateValidation}
+                  />
+                </FormGroup>
+              </Tooltip>
               <FormGroup
                 fieldId="url"
                 label="URL"
