@@ -1,22 +1,18 @@
 import {
-  DMN14__tAssociation,
-  DMN14__tBusinessKnowledgeModel,
-  DMN14__tDecision,
   DMN14__tDefinitions,
-  DMN14__tKnowledgeSource,
   DMNDI13__DMNEdge,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
-import { useDmnEditorStore } from "../store/Store";
-import { snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { NODE_LAYERS, useDmnEditorStore } from "../store/Store";
+import { switchExpression } from "../switchExpression/switchExpression";
+import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
+import { EdgeType } from "./connections/graphStructure";
 import { EDGE_TYPES } from "./edges/EdgeTypes";
 import { DmnEditorDiagramEdgeData } from "./edges/Edges";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import { DmnEditorDiagramNodeData } from "./nodes/Nodes";
-import { switchExpression } from "../switchExpression/switchExpression";
-import { EdgeType } from "./connections/graphStructure";
 
 export function useDmnDiagramData() {
   const { diagram, dmn } = useDmnEditorStore();
@@ -69,6 +65,10 @@ export function useDmnDiagramData() {
     // console.time("nodes");
 
     const nodesById = new Map<string, RF.Node<DmnEditorDiagramNodeData<any>>>();
+    const parentIdsById = new Map<
+      string,
+      Unpacked<DMN14__tDefinitions["drgElement"] | DMN14__tDefinitions["artifact"]>
+    >();
 
     const { selected, dragging, resizing } = {
       selected: new Set(diagram.selected),
@@ -105,8 +105,21 @@ export function useDmnDiagramData() {
         resizing: resizing.has(id),
         position: snapShapePosition(shape),
         data: { dmnObject, shape, index },
-        style: { zIndex: 1, ...snapShapeDimensions(shape) },
+        zIndex: NODE_LAYERS.NODES,
+        style: { ...snapShapeDimensions(shape) },
       };
+
+      if (dmnObject.__$$element === "decisionService") {
+        const containedDecisions = [...(dmnObject.outputDecision ?? []), ...(dmnObject.encapsulatedDecision ?? [])];
+        for (let i = 0; i < containedDecisions.length; i++) {
+          parentIdsById.set(idFromHref(containedDecisions[i]["@_href"]), dmnObject);
+          newNode.zIndex = NODE_LAYERS.PARENT_NODES;
+        }
+      }
+
+      if (dmnObject.__$$element === "group") {
+        // FIXME: Tiago --> Need to find which nodes are encapsulated by a group.
+      }
 
       nodesById.set(newNode.id, newNode);
       return newNode;
@@ -145,74 +158,91 @@ export function useDmnDiagramData() {
       }),
     ];
 
+    // Assign parents
+    for (let i = 0; i < nodes.length; i++) {
+      const parent = parentIdsById.get(nodes[i].id);
+      if (parent) {
+        nodes[i].parentNode = parent["@_id"]!;
+        nodes[i].extent = "parent"; // FIXME: Tiago make these nodes deattach from parent when dragged outside. And vice-versa.
+        nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
+
+        // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
+        const parentShape = shapesById.get(parent["@_id"]!)!;
+
+        nodes[i].position = snapShapePosition(
+          offsetShapePosition(nodes[i].data.shape, {
+            x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
+            y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
+          })
+        );
+      }
+    }
+
     // console.timeEnd("nodes");
     // console.time("edges");
 
     const edges: RF.Edge<DmnEditorDiagramEdgeData>[] = [
       // information requirements
-      ...(dmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnEditorDiagramEdgeData>[]>(
-        (acc, dmnObject, index) => {
-          if (dmnObject.__$$element === "decision") {
-            acc.push(
-              ...(dmnObject.informationRequirement ?? []).map((ir, irIndex) =>
-                newEdge({
-                  id: ir["@_id"] ?? "",
-                  dmnObject: {
-                    type: dmnObject.__$$element,
-                    id: dmnObject["@_id"] ?? "",
-                    requirementType: "informationRequirement",
-                  },
-                  type: EDGE_TYPES.informationRequirement,
-                  source: idFromHref((ir.requiredDecision ?? ir.requiredInput)?.["@_href"]),
-                  target: dmnObject["@_id"]!,
-                })
-              )
-            );
-          }
-          // knowledge requirements
-          if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
-            acc.push(
-              ...(dmnObject.knowledgeRequirement ?? []).map((kr) =>
-                newEdge({
-                  id: kr["@_id"] ?? "",
-                  dmnObject: {
-                    type: dmnObject.__$$element,
-                    id: dmnObject["@_id"] ?? "",
-                    requirementType: "knowledgeRequirement",
-                  },
-                  type: EDGE_TYPES.knowledgeRequirement,
-                  source: idFromHref(kr.requiredKnowledge?.["@_href"]),
-                  target: dmnObject["@_id"]!,
-                })
-              )
-            );
-          }
-          // authority requirements
-          if (
-            dmnObject.__$$element === "decision" ||
-            dmnObject.__$$element === "businessKnowledgeModel" ||
-            dmnObject.__$$element === "knowledgeSource"
-          ) {
-            acc.push(
-              ...(dmnObject.authorityRequirement ?? []).map((ar) =>
-                newEdge({
-                  id: ar["@_id"] ?? "",
-                  dmnObject: {
-                    type: dmnObject.__$$element,
-                    id: dmnObject["@_id"] ?? "",
-                    requirementType: "authorityRequirement",
-                  },
-                  type: EDGE_TYPES.authorityRequirement,
-                  source: idFromHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)?.["@_href"]),
-                  target: dmnObject["@_id"]!,
-                })
-              )
-            );
-          }
-          return acc;
-        },
-        []
-      ),
+      ...(dmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnEditorDiagramEdgeData>[]>((acc, dmnObject) => {
+        if (dmnObject.__$$element === "decision") {
+          acc.push(
+            ...(dmnObject.informationRequirement ?? []).map((ir) =>
+              newEdge({
+                id: ir["@_id"] ?? "",
+                dmnObject: {
+                  type: dmnObject.__$$element,
+                  id: dmnObject["@_id"] ?? "",
+                  requirementType: "informationRequirement",
+                },
+                type: EDGE_TYPES.informationRequirement,
+                source: idFromHref((ir.requiredDecision ?? ir.requiredInput)?.["@_href"]),
+                target: dmnObject["@_id"]!,
+              })
+            )
+          );
+        }
+        // knowledge requirements
+        if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
+          acc.push(
+            ...(dmnObject.knowledgeRequirement ?? []).map((kr) =>
+              newEdge({
+                id: kr["@_id"] ?? "",
+                dmnObject: {
+                  type: dmnObject.__$$element,
+                  id: dmnObject["@_id"] ?? "",
+                  requirementType: "knowledgeRequirement",
+                },
+                type: EDGE_TYPES.knowledgeRequirement,
+                source: idFromHref(kr.requiredKnowledge?.["@_href"]),
+                target: dmnObject["@_id"]!,
+              })
+            )
+          );
+        }
+        // authority requirements
+        if (
+          dmnObject.__$$element === "decision" ||
+          dmnObject.__$$element === "businessKnowledgeModel" ||
+          dmnObject.__$$element === "knowledgeSource"
+        ) {
+          acc.push(
+            ...(dmnObject.authorityRequirement ?? []).map((ar) =>
+              newEdge({
+                id: ar["@_id"] ?? "",
+                dmnObject: {
+                  type: dmnObject.__$$element,
+                  id: dmnObject["@_id"] ?? "",
+                  requirementType: "authorityRequirement",
+                },
+                type: EDGE_TYPES.authorityRequirement,
+                source: idFromHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)?.["@_href"]),
+                target: dmnObject["@_id"]!,
+              })
+            )
+          );
+        }
+        return acc;
+      }, []),
       // associations
       ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject) =>
         dmnObject.__$$element === "association"

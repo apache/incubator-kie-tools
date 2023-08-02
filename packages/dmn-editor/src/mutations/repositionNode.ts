@@ -12,7 +12,7 @@ export function repositionNode({
   definitions: DMN14__tDefinitions;
   change: {
     shapeIndex: number;
-    position: { "@_x": number; "@_y": number };
+    position: { x: number; y: number };
     sourceEdgeIndexes: number[];
     targetEdgeIndexes: number[];
   };
@@ -26,11 +26,11 @@ export function repositionNode({
     throw new Error("Cannot reposition non-existent shape bounds");
   }
 
-  const deltaX = change.position["@_x"] - (bounds?.["@_x"] ?? 0);
-  const deltaY = change.position["@_y"] - (bounds?.["@_y"] ?? 0);
+  const deltaX = change.position.x - (bounds?.["@_x"] ?? 0);
+  const deltaY = change.position.y - (bounds?.["@_y"] ?? 0);
 
-  bounds["@_x"] = change.position["@_x"];
-  bounds["@_y"] = change.position["@_y"];
+  bounds["@_x"] = change.position.x;
+  bounds["@_y"] = change.position.y;
 
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
@@ -57,4 +57,11 @@ export function repositionNode({
 
   offsetEdges({ edgeIndexes: change.sourceEdgeIndexes, waypoint: "first" });
   offsetEdges({ edgeIndexes: change.targetEdgeIndexes, waypoint: "last" });
+
+  return {
+    delta: {
+      x: deltaX,
+      y: deltaY,
+    },
+  };
 }

@@ -8,7 +8,9 @@ export function EditableNodeLabel({
   setEditing,
   value,
   onChange,
+  position,
 }: {
+  position?: "center-center" | "top-center";
   isEditing: boolean;
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
@@ -94,12 +96,14 @@ export function EditableNodeLabel({
 
   const ref = useRef<HTMLInputElement>(null);
 
+  const positionClass = position ?? "center-center";
+
   return (
     <>
       {(isEditing && (
         <input
           onMouseDownCapture={(e) => e.stopPropagation()} // Make sure mouse events stay inside the node.
-          className={"kie-dmn-editor--editable-node-name-input"}
+          className={`kie-dmn-editor--editable-node-name-input ${positionClass}`}
           onKeyDown={onKeyDown}
           tabIndex={-1}
           ref={ref}

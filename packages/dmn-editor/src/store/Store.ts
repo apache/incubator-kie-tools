@@ -86,6 +86,12 @@ export type DmnNodeWithExpression =
       content: DMN14__tDecision;
     };
 
+export const NODE_LAYERS = {
+  PARENT_NODES: 0,
+  NODES: 1000, // We need a difference > 1000 here, since ReactFlow will add 1000 to the z-index when a node is selected.
+  NESTED_NODES: 3000,
+};
+
 export function useDmnEditorStore() {
   return useZustandStore(useDmnEditorStoreApi());
 }

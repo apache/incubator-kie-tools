@@ -1,7 +1,7 @@
 import { DC__Bounds, DC__Point, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
-// export const SNAP_GRID = { x: 1, y: 1 };
-export const SNAP_GRID = { x: 20, y: 20 };
+export const SNAP_GRID = { x: 1, y: 1 };
+// export const SNAP_GRID = { x: 20, y: 20 };
 
 export const MIN_SIZE_FOR_NODES = {
   width: SNAP_GRID.x * 8,
@@ -12,6 +12,21 @@ export function snapShapePosition(shape: DMNDI13__DMNShape) {
   return {
     x: Math.floor((shape["dc:Bounds"]?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
     y: Math.floor((shape["dc:Bounds"]?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+  };
+}
+
+export function offsetShapePosition(shape: DMNDI13__DMNShape, offset: { x: number; y: number }): DMNDI13__DMNShape {
+  if (!shape["dc:Bounds"]) {
+    return shape;
+  }
+
+  return {
+    ...shape,
+    "dc:Bounds": {
+      ...shape["dc:Bounds"],
+      "@_x": offset.x + shape["dc:Bounds"]["@_x"],
+      "@_y": offset.y + shape["dc:Bounds"]["@_y"],
+    },
   };
 }
 

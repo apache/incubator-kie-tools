@@ -12,7 +12,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
-import { SNAP_GRID } from "./SnapGrid";
+import { SNAP_GRID, offsetShapePosition, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/NodeHandles";
 import { EdgeType, NodeType, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
@@ -36,8 +36,9 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { useDmnDiagramData } from "./useDmnDiagramData";
+import { idFromHref, useDmnDiagramData } from "./useDmnDiagramData";
 import { deleteNode } from "../mutations/deleteNode";
+import { DMN14__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -280,22 +281,50 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             case "position":
               state.dispatch.diagram.setNodeStatus(state, change.id, { dragging: change.dragging });
               if (change.positionAbsolute) {
-                repositionNode({
+                const node = nodesById.get(change.id)!;
+                const { delta } = repositionNode({
                   definitions: state.dmn.model.definitions,
                   change: {
-                    shapeIndex: nodesById.get(change.id)!.data.shape.index,
+                    shapeIndex: node.data.shape.index,
                     sourceEdgeIndexes: edges.flatMap((e) =>
                       e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
                     ),
                     targetEdgeIndexes: edges.flatMap((e) =>
                       e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
                     ),
-                    position: {
-                      "@_x": change.positionAbsolute.x,
-                      "@_y": change.positionAbsolute.y,
-                    },
+                    position: change.positionAbsolute,
                   },
                 });
+
+                // Update nested
+                if (node.type === NODE_TYPES.decisionService) {
+                  const decisionService = node.data.dmnObject as DMN14__tDecisionService;
+                  const nested = [
+                    ...(decisionService.outputDecision ?? []),
+                    ...(decisionService.encapsulatedDecision ?? []),
+                  ];
+
+                  for (let i = 0; i < nested.length; i++) {
+                    const nestedNode = nodesById.get(idFromHref(nested[i]["@_href"]))!;
+                    const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
+                      offsetShapePosition(nestedNode.data.shape, delta)
+                    );
+                    repositionNode({
+                      definitions: state.dmn.model.definitions,
+                      change: {
+                        shapeIndex: nestedNode.data.shape.index,
+                        sourceEdgeIndexes: edges.flatMap((e) =>
+                          e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                        ),
+                        targetEdgeIndexes: edges.flatMap((e) =>
+                          e.target === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                        ),
+
+                        position: snappedNestedNodeShapeWithAppliedDelta,
+                      },
+                    });
+                  }
+                }
               }
               break;
             case "remove":
@@ -345,18 +374,18 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     <>
       <EdgeMarkers />
       <RF.ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onlyRenderVisibleElements={true}
         zoomOnDoubleClick={false}
         elementsSelectable={true}
-        nodes={nodes}
-        edges={edges}
         panOnScroll={true}
         selectionOnDrag={true}
         panOnDrag={PAN_ON_DRAG}
         panActivationKeyCode={"Alt"}
         selectionMode={RF.SelectionMode.Partial}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
         edgesUpdatable={true}
         connectionLineComponent={ConnectionLine}
         onEdgeUpdate={onEdgeUpdate}

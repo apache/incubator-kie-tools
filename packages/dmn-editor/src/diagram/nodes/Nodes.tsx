@@ -13,7 +13,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
 import { resizeNode } from "../../mutations/resizeNode";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { NODE_LAYERS, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
@@ -45,13 +45,14 @@ export const InputDataNode = React.memo(
     data: { dmnObject: inputData, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -108,13 +109,14 @@ export const DecisionNode = React.memo(
     data: { dmnObject: decision, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -176,13 +178,14 @@ export const BkmNode = React.memo(
     data: { dmnObject: bkm, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -244,13 +247,14 @@ export const KnowledgeSourceNode = React.memo(
     data: { dmnObject: knowledgeSource, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -307,13 +311,14 @@ export const TextAnnotationNode = React.memo(
     data: { dmnObject: textAnnotation, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -370,13 +375,14 @@ export const DecisionServiceNode = React.memo(
     data: { dmnObject: decisionService, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tDecisionService>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, isHovered, dragging, selected);
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -433,6 +439,7 @@ export const GroupNode = React.memo(
     data: { dmnObject: group, shape, index },
     selected,
     dragging,
+    zIndex,
     id,
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tGroup>>) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -542,9 +549,9 @@ function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions 
   };
 }
 
-// FIXME: Minor blinking occurs when node is selected & hovered and Esc is pressed to deselect. Not always, though.
 function useHoveredNodeAlwaysOnTop(
   ref: React.RefObject<HTMLDivElement>,
+  layer: number,
   isHovered: boolean,
   dragging: boolean,
   selected: boolean
@@ -555,10 +562,10 @@ function useHoveredNodeAlwaysOnTop(
         ref.current?.focus();
       }
       if (ref.current) {
-        ref.current.parentElement!.style.zIndex = `${isHovered || dragging ? 1200 : 10}`;
+        ref.current.parentElement!.style.zIndex = `${isHovered || dragging ? layer + 1000 + 1 : layer}`;
       }
     }, 0);
-  }, [dragging, isHovered, ref, selected]);
+  }, [dragging, isHovered, ref, selected, layer]);
 }
 
 export function useTargetStatus(id: string, isHovered: boolean) {
