@@ -1,10 +1,9 @@
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds, DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
-import { Dispatch } from "../store/Store";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { NodeNature, nodeNatures } from "./NodeNature";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { NodeNature, nodeNatures } from "./NodeNature";
 
 export function addStandaloneNode({
   definitions,
