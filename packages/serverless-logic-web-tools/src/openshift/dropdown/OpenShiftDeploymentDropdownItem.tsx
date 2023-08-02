@@ -67,7 +67,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     window.open(
       props.deployment.devMode
         ? endpoints.swfDevUi
-        : // Temporay fix to KOGITO-9480
+        : // Temporary fix to KOGITO-9480
           `${endpoints.base}/index.html`,
       "_blank"
     );
