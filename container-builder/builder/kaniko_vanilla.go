@@ -19,11 +19,14 @@ import (
 	"context"
 	"os"
 
+	"k8s.io/klog/v2"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/sirupsen/logrus"
+
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 type KanikoVanillaConfig struct {
@@ -62,28 +65,25 @@ func KanikoBuild(connection *client.Client, config KanikoVanillaConfig) (string,
 	}, hostConfig, nil, nil, config.ContainerName)
 
 	if err != nil {
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerCreate")
 	}
 
 	if err := connection.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		logrus.Error(err)
-	}
-	if err != nil {
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerStart")
 	}
 
 	statusCh, errCh := connection.ContainerWait(ctx, resp.ID, container.WaitConditionNotRunning)
 	select {
 	case err := <-errCh:
 		if err != nil {
-			logrus.Error(err)
+			klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerWait")
 		}
 	case <-statusCh:
 	}
 
 	out, err := connection.ContainerLogs(ctx, resp.ID, types.ContainerLogsOptions{ShowStdout: true})
 	if err != nil {
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during KanikoBuild, ContainerLogs")
 	}
 	if config.ReadBuildOutput {
 		stdcopy.StdCopy(os.Stdout, os.Stderr, out)

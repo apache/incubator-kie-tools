@@ -17,10 +17,11 @@ package builder
 import (
 	"time"
 
+	"k8s.io/klog/v2"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
-	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
@@ -30,6 +31,7 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 	builder "github.com/kiegroup/kogito-serverless-operator/container-builder/builder/kubernetes"
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
 const (
@@ -122,7 +124,6 @@ func (c *containerBuilderManager) reconcileBuild(build *api.ContainerBuild, cli 
 }
 
 func (c *containerBuilderManager) buildImage(kb internalBuilder) (*api.ContainerBuild, error) {
-	log := ctrllog.FromContext(c.ctx)
 	cli, err := client.FromCtrlClientSchemeAndConfig(c.client, c.client.Scheme(), c.restConfig)
 	plat := api.PlatformContainerBuild{
 		ObjectReference: api.ObjectReference{
@@ -145,14 +146,13 @@ func (c *containerBuilderManager) buildImage(kb internalBuilder) (*api.Container
 
 	build, err := newBuild(kb, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
 	if err != nil {
-		log.Error(err, err.Error())
+		klog.V(log.E).ErrorS(err, "error during build Image")
 		return nil, err
 	}
 	return build, err
 }
 
 func (c *containerBuilderManager) scheduleBuild(kb internalBuilder) (*api.ContainerBuild, error) {
-	log := ctrllog.FromContext(c.ctx)
 	cli, err := client.FromCtrlClientSchemeAndConfig(c.client, c.client.Scheme(), c.restConfig)
 	plat := api.PlatformContainerBuild{
 		ObjectReference: api.ObjectReference{
@@ -175,7 +175,7 @@ func (c *containerBuilderManager) scheduleBuild(kb internalBuilder) (*api.Contai
 
 	build, err := newBuild(kb, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
 	if err != nil {
-		log.Error(err, err.Error())
+		klog.V(log.E).ErrorS(err, "error during schedule build")
 		return nil, err
 	}
 	return build, err

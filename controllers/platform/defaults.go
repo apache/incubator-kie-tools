@@ -17,10 +17,12 @@ package platform
 import (
 	"context"
 
+	"k8s.io/klog/v2"
+
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
@@ -48,7 +50,7 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 	}
 
 	if verbose && p.Spec.BuildPlatform.Timeout.Duration != 0 {
-		log.Log.Infof("Maven Timeout set to %s", p.Spec.BuildPlatform.Timeout.Duration)
+		klog.V(log.I).InfoS("Maven Timeout set", "timeout", p.Spec.BuildPlatform.Timeout.Duration)
 	}
 
 	updatePlatform(ctx, c, p)
@@ -60,13 +62,13 @@ func updatePlatform(ctx context.Context, c client.Client, p *operatorapi.SonataF
 	config := operatorapi.SonataFlowPlatform{}
 	errGet := c.Get(ctx, ctrl.ObjectKey{Namespace: p.Namespace, Name: p.Name}, &config)
 	if errGet != nil {
-		log.Error(errGet, "Error reading the Platform")
+		klog.V(log.E).ErrorS(errGet, "Error reading the Platform")
 	}
 	config.Spec = p.Spec
 	config.Status.Cluster = p.Status.Cluster
 
 	updateErr := c.Update(ctx, &config)
 	if updateErr != nil {
-		log.Error(updateErr, "Error updating the BuildPlatform")
+		klog.V(log.E).ErrorS(updateErr, "Error updating the BuildPlatform")
 	}
 }

@@ -23,10 +23,13 @@ import (
 	"os"
 	"time"
 
+	"k8s.io/klog/v2"
+
 	"github.com/docker/docker/client"
 	registryContainer "github.com/heroku/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
-	"github.com/sirupsen/logrus"
+
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 const REGISTRY_IMG = "registry"
@@ -102,7 +105,7 @@ func (r RegistryContainer) DeleteImage(repository string, tag string) error {
 		defer resp.Body.Close()
 	}
 	if err != nil {
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during DeleteImage")
 		return err
 	}
 	return nil
@@ -117,7 +120,7 @@ func (r *RegistryContainer) url(pathTemplate string, args ...interface{}) string
 func GetRegistryContainer() (RegistryContainer, error) {
 	registryContainerConnection, err := GetRegistryConnection(REGISTRY_CONTAINER_URL, "", "")
 	if err != nil {
-		logrus.Errorf("Can't connect to the RegistryContainer")
+		klog.V(log.E).ErrorS(err, "Can't connect to the RegistryContainer")
 		return RegistryContainer{}, err
 	}
 	return RegistryContainer{Connection: *registryContainerConnection}, nil
@@ -136,11 +139,11 @@ func IsPortAvailable(port string) bool {
 func GetRegistryConnection(url string, username string, password string) (*registryContainer.Registry, error) {
 	registryConn, err := registryContainer.New(url, username, password)
 	if err != nil {
-		logrus.Error(err, "First Attempt to connect with RegistryContainer")
+		klog.V(log.E).ErrorS(err, "First Attempt to connect with RegistryContainer")
 	}
 	// we try ten times if the machine is slow and the registry needs time to start
 	if err != nil {
-		logrus.Info("Waiting for a correct ping with RegistryContainer")
+		klog.V(log.I).InfoS("Waiting for a correct ping with RegistryContainer")
 
 		for i := 0; i < 10; i++ {
 			time.Sleep(1 * time.Second)

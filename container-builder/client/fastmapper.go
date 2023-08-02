@@ -17,14 +17,16 @@
 package client
 
 import (
-	"github.com/sirupsen/logrus"
 	"k8s.io/apimachinery/pkg/api/meta"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/restmapper"
+	"k8s.io/klog/v2"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 // FastMapperAllowedAPIGroups contains a set of API groups that are allowed when using the fastmapper.
@@ -63,7 +65,7 @@ func newFastDiscoveryRESTMapperWithFilter(config *rest.Config, filter func(*meta
 	for _, group := range groups.Groups {
 		pinnedGroup := group
 		pick := filter(&pinnedGroup)
-		logrus.Debugf("Group: %s %v", group.Name, pick)
+		klog.V(log.D).InfoS("Group", "name", pick)
 		totalCount++
 		if !pick {
 			continue
@@ -77,7 +79,7 @@ func newFastDiscoveryRESTMapperWithFilter(config *rest.Config, filter func(*meta
 		wg.Start(func() { discoverGroupResources(dc, gr) })
 	}
 	wg.Wait()
-	logrus.Debugf("Picked %d/%d", pickedCount, totalCount)
+	klog.V(log.D).InfoS("Picked", "pickedCount", pickedCount, "totalCount", totalCount)
 	return restmapper.NewDiscoveryRESTMapper(grs), nil
 }
 
@@ -85,7 +87,7 @@ func discoverGroupResources(dc discovery.DiscoveryInterface, gr *restmapper.APIG
 	for _, version := range gr.Group.Versions {
 		resources, err := dc.ServerResourcesForGroupVersion(version.GroupVersion)
 		if err != nil {
-			logrus.Fatal(err, version.GroupVersion)
+			klog.V(log.E).ErrorS(err, version.GroupVersion)
 		}
 		gr.VersionedResources[version.Version] = resources.APIResources
 	}

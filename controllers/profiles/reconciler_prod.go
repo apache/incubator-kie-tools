@@ -18,6 +18,10 @@ import (
 	"context"
 	"time"
 
+	"k8s.io/klog/v2"
+
+	"github.com/kiegroup/kogito-serverless-operator/log"
+
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
@@ -28,7 +32,6 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 
-	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -68,20 +71,18 @@ type prodObjectEnsurers struct {
 
 func newProdObjectEnsurers(support *stateSupport) *prodObjectEnsurers {
 	return &prodObjectEnsurers{
-		deployment:          newDefaultObjectEnsurer(support.client, support.logger, defaultDeploymentCreator),
-		service:             newDefaultObjectEnsurer(support.client, support.logger, defaultServiceCreator),
-		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
+		deployment:          newDefaultObjectEnsurer(support.client, defaultDeploymentCreator),
+		service:             newDefaultObjectEnsurer(support.client, defaultServiceCreator),
+		propertiesConfigMap: newDefaultObjectEnsurer(support.client, workflowPropsConfigMapCreator),
 	}
 }
 
-func newProdProfileReconciler(client client.Client, config *rest.Config, logger *logr.Logger) ProfileReconciler {
+func newProdProfileReconciler(client client.Client, config *rest.Config) ProfileReconciler {
 	support := &stateSupport{
-		logger: logger,
 		client: client,
 	}
 	// the reconciliation state machine
 	stateMachine := newReconciliationStateMachine(
-		logger,
 		&newBuilderReconciliationState{stateSupport: support},
 		&followBuildStatusReconciliationState{stateSupport: support},
 		&deployWorkflowReconciliationState{stateSupport: support, ensurers: newProdObjectEnsurers(support)},
@@ -116,7 +117,7 @@ func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operat
 			_, err = h.performStatusUpdate(ctx, workflow)
 			return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 		}
-		h.logger.Error(err, "Failed to get active platform")
+		klog.V(log.E).ErrorS(err, "Failed to get active platform")
 		return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 	}
 	// If there is an active platform we have got all the information to build but...
@@ -133,7 +134,7 @@ func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operat
 		_, err = h.performStatusUpdate(ctx, workflow)
 	} else {
 		// TODO: not ideal, but we will improve it on https://issues.redhat.com/browse/KOGITO-8792
-		h.logger.Info("Build is in failed state, try to delete the SonataFlowBuild to restart a new build cycle")
+		klog.V(log.I).InfoS("Build is in failed state, try to delete the SonataFlowBuild to restart a new build cycle")
 	}
 
 	return ctrl.Result{RequeueAfter: requeueAfterStartingBuild}, nil, err
@@ -151,7 +152,7 @@ func (h *followBuildStatusReconciliationState) Do(ctx context.Context, workflow 
 	// Let's retrieve the build to check the status
 	build, err := builder.NewSonataFlowBuildManager(ctx, h.client).GetOrCreateBuild(workflow)
 	if err != nil {
-		h.logger.Error(err, "Failed to get or create the build for the workflow.")
+		klog.V(log.E).ErrorS(err, "Failed to get or create the build for the workflow.")
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason, build.Status.Error)
 		if _, err = h.performStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{}, nil, err
@@ -160,7 +161,7 @@ func (h *followBuildStatusReconciliationState) Do(ctx context.Context, workflow 
 	}
 
 	if build.Status.BuildPhase == operatorapi.BuildPhaseSucceeded {
-		h.logger.Info("Workflow build has finished")
+		klog.V(log.I).InfoS("Workflow build has finished")
 		//If we have finished a build and the workflow is not running, we will start the provisioning phase
 		workflow.Status.Manager().MarkTrue(api.BuiltConditionType)
 		_, err = h.performStatusUpdate(ctx, workflow)
@@ -267,7 +268,7 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 	objs := []client.Object{existingDeployment, existingService, propsCM}
 
 	if !requeue {
-		h.logger.Info("Skip reconcile: Deployment and service already exists",
+		klog.V(log.I).InfoS("Skip reconcile: Deployment and service already exists",
 			"Deployment.Namespace", existingDeployment.Namespace, "Deployment.Name", existingDeployment.Name)
 		// TODO: very naive, the state should observe the Deployment's status: https://issues.redhat.com/browse/KOGITO-8524
 		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
@@ -321,7 +322,7 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) mutateVisitor {
 
 // isWorkflowChanged marks the workflow status as unknown to require a new build reconciliation
 func (h *deployWorkflowReconciliationState) isWorkflowChanged(workflow *operatorapi.SonataFlow) bool {
-	generation := kubeutil.GetLastGeneration(workflow.Namespace, workflow.Name, h.client, context.TODO(), h.logger)
+	generation := kubeutil.GetLastGeneration(workflow.Namespace, workflow.Name, h.client, context.TODO())
 	if generation > workflow.Status.ObservedGeneration {
 		return true
 	}

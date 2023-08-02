@@ -20,5 +20,9 @@ artifacts:
     path: "../../../../utils"
     dest: /workspace/utils
 
+  - name: log
+    path: "../../../../log"
+    dest: /workspace/log
+
 execute:
   - script: install.sh

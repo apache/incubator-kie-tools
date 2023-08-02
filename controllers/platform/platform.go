@@ -20,13 +20,15 @@ import (
 	"os"
 	"strings"
 
+	"k8s.io/klog/v2"
+
 	coordination "k8s.io/api/coordination/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
@@ -118,7 +120,7 @@ func GetActivePlatform(ctx context.Context, c ctrl.Reader, namespace string) (*o
 
 // GetLocalPlatform returns the currently installed platform or any platform existing in local namespace.
 func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, active bool) (*operatorapi.SonataFlowPlatform, error) {
-	log.Debug("Finding available platforms")
+	klog.V(log.D).InfoS("Finding available platforms")
 
 	lst, err := ListPrimaryPlatforms(ctx, c, namespace)
 	if err != nil {
@@ -128,7 +130,7 @@ func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, acti
 	for _, platform := range lst.Items {
 		platform := platform // pin
 		if IsActive(&platform) {
-			log.Debugf("Found active local build platform %s", platform.Name)
+			klog.V(log.D).InfoS("Found active local build platform", "platform", platform.Name)
 			return &platform, nil
 		}
 	}
@@ -136,11 +138,11 @@ func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, acti
 	if !active && len(lst.Items) > 0 {
 		// does not require the platform to be active, just return one if present
 		res := lst.Items[0]
-		log.Debugf("Found local build platform %s", res.Name)
+		klog.V(log.D).InfoS("Found local build platform", "platform", res.Name)
 		return &res, nil
 	}
 
-	log.Debugf("Not found a local build platform")
+	klog.V(log.D).InfoS("Not found a local build platform")
 	return nil, k8serrors.NewNotFound(operatorapi.Resource("SonataFlowPlatform"), DefaultPlatformName)
 }
 

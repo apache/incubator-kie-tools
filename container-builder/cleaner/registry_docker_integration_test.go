@@ -22,11 +22,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"k8s.io/klog/v2"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/common"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 func TestRegistryDockerIntegrationTestSuite(t *testing.T) {
@@ -34,7 +35,7 @@ func TestRegistryDockerIntegrationTestSuite(t *testing.T) {
 }
 
 func (suite *DockerTestSuite) TestDockerRegistry() {
-	logrus.Info("TestPullTagPush ")
+	klog.V(log.I).InfoS("TestPullTagPush ")
 	assert.Truef(suite.T(), suite.RegistryID != "", "Registry not started")
 	assert.Truef(suite.T(), suite.LocalRegistry.IsRegistryImagePresent(), "Registry image not present")
 	assert.Truef(suite.T(), suite.LocalRegistry.GetRegistryRunningID() == suite.RegistryID, "Registry container not running")
@@ -54,7 +55,7 @@ func (suite *DockerTestSuite) TestPullTagPush() {
 
 	time.Sleep(2 * time.Second) // Needed on CI
 	repos = CheckRepositoriesSize(suite.T(), initialRepoSize+1, registryContainer)
-	logrus.Info("Repo Size after pull image = ", len(repos))
+	klog.V(log.I).InfoS("Repo Size after pull image", "size", len(repos))
 }
 
 func dockerPullTagPushOnRegistryContainer(suite *DockerTestSuite) bool {

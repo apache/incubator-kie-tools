@@ -17,24 +17,26 @@ package kubernetes
 import (
 	"context"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"k8s.io/klog/v2"
 
-	"github.com/go-logr/logr"
-	client "sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
-func getWorkflow(namespace string, name string, c client.Client, ctx context.Context, logger *logr.Logger) *operatorapi.SonataFlow {
+func getWorkflow(namespace string, name string, c client.Client, ctx context.Context) *operatorapi.SonataFlow {
 	serverlessWorkflowType := &operatorapi.SonataFlow{}
 	serverlessWorkflowType.Namespace = namespace
 	serverlessWorkflowType.Name = name
 	serverlessWorkflow := &operatorapi.SonataFlow{}
 	if err := c.Get(ctx, client.ObjectKeyFromObject(serverlessWorkflowType), serverlessWorkflow); err != nil {
-		logger.Error(err, "Error during Get")
+		klog.V(log.E).ErrorS(err, "unable to retrieve SonataFlow definition")
 	}
 	return serverlessWorkflow
 }
 
-func GetLastGeneration(namespace string, name string, c client.Client, ctx context.Context, logger *logr.Logger) int64 {
-	workflow := getWorkflow(namespace, name, c, ctx, logger)
+func GetLastGeneration(namespace string, name string, c client.Client, ctx context.Context) int64 {
+	workflow := getWorkflow(namespace, name, c, ctx)
 	return workflow.Generation
 }

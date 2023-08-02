@@ -18,15 +18,17 @@ import (
 	"context"
 	"fmt"
 
+	"k8s.io/klog/v2"
+
 	"k8s.io/client-go/rest"
 
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 
-	"github.com/go-logr/logr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
 // ProfileReconciler is the public interface to have access to this package and perform the actual reconciliation flow.
@@ -64,7 +66,6 @@ type ProfileReconciler interface {
 
 // stateSupport is the shared structure with common accessors used throughout the whole reconciliation profiles
 type stateSupport struct {
-	logger *logr.Logger
 	client client.Client
 }
 
@@ -73,7 +74,7 @@ func (s stateSupport) performStatusUpdate(ctx context.Context, workflow *operato
 	var err error
 	workflow.Status.ObservedGeneration = workflow.Generation
 	if err = s.client.Status().Update(ctx, workflow); err != nil {
-		s.logger.Error(err, "Failed to update Workflow status")
+		klog.V(log.E).ErrorS(err, "Failed to update Workflow status")
 		return false, err
 	}
 	return true, err
@@ -108,7 +109,7 @@ func (b baseReconciler) Reconcile(ctx context.Context, workflow *operatorapi.Son
 		return result, err
 	}
 	b.objects = objects
-	b.logger.Info("Returning from reconciliation", "Result", result)
+	klog.V(log.I).InfoS("Returning from reconciliation", "Result", result)
 
 	return result, err
 }
@@ -125,10 +126,9 @@ type ReconciliationState interface {
 }
 
 // newReconciliationStateMachine builder for the reconciliationStateMachine
-func newReconciliationStateMachine(logger *logr.Logger, states ...ReconciliationState) *reconciliationStateMachine {
+func newReconciliationStateMachine(states ...ReconciliationState) *reconciliationStateMachine {
 	return &reconciliationStateMachine{
 		states: states,
-		logger: logger,
 	}
 }
 
@@ -138,19 +138,18 @@ func newReconciliationStateMachine(logger *logr.Logger, states ...Reconciliation
 // TODO: implement state transition, so based on a given condition we do the status update which actively transition the object state
 type reconciliationStateMachine struct {
 	states []ReconciliationState
-	logger *logr.Logger
 }
 
 func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	for _, h := range r.states {
 		if h.CanReconcile(workflow) {
-			r.logger.Info("Found a condition to reconcile.", "Conditions", workflow.Status.Conditions)
+			klog.V(log.I).InfoS("Found a condition to reconcile.", "Conditions", workflow.Status.Conditions)
 			result, objs, err := h.Do(ctx, workflow)
 			if err != nil {
 				return result, objs, err
 			}
 			if err = h.PostReconcile(ctx, workflow); err != nil {
-				r.logger.Error(err, "Error in Post Reconcile actions.", "Workflow", workflow.Name, "Conditions", workflow.Status.Conditions)
+				klog.V(log.E).ErrorS(err, "Error in Post Reconcile actions.", "Workflow", workflow.Name, "Conditions", workflow.Status.Conditions)
 			}
 			return result, objs, err
 		}
@@ -159,6 +158,6 @@ func (r *reconciliationStateMachine) do(ctx context.Context, workflow *operatora
 }
 
 // NewReconciler creates a new ProfileReconciler based on the given workflow and context.
-func NewReconciler(client client.Client, config *rest.Config, logger *logr.Logger, workflow *operatorapi.SonataFlow) ProfileReconciler {
-	return profileBuilder(workflow)(client, config, logger)
+func NewReconciler(client client.Client, config *rest.Config, workflow *operatorapi.SonataFlow) ProfileReconciler {
+	return profileBuilder(workflow)(client, config)
 }

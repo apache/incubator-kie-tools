@@ -16,7 +16,8 @@ package controllers
 
 import (
 	"context"
-	"fmt"
+
+	"k8s.io/klog/v2"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -29,14 +30,13 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
-	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
@@ -63,13 +63,12 @@ type SonataFlowReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.2/pkg/reconcile
 func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logger := ctrllog.FromContext(ctx)
 
 	// Make sure the operator is allowed to act on namespace
 	if ok, err := platform.IsOperatorAllowedOnNamespace(ctx, r.Client, req.Namespace); err != nil {
 		return reconcile.Result{}, err
 	} else if !ok {
-		logger.Info(fmt.Sprintf("Ignoring request because the operator hasn't got the permissions to work on namespace %s", req.Namespace))
+		klog.V(log.I).InfoS("Ignoring request because the operator hasn't got the permissions to work on namespace", "namespace", req.Namespace)
 		return reconcile.Result{}, nil
 	}
 
@@ -80,17 +79,17 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
 		}
-		logger.Error(err, "Failed to get SonataFlow")
+		klog.V(log.E).ErrorS(err, "Failed to get SonataFlow")
 		return ctrl.Result{}, err
 	}
 
 	// Only process resources assigned to the operator
 	if !platform.IsOperatorHandlerConsideringLock(ctx, r.Client, req.Namespace, workflow) {
-		logger.Info("Ignoring request because resource is not assigned to current operator")
+		klog.V(log.I).InfoS("Ignoring request because resource is not assigned to current operator")
 		return reconcile.Result{}, nil
 	}
 
-	return profiles.NewReconciler(r.Client, r.Config, &logger, workflow).Reconcile(ctx, workflow)
+	return profiles.NewReconciler(r.Client, r.Config, workflow).Reconcile(ctx, workflow)
 }
 
 func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFlowPlatform) []reconcile.Request {
@@ -106,14 +105,14 @@ func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFl
 		}
 
 		if err := c.List(context.Background(), list, opts...); err != nil {
-			log.Error(err, "Failed to list workflows")
+			klog.V(log.E).ErrorS(err, "Failed to list workflows")
 			return requests
 		}
 
 		for _, workflow := range list.Items {
 			cond := workflow.Status.GetTopLevelCondition()
 			if cond.IsFalse() && api.WaitingForPlatformReason == cond.Reason {
-				log.Infof("Platform %s ready, wake-up workflow: %s", p.Name, workflow.Name)
+				klog.V(log.I).InfoS("Platform ready, wake-up workflow", "platform", p.Name, "workflow", workflow.Name)
 				requests = append(requests, reconcile.Request{
 					NamespacedName: types.NamespacedName{
 						Namespace: workflow.Namespace,
@@ -137,7 +136,7 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(func(c context.Context, a client.Object) []reconcile.Request {
 			platform, ok := a.(*operatorapi.SonataFlowPlatform)
 			if !ok {
-				log.Error(fmt.Errorf("type assertion failed: %v", a), "Failed to retrieve workflow list")
+				klog.V(log.E).InfoS("Failed to retrieve workflow list. Type assertion failed", "assertion", a)
 				return []reconcile.Request{}
 			}
 			return platformEnqueueRequestsFromMapFunc(mgr.GetClient(), platform)

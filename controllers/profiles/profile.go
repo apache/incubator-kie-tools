@@ -15,7 +15,6 @@
 package profiles
 
 import (
-	"github.com/go-logr/logr"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -27,7 +26,7 @@ const (
 	defaultProfile = metadata.ProdProfile
 )
 
-type reconcilerBuilder func(client client.Client, config *rest.Config, logger *logr.Logger) ProfileReconciler
+type reconcilerBuilder func(client client.Client, config *rest.Config) ProfileReconciler
 
 var profileBuilders = map[metadata.ProfileType]reconcilerBuilder{
 	metadata.ProdProfile: newProdProfileReconciler,

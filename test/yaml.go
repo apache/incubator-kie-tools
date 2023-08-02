@@ -20,13 +20,15 @@ import (
 	"runtime"
 	"strings"
 
+	"k8s.io/klog/v2"
+
 	"github.com/davecgh/go-spew/spew"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
@@ -54,17 +56,17 @@ func GetSonataFlow(path string, namespace string) *operatorapi.SonataFlow {
 	ksw := &operatorapi.SonataFlow{}
 	yamlFile, err := os.ReadFile(path)
 	if err != nil {
-		log.Errorf(err, "yamlFile.Get err   #%v ", err)
+		klog.V(log.E).ErrorS(err, "yamlFile.Get")
 		panic(err)
 	}
 
 	// Important: Here we are reading the CR deployment file from a given path and creating an &operatorapi.SonataFlow struct
 	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(ksw)
 	if err != nil {
-		log.Errorf(err, "Unmarshal: #%v", err)
+		klog.V(log.E).ErrorS(err, "Unmarshal")
 		panic(err)
 	}
-	log.Debugf("Successfully read KSW  #%v ", spew.Sprint(ksw))
+	klog.V(log.D).InfoS("Successfully read KSW", "ksw", spew.Sprint(ksw))
 	ksw.Namespace = namespace
 	return ksw
 }
@@ -73,16 +75,16 @@ func GetSonataFlowPlatform(path string) *operatorapi.SonataFlowPlatform {
 	ksp := &operatorapi.SonataFlowPlatform{}
 	yamlFile, err := os.ReadFile(path)
 	if err != nil {
-		log.Errorf(err, "yamlFile.Get err #%v ", err)
+		klog.V(log.E).ErrorS(err, "yamlFile.Get")
 		panic(err)
 	}
 	// Important: Here we are reading the CR deployment file from a given path and creating a &operatorapi.SonataFlowPlatform struct
 	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(ksp)
 	if err != nil {
-		log.Errorf(err, "Unmarshal: %v", err)
+		klog.V(log.E).ErrorS(err, "Unmarshal")
 		panic(err)
 	}
-	log.Debugf("Successfully read KSP  #%v ", ksp)
+	klog.V(log.D).InfoS("Successfully read KSP", "ksp", ksp)
 	return ksp
 }
 
@@ -114,12 +116,12 @@ func GetSonataFlowBuilderConfig(path, namespace string) *corev1.ConfigMap {
 	cm := &corev1.ConfigMap{}
 	yamlFile, err := os.ReadFile(path + manifestsPath + sonataFlowBuilderConfig)
 	if err != nil {
-		log.Errorf(err, "yamlFile.Get err   #%v ", err)
+		klog.V(log.E).ErrorS(err, "yamlFile.Get")
 		panic(err)
 	}
 	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(cm)
 	if err != nil {
-		log.Errorf(err, "Unmarshal: #%v", err)
+		klog.V(log.E).ErrorS(err, "Unmarshal")
 		panic(err)
 	}
 	cm.Namespace = namespace
@@ -146,7 +148,7 @@ func GetPathForSamples(path string) string {
 
 func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
 	_, file, _, ok := runtime.Caller(1)
-	log.Info("caller:" + file)
+	klog.V(log.I).InfoS("caller", "file", file)
 	if ok {
 		return GetSonataFlow(GetPathForSamples(file)+SonataFlowSampleYamlCR, namespace)
 	} else {

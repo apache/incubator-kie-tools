@@ -20,11 +20,12 @@ package builder
 import (
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"k8s.io/klog/v2"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/common"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 type KanikoDockerTestSuite struct {
@@ -46,7 +47,7 @@ func (suite *KanikoDockerTestSuite) SetupSuite() {
 
 	pullErr := suite.Docker.PullImage(EXECUTOR_IMAGE)
 	if pullErr != nil {
-		logrus.Infof("Pull Kaniko executor Error:%s", pullErr)
+		klog.V(log.E).ErrorS(pullErr, "Pull Kaniko executor")
 	}
 	time.Sleep(4 * time.Second) // Needed on CI
 }
@@ -59,14 +60,14 @@ func (suite *KanikoDockerTestSuite) TearDownSuite() {
 		suite.LocalRegistry.StopRegistry()
 	}
 	purged, err := suite.Docker.PurgeContainer("", common.REGISTRY_IMG)
-	logrus.Infof("Purged containers %t", purged)
+	klog.V(log.I).InfoS("Purged containers", "containers", purged)
 	if err != nil {
-		logrus.Infof("Purged registry err %t", err)
+		klog.V(log.E).ErrorS(err, "Purged registry")
 	}
 
 	purgedBuild, err := suite.Docker.PurgeContainer("", EXECUTOR_IMAGE)
 	if err != nil {
-		logrus.Infof("Purged container err %t", err)
+		klog.V(log.E).ErrorS(err, "Purged container")
 	}
-	logrus.Infof("Purged container build %t", purgedBuild)
+	klog.V(log.I).InfoS("Purged container build", "container", purgedBuild)
 }

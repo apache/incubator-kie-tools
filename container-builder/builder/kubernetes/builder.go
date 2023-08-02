@@ -18,11 +18,12 @@ import (
 	"context"
 	"fmt"
 
+	"k8s.io/klog/v2"
+
 	corev1 "k8s.io/api/core/v1"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
@@ -49,7 +50,6 @@ type containerBuildContext struct {
 }
 
 type builder struct {
-	L       log.Logger
 	Context containerBuildContext
 }
 
@@ -94,7 +94,6 @@ type schedulerHandler interface {
 
 func FromBuild(build *api.ContainerBuild) ContainerBuilder {
 	return &builder{
-		L: log.WithName(util.ComponentName),
 		Context: containerBuildContext{
 			ContainerBuild: build,
 			C:              context.TODO(),
@@ -174,20 +173,19 @@ func (b *builder) Reconcile() (*api.ContainerBuild, error) {
 	target := b.Context.ContainerBuild.DeepCopy()
 
 	for _, a := range actions {
-		a.InjectLogger(b.L)
 		a.InjectClient(b.Context.Client)
 
 		if a.CanHandle(target) {
-			b.L.Infof("Invoking action %s", a.Name())
+			klog.V(log.I).InfoS("Invoking action", "buildAction", a.Name())
 			newTarget, err := a.Handle(b.Context.C, target)
 			if err != nil {
-				b.L.Errorf(err, "Failed to invoke action %s", a.Name())
+				klog.V(log.E).ErrorS(err, "Failed to invoke action", "buildAction", a.Name())
 				return nil, err
 			}
 
 			if newTarget != nil {
 				if newTarget.Status.Phase != target.Status.Phase {
-					b.L.Info(
+					klog.V(log.I).InfoS(
 						"state transition",
 						"phase-from", target.Status.Phase,
 						"phase-to", newTarget.Status.Phase,

@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"time"
 
+	"k8s.io/klog/v2"
+
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -28,12 +30,12 @@ import (
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
 // SonataFlowBuildReconciler reconciles a SonataFlowBuild object
@@ -62,21 +64,20 @@ const (
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.12.1/pkg/reconcile
 func (r *SonataFlowBuildReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	log := ctrllog.FromContext(ctx)
 	build := &operatorapi.SonataFlowBuild{}
 	err := r.Client.Get(ctx, req.NamespacedName, build)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
 		}
-		log.Error(err, "Failed to get the SonataFlowBuild")
+		klog.V(log.E).ErrorS(err, "Failed to get the SonataFlowBuild")
 		return ctrl.Result{}, err
 	}
 
 	phase := build.Status.BuildPhase
 	buildManager, err := builder.NewBuildManager(ctx, r.Client, r.Config, build.Name, build.Namespace)
 	if err != nil {
-		log.Error(err, "Failed to get create a build manager to handle the workflow build")
+		klog.V(log.E).ErrorS(err, "Failed to get create a build manager to handle the workflow build")
 		return ctrl.Result{}, err
 	}
 

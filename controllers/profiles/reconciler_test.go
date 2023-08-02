@@ -15,16 +15,11 @@
 package profiles
 
 import (
-	"context"
-
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 func fakeReconcilerSupport(client client.Client) *stateSupport {
-	logger := ctrllog.FromContext(context.TODO())
 	return &stateSupport{
-		logger: &logger,
 		client: client,
 	}
 }

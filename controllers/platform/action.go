@@ -18,7 +18,6 @@ import (
 	"context"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
@@ -26,7 +25,6 @@ import (
 // Action --.
 type Action interface {
 	client.Injectable
-	log.Injectable
 
 	// a user friendly name for the action
 	Name() string
@@ -40,13 +38,8 @@ type Action interface {
 
 type baseAction struct {
 	client client.Client
-	Logger log.Logger
 }
 
 func (action *baseAction) InjectClient(client client.Client) {
 	action.client = client
-}
-
-func (action *baseAction) InjectLogger(log log.Logger) {
-	action.Logger = log
 }

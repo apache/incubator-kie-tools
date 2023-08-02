@@ -22,11 +22,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
+	"k8s.io/klog/v2"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/common"
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 func TestDockerIntegrationTestSuite(t *testing.T) {
@@ -43,21 +44,21 @@ func (suite *DockerTestSuite) TestImagesOperationsOnDockerRegistryForTest() {
 
 	pullErr := suite.Docker.PullImage(common.TEST_IMG + ":" + common.LATEST_TAG)
 	if pullErr != nil {
-		logrus.Infof("Pull Error:%s", pullErr)
+		klog.V(log.E).ErrorS(pullErr, "Pull Error")
 	}
 	assert.Nil(suite.T(), pullErr, "Pull image failed")
 	time.Sleep(2 * time.Second) // Needed on CI
 	assert.True(suite.T(), suite.LocalRegistry.IsImagePresent(common.TEST_IMG), "Test image not found in the registry after the pull")
 	tagErr := suite.Docker.TagImage(common.TEST_IMG, common.TEST_IMG_LOCAL_TAG)
 	if tagErr != nil {
-		logrus.Infof("Tag Error:%s", tagErr)
+		klog.V(log.E).ErrorS(tagErr, "Tag Error")
 	}
 
 	assert.Nil(suite.T(), tagErr, "Tag image failed")
 	time.Sleep(2 * time.Second) // Needed on CI
 	pushErr := suite.Docker.PushImage(common.TEST_IMG_LOCAL_TAG, common.REGISTRY_CONTAINER_URL_FROM_DOCKER_SOCKET, "", "")
 	if pushErr != nil {
-		logrus.Infof("Push Error:%s", pushErr)
+		klog.V(log.E).ErrorS(pushErr, "Push Error")
 	}
 
 	assert.Nil(suite.T(), pushErr, "Push image in the Docker container failed")

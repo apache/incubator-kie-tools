@@ -21,12 +21,15 @@ import (
 	"strings"
 	"time"
 
+	"k8s.io/klog/v2"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/go-connections/nat"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
+
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
 )
 
 func GetDockerConnection() (*client.Client, error) {
@@ -45,7 +48,7 @@ func GetCustomDockerConnectionWithIP(ip string) (*client.Client, error) {
 func GetCustomRegistry() (DockerLocalRegistry, *client.Client, error) {
 	connectionLocal, err := GetCustomDockerConnectionWithIP(REGISTRY_CONTAINER_URL_FROM_DOCKER_SOCKET)
 	if err != nil {
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during Get Custom Registry")
 		return DockerLocalRegistry{}, nil, err
 	}
 
@@ -74,12 +77,12 @@ func (d DockerLocalRegistry) StartRegistry() string {
 	registryID := d.GetRegistryRunningID()
 
 	if len(registryID) > 0 {
-		logrus.Infof("Registry ID %s is already running", registryID)
+		klog.V(log.I).InfoS("Registry ID is already running", "ID", registryID)
 		return registryID
 	}
 
 	if !d.IsRegistryImagePresent() {
-		logrus.Info("Registry Image Pull")
+		klog.V(log.I).InfoS("Registry Image Pull")
 		_, err := d.Connection.ImagePull(ctx, REGISTRY_IMG, types.ImagePullOptions{})
 		if err != nil {
 			fmt.Println(err)
@@ -89,7 +92,7 @@ func (d DockerLocalRegistry) StartRegistry() string {
 
 	time.Sleep(2 * time.Second) // needed on CI
 
-	logrus.Info("Registry Container Create")
+	klog.V(log.I).InfoS("Registry Container Create")
 	resp, err := d.Connection.ContainerCreate(ctx, &container.Config{
 		Image:        REGISTRY_IMG,
 		ExposedPorts: nat.PortSet{"5000": struct{}{}},
@@ -102,18 +105,17 @@ func (d DockerLocalRegistry) StartRegistry() string {
 		REGISTRY_IMG)
 
 	if err != nil {
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during Registry Container Create")
 	}
 
-	logrus.Info("Starting Registry container")
+	klog.V(log.I).InfoS("Starting Registry Container")
 	if err := d.Connection.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
-		logrus.Info("error during Start registry")
-		logrus.Error(err)
+		klog.V(log.E).ErrorS(err, "error during Start Registry Container")
 		return ""
 	}
 
 	// give some time to start
-	logrus.Info("Waiting 4 sec")
+	klog.V(log.I).InfoS("Waiting 4 seconds")
 	time.Sleep(4 * time.Second)
 	return d.GetRegistryRunningID()
 }
@@ -121,13 +123,13 @@ func (d DockerLocalRegistry) StartRegistry() string {
 func (d DockerLocalRegistry) StopRegistry() bool {
 	registryID := d.GetRegistryRunningID()
 	if len(registryID) > 0 {
-		logrus.Info("StopRegistry Kill registry container.ID " + registryID)
+		klog.V(log.I).InfoS("StopRegistry Kill Container", "ID", registryID)
 		ctx := context.Background()
 		_ = d.Connection.ContainerKill(ctx, registryID, "SIGKILL")
-		logrus.Info("StopRegistry Removing container ID " + registryID)
+		klog.V(log.I).InfoS("StopRegistry Removing Container", "ID", registryID)
 		err := d.Connection.ContainerRemove(ctx, registryID, types.ContainerRemoveOptions{})
 		if err != nil {
-			logrus.Info(err)
+			klog.V(log.E).ErrorS(err, "error during Stop Registry")
 			return false
 		}
 	}
@@ -137,9 +139,9 @@ func (d DockerLocalRegistry) StopRegistry() bool {
 func (d DockerLocalRegistry) StopAndRemoveContainer(containerID string) bool {
 	if len(containerID) > 0 {
 		ctx := context.Background()
-		logrus.Info("Docker StopAndRemoveContainer Kill registry container container.ID " + containerID)
+		klog.V(log.I).InfoS("Docker StopAndRemoveContainer Kill registry container", "ID", containerID)
 		_ = d.Connection.ContainerKill(ctx, containerID, "SIGKILL")
-		logrus.Info("Docker StopAndRemoveContainer Removing container ID " + containerID)
+		klog.V(log.I).InfoS("Docker StopAndRemoveContainer Removing container", "ID", containerID)
 		err := d.Connection.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{})
 		return err == nil
 	}
@@ -194,30 +196,30 @@ func SetupDockerSocket() (DockerLocalRegistry, string, Docker) {
 	dockerSocketConn, err := GetDockerConnection()
 
 	if err != nil {
-		logrus.Errorf("Can't get Docker socket")
+		klog.V(log.E).ErrorS(err, "Can't get Docker socket")
 		return DockerLocalRegistry{}, "", Docker{}
 	}
 	dockerSock := Docker{Connection: dockerSocketConn}
 
 	if err != nil {
-		logrus.Errorf("Pull error in SetupDockerSocket %s", err)
+		klog.V(log.E).ErrorS(err, "error during SetupDockerSocket")
 	}
 	_, err = dockerSock.PurgeContainer("", REGISTRY_IMG)
 	if err != nil {
-		logrus.Errorf("Purge  error in SetupDockerSocket %s", err)
+		klog.V(log.E).ErrorS(err, "error during SetupDockerSocket")
 	}
 
 	d := DockerLocalRegistry{Connection: dockerSocketConn}
-	logrus.Info("Check if registry image is present :", d.IsRegistryImagePresent())
+	klog.V(log.I).InfoS("Check if registry image is present", "isPresent", d.IsRegistryImagePresent())
 	if !d.IsRegistryImagePresent() {
 		dockerSock.PullImage(REGISTRY_IMG_FULL_TAG)
 	}
 	registryID := d.GetRegistryRunningID()
 	if len(registryID) == 0 {
 		registryID = d.StartRegistry()
-		logrus.Errorf("Registry started")
+		klog.V(log.E).ErrorS(err, "Registry started")
 	} else {
-		logrus.Infof("Registry already up and running with ID %s", registryID)
+		klog.V(log.I).InfoS("Registry already up and running", "ID", registryID)
 	}
 	return d, registryID, dockerSock
 

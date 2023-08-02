@@ -17,20 +17,21 @@ package profiles
 import (
 	"context"
 
+	"k8s.io/klog/v2"
+
 	"k8s.io/client-go/rest"
 
-	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
 // newStatusEnricher see defaultObjectEnsurer
-func newStatusEnricher(client client.Client, logger *logr.Logger, enricher statusEnricherFn) *statusEnricher {
+func newStatusEnricher(client client.Client, enricher statusEnricherFn) *statusEnricher {
 	return &statusEnricher{
 		client:   client,
-		logger:   logger,
 		enricher: enricher,
 	}
 }
@@ -43,7 +44,6 @@ type statusEnricherFn func(ctx context.Context, client client.Client, workflow *
 type statusEnricher struct {
 	client   client.Client
 	config   *rest.Config
-	logger   *logr.Logger
 	enricher statusEnricherFn
 }
 
@@ -54,6 +54,6 @@ func (d *statusEnricher) Enrich(ctx context.Context, workflow *operatorapi.Sonat
 		return result, err
 	}
 
-	d.logger.Info("Enrichment operation finalized", "result", result, "workflow", workflow.GetName(), "namespace", workflow.GetNamespace())
+	klog.V(log.I).InfoS("Enrichment operation finalized", "result", result, "workflow", workflow.GetName(), "namespace", workflow.GetNamespace())
 	return result, nil
 }

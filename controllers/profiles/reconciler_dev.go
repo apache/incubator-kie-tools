@@ -20,6 +20,8 @@ import (
 	"path"
 	"time"
 
+	"k8s.io/klog/v2"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
@@ -29,11 +31,11 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/kiegroup/kogito-serverless-operator/log"
 	"github.com/kiegroup/kogito-serverless-operator/utils"
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 
-	"github.com/go-logr/logr"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -42,7 +44,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
-
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
@@ -76,9 +77,8 @@ func (d developmentProfile) GetProfile() metadata.ProfileType {
 	return metadata.DevProfile
 }
 
-func newDevProfileReconciler(client client.Client, config *rest.Config, logger *logr.Logger) ProfileReconciler {
+func newDevProfileReconciler(client client.Client, config *rest.Config) ProfileReconciler {
 	support := &stateSupport{
-		logger: logger,
 		client: client,
 	}
 
@@ -92,7 +92,7 @@ func newDevProfileReconciler(client client.Client, config *rest.Config, logger *
 		enrichers = newDevelopmentObjectEnrichers(support)
 	}
 
-	stateMachine := newReconciliationStateMachine(logger,
+	stateMachine := newReconciliationStateMachine(
 		&ensureRunningDevWorkflowReconciliationState{stateSupport: support, ensurers: ensurers},
 		&followDeployDevWorkflowReconciliationState{stateSupport: support, enrichers: enrichers},
 		&recoverFromFailureDevReconciliationState{stateSupport: support})
@@ -101,39 +101,39 @@ func newDevProfileReconciler(client client.Client, config *rest.Config, logger *
 		baseReconciler: newBaseProfileReconciler(support, stateMachine),
 	}
 
-	logger.Info("Reconciling in", "profile", profile.GetProfile())
+	klog.V(log.I).InfoS("Reconciling in", "profile", profile.GetProfile())
 	return profile
 }
 
 func newDevelopmentObjectEnsurers(support *stateSupport) *devProfileObjectEnsurers {
 	return &devProfileObjectEnsurers{
-		deployment:          newDefaultObjectEnsurer(support.client, support.logger, devDeploymentCreator),
-		service:             newDefaultObjectEnsurer(support.client, support.logger, devServiceCreator),
+		deployment:          newDefaultObjectEnsurer(support.client, devDeploymentCreator),
+		service:             newDefaultObjectEnsurer(support.client, devServiceCreator),
 		network:             newDummyObjectEnsurer(),
-		definitionConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
-		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
+		definitionConfigMap: newDefaultObjectEnsurer(support.client, workflowDefConfigMapCreator),
+		propertiesConfigMap: newDefaultObjectEnsurer(support.client, workflowPropsConfigMapCreator),
 	}
 }
 
 func newDevelopmentObjectEnsurersForOpenShift(support *stateSupport) *devProfileObjectEnsurers {
 	return &devProfileObjectEnsurers{
-		deployment:          newDefaultObjectEnsurer(support.client, support.logger, devDeploymentCreator),
-		service:             newDefaultObjectEnsurer(support.client, support.logger, defaultServiceCreator),
-		network:             newDefaultObjectEnsurer(support.client, support.logger, defaultNetworkCreator),
-		definitionConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowDefConfigMapCreator),
-		propertiesConfigMap: newDefaultObjectEnsurer(support.client, support.logger, workflowPropsConfigMapCreator),
+		deployment:          newDefaultObjectEnsurer(support.client, devDeploymentCreator),
+		service:             newDefaultObjectEnsurer(support.client, defaultServiceCreator),
+		network:             newDefaultObjectEnsurer(support.client, defaultNetworkCreator),
+		definitionConfigMap: newDefaultObjectEnsurer(support.client, workflowDefConfigMapCreator),
+		propertiesConfigMap: newDefaultObjectEnsurer(support.client, workflowPropsConfigMapCreator),
 	}
 }
 
 func newDevelopmentObjectEnrichers(support *stateSupport) *devProfileObjectEnrichers {
 	return &devProfileObjectEnrichers{
-		networkInfo: newStatusEnricher(support.client, support.logger, defaultDevStatusEnricher),
+		networkInfo: newStatusEnricher(support.client, defaultDevStatusEnricher),
 	}
 }
 
 func newDevelopmentObjectEnrichersForOpenShift(support *stateSupport) *devProfileObjectEnrichers {
 	return &devProfileObjectEnrichers{
-		networkInfo: newStatusEnricher(support.client, support.logger, devStatusEnricherForOpenShift),
+		networkInfo: newStatusEnricher(support.client, devStatusEnricherForOpenShift),
 	}
 }
 
@@ -213,7 +213,7 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 
 	// First time reconciling this object, mark as wait for deployment
 	if workflow.Status.GetTopLevelCondition().IsUnknown() {
-		e.logger.Info("Workflow is in WaitingForDeployment Condition")
+		klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 		if _, err = e.performStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
@@ -224,7 +224,7 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	// Is the deployment still available?
 	convertedDeployment := deployment.(*appsv1.Deployment)
 	if !kubeutil.IsDeploymentAvailable(convertedDeployment) {
-		e.logger.Info("Workflow is not running due to a problem in the Deployment. Attempt to recover.")
+		klog.V(log.I).InfoS("Workflow is not running due to a problem in the Deployment. Attempt to recover.")
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, getDeploymentFailureMessage(convertedDeployment))
 		if _, err = e.performStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
@@ -256,7 +256,7 @@ func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, wor
 
 	if kubeutil.IsDeploymentAvailable(deployment) {
 		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
-		f.logger.Info("Workflow is in Running Condition")
+		klog.V(log.I).InfoS("Workflow is in Running Condition")
 		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
 
@@ -266,7 +266,7 @@ func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, wor
 
 	if !kubeutil.IsDeploymentFailed(deployment) {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
-		f.logger.Info("Workflow is in WaitingForDeployment Condition")
+		klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
 		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
 		}
@@ -276,7 +276,7 @@ func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, wor
 	failedReason := getDeploymentFailureMessage(deployment)
 	workflow.Status.LastTimeRecoverAttempt = metav1.Now()
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, failedReason)
-	f.logger.Info("Workflow deployment failed", "Reason Message", failedReason)
+	klog.V(log.I).InfoS("Workflow deployment failed", "Reason Message", failedReason)
 	_, err := f.performStatusUpdate(ctx, workflow)
 	return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
 }
@@ -312,7 +312,7 @@ func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workf
 	if err := r.client.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
 		// if the deployment is not there, let's try to reset the status condition and make the reconciliation fix the objects
 		if errors.IsNotFound(err) {
-			r.logger.Info("Tried to recover from failed state, no deployment found, trying to reset the workflow conditions")
+			klog.V(log.I).InfoS("Tried to recover from failed state, no deployment found, trying to reset the workflow conditions")
 			workflow.Status.RecoverFailureAttempts = 0
 			workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
 			if _, updateErr := r.performStatusUpdate(ctx, workflow); updateErr != nil {
@@ -360,7 +360,7 @@ func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workf
 	})
 
 	if retryErr != nil {
-		r.logger.Info("Error during Deployment rollout")
+		klog.V(log.E).ErrorS(retryErr, "Error during Deployment rollout")
 		return ctrl.Result{RequeueAfter: requeueRecoverDeploymentErrorInterval}, nil, nil
 	}
 
