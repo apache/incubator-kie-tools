@@ -26,7 +26,7 @@ pipeline {
         CONTAINER_ENGINE = 'docker'
         CONTAINER_ENGINE_TLS_OPTIONS = ''
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
 
         IMAGE_BUILD_PLATFORMS = 'linux/amd64,linux/arm64'
     }

@@ -25,7 +25,7 @@ pipeline {
         CONTAINER_ENGINE = 'podman'
         CONTAINER_ENGINE_TLS_OPTIONS = '--tls-verify=false'
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
         GITHUB_REPO = "${REPO_NAME}" // for github-release cli
     }
 
@@ -74,7 +74,7 @@ pipeline {
 
                         // Tag with `latest` tag if asked for as parameter
                         if (helper.isDeployLatestTag()) {
-                             promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
+                            promoteImage(helper.getImageFullTag(imageName, baseImageParamsPrefix), helper.getImageFullTag(imageName, promoteImageParamsPrefix, 'latest'))
                         }
                     }
                 }
