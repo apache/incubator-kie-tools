@@ -192,8 +192,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -397,8 +397,8 @@ importers:
         specifier: ^17.0.5
         version: 17.0.8
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -434,8 +434,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -707,8 +707,8 @@ importers:
         specifier: ^10.0.2
         version: 10.0.2
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -1013,8 +1013,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -3292,8 +3292,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -4726,8 +4726,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-electron":
         specifier: ^2.3.3
         version: 2.3.3
@@ -5272,8 +5272,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -5957,8 +5957,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -7570,8 +7570,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-electron":
         specifier: ^2.3.3
         version: 2.3.3
@@ -8441,8 +8441,8 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       minimatch:
         specifier: ^3.0.5
         version: 3.0.5
@@ -8615,8 +8615,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -8687,8 +8687,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -8723,8 +8723,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -8771,8 +8771,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -8862,8 +8862,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -9447,8 +9447,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-electron":
         specifier: ^2.3.3
         version: 2.3.3
@@ -17231,9 +17231,9 @@ packages:
     resolution:
       { integrity: sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ== }
 
-  /@types/vscode@1.66.0:
+  /@types/vscode@1.67.0:
     resolution:
-      { integrity: sha512-ZfJck4M7nrGasfs4A4YbUoxis3Vu24cETw3DERsNYtDZmYSYtk6ljKexKFKhImO/ZmY6ZMsmegu2FPkXoUFImA== }
+      { integrity: sha512-GH8BDf8cw9AC9080uneJfulhSa7KHSMI2s/CyKePXoGNos9J486w2V4YKoeNUqIEkW4hKoEAWp6/cXTwyGj47g== }
 
   /@types/ws@8.2.2:
     resolution:
