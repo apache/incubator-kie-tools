@@ -18,7 +18,9 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.Optional;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
@@ -35,6 +37,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
 
+@RunWith(LienzoMockitoTestRunner.class)
 public class StateMarshallingTest extends BaseMarshallingTest {
 
     private static final String WORKFLOW_ID = "workflow1";
@@ -122,7 +125,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertEquals(1, workflow.getStates().length);
         OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
-        assertFalse(GraphUtils.toEnd(state1.getEnd()));
+        assertFalse(DefinitionTypeUtils.toEnd(state1.getEnd()));
         assertNull(state1.getCompensatedBy());
         assertNull(state1.getOnErrors());
     }
@@ -142,14 +145,14 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         Workflow workflow = marshallWorkflow();
         OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
-        assertFalse(GraphUtils.toEnd(state1.getEnd()));
+        assertFalse(DefinitionTypeUtils.toEnd(state1.getEnd()));
         assertNull(state1.getCompensatedBy());
         ErrorTransition[] errorTransitions = state1.getOnErrors();
         assertNotNull(errorTransitions);
         assertEquals(1, errorTransitions.length);
         ErrorTransition onError = errorTransitions[0];
         assertNull(onError.getTransition());
-        assertTrue(GraphUtils.toEnd(onError.getEnd()));
+        assertTrue(DefinitionTypeUtils.toEnd(onError.getEnd()));
     }
 
     @Test
@@ -169,7 +172,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         Workflow workflow = marshallWorkflow();
         OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
-        assertFalse(GraphUtils.toEnd(state1.getEnd()));
+        assertFalse(DefinitionTypeUtils.toEnd(state1.getEnd()));
         assertNull(state1.getTransition());
         assertNull(state1.getOnErrors());
         assertEquals(compensationState.getName(), state1.getCompensatedBy());

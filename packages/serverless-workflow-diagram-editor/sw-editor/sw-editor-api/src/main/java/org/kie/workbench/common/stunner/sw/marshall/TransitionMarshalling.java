@@ -129,7 +129,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(dataConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (GraphUtils.toEnd(dataConditionTransition.getEnd())) {
+                if (DefinitionTypeUtils.toEnd(dataConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -178,7 +178,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(defaultConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (GraphUtils.toEnd(defaultConditionTransition.getEnd())) {
+                if (DefinitionTypeUtils.toEnd(defaultConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -228,7 +228,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(errorTransition.getTransition());
 
                 Edge edge = null;
-                if (GraphUtils.toEnd(errorTransition.getEnd())) {
+                if (DefinitionTypeUtils.toEnd(errorTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -278,7 +278,7 @@ public interface TransitionMarshalling {
                 String transition = getTransition(eventConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (GraphUtils.toEnd(eventConditionTransition.getEnd())) {
+                if (DefinitionTypeUtils.toEnd(eventConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);

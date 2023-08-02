@@ -92,7 +92,6 @@ public abstract class BaseMarshallingTest {
             Edge edge = outEdges.get(0);
             Node targetNode = edge.getTargetNode();
             View targetContent = (View) targetNode.getContent();
-            System.out.println(targetContent.getDefinition().toString());
             if (targetContent.getDefinition() instanceof End) {
                 return true;
             }

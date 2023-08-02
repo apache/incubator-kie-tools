@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -24,6 +26,7 @@ import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(LienzoMockitoTestRunner.class)
 public class StatesFlowMarshallingTest extends BaseMarshallingTest {
 
     private static final String WORKFLOW_ID = "workflow1";

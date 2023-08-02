@@ -166,7 +166,7 @@ public class StateShapeTest {
 
     @Test
     public void customBase64IconStateIconTest() {
-        InjectState state = (InjectState) spy(createState(INJECT));
+        InjectState state = (InjectState) createState(INJECT);
         Metadata metadata = new Metadata();
         metadata.setIcon("data://png..lalala");
         state.setMetadata(metadata);
@@ -182,7 +182,7 @@ public class StateShapeTest {
 
     @Test
     public void invalidIconStateTest() {
-        InjectState state = (InjectState) spy(createState(INJECT));
+        InjectState state = (InjectState) createState(INJECT);
         Metadata metadata = new Metadata();
         metadata.setIcon("png..lalala");
         state.setMetadata(metadata);

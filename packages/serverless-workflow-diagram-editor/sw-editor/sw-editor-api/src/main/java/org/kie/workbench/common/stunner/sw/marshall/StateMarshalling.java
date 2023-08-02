@@ -73,7 +73,7 @@ public interface StateMarshalling {
 
                 // Parse end.
                 JsPropertyMap<Object> map = Js.asPropertyMap(state);
-                if (map.has("end") && GraphUtils.toEnd(map.get("end"))) {
+                if (map.has("end") && DefinitionTypeUtils.toEnd(map.get("end"))) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);

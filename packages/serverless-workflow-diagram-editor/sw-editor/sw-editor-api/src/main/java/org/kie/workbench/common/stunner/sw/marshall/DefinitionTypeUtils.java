@@ -2,10 +2,23 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
 public class DefinitionTypeUtils {
+
+    public static boolean toEnd(Object end) {
+        if (end instanceof Boolean) {
+            return (boolean) end;
+        } else if (end instanceof StateEnd) {
+            StateEnd stateEnd = (StateEnd) end;
+            if (stateEnd.getTerminate() != null) {
+                return stateEnd.getTerminate();
+            }
+        }
+        return false;
+    }
 
     public static String getTransition(Object transition) {
         if (transition instanceof String) {
