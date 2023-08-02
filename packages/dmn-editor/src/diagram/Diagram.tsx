@@ -263,12 +263,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   definitions: state.dmn.model.definitions,
                   change: {
                     shapeIndex: nodesById.get(change.id)!.data.shape.index,
-                    sourceEdgeIndexes: edges
-                      .flatMap((e) => (e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []))
-                      .reverse(),
-                    targetEdgeIndexes: edges
-                      .flatMap((e) => (e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []))
-                      .reverse(),
+                    sourceEdgeIndexes: edges.flatMap((e) =>
+                      e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                    ),
+                    targetEdgeIndexes: edges.flatMap((e) =>
+                      e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                    ),
                     dimension: {
                       "@_width": change.dimensions?.width ?? 0,
                       "@_height": change.dimensions?.height ?? 0,
@@ -284,12 +284,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   definitions: state.dmn.model.definitions,
                   change: {
                     shapeIndex: nodesById.get(change.id)!.data.shape.index,
-                    sourceEdgeIndexes: edges
-                      .flatMap((e) => (e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []))
-                      .reverse(),
-                    targetEdgeIndexes: edges
-                      .flatMap((e) => (e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []))
-                      .reverse(),
+                    sourceEdgeIndexes: edges.flatMap((e) =>
+                      e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                    ),
+                    targetEdgeIndexes: edges.flatMap((e) =>
+                      e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                    ),
                     position: {
                       "@_x": change.positionAbsolute.x,
                       "@_y": change.positionAbsolute.y,
@@ -305,11 +305,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 node: {
                   type: node.type as NodeType,
                   id: node.id,
-                  index: node.data.index,
-                  shapeIndex: node.data.shape.index,
                 },
-                sourceEdgeIndexes: edges.flatMap((e) => (e.source === node.id && e.data?.dmnEdge ? [e] : [])).reverse(),
-                targetEdgeIndexes: edges.flatMap((e) => (e.target === node.id && e.data?.dmnEdge ? [e] : [])).reverse(),
+                targetEdges: edges
+                  .flatMap((e) => (e.target === node.id ? [{ id: e.id, data: e.data! }] : []))
+                  .reverse(),
               });
               state.dispatch.diagram.setNodeStatus(state, node.id, {
                 selected: false,
