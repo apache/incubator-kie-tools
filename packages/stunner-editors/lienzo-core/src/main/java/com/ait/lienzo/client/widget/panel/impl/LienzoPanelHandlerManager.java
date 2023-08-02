@@ -748,8 +748,8 @@ public final class LienzoPanelHandlerManager {
         }
 
         Node<?> node = findPrimitiveForEventType(x, y, NodeMouseClickEvent.getType());
-        if (node.getNodeType().getValue().equals("Shape")) {
-            clearElementInfo();
+        if (node == null) {
+          clearElementInfo();
         }
         fireEvent(event, null, x, y, null, node, nodeMouseClickEvent);
     }
