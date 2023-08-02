@@ -32,7 +32,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/vscode": "^1.66.0",
+    "@types/vscode": "1.67.0",
     "@vscode/vsce": "^2.19.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.2",
@@ -42,7 +42,7 @@
     "webpack-merge": "^5.8.0"
   },
   "engines": {
-    "vscode": "^1.66.0"
+    "vscode": "^1.67.0"
   },
   "displayName": "Todo List View :: Kogito Examples ",
   "categories": [
