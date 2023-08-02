@@ -304,6 +304,7 @@ export class GitService {
       dir: args.dir,
       remoteRef: args.remoteRef,
       authInfo: args.authInfo,
+      insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
     });
 
     if (serverRemoteRef?.oid && head === serverRemoteRef.oid) return;

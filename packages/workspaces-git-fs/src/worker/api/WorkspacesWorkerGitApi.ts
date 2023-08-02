@@ -46,6 +46,7 @@ export interface WorkspacesWorkerGitApi {
       email: string;
       name: string;
     };
+    gitInsecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<{
     workspace: WorkspaceDescriptor;
     suggestedFirstFile?: WorkspaceWorkerFileDescriptor;
@@ -148,23 +149,27 @@ export interface WorkspacesWorkerGitApi {
     workspaceId: string;
     remoteUrl: string;
     branch?: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
     branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
     branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_changeGitAuthSessionId(args: {
     workspaceId: string;
     gitAuthSessionId: string | undefined;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initLocalOnExistingWorkspace(args: { workspaceId: string }): Promise<void>;

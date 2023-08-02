@@ -85,7 +85,12 @@ export function NewWorkspaceFromUrlPage() {
   }, [queryParamInsecurelyDisableTlsCertificateValidation, authProvider]);
 
   const importableUrl = useImportableUrl(queryParamUrl);
-  const clonableUrlObject = useClonableUrl(queryParamUrl, authInfo, queryParamBranch);
+  const clonableUrlObject = useClonableUrl(
+    queryParamUrl,
+    authInfo,
+    queryParamBranch,
+    insecurelyDisableTlsCertificateValidation
+  );
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
   const setAuthSessionId = useCallback(
@@ -212,6 +217,7 @@ export function NewWorkspaceFromUrlPage() {
 
   const cloneGitRepository: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
+      console.log(args);
       const res = await workspaces.createWorkspaceFromGitRepository(args);
 
       const { workspace, suggestedFirstFile } = res;
@@ -282,6 +288,8 @@ export function NewWorkspaceFromUrlPage() {
   const doImport = useCallback(async () => {
     const singleFile = isSingleFile(importableUrl.type);
 
+    console.log({ importableUrl, queryParamAuthSessionId, queryParamInsecurelyDisableTlsCertificateValidation });
+
     try {
       if (queryParamAuthSessionId && !authSession) {
         setImportingError(`Auth session '${queryParamAuthSessionId}' not found.`);
@@ -305,6 +313,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             gitAuthSessionId: queryParamAuthSessionId,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -327,6 +336,7 @@ export function NewWorkspaceFromUrlPage() {
             gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -348,6 +358,7 @@ export function NewWorkspaceFromUrlPage() {
             gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -368,6 +379,7 @@ export function NewWorkspaceFromUrlPage() {
             gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -400,6 +412,7 @@ export function NewWorkspaceFromUrlPage() {
     authInfo,
     doImportAsSingleFile,
     queryParamBranch,
+    insecurelyDisableTlsCertificateValidation,
   ]);
 
   useEffect(() => {

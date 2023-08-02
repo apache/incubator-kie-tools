@@ -133,7 +133,12 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   import: new Route<{
-    queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.AUTH_SESSION_ID | QueryParams.CONFIRM;
+    queryParams:
+      | QueryParams.URL
+      | QueryParams.BRANCH
+      | QueryParams.AUTH_SESSION_ID
+      | QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
+      | QueryParams.CONFIRM;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{

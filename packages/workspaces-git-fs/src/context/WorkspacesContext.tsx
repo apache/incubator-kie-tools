@@ -107,6 +107,7 @@ export interface WorkspacesContextType {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   pull(args: {
@@ -244,13 +245,32 @@ export interface WorkspacesContextType {
 
   getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor>;
 
-  initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch?: string }): Promise<void>;
+  initGitOnWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: URL;
+    branch?: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<void>;
 
-  initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
+  initGistOnWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: URL;
+    branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<void>;
 
-  initSnippetOnWorkspace(args: { workspaceId: string; remoteUrl: URL; branch: string }): Promise<void>;
+  initSnippetOnWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: URL;
+    branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<void>;
 
-  changeGitAuthSessionId(args: { workspaceId: string; gitAuthSessionId: string | undefined }): Promise<void>;
+  changeGitAuthSessionId(args: {
+    workspaceId: string;
+    gitAuthSessionId: string | undefined;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<void>;
 
   initLocalOnWorkspace(args: { workspaceId: string }): Promise<void>;
 }

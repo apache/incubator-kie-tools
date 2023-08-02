@@ -45,7 +45,6 @@ import {
 import { switchExpression } from "../../switchExpression/switchExpression";
 import { AuthOptionsType, BitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
-import { corsProxyUrl } from "../../workspace/worker/sharedWorker";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;

@@ -510,47 +510,70 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const initGitOnWorkspace = useCallback(
-    async (args: { workspaceId: string; remoteUrl: URL; branch?: string }) =>
+    async (args: {
+      workspaceId: string;
+      remoteUrl: URL;
+      branch?: string;
+      insecurelyDisableTlsCertificateValidation?: boolean;
+    }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitOnExistingWorkspace({
           workspaceId: args.workspaceId,
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
         })
       ),
     [workspacesSharedWorker]
   );
 
   const initGistOnWorkspace = useCallback(
-    async (args: { workspaceId: string; remoteUrl: URL; branch: string }) =>
+    async (args: {
+      workspaceId: string;
+      remoteUrl: URL;
+      branch: string;
+      insecurelyDisableTlsCertificateValidation?: boolean;
+    }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
           workspaceId: args.workspaceId,
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
         })
       ),
     [workspacesSharedWorker]
   );
 
   const initSnippetOnWorkspace = useCallback(
-    async (args: { workspaceId: string; remoteUrl: URL; branch: string }) =>
+    async (args: {
+      workspaceId: string;
+      remoteUrl: URL;
+      branch: string;
+      insecurelyDisableTlsCertificateValidation?: boolean;
+    }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace({
           workspaceId: args.workspaceId,
           remoteUrl: args.remoteUrl.toString(),
           branch: args.branch,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
         })
       ),
     [workspacesSharedWorker]
   );
 
   const changeGitAuthSessionId = useCallback(
-    async (args: { workspaceId: string; gitAuthSessionId: string | undefined }) => {
+    async (args: {
+      workspaceId: string;
+      gitAuthSessionId: string | undefined;
+      insecurelyDisableTlsCertificateValidation?: boolean;
+    }) => {
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_changeGitAuthSessionId({
           workspaceId: args.workspaceId,
           gitAuthSessionId: args.gitAuthSessionId,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
         })
       );
     },

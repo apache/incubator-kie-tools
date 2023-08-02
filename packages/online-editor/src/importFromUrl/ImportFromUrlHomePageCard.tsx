@@ -58,23 +58,6 @@ export function ImportFromUrlCard() {
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
 
-  useEffect(() => {
-    const urlDomain = importableUrl.url?.host;
-    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
-      authProviders,
-      authSessions,
-      authSessionStatus,
-      urlDomain,
-    });
-    setAuthSessionId(compatible[0]!.id);
-    updateInsecurelyDisableTlsCertificateValidation(compatible[0]);
-  }, [authProviders, authSessionStatus, authSessions, importableUrl]);
-  // Select authSession based on the importableUrl domain (end)
-
-  useEffect(() => {
-    setGitRef(clonableUrl.selectedGitRefName ?? "");
-  }, [clonableUrl.selectedGitRefName]);
-
   const updateInsecurelyDisableTlsCertificateValidation = useCallback(
     (newAuthSession: AuthSession) => {
       if (newAuthSession && newAuthSession.type === "git") {
@@ -90,8 +73,25 @@ export function ImportFromUrlCard() {
   );
 
   useEffect(() => {
+    const urlDomain = importableUrl.url?.host;
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders,
+      authSessions,
+      authSessionStatus,
+      urlDomain,
+    });
+    setAuthSessionId(compatible[0]!.id);
+    updateInsecurelyDisableTlsCertificateValidation(compatible[0]);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl, updateInsecurelyDisableTlsCertificateValidation]);
+  // Select authSession based on the importableUrl domain (end)
+
+  useEffect(() => {
+    setGitRef(clonableUrl.selectedGitRefName ?? "");
+  }, [clonableUrl.selectedGitRefName]);
+
+  useEffect(() => {
     authSession && updateInsecurelyDisableTlsCertificateValidation(authSession);
-  }, [authSession]);
+  }, [authSession, updateInsecurelyDisableTlsCertificateValidation]);
 
   const validation = useImportableUrlValidation(authSession, url, gitRefName, clonableUrl, advancedImportModalRef);
 
@@ -110,10 +110,15 @@ export function ImportFromUrlCard() {
 
       history.push({
         pathname: routes.import.path({}),
-        search: routes.import.queryString({ url, branch: gitRefName, authSessionId }),
+        search: routes.import.queryString({
+          url,
+          branch: gitRefName,
+          authSessionId,
+          insecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation.toString(),
+        }),
       });
     },
-    [authSessionId, gitRefName, history, isValid, routes.import, url]
+    [authSessionId, gitRefName, history, isValid, routes.import, url, insecurelyDisableTlsCertificateValidation]
   );
 
   const buttonLabel = useMemo(() => {
