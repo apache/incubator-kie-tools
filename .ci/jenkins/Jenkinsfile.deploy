@@ -26,7 +26,7 @@ pipeline {
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
 
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
     }
@@ -67,8 +67,7 @@ pipeline {
             }
             steps {
                 script {
-                    githubscm.forkRepo(getBotAuthorCredsID())
-                    githubscm.createBranch(getBotBranch())
+                    githubscm.createBranch(getPRBranch())
                 }
             }
         }
@@ -191,15 +190,15 @@ pipeline {
                         }
                         prBody += '\nSee build url above for more information'
                     }
-                    String prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+                    String prLink = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getGitAuthorCredsID())
                     deployProperties["${getRepoName()}.pr.link"] = prLink
                 }
             }
             post {
                 always {
                     script {
-                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.uri", "https://github.com/${getBotAuthor()}/${getRepoName()}")
-                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getBotBranch())
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
+                        setDeployPropertyIfNeeded("${getRepoName()}.pr.source.ref", getPRBranch())
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.uri", "https://github.com/${getGitAuthor()}/${getRepoName()}")
                         setDeployPropertyIfNeeded("${getRepoName()}.pr.target.ref", getBuildBranch())
                     }
@@ -258,7 +257,7 @@ void checkoutRepo() {
 
 void commitAndPushChanges(String commitMsg) {
     githubscm.commitChanges(commitMsg)
-    githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
+    githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
     changesDone = true
 }
 
@@ -272,8 +271,8 @@ void createBuildAndTestStageClosure(String image) {
             List buildParams = []
             buildParams.add(string(name: 'DISPLAY_NAME', value: "${params.DISPLAY_NAME} - ${image}"))
             buildParams.add(string(name: 'BUILD_IMAGE_NAME', value: image))
-            buildParams.add(string(name: 'SOURCE_AUTHOR', value: isRelease() ? getBotAuthor() : getGitAuthor()))
-            buildParams.add(string(name: 'SOURCE_BRANCH', value: isRelease() ? getBotBranch() : getBuildBranch()))
+            buildParams.add(string(name: 'SOURCE_AUTHOR', value: isRelease() ? getGitAuthor() : getGitAuthor()))
+            buildParams.add(string(name: 'SOURCE_BRANCH', value: isRelease() ? getPRBranch() : getBuildBranch()))
 
             buildParams.add(string(name: 'MAVEN_ARTIFACTS_REPOSITORY', value: env.MAVEN_ARTIFACT_REPOSITORY ?: (isRelease() ? env.DEFAULT_STAGING_REPOSITORY : '')))
             buildParams.add(string(name: 'BUILD_KOGITO_APPS_URI', value: params.APPS_URI))
@@ -391,16 +390,12 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
-String getBotBranch() {
-    return "${getProjectVersion() ?: getBuildBranch()}-${env.BOT_BRANCH_HASH}"
+String getGitAuthorCredsID() {
+    retrun env.AUTHOR_CREDS_ID
 }
 
-String getBotAuthor() {
-    return env.GIT_AUTHOR_BOT
-}
-
-String getBotAuthorCredsID() {
-    return env.BOT_CREDENTIALS_ID
+String getPRBranch() {
+    return "${getProjectVersion() ?: getBuildBranch()}-${env.PR_BRANCH_HASH}"
 }
 
 String getProjectVersion() {

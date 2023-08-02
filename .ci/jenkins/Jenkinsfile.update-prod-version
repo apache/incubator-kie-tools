@@ -16,7 +16,7 @@ pipeline {
     environment {
         // Static env is defined into ./dsl/jobs.groovy file
 
-        BOT_BRANCH_HASH = "${util.generateHash(10)}"
+        PR_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
     stages {
@@ -36,8 +36,7 @@ pipeline {
         stage('Prepare for PR') {
             steps {
                 script {
-                    githubscm.forkRepo(getBotAuthorCredsID())
-                    githubscm.createBranch(getBotBranch())
+                    githubscm.createBranch(getPRBranch())
                 }
             }
         }
@@ -60,8 +59,8 @@ pipeline {
                     } else {
                         error 'No update version can be done'
                     }
-                    githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
-                    String prLink = githubscm.createPR(commitMsg, 'Please review and merge', getBuildBranch(), getBotAuthorCredsID())
+                    githubscm.pushObject('origin', getPRBranch(), getGitAuthorCredsID())
+                    String prLink = githubscm.createPR(commitMsg, 'Please review and merge', getBuildBranch(), getGitAuthorCredsID())
 
                     echo "Created PR ${prLink}"
                 }
@@ -87,16 +86,12 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
-String getBotBranch() {
-    return "${getProdProjectVersion() ?: getBuildBranch()}-${env.BOT_BRANCH_HASH}"
+String getGitAuthorCredsID() {
+    retrun env.AUTHOR_CREDS_ID
 }
 
-String getBotAuthor() {
-    return "${GIT_AUTHOR_BOT}"
-}
-
-String getBotAuthorCredsID() {
-    return "${BOT_CREDENTIALS_ID}"
+String getPRBranch() {
+    return "${getProdProjectVersion() ?: getBuildBranch()}-${env.PR_BRANCH_HASH}"
 }
 
 String getProdProjectVersion() {
