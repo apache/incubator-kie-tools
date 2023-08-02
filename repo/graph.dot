@@ -183,6 +183,7 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/chrome-extension-test-helper" [ style = "dashed", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "dashed", color = "black" ];
+  "chrome-extension-serverless-workflow-editor" -> "@kie-tools/chrome-extension-test-helper" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/chrome-extension-test-helper" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/cors-proxy" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
@@ -363,7 +364,6 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/yard-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-base-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-builder-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];

@@ -355,6 +355,11 @@
       },
       {
         "source": "chrome-extension-serverless-workflow-editor",
+        "target": "@kie-tools/chrome-extension-test-helper",
+        "weight": 1
+      },
+      {
+        "source": "chrome-extension-serverless-workflow-editor",
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
@@ -715,7 +720,6 @@
         "target": "@kie-tools/dashbuilder-viewer-image-env",
         "weight": 1
       },
-      { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/extended-services", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
         "target": "@kie-tools/serverless-logic-web-tools-base-builder-image-env",
