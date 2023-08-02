@@ -38,6 +38,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
+    "@kie-tools-core/switch-expression-ts": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools-core/workspaces-git-fs": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",

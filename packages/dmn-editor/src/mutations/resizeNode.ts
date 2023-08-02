@@ -5,7 +5,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { TargetHandleId } from "../diagram/connections/NodeHandles";
 import { getHandlePosition } from "../diagram/maths/DmnMaths";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 export function resizeNode({
   definitions,

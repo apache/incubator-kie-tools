@@ -38,7 +38,7 @@ import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { useGitHubClient } from "../../../github/Hooks";
 import { isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
-import { switchExpression } from "../../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";

@@ -12,7 +12,7 @@ import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMar
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
 
 export function addConnectedNode({

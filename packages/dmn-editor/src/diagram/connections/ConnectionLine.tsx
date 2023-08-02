@@ -13,7 +13,7 @@ import { getPositionalHandlePosition } from "../maths/Maths";
 import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
 import { getNodeCenterPoint } from "../maths/DmnMaths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {

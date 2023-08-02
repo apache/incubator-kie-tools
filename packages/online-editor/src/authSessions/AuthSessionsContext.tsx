@@ -27,7 +27,7 @@ import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSession
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
 import { useEnv } from "../env/hooks/EnvContext";

@@ -6,7 +6,7 @@ import {
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
 import { NODE_LAYERS, useDmnEditorStore } from "../store/Store";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { EdgeType } from "./connections/graphStructure";
 import { EDGE_TYPES } from "./edges/EdgeTypes";

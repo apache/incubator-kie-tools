@@ -3,7 +3,7 @@ import {
   DMNDI13__DMNEdge,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 export function repositionNode({
   definitions,

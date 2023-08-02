@@ -1,4 +1,4 @@
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 type UnionString3Values = "one" | "two" | "three";
 type UnionStringSubset = "one" | "three";
@@ -57,5 +57,14 @@ describe("switchExpression tests", () => {
         three: "value3",
       })
     ).toBe("value3");
+  });
+  it("test undefined as a valid result", () => {
+    const value: "a" | "b" | "c" = "c";
+    const res: string | undefined = switchExpression(value, {
+      a: "a",
+      c: undefined,
+    });
+
+    expect(res).toBe(undefined);
   });
 });

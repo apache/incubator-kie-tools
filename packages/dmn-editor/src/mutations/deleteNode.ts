@@ -2,7 +2,7 @@ import { DMN14__tDecision, DMN14__tDefinitions } from "@kie-tools/dmn-marshaller
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
-import { switchExpression } from "../switchExpression/switchExpression";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 
 export function deleteNode({
   definitions,
