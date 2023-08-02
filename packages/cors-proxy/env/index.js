@@ -19,7 +19,7 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     CORS_PROXY__port: {
-      default: 8081,
+      default: 8080,
       description: "HTTP Port the proxy should listen to",
     },
     CORS_PROXY__origin: {
