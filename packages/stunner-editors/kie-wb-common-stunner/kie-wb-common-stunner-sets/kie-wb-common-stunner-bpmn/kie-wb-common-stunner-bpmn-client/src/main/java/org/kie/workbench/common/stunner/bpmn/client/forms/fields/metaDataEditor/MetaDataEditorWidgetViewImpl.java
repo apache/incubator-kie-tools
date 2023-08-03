@@ -137,8 +137,6 @@ public class MetaDataEditorWidgetViewImpl extends Composite implements MetaDataE
     public void init(final Presenter presenter) {
         this.presenter = presenter;
         addButton.setIcon(IconType.PLUS);
-        attributeth.setInnerText("Name");
-        valueth.setInnerText("Value");
     }
 
     @Override
