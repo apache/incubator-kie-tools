@@ -77,8 +77,18 @@ export async function setupDiagramEditorCompanionTab(args: {
     vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
       if (args.kieEditorsStore.activeEditor) {
         args.kieEditorsStore.openEditors.forEach((kieEditor) => {
-          kieEditor.close();
+          const activeTab = vscode.window.tabGroups.activeTabGroup.activeTab;
+          if (
+            activeTab &&
+            activeTab.input instanceof vscode.TabInputCustom &&
+            activeTab.input.uri.toString() !== kieEditor.document.document.uri.toString()
+          ) {
+            kieEditor.close();
+          }
         });
+      }
+
+      if (!textEditor) {
         return;
       }
 
@@ -93,10 +103,6 @@ export async function setupDiagramEditorCompanionTab(args: {
             kieEditor.close();
           }
         });
-      }
-
-      if (!textEditor) {
-        return;
       }
 
       if (!isSwf(textEditor.document)) {
