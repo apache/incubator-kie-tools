@@ -8,6 +8,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
 import { Unpacked } from "../useDmnDiagramData";
+import { useDmnEditorStore } from "../../store/Store";
 
 export type DmnEditorDiagramEdgeData = {
   dmnEdge: (DMNDI13__DMNEdge & { index: number }) | undefined;
@@ -23,6 +24,7 @@ export type DmnEditorDiagramEdgeData = {
 };
 
 export function useKieEdgePath(source: string, target: string, data: DmnEditorDiagramEdgeData | undefined) {
+  const { diagram } = useDmnEditorStore();
   const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
   const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
   const dmnEdge = data?.dmnEdge;
@@ -32,13 +34,14 @@ export function useKieEdgePath(source: string, target: string, data: DmnEditorDi
   const { path } = useMemo(
     () =>
       getSnappedMultiPointAnchoredEdgePath({
+        snapGrid: diagram.snapGrid,
         dmnEdge,
         sourceNode,
         targetNode,
         dmnShapeSource,
         dmnShapeTarget,
       }),
-    [dmnEdge, dmnShapeSource, dmnShapeTarget, sourceNode, targetNode]
+    [diagram.snapGrid, dmnEdge, dmnShapeSource, dmnShapeTarget, sourceNode, targetNode]
   );
 
   return path;

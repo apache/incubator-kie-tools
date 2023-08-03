@@ -103,10 +103,10 @@ export function useDmnDiagramData() {
         selected: selected.has(id),
         dragging: dragging.has(id),
         resizing: resizing.has(id),
-        position: snapShapePosition(shape),
+        position: snapShapePosition(diagram.snapGrid, shape),
         data: { dmnObject, shape, index },
         zIndex: NODE_LAYERS.NODES,
-        style: { ...snapShapeDimensions(shape) },
+        style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
       };
 
       if (dmnObject.__$$element === "decisionService") {
@@ -170,6 +170,7 @@ export function useDmnDiagramData() {
         const parentShape = shapesById.get(parent["@_id"]!)!;
 
         nodes[i].position = snapShapePosition(
+          diagram.snapGrid,
           offsetShapePosition(nodes[i].data.shape, {
             x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
             y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
@@ -271,13 +272,14 @@ export function useDmnDiagramData() {
       nodesById,
     };
   }, [
+    diagram.selected,
     diagram.dragging,
     diagram.resizing,
-    diagram.selected,
-    getEdgeData,
-    dmn.model.definitions.artifact,
+    diagram.snapGrid,
     dmn.model.definitions.drgElement,
+    dmn.model.definitions.artifact,
     shapesById,
+    getEdgeData,
   ]);
 
   return { shapesById, edgesById, nodesById, nodes, edges };

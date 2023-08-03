@@ -12,8 +12,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
-import { resizeNode } from "../../mutations/resizeNode";
-import { NODE_LAYERS, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
@@ -56,9 +55,10 @@ export const InputDataNode = React.memo(
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
-    const nodeDimensions = useNodeDimensions(id, shape);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -97,7 +97,7 @@ export const InputDataNode = React.memo(
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -121,9 +121,9 @@ export const DecisionNode = React.memo(
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
 
-    const nodeDimensions = useNodeDimensions(id, shape);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -166,7 +166,7 @@ export const DecisionNode = React.memo(
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -189,10 +189,9 @@ export const BkmNode = React.memo(
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
-
-    const nodeDimensions = useNodeDimensions(id, shape);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -235,7 +234,7 @@ export const BkmNode = React.memo(
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -258,10 +257,9 @@ export const KnowledgeSourceNode = React.memo(
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
-
-    const nodeDimensions = useNodeDimensions(id, shape);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -299,7 +297,7 @@ export const KnowledgeSourceNode = React.memo(
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -322,10 +320,9 @@ export const TextAnnotationNode = React.memo(
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
-
-    const nodeDimensions = useNodeDimensions(id, shape);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setText = useCallback(
       (newText: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -363,7 +360,7 @@ export const TextAnnotationNode = React.memo(
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
           />
-          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -387,9 +384,9 @@ export const DecisionServiceNode = React.memo(
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
 
-    const nodeDimensions = useNodeDimensions(id, shape);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -427,7 +424,7 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );
@@ -449,7 +446,9 @@ export const GroupNode = React.memo(
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
 
-    const nodeDimensions = useNodeDimensions(id, shape);
+    const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const { diagram } = useDmnEditorStore();
+    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
@@ -480,13 +479,10 @@ const resizerControlStyle = {
   border: "none",
 };
 
-export function NodeResizerHandle(props: { nodeId: string; nodeShapeIndex: number }) {
+export function NodeResizerHandle(props: { snapGrid: SnapGrid; nodeId: string; nodeShapeIndex: number }) {
+  const minSize = MIN_SIZE_FOR_NODES(props.snapGrid);
   return (
-    <RF.NodeResizeControl
-      style={resizerControlStyle}
-      minWidth={MIN_SIZE_FOR_NODES.width}
-      minHeight={MIN_SIZE_FOR_NODES.height}
-    >
+    <RF.NodeResizeControl style={resizerControlStyle} minWidth={minSize.width} minHeight={minSize.height}>
       <div
         style={{
           position: "absolute",
@@ -537,15 +533,15 @@ function useNodeResizing(id: string): boolean {
 
   return node.resizing ?? false;
 }
-function useNodeDimensions(id: string, shape: DMNDI13__DMNShape): RF.Dimensions {
+function useNodeDimensions(snapGrid: SnapGrid, id: string, shape: DMNDI13__DMNShape): RF.Dimensions {
   const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
   if (!node) {
     throw new Error("Can't use nodeInternals of non-existent node " + id);
   }
 
   return {
-    width: node.width ?? snapShapeDimensions(shape).width,
-    height: node.height ?? snapShapeDimensions(shape).height,
+    width: node.width ?? snapShapeDimensions(snapGrid, shape).width,
+    height: node.height ?? snapShapeDimensions(snapGrid, shape).height,
   };
 }
 

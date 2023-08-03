@@ -1,10 +1,11 @@
 import * as RF from "reactflow";
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
+import { TenantIcon } from "@patternfly/react-icons/dist/js/icons/tenant-icon";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addEdge } from "../mutations/addEdge";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
@@ -12,7 +13,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
-import { SNAP_GRID, offsetShapePosition, snapShapePosition } from "./SnapGrid";
+import { offsetShapePosition, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/NodeHandles";
 import { EdgeType, NodeType, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
@@ -39,6 +40,8 @@ import {
 import { idFromHref, useDmnDiagramData } from "./useDmnDiagramData";
 import { deleteNode } from "../mutations/deleteNode";
 import { DMN14__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -47,8 +50,6 @@ const FIT_VIEW_OPTIONS = { maxZoom: 1, minZoom: 1, duration: 400 };
 const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
 
 export function Diagram({ container }: { container: React.RefObject<HTMLElement> }) {
-  const snapGrid = useMemo<[number, number]>(() => [SNAP_GRID.x, SNAP_GRID.y], []);
-
   const nodeTypes: Record<NodeType, any> = useMemo(
     () => ({
       [NODE_TYPES.decisionService]: DecisionServiceNode,
@@ -72,6 +73,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   }, []);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { diagram } = useDmnEditorStore();
 
   const { shapesById, nodesById, nodes, edges } = useDmnDiagramData();
 
@@ -157,15 +159,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             bounds: {
               "@_x": dropPoint.x,
               "@_y": dropPoint.y,
-              "@_width": DEFAULT_NODE_SIZES[type]["@_width"],
-              "@_height": DEFAULT_NODE_SIZES[type]["@_height"],
+              "@_width": DEFAULT_NODE_SIZES[type](diagram.snapGrid)["@_width"],
+              "@_height": DEFAULT_NODE_SIZES[type](diagram.snapGrid)["@_height"],
             },
           },
         });
         state.diagram.selected = [newNodeId];
       });
     },
-    [container, dmnEditorStoreApi, reactFlowInstance]
+    [container, diagram.snapGrid, dmnEditorStoreApi, reactFlowInstance]
   );
 
   const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
@@ -228,8 +230,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             bounds: {
               "@_x": dropPoint.x,
               "@_y": dropPoint.y,
-              "@_width": DEFAULT_NODE_SIZES[newNodeType]["@_width"],
-              "@_height": DEFAULT_NODE_SIZES[newNodeType]["@_height"],
+              "@_width": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_width"],
+              "@_height": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_height"],
             },
           },
         });
@@ -237,7 +239,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         state.diagram.selected = [newNodeId];
       });
     },
-    [connection, container, dmnEditorStoreApi, nodesById, reactFlowInstance, shapesById]
+    [connection, container, diagram.snapGrid, dmnEditorStoreApi, nodesById, reactFlowInstance, shapesById]
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
@@ -307,6 +309,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   for (let i = 0; i < nested.length; i++) {
                     const nestedNode = nodesById.get(idFromHref(nested[i]["@_href"]))!;
                     const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
+                      diagram.snapGrid,
                       offsetShapePosition(nestedNode.data.shape, delta)
                     );
                     repositionNode({
@@ -359,7 +362,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [dmnEditorStoreApi, edges, nodesById, reactFlowInstance]
+    [dmnEditorStoreApi, edges, nodesById, reactFlowInstance, diagram.snapGrid]
   );
 
   const onEdgeUpdate: RF.OnEdgeUpdateFunc = useCallback((args) => {
@@ -369,6 +372,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const onEdgesChange = useCallback<RF.OnEdgesChange>(() => {
     //
   }, []);
+
+  const rfSnapGrid = useMemo<[number, number]>(
+    () => (diagram.snapGrid.isOn ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
+    [diagram.snapGrid.isOn, diagram.snapGrid.x, diagram.snapGrid.y]
+  );
 
   return (
     <>
@@ -396,7 +404,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         snapToGrid={true}
-        snapGrid={snapGrid}
+        snapGrid={rfSnapGrid}
         defaultViewport={DEFAULT_VIEWPORT}
         fitView={false}
         fitViewOptions={FIT_VIEW_OPTIONS}
@@ -407,7 +415,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       >
         <SelectionStatus />
         <Pallete />
-        <PropertiesPanelToggle />
+        <TopRightCornerPanels />
         <PanWhenAltPressed />
         <KeyboardShortcuts />
         <RF.Background />
@@ -417,12 +425,48 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   );
 }
 
-export function PropertiesPanelToggle() {
-  const { propertiesPanel, dispatch } = useDmnEditorStore();
+export function TopRightCornerPanels() {
+  const { propertiesPanel, dispatch, diagram } = useDmnEditorStore();
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const toggleOverlaysPanel = useCallback(() => {
+    dmnEditorStoreApi.setState((state) => dispatch.diagram.toggleOverlaysPanel(state));
+  }, [dispatch.diagram, dmnEditorStoreApi]);
+
+  useLayoutEffect(() => {
+    dmnEditorStoreApi.setState((state) => {
+      if (state.diagram.overlaysPanel.isOpen) {
+        // This is necessary to make sure that the Popover is open at the correct position.
+        setTimeout(() => {
+          dmnEditorStoreApi.setState((state) => {
+            state.diagram.overlaysPanel.isOpen = true;
+          });
+        }, 300); // That's the animation duration to open/close the properties panel.
+      }
+      state.diagram.overlaysPanel.isOpen = false;
+    });
+  }, [dmnEditorStoreApi, propertiesPanel.isOpen]);
+
   return (
     <>
-      {(!propertiesPanel.isOpen && (
-        <RF.Panel position={"top-right"}>
+      <RF.Panel position={"top-right"} style={{ display: "flex" }}>
+        <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
+          <Popover
+            key={`${propertiesPanel.isOpen}`}
+            aria-label="Advanced popover usages example"
+            position={"left-start"}
+            hideOnOutsideClick={false}
+            isVisible={diagram.overlaysPanel.isOpen}
+            enableFlip={true}
+            headerContent={<div>Overlays</div>}
+            bodyContent={<OverlaysPanel />}
+          >
+            <button className={"kie-dmn-editor--overlays-panel-toggle-button"} onClick={toggleOverlaysPanel}>
+              <TenantIcon size={"sm"} />
+            </button>
+          </Popover>
+        </aside>
+        {!propertiesPanel.isOpen && (
           <aside className={"kie-dmn-editor--properties-panel-toggle"}>
             <button
               className={"kie-dmn-editor--properties-panel-toggle-button"}
@@ -431,8 +475,8 @@ export function PropertiesPanelToggle() {
               <InfoIcon size={"sm"} />
             </button>
           </aside>
-        </RF.Panel>
-      )) || <></>}
+        )}
+      </RF.Panel>
     </>
   );
 }

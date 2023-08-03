@@ -1,17 +1,18 @@
 import { DC__Bounds, DC__Point, DMNDI13__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { SnapGrid } from "../store/Store";
 
-// export const SNAP_GRID = { x: 1, y: 1 };
-export const SNAP_GRID = { x: 20, y: 20 };
+export const NODE_MIN_WIDTH = 160;
+export const NODE_MIN_HEIGHT = 80;
 
-export const MIN_SIZE_FOR_NODES = {
-  width: SNAP_GRID.x * 8,
-  height: SNAP_GRID.y * 4,
+export const MIN_SIZE_FOR_NODES = (grid: SnapGrid, width = NODE_MIN_WIDTH, height = NODE_MIN_HEIGHT) => {
+  const snapped = snapPoint(grid, { "@_x": width, "@_y": height }, "ceil");
+  return { width: snapped["@_x"], height: snapped["@_y"] };
 };
 
-export function snapShapePosition(shape: DMNDI13__DMNShape) {
+export function snapShapePosition(snapGrid: SnapGrid, shape: DMNDI13__DMNShape) {
   return {
-    x: Math.floor((shape["dc:Bounds"]?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
-    y: Math.floor((shape["dc:Bounds"]?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+    x: snap(snapGrid, "x", shape["dc:Bounds"]?.["@_x"]),
+    y: snap(snapGrid, "y", shape["dc:Bounds"]?.["@_y"]),
   };
 }
 
@@ -30,34 +31,33 @@ export function offsetShapePosition(shape: DMNDI13__DMNShape, offset: { x: numbe
   };
 }
 
-export function snapShapeDimensions(shape: DMNDI13__DMNShape) {
+export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI13__DMNShape) {
+  const minSizes = MIN_SIZE_FOR_NODES(grid);
   return {
-    width: Math.max(
-      Math.floor((shape["dc:Bounds"]?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
-      MIN_SIZE_FOR_NODES.width
-    ),
-    height: Math.max(
-      Math.floor((shape["dc:Bounds"]?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
-      MIN_SIZE_FOR_NODES.height
-    ),
+    width: Math.max(snap(grid, "x", shape["dc:Bounds"]?.["@_width"]), minSizes.width),
+    height: Math.max(snap(grid, "y", shape["dc:Bounds"]?.["@_height"]), minSizes.height),
   };
 }
 
-export function snapBounds(bounds: DC__Bounds | undefined): DC__Bounds {
+export function snapBounds(grid: SnapGrid, bounds: DC__Bounds | undefined): DC__Bounds {
+  const minSizes = MIN_SIZE_FOR_NODES(grid);
   return {
-    "@_x": Math.floor((bounds?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
-    "@_y": Math.floor((bounds?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
-    "@_width": Math.max(Math.floor((bounds?.["@_width"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x, MIN_SIZE_FOR_NODES.width),
-    "@_height": Math.max(
-      Math.floor((bounds?.["@_height"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
-      MIN_SIZE_FOR_NODES.height
-    ),
+    "@_x": snap(grid, "x", bounds?.["@_x"]),
+    "@_y": snap(grid, "y", bounds?.["@_y"]),
+    "@_width": Math.max(snap(grid, "x", bounds?.["@_width"]), minSizes.width),
+    "@_height": Math.max(snap(grid, "y", bounds?.["@_height"]), minSizes.height),
   };
 }
 
-export function snapPoint(bounds: DC__Point, method: "floor" | "ceil" = "floor"): DC__Point {
+export function snapPoint(grid: SnapGrid, point: DC__Point, method: "floor" | "ceil" = "floor"): DC__Point {
   return {
-    "@_x": Math[method]((bounds?.["@_x"] ?? 0) / SNAP_GRID.x) * SNAP_GRID.x,
-    "@_y": Math[method]((bounds?.["@_y"] ?? 0) / SNAP_GRID.y) * SNAP_GRID.y,
+    "@_x": snap(grid, "x", point?.["@_x"], method),
+    "@_y": snap(grid, "y", point?.["@_y"], method),
   };
+}
+
+export function snap(grid: SnapGrid, coord: "x" | "y", value: number | undefined, method: "floor" | "ceil" = "floor") {
+  return grid.isOn //
+    ? Math[method]((value ?? 0) / grid[coord]) * grid[coord]
+    : value ?? 0;
 }

@@ -16,6 +16,12 @@ export interface DmnEditorDiagramNodeStatus {
   resizing: boolean;
 }
 
+export interface SnapGrid {
+  isOn: boolean;
+  x: number;
+  y: number;
+}
+
 export interface State {
   dispatch: Dispatch;
   dmn: {
@@ -33,6 +39,16 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
+    overlaysPanel: {
+      isOpen: boolean;
+    };
+    overlays: {
+      enableNodeHierarchyHighlight: boolean;
+      enableExecutionHitsHighlights: boolean;
+      enableCustomNodeStyles: boolean;
+      enableDataTypesOnNodes: boolean;
+    };
+    snapGrid: SnapGrid;
     selected: Array<string>;
     dragging: Array<string>;
     resizing: Array<string>;
@@ -56,7 +72,9 @@ export type Dispatch = {
     setTab: (tab: DmnEditorTab) => void;
   };
   diagram: {
-    setNodeStatus(state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>): void;
+    toggleOverlaysPanel: (state: State) => void;
+    setSnapGrid: (state: State, snap: SnapGrid) => void;
+    setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
   };
 };
 
@@ -125,6 +143,16 @@ export function createDmnEditorStore(xml: string) {
         tab: DmnEditorTab.EDITOR,
       },
       diagram: {
+        overlaysPanel: {
+          isOpen: false,
+        },
+        overlays: {
+          enableNodeHierarchyHighlight: true,
+          enableExecutionHitsHighlights: true,
+          enableCustomNodeStyles: true,
+          enableDataTypesOnNodes: true,
+        },
+        snapGrid: { isOn: true, x: 20, y: 20 },
         selected: [],
         dragging: [],
         resizing: [],
@@ -182,6 +210,12 @@ export function createDmnEditorStore(xml: string) {
           },
         },
         diagram: {
+          toggleOverlaysPanel: (prev) => {
+            prev.diagram.overlaysPanel.isOpen = !prev.diagram.overlaysPanel.isOpen;
+          },
+          setSnapGrid: (prev, snapGrid) => {
+            prev.diagram.snapGrid = snapGrid;
+          },
           setNodeStatus: (prev, nodeId, newStatus) => {
             //selected
             if (newStatus.selected !== undefined) {

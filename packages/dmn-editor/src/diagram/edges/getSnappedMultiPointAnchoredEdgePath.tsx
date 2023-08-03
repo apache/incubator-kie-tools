@@ -10,14 +10,17 @@ import { TargetHandleId } from "../connections/NodeHandles";
 import { getHandlePosition, getNodeCenterPoint, getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
 import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
+import { SnapGrid } from "../../store/Store";
 
 export function getSnappedMultiPointAnchoredEdgePath({
+  snapGrid,
   dmnEdge,
   sourceNode,
   targetNode,
   dmnShapeSource,
   dmnShapeTarget,
 }: {
+  snapGrid: SnapGrid;
   dmnEdge: DMNDI13__DMNEdge | undefined;
   sourceNode: RF.Node<any, string | undefined> | undefined;
   targetNode: RF.Node<any, string | undefined> | undefined;
@@ -58,7 +61,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
       dmnShapeSource!,
       firstWaypoint,
       sourceNode,
-      points.length === 2 ? getNodeCenterPoint(targetNode) : snapPoint(secondWaypoint)
+      points.length === 2 ? getNodeCenterPoint(targetNode) : snapPoint(snapGrid, secondWaypoint)
     );
     points[0] ??= sourceHandlePoint;
 
@@ -68,7 +71,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
       dmnShapeTarget!,
       lastWaypoint,
       targetNode,
-      points.length === 2 ? getNodeCenterPoint(sourceNode) : snapPoint(secondToLastWaypoint)
+      points.length === 2 ? getNodeCenterPoint(sourceNode) : snapPoint(snapGrid, secondToLastWaypoint)
     );
     points[points.length - 1] ??= targetHandlePoint;
   }
@@ -77,7 +80,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
   // skip first and last elements, as they are pre-filled using the logic below.
   for (let i = 1; i < points.length - 1; i++) {
-    points[i] = snapPoint({ ...(dmnEdge?.["di:waypoint"] ?? [])[i] });
+    points[i] = snapPoint(snapGrid, { ...(dmnEdge?.["di:waypoint"] ?? [])[i] });
   }
 
   return { path: pointsToPath(points), points };

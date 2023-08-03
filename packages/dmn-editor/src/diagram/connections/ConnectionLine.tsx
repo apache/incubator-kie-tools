@@ -15,9 +15,11 @@ import { getNodeCenterPoint } from "../maths/DmnMaths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
+import { useDmnEditorStore } from "../../store/Store";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
+  const { diagram } = useDmnEditorStore();
 
   // Edges
   if (fromHandle?.id === EDGE_TYPES.informationRequirement) {
@@ -31,9 +33,11 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   }
   // Nodes
   else {
-    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint({ "@_x": toX, "@_y": toY });
+    const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(diagram.snapGrid, { "@_x": toX, "@_y": toY });
+
+    const minSize = MIN_SIZE_FOR_NODES(diagram.snapGrid);
     const [toXauto, toYauto] = getPositionalHandlePosition(
-      { x: toXsnapped, y: toYsnapped, width: MIN_SIZE_FOR_NODES.width, height: MIN_SIZE_FOR_NODES.height },
+      { x: toXsnapped, y: toYsnapped, width: minSize.width, height: minSize.height },
       { x: fromX, y: fromY, width: 1, height: 1 }
     );
 
@@ -58,8 +62,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           <DecisionNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={DEFAULT_NODE_SIZES[NODE_TYPES.decision]["@_width"]}
-            height={DEFAULT_NODE_SIZES[NODE_TYPES.decision]["@_height"]}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"]}
           />
         </g>
       );
@@ -70,8 +74,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           <BkmNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={DEFAULT_NODE_SIZES[NODE_TYPES.bkm]["@_width"]}
-            height={DEFAULT_NODE_SIZES[NODE_TYPES.bkm]["@_height"]}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.bkm](diagram.snapGrid)["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.bkm](diagram.snapGrid)["@_height"]}
           />
         </g>
       );
@@ -82,8 +86,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           <KnowledgeSourceNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={DEFAULT_NODE_SIZES[NODE_TYPES.knowledgeSource]["@_width"]}
-            height={DEFAULT_NODE_SIZES[NODE_TYPES.knowledgeSource]["@_height"]}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.knowledgeSource](diagram.snapGrid)["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.knowledgeSource](diagram.snapGrid)["@_height"]}
           />
         </g>
       );
@@ -94,8 +98,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           <TextAnnotationNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={DEFAULT_NODE_SIZES[NODE_TYPES.textAnnotation]["@_width"]}
-            height={DEFAULT_NODE_SIZES[NODE_TYPES.textAnnotation]["@_height"]}
+            width={DEFAULT_NODE_SIZES[NODE_TYPES.textAnnotation](diagram.snapGrid)["@_width"]}
+            height={DEFAULT_NODE_SIZES[NODE_TYPES.textAnnotation](diagram.snapGrid)["@_height"]}
           />
         </g>
       );
