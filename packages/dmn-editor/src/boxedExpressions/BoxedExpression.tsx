@@ -1,4 +1,10 @@
-import { DmnBuiltInDataType, ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BeeGwtService,
+  DmnBuiltInDataType,
+  ExpressionDefinition,
+  ExpressionDefinitionLogicType,
+  PmmlParam,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -6,8 +12,9 @@ import * as React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { updateExpression } from "../mutations/updateExpression";
-import { DmnNodeWithExpression, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DmnEditorTab, DmnNodeWithExpression, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
+import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressionDefinitionByLogicType";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const { dispatch, dmn, boxedExpression } = useDmnEditorStore();
@@ -56,6 +63,32 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     [dmn.model.definitions.itemDefinition]
   );
 
+  const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
+
+  const isResetSupportedOnRootExpression = useMemo(() => {
+    return boxedExpression.node?.type === NODE_TYPES.decision;
+  }, [boxedExpression.node?.type]);
+
+  const beeGwtService = useMemo<BeeGwtService>(() => {
+    return {
+      getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition {
+        return getDefaultExpressionDefinitionByLogicType(
+          logicType as ExpressionDefinitionLogicType,
+          { dataType: dataType } as ExpressionDefinition,
+          0
+        );
+      },
+      selectObject(uuid) {
+        dmnEditorStoreApi.setState((state) => {
+          dispatch.diagram.setNodeStatus(state, uuid!, { selected: true });
+        });
+      },
+      openDataTypePage() {
+        dispatch.navigation.setTab(DmnEditorTab.DATA_TYPES);
+      },
+    };
+  }, [dispatch.diagram, dispatch.navigation, dmnEditorStoreApi]);
+
   return (
     <>
       <Label
@@ -69,6 +102,9 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       <br />
       <>
         <BoxedExpressionEditor
+          beeGwtService={beeGwtService}
+          pmmlParams={pmmlParams}
+          isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
           decisionNodeId={boxedExpression.node!.content["@_id"]!}
           expressionDefinition={expression}
           setExpressionDefinition={setExpression}
