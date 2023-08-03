@@ -15,14 +15,16 @@
  */
 
 import { Namespaced, mergeMetas } from "@kie-tools/xml-parser-ts";
-import "./schemas/dmn-1_4/ts-gen/types";
-import "./schemas/dmn-1_3/ts-gen/types";
+
+import { meta as dmn12meta, ns as dmn12ns } from "./schemas/dmn-1_2/ts-gen/meta";
 import "./schemas/dmn-1_2/ts-gen/types";
-import { ns as dmn12ns, meta as dmn12meta } from "./schemas/dmn-1_2/ts-gen/meta";
-import { ns as dmn13ns, meta as dmn13meta } from "./schemas/dmn-1_3/ts-gen/meta";
-import { ns as dmn14ns, meta as dmn14meta } from "./schemas/dmn-1_4/ts-gen/meta";
-import { ns as dmn15ns, meta as dmn15meta } from "./schemas/dmn-1_5/ts-gen/meta";
-import { ns as kie10ns, meta as kie10meta } from "./schemas/kie-1_0/ts-gen/meta";
+import { meta as dmn13meta, ns as dmn13ns } from "./schemas/dmn-1_3/ts-gen/meta";
+import "./schemas/dmn-1_3/ts-gen/types";
+import { meta as dmn14meta, ns as dmn14ns } from "./schemas/dmn-1_4/ts-gen/meta";
+import "./schemas/dmn-1_4/ts-gen/types";
+import { meta as dmn15meta, ns as dmn15ns } from "./schemas/dmn-1_5/ts-gen/meta";
+import "./schemas/dmn-1_5/ts-gen/types";
+import { meta as kie10meta, ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
 import { KIE__tAttachment, KIE__tComponentsWidthsExtension } from "./schemas/kie-1_0/ts-gen/types";
 
 export const KIE_NS = "kie:";
