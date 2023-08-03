@@ -20,7 +20,7 @@ export function ShapeOptions(props: { startExpanded: boolean }) {
               <TextContent>
                 <Text component={TextVariants.h4}>
                   <CubeIcon />
-                  &nbsp;&nbsp;Shape
+                  &nbsp;&nbsp;Shape (Work in progress 🔧)
                 </Text>
               </TextContent>
             ),

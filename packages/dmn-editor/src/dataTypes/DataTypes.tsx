@@ -1,5 +1,5 @@
 import * as React from "react";
 
 export function DataTypes() {
-  return <>Data types</>;
+  return <>Work in progress 🔧</>;
 }

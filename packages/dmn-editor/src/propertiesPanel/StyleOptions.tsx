@@ -19,7 +19,7 @@ export function StyleOptions(props: { startExpanded: boolean }) {
               <TextContent>
                 <Text component={TextVariants.h4}>
                   <PencilAltIcon />
-                  &nbsp;&nbsp;Style
+                  &nbsp;&nbsp;Style (Work in progress 🔧)
                 </Text>
               </TextContent>
             ),
