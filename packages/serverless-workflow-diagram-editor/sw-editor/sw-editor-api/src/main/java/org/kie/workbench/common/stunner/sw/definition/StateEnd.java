@@ -63,8 +63,9 @@ public class StateEnd {
         return continueAs;
     }
 
-    public final void setContinueAs(Object continueAs) {
+    public final StateEnd setContinueAs(Object continueAs) {
         this.continueAs = continueAs;
+        return this;
     }
 
     public final ProducedEvent[] getProduceEvents() {

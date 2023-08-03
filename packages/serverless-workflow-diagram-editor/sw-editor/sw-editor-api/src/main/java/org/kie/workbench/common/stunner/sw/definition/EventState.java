@@ -85,8 +85,9 @@ public class EventState extends State<EventState> {
         return onEvents;
     }
 
-    public void setOnEvents(OnEvent[] onEvents) {
+    public EventState setOnEvents(OnEvent[] onEvents) {
         this.onEvents = onEvents;
+        return this;
     }
 
     public StateDataFilter getStateDataFilter() {

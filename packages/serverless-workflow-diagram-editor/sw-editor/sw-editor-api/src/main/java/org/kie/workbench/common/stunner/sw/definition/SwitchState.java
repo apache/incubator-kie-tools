@@ -65,8 +65,9 @@ public class SwitchState extends State<SwitchState> {
         return defaultCondition;
     }
 
-    public void setDefaultCondition(DefaultConditionTransition defaultCondition) {
+    public SwitchState setDefaultCondition(DefaultConditionTransition defaultCondition) {
         this.defaultCondition = defaultCondition;
+        return this;
     }
 
     public EventConditionTransition[] getEventConditions() {
@@ -81,8 +82,9 @@ public class SwitchState extends State<SwitchState> {
         return dataConditions;
     }
 
-    public void setDataConditions(DataConditionTransition[] dataConditions) {
+    public SwitchState setDataConditions(DataConditionTransition[] dataConditions) {
         this.dataConditions = dataConditions;
+        return this;
     }
 
     public Boolean getUsedForCompensation() {
