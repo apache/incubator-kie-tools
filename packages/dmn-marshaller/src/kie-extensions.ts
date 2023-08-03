@@ -21,6 +21,7 @@ import "./schemas/dmn-1_2/ts-gen/types";
 import { ns as dmn12ns, meta as dmn12meta } from "./schemas/dmn-1_2/ts-gen/meta";
 import { ns as dmn13ns, meta as dmn13meta } from "./schemas/dmn-1_3/ts-gen/meta";
 import { ns as dmn14ns, meta as dmn14meta } from "./schemas/dmn-1_4/ts-gen/meta";
+import { ns as dmn15ns, meta as dmn15meta } from "./schemas/dmn-1_5/ts-gen/meta";
 import { ns as kie10ns, meta as kie10meta } from "./schemas/kie-1_0/ts-gen/meta";
 import { KIE__tAttachment, KIE__tComponentsWidthsExtension } from "./schemas/kie-1_0/ts-gen/types";
 
@@ -114,6 +115,37 @@ dmn14ns.set(kie10ns.get("")!, KIE_NS);
 };
 
 (dmn14meta["DMN14__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
+///////////////////////////
+///       DMN 1.5       ///
+///////////////////////////
+
+declare module "./schemas/dmn-1_5/ts-gen/types" {
+  export interface DMNDI15__DMNDiagram__extension {
+    "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
+  }
+
+  export interface DMN15__tKnowledgeSource__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+}
+
+dmn15ns.set(KIE_NS, kie10ns.get("")!);
+dmn15ns.set(kie10ns.get("")!, KIE_NS);
+
+(dmn15meta as any) = mergeMetas(dmn15meta, [[KIE_NS, kie10meta]]);
+
+(dmn15meta["DMNDI15__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
+  type: "KIE__tComponentsWidthsExtension",
+  isArray: true,
+  isOptional: true,
+};
+
+(dmn15meta["DMN15__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
