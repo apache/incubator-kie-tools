@@ -21,4 +21,3 @@ export * from "./SwfPreviewOptionsChannelApiImpl";
 export * from "./NoOpSwfStaticEnvelopeContentProviderChannelApiImpl";
 export * from "./SwfStaticEnvelopeContentProviderChannelApiImpl";
 export * from "./NoOpSwfServiceCatalogChannelApiImpl";
-export * from "./ServerlessWorkflowCombinedEditorEnvelopeApiImpl";

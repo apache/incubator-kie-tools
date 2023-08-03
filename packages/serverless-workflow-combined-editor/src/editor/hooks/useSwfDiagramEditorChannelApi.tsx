@@ -20,7 +20,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
-import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "../../impl/ServerlessWorkflowDiagramEditorChannelApiImpl";
+import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "../../channel/ServerlessWorkflowDiagramEditorChannelApiImpl";
 
 export function useSwfDiagramEditorChannelApi(args: {
   locale: string;
