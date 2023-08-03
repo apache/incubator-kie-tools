@@ -68,7 +68,8 @@ export class Dependencies {
 
   public readonly all = {
     notificationIndicator: () => {
-      return document.querySelector(".notification-indicator") as HTMLElement | null;
+      return (document.querySelector(".notification-indicator") ??
+        document.querySelector(".AppHeader-search")) as HTMLElement | null;
     },
     body: () => {
       return document.body;
