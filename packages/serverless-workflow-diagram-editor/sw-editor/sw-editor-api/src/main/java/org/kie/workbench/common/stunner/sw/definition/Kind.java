@@ -18,5 +18,6 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 public enum Kind {
 
-    consumed, produced;
+    consumed,
+    produced
 }

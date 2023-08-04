@@ -17,5 +17,7 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
 public enum DocType {
-    JSON, XML, YAML;
+    JSON,
+    XML,
+    YAML
 }

@@ -73,15 +73,6 @@ public abstract class BaseMarshallingTest {
         return !node.getOutEdges().isEmpty();
     }
 
-    public boolean hasOutgoingEdgeTo(String name, String to) {
-        String toUUID = getUUIDForObjectName(to);
-        Node node = getNodeByName(name);
-        return node.getOutEdges().stream()
-                .filter(e -> toUUID.equals(((Edge) e).getTargetNode().getUUID()))
-                .findAny()
-                .isPresent();
-    }
-
     public boolean hasIncomingEdgeFrom(String name, String from) {
         String fromUUID = getUUIDForObjectName(from);
         Node node = getNodeByName(name);
@@ -101,7 +92,6 @@ public abstract class BaseMarshallingTest {
             Edge edge = outEdges.get(0);
             Node targetNode = edge.getTargetNode();
             View targetContent = (View) targetNode.getContent();
-            System.out.println(targetContent.getDefinition().toString());
             if (targetContent.getDefinition() instanceof End) {
                 return true;
             }
@@ -136,10 +126,6 @@ public abstract class BaseMarshallingTest {
 
     public Node getNodeByName(String name) {
         return getGraph().getNode(getUUIDForObjectName(name));
-    }
-
-    public Node getNodeByUUID(String uuid) {
-        return getGraph().getNode(uuid);
     }
 
     public String getUUIDForObjectName(String name) {
