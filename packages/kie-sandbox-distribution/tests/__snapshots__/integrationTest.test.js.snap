@@ -1,12 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test built images individually cors-proxy built image 1`] = `
-Object {
-  "data": Array [],
-  "type": "Buffer",
-}
-`;
-
 exports[`Test built images individually cors-proxy homepage 1`] = `
 "<!DOCTYPE html>
     <html>
@@ -16,13 +9,6 @@ exports[`Test built images individually cors-proxy homepage 1`] = `
       <p>The source code is hosted on Github at <a href=\\"https://github.com/kiegroup/kie-tools/packages/cors-proxy\\">@kie-tools/cors-proxy</a></p>
       <p>It can also be installed from npm with <code>npm install <a href=\\"https://npmjs.org/package/@kie-tools/cors-proxy\\">@kie-tools/cors-proxy</a></code></p>
     </html>"
-`;
-
-exports[`Test built images individually extended-services built image 1`] = `
-Object {
-  "data": Array [],
-  "type": "Buffer",
-}
 `;
 
 exports[`Test built images individually extended-services homepage 1`] = `
@@ -47,11 +33,4 @@ exports[`Test built images individually extended-services homepage 1`] = `
     
   </body>
 </html>"
-`;
-
-exports[`Test built images individually kie-sandbox built image 1`] = `
-Object {
-  "data": Array [],
-  "type": "Buffer",
-}
 `;
