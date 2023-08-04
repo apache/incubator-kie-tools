@@ -64,6 +64,7 @@ In order to build the project, you need to comply with the following requirement
 - [operator-sdk-v1.25.0+](https://sdk.operatorframework.io/docs/building-operators/golang/installation/)
 - [Go 1.19+](https://go.dev/dl/)
 - [Kubebuilder 3.7.0+](https://github.com/kubernetes-sigs/kubebuilder/releases)
+- [CEKit 4.8.0+](https://cekit.io/)
 
 GNU Make:
 Used to define composite build actions. This should be already installed or available as a
@@ -136,6 +137,27 @@ make deploy
 ```sh
 make undeploy
 ```
+
+### Change log level
+By Default the log level is set to show only ERRORS with 
+```sh
+- "--v=0" 
+```
+inside the manager_auth_proxy_patch.yaml in the containers' section of kube-rbac-proxy and manager.
+
+With the 
+```sh
+make generate-all 
+```
+whese values will be replicated on operator.yaml and on sonataflow-operator.clusterserviceversion.yaml containers' sections.
+
+If you want to see the INFO msg replace v=0 with v=2 in the files during the development or in the deployment files on the cluster
+
+The available levels are:
+- v=0 > Error
+- v=1 > Warning
+- v=2 >Info
+- v=3 > Debug
 
 ### Running the operator on the cluster
 
