@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
@@ -27,6 +28,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
+import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
@@ -139,7 +141,6 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                        canvasHandler,
                                                        targetNode.getUUID());
             this.inlineTextEditEventEvent.fire(new InlineTextEditEvent(targetNode.getUUID()));
-
         }
     }
 
@@ -200,12 +201,50 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
                                                          final Node<View<?>, Edge> targetNode) {
         final Node parent = (Node) GraphUtils.getParent(sourceNode);
         final String shapeSetId = canvasHandler.getDiagram().getMetadata().getShapeSetId();
+
+        Object definition = targetNode.getContent().getDefinition();
+        String nodeName = JsWindow.editor.definitions.getName(definition);
+        final String availableNodeName = getAvailableNodeName(canvasHandler,
+                                                              JsWindow.editor.definitions.getName(definition),
+                                                              0);
+
+        if (!nodeName.equals(availableNodeName)) {
+            JsWindow.editor.definitions.setName(definition, availableNodeName);
+        }
+
         if (null != parent) {
             return commandFactory.addChildNode(parent,
                                                targetNode,
                                                shapeSetId);
         }
+
         return commandFactory.addNode(targetNode,
                                       shapeSetId);
+    }
+
+    static String getAvailableNodeName(final CanvasHandler canvasHandler,
+                                       String nodeName,
+                                       int counter) {
+        AtomicBoolean found = new AtomicBoolean(false);
+        String finalNodeName = nodeName;
+        canvasHandler.getDiagram().getGraph().nodes().forEach((node) -> {
+            View content = (View) ((Node) node).getContent();
+            if (JsWindow.editor.definitions.getName(content.getDefinition()).equals(finalNodeName)) {
+                found.set(true);
+            }
+        });
+
+        if (!found.get()) {
+            return nodeName;
+        }
+
+        counter++;
+        if (nodeName.lastIndexOf("_") == -1) {
+            nodeName += "_" + counter;
+        } else {
+            nodeName = finalNodeName.substring(0, nodeName.lastIndexOf("_")) + "_" + counter;
+        }
+
+        return getAvailableNodeName(canvasHandler, nodeName, counter);
     }
 }

@@ -108,6 +108,14 @@ public class JsDefinitionManager {
         return null;
     }
 
+    public void setName(Object pojo, String name) {
+        String field = definitionAdapter.getMetaPropertyField(pojo, PropertyMetaTypes.NAME);
+        Optional<?> property = definitionAdapter.getProperty(pojo, field);
+        if (property.isPresent()) {
+            propertyAdapter.setValue((JsDefinitionProperty) property.get(), name);
+        }
+    }
+
     public String getDescription(Object pojo) {
         return definitionAdapter.getDescription(pojo);
     }

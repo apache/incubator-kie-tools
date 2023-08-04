@@ -123,6 +123,12 @@ export function ConnectToKubernetesSimple(props: {
     [props]
   );
 
+  /* 
+  TODO: uncomment when enabling kubernetes deployment to use cors-proxy
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback((checked: boolean) => {
+    props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
+  }, [props]); */
+
   return (
     <>
       {isConnectionValidated === FormValiationOptions.INVALID && (
@@ -325,6 +331,20 @@ export function ConnectToKubernetesSimple(props: {
             </InputGroupText>
           </InputGroup>
         </FormGroup>
+        {/* 
+          TODO: uncomment when enabling kubernetes deployment to use cors-proxy
+        <FormGroup fieldId="disable-tls-validation">
+          <Checkbox
+            id="disable-tls-validation"
+            name="disable-tls-validation"
+            label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
+            description={<I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>}
+            aria-label="Disable TLS Certificate Validation"
+            tabIndex={4}
+            isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
+            onChange={onInsecurelyDisableTlsCertificateValidationChange}
+          />
+        </FormGroup> */}
         <ActionGroup>
           <Button
             id="dev-deployments-config-save-button"

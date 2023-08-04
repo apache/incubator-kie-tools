@@ -21,8 +21,8 @@ import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
-import { SwfServiceCatalogChannelApiImpl } from "../../impl";
-import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
+import { SwfServiceCatalogChannelApiImpl } from "../../channel";
+import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../channel/ServerlessWorkflowTextEditorChannelApiImpl";
 
 export function useSwfTextEditorChannelApi(args: {
   locale: string;

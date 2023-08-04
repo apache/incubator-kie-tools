@@ -19,8 +19,6 @@ import * as React from "react";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../cookies";
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
-import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { readDevModeEnabledConfigCookie, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
@@ -51,25 +49,11 @@ interface GithubUser {
   email: string;
 }
 
-export class ExtendedServicesConfig {
-  constructor(public readonly host: string, public readonly port: string) {}
-
-  public buildUrl(): string {
-    if (this.port.trim().length === 0) {
-      return this.host;
-    }
-    return `${this.host}:${this.port}`;
-  }
-}
-
 export interface SettingsContextType {
   openshift: {
     status: OpenShiftInstanceStatus;
     config: KubernetesConnection;
     isDevModeEnabled: boolean;
-  };
-  extendedServices: {
-    config: ExtendedServicesConfig;
   };
   github: {
     token?: string;
@@ -91,9 +75,6 @@ export interface SettingsDispatchContextType {
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
     setConfig: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
     setDevModeEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-  };
-  extendedServices: {
-    setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
   };
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
@@ -172,25 +153,19 @@ export function SettingsContextProvider(props: any) {
     });
   }, [githubAuthService]);
 
-  const extendedServices = useExtendedServices();
-
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState(readServiceAccountConfigCookie());
   const [serviceRegistryConfig, setServiceRegistryConfig] = useState(readServiceRegistryConfigCookie());
 
-  const [openshiftStatus, setOpenshiftStatus] = useState(
-    extendedServices.status === ExtendedServicesStatus.AVAILABLE
-      ? OpenShiftInstanceStatus.DISCONNECTED
-      : OpenShiftInstanceStatus.UNAVAILABLE
-  );
+  const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
 
   const openshiftService = useMemo(
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${extendedServices.config.buildUrl()}/${"cors-proxy"}`,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
-    [openshiftConfig, extendedServices.config]
+    [openshiftConfig]
   );
 
   const [isOpenShiftDevModeEnabled, setOpenShiftDevModeEnabled] = useState(readDevModeEnabledConfigCookie());
@@ -200,9 +175,9 @@ export function SettingsContextProvider(props: any) {
       new SwfServiceCatalogStore({
         serviceAccount: serviceAccountConfig,
         serviceRegistry: serviceRegistryConfig,
-        extendedServicesConfig: extendedServices.config,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
-    [extendedServices.config, serviceAccountConfig, serviceRegistryConfig]
+    [serviceAccountConfig, serviceRegistryConfig]
   );
 
   const dispatch = useMemo(() => {
@@ -217,9 +192,6 @@ export function SettingsContextProvider(props: any) {
         authService: githubAuthService,
         octokit: githubOctokit,
       },
-      extendedServices: {
-        setConfig: extendedServices.saveNewConfig,
-      },
       serviceAccount: {
         setConfig: setServiceAccountConfig,
       },
@@ -228,7 +200,7 @@ export function SettingsContextProvider(props: any) {
         catalogStore: serviceCatalogStore,
       },
     };
-  }, [githubAuthService, githubOctokit, openshiftService, extendedServices.saveNewConfig, serviceCatalogStore]);
+  }, [githubAuthService, githubOctokit, openshiftService, serviceCatalogStore]);
 
   const value = useMemo(() => {
     return {
@@ -242,9 +214,6 @@ export function SettingsContextProvider(props: any) {
         token: githubToken,
         user: githubUser,
         scopes: githubScopes,
-      },
-      extendedServices: {
-        config: extendedServices.config,
       },
       serviceAccount: {
         config: serviceAccountConfig,
@@ -261,7 +230,6 @@ export function SettingsContextProvider(props: any) {
     githubToken,
     githubUser,
     githubScopes,
-    extendedServices.config,
     serviceAccountConfig,
     serviceRegistryConfig,
   ]);

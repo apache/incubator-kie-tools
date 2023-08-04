@@ -141,7 +141,6 @@ export const routes = {
     home: new Route<{}>(() => SETTINGS_ROUTE),
     github: new Route<{}>(() => `${SETTINGS_ROUTE}/github`),
     openshift: new Route<{}>(() => `${SETTINGS_ROUTE}/openshift`),
-    extended_services: new Route<{}>(() => `${SETTINGS_ROUTE}/extended-services`),
     service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/service-account`),
     service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
     storage: new Route<{}>(() => `${SETTINGS_ROUTE}/storage`),
