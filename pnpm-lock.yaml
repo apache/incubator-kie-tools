@@ -6662,15 +6662,6 @@ importers:
 
   packages/serverless-logic-web-tools-swf-deployment-webapp2:
     dependencies:
-      "@kie-tools-core/i18n":
-        specifier: workspace:*
-        version: link:../i18n
-      "@kie-tools-core/patternfly-base":
-        specifier: workspace:*
-        version: link:../patternfly-base
-      "@kie-tools/i18n-common-dictionary":
-        specifier: workspace:*
-        version: link:../i18n-common-dictionary
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -6699,6 +6690,9 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
@@ -17747,7 +17741,7 @@ packages:
       webpack-cli: 4.x.x
     dependencies:
       envinfo: 7.8.1
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
     dev: true
 
   /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.11.0):
@@ -20514,7 +20508,7 @@ packages:
       postcss-value-parser: 4.2.0
       schema-utils: 3.1.1
       semver: 7.3.7
-      webpack: 5.70.0(webpack-cli@4.10.0)
+      webpack: 5.70.0
     dev: true
 
   /css-loader@6.7.1(webpack@5.76.1):
@@ -23215,7 +23209,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0(webpack-cli@4.10.0)
+      webpack: 5.70.0
     dev: true
 
   /file-loader@6.2.0(webpack@5.76.1):
@@ -30562,7 +30556,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0(webpack-cli@4.10.0)
+      webpack: 5.70.0
     dev: true
 
   /rc@1.2.8:
@@ -32779,7 +32773,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0(webpack-cli@4.10.0)
+      webpack: 5.70.0
     dev: true
 
   /stylus-loader@7.0.0(stylus@0.59.0)(webpack@5.76.1):
@@ -33072,7 +33066,7 @@ packages:
       serialize-javascript: 6.0.0
       source-map: 0.6.1
       terser: 5.14.2
-      webpack: 5.70.0(webpack-cli@4.10.0)
+      webpack: 5.70.0
     dev: true
 
   /terser-webpack-plugin@5.3.0(webpack@5.76.1):
@@ -34697,7 +34691,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.76.1(esbuild@0.15.5)
+      webpack: 5.76.1(webpack-cli@4.10.0)
     dev: true
 
   /webpack-dev-server@4.11.0(webpack-cli@4.10.0)(webpack@5.76.1):

@@ -121,7 +121,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-builder-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "serverless-logic-web-tools-swf-deployment-webapp2" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -372,9 +372,10 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
-  "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
+  "serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools-core/patternfly-base" [ style = "dashed", color = "blue" ];
+  "serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
+  "serverless-logic-web-tools-swf-deployment-webapp2" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" -> "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];

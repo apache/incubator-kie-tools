@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -23,12 +22,10 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from "react";
 import { useHistory } from "react-router";
-import { useAppI18n } from "../i18n";
 import { routes } from "../routes";
 
 export function BasePage(props: { children?: React.ReactNode }) {
   const history = useHistory();
-  const { i18n } = useAppI18n();
 
   return (
     <Page
@@ -52,11 +49,16 @@ export function BasePage(props: { children?: React.ReactNode }) {
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
                     key="disclaimer-tooltip"
-                    content={<I18nHtml>{i18n.masthead.disclaimer.description}</I18nHtml>}
+                    content={
+                      <>
+                        This deployment is intended to be used during <b>development</b>, so users should not use the
+                        deployed services in production or for any type of business-critical workloads.
+                      </>
+                    }
                   >
                     <TextContent>
                       <Text component={TextVariants.h5}>
-                        {i18n.masthead.disclaimer.title}
+                        Development only
                         <HelpIcon className="app--masterhead__disclaimer-icon" />
                       </Text>
                     </TextContent>

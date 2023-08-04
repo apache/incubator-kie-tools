@@ -128,7 +128,7 @@
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
-      { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2" },
+      { "id": "serverless-logic-web-tools-swf-deployment-webapp2" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
@@ -791,20 +791,17 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2",
+        "source": "serverless-logic-web-tools-swf-deployment-webapp2",
         "target": "@kie-tools-core/patternfly-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2",
+        "source": "serverless-logic-web-tools-swf-deployment-webapp2",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
+      { "source": "serverless-logic-web-tools-swf-deployment-webapp2", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "serverless-logic-web-tools-swf-deployment-webapp2", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
@@ -991,10 +988,7 @@
       "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
       "packages/serverless-logic-web-tools-swf-deployment-webapp"
     ],
-    [
-      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2",
-      "packages/serverless-logic-web-tools-swf-deployment-webapp2"
-    ],
+    ["serverless-logic-web-tools-swf-deployment-webapp2", "packages/serverless-logic-web-tools-swf-deployment-webapp2"],
     [
       "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
       "packages/serverless-logic-web-tools-swf-dev-mode-image"

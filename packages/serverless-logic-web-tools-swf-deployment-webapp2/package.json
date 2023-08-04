@@ -1,9 +1,9 @@
 {
-  "private": true,
-  "name": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp2",
-  "version": "0.0.0",
+  "name": "serverless-logic-web-tools-swf-deployment-webapp2",
+  "version": "0.0.1",
   "description": "",
   "license": "Apache-2.0",
+  "keywords": [],
   "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
@@ -22,9 +22,6 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "workspace:*",
-    "@kie-tools-core/patternfly-base": "workspace:*",
-    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "react": "^17.0.2",
@@ -36,6 +33,7 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",

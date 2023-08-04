@@ -14,34 +14,24 @@
  * limitations under the License.
  */
 
-import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import * as React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
-import { AppI18nContext, appI18nDefaults, appI18nDictionaries } from "./i18n";
 import { HomePage } from "./pages/HomePage";
 import { NoMatchPage } from "./pages/NoMatchPage";
 import { routes } from "./routes";
 
 export function App() {
   return (
-    <I18nDictionariesProvider
-      defaults={appI18nDefaults}
-      dictionaries={appI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={AppI18nContext}
-    >
-      <AppContextProvider>
-        <HashRouter>
-          <Switch>
-            <Route path={routes.root.path({})}>
-              <HomePage />
-            </Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
-      </AppContextProvider>
-    </I18nDictionariesProvider>
+    <AppContextProvider>
+      <HashRouter>
+        <Switch>
+          <Route path={routes.root.path({})}>
+            <HomePage />
+          </Route>
+          <Route component={NoMatchPage} />
+        </Switch>
+      </HashRouter>
+    </AppContextProvider>
   );
 }
