@@ -47,8 +47,8 @@ public class RunTests {
     private Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
 
     @Container
-    private GenericContainer devModeImage = new GenericContainer("quay.io/kiegroup/kogito-swf-devmode:" + System.getenv("IMAGE_VERSION"))
-            .withFileSystemBind("tests/shell/kogito-swf-devmode/resources", "/home/kogito/serverless-workflow-project/src/main/resources", BindMode.READ_ONLY)
+    private GenericContainer devModeImage = new GenericContainer(getTestImage())
+            .withFileSystemBind(getScriptDirPath() + "/resources", "/home/kogito/serverless-workflow-project/src/main/resources", BindMode.READ_ONLY)
             .withExposedPorts(8080)
             .waitingFor(Wait.forHttp("/jsongreet"))
             .withLogConsumer(logConsumer);
@@ -69,16 +69,21 @@ public class RunTests {
     }
 
     public static void main(String... args) throws Exception {
-        if (args == null || args.length != 1) {
-            System.err.println("Output directory is not specified. Usage:");
-            System.err.println(RunTests.class.getSimpleName() + ".java <reports output directory>");
-            System.exit(1);
-            throw new IllegalStateException("Unreachable code");
-        }
-        System.out.println("Got IMAGE_VERSION = " + System.getenv("IMAGE_VERSION"));
         CommandLineOptions options = new CommandLineOptions();
         options.setSelectedClasses(Collections.singletonList(RunTests.class.getName()));
-        options.setReportsDir(Paths.get(args[0]));
+        options.setReportsDir(Paths.get(getOutputDir()));
         new ConsoleTestExecutor(options).execute(new PrintWriter(System.out));
+    }
+
+    static String getTestImage() {
+        return System.getenv("TEST_IMAGE");
+    }
+
+    static String getOutputDir() {
+        return System.getenv("OUTPUT_DIR");
+    }
+
+    static String getScriptDirPath() {
+        return System.getenv("TESTS_SCRIPT_DIR_PATH");
     }
 }

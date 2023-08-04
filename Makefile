@@ -52,7 +52,7 @@ endif
 # if ignore_test is set to true, ignore the tests
 ifneq ($(ignore_test),true)
 	${CEKIT_CMD} --descriptor ${image_name}-image.yaml test behave ${test_options}
-	tests/shell/run.sh ${image_name} ${SHORTENED_LATEST_VERSION}
+	tests/shell/run.sh ${image_name} "quay.io/kiegroup/${image_name}:${SHORTENED_LATEST_VERSION}"
 endif
 
 # Build all images

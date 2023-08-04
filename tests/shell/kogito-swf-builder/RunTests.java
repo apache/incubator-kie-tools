@@ -48,8 +48,8 @@ public class RunTests {
     @Container
     private GenericContainer builtImage = new GenericContainer(
             new ImageFromDockerfile("dev.local/jbang-test/swf-test:" + Math.round(Math.random() * 1000000.00))
-                    .withDockerfile(Paths.get("tests/shell/kogito-swf-builder/", "resources", "Dockerfile"))
-                    .withBuildArg("BUILDER_VERSION", System.getenv("IMAGE_VERSION")))
+                    .withDockerfile(Paths.get(getScriptDirPath(), "resources", "Dockerfile"))
+                    .withBuildArg("BUILDER_IMAGE_TAG", getTestImage()))
             .withExposedPorts(8080)
             .waitingFor(Wait.forHttp("/jsongreet"))
             .withLogConsumer(logConsumer);
@@ -70,16 +70,23 @@ public class RunTests {
     }
 
     public static void main(String... args) throws Exception {
-        if (args == null || args.length != 1) {
-            System.err.println("Output directory is not specified. Usage:");
-            System.err.println(RunTests.class.getSimpleName() + ".java <reports output directory>");
-            System.exit(1);
-            throw new IllegalStateException("Unreachable code");
-        }
-        System.out.println("Got IMAGE_VERSION = " + System.getenv("IMAGE_VERSION"));
+        // Log docker build. Source: https://github.com/testcontainers/testcontainers-java/issues/3093
+        System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava.api.command.BuildImageResultCallback", "debug");
         CommandLineOptions options = new CommandLineOptions();
         options.setSelectedClasses(Collections.singletonList(RunTests.class.getName()));
-        options.setReportsDir(Paths.get(args[0]));
+        options.setReportsDir(Paths.get(getOutputDir()));
         new ConsoleTestExecutor(options).execute(new PrintWriter(System.out));
+    }
+
+    static String getTestImage() {
+        return System.getenv("TEST_IMAGE");
+    }
+
+    static String getOutputDir() {
+        return System.getenv("OUTPUT_DIR");
+    }
+
+    static String getScriptDirPath() {
+        return System.getenv("TESTS_SCRIPT_DIR_PATH");
     }
 }
