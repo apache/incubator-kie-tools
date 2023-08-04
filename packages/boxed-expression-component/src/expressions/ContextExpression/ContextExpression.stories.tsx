@@ -1,15 +1,18 @@
 import * as React from "react";
-import { useRef } from "react";
+import { useState, useEffect } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   ContextExpressionDefinition,
   DmnBuiltInDataType,
+  ExpressionDefinition,
   ExpressionDefinitionLogicType,
   generateUuid,
 } from "../../api";
 import { ContextExpression } from "./ContextExpression";
+import { BoxedExpressionEditor } from "../";
+import { beeGwtService, dataTypes, pmmlParams } from "../../../.storybook/preview";
 
-const defaultProps: ContextExpressionDefinition = {
+const contextExpressionDefinition: ContextExpressionDefinition = {
   id: generateUuid(),
   dataType: DmnBuiltInDataType.Any,
   logicType: ExpressionDefinitionLogicType.Context,
@@ -37,29 +40,41 @@ const defaultProps: ContextExpressionDefinition = {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<ContextExpressionDefinition> = {
-  title: "Boxed Expression/Expressions/Context Expression",
   component: ContextExpression,
   parameters: {
     layout: "center",
   },
+  decorators: [
+    (Story) => (
+      <div style={{ margin: "1em" }}>
+        <Story />
+      </div>
+    ),
+  ],
 };
-
 export default meta;
 type Story = StoryObj<ContextExpressionDefinition>;
-function ContextExpressionWrapper(props: ContextExpressionDefinition) {
-  const ref = useRef(null);
+
+function ContextExpressionWrapper() {
+  const emptyRef = React.useRef<HTMLElement>(null);
+  const [expression, setExpression] = useState<ExpressionDefinition>(contextExpressionDefinition);
 
   return (
-    <div ref={ref}>
-      <ContextExpression {...props} isNested={false} />
-    </div>
+    <BoxedExpressionEditor
+      decisionNodeId="_00000000-0000-0000-0000-000000000000"
+      expressionDefinition={expression}
+      setExpressionDefinition={setExpression}
+      dataTypes={dataTypes}
+      scrollableParentRef={emptyRef}
+      beeGwtService={beeGwtService}
+      pmmlParams={pmmlParams}
+    />
   );
 }
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Default: Story = {
-  render: (args) => ContextExpressionWrapper(args),
-  args: {
-    ...defaultProps,
+  render: (args) => {
+    return ContextExpressionWrapper();
   },
 };
