@@ -15,11 +15,11 @@
  */
 
 .blank-slate-pf {
-  background-color: transparent;
-  border: none;
+  background-color: transparent !important;
+  border: none !important;
 }
 
 .pficon-warning-triangle-o,
 .pficon-warning-triangle-o:before {
-  color: gray;
+  color: gray !important;
 }
