@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="3" failures="0" errors="0" time="9.113">
+  <testsuite name="expressions/ContextExpression" errors="0" failures="0" skipped="0" timestamp="2023-08-04T20:03:33" time="1.989" tests="1">
+    <testcase classname="expressions/ContextExpression Default smoke-test" name="expressions/ContextExpression Default smoke-test" time="0.176">
+    </testcase>
+  </testsuite>
+  <testsuite name="expressions/ContextExpression" errors="0" failures="0" skipped="0" timestamp="2023-08-04T20:03:35" time="2.334" tests="1">
+    <testcase classname="expressions/ContextExpression Default smoke-test" name="expressions/ContextExpression Default smoke-test" time="0.102">
+    </testcase>
+  </testsuite>
+  <testsuite name="expressions/ContextExpression" errors="0" failures="0" skipped="0" timestamp="2023-08-04T20:03:37" time="1.993" tests="1">
+    <testcase classname="expressions/ContextExpression Default smoke-test" name="expressions/ContextExpression Default smoke-test" time="0.221">
+    </testcase>
+  </testsuite>
+</testsuites>

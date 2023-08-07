@@ -41,21 +41,11 @@ const contextExpressionDefinition: ContextExpressionDefinition = {
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<ContextExpressionDefinition> = {
   component: ContextExpression,
-  parameters: {
-    layout: "center",
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ margin: "1em" }}>
-        <Story />
-      </div>
-    ),
-  ],
 };
 export default meta;
 type Story = StoryObj<ContextExpressionDefinition>;
 
-function ContextExpressionWrapper() {
+function ContextExpressionWrapper(args: ContextExpressionDefinition) {
   const emptyRef = React.useRef<HTMLElement>(null);
   const [expression, setExpression] = useState<ExpressionDefinition>(contextExpressionDefinition);
 
@@ -75,6 +65,9 @@ function ContextExpressionWrapper() {
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Default: Story = {
   render: (args) => {
-    return ContextExpressionWrapper();
+    return ContextExpressionWrapper(args);
+  },
+  args: {
+    ...contextExpressionDefinition,
   },
 };
