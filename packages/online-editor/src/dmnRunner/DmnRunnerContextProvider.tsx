@@ -748,8 +748,8 @@ export function DmnRunnerExtendedServicesError() {
           <p>An error has happened while trying to show your inputs</p>
           <br />
           <p>
-            If you're using included models, please check if they still exist in project. If you have deleted one file
-            that was included, please remove all its entry in the "Included Models" tab.
+            If your DMN file has included models, please check if they still exist.
+            If you have deleted a file that was being used as an included model, please remove its reference in the "Included Models" tab.
           </p>
         </EmptyStateBody>
       </EmptyState>
