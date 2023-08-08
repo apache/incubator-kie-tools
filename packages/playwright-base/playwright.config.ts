@@ -3,7 +3,7 @@ import { env } from "./env";
 
 const buildEnv: any = env;
 
-export default defineConfig({
+export const playwirghtBase = defineConfig({
   testDir: "./e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -17,21 +17,21 @@ export default defineConfig({
   reporter: process.env.CI
     ? [
         ["github"],
-        ["junit", { outputFile: "./dist-tests/reports/junit-report-e2e.xml" }],
-        ["html", { outputFolder: "./dist-tests/reports/", open: "never" }],
+        ["junit", { outputFile: "./dist-e2e/junit-report-e2e.xml" }],
+        ["html", { outputFolder: "./dist-e2e/reports/", open: "never" }],
+        ["list"],
       ]
-    : [["html", { outputFolder: "./dist-tests/reports/", open: "never" }], ["list"]],
+    : [["html", { outputFolder: "./dist-e2e/reports/", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
-
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     screenshot: "only-on-failure",
     /* automatically record video on retry  */
     video: "on-first-retry",
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-
+    // Default locale;
     locale: "en-US",
   },
 
@@ -42,7 +42,6 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
-      fullyParallel: true,
     },
 
     // {
@@ -60,10 +59,4 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
     },
   ],
-  /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
-    reuseExistingServer: !process.env.CI || true,
-  },
 });
