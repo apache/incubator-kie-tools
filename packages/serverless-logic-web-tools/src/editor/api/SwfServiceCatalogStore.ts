@@ -32,7 +32,6 @@ import {
   isServiceRegistryConfigValid,
   ServiceRegistrySettingsConfig,
 } from "../../settings/serviceRegistry/ServiceRegistryConfig";
-import { ExtendedServicesConfig } from "../../settings/SettingsContext";
 import {
   VIRTUAL_SERVICE_REGISTRY_NAME,
   VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX,

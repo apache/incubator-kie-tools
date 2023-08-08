@@ -24,8 +24,8 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMa
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.StringOrValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringOrValueHolderYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StringOrValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StringOrValueHolderYamlTypeSerializer;
 
 @JSONMapper
 @YAMLMapper

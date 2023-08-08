@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowExecTimeoutJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowExecTimeoutYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowExecTimeoutJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowExecTimeoutYamlSerializer;
 
 @JSONMapper
 @YAMLMapper

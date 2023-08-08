@@ -1244,10 +1244,6 @@ jobs:
       SERVERLESS_LOGIC_WEB_TOOLS__version: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: ""
-      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
-      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
-      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
-      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
@@ -1266,7 +1262,7 @@ jobs:
       SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "${{ inputs.tag }}"
       SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
-    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_web_tools == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_web_tools_swf_builder_image.result == 'success' || needs.serverless_logic_web_tools_swf_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_base_builder_image.result == 'success' || needs.serverless_logic_web_tools_base_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_swf_dev_mode_image.result == 'success' || needs.serverless_logic_web_tools_swf_dev_mode_image.result == 'skipped') && (needs.dashbuilder_viewer_image.result == 'success' || needs.dashbuilder_viewer_image.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_web_tools == 'true' && (needs.serverless_logic_web_tools_swf_builder_image.result == 'success' || needs.serverless_logic_web_tools_swf_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_base_builder_image.result == 'success' || needs.serverless_logic_web_tools_base_builder_image.result == 'skipped') && (needs.serverless_logic_web_tools_swf_dev_mode_image.result == 'success' || needs.serverless_logic_web_tools_swf_dev_mode_image.result == 'skipped') && (needs.dashbuilder_viewer_image.result == 'success' || needs.dashbuilder_viewer_image.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs:
       [
@@ -1275,7 +1271,6 @@ jobs:
         serverless_logic_web_tools_base_builder_image,
         serverless_logic_web_tools_swf_dev_mode_image,
         dashbuilder_viewer_image,
-        extended_services,
       ]
     steps:
       - name: "Checkout @ GitHub default"

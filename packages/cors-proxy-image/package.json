@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "echo \"Nothing to do\"",
+    "build:dev": "pnpm cleanup && pnpm copy:cors-proxy-package && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
     "build:prod": "pnpm cleanup && pnpm copy:cors-proxy-package && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:cors-proxy-package": "run-script-os",

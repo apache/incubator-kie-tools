@@ -23,7 +23,9 @@ import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.layout.Layout;
 import com.ait.lienzo.client.core.layout.graph.Vertex;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -53,6 +55,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotSame;
 
+@RunWith(LienzoMockitoTestRunner.class)
 public class AutoLayoutTest extends BaseMarshallingTest {
 
     private static final String WORKFLOW_ID = "workflow1";

@@ -20,6 +20,11 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 public interface SWConstants {
 
     @TranslationKey(defaultValue = "")
+    String INVALID_TARGET_NAME = "InvalidTargetName.message";
+    @TranslationKey(defaultValue = "")
+    String DUPLICATE_STATE_NAME = "DuplicateStateName.message";
+
+    @TranslationKey(defaultValue = "")
     String ACTION_IS_NULL = "Action.null";
     @TranslationKey(defaultValue = "")
     String ACTIONS_ARE_NULL = "Actions.null";

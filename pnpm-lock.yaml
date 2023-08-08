@@ -192,8 +192,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -397,8 +397,8 @@ importers:
         specifier: ^17.0.5
         version: 17.0.8
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -434,8 +434,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -707,8 +707,8 @@ importers:
         specifier: ^10.0.2
         version: 10.0.2
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -1028,8 +1028,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -1278,6 +1278,9 @@ importers:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
+      "@kie-tools/chrome-extension-test-helper":
+        specifier: workspace:*
+        version: link:../chrome-extension-test-helper
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
@@ -3389,8 +3392,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -4823,8 +4826,8 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-electron":
         specifier: ^2.3.3
         version: 2.3.3
@@ -5369,8 +5372,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -6069,8 +6072,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -6482,9 +6485,6 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
-      "@kie-tools/extended-services":
-        specifier: workspace:*
-        version: link:../extended-services
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -6771,6 +6771,115 @@ importers:
       webpack-dev-server:
         specifier: ^4.7.3
         version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
+
+  packages/serverless-logic-web-tools-swf-deployment-webapp2:
+    dependencies:
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools/i18n-common-dictionary":
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
+      "@patternfly/react-core":
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-icons":
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      react-router:
+        specifier: ^5.2.1
+        version: 5.2.1(react@17.0.2)
+      react-router-dom:
+        specifier: ^5.2.1
+        version: 5.3.0(react@17.0.2)
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.18.10
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.18.10(@babel/core@7.18.10)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
+      "@types/react-router":
+        specifier: ^5.1.14
+        version: 5.1.14
+      "@types/react-router-dom":
+        specifier: ^5.1.7
+        version: 5.1.7
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.76.1)
+      html-replace-webpack-plugin:
+        specifier: ^2.6.0
+        version: 2.6.0
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.3.2(webpack@5.76.1)
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+      webpack:
+        specifier: ^5.36.2
+        version: 5.76.1(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.11.0(webpack-cli@4.10.0)(webpack@5.76.1)
       webpack-merge:
         specifier: ^5.8.0
         version: 5.8.0
@@ -7685,8 +7794,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-electron":
         specifier: ^2.3.3
         version: 2.3.3
@@ -8556,8 +8665,8 @@ importers:
         specifier: workspace:*
         version: link:../workspace
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       minimatch:
         specifier: ^3.0.5
         version: 3.0.5
@@ -8730,8 +8839,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-web":
         specifier: ^0.0.30
         version: 0.0.30
@@ -8802,8 +8911,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -8838,8 +8947,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/vsce":
         specifier: ^2.19.0
         version: 2.19.0
@@ -8886,8 +8995,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -8977,8 +9086,8 @@ importers:
         specifier: ^2.7.4
         version: 2.7.4
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       jest:
         specifier: ^26.6.3
         version: 26.6.3
@@ -9562,8 +9671,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       "@types/vscode":
-        specifier: ^1.66.0
-        version: 1.66.0
+        specifier: 1.67.0
+        version: 1.67.0
       "@vscode/test-electron":
         specifier: ^2.3.3
         version: 2.3.3
@@ -20705,6 +20814,22 @@ packages:
       "@testing-library/dom": 9.3.1
     dev: true
 
+  /@thiagoelg/cors-proxy@0.0.1:
+    resolution:
+      { integrity: sha512-bWuahxgmL4D7GgcaoI7YygUzwD1/tx3F7c7OzNhinQM8A+VYdmu2M+2RuronAfCDTsEmumMqFSZoF3FD/p58kQ== }
+    hasBin: true
+    dependencies:
+      cross-env: 5.2.1
+      daemonize-process: 1.0.9
+      micro: 9.3.4
+      micro-cors: 0.1.1
+      minimisted: 2.0.1
+      node-fetch: 2.6.11
+      tree-kill: 1.2.2
+    transitivePeerDependencies:
+      - encoding
+    dev: true
+
   /@tootallnate/once@1.1.2:
     resolution:
       { integrity: sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw== }
@@ -21645,9 +21770,9 @@ packages:
     resolution:
       { integrity: sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ== }
 
-  /@types/vscode@1.66.0:
+  /@types/vscode@1.67.0:
     resolution:
-      { integrity: sha512-ZfJck4M7nrGasfs4A4YbUoxis3Vu24cETw3DERsNYtDZmYSYtk6ljKexKFKhImO/ZmY6ZMsmegu2FPkXoUFImA== }
+      { integrity: sha512-GH8BDf8cw9AC9080uneJfulhSa7KHSMI2s/CyKePXoGNos9J486w2V4YKoeNUqIEkW4hKoEAWp6/cXTwyGj47g== }
 
   /@types/wait-on@5.3.1:
     resolution:
@@ -25142,6 +25267,15 @@ packages:
       pretty-bytes: 5.6.0
     dev: true
 
+  /cross-env@5.2.1:
+    resolution:
+      { integrity: sha512-1yHhtcfAd1r4nwQgknowuUNfIT9E8dOMMspC36g45dN+iD1blloi7xp8X/xAIDnjHWyt1uQ8PHk2fkNaym7soQ== }
+    engines: { node: ">=4.0" }
+    hasBin: true
+    dependencies:
+      cross-spawn: 6.0.5
+    dev: true
+
   /cross-env@7.0.3:
     resolution:
       { integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw== }
@@ -25251,7 +25385,7 @@ packages:
       postcss-modules-values: 4.0.0(postcss@8.4.16)
       postcss-value-parser: 4.2.0
       semver: 7.5.3
-      webpack: 5.76.1(@swc/core@1.3.71)(webpack-cli@4.10.0)
+      webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
   /css-prefers-color-scheme@6.0.3(postcss@8.4.16):
@@ -25690,6 +25824,12 @@ packages:
       d3-selection: 2.0.0
       d3-transition: 2.0.0(d3-selection@2.0.0)
     dev: false
+
+  /daemonize-process@1.0.9:
+    resolution:
+      { integrity: sha512-YoB+AmcgHIBDVeyfVWSCV90FNk799zX8Uvn7RJTDCD8Y0EMNbSfIKLG961VgchJme2GHmqpXUuV8Rxe2j2L+bw== }
+    engines: { node: ">=4" }
+    dev: true
 
   /dashdash@1.14.1:
     resolution:
@@ -26136,6 +26276,12 @@ packages:
   /delegates@1.0.0:
     resolution:
       { integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ== }
+    dev: true
+
+  /depd@1.1.1:
+    resolution:
+      { integrity: sha512-Jlk9xvkTDGXwZiIDyoM7+3AsuvJVoyOpRupvEVy9nX3YO3/ieZxhlgh8GpLNZ8AY7HjO6y2YwpMSh1ejhu3uIw== }
+    engines: { node: ">= 0.6" }
     dev: true
 
   /depd@1.1.2:
@@ -29585,6 +29731,21 @@ packages:
       webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
+  /html-webpack-plugin@5.3.2(webpack@5.76.1):
+    resolution:
+      { integrity: sha512-HvB33boVNCz2lTyBsSiMffsJ+m0YLIQ+pskblXgN9fnjS1BgEcuAfdInfXfGrkdXV406k9FiDi86eVCDBgJOyQ== }
+    engines: { node: ">=10.13.0" }
+    peerDependencies:
+      webpack: ^5.20.0
+    dependencies:
+      "@types/html-minifier-terser": 5.1.1
+      html-minifier-terser: 5.1.1
+      lodash: 4.17.21
+      pretty-error: 3.0.4
+      tapable: 2.2.0
+      webpack: 5.76.1(webpack-cli@4.10.0)
+    dev: true
+
   /html-webpack-plugin@5.5.3(webpack@5.76.1):
     resolution:
       { integrity: sha512-6YrDKTuqaP/TquFH7h4srYWsZx+x6k6+FbsTm0ziCwGHDP78Unr1r9F/H4+sGmMbX08GQcJ+K64x55b+7VM/jg== }
@@ -29596,7 +29757,7 @@ packages:
       html-minifier-terser: 6.1.0
       lodash: 4.17.21
       pretty-error: 4.0.0
-      tapable: 2.2.0
+      tapable: 2.2.1
       webpack: 5.76.1(@swc/core@1.3.71)(webpack-cli@4.10.0)
     dev: true
 
@@ -29644,6 +29805,17 @@ packages:
   /http-deceiver@1.2.7:
     resolution:
       { integrity: sha512-LmpOGxTfbpgtGVxJrj5k7asXHCgNZp5nLfp+hWc8QQRqtb7fUy6kRY3BO1h9ddF6yIPYUARgxGOwB42DnxIaNw== }
+    dev: true
+
+  /http-errors@1.6.2:
+    resolution:
+      { integrity: sha512-STnYGcKMXL9CGdtpeTFnLmgMSHTTNQJSHxiC4DETHKf934Q160Ht5pljrNeH24S0O9xUN+9vsDJZdZtk5js6Ww== }
+    engines: { node: ">= 0.6" }
+    dependencies:
+      depd: 1.1.1
+      inherits: 2.0.3
+      setprototypeof: 1.0.3
+      statuses: 1.5.0
     dev: true
 
   /http-errors@1.6.3:
@@ -29886,6 +30058,12 @@ packages:
     resolution:
       { integrity: sha512-SQS2gDTB7tBN486QSoKPKQItZw97BMOd+Kdb6ghfpBc0yXyzrddI0oDV5MkDAbuB4X2mO3/nj60TRMcYxwzZeQ== }
     hasBin: true
+    dev: true
+
+  /iconv-lite@0.4.19:
+    resolution:
+      { integrity: sha512-oTZqweIP51xaGPI4uPa56/Pri/480R+mo7SeU+YETByQNhDG55ycFyNLIgta9vXhILrxXDmF7ZGhqZIcuN0gJQ== }
+    engines: { node: ">=0.10.0" }
     dev: true
 
   /iconv-lite@0.4.24:
@@ -33580,6 +33758,24 @@ packages:
       { integrity: sha512-iclAHeNqNm68zFtnZ0e+1L2yUIdvzNoauKU4WBA3VvH/vPFieF7qfRlwUZU+DA9P9bPXIS90ulxoUoCH23sV2w== }
     engines: { node: ">= 0.6" }
 
+  /micro-cors@0.1.1:
+    resolution:
+      { integrity: sha512-6WqIahA5sbQR1Gjexp1VuWGFDKbZZleJb/gy1khNGk18a6iN1FdTcr3Q8twaxkV5H94RjxIBjirYbWCehpMBFw== }
+    engines: { node: ">=6" }
+    dev: true
+
+  /micro@9.3.4:
+    resolution:
+      { integrity: sha512-smz9naZwTG7qaFnEZ2vn248YZq9XR+XoOH3auieZbkhDL4xLOxiE+KqG8qqnBeKfXA9c1uEFGCxPN1D+nT6N7w== }
+    engines: { node: ">= 8.0.0" }
+    hasBin: true
+    dependencies:
+      arg: 4.1.0
+      content-type: 1.0.4
+      is-stream: 1.1.0
+      raw-body: 2.3.2
+    dev: true
+
   /micromatch@3.1.10:
     resolution:
       { integrity: sha512-MWikgl9n9M3w+bpsY3He8L+w9eF9338xRl8IAO5viDizwSzziFEyUzo2xrrloB64ADbTf8uA8vRqqttDTOmccg== }
@@ -33747,7 +33943,6 @@ packages:
       { integrity: sha512-1oPjfuLQa2caorJUM8HV8lGgWCc0qqAO1MNv/k05G4qslmsndV/5WdNZrqCiyqiz3wohia2Ij2B7w2Dr7/IyrA== }
     dependencies:
       minimist: 1.2.8
-    dev: false
 
   /minipass-collect@1.0.2:
     resolution:
@@ -36769,6 +36964,17 @@ packages:
       { integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg== }
     engines: { node: ">= 0.6" }
 
+  /raw-body@2.3.2:
+    resolution:
+      { integrity: sha512-Ss0DsBxqLxCmQkfG5yazYhtbVVTJqS9jTsZG2lhrNwqzOk2SUC7O/NB/M//CkEBqsrtmlNgJCPccJGuYSFr6Vg== }
+    engines: { node: ">= 0.8" }
+    dependencies:
+      bytes: 3.0.0
+      http-errors: 1.6.2
+      iconv-lite: 0.4.19
+      unpipe: 1.0.0
+    dev: true
+
   /raw-body@2.4.0:
     resolution:
       { integrity: sha512-4Oz8DUIwdvoa5qMJelxipzi/iJIi40O5cGV1wNYp5hvZP8ZN0T+jiNkL0QepXs+EsQ9XJ8ipEDoiH70ySUJP3Q== }
@@ -37110,7 +37316,7 @@ packages:
     peerDependencies:
       react: ">=15"
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
       history: 4.10.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
@@ -37125,7 +37331,7 @@ packages:
     peerDependencies:
       react: ">=15"
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
       history: 4.10.1
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
@@ -38382,6 +38588,11 @@ packages:
   /setimmediate@1.0.5:
     resolution:
       { integrity: sha512-MATJdZp8sLqDl/68LfQmbP8zKPLQNV6BIZoIgrscFDQ+RsvK/BxeDQOgyxKKoh0y/8h3BqVFnCqQ/gd+reiIXA== }
+
+  /setprototypeof@1.0.3:
+    resolution:
+      { integrity: sha512-9jphSf3UbIgpOX/RKvX02iw/rN2TKdusnsPpGfO/rkcsrd+IRqgHZb4VGnmL0Cynps8Nj2hN45wsi30BzrHDIw== }
+    dev: true
 
   /setprototypeof@1.1.0:
     resolution:
@@ -42039,7 +42250,7 @@ packages:
       tapable: 2.2.0
       terser-webpack-plugin: 5.3.0(webpack@5.76.1)
       watchpack: 2.4.0
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
+      webpack-cli: 4.10.0(webpack@5.76.1)
       webpack-sources: 3.2.3
     transitivePeerDependencies:
       - "@swc/core"
