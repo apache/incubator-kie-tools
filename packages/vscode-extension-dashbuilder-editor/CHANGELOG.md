@@ -1,3 +1,10 @@
+# 0.31.0 (alpha)
+
+- [KOGITO-9425](https://issues.redhat.com/browse/KOGITO-9425) - Make sure that column settings are respected for meters and timeseries in Dashbuilder
+- [KOGITO-9062](https://issues.redhat.com/browse/KOGITO-9062) - Update Dashbuilder Editor Schema with latest fields
+- NO-ISSUE - Dashbuilder Editor Schema Fix
+- [KOGITO-9499](https://issues.redhat.com/browse/KOGITO-9499) - Support POST for Dashbuilder external DataSets
+
 # 0.30.0 (alpha)
 
 - [KOGITO-9227](https://issues.redhat.com/browse/KOGITO-9227) - Make an internal Dashbuilder timeseries component

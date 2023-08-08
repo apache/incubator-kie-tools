@@ -16,8 +16,11 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewImpl;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
@@ -34,7 +37,6 @@ import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.EDGE_START;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
@@ -56,32 +58,37 @@ public interface TransitionMarshalling {
     EdgeMarshaller<Transition> TRANSITION_MARSHALLER =
             (context, edge) -> {
                 Node sourceNode = edge.getSourceNode();
-                if (null != sourceNode) {
-                    Node targetNode = edge.getTargetNode();
-                    if (null != targetNode) {
-                        State sourceState = getElementDefinition(sourceNode);
-                        Object targetDef = getElementDefinition(targetNode);
+                if (null == sourceNode) {
+                    return edge;
+                }
 
-                        if (targetDef instanceof End) {
+                Node targetNode = edge.getTargetNode();
+                if (null == targetNode) {
+                    return edge;
+                }
 
-                            sourceState.setTransition(null);
+                State sourceState = getElementDefinition(sourceNode);
+                Object targetDef = getElementDefinition(targetNode);
+                JsPropertyMap<Object> map = Js.asPropertyMap(sourceState);
+                if (!(map.has("end"))) {
+                    return edge;
+                }
 
-                            if (sourceState.getEnd() instanceof Boolean) {
-                                sourceState.setEnd(true);
-                            } // else is Object
-                        } else {
-                            // New states created from the canvas have null transition
-                            if (null == sourceState.getTransition() ||
-                                    sourceState.getTransition() instanceof String) {
-                                sourceState.setTransition(getStateNodeName(targetNode));
-                            } else {
-                                ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
-                            }
+                if (targetDef instanceof End) {
+                    map.set("transition", null);
+                    if (map.get("end") instanceof Boolean) {
+                        map.set("end", true);
+                    } // else is Object
+                } else {
+                    if (null == map.get("transition") ||
+                            map.get("transition") instanceof String) {
+                        map.set("transition", getStateNodeName(targetNode));
+                    } else {
+                        ((StateTransition) map.get("transition")).setNextState(getStateNodeName(targetNode));
+                    }
 
-                            if (sourceState.getEnd() instanceof Boolean) {
-                                sourceState.setEnd(false);
-                            }
-                        }
+                    if (map.get("end") instanceof Boolean) {
+                        map.set("end", false);
                     }
                 }
 
@@ -105,9 +112,12 @@ public interface TransitionMarshalling {
                 Node sourceNode = edge.getSourceNode();
                 if (null != sourceNode) {
                     Node targetNode = edge.getTargetNode();
-                    if (null != targetNode) {
-                        State sourceState = getElementDefinition(sourceNode);
-                        sourceState.setCompensatedBy(getStateNodeName(targetNode));
+                    ViewImpl view = (ViewImpl) sourceNode.getContent();
+                    JsPropertyMap<Object> map = Js.asPropertyMap(view.getDefinition());
+                    if (null != targetNode && view != null && map.has("compensatedBy")) {
+                        Object sourceState = getElementDefinition(sourceNode);
+                        JsPropertyMap<Object> sourceMap = Js.asPropertyMap(sourceState);
+                        sourceMap.set("compensatedBy", getStateNodeName(targetNode));
                     }
                 }
 
@@ -116,11 +126,10 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<DataConditionTransition> DATA_CONDITION_TRANSITION_UNMARSHALLER =
             (context, dataConditionTransition) -> {
-                boolean end = getEnd(dataConditionTransition.getEnd());
                 String transition = getTransition(dataConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (end) {
+                if (DefinitionTypeUtils.toEnd(dataConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -166,11 +175,10 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<DefaultConditionTransition> DEFAULT_CONDITION_TRANSITION_UNMARSHALLER =
             (context, defaultConditionTransition) -> {
-                boolean end = getEnd(defaultConditionTransition.getEnd());
                 String transition = getTransition(defaultConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (end) {
+                if (DefinitionTypeUtils.toEnd(defaultConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -217,11 +225,10 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<ErrorTransition> ERROR_TRANSITION_UNMARSHALLER =
             (context, errorTransition) -> {
-                boolean end = getEnd(errorTransition.getEnd());
                 String transition = getTransition(errorTransition.getTransition());
 
                 Edge edge = null;
-                if (end) {
+                if (DefinitionTypeUtils.toEnd(errorTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -268,11 +275,10 @@ public interface TransitionMarshalling {
 
     EdgeUnmarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_UNMARSHALLER =
             (context, eventConditionTransition) -> {
-                boolean end = getEnd(eventConditionTransition.getEnd());
                 String transition = getTransition(eventConditionTransition.getTransition());
 
                 Edge edge = null;
-                if (end) {
+                if (DefinitionTypeUtils.toEnd(eventConditionTransition.getEnd())) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -287,31 +293,34 @@ public interface TransitionMarshalling {
     EdgeMarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_MARSHALLER =
             (context, edge) -> {
                 Node sourceNode = edge.getSourceNode();
-                if (null != sourceNode) {
-                    Node targetNode = edge.getTargetNode();
-                    if (null != targetNode) {
-                        EventConditionTransition eventConditionTransition = getElementDefinition(edge);
-                        Object targetDef = getElementDefinition(targetNode);
+                if (null == sourceNode) {
+                    return edge;
+                }
 
-                        if (targetDef instanceof End) {
-                            eventConditionTransition.setTransition(null);
+                Node targetNode = edge.getTargetNode();
+                if (null == targetNode) {
+                    return edge;
+                }
+                EventConditionTransition eventConditionTransition = getElementDefinition(edge);
+                Object targetDef = getElementDefinition(targetNode);
 
-                            if (eventConditionTransition.getEnd() instanceof Boolean) {
-                                eventConditionTransition.setEnd(true);
-                            }
-                        } else {
-                            // New states created from the canvas have null transition
-                            if (null == eventConditionTransition.getTransition() ||
-                                    eventConditionTransition.getTransition() instanceof String) {
-                                eventConditionTransition.setTransition(getStateNodeName(targetNode));
-                            } else {
-                                ((StateTransition) eventConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
-                            }
+                if (targetDef instanceof End) {
+                    eventConditionTransition.setTransition(null);
 
-                            if (eventConditionTransition.getEnd() instanceof Boolean) {
-                                eventConditionTransition.setEnd(false);
-                            }
-                        }
+                    if (eventConditionTransition.getEnd() instanceof Boolean) {
+                        eventConditionTransition.setEnd(true);
+                    }
+                } else {
+                    // New states created from the canvas have null transition
+                    if (null == eventConditionTransition.getTransition() ||
+                            eventConditionTransition.getTransition() instanceof String) {
+                        eventConditionTransition.setTransition(getStateNodeName(targetNode));
+                    } else {
+                        ((StateTransition) eventConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
+                    }
+
+                    if (eventConditionTransition.getEnd() instanceof Boolean) {
+                        eventConditionTransition.setEnd(false);
                     }
                 }
                 return edge;

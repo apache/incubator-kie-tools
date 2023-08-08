@@ -17,5 +17,6 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 public enum FunctionRefType {
-    sync, async;
+    sync,
+    async
 }

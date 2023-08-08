@@ -1,64 +1,81 @@
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const buildEnv = require("@kie-tools/root-env/env");
+const extendedServicesImageEnv = require("@kie-tools/kie-sandbox-extended-services-image/env");
+const corsProxyImageEnv = require("@kie-tools/cors-proxy-image/env");
+const kieSandboxImageEnv = require("@kie-tools/kie-sandbox-image/env");
+
+module.exports = composeEnv([buildEnv, extendedServicesImageEnv, corsProxyImageEnv, kieSandboxImageEnv], {
   vars: varsWithName({
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageRegistry: {
-      default: "quay.io",
+      default: kieSandboxImageEnv.env.kieSandbox.image.registry,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount: {
-      default: "kie-tools",
+      default: kieSandboxImageEnv.env.kieSandbox.image.account,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName: {
-      default: "kie-sandbox-image",
+      default: kieSandboxImageEnv.env.kieSandbox.image.name,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag: {
-      default: "latest",
+      default: kieSandboxImageEnv.env.kieSandbox.image.buildTags.split(" ")[0],
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__kieSandboxPort: {
+    KIE_SANDBOX_DISTRIBUTION__kieSandboxContainerPort: {
+      default: "8080",
+      description: "",
+    },
+    KIE_SANDBOX_DISTRIBUTION__kieSandboxExposedPort: {
       default: "9090",
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry: {
-      default: "quay.io",
+      default: extendedServicesImageEnv.env.extendedServicesImage.registry,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount: {
-      default: "kie-tools",
+      default: extendedServicesImageEnv.env.extendedServicesImage.account,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName: {
-      default: "kie-sandbox-extended-services-image",
+      default: extendedServicesImageEnv.env.extendedServicesImage.name,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag: {
-      default: "latest",
+      default: extendedServicesImageEnv.env.extendedServicesImage.buildTags.split(" ")[0],
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__extendedServicesPort: {
+    KIE_SANDBOX_DISTRIBUTION__extendedServicesContainerPort: {
+      default: "21345",
+      description: "",
+    },
+    KIE_SANDBOX_DISTRIBUTION__extendedServicesExposedPort: {
       default: "21345",
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry: {
-      default: "quay.io",
+      default: corsProxyImageEnv.env.corsProxyImage.image.registry,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageAccount: {
-      default: "kie-tools",
+      default: corsProxyImageEnv.env.corsProxyImage.image.account,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageName: {
-      default: "cors-proxy-image",
+      default: corsProxyImageEnv.env.corsProxyImage.image.name,
       description: "",
     },
     KIE_SANDBOX_DISTRIBUTION__corsProxyImageTag: {
-      default: "latest",
+      default: corsProxyImageEnv.env.corsProxyImage.image.buildTags.split(" ")[0],
       description: "",
     },
-    KIE_SANDBOX_DISTRIBUTION__corsProxyPort: {
+    KIE_SANDBOX_DISTRIBUTION__corsProxyContainerPort: {
+      default: "8080",
+      description: "",
+    },
+    KIE_SANDBOX_DISTRIBUTION__corsProxyExposedPort: {
       default: "7081",
       description: "",
     },
@@ -71,21 +88,24 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageAccount),
           imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageName),
           imageTag: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxImageTag),
-          port: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxPort),
+          containerPort: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxContainerPort),
+          exposedPort: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__kieSandboxExposedPort),
         },
         extendedServices: {
           imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesImageRegistry),
           imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesImageAccount),
           imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesImageName),
           imageTag: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesImageTag),
-          port: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesPort),
+          containerPort: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesContainerPort),
+          exposedPort: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__extendedServicesExposedPort),
         },
         corsProxy: {
           imageRegistry: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageRegistry),
           imageAccount: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageAccount),
           imageName: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageName),
           imageTag: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyImageTag),
-          port: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyPort),
+          containerPort: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyContainerPort),
+          exposedPort: getOrDefault(this.vars.KIE_SANDBOX_DISTRIBUTION__corsProxyExposedPort),
         },
       },
     };
