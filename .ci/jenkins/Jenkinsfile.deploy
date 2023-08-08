@@ -83,6 +83,9 @@ pipeline {
             }
             steps {
                 script {
+                    if (githubscm.isBranchExist('origin', helper.getPRBranch())) {
+                        githubscm.removeRemoteBranch('origin', helper.getPRBranch())
+                    }
                     githubscm.createBranch(helper.getPRBranch())
                 }
             }
