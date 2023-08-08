@@ -171,6 +171,7 @@ void setupDeployJob(JobType jobType, String envName = '') {
                 stringParam('QUARKUS_PLATFORM_VERSION', '', 'Allow to override the Quarkus Platform version')
             }
 
+            stringParam('KOGITO_PR_BRANCH', '', 'PR branch name')
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }

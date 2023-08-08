@@ -26,8 +26,6 @@ pipeline {
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        PR_BRANCH_HASH = "${util.generateHash(10)}"
-
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
     }
 
@@ -67,6 +65,9 @@ pipeline {
             }
             steps {
                 script {
+                    if (githubscm.isBranchExist('origin',getPRBranch())) {
+                        githubscm.removeRemoteBranch('origin', getPRBranch())
+                    }
                     githubscm.createBranch(getPRBranch())
                 }
             }
@@ -395,7 +396,7 @@ String getGitAuthorCredsID() {
 }
 
 String getPRBranch() {
-    return "${getProjectVersion() ?: getBuildBranch()}-${env.PR_BRANCH_HASH}"
+    return params.KOGITO_PR_BRANCH
 }
 
 String getProjectVersion() {
