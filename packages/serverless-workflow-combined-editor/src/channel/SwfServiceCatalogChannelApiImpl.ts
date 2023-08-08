@@ -23,46 +23,48 @@ import {
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
-    private readonly channelApi: MessageBusClientApi<SwfServiceCatalogChannelApi>,
-    private readonly services: SwfServiceCatalogService[],
-    private readonly serviceRegistriesSettings: SwfServiceRegistriesSettings
+    private readonly args: {
+      channelApi: MessageBusClientApi<SwfServiceCatalogChannelApi>;
+      services: SwfServiceCatalogService[];
+      serviceRegistriesSettings: SwfServiceRegistriesSettings;
+    }
   ) {}
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return {
-      defaultValue: this.services,
+      defaultValue: this.args.services,
     };
   }
 
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return {
-      defaultValue: this.serviceRegistriesSettings,
+      defaultValue: this.args.serviceRegistriesSettings,
     };
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    this.channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
+    this.args.channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    this.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
+    this.args.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
   }
 
   public kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    this.channelApi.notifications.kogitoSwfServiceCatalog_importEventFromCompletionItem.send(args);
+    this.args.channelApi.notifications.kogitoSwfServiceCatalog_importEventFromCompletionItem.send(args);
   }
 
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
-    this.channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
+    this.args.channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
-    this.channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
+    this.args.channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
   }
 }
