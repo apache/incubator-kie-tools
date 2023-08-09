@@ -49,12 +49,14 @@ const emptyExpression: ExpressionDefinition = {
 
 const initialLiteralExpression: LiteralExpressionDefinition = {
   id: generateUuid(),
+  name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.Literal,
 };
 
 const initialContextExpression: ContextExpressionDefinition = {
   id: generateUuid(),
+  name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.Context,
   contextEntries: [
@@ -82,6 +84,7 @@ const initialContextExpression: ContextExpressionDefinition = {
 
 const initialDecisionTableExpression: DecisionTableExpressionDefinition = {
   id: generateUuid(),
+  name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.DecisionTable,
   hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
@@ -121,6 +124,7 @@ const initialDecisionTableExpression: DecisionTableExpressionDefinition = {
 
 const initialRelationExpression: RelationExpressionDefinition = {
   id: generateUuid(),
+  name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.Relation,
   columns: [
@@ -144,8 +148,23 @@ const initialRelationExpression: RelationExpressionDefinition = {
   ],
 };
 
+const initialFunctionExpression: FunctionExpressionDefinition = {
+  id: generateUuid(),
+  name: "Expression Name",
+  dataType: DmnBuiltInDataType.Undefined,
+  logicType: ExpressionDefinitionLogicType.Function,
+  functionKind: FunctionExpressionDefinitionKind.Feel,
+  formalParameters: [],
+  expression: {
+    id: generateUuid(),
+    logicType: ExpressionDefinitionLogicType.Undefined,
+    dataType: DmnBuiltInDataType.Undefined,
+  },
+};
+
 const initialInvocationExpression: InvocationExpressionDefinition = {
   id: generateUuid(),
+  name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.Invocation,
   entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
@@ -172,6 +191,7 @@ const initialInvocationExpression: InvocationExpressionDefinition = {
 
 const initialListExpression: ListExpressionDefinition = {
   id: generateUuid(),
+  name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.List,
   items: [
@@ -197,15 +217,8 @@ function getDefaultExpressionDefinitionByLogicType(
     return literalExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Function) {
     const functionExpression: FunctionExpressionDefinition = {
+      ...initialFunctionExpression,
       ...prev,
-      logicType,
-      functionKind: FunctionExpressionDefinitionKind.Feel,
-      formalParameters: [],
-      expression: {
-        id: generateUuid(),
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-      },
     };
     return functionExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Context) {
@@ -341,7 +354,7 @@ export function BoxedExpressionEditorWrapper(args: BoxedExpressionEditorProps) {
 }
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Default: Story = {
+export const EmptyExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
   args: {
     decisionNodeId: generateUuid(),
@@ -353,74 +366,76 @@ export const Default: Story = {
   },
 };
 
+const filterArgs = {
+  controls: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+};
+
 export const LiteralExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
   args: {
-    decisionNodeId: generateUuid(),
+    ...EmptyExpression.args,
     expressionDefinition: initialLiteralExpression,
-    dataTypes,
-    beeGwtService,
-    pmmlParams,
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const ContextExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
   args: {
-    decisionNodeId: generateUuid(),
+    ...EmptyExpression.args,
     expressionDefinition: initialContextExpression,
-    dataTypes,
-    beeGwtService,
-    pmmlParams,
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const DecisionTableExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
   args: {
-    decisionNodeId: generateUuid(),
+    ...EmptyExpression.args,
     expressionDefinition: initialDecisionTableExpression,
-    dataTypes,
-    beeGwtService,
-    pmmlParams,
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const RelationExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
   args: {
-    decisionNodeId: generateUuid(),
+    ...EmptyExpression.args,
     expressionDefinition: initialRelationExpression,
-    dataTypes,
-    beeGwtService,
-    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};
+
+export const FunctionExpression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
+  args: {
+    ...EmptyExpression.args,
+    expressionDefinition: initialFunctionExpression,
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const InvocationExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
   args: {
-    decisionNodeId: generateUuid(),
+    ...EmptyExpression.args,
     expressionDefinition: initialInvocationExpression,
-    dataTypes,
-    beeGwtService,
-    pmmlParams,
     isResetSupportedOnRootExpression: false,
   },
 };
 
 export const ListExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(args),
+  parameters: filterArgs,
   args: {
-    decisionNodeId: generateUuid(),
+    ...EmptyExpression.args,
     expressionDefinition: initialListExpression,
-    dataTypes,
-    beeGwtService,
-    pmmlParams,
     isResetSupportedOnRootExpression: false,
   },
 };
