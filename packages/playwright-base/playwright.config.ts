@@ -3,7 +3,7 @@ import { env } from "./env";
 
 const buildEnv: any = env;
 
-export const playwirghtBase = defineConfig({
+export default defineConfig({
   testDir: "./e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -24,7 +24,6 @@ export const playwirghtBase = defineConfig({
     : [["html", { outputFolder: "./dist-e2e/reports/", open: "never" }], ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     screenshot: "only-on-failure",
     /* automatically record video on retry  */
