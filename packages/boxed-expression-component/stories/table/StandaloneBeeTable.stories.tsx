@@ -5,29 +5,6 @@ import { ResizerStopBehavior } from "../../src/resizing/ResizingWidthsContext";
 import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../../src/api";
 import { StandaloneBeeTable } from "../../src/table/BeeTable";
 
-const defaultProps: BeeTableProps<object> = {
-  columns: [
-    {
-      accessor: "x",
-      label: "y",
-      isRowIndexColumn: false,
-      dataType: DmnBuiltInDataType.Any,
-      minWidth: 100,
-      width: 100,
-    },
-  ] as any,
-  rows: [{ ["x"]: { content: "", id: "y" } }],
-  allowedOperations: (conditions: any) => {
-    return [];
-  },
-  resizerStopBehavior: ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER,
-  shouldShowRowsInlineControls: false,
-  shouldShowColumnsInlineControls: false,
-  shouldRenderRowIndexColumn: false,
-  headerVisibility: BeeTableHeaderVisibility.None,
-  operationConfig: [],
-};
-
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof StandaloneBeeTable> = {
   component: StandaloneBeeTable,
@@ -46,18 +23,31 @@ function StandaloneBeeTableWrapper(props: BeeTableProps<object>) {
   );
 }
 
+const defaultProps: BeeTableProps<object> = {
+  columns: [
+    {
+      accessor: "x",
+      label: "y",
+      isRowIndexColumn: false,
+      dataType: DmnBuiltInDataType.Any,
+      minWidth: 100,
+      width: 100,
+    },
+  ] as any,
+  rows: [{ ["x"]: { content: "", id: "y" } }],
+  allowedOperations: () => [],
+  resizerStopBehavior: ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER,
+  shouldShowRowsInlineControls: false,
+  shouldShowColumnsInlineControls: false,
+  shouldRenderRowIndexColumn: true,
+  headerVisibility: BeeTableHeaderVisibility.AllLevels,
+  operationConfig: [],
+};
+
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Default: Story = {
   render: (args) => StandaloneBeeTableWrapper(args),
   args: {
     ...defaultProps,
-  },
-};
-
-export const ReadOnly: Story = {
-  render: (args) => StandaloneBeeTableWrapper(args),
-  args: {
-    ...defaultProps,
-    isReadOnly: true,
   },
 };
