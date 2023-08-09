@@ -18,12 +18,13 @@ import (
 	"context"
 	"errors"
 
-	"k8s.io/klog/v2"
-
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/kiegroup/kogito-serverless-operator/api"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/log"
@@ -45,7 +46,7 @@ func (action *warmAction) Name() string {
 }
 
 func (action *warmAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bool {
-	return platform.Status.Phase == operatorapi.PlatformPhaseWarming
+	return platform.Status.IsWarming()
 }
 
 func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
@@ -68,8 +69,8 @@ func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.Sona
 
 	switch pod.Status.Phase {
 	case corev1.PodSucceeded:
-		klog.V(log.I).InfoS("Kaniko cache successfully warmed up")
-		platform.Status.Phase = operatorapi.PlatformPhaseCreating
+		klog.V(log.D).InfoS("Kaniko cache successfully warmed up")
+		platform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformWarmingReason, "Kaniko cache successfully warmed up")
 		return platform, nil
 	case corev1.PodFailed:
 		return nil, errors.New("failed to warm up Kaniko cache")

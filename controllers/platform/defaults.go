@@ -18,7 +18,6 @@ import (
 	"context"
 
 	"k8s.io/klog/v2"
-
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
@@ -32,11 +31,11 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 	// update missing fields in the resource
 	if p.Status.Cluster == "" || utils.IsOpenShift() {
 		p.Status.Cluster = operatorapi.PlatformClusterOpenShift
-		p.Spec.BuildPlatform.BuildStrategy = operatorapi.PlatformBuildStrategy
+		p.Spec.Build.Config.BuildStrategy = operatorapi.PlatformBuildStrategy
 	}
 	if p.Status.Cluster == "" || !utils.IsOpenShift() {
 		p.Status.Cluster = operatorapi.PlatformClusterKubernetes
-		p.Spec.BuildPlatform.BuildStrategy = operatorapi.OperatorBuildStrategy
+		p.Spec.Build.Config.BuildStrategy = operatorapi.OperatorBuildStrategy
 	}
 
 	err := SetPlatformDefaults(p, verbose)
@@ -49,8 +48,8 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 		return err
 	}
 
-	if verbose && p.Spec.BuildPlatform.Timeout.Duration != 0 {
-		klog.V(log.I).InfoS("Maven Timeout set", "timeout", p.Spec.BuildPlatform.Timeout.Duration)
+	if verbose && p.Spec.Build.Config.Timeout.Duration != 0 {
+		klog.V(log.I).InfoS("Maven Timeout set", "timeout", p.Spec.Build.Config.Timeout.Duration)
 	}
 
 	updatePlatform(ctx, c, p)

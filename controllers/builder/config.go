@@ -19,15 +19,13 @@ import (
 	"fmt"
 	"os"
 
-	"k8s.io/klog/v2"
-
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
@@ -37,23 +35,7 @@ const (
 	ConfigMapName                       = "sonataflow-operator-builder-config"
 	configKeyDefaultExtension           = "DEFAULT_WORKFLOW_EXTENSION"
 	configKeyDefaultBuilderResourceName = "DEFAULT_BUILDER_RESOURCE_NAME"
-	configKeyBuildNamespace             = "build-namespace"
-	configKeyRegistrySecret             = "registry-secret"
-	configKeyRegistryAddress            = "registry-address"
 )
-
-func NewCustomConfig(platform operatorapi.SonataFlowPlatform) (map[string]string, error) {
-	customConfig := make(map[string]string)
-	if platform.Namespace == "" {
-		return nil, fmt.Errorf("unable to retrieve the namespace from platform %s", platform.Name)
-	}
-	customConfig[configKeyBuildNamespace] = platform.Namespace
-	// Registry Secret and Address are not required, the inner builder will use minikube inner registry if available
-	// TODO: we should review
-	customConfig[configKeyRegistrySecret] = platform.Spec.BuildPlatform.Registry.Secret
-	customConfig[configKeyRegistryAddress] = platform.Spec.BuildPlatform.Registry.Address
-	return customConfig, nil
-}
 
 // GetCommonConfigMap retrieves the config map with the builder common configuration information
 func GetCommonConfigMap(client client.Client, fallbackNS string) (*corev1.ConfigMap, error) {

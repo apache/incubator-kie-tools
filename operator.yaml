@@ -165,11 +165,11 @@ spec:
     - jsonPath: .status.cluster
       name: Cluster
       type: string
-    - jsonPath: .status.phase
-      name: Phase
-      type: string
-    - jsonPath: .status.phase=='Ready'
+    - jsonPath: .status.conditions[?(@.type=='Succeed')].status
       name: Ready
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Succeed')].reason
+      name: Reason
       type: string
     name: v1alpha08
     schema:
@@ -193,172 +193,132 @@ spec:
             description: SonataFlowPlatformSpec defines the desired state of SonataFlowPlatform
             properties:
               build:
-                description: BuildTemplate specify how to build the Workflow. It's
-                  used as a template for the SonataFlowBuild
+                description: Attributes for building workflows in the target platform
                 properties:
-                  arguments:
-                    description: Arguments lists the command line arguments to send
-                      to the builder
-                    items:
-                      type: string
-                    type: array
-                  resources:
-                    description: Resources optional compute resource requirements
-                      for the builder
+                  config:
+                    description: Describes the platform configuration for building
+                      workflows.
                     properties:
-                      claims:
-                        description: "Claims lists the names of resources, defined
-                          in spec.resourceClaims, that are used by this container.
-                          \n This is an alpha field and requires enabling the DynamicResourceAllocation
-                          feature gate. \n This field is immutable. It can only be
-                          set for containers."
+                      baseImage:
+                        description: a base image that can be used as base layer for
+                          all images. It can be useful if you want to provide some
+                          custom base image with further utility software
+                        type: string
+                      registry:
+                        description: Registry the registry where to publish the built
+                          image
+                        properties:
+                          address:
+                            description: the URI to access
+                            type: string
+                          ca:
+                            description: the configmap which stores the Certificate
+                              Authority
+                            type: string
+                          insecure:
+                            description: if the container registry is insecure (ie,
+                              http only)
+                            type: boolean
+                          organization:
+                            description: the registry organization
+                            type: string
+                          secret:
+                            description: the secret where credentials are stored
+                            type: string
+                        type: object
+                      strategy:
+                        description: BuildStrategy to use to build workflows in the
+                          platform. Usually, the operator elect the strategy based
+                          on the platform. Note that this field might be read only
+                          in certain scenarios.
+                        type: string
+                      strategyOptions:
+                        additionalProperties:
+                          type: string
+                        description: BuildStrategyOptions additional options to add
+                          to the build strategy. See https://sonataflow.org/serverlessworkflow/main/cloud/operator/build-and-deploy-workflows.html
+                        type: object
+                      timeout:
+                        description: how much time to wait before time out the build
+                          process
+                        type: string
+                    type: object
+                  template:
+                    description: Describes a build template for building workflows.
+                      Base for the internal SonataFlowBuild resource.
+                    properties:
+                      arguments:
+                        description: Arguments lists the command line arguments to
+                          send to the builder
                         items:
-                          description: ResourceClaim references one entry in PodSpec.ResourceClaims.
-                          properties:
-                            name:
-                              description: Name must match the name of one entry in
-                                pod.spec.resourceClaims of the Pod where this field
-                                is used. It makes that resource available inside a
-                                container.
-                              type: string
-                          required:
-                          - name
-                          type: object
+                          type: string
                         type: array
-                        x-kubernetes-list-map-keys:
-                        - name
-                        x-kubernetes-list-type: map
-                      limits:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                          x-kubernetes-int-or-string: true
-                        description: 'Limits describes the maximum amount of compute
-                          resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                      resources:
+                        description: Resources optional compute resource requirements
+                          for the builder
+                        properties:
+                          claims:
+                            description: "Claims lists the names of resources, defined
+                              in spec.resourceClaims, that are used by this container.
+                              \n This is an alpha field and requires enabling the
+                              DynamicResourceAllocation feature gate. \n This field
+                              is immutable. It can only be set for containers."
+                            items:
+                              description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                              properties:
+                                name:
+                                  description: Name must match the name of one entry
+                                    in pod.spec.resourceClaims of the Pod where this
+                                    field is used. It makes that resource available
+                                    inside a container.
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                            x-kubernetes-list-map-keys:
+                            - name
+                            x-kubernetes-list-type: map
+                          limits:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: 'Limits describes the maximum amount of compute
+                              resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                            type: object
+                          requests:
+                            additionalProperties:
+                              anyOf:
+                              - type: integer
+                              - type: string
+                              pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                              x-kubernetes-int-or-string: true
+                            description: 'Requests describes the minimum amount of
+                              compute resources required. If Requests is omitted for
+                              a container, it defaults to Limits if that is explicitly
+                              specified, otherwise to an implementation-defined value.
+                              Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                            type: object
                         type: object
-                      requests:
-                        additionalProperties:
-                          anyOf:
-                          - type: integer
-                          - type: string
-                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
-                          x-kubernetes-int-or-string: true
-                        description: 'Requests describes the minimum amount of compute
-                          resources required. If Requests is omitted for a container,
-                          it defaults to Limits if that is explicitly specified, otherwise
-                          to an implementation-defined value. Requests cannot exceed
-                          Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
-                        type: object
-                    type: object
-                  timeout:
-                    description: Timeout defines the Build maximum execution duration.
-                      The Build deadline is set to the Build start time plus the Timeout
-                      duration. If the Build deadline is exceeded, the Build context
-                      is canceled, and its phase set to BuildPhaseFailed.
-                    format: duration
-                    type: string
-                type: object
-              configuration:
-                description: Configuration list of configuration properties to be
-                  attached to all the Workflow built from this Platform
-                properties:
-                  type:
-                    description: 'Type represents the type of configuration, ie: property,
-                      configmap, secret, ...'
-                    type: string
-                  value:
-                    description: Value a reference to the object for this configuration
-                      (syntax may vary depending on the `Type`)
-                    properties:
-                      apiVersion:
-                        description: API version of the referent.
-                        type: string
-                      fieldPath:
-                        description: 'If referring to a piece of an object instead
-                          of an entire object, this string should contain a valid
-                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                          For example, if the object reference is to a container within
-                          a pod, this would take on a value like: "spec.containers{name}"
-                          (where "name" refers to the name of the container that triggered
-                          the event) or if no container name is specified "spec.containers[2]"
-                          (container with index 2 in this pod). This syntax is chosen
-                          only to have some well-defined way of referencing a part
-                          of an object. TODO: this design is not final and this field
-                          is subject to change in the future.'
-                        type: string
-                      kind:
-                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                        type: string
-                      name:
-                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                        type: string
-                      namespace:
-                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                        type: string
-                      resourceVersion:
-                        description: 'Specific resourceVersion to which this reference
-                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
-                        type: string
-                      uid:
-                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                      timeout:
+                        description: Timeout defines the Build maximum execution duration.
+                          The Build deadline is set to the Build start time plus the
+                          Timeout duration. If the Build deadline is exceeded, the
+                          Build context is canceled, and its phase set to BuildPhaseFailed.
+                        format: duration
                         type: string
                     type: object
-                    x-kubernetes-map-type: atomic
-                required:
-                - type
-                - value
                 type: object
-              devBaseImage:
-                description: DevBaseImage Base image to run the Workflow in dev mode
-                  instead of the operator's default. Optional, used for the dev profile
-                  only
-                type: string
-              platform:
-                description: BuildPlatform specify how is the platform where we want
-                  to build the Workflow
+              devMode:
+                description: Attributes for running workflows in devmode (immutable,
+                  no build required)
                 properties:
                   baseImage:
-                    description: a base image that can be used as base layer for all
-                      images. It can be useful if you want to provide some custom
-                      base image with further utility software
-                    type: string
-                  buildStrategy:
-                    description: BuildStrategy to use to build workflows in the platform.
-                      Usually, the operator elect the strategy based on the platform.
-                      Note that this field might be read only in certain scenarios.
-                    type: string
-                  buildStrategyOptions:
-                    additionalProperties:
-                      type: string
-                    description: 'TODO: add a link to the documentation where the
-                      user can find more info about this field BuildStrategyOptions
-                      additional options to add to the build strategy.'
-                    type: object
-                  registry:
-                    description: Registry the registry where to publish the built
-                      image
-                    properties:
-                      address:
-                        description: the URI to access
-                        type: string
-                      ca:
-                        description: the configmap which stores the Certificate Authority
-                        type: string
-                      insecure:
-                        description: if the container registry is insecure (ie, http
-                          only)
-                        type: boolean
-                      organization:
-                        description: the registry organization
-                        type: string
-                      secret:
-                        description: the secret where credentials are stored
-                        type: string
-                    type: object
-                  timeout:
-                    description: how much time to wait before time out the build process
+                    description: Base image to run the Workflow in dev mode instead
+                      of the operator's default.
                     type: string
                 type: object
             type: object
@@ -373,17 +333,12 @@ spec:
                 - openshift
                 type: string
               conditions:
-                description: Conditions which are the conditions met (particularly
-                  useful when in ERROR phase)
+                description: The latest available observations of a resource's current
+                  state.
                 items:
-                  description: PlatformCondition describes the state of a resource
-                    at a certain point.
+                  description: Condition describes the common structure for conditions
+                    in our types
                   properties:
-                    lastTransitionTime:
-                      description: Last time the condition transitioned from one status
-                        to another.
-                      format: date-time
-                      type: string
                     lastUpdateTime:
                       description: The last time this condition was updated.
                       format: date-time
@@ -399,7 +354,7 @@ spec:
                       description: Status of the condition, one of True, False, Unknown.
                       type: string
                     type:
-                      description: Type of platform condition (i.e. Kubernetes, OpenShift).
+                      description: Type condition for the given object
                       type: string
                   required:
                   - status
@@ -412,13 +367,9 @@ spec:
                 description: Info generic information related to the build
                 type: object
               observedGeneration:
-                description: ObservedGeneration is the most recent generation observed
-                  for this Platform.
+                description: The generation observed by the deployment controller.
                 format: int64
                 type: integer
-              phase:
-                description: Phase defines in what phase the Platform is found
-                type: string
               version:
                 description: Version the operator version controlling this Platform
                 type: string

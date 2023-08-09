@@ -3,7 +3,8 @@ kind: SonataFlowPlatform
 metadata:
   name: sonataflow-platform
 spec:
-  platform:
-    registry:
-      address: quay.io/kiegroup
-      secret: regcred
+  build:
+    config:
+      registry:
+        address: quay.io/kiegroup
+        secret: regcred

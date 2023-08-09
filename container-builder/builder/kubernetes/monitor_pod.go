@@ -121,7 +121,7 @@ func (action *monitorPodAction) Handle(ctx context.Context, build *api.Container
 
 		for _, task := range build.Spec.Tasks {
 			if t := task.Kaniko; t != nil {
-				build.Status.Image = t.Image
+				build.Status.RepositoryImageTag = t.GetRepositoryImageTag()
 				break
 			}
 		}

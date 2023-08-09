@@ -24,6 +24,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/kiegroup/kogito-serverless-operator/api"
+
 	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
 
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
@@ -51,7 +53,7 @@ func (action *initializeAction) Name() string {
 }
 
 func (action *initializeAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bool {
-	return platform.Status.Phase == "" || platform.Status.Phase == operatorapi.PlatformPhaseDuplicate
+	return platform.Status.GetTopLevelCondition().IsUnknown() || platform.Status.IsDuplicated()
 }
 
 func (action *initializeAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
@@ -61,10 +63,9 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 	}
 	if duplicate {
 		// another platform already present in the namespace
-		if platform.Status.Phase != operatorapi.PlatformPhaseDuplicate {
+		if !platform.Status.IsDuplicated() {
 			plat := platform.DeepCopy()
-			plat.Status.Phase = operatorapi.PlatformPhaseDuplicate
-
+			plat.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformDuplicatedReason, "")
 			return plat, nil
 		}
 
@@ -75,7 +76,7 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 		return nil, err
 	}
 	// nolint: staticcheck
-	if platform.Spec.BuildPlatform.BuildStrategy == operatorapi.OperatorBuildStrategy {
+	if platform.Spec.Build.Config.BuildStrategy == operatorapi.OperatorBuildStrategy {
 		//If KanikoCache is enabled
 		if IsKanikoCacheEnabled(platform) {
 			// Create the persistent volume claim used by the Kaniko cache
@@ -90,13 +91,13 @@ func (action *initializeAction) Handle(ctx context.Context, platform *operatorap
 			if err != nil {
 				return nil, err
 			}
-			platform.Status.Phase = operatorapi.PlatformPhaseWarming
+			platform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformWarmingReason, "")
 		} else {
 			// Skip the warmer pod creation
-			platform.Status.Phase = operatorapi.PlatformPhaseCreating
+			platform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformCreatingReason, "")
 		}
 	} else {
-		platform.Status.Phase = operatorapi.PlatformPhaseCreating
+		platform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformCreatingReason, "")
 	}
 	platform.Status.Version = metadata.SpecVersion
 
@@ -112,7 +113,7 @@ func createPersistentVolumeClaim(ctx context.Context, client client.Client, plat
 	}
 	// nolint: staticcheck
 	pvcName := defaultKanikoCachePVCName
-	if persistentVolumeClaim, found := platform.Spec.BuildPlatform.BuildStrategyOptions[kanikoPVCName]; found {
+	if persistentVolumeClaim, found := platform.Spec.Build.Config.BuildStrategyOptions[kanikoPVCName]; found {
 		pvcName = persistentVolumeClaim
 	}
 

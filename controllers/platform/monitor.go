@@ -38,7 +38,7 @@ func (action *monitorAction) Name() string {
 }
 
 func (action *monitorAction) CanHandle(platform *operatorapi.SonataFlowPlatform) bool {
-	return platform.Status.Phase == operatorapi.PlatformPhaseReady
+	return platform.Status.IsReady()
 }
 
 func (action *monitorAction) Handle(ctx context.Context, platform *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {

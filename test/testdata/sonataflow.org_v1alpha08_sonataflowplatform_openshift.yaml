@@ -17,5 +17,6 @@ kind: SonataFlowPlatform
 metadata:
   name: sonataflow-platform
 spec:
-  platform:
-    buildStrategy: platform
+  build:
+    config:
+      strategy: platform

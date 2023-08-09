@@ -186,8 +186,8 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
 	pl, errPl := platform.GetActivePlatform(ctx, e.client, workflow.Namespace)
 	// check if the Platform available
-	if errPl == nil && len(pl.Spec.DevBaseImage) > 0 {
-		devBaseContainerImage = pl.Spec.DevBaseImage
+	if errPl == nil && len(pl.Spec.DevMode.BaseImage) > 0 {
+		devBaseContainerImage = pl.Spec.DevMode.BaseImage
 	}
 
 	deployment, _, err := e.ensurers.deployment.ensure(ctx, workflow,

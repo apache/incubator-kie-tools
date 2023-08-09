@@ -37,7 +37,7 @@ const kanikoBuildCacheEnabled = "KanikoBuildCacheEnabled"
 const kanikoDefaultWarmerImageName = "gcr.io/kaniko-project/warmer"
 
 func IsKanikoCacheEnabled(platform *v08.SonataFlowPlatform) bool {
-	return platform.Spec.BuildPlatform.IsOptionEnabled(kanikoBuildCacheEnabled)
+	return platform.Spec.Build.Config.IsStrategyOptionEnabled(kanikoBuildCacheEnabled)
 }
 
 func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platform *v08.SonataFlowPlatform) error {
@@ -49,12 +49,12 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 	// - https://kubernetes.io/docs/concepts/storage/volumes/#local
 	// nolint: staticcheck
 	pvcName := defaultKanikoCachePVCName
-	if persistentVolumeClaim, found := platform.Spec.BuildPlatform.BuildStrategyOptions[kanikoPVCName]; found {
+	if persistentVolumeClaim, found := platform.Spec.Build.Config.BuildStrategyOptions[kanikoPVCName]; found {
 		pvcName = persistentVolumeClaim
 	}
 
 	var warmerImage string
-	if image, found := platform.Spec.BuildPlatform.BuildStrategyOptions[kanikoWarmerImage]; found {
+	if image, found := platform.Spec.Build.Config.BuildStrategyOptions[kanikoWarmerImage]; found {
 		warmerImage = image
 	} else {
 		warmerImage = fmt.Sprintf("%s:v%s", kanikoDefaultWarmerImageName, defaults.KanikoVersion)
@@ -80,7 +80,7 @@ func createKanikoCacheWarmerPod(ctx context.Context, client client.Client, platf
 					Args: []string{
 						"--force",
 						"--cache-dir=" + kanikoCacheDir,
-						"--image=" + platform.Spec.BuildPlatform.BaseImage,
+						"--image=" + platform.Spec.Build.Config.BaseImage,
 					},
 					VolumeMounts: []corev1.VolumeMount{
 						{

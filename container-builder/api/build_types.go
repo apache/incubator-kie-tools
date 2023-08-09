@@ -17,6 +17,8 @@
 package api
 
 import (
+	"fmt"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -95,6 +97,15 @@ type PublishTask struct {
 	Registry ContainerRegistrySpec `json:"registry,omitempty"`
 }
 
+// GetRepositoryImageTag gets the full qualified Repository Name for the given image in the PublishTask.
+// For example quay.io/myrepo/myimage:latest.
+func (p *PublishTask) GetRepositoryImageTag() string {
+	if len(p.Registry.Address) > 0 {
+		return fmt.Sprintf("%s/%s", p.Registry.Address, p.Image)
+	}
+	return p.Image
+}
+
 // KanikoTask is used to configure Kaniko
 type KanikoTask struct {
 	ContainerBuildBaseTask `json:",inline"`
@@ -167,7 +178,7 @@ type ContainerBuildStatus struct {
 	// describes the phase
 	Phase ContainerBuildPhase `json:"phase,omitempty"`
 	// the image name built
-	Image string `json:"image,omitempty"`
+	RepositoryImageTag string `json:"repositoryImageTag,omitempty"`
 	// the digest from image
 	Digest string `json:"digest,omitempty"`
 	// the base image used for this build

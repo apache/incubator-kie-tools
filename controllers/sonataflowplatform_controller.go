@@ -19,15 +19,16 @@ import (
 	"fmt"
 	"time"
 
-	"k8s.io/klog/v2"
-
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
+	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	"github.com/kiegroup/kogito-serverless-operator/api"
 
 	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
 
@@ -89,6 +90,8 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 		return reconcile.Result{}, err
 	}
 
+	instance.Status.Manager().InitializeConditions()
+
 	// Only process resources assigned to the operator
 	if !platform.IsOperatorHandlerConsideringLock(ctx, r.Reader, req.Namespace, &instance) {
 		klog.V(log.I).InfoS("Ignoring request because resource is not assigned to current operator")
@@ -101,8 +104,6 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 		platform.NewMonitorAction(),
 	}
 
-	var targetPhase operatorapi.PlatformPhase
-
 	var err error
 
 	target := instance.DeepCopy()
@@ -112,13 +113,16 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 		a.InjectClient(cli)
 
 		if a.CanHandle(target) {
-			klog.V(log.I).InfoS("Invoking action", "Name", a.Name())
 
-			phaseFrom := target.Status.Phase
+			klog.V(log.I).InfoS("Invoking action", "Name", a.Name())
 
 			target, err = a.Handle(ctx, target)
 			if err != nil {
-				r.Recorder.Event(&instance, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
+				target.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformFailureReason, err.Error())
+				if err := r.Client.Status().Patch(ctx, target, ctrl.MergeFrom(&instance)); err != nil {
+					return reconcile.Result{}, err
+				}
+				r.Recorder.Event(&instance, corev1.EventTypeWarning, "Failed", fmt.Sprintf("Failed to update SonataFlowPlaform: %s", err))
 				return reconcile.Result{}, err
 			}
 
@@ -126,34 +130,24 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 				target.Status.ObservedGeneration = instance.Generation
 
 				if err := r.Client.Status().Patch(ctx, target, ctrl.MergeFrom(&instance)); err != nil {
-					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Status Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
+					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Status Updated", fmt.Sprintf("Updated platform condition %s", instance.Status.GetTopLevelCondition()))
 					return reconcile.Result{}, err
 				}
 
 				if err := r.Client.Update(ctx, target); err != nil {
-					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Spec Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
+					r.Recorder.Event(&instance, corev1.EventTypeNormal, "Spec Updated", fmt.Sprintf("Updated platform condition to %s", instance.Status.GetTopLevelCondition()))
 					return reconcile.Result{}, err
-				}
-
-				targetPhase = target.Status.Phase
-
-				if targetPhase != phaseFrom {
-					klog.V(log.I).InfoS(
-						"state transition",
-						"phase-from", phaseFrom,
-						"phase-to", target.Status.Phase,
-					)
 				}
 			}
 
 			// handle one action at time so the resource
 			// is always at its latest state
-			r.Recorder.Event(&instance, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated platform phase to  %s", instance.Status.Phase))
+			r.Recorder.Event(&instance, corev1.EventTypeNormal, "Updated", fmt.Sprintf("Updated platform condition to  %s", instance.Status.GetTopLevelCondition()))
 			break
 		}
 	}
 
-	if targetPhase == operatorapi.PlatformPhaseReady {
+	if target.Status.IsReady() {
 		return reconcile.Result{}, nil
 	}
 

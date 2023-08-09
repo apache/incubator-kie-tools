@@ -15,6 +15,8 @@
 package api
 
 import (
+	"fmt"
+
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -101,4 +103,18 @@ func (c *Condition) GetMessage() string {
 		return ""
 	}
 	return c.Message
+}
+
+func (c *Condition) String() string {
+	if c == nil {
+		return ""
+	}
+	str := fmt.Sprintf("Condition %s status is %s", c.Type, c.Status)
+	if len(c.Reason) > 0 {
+		str += fmt.Sprintf(". [Reason] %s", c.Reason)
+	}
+	if len(c.Message) > 0 {
+		str += fmt.Sprintf(". [Message] %s", c.Message)
+	}
+	return str
 }

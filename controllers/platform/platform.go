@@ -174,7 +174,7 @@ func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*op
 
 // IsActive determines if the given platform is being used.
 func IsActive(p *operatorapi.SonataFlowPlatform) bool {
-	return p.Status.Phase != "" && p.Status.Phase != operatorapi.PlatformPhaseDuplicate
+	return !p.Status.IsDuplicated()
 }
 
 // IsSecondary determines if the given platform is marked as secondary.

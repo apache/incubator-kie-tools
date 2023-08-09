@@ -68,7 +68,6 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 	}
 	build.Status.BuildPhase = operatorapi.BuildPhase(containerBuilder.Status.Phase)
 	build.Status.Error = containerBuilder.Status.Error
-	build.Status.ImageTag = imageNameTag
 	return nil
 }
 
@@ -84,6 +83,7 @@ func (c *containerBuilderManager) Reconcile(build *operatorapi.SonataFlowBuild) 
 	}
 	build.Status.BuildPhase = operatorapi.BuildPhase(containerBuild.Status.Phase)
 	build.Status.Error = containerBuild.Status.Error
+	build.Status.ImageTag = containerBuild.Status.RepositoryImageTag
 	if err = build.Status.SetInnerBuild(containerBuild); err != nil {
 		return err
 	}
@@ -104,8 +104,8 @@ func (c *containerBuilderManager) getImageBuilderForKaniko(workflowID string, im
 	ib.WithPodMiddleName(workflowID)
 	ib.WithInsecureRegistry(false)
 	ib.WithImageNameTag(imageNameTag)
-	ib.WithSecret(c.platform.Spec.BuildPlatform.Registry.Secret)
-	ib.WithRegistryAddress(c.platform.Spec.BuildPlatform.Registry.Address)
+	ib.WithSecret(c.platform.Spec.Build.Config.Registry.Secret)
+	ib.WithRegistryAddress(c.platform.Spec.Build.Config.Registry.Address)
 	ib.WithCache(task.Cache)
 	ib.WithResources(task.Resources)
 	ib.WithAdditionalFlags(task.AdditionalFlags)
@@ -147,35 +147,6 @@ func (c *containerBuilderManager) buildImage(kb internalBuilder) (*api.Container
 	build, err := newBuild(kb, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during build Image")
-		return nil, err
-	}
-	return build, err
-}
-
-func (c *containerBuilderManager) scheduleBuild(kb internalBuilder) (*api.ContainerBuild, error) {
-	cli, err := client.FromCtrlClientSchemeAndConfig(c.client, c.client.Scheme(), c.restConfig)
-	plat := api.PlatformContainerBuild{
-		ObjectReference: api.ObjectReference{
-			Namespace: kb.Namespace,
-			Name:      kb.PodMiddleName,
-		},
-		Spec: api.PlatformContainerBuildSpec{
-			BuildStrategy:   api.ContainerBuildStrategyPod,
-			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
-			Registry: api.ContainerRegistrySpec{
-				Insecure: kb.InsecureRegistry,
-				Address:  kb.RegistryAddress,
-				Secret:   kb.Secret,
-			},
-			Timeout: &metav1.Duration{
-				Duration: kb.Timeout,
-			},
-		},
-	}
-
-	build, err := newBuild(kb, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
-	if err != nil {
-		klog.V(log.E).ErrorS(err, "error during schedule build")
 		return nil, err
 	}
 	return build, err

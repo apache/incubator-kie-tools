@@ -30,8 +30,6 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
-
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -190,24 +188,27 @@ func (h *deployWorkflowReconciliationState) CanReconcile(workflow *operatorapi.S
 }
 
 func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	pl, err := platform.GetActivePlatform(ctx, h.client, workflow.Namespace)
+	// Guard to avoid errors while getting a new builder manager.
+	// Maybe we can do typed errors in the buildManager and
+	// have something like sonataerr.IsPlatformNotFound(err) instead.
+	_, err := platform.GetActivePlatform(ctx, h.client, workflow.Namespace)
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForPlatformReason,
 			"No active Platform for namespace %s so the resWorkflowDef cannot be deployed. Waiting for an active platform", workflow.Namespace)
 		return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
 	}
 
+	buildManager := builder.NewSonataFlowBuildManager(ctx, h.client)
+	build, err := buildManager.GetOrCreateBuild(workflow)
+	if err != nil {
+		return ctrl.Result{}, nil, err
+	}
+
 	if h.isWorkflowChanged(workflow) { // Let's check that the 2 resWorkflowDef definition are different
 		workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
-		buildManager := builder.NewSonataFlowBuildManager(ctx, h.client)
-		build, err := buildManager.GetOrCreateBuild(workflow)
-		if err != nil {
-			return ctrl.Result{}, nil, err
-		}
 		if err = buildManager.MarkToRestart(build); err != nil {
 			return ctrl.Result{}, nil, err
 		}
-
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildIsRunningReason, "Marked to restart")
 		workflow.Status.Manager().MarkUnknown(api.RunningConditionType, "", "")
 		_, err = h.performStatusUpdate(ctx, workflow)
@@ -215,11 +216,7 @@ func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *op
 	}
 
 	// didn't change, business as usual
-	image := workflowdef.GetWorkflowAppImageNameTag(workflow)
-	if len(pl.Spec.BuildPlatform.Registry.Address) > 0 {
-		image = pl.Spec.BuildPlatform.Registry.Address + "/" + image
-	}
-	return h.handleObjects(ctx, workflow, image)
+	return h.handleObjects(ctx, workflow, build.Status.ImageTag)
 }
 
 func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {

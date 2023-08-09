@@ -21,11 +21,10 @@ import (
 	"strings"
 	"time"
 
-	"k8s.io/klog/v2"
-
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
@@ -44,64 +43,63 @@ var builderDockerfileFromRE = regexp.MustCompile(`FROM (.*) AS builder`)
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
 
 func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
-	//@TODO Add a notification on the status about this registry value ignored when https://issues.redhat.com/browse/KOGITO-9218 will be implemented
-	if p.Spec.BuildPlatform.BuildStrategy == operatorapi.PlatformBuildStrategy && p.Status.Cluster == operatorapi.PlatformClusterOpenShift {
-		p.Spec.BuildPlatform.Registry = operatorapi.RegistrySpec{}
-		klog.V(log.I).InfoS("Platform registry not set and ignored on openshift cluster")
+	if p.Spec.Build.Config.BuildStrategy == operatorapi.PlatformBuildStrategy && p.Status.Cluster == operatorapi.PlatformClusterOpenShift {
+		p.Spec.Build.Config.Registry = operatorapi.RegistrySpec{}
+		klog.V(log.D).InfoS("Platform registry not set and ignored on openshift cluster")
 		return nil
 	}
 
-	if p.Spec.BuildPlatform.Registry.Address == "" && p.Status.Cluster == operatorapi.PlatformClusterKubernetes {
+	if p.Spec.Build.Config.Registry.Address == "" && p.Status.Cluster == operatorapi.PlatformClusterKubernetes {
 		// try KEP-1755
 		address, err := GetRegistryAddress(ctx, c)
 		if err != nil && verbose {
 			klog.V(log.E).ErrorS(err, "Cannot find a registry where to push images via KEP-1755")
 		} else if err == nil && address != nil {
-			p.Spec.BuildPlatform.Registry.Address = *address
+			p.Spec.Build.Config.Registry.Address = *address
 		}
 	}
 
-	klog.V(log.D).InfoS("Final Registry Address", "address", p.Spec.BuildPlatform.Registry.Address)
+	klog.V(log.D).InfoS("Final Registry Address", "address", p.Spec.Build.Config.Registry.Address)
 	return nil
 }
 
 func SetPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error {
-	if p.Spec.BuildPlatform.BuildStrategyOptions == nil {
+	if p.Spec.Build.Config.BuildStrategyOptions == nil {
 		klog.V(log.D).InfoS("SonataFlow Platform: setting publish strategy options", "namespace", p.Namespace)
-		p.Spec.BuildPlatform.BuildStrategyOptions = map[string]string{}
+		p.Spec.Build.Config.BuildStrategyOptions = map[string]string{}
 	}
 
-	if p.Spec.BuildPlatform.GetTimeout().Duration != 0 {
-		d := p.Spec.BuildPlatform.GetTimeout().Duration.Truncate(time.Second)
+	if p.Spec.Build.Config.GetTimeout().Duration != 0 {
+		d := p.Spec.Build.Config.GetTimeout().Duration.Truncate(time.Second)
 
-		if verbose && p.Spec.BuildPlatform.Timeout.Duration != d {
-			klog.V(log.I).InfoS("ContainerBuild timeout minimum unit is sec", "configured", p.Spec.BuildPlatform.GetTimeout().Duration, "truncated", d)
+		if verbose && p.Spec.Build.Config.Timeout.Duration != d {
+			klog.V(log.I).InfoS("ContainerBuild timeout minimum unit is sec", "configured", p.Spec.Build.Config.GetTimeout().Duration, "truncated", d)
 		}
 
 		klog.V(log.D).InfoS("SonataFlow Platform: setting build timeout", "namespace", p.Namespace)
-		p.Spec.BuildPlatform.Timeout = &metav1.Duration{
+		p.Spec.Build.Config.Timeout = &metav1.Duration{
 			Duration: d,
 		}
 	} else {
 		klog.V(log.D).InfoS("SonataFlow Platform setting default build timeout to 5 minutes", "namespace", p.Namespace)
-		p.Spec.BuildPlatform.Timeout = &metav1.Duration{
+		p.Spec.Build.Config.Timeout = &metav1.Duration{
 			Duration: 5 * time.Minute,
 		}
 	}
 
-	if p.Spec.BuildPlatform.IsOptionEnabled(kanikoBuildCacheEnabled) {
-		p.Spec.BuildPlatform.BuildStrategyOptions[kanikoPVCName] = p.Name
-		if len(p.Spec.BuildPlatform.BaseImage) == 0 {
-			p.Spec.BuildPlatform.BaseImage = workflowdef.GetDefaultWorkflowBuilderImageTag()
+	if p.Spec.Build.Config.IsStrategyOptionEnabled(kanikoBuildCacheEnabled) {
+		p.Spec.Build.Config.BuildStrategyOptions[kanikoPVCName] = p.Name
+		if len(p.Spec.Build.Config.BaseImage) == 0 {
+			p.Spec.Build.Config.BaseImage = workflowdef.GetDefaultWorkflowBuilderImageTag()
 		}
 	}
 
-	if p.Spec.BuildPlatform.BuildStrategy == operatorapi.OperatorBuildStrategy && !p.Spec.BuildPlatform.IsOptionEnabled(kanikoBuildCacheEnabled) {
+	if p.Spec.Build.Config.BuildStrategy == operatorapi.OperatorBuildStrategy && !p.Spec.Build.Config.IsStrategyOptionEnabled(kanikoBuildCacheEnabled) {
 		// Default to disabling Kaniko cache warmer
 		// Using the cache warmer pod seems unreliable with the current Kaniko version
 		// and requires relying on a persistent volume.
 		defaultKanikoBuildCache := "false"
-		p.Spec.BuildPlatform.BuildStrategyOptions[kanikoBuildCacheEnabled] = defaultKanikoBuildCache
+		p.Spec.Build.Config.BuildStrategyOptions[kanikoBuildCacheEnabled] = defaultKanikoBuildCache
 		if verbose {
 			klog.V(log.I).InfoS("Kaniko cache set", "value", defaultKanikoBuildCache)
 		}
@@ -110,8 +108,8 @@ func SetPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error 
 	setStatusAdditionalInfo(p)
 
 	if verbose {
-		klog.V(log.I).InfoS("BaseImage set", "value", p.Spec.BuildPlatform.BaseImage)
-		klog.V(log.I).InfoS("Timeout set", "value", p.Spec.BuildPlatform.GetTimeout())
+		klog.V(log.I).InfoS("BaseImage set", "value", p.Spec.Build.Config.BaseImage)
+		klog.V(log.I).InfoS("Timeout set", "value", p.Spec.Build.Config.GetTimeout())
 	}
 	return nil
 }
@@ -120,7 +118,7 @@ func setStatusAdditionalInfo(platform *operatorapi.SonataFlowPlatform) {
 	platform.Status.Info = make(map[string]string)
 
 	klog.V(log.D).InfoS("SonataFlow Platform setting build publish strategy", "namespace", platform.Namespace)
-	if platform.Spec.BuildPlatform.BuildStrategy == operatorapi.OperatorBuildStrategy {
+	if platform.Spec.Build.Config.BuildStrategy == operatorapi.OperatorBuildStrategy {
 		platform.Status.Info["kanikoVersion"] = defaults.KanikoVersion
 	}
 	klog.V(log.D).InfoS("SonataFlow setting status info", "namespace", platform.Namespace)
@@ -150,9 +148,9 @@ func GetRegistryAddress(ctx context.Context, c client.Client) (*string, error) {
 }
 
 func GetCustomizedDockerfile(dockerfile string, platform operatorapi.SonataFlowPlatform) string {
-	if platform.Spec.BuildPlatform.BaseImage != "" {
+	if platform.Spec.Build.Config.BaseImage != "" {
 		res := builderDockerfileFromRE.FindAllStringSubmatch(dockerfile, 1)
-		dockerfile = strings.Replace(dockerfile, strings.Trim(res[0][1], " "), platform.Spec.BuildPlatform.BaseImage, 1)
+		dockerfile = strings.Replace(dockerfile, strings.Trim(res[0][1], " "), platform.Spec.Build.Config.BaseImage, 1)
 	}
 	return dockerfile
 }

@@ -83,7 +83,11 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
+	build := test.GetLocalSucceedSonataFlowBuild(workflow.Name, workflow.Namespace)
+	client := test.NewKogitoClientBuilder().
+		WithRuntimeObjects(workflow, platform, build).
+		WithStatusSubresource(workflow, platform, build).
+		Build()
 	handler := &deployWorkflowReconciliationState{
 		stateSupport: fakeReconcilerSupport(client),
 		ensurers:     newProdObjectEnsurers(&stateSupport{client: client}),

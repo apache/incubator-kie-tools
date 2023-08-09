@@ -77,7 +77,7 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 	args := []string{
 		"--dockerfile=Dockerfile",
 		"--context=dir://" + task.ContextDir,
-		"--destination=" + task.Registry.Address + "/" + task.Image,
+		"--destination=" + task.GetRepositoryImageTag(),
 	}
 
 	if task.AdditionalFlags != nil && len(task.AdditionalFlags) > 0 {

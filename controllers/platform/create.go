@@ -17,6 +17,7 @@ package platform
 import (
 	"context"
 
+	"github.com/kiegroup/kogito-serverless-operator/api"
 	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
@@ -34,12 +35,12 @@ func (action *createAction) Name() string {
 }
 
 func (action *createAction) CanHandle(platform *v08.SonataFlowPlatform) bool {
-	return platform.Status.Phase == v08.PlatformPhaseCreating
+	return platform.Status.IsCreating()
 }
 
 func (action *createAction) Handle(ctx context.Context, platform *v08.SonataFlowPlatform) (*v08.SonataFlowPlatform, error) {
 	//TODO: Perform the actions needed for the Platform creation
-	platform.Status.Phase = v08.PlatformPhaseReady
+	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
 
 	return platform, nil
 }

@@ -49,7 +49,7 @@ func (k *sonataFlowBuildManager) GetOrCreateBuild(workflow *operatorapi.SonataFl
 			if plat, err = platform.GetActivePlatform(k.ctx, k.client, workflow.Namespace); err != nil {
 				return nil, err
 			}
-			buildInstance.Spec.BuildTemplate = plat.Spec.BuildTemplate
+			buildInstance.Spec.BuildTemplate = plat.Spec.Build.Template
 			if err = controllerutil.SetControllerReference(workflow, buildInstance, k.client.Scheme()); err != nil {
 				return nil, err
 			}

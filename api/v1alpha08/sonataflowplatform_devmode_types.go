@@ -14,16 +14,8 @@
 
 package v1alpha08
 
-import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-)
-
-// NewSonataFlowPlatformList returns an empty list of Platform objects
-func NewSonataFlowPlatformList() SonataFlowPlatformList {
-	return SonataFlowPlatformList{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: GroupVersion.String(),
-			Kind:       SonataFlowPlatformKind,
-		},
-	}
+// DevModePlatformSpec describes the devmode configuration for the given platform.
+type DevModePlatformSpec struct {
+	// Base image to run the Workflow in dev mode instead of the operator's default.
+	BaseImage string `json:"baseImage,omitempty"`
 }

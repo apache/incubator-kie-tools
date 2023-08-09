@@ -145,7 +145,7 @@ run: manifests generate ## Run a controller from your host.
 
 .PHONY: debug
 debug: build-4-debug ## Run a controller from your host from binary
-	./bin/manager
+	./bin/manager -v=2
 
 .PHONY: docker-build
 docker-build: test ## Build docker image with the manager.

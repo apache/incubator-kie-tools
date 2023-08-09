@@ -106,8 +106,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 	if err != nil {
 		return err
 	}
-	build.Status.ImageTag = workflowdef.GetWorkflowAppImageNameTag(workflow)
-	bc := o.newDefaultBuildConfig(build)
+	bc := o.newDefaultBuildConfig(build, workflow)
 	if err = o.addExternalResources(bc, workflow); err != nil {
 		return err
 	}
@@ -131,7 +130,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 		if kubeutil.IsObjectNew(bc) {
 			return nil
 		}
-		referenceBC := o.newDefaultBuildConfig(build)
+		referenceBC := o.newDefaultBuildConfig(build, workflow)
 		bc.Spec = *referenceBC.Spec.DeepCopy()
 		return o.addExternalResources(bc, workflow)
 	}); err != nil {
@@ -142,7 +141,7 @@ func (o *openshiftBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 	return nil
 }
 
-func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.SonataFlowBuild) *buildv1.BuildConfig {
+func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.SonataFlowBuild, workflow *operatorapi.SonataFlow) *buildv1.BuildConfig {
 	optimizationPol := buildv1.ImageOptimizationSkipLayers
 	dockerFile := platform.GetCustomizedDockerfile(o.commonConfig.Data[o.commonConfig.Data[configKeyDefaultBuilderResourceName]], *o.platform)
 	return &buildv1.BuildConfig{
@@ -165,7 +164,7 @@ func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.Sonat
 				Output: buildv1.BuildOutput{
 					To: &corev1.ObjectReference{
 						Namespace: build.Namespace,
-						Name:      build.Status.ImageTag,
+						Name:      workflowdef.GetWorkflowAppImageNameTag(workflow),
 						Kind:      imageStreamTagKind,
 					},
 				},
@@ -218,6 +217,7 @@ func (o *openshiftBuilderManager) Reconcile(build *operatorapi.SonataFlowBuild) 
 			return err
 		}
 		build.Status.BuildPhase = operatorapi.BuildPhaseScheduling
+		build.Status.ImageTag = openshiftBuild.Status.OutputDockerImageReference
 		return build.Status.SetInnerBuild(kubeutil.ToTypedLocalReference(openshiftBuild))
 	}
 
@@ -234,6 +234,7 @@ func (o *openshiftBuilderManager) Reconcile(build *operatorapi.SonataFlowBuild) 
 	if openshiftBuild.Status.Phase == buildv1.BuildPhaseError {
 		build.Status.Error = openshiftBuild.Status.Message
 	}
+	build.Status.ImageTag = openshiftBuild.Status.OutputDockerImageReference
 
 	return build.Status.SetInnerBuild(kubeutil.ToTypedLocalReference(openshiftBuild))
 }

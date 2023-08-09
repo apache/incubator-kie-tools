@@ -17,6 +17,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"time"
 
 	"k8s.io/klog/v2"
@@ -88,11 +89,11 @@ func (r *SonataFlowBuildReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		return ctrl.Result{RequeueAfter: requeueAfterForNewBuild}, r.manageStatusUpdate(ctx, build)
 		// TODO: this smells, why not just else? review in the future: https://issues.redhat.com/browse/KOGITO-8785
 	} else if phase != operatorapi.BuildPhaseSucceeded && phase != operatorapi.BuildPhaseError && phase != operatorapi.BuildPhaseFailed {
-		beforeReconcilePhase := build.Status.BuildPhase
+		beforeReconcileStatus := build.Status.DeepCopy()
 		if err = buildManager.Reconcile(build); err != nil {
 			return ctrl.Result{}, err
 		}
-		if beforeReconcilePhase != build.Status.BuildPhase {
+		if !reflect.DeepEqual(build.Status, beforeReconcileStatus) {
 			if err = r.manageStatusUpdate(ctx, build); err != nil {
 				return ctrl.Result{}, err
 			}

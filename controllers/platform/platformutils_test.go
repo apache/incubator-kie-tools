@@ -38,7 +38,7 @@ func TestSonataFlowBuildController(t *testing.T) {
 	assert.True(t, foundDefault)
 
 	// 2 - Let's try to override using the productized image
-	platform.Spec.BuildPlatform.BaseImage = "registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8"
+	platform.Spec.Build.Config.BaseImage = "registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8"
 	resProductized := GetCustomizedDockerfile(dockerfile, *platform)
 	foundProductized, err := regexp.MatchString("FROM registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8 AS builder", resProductized)
 	assert.NoError(t, err)

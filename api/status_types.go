@@ -54,6 +54,14 @@ func (s *Status) GetCondition(t ConditionType) *Condition {
 	return nil
 }
 
+func (s *Status) String() string {
+	str := ""
+	for _, c := range s.Conditions {
+		str += c.String() + "\n"
+	}
+	return str
+}
+
 func (s *Status) setConditions(c Conditions) {
 	s.Conditions = c
 }

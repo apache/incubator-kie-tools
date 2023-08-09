@@ -20,9 +20,10 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"k8s.io/klog/v2"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/kiegroup/kogito-serverless-operator/api"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -40,8 +41,7 @@ const (
 	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
 	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
 	sonataFlowBuilderConfig                   = "sonataflow-operator-builder-config_v1_configmap.yaml"
-
-	BuilderDockerfile = "builder_dockerfile.yaml"
+	sonataFlowBuildSucceed                    = "sonataflow.org_v1alpha08_sonataflowbuild.yaml"
 
 	configSamplesOneLevelPath = "../config/samples/"
 	configSamplesTwoLevelPath = "../../config/samples/"
@@ -85,12 +85,13 @@ func GetSonataFlowPlatform(path string) *operatorapi.SonataFlowPlatform {
 		panic(err)
 	}
 	klog.V(log.D).InfoS("Successfully read KSP", "ksp", ksp)
+	ksp.Status.Manager().InitializeConditions()
 	return ksp
 }
 
 func GetSonataFlowPlatformInReadyPhase(path string, namespace string) *operatorapi.SonataFlowPlatform {
 	ksp := GetSonataFlowPlatform(path)
-	ksp.Status.Phase = operatorapi.PlatformPhaseReady
+	ksp.Status.Manager().MarkTrue(api.SucceedConditionType)
 	ksp.Namespace = namespace
 	return ksp
 }
@@ -109,7 +110,23 @@ func GetNewEmptySonataFlowBuild(name, namespace string) *operatorapi.SonataFlowB
 		},
 		Status: operatorapi.SonataFlowBuildStatus{},
 	}
+}
 
+// GetLocalSucceedSonataFlowBuild gets a local (testdata dir ref to caller) SonataFlowBuild with Succeed status equals to true.
+func GetLocalSucceedSonataFlowBuild(name, namespace string) *operatorapi.SonataFlowBuild {
+	yamlFile, err := os.ReadFile("testdata/" + sonataFlowBuildSucceed)
+	if err != nil {
+		klog.ErrorS(err, "Yaml file not found on local testdata dir")
+		panic(err)
+	}
+	build := &operatorapi.SonataFlowBuild{}
+	if err := yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 255).Decode(build); err != nil {
+		klog.ErrorS(err, "Failed to unmarshal SonataFlowBuild")
+		panic(err)
+	}
+	build.Name = name
+	build.Namespace = namespace
+	return build
 }
 
 func GetSonataFlowBuilderConfig(path, namespace string) *corev1.ConfigMap {
@@ -181,16 +198,16 @@ func GetBasePlatformInReadyPhase(namespace string) *operatorapi.SonataFlowPlatfo
 func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
-	platform.Status.Phase = operatorapi.PlatformPhaseReady
-	platform.Spec.BuildPlatform.BaseImage = "quay.io/customx/custom-swf-builder:24.8.17"
+	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
+	platform.Spec.Build.Config.BaseImage = "quay.io/customx/custom-swf-builder:24.8.17"
 	return platform
 }
 
 func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
-	platform.Status.Phase = operatorapi.PlatformPhaseReady
-	platform.Spec.DevBaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
+	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
+	platform.Spec.DevMode.BaseImage = "quay.io/customgroup/custom-swf-builder-nightly:42.43.7"
 	return platform
 }
 
@@ -199,7 +216,9 @@ func GetBasePlatform() *operatorapi.SonataFlowPlatform {
 	if ok {
 		return GetSonataFlowPlatform(GetPathForSamples(file) + sonataFlowPlatformYamlCR)
 	} else {
-		return &operatorapi.SonataFlowPlatform{}
+		ksp := &operatorapi.SonataFlowPlatform{}
+		ksp.Status.Manager().InitializeConditions()
+		return ksp
 	}
 }
 

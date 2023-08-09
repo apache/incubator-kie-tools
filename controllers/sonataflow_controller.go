@@ -95,7 +95,7 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFlowPlatform) []reconcile.Request {
 	var requests []reconcile.Request
 
-	if p.Status.Phase == operatorapi.PlatformPhaseReady {
+	if p.Status.IsReady() {
 		list := &operatorapi.SonataFlowList{}
 
 		// Do global search in case of global operator (it may be using a global platform)
@@ -134,12 +134,12 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Owns(&corev1.ConfigMap{}).
 		Owns(&operatorapi.SonataFlowBuild{}).
 		Watches(&operatorapi.SonataFlowPlatform{}, handler.EnqueueRequestsFromMapFunc(func(c context.Context, a client.Object) []reconcile.Request {
-			platform, ok := a.(*operatorapi.SonataFlowPlatform)
+			plat, ok := a.(*operatorapi.SonataFlowPlatform)
 			if !ok {
 				klog.V(log.E).InfoS("Failed to retrieve workflow list. Type assertion failed", "assertion", a)
 				return []reconcile.Request{}
 			}
-			return platformEnqueueRequestsFromMapFunc(mgr.GetClient(), platform)
+			return platformEnqueueRequestsFromMapFunc(mgr.GetClient(), plat)
 		})).
 		Complete(r)
 }
