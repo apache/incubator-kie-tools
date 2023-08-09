@@ -21,13 +21,14 @@ import {
   EnvelopeContent,
   EnvelopeContentType,
   EnvelopeMapping,
+  StateControlCommand,
   useKogitoEditorEnvelopeContext,
 } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import {
@@ -62,7 +63,7 @@ import {
 import { Position } from "monaco-editor";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions } from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
-import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
+import { UseSwfTextEditorChannelApiArgs, useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 import { colorNodes } from "./helpers/ColorNodes";
 
 interface Props {
@@ -71,6 +72,7 @@ interface Props {
   channelType: ChannelType;
   resourcesPathPrefix: string;
   onNewEdit: (edit: WorkspaceEdit) => void;
+  onStateControlCommandUpdate: (command: StateControlCommand) => void;
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
@@ -96,6 +98,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
+  const { onStateControlCommandUpdate, onNewEdit } = props;
   const [file, setFile] = useState<File | undefined>(undefined);
   const [embeddedTextEditorFile, setEmbeddedTextEditorFile] = useState<EmbeddedEditorFile>();
   const [embeddedDiagramEditorFile, setEmbeddedDiagramEditorFile] = useState<EmbeddedEditorFile>();
@@ -258,13 +261,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await textEditor.getContent();
-        props.onNewEdit(new WorkspaceEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,
         }));
       },
-      [props, textEditor]
+      [textEditor]
     )
   );
 
@@ -277,13 +279,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await diagramEditor.getContent();
-        props.onNewEdit(new WorkspaceEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,
         }));
       },
-      [props, diagramEditor]
+      [diagramEditor]
     )
   );
 
@@ -338,17 +339,55 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     [editorEnvelopeCtx, embeddedDiagramEditorFile, onDiagramEditorReady, textEditor, props.locale]
   );
 
-  const useSwfTextEditorChannelApiArgs = useMemo(
+  const onTextEditorNewEdit = useCallback(
+    (edit: WorkspaceEdit) => {
+      onNewEdit(edit);
+    },
+    [onNewEdit]
+  );
+
+  const onTextEditorStateControlCommandUpdate = useCallback(
+    (command: StateControlCommand) => {
+      switch (command) {
+        case StateControlCommand.UNDO:
+          onStateControlCommandUpdate(StateControlCommand.UNDO);
+          break;
+        case StateControlCommand.REDO:
+          onStateControlCommandUpdate(StateControlCommand.REDO);
+          break;
+        default:
+          console.info(`Unknown message type received: ${command}`);
+          break;
+      }
+    },
+    [onStateControlCommandUpdate]
+  );
+
+  const useSwfTextEditorChannelApiArgs = useMemo<UseSwfTextEditorChannelApiArgs>(
     () => ({
+      apiOverrides: {
+        kogitoWorkspace_newEdit: onTextEditorNewEdit,
+        kogitoEditor_stateControlCommandUpdate: onTextEditorStateControlCommandUpdate,
+        kogitoEditor_ready: onTextEditorReady,
+        kogitoEditor_setContentError: onTextEditorSetContentError,
+      },
       channelApi:
         editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
       locale: props.locale,
       embeddedEditorFile: embeddedTextEditorFile,
-      onEditorReady: onTextEditorReady,
       swfDiagramEditorEnvelopeApi: diagramEditor?.getEnvelopeServer()
         .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>,
     }),
-    [editorEnvelopeCtx, onTextEditorReady, diagramEditor, embeddedTextEditorFile, props.locale]
+    [
+      onTextEditorNewEdit,
+      onTextEditorStateControlCommandUpdate,
+      onTextEditorReady,
+      onTextEditorSetContentError,
+      editorEnvelopeCtx.channelApi,
+      props.locale,
+      embeddedTextEditorFile,
+      diagramEditor,
+    ]
   );
 
   const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
@@ -364,8 +403,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           ref={textEditorRef}
           file={embeddedTextEditorFile}
           channelType={props.channelType}
-          kogitoEditor_ready={onTextEditorReady}
-          kogitoEditor_setContentError={onTextEditorSetContentError}
           editorEnvelopeLocator={textEditorEnvelopeLocator}
           locale={props.locale}
           customChannelApiImpl={textEditorChannelApi}
@@ -407,7 +444,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     if (isCombinedEditorReady) {
       editorEnvelopeCtx.channelApi.notifications.kogitoSwfCombinedEditor_combinedEditorReady.send();
     }
-  }, [isCombinedEditorReady]);
+  }, [editorEnvelopeCtx, isCombinedEditorReady]);
 
   return (
     <div style={{ height: "100%" }}>

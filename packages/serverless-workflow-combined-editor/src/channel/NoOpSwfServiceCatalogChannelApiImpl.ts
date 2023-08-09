@@ -22,10 +22,6 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export class NoOpSwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor() {
-    /* Empty on purpose */
-  }
-
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return {
       defaultValue: [],

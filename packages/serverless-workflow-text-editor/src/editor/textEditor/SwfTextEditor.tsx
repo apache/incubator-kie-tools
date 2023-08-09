@@ -16,12 +16,12 @@
 
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef, useCallback } from "react";
-import { SwfTextEditorController, SwfTextEditorApi } from "./SwfTextEditorController";
+import { SwfTextEditorController, SwfTextEditorApi, SwfTextEditorOperation } from "./SwfTextEditorController";
 import { initCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
-import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { ServerlessWorkflowTextEditorChannelApi } from "../../api";
 import { editor } from "monaco-editor";
@@ -29,7 +29,7 @@ import { editor } from "monaco-editor";
 interface Props {
   content: string;
   fileName: string;
-  onContentChange: (content: string) => void;
+  onContentChange: (args: { content: string; operation: SwfTextEditorOperation }) => void;
   channelType: ChannelType;
   setValidationErrors: (errors: editor.IMarker[]) => void;
   isReadOnly: boolean;
@@ -49,9 +49,12 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
 
   const fileLanguage = useMemo(() => getFileLanguage(fileName), [fileName]);
 
-  const onSelectionChanged = useCallback((nodeName: string) => {
-    editorEnvelopeCtx.channelApi.notifications.kogitoSwfTextEditor__onSelectionChanged.send({ nodeName });
-  }, []);
+  const onSelectionChanged = useCallback(
+    (nodeName: string) => {
+      editorEnvelopeCtx.channelApi.notifications.kogitoSwfTextEditor__onSelectionChanged.send({ nodeName });
+    },
+    [editorEnvelopeCtx]
+  );
 
   const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {
     if (fileLanguage !== null) {
@@ -66,7 +69,16 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
       );
     }
     throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange, isReadOnly, setValidationErrors]);
+  }, [
+    fileLanguage,
+    fileName,
+    content,
+    onContentChange,
+    editorEnvelopeCtx.operatingSystem,
+    isReadOnly,
+    setValidationErrors,
+    onSelectionChanged,
+  ]);
 
   useEffect(() => {
     controller.forceRedraw();
