@@ -28,8 +28,6 @@ runs:
 
     - name: "Bootstrap"
       shell: bash
-      env:
-        PLAYWRIGHT_BASE__installDeps: "true"
       run: |
         echo "STEP: Bootstrap"
         cd ${{ inputs.working_dir }}
