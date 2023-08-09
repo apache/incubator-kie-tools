@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv, str2bool, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
@@ -26,7 +26,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   get env() {
     return {
       playwrightBase: {
-        installDeps: getOrDefault(this.vars.PLAYWRIGHT_BASE__installDeps),
+        installDeps: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__installDeps)),
       },
     };
   },

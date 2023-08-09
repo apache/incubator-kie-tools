@@ -15,5 +15,26 @@ const config: StorybookConfig = {
   docs: {
     autodocs: "tag",
   },
+  webpackFinal: async (config, options) => {
+    config.module?.rules?.push({
+      test: /\.tsx?$/,
+      use: [
+        {
+          loader: require.resolve("ts-loader"),
+          options: {
+            transpileOnly: undefined,
+            compilerOptions: {
+              importsNotUsedAsValues: "preserve",
+              sourceMap: undefined,
+            },
+          },
+        },
+        {
+          loader: require.resolve("@kie-tools-core/webpack-base/multi-package-live-reload-loader.js"),
+        },
+      ],
+    });
+    return config;
+  },
 };
 export default config;
