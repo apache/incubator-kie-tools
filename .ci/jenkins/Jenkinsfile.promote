@@ -114,31 +114,24 @@ pipeline {
                         updateInternalGoModuleWithTag('workflowproj', "workflowproj/${helper.getGitTag()}")
                         sh 'make generate-all'
                         commitAndPush('origin', "[${helper.getBuildBranch()}] Update internal dependency modules version in go.mod") { sh 'git add .' }
-
-                        // Create final and release
-                        helper.createRelease()
                     }
                 }
             }
         }
-        stage('Set next snapshot version') {
-            when {
-                expression { return helper.isRelease() }
-            }
+
+        stage('Create Release') {
             steps {
                 script {
-                    String nextVersion = helper.getNextVersion()
-                    dir(helper.getRepoName()) {
-                        // Update version to next snapshot
-                        sh "make bump-version new_version=${nextVersion}"
+                    if(githubscm.isReleaseExist(helper.getGitTag(), helper.getGitAuthorCredsID())) {
+                        githubscm.deleteReleaseAndTag(helper.getGitTag(), helper.getGitAuthorCredsID())
+                    }
+                    githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTag(helper.getGitTag()), helper.getGitAuthorCredsID())
+                    githubscm.updateReleaseBody(helper.getGitTag(), helper.getGitAuthorCredsID())
 
-                        commitAndPush('origin', "[${helper.getBuildBranch()}] Update snapshot version to ${nextVersion}\n\nCommitted by build ${BUILD_TAG}: ${BUILD_URL}") {
-                            sh '''
-                                git add .
-                                git reset -- go.mod
-                                git reset -- go.sum
-                            '''
-                        }
+                    withCredentials([usernamePassword(credentialsId: helper.getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                        sh """
+                            gh release upload ${helper.getGitTag()} "operator.yaml"
+                        """
                     }
                 }
             }

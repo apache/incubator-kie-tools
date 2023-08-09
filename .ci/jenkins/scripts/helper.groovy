@@ -73,20 +73,6 @@ void createTag(String tagName = getGitTag()) {
     githubscm.tagLocalAndRemoteRepository('origin', tagName, getGitAuthorCredsID(), '', true)
 }
 
-void createRelease() {
-    if(githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
-        githubscm.deleteReleaseAndTag(getGitTag(), getGitAuthorCredsID())
-    }
-    githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTag(getGitTag()), getGitAuthorCredsID())
-    githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
-
-    withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-        sh """
-            gh release upload ${getGitTag()} "operator.yaml"
-        """
-    }
-}
-
 // Set images public on quay. Useful when new images are introduced.
 void makeQuayImagePublic(String repository, String paramsPrefix = defaultImageParamsPrefix) {
     String namespace = getImageNamespace(paramsPrefix)
