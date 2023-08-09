@@ -16,5 +16,4 @@
 
 package metadata
 
-var DevModeImage string
-
+var KogitoVersion string
