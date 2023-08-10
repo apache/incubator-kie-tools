@@ -37,7 +37,7 @@
       "dependsOn": ["build", "create"]
     },
     {
-      "label": "quarkus build and create",
+      "label": "build and quarkus create",
       "dependsOrder": "sequence",
       "dependsOn": ["build", "quarkus create"]
     }

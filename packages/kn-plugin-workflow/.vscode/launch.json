@@ -70,17 +70,6 @@
       ]
     },
     {
-      "name": "Launch quarkus build",
-      "type": "go",
-      "request": "launch",
-      "mode": "exec",
-      "preLaunchTask": "quarkus build and create",
-      "postDebugTask": "clean",
-      "cwd": "${workspaceFolder}/debug",
-      "program": "${workspaceRoot}/${input:bin}",
-      "args": ["quarkus", "build"]
-    },
-    {
       "name": "Launch quarkus convert",
       "type": "go",
       "request": "launch",
@@ -102,7 +91,7 @@
       "type": "go",
       "request": "launch",
       "mode": "exec",
-      "preLaunchTask": "quarkus build and create",
+      "preLaunchTask": "build and quarkus create",
       "postDebugTask": "clean",
       "cwd": "${workspaceFolder}/debug",
       "program": "${workspaceRoot}/${input:bin}",
@@ -113,7 +102,7 @@
       "type": "go",
       "request": "launch",
       "mode": "exec",
-      "preLaunchTask": "quarkus build and create",
+      "preLaunchTask": "build and quarkus create",
       "postDebugTask": "clean",
       "cwd": "${workspaceFolder}/debug",
       "program": "${workspaceRoot}/${input:bin}",
@@ -142,7 +131,7 @@
         "dist/kn-workflow-linux-amd64",
         "dist/kn-workflow-darwin-amd64",
         "dist/kn-workflow-darwin-arm64",
-        "dist/kn-workflow-win32-amd64"
+        "dist/kn-workflow-windows-amd64.exe"
       ]
     },
     {
@@ -205,7 +194,7 @@
       "id": "command-args-quarkus-deploy-path",
       "type": "promptString",
       "default": "",
-      "description": "path to knative deployment files. Usage --path=${path_to_k8_files}"
+      "description": "Path to knative deployment files. Usage --path=${path_to_k8_files}"
     },
     {
       "id": "command-args-quarkus-image",
@@ -217,7 +206,7 @@
       "id": "command-args-quarkus-image-registry",
       "type": "promptString",
       "default": "",
-      "description": "Image registry, ex: quay.io, if the --image flag is in use this option overrides image [registry]. usage --image-registry=${image_registry_name}"
+      "description": "Image registry, ex: quay.io, if the --image flag is in use this option overrides image [registry]. Usage --image-registry=${image_registry_name}"
     },
     {
       "id": "command-args-quarkus-image-repository",
