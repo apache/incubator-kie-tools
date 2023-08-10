@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "@kie-tools-scripts/verify-version",
+  "version": "0.0.0",
+  "keywords": [],
+  "bin": {
+    "kie-tools--verify-version-to": "verify_version.js"
+  },
+  "devDependencies": {
+    "@pnpm/find-workspace-packages": "^4.0.27"
+  }
+}

@@ -30,7 +30,8 @@
     "dist:scesim": "symlink-dir drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./dist/scesim",
     "install": "node install.js",
     "lint": "echo 'Linting'",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "verify-version": "node verify.js"
   },
   "dependencies": {
     "@kie-tools/stunner-editors-dmn-loader": "workspace:*"

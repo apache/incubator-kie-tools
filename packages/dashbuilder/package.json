@@ -34,7 +34,8 @@
     "delete:components": "rimraf ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
     "install": "node install.js",
     "lint": "echo 'Linting'",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "verify-version": "node verify.js"
   },
   "dependencies": {
     "@kie-tools/dashbuilder-component-assembler": "workspace:*"

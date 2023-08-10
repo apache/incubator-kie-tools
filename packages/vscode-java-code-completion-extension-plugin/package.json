@@ -26,7 +26,8 @@
     "install": "node install.js",
     "install:mvnw": "mvn wrapper:wrapper -f ./",
     "lint": "echo 'Linting'",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "verify-version": "node verify.js"
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",
