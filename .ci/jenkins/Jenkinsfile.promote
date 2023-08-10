@@ -125,7 +125,7 @@ pipeline {
                     if(githubscm.isReleaseExist(helper.getGitTag(), helper.getGitAuthorCredsID())) {
                         githubscm.deleteReleaseAndTag(helper.getGitTag(), helper.getGitAuthorCredsID())
                     }
-                    githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTag(helper.getGitTag()), helper.getGitAuthorCredsID())
+                    githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTagFromVersion(helper.getGitTag(), 'v', '', ['/']), helper.getGitAuthorCredsID())
                     githubscm.updateReleaseBody(helper.getGitTag(), helper.getGitAuthorCredsID())
 
                     withCredentials([usernamePassword(credentialsId: helper.getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
