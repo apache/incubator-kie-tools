@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
-import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
