@@ -27,8 +27,8 @@ func TestManipulatePom(t *testing.T) {
 	//setup
 	metadata.KogitoVersion = "1.42.0.Final"
 
-	inputPath := "testdata/pom1-input.xml"
-	expectedPath := "testdata/pom1-expected.xml"
+	inputPath := "testdata/pom1-input.xml_no_auto_formatting"
+	expectedPath := "testdata/pom1-expected.xml_no_auto_formatting"
 
 	tempFile := "testdata/temp.xml"
 	err := copyFile(inputPath, tempFile)
