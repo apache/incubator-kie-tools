@@ -12,18 +12,24 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "types": "index.d.ts",
-  "main": "index.js",
+  "bin": {
+    "storybook-base": "bin.js"
+  },
+  "main": "bin.js",
   "files": [
-    "index.js"
+    "dist",
+    "src"
   ],
   "scripts": {
-    "install": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
+    "install": "rimraf dist && tsc"
   },
   "devDependencies": {
+    "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@storybook/react-webpack5": "^7.1.1",
     "rimraf": "^3.0.2",
-    "storybook": "^7.1.1"
+    "storybook": "^7.1.1",
+    "typescript": "^4.6.2"
   }
 }

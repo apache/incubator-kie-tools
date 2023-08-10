@@ -18,15 +18,15 @@ const { varsWithName, composeEnv, str2bool, getOrDefault } = require("@kie-tools
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    PLAYWRIGHT_BASE__installDeps: {
+    STORYBOOK_BASE__live: {
       default: "false",
-      description: "Should install Playwright dependencies",
+      description: "Start storybook with live reload capabilities",
     },
   }),
   get env() {
     return {
-      playwrightBase: {
-        installDeps: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__installDeps)),
+      storybookBase: {
+        live: str2bool(getOrDefault(this.vars.STORYBOOK_BASE__live)),
       },
     };
   },

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useArgs } from "@storybook/preview-api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
@@ -59,6 +59,12 @@ const initialContextExpression: ContextExpressionDefinition = {
   name: "Expression Name",
   dataType: DmnBuiltInDataType.Undefined,
   logicType: ExpressionDefinitionLogicType.Context,
+  entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+  result: {
+    logicType: ExpressionDefinitionLogicType.Undefined,
+    dataType: DmnBuiltInDataType.Undefined,
+    id: generateUuid(),
+  },
   contextEntries: [
     {
       entryInfo: {
@@ -74,12 +80,6 @@ const initialContextExpression: ContextExpressionDefinition = {
       },
     },
   ],
-  result: {
-    id: generateUuid(),
-    dataType: DmnBuiltInDataType.Any,
-    logicType: ExpressionDefinitionLogicType.Undefined,
-  },
-  entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
 };
 
 const initialDecisionTableExpression: DecisionTableExpressionDefinition = {
@@ -223,8 +223,30 @@ function getDefaultExpressionDefinitionByLogicType(
     return functionExpression;
   } else if (logicType === ExpressionDefinitionLogicType.Context) {
     const contextExpression: ContextExpressionDefinition = {
-      ...initialContextExpression,
       ...prev,
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Context,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+      result: {
+        logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
+        id: generateUuid(),
+      },
+      contextEntries: [
+        {
+          entryInfo: {
+            id: generateUuid(),
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
+          },
+          entryExpression: {
+            id: generateUuid(),
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
+            logicType: ExpressionDefinitionLogicType.Undefined,
+          },
+        },
+      ],
     };
     return contextExpression;
   } else if (logicType === ExpressionDefinitionLogicType.List) {
@@ -319,24 +341,28 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-export function BoxedExpressionEditorWrapper(args: BoxedExpressionEditorProps) {
+export function BoxedExpressionEditorWrapper() {
   const emptyRef = React.useRef<HTMLElement>(null);
+  const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
   const [expression, setExpression] = useState<ExpressionDefinition>(args.expressionDefinition);
-  const [_, updateArgs] = useArgs();
 
-  const setExpressionCallback = useCallback(
+  useEffect(() => {
+    setExpression(args.expressionDefinition);
+  }, [args]);
+
+  const setExpressionCallback: React.Dispatch<React.SetStateAction<ExpressionDefinition>> = useCallback(
     (newExpression) => {
       setExpression((prev) => {
         if (typeof newExpression === "function") {
           const expression = newExpression(prev);
-          updateArgs(expression);
+          updateArgs({ ...args, expressionDefinition: expression });
           return expression;
         }
-        updateArgs(newExpression);
+        updateArgs({ ...args, expressionDefinition: expression });
         return newExpression;
       });
     },
-    [updateArgs]
+    [args, expression, updateArgs]
   );
 
   return (
@@ -355,7 +381,7 @@ export function BoxedExpressionEditorWrapper(args: BoxedExpressionEditorProps) {
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const EmptyExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   args: {
     decisionNodeId: generateUuid(),
     expressionDefinition: emptyExpression,
@@ -371,7 +397,7 @@ const filterArgs = {
 };
 
 export const LiteralExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,
@@ -381,7 +407,7 @@ export const LiteralExpression: Story = {
 };
 
 export const ContextExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,
@@ -391,7 +417,7 @@ export const ContextExpression: Story = {
 };
 
 export const DecisionTableExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,
@@ -401,7 +427,7 @@ export const DecisionTableExpression: Story = {
 };
 
 export const RelationExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,
@@ -411,7 +437,7 @@ export const RelationExpression: Story = {
 };
 
 export const FunctionExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,
@@ -421,7 +447,7 @@ export const FunctionExpression: Story = {
 };
 
 export const InvocationExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,
@@ -431,7 +457,7 @@ export const InvocationExpression: Story = {
 };
 
 export const ListExpression: Story = {
-  render: (args) => BoxedExpressionEditorWrapper(args),
+  render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
     ...EmptyExpression.args,

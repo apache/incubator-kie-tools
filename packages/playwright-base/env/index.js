@@ -20,7 +20,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     PLAYWRIGHT_BASE__installDeps: {
       default: "false",
-      description: "Should install Playwright dependencies",
+      description: "Install Playwright dependencies",
     },
   }),
   get env() {

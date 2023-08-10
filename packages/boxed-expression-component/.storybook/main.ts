@@ -1,49 +1,13 @@
-import type { StorybookConfig } from "@storybook/react-webpack5";
-import { env } from "../env";
-const buildEnv: any = env;
+import baseConfig from "@kie-tools/storybook-base/storybookMain";
 
-const importsNotUsedAsValues = buildEnv.live ? { importsNotUsedAsValues: "preserve" } : {};
-const liveRoloadLoader = buildEnv.live
-  ? [
-      {
-        loader: require.resolve("@kie-tools-core/webpack-base/multi-package-live-reload-loader.js"),
-      },
-    ]
-  : [];
-
-const config: StorybookConfig = {
-  stories: ["../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+const config = {
+  ...baseConfig,
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-onboarding",
     "@storybook/addon-interactions",
   ],
-  framework: {
-    name: "@storybook/react-webpack5",
-    options: {},
-  },
-  docs: {
-    autodocs: "tag",
-  },
-  webpackFinal: async (config) => {
-    config.module?.rules?.push({
-      test: /\.tsx?$/,
-      use: [
-        {
-          loader: require.resolve("ts-loader"),
-          options: {
-            transpileOnly: buildEnv.transpileOnly,
-            compilerOptions: {
-              ...importsNotUsedAsValues,
-              sourceMap: buildEnv.sourceMap,
-            },
-          },
-        },
-        ...liveRoloadLoader,
-      ],
-    });
-    return config;
-  },
 };
+
 export default config;
