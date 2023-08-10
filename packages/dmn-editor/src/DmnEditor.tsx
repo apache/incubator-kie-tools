@@ -25,9 +25,10 @@ import {
   useDmnEditorStore,
 } from "./store/Store";
 
-import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+
+import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
 export type DmnEditorRef = {
   getContent(): string;

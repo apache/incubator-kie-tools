@@ -1,6 +1,6 @@
 export const SPEC = {
-  expressionLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/"` },
-  typeLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/"` },
+  expressionLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/"` }, // FIXME: Tiago --> This is not quite right, as DMN now has multiple versions of FEEL
+  typeLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/"` }, // FIXME: Tiago --> This is not quite right, as DMN now has multiple versions of FEEL
   BOXED: {
     DECISION_TABLE: {
       PreferredOrientation: { default: "Rule-as-Row" },
