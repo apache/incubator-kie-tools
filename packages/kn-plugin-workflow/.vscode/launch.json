@@ -176,7 +176,7 @@
       "id": "command-args-quarkus-extensions",
       "type": "promptString",
       "default": "",
-      "description": "On Quarkus projects, setup project custom Maven extensions, separated with a comma."
+      "description": "On Quarkus projects, setup project custom Maven extensions, separated with a comma. Usage --extension=${extensions}."
     },
     {
       "id": "command-args-quarkus-pgi",
