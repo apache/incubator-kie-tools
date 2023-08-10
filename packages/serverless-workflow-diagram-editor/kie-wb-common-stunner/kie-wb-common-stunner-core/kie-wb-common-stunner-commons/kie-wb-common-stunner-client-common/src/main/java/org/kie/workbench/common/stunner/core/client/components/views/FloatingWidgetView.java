@@ -26,6 +26,8 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;
 import org.uberfire.mvp.Command;
 
 import static elemental2.dom.CSSProperties.ZIndexUnionType;
@@ -47,6 +49,10 @@ public class FloatingWidgetView implements FloatingView<IsElement> {
     private boolean visible;
     private Command hideCallback;
     private final HTMLDivElement panel = (HTMLDivElement) DomGlobal.document.createElement("div");
+    private final NativeHandlerRegistration handlerRegistrationManager = new NativeHandlerRegistration();
+
+    private static final String MOUSE_OVER = "mouseover";
+    private static final String MOUSE_OUT = "mouseout";
 
     public FloatingWidgetView() {
         this.attached = false;
@@ -209,7 +215,15 @@ public class FloatingWidgetView implements FloatingView<IsElement> {
     }
 
     private void registerHoverEventHandlers() {
-        panel.addEventListener("mouseover", event -> stopTimeout());
-        panel.addEventListener("mouseout", event -> startTimeout());
+        final NativeHandler mouseOverHandler = new NativeHandler(MOUSE_OVER,
+                                                                 mouseOverEvent -> stopTimeout(),
+                                                                 panel).add();
+
+        final NativeHandler mouseOutHandler = new NativeHandler(MOUSE_OUT,
+                                                                mouseOutEvent -> startTimeout(),
+                                                                panel).add();
+
+        handlerRegistrationManager.register(mouseOverHandler);
+        handlerRegistrationManager.register(mouseOutHandler);
     }
 }

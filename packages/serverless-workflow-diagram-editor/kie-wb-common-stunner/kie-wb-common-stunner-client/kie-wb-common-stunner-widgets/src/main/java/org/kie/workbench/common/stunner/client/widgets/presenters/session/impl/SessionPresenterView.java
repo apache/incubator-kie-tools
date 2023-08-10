@@ -48,6 +48,7 @@ public class SessionPresenterView
     private HTMLDivElement sessionContainer;
 
     private ScrollType scrollType = ScrollType.AUTO;
+
     void onCanvasFocusedSelectionEvent(final @Observes CanvasFocusedShapeEvent event) {
         getElement().scrollLeft = event.getX();
         getElement().scrollLeft = event.getY();
@@ -101,5 +102,4 @@ public class SessionPresenterView
         removeAllChildren(getElement());
         removeFromParent(getElement());
     }
-
 }

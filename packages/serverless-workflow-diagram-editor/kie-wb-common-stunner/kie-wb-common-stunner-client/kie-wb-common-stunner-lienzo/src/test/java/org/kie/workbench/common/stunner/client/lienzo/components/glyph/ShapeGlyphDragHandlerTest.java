@@ -19,23 +19,19 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Callback;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -45,6 +41,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -77,16 +74,16 @@ public class ShapeGlyphDragHandlerTest {
     private CSSStyleDeclaration proxyStyle;
 
     @Mock
-    private HandlerRegistration moveHandlerReg;
+    private NativeHandler moveHandlerReg;
 
     @Mock
-    private HandlerRegistration upHandlerReg;
+    private NativeHandler upHandlerReg;
 
     @Mock
-    private HandlerRegistration keyHandlerReg;
+    private NativeHandler keyHandlerReg;
 
     private ShapeGlyphDragHandler tested;
-    private GWTHandlerRegistration handlerRegistrations;
+    private NativeHandlerRegistration handlerRegistrations;
     private LienzoPanelWidget proxyPanel;
     private Group glyphGroup;
 
@@ -95,23 +92,18 @@ public class ShapeGlyphDragHandlerTest {
         proxyPanel = spy(LienzoPanelWidget.create(DRAG_PROXY_WIDTH, DRAG_PROXY_HEIGHT));
         when(proxyPanel.getElement()).thenReturn(proxyElement);
         proxyElement.style = proxyStyle;
-        handlerRegistrations = new GWTHandlerRegistration();
+        handlerRegistrations = new NativeHandlerRegistration();
         glyphGroup = new Group();
         when(glyphLienzoGlyphRenderer.render(eq(glyph), anyDouble(), anyDouble())).thenReturn(glyphGroup);
         when(glyphDragItem.getHeight()).thenReturn(DRAG_PROXY_WIDTH);
         when(glyphDragItem.getWidth()).thenReturn(DRAG_PROXY_HEIGHT);
         when(glyphDragItem.getShape()).thenReturn(glyph);
-        when(rootPanel.addDomHandler(any(MouseMoveHandler.class), eq(MouseMoveEvent.getType())))
-                .thenReturn(moveHandlerReg);
-        when(rootPanel.addDomHandler(any(MouseUpHandler.class), eq(MouseUpEvent.getType())))
-                .thenReturn(upHandlerReg);
-        when(rootPanel.addDomHandler(any(KeyDownHandler.class), eq(KeyDownEvent.getType())))
-                .thenReturn(keyHandlerReg);
-        tested = new ShapeGlyphDragHandler(glyphLienzoGlyphRenderer,
-                                           handlerRegistrations,
-                                           () -> rootPanel,
-                                           item -> proxyPanel,
-                                           (task, timeout) -> task.execute());
+        tested = spy(new ShapeGlyphDragHandler(glyphLienzoGlyphRenderer,
+                                               handlerRegistrations,
+                                               () -> rootPanel,
+                                               item -> proxyPanel,
+                                               (task, timeout) -> task.execute()));
+        doNothing().when(tested).attachHandlers(any(Callback.class));
     }
 
     @Test
@@ -132,8 +124,10 @@ public class ShapeGlyphDragHandlerTest {
 
     @Test
     @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
-    public void testProxyhHandlers() {
+    public void testProxyHandlers() {
         Callback callback = mock(Callback.class);
+
+        attachHandlers();
         tested.show(glyphDragItem, 11, 33, callback);
 
         // Check keyboard event handling.
@@ -141,11 +135,14 @@ public class ShapeGlyphDragHandlerTest {
 
         // Check mouse move event handling.
         assertTrue(handlerRegistrations.isRegistered(moveHandlerReg));
-        MouseMoveEvent moveEvent = mock(MouseMoveEvent.class);
-        when(moveEvent.getX()).thenReturn(7);
-        when(moveEvent.getY()).thenReturn(9);
-        when(moveEvent.getClientX()).thenReturn(3);
-        when(moveEvent.getClientY()).thenReturn(5);
+
+        MouseEvent moveEvent = mock(MouseEvent.class);
+        moveEvent.type = ShapeGlyphDragHandler.MOUSE_MOVE;
+        moveEvent.x = 7;
+        moveEvent.y = 9;
+        moveEvent.clientX = 3;
+        moveEvent.clientY = 5;
+
         tested.onMouseMove(moveEvent,
                            callback);
         assertEquals((7 + "px"), proxyStyle.left);
@@ -154,11 +151,12 @@ public class ShapeGlyphDragHandlerTest {
 
         // Check mouse up event handling.
         assertTrue(handlerRegistrations.isRegistered(upHandlerReg));
-        MouseUpEvent upEvent = mock(MouseUpEvent.class);
-        when(upEvent.getX()).thenReturn(7);
-        when(upEvent.getY()).thenReturn(9);
-        when(upEvent.getClientX()).thenReturn(3);
-        when(upEvent.getClientY()).thenReturn(5);
+        MouseEvent upEvent = mock(MouseEvent.class);
+        upEvent.type = ShapeGlyphDragHandler.MOUSE_UP;
+        upEvent.x = 7;
+        upEvent.y = 9;
+        upEvent.clientX = 3;
+        upEvent.clientY = 5;
         tested.onMouseUp(upEvent,
                          callback);
         verify(moveHandlerReg, times(1)).removeHandler();
@@ -172,11 +170,13 @@ public class ShapeGlyphDragHandlerTest {
     @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testKeyboardHandling() {
         Callback callback = mock(Callback.class);
+        attachHandlers();
         tested.show(glyphDragItem, 11, 33, callback);
         assertTrue(handlerRegistrations.isRegistered(keyHandlerReg));
         assertTrue(handlerRegistrations.isRegistered(moveHandlerReg));
         assertTrue(handlerRegistrations.isRegistered(upHandlerReg));
-        KeyDownEvent event = mock(KeyDownEvent.class);
+        Event event = mock(Event.class);
+        event.type = ShapeGlyphDragHandler.KEY_DOWN;
         tested.onKeyDown(event);
         verify(moveHandlerReg, times(1)).removeHandler();
         verify(upHandlerReg, times(1)).removeHandler();
@@ -188,6 +188,7 @@ public class ShapeGlyphDragHandlerTest {
     @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testClear() throws Exception {
         Callback callback = mock(Callback.class);
+        attachHandlers();
         tested.show(glyphDragItem, 11, 33, callback);
         tested.clear();
         verify(proxyPanel, never()).destroy();
@@ -201,6 +202,7 @@ public class ShapeGlyphDragHandlerTest {
     @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testDestroy() throws Exception {
         Callback callback = mock(Callback.class);
+        attachHandlers();
         tested.show(glyphDragItem, 11, 33, callback);
         tested.destroy();
         verify(proxyPanel, times(1)).destroy();
@@ -208,5 +210,14 @@ public class ShapeGlyphDragHandlerTest {
         verify(upHandlerReg, times(1)).removeHandler();
         //verify(rootPanel, times(1)).remove(eq(proxyPanel)); //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
         assertTrue(handlerRegistrations.isEmpty());
+    }
+
+    private void attachHandlers() {
+        tested.mouseMoveHandler = moveHandlerReg;
+        tested.mouseUpHandler = upHandlerReg;
+        tested.keyDownHandler = keyHandlerReg;
+        handlerRegistrations.register(tested.mouseMoveHandler);
+        handlerRegistrations.register(tested.mouseUpHandler);
+        handlerRegistrations.register(tested.keyDownHandler);
     }
 }

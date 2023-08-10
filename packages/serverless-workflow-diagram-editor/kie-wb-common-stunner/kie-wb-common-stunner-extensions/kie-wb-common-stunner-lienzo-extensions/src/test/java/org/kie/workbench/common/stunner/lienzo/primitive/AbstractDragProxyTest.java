@@ -19,11 +19,9 @@ package org.kie.workbench.common.stunner.lienzo.primitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.ait.lienzo.tools.client.event.EventType;
 import com.google.gwt.user.client.Timer;
+import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,16 +44,13 @@ public class AbstractDragProxyTest {
     private Layer layer;
 
     @Mock
-    private MouseMoveEvent mouseMoveEvent;
-
-    @Mock
-    private MouseUpEvent mouseUpEvent;
-
-    @Mock
     private Timer timer;
 
     @Mock
     private Transform transform;
+
+    @Mock
+    private MouseEvent mouseEvent;
 
     private Object shapeProxy;
 
@@ -76,15 +71,13 @@ public class AbstractDragProxyTest {
     }
 
     @Test
-    public void testGetMouseMoveHandlerWhenProxyIsNotAttached() {
-
+    public void testOnMouseMoveWhenProxyIsNotAttached() {
         final int initialX = 100;
         final int initialY = 100;
-        final MouseMoveHandler handler = abstractDragProxy.getMouseMoveHandler(initialX, initialY, timeout, callback);
-
+        mouseEvent.type = EventType.MOUSE_MOVE.getType();
         doReturn(false).when(abstractDragProxy).isAttached();
 
-        handler.onMouseMove(mouseMoveEvent);
+        abstractDragProxy.onMouseMove(mouseEvent, initialX, initialY, timeout, callback);
 
         verify(abstractDragProxy, never()).setLocation(any(), anyInt(), anyInt());
         verify(abstractDragProxy, never()).scheduleMove(any(), anyInt(), anyInt(), anyInt());
@@ -92,19 +85,17 @@ public class AbstractDragProxyTest {
     }
 
     @Test
-    public void testGetMouseMoveHandlerWhenProxyWhenXDiffAndYDiffAreNull() {
-
+    public void testOnMouseMoveWhenProxyWhenXDiffAndYDiffAreNull() {
         final int initialX = 100;
         final int initialY = 100;
         final int expectedX = 100;
         final int expectedY = 100;
-        final MouseMoveHandler handler = abstractDragProxy.getMouseMoveHandler(initialX, initialY, timeout, callback);
-
-        when(mouseMoveEvent.getX()).thenReturn(75);
-        when(mouseMoveEvent.getY()).thenReturn(75);
+        mouseEvent.type = EventType.MOUSE_MOVE.getType();
+        mouseEvent.x = 75;
+        mouseEvent.y = 75;
         doReturn(true).when(abstractDragProxy).isAttached();
 
-        handler.onMouseMove(mouseMoveEvent);
+        abstractDragProxy.onMouseMove(mouseEvent, initialX, initialY, timeout, callback);
 
         assertEquals(25, abstractDragProxy.xDiff().intValue());
         assertEquals(25, abstractDragProxy.yDiff().intValue());
@@ -115,23 +106,22 @@ public class AbstractDragProxyTest {
     }
 
     @Test
-    public void testGetMouseMoveHandler() {
-
+    public void testOnMouseMove() {
         final int initialX = 100;
         final int initialY = 100;
         final int expectedX = 175;
         final int expectedY = 175;
-        final MouseMoveHandler handler = abstractDragProxy.getMouseMoveHandler(initialX, initialY, timeout, callback);
+        mouseEvent.type = EventType.MOUSE_MOVE.getType();
+        mouseEvent.x = 150;
+        mouseEvent.y = 150;
 
-        when(mouseMoveEvent.getX()).thenReturn(150);
-        when(mouseMoveEvent.getY()).thenReturn(150);
         doReturn(0).when(abstractDragProxy).xDiff();
         doReturn(0).when(abstractDragProxy).yDiff();
         doReturn(25).when(abstractDragProxy).getXDiff();
         doReturn(25).when(abstractDragProxy).getYDiff();
         doReturn(true).when(abstractDragProxy).isAttached();
 
-        handler.onMouseMove(mouseMoveEvent);
+        abstractDragProxy.onMouseMove(mouseEvent, initialX, initialY, timeout, callback);
 
         verify(abstractDragProxy).setLocation(shapeProxy, expectedX, expectedY);
         verify(abstractDragProxy).scheduleMove(callback, expectedX, expectedY, timeout);
@@ -139,33 +129,29 @@ public class AbstractDragProxyTest {
     }
 
     @Test
-    public void testGetMouseUpHandlerWhenProxyIsNotAttached() {
-
-        final MouseUpHandler handler = abstractDragProxy.getMouseUpHandler(callback);
-
+    public void testOnMouseUpWhenProxyIsNotAttached() {
+        mouseEvent.type = EventType.MOUSE_UP.getType();
         doReturn(false).when(abstractDragProxy).isAttached();
 
-        handler.onMouseUp(mouseUpEvent);
+        abstractDragProxy.onMouseUp(mouseEvent, callback);
 
         verify(abstractDragProxy, never()).clear();
         verify(callback, never()).onComplete(anyInt(), anyInt());
     }
 
     @Test
-    public void testGetMouseUpHandler() {
-
-        final MouseUpHandler handler = abstractDragProxy.getMouseUpHandler(callback);
+    public void testOnMouseUp() {
         final int expectedX = 175;
         final int expectedY = 175;
-
-        when(mouseUpEvent.getX()).thenReturn(150);
-        when(mouseUpEvent.getY()).thenReturn(150);
+        mouseEvent.type = EventType.MOUSE_UP.getType();
+        mouseEvent.x = 150;
+        mouseEvent.y = 150;
         doReturn(25).when(abstractDragProxy).getXDiff();
         doReturn(25).when(abstractDragProxy).getYDiff();
         doNothing().when(abstractDragProxy).clear();
         doReturn(true).when(abstractDragProxy).isAttached();
 
-        handler.onMouseUp(mouseUpEvent);
+        abstractDragProxy.onMouseUp(mouseEvent, callback);
 
         verify(abstractDragProxy).clear();
         verify(callback).onComplete(expectedX, expectedY);
