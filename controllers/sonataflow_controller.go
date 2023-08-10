@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"context"
+	"fmt"
 
 	"k8s.io/klog/v2"
 
@@ -125,6 +126,40 @@ func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFl
 	return requests
 }
 
+func buildEnqueueRequestsFromMapFunc(c client.Client, b *operatorapi.SonataFlowBuild) []reconcile.Request {
+	var requests []reconcile.Request
+
+	if b.Status.BuildPhase == operatorapi.BuildPhaseSucceeded {
+
+		// Fetch the Workflow instance
+		workflow := &operatorapi.SonataFlow{}
+		namespacedName := types.NamespacedName{
+			Namespace: workflow.Namespace,
+			Name:      workflow.Name,
+		}
+		err := c.Get(context.Background(), namespacedName, workflow)
+		if err != nil {
+			if errors.IsNotFound(err) {
+				return requests
+			}
+			klog.V(log.I).ErrorS(err, "Failed to get SonataFlow")
+			return requests
+		}
+
+		if workflow.Status.IsBuildRunningOrUnknown() {
+			klog.V(log.I).InfoS("Build %s ready, wake-up workflow: %s", b.Name, workflow.Name)
+			requests = append(requests, reconcile.Request{
+				NamespacedName: types.NamespacedName{
+					Namespace: workflow.Namespace,
+					Name:      workflow.Name,
+				},
+			})
+		}
+
+	}
+	return requests
+}
+
 // SetupWithManager sets up the controller with the Manager.
 func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
@@ -140,6 +175,14 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 				return []reconcile.Request{}
 			}
 			return platformEnqueueRequestsFromMapFunc(mgr.GetClient(), plat)
+		})).
+		Watches(&operatorapi.SonataFlowBuild{}, handler.EnqueueRequestsFromMapFunc(func(c context.Context, a client.Object) []reconcile.Request {
+			build, ok := a.(*operatorapi.SonataFlowBuild)
+			if !ok {
+				klog.V(log.I).ErrorS(fmt.Errorf("type assertion failed: %v", a), "Failed to retrieve workflow list")
+				return []reconcile.Request{}
+			}
+			return buildEnqueueRequestsFromMapFunc(mgr.GetClient(), build)
 		})).
 		Complete(r)
 }

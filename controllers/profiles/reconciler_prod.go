@@ -110,7 +110,7 @@ func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operat
 	_, err := platform.GetActivePlatform(ctx, h.client, workflow.Namespace)
 	if err != nil {
 		if errors.IsNotFound(err) {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForPlatformReason,
+			workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForPlatformReason,
 				"No active Platform for namespace %s so the workflow cannot be built.", workflow.Namespace)
 			_, err = h.performStatusUpdate(ctx, workflow)
 			return ctrl.Result{RequeueAfter: requeueWhileWaitForPlatform}, nil, err
@@ -123,6 +123,11 @@ func (h *newBuilderReconciliationState) Do(ctx context.Context, workflow *operat
 	buildManager := builder.NewSonataFlowBuildManager(ctx, h.client)
 	build, err := buildManager.GetOrCreateBuild(workflow)
 	if err != nil {
+		//If we are not able to retrieve or create a Build CR for this Workflow we will mark
+		klog.V(log.E).ErrorS(err, "Failed to retrieve or create a Build CR")
+		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForBuildReason,
+			"Failed to retrieve or create a Build CR", workflow.Namespace)
+		_, err = h.performStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
 	}
 
@@ -184,7 +189,7 @@ type deployWorkflowReconciliationState struct {
 }
 
 func (h *deployWorkflowReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
-	return workflow.Status.GetCondition(api.BuiltConditionType).IsTrue()
+	return workflow.Status.GetCondition(api.BuiltConditionType).IsTrue() && workflow.Status.GetCondition(api.RunningConditionType).IsFalse()
 }
 
 func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
@@ -223,6 +228,8 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 	// the dev one is ok for now
 	propsCM, _, err := h.ensurers.propertiesConfigMap.ensure(ctx, workflow, ensureProdWorkflowPropertiesConfigMapMutator(workflow))
 	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the properties config map")
+		_, err = h.performStatusUpdate(ctx, workflow)
 		return ctrl.Result{}, nil, err
 	}
 
@@ -232,6 +239,8 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 	requeue := false
 	if err := h.client.Get(ctx, client.ObjectKeyFromObject(workflow), existingDeployment); err != nil {
 		if !errors.IsNotFound(err) {
+			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to verify if deployment is available due to ", err)
+			_, err = h.performStatusUpdate(ctx, workflow)
 			return reconcile.Result{Requeue: false}, nil, err
 		}
 		deployment, _, err :=
@@ -241,6 +250,8 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 				h.getDeploymentMutateVisitors(workflow, image, propsCM.(*v1.ConfigMap))...,
 			)
 		if err != nil {
+			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "Unable to perform the deploy due to ", err)
+			_, err = h.performStatusUpdate(ctx, workflow)
 			return reconcile.Result{}, nil, err
 		}
 		existingDeployment, _ = deployment.(*appsv1.Deployment)
@@ -255,6 +266,8 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 		}
 		service, _, err := h.ensurers.service.ensure(ctx, workflow, defaultServiceMutateVisitor(workflow))
 		if err != nil {
+			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to make the service available due to ", err)
+			_, err = h.performStatusUpdate(ctx, workflow)
 			return reconcile.Result{}, nil, err
 		}
 		existingService, _ = service.(*v1.Service)
