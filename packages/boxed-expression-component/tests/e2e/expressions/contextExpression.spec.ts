@@ -31,7 +31,7 @@ test.describe("Context Expression", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.getByRole("button", { name: "Options menu" }).press("Escape");
 
-    await expect(page.getByText("Expression Name (<Undefined>)")).toBeAttached();
+    await expect(page.getByText("Expression Name (Context)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
   });
 });
