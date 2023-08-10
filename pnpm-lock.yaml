@@ -4482,9 +4482,6 @@ importers:
       "@kie-tools/yaml-language-server":
         specifier: workspace:*
         version: link:../yaml-language-server
-      jsonata:
-        specifier: ^1.8.3
-        version: 1.8.3
       jsonc-parser:
         specifier: ^3.0.0
         version: 3.2.0
