@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import * as ReactDOM from "react-dom";
 import "./index.css";
 import {
   BeeGwtService,
@@ -24,19 +23,19 @@ import {
   ExpressionDefinitionLogicType,
   ExpressionDefinition,
   generateUuid,
-} from "../src/api";
-import { BoxedExpressionEditor } from "../src/expressions";
+} from "../../src/api";
+import { BoxedExpressionEditor } from "../../src/expressions";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
-import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";
+import type { Meta, StoryObj } from "@storybook/react";
 
 /**
  * Constants copied from tests to fix debugger
  */
-export const dataTypes = [
+const dataTypes = [
   { typeRef: "Undefined", name: "<Undefined>", isCustom: false },
   { typeRef: "Any", name: "Any", isCustom: false },
   { typeRef: "Boolean", name: "boolean", isCustom: false },
@@ -51,7 +50,7 @@ export const dataTypes = [
   { typeRef: "tPerson", name: "tPerson", isCustom: true },
 ];
 
-export const pmmlParams = [
+const pmmlParams = [
   {
     document: "document",
     modelsFromDocument: [
@@ -105,7 +104,7 @@ const beeGwtService: BeeGwtService = {
   selectObject(): void {},
 };
 
-export const App: React.FunctionComponent = () => {
+const App: React.FunctionComponent = () => {
   const [version, setVersion] = useState(-1);
   const [expression, setExpression] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
   const [expressionString, setExpressionString] = useState(JSON.stringify(INITIAL_EXPRESSION));
@@ -136,7 +135,7 @@ export const App: React.FunctionComponent = () => {
 
   const emptyRef = React.useRef<HTMLElement>(null);
   return (
-    <div className="showcase">
+    <div className="dev-webapp">
       <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
         <BoxedExpressionEditor
@@ -192,4 +191,11 @@ export const App: React.FunctionComponent = () => {
   );
 };
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const meta: Meta<typeof App> = {
+  component: App,
+};
+
+export default meta;
+type Story = StoryObj<typeof App>;
+
+export const WebApp: Story = {};
