@@ -61,7 +61,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       });
 
       // TO DO: Remove this workaround!
-      if (info.targetUrl.includes("testing")) {
+      if (req.headers[INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true") {
         outHeaders["accept-encoding"] = "identity";
       }
 
