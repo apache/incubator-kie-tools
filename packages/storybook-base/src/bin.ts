@@ -19,7 +19,7 @@ storybook.stdout.on("data", (data) => {
 });
 
 storybook.stderr.setEncoding("utf8");
-storybook.stderr.on("data", (data: string) => {
+storybook.stderr.on("data", (data) => {
   if (data.includes("[webpack.Progress]")) {
     return;
   }
