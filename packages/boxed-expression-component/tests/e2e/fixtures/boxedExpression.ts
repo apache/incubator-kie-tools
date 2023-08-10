@@ -1,11 +1,27 @@
 import { Locator, Page, test as base } from "@playwright/test";
 
 type BoxedExpressionFixtures = {
-  expressionSelector: ExpressionSelector;
+  boxedExpressionEditor: BoxedExpressionEditor;
+  standaloneExpression: StandaloneExpression;
   resizer: Resizer;
 };
 
-class ExpressionSelector {
+class StandaloneExpression {
+  constructor(public page: Page, public baseURL?: string) {
+    this.page = page;
+    this.baseURL = baseURL;
+  }
+
+  public async openLiteralExpression() {
+    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--literal-expression` ?? "");
+  }
+
+  public async openContextExpression() {
+    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--context-expression` ?? "");
+  }
+}
+
+class BoxedExpressionEditor {
   constructor(public page: Page) {
     this.page = page;
   }
@@ -40,12 +56,12 @@ class Resizer {
 }
 
 export const test = base.extend<BoxedExpressionFixtures>({
-  page: async ({ baseURL, page }, use) => {
-    await page.goto(baseURL ?? "");
-    await use(page);
+  boxedExpressionEditor: async ({ page, baseURL }, use) => {
+    await page.goto(`${baseURL}/iframe.html?id=expressions-boxedexpressioneditor--empty-expression` ?? "");
+    await use(new BoxedExpressionEditor(page));
   },
-  expressionSelector: async ({ page }, use) => {
-    await use(new ExpressionSelector(page));
+  standaloneExpression: async ({ page, baseURL }, use) => {
+    await use(new StandaloneExpression(page, baseURL));
   },
   resizer: async ({ page }, use) => {
     await use(new Resizer(page));

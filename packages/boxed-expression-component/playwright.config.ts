@@ -8,12 +8,12 @@ const buildEnv: any = env;
 export default defineConfig(
   merge(playwirghtBaseConfig, {
     use: {
-      baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
+      baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
     },
     /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
     webServer: {
-      command: "pnpm start",
-      url: `http://localhost:${buildEnv.boxedExpressionComponent.dev.port}`,
+      command: "pnpm storybook",
+      url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
       reuseExistingServer: !process.env.CI || true,
     },
   })
