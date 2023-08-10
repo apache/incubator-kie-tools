@@ -22,7 +22,7 @@ class StandaloneExpression {
 
   public async openDecisionTableExpression() {
     await this.page.goto(
-      `${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--decisiontable-expression` ?? ""
+      `${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--decision-table-expression` ?? ""
     );
   }
 

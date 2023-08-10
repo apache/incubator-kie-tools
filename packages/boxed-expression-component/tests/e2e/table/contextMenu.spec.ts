@@ -24,4 +24,31 @@ test.describe("Table context menu", () => {
   test("Open table context menu and insert multiples columns", async ({ standaloneExpression, page }) => {
     await standaloneExpression.openRelationExpression();
   });
+
+  test("Open table context menu and delete row", async ({ standaloneExpression, page }) => {
+    await standaloneExpression.openRelationExpression();
+  });
+
+  test("Open table context menu and duplicate row", async ({ standaloneExpression, page }) => {
+    await standaloneExpression.openRelationExpression();
+  });
+
+  // chromium / chrome only;
+  test("Open table context menu and copy row", async ({ standaloneExpression, page }) => {
+    await standaloneExpression.openRelationExpression();
+  });
+
+  // chromium / chrome only;
+  test("Open table context menu and cut row", async ({ standaloneExpression, page }) => {
+    await standaloneExpression.openRelationExpression();
+  });
+
+  // chromium / chrome only;
+  test("Open table context menu and paste row", async ({ standaloneExpression, page }) => {
+    await standaloneExpression.openRelationExpression();
+  });
+
+  test("Open table context menu and reset row", async ({ standaloneExpression, page }) => {
+    await standaloneExpression.openRelationExpression();
+  });
 });
