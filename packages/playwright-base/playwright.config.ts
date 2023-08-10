@@ -1,7 +1,4 @@
 import { devices, defineConfig } from "@playwright/test";
-import { env } from "./env";
-
-const buildEnv: any = env;
 
 export default defineConfig({
   testDir: "./e2e",

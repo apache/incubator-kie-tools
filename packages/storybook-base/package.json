@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/playwright-base",
+  "name": "@kie-tools/storybook-base",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -22,7 +22,8 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "@playwright/test": "^1.35.1",
-    "rimraf": "^3.0.2"
+    "@storybook/react-webpack5": "^7.1.1",
+    "rimraf": "^3.0.2",
+    "storybook": "^7.1.1"
   }
 }
