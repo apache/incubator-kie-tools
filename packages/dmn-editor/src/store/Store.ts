@@ -82,7 +82,7 @@ const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/"
   expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
-  namespace="https://kiegroup.org/dmn/${generateUuid()}"
+  namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
 </definitions>`;
