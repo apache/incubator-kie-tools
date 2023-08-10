@@ -5,16 +5,18 @@ import { env } from "./env";
 
 const buildEnv: any = env;
 
-export default defineConfig(
-  merge(playwirghtBaseConfig, {
-    use: {
-      baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
-    },
-    /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
-    webServer: {
-      command: "pnpm storybook",
-      url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
-      reuseExistingServer: !process.env.CI || true,
-    },
-  })
-);
+const customConfig = defineConfig({
+  // storybook takes more than 30s to start;
+  timeout: 60000,
+  use: {
+    baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
+  },
+  /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
+  webServer: {
+    command: "pnpm storybook",
+    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
+    reuseExistingServer: !process.env.CI || true,
+  },
+});
+
+export default defineConfig(merge(playwirghtBaseConfig, customConfig));

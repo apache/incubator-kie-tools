@@ -19,10 +19,34 @@ class StandaloneExpression {
   public async openContextExpression() {
     await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--context-expression` ?? "");
   }
+
+  public async openDecisionTableExpression() {
+    await this.page.goto(
+      `${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--decisiontable-expression` ?? ""
+    );
+  }
+
+  public async openRelationExpression() {
+    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--relation-expression` ?? "");
+  }
+
+  public async openInvocationExpression() {
+    await this.page.goto(
+      `${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--invocation-expression` ?? ""
+    );
+  }
+
+  public async openListExpression() {
+    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--list-expression` ?? "");
+  }
+
+  public async openFunctionExpression() {
+    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--function-expression` ?? "");
+  }
 }
 
 class BoxedExpressionEditor {
-  constructor(public page: Page) {
+  constructor(public page: Page, public baseURL?: string) {
     this.page = page;
   }
 
@@ -40,8 +64,8 @@ class BoxedExpressionEditor {
     await from.getByRole("menuitem", { name: "Context" }).click();
   }
 
-  public getBee(page: Page = this.page) {
-    return page.locator(".boxed-expression-provider");
+  public async goto() {
+    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--empty-expression` ?? "");
   }
 }
 
@@ -57,8 +81,7 @@ class Resizer {
 
 export const test = base.extend<BoxedExpressionFixtures>({
   boxedExpressionEditor: async ({ page, baseURL }, use) => {
-    await page.goto(`${baseURL}/iframe.html?id=expressions-boxedexpressioneditor--empty-expression` ?? "");
-    await use(new BoxedExpressionEditor(page));
+    await use(new BoxedExpressionEditor(page, baseURL));
   },
   standaloneExpression: async ({ page, baseURL }, use) => {
     await use(new StandaloneExpression(page, baseURL));

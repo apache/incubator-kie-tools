@@ -2,8 +2,8 @@ import { test, expect } from "../fixtures/boxedExpression";
 
 test.describe("Resizing Expressions", () => {
   test.describe("Literal Expression", () => {
-    test.beforeEach(async ({ boxedExpressionEditor }) => {
-      await boxedExpressionEditor.literalExpression();
+    test.beforeEach(async ({ standaloneExpression }) => {
+      await standaloneExpression.openLiteralExpression();
     });
 
     test("resing the header and reset to default width", async ({ page, resizer }) => {
@@ -39,8 +39,8 @@ test.describe("Resizing Expressions", () => {
   });
 
   test.describe("Context Expression", () => {
-    test.beforeEach(async ({ boxedExpressionEditor }) => {
-      await boxedExpressionEditor.contextExpression();
+    test.beforeEach(async ({ standaloneExpression }) => {
+      await standaloneExpression.openContextExpression();
     });
 
     test.skip("resize header column and reset", async ({ page, resizer }) => {
@@ -56,17 +56,14 @@ test.describe("Resizing Expressions", () => {
       });
 
       const firstEntry = page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" });
-      const secondEntry = page.getByRole("cell", { name: "ContextEntry-2 (<Undefined>)" });
       const result = page.getByRole("cell", { name: "<result>" });
 
       expect(await header.boundingBox()).toHaveProperty("width", 382);
       expect(await firstEntry.boundingBox()).toHaveProperty("width", 120);
-      expect(await secondEntry.boundingBox()).toHaveProperty("width", 120);
       expect(await result.boundingBox()).toHaveProperty("width", 120);
       await resizer.reset(handle);
       expect(await header.boundingBox()).toHaveProperty("width", 332);
       expect(await firstEntry.boundingBox()).toHaveProperty("width", 120);
-      expect(await secondEntry.boundingBox()).toHaveProperty("width", 120);
       expect(await result.boundingBox()).toHaveProperty("width", 120);
     });
 
