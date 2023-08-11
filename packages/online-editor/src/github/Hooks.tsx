@@ -29,7 +29,7 @@ export function getOctokitClient(args: {
 }) {
   return new Octokit({
     auth: args.githubToken,
-    baseUrl: args.domain === "proxy.testing:9091" ? "proxy.testing:9092" : getGithubInstanceApiUrl(args.domain),
+    baseUrl: getGithubInstanceApiUrl(args.domain),
     request: {
       fetch: (url: RequestInfo | URL, options: RequestInit) => {
         const newUrl = args.insecurelyDisableTlsCertificateValidation

@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-import { Octokit } from "@octokit/rest";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import InfoAltIcon from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
-import * as React from "react";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { useCallback, useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { getGithubInstanceApiUrl, getOctokitClient } from "../../github/Hooks";
+import { getOctokitClient } from "../../github/Hooks";
 import { useOnlineI18n } from "../../i18n";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
@@ -38,12 +36,11 @@ import { GitAuthSession } from "../../authSessions/AuthSessionApi";
 import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import {
   GitAuthProvider,
-  INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS,
   isSupportedGitAuthProviderType,
   SupportedGitAuthProviders,
 } from "../../authProviders/AuthProvidersApi";
 import { switchExpression } from "../../switchExpression/switchExpression";
-import { AuthOptionsType, BitbucketClient } from "../../bitbucket/Hooks";
+import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -421,7 +418,7 @@ export const fetchAuthenticatedBitbucketUser = async (
   proxyUrl?: string,
   insecurelyDisableTlsCertificateValidation?: boolean
 ) => {
-  const bitbucket = new BitbucketClient({
+  const bitbucketClient = getBitbucketClient({
     appName,
     domain,
     auth: {
@@ -429,13 +426,11 @@ export const fetchAuthenticatedBitbucketUser = async (
       username: bitbucketUsername,
       password: bitbucketToken,
     },
-    proxyUrl: insecurelyDisableTlsCertificateValidation ? proxyUrl : undefined,
-    headers: {
-      ...(insecurelyDisableTlsCertificateValidation ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS : {}),
-    },
+    proxyUrl,
+    insecurelyDisableTlsCertificateValidation,
   });
 
-  const response = await bitbucket.getAuthedUser();
+  const response = await bitbucketClient.getAuthedUser();
   if (!response.ok) {
     const message = await response.text();
     throw new Error(
