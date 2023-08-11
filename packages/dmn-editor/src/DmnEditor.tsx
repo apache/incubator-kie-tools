@@ -30,6 +30,8 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
+const ON_CHANGE_THROTTLE_TIME_IN_MS = 500;
+
 export type DmnEditorRef = {
   getContent(): string;
 };
@@ -67,7 +69,13 @@ export const DmnEditorInternal = ({
       return;
     }
 
-    onModelChange?.(dmn.model);
+    const timeout = setTimeout(() => {
+      onModelChange?.(dmn.model);
+    }, ON_CHANGE_THROTTLE_TIME_IN_MS);
+
+    return () => {
+      clearTimeout(timeout);
+    };
   }, [diagram.dragging.length, diagram.resizing.length, dmn.model, onModelChange]);
 
   const onTabChanged = useCallback(
