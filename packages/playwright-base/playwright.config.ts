@@ -2,7 +2,6 @@ import { devices, defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}{ext}",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -39,6 +38,7 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
+      snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-chromium-{ext}",
     },
 
     // {
@@ -49,11 +49,13 @@ export default defineConfig({
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
+      snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-webkit-{ext}",
     },
 
     {
       name: "Google Chrome",
       use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
+      snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-chrome-{ext}",
     },
   ],
 });
