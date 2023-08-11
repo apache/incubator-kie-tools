@@ -746,6 +746,11 @@ export function DmnRunnerExtendedServicesError() {
         </TextContent>
         <EmptyStateBody>
           <p>An error has happened while trying to show your inputs</p>
+          <br />
+          <p>
+            If your DMN file has included models, please check if they still exist. If you have deleted a file that was
+            being used as an included model, please remove its reference in the Included Models tab.
+          </p>
         </EmptyStateBody>
       </EmptyState>
     </div>
