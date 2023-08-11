@@ -5,96 +5,53 @@ test.describe("Logic type selector", () => {
     await boxedExpressionEditor.goto();
   });
 
-  test("Select Literal Expression", async ({ page }) => {
+  test("Select literal expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Literal" }).click();
-
-    await expect(page.getByText("Expression Name (Literal)")).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell")).toHaveCount(1);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("literal-expression.png");
   });
 
-  test("Select Context Expression", async ({ page }) => {
+  test("Select context expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Context" }).click();
-
-    await expect(page.getByText("Expression Name (Context)")).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "<result>" })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(2);
-    await expect(page.getByRole("columnheader")).toHaveCount(1);
-    await expect(page.getByRole("cell")).toHaveCount(4);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("context-expression.png");
   });
 
-  test("Select Decision Table Expression", async ({ page }) => {
+  test("Select decision table expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Decision Table" }).click();
-
-    await expect(page.getByText("Expression Name (Decision Table)")).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
-    await expect(page.getByRole("columnheader")).toHaveCount(4);
-    await expect(page.getByRole("cell")).toHaveCount(4);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("decision-table-expression.png");
   });
 
-  test("Select Relation Expression", async ({ page }) => {
+  test("Select relation expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Relation" }).click();
-
-    await expect(page.getByText("Expression Name (Relation)")).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "column-1 (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "#", exact: true })).toBeAttached();
-    await expect(page.getByRole("columnheader")).toHaveCount(3);
-    await expect(page.getByRole("cell")).toHaveCount(2);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-expression.png");
   });
 
-  test("Select Invocation Expression", async ({ page }) => {
+  test("Select invocation expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Invocation" }).click();
-
-    await expect(page.getByText("Expression Name (Invocation)")).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "FUNCTION" })).toBeAttached();
-    await expect(page.getByRole("cell", { name: "p-1" })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(1);
-    await expect(page.getByRole("columnheader")).toHaveCount(2);
-    await expect(page.getByRole("cell")).toHaveCount(2);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("invocation-expression.png");
   });
 
-  test("Select List Expression", async ({ page }) => {
+  test("Select list expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "List" }).click();
-
-    await expect(page.getByText("Expression Name (List)")).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "#", exact: true })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(1);
-    await expect(page.getByRole("columnheader")).toHaveCount(2);
-    await expect(page.getByRole("cell")).toHaveCount(2);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("list-expression.png");
   });
 
-  test("Shouldn't have Function Expression on root", async ({ page }) => {
+  test("Shouldn't have function expression on root", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
-
     await expect(page.getByRole("menuitem", { name: "Function" })).not.toBeAttached();
   });
 
-  test("Select Function Expression from List", async ({ page }) => {
+  test("Select a nested function expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "List" }).click();
 
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Function" }).click();
-
-    await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
-    await expect(page.getByRole("columnheader", { name: "Edit parameters" })).toBeAttached();
-    await expect(page.getByText("Select expression")).toHaveCount(1);
-    await expect(page.getByRole("columnheader")).toHaveCount(4);
-    await expect(page.getByRole("cell")).toHaveCount(4);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("nested-function-expression.png");
   });
 });

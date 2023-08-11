@@ -1,7 +1,7 @@
 import { test, expect } from "../fixtures/boxedExpression";
 
-test.describe("Resizing Expressions", () => {
-  test.describe("Literal Expression", () => {
+test.describe("Resizing", () => {
+  test.describe("Literal expression", () => {
     test.beforeEach(async ({ standaloneExpression }) => {
       await standaloneExpression.openLiteralExpression();
     });
@@ -38,7 +38,7 @@ test.describe("Resizing Expressions", () => {
     });
   });
 
-  test.describe("Context Expression", () => {
+  test.describe("Context expression", () => {
     test.beforeEach(async ({ standaloneExpression }) => {
       await standaloneExpression.openContextExpression();
     });
