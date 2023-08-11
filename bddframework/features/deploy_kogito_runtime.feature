@@ -204,7 +204,6 @@ Feature: Deploy Kogito Runtime
     And Clone Kogito examples into local directory
     And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
       | native  | <native>    |
-      | profile | persistence |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
       # Setup short name as it can create some problems with route name too long ...
@@ -503,8 +502,8 @@ Feature: Deploy Kogito Runtime
       | runtime-env | quarkus.hibernate-orm.database.generation | update                                 |
     And Clone Kogito examples into local directory
     And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
-      | profile | events,persistence |
-      | native  | <native>           |
+      | profile | events   |
+      | native  | <native> |
 
     When Deploy <runtime> example service "<example-service>" from runtime registry with configuration:
       | config | infra | kafka            |

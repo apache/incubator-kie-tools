@@ -249,7 +249,7 @@ Feature: Kogito Data Index
       
     And Clone Kogito examples into local directory
     And Local example service "kogito-quarkus-examples/process-postgresql-persistence-quarkus" is built by Maven and deployed to runtime registry with Maven configuration:
-      | profile | persistence,events |
+      | profile | events |
     And Deploy quarkus example service "process-postgresql-persistence-quarkus" from runtime registry with configuration:
       | config      | infra                                        | kafka                                           |
       # Setup short name as it can create some problems with route name too long ...
