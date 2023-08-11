@@ -22,7 +22,7 @@ import {
   ServerlessWorkflowCombinedEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
-import { ServerlessWorkflowCombinedEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+import { ServerlessWorkflowCombinedEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/envelope";
 
 EditorEnvelope.initCustom<
   ServerlessWorkflowCombinedEditorApi,

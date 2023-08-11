@@ -224,7 +224,7 @@
             "start: Init State\n" +
             "states:\n" +
             "  - name: Init State\n" +
-            "    type: inject\n" +
+            "    type: event\n" +
             "    transition: Next State\n" +
             "    onErrors:\n" +
             "      - errorRef: Some Error\n" +
@@ -505,7 +505,7 @@
             '  schedule: "2020-03-20T09:00:00Z/2020-03-20T15:00:00Z"\n' +
             "states:\n" +
             "  - name: Init State\n" +
-            "    type: inject\n" +
+            "    type: operation\n" +
             "    transition:\n" +
             "      nextState: Next State\n" +
             "    onErrors:\n" +
@@ -585,7 +585,7 @@
           states: [
             {
               name: "Init State",
-              type: "inject",
+              type: "event",
               end: false,
               transition: "Next State",
               onErrors: [
@@ -994,7 +994,7 @@
           states: [
             {
               name: "Init State",
-              type: "inject",
+              type: "operation",
               end: false,
               transition: {
                 nextState: "Next State",

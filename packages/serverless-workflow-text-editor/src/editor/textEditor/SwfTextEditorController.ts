@@ -18,10 +18,6 @@ import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import {
   getJsonStateNameFromOffset,
   getJsonStateNameOffset,
   getYamlStateNameFromOffset,
@@ -65,7 +61,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
   constructor(
     content: string,
-    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
+    private readonly onContentChange: (args: { content: string; operation: SwfTextEditorOperation }) => void,
     private readonly language: FileLanguage,
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
@@ -76,7 +72,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.model.onDidChangeContent((event) => {
       if (!event.isUndoing && !event.isRedoing) {
         this.editor?.pushUndoStop();
-        onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT);
+        onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.EDIT });
       }
     });
 
@@ -127,16 +123,16 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
-      this.onContentChange(this.model.getValue(), SwfTextEditorOperation.UNDO);
+      this.onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.UNDO });
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyZ, () => {
-      this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
+      this.onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.REDO });
     });
 
     if (this.operatingSystem !== OperatingSystem.MACOS) {
       this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
-        this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
+        this.onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.REDO });
       });
     }
 

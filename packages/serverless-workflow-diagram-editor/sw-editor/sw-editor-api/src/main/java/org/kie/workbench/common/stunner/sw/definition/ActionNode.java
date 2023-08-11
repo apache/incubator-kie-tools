@@ -22,10 +22,10 @@ import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.FunctionRefJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.SubFlowRefJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.FunctionRefYamlSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.SubFlowRefYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.FunctionRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.SubFlowRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.FunctionRefYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.SubFlowRefYamlSerializer;
 
 @JsType
 @YamlPropertyOrder({"name", "id", "functionRef", "eventRef", "subFlowRef", "retryRef", "sleep", "retryableErrors", "nonRetryableErrors", "actionDataFilter", "condition"})

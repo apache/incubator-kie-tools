@@ -1,3 +1,18 @@
+# 0.31.0 (alpha)
+
+- [kie-issues#183](https://github.com/kiegroup/kie-issues/issues/183) - Dead keys (E.g., ˜ˆ´¨) are not triggering edit mode correctly on BeeTable cells
+- [kie-issues#184](https://github.com/kiegroup/kie-issues/issues/184) - It shouldn't be possible to mutate the selection when selecting text inside a BeeTable cell
+- [kie-issues#216](https://github.com/kiegroup/kie-issues/issues/216) - DMN's Editor Boxed Expression Editor: It's not possible to delete a table row in Safari
+- [kie-issues#48](https://github.com/kiegroup/kie-issues/issues/48) - Implement DMN 1.3 new keywords support
+- [kie-issues#168](https://github.com/kiegroup/kie-issues/issues/168) - In DMN Editor's Boxed Expression Editor Context Menu, make possible to add N rows/columns with a single click
+- [kie-issues#365](https://github.com/kiegroup/kie-issues/issues/365) - Top-left cell data is getting lost after Cutting and Pasting to the DMN Editor's Boxed Expression Editor
+- [kie-issues#372](https://github.com/kiegroup/kie-issues/issues/372) - DMN Editor: Removing GWT-based autocompletion feature
+- [kie-issues#353](https://github.com/kiegroup/kie-issues/issues/353) - DMN Editor Add documentation to every FEEL function proposed by code completion
+- [kie-issues#373](https://github.com/kiegroup/kie-issues/issues/373) - DMN's Decision Table: Changing the column data type doens't work after changing Decision node type
+- [kie-issues#375](https://github.com/kiegroup/kie-issues/issues/375) - DMN Editor: Context Menu is empty in List expression header
+- [kie-issues#376](https://github.com/kiegroup/kie-issues/issues/376) - DMN Runner context menu options are not appropriate regarding the selected cell
+- [kie-issues#382](https://github.com/kiegroup/kie-issues/issues/382) - [DMN Editor] Superfluous newline in multi-cell copy/paste
+
 # 0.30.0 (alpha)
 
 - [kie-issues#252](https://github.com/kiegroup/kie-issues/issues/252) - A Decision Table's single output column header should be merged
