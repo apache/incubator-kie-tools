@@ -36,6 +36,7 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      timeout: 60000,
       name: "chromium",
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
       snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-chromium-{ext}",
@@ -47,12 +48,14 @@ export default defineConfig({
     // },
 
     {
+      timeout: 60000,
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
       snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-webkit-{ext}",
     },
 
     {
+      timeout: 60000,
       name: "Google Chrome",
       use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
       snapshotPathTemplate: "{testDir}/__screenshots__/{testFilePath}/{arg}-chrome-{ext}",

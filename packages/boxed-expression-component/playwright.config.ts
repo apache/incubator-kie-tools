@@ -7,7 +7,6 @@ const buildEnv: any = env;
 
 const customConfig = defineConfig({
   // storybook takes more than 30s to start;
-  timeout: 60000,
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
   },
