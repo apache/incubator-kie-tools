@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
-  targetNamespace="http://www.drools.org/kie/dmn/1.2"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  targetNamespace="https://kie.org/dmn/extensions/1.0"
   elementFormDefault="qualified"
   attributeFormDefault="unqualified">
 

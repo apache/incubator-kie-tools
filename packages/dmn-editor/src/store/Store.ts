@@ -9,6 +9,8 @@ import { createContext, useContext } from "react";
 import { StoreApi, UseBoundStore, create, useStore as useZustandStore } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { SPEC } from "../Spec";
+import { ns as dmn14ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/meta";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -80,8 +82,8 @@ export type Dispatch = {
 
 const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="https://www.omg.org/spec/DMN/20211108/MODEL/"
-  expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns="${dmn14ns.get("")}"
+  expressionLanguage="${SPEC.expressionLanguage.default}"
   namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">

@@ -108,7 +108,20 @@ export function getParser<T extends object>(args: {
     },
     build: ({ json, instanceNs }) => {
       // console.time("building took");
-      const xml = build({ json, ns: args.ns, instanceNs, indent: "" });
+      const __json = JSON.parse(JSON.stringify(json));
+
+      for (const [k, v] of [...args.ns.entries()]) {
+        // xmlns --> URL
+        if (k.endsWith(":") || k === "") {
+          const instanceNsKey = instanceNs.get(v)?.slice(0, -1);
+          if (!instanceNsKey || !__json[args.root.element][`@_xmlns:${instanceNsKey}`]) {
+            console.warn(`Adding NS mapping to XML: xmlns:${k.slice(0, -1)} --> ${v}`);
+            __json[args.root.element][`@_xmlns:${k.slice(0, -1)}`] = v;
+          }
+        }
+      }
+
+      const xml = build({ json: __json, ns: args.ns, instanceNs, indent: "" });
       // console.timeEnd("building took");
       return xml;
     },

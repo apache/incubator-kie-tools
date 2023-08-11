@@ -1,7 +1,7 @@
+import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
-import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 
 const latest = "1.4";
 
