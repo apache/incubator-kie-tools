@@ -451,8 +451,9 @@ digraph G {
   "@kie-tools/yaml-language-server" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/yaml-language-server" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/yard-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/yard-language-service" [ style = "solid", color = "blue" ];
+  "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/yard-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "yard-vscode-extension" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
