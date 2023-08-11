@@ -13,25 +13,52 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { CardTitle, Card, CardHeader, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
 import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { addIncludedModel } from "../mutations/addIncludedModel";
+import { deleteIncludedModel } from "../mutations/deleteIncludedModel";
+import { SPEC } from "../Spec";
 
-type ExternalModel = {
+export type ExternalModel = {
   label: string;
   path: string;
-  namespace: string;
-  type: string;
+  model: {
+    "@_namespace": string;
+    "@_xmlns": string;
+  };
 };
 
 export function IncludedModels() {
   const models = useMemo<{ dmn: ExternalModel[]; pmml: ExternalModel[] }>(() => {
     return {
       dmn: [
-        { type: "dmn", label: "Other DMN", path: "src/main/resources/other.dmn", namespace: "NS1" },
-        { type: "dmn", label: "Anther DMN", path: "src/main/resources/another.dmn", namespace: "NS2" },
+        {
+          model: {
+            "@_xmlns": "https://www.omg.org/spec/DMN/20211108/MODEL/",
+            "@_namespace": "https://kie.org/dmn/_42458D20-6E53-4071-A60D-544A06CEBC9F",
+          },
+          label: "Other DMN",
+          path: "src/main/resources/other.dmn",
+        },
+        {
+          model: {
+            "@_xmlns": "https://www.omg.org/spec/DMN/20211108/MODEL/",
+            "@_namespace": "https://kie.org/dmn/_4B5EA01B-236F-490B-BB33-57569043B73B",
+          },
+          label: "Anther DMN",
+          path: "src/main/resources/another.dmn",
+        },
       ],
-      pmml: [{ type: "pmml", label: "Some PMML", path: "src/main/resources/some.pmml", namespace: "NS3" }],
+      pmml: [
+        {
+          model: {
+            "@_xmlns": "http://www.dmg.org/PMML-4_4",
+            "@_namespace": "https://kie.org/pmml/_8A20E3CC-B6E1-40E1-AF0F-AF9A748337A6",
+          },
+          label: "Some PMML",
+          path: "src/main/resources/some.pmml",
+        },
+      ],
     };
   }, []);
 
@@ -42,8 +69,8 @@ export function IncludedModels() {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModelSelectOpen, setModelSelectOpen] = useState(false);
-  const [model, setModel] = useState<ExternalModel | undefined>(undefined);
-  const [name, setName] = useState("");
+  const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
+  const [modelAlias, setModelAlias] = useState("");
 
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -52,29 +79,39 @@ export function IncludedModels() {
   const cancel = useCallback(() => {
     setModalOpen(false);
     setModelSelectOpen(false);
-    setModel(undefined);
-    setName("");
+    setSelectedModel(undefined);
+    setModelAlias("");
   }, []);
 
-  const includeModel = useCallback(() => {
-    const valid = true; // FIXME: Tiago --> Write validation for name and model path.
-    if (!model || !valid) {
+  const remove = useCallback(
+    (index: number) => {
+      dmnEditorStoreApi.setState((state) => {
+        deleteIncludedModel({ definitions: state.dmn.model.definitions, index });
+      });
+    },
+    [dmnEditorStoreApi]
+  );
+
+  const add = useCallback(() => {
+    const valid = true; // FIXME: Tiago --> Do additional checks here like unicity etc
+    if (!selectedModel || !valid || !SPEC.namedElement.isValidName(modelAlias)) {
       return;
     }
 
     setModalOpen(false);
     dmnEditorStoreApi.setState((state) => {
-      state.dmn.model.definitions.import ??= [];
-      state.dmn.model.definitions.import.push({
-        "@_id": generateUuid(),
-        "@_name": name,
-        "@_importType": model.type,
-        "@_namespace": model.namespace,
+      addIncludedModel({
+        definitions: state.dmn.model.definitions,
+        includedModel: {
+          xmlns: selectedModel.model["@_xmlns"],
+          namespace: selectedModel.model["@_namespace"],
+          alias: modelAlias,
+        },
       });
     });
 
     cancel();
-  }, [cancel, dmnEditorStoreApi, model, name]);
+  }, [cancel, dmnEditorStoreApi, selectedModel, modelAlias]);
 
   return (
     <>
@@ -84,7 +121,7 @@ export function IncludedModels() {
         title={"Include model"}
         variant={ModalVariant.large}
         actions={[
-          <Button key="confirm" variant="primary" onClick={includeModel}>
+          <Button key="confirm" variant="primary" onClick={add}>
             Include model
           </Button>,
           <Button key="cancel" variant="link" onClick={cancel}>
@@ -104,12 +141,12 @@ export function IncludedModels() {
               typeAheadAriaLabel={"Select a model to include..."}
               placeholderText={"Select a model to include..."}
               onToggle={setModelSelectOpen}
-              onClear={() => setModel(undefined)}
+              onClear={() => setSelectedModel(undefined)}
               onSelect={(e, v) => {
-                setModel(v as any);
+                setSelectedModel(v as any);
                 setModelSelectOpen(false);
               }}
-              selections={model}
+              selections={selectedModel}
               isOpen={isModelSelectOpen}
               aria-labelledby={"Included model selector"}
               isGrouped={true}
@@ -131,8 +168,13 @@ export function IncludedModels() {
               </SelectGroup>
             </Select>
           </FormGroup>
-          <FormGroup label={"Name"} isRequired={true}>
-            <TextInput placeholder={"Enter a name..."} aria-label={"Name"} value={name} onChange={setName} />
+          <FormGroup label={"Alias"} isRequired={true}>
+            <TextInput
+              placeholder={"Enter an alias..."}
+              aria-label={"Alias"}
+              value={modelAlias}
+              onChange={setModelAlias}
+            />
           </FormGroup>
           <br />
         </Form>
@@ -157,18 +199,23 @@ export function IncludedModels() {
           <Divider inset={{ default: "insetMd" }} />
           <br />
           <Gallery hasGutter={true}>
-            {imports.map((imp, index) => (
-              <>
-                <GalleryItem>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>{imp["@_name"]}</CardTitle>
-                    </CardHeader>
-                    <CardBody>{imp["@_namespace"]}</CardBody>
-                    <CardFooter>{imp["@_locationURI"]}</CardFooter>
-                  </Card>
-                </GalleryItem>
-              </>
+            {imports.map((i, index) => (
+              <GalleryItem key={i["@_name"]}>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{i["@_name"]}</CardTitle>
+                  </CardHeader>
+                  <CardBody>{i["@_namespace"]}</CardBody>
+                  <CardFooter>
+                    {`/some/resolved/path`}
+                    <br />
+                    <br />
+                    <Button variant={ButtonVariant.link} onClick={() => remove(index)} style={{ padding: 0 }}>
+                      Remove
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </GalleryItem>
             ))}
           </Gallery>
         </PageSection>
