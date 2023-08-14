@@ -27,7 +27,7 @@ export default class GitHubListPage extends Page {
   }
 
   public async getFile(name: string): Promise<GitHubListItem> {
-    const file: By = By.xpath(`//div[@title='${name}']`);
+    const file: By = By.xpath(`//td[@class='react-directory-row-name-cell-large-screen']//div[@title='${name}']`);
     await this.tools.by(file).wait(5000).untilPresent();
     return await this.tools.createPageFragment(GitHubListItem, await this.tools.by(file).getElement());
   }
