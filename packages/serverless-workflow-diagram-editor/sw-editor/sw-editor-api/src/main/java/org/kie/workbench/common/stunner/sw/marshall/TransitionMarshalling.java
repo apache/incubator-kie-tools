@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
-import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -67,12 +66,9 @@ public interface TransitionMarshalling {
                     return edge;
                 }
 
-                State sourceState = getElementDefinition(sourceNode);
+                Object sourceState = getElementDefinition(sourceNode);
                 Object targetDef = getElementDefinition(targetNode);
                 JsPropertyMap<Object> map = Js.asPropertyMap(sourceState);
-                if (!(map.has("end"))) {
-                    return edge;
-                }
 
                 if (targetDef instanceof End) {
                     map.set("transition", null);
@@ -113,8 +109,8 @@ public interface TransitionMarshalling {
                 if (null != sourceNode) {
                     Node targetNode = edge.getTargetNode();
                     ViewImpl view = (ViewImpl) sourceNode.getContent();
-                    JsPropertyMap<Object> map = Js.asPropertyMap(view.getDefinition());
-                    if (null != targetNode && view != null && map.has("compensatedBy")) {
+
+                    if (null != targetNode && view != null) {
                         Object sourceState = getElementDefinition(sourceNode);
                         JsPropertyMap<Object> sourceMap = Js.asPropertyMap(sourceState);
                         sourceMap.set("compensatedBy", getStateNodeName(targetNode));
