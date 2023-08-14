@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-  ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
+  ~ Copyright 2023 Red Hat, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -14,37 +14,58 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project
-  xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-  <groupId>org.serverless-logic-web-tools</groupId>
+    <groupId>org.serverless-logic-web-tools</groupId>
     <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
     <version>0.1.0</version>
-  <packaging>jar</packaging>
+    <packaging>jar</packaging>
 
-  <name>Serverless Logic Web Toos Deployment Webapp</name>
-  <description>
-    The parent contains all metadata (including plugins) and also dependency versions for all DashBuilder modules
-  </description>
-  <inceptionYear>2021</inceptionYear>
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-    
+    <name>Serverless Logic Web Tools Deployment Webapp2</name>
+    <description>
+        The parent contains all metadata (including plugins) and also dependency versions
+        for all Serverless Workflows modules
+    </description>
+    <inceptionYear>2023</inceptionYear>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
     <properties>
-    <java.module.name />
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <maven.compiler.release>11</maven.compiler.release>
+        <java.module.name />
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.release>11</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
+    <dependencies>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>webjars</id>
+            <url>https://maven.webjars.org</url>
+        </repository>
+    </repositories>
+
+<distributionManagement>
+  <snapshotRepository>
+    <id>ossrh</id>
+    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+    <id>ossrh</id>
+    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+</distributionManagement>
+
+
     <build>
         <plugins>
             <plugin>
@@ -73,6 +94,29 @@
                                     </includes>
                                 </resource>
                             </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <id>deploy-webjar</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
+                            <groupId>org.webjars</groupId>
+                            <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+                            <version>${project.version}</version>
+                            <packaging>jar</packaging>
+                            <description>Serverless Logic Web Tools SWF Deployment Webapp2</description>
+                            <url>https://www.webjars.org</url>
                         </configuration>
                     </execution>
                 </executions>

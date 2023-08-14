@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";

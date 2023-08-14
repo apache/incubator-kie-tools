@@ -17741,7 +17741,7 @@ packages:
       webpack-cli: 4.x.x
     dependencies:
       envinfo: 7.8.1
-      webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.70.0)
     dev: true
 
   /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.11.0):
@@ -20508,7 +20508,7 @@ packages:
       postcss-value-parser: 4.2.0
       schema-utils: 3.1.1
       semver: 7.3.7
-      webpack: 5.70.0
+      webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
   /css-loader@6.7.1(webpack@5.76.1):
@@ -23209,7 +23209,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0
+      webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
   /file-loader@6.2.0(webpack@5.76.1):
@@ -24241,7 +24241,7 @@ packages:
     resolution:
       { integrity: sha512-36nwAD620w12kuzPAsyINPWJqlNbij+hpK1k9XRloDtym8mxzGYl2c17LnV6IAGB2Dmg4tEa7G7DlawS0+qjew== }
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
       loose-envify: 1.4.0
       resolve-pathname: 3.0.0
       tiny-invariant: 1.1.0
@@ -30556,7 +30556,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0
+      webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
   /rc@1.2.8:
@@ -32773,7 +32773,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0
+      webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
   /stylus-loader@7.0.0(stylus@0.59.0)(webpack@5.76.1):
@@ -33066,7 +33066,7 @@ packages:
       serialize-javascript: 6.0.0
       source-map: 0.6.1
       terser: 5.14.2
-      webpack: 5.70.0
+      webpack: 5.70.0(webpack-cli@4.10.0)
     dev: true
 
   /terser-webpack-plugin@5.3.0(webpack@5.76.1):
@@ -34691,7 +34691,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.76.1(webpack-cli@4.10.0)
+      webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
   /webpack-dev-server@4.11.0(webpack-cli@4.10.0)(webpack@5.76.1):

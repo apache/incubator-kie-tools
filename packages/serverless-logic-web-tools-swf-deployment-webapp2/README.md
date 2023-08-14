@@ -37,9 +37,12 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
         cd getting-started
 
-4.  Edit the `pom.xml` file and add the following plugin configuration:
+### Using a local webjar
 
-        <plugin>
+1.  Edit the `pom.xml` file and add the following plugin configuration:
+
+```xml
+<plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <version>3.2.0</version>
@@ -53,12 +56,13 @@ To create a consumer app for local tests following the Quarkus Getting Started A
                     <configuration>
                         <artifactItems>
                             <artifactItem>
-                                <groupId>org.serverless-logic-web-tools</groupId>
+                                <groupId>org.webjars.npm</groupId>
                                 <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
                                 <version>0.1.0</version>
                                 <type>jar</type>
                                 <overWrite>true</overWrite>
-                                <outputDirectory>${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
+                                <outputDirectory
+            >${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
                                 <includes>**/*</includes>
                             </artifactItem>
                         </artifactItems>
@@ -66,3 +70,87 @@ To create a consumer app for local tests following the Quarkus Getting Started A
                 </execution>
             </executions>
         </plugin>
+```
+
+## Using the deployed webjar
+
+1.  Edit the `pom.xml` file and add the following plugin configuration:
+
+Add the webjar version to the properties section of your pom.xml
+
+```xml
+<slwtDeploymentWebapp.version>0.0.2</slwtDeploymentWebapp.version>
+```
+
+Add the webjar as a dependency in the dependencies section
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.webjars.npm</groupId>
+        <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+        <version>${slwtDeploymentWebapp.version}</version>
+    </dependency>
+  </dependencies>
+```
+
+Add a plugin to unpack and copy the Webjar in the plugins section
+
+```xml
+<build>
+    <plugins>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <executions>
+              <execution>
+                  <id>unpack-serverless-logic-web-tools-swf-deployment-webapp2</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                      <goal>unpack</goal>
+                  </goals>
+                  <configuration>
+                      <artifactItems>
+                          <artifactItem>
+                              <groupId>org.webjars.npm</groupId>
+                              <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+                              <version>${slwtDeploymentWebapp.version}</version>
+                              <outputDirectory
+                >${project.build.directory}/serverless-logic-web-tools-swf-deployment-webapp2</outputDirectory>
+                          </artifactItem>
+                      </artifactItems>
+                      <overWriteReleases>false</overWriteReleases>
+                      <overWriteSnapshots>true</overWriteSnapshots>
+                  </configuration>
+              </execution>
+          </executions>
+      </plugin>
+      <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <executions>
+              <execution>
+                  <id>copy-serverless-logic-web-tools-swf-deployment-webapp2-resources</id>
+                  <phase>process-resources</phase>
+                  <goals>
+                      <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                      <outputDirectory>${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
+                      <overwrite>true</overwrite>
+                      <resources>
+                          <resource>
+                              <directory
+                >${project.build.directory}/serverless-logic-web-tools-swf-deployment-webapp2/META-INF/resources/webjars/serverless-logic-web-tools-swf-deployment-webapp2/${slwtDeploymentWebapp.version}/dist</directory>
+
+                                <includes>**/*</includes>
+                          </resource>
+                      </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+```
+
+An example can be found in [serverless-logic-web-tools-swf-deployment-webapp2-consumer](https://github.com/fantonangeli/serverless-logic-web-tools-swf-deployment-webapp2-consumer)
