@@ -21,7 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -32,11 +32,11 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public class CanvasInlineTextEditorControl
         extends AbstractCanvasInlineTextEditorControl {
 
-    private final FloatingView<IsWidget> floatingView;
+    private final FloatingView<IsElement> floatingView;
     private final TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;
 
     @Inject
-    public CanvasInlineTextEditorControl(final FloatingView<IsWidget> floatingView,
+    public CanvasInlineTextEditorControl(final FloatingView<IsElement> floatingView,
                                          final @InlineTextEditorBox TextEditorBox<AbstractCanvasHandler, Element> textEditorBox) {
         this.floatingView = floatingView;
         this.textEditorBox = textEditorBox;
@@ -60,7 +60,7 @@ public class CanvasInlineTextEditorControl
     }
 
     @Override
-    protected FloatingView<IsWidget> getFloatingView() {
+    protected FloatingView<IsElement> getFloatingView() {
         return floatingView;
     }
 

@@ -3,6 +3,7 @@ module github.com/kiegroup/kie-tools/packages/kn-plugin-workflow
 go 1.20
 
 require (
+	github.com/beevik/etree v1.2.0
 	github.com/docker/docker v23.0.6+incompatible
 	github.com/docker/go-connections v0.4.0
 	github.com/jstemmer/go-junit-report/v2 v2.0.0
