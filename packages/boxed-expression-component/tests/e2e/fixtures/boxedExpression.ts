@@ -1,9 +1,11 @@
 import { Locator, Page, test as base } from "@playwright/test";
+import { Clipboard } from "./clipboard";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
   standaloneExpression: StandaloneExpression;
   resizer: Resizer;
+  clipboard: Clipboard;
 };
 
 class StandaloneExpression {
@@ -92,6 +94,12 @@ export const test = base.extend<BoxedExpressionFixtures>({
   },
   resizer: async ({ page }, use) => {
     await use(new Resizer(page));
+  },
+  clipboard: async ({ browserName, context, page }, use) => {
+    if (browserName === "chromium") {
+      await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    }
+    await use(new Clipboard(page));
   },
 });
 
