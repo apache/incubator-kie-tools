@@ -30,4 +30,11 @@ export interface DiagramExposedInteropApi {
    * Notify that the diagram finished setting its content
    */
   setContentSuccess: () => void;
+
+  /**
+   * Notify that the diagram has been edited from Stunner
+   * @param newContent diagram raw content
+   * @param nodeName name of the node to be selected
+   */
+  onDiagramChanged: (newContent: string, nodeName: string) => void;
 }

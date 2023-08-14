@@ -53,4 +53,8 @@ export class ServerlessWorkflowTextEditorEnvelopeApiImpl
   public kogitoSwfTextEditor__moveCursorToPosition(position: Position): void {
     this.getEditorOrThrowError().moveCursorToPosition(position);
   }
+
+  public kogitoSwfTextEditor__updateContent(args: { newContent: string; nodeName: string; documentUri: string }): void {
+    this.getEditorOrThrowError().updateContent(args.newContent, args.nodeName);
+  }
 }

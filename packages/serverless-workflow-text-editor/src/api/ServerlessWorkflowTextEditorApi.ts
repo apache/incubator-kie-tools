@@ -20,4 +20,5 @@ import { Position } from "monaco-editor";
 export interface ServerlessWorkflowTextEditorApi extends Editor {
   moveCursorToNode(nodeName: string): void;
   moveCursorToPosition(position: Position): void;
+  updateContent(newContent: string, nodeName: string): void;
 }

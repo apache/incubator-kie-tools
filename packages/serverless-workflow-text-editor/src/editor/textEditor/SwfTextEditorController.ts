@@ -41,6 +41,7 @@ export interface SwfTextEditorApi {
   dispose: () => void;
   moveCursorToNode: (nodeName: string) => void;
   moveCursorToPosition: (position: Position) => void;
+  updateContent: (newContent: string, nodeName: string) => void;
 }
 
 export enum SwfTextEditorOperation {
@@ -58,6 +59,8 @@ export class SwfTextEditorController implements SwfTextEditorApi {
   private readonly model: editor.ITextModel;
 
   public editor: editor.IStandaloneCodeEditor | undefined;
+
+  private ghostEditor: editor.IStandaloneCodeEditor | undefined;
 
   constructor(
     content: string,
@@ -220,6 +223,53 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     }
 
     this.onSelectionChanged(nodeName);
+  }
+
+  /**
+   * Update text editor content with diagram content
+   *
+   * @param newContent - raw content from diagram
+   * @param nodeName - name of the node to be selected
+   * @returns
+   */
+  public updateContent(newContent: string, nodeName: string): void {
+    if (!this.editor || !newContent) {
+      return;
+    }
+
+    // Create reusable GhostEditor instance
+    if (!this.ghostEditor) {
+      const detachedDiv: HTMLDivElement = document.createElement("div");
+      this.ghostEditor = editor.create(detachedDiv, {
+        language: this.language,
+        automaticLayout: true,
+      });
+    }
+
+    //Create new model and assign the new content to GhostEditor
+    const ghostModel: editor.ITextModel = editor.createModel(newContent, this.language);
+    this.ghostEditor.setModel(ghostModel);
+
+    //Format new content
+    this.ghostEditor
+      .getAction("editor.action.formatDocument")
+      .run()
+      .then(() => {
+        this.editor?.getModel()?.pushEditOperations(
+          [],
+          [
+            {
+              range: this.editor?.getModel()!.getFullModelRange(),
+              text: this.ghostEditor?.getModel()?.getValue() || "",
+            },
+          ],
+          () => null
+        );
+      })
+      .then(() => {
+        this.ghostEditor?.getModel()?.dispose;
+        this.moveCursorToNode(nodeName);
+      });
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

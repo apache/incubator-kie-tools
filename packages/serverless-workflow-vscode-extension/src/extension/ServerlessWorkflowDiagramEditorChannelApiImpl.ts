@@ -260,4 +260,8 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
+
+  public async kogitoSwfDiagramEditor__onDiagramChanged(args: { newContent: string; nodeName: string }): Promise<void> {
+    // Do nothing, State control is handling content update from the diagram
+  }
 }

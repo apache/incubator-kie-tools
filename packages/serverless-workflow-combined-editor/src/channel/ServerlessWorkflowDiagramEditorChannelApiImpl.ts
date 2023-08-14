@@ -99,4 +99,12 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   public kogitoSwfDiagramEditor__setContentSuccess(): void {
     // Do nothing.
   }
+
+  public kogitoSwfDiagramEditor__onDiagramChanged(args: {
+    newContent: string;
+    nodeName: string;
+    documentUri?: string;
+  }): void {
+    return this.args.textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__updateContent.send(args);
+  }
 }

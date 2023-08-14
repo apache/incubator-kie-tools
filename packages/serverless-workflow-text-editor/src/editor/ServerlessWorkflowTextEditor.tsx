@@ -118,6 +118,9 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
         moveCursorToPosition: (position: Position): void => {
           swfTextEditorRef.current?.moveCursorToPosition(position);
         },
+        updateContent: (newContent: string, nodeName: string): void => {
+          swfTextEditorRef.current?.updateContent(newContent, nodeName);
+        },
       };
     },
     [onStateControlCommandUpdate]

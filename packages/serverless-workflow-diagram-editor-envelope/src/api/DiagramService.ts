@@ -33,4 +33,11 @@ export class DiagramService implements DiagramExposedInteropApi {
   public setContentSuccess() {
     this.envelopeContext.channelApi.notifications.kogitoSwfDiagramEditor__setContentSuccess.send();
   }
+
+  public onDiagramChanged(newContent: string, nodeName: string) {
+    this.envelopeContext.channelApi.notifications.kogitoSwfDiagramEditor__onDiagramChanged.send({
+      newContent,
+      nodeName,
+    });
+  }
 }
