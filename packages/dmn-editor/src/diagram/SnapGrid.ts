@@ -39,16 +39,6 @@ export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI13__DMNShape) {
   };
 }
 
-export function snapBounds(grid: SnapGrid, bounds: DC__Bounds | undefined): DC__Bounds {
-  const minSizes = MIN_SIZE_FOR_NODES(grid);
-  return {
-    "@_x": snap(grid, "x", bounds?.["@_x"]),
-    "@_y": snap(grid, "y", bounds?.["@_y"]),
-    "@_width": Math.max(snap(grid, "x", bounds?.["@_width"]), minSizes.width),
-    "@_height": Math.max(snap(grid, "y", bounds?.["@_height"]), minSizes.height),
-  };
-}
-
 export function snapPoint(grid: SnapGrid, point: DC__Point, method: "floor" | "ceil" = "floor"): DC__Point {
   return {
     "@_x": snap(grid, "x", point?.["@_x"], method),

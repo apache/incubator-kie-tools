@@ -349,11 +349,12 @@ the cursor is inside it. By making it adimensional, that never happens.
 
 /* nodes selection / hover */
 
-.react-flow__node.selected {
-  color: #006ba4 !important;
-}
 .react-flow__node:not(.selected):hover > .kie-dmn-editor--node-shape.normal {
   filter: drop-shadow(4px 4px 2px rgb(127, 127, 127));
+}
+
+.react-flow__node.selected {
+  color: #006ba4 !important;
 }
 .react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
   border-color: #006ba4 !important;
@@ -363,6 +364,32 @@ the cursor is inside it. By making it adimensional, that never happens.
   stroke: #006ba4 !important;
 }
 
+/* hierarchy view */
+.react-flow__node.hierarchy.up {
+  color: #0083a4 !important;
+}
+.react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape {
+  border-color: #0083a4 !important;
+  /* filter: drop-shadow(4px 4px 2px #0083a477); */
+}
+.react-flow__edge.hierarchy.up > path,
+.react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape > g * {
+  stroke: #0083a4 !important;
+  stroke-width: 3px !important;
+}
+.react-flow__node.hierarchy.down {
+  font-weight: bold;
+  color: #003fa4 !important;
+}
+.react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape {
+  border-color: #003fa4 !important;
+  /* filter: drop-shadow(4px 4px 2px #003fa477); */
+}
+.react-flow__edge.hierarchy.down > path,
+.react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape > g * {
+  stroke: #003fa4 !important;
+  stroke-width: 3px !important;
+}
 /* selection rect */
 
 .react-flow__nodesselection-rect {

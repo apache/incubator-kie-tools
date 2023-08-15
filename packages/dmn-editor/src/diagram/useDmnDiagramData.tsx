@@ -76,55 +76,6 @@ export function useDmnDiagramData() {
       resizing: new Set(diagram.resizing),
     };
 
-    function ackNode(
-      dmnObject: Unpacked<DMN14__tDefinitions["drgElement"] | DMN14__tDefinitions["artifact"]>,
-      index: number
-    ) {
-      const type = switchExpression(dmnObject.__$$element, {
-        inputData: NODE_TYPES.inputData,
-        decision: NODE_TYPES.decision,
-        businessKnowledgeModel: NODE_TYPES.bkm,
-        knowledgeSource: NODE_TYPES.knowledgeSource,
-        decisionService: NODE_TYPES.decisionService,
-        association: undefined,
-        group: NODE_TYPES.group,
-        textAnnotation: NODE_TYPES.textAnnotation,
-      });
-
-      if (!type) {
-        return undefined;
-      }
-
-      const id = dmnObject["@_id"]!;
-      const shape = shapesById.get(id)!;
-      const newNode = {
-        id,
-        type,
-        selected: selected.has(id),
-        dragging: dragging.has(id),
-        resizing: resizing.has(id),
-        position: snapShapePosition(diagram.snapGrid, shape),
-        data: { dmnObject, shape, index },
-        zIndex: NODE_LAYERS.NODES,
-        style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
-      };
-
-      if (dmnObject.__$$element === "decisionService") {
-        const containedDecisions = [...(dmnObject.outputDecision ?? []), ...(dmnObject.encapsulatedDecision ?? [])];
-        for (let i = 0; i < containedDecisions.length; i++) {
-          parentIdsById.set(idFromHref(containedDecisions[i]["@_href"]), dmnObject);
-          newNode.zIndex = NODE_LAYERS.PARENT_NODES;
-        }
-      }
-
-      if (dmnObject.__$$element === "group") {
-        // FIXME: Tiago --> Need to find which nodes are encapsulated by a group.
-      }
-
-      nodesById.set(newNode.id, newNode);
-      return newNode;
-    }
-
     function newEdge({
       id,
       type,
@@ -147,39 +98,6 @@ export function useDmnDiagramData() {
       };
     }
 
-    const nodes: RF.Node<DmnEditorDiagramNodeData<any>>[] = [
-      ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode(dmnObject, index);
-        return newNode ? [newNode] : [];
-      }),
-      ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode(dmnObject, index);
-        return newNode ? [newNode] : [];
-      }),
-    ];
-
-    // Assign parents
-    for (let i = 0; i < nodes.length; i++) {
-      const parent = parentIdsById.get(nodes[i].id);
-      if (parent) {
-        nodes[i].parentNode = parent["@_id"]!;
-        nodes[i].extent = "parent"; // FIXME: Tiago make these nodes deattach from parent when dragged outside. And vice-versa.
-        nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
-
-        // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
-        const parentShape = shapesById.get(parent["@_id"]!)!;
-
-        nodes[i].position = snapShapePosition(
-          diagram.snapGrid,
-          offsetShapePosition(nodes[i].data.shape, {
-            x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
-            y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
-          })
-        );
-      }
-    }
-
-    // console.timeEnd("nodes");
     // console.time("edges");
 
     const edges: RF.Edge<DmnEditorDiagramEdgeData>[] = [
@@ -266,6 +184,93 @@ export function useDmnDiagramData() {
 
     // console.timeEnd("edges");
 
+    function ackNode(
+      dmnObject: Unpacked<DMN14__tDefinitions["drgElement"] | DMN14__tDefinitions["artifact"]>,
+      index: number
+    ) {
+      const type = switchExpression(dmnObject.__$$element, {
+        inputData: NODE_TYPES.inputData,
+        decision: NODE_TYPES.decision,
+        businessKnowledgeModel: NODE_TYPES.bkm,
+        knowledgeSource: NODE_TYPES.knowledgeSource,
+        decisionService: NODE_TYPES.decisionService,
+        association: undefined,
+        group: NODE_TYPES.group,
+        textAnnotation: NODE_TYPES.textAnnotation,
+      });
+
+      if (!type) {
+        return undefined;
+      }
+
+      const id = dmnObject["@_id"]!;
+      const shape = shapesById.get(id)!;
+      const newNode = {
+        id,
+        type,
+        selected: selected.has(id),
+        dragging: dragging.has(id),
+        resizing: resizing.has(id),
+        position: snapShapePosition(diagram.snapGrid, shape),
+        data: { dmnObject, shape, index },
+        zIndex: NODE_LAYERS.NODES,
+        style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
+      };
+
+      if (dmnObject.__$$element === "decisionService") {
+        const containedDecisions = [...(dmnObject.outputDecision ?? []), ...(dmnObject.encapsulatedDecision ?? [])];
+        for (let i = 0; i < containedDecisions.length; i++) {
+          parentIdsById.set(idFromHref(containedDecisions[i]["@_href"]), dmnObject);
+          newNode.zIndex = NODE_LAYERS.PARENT_NODES;
+        }
+      }
+
+      if (dmnObject.__$$element === "group") {
+        // FIXME: Tiago --> Need to find which nodes are encapsulated by a group.
+      }
+
+      nodesById.set(newNode.id, newNode);
+      return newNode;
+    }
+
+    const nodes: RF.Node<DmnEditorDiagramNodeData<any>>[] = [
+      ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
+        const newNode = ackNode(dmnObject, index);
+        return newNode ? [newNode] : [];
+      }),
+      ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
+        const newNode = ackNode(dmnObject, index);
+        return newNode ? [newNode] : [];
+      }),
+    ];
+
+    if (diagram.overlays.enableNodeHierarchyHighlight) {
+      assignClassesToHighlightedHierarchyNodes([...selected], nodesById, edges);
+    }
+
+    // Assign parents & classNames to NODES
+    for (let i = 0; i < nodes.length; i++) {
+      const parent = parentIdsById.get(nodes[i].id);
+      if (parent) {
+        nodes[i].parentNode = parent["@_id"]!;
+        nodes[i].extent = "parent"; // FIXME: Tiago make these nodes deattach from parent when dragged outside. And vice-versa.
+        nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
+
+        // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
+        const parentShape = shapesById.get(parent["@_id"]!)!;
+
+        nodes[i].position = snapShapePosition(
+          diagram.snapGrid,
+          offsetShapePosition(nodes[i].data.shape, {
+            x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
+            y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
+          })
+        );
+      }
+    }
+
+    // console.timeEnd("nodes");
+
     return {
       nodes,
       edges,
@@ -275,11 +280,12 @@ export function useDmnDiagramData() {
     diagram.selected,
     diagram.dragging,
     diagram.resizing,
+    diagram.overlays.enableNodeHierarchyHighlight,
     diagram.snapGrid,
     dmn.model.definitions.drgElement,
     dmn.model.definitions.artifact,
-    shapesById,
     getEdgeData,
+    shapesById,
   ]);
 
   return { shapesById, edgesById, nodesById, nodes, edges };
@@ -288,5 +294,66 @@ export function useDmnDiagramData() {
 export function idFromHref(href: string | undefined) {
   return href?.substring(1) ?? "";
 }
+
+export function assignClassesToHighlightedHierarchyNodes(
+  selected: string[],
+  nodes: Map<string, RF.Node>,
+  edges: RF.Edge[]
+) {
+  function traverse(curNodeIds: string[], traversalDirection: HierarchyDirection, visited = new Set<string>()) {
+    if (curNodeIds.length <= 0) {
+      return;
+    }
+
+    const nextNodeIds = curNodeIds.flatMap((curNodeId) => {
+      if (visited.has(curNodeId)) {
+        return [];
+      }
+
+      // Only paint nodes if they're not selected.
+      if (!__selectedSet.has(curNodeId)) {
+        nodes.get(curNodeId)!.className = `hierarchy ${traversalDirection}`;
+      }
+
+      const curNodeAdjs = __adjMatrix[curNodeId] ?? {};
+      return Object.keys(curNodeAdjs).flatMap((adjNodeId) => {
+        const { edge, direction: edgeDirection } = curNodeAdjs[adjNodeId]!;
+        if (traversalDirection !== edgeDirection) {
+          return [];
+        }
+
+        visited.add(curNodeId);
+        // Only paint edges if at least one of the endpoints is not selected.
+        if (!(__selectedSet.has(edge.source) && __selectedSet.has(edge.target))) {
+          edge.className = `hierarchy ${traversalDirection}`;
+        }
+
+        return [adjNodeId];
+      });
+    });
+
+    traverse(nextNodeIds, traversalDirection, visited);
+  }
+
+  const __selectedSet = new Set(selected);
+  const __adjMatrix: AdjMatrix = {};
+
+  for (const e of edges) {
+    __adjMatrix[e.source] ??= {};
+    __adjMatrix[e.target] ??= {};
+    __adjMatrix[e.source]![e.target] = { direction: "up", edge: e };
+    __adjMatrix[e.target]![e.source] = { direction: "down", edge: e };
+  }
+
+  traverse(selected, "up");
+  traverse(selected, "down"); // Traverse "down" after "up" because when there's a cycle, highlighting a node as a dependency is preferable.
+}
+
+export type AdjMatrix = Record<
+  string,
+  undefined | Record<string, undefined | { direction: HierarchyDirection; edge: RF.Edge }>
+>;
+
+export type HierarchyDirection = "up" | "down";
 
 export type Unpacked<T> = T extends Array<infer U> ? U : never;
