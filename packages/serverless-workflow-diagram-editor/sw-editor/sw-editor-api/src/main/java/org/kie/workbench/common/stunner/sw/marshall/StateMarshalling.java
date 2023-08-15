@@ -140,7 +140,7 @@ public interface StateMarshalling {
                 }
 
                 JsPropertyMap<Object> map = Js.asPropertyMap(state);
-                if (map.has("onErrors")) {
+                if (map.has("onErrors") || !errors.isEmpty()) {
                     map.set("onErrors", errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
                 }
                 return state;
