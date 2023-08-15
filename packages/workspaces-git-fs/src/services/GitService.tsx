@@ -18,8 +18,7 @@ import git, { FetchResult, STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
-
-const INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurely-disable-tls-certificate-validation";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export interface CloneArgs {
   fs: KieSandboxWorkspacesFs;
@@ -87,9 +86,9 @@ export class GitService {
 
   private getRequestHeaders(args: { insecurelyDisableTlsCertificateValidation?: boolean }) {
     return {
-      ...(args.insecurelyDisableTlsCertificateValidation && {
-        [INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: "true",
-      }),
+      [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+        args.insecurelyDisableTlsCertificateValidation
+      ).toString(),
     };
   }
 

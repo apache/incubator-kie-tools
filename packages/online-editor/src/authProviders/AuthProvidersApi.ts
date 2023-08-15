@@ -27,10 +27,6 @@ export enum AuthProviderType {
   kubernetes = "kubernetes",
 }
 
-export const INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS = {
-  "insecurely-disable-tls-certificate-validation": "true",
-};
-
 const gitAuthProviderKeys = [AuthProviderType.bitbucket, AuthProviderType.github, AuthProviderType.gitlab] as const;
 const supportedGitAuthProvidersKeys = [AuthProviderType.bitbucket, AuthProviderType.github] as const;
 export type SupportedGitAuthProviders = typeof supportedGitAuthProvidersKeys[number];

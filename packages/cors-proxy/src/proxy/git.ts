@@ -16,7 +16,7 @@
 
 import * as url from "url";
 
-import { CorsConfig } from "./types";
+import { CorsConfig } from "@kie-tools/cors-proxy-api/dist";
 
 export enum GIT_HTTP_METHODS {
   GET = "GET",

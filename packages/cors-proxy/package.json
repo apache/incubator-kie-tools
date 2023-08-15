@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/cors-proxy-api": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",

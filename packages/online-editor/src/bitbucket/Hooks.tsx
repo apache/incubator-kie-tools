@@ -18,7 +18,7 @@ import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { useEnv } from "../env/hooks/EnvContext";
-import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS } from "../authProviders/AuthProvidersApi";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export enum AuthOptionsType {
   UNDEFINED = "UNDEFINED",
@@ -231,7 +231,9 @@ export function getBitbucketClient(args: {
     auth: args.auth,
     proxyUrl: args.insecurelyDisableTlsCertificateValidation ? args.proxyUrl : undefined,
     headers: {
-      ...(args.insecurelyDisableTlsCertificateValidation ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS : {}),
+      [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+        args.insecurelyDisableTlsCertificateValidation
+      ).toString(),
     },
   });
 }

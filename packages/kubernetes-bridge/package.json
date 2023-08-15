@@ -23,6 +23,7 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
+    "@kie-tools/cors-proxy-api": "workspace:*",
     "@kubernetes-models/apimachinery": "^1.1.0",
     "@kubernetes-models/base": "^4.0.0",
     "@kubernetes-models/knative": "^2.1.0",

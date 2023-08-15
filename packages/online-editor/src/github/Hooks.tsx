@@ -18,8 +18,8 @@ import { Octokit } from "@octokit/rest";
 import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
-import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS } from "../authProviders/AuthProvidersApi";
 import { useEnv } from "../env/hooks/EnvContext";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export function getOctokitClient(args: {
   githubToken?: string;
@@ -38,10 +38,10 @@ export function getOctokitClient(args: {
         return fetch(newUrl, {
           ...options,
           headers: {
+            [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+              args.insecurelyDisableTlsCertificateValidation
+            ).toString(),
             ...options.headers,
-            ...(args.insecurelyDisableTlsCertificateValidation
-              ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS
-              : {}),
           },
         });
       },

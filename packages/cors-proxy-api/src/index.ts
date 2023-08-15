@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-export const INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurely-disable-tls-certificate-validation";
-export const TARGET_URL_HEADER = "target-url";
+export enum CorsProxyHeaderKeys {
+  TARGET_URL = "target-url",
+  INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurely-disable-tls-certificate-validation",
+}
 
 export type CorsConfig = {
   exposeHeaders: string[];
