@@ -3,8 +3,8 @@ import { test, expect } from "../fixtures/boxedExpression";
 
 test.describe("Cell context menu", () => {
   test.describe("Rows control", () => {
-    test.beforeEach(async ({ standaloneExpression, page }) => {
-      await standaloneExpression.openRelationExpression();
+    test.beforeEach(async ({ expressions, page }) => {
+      await expressions.openRelationExpression();
       await page.getByTestId("monaco-container").click();
       await page.keyboard.type('"test"');
       await page.keyboard.press("Enter");
@@ -46,7 +46,6 @@ test.describe("Cell context menu", () => {
     test("Open row context menu and delete row", async ({ page }) => {
       await page.getByRole("menuitem", { name: "Insert above" }).click();
       await expect(page.getByRole("row", { name: "2" })).toContainText("test");
-
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Delete" }).click();
       await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
@@ -60,8 +59,8 @@ test.describe("Cell context menu", () => {
   });
 
   test.describe("Columns controls", () => {
-    test.beforeEach(async ({ standaloneExpression, page }) => {
-      await standaloneExpression.openRelationExpression();
+    test.beforeEach(async ({ expressions, page }) => {
+      await expressions.openRelationExpression();
       await page.getByTestId("monaco-container").click();
       await page.keyboard.type('"test"');
       await page.keyboard.press("Enter");
@@ -103,7 +102,7 @@ test.describe("Cell context menu", () => {
       await expect(page.getByRole("cell")).toHaveCount(3);
     });
 
-    test("Open column context menu and delete column", async ({ standaloneExpression, page }) => {
+    test("Open column context menu and delete column", async ({ expressions, page }) => {
       await page.getByRole("menuitem", { name: "Insert left" }).click();
       await expect(page.getByRole("cell").nth(2)).toContainText("test");
 
@@ -116,9 +115,22 @@ test.describe("Cell context menu", () => {
     });
   });
 
+  test("Stress test: add multiple columns and rows", async ({ expressions, page }) => {
+    await expressions.openRelationExpression();
+    await page.getByTestId("monaco-container").click({ button: "right" });
+    await page.getByRole("menuitem", { name: "Insert", exact: true }).nth(0).click();
+    await page.getByRole("spinbutton", { name: "number input" }).click();
+    await page.getByRole("button", { name: "Insert" }).click();
+    await page.getByTestId("monaco-container").nth(0).click({ button: "right" });
+    await page.getByRole("menuitem", { name: "Insert", exact: true }).nth(1).click();
+    await page.getByRole("spinbutton", { name: "number input" }).click();
+    await page.getByLabel("Below").click();
+    await page.getByRole("button", { name: "Insert" }).click();
+  });
+
   test.describe("Selection context menu", () => {
-    test.beforeEach(async ({ standaloneExpression, page }) => {
-      await standaloneExpression.openRelationExpression();
+    test.beforeEach(async ({ expressions, page }) => {
+      await expressions.openRelationExpression();
       await page.getByTestId("monaco-container").click();
       await page.keyboard.type('"test"');
       await page.keyboard.press("Enter");
@@ -128,11 +140,11 @@ test.describe("Cell context menu", () => {
       test.beforeEach(async ({ browserName }) => {
         test.skip(
           browserName !== "chromium",
-          "Playwright Webkit doesn't support clipboard permissions https://github.com/microsoft/playwright/issues/13037"
+          "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
         );
       });
 
-      test("Open selection context menu and copy row", async ({ page, clipboard }) => {
+      test("Open selection context menu and copy/paste row", async ({ page, clipboard }) => {
         await page.getByTestId("monaco-container").click({ button: "right" });
         await page.getByRole("menuitem", { name: "Copy" }).click();
         await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");

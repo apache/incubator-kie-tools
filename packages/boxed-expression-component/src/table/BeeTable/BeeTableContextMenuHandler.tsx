@@ -95,7 +95,7 @@ export function BeeTableContextMenuHandler({
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
   const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
   const [direction, setDirection] = useState(InsertRowColumnsDirection.AboveOrRight);
-  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number | "">(
+  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number>(
     DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION
   );
 
@@ -181,7 +181,7 @@ export function BeeTableContextMenuHandler({
   }, [activeCell, column?.groupType, operationConfig]);
 
   const allOperations = useMemo(() => {
-    return operationGroups.flatMap(({ group, items }) => items);
+    return operationGroups.flatMap(({ items }) => items);
   }, [operationGroups]);
 
   const operationLabel = useCallback(
@@ -364,21 +364,19 @@ export function BeeTableContextMenuHandler({
     ]
   );
 
-  const onMinus = () => {
-    const newValue = (insertMultipleRowColumnsValue || 0) - 1;
-    setInsertMultipleRowColumnsValue(newValue);
-  };
+  const onMinus = useCallback(() => {
+    setInsertMultipleRowColumnsValue(insertMultipleRowColumnsValue - 1);
+  }, [insertMultipleRowColumnsValue]);
 
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+  const onChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
     const intValue = Math.abs(parseInt(value));
     setInsertMultipleRowColumnsValue(intValue === 0 ? 1 : Math.min(intValue, MAXIMUM_ROWS_COLUMNS_PER_INSERTION));
-  };
+  }, []);
 
-  const onPlus = () => {
-    const newValue = (insertMultipleRowColumnsValue || 0) + 1;
-    setInsertMultipleRowColumnsValue(newValue);
-  };
+  const onPlus = useCallback(() => {
+    setInsertMultipleRowColumnsValue(insertMultipleRowColumnsValue + 1);
+  }, [insertMultipleRowColumnsValue]);
 
   const insertRowColumnsNumberInput = useMemo(() => {
     return (

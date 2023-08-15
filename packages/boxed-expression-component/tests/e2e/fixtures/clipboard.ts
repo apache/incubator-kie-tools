@@ -8,6 +8,11 @@ export class Clipboard {
     await this.page.keyboard.press(`${modifier}+KeyC`);
   }
 
+  public async cut() {
+    const modifier = process.platform === "darwin" ? "Meta" : "Control";
+    await this.page.keyboard.press(`${modifier}+KeyX`);
+  }
+
   public async paste() {
     const modifier = process.platform === "darwin" ? "Meta" : "Control";
     await this.page.keyboard.press(`${modifier}+KeyV`);

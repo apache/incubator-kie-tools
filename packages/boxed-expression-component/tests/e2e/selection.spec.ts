@@ -1,11 +1,57 @@
 import { test, expect } from "./fixtures/boxedExpression";
 
-test.describe("Selection", () => {
-  test("Select multiple cells", async ({ standaloneExpression }) => {
-    await standaloneExpression.openLiteralExpression();
+test.describe("Cell selection", () => {
+  test.beforeEach(async ({ expressions }) => {
+    await expressions.openRelationExpression();
+    await expressions.createRelationExpression();
   });
 
-  test("Select multiple cells and delete", async ({ standaloneExpression }) => {
-    await standaloneExpression.openLiteralExpression();
+  test("Select multiple cells and write on cells", async ({ page }) => {
+    for (let i = 0; i < 9; i++) {
+      await expect(page.getByRole("cell", { name: `test${i}` }).first()).toContainText(`test${i}`);
+    }
+  });
+
+  test("Select multiple cells and copy/paste", async ({ page, clipboard }) => {
+    await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(8));
+    await clipboard.copy();
+    await page.keyboard.press("Delete");
+
+    for (let i = 1; i < 4; i++) {
+      for (let j = 1; j < 4; j++) {
+        await expect(
+          page
+            .getByRole("row", { name: `${i}`, exact: true })
+            .getByRole("cell")
+            .nth(j)
+        ).toContainText("");
+      }
+    }
+
+    await clipboard.paste();
+    for (let i = 0; i < 9; i++) {
+      await expect(page.getByRole("cell", { name: `test${i}` }).first()).toContainText(`test${i}`);
+    }
+  });
+
+  test("Select multiple cells and cut", async ({ page, clipboard }) => {
+    await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(8));
+    await clipboard.cut();
+
+    for (let i = 1; i < 4; i++) {
+      for (let j = 1; j < 4; j++) {
+        await expect(
+          page
+            .getByRole("row", { name: `${i}`, exact: true })
+            .getByRole("cell")
+            .nth(j)
+        ).toContainText("");
+      }
+    }
+
+    await clipboard.paste();
+    for (let i = 0; i < 9; i++) {
+      await expect(page.getByRole("cell", { name: `test${i}` }).first()).toContainText(`test${i}`);
+    }
   });
 });
