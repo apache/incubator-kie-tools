@@ -16,8 +16,8 @@
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,7 +60,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -92,16 +91,13 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     private static final String POSITION_OUTSIDE = "OUTSIDE";
 
     @Mock
-    protected FloatingView<IsWidget> floatingView;
+    protected FloatingView<IsElement> floatingView;
 
     @Mock
     protected TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;
 
     @Mock
     protected HTMLElement textEditBoxElement;
-
-    @Mock
-    protected IsWidget textEditBoxWidget;
 
     @Mock
     protected EditorSession session;
@@ -201,7 +197,6 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
             return null;
         }).when(control).scheduleDeferredCommand(any(Scheduler.ScheduledCommand.class));
 
-        doReturn(textEditBoxWidget).when(control).wrapTextEditorBoxElement(eq(textEditBoxElement));
         doAnswer(i -> abstractCanvas).when(control).getAbstractCanvas();
         doAnswer(i -> hasTitle).when(control).getHasTitle();
         doNothing().when(control).setMouseWheelHandler();
@@ -277,7 +272,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         verify(textEditorBox).initialize(eq(canvasHandler),
                                          any(Command.class));
         verify(floatingView).hide();
-        verify(floatingView).add(textEditBoxWidget);
+        verify(floatingView).add(textEditorBox);
     }
 
     @Test

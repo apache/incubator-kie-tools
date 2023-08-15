@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "@kie-tools/yaml-language-server": "workspace:*",
-    "jsonata": "^1.8.3",
     "jsonc-parser": "^3.0.0",
     "vscode-json-languageservice": "^4.2.1",
     "vscode-languageserver": "^7.0.0",

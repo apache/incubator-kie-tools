@@ -23,14 +23,17 @@ import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-wo
 import { useMemo } from "react";
 import { SwfServiceCatalogChannelApiImpl } from "../../channel";
 import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../channel/ServerlessWorkflowTextEditorChannelApiImpl";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 
-export function useSwfTextEditorChannelApi(args: {
+export interface UseSwfTextEditorChannelApiArgs {
+  apiOverrides: Partial<KogitoEditorChannelApi>;
   locale: string;
   channelApi?: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>;
   embeddedEditorFile?: EmbeddedEditorFile;
-  onEditorReady: () => void;
   swfDiagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>;
-}) {
+}
+
+export function useSwfTextEditorChannelApi(args: UseSwfTextEditorChannelApiArgs) {
   const [services] = useSharedValue(args.channelApi?.shared.kogitoSwfServiceCatalog_services);
   const [serviceRegistriesSettings] = useSharedValue(
     args.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistriesSettings
@@ -44,9 +47,7 @@ export function useSwfTextEditorChannelApi(args: {
     () =>
       args.embeddedEditorFile &&
       new EmbeddedEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
-        kogitoEditor_ready: () => {
-          args.onEditorReady();
-        },
+        ...args.apiOverrides,
       }),
     [args, stateControl]
   );
@@ -56,7 +57,7 @@ export function useSwfTextEditorChannelApi(args: {
       args.channelApi &&
       services &&
       serviceRegistriesSettings &&
-      new SwfServiceCatalogChannelApiImpl(args.channelApi, services, serviceRegistriesSettings),
+      new SwfServiceCatalogChannelApiImpl({ channelApi: args.channelApi, services, serviceRegistriesSettings }),
     [args.channelApi, serviceRegistriesSettings, services]
   );
 
@@ -64,13 +65,13 @@ export function useSwfTextEditorChannelApi(args: {
     () =>
       channelApiImpl &&
       args.channelApi &&
-      new ServerlessWorkflowTextEditorChannelApiImpl(
-        channelApiImpl,
-        args.channelApi,
-        swfServiceCatalogChannelApiImpl,
-        args.swfDiagramEditorEnvelopeApi
-      ),
-    [channelApiImpl, args.channelApi, args.swfDiagramEditorEnvelopeApi, swfServiceCatalogChannelApiImpl]
+      new ServerlessWorkflowTextEditorChannelApiImpl({
+        defaultApiImpl: channelApiImpl,
+        channelApi: args.channelApi,
+        swfServiceCatalogApiImpl: swfServiceCatalogChannelApiImpl,
+        diagramEditorEnvelopeApi: args.swfDiagramEditorEnvelopeApi,
+      }),
+    [channelApiImpl, args, swfServiceCatalogChannelApiImpl]
   );
 
   return {

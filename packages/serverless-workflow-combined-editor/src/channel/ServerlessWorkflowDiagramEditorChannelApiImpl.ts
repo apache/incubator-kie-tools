@@ -34,64 +34,66 @@ import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-w
 
 export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   constructor(
-    private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly textEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>
+    private readonly args: {
+      defaultApiImpl: KogitoEditorChannelApi;
+      textEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
+    }
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
-    return this.defaultApiImpl.kogitoEditor_contentRequest();
+    return this.args.defaultApiImpl.kogitoEditor_contentRequest();
   }
 
   public kogitoEditor_ready(): void {
-    this.defaultApiImpl.kogitoEditor_ready();
+    this.args.defaultApiImpl.kogitoEditor_ready();
   }
 
   public kogitoEditor_setContentError(content: EditorContent): void {
-    this.defaultApiImpl.kogitoEditor_setContentError(content);
+    this.args.defaultApiImpl.kogitoEditor_setContentError(content);
   }
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
-    this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
+    this.args.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {
-    return this.defaultApiImpl.kogitoI18n_getLocale();
+    return this.args.defaultApiImpl.kogitoI18n_getLocale();
   }
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    this.defaultApiImpl.kogitoNotifications_createNotification(notification);
+    this.args.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
   public kogitoNotifications_removeNotifications(path: string): void {
-    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
+    this.args.defaultApiImpl.kogitoNotifications_removeNotifications(path);
   }
 
   public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
+    this.args.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
   public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
-    this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
+    this.args.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
   public kogitoWorkspace_openFile(path: string): void {
-    this.defaultApiImpl.kogitoWorkspace_openFile(path);
+    this.args.defaultApiImpl.kogitoWorkspace_openFile(path);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
-    return this.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
+    return this.args.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
-    return this.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
+    return this.args.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
   }
 
   public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
-    return this.defaultApiImpl.kogitoEditor_theme();
+    return this.args.defaultApiImpl.kogitoEditor_theme();
   }
 
   public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    return this.textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
+    return this.args.textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
   }
 
   public kogitoSwfDiagramEditor__setContentSuccess(): void {

@@ -49,7 +49,10 @@ export function useSwfDiagramEditorChannelApi(args: {
       args.channelApi &&
       channelApiImpl &&
       args.swfTextEditorEnvelopeApi &&
-      new ServerlessWorkflowDiagramEditorChannelApiImpl(channelApiImpl, args.swfTextEditorEnvelopeApi),
+      new ServerlessWorkflowDiagramEditorChannelApiImpl({
+        defaultApiImpl: channelApiImpl,
+        textEditorEnvelopeApi: args.swfTextEditorEnvelopeApi,
+      }),
     [args.channelApi, channelApiImpl, args.swfTextEditorEnvelopeApi]
   );
 
