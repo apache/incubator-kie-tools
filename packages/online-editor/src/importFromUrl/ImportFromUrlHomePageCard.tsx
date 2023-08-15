@@ -27,7 +27,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
-import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AUTH_SESSION_NONE, AuthSession } from "../authSessions/AuthSessionApi";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
@@ -60,9 +60,9 @@ export function ImportFromUrlCard() {
 
   const updateInsecurelyDisableTlsCertificateValidation = useCallback(
     (newAuthSession: AuthSession) => {
-      if (newAuthSession && newAuthSession.type === "git") {
+      if (newAuthSession?.type === "git") {
         const localAuthProvider = authProviders.find((provider) => provider.id === newAuthSession.authProviderId);
-        if (localAuthProvider && localAuthProvider.group === AuthProviderGroup.GIT) {
+        if (localAuthProvider?.group === AuthProviderGroup.GIT) {
           setInsecurelyDisableTlsCertificateValidation(
             localAuthProvider.insecurelyDisableTlsCertificateValidation ?? false
           );

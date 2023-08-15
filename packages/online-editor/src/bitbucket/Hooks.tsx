@@ -105,12 +105,14 @@ export class BitbucketClient implements BitbucketClientApi {
     };
     this.auth = options?.auth ?? undefinedAuthOptions;
     this.username = options.username ?? (options?.auth as BasicAuthOptions)?.username;
+    this.proxyUrl = options.proxyUrl;
   }
   appName: string;
   auth: AuthOptions;
   domain: string;
   headers: Record<string, string>;
   username?: string;
+  proxyUrl?: string;
 
   request = async (props: {
     urlContext: string;
@@ -138,8 +140,11 @@ export class BitbucketClient implements BitbucketClientApi {
       body: props.body,
     });
   };
-  getApiUrl = (proxyUrl?: string) => {
-    return `${proxyUrl ? `${proxyUrl}/` : "https://"}api.${this.domain}/2.0`;
+  getApiUrl = () => {
+    if (this.proxyUrl) {
+      return `${this.proxyUrl}/api.${this.domain}/2.0`;
+    }
+    return `https://api.${this.domain}/2.0`;
   };
   getAuthedUser = () => {
     return this.request({ urlContext: "/user" });
@@ -213,21 +218,39 @@ export class BitbucketClient implements BitbucketClientApi {
   };
 }
 
+export function getBitbucketClient(args: {
+  appName: string;
+  auth?: AuthOptions;
+  domain?: string;
+  proxyUrl?: string;
+  insecurelyDisableTlsCertificateValidation?: boolean;
+}) {
+  return new BitbucketClient({
+    appName: args.appName,
+    domain: args.domain,
+    auth: args.auth,
+    proxyUrl: args.insecurelyDisableTlsCertificateValidation ? args.proxyUrl : undefined,
+    headers: {
+      ...(args.insecurelyDisableTlsCertificateValidation ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS : {}),
+    },
+  });
+}
+
 export function useBitbucketClient(authSession: AuthSession | undefined): BitbucketClientApi {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
 
   return useMemo(() => {
     if (authSession?.type !== "git") {
-      return new BitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
+      return getBitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
     const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
     if (authProvider?.type !== "bitbucket") {
-      return new BitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
+      return getBitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
-    return new BitbucketClient({
+    return getBitbucketClient({
       appName: env.KIE_SANDBOX_APP_NAME,
       domain: authProvider.domain,
       auth: {
@@ -235,12 +258,8 @@ export function useBitbucketClient(authSession: AuthSession | undefined): Bitbuc
         username: authSession.login,
         password: authSession.token,
       },
-      proxyUrl: authProvider.insecurelyDisableTlsCertificateValidation ? env.KIE_SANDBOX_CORS_PROXY_URL : undefined,
-      headers: {
-        ...(authProvider.insecurelyDisableTlsCertificateValidation
-          ? INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION_HEADERS
-          : {}),
-      },
+      proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+      insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
     });
   }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]);
 }

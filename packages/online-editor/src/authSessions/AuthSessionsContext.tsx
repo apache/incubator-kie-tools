@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
-import * as React from "react";
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import {
   AuthenticatedUserResponse,
@@ -32,6 +31,7 @@ import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift
 import {
   GitAuthProvider,
   SupportedGitAuthProviders,
+  isGitAuthProvider,
   isSupportedGitAuthProviderType,
 } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
@@ -143,13 +143,10 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
         const newAuthSessionStatus: [string, AuthSessionStatus][] = await Promise.all(
           [...(authSessions?.values() ?? [])].map(async (authSession) => {
             if (authSession.type === "git") {
-              const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId) as GitAuthProvider;
-              if (isSupportedGitAuthProviderType(authProvider?.type)) {
+              const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
+              if (isGitAuthProvider(authProvider) && isSupportedGitAuthProviderType(authProvider.type)) {
                 try {
-                  const fetchUser = switchExpression<
-                    SupportedGitAuthProviders,
-                    () => Promise<AuthenticatedUserResponse>
-                  >(authProvider?.type, {
+                  const fetchUser = switchExpression(authProvider?.type, {
                     bitbucket: () =>
                       fetchAuthenticatedBitbucketUser(
                         env.KIE_SANDBOX_APP_NAME,

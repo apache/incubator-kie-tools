@@ -97,14 +97,15 @@ export class ExtendedServicesClient {
       throw new Error(`${response.status} ${response.statusText}`);
     }
 
-    // The input set property associated with the mainURI is InputSetX, where X is a number not always 1.
-    // So replace all occurrences InputSetX -> InputSet to keep compatibility with the current DmnForm.
+    // The input set property associated with the mainURI can be InputSetX or nsYInputSetX, where X and Y are a number.
+    // So replace all occurrences InputSetX/nsYInputSetX -> InputSet to keep compatibility with the current DmnForm.
     const json = await response.json();
-    const refIndex = json["$ref"].replace("#/definitions/InputSet", "");
+    const inputSet = json["$ref"].replace("#/definitions/", "");
+    const outputSet = inputSet.replace("InputSet", "OutputSet");
     return JSON.parse(
       JSON.stringify(json)
-        .replace(new RegExp(`InputSet${refIndex}`, "g"), "InputSet")
-        .replace(new RegExp(`OutputSet${refIndex}`, "g"), "OutputSet")
+        .replace(new RegExp(`${inputSet}`, "g"), "InputSet")
+        .replace(new RegExp(`${outputSet}`, "g"), "OutputSet")
     );
   }
 

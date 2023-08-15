@@ -41,78 +41,80 @@ import { SwfStaticEnvelopeContentProviderChannelApi } from "../api/SwfStaticEnve
 
 export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
   constructor(
-    private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
-    private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
-    private readonly swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi
+    private readonly args: {
+      defaultApiImpl: KogitoEditorChannelApi;
+      swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi;
+      swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi;
+      swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi;
+      swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi;
+    }
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
-    return this.defaultApiImpl.kogitoEditor_contentRequest();
+    return this.args.defaultApiImpl.kogitoEditor_contentRequest();
   }
 
   public kogitoEditor_ready(): void {
-    this.defaultApiImpl.kogitoEditor_ready();
+    this.args.defaultApiImpl.kogitoEditor_ready();
   }
 
   public kogitoEditor_setContentError(content: EditorContent): void {
-    this.defaultApiImpl.kogitoEditor_setContentError(content);
+    this.args.defaultApiImpl.kogitoEditor_setContentError(content);
   }
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
-    this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
+    this.args.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
   }
 
   public kogitoI18n_getLocale(): Promise<string> {
-    return this.defaultApiImpl.kogitoI18n_getLocale();
+    return this.args.defaultApiImpl.kogitoI18n_getLocale();
   }
 
   public kogitoNotifications_createNotification(notification: Notification): void {
-    this.defaultApiImpl.kogitoNotifications_createNotification(notification);
+    this.args.defaultApiImpl.kogitoNotifications_createNotification(notification);
   }
 
   public kogitoNotifications_removeNotifications(path: string): void {
-    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
+    this.args.defaultApiImpl.kogitoNotifications_removeNotifications(path);
   }
 
   public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
+    this.args.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
   public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
-    this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
+    this.args.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
   public kogitoWorkspace_openFile(path: string): void {
-    this.defaultApiImpl.kogitoWorkspace_openFile(path);
+    this.args.defaultApiImpl.kogitoWorkspace_openFile(path);
   }
 
   public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
-    return this.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
+    return this.args.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
   }
 
   public kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
-    return this.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
+    return this.args.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
   }
 
   public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
-    return this.defaultApiImpl.kogitoEditor_theme();
+    return this.args.defaultApiImpl.kogitoEditor_theme();
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
-    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_services() ?? { defaultValue: [] };
+    return this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_services() ?? { defaultValue: [] };
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_refresh();
+    this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_refresh();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
+    this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
   }
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
@@ -121,32 +123,32 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCompletionItems(args) ?? [];
+    return this.args.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCompletionItems(args) ?? [];
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
+    return this.args.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
   }
 
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return (
-      this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {
+      this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {
         defaultValue: { registries: [] },
       }
     );
   }
 
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_logInServiceRegistries();
+    this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_logInServiceRegistries();
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
+    this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
 
   kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
     return (
-      this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
+      this.args.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
         defaultValue: { defaultWidth: "50%", editorMode: "full" },
       }
     );
@@ -154,7 +156,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
 
   public kogitoSwfGetDiagramEditorEnvelopeContent(): SharedValueProvider<string> {
     return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetDiagramEditorEnvelopeContent() ?? {
+      this.args.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetDiagramEditorEnvelopeContent() ?? {
         defaultValue: "",
       }
     );
@@ -162,7 +164,9 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
 
   public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
     return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ?? { defaultValue: "" }
+      this.args.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ?? {
+        defaultValue: "",
+      }
     );
   }
 

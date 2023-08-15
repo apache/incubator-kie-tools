@@ -47,11 +47,9 @@ export const createEditor = (
 ): StandaloneEditorApi => {
   return {
     undo: () => {
-      stateControl.undo();
       return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorUndo.send());
     },
     redo: () => {
-      stateControl.redo();
       return Promise.resolve(envelopeApi.notifications.kogitoEditor_editorRedo.send());
     },
     close: () => {
