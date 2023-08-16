@@ -31,6 +31,7 @@ import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList"
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
+import { useEnv } from "../../env/hooks/EnvContext";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -38,6 +39,7 @@ export enum OpenShiftSettingsTabMode {
 }
 
 export function ConnectToOpenShiftSection() {
+  const { env } = useEnv();
   const extendedServices = useExtendedServices();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
@@ -55,9 +57,9 @@ export function ConnectToOpenShiftSection() {
     () =>
       new KieSandboxOpenShiftService({
         connection,
-        proxyUrl: extendedServices.config.url.corsProxy,
+        proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
       }),
-    [connection, extendedServices.config]
+    [connection, env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
   const successPrimaryAction = useMemo(() => {

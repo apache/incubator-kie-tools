@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
@@ -106,10 +105,6 @@ public class SessionEditorPresenter<S extends EditorSession>
 
     void onScreenMinimizedEvent(@Observes ScreenMinimizedEvent event) {
         getPalette().onScreenMinimized(event);
-    }
-
-    void commandExecutedFired(@Observes final CanvasCommandExecutedEvent event) {
-        refreshOnEvent(event);
     }
 
     void commandUndoExecutedFired(@Observes final CanvasCommandUndoneEvent event) {

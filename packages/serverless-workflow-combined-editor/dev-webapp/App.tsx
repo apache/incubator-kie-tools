@@ -21,7 +21,7 @@ import {
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditor, useDirtyState, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename, extname } from "path";
 import * as React from "react";
@@ -35,6 +35,7 @@ export type ServerlessWorkflowType = "json" | "yml" | "yaml";
 export const App = () => {
   const { editor, editorRef } = useEditorRef();
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+  const isDirty = useDirtyState(editor);
 
   const editorEnvelopeLocator = useMemo(
     () =>
@@ -117,6 +118,7 @@ export const App = () => {
               get={onGetContent}
               setTheme={onSetTheme}
               validate={onValidate}
+              isDirty={isDirty}
             />
           </PageSection>
           <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>

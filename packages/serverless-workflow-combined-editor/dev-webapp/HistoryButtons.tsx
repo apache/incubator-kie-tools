@@ -18,6 +18,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import "./HistoryButtons.scss";
@@ -33,6 +34,7 @@ interface HistoryButtonsProps {
   get: () => Promise<string>;
   setTheme: (theme: Theme) => Promise<void>;
   validate: () => Promise<void>;
+  isDirty: boolean;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
@@ -71,6 +73,13 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
             }}
           />
         </SplitItem>
+        {props.isDirty && (
+          <SplitItem className="history-buttons__edited-indicator">
+            <TextContent>
+              <Text component={"small"}>{"(Edited)"}</Text>
+            </TextContent>
+          </SplitItem>
+        )}
       </Split>
       <hr className="history-buttons__divider" />
     </div>

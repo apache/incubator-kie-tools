@@ -104,13 +104,14 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, go to `packages/online-editor`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Online Editor resources.
 3. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
-4. Run the Git CORS Proxy by running `pnpm start` at `packages/git-cors-proxy-image`.
+4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
 
 #### Serverless Logic Web Tools
 
 1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-web-tools`.
 1. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
 1. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
+1. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
 
 #### Standalone Editors (DMN and BPMN)
 

@@ -19,9 +19,8 @@ package pkg
 import "github.com/kiegroup/kie-tools/packages/extended-services/pkg/metadata"
 
 type ProxyConfig struct {
-	Ip                 string `json:"ip"`
-	Port               string `json:"port"`
-	InsecureSkipVerify bool   `json:"insecureSkipVerify"`
+	Ip   string `json:"ip"`
+	Port string `json:"port"`
 }
 
 type PingResponse struct {
@@ -31,13 +30,12 @@ type PingResponse struct {
 	Started       bool        `json:"started"`
 }
 
-func GetPingResponse(insecureSkipVerify bool, started bool) PingResponse {
+func GetPingResponse(started bool) PingResponse {
 	return PingResponse{
 		Version: metadata.Version,
 		ProxyConfig: ProxyConfig{
-			Ip:                 metadata.Ip,
-			Port:               metadata.Port,
-			InsecureSkipVerify: insecureSkipVerify,
+			Ip:   metadata.Ip,
+			Port: metadata.Port,
 		},
 		KieSandboxUrl: metadata.KieSandboxUrl,
 		Started:       started,

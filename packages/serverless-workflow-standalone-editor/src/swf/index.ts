@@ -26,7 +26,7 @@ import {
   SwfPreviewOptionsChannelApiImpl,
   NoOpSwfServiceCatalogChannelApiImpl,
   SwfStaticEnvelopeContentProviderChannelApiImpl,
-} from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+} from "@kie-tools/serverless-workflow-combined-editor/dist/channel";
 import { StandaloneServerlessWorkflowCombinedEditorChannelApi } from "./channel";
 import { getLanguageServiceChannelApi } from "./languageService";
 import { SwfPreviewOptions } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
