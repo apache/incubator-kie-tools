@@ -1,12 +1,13 @@
 import { Locator, Page, test as base } from "@playwright/test";
 import { Clipboard } from "./clipboard";
 import { Expressions } from "./expression";
+import { Resizing } from "./resizing";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
   expressions: Expressions;
   clipboard: Clipboard;
-  sleep: (timeout: number) => Promise<true>;
+  resizing: Resizing;
 };
 
 class BoxedExpressionEditor {
@@ -48,6 +49,9 @@ export const test = base.extend<BoxedExpressionFixtures>({
     const clipboard = new Clipboard(page);
     clipboard.setup(context, browserName);
     await use(clipboard);
+  },
+  resizing: async ({ page }, use) => {
+    await use(new Resizing(page));
   },
 });
 

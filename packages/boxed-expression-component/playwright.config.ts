@@ -12,7 +12,7 @@ const customConfig = defineConfig({
   },
   /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
   webServer: {
-    command: "pnpm storybook",
+    command: "pnpm start",
     url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
     reuseExistingServer: !process.env.CI || true,
   },
