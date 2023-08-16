@@ -6,22 +6,32 @@ export class Expressions {
     this.baseURL = baseURL;
   }
 
+  public getIframeURL(iframeId: string) {
+    return `iframe.html?id=${iframeId}&viewMode=story`;
+  }
+
   public async openLiteralExpression() {
-    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--literal-expression` ?? "");
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--literal-expression")}` ?? ""
+    );
   }
 
   public async openContextExpression() {
-    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--context-expression` ?? "");
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--context-expression")}` ?? ""
+    );
   }
 
   public async openDecisionTableExpression() {
     await this.page.goto(
-      `${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--decision-table-expression` ?? ""
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--decision-table-expression")}` ?? ""
     );
   }
 
   public async openRelationExpression() {
-    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--relation-expression` ?? "");
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--relation-expression")}` ?? ""
+    );
   }
 
   public async createRelationExpression() {
@@ -47,15 +57,19 @@ export class Expressions {
 
   public async openInvocationExpression() {
     await this.page.goto(
-      `${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--invocation-expression` ?? ""
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--invocation-expression")}` ?? ""
     );
   }
 
   public async openListExpression() {
-    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--list-expression` ?? "");
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--list-expression")}` ?? ""
+    );
   }
 
   public async openFunctionExpression() {
-    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-boxedexpressioneditor--function-expression` ?? "");
+    await this.page.goto(
+      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--function-expression")}` ?? ""
+    );
   }
 }

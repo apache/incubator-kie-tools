@@ -20,7 +20,6 @@ export class Resizing {
 
   public async reset(target: Locator) {
     await target.hover();
-    await target.getByTestId("resizer-handle").hover();
-    await target.getByTestId("resizer-handle").dblclick({ delay: 10 });
+    await target.getByTestId("resizer-handle").dblclick();
   }
 }

@@ -48,7 +48,7 @@ export default defineConfig({
     {
       timeout: 60000,
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
     },
 
     {

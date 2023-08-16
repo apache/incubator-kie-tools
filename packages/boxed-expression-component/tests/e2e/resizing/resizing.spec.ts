@@ -37,7 +37,9 @@ test.describe("Resizing", () => {
       expect(await result.boundingBox()).toHaveProperty("width", 120);
     });
 
-    test("resize header column and reset", async ({ page, resizing }) => {
+    test("resize header column and reset", async ({ page, resizing, browserName }) => {
+      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+
       // Requires a nested expression to save the header width
       await page.getByText("Select expression").first().click();
       await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
@@ -188,7 +190,9 @@ test.describe("Resizing", () => {
       expect(await params.boundingBox()).toHaveProperty("width", 212);
     });
 
-    test("resize header column and reset", async ({ page, resizing }) => {
+    test("resize header column and reset", async ({ page, resizing, browserName }) => {
+      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+
       // Requires a nested expression to save the header width
       await page.getByText("Select expression").first().click();
       await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
@@ -226,7 +230,9 @@ test.describe("Resizing", () => {
       expect(await params.boundingBox()).toHaveProperty("width", 120);
     });
 
-    test("resize header column and reset", async ({ page, resizing }) => {
+    test("resize header column and reset", async ({ page, resizing, browserName }) => {
+      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+
       // Requires a nested expression to save the header width
       await page.getByText("Select expression").first().click();
       await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
@@ -275,7 +281,9 @@ test.describe("Resizing", () => {
       expect(await header.boundingBox()).toHaveProperty("width", 212);
     });
 
-    test("resize header column and reset", async ({ page, resizing }) => {
+    test("resize header column and reset", async ({ page, resizing, browserName }) => {
+      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+
       // Requires a nested expression to save the header width
       await page.getByText("Select expression").first().click();
       await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
