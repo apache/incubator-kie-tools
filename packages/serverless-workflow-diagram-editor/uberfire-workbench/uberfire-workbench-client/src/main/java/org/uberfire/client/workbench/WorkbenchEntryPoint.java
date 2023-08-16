@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -43,6 +44,8 @@ public class WorkbenchEntryPoint {
 
     private final Map<String, Activity> idActivityMap = new HashMap<>();
 
+    private final HTMLElement mainContainer = (HTMLElement) DomGlobal.document.createElement("div");
+
     @AfterInitialization
     private void afterInitialization() {
         WorkbenchResources.INSTANCE.CSS().ensureInjected();
@@ -57,10 +60,18 @@ public class WorkbenchEntryPoint {
 
 
     private void setupRootContainer() {
+        DomGlobal.document.body.appendChild(mainContainer);
+        mainContainer.id = "main-container";
+        mainContainer.className = "main-container";
+        mainContainer.style.position = "absolute";
+        mainContainer.style.setProperty("inset", "0px");
+
         HTMLDivElement root = (HTMLDivElement) DomGlobal.document.createElement("div");
         root.id = "root-container";
         root.className = "root-container";
-        DomGlobal.document.body.appendChild(root);
+
+        mainContainer.appendChild(root);
+        DomGlobal.document.body.appendChild(mainContainer);
 
         final SyncBeanDef<EditorActivity> editorBean = getBean(EditorActivity.class, null);
         JSFunctions.nativeRegisterGwtClientBean(editorBean.getName(), editorBean);

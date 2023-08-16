@@ -156,10 +156,9 @@ public class StunnerEditor {
                 callback.onError(error);
             }
         });
-
         removeAllChildren(rootContainer);
-        rootContainer.appendChild(Js.uncheckedCast(diagramPresenter.getView().getElement()));
 
+        rootContainer.appendChild(diagramPresenter.getView().getElement());
         DomGlobal.window.addEventListener("resize", evt -> {
             resizeTo(DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
         });
