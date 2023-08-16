@@ -51,13 +51,14 @@ const NODE_FONT_WIDTH: number = 9;
 const NODE_FONT_HEIGHT: number = 24;
 const NODE_MIN_WIDTH: number = 60;
 const NODE_MIN_HEIGHT: number = 44;
+const NODE_VERTICAL_SPACING: number = 20;
 
 export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
   const [nodes, setNodes] = useState<NodeData[]>([]);
   const [edges, setEdges] = useState<EdgeData[]>([]);
+  const [diagramHeight, setDiagramHeight] = useState<number>(0);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
-  const decisionDevElementRef = React.useRef<HTMLDivElement>(null);
   const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
 
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -93,39 +94,55 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
   }, []);
 
   const setupDiagram = useCallback(() => {
-    const nodesData: NodeData[] = [];
-    const edgesData: EdgeData[] = [];
+    let nodesData: NodeData[] = [];
+    let edgesData: EdgeData[] = [];
     let nodeId: number = 0;
+    let height: number = 0;
 
     if (yardData?.elements) {
       yardData.elements.map((element) => {
+        if (!element.logic?.type || !element.name) {
+          nodesData = [];
+          edgesData = [];
+          return;
+        }
+
         const elementNodeId = ++nodeId;
         nodesData.push(createNode(elementNodeId, element.name));
 
         if (element.logic.type === "LiteralExpression") {
-          nodesData.push(createNode(++nodeId, element.logic.expression ?? ""));
+          const expressionNode = createNode(++nodeId, element.logic.expression ?? "");
+          nodesData.push(expressionNode);
           edgesData.push(createEdge(elementNodeId, nodeId));
+          height += NODE_VERTICAL_SPACING + expressionNode.height;
         } else if (element.logic.type === "DecisionTable") {
           element.logic.rules?.map((rule) => {
             let inputText = "";
             let outputText = "";
             let ruleIndex = 0;
+
             element.logic.inputs?.map((input) => {
               inputText += input + ": " + rule[ruleIndex++] + "\n";
             });
-            nodesData.push(createNode(++nodeId, inputText));
+            const inputsNode = createNode(++nodeId, inputText);
+            nodesData.push(inputsNode);
             edgesData.push(createEdge(elementNodeId, nodeId));
+
             element.logic.outputComponents?.map((output) => {
               outputText += output + ": " + rule[ruleIndex++] + "\n";
             });
-            nodesData.push(createNode(++nodeId, outputText));
+            const outputsNode = createNode(++nodeId, outputText);
+            nodesData.push(outputsNode);
             edgesData.push(createEdge(nodeId - 1, nodeId));
+
+            height += NODE_VERTICAL_SPACING + Math.max(inputsNode.height, outputsNode.height);
           });
         }
       });
 
       setNodes(nodesData);
       setEdges(edgesData);
+      setDiagramHeight(height);
     }
   }, [yardData, setNodes, setEdges]);
 
@@ -160,8 +177,8 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
   const diagram = useMemo(
     () => (
       <Canvas
-        maxWidth={4000}
-        maxHeight={4000}
+        maxWidth={Math.max(4000, diagramHeight / 5)}
+        maxHeight={diagramHeight + 2000}
         fit={true}
         direction={"RIGHT"}
         nodes={nodes}
@@ -266,7 +283,7 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
                     <TextInput
                       id={"expression-lang-text-input"}
                       isReadOnly={isReadOnly}
-                      value={input.name ? input.name : ""}
+                      value={input?.name ? input.name : ""}
                     ></TextInput>
                     <div className={"separator"}></div>
                     <Title headingLevel="h6" size={TitleSizes.md}>
@@ -275,7 +292,7 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
                     <TextInput
                       id={"expression-lang-text-input"}
                       isReadOnly={isReadOnly}
-                      value={input.type ? input.type : ""}
+                      value={input?.type ? input.type : ""}
                     ></TextInput>
                     <Divider />
                   </div>
@@ -290,12 +307,8 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
           </div>
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
-          <div
-            className={"decision-element-body"}
-            ref={decisionDevElementRef}
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
-          >
-            {yardData?.elements && yardData?.elements.length > 0 ? (
+          <div className={"decision-element-body"} style={{ maxWidth: "100%", maxHeight: "100%" }}>
+            {yardData?.elements && yardData?.elements.length > 0 && nodes.length > 0 ? (
               <TransformWrapper centerOnInit={true} initialScale={0.7} minScale={0.3} ref={transformComponentRef}>
                 <TransformComponent>{diagram}</TransformComponent>
               </TransformWrapper>
