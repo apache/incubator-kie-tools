@@ -153,20 +153,20 @@ test.describe("Resizing", () => {
     });
 
     test("resize column and add new columns", async ({ page, resizing }) => {
-      const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
+      const columnsHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const column1 = page.getByRole("columnheader", { name: "column-1 (<Undefined>)" });
 
-      await resizing.resizeCell(outputHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
-      expect(await outputHeader.boundingBox()).toHaveProperty("width", 150);
+      await resizing.resizeCell(columnsHeader, { x: 0, y: 0 }, { x: 50, y: 0 });
+      expect(await columnsHeader.boundingBox()).toHaveProperty("width", 150);
       await column1.hover({ position: { x: 0, y: 0 } });
       await column1.locator("svg").click();
       const column2 = page.getByRole("columnheader", { name: "column-2 (<Undefined>)" });
 
-      expect(await outputHeader.boundingBox()).toHaveProperty("width", 250);
+      expect(await columnsHeader.boundingBox()).toHaveProperty("width", 250);
       expect(await column1.boundingBox()).toHaveProperty("width", 150);
       expect(await column2.boundingBox()).toHaveProperty("width", 100);
-      await resizing.reset(outputHeader);
-      expect(await outputHeader.boundingBox()).toHaveProperty("width", 200);
+      await resizing.reset(columnsHeader);
+      expect(await columnsHeader.boundingBox()).toHaveProperty("width", 200);
       expect(await column1.boundingBox()).toHaveProperty("width", 100);
       expect(await column2.boundingBox()).toHaveProperty("width", 100);
     });
