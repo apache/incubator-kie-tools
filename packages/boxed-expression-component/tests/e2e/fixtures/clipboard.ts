@@ -1,4 +1,4 @@
-import { Locator, Page, test as base } from "@playwright/test";
+import { BrowserContext, Page } from "@playwright/test";
 
 export class Clipboard {
   constructor(public page: Page) {}
@@ -17,4 +17,12 @@ export class Clipboard {
     const modifier = process.platform === "darwin" ? "Meta" : "Control";
     await this.page.keyboard.press(`${modifier}+KeyV`);
   }
+
+  public async setup(context: BrowserContext, browserName: string) {
+    if (browserName === "chromium") {
+      await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+    }
+  }
+
+  public use() {}
 }

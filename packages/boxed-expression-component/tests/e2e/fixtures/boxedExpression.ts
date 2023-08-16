@@ -45,10 +45,9 @@ export const test = base.extend<BoxedExpressionFixtures>({
     await use(new Expressions(page, baseURL));
   },
   clipboard: async ({ browserName, context, page }, use) => {
-    if (browserName === "chromium") {
-      await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-    }
-    await use(new Clipboard(page));
+    const clipboard = new Clipboard(page);
+    clipboard.setup(context, browserName);
+    await use(clipboard);
   },
 });
 

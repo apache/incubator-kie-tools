@@ -287,11 +287,11 @@ export function BoxedExpressionEditorWrapper() {
           updateArgs({ ...args, expressionDefinition: expression });
           return expression;
         }
-        updateArgs({ ...args, expressionDefinition: expression });
+        updateArgs({ ...args, expressionDefinition: newExpression });
         return newExpression;
       });
     },
-    [args, expression, updateArgs]
+    [args, updateArgs]
   );
 
   return (
@@ -312,7 +312,7 @@ export function BoxedExpressionEditorWrapper() {
 export const RootExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   args: {
-    decisionNodeId: generateUuid(),
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -322,7 +322,6 @@ export const RootExpression: Story = {
     dataTypes,
     beeGwtService,
     pmmlParams,
-    isResetSupportedOnRootExpression: true,
   },
 };
 

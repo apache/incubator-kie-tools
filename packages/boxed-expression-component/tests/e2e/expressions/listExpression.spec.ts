@@ -1,8 +1,8 @@
 import { test, expect } from "../fixtures/boxedExpression";
 
 test.describe("List expression", () => {
-  test("Check if expression rendered correctly", async ({ boxedExpressionEditor, standaloneExpression, page }) => {
-    await standaloneExpression.openListExpression();
+  test("Check if expression rendered correctly", async ({ boxedExpressionEditor, expressions, page }) => {
+    await expressions.openListExpression();
     await expect(page.getByText("Expression Name (List)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "#", exact: true })).toBeAttached();

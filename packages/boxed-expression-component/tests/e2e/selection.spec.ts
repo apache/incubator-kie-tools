@@ -1,7 +1,12 @@
 import { test, expect } from "./fixtures/boxedExpression";
 
 test.describe("Cell selection", () => {
-  test.beforeEach(async ({ expressions }) => {
+  test.beforeEach(async ({ expressions, browserName }) => {
+    test.skip(
+      browserName !== "chromium",
+      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
+    );
+
     await expressions.openRelationExpression();
     await expressions.createRelationExpression();
   });
@@ -34,7 +39,7 @@ test.describe("Cell selection", () => {
     }
   });
 
-  test("Select multiple cells and cut", async ({ page, clipboard }) => {
+  test("Select multiple cells and cut/paste", async ({ page, clipboard }) => {
     await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(8));
     await clipboard.cut();
 

@@ -115,17 +115,42 @@ test.describe("Cell context menu", () => {
     });
   });
 
-  test("Stress test: add multiple columns and rows", async ({ expressions, page }) => {
-    await expressions.openRelationExpression();
-    await page.getByTestId("monaco-container").click({ button: "right" });
-    await page.getByRole("menuitem", { name: "Insert", exact: true }).nth(0).click();
-    await page.getByRole("spinbutton", { name: "number input" }).click();
-    await page.getByRole("button", { name: "Insert" }).click();
-    await page.getByTestId("monaco-container").nth(0).click({ button: "right" });
-    await page.getByRole("menuitem", { name: "Insert", exact: true }).nth(1).click();
-    await page.getByRole("spinbutton", { name: "number input" }).click();
-    await page.getByLabel("Below").click();
-    await page.getByRole("button", { name: "Insert" }).click();
+  test.describe("Index and header cells add rows and columns by plus sign", () => {
+    test.beforeEach(async ({ expressions, page }) => {
+      await expressions.openRelationExpression();
+      await page.getByTestId("monaco-container").click();
+      await page.keyboard.type('"test"');
+      await page.keyboard.press("Enter");
+    });
+
+    test("Add row above by positioning mouse on the index cell upper section", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).hover({ position: { x: 0, y: 0 } });
+      await page.getByRole("cell", { name: "1" }).locator("svg").click();
+      await expect(page.getByRole("row", { name: "2" })).toContainText("test");
+    });
+
+    test("Add row below by positioning mouse on the index cell lower section", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).hover();
+      await page.getByRole("cell", { name: "1" }).locator("svg").click();
+      await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+      await expect(page.getByRole("row", { name: "2" })).toBeAttached();
+    });
+
+    test("Add column left by positioning mouse on the header cell left section", async ({ page }) => {
+      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
+      await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
+      await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
+      await expect(page.getByRole("cell").nth(2)).toContainText("test");
+      await expect(page.getByRole("cell")).toHaveCount(3);
+    });
+
+    test("Add column right by positioning mouse on the header cell right section", async ({ page }) => {
+      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover();
+      await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
+      await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
+      await expect(page.getByRole("cell").nth(1)).toContainText("test");
+      await expect(page.getByRole("cell")).toHaveCount(3);
+    });
   });
 
   test.describe("Selection context menu", () => {
