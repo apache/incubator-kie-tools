@@ -92,6 +92,7 @@ func defaultDeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, 
 							Name:          "http",
 							Protocol:      corev1.ProtocolTCP,
 						}},
+						TerminationMessagePolicy: corev1.TerminationMessageFallbackToLogsOnError,
 						LivenessProbe: &corev1.Probe{
 							ProbeHandler: corev1.ProbeHandler{
 								HTTPGet: &corev1.HTTPGetAction{

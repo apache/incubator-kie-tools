@@ -16,7 +16,6 @@ package profiles
 
 import (
 	"context"
-	"fmt"
 	"path"
 	"time"
 
@@ -225,7 +224,7 @@ func (e *ensureRunningDevWorkflowReconciliationState) Do(ctx context.Context, wo
 	convertedDeployment := deployment.(*appsv1.Deployment)
 	if !kubeutil.IsDeploymentAvailable(convertedDeployment) {
 		klog.V(log.I).InfoS("Workflow is not running due to a problem in the Deployment. Attempt to recover.")
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, getDeploymentFailureMessage(convertedDeployment))
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, getDeploymentUnavailabilityMessage(convertedDeployment))
 		if _, err = e.performStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{RequeueAfter: requeueAfterFailure}, objs, err
 		}
@@ -244,41 +243,16 @@ func (f *followDeployDevWorkflowReconciliationState) CanReconcile(workflow *oper
 }
 
 func (f *followDeployDevWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	deployment := &appsv1.Deployment{}
-	if err := f.client.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
-		// we should have the deployment by this time, so even if the error above is not found, we should halt.
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Couldn't find deployment anymore while waiting for the deploy")
-		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
-			return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
-		}
+	result, err := DeploymentHandler(f.client).SyncDeploymentStatus(ctx, workflow)
+	if err != nil {
 		return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
 	}
 
-	if kubeutil.IsDeploymentAvailable(deployment) {
-		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
-		klog.V(log.I).InfoS("Workflow is in Running Condition")
-		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
-			return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
-
-		}
-		return ctrl.Result{RequeueAfter: requeueAfterIsRunning}, nil, nil
+	if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
+		return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
 	}
 
-	if !kubeutil.IsDeploymentFailed(deployment) {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
-		klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
-		if _, err := f.performStatusUpdate(ctx, workflow); err != nil {
-			return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
-		}
-		return ctrl.Result{RequeueAfter: requeueAfterFollowDeployment}, nil, nil
-	}
-
-	failedReason := getDeploymentFailureMessage(deployment)
-	workflow.Status.LastTimeRecoverAttempt = metav1.Now()
-	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, failedReason)
-	klog.V(log.I).InfoS("Workflow deployment failed", "Reason Message", failedReason)
-	_, err := f.performStatusUpdate(ctx, workflow)
-	return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil, err
+	return result, nil, nil
 }
 
 func (f *followDeployDevWorkflowReconciliationState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
@@ -370,17 +344,6 @@ func (r *recoverFromFailureDevReconciliationState) Do(ctx context.Context, workf
 		return ctrl.Result{Requeue: false}, nil, err
 	}
 	return ctrl.Result{RequeueAfter: requeueRecoverDeploymentErrorInterval}, nil, nil
-}
-
-// getDeploymentFailureMessage gets the replica failure reason.
-// MUST be called after checking that the Deployment is NOT available.
-// If there's no reason, the Deployment state has no apparent reason to be in failed state.
-func getDeploymentFailureMessage(deployment *appsv1.Deployment) string {
-	failure := kubeutil.GetDeploymentUnavailabilityMessage(deployment)
-	if len(failure) == 0 {
-		failure = fmt.Sprintf("Workflow Deployment %s is unavailable", deployment.Name)
-	}
-	return failure
 }
 
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment

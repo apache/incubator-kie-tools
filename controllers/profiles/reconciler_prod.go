@@ -189,7 +189,8 @@ type deployWorkflowReconciliationState struct {
 }
 
 func (h *deployWorkflowReconciliationState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
-	return workflow.Status.GetCondition(api.BuiltConditionType).IsTrue() && workflow.Status.GetCondition(api.RunningConditionType).IsFalse()
+	// If we have a built ready, we should deploy the object
+	return workflow.Status.GetCondition(api.BuiltConditionType).IsTrue()
 }
 
 func (h *deployWorkflowReconciliationState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
@@ -280,12 +281,15 @@ func (h *deployWorkflowReconciliationState) handleObjects(ctx context.Context, w
 	if !requeue {
 		klog.V(log.I).InfoS("Skip reconcile: Deployment and service already exists",
 			"Deployment.Namespace", existingDeployment.Namespace, "Deployment.Name", existingDeployment.Name)
-		// TODO: very naive, the state should observe the Deployment's status: https://issues.redhat.com/browse/KOGITO-8524
-		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
+		result, err := DeploymentHandler(h.client).SyncDeploymentStatus(ctx, workflow)
+		if err != nil {
+			return reconcile.Result{Requeue: false}, nil, err
+		}
+
 		if _, err := h.performStatusUpdate(ctx, workflow); err != nil {
 			return reconcile.Result{Requeue: false}, nil, err
 		}
-		return reconcile.Result{RequeueAfter: requeueAfterIsRunning}, objs, nil
+		return result, objs, nil
 	}
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")

@@ -23,15 +23,15 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
+const (
+	// this const is available here https://github.com/kubernetes/kubernetes/blob/6e0cb243d57592c917fe449dde20b0e246bc66be/pkg/controller/deployment/util/deployment_util.go#L100
+	// but it doesn't worth the dependency.
+	deploymentMinimumReplicasUnavailable = "MinimumReplicasUnavailable"
+)
+
 // IsDeploymentAvailable verifies if the Deployment conditions match the Available status
 func IsDeploymentAvailable(deployment *appsv1.Deployment) bool {
-	for _, condition := range deployment.Status.Conditions {
-		if condition.Type == appsv1.DeploymentAvailable &&
-			condition.Status == v1.ConditionTrue {
-			return true
-		}
-	}
-	return false
+	return isDeploymentInCondition(deployment, appsv1.DeploymentAvailable, v1.ConditionTrue)
 }
 
 // IsDeploymentFailed returns true in case of Deployment not available (IsDeploymentAvailable returns false) or it has a condition of
@@ -40,9 +40,25 @@ func IsDeploymentFailed(deployment *appsv1.Deployment) bool {
 	if IsDeploymentAvailable(deployment) {
 		return false
 	}
+	return isDeploymentInCondition(deployment, appsv1.DeploymentReplicaFailure, v1.ConditionTrue)
+}
+
+func isDeploymentInCondition(deployment *appsv1.Deployment, conditionType appsv1.DeploymentConditionType, status v1.ConditionStatus) bool {
 	for _, condition := range deployment.Status.Conditions {
-		if condition.Type == appsv1.DeploymentReplicaFailure &&
-			condition.Status == v1.ConditionTrue {
+		if condition.Type == conditionType &&
+			condition.Status == status {
+			return true
+		}
+	}
+	return false
+}
+
+// IsDeploymentMinimumReplicasUnavailable verifies if the deployment has the minimum replicas available
+func IsDeploymentMinimumReplicasUnavailable(deployment *appsv1.Deployment) bool {
+	for _, condition := range deployment.Status.Conditions {
+		if condition.Type == appsv1.DeploymentAvailable &&
+			condition.Status == v1.ConditionFalse &&
+			condition.Reason == deploymentMinimumReplicasUnavailable {
 			return true
 		}
 	}

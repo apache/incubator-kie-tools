@@ -70,7 +70,7 @@ func (action *warmAction) Handle(ctx context.Context, platform *operatorapi.Sona
 	switch pod.Status.Phase {
 	case corev1.PodSucceeded:
 		klog.V(log.D).InfoS("Kaniko cache successfully warmed up")
-		platform.Status.Manager().MarkFalse(api.SucceedConditionType, operatorapi.PlatformWarmingReason, "Kaniko cache successfully warmed up")
+		platform.Status.Manager().MarkTrueWithReason(api.SucceedConditionType, operatorapi.PlatformWarmingReason, "Kaniko cache successfully warmed up")
 		return platform, nil
 	case corev1.PodFailed:
 		return nil, errors.New("failed to warm up Kaniko cache")

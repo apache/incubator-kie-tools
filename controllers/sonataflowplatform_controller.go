@@ -147,7 +147,7 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 		}
 	}
 
-	if target.Status.IsReady() {
+	if target != nil && target.Status.IsReady() {
 		return reconcile.Result{}, nil
 	}
 

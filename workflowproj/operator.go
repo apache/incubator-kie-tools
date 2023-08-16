@@ -27,8 +27,10 @@ const (
 	workflowConfigMapNameSuffix = "-props"
 	// ApplicationPropertiesFileName is the default application properties file name
 	ApplicationPropertiesFileName = "application.properties"
-	// LabelApp key to use among object selectors
+	// LabelApp key to use among object selectors, "app" is used among k8s applications to group objects in some UI consoles
 	LabelApp = "app"
+	// LabelWorkflow specialized label managed by the controller
+	LabelWorkflow = metadata.Domain + "/workflow-app"
 )
 
 // SetTypeToObject sets the Kind and ApiVersion to a given object since the default constructor won't do it.
@@ -66,7 +68,8 @@ func SetDefaultLabels(workflow *operatorapi.SonataFlow, object metav1.Object) {
 // You can use SetDefaultLabels that essentially does the same thing, if you don't need the labels explicitly.
 func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	return map[string]string{
-		LabelApp: workflow.Name,
+		LabelApp:      workflow.Name,
+		LabelWorkflow: workflow.Name,
 	}
 }
 

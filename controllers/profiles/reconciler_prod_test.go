@@ -19,10 +19,11 @@ import (
 	"testing"
 	"time"
 
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
 
 	"github.com/stretchr/testify/assert"
-	v1 "k8s.io/api/apps/v1"
+	appsv1 "k8s.io/api/apps/v1"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
@@ -74,6 +75,17 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.Equal(t, api.WaitingForDeploymentReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now with the objects created, it should be running
+	// let's update the deployment status to available == true
+	deployment := &appsv1.Deployment{}
+	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
+	assert.NoError(t, err)
+	deployment.Status.Conditions = append(deployment.Status.Conditions, appsv1.DeploymentCondition{
+		Type:   appsv1.DeploymentAvailable,
+		Status: corev1.ConditionTrue,
+	})
+	err = client.Status().Update(context.TODO(), deployment)
+	assert.NoError(t, err)
+
 	result, err = NewReconciler(client, config, workflow).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
@@ -98,7 +110,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 3)
 
-	deployment := &v1.Deployment{}
+	deployment := &appsv1.Deployment{}
 	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, deployment.Spec.Template.Spec.Containers[0].Image)
@@ -119,7 +131,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 2)
 	// the reconciliation state should guarantee our port
-	deployment = &v1.Deployment{}
+	deployment = &appsv1.Deployment{}
 	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
 	assert.NoError(t, err)
 	assert.Equal(t, int32(8080), deployment.Spec.Template.Spec.Containers[0].Ports[0].ContainerPort)
@@ -144,17 +156,24 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, result)
 	assert.Len(t, objects, 3)
+
 	// then we load a workflow with metadata.generation set to 1
-	workflowChanged := test.GetBaseSonataFlow(t.Name())
+	workflowChanged := &operatorapi.SonataFlow{}
+	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), workflowChanged)
+	assert.NoError(t, err)
 	//we set the generation to 1
 	workflowChanged.Generation = int64(1)
+	err = client.Update(context.TODO(), workflowChanged)
+	assert.NoError(t, err)
+	// reconcile
 	handler = &deployWorkflowReconciliationState{
 		stateSupport: fakeReconcilerSupport(client),
 		ensurers:     newProdObjectEnsurers(&stateSupport{client: client}),
 	}
 	result, objects, err = handler.Do(context.TODO(), workflowChanged)
 	assert.NoError(t, err)
-	assert.Equal(t, time.Duration(60000000000), result.RequeueAfter)
-	assert.NotNil(t, result)
-	assert.Len(t, objects, 3)
+	// no requeue, no objects since the workflow has changed
+	assert.Equal(t, time.Duration(0), result.RequeueAfter)
+	assert.False(t, result.Requeue)
+	assert.Len(t, objects, 0)
 }
