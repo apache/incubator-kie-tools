@@ -245,7 +245,7 @@ test.describe("Resizing", () => {
       expect(await params.boundingBox()).toHaveProperty("width", 120);
     });
 
-    test("resize results column and reset", async ({ page, resizing }) => {
+    test("resize parameters column and reset", async ({ page, resizing }) => {
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const functionName = page.getByRole("columnheader", { name: "FUNCTION" });
       const params = page.getByRole("cell", { name: "p-1 (<Undefined>)" });
@@ -270,7 +270,6 @@ test.describe("Resizing", () => {
       test.info().annotations.push({ type: "kie-issue", description: "<link>" });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-
       expect(await header.boundingBox()).toHaveProperty("width", 212);
       await resizing.resizeCell(header, { x: 0, y: 0 }, { x: 50, y: 0 });
       expect(await header.boundingBox()).toHaveProperty("width", 212);
@@ -282,7 +281,6 @@ test.describe("Resizing", () => {
       await page.getByRole("menuitem", { name: "FEEL Literal" }).click();
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
-
       await resizing.resizeCell(header, { x: 0, y: 0 }, { x: 50, y: 0 });
       expect(await header.boundingBox()).toHaveProperty("width", 262);
       await resizing.reset(header);
