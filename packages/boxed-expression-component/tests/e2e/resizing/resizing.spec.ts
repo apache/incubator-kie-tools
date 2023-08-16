@@ -1,3 +1,4 @@
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../fixtures/boxedExpression";
 
 test.describe("Resizing", () => {
@@ -21,8 +22,12 @@ test.describe("Resizing", () => {
       await expressions.openContextExpression();
     });
 
-    test("shouldn't resize header column", async ({ page, resizing }) => {
-      test.info().annotations.push({ type: "kie-issue", description: "<link>" });
+    test("resize header column", async ({ page, resizing }) => {
+      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.info().annotations.push({
+        type: TestAnnotations.KIE_ISSUE,
+        description: "https://github.com/kiegroup/kie-issues/issues/179",
+      });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const firstEntry = page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" });
@@ -86,6 +91,34 @@ test.describe("Resizing", () => {
       expect(await result.boundingBox()).toHaveProperty("width", 120);
       expect(await header.boundingBox()).toHaveProperty("width", 332);
       expect(await firstEntry.boundingBox()).toHaveProperty("width", 120);
+    });
+
+    test("check resize on nested expressions", async ({ page, resizing, browserName }) => {
+      test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
+      test.info().annotations.push({
+        type: TestAnnotations.KIE_ISSUE,
+        description: "https://github.com/kiegroup/kie-issues/issues/180",
+      });
+
+      await page.getByText("Select expression").first().click();
+      await page.getByRole("menuitem", { name: "Context" }).click();
+      await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).first().hover();
+      await page.locator(".add-row-button").click();
+      await page.getByText("Select expression").nth(2).click();
+      await page.getByRole("menuitem", { name: "Context" }).click();
+
+      const nestedEntry = page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).nth(2);
+      await resizing.resizeCell(nestedEntry, { x: 0, y: 0 }, { x: 50, y: 0 });
+
+      await page.getByText("Select expression").nth(2).click();
+      await page.getByRole("menuitem", { name: "Literal" }).click();
+      const nestedLiteralExpresison = page.getByRole("cell", { name: "=", exact: true });
+
+      expect(await nestedEntry.boundingBox()).toHaveProperty("width", 170);
+      expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 262);
+      await resizing.reset(nestedEntry);
+      expect(await nestedEntry.boundingBox()).toHaveProperty("width", 120);
+      expect(await nestedLiteralExpresison.boundingBox()).toHaveProperty("width", 212);
     });
   });
 
@@ -177,8 +210,12 @@ test.describe("Resizing", () => {
       await expressions.openFunctionExpression();
     });
 
-    test("shouldn't resize header column", async ({ page, resizing }) => {
-      test.info().annotations.push({ type: "kie-issue", description: "<link>" });
+    test("resize header column", async ({ page, resizing }) => {
+      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.info().annotations.push({
+        type: TestAnnotations.KIE_ISSUE,
+        description: "https://github.com/kiegroup/kie-issues/issues/179",
+      });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const params = page.getByRole("columnheader", { name: "Edit parameters" });
@@ -214,8 +251,12 @@ test.describe("Resizing", () => {
       await expressions.openInvocationExpression();
     });
 
-    test("shouldn't resize header column", async ({ page, resizing }) => {
-      test.info().annotations.push({ type: "kie-issue", description: "<link>" });
+    test("resize header column", async ({ page, resizing }) => {
+      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.info().annotations.push({
+        type: TestAnnotations.KIE_ISSUE,
+        description: "https://github.com/kiegroup/kie-issues/issues/179",
+      });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const functionName = page.getByRole("columnheader", { name: "FUNCTION" });
@@ -272,8 +313,12 @@ test.describe("Resizing", () => {
       await expressions.openListExpression();
     });
 
-    test("shouldn't resize header column", async ({ page, resizing }) => {
-      test.info().annotations.push({ type: "kie-issue", description: "<link>" });
+    test("resize header column", async ({ page, resizing }) => {
+      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/179");
+      test.info().annotations.push({
+        type: TestAnnotations.KIE_ISSUE,
+        description: "https://github.com/kiegroup/kie-issues/issues/179",
+      });
 
       const header = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       expect(await header.boundingBox()).toHaveProperty("width", 212);

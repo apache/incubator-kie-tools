@@ -1,5 +1,5 @@
-import { webkit } from "@playwright/test";
 import { test, expect } from "../fixtures/boxedExpression";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Cell context menu", () => {
   test.describe("Rows control", () => {
@@ -11,7 +11,10 @@ test.describe("Cell context menu", () => {
 
       test
         .info()
-        .annotations.push({ type: "kie-issue", description: "https://github.com/kiegroup/kie-issues/issues/421" });
+        .annotations.push({
+          type: TestAnnotations.KIE_ISSUE,
+          description: "https://github.com/kiegroup/kie-issues/issues/421",
+        });
       // Click on 1 to prevent kie-issues#421;
       await page.getByRole("cell", { name: "1" }).click();
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
@@ -67,7 +70,10 @@ test.describe("Cell context menu", () => {
 
       test
         .info()
-        .annotations.push({ type: "kie-issue", description: "https://github.com/kiegroup/kie-issues/issues/421" });
+        .annotations.push({
+          type: TestAnnotations.KIE_ISSUE,
+          description: "https://github.com/kiegroup/kie-issues/issues/421",
+        });
       // Click on 1 to prevent kie-issues#421;
       await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
       await page.getByTestId("expression-container").getByText("Expression Name").click({
