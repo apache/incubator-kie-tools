@@ -129,13 +129,13 @@
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
-      { "id": "serverless-logic-web-tools-swf-deployment-webapp2" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
       { "id": "@kie-tools/serverless-workflow-language-service" },
       { "id": "@kie-tools/serverless-workflow-jq-expressions" },
       { "id": "@kie-tools/serverless-workflow-service-catalog" },
       { "id": "swf-vscode-extension" },
+      { "id": "serverless-logic-web-tools-swf-deployment-webapp2" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -802,18 +802,6 @@
         "weight": 1
       },
       {
-        "source": "serverless-logic-web-tools-swf-deployment-webapp2",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      {
-        "source": "serverless-logic-web-tools-swf-deployment-webapp2",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      { "source": "serverless-logic-web-tools-swf-deployment-webapp2", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "serverless-logic-web-tools-swf-deployment-webapp2", "target": "@kie-tools/tsconfig", "weight": 1 },
-      {
         "source": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "weight": 1
@@ -863,6 +851,18 @@
         "weight": 1
       },
       { "source": "swf-vscode-extension", "target": "@kie-tools/vscode-extension-common-test-helpers", "weight": 1 },
+      {
+        "source": "serverless-logic-web-tools-swf-deployment-webapp2",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "serverless-logic-web-tools-swf-deployment-webapp2",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      { "source": "serverless-logic-web-tools-swf-deployment-webapp2", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "serverless-logic-web-tools-swf-deployment-webapp2", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "vscode-extension-dashbuilder-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       {
         "source": "vscode-extension-dashbuilder-editor",
@@ -1000,7 +1000,6 @@
       "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
       "packages/serverless-logic-web-tools-swf-deployment-webapp"
     ],
-    ["serverless-logic-web-tools-swf-deployment-webapp2", "packages/serverless-logic-web-tools-swf-deployment-webapp2"],
     [
       "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
       "packages/serverless-logic-web-tools-swf-dev-mode-image"
@@ -1019,6 +1018,7 @@
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
+    ["serverless-logic-web-tools-swf-deployment-webapp2", "packages/sonataflow-deployment-webapp"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
     ["@kie-tools/text-editor", "packages/text-editor"],

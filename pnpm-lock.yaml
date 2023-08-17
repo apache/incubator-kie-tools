@@ -6743,25 +6743,6 @@ importers:
         version: 5.8.0
 
   packages/serverless-logic-web-tools-swf-deployment-webapp2:
-    dependencies:
-      "@patternfly/react-core":
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-icons":
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.2.1
-        version: 5.2.1(react@17.0.2)
-      react-router-dom:
-        specifier: ^5.2.1
-        version: 5.3.0(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -6787,6 +6768,12 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@patternfly/react-core":
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-icons":
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -6823,6 +6810,18 @@ importers:
       jest-when:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      react-router:
+        specifier: ^5.2.1
+        version: 5.2.1(react@17.0.2)
+      react-router-dom:
+        specifier: ^5.2.1
+        version: 5.3.0(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7814,6 +7813,108 @@ importers:
       webpack-dev-server:
         specifier: ^4.7.3
         version: 4.7.3(webpack-cli@4.10.0)(webpack@5.70.0)
+      webpack-merge:
+        specifier: ^5.8.0
+        version: 5.8.0
+
+  packages/sonataflow-deployment-webapp:
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.18.10
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.18.10(@babel/core@7.18.10)
+      "@babel/preset-react":
+        specifier: ^7.16.0
+        version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools-core/patternfly-base":
+        specifier: workspace:*
+        version: link:../patternfly-base
+      "@kie-tools-core/webpack-base":
+        specifier: workspace:*
+        version: link:../webpack-base
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@patternfly/react-core":
+        specifier: ^4.276.6
+        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-icons":
+        specifier: ^4.93.6
+        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      "@types/jest-when":
+        specifier: ^2.7.4
+        version: 2.7.4
+      "@types/react":
+        specifier: ^17.0.6
+        version: 17.0.21
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
+      "@types/react-router":
+        specifier: ^5.1.14
+        version: 5.1.14
+      "@types/react-router-dom":
+        specifier: ^5.1.7
+        version: 5.1.7
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.76.1)
+      html-replace-webpack-plugin:
+        specifier: ^2.6.0
+        version: 2.6.0
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.3.2(webpack@5.76.1)
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      jest-when:
+        specifier: ^3.5.0
+        version: 3.5.0(jest@26.6.3)
+      react:
+        specifier: ^17.0.2
+        version: 17.0.2
+      react-dom:
+        specifier: ^17.0.2
+        version: 17.0.2(react@17.0.2)
+      react-router:
+        specifier: ^5.2.1
+        version: 5.2.1(react@17.0.2)
+      react-router-dom:
+        specifier: ^5.2.1
+        version: 5.3.0(react@17.0.2)
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+      webpack:
+        specifier: ^5.36.2
+        version: 5.76.1(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
+      webpack-dev-server:
+        specifier: ^4.7.3
+        version: 4.11.0(webpack-cli@4.10.0)(webpack@5.76.1)
       webpack-merge:
         specifier: ^5.8.0
         version: 5.8.0
@@ -17576,7 +17677,7 @@ packages:
       debug: 4.3.4
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.3.8
+      semver: 7.5.4
       tsutils: 3.21.0
     transitivePeerDependencies:
       - supports-color
@@ -33414,7 +33515,7 @@ packages:
       lodash: 4.17.21
       make-error: 1.3.6
       mkdirp: 1.0.4
-      semver: 7.3.8
+      semver: 7.5.4
       typescript: 4.8.4
       yargs-parser: 20.2.7
     dev: true
