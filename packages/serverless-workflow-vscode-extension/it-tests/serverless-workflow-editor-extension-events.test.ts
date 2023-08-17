@@ -50,8 +50,8 @@ describe("Serverless workflow editor - events tests", () => {
   it("Checks events are loaded from asyncapi files into JSON serverless workflow file", async function () {
     this.timeout(50000);
 
-    const editorWebviews = await testHelper.openFileFromSidebar("event.sw.json");
-    const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
+    const editorWebViews = await testHelper.openFileFromSidebar("event.sw.json");
+    const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
     const textEditor = await swfTextEditor.getSwfTextEditor();
 
     await textEditor.moveCursor(13, 14);
@@ -81,8 +81,8 @@ describe("Serverless workflow editor - events tests", () => {
   it("Checks events are loaded from asyncapi files into YAML serverless workflow file", async function () {
     this.timeout(50000);
 
-    const editorWebviews = await testHelper.openFileFromSidebar("event.sw.yaml");
-    const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
+    const editorWebViews = await testHelper.openFileFromSidebar("event.sw.yaml");
+    const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
     const textEditor = await swfTextEditor.getSwfTextEditor();
 
     await textEditor.moveCursor(10, 4);
@@ -93,7 +93,7 @@ describe("Serverless workflow editor - events tests", () => {
     const contentAssist = await textEditor.toggleContentAssist(true);
     const items = await contentAssist?.getItems();
     const eventNames = await Promise.all(items?.map(async (i) => await i.getLabel()) ?? []);
-    expect(eventNames).to.contain.members([
+    expect(eventNames).to.have.all.members([
       "specs»asyncapi.json#publishJsonOperation",
       "specs»asyncapi.json#subscribeJsonOperation",
       "specs»asyncapi.yaml#publishYamlOperation",
