@@ -94,55 +94,79 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
   }, []);
 
   const setupDiagram = useCallback(() => {
-    let nodesData: NodeData[] = [];
-    let edgesData: EdgeData[] = [];
-    let nodeId: number = 0;
-    let height: number = 0;
+    try {
+      let nodesData: NodeData[] = [];
+      let edgesData: EdgeData[] = [];
+      let nodeId: number = 0;
+      let height: number = 0;
 
-    if (yardData?.elements) {
-      yardData.elements.map((element) => {
-        if (!element.logic?.type || !element.name) {
-          nodesData = [];
-          edgesData = [];
-          return;
-        }
+      if (yardData?.elements) {
+        yardData.elements.map((element) => {
+          if (!element.logic?.type || !element.name) {
+            nodesData = [];
+            edgesData = [];
+            return;
+          }
 
-        const elementNodeId = ++nodeId;
-        nodesData.push(createNode(elementNodeId, element.name));
+          const elementNodeId = ++nodeId;
+          nodesData.push(createNode(elementNodeId, element.name));
 
-        if (element.logic.type === "LiteralExpression") {
-          const expressionNode = createNode(++nodeId, element.logic.expression ?? "");
-          nodesData.push(expressionNode);
-          edgesData.push(createEdge(elementNodeId, nodeId));
-          height += NODE_VERTICAL_SPACING + expressionNode.height;
-        } else if (element.logic.type === "DecisionTable") {
-          element.logic.rules?.map((rule) => {
-            let inputText = "";
-            let outputText = "";
-            let ruleIndex = 0;
-
-            element.logic.inputs?.map((input) => {
-              inputText += input + ": " + rule[ruleIndex++] + "\n";
-            });
-            const inputsNode = createNode(++nodeId, inputText);
-            nodesData.push(inputsNode);
+          if (element.logic.type === "LiteralExpression") {
+            const expressionNode = createNode(++nodeId, element.logic.expression ?? "");
+            nodesData.push(expressionNode);
             edgesData.push(createEdge(elementNodeId, nodeId));
+            height += NODE_VERTICAL_SPACING + expressionNode.height;
+          } else if (element.logic.type === "DecisionTable") {
+            element.logic.rules?.map((rule) => {
+              let inputText = "";
+              let outputText = "";
+              let ruleIndex = 0;
 
-            element.logic.outputComponents?.map((output) => {
-              outputText += output + ": " + rule[ruleIndex++] + "\n";
+              element.logic.inputs?.map((input) => {
+                if (!Array.isArray(rule)) {
+                  inputText += input + ": " + (rule?.when ? rule.when[ruleIndex++] : "") + "\n";
+                } else {
+                  inputText += input + ": " + rule[ruleIndex++] + "\n";
+                }
+              });
+
+              const inputsNode = createNode(++nodeId, inputText);
+              nodesData.push(inputsNode);
+              edgesData.push(createEdge(elementNodeId, nodeId));
+
+              if (element.logic.outputComponents) {
+                if (!Array.isArray(rule)) {
+                  outputText += element.logic.outputComponents[0] + ": " + (rule?.then ?? "") + "\n";
+                } else {
+                  element.logic.outputComponents.map((output) => {
+                    outputText += output + ": " + rule[ruleIndex++] + "\n";
+                  });
+                }
+              } else {
+                if (!Array.isArray(rule)) {
+                  outputText += (rule?.then ?? "") + "\n";
+                } else {
+                  while (ruleIndex < rule.length) {
+                    outputText += rule[ruleIndex++] + "\n";
+                  }
+                }
+              }
+
+              const outputsNode = createNode(++nodeId, outputText);
+              nodesData.push(outputsNode);
+              edgesData.push(createEdge(nodeId - 1, nodeId));
+
+              height += NODE_VERTICAL_SPACING + Math.max(inputsNode.height, outputsNode.height);
             });
-            const outputsNode = createNode(++nodeId, outputText);
-            nodesData.push(outputsNode);
-            edgesData.push(createEdge(nodeId - 1, nodeId));
+          }
+        });
 
-            height += NODE_VERTICAL_SPACING + Math.max(inputsNode.height, outputsNode.height);
-          });
-        }
-      });
-
-      setNodes(nodesData);
-      setEdges(edgesData);
-      setDiagramHeight(height);
+        setNodes(nodesData);
+        setEdges(edgesData);
+        setDiagramHeight(height);
+      }
+    } catch (e) {
+      console.debug("Error during building diagram phase of yard model" + e.toString());
     }
   }, [yardData, setNodes, setEdges]);
 
