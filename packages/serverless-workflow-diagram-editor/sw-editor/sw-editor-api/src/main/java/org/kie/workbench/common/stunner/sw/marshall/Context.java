@@ -104,8 +104,4 @@ public class Context {
     public void addMessage(Message message) {
         messages.add(message);
     }
-
-    public void clearMessages() {
-        messages.clear();
-    }
 }

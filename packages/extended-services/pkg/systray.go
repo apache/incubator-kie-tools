@@ -31,9 +31,8 @@ import (
 )
 
 type Systray struct {
-	Server                   *Proxy
-	StartStopItem            *systray.MenuItem
-	ToggleInsecureSkipVerify *systray.MenuItem
+	Server        *Proxy
+	StartStopItem *systray.MenuItem
 
 	runnerPortItem *systray.MenuItem
 	openKieSandbox *systray.MenuItem
@@ -65,14 +64,6 @@ func (s *Systray) onReady() {
 				s.Stop()
 			} else {
 				s.Start()
-			}
-		case <-s.ToggleInsecureSkipVerify.ClickedCh:
-			if s.Server.InsecureSkipVerify {
-				s.Server.InsecureSkipVerify = false
-				s.ToggleInsecureSkipVerify.SetTitle(metadata.ALLOW_INSECURE_SKIP_VERIFY)
-			} else {
-				s.Server.InsecureSkipVerify = true
-				s.ToggleInsecureSkipVerify.SetTitle(metadata.DISALLOW_INSECURE_SKIP_VERIFY)
 			}
 		case <-quitItem.ClickedCh:
 			s.Stop()
@@ -111,13 +102,7 @@ func (s *Systray) mainSection() {
 }
 
 func (s *Systray) operationSection() {
-	if s.Server.InsecureSkipVerify {
-		s.ToggleInsecureSkipVerify = systray.AddMenuItem(metadata.DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of s-signed certificates")
-	} else {
-		s.ToggleInsecureSkipVerify = systray.AddMenuItem(metadata.ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of s-signed certificates")
-	}
 	s.StartStopItem = systray.AddMenuItem(metadata.START, "")
-
 }
 
 func (s *Systray) Refresh() {

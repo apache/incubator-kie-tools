@@ -18,6 +18,7 @@ package quarkus
 
 import (
 	"fmt"
+	"github.com/beevik/etree"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
@@ -52,5 +53,57 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 		return err
 	}
 
+	//Until we are part of Quarkus 3.x bom we need to manipulate the pom.xml to use the right version of kogito-bom
+	pomPath := cfg.ProjectName + "/pom.xml"
+	if err := manipulatePomToKogito(pomPath); err != nil {
+		return err
+	}
 	return nil
+}
+
+func manipulatePomToKogito(filename string) error {
+
+	doc := etree.NewDocument()
+	err := doc.ReadFromFile(filename)
+	if err != nil {
+		return fmt.Errorf("error reading %s: %w", filename, err)
+	}
+
+	// Remove the <dependency> block with quarkus-kogito-bom
+	dependencyToReplace := doc.FindElement("//dependency[groupId='${quarkus.platform.group-id}'][artifactId='quarkus-kogito-bom']")
+	if dependencyToReplace == nil {
+		return fmt.Errorf("error parsing %s: %w", filename, err)
+	}
+	dependencyToReplace.Parent().RemoveChild(dependencyToReplace)
+
+	// Create the new <dependency> block with kogito-bom and add it to the <dependencyManagement> block
+	// replacing quarkus-kogito-bom on specific version
+	newDependency := doc.CreateElement("dependency")
+	newDependency.CreateElement("groupId").SetText("org.kie.kogito")
+	newDependency.CreateElement("artifactId").SetText("kogito-bom")
+	newDependency.CreateElement("version").SetText(metadata.KogitoVersion)
+	newDependency.CreateElement("type").SetText("pom")
+	newDependency.CreateElement("scope").SetText("import")
+
+	dependencyManagement := doc.FindElement("//dependencyManagement")
+	if dependencyManagement != nil {
+		dependencies := dependencyManagement.FindElement("dependencies")
+		if dependencies != nil {
+			dependencies.AddChild(newDependency)
+		} else {
+			dependencies = dependencyManagement.CreateElement("dependencies")
+			dependencies.AddChild(newDependency)
+		}
+	}
+
+	doc.Indent(4)
+
+	err = doc.WriteToFile(filename)
+	if err != nil {
+		fmt.Println("Error writing modified XML:", err)
+		return fmt.Errorf("error writing modified content to %s: %w", filename, err)
+	}
+
+	return nil
+
 }

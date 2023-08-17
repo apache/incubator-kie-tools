@@ -26,14 +26,14 @@ import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelo
 declare const importScripts: any;
 importScripts("fsMain.js");
 
-async function gitCorsProxyUrl(): Promise<string> {
+async function corsProxyUrl(): Promise<string> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
-  return env.SERVERLESS_LOGIC_WEB_TOOLS_GIT_CORS_PROXY_URL;
+  return env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL;
 }
 
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
-const workspaceServices = createWorkspaceServices({ gitCorsProxyUrl: gitCorsProxyUrl() });
+const workspaceServices = createWorkspaceServices({ corsProxyUrl: corsProxyUrl() });
 
 // shared worker connection
 

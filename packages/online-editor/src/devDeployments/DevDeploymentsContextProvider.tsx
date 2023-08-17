@@ -51,7 +51,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       if (authSession.type === "openshift") {
         return new KieSandboxOpenShiftService({
           connection: authSession,
-          proxyUrl: extendedServices.config.url.corsProxy,
+          proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
         });
       } else if (authSession.type === "kubernetes") {
         return new KieSandboxKubernetesService({
@@ -60,7 +60,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       }
       throw new Error("Invalid AuthSession type.");
     },
-    [extendedServices.config.url.corsProxy]
+    [env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
   const deleteDeployment = useCallback(

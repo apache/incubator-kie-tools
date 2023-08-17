@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.shape;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -70,53 +69,6 @@ public class ShapeViewExtStub
     }
 
     @Override
-    public Object setTitle(final String title) {
-        return this;
-    }
-
-    @Override
-    public Object setTitlePosition(final VerticalAlignment verticalAlignment,
-                                   final HorizontalAlignment horizontalAlignment, final ReferencePosition referencePosition,
-                                   final Orientation orientation) {
-        return this;
-    }
-
-    @Override
-    public Object setTitleSizeConstraints(final Size sizeConstraints) {
-        return this;
-    }
-
-    @Override
-    public Object setMargins(final Map<Enum, Double> margins) {
-        return this;
-    }
-
-    @Override
-    public Object setTitleXOffsetPosition(final Double xOffset) {
-        return this;
-    }
-
-    @Override
-    public Object setTitleYOffsetPosition(final Double yOffset) {
-        return this;
-    }
-
-    @Override
-    public Object setTitleRotation(final double degrees) {
-        return this;
-    }
-
-    @Override
-    public Object setTitleStrokeColor(final String color) {
-        return this;
-    }
-
-    @Override
-    public Object setTitleStrokeAlpha(final double alpha) {
-        return this;
-    }
-
-    @Override
     public Object setTitleFontFamily(final String fontFamily) {
         return this;
     }
@@ -147,41 +99,7 @@ public class ShapeViewExtStub
     }
 
     @Override
-    public String getTitlePosition() {
-        return null;
-    }
-
-    @Override
-    public String getOrientation() {
-        return null;
-    }
-
-    @Override
-    public double getMarginX() {
-        return 0;
-    }
-
-    @Override
-    public String getFontPosition() {
-        return null;
-    }
-
-    @Override
-    public String getFontAlignment() {
-        return null;
-    }
-
-    @Override
     public Object setTitleAlpha(final double alpha) {
-        return this;
-    }
-
-    @Override
-    public void batch() {
-    }
-
-    @Override
-    public Object moveTitleToTop() {
         return this;
     }
 

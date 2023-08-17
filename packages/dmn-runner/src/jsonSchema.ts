@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as React from "react";
 import { JSON_SCHEMA_INPUT_SET_PATH, RECURSION_KEYWORD, RECURSION_REF_KEYWORD, X_DMN_TYPE_KEYWORD } from "./constants";
 import { ValidateFunction } from "./ajv";
 import {

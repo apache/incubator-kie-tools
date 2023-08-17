@@ -35,54 +35,12 @@ If you find an issue or any misleading information, please feel free to report i
 
     tasks: [
       {
-        title: "Setting Extended Services",
-        description: `<div class="sectionbody">
-          <div class="paragraph">
-            <p>The Extended Services tool is required to proxy requests to an OpenShift instance. Therefore, setting the Extended Services enables you to deploy and monitor your Serverless Workflow projects.</p>
-          </div>
-          <div class="olist arabic">
-            <div class="title">
-              <em>
-                <strong>Procedure</strong>
-              </em>
-            </div>
-            <ol class="arabic">
-              <li>
-                <p>In the Serverless Logic Web Tools web application, click the <strong>Cogwheel</strong> (⚙️) on the top-right corner and go to the <strong>Extended Services</strong> tab. </p>
-              </li>
-              <li>
-                <p>In case you are not connected to Extended Services, you see <strong>You are not connected to Extended Services. Click to setup</strong> mesaage.</p>
-              </li>
-              <li>
-                <p>Click on the link in the message.</p>
-                <div class="paragraph">
-                  <p>A window appears containing your current operating system as selected and a link to download the latest version of Extended Services.</p>
-                </div>
-              </li>
-              <li>
-                <p>Download the Extended Services and execute it.</p>
-                <div class="openblock">
-                  <div class="content">
-                    <div class="paragraph">
-                      <p>You might need to grant permissions to run the file depending on your operating system and settings.</p>
-                    </div>
-                    <div class="paragraph">
-                      <p>After executing the Extended Services the content in the <strong>Extended Services</strong> is updated and displays that you are connected to the Extended Services. </p>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            </ol>
-          </div>
-        </div>`,
-      },
-      {
         title: "Connecting to OpenShift instance using Serverless Logic Web Tools",
         description: `<div class="sect1">
           <h2 id="proc-connecting-openshift-instance-serverless-logic-web-tools">Connecting to OpenShift instance using Serverless Logic Web Tools</h2>
           <div class="sectionbody">
             <div class="paragraph">
-              <p>After setting the Extended Services, you can connect to your OpenShift instance to deploy your Serverless Workflow projects with Serverless Logic Web Tools.</p>
+              <p>You can connect to your OpenShift instance to deploy your Serverless Workflow projects with Serverless Logic Web Tools.</p>
             </div>
             <div class="ulist">
               <div class="title">
@@ -91,9 +49,6 @@ If you find an issue or any misleading information, please feel free to report i
                 </em>
               </div>
               <ul>
-                <li>
-                  <p>Extended Services tool is installed and running.</p>
-                </li>
                 <li>
                   <p>OpenShift instance is active.</p>
                   <div class="paragraph">
@@ -160,6 +115,9 @@ If you find an issue or any misleading information, please feel free to report i
                   <p>Enter the value of API token in the <strong>Token</strong> field. </p>
                 </li>
                 <li>
+                  <p>If your OpenShift instance uses Self-Signed certificates, then you must also check the <code>Insecurely disable TLS certificate validation</code> option.</p>
+                </li>
+                <li>
                   <p>Click <strong>Connect</strong>. </p>
                   <div class="paragraph">
                     <p>If the entered values are correct, then the tab updates and displays <strong>You&rsquo;re connected to OpenShift</strong> message. </p>
@@ -169,23 +127,6 @@ If you find an issue or any misleading information, please feel free to report i
             </div>
             <div class="paragraph">
               <p>After connecting to OpenShift, you are ready to deploy your Serverless Workflow projects using Serverless Logic Web Tools. For more information about deploying your projects, see <a class="xref page" href="serverless-logic-web-tools-deploy-projects.html" aria-invalid="true">Deploying your Serverless Workflow projects using Serverless Logic Web Tools</a>. </p>
-            </div>
-            <div class="admonitionblock note">
-              <table>
-                <tbody>
-                  <tr>
-                    <td class="icon">&nbsp;</td>
-                    <td class="content">
-                      <div class="paragraph">
-                        <p>
-                          <b>NOTE</b>
-                          <br />If your OpenShift instance uses self-signed certificates, then you must enable the <code>InsecureSkipVerify</code> on Extended Services.
-                        </p>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>`,

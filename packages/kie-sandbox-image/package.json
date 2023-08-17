@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "build:dev": "pnpm env-json:schema:generate && pnpm copy:assets",
+    "build:dev": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:online-editor && pnpm copy:image-env-to-json",

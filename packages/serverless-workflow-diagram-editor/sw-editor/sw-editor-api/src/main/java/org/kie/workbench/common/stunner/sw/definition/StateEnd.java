@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMapper;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.ContinueAsJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ContinueAsYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.ContinueAsJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.ContinueAsYamlTypeSerializer;
 
 @JSONMapper
 @YAMLMapper
@@ -39,7 +39,7 @@ public class StateEnd {
     @JsonbTypeDeserializer(ContinueAsJsonbTypeSerializer.class)
     @YamlTypeSerializer(ContinueAsYamlTypeSerializer.class)
     @YamlTypeDeserializer(ContinueAsYamlTypeSerializer.class)
-    private Object continueAs;
+    public Object continueAs;
 
     public ProducedEvent[] produceEvents;
 
@@ -63,8 +63,9 @@ public class StateEnd {
         return continueAs;
     }
 
-    public final void setContinueAs(Object continueAs) {
+    public final StateEnd setContinueAs(Object continueAs) {
         this.continueAs = continueAs;
+        return this;
     }
 
     public final ProducedEvent[] getProduceEvents() {
