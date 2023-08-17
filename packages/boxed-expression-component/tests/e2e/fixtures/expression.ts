@@ -51,7 +51,7 @@ export class Expressions {
       await this.page.keyboard.press("Space");
       await this.page.keyboard.press("Tab");
       // required
-      await new Promise<true>((res) => setTimeout(() => res(true), 50));
+      await this.page.waitForTimeout(50);
     }
   }
 
