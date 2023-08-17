@@ -17,12 +17,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.serverless-logic-web-tools</groupId>
-    <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+    <groupId>org.webjars.npm</groupId>
+    <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>Serverless Logic Web Tools Deployment Webapp2</name>
+    <name>SonataFlow Deployment Webapp</name>
     <description>
         The parent contains all metadata (including plugins) and also dependency versions
         for all Serverless Workflows modules
@@ -112,10 +112,10 @@
                         <configuration>
                             <file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
                             <groupId>org.webjars</groupId>
-                            <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+                            <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
                             <version>${project.version}</version>
                             <packaging>jar</packaging>
-                            <description>Serverless Logic Web Tools SWF Deployment Webapp2</description>
+                            <description></description>
                             <url>https://www.webjars.org</url>
                         </configuration>
                     </execution>

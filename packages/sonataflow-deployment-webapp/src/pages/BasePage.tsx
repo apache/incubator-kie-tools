@@ -22,10 +22,12 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from "react";
 import { useHistory } from "react-router";
+import { useApp } from "../context/AppContext";
 import { routes } from "../routes";
 
 export function BasePage(props: { children?: React.ReactNode }) {
   const history = useHistory();
+  const app = useApp();
 
   return (
     <Page
@@ -38,7 +40,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>Serverless Deployment</Text>
+                  <Text component={TextVariants.h1}>{app.appTitle}</Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>

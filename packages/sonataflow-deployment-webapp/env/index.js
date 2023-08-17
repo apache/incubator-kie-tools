@@ -20,7 +20,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({}),
   get env() {
     return {
-      serverlessLogicWebToolsSwfDeploymentWebapp2: {
+      sonataFlowDeploymentWebapp: {
         dev: {
           port: 9022,
         },

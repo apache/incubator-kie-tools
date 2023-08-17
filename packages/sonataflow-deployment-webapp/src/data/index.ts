@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { createContext, useContext } from "react";
-import { AppData } from "../data";
+import { routes } from "../routes";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AppContextType extends AppData {}
+export interface AppData {
+  appTitle: string;
+}
 
-export const AppContext = createContext<AppContextType>({} as any);
-
-export function useApp() {
-  return useContext(AppContext);
+export async function fetchAppData(): Promise<AppData> {
+  const response = await fetch(routes.dataJson.path({}));
+  return (await response.json()) as AppData;
 }

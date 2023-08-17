@@ -43,6 +43,6 @@ module.exports = async (env) =>
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.serverlessLogicWebToolsSwfDeploymentWebapp2.dev.port,
+      port: buildEnv.sonataFlowDeploymentWebapp.dev.port,
     },
   });

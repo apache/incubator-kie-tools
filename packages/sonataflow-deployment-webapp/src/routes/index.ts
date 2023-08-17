@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,13 +103,10 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 
 export const routes = {
   root: new Route<{}>(() => "/"),
-
+  dataJson: new Route<{}>(() => "/data.json"),
   swaggerUi: new Route<{}>(() => "/q/swagger-ui"),
-
   openApi: new Route<{}>(() => "/q/openapi?format=json"),
-
   metrics: new Route<{}>(() => "/metrics/index.html"),
-
   model: new Route<{
     pathParams: PathParams.FILE_PATH;
   }>(({ filePath }) => `/${filePath}`),

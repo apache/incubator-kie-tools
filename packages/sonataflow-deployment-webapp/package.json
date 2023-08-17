@@ -1,6 +1,6 @@
 {
-  "name": "serverless-logic-web-tools-swf-deployment-webapp2",
-  "version": "0.0.7",
+  "name": "@kie-tools/sonataflow-deploy-webapp",
+  "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
@@ -26,6 +26,7 @@
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",

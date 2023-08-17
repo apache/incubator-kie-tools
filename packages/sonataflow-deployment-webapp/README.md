@@ -1,6 +1,6 @@
-# Serverless Logic Web Tools SWF Deployment Webapp2
+# SonataFlow Deployment Webapp
 
-This is the web application for Serverless Logic Web Tools SWF Deployment to be used in Kogito-runtime.
+This is the web application for SonataFlow Deployment to be used in Kogito-runtime.
 
 ## Run local web server
 
@@ -57,7 +57,7 @@ To create a consumer app for local tests following the Quarkus Getting Started A
                         <artifactItems>
                             <artifactItem>
                                 <groupId>org.webjars.npm</groupId>
-                                <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+                                <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
                                 <version>0.1.0</version>
                                 <type>jar</type>
                                 <overWrite>true</overWrite>
@@ -88,7 +88,7 @@ Add the webjar as a dependency in the dependencies section
 <dependencies>
     <dependency>
         <groupId>org.webjars.npm</groupId>
-        <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+        <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
         <version>${slwtDeploymentWebapp.version}</version>
     </dependency>
   </dependencies>
@@ -104,7 +104,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
           <artifactId>maven-dependency-plugin</artifactId>
           <executions>
               <execution>
-                  <id>unpack-serverless-logic-web-tools-swf-deployment-webapp2</id>
+                  <id>unpack-sonataflow-deployment-webapp</id>
                   <phase>process-resources</phase>
                   <goals>
                       <goal>unpack</goal>
@@ -113,10 +113,9 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                       <artifactItems>
                           <artifactItem>
                               <groupId>org.webjars.npm</groupId>
-                              <artifactId>serverless-logic-web-tools-swf-deployment-webapp2</artifactId>
+                              <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
                               <version>${slwtDeploymentWebapp.version}</version>
-                              <outputDirectory
-                >${project.build.directory}/serverless-logic-web-tools-swf-deployment-webapp2</outputDirectory>
+                              <outputDirectory>${project.build.directory}/sonataflow-deployment-webapp</outputDirectory>
                           </artifactItem>
                       </artifactItems>
                       <overWriteReleases>false</overWriteReleases>
@@ -129,7 +128,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
           <artifactId>maven-resources-plugin</artifactId>
           <executions>
               <execution>
-                  <id>copy-serverless-logic-web-tools-swf-deployment-webapp2-resources</id>
+                  <id>copy-sonataflow-deployment-webapp-resources</id>
                   <phase>process-resources</phase>
                   <goals>
                       <goal>copy-resources</goal>
@@ -140,7 +139,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                       <resources>
                           <resource>
                               <directory
-                >${project.build.directory}/serverless-logic-web-tools-swf-deployment-webapp2/META-INF/resources/webjars/serverless-logic-web-tools-swf-deployment-webapp2/${slwtDeploymentWebapp.version}/dist</directory>
+                >${project.build.directory}/sonataflow-deployment-webapp/META-INF/resources/webjars/sonataflow-deployment-webapp/${slwtDeploymentWebapp.version}/dist</directory>
 
                                 <includes>**/*</includes>
                           </resource>
@@ -153,4 +152,4 @@ Add a plugin to unpack and copy the Webjar in the plugins section
   </build>
 ```
 
-An example can be found in [serverless-logic-web-tools-swf-deployment-webapp2-consumer](https://github.com/fantonangeli/serverless-logic-web-tools-swf-deployment-webapp2-consumer)
+An example can be found in [sonataflow-deployment-webapp-consumer](https://github.com/fantonangeli/sonataflow-deployment-webapp-consumer)

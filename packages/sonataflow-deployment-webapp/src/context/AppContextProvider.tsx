@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,33 @@
  * limitations under the License.
  */
 
-import React, { ReactNode } from "react";
+import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router";
+import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { AppContext } from "./AppContext";
 
-interface Props {
-  children: ReactNode;
-}
+export function AppContextProvider(props: PropsWithChildren<{}>) {
+  const history = useHistory();
+  const appDataPromise = useAppDataPromise();
+  const [appTitle, setAppTitle] = useState("");
 
-export function AppContextProvider(props: Props) {
-  return <AppContext.Provider value={{}}>{props.children}</AppContext.Provider>;
+  useEffect(() => {
+    if (!appDataPromise.data) {
+      return;
+    }
+
+    setAppTitle(appDataPromise.data.appTitle);
+
+    document.title = appDataPromise.data.appTitle;
+  }, [appDataPromise.data, history]);
+
+  const value = useMemo(
+    () => ({
+      appDataPromise,
+      appTitle,
+    }),
+    [appTitle, appDataPromise]
+  );
+
+  return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;
 }
