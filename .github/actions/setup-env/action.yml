@@ -22,7 +22,7 @@ runs:
         dotnet: true
         haskell: true
         large-packages: false
-        swap-storage: true
+        swap-storage: false
 
     - name: "Print storage usage (before setup)"
       shell: bash
