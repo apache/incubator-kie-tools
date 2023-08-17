@@ -6,14 +6,13 @@ import { env } from "./env";
 const buildEnv: any = env;
 
 const customConfig = defineConfig({
-  // storybook takes more than 30s to start;
   use: {
     baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
   },
   /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
+    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=expressions-boxedexpressioneditor--root-expression`,
     reuseExistingServer: !process.env.CI || true,
   },
 });
