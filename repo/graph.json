@@ -106,6 +106,7 @@
       { "id": "@kie-tools/uniforms-patternfly-codegen" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/import-java-classes-component" },
+      { "id": "@kie-tools/jest-base" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
       { "id": "@kie-tools/vscode-extension-common-test-helpers" },
@@ -653,6 +654,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/import-java-classes-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/jest-base", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "kie-editors-dev-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "kie-editors-dev-vscode-extension", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "kie-editors-dev-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
@@ -945,6 +947,7 @@
     ["@kie-tools/image-builder", "packages/image-builder"],
     ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
     ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools/jest-base", "packages/jest-base"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
     ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],

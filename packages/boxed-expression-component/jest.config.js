@@ -27,7 +27,6 @@ module.exports = {
     "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
   },
   reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/jest-report.xml" }]],
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],

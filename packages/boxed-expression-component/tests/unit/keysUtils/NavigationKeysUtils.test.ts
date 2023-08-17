@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { describe, test, expect } from "@jest/globals";
 import { NavigationKeysUtils } from "@kie-tools/boxed-expression-component/dist/keysUtils";
 
 const notAKey = "NotAKey";

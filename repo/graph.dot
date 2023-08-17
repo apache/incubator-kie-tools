@@ -97,6 +97,7 @@ digraph G {
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/jest-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-editors-dev-vscode-extension" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -296,6 +297,7 @@ digraph G {
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/import-java-classes-component" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
