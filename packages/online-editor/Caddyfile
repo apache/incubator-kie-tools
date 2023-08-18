@@ -1,0 +1,40 @@
+github.localhost {
+	log {
+		level DEBUG
+		output stdout
+	}
+	reverse_proxy https://github.ibm.com {
+		header_up Host {upstream_hostport}
+		header_down Referer
+	}
+}
+gist.github.localhost {
+	log {
+		level DEBUG
+		output stdout
+	}
+	reverse_proxy https://gist.github.ibm.com {
+		header_up Host {upstream_hostport}
+		header_down Referer
+	}
+}
+bitbucket.localhost {
+	log {
+		level DEBUG
+		output stdout
+	}
+	reverse_proxy https://bitbucket.org {
+		header_up Host {upstream_hostport}
+		header_down Referer
+	}
+}
+api.bitbucket.localhost {
+	log {
+		level DEBUG
+		output stdout
+	}
+	reverse_proxy https://api.bitbucket.org {
+		header_up Host {upstream_hostport}
+		header_down Referer
+	}
+}

@@ -27,6 +27,7 @@ export enum AuthProviderType {
   kubernetes = "kubernetes",
 }
 
+const gitAuthProviderKeys = [AuthProviderType.bitbucket, AuthProviderType.github, AuthProviderType.gitlab] as const;
 const supportedGitAuthProvidersKeys = [AuthProviderType.bitbucket, AuthProviderType.github] as const;
 export type SupportedGitAuthProviders = typeof supportedGitAuthProvidersKeys[number];
 export const isSupportedGitAuthProviderType = (
@@ -34,10 +35,15 @@ export const isSupportedGitAuthProviderType = (
 ): maybeSupportedTypeKey is SupportedGitAuthProviders => {
   return supportedGitAuthProvidersKeys.some((k) => k === maybeSupportedTypeKey);
 };
+export const isGitAuthProvider = (
+  maybeGitAuthProvider: AuthProvider | undefined
+): maybeGitAuthProvider is GitAuthProvider => {
+  return gitAuthProviderKeys.some((k) => k === maybeGitAuthProvider?.type);
+};
 
 export type OpenShiftAuthProviderType = AuthProviderType.openshift;
 export type KubernetesAuthProviderType = AuthProviderType.kubernetes;
-export type GitAuthProviderType = AuthProviderType.bitbucket | AuthProviderType.github | AuthProviderType.gitlab;
+export type GitAuthProviderType = typeof gitAuthProviderKeys[number];
 
 export type OpenShiftAuthProvider = {
   id: string;
@@ -68,6 +74,7 @@ export type GitAuthProvider = {
   enabled: boolean;
   supportedGitRemoteDomains: string[];
   group: AuthProviderGroup.GIT;
+  insecurelyDisableTlsCertificateValidation?: boolean;
 };
 
 export type AuthProvider = OpenShiftAuthProvider | KubernetesAuthProvider | GitAuthProvider;

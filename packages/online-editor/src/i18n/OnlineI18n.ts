@@ -308,6 +308,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       seeConnectedAccounts: string;
       continue: string;
     };
+    insecurelyDisableTlsCertificateValidation: string;
+    insecurelyDisableTlsCertificateValidationInfo: string;
   };
   commitModal: {
     title: string;
