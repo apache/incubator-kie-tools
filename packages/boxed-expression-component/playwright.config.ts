@@ -12,7 +12,7 @@ const customConfig = defineConfig({
   /* Run your local dev server before starting the tests */ /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=expressions-boxedexpressioneditor--root-expression`,
+    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=expressions-boxedexpressioneditor--empty-expression`,
     reuseExistingServer: !process.env.CI || true,
   },
 });

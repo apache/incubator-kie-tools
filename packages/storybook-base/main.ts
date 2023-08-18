@@ -2,7 +2,7 @@ import type { StorybookConfig } from "@storybook/react-webpack5";
 import { env } from "./env";
 const buildEnv: any = env;
 
-const config: StorybookConfig = {
+export const config: StorybookConfig = {
   stories: ["../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   framework: {
     name: "@storybook/react-webpack5",
@@ -12,7 +12,7 @@ const config: StorybookConfig = {
     autodocs: "tag",
   },
   webpackFinal: async (config) => {
-    if (buildEnv.storybookBase.live) {
+    if (process.env.STORYBOOK_BASE_WRAPPER_INTERNAL__liveReload) {
       config.module?.rules?.push({
         test: /\.tsx?$/,
         use: [
@@ -36,4 +36,3 @@ const config: StorybookConfig = {
     return config;
   },
 };
-export default config;

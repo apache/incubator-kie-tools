@@ -11,13 +11,13 @@ test.describe("Cell selection", () => {
     await expressions.createRelationExpression();
   });
 
-  test("Select multiple cells and write on cells", async ({ page }) => {
+  test("should select multiple cells and write on cells", async ({ page }) => {
     for (let i = 0; i < 9; i++) {
       await expect(page.getByRole("cell", { name: `test${i}` }).first()).toContainText(`test${i}`);
     }
   });
 
-  test("Select multiple cells and copy/paste", async ({ page, clipboard }) => {
+  test("should select multiple cells and copy/paste", async ({ page, clipboard }) => {
     await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(8));
     await clipboard.copy();
     await page.keyboard.press("Delete");
@@ -39,7 +39,7 @@ test.describe("Cell selection", () => {
     }
   });
 
-  test("Select multiple cells and cut/paste", async ({ page, clipboard }) => {
+  test("should select multiple cells and cut/paste", async ({ page, clipboard }) => {
     await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(8));
     await clipboard.cut();
 

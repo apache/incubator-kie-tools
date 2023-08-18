@@ -11,14 +11,14 @@ test.describe("Expression context menu", () => {
     await boxedExpressionEditor.selectLiteralExpression();
   });
 
-  test("Reset expression", async ({ page }) => {
+  test("should reset expression", async ({ page }) => {
     await page.getByTestId("logic-type-button-test-id").click();
     await page.getByRole("menuitem", { name: "Reset" }).click();
     await expect(page.getByText("Expression Name (<Undefined>)")).toBeAttached();
     await expect(page.getByText("Select expression")).toBeAttached();
   });
 
-  test("Copy, reset and paste expression", async ({ page, clipboard }) => {
+  test("should copy, reset and paste expression", async ({ page, clipboard }) => {
     await page.getByTestId("logic-type-button-test-id").click();
     clipboard.use();
     await page.getByRole("menuitem", { name: "copy" }).click();
@@ -30,7 +30,7 @@ test.describe("Expression context menu", () => {
     await expect(page.getByText("Expression Name (Literal)")).toBeAttached();
   });
 
-  test("Cut and paste expression", async ({ page, clipboard }) => {
+  test("should cut and paste expression", async ({ page, clipboard }) => {
     await page.getByTestId("logic-type-button-test-id").click();
     clipboard.use();
     await page.getByRole("menuitem", { name: "cut" }).click();

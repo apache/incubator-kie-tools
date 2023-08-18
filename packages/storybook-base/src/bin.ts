@@ -8,7 +8,7 @@ if (argv.indexOf("--storybookArgs") !== -1) {
 }
 
 if (argv.indexOf("--env") !== -1 && argv[argv.indexOf("--env") + 1] === "live") {
-  process.env.STORYBOOK_BASE__live = "true";
+  process.env.STORYBOOK_BASE_WRAPPER_INTERNAL__liveReload = "true";
 }
 
 const storybook = spawn(`storybook`, storybookArgs);

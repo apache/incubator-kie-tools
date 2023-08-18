@@ -1,2 +1,2 @@
-**/dist-e2e/junit-report*.xml
+**/dist-e2e-tests/junit-report*.xml
 **/target/failsafe-reports/TEST-*.xml

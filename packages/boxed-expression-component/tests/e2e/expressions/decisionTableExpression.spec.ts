@@ -6,7 +6,7 @@ test.describe("Decision table expression", () => {
     await expressions.openDecisionTableExpression();
   });
 
-  test("Check if expression rendered correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render expression correctly", async ({ boxedExpressionEditor, page }) => {
     await expect(page.getByText("Expression Name (Decision Table)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
@@ -33,7 +33,7 @@ test.describe("Decision table expression", () => {
     ];
 
     for (const [policy, abreviation] of hitPolicies) {
-      test(`Change hit policy to ${policy}`, async ({ page }) => {
+      test(`should change hit policy to ${policy}`, async ({ page }) => {
         await page.getByRole("menuitem", { name: policy }).hover();
         await expect(page.getByLabel(`${policy}-help`)).toBeAttached();
         await page.getByRole("menuitem", { name: policy }).click();
@@ -41,7 +41,7 @@ test.describe("Decision table expression", () => {
       });
     }
 
-    test("Change between hit policies", async ({ page }) => {
+    test("should change between hit policies", async ({ page }) => {
       await page.getByRole("menuitem", { name: "FIRST" }).click();
       await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
 
@@ -64,7 +64,7 @@ test.describe("Decision table expression", () => {
       await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
     });
 
-    test.describe("Change collect aggregator function", () => {
+    test.describe("should change collect aggregator function", () => {
       const aggregatorFunction = [
         ["<None>", "?"],
         ["SUM", "+"],
@@ -74,7 +74,7 @@ test.describe("Decision table expression", () => {
       ];
 
       for (const [aggregator, abreviation] of aggregatorFunction) {
-        test(`Change aggregator to ${aggregator}`, async ({ page }) => {
+        test(`should change aggregator to ${aggregator}`, async ({ page }) => {
           await page.getByRole("menuitem", { name: "COLLECT" }).click();
           await page.getByRole("menuitem", { name: aggregator }).hover();
           await expect(page.getByLabel(`${abreviation}-help`)).toBeAttached();

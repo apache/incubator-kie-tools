@@ -5,7 +5,7 @@ test.describe("Function expression", () => {
     await expressions.openFunctionExpression();
   });
 
-  test("Check if FEEL function expression rendered correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render FEEL function expression correctly", async ({ boxedExpressionEditor, page }) => {
     await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "F", exact: true })).toBeAttached();
@@ -16,7 +16,7 @@ test.describe("Function expression", () => {
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("feel-function-expression.png");
   });
 
-  test("Check if Java function expression rendered correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render Java function expression correctly", async ({ boxedExpressionEditor, page }) => {
     await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "Java" }).click();
@@ -35,7 +35,7 @@ test.describe("Function expression", () => {
     await expect(page.getByRole("cell")).toHaveCount(6);
   });
 
-  test("Check if PMML function expression rendered correctly", async ({ boxedExpressionEditor, page }) => {
+  test("should render PMML function expression correctly", async ({ boxedExpressionEditor, page }) => {
     await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "PMML" }).click();
@@ -83,7 +83,7 @@ test.describe("Function expression", () => {
     ];
 
     for (const [functionName, abreviation] of functioTypes) {
-      test(`Change function type to ${functionName}`, async ({ page }) => {
+      test(`should change function type to ${functionName}`, async ({ page }) => {
         await page.getByRole("menuitem", { name: functionName }).hover();
         await expect(page.getByLabel(`${functionName}-help`)).toBeAttached();
         await page.getByRole("menuitem", { name: functionName }).click();
@@ -92,7 +92,7 @@ test.describe("Function expression", () => {
     }
   });
 
-  test("Edit function parameters", async ({ page }) => {
+  test("should edit function parameters", async ({ page }) => {
     await page.getByRole("columnheader", { name: "Edit parameters" }).click();
     await expect(page.getByRole("button", { name: "Add parameter" })).toBeAttached();
 

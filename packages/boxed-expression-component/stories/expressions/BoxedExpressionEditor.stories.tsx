@@ -309,7 +309,7 @@ export function BoxedExpressionEditorWrapper() {
 }
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const RootExpression: Story = {
+export const EmptyExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   args: {
     decisionNodeId: "_00000000-0000-0000-0000-000000000000",
@@ -333,7 +333,7 @@ export const LiteralExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -348,7 +348,7 @@ export const ContextExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -384,7 +384,7 @@ export const DecisionTableExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -432,7 +432,7 @@ export const RelationExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -466,7 +466,7 @@ export const FunctionExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -488,7 +488,7 @@ export const InvocationExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",
@@ -523,7 +523,7 @@ export const ListExpression: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: filterArgs,
   args: {
-    ...RootExpression.args,
+    ...EmptyExpression.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Expression Name",

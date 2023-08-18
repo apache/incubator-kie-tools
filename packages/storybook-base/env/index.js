@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv, str2bool, getOrDefault } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({
-    STORYBOOK_BASE__live: {
-      default: "false",
-      description: "Start storybook with live reload capabilities",
-    },
-  }),
+  vars: varsWithName({}),
   get env() {
-    return {
-      storybookBase: {
-        live: str2bool(getOrDefault(this.vars.STORYBOOK_BASE__live)),
-      },
-    };
+    return {};
   },
 });
