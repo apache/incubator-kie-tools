@@ -24,7 +24,7 @@ import elemental2.dom.CSSProperties.WidthUnionType;
 import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
 import org.dashbuilder.dataset.ColumnType;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.patternfly.table.Table;
 import org.dashbuilder.renderer.client.resources.i18n.TableConstants;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -32,7 +32,7 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class TableDisplayerView extends AbstractErraiDisplayerView<TableDisplayer> implements TableDisplayer.View {
+public class TableDisplayerView extends AbstractDisplayerView<TableDisplayer> implements TableDisplayer.View {
 
     @Inject
     protected Table table;
@@ -54,7 +54,7 @@ public class TableDisplayerView extends AbstractErraiDisplayerView<TableDisplaye
 
     @Override
     public void init(TableDisplayer presenter) {
-        super.setPresenter(presenter);
+        super.init(presenter);
         super.setVisualization(Js.cast(rootContainer));
 
         tableContainer.append(table.getElement());

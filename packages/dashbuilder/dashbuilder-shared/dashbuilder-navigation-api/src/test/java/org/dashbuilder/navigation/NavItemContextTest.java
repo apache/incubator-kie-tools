@@ -17,7 +17,6 @@ package org.dashbuilder.navigation;
 
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.junit.Test;
-import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -52,17 +51,6 @@ public class NavItemContextTest {
         assertEquals(ctx.getProperty("a"), "A");
         assertEquals(ctx.getProperty("b"), "B");
         assertEquals(ctx.toString(), "a=A;b=B;");
-    }
-
-    @Test
-    public void testPerspective() {
-        NavWorkbenchCtx ctx = NavWorkbenchCtx.perspective("A");
-        assertEquals(ctx.getPropertyIds().size(), 2);
-        assertEquals(ctx.getResourceId(), "A");
-        assertEquals(ctx.getResourceType(), ActivityResourceType.PERSPECTIVE);
-        assertEquals(ctx.getProperty(NavWorkbenchCtx.RESOURCE_ID), "A");
-        assertEquals(ctx.getProperty(NavWorkbenchCtx.RESOURCE_TYPE), "PERSPECTIVE");
-        assertEquals(ctx.toString(), "resourceId=A;resourceType=PERSPECTIVE;");
     }
 
     @Test

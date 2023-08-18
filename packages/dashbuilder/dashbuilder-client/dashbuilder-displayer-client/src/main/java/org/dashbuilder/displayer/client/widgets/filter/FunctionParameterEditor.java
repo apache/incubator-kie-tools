@@ -15,9 +15,7 @@
  */
 package org.dashbuilder.displayer.client.widgets.filter;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-public interface FunctionParameterEditor extends IsWidget {
+public interface FunctionParameterEditor {
 
     void setFocus(boolean focus);
 }

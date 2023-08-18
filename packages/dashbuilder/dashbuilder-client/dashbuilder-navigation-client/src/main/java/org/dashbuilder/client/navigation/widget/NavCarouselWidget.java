@@ -17,12 +17,11 @@ package org.dashbuilder.client.navigation.widget;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavItem;
@@ -33,7 +32,7 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
 
     public interface View extends NavWidgetView<NavCarouselWidget>, ClientLayoutRecursionIssueI18n {
 
-        void addContentSlide(IsWidget widget);
+        void addContentSlide(HTMLElement widget);
 
         void infiniteRecursionError(String cause);
     }
@@ -70,14 +69,11 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
     @Override
     public void show(List<NavItem> itemList) {
         // Discard everything but runtime perspectives
-        List<NavItem> itemsFiltered = itemList.stream()
-                .filter(perspectivePluginManager::isRuntimePerspective)
-                .collect(Collectors.toList());
 
         // Get the default item configured (if any)
         NavItem defaultNavItem = null;
         if (defaultNavItemId != null) {
-            for (NavItem navItem : itemsFiltered) {
+            for (NavItem navItem : itemList) {
                 if (defaultNavItemId.equals(navItem.getId())) {
                     defaultNavItem = navItem;
                 }
@@ -85,12 +81,12 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
         }
         // Place the default item at the beginning of the carousel
         if (defaultNavItem != null) {
-            itemsFiltered.remove(defaultNavItem);
-            itemsFiltered.add(0, defaultNavItem);
+            itemList.remove(defaultNavItem);
+            itemList.add(0, defaultNavItem);
         }
 
         perspectiveIds.clear();
-        super.show(itemsFiltered);
+        super.show(itemList);
     }
 
     @Override
@@ -99,14 +95,18 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
         String perspectiveId = perspectivePluginManager.getRuntimePerspectiveId(navItem);
         if (perspectiveId != null) {
             perspectiveIds.add(perspectiveId);
-            perspectivePluginManager.buildPerspectiveWidget(perspectiveId, view::addContentSlide,
-                    this::onInfiniteRecursion);
+            perspectivePluginManager.buildPerspectiveWidget(perspectiveId, view::addContentSlide);
         }
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
         String cause = issue.printReport(navigationManager.getNavTree(), view);
         view.infiniteRecursionError(cause);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
 }

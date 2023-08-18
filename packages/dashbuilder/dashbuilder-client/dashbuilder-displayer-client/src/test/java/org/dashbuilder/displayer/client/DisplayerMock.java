@@ -14,6 +14,7 @@
  */
 package org.dashbuilder.displayer.client;
 
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.displayer.DisplayerConstraints;
 
@@ -60,5 +61,10 @@ public class DisplayerMock extends AbstractDisplayer<AbstractDisplayer.View> {
         if (! ignoreError) {
             throw new RuntimeException(error.getRootCause());
         }
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return null;
     }
 }

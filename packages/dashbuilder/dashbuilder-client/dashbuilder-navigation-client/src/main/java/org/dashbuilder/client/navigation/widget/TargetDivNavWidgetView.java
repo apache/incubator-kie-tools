@@ -18,16 +18,13 @@ package org.dashbuilder.client.navigation.widget;
 import java.util.function.Consumer;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
 import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
 import org.uberfire.mvp.Command;
 
@@ -46,20 +43,20 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
 
     @Override
     public void clearContent(String targetDivId) {
-        Element targetDiv = getTargetDiv(targetDivId);
+        var targetDiv = getTargetDiv(targetDivId);
         if (targetDiv != null) {
-            DOMUtil.removeAllChildren(targetDiv);
+            domUtil.removeAllElementChildren(targetDiv);
         }
     }
 
     @Override
-    public void showContent(String targetDivId, IsWidget content) {
+    public void showContent(String targetDivId, elemental2.dom.HTMLElement content) {
         getTargetDiv(targetDivId, targetDiv -> {
-            DOMUtil.removeAllChildren(targetDiv);
-            Div container = (Div) Window.getDocument().createElement("div");
-            container.getStyle().setProperty("overflow", "hidden");
+            domUtil.removeAllElementChildren(targetDiv);
+            var container = (HTMLElement) DomGlobal.document.createElement("div");
+            container.style.setProperty("overflow", "hidden");
             targetDiv.appendChild(container);
-            super.appendWidgetToElement(container, content);
+            container.appendChild(Js.cast(content));
         }, () -> error(NavigationConstants.INSTANCE.navWidgetTargetDivMissing()));
     }
 
@@ -77,7 +74,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     public void infiniteRecursionError(String targetDivId, String cause) {
         Element targetDiv = getTargetDiv(targetDivId);
         if (targetDiv != null) {
-            DOMUtil.removeAllChildren(targetDiv);
+            domUtil.removeAllElementChildren(targetDiv);
             String message = NavigationConstants.INSTANCE.targetDivIdPerspectiveInfiniteRecursion() + cause;
             alertBox.setMessage(message);
             targetDiv.appendChild(Js.cast(alertBox.getElement()));
@@ -87,7 +84,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     }
 
     public void error(String message) {
-        DOMUtil.removeAllChildren(navWidget);
+        domUtil.removeAllElementChildren(navWidget);
         alertBox.setMessage(message);
         navWidget.appendChild(Js.cast(alertBox.getElement()));
     }
@@ -100,7 +97,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
         if (id != null && (id.equals(AbstractLayoutGenerator.CONTAINER_ID) || id.equals("layout"))) {
             return el;
         } else {
-            return getLayoutRootElement(el.getParentElement());
+            return getLayoutRootElement(el.parentElement);
         }
     }
 
@@ -121,7 +118,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     public HTMLElement getTargetDiv(String targetDivId) {
         HTMLElement targetDiv = null;
         if (targetDivId != null) {
-            Element layoutRoot = getLayoutRootElement(navWidget.getParentElement());
+            var layoutRoot = getLayoutRootElement(navWidget.parentElement);
             if (layoutRoot != null) {
                 targetDiv = (HTMLElement) layoutRoot.querySelector("#" + targetDivId);
             }

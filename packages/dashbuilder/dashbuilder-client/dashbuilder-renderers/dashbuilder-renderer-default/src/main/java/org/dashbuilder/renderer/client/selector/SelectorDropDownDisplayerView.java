@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.renderer.client.selector;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -25,15 +26,16 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLUListElement;
 import jsinterop.base.Js;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+@Dependent
 @Templated
-public class SelectorDropDownDisplayerView extends AbstractErraiDisplayerView<SelectorDropDownDisplayer>
+public class SelectorDropDownDisplayerView extends AbstractDisplayerView<SelectorDropDownDisplayer>
                                            implements SelectorDropDownDisplayer.View {
 
     private static final String MIN_WIDTH_ATTR = "min-width";
@@ -71,8 +73,8 @@ public class SelectorDropDownDisplayerView extends AbstractErraiDisplayerView<Se
 
     @Override
     public void init(SelectorDropDownDisplayer presenter) {
-        super.setPresenter(presenter);
-        super.setVisualization(Js.cast(containerDiv));
+        super.init(presenter);
+        super.setVisualization(containerDiv);
         DomGlobal.document.addEventListener("click", e -> {
             if (!containerDiv.contains(Js.cast(e.target))) {
                 hideItems();

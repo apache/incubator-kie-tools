@@ -16,129 +16,57 @@
 
 package org.dashbuilder.client;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
-import org.dashbuilder.client.error.DefaultRuntimeErrorCallback;
-import org.dashbuilder.client.perspective.NotFoundPerspective;
-import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.shared.model.RuntimeModel;
+import jsinterop.base.Js;
+import org.dashbuilder.client.place.PlaceManager;
+import org.dashbuilder.client.screens.Router;
+import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.api.UncaughtExceptionHandler;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.Workbench;
 
 @EntryPoint
 @ApplicationScoped
 @Bundle("resources/i18n/AppConstants.properties")
 public class RuntimeEntryPoint {
 
-    public static final String DASHBOARD_PARAM = "dashboard";
-
-    public static final String PERSPECTIVE_PARAM = "perspective";
-
-    private static AppConstants i18n = AppConstants.INSTANCE;
-
     @Inject
-    Workbench workbench;
-
-    @Inject
-    RuntimeClientLoader modelLoader;
+    Elemental2DomUtil domUtil;
 
     @Inject
     PlaceManager placeManager;
 
     @Inject
-    RuntimeCommunication runtimeCommunication;
+    Router router;
 
     @Inject
-    DefaultRuntimeErrorCallback defaultRuntimeErrorCallback;
-    
-    private String dashboard;
+    BusyIndicator busyIndicator;
 
     @PostConstruct
-    public void startup() {
-        workbench.addStartupBlocker(RuntimeEntryPoint.class);
-        Map<String, List<String>> params = Window.Location.getParameterMap();
-        boolean isStandalone = params.containsKey("standalone");
-        List<String> dashboardParams = params.get(DASHBOARD_PARAM);
+    public void onLoad() {
+        var root = DomGlobal.document.getElementById("app");
 
-        if (!foundDashboard(dashboardParams)) {
-            dashboardParams = params.get(PERSPECTIVE_PARAM);
-        }        
+        RootPanel.get().getElement().appendChild(Js.cast(root));
 
-        if (isStandalone && foundDashboard(dashboardParams)) {
-            dashboard = dashboardParams.get(0);
-            modelLoader.loadModel(this::foundRuntimeModel,
-                                  this::notFound,
-                                  this::error);
-        } else {
-            this.hideLoading();
-        }
-        
-    }
+        hideLoading();
+        placeManager.setup(root);
+        router.doRoute();
 
-    private void foundRuntimeModel(RuntimeModel runtimeModel) {
-        boolean perspectiveNotFound = runtimeModel.getLayoutTemplates().stream()
-                                                  .noneMatch(lt -> lt.getName().equals(dashboard));
-        if (perspectiveNotFound) {
-            notFound();
-        } else {
-            targetPerspective();
-        }
-    }
-
-    public void notFound() {
-        String newUrl = GWT.getHostPageBaseURL() + "?standalone&" +
-                        PERSPECTIVE_PARAM + "=" + NotFoundPerspective.ID + "&" +
-                        DASHBOARD_PARAM + "=" + dashboard;
-        DomGlobal.window.history.pushState(null,
-                                           "Dashbuilder Runtime | Not Found",
-                                           newUrl);
-        this.hideLoading();
+        DomGlobal.document.body.appendChild(busyIndicator.getElement());
 
     }
-
-    public void targetPerspective() {
-        String newUrl = Window.Location.createUrlBuilder()
-                                       .setParameter(PERSPECTIVE_PARAM, dashboard)
-                                       .buildString();
-        DomGlobal.window.history.pushState(null,
-                                           "Dashbuilder Runtime",
-                                           newUrl);
-        this.hideLoading();
-    }
-
-    public void error(Object e, Throwable t) {
-        runtimeCommunication.showError(i18n.errorLoadingDashboards(), t);
-        this.hideLoading();
-    }
-
-    @UncaughtExceptionHandler
-    public void generalErrorHandling(final Throwable t) {
-        defaultRuntimeErrorCallback.error(t);
-    }
-    
 
     private void hideLoading() {
-        workbench.removeStartupBlocker(RuntimeEntryPoint.class);
         Element loading = DomGlobal.document.getElementById("loading");
         if (loading != null) {
             loading.remove();
         }
-    }
-
-    private boolean foundDashboard(List<String> dashboardParams) {
-        return dashboardParams != null && !dashboardParams.isEmpty();
     }
 
 }

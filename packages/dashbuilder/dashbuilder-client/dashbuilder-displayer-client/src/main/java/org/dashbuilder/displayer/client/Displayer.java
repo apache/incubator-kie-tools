@@ -15,7 +15,7 @@
  */
 package org.dashbuilder.displayer.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.export.ExportCallback;
@@ -25,7 +25,7 @@ import org.dashbuilder.displayer.client.formatter.ValueFormatter;
 /**
  * A Displayer takes care of drawing a DisplayerSettings instance.
  */
-public interface Displayer extends DisplayerListener, IsWidget {
+public interface Displayer extends DisplayerListener {
 
     /**
      * The data displayer to draw.
@@ -99,4 +99,6 @@ public interface Displayer extends DisplayerListener, IsWidget {
      * Frees any resource the displayer is consuming.
      */
     void close();
+    
+    HTMLElement getElement ();
 }

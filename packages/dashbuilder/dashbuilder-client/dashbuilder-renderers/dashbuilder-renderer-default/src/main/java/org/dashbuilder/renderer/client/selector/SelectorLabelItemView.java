@@ -19,13 +19,13 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLButtonElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class SelectorLabelItemView implements SelectorLabelItem.View, IsElement {
+public class SelectorLabelItemView implements SelectorLabelItem.View {
 
     private static final String SELECTED_CLASS = "pf-m-primary";
     private static final String UNSELECTED_CLASS = "pf-m-secondary";
@@ -80,5 +80,10 @@ public class SelectorLabelItemView implements SelectorLabelItem.View, IsElement 
     @EventHandler("item")
     public void onItemClick(ClickEvent event) {
         presenter.onItemClick();
+    }
+    
+    @Override
+    public HTMLElement getElement() {
+        return item;
     }
 }

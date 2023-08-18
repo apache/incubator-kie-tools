@@ -20,13 +20,13 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.CSSProperties.WidthUnionType;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.patternfly.date.DatePicker;
 
 // TODO: create new view
 @Dependent
-public class DateParameterEditorView extends Composite implements DateParameterEditor.View {
+public class DateParameterEditorView implements DateParameterEditor.View {
 
     DateParameterEditor presenter;
 
@@ -64,5 +64,10 @@ public class DateParameterEditorView extends Composite implements DateParameterE
     @Override
     public void setWidth(int width) {
         input.getElement().style.width = WidthUnionType.of(width + "px");
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return null;
     }
 }

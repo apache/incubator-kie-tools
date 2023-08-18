@@ -18,7 +18,6 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
@@ -29,12 +28,9 @@ import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
@@ -45,11 +41,11 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    Div contentDiv;
+    HTMLDivElement contentDiv;
 
     @Inject
     @DataField
@@ -85,27 +81,27 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
 
     @Override
     public void addTileWidget(HTMLElement tileWidget) {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         mainDiv.appendChild(contentDiv);
         tilesDiv.appendChild(Js.cast(tileWidget));
     }
 
     @Override
-    public void showTileContent(IsWidget tileContent) {
+    public void showTileContent(HTMLElement tileContent) {
         domUtil.removeAllElementChildren(tilesDiv);
-        super.appendWidgetToElement(Js.cast(tilesDiv), tileContent);
+        tilesDiv.appendChild(tileContent);
     }
 
     @Override
     public void errorNavItemsEmpty() {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navGroupEmptyError());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void errorNavGroupNotFound() {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navGroupNotFound());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
@@ -128,7 +124,7 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
     }
 
     @Override
-    public void addBreadcrumbItem(String navItemName, Command onClicked) {
+    public void addBreadcrumbItem(String navItemName, Runnable onClicked) {
         var li = DomGlobal.document.createElement("li");
         var divider = createBreadcrumbDivider();
         li.appendChild(divider);
@@ -141,18 +137,18 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
         li.className = "pf-v5-c-breadcrumb__item";
 
         anchor.onclick = e -> {
-            onClicked.execute();
+            onClicked.run();
             return null;
         };
         // add here the divider
         if (onClicked == null) {
             breadcrumb.querySelectorAll("li > a").forEach((v, i, list) -> {
                 v.classList.remove(CURRENT_ITEM_CLASS);
-                return null; 
+                return null;
             });
             anchor.classList.add(CURRENT_ITEM_CLASS);
         }
-        breadcrumb.appendChild(li);        
+        breadcrumb.appendChild(li);
     }
 
     Element createBreadcrumbDivider() {
@@ -162,6 +158,11 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
         i.className = "fas fa-angle-right";
         span.appendChild(i);
         return span;
+    }
+    
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
     }
 
 }

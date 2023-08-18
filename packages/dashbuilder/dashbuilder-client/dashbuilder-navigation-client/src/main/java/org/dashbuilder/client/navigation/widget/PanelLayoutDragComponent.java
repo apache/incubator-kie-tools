@@ -48,5 +48,5 @@ public class PanelLayoutDragComponent extends SinglePageNavigationDragComponent 
     String getPageParameterName() {
         return PAGE_NAME_PARAMETER;
     }
-
+    
 }

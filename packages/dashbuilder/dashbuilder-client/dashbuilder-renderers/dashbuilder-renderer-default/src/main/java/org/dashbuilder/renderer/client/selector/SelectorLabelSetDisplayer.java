@@ -33,13 +33,13 @@ import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @Dependent
-public class SelectorLabelSetDisplayer extends AbstractErraiDisplayer<SelectorLabelSetDisplayer.View> {
+public class SelectorLabelSetDisplayer extends AbstractDisplayer<SelectorLabelSetDisplayer.View> {
 
-    public interface View extends AbstractErraiDisplayer.View<SelectorLabelSetDisplayer> {
+    public interface View extends AbstractDisplayer.View<SelectorLabelSetDisplayer> {
 
         void showTitle(String title);
 
@@ -153,8 +153,7 @@ public class SelectorLabelSetDisplayer extends AbstractErraiDisplayer<SelectorLa
         clearItems();
         if (dataSet.getRowCount() == 0) {
             view.noData();
-        }
-        else {
+        } else {
             // Generate the list entries from the current data set
             for (int i = 0; i < dataSet.getRowCount(); i++) {
 

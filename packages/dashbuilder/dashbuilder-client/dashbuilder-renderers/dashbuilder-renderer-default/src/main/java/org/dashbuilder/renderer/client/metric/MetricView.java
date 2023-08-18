@@ -21,23 +21,25 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.ScriptInjector;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
-import org.dashbuilder.renderer.client.DefaultRenderer;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.renderer.client.resources.i18n.MetricConstants;
 
 @Dependent
-public class MetricView extends AbstractGwtDisplayerView<MetricDisplayer> implements MetricDisplayer.View {
+public class MetricView extends AbstractDisplayerView<MetricDisplayer> implements MetricDisplayer.View {
 
-    FlowPanel container = new FlowPanel();
+    HTMLElement container;
     HTMLPanel htmlPanel = null;
     String uniqueId = Document.get().createUniqueId();
 
     @Override
     public void init(MetricDisplayer presenter) {
-        container.getElement().setAttribute("id", uniqueId);
-        super.setPresenter(presenter);
+        container = (HTMLElement) DomGlobal.document.createElement("div");
+        container.setAttribute("id", uniqueId);
+        super.init(presenter);
         super.setVisualization(container);
     }
 
@@ -47,18 +49,10 @@ public class MetricView extends AbstractGwtDisplayerView<MetricDisplayer> implem
     }
 
     @Override
-    public void clear() {
-        super.clear();
-        htmlPanel = null;
-        container.clear();
-        DefaultRenderer.closeDisplayer(uniqueId);
-    }
-
-    @Override
     public void setHtml(String html) {
         htmlPanel = new HTMLPanel(html);
-        container.clear();
-        container.add(htmlPanel);
+        domUtil.removeAllElementChildren(container);
+        container.appendChild(Js.cast(htmlPanel.getElement()));
     }
 
     @Override
@@ -82,4 +76,5 @@ public class MetricView extends AbstractGwtDisplayerView<MetricDisplayer> implem
     public String getColumnsTitle() {
         return MetricConstants.INSTANCE.metricDisplayer_columnsTitle();
     }
+
 }

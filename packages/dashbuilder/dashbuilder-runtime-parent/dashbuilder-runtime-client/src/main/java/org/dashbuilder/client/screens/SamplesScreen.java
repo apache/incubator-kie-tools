@@ -19,28 +19,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
+import org.dashbuilder.client.place.Place;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.widgets.SampleCard;
 import org.dashbuilder.client.widgets.SamplesCardRow;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.lifecycle.OnClose;
-import org.uberfire.lifecycle.OnOpen;
 
 /**
  * Screen displayed when there's no dashboards available and samples url is configured
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = SamplesScreen.ID)
-public class SamplesScreen {
+public class SamplesScreen implements Place {
 
     public static final String ID = "SamplesScreen";
 
@@ -50,7 +47,7 @@ public class SamplesScreen {
     View view;
 
     @Inject
-    RouterScreen router;
+    Router router;
 
     @Inject
     SamplesService samplesService;
@@ -73,18 +70,8 @@ public class SamplesScreen {
         view.init(this);
     }
 
-    @WorkbenchPartTitle
-    public String title() {
-        return i18n.samplesScreenTitle();
-    }
-
-    @WorkbenchPartView
-    protected View getPart() {
-        return view;
-    }
-
-    @OnOpen
-    protected void onOpen() {
+    @Override
+    public void onOpen() {
         var rows = new ArrayList<SamplesCardRow>();
         samplesService.samplesByCategory().forEach((cat, samples) -> {
             var samplesCards = new ArrayList<SampleCard>();
@@ -100,10 +87,20 @@ public class SamplesScreen {
         view.addRows(rows);
     }
 
-    @OnClose
+    @PreDestroy
     public void clear() {
         sampleCardInstance.destroyAll();
         samplesCardRowInstance.destroyAll();
         view.clear();
+    }
+
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

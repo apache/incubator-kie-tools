@@ -18,13 +18,12 @@ package org.dashbuilder.renderer.client.selector;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import jsinterop.base.Js;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.patternfly.select.Select;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
 
 @Dependent
-public class SelectorDisplayerView extends AbstractErraiDisplayerView<SelectorDisplayer> implements
+public class SelectorDisplayerView extends AbstractDisplayerView<SelectorDisplayer> implements
                                    SelectorDisplayer.View {
 
     @Inject
@@ -32,8 +31,8 @@ public class SelectorDisplayerView extends AbstractErraiDisplayerView<SelectorDi
 
     @Override
     public void init(SelectorDisplayer presenter) {
-        super.setPresenter(presenter);
-        super.setVisualization(Js.cast(select.getElement()));
+        super.init(presenter);
+        super.setVisualization(select.getElement());
     }
 
     @Override

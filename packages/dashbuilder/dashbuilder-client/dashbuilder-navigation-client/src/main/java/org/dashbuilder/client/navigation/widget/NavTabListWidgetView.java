@@ -18,8 +18,8 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLUListElement;
 import jsinterop.base.Js;
 import org.dashbuilder.patternfly.alert.Alert;
@@ -76,7 +76,7 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
     }
 
     @Override
-    public void addGroupItem(String id, String name, String description, IsWidget widget) {
+    public void addGroupItem(String id, String name, String description, HTMLElement el) {
         this.addItem(id, name, description, () -> presenter.onGroupTabClicked(id));
     }
 
@@ -109,9 +109,9 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
     }
 
     @Override
-    public void showChildrenTabs(IsWidget tabListWidget) {
+    public void showChildrenTabs(HTMLElement tabListWidget) {
         domUtil.removeAllElementChildren(childrenDiv);
-        super.appendWidgetToElement(Js.cast(childrenDiv), tabListWidget);
+        childrenDiv.appendChild(tabListWidget);
         if (presenter.getLevel() == 0) {
             childrenDiv.style.setProperty("margin-left", "15px");
         }
@@ -129,6 +129,11 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
         domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(message);
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
     }
 
 }

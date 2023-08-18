@@ -23,9 +23,10 @@ import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.CSSProperties.WidthUnionType;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.patternfly.label.Label;
 import org.dashbuilder.patternfly.label.LabelColor;
 import org.dashbuilder.patternfly.slider.Slider;
@@ -34,7 +35,7 @@ import org.dashbuilder.renderer.client.resources.i18n.SliderConstants;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 @Dependent
-public class SelectorSliderDisplayerView extends AbstractErraiDisplayerView<SelectorSliderDisplayer>
+public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorSliderDisplayer>
                                          implements SelectorSliderDisplayer.View {
 
     FlowPanel container = new FlowPanel();
@@ -51,8 +52,8 @@ public class SelectorSliderDisplayerView extends AbstractErraiDisplayerView<Sele
 
     @Override
     public void init(SelectorSliderDisplayer presenter) {
-        super.setPresenter(presenter);
-        super.setVisualization(container.getElement());
+        super.init(presenter);
+        super.setVisualization(Js.cast(container.getElement()));
 
         // Enlarge the tooltip max width
         StyleInjector.inject(".slider .tooltip-inner { max-width: 900px; }");
@@ -115,16 +116,17 @@ public class SelectorSliderDisplayerView extends AbstractErraiDisplayerView<Sele
     }
 
     @Override
-    public void showInputs(IsWidget minValueEditor, IsWidget maxValueEditor) {
-        minValueEditor.asWidget().getElement().getStyle().setMarginTop(5, Style.Unit.PX);
-        maxValueEditor.asWidget().getElement().getStyle().setMarginTop(5, Style.Unit.PX);
-        minValueEditor.asWidget().getElement().getStyle().setMarginBottom(5, Style.Unit.PX);
-        maxValueEditor.asWidget().getElement().getStyle().setMarginBottom(5, Style.Unit.PX);
-        maxValueEditor.asWidget().getElement().getStyle().setFloat(Style.Float.RIGHT);
+    public void showInputs(HTMLElement minValueEditor, HTMLElement maxValueEditor) {
+        minValueEditor.style.set("margin-top", "5px");
+        maxValueEditor.style.set("margin-top", "5px");
+        minValueEditor.style.set("margin-bottom", "5px");
+        maxValueEditor.style.set("margin-bottom", "5px");
+        maxValueEditor.style.set("float", "right");
 
         inputs.clear();
-        inputs.add(minValueEditor);
-        inputs.add(maxValueEditor);
+        // change inputs to other panel
+        //inputs.add(minValueEditor);
+        //inputs.add(maxValueEditor);
 
         header.setVisible(true);
         inputs.setVisible(true);

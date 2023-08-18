@@ -32,15 +32,15 @@ import com.google.gwt.user.client.Window;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
-import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
 import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.client.screens.RouterScreen;
+import org.dashbuilder.client.screens.Router;
 import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.client.setup.RuntimeClientSetup;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
+import org.dashbuilder.renderer.client.DefaultRenderer;
 import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
@@ -59,8 +59,6 @@ public class RuntimeClientLoader {
 
     public static final String IMPORT_ID_PARAM = "import";
 
-    RuntimePerspectiveGenerator perspectiveEditorGenerator;
-
     RuntimePerspectivePluginManager runtimePerspectivePluginManager;
 
     NavigationManager navigationManager;
@@ -77,7 +75,7 @@ public class RuntimeClientLoader {
 
     Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent;
 
-    RouterScreen router;
+    Router router;
 
     RuntimeClientMode mode;
 
@@ -98,8 +96,7 @@ public class RuntimeClientLoader {
     }
 
     @Inject
-    public RuntimeClientLoader(RuntimePerspectiveGenerator perspectiveEditorGenerator,
-                               RuntimePerspectivePluginManager runtimePerspectivePluginManager,
+    public RuntimeClientLoader(RuntimePerspectivePluginManager runtimePerspectivePluginManager,
                                NavigationManager navigationManager,
                                BusyIndicator busyIndicator,
                                ExternalDataSetClientProvider externalDataSetRegister,
@@ -109,8 +106,7 @@ public class RuntimeClientLoader {
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
                                Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent,
                                Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent,
-                               RouterScreen router) {
-        this.perspectiveEditorGenerator = perspectiveEditorGenerator;
+                               Router router) {
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
         this.navigationManager = navigationManager;
         this.externalDataSetProvider = externalDataSetRegister;
@@ -233,7 +229,7 @@ public class RuntimeClientLoader {
      * @return
      *  true if client model was sucessfully loaded.
      */
-    public boolean loadContentAndRoute(String content) {
+    public RuntimeModel loadContentAndRoute(String content) {
         try {
             if (content == null || content.trim().isEmpty()) {
                 clientModel = null;
@@ -245,13 +241,13 @@ public class RuntimeClientLoader {
                 this.clientModel = runtimeModel;
                 updatedGlobalSettingsEvent.fire(new UpdatedGlobalSettingsEvent(runtimeModel.getGlobalSettings()));
                 updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
-                return true;
+                return clientModel;
             }
         } catch (Exception e) {
             router.goToContentError(e);
         }
 
-        return false;
+        return null;
     }
 
     private void loadClientModel(String url,
@@ -266,7 +262,7 @@ public class RuntimeClientLoader {
         }).then(content -> {
             busyIndicator.hide();
             try {
-                if (loadContentAndRoute(content)) {
+                if (loadContentAndRoute(content) != null) {
                     responseConsumer.accept(this.clientModel);
                 }
             } catch (Exception e) {
@@ -291,12 +287,16 @@ public class RuntimeClientLoader {
     }
 
     private void registerModel(RuntimeModel runtimeModel) {
-        clearObsoletePerspectives(runtimeModel);
+        clearLayoutRetainedData();
         clearObsoleteDataSets(runtimeModel);
-        runtimeModel.getLayoutTemplates().forEach(perspectiveEditorGenerator::generatePerspective);
         runtimeModel.getClientDataSets().forEach(externalDataSetProvider::register);
         runtimePerspectivePluginManager.setTemplates(runtimeModel.getLayoutTemplates());
         navigationManager.setDefaultNavTree(runtimeModel.getNavTree());
+    }
+
+    private void clearLayoutRetainedData() {
+        DefaultRenderer.closeAllDisplayers();
+        // TODO: Identify and remove beans created with newInstance
     }
 
     private RuntimeServiceResponse buildEditorResponse() {
@@ -317,17 +317,6 @@ public class RuntimeClientLoader {
                 Optional.ofNullable(clientModel),
                 list,
                 false);
-    }
-
-    private void clearObsoletePerspectives(RuntimeModel runtimeModel) {
-        if (clientModel != null) {
-            clientModel.getLayoutTemplates()
-                    .stream()
-                    .filter(lt -> runtimeModel.getLayoutTemplates()
-                            .stream()
-                            .noneMatch(lt2 -> lt2.getName().equals(lt.getName())))
-                    .forEach(lt -> perspectiveEditorGenerator.unregisterPerspective(lt));
-        }
     }
 
     private void clearObsoleteDataSets(RuntimeModel runtimeModel) {

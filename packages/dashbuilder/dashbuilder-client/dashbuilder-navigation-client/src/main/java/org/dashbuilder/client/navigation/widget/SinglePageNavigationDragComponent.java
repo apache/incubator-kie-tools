@@ -17,13 +17,10 @@ package org.dashbuilder.client.navigation.widget;
 
 import java.util.function.BiConsumer;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
@@ -40,20 +37,19 @@ public abstract class SinglePageNavigationDragComponent implements LayoutDragCom
     }
 
     @Override
-    public IsWidget getShowWidget(RenderingContext ctx) {
+    public HTMLElement getShowWidget(RenderingContext ctx) {
         var perspectiveId = ctx.getComponent().getProperties().get(getPageParameterName());
         var builder = getComponentBuilder();
         var root = builder.root;
         var pageBuilder = builder.pageConsumer;
         if (perspectiveId == null) {
-            return ElementWrapperWidget.getWidget(alert("Page " + perspectiveId + "  not Found"));
+            return alert("Page " + perspectiveId + "  not Found");
         } else {
             perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
-                    page -> pageBuilder.accept(perspectiveId, Js.cast(page.asWidget().getElement())),
-                    issue -> root.appendChild(alert("Error with infinite recursion. Review the embedded page")));
+                    page -> pageBuilder.accept(perspectiveId, page));
         }
 
-        return ElementWrapperWidget.getWidget(root);
+        return root;
     }
 
     abstract ComponentBuilder getComponentBuilder();

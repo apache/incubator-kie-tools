@@ -38,8 +38,6 @@ public class NavTilesDragComponent extends AbstractNavDragComponent {
               pluginManager,
               navWidget);
 
-        this.navWidget.setHideEmptyGroups(true);
-
     }
 
 }

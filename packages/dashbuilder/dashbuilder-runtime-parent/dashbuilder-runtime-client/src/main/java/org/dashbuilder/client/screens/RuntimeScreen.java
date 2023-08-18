@@ -20,18 +20,14 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.resources.i18n.AppConstants;
+import elemental2.dom.HTMLElement;
+import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
+import org.dashbuilder.client.place.Place;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.model.RuntimeModel;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 /**
@@ -39,49 +35,33 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = RuntimeScreen.ID)
-public class RuntimeScreen {
+public class RuntimeScreen implements Place {
 
     public static final String ID = "RuntimeScreen";
 
     public static final String INDEX_PAGE_NAME = "index";
 
-    private static AppConstants i18n = AppConstants.INSTANCE;
-
     public interface View extends UberElemental<RuntimeScreen> {
 
         void loadNavTree(NavTree navTree, boolean keepNavigation);
+
+        void setContent(HTMLElement element);
 
     }
 
     @Inject
     View view;
 
-
     @Inject
-    PlaceManager placeManager;
+    PerspectivePluginManager pluginManager;
 
     private RuntimeModel currentRuntimeModel;
-
-    String lastVisited;
-
-    boolean keepHistory;
 
     boolean newNavigation;
 
     @PostConstruct
     void setup() {
         view.init(this);
-    }
-
-    @WorkbenchPartTitle
-    public String getScreenTitle() {
-        return i18n.runtimeScreenTitle();
-    }
-
-    @WorkbenchPartView
-    public View workbenchPart() {
-        return this.view;
     }
 
     public void loadDashboards(RuntimeModel runtimeModel) {
@@ -92,40 +72,31 @@ public class RuntimeScreen {
     }
 
     public void goToIndex(List<LayoutTemplate> templates) {
-        if (keepHistory &&
-            lastVisited != null &&
-            !newNavigation &&
-            templates.stream().anyMatch(t -> t.getName().equals(lastVisited))) {
-            keepHistory = false;
-            placeManager.goTo(lastVisited);
-        } else if (templates.stream().anyMatch(lt -> lt.getName().equals(INDEX_PAGE_NAME))) {
-            templates.stream()
-                    .map(LayoutTemplate::getName)
-                    .filter(INDEX_PAGE_NAME::equals)
-                    .findFirst()
-                    .ifPresent(placeManager::goTo);
+        var indexOp = templates.stream()
+                .filter(lt -> INDEX_PAGE_NAME.equals(lt.getName()))
+                .findFirst();
+        if (indexOp.isPresent()) {
+            loadTemplate(indexOp.get());
         } else if (templates.size() == 1) {
-            placeManager.goTo(templates.get(0).getName());
+            loadTemplate(templates.get(0));
         }
     }
 
-    public void setKeepHistory(boolean keepHistory) {
-        this.keepHistory = keepHistory;
+    private void loadTemplate(LayoutTemplate template) {
+        pluginManager.buildPerspectiveWidget(template.getName(), view::setContent);
     }
 
     public void clearCurrentSelection() {
         currentRuntimeModel = null;
     }
 
-    void onPerspectiveChange(@Observes PerspectiveChange perspectiveChange) {
-        if (currentRuntimeModel != null) {
-            var perspective = perspectiveChange.getIdentifier();
-            var isLayoutTemplate = currentRuntimeModel.getLayoutTemplates()
-                    .stream()
-                    .anyMatch(lt -> lt.getName().equals(perspective));
-            if (isLayoutTemplate) {
-                lastVisited = perspective;
-            }
-        }
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

@@ -17,8 +17,8 @@ package org.dashbuilder.renderer.client.selector;
 
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Element;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import jsinterop.base.Js;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
@@ -28,8 +28,8 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class SelectorLabelSetDisplayerView extends AbstractErraiDisplayerView<SelectorLabelSetDisplayer>
-        implements SelectorLabelSetDisplayer.View {
+public class SelectorLabelSetDisplayerView extends AbstractDisplayerView<SelectorLabelSetDisplayer>
+                                           implements SelectorLabelSetDisplayer.View {
 
     @Inject
     @DataField
@@ -49,8 +49,8 @@ public class SelectorLabelSetDisplayerView extends AbstractErraiDisplayerView<Se
 
     @Override
     public void init(SelectorLabelSetDisplayer presenter) {
-        super.setPresenter(presenter);
-        super.setVisualization((Element) containerDiv);
+        super.init(presenter);
+        super.setVisualization(Js.cast(containerDiv));
     }
 
     @Override
@@ -79,7 +79,7 @@ public class SelectorLabelSetDisplayerView extends AbstractErraiDisplayerView<Se
 
     @Override
     public void addItem(SelectorLabelItem item) {
-        HTMLElement element = item.getView().getElement();
+        HTMLElement element = Js.cast(item.getView().getElement());
         element.getStyle().setProperty("margin", "3px");
         labelSetDiv.appendChild(element);
     }

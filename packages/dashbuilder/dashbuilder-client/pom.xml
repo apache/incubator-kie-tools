@@ -46,6 +46,8 @@
 
   <modules>
     <module>dashbuilder-patternfly</module>
+    <module>uberfire-layout-editor-client</module>
+    <module>uberfire-runtime-plugins-client</module>
     <module>dashbuilder-common-client</module>
     <module>dashbuilder-dataset-client</module>
     <module>dashbuilder-displayer-client</module>

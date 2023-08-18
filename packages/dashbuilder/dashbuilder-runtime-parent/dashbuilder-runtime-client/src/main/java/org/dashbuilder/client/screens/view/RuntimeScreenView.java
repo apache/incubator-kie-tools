@@ -52,13 +52,20 @@ public class RuntimeScreenView implements RuntimeScreen.View {
 
     @Override
     public void init(RuntimeScreen presenter) {
-        elementalUtil.appendWidgetToElement(runtimePage, tilesWidget.asWidget());
+        runtimePage.appendChild(tilesWidget.getElement());
     }
 
     @Override
     public void loadNavTree(NavTree navTree, boolean keepHistory) {
         tilesWidget.clearSelectedItem();
         tilesWidget.show(navTree.getRootItems(), !keepHistory);
+    }
+
+    @Override
+    public void setContent(HTMLElement element) {
+        elementalUtil.removeAllElementChildren(runtimePage);
+        runtimePage.appendChild(element);
+        
     }
 
 }

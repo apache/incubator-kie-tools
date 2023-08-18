@@ -31,7 +31,7 @@ import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.widgets.ExternalComponentPresenter;
 import org.dashbuilder.displayer.external.ExternalColumn;
 import org.dashbuilder.displayer.external.ExternalColumnSettings;
@@ -41,11 +41,11 @@ import org.dashbuilder.displayer.external.ExternalDataSet;
 import org.dashbuilder.displayer.external.ExternalFilterRequest;
 
 @Dependent
-public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalComponentDisplayer.View> {
+public class ExternalComponentDisplayer extends AbstractDisplayer<ExternalComponentDisplayer.View> {
 
     private static final String DEFAULT_WIDTH = "100%";
 
-    public interface View extends AbstractErraiDisplayer.View<ExternalComponentDisplayer> {
+    public interface View extends AbstractDisplayer.View<ExternalComponentDisplayer> {
 
         void setSize(int chartWidth, int chartHeight);
 

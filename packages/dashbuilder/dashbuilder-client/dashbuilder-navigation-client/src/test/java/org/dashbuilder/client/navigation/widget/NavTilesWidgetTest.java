@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,9 +52,6 @@ public class NavTilesWidgetTest {
     SyncBeanManager beanManager;
 
     @Mock
-    PlaceManager placeManager;
-
-    @Mock
     SyncBeanDef<NavItemTileWidget> tileWidgetBeanDef;
 
     @Mock
@@ -68,7 +64,7 @@ public class NavTilesWidgetTest {
     public void setUp() throws Exception {
         when(beanManager.lookupBean(NavItemTileWidget.class)).thenReturn(tileWidgetBeanDef);
         when(tileWidgetBeanDef.getInstance()).thenReturn(tileWidget);
-        presenter = new NavTilesWidget(view, navigationManager, pluginManager, placeManager, beanManager);
+        presenter = new NavTilesWidget(view, navigationManager, pluginManager, beanManager);
 
         tree = new NavTreeBuilder()
                 .group("Home", "Home", null, false)
@@ -79,7 +75,7 @@ public class NavTilesWidgetTest {
                 .item("A31", "A3", null, false)
                 .build();
     }
-
+    
     @Test
     public void testOpenItem() {
         NavItem navItem = tree.getItemById("A");

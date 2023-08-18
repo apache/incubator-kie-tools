@@ -18,15 +18,11 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.dashbuilder.patternfly.alert.Alert;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Node;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.mvp.Command;
@@ -34,8 +30,8 @@ import org.uberfire.mvp.Command;
 @Dependent
 @Templated
 public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
-    implements NavTreeWidget.View {
-    
+                               implements NavTreeWidget.View {
+
     private static final String RUNTIME_ICON = "fas fa-tachometer-alt";
 
     private static final String PERSPECTIVE_ICON = "pficon-screen";
@@ -44,11 +40,9 @@ public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     NavTreeWidget presenter;
-    
-    
 
     @Inject
     public NavTreeWidgetView(Alert alertBox) {
@@ -58,7 +52,7 @@ public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
     @Override
     public void init(NavTreeWidget presenter) {
         this.presenter = presenter;
-        super.navWidget = mainDiv;
+        super.navWidget = Js.cast(mainDiv);
     }
 
     @Override
@@ -68,10 +62,10 @@ public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
 
     @Override
     public void setLevel(int level) {
-        int margin = level*10;
-        mainDiv.getStyle().setProperty("margin-left", margin + "px");
+        int margin = level * 10;
+        mainDiv.style.setProperty("margin-left", margin + "px");
         if (level == 0) {
-            mainDiv.getStyle().setProperty("padding", "10px");
+            mainDiv.style.setProperty("padding", "10px");
         }
     }
 
@@ -86,48 +80,52 @@ public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
     }
 
     @Override
-    public void addGroupItem(String id, String name, String description, IsWidget widget) {
-        this.addItem(GROUP_ICON,id, name, description, null);
+    public void addGroupItem(String id, String name, String description, HTMLElement widget) {
+        this.addItem(GROUP_ICON, id, name, description, null);
         super.addGroupItem(id, name, description, widget);
     }
 
     @Override
     protected void setSelectedEnabled(boolean enabled) {
-        String cname = selectedItem.getClassName();
+        String cname = selectedItem.className.toString();
         if (!cname.equals("uf-navtree-widget-non-clickable")) {
             if (enabled) {
-                selectedItem.setClassName("uf-navtree-widget-clicked");
+                selectedItem.className = "uf-navtree-widget-clicked";
             } else {
-                selectedItem.setClassName("uf-navtree-widget-non-clicked");
+                selectedItem.className = "uf-navtree-widget-non-clicked";
             }
         }
     }
 
     protected void addItem(String iconClass, String id, String name, String description, Command onClicked) {
-        Element nameEl = onClicked != null ? Document.get().createAnchorElement() : Document.get().createSpanElement();
-        nameEl.setInnerText(name);
-        nameEl.setClassName(onClicked != null ? "uf-navtree-widget-non-clicked" : "uf-navtree-widget-non-clickable");
+        var elName = onClicked != null ? "a" : "span";
+        var nameEl = (HTMLElement) DomGlobal.document.createElement(elName);
+        nameEl.textContent = (name);
+        nameEl.className = onClicked != null ? "uf-navtree-widget-non-clicked" : "uf-navtree-widget-non-clickable";
         if (description != null && !description.equals(name)) {
-            nameEl.setTitle(description);
+            nameEl.title = (description);
         }
 
-        SpanElement iconSpan = Document.get().createSpanElement();
-        iconSpan.setClassName("uf-navtree-widget-icon " + iconClass);
+        var iconSpan = DomGlobal.document.createElement("span");
+        iconSpan.className = ("uf-navtree-widget-icon " + iconClass);
 
-        DivElement div = Document.get().createDivElement();
+        var div = DomGlobal.document.createElement("div");
         div.appendChild(iconSpan);
         div.appendChild(nameEl);
 
-        navWidget.appendChild((Node) div);
+        navWidget.appendChild(div);
         itemMap.put(id, nameEl);
 
         if (onClicked != null) {
-            Event.sinkEvents(nameEl, Event.ONCLICK);
-            Event.setEventListener(nameEl, event -> {
-                if (Event.ONCLICK == event.getTypeInt()) {
-                    onClicked.execute();
-                }
-            });
+            nameEl.onclick = e -> {                
+                onClicked.execute();
+                return null;
+            };
         }
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
     }
 }

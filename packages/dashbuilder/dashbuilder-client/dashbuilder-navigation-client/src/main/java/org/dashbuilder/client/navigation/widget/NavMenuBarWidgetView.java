@@ -109,4 +109,9 @@ public class NavMenuBarWidgetView extends TargetDivNavWidgetView<NavMenuBarWidge
         //nav.setClassName(visible ? "navbar navbar-default navbar-pf" : "");
     }
 
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
+    }
+
 }

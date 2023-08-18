@@ -18,10 +18,7 @@ package org.dashbuilder.displayer.client;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-
-import org.uberfire.client.workbench.events.PerspectiveChange;
 
 /**
  * It holds the set of Displayer instances being displayed on the current
@@ -66,13 +63,6 @@ public class PerspectiveCoordinator {
      */
     public List<Displayer> getDisplayerList() {
         return displayerCoordinator.getDisplayerList();
-    }
-
-    /**
-     * Reset the coordinator every time the perspective is changed.
-     */
-    private void onPerspectiveChanged(@Observes final PerspectiveChange event) {
-        displayerCoordinator.clear();
     }
 
     public void closeDisplayer(String uuid) {

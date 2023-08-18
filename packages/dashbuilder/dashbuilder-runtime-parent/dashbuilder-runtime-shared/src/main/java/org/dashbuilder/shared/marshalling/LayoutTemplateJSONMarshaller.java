@@ -78,6 +78,12 @@ public class LayoutTemplateJSONMarshaller {
     static final String HTML = "HTML";
     static final String HTML_CODE_PROP = "HTML_CODE";
 
+    // Drag types constants
+    static final String TITLE_DRAG_TYPE =
+            "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TitleLayoutDragComponent";
+    static final String TITLE = "TITLE";
+    static final String TITLE_TEXT_PROP = "text";
+
     static final String SCREEN_DRAG_TYPE = "org.dashbuilder.client.navigation.widget.ScreenLayoutDragComponent";
     static final String SCREEN = "SCREEN";
     static final String SCREEN_NAME_PROP = "Screen Name";
@@ -379,6 +385,7 @@ public class LayoutTemplateJSONMarshaller {
     protected Optional<LayoutComponent> findComponentByShortcut(JsonObject object) {
         return Stream.of(
                 elementShortcut(object, HTML, HTML_CODE_PROP, HTML_DRAG_TYPE),
+                elementShortcut(object, TITLE, TITLE_TEXT_PROP, TITLE_DRAG_TYPE),
                 elementShortcut(object, SCREEN, SCREEN_NAME_PROP, SCREEN_DRAG_TYPE),
                 elementShortcut(object, DIV, DIV_ID_PROP, DIV_DRAG_TYPE),
                 elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE),

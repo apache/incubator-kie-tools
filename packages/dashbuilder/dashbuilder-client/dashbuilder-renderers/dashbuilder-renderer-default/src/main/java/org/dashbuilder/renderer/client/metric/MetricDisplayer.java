@@ -29,12 +29,12 @@ import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.Mode;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 
 @Dependent
-public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> {
+public class MetricDisplayer extends AbstractDisplayer<MetricDisplayer.View> {
 
-    public interface View extends AbstractGwtDisplayer.View<MetricDisplayer> {
+    public interface View extends AbstractDisplayer.View<MetricDisplayer> {
 
         String getUniqueId();
 
@@ -51,15 +51,15 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
             "width", "height", "marginTop", "marginBottom", "marginRight", "marginLeft", "bgColor",
             "isFilterEnabled", "isFilterOn", "isEmpty", "doFilter");
 
-    public static final String DEFAULT_HTML_TEMPLATE = "<div id=\"${this}\""  +    
+    public static final String DEFAULT_HTML_TEMPLATE = "<div id=\"${this}\"" +
             "style=\"background-color:${bgColor}; width:${width}px; height: auto; " +
             "margin-top:${marginTop}px; margin-right:${marginRight}px; margin-bottom:${marginBottom}px; margin-left:${marginLeft}px;\">\n" +
-            "  <div class=\"pf-v5-c-card pf-m-compact pf-m-rounded\">" + 
-            "    <div class=\"pf-v5-c-card__title\">\n" + 
-            "      <h3 class=\"pf-v5-c-card__title-text\">${title}</h3>\n" + 
+            "  <div class=\"pf-v5-c-card pf-m-compact pf-m-rounded\">" +
+            "    <div class=\"pf-v5-c-card__title\">\n" +
+            "      <h3 class=\"pf-v5-c-card__title-text\">${title}</h3>\n" +
             "    </div>" +
             "    <div class=\"pf-v5-c-card__body\"><h2>${value}</h2></div>\n" +
-            "  </div>" + 
+            "  </div>" +
             "</div>";
 
     public static final String DEFAULT_JS_TEMPLATE = "if (${isFilterEnabled}) {  \n" +
@@ -78,7 +78,7 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
             "    ${doFilter};\n" +
             "  };\n" +
             "}";
-    
+
     private static final String DARK_MODE_DEFAULT_COLOR = "rgb(27, 29, 33)";
 
     protected View view;
@@ -88,7 +88,7 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
     @Inject
     public MetricDisplayer(View view) {
         this.view = view;
-        this.view.init(this);
+        view.init(this);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
     @Override
     protected void updateVisualization() {
         if (displayerSettings.getMode() == Mode.DARK &&
-            "".equals(displayerSettings.getChartBackgroundColor()) ) {
+            "".equals(displayerSettings.getChartBackgroundColor())) {
             displayerSettings.setChartBackgroundColor(DARK_MODE_DEFAULT_COLOR);
         }
         String template = getHtmlTemplate();
@@ -207,7 +207,7 @@ public class MetricDisplayer extends AbstractGwtDisplayer<MetricDisplayer.View> 
     }
 
     public String getExtraKeyId(String key) {
-        return view.getUniqueId()  + "_" + key;
+        return view.getUniqueId() + "_" + key;
     }
 
     public boolean isFilterOn() {

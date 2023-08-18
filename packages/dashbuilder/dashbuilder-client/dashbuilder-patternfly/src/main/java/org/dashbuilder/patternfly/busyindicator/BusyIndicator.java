@@ -15,39 +15,49 @@
  */
 package org.dashbuilder.patternfly.busyindicator;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.uberfire.client.mvp.UberElemental;
+import elemental2.dom.HTMLParagraphElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 
 @ApplicationScoped
 public class BusyIndicator {
 
     @Inject
-    View view;
+    Elemental2DomUtil util;
 
-    public interface View extends UberElemental<BusyIndicator> {
+    @Inject
+    @DataField
+    HTMLDivElement busyIndicatorRoot;
 
-    }
+    @Inject
+    @DataField
+    HTMLParagraphElement loadingText;
 
-    @PostConstruct
-    public void init() {
-        view.init(this);
-    }
+    @Inject
+    @DataField
+    HTMLDivElement loadingTextContainer;
 
     public HTMLElement getElement() {
-        return view.getElement();
+        return busyIndicatorRoot;
     }
 
-    public void show(String loadingDashboards) {
-        // TODO Auto-generated method stub
-        
+    public void show(String text) {
+        busyIndicatorRoot.style.display = "block";
+        if (text != null) {
+            loadingText.textContent = text;
+            loadingTextContainer.style.display = "block";
+        } else {
+            loadingTextContainer.style.display = "none";
+        }
+
     }
 
     public void hide() {
-        // TODO Auto-generated method stub
-        
+        busyIndicatorRoot.style.display = "none";
     }
 }

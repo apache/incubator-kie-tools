@@ -29,7 +29,6 @@ import javax.inject.Inject;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.dataset.group.DataSetGroup;
-import org.uberfire.mvp.Command;
 
 /**
  * The coordinator class holds a list of Displayer instances and it makes sure that the data shared among
@@ -114,7 +113,7 @@ public class DisplayerCoordinator {
         redrawAll(null, null);
     }
 
-    public void drawAll(Command onSuccess, Command onFailure) {
+    public void drawAll(Runnable onSuccess, Runnable onFailure) {
         coordinatorListener.init(onSuccess, onFailure, displayerList.size(), true);
         for (RendererLibrary renderer : rendererMap.keySet()) {
             List<Displayer> rendererGroup = rendererMap.get(renderer);
@@ -122,7 +121,7 @@ public class DisplayerCoordinator {
         }
     }
 
-    public void redrawAll(Command onSuccess, Command onFailure) {
+    public void redrawAll(Runnable onSuccess, Runnable onFailure) {
         coordinatorListener.init(onSuccess, onFailure, displayerList.size(), false);
         rendererMap.forEach(RendererLibrary::redraw);
     }
@@ -161,11 +160,11 @@ public class DisplayerCoordinator {
 
         int count = 0;
         int total = 0;
-        Command onSuccess;
-        Command onFailure;
+        Runnable onSuccess;
+        Runnable onFailure;
         boolean draw;
 
-        protected void init(Command onSuccess, Command onFailure, int total, boolean draw) {
+        protected void init(Runnable onSuccess, Runnable onFailure, int total, boolean draw) {
             count = 0;
             this.onSuccess = onSuccess;
             this.onFailure = onFailure;
@@ -176,14 +175,14 @@ public class DisplayerCoordinator {
         protected void count() {
             count++;
             if (count == total && onSuccess != null) {
-                onSuccess.execute();
+                onSuccess.run();
             }
         }
 
         protected void error() {
             count++;
             if (count == total && onFailure != null) {
-                onFailure.execute();
+                onFailure.run();
             }
         }
 

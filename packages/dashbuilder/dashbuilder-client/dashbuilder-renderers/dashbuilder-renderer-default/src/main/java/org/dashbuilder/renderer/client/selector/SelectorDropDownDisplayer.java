@@ -34,13 +34,13 @@ import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @Dependent
-public class SelectorDropDownDisplayer extends AbstractErraiDisplayer<SelectorDropDownDisplayer.View> {
+public class SelectorDropDownDisplayer extends AbstractDisplayer<SelectorDropDownDisplayer.View> {
 
-    public interface View extends AbstractErraiDisplayer.View<SelectorDropDownDisplayer> {
+    public interface View extends AbstractDisplayer.View<SelectorDropDownDisplayer> {
 
         void showTitle(String title);
 
@@ -288,6 +288,7 @@ public class SelectorDropDownDisplayer extends AbstractErraiDisplayer<SelectorDr
         }
         return out.toString() + " ";
     }
+
     public String formatItemList(List<String> itemList, int maxWidth) {
         StringBuffer out = new StringBuffer();
         int charLength = 9;
@@ -309,8 +310,7 @@ public class SelectorDropDownDisplayer extends AbstractErraiDisplayer<SelectorDr
             if (item.length() > availableChars) {
                 out.append(item.substring(0, availableChars)).append("...");
                 return out.toString();
-            }
-            else {
+            } else {
                 availableChars -= item.length();
                 out.append(item);
             }

@@ -24,8 +24,6 @@ import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * A widget that shows a tile representing a {@link NavItem}
@@ -46,7 +44,7 @@ public class NavItemTileWidget {
 
     View view;
     PerspectivePluginManager perspectivePluginManager;
-    Command onClick = null;
+    Runnable onClick = null;
 
     @Inject
     public NavItemTileWidget(View view, PerspectivePluginManager perspectivePluginManager) {
@@ -59,7 +57,7 @@ public class NavItemTileWidget {
         return view.getElement();
     }
 
-    public void setOnClick(Command onClick) {
+    public void setOnClick(Runnable onClick) {
         this.onClick = onClick;
     }
 
@@ -72,12 +70,8 @@ public class NavItemTileWidget {
         } else {
             NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
             String resourceId = navCtx.getResourceId();
-            if (resourceId != null && ActivityResourceType.PERSPECTIVE.equals(navCtx.getResourceType())) {
-                if (perspectivePluginManager.isRuntimePerspective(resourceId)) {
-                    view.show(name, descr, View.ItemType.RUNTIME_PERSPECTIVE);
-                } else {
-                    view.show(name, descr, View.ItemType.PERSPECTIVE);
-                }
+            if (resourceId != null) {
+                view.show(name, descr, View.ItemType.RUNTIME_PERSPECTIVE);
             }
         }
     }
@@ -86,7 +80,7 @@ public class NavItemTileWidget {
 
     void onClick() {
         if (onClick != null) {
-            onClick.execute();
+            onClick.run();
         }
     }
 }

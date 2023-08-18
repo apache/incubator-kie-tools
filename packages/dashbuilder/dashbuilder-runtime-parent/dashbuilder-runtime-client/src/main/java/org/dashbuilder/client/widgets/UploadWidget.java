@@ -30,7 +30,7 @@ import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.client.screens.RouterScreen;
+import org.dashbuilder.client.screens.Router;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.uberfire.client.mvp.UberElemental;
 
@@ -47,7 +47,7 @@ public class UploadWidget implements IsElement {
     View view;
 
     @Inject
-    RouterScreen routerScreen;
+    Router routerScreen;
 
     @Inject
     RuntimeClientLoader runtimeClientLoader;
@@ -92,8 +92,13 @@ public class UploadWidget implements IsElement {
             var reader = new FileReader();
             reader.onload = p -> {
                 try {
-                    runtimeClientLoader.loadContentAndRoute(reader.result.asString());
-                    routerScreen.doRoute();
+                    
+                    var loadedContent = runtimeClientLoader.loadContentAndRoute(reader.result.asString());
+                    if(loadedContent != null) {
+                        routerScreen.showRuntimeModel(loadedContent);
+                    } else {
+                        routerScreen.doRoute();
+                    }
                 } catch(Exception e) {
                     e.printStackTrace();
                     DomGlobal.console.log(e);

@@ -143,121 +143,22 @@
         <version>${project.version}</version>
       </dependency>      
 
-      <!-- Workbench -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-client-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-client-api</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-client</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-processors</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-processors</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-processors-tests</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-workbench-processors-tests</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-      <!-- JS Native Plugins -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-js</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-js</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- UberFire Packaging -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-client-all</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-client-all</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Testing Utils -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-testing-utils</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-testing-utils</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- UberFire Showcase WARS -->
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>showcase-distribution-wars</artifactId>
-        <type>war</type>
-        <version>${project.version}</version>
-        <classifier>tomcat7.0</classifier>
-      </dependency>
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>showcase-distribution-wars</artifactId>
-        <type>war</type>
-        <version>${project.version}</version>
-        <classifier>wildfly</classifier>
-      </dependency>
-
       <!-- Layout Editor -->
 
       <dependency>
         <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-api</artifactId>
+        <version>${project.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.uberfire</groupId>
         <artifactId>uberfire-layout-editor-api</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -282,8 +183,6 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- Runtime plugins -->
-
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-runtime-plugins-client</artifactId>
@@ -293,77 +192,6 @@
       <dependency>
         <groupId>org.uberfire</groupId>
         <artifactId>uberfire-runtime-plugins-client</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Widget Ace and Editors -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-editors</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-core-editors</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Markdown widget -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widget-markdown</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widget-markdown</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <!-- Security Management Workbench & widgets & webapp. -->
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-security-management</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-widgets-security-management</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-management-client-wb</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-management-client-wb</artifactId>
-        <version>${project.version}</version>
-        <classifier>sources</classifier>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-management-webapp</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.uberfire</groupId>
-        <artifactId>uberfire-security-management-webapp</artifactId>
         <version>${project.version}</version>
         <classifier>sources</classifier>
       </dependency>

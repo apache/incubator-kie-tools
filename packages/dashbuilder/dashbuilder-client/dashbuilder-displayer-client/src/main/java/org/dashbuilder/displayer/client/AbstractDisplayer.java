@@ -24,8 +24,7 @@ import java.util.Map;
 import java.util.OptionalDouble;
 import java.util.Set;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.StringUtils;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.ColumnType;
@@ -49,6 +48,7 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.export.ExportCallback;
 import org.dashbuilder.displayer.client.export.ExportFormat;
 import org.dashbuilder.displayer.client.formatter.ValueFormatter;
+import org.uberfire.client.mvp.UberElemental;
 
 /**
  * Base class for implementing custom displayers.
@@ -66,7 +66,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                                                   "#00659C", "#A30000", "#B35C00", "#B58100", "#6CA100", "#2D7623",
                                                   "#005C66", "#008BAD", "#40199A"};
 
-    public interface View extends IsWidget {
+    public interface View<P extends AbstractDisplayer> extends UberElemental<P> {
 
         void errorMissingSettings();
 
@@ -120,11 +120,6 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     protected DataSetFilter currentFilter = null;
     protected boolean refreshEnabled = true;
     protected boolean drawn = false;
-
-    @Override
-    public Widget asWidget() {
-        return getView().asWidget();
-    }
 
     /**
      * It returns the actual implementation of the View
@@ -1022,5 +1017,10 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
                     .valueOf(v.toString())).toArray();
         }
         return values;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return getView().getElement();
     }
 }

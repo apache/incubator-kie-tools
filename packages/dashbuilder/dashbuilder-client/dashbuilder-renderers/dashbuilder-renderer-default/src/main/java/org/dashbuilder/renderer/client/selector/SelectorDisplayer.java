@@ -29,13 +29,13 @@ import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.Displayer;
 
 @Dependent
-public class SelectorDisplayer extends AbstractErraiDisplayer<SelectorDisplayer.View> {
+public class SelectorDisplayer extends AbstractDisplayer<SelectorDisplayer.View> {
 
-    public interface View extends AbstractErraiDisplayer.View<SelectorDisplayer> {
+    public interface View extends AbstractDisplayer.View<SelectorDisplayer> {
 
         void showSelectHint(String column);
 
@@ -60,7 +60,6 @@ public class SelectorDisplayer extends AbstractErraiDisplayer<SelectorDisplayer.
 
     View view;
     protected boolean filterOn = false;
-    
 
     @Inject
     public SelectorDisplayer(View view) {
@@ -88,15 +87,15 @@ public class SelectorDisplayer extends AbstractErraiDisplayer<SelectorDisplayer.
                 .setExtraColumnsAllowed(true)
                 .setGroupsTitle(view.getGroupsTitle())
                 .setColumnsTitle(view.getColumnsTitle())
-                .setColumnTypes(new ColumnType[] {
-                        ColumnType.LABEL});
+                .setColumnTypes(new ColumnType[]{
+                                                 ColumnType.LABEL});
 
         return new DisplayerConstraints(lookupConstraints)
-                .supportsAttribute( DisplayerAttributeDef.TYPE )
-                .supportsAttribute( DisplayerAttributeGroupDef.COLUMNS_GROUP )
-                .supportsAttribute( DisplayerAttributeGroupDef.FILTER_GROUP )
-                .supportsAttribute( DisplayerAttributeGroupDef.REFRESH_GROUP )
-                .supportsAttribute( DisplayerAttributeGroupDef.GENERAL_GROUP );
+                .supportsAttribute(DisplayerAttributeDef.TYPE)
+                .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.GENERAL_GROUP);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class SelectorDisplayer extends AbstractErraiDisplayer<SelectorDisplayer.
                         out.append(extraColumnName).append("=").append(formattedValue);
                     }
                 }
-                view.setItemTitle(view.getItemCount()-1, out.toString());
+                view.setItemTitle(view.getItemCount() - 1, out.toString());
             }
         }
     }

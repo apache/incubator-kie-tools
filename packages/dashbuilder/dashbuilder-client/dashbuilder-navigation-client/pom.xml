@@ -72,18 +72,6 @@
 
     <dependency>
       <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
-      <artifactId>uberfire-workbench-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
     </dependency>
 
@@ -94,7 +82,7 @@
 
     <!-- GWT and GWT Extensions -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
+      <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope>
     </dependency>

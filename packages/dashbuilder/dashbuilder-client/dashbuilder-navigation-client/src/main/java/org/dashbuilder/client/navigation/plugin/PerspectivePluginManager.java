@@ -15,35 +15,15 @@
  */
 package org.dashbuilder.client.navigation.plugin;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.dashbuilder.navigation.NavGroup;
+import java.util.function.Consumer;
+
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.navigation.NavItem;
-import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
-import org.dashbuilder.navigation.layout.LayoutTemplateContext;
-import org.dashbuilder.navigation.layout.LayoutTemplateInfo;
-import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.mvp.ParameterizedCommand;
 
 public interface PerspectivePluginManager {
-    
-    boolean isRuntimePerspective(NavItem navItem);
-
-    boolean isRuntimePerspective(String perspectiveId);
 
     String getRuntimePerspectiveId(NavItem navItem);
 
-    boolean existsPerspectivePlugin(String perspectiveName);
-
-    void getLayoutTemplateInfo(String perspectiveName, ParameterizedCommand<LayoutTemplateInfo> callback);
-
-    void getLayoutTemplateInfo(LayoutTemplate layoutTemplate, ParameterizedCommand<LayoutTemplateInfo> callback);
-
-    void buildPerspectiveWidget(String perspectiveName, LayoutTemplateContext layoutCtx, ParameterizedCommand<IsWidget> afterBuild, ParameterizedCommand<LayoutRecursionIssue> onInfiniteRecursion);
-
-    default void buildPerspectiveWidget(String perspectiveName, ParameterizedCommand<IsWidget> afterBuild, ParameterizedCommand<LayoutRecursionIssue> onInfiniteRecursion) {
-        buildPerspectiveWidget(perspectiveName, null, afterBuild, onInfiniteRecursion);
-    }
-
-    NavGroup getLastBuildPerspectiveNavGroup();
+    void buildPerspectiveWidget(String perspectiveName, Consumer<HTMLElement> afterBuild);
 
 }

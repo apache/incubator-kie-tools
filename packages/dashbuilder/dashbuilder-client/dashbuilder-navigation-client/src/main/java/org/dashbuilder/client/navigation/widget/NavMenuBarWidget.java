@@ -18,10 +18,10 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
 public class NavMenuBarWidget extends TargetDivNavWidget {
@@ -38,9 +38,8 @@ public class NavMenuBarWidget extends TargetDivNavWidget {
     public NavMenuBarWidget(View view,
                             SyncBeanManager beanManager,
                             PerspectivePluginManager pluginManager,
-                            PlaceManager placeManager,
                             NavigationManager navigationManager) {
-        super(view, pluginManager, placeManager, navigationManager);
+        super(view, pluginManager, navigationManager);
         this.view = view;
         this.beanManager = beanManager;
     }
@@ -52,5 +51,10 @@ public class NavMenuBarWidget extends TargetDivNavWidget {
 
     public void setNavHeaderVisible(boolean visible) {
         view.setNavHeaderVisible(visible);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

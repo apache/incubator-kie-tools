@@ -30,6 +30,8 @@
   </dependencyManagement>
 
   <modules>
+    <module>uberfire-api</module>
+    <module>uberfire-layout-editor-api</module>
     <module>dashbuilder-displayer-api</module>
     <module>dashbuilder-navigation-api</module>
     <module>dashbuilder-services-api</module>

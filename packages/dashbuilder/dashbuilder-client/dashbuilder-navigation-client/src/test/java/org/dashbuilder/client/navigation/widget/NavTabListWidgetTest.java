@@ -16,7 +16,6 @@ package org.dashbuilder.client.navigation.widget;
 
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
-import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
@@ -27,14 +26,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -64,9 +62,6 @@ public class NavTabListWidgetTest {
     @Mock
     SyncBeanManager beanManager;
 
-    @Mock
-    PlaceManager placeManager;
-
     NavTabListWidget tabsAdmin;
     NavTabListWidget tabsDashboards;
     NavTabListWidget presenter;
@@ -83,27 +78,27 @@ public class NavTabListWidgetTest {
 
     @Before
     public void setUp() throws Exception {
-        tabsAdmin = new NavTabListWidget(viewAdmin, beanManager, pluginManager, placeManager, navigationManager);
-        tabsDashboards = new NavTabListWidget(viewDashboards, beanManager, pluginManager, placeManager, navigationManager);
-        presenter = new NavTabListWidget(view, beanManager, pluginManager, placeManager, navigationManager);
+        tabsAdmin = new NavTabListWidget(viewAdmin, beanManager, pluginManager, navigationManager);
+        tabsDashboards = new NavTabListWidget(viewDashboards, beanManager, pluginManager, navigationManager);
+        presenter = new NavTabListWidget(view, beanManager, pluginManager, navigationManager);
         presenter.setGotoItemEnabled(true);
 
         tree = new NavTreeBuilder()
                 .item(ITEM_ID_HOME, "Home", null, false, NavWorkbenchCtx.perspective(ITEM_ID_HOME))
                 .item(ITEM_ID_GALLERY, "Gallery", null, false, NavWorkbenchCtx.perspective(ITEM_ID_GALLERY))
                 .group(ITEM_ID_ADMIN, "Administration", null, false)
-                    .item(ITEM_ID_DATASETS, "Datasets", null, false, NavWorkbenchCtx.perspective(ITEM_ID_DATASETS))
-                    .item(ITEM_ID_CONTENTMGMT, "Content Manager", null, false, NavWorkbenchCtx.perspective(ITEM_ID_CONTENTMGMT))
-                    .endGroup()
+                .item(ITEM_ID_DATASETS, "Datasets", null, false, NavWorkbenchCtx.perspective(ITEM_ID_DATASETS))
+                .item(ITEM_ID_CONTENTMGMT, "Content Manager", null, false, NavWorkbenchCtx.perspective(
+                        ITEM_ID_CONTENTMGMT))
+                .endGroup()
                 .group(ITEM_ID_DASHBOARDS, "Dashboards", null, false)
-                    .item(ITEM_ID_DASHBOARD1, "Dashboard 1", null, false, NavWorkbenchCtx.perspective(ITEM_ID_DASHBOARD1))
-                    .item(ITEM_ID_DASHBOARD2, "Dashboard 2", null, false, NavWorkbenchCtx.perspective(ITEM_ID_DASHBOARD2))
-                    .endGroup()
+                .item(ITEM_ID_DASHBOARD1, "Dashboard 1", null, false, NavWorkbenchCtx.perspective(ITEM_ID_DASHBOARD1))
+                .item(ITEM_ID_DASHBOARD2, "Dashboard 2", null, false, NavWorkbenchCtx.perspective(ITEM_ID_DASHBOARD2))
+                .endGroup()
                 .build();
 
         when(beanManager.lookupBean(NavTabListWidget.class)).thenReturn(tablistBean);
         when(tablistBean.newInstance()).thenReturn(tabsAdmin, tabsDashboards);
-        when(pluginManager.isRuntimePerspective(any(NavItem.class))).thenReturn(true);
     }
 
     @Test
@@ -114,8 +109,6 @@ public class NavTabListWidgetTest {
         verify(view).init(presenter);
         verify(view).addItem(eq(ITEM_ID_HOME), anyString(), any(), any());
         verify(view).addItem(eq(ITEM_ID_GALLERY), anyString(), any(), any());
-        verify(view).addGroupItem(eq(ITEM_ID_ADMIN), anyString(), any(), eq(tabsAdmin));
-        verify(view).addGroupItem(eq(ITEM_ID_DASHBOARDS), anyString(), any(), eq(tabsDashboards));
         verify(view).setSelectedItem(ITEM_ID_HOME);
 
         verify(viewAdmin).showAsSubmenu(true);
@@ -140,11 +133,10 @@ public class NavTabListWidgetTest {
 
         verify(view, atLeastOnce()).clearSelectedItem();
         verify(view, atLeastOnce()).setSelectedItem(ITEM_ID_DASHBOARDS);
-        verify(view).showChildrenTabs(tabsDashboards);
+        verify(view).showChildrenTabs(tabsDashboards.getElement());
         verify(viewDashboards).setSelectedItem(ITEM_ID_DASHBOARD2);
         verify(viewAdmin, never()).showChildrenTabs(any());
     }
-
 
     @Test
     public void testSelectNestedItem() {

@@ -12,11 +12,16 @@
 <module>
 
   <inherits name="org.kie.soup.commons.KIESoupCommons" />
+  
+  <!--  Errai -->
+  <inherits name="org.jboss.errai.enterprise.CDI" />
+  <inherits name="org.jboss.errai.ioc.Container" />
+  
+  <!-- Layout Editor -->
   <inherits name="org.uberfire.UberfireAPI" />
-  <inherits name="org.uberfire.UberfireClientAPI" />
-  <inherits name="org.uberfire.UberfireWorkbench" />
-
-  <inherits name="org.uberfire.ext.plugin.RuntimePluginClient" />
+  <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient" />
+  <inherits name="org.uberfire.ext.plugin/RuntimePluginClient" />
+ 
 
   <!-- Dashbuilder Client Deps -->
   <inherits name="org.dashbuilder.DashbuilderPatternfly" />

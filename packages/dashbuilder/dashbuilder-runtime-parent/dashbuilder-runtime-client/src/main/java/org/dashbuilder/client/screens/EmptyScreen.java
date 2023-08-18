@@ -17,40 +17,27 @@ package org.dashbuilder.client.screens;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.RuntimeClientLoader;
-import org.dashbuilder.client.perspective.EmptyPerspective;
-import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.PerspectiveManager;
+import org.dashbuilder.client.place.Place;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.lifecycle.OnOpen;
 
 /**
  * Screen displayed when there's no dashboards available.
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = EmptyScreen.ID)
-public class EmptyScreen {
+public class EmptyScreen implements Place {
 
     public static final String ID = "EmptyScreen";
-
-    private static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;
 
     @Inject
-    RouterScreen router;
-
-    @Inject
-    PerspectiveManager perspectiveManager;
+    Router router;
 
     @Inject
     RuntimeClientLoader loader;
@@ -72,18 +59,8 @@ public class EmptyScreen {
         view.init(this);
     }
 
-    @WorkbenchPartTitle
-    public String title() {
-        return i18n.uploadDashboardsTitle();
-    }
-
-    @WorkbenchPartView
-    protected View getPart() {
-        return view;
-    }
-
-    @OnOpen
-    protected void onOpen() {
+    @Override
+    public void onOpen() {
         var modelId = loader.getImportId();
         if (loader.isEditor()) {
             view.editorMode();
@@ -98,15 +75,14 @@ public class EmptyScreen {
         }
     }
 
-    public void onModelUpdated(@Observes UpdatedRuntimeModelEvent event) {
-        reload();
+    @Override
+    public String getId() {
+        return ID;
     }
 
-    private void reload() {
-        var currentPlace = perspectiveManager.getCurrentPerspective().getIdentifier();
-        if (EmptyPerspective.ID.equals(currentPlace)) {
-            router.listDashboards();
-        }
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
 }

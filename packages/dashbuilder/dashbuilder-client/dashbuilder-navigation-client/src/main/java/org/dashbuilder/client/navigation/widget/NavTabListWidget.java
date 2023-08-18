@@ -20,12 +20,11 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavItem;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.PlaceManager;
 
 @Dependent
 public class NavTabListWidget extends TargetDivNavWidget {
@@ -34,7 +33,7 @@ public class NavTabListWidget extends TargetDivNavWidget {
 
         void clearChildrenTabs();
 
-        void showChildrenTabs(IsWidget tabListWidget);
+        void showChildrenTabs(HTMLElement tabListWidget);
 
         void showAsSubmenu(boolean enabled);
     }
@@ -46,9 +45,8 @@ public class NavTabListWidget extends TargetDivNavWidget {
     public NavTabListWidget(View view,
                             SyncBeanManager beanManager,
                             PerspectivePluginManager pluginManager,
-                            PlaceManager placeManager,
                             NavigationManager navigationManager) {
-        super(view, pluginManager, placeManager, navigationManager);
+        super(view, pluginManager, navigationManager);
         this.view = view;
         this.beanManager = beanManager;
     }
@@ -63,7 +61,7 @@ public class NavTabListWidget extends TargetDivNavWidget {
         boolean selected = super.setSelectedItem(id);
         if (selected && activeNavSubgroup != null) {
             view.setSelectedItem(activeNavSubgroup.getNavGroup().getId());
-            view.showChildrenTabs(activeNavSubgroup);
+            view.showChildrenTabs(activeNavSubgroup.getElement());
         }
         return selected;
     }
@@ -86,8 +84,13 @@ public class NavTabListWidget extends TargetDivNavWidget {
         TargetDivNavWidget navGroupWidget = (TargetDivNavWidget) super.getSubgroupNavWidget(id);
         if (navGroupWidget != null) {
             super.onItemClicked(navGroupWidget.getNavGroup());
-            view.showChildrenTabs(navGroupWidget);
+            view.showChildrenTabs(navGroupWidget.getElement());
             navGroupWidget.gotoDefaultItem();
         }
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

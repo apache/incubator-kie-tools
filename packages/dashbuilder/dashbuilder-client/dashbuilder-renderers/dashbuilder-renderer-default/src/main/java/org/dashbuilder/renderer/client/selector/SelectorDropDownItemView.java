@@ -23,15 +23,12 @@ import elemental2.dom.CSSProperties.OpacityUnionType;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class SelectorDropDownItemView implements SelectorDropDownItem.View, IsElement {
-
-    private static final String SHOW_ICON_CLASS = "pf-v5-c-menu__item.pf-m-selected";
+public class SelectorDropDownItemView implements SelectorDropDownItem.View {
 
     @Inject
     @DataField
@@ -99,5 +96,10 @@ public class SelectorDropDownItemView implements SelectorDropDownItem.View, IsEl
 
     private void showIcon() {
         itemIcon.style.opacity = OpacityUnionType.of(1);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return item;
     }
 }

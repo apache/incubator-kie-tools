@@ -27,13 +27,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.client.mvp.PlaceManager;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -63,9 +59,6 @@ public class NavMenuBarWidgetTest {
     @Mock
     SyncBeanManager beanManager;
 
-    @Mock
-    PlaceManager placeManager;
-
     NavDropDownWidget dropDownAdmin;
     NavDropDownWidget dropDownDashboards;
     NavMenuBarWidget presenter;
@@ -84,7 +77,7 @@ public class NavMenuBarWidgetTest {
     public void setUp() throws Exception {
         dropDownAdmin = new NavDropDownWidget(viewAdmin, beanManager, navigationManager);
         dropDownDashboards = new NavDropDownWidget(viewDashboards, beanManager, navigationManager);
-        presenter = new NavMenuBarWidget(view, beanManager, pluginManager, placeManager, navigationManager);
+        presenter = new NavMenuBarWidget(view, beanManager, pluginManager,navigationManager);
 
         tree = new NavTreeBuilder()
                 .item(ITEM_ID_HOME, "Home", null, false, NavWorkbenchCtx.perspective(ITEM_ID_HOME))
@@ -103,28 +96,6 @@ public class NavMenuBarWidgetTest {
         when(dropDownBean.newInstance()).thenReturn(dropDownAdmin, dropDownDashboards);
     }
 
-    @Test
-    public void testShowMenuBar() {
-        presenter.show(tree);
-
-        verify(view).init(presenter);
-
-        verify(view, never()).setSelectedItem(anyString());
-        verify(view).addItem(eq(ITEM_ID_HOME), anyString(), any(), any());
-        verify(view).addItem(eq(ITEM_ID_GALLERY), anyString(), any(), any());
-        verify(view).addGroupItem(eq(ITEM_ID_ADMIN), anyString(), any(), eq(dropDownAdmin));
-        verify(view).addGroupItem(eq(ITEM_ID_DASHBOARDS), anyString(), any(), eq(dropDownDashboards));
-
-        verify(viewAdmin).setDropDownName("Administration");
-        verify(viewAdmin, never()).setActive(true);
-        verify(viewAdmin).addItem(eq(ITEM_ID_DATASETS), anyString(), any(), any());
-        verify(viewAdmin).addItem(eq(ITEM_ID_CONTENTMGMT), anyString(), any(), any());
-
-        verify(viewDashboards).setDropDownName("Dashboards");
-        verify(viewDashboards, never()).setActive(true);
-        verify(viewDashboards).addItem(eq(ITEM_ID_DASHBOARD1), anyString(), any(), any());
-        verify(viewDashboards).addItem(eq(ITEM_ID_DASHBOARD2), anyString(), any(), any());
-    }
 
     @Test
     public void testSelectRootItem() {

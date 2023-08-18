@@ -13,19 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.dashboardCardTitle {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  font-size: 15px !important;
-  font-weight: 350 !important;
-  height: 20px;
-}
 
-.dashboardCardTitle:hover {
-  text-overflow: unset;
-  white-space: normal;
-  overflow: visible;
-  font-weight: 450 !important;
-  z-index: 999;
+.dashboardTile {
+  width: 300px;
 }

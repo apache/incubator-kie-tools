@@ -19,15 +19,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
-import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
-import org.uberfire.client.mvp.PlaceManager;
 
 /**
  * Base class for nav widgets that uses a target div to show a nav item's content once clicked.
@@ -38,15 +36,14 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
 
         void clearContent(String targetDivId);
 
-        void showContent(String targetDivId, IsWidget content);
+        void showContent(String targetDivId, HTMLElement content);
 
         void infiniteRecursionError(String targetDivId, String cause);
-        
+
     }
 
     View view;
     PerspectivePluginManager pluginManager;
-    PlaceManager placeManager;
     String targetDivId = null;
     String defaultNavItemId = null;
     boolean gotoItemEnabled = false;
@@ -54,12 +51,10 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
     @Inject
     public TargetDivNavWidget(View view,
                               PerspectivePluginManager pluginManager,
-                              PlaceManager placeManager,
                               NavigationManager navigationManager) {
         super(view, navigationManager);
         this.view = view;
         this.pluginManager = pluginManager;
-        this.placeManager = placeManager;
     }
 
     public void setGotoItemEnabled(boolean enabled) {
@@ -121,14 +116,13 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
             return null;
         }
         for (NavItem navItem : itemList) {
-            if (pluginManager.isRuntimePerspective(navItem)) {
-                return navItem.getId();
-            }
             if (navItem instanceof NavGroup) {
                 String result = getFirstRuntimePerspective(((NavGroup) navItem).getChildren());
                 if (result != null) {
                     return result;
                 }
+            } else {
+                return navItem.getId();
             }
         }
         return null;
@@ -150,16 +144,8 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
         if (parent == null && gotoItemEnabled) {
             NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(getItemSelected());
             String resourceId = navCtx.getResourceId();
-            String navRootId = navCtx.getNavGroupId();
             if (resourceId != null) {
-                if (pluginManager.isRuntimePerspective(resourceId)) {
-                    LayoutTemplateContext layoutCtx = new LayoutTemplateContext(navRootId);
-                    pluginManager.buildPerspectiveWidget(resourceId, layoutCtx,
-                            w -> view.showContent(targetDivId, w),
-                            this::onInfiniteRecursion);
-                } else if (!onlyRuntimePerspectives) {
-                    placeManager.goTo(resourceId);
-                }
+                pluginManager.buildPerspectiveWidget(resourceId, w -> view.showContent(targetDivId, w));
             } else {
                 view.clearContent(targetDivId);
             }

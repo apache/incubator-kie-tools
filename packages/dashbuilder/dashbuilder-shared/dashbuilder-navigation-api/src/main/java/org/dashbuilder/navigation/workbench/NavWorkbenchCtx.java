@@ -21,7 +21,6 @@ import java.util.List;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavItemContext;
 import org.dashbuilder.navigation.impl.NavItemContextImpl;
-import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * A {@link NavItemContext} which contains workbench related context like for instance:
@@ -48,7 +47,6 @@ public class NavWorkbenchCtx extends NavItemContextImpl {
     public static NavWorkbenchCtx perspective(String perspectiveId) {
         NavWorkbenchCtx ctx = new NavWorkbenchCtx();
         ctx.setResourceId(perspectiveId);
-        ctx.setResourceType(ActivityResourceType.PERSPECTIVE);
         return ctx;
     }
 
@@ -78,16 +76,6 @@ public class NavWorkbenchCtx extends NavItemContextImpl {
         } else {
             super.setProperty(RESOURCE_ID, resourceId);
         }
-        return this;
-    }
-
-    public ActivityResourceType getResourceType() {
-        String type = super.getProperty(RESOURCE_TYPE);
-        return type != null ? ActivityResourceType.valueOf(type.toUpperCase()) : null;
-    }
-
-    public NavWorkbenchCtx setResourceType(ActivityResourceType resourceType) {
-        super.setProperty(RESOURCE_TYPE, resourceType.name().toUpperCase());
         return this;
     }
 

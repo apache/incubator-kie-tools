@@ -20,7 +20,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
@@ -53,11 +52,6 @@ public abstract class BaseNavWidget implements NavWidget {
 
     public NavigationManager getNavigationManager() {
         return navigationManager;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
     }
 
     @Override
@@ -129,7 +123,7 @@ public abstract class BaseNavWidget implements NavWidget {
     }
 
     public boolean areSubGroupsSupported() {
-        return maxLevels < 1 || getLevel() < maxLevels-1;
+        return maxLevels < 1 || getLevel() < maxLevels - 1;
     }
 
     protected NavWidget getSubgroupNavWidget(String groupId) {
@@ -219,7 +213,7 @@ public abstract class BaseNavWidget implements NavWidget {
             subGroupNavWidget.setOnItemSelectedCommand(() -> onSubGroupItemClicked(subGroupNavWidget));
             subGroupNavWidget.show(navGroup);
             navSubgroupList.add(subGroupNavWidget);
-            view.addGroupItem(navGroup.getId(), navGroup.getName(), navGroup.getDescription(), subGroupNavWidget);
+            view.addGroupItem(navGroup.getId(), navGroup.getName(), navGroup.getDescription(), subGroupNavWidget.getElement());
         }
     }
 
@@ -285,8 +279,6 @@ public abstract class BaseNavWidget implements NavWidget {
 
         itemSelected = navItem;
         view.setSelectedItem(navItem.getId());
-
-        navigationManager.navItemClicked(navItem);
 
         if (onItemSelectedCommand != null) {
             onItemSelectedCommand.execute();

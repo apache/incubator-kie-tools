@@ -20,7 +20,7 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.dataset.ColumnType;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.dataset.DataSetLookupConstraints;
@@ -34,14 +34,14 @@ import org.dashbuilder.dataset.impl.DataColumnImpl;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.widgets.filter.DateParameterEditor;
 import org.dashbuilder.displayer.client.widgets.filter.NumberParameterEditor;
 
 @Dependent
-public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSliderDisplayer.View> {
+public class SelectorSliderDisplayer extends AbstractDisplayer<SelectorSliderDisplayer.View> {
 
-    public interface View extends AbstractErraiDisplayer.View<SelectorSliderDisplayer> {
+    public interface View extends AbstractDisplayer.View<SelectorSliderDisplayer> {
 
         void showTitle(String title);
 
@@ -53,7 +53,7 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
 
         void showSlider(double min, double max, double step, double minSelected, double maxSelected);
 
-        void showInputs(IsWidget minValueEditor, IsWidget maxValueEditor);
+        void showInputs(HTMLElement minValueEditor, HTMLElement maxValueEditor);
 
         void margins(int top, int bottom, int left, int right);
 
@@ -80,13 +80,14 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
     public SelectorSliderDisplayer(View view, DateParameterEditor minDateEditor,
                                    DateParameterEditor maxDateEditor,
                                    NumberParameterEditor minNumberEditor,
-                                   NumberParameterEditor maxNumberEditor) {        
+                                   NumberParameterEditor maxNumberEditor) {
         this.view = view;
         this.view.init(this);
         this.minDateEditor = minDateEditor;
         this.maxDateEditor = maxDateEditor;
         this.minNumberEditor = minNumberEditor;
-        this.maxNumberEditor = maxNumberEditor;;
+        this.maxNumberEditor = maxNumberEditor;
+        ;
         this.minDateEditor.setOnChangeCommand(this::onMinDateInputChange);
         this.minDateEditor.setOnFocusCommand(this::onMinDateInputFocus);
         this.minDateEditor.setOnBlurCommand(this::onMinDateInputBlur);
@@ -131,7 +132,8 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
     @Override
     protected void beforeDataSetLookup() {
         DataSetGroup group = dataSetHandler.getCurrentDataSetLookup().getLastGroupOp();
-        if (group != null && (group.getAggregationFunctions().isEmpty() || group.getColumnGroup() != null || group.getGroupFunctions().size() < 2)) {
+        if (group != null && (group.getAggregationFunctions().isEmpty() || group.getColumnGroup() != null || group
+                .getGroupFunctions().size() < 2)) {
             group.setColumnGroup(null);
             GroupFunction minFunction = group.getGroupFunctions().get(0);
             minFunction.setFunction(AggregateFunctionType.MIN);
@@ -170,13 +172,12 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
         dataColumnMax = new DataColumnImpl(maxColumnId, columnType);
 
         int inputsWidth = displayerSettings.getSelectorWidth();
-        inputsWidth = inputsWidth > 0 ? (inputsWidth/2) - 10  : -1;
+        inputsWidth = inputsWidth > 0 ? (inputsWidth / 2) - 10 : -1;
         inputsWidth = inputsWidth > 100 ? 100 : inputsWidth;
 
         if (minValue == null || maxValue == null) {
             view.noData();
-        }
-        else if (ColumnType.DATE.equals(columnType)) {
+        } else if (ColumnType.DATE.equals(columnType)) {
             rangeMin = ((Date) minValue).getTime();
             rangeMax = ((Date) maxValue).getTime() + 1;
             selectedMin = selectedMin == -1 ? rangeMin : selectedMin;
@@ -188,10 +189,9 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
                 maxDateEditor.setValue((Date) maxValue);
                 minDateEditor.setWidth(inputsWidth);
                 maxDateEditor.setWidth(inputsWidth);
-                view.showInputs(minDateEditor, maxDateEditor);
+                view.showInputs(minDateEditor.getElement(), maxDateEditor.getElement());
             }
-        }
-        else if (ColumnType.NUMBER.equals(columnType)) {
+        } else if (ColumnType.NUMBER.equals(columnType)) {
             // Round to integer
             rangeMin = ((Number) minValue).intValue();
             rangeMax = ((Number) maxValue).intValue() + 1;
@@ -204,10 +204,9 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
                 maxNumberEditor.setValue((Number) maxValue);
                 minNumberEditor.setWidth(inputsWidth);
                 maxNumberEditor.setWidth(inputsWidth);
-                view.showInputs(minNumberEditor, maxNumberEditor);
+                view.showInputs(minNumberEditor.getElement(), maxNumberEditor.getElement());
             }
-        }
-        else {
+        } else {
             view.textColumnsNotSupported();
         }
     }
@@ -218,11 +217,9 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
         }
         if (ColumnType.DATE.equals(dataColumnMin.getColumnType())) {
             return new Date((long) selectedMin);
-        }
-        else if (ColumnType.NUMBER.equals(dataColumnMin.getColumnType())) {
+        } else if (ColumnType.NUMBER.equals(dataColumnMin.getColumnType())) {
             return (long) selectedMin;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -233,11 +230,9 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
         }
         if (ColumnType.DATE.equals(dataColumnMax.getColumnType())) {
             return new Date((long) selectedMax);
-        }
-        else if (ColumnType.NUMBER.equals(dataColumnMax.getColumnType())) {
+        } else if (ColumnType.NUMBER.equals(dataColumnMax.getColumnType())) {
             return (long) selectedMax;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -262,8 +257,7 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
                 minDateEditor.setValue(dateFrom);
                 maxDateEditor.setValue(dateTo);
                 super.filterUpdate(filter);
-            }
-            else if (ColumnType.NUMBER.equals(dataColumnMin.getColumnType())) {
+            } else if (ColumnType.NUMBER.equals(dataColumnMin.getColumnType())) {
                 columnFilter.setParameters(min, max);
                 minNumberEditor.setValue(min);
                 maxNumberEditor.setValue(max);
@@ -328,11 +322,9 @@ public class SelectorSliderDisplayer extends AbstractErraiDisplayer<SelectorSlid
         if (ColumnType.DATE.equals(dataColumn.getColumnType())) {
             Date date = new Date((long) val);
             return super.formatValue(date, dataColumn);
-        }
-        else if (ColumnType.NUMBER.equals(dataColumn.getColumnType())) {
+        } else if (ColumnType.NUMBER.equals(dataColumn.getColumnType())) {
             return super.formatValue(val, dataColumn);
-        }
-        else {
+        } else {
             return Double.toString(val);
         }
     }

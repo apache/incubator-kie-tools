@@ -20,7 +20,6 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.mvp.Command;
 
 public class FilterLabelSet {
 
@@ -35,7 +34,7 @@ public class FilterLabelSet {
 
     private View view;
     private SyncBeanManager beanManager;
-    private Command onClearAllCommand;
+    private Runnable onClearAllCommand;
     private int numberOfLabels = 0;
 
     @Inject
@@ -65,14 +64,14 @@ public class FilterLabelSet {
         return filterLabel;
     }
 
-    public void setOnClearAllCommand(Command onClearAllCommand) {
+    public void setOnClearAllCommand(Runnable onClearAllCommand) {
         this.onClearAllCommand = onClearAllCommand;
     }
 
     void onClearAll() {
         this.clear();
         if (onClearAllCommand != null) {
-            onClearAllCommand.execute();
+            onClearAllCommand.run();
         }
     }
 }

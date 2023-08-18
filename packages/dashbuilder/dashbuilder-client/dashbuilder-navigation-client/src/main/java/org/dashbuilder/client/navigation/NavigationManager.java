@@ -15,13 +15,9 @@
  */
 package org.dashbuilder.client.navigation;
 
-import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
-import org.uberfire.mvp.Command;
 
 public interface NavigationManager {
-
-    void init(Command afterInit);
 
     void setDefaultNavTree(NavTree navTree);
 
@@ -30,10 +26,6 @@ public interface NavigationManager {
     NavTree getNavTree();
 
     boolean hasNavTree();
-
-    void saveNavTree(NavTree navTree, Command afterSave);
-
-    void navItemClicked(NavItem navItem);
 
     void update(NavTree navTree);
 }

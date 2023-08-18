@@ -34,13 +34,13 @@ import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.Displayer;
 
 @Dependent
-public class TableDisplayer extends AbstractErraiDisplayer<TableDisplayer.View> {
+public class TableDisplayer extends AbstractDisplayer<TableDisplayer.View> {
 
-    public interface View extends AbstractErraiDisplayer.View<TableDisplayer> {
+    public interface View extends AbstractDisplayer.View<TableDisplayer> {
 
         String getGroupsTitle();
 
@@ -256,4 +256,5 @@ public class TableDisplayer extends AbstractErraiDisplayer<TableDisplayer.View> 
         view.gotoFirstPage();
         super.onFilterReset(displayer, filter);
     }
+
 }

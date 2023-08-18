@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.mvp.Command;
 
 public class FilterLabel {
 
@@ -30,7 +29,7 @@ public class FilterLabel {
 
     private View view;
     private String label;
-    private Command onRemoveCommand;
+    private Runnable onRemoveCommand;
 
     @Inject
     public FilterLabel(View view) {
@@ -51,13 +50,13 @@ public class FilterLabel {
         return label;
     }
 
-    public void setOnRemoveCommand(Command onRemoveCommand) {
+    public void setOnRemoveCommand(Runnable onRemoveCommand) {
         this.onRemoveCommand = onRemoveCommand;
     }
 
     void onRemove() {
         if (onRemoveCommand != null) {
-            onRemoveCommand.execute();
+            onRemoveCommand.run();
         }
     }
 }

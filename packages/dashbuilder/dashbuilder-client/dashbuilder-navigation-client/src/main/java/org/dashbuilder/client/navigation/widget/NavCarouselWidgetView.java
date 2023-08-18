@@ -18,33 +18,32 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Window;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
 public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
-    implements NavCarouselWidget.View {
+                                   implements NavCarouselWidget.View {
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    Div carouselDiv;
+    HTMLDivElement carouselDiv;
 
     @Inject
     @DataField
-    Div slidesDiv;
+    HTMLDivElement slidesDiv;
 
     NavCarouselWidget presenter;
     Alert alertBox;
@@ -68,36 +67,41 @@ public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
     }
 
     @Override
-    public void addContentSlide(IsWidget widget) {
-        DOMUtil.removeAllChildren(mainDiv);
+    public void addContentSlide(HTMLElement widget) {
+        domUtil.removeAllElementChildren(mainDiv);
         mainDiv.appendChild(carouselDiv);
 
-        Div div = (Div) Window.getDocument().createElement("div");
-        div.setClassName(slidesDiv.getChildNodes().getLength() == 0 ? "item active" : "item");
-        super.appendWidgetToElement(div, widget);
+        var div = DomGlobal.document.createElement("div");
+        div.className = (slidesDiv.childElementCount == 0 ? "item active" : "item");
+        div.appendChild(Js.cast(widget));
         slidesDiv.appendChild(div);
     }
 
     @Override
     public void errorNavGroupNotFound() {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navGroupNotFound());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void errorNavItemsEmpty() {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navCarouselDragComponentEmptyError());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void infiniteRecursionError(String cause) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        div.setClassName(slidesDiv.getChildNodes().getLength() == 0 ? "item active" : "item");
+        var div = DomGlobal.document.createElement("div");
+        div.className = (slidesDiv.childElementCount == 0 ? "item active" : "item");
         alertBox.setMessage(NavigationConstants.INSTANCE.navCarouselDragComponentInfiniteRecursion() + " " + cause);
         div.appendChild(Js.cast(alertBox.getElement()));
         slidesDiv.appendChild(div);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return Js.cast(mainDiv);
     }
 }

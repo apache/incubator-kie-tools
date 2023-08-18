@@ -17,16 +17,17 @@ package org.dashbuilder.client.navigation.widget;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
+import org.jboss.errai.common.client.api.elemental2.IsElement;
 import org.uberfire.mvp.Command;
 
 /**
  * Interface for widgets in charge of the display of navigation items
  */
-public interface NavWidget extends IsWidget {
+public interface NavWidget extends IsElement {
 
     void hide();
 
@@ -63,5 +64,7 @@ public interface NavWidget extends IsWidget {
     void clearSelectedItem();
 
     void dispose();
+
+    HTMLElement getElement();
 
 }

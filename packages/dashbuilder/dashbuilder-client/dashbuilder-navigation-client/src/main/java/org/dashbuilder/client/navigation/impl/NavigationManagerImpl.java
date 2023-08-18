@@ -20,19 +20,13 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.dashbuilder.client.navigation.NavigationManager;
-import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
-import org.uberfire.mvp.Command;
 
 @ApplicationScoped
 public class NavigationManagerImpl implements NavigationManager {
 
     private NavTree navTree;
     private NavTree defaultNavTree;
-
-    public NavigationManagerImpl() {
-        // no op
-    }
 
     @Override
     public NavTree getDefaultNavTree() {
@@ -55,23 +49,8 @@ public class NavigationManagerImpl implements NavigationManager {
     }
 
     @Override
-    public void saveNavTree(NavTree newTree, Command afterSave) {
-        // no save
-    }
-
-    @Override
-    public void navItemClicked(NavItem navItem) {
-        // no op
-    }
-
-    @Override
     public void update(NavTree navTree) {
         this.defaultNavTree = navTree;
     }
 
-    @Override
-    public void init(Command afterInit) {
-        // ignored
-
-    }
 }

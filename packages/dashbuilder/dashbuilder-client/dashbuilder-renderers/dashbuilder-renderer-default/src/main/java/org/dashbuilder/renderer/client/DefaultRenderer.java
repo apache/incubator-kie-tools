@@ -153,7 +153,7 @@ public class DefaultRenderer extends AbstractRendererLibrary {
         }
     }
 
-    public static void closeDisplayer(String displayerId) {
-        _metricDisplayerMap.remove(displayerId);
+    public static void closeAllDisplayers() {
+        _metricDisplayerMap.clear();
     }
 }

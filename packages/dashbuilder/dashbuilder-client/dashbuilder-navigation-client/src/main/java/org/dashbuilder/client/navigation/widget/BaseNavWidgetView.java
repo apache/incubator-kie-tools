@@ -20,63 +20,63 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.gwt.dom.client.AnchorElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Node;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLLIElement;
+import elemental2.dom.Node;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.uberfire.mvp.Command;
 
-public abstract class BaseNavWidgetView<T> extends Composite implements NavWidgetView<T> {
+public abstract class BaseNavWidgetView<T> implements NavWidgetView<T> {
 
     protected Node navWidget = null;
     protected Element selectedItem = null;
-    protected Map<String,Element> itemMap = new HashMap<>();
+    protected Map<String, Element> itemMap = new HashMap<>();
     protected Set<IsWidget> widgetSet = new HashSet<>();
+    @Inject
+    Elemental2DomUtil domUtil;
 
     protected void appendWidgetToElement(HTMLElement element, IsWidget widget) {
-        DOMUtil.appendWidgetToElement(element, widget);
+        domUtil.appendWidgetToElement(element, widget.asWidget());
         widgetSet.add(widget);
     }
 
     @Override
     public void clearItems() {
-        DOMUtil.removeAllChildren(navWidget);
-        widgetSet.forEach(DOMUtil::removeFromParent);
+        domUtil.removeAllElementChildren(navWidget);
+
+        widgetSet.forEach(w -> w.asWidget().getElement().removeFromParent());
     }
 
     @Override
-    public void addGroupItem(String id, String name, String description, IsWidget widget) {
-        Element el = widget.asWidget().getElement();
+    public void addGroupItem(String id, String name, String description, elemental2.dom.HTMLElement el) {
         navWidget.appendChild((Node) el);
     }
 
     @Override
     public void addItem(String id, String name, String description, Command onItemSelected) {
-        AnchorElement anchor = Document.get().createAnchorElement();
-        anchor.setInnerText(name);
+        var anchor = (HTMLAnchorElement) DomGlobal.document.createElement("a");
+        anchor.textContent = name;
         if (description != null && !description.equals(name)) {
-            anchor.setTitle(description);
+            anchor.title = description;
         }
 
-        LIElement li = Document.get().createLIElement();
-        li.getStyle().setCursor(Style.Cursor.POINTER);
+        var li = (HTMLLIElement) DomGlobal.document.createElement("li");
+        li.style.cursor = "pointer";
         li.appendChild(anchor);
-        navWidget.appendChild((Node) li);
+        navWidget.appendChild(li);
         itemMap.put(id, li);
 
-        Event.sinkEvents(anchor, Event.ONCLICK);
-        Event.setEventListener(anchor, event -> {
-            if (Event.ONCLICK == event.getTypeInt()) {
-                onItemSelected.execute();
-            }
-        });
+        anchor.onclick = e -> {
+            onItemSelected.execute();
+            return null;
+        };
+
     }
 
     @Override
@@ -98,10 +98,10 @@ public abstract class BaseNavWidgetView<T> extends Composite implements NavWidge
     }
 
     protected void setSelectedEnabled(boolean enabled) {
-        if (enabled) {            
-            selectedItem.addClassName("active");
+        if (enabled) {
+            selectedItem.classList.add("active");
         } else {
-            selectedItem.removeClassName("active");
+            selectedItem.classList.remove("active");
         }
     }
 

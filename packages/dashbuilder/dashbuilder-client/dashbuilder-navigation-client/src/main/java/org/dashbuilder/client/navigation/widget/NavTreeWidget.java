@@ -20,12 +20,11 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavItem;
-import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 
 @Dependent
@@ -47,9 +46,8 @@ public class NavTreeWidget extends TargetDivNavWidget {
     public NavTreeWidget(View view,
                          SyncBeanManager beanManager,
                          PerspectivePluginManager pluginManager,
-                         PlaceManager placeManager,
                          NavigationManager navigationManager) {
-        super(view, pluginManager, placeManager, navigationManager);
+        super(view, pluginManager, navigationManager);
         this.view = view;
         this.beanManager = beanManager;
     }
@@ -67,13 +65,12 @@ public class NavTreeWidget extends TargetDivNavWidget {
 
     @Override
     protected void showItem(NavItem navItem) {
-        NavWorkbenchCtx ctx = NavWorkbenchCtx.get(navItem);
-        if (pluginManager.isRuntimePerspective(ctx.getResourceId())) {
-            view.addRuntimePerspective(navItem.getId(), navItem.getName(), navItem.getDescription(),
-                    () -> onItemClicked(navItem));
-        } else {
-            view.addPerspective(navItem.getId(), navItem.getName(), navItem.getDescription(), () -> onItemClicked(
-                    navItem));
-        }
+        view.addRuntimePerspective(navItem.getId(), navItem.getName(), navItem.getDescription(),
+                () -> onItemClicked(navItem));
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

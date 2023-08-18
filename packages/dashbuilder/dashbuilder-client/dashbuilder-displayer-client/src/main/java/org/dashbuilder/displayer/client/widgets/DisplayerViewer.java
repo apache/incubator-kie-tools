@@ -19,10 +19,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.client.AbstractDisplayerListener;
@@ -30,15 +28,15 @@ import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.displayer.client.DisplayerListener;
 import org.dashbuilder.displayer.client.DisplayerLocator;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class DisplayerViewer extends Composite {
+public class DisplayerViewer {
 
     protected DisplayerSettings displayerSettings;
-    protected Panel container = new FlowPanel();
-    protected Label label = new Label();
+    protected HTMLElement container;
     protected Displayer displayer;
     @Inject
     protected DisplayerErrorWidget errorWidget;
@@ -46,6 +44,8 @@ public class DisplayerViewer extends Composite {
     protected DisplayerLocator displayerLocator;
     ClientRuntimeError displayerInitializationError;
     CommonConstants i18n = CommonConstants.INSTANCE;
+    @Inject
+    Elemental2DomUtil domUtil;
 
     DisplayerListener displayerListener = new AbstractDisplayerListener() {
 
@@ -70,7 +70,6 @@ public class DisplayerViewer extends Composite {
     @Inject
     public DisplayerViewer(DisplayerLocator displayerLocator) {
         this.displayerLocator = displayerLocator;
-        initWidget(container);
     }
 
     public DisplayerSettings getDisplayerSettings() {
@@ -82,6 +81,7 @@ public class DisplayerViewer extends Composite {
     }
 
     public void init(DisplayerSettings displayerSettings) {
+        container = (HTMLElement) DomGlobal.document.createElement("div");
         try {
             // Lookup the displayer
             checkNotNull("displayerSettings",
@@ -100,8 +100,9 @@ public class DisplayerViewer extends Composite {
 
     protected void show() {
         // Add the displayer into a container
-        container.clear();
-        container.add(displayer);
+        domUtil.removeAllElementChildren(container);
+        var element = displayer.getElement();
+        container.appendChild(element);
         error = false;
     }
 
@@ -119,31 +120,20 @@ public class DisplayerViewer extends Composite {
         return displayer;
     }
 
-    public Displayer redraw() {
-        try {
-            checkNotNull("displayerSettings",
-                    displayerSettings);
-            checkNotNull("displayer",
-                    displayer);
-
-            displayer.setDisplayerSettings(displayerSettings);
-            displayer.redraw();
-        } catch (Exception e) {
-            error(new ClientRuntimeError(e));
-        }
-        return displayer;
-    }
-
     public void error(ClientRuntimeError e) {
         error(e, e.getMessage());
     }
 
     public void error(ClientRuntimeError e, String message) {
-        container.clear();
-        container.add(errorWidget);
+        domUtil.removeAllElementChildren(container);
+        container.appendChild(errorWidget.getElement());
         errorWidget.show(message, e.getThrowable());
         error = true;
         GWT.log(e.getMessage(),
                 e.getThrowable());
+    }
+
+    public HTMLElement getDisplayerContainer() {
+        return container;
     }
 }

@@ -6,12 +6,11 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.displayer.client.widgets.ExternalComponentPresenter;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.patternfly.label.Label;
 import org.dashbuilder.patternfly.label.LabelColor;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
@@ -35,7 +34,7 @@ public class ExternalDragComponent implements LayoutDragComponent {
     Label label;
 
     @Override
-    public IsWidget getShowWidget(RenderingContext ctx) {
+    public HTMLElement getShowWidget(RenderingContext ctx) {
         var ltProps = ctx.getComponent().getProperties();
         var storedComponentId = ltProps.get(COMPONENT_ID_KEY);
         var partition = ltProps.get(COMPONENT_PARTITION_KEY);
@@ -44,7 +43,7 @@ public class ExternalDragComponent implements LayoutDragComponent {
             label.setLabelColor(LabelColor.RED);
             label.setShowIcon(true);
             label.setText("Component not found.");
-            return ElementWrapperWidget.getWidget(label.getElement());
+            return label.getElement();
         }
 
         externalComponentPresenter.withComponentBaseUrlIdAndPartition(baseUrl, storedComponentId, partition);
@@ -53,7 +52,7 @@ public class ExternalDragComponent implements LayoutDragComponent {
         var message = messageHelper.newInitMessage(componentProperties);
         externalComponentPresenter.sendMessage(message);
 
-        return externalComponentPresenter.getView();
+        return externalComponentPresenter.getView().getElement();
     }
 
     private Map<String, String> retrieveComponentProperties(String componentId,

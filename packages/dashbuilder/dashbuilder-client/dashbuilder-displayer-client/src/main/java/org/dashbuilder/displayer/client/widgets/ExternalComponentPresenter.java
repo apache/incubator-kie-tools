@@ -30,7 +30,7 @@ import org.dashbuilder.displayer.client.component.ExternalComponentListener;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
 import org.dashbuilder.displayer.external.ExternalFilterRequest;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElemental;
 
 @Dependent
 public class ExternalComponentPresenter implements ExternalComponentListener {
@@ -49,7 +49,7 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
 
     String hostPageUrl;
 
-    public interface View extends UberView<ExternalComponentPresenter> {
+    public interface View extends UberElemental<ExternalComponentPresenter> {
 
         void setComponentURL(String url);
 

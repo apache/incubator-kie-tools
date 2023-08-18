@@ -19,9 +19,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.patternfly.code.CodeView;
 import org.dashbuilder.patternfly.panel.Panel;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -29,7 +29,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
-public class DisplayerErrorWidget extends Composite {
+public class DisplayerErrorWidget {
 
     @Inject
     @DataField
@@ -75,6 +75,10 @@ public class DisplayerErrorWidget extends Composite {
             cause = cause.getCause();
         }
         return sb.toString();
+    }
+
+    public HTMLElement getElement() {
+        return displayerErrorRoot;
     }
 
 }
