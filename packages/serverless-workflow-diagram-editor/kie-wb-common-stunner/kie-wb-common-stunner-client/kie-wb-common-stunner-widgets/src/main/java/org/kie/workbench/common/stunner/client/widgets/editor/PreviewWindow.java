@@ -24,12 +24,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.CSSStyleDeclaration;
 import jsinterop.base.Js;
 import org.gwtbootstrap3.extras.animate.client.ui.Animate;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
@@ -76,22 +75,19 @@ public class PreviewWindow {
         AbstractCanvas abstractCanvas = abstractCanvasHandler.getAbstractCanvas();
         AbstractCanvas.CanvasView canvasView = abstractCanvas.getView();
         CanvasPanel canvasPanel = canvasView.getPanel();
-        Widget widget = canvasPanel.asWidget();
-        Element element = widget.getElement();
-
-        Style style = element.getStyle();
-        style.setBorderWidth(1, Style.Unit.PX);
-        style.setBorderStyle(Style.BorderStyle.SOLID);
-        style.setBorderColor("#808080");
+        CSSStyleDeclaration style = canvasPanel.getElement().style;
+        style.setProperty("border-width", "1px");
+        style.setProperty("border-style", "solid");
+        style.setProperty("border-color", "#808080");
     }
 
     private void close() {
         if (null != previewRoot && previewRoot.isVisible() && !closing) {
             closing = true;
             Animate.animate(previewRoot,
-                    Animation.FADE_OUT,
-                    1,
-                    DURATION);
+                            Animation.FADE_OUT,
+                            1,
+                            DURATION);
             final Timer hideTimer = new Timer() {
                 @Override
                 public void run() {
@@ -126,22 +122,22 @@ public class PreviewWindow {
             }
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
-                    new SessionViewer.SessionViewerCallback<Diagram>() {
-                        @Override
-                        public void afterCanvasInitialized() {
-                            addWidget();
-                            translate(x, y, width, height);
-                            Animate.animate(previewRoot,
-                                    Animation.FADE_IN,
-                                    1,
-                                    DURATION);
-                        }
+                               new SessionViewer.SessionViewerCallback<Diagram>() {
+                                   @Override
+                                   public void afterCanvasInitialized() {
+                                       addWidget();
+                                       translate(x, y, width, height);
+                                       Animate.animate(previewRoot,
+                                                       Animation.FADE_IN,
+                                                       1,
+                                                       DURATION);
+                                   }
 
-                        @Override
-                        public void onError(final ClientRuntimeError error) {
-                            showError(error);
-                        }
-                    });
+                                   @Override
+                                   public void onError(final ClientRuntimeError error) {
+                                       showError(error);
+                                   }
+                               });
         }
     }
 
@@ -191,9 +187,9 @@ public class PreviewWindow {
                 case SHOW:
                 case TOGGLE:
                     show(event.getX(),
-                            event.getY(),
-                            event.getWidth(),
-                            event.getHeight());
+                         event.getY(),
+                         event.getWidth(),
+                         event.getHeight());
                     break;
             }
         }

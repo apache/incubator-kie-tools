@@ -27,7 +27,6 @@ import com.google.gwt.touch.client.Point;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -366,13 +365,15 @@ public abstract class AbstractCanvasInlineTextEditorControl
     }
 
     double getCanvasAbsoluteWidth() {
-        return getAbstractCanvas().getView().getPanel().asWidget().getOffsetWidth() +
+        String offsetWidth = getAbstractCanvas().getView().getPanel().getElement().style.getPropertyValue("offsetWidth");
+        return Integer.parseInt(offsetWidth) +
                 canvasPosition.getX() -
                 scrollBarOffset;
     }
 
     double getCanvasAbsoluteHeight() {
-        return getAbstractCanvas().getView().getPanel().asWidget().getOffsetHeight() +
+        String offsetHeight = getAbstractCanvas().getView().getPanel().getElement().style.getPropertyValue("offsetHeight");
+        return Integer.parseInt(offsetHeight) +
                 canvasPosition.getY() -
                 scrollBarOffset;
     }
@@ -421,10 +422,10 @@ public abstract class AbstractCanvasInlineTextEditorControl
 
     void setMouseWheelHandler() {
         //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
-        HTMLElement panelElement = Js.uncheckedCast(getAbstractCanvas()
-                                                            .getView()
-                                                            .getPanel()
-                                                            .asWidget().getElement());
+        HTMLElement panelElement = getAbstractCanvas()
+                                       .getView()
+                                       .getPanel()
+                                       .getElement();
 
         mouseWheelHandler = new NativeHandler(MOUSE_WHEEL,
                                               this::onMouseWheel,

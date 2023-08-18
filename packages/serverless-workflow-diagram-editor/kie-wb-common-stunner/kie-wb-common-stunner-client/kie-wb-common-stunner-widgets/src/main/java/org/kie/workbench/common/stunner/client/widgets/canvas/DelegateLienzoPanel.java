@@ -22,7 +22,7 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -69,8 +69,8 @@ public abstract class DelegateLienzoPanel<P extends LienzoPanel> implements Lien
     }
 
     @Override
-    public Widget asWidget() {
-        return getDelegate().asWidget();
+    public HTMLElement getElement() {
+        return getDelegate().getElement();
     }
 
     @Override

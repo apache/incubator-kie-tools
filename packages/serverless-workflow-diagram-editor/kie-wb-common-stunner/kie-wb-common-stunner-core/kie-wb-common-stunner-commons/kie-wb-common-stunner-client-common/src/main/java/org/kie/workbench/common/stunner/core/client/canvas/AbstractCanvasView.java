@@ -27,7 +27,6 @@ import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
@@ -55,14 +54,13 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
                               final CanvasSettings canvasSettings) {
         this.canvasPanel = canvasPanel;
         doInitialize(canvasSettings);
-        mainPanel.appendChild(Js.uncheckedCast(canvasPanel.asWidget().getElement()));
+        mainPanel.appendChild(canvasPanel.getElement());
         return cast();
     }
 
     @Override
     public V setCursor(final AbstractCanvas.Cursors cursor) {
-        final Style style = canvasPanel.asWidget().getElement().getStyle();
-        style.setProperty(CURSOR, toLienzoCursorKey(cursor));
+        canvasPanel.getElement().style.setProperty(CURSOR, toLienzoCursorKey(cursor));
         return cast();
     }
 

@@ -111,7 +111,7 @@ public class ZoomLevelSelectorTest {
     }
 
     @Test
-    public void testAsWidget() {
+    public void testGetElement() {
         elemental2.dom.HTMLElement w = mock(elemental2.dom.HTMLElement.class);
         when(view.getElement()).thenReturn(w);
         assertEquals(w, tested.getElement());

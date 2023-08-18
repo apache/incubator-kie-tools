@@ -35,7 +35,7 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.EventListener;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
@@ -77,8 +77,8 @@ public class StunnerLienzoBoundsPanel
     }
 
     @Override
-    public Widget asWidget() {
-        return ElementWrapperWidget.getWidget(view.getElement());
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
     @Override

@@ -24,7 +24,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -74,10 +73,10 @@ public class SessionPresenterView
         final CSSStyleDeclaration style = sessionContainer.style;
         switch (type) {
             case AUTO:
-                style.overflow = Style.Overflow.AUTO.getCssName();
+                style.overflow = "auto";
                 break;
             case CUSTOM:
-                style.overflow = Style.Overflow.HIDDEN.getCssName();
+                style.overflow = "hidden";
         }
     }
 
