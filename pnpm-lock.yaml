@@ -4611,6 +4611,10 @@ importers:
         version: 4.8.4
 
   packages/k8s-yaml-to-apiserver-requests:
+    dependencies:
+      yaml:
+        specifier: ^2.0.1
+        version: 2.0.1
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -30962,7 +30966,7 @@ packages:
     peerDependencies:
       react: ">=15"
     dependencies:
-      "@babel/runtime": 7.16.7
+      "@babel/runtime": 7.18.9
       history: 4.10.1
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
