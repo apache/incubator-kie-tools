@@ -186,9 +186,9 @@ public class PreviewWindow {
                 case SHOW:
                 case TOGGLE:
                     show(event.getX(),
-                            event.getY(),
-                            event.getWidth(),
-                            event.getHeight());
+                         event.getY(),
+                         event.getWidth(),
+                         event.getHeight());
                     break;
             }
         }
