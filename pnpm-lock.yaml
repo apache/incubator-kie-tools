@@ -5531,6 +5531,9 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.16.12)
+      "@jest/globals":
+        specifier: ^26.6.2
+        version: 26.6.2
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
         version: link:../webpack-base
@@ -5543,6 +5546,9 @@ importers:
       "@kie-tools/extended-services":
         specifier: workspace:*
         version: link:../extended-services
+      "@kie-tools/playwright-base":
+        specifier: workspace:*
+        version: link:../playwright-base
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
@@ -5552,6 +5558,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@playwright/test":
+        specifier: ^1.37.0
+        version: 1.37.0
       "@testing-library/jest-dom":
         specifier: ^5.16.1
         version: 5.16.1
@@ -5561,12 +5570,6 @@ importers:
       "@types/history":
         specifier: ^4.7.3
         version: 4.7.5
-      "@types/jest":
-        specifier: ^26.0.23
-        version: 26.0.23
-      "@types/jest-when":
-        specifier: ^2.7.4
-        version: 2.7.4
       "@types/js-yaml":
         specifier: ^4.0.5
         version: 4.0.5

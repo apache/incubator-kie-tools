@@ -15,8 +15,9 @@
  */
 
 import * as React from "react";
+import "@testing-library/jest-dom";
 import { render, waitFor } from "@testing-library/react";
-import { AnimatedTripleDotLabel } from "../../extendedServices/AnimatedTripleDotLabel";
+import { AnimatedTripleDotLabel } from "../../../src/extendedServices/AnimatedTripleDotLabel";
 
 describe("AnimatedTripleDotLabel", () => {
   test("should be valid", async () => {

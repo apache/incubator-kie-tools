@@ -1,4 +1,5 @@
-import { switchExpression } from "../../switchExpression/switchExpression";
+import { describe, it, expect } from "@jest/globals";
+import { switchExpression } from "../../../src/switchExpression/switchExpression";
 
 type UnionString3Values = "one" | "two" | "three";
 type UnionStringSubset = "one" | "three";
