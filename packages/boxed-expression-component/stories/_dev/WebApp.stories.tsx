@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
 import {
   BeeGwtService,
@@ -24,13 +24,10 @@ import {
   ExpressionDefinition,
   generateUuid,
 } from "../../src/api";
-import { BoxedExpressionEditor } from "../../src/expressions";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
-import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
-import ReactJson from "react-json-view";
 import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
+import { BoxedExpressionEditorProps } from "../../src/expressions";
 
 /**
  * Constants copied from tests to fix debugger
@@ -104,92 +101,30 @@ const beeGwtService: BeeGwtService = {
   selectObject(): void {},
 };
 
-const App: React.FunctionComponent = () => {
+function App(args: BoxedExpressionEditorProps) {
   const [version, setVersion] = useState(-1);
-  const [expression, setExpression] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
-  const [expressionString, setExpressionString] = useState(JSON.stringify(INITIAL_EXPRESSION));
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const onExpressionStringChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setExpressionString(e.target.value);
-  }, []);
-
-  const toggleModal = useCallback(() => {
-    setIsModalOpen((prev) => !prev);
-  }, []);
-
-  const setExpressionFromString = useCallback(() => {
-    try {
-      const parsedTypedExpression = JSON.parse(expressionString);
-      setExpression(parsedTypedExpression);
-      setIsModalOpen(false);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [expressionString]);
+  const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
 
   useEffect(() => {
     setVersion((prev) => prev + 1);
-    setExpressionString(JSON.stringify(expression));
-  }, [expression]);
+  }, [expressionDefinition]);
 
-  const emptyRef = React.useRef<HTMLElement>(null);
   return (
     <div className="dev-webapp">
       <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
-        <BoxedExpressionEditor
-          scrollableParentRef={emptyRef}
-          beeGwtService={beeGwtService}
-          decisionNodeId="_00000000-0000-0000-0000-000000000000"
-          expressionDefinition={expression}
-          setExpressionDefinition={setExpression}
-          dataTypes={dataTypes}
-          pmmlParams={pmmlParams}
-        />
+        {BoxedExpressionEditorWrapper({
+          decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+          dataTypes: dataTypes,
+          beeGwtService: beeGwtService,
+          pmmlParams: pmmlParams,
+          expressionDefinition: expressionDefinition,
+          setExpressionDefinition: setExpressionDefinition,
+        })}
       </div>
-
-      <div data-testid={"boxed-expression-json"} className="updated-json">
-        <div className="buttons">
-          <Button
-            variant="secondary"
-            icon={<PenIcon />}
-            iconPosition="left"
-            onClick={toggleModal}
-            ouiaId="edit-expression-json"
-          />
-        </div>
-
-        <pre>
-          <ReactJson src={expression} name={false} enableClipboard />
-        </pre>
-      </div>
-
-      <Modal
-        title="Manually edit Expression Definition"
-        className="expression-definition-editor-modal"
-        isOpen={isModalOpen}
-        onClose={toggleModal}
-        description="This modal is supposed to provide a manual edit option for the expression definition. If «Confirm» action does nothing, probably there is an issue with JSON definition parsing: look at browser's console."
-        actions={[
-          <Button key="confirm" variant="primary" onClick={setExpressionFromString} ouiaId="confirm-expression-json">
-            Confirm
-          </Button>,
-          <Button key="cancel" variant="link" onClick={toggleModal}>
-            Cancel
-          </Button>,
-        ]}
-      >
-        <textarea
-          className="typed-expression"
-          value={expressionString}
-          onChange={onExpressionStringChange}
-          data-ouia-component-id="typed-expression-json"
-        />
-      </Modal>
     </div>
   );
-};
+}
 
 const meta: Meta<typeof App> = {
   component: App,
@@ -198,4 +133,6 @@ const meta: Meta<typeof App> = {
 export default meta;
 type Story = StoryObj<typeof App>;
 
-export const WebApp: Story = {};
+export const WebApp: Story = {
+  render: (args) => App(args),
+};

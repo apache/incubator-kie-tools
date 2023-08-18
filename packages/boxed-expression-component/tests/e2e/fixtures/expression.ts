@@ -11,27 +11,19 @@ export class Expressions {
   }
 
   public async openLiteralExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--literal-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-literal-expression--base")}` ?? "");
   }
 
   public async openContextExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--context-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-context-expression--base")}` ?? "");
   }
 
   public async openDecisionTableExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--decision-table-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-decision-table-expression--base")}` ?? "");
   }
 
   public async openRelationExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--relation-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-relation-expression--base")}` ?? "");
   }
 
   public async createRelationExpression() {
@@ -56,20 +48,14 @@ export class Expressions {
   }
 
   public async openInvocationExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--invocation-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-invocation-expression--base")}` ?? "");
   }
 
   public async openListExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--list-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-list-expression--base")}` ?? "");
   }
 
   public async openFunctionExpression() {
-    await this.page.goto(
-      `${this.baseURL}/${this.getIframeURL("expressions-boxedexpressioneditor--function-expression")}` ?? ""
-    );
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-function-expression--base")}` ?? "");
   }
 }

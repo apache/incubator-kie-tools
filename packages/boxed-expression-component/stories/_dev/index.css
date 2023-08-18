@@ -26,23 +26,3 @@
   overflow-y: auto;
   height: calc(50vh - 8px);
 }
-
-.dev-webapp .updated-json {
-  border-style: inset;
-  margin: 1em;
-  padding: 1em;
-  height: calc(30vh - 8px - 2em - 4px);
-  overflow-y: auto;
-}
-
-.dev-webapp .updated-json .buttons button,
-.expression-definition-editor-modal button {
-  cursor: pointer;
-}
-
-.expression-definition-editor-modal .typed-expression {
-  height: 20em;
-  width: 100%;
-  overflow: auto;
-  resize: none;
-}

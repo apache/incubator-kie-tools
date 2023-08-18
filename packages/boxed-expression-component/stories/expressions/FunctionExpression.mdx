@@ -1,0 +1,13 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import * as FunctionExpression from "./FunctionExpression.stories";
+
+<Meta title="MDX/Function Expression" of={FunctionExpression} />
+
+# Function Expression
+
+With `MDX` we can include a story for `Checkbox` right in the middle of our
+markdown documentation.
+
+<Canvas>
+  <Story of={FunctionExpression.Base} />
+</Canvas>

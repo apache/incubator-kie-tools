@@ -3,7 +3,7 @@ import { env } from "./env";
 const buildEnv: any = env;
 
 export const config: StorybookConfig = {
-  stories: ["../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   framework: {
     name: "@storybook/react-webpack5",
     options: {},

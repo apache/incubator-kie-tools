@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { Preview } from "@storybook/react";
+import { Title, Subtitle, Description, Primary, Controls, Stories } from "@storybook/blocks";
 import "../src/expressions/BoxedExpressionEditor/base-no-reset-wrapped.css";
 
 const preview: Preview = {
@@ -10,6 +11,19 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/,
       },
+    },
+    docs: {
+      toc: true,
+      page: () => (
+        <>
+          <Title />
+          <Subtitle />
+          <Description />
+          <Primary />
+          <Controls />
+          <Stories />
+        </>
+      ),
     },
   },
 

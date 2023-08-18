@@ -1,0 +1,13 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import * as InvocationExpression from "./InvocationExpression.stories";
+
+<Meta title="MDX/Invocation Expression" of={InvocationExpression} />
+
+# Invocation Expression
+
+With `MDX` we can include a story for `Checkbox` right in the middle of our
+markdown documentation.
+
+<Canvas>
+  <Story of={InvocationExpression.Base} />
+</Canvas>
