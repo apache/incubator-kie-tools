@@ -118,7 +118,9 @@ export function CreateGitRepositoryModal(props: {
       throw new Error("Repo creation failed.");
     }
 
-    // TO DO: Remove this.
+    // The cloneUrl host is replaced with the authProvider domain because when GitHub is being proxied it will return
+    // the original URL (with github.com) instead of the proxy URL.
+    // This won't affect usaged when GitHub is not being proxied.
     const host = new URL(repo.data.clone_url).host;
     const cloneUrl = repo.data.clone_url.replace(host, authProvider?.domain ?? host);
     return { cloneUrl, htmlUrl: repo.data.html_url };

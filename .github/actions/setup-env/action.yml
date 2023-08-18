@@ -10,6 +10,8 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # This cleans up the GitHub action images, removing unnecessary packages such as Android Studio and DOTNet libraries.
+    # This can provide up to 7GB of free space for the rest of the build.
     - name: "Clear storage usage from unnecessary packages"
       uses: jlumbroso/free-disk-space@76866dbe54312617f00798d1762df7f43def6e5c
       if: runner.os == 'Linux'
@@ -81,6 +83,7 @@ runs:
         colima stop
         colima delete
         colima start --memory 4 --network-address --verbose
+      # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
 
     - name: "Setup network timeout"
       shell: bash
