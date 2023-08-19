@@ -262,7 +262,7 @@ export const beeGwtService: BeeGwtService = {
 };
 
 export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEditorProps>) {
-  const emptyRef = React.useRef<HTMLElement>(null);
+  const emptyRef = React.useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
   const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(args.expressionDefinition);
 
@@ -286,17 +286,19 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
   );
 
   return (
-    <BoxedExpressionEditor
-      decisionNodeId={props?.decisionNodeId ?? args.decisionNodeId}
-      expressionDefinition={props?.expressionDefinition ?? expressionDefinition}
-      setExpressionDefinition={props?.setExpressionDefinition ?? setExpressionCallback}
-      dataTypes={props?.dataTypes ?? args.dataTypes}
-      scrollableParentRef={props?.scrollableParentRef ?? emptyRef}
-      beeGwtService={props?.beeGwtService ?? args.beeGwtService}
-      pmmlParams={props?.pmmlParams ?? args.pmmlParams}
-      isResetSupportedOnRootExpression={
-        props?.isResetSupportedOnRootExpression ?? args.isResetSupportedOnRootExpression
-      }
-    />
+    <div ref={emptyRef}>
+      <BoxedExpressionEditor
+        decisionNodeId={props?.decisionNodeId ?? args.decisionNodeId}
+        expressionDefinition={props?.expressionDefinition ?? expressionDefinition}
+        setExpressionDefinition={props?.setExpressionDefinition ?? setExpressionCallback}
+        dataTypes={props?.dataTypes ?? args.dataTypes}
+        scrollableParentRef={props?.scrollableParentRef ?? emptyRef}
+        beeGwtService={props?.beeGwtService ?? args.beeGwtService}
+        pmmlParams={props?.pmmlParams ?? args.pmmlParams}
+        isResetSupportedOnRootExpression={
+          props?.isResetSupportedOnRootExpression ?? args.isResetSupportedOnRootExpression
+        }
+      />
+    </div>
   );
 }
