@@ -7,7 +7,23 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
-import { DmnEditor, DmnEditorRef } from "../../src/DmnEditor";
+import { DmnEditor, DmnEditorProps, DmnEditorRef } from "../../src/DmnEditor";
+import { DmnDefinitions, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
+
+import { ns as dmn14ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/meta";
+import { SPEC } from "../../src/Spec";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+
+const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN);
+
+const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="${dmn14ns.get("")}"
+  expressionLanguage="${SPEC.expressionLanguage.default}"
+  namespace="https://kie.org/dmn/${generateUuid()}"
+  id="${generateUuid()}"
+  name="DMN${generateUuid()}">
+</definitions>`;
 
 export function DevWebApp() {
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -20,7 +36,10 @@ export function DevWebApp() {
       [...e.dataTransfer.items].forEach((item, i) => {
         if (item.kind === "file") {
           const reader = new FileReader();
-          reader.addEventListener("load", ({ target }) => setState({ stack: [target?.result as string], pointer: 0 }));
+          reader.addEventListener("load", ({ target }) => {
+            const marshaller = getMarshaller(target?.result as string);
+            setState({ marshaller, stack: [marshaller.parser.parse()], pointer: 0 });
+          });
           reader.readAsText(item.getAsFile() as any);
         }
       });
@@ -33,28 +52,36 @@ export function DevWebApp() {
 
   const ref = useRef<DmnEditorRef>(null);
 
-  const copyAsXml = useCallback(() => {
-    navigator.clipboard.writeText(ref.current?.getContent() || "");
+  const reset = useCallback(() => {
+    const marshaller = getMarshaller(EMPTY_DMN_14());
+    setState({
+      marshaller,
+      stack: [marshaller.parser.parse()],
+      pointer: 0,
+    });
   }, []);
 
-  const reset = useCallback(() => {
-    setState({ stack: [""], pointer: 0 });
-  }, []);
+  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnDefinitions[]; pointer: number }>({
+    marshaller: initialDmnMarshaller,
+    stack: [initialDmnMarshaller.parser.parse()],
+    pointer: 0,
+  });
+
+  const currentModel = state.stack[state.pointer];
 
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
-      const fileBlob = new Blob([ref.current?.getContent() || ""], { type: "text/xml" });
+      const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
       downloadRef.current.download = `dmn-${makeid(10)}.dmn`;
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
-  }, []);
+  }, [currentModel, state.marshaller.builder]);
 
-  const [state, setState] = useState<{ stack: string[]; pointer: number }>({
-    stack: [DEFAULT_DEV_WEBAPP_DMN],
-    pointer: 0,
-  });
+  const copyAsXml = useCallback(() => {
+    navigator.clipboard.writeText(state.marshaller.builder.build(currentModel));
+  }, [currentModel, state.marshaller.builder]);
 
   const undo = useCallback(() => {
     setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
@@ -64,9 +91,15 @@ export function DevWebApp() {
     setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
   }, []);
 
-  const onModelChange = useCallback((model) => {
-    console.info("Model changed!");
-    console.info(model);
+  const onModelChange: DmnEditorProps["onModelChange"] = useCallback((model) => {
+    setState((prev) => {
+      const newStack = prev.stack.slice(0, prev.pointer + 1);
+      return {
+        ...prev,
+        stack: [...newStack, model],
+        pointer: newStack.length,
+      };
+    });
   }, []);
 
   return (
@@ -96,7 +129,7 @@ export function DevWebApp() {
         </PageSection>
         <hr />
         <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
-          <DmnEditor ref={ref} xml={state.stack[state.pointer]} onModelChange={onModelChange} />
+          <DmnEditor ref={ref} model={currentModel} onModelChange={onModelChange} />
         </PageSection>
       </Page>
     </>

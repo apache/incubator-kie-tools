@@ -1,5 +1,3 @@
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import {
   DMN14__tBusinessKnowledgeModel,
   DMN14__tDecision,
@@ -8,9 +6,6 @@ import {
 import { createContext, useContext } from "react";
 import { StoreApi, UseBoundStore, create, useStore as useZustandStore } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
-import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { SPEC } from "../Spec";
-import { ns as dmn14ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/meta";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -28,10 +23,9 @@ export interface State {
   dispatch: Dispatch;
   dmn: {
     model: { definitions: DMN14__tDefinitions };
-    marshaller: DmnMarshaller;
   };
   boxedExpression: {
-    node: DmnNodeWithExpression | undefined;
+    drgElement: DrgElementWithExpression | undefined;
   };
   propertiesPanel: {
     isOpen: boolean;
@@ -59,10 +53,10 @@ export interface State {
 
 export type Dispatch = {
   dmn: {
-    reset: (xml: string) => void;
+    reset: (model: State["dmn"]["model"]) => void;
   };
   boxedExpression: {
-    open: (nodeWithExpression: DmnNodeWithExpression) => void;
+    open: (nodeWithExpression: DrgElementWithExpression) => void;
     close: () => void;
   };
   propertiesPanel: {
@@ -80,15 +74,6 @@ export type Dispatch = {
   };
 };
 
-const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
-<definitions
-  xmlns="${dmn14ns.get("")}"
-  expressionLanguage="${SPEC.expressionLanguage.default}"
-  namespace="https://kie.org/dmn/${generateUuid()}"
-  id="${generateUuid()}"
-  name="DMN${generateUuid()}">
-</definitions>`;
-
 export enum DmnEditorTab {
   EDITOR,
   DATA_TYPES,
@@ -96,13 +81,20 @@ export enum DmnEditorTab {
   DOCUMENTATION,
 }
 
-export type DmnNodeWithExpression =
+export enum TypeOfDrgElementWithExpression {
+  DECISION,
+  BKM,
+}
+
+export type DrgElementWithExpression =
   | {
-      type: typeof NODE_TYPES.bkm;
+      index: number;
+      type: TypeOfDrgElementWithExpression.BKM;
       content: DMN14__tBusinessKnowledgeModel;
     }
   | {
-      type: typeof NODE_TYPES.decision;
+      index: number;
+      type: TypeOfDrgElementWithExpression.DECISION;
       content: DMN14__tDecision;
     };
 
@@ -124,18 +116,14 @@ export const DmnEditorStoreApiContext = createContext<StoreApiType>({} as any);
 
 export type StoreApiType = UseBoundStore<WithImmer<StoreApi<State>>>;
 
-export function createDmnEditorStore(xml: string) {
-  const initialMarshaller = getMarshaller(xml || EMPTY_DMN_14());
-  const initialModel = initialMarshaller.parser.parse();
-
+export function createDmnEditorStore(model: State["dmn"]["model"]) {
   return create(
     immer<State>((set, get) => ({
       dmn: {
-        marshaller: initialMarshaller,
-        model: initialModel,
+        model,
       },
       boxedExpression: {
-        node: undefined,
+        drgElement: undefined,
       },
       propertiesPanel: {
         isOpen: false,
@@ -161,29 +149,25 @@ export function createDmnEditorStore(xml: string) {
       },
       dispatch: {
         dmn: {
-          reset: (xml) => {
+          reset: (model) => {
             set((state) => {
-              xml = (xml ?? "").trim().length <= 0 ? EMPTY_DMN_14() : xml;
-              const marshaller = getMarshaller(xml);
-              state.dmn.marshaller = marshaller;
-              state.dmn.model = marshaller.parser.parse();
               state.diagram.selected = [];
               state.diagram.dragging = [];
               state.diagram.resizing = [];
               state.navigation.tab = DmnEditorTab.EDITOR;
-              state.boxedExpression.node = undefined;
+              state.boxedExpression.drgElement = undefined;
             });
           },
         },
         boxedExpression: {
           open: (node) => {
             set((state) => {
-              state.boxedExpression.node = node;
+              state.boxedExpression.drgElement = node;
             });
           },
           close: () => {
             set((state) => {
-              state.boxedExpression.node = undefined;
+              state.boxedExpression.drgElement = undefined;
             });
           },
         },

@@ -9,12 +9,18 @@ import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dis
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
-import { useEffect, useMemo, useState } from "react";
-import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { updateExpression } from "../mutations/updateExpression";
-import { DmnEditorTab, DmnNodeWithExpression, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import {
+  DmnEditorTab,
+  DrgElementWithExpression,
+  TypeOfDrgElementWithExpression,
+  useDmnEditorStore,
+  useDmnEditorStoreApi,
+} from "../store/Store";
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
 import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressionDefinitionByLogicType";
+import "@kie-tools/dmn-marshaller";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const { dispatch, dmn, boxedExpression } = useDmnEditorStore();
@@ -35,23 +41,38 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     }, new Map<string, number[]>());
   }, [dmn.model.definitions]);
 
-  const initial = useMemo(() => {
-    return boxedExpression.node
-      ? dmnNodeToBoxedExpression(widthsById, boxedExpression.node)
+  const expression = useMemo(() => {
+    return boxedExpression.drgElement
+      ? drgElementToBoxedExpression(widthsById, boxedExpression.drgElement)
       : getUndefinedExpressionDefinition();
-  }, [boxedExpression.node, widthsById]);
+  }, [boxedExpression.drgElement, widthsById]);
 
-  const [expression, setExpression] = useState(initial);
-  useEffect(() => setExpression(initial), [initial]); // Keeps internal state updated when boxedExpression.node changes.
+  const setExpression: React.Dispatch<React.SetStateAction<ExpressionDefinition>> = useCallback(
+    (expressionAction) => {
+      dmnEditorStoreApi.setState((state) => {
+        updateExpression({
+          definitions: state.dmn.model.definitions,
+          expression: typeof expressionAction === "function" ? expressionAction(expression) : expressionAction,
+          index: boxedExpression.drgElement?.index ?? 0,
+        });
+      });
+    },
+    [boxedExpression.drgElement?.index, dmnEditorStoreApi, expression]
+  );
+
+  //Necessary, since `state.boxedExpression.drgElement!.content` is a copy of the original element.
   useEffect(() => {
-    if (expression === initial) {
-      return;
-    }
-
     dmnEditorStoreApi.setState((state) => {
-      updateExpression({ definitions: state.dmn.model.definitions, expression, index: 0 });
+      state.boxedExpression.drgElement!.content =
+        dmn.model.definitions.drgElement![boxedExpression.drgElement?.index ?? 0];
     });
-  }, [dmnEditorStoreApi, expression, initial]);
+  }, [boxedExpression.drgElement?.index, dmn.model.definitions.drgElement, dmnEditorStoreApi]);
+
+  const isResetSupportedOnRootExpression = useMemo(() => {
+    return boxedExpression.drgElement?.type === TypeOfDrgElementWithExpression.DECISION;
+  }, [boxedExpression.drgElement?.type]);
+
+  ////
 
   const dataTypes = useMemo(
     () =>
@@ -64,10 +85,6 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   );
 
   const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
-
-  const isResetSupportedOnRootExpression = useMemo(() => {
-    return boxedExpression.node?.type === NODE_TYPES.decision;
-  }, [boxedExpression.node?.type]);
 
   const beeGwtService = useMemo<BeeGwtService>(() => {
     return {
@@ -89,6 +106,8 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     };
   }, [dispatch.diagram, dispatch.navigation, dmnEditorStoreApi]);
 
+  ////
+
   return (
     <>
       <Label
@@ -105,7 +124,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
           beeGwtService={beeGwtService}
           pmmlParams={pmmlParams}
           isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
-          decisionNodeId={boxedExpression.node!.content["@_id"]!}
+          decisionNodeId={boxedExpression.drgElement!.content["@_id"]!}
           expressionDefinition={expression}
           setExpressionDefinition={setExpression}
           dataTypes={dataTypes}
@@ -116,25 +135,28 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   );
 }
 
-function dmnNodeToBoxedExpression(
+function drgElementToBoxedExpression(
   widthsById: Map<string, number[]>,
-  dmnNode: DmnNodeWithExpression
+  drgElement: DrgElementWithExpression
 ): ExpressionDefinition {
-  if (dmnNode.type == NODE_TYPES.bkm) {
+  if (drgElement.type === TypeOfDrgElementWithExpression.BKM) {
     return {
       ...dmnToBee(widthsById, {
-        expression: { __$$element: "functionDefinition", ...dmnNode.content.encapsulatedLogic },
+        expression: {
+          __$$element: "functionDefinition",
+          ...drgElement.content.encapsulatedLogic,
+        },
       }),
-      dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
-      name: dmnNode.content["@_name"],
+      dataType: drgElement.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
+      name: drgElement.content["@_name"],
     };
-  } else if (dmnNode.type == NODE_TYPES.decision) {
+  } else if (drgElement.type === TypeOfDrgElementWithExpression.DECISION) {
     return {
-      ...dmnToBee(widthsById, dmnNode.content),
-      dataType: dmnNode.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
-      name: dmnNode.content["@_name"],
+      ...dmnToBee(widthsById, drgElement.content),
+      dataType: drgElement.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
+      name: drgElement.content["@_name"],
     };
   } else {
-    throw new Error(`Unknown type of node that has an expression '${(dmnNode as any).type}'.`);
+    throw new Error(`Unknown type of drgElement that has an expression '${(drgElement as any).type}'.`);
   }
 }

@@ -12,7 +12,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
-import { SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { SnapGrid, TypeOfDrgElementWithExpression, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
@@ -153,7 +153,10 @@ export const DecisionNode = React.memo(
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decision.variable} shape={shape} />
           <EditExpressionNodePanel
             isVisible={!isTargeted && isHovered}
-            nodeWithExpression={useMemo(() => ({ type: NODE_TYPES.decision, content: decision }), [decision])}
+            drgElementWithExpression={useMemo(
+              () => ({ type: TypeOfDrgElementWithExpression.DECISION, content: decision, index }),
+              [decision, index]
+            )}
           />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
@@ -221,7 +224,10 @@ export const BkmNode = React.memo(
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={bkm.variable} shape={shape} />
           <EditExpressionNodePanel
             isVisible={!isTargeted && isHovered}
-            nodeWithExpression={useMemo(() => ({ type: NODE_TYPES.bkm, content: bkm }), [bkm])}
+            drgElementWithExpression={useMemo(
+              () => ({ type: TypeOfDrgElementWithExpression.BKM, content: bkm, index }),
+              [bkm, index]
+            )}
           />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}

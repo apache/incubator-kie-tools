@@ -353,7 +353,14 @@ export function BeeTableHeader<R extends object>({
         );
       }
     });
-  }, [getColumnKey, reactTableInstance, renderColumn, shouldRenderHeaderGroup, shouldRenderRowIndexColumn]);
+  }, [
+    getColumnKey,
+    headerVisibility,
+    reactTableInstance,
+    renderColumn,
+    shouldRenderHeaderGroup,
+    shouldRenderRowIndexColumn,
+  ]);
 
   return <>{<thead>{renderHeaderGroups()}</thead>}</>;
 }

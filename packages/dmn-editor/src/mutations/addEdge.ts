@@ -14,6 +14,7 @@ import { _checkIsValidConnection } from "../diagram/connections/isValidConnectio
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { getBoundsCenterPoint, getPointForHandle } from "../diagram/maths/DmnMaths";
 import { getRequirementsFromEdge } from "./addConnectedNode";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function addEdge({
   definitions,
@@ -90,19 +91,16 @@ export function addEdge({
     }
   }
 
-  definitions["dmndi:DMNDI"] ??= {};
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0] ??= {};
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"] ??= [];
+  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   // Remove existing
   removeFirstMatchIfPresent(
-    definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"],
+    diagramElements,
     (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
   );
 
   // Replace with the new one.
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"].push({
+  diagramElements.push({
     __$$element: "dmndi:DMNEdge",
     "@_id": generateUuid(),
     "@_dmnElementRef": newEdgeId,

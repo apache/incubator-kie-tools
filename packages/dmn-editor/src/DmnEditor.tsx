@@ -23,6 +23,7 @@ import {
   StoreApiType,
   createDmnEditorStore,
   useDmnEditorStore,
+  useDmnEditorStoreApi,
 } from "./store/Store";
 
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
@@ -33,34 +34,37 @@ import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF
 const ON_CHANGE_THROTTLE_TIME_IN_MS = 500;
 
 export type DmnEditorRef = {
-  getContent(): string;
+  reset: (mode: State["dmn"]["model"]) => void;
 };
 
 export type DmnEditorProps = {
-  xml: string;
+  model: State["dmn"]["model"];
   onModelChange?: (model: State["dmn"]["model"]) => void;
 };
 
 export const DmnEditorInternal = ({
-  xml,
+  model,
   onModelChange,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
   const { propertiesPanel, boxedExpression, dmn, navigation, dispatch, diagram } = useDmnEditorStore();
 
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
     forwardRef,
     () => ({
-      getContent: () => dmn.marshaller.builder.build(dmn.model),
+      reset: (model) => dispatch.dmn.reset(model),
     }),
-    [dmn.marshaller, dmn.model]
+    [dispatch.dmn]
   );
 
   // Make sure the DMN Editor reacts to props changing.
   useEffectAfterFirstRender(() => {
-    dispatch.dmn.reset(xml);
-  }, [dispatch.dmn, xml]);
+    dmnEditorStoreApi.setState((state) => {
+      state.dmn.model = model;
+    });
+  }, [dispatch.dmn, model]);
 
   // Only notify changes when dragging/resizing operations are not happening.
   useEffectAfterFirstRender(() => {
@@ -112,9 +116,9 @@ export const DmnEditorInternal = ({
               <DrawerContent panelContent={<PropertiesPanel />}>
                 <DrawerContentBody>
                   <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                    <DmnVersionLabel version={dmn.marshaller.version} />
-                    {!boxedExpression.node && <Diagram container={diagramContainerRef} />}
-                    {boxedExpression.node && <BoxedExpression container={diagramContainerRef} />}
+                    <DmnVersionLabel version={"1.4"} />
+                    {!boxedExpression.drgElement && <Diagram container={diagramContainerRef} />}
+                    {boxedExpression.drgElement && <BoxedExpression container={diagramContainerRef} />}
                   </div>
                 </DrawerContentBody>
               </DrawerContent>
@@ -175,7 +179,7 @@ export const DmnEditorInternal = ({
 };
 
 export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref<DmnEditorRef>) => {
-  const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.xml));
+  const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.model));
 
   return (
     <DmnEditorStoreApiContext.Provider value={storeRef.current}>

@@ -10,15 +10,19 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DMN14__tContext,
+  DMN14__tDecision,
+  DMN14__tFunctionDefinition,
   DMN14__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { SPEC } from "../Spec";
-import { DmnExpression } from "./DmnExpression";
 
 /** Converts a DMN JSON to an ExpressionDefinition. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
  *  created prior to the DMN Editor, needing to declare its own model. */
-export function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpression): ExpressionDefinition {
+export function dmnToBee(
+  widthsById: Map<string, number[]>,
+  dmnExpr: DMN14__tDecision | DMN14__tFunctionDefinition
+): ExpressionDefinition {
   if (!dmnExpr) {
     return getUndefinedExpressionDefinition();
   } else if (dmnExpr.expression?.__$$element === "literalExpression") {
@@ -65,9 +69,9 @@ export function dmnToBee(widthsById: Map<string, number[]>, dmnExpr: DmnExpressi
       })),
       rules: (d.rule ?? []).map((r) => ({
         id: r["@_id"]!,
-        inputEntries: (r.inputEntry ?? []).map((s) => ({ id: s["@_id"]!, content: s.text ?? "" })),
-        outputEntries: (r.outputEntry ?? []).map((s) => ({ id: s["@_id"]!, content: s.text ?? "" })),
-        annotationEntries: (r.annotationEntry ?? []).map((s) => s.text ?? ""),
+        inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text ?? "" })),
+        outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text ?? "" })),
+        annotationEntries: (r.annotationEntry ?? []).map((a) => a.text ?? ""),
       })),
     };
   } else if (dmnExpr.expression?.__$$element === "relation") {

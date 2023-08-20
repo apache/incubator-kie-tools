@@ -4,6 +4,7 @@ import { DC__Bounds, DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
+import { addOrGetDefaultDiagram as getDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function addStandaloneNode({
   definitions,
@@ -71,11 +72,8 @@ export function addStandaloneNode({
   }
 
   // Add the new node shape
-  definitions["dmndi:DMNDI"] ??= {};
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0] ??= {};
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"] ??= [];
-  definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"][0]["dmndi:DMNDiagramElement"]?.push({
+  const { diagramElements } = getDefaultDiagram({ definitions });
+  diagramElements?.push({
     __$$element: "dmndi:DMNShape",
     "@_id": generateUuid(),
     "@_dmnElementRef": newNodeId,

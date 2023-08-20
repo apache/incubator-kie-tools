@@ -3,6 +3,7 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function deleteNode({
   definitions,
@@ -13,7 +14,7 @@ export function deleteNode({
   node: { type: NodeType; id: string };
   targetEdges: { id: string; data: DmnEditorDiagramEdgeData }[];
 }) {
-  const diagramElements = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"];
+  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   const uniqueTargetEdgeIds = new Set<string>();
 

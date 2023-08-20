@@ -1,6 +1,10 @@
-import { ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { ExpressionDefinition, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DMN14__tDefinitions,
+  DMN14__tFunctionDefinition,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { beeToDmn } from "../boxedExpressions/beeToDmn";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function updateExpression({
   definitions,
@@ -11,6 +15,30 @@ export function updateExpression({
   expression: ExpressionDefinition;
   index: number;
 }) {
-  // TODO: Implement
-  console.info(`TIAGO WRITE: Boxed Expression updated! ${beeToDmn(expression)}`); // TODO: Actually mutate the DMN JSON.
+  const updatedWidthsMap = new Map<string, number[]>();
+
+  const drgElement = definitions.drgElement?.[index];
+  if (drgElement?.__$$element === "decision") {
+    drgElement.expression = beeToDmn(expression, updatedWidthsMap);
+  } else if (drgElement?.__$$element === "businessKnowledgeModel") {
+    if (expression.logicType !== ExpressionDefinitionLogicType.Function) {
+      throw new Error("Can't have an expression on a BKM that is not a Function.");
+    }
+
+    drgElement.encapsulatedLogic = beeToDmn(expression, updatedWidthsMap) as DMN14__tFunctionDefinition;
+  } else {
+    throw new Error("Can't update expression for drgElement that is not a Decision or a BKM.");
+  }
+
+  const { widthsExtension, widths } = addOrGetDefaultDiagram({ definitions });
+  const componentWidthsMap = widths.reduce(
+    (acc, e) => (e["@_dmnElementRef"] ? acc.set(e["@_dmnElementRef"], e["kie:width"] ?? []) : acc),
+    new Map<string, number[]>()
+  );
+
+  updatedWidthsMap.forEach((v, k) => componentWidthsMap.set(k, v));
+  widthsExtension["kie:ComponentWidths"] = [...componentWidthsMap.entries()].map(([k, v]) => ({
+    "@_dmnElementRef": k,
+    "kie:width": v,
+  }));
 }

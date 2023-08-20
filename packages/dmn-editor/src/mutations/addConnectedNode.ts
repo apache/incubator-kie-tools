@@ -14,6 +14,7 @@ import { getBoundsCenterPoint } from "../diagram/maths/DmnMaths";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function addConnectedNode({
   definitions,
@@ -100,8 +101,9 @@ export function addConnectedNode({
   }
 
   const newShapeId = generateUuid();
+  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
   // Add the new node shape
-  definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
+  diagramElements?.push({
     __$$element: "dmndi:DMNShape",
     "@_id": newShapeId,
     "@_dmnElementRef": newNodeId,
@@ -111,7 +113,7 @@ export function addConnectedNode({
   });
 
   // Add the new edge shape
-  definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"]?.push({
+  diagramElements?.push({
     __$$element: "dmndi:DMNEdge",
     "@_id": generateUuid() + AutoPositionedEdgeMarker.TARGET,
     "@_dmnElementRef": newEdgeId,

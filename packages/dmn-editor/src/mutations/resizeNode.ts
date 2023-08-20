@@ -6,6 +6,7 @@ import {
 import { TargetHandleId } from "../diagram/connections/NodeHandles";
 import { getHandlePosition } from "../diagram/maths/DmnMaths";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function resizeNode({
   definitions,
@@ -21,7 +22,7 @@ export function resizeNode({
 }) {
   const edgeIndexesAlreadyUpdated = new Set<number>();
 
-  const diagramElements = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"] ?? [];
+  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   const shapeBounds = (diagramElements?.[change.shapeIndex] as DMNDI13__DMNShape | undefined)?.["dc:Bounds"];
   if (!shapeBounds) {

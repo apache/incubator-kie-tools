@@ -4,6 +4,7 @@ import {
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function repositionNode({
   definitions,
@@ -19,7 +20,7 @@ export function repositionNode({
 }) {
   const edgeIndexesAlreadyUpdated = new Set<number>();
 
-  const diagramElements = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]?.["dmndi:DMNDiagramElement"] ?? [];
+  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   const bounds = (diagramElements?.[change.shapeIndex] as DMNDI13__DMNShape | undefined)?.["dc:Bounds"];
   if (!bounds) {
