@@ -240,7 +240,7 @@ export function DecisionTableExpression(
       id: decisionTableExpression.id,
       accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
-      dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
+      dataType: decisionTableExpression.dataType,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       width: undefined,

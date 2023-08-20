@@ -172,7 +172,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         ],
       },
     ];
-  }, []);
+  }, [i18n]);
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
     if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {

@@ -71,7 +71,7 @@ export function PmmlFunctionExpression({
       {
         label: functionExpression.name ?? DEFAULT_EXPRESSION_NAME,
         accessor: functionExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-        dataType: functionExpression.dataType ?? DmnBuiltInDataType.Undefined,
+        dataType: functionExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
@@ -107,7 +107,7 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [functionExpression.dataType, functionExpression.name, parametersColumnHeader]);
+  }, [functionExpression.dataType, functionExpression.id, functionExpression.name, parametersColumnHeader]);
 
   const headerVisibility = useMemo(() => {
     return functionExpression.isNested

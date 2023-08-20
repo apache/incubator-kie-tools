@@ -116,7 +116,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
         width: undefined,
       },
     ],
-    [listExpression.dataType, listExpression.name]
+    [decisionNodeId, listExpression.dataType, listExpression.name]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -127,7 +127,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     () => ({
       [decisionNodeId]: ListItemCell,
     }),
-    []
+    [decisionNodeId]
   );
 
   const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {

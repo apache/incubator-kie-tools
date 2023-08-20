@@ -53,14 +53,16 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   }, [beeGwtService, isActive]);
 
   const onLogicTypeSelected = useCallback(
-    (logicType) => {
-      setExpression((prev) => ({
-        ...beeGwtService!.getDefaultExpressionDefinition(logicType, prev.dataType),
-        logicType,
-        isNested,
-        id: prev.id ?? generateUuid(),
-        name: prev.name ?? DEFAULT_EXPRESSION_NAME,
-      }));
+    (logicType: ExpressionDefinitionLogicType) => {
+      setExpression((prev) => {
+        const defaultExpression = beeGwtService!.getDefaultExpressionDefinition(logicType, prev.dataType);
+        return {
+          ...defaultExpression,
+          isNested,
+          id: prev.id ?? generateUuid(),
+          name: prev.name ?? DEFAULT_EXPRESSION_NAME,
+        };
+      });
     },
     [beeGwtService, isNested, setExpression]
   );

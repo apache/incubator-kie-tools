@@ -126,7 +126,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
       {
         label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
         accessor: invocationExpression.id as keyof ROWTYPE,
-        dataType: invocationExpression.dataType ?? INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+        dataType: invocationExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
         columns: [
@@ -163,9 +163,10 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
       },
     ],
     [
+      invocationExpression.id,
       invocationExpression.name,
       invocationExpression.dataType,
-      invocationExpression.invokedFunction,
+      invocationExpression.invokedFunction.name,
       parametersWidth,
       setParametersWidth,
     ]

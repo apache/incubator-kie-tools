@@ -26,6 +26,7 @@ export function beeToDmn(
       return {
         __$$element: "context",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_typeRef": expression.dataType,
         contextEntry: [
           ...expression.contextEntries.map((e) => {
@@ -54,6 +55,7 @@ export function beeToDmn(
       return {
         __$$element: "decisionTable",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_typeRef": expression.dataType,
         "@_hitPolicy": expression.hitPolicy,
         "@_aggregation": (() => {
@@ -117,6 +119,7 @@ export function beeToDmn(
       return {
         __$$element: "functionDefinition",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_kind": expression.functionKind,
         "@_typeRef": expression.dataType,
         formalParameter: expression.formalParameters.map((p) => ({
@@ -175,6 +178,7 @@ export function beeToDmn(
       return {
         __$$element: "invocation",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_typeRef": expression.dataType,
         expression: {
           __$$element: "literalExpression",
@@ -198,6 +202,7 @@ export function beeToDmn(
       return {
         __$$element: "list",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_typeRef": expression.dataType,
         expression: expression.items.map((i) => beeToDmn(i, __widths)!),
       };
@@ -206,6 +211,7 @@ export function beeToDmn(
       return {
         __$$element: "literalExpression",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_typeRef": expression.dataType,
         text: expression.content,
       };
@@ -214,6 +220,7 @@ export function beeToDmn(
       return {
         __$$element: "relation",
         "@_id": expression.id,
+        "@_label": expression.name,
         "@_typeRef": expression.dataType,
         row: (expression.rows ?? []).map((r) => {
           return {

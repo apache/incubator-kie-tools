@@ -125,7 +125,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         accessor: contextExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: contextExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
-        dataType: contextExpression.dataType ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
+        dataType: contextExpression.dataType,
         width: undefined,
         columns: [
           {
@@ -149,7 +149,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         ],
       },
     ];
-  }, [contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [contextExpression.id, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {

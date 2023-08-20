@@ -4,6 +4,7 @@ import {
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   PmmlParam,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -91,7 +92,10 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition {
         return getDefaultExpressionDefinitionByLogicType(
           logicType as ExpressionDefinitionLogicType,
-          { dataType: dataType } as ExpressionDefinition,
+          {
+            id: generateUuid(),
+            dataType: (dataType as DmnBuiltInDataType) || DmnBuiltInDataType.Undefined,
+          },
           0
         );
       },
@@ -147,13 +151,17 @@ function drgElementToBoxedExpression(
           ...drgElement.content.encapsulatedLogic,
         },
       }),
-      dataType: drgElement.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
+      dataType: (drgElement.content.variable?.["@_typeRef"] ??
+        drgElement.content.encapsulatedLogic?.["@_typeRef"] ??
+        DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
       name: drgElement.content["@_name"],
     };
   } else if (drgElement.type === TypeOfDrgElementWithExpression.DECISION) {
     return {
       ...dmnToBee(widthsById, drgElement.content),
-      dataType: drgElement.content.variable?.["@_typeRef"] as DmnBuiltInDataType,
+      dataType: (drgElement.content.variable?.["@_typeRef"] ??
+        drgElement.content.expression?.["@_typeRef"] ??
+        DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
       name: drgElement.content["@_name"],
     };
   } else {
