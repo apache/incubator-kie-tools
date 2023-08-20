@@ -194,6 +194,7 @@ export function beeToDmn(
         }),
       };
     case ExpressionDefinitionLogicType.List:
+      __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
       return {
         __$$element: "list",
         "@_id": expression.id,
@@ -209,6 +210,7 @@ export function beeToDmn(
         text: expression.content,
       };
     case ExpressionDefinitionLogicType.Relation:
+      __widths.set(expression.id, [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH]);
       return {
         __$$element: "relation",
         "@_id": expression.id,
