@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
+import { OpenApi } from "openapi-v3";
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
+import { useOpenApiPromise } from "../hooks/useOpenApiPromise";
 import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
-  const history = useHistory();
   const appDataPromise = useAppDataPromise();
+  const openApiPromise = useOpenApiPromise();
   const [appTitle, setAppTitle] = useState("");
+  const [openApiData, setOpenApiData] = useState<OpenApi>();
 
   useEffect(() => {
     if (!appDataPromise.data) {
@@ -32,7 +35,15 @@ export function AppContextProvider(props: PropsWithChildren<{}>) {
     setAppTitle(appDataPromise.data.appTitle);
 
     document.title = appDataPromise.data.appTitle;
-  }, [appDataPromise.data, history]);
+  }, [appDataPromise.data]);
+
+  useEffect(() => {
+    if (!openApiPromise.data) {
+      return;
+    }
+
+    setOpenApiData(openApiPromise.data);
+  }, [openApiPromise.data]);
 
   const value = useMemo(
     () => ({

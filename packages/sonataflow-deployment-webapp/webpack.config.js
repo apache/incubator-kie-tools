@@ -40,7 +40,9 @@ module.exports = async (env) =>
       rules: [...patternflyBase.webpackModuleRules],
     },
     devServer: {
-      historyApiFallback: false,
+      historyApiFallback: {
+        rewrites: [{ from: /^\/q\/openapi/, to: "/openapi.json" }],
+      },
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
       port: buildEnv.sonataFlowDeploymentWebapp.dev.port,

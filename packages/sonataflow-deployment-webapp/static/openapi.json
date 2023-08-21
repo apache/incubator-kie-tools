@@ -1,0 +1,16 @@
+{
+  "openapi": "3.0.3",
+  "info": {},
+  "tags": [
+    {
+      "name": "compensation",
+      "description": "An example of how compensation works"
+    },
+    {
+      "name": "jsongreet",
+      "description": "JSON based greeting workflow"
+    }
+  ],
+  "paths": {},
+  "components": {}
+}
