@@ -18,7 +18,6 @@ jenkins_path = '.ci/jenkins'
 
 // PR checks
 setupPrJob()
-setupDeployJob(JobType.PULL_REQUEST, 'kogito-bdd')
 
 // Init branch
 createSetupBranchJob()
@@ -45,7 +44,7 @@ setupQuarkusUpdateJob()
 /////////////////////////////////////////////////////////////////
 
 void setupPrJob(boolean isProdCI = false) {
-    setupBuildImageJob(JobType.PULL_REQUEST, '', isProdCI)
+    setupBuildImageJob(JobType.PULL_REQUEST, isProdCI)
 
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.PULL_REQUEST, "${jenkins_path}/Jenkinsfile", "Kogito Images${isProdCI ? ' Prod' : ''} PR check")
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
@@ -99,41 +98,27 @@ void createSetupBranchJob() {
     }
 }
 
-void setupDeployJob(JobType jobType, String envName = '') {
-    setupBuildImageJob(jobType, envName)
+void setupDeployJob(JobType jobType) {
+    setupBuildImageJob(jobType)
 
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images-deploy', jobType, envName, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-deploy', jobType, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
     JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
-    if (jobType == JobType.PULL_REQUEST) {
-        jobParams.git.branch = '${BUILD_BRANCH_NAME}'
-        jobParams.git.author = '${GIT_AUTHOR}'
-        jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
-    }
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-images',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
         MAX_REGISTRY_RETRIES: 3,
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+
+        MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+
+        QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
     ])
-    if (jobType == JobType.PULL_REQUEST) {
-        jobParams.env.putAll([
-            MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
-        ])
-    } else {
-        jobParams.env.putAll([
-            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-            AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-            GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
-
-            MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-            DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
-
-            QUARKUS_PLATFORM_NEXUS_URL: Utils.getMavenQuarkusPlatformRepositoryUrl(this),
-        ])
-    }
     if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
         jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
     }
@@ -142,10 +127,6 @@ void setupDeployJob(JobType jobType, String envName = '') {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            if (jobType == JobType.PULL_REQUEST) {
-                // author can be changed as param only for PR behavior, due to source branch/target, else it is considered as an env
-                stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
-            }
 
             stringParam('APPS_URI', '', 'Git uri to the kogito-apps repository to use for tests.')
             stringParam('APPS_REF', '', 'Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
@@ -177,8 +158,8 @@ void setupDeployJob(JobType jobType, String envName = '') {
     }
 }
 
-void setupBuildImageJob(JobType jobType, String envName = '', boolean prodCI = false) {
-    def jobParams = JobParamsUtils.getBasicJobParamsWithEnv(this, 'kogito-images.build-image', jobType, envName, "${jenkins_path}/Jenkinsfile.build-image", 'Kogito Images Build single image')
+void setupBuildImageJob(JobType jobType, boolean prodCI = false) {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images.build-image', jobType, "${jenkins_path}/Jenkinsfile.build-image", 'Kogito Images Build single image')
     // Use jenkinsfile from the build branch
     jobParams.git.author = '${SOURCE_AUTHOR}'
     jobParams.git.branch = '${SOURCE_BRANCH}'
