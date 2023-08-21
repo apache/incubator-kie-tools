@@ -24,14 +24,18 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMa
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.StringOrValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StringOrValueHolderYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StateEndDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StateTransitionDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StringOrValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StateEndDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StateTransitionDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StringOrValueHolderYamlTypeSerializer;
 
 @JSONMapper
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "usedForCompensation", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "data", "metadata"})
-public class InjectState extends State {
+public class InjectState extends State<InjectState> {
 
     public static final String TYPE_INJECT = "inject";
 
@@ -42,9 +46,27 @@ public class InjectState extends State {
     @JsonbTypeDeserializer(StringOrValueHolderJsonbTypeSerializer.class)
     @YamlTypeSerializer(StringOrValueHolderYamlTypeSerializer.class)
     @YamlTypeDeserializer(StringOrValueHolderYamlTypeSerializer.class)
-    private Object data;
+    public Object data;
 
     public Boolean usedForCompensation;
+
+    public StateDataFilter stateDataFilter;
+
+    public Metadata metadata;
+
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StateTransitionDefinitionYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StateTransitionDefinitionYamlTypeSerializer.class)
+    public Object transition;
+
+    @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @YamlTypeSerializer(StateEndDefinitionYamlTypeSerializer.class)
+    @YamlTypeDeserializer(StateEndDefinitionYamlTypeSerializer.class)
+    public Object end;
+
+    public String compensatedBy;
 
     public InjectState() {
         this.type = TYPE_INJECT;
@@ -64,5 +86,49 @@ public class InjectState extends State {
 
     public void setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
+    }
+
+    public StateDataFilter getStateDataFilter() {
+        return stateDataFilter;
+    }
+
+    public void setStateDataFilter(StateDataFilter stateDataFilter) {
+        this.stateDataFilter = stateDataFilter;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public InjectState setMetadata(Metadata metadata) {
+        this.metadata = metadata;
+        return this;
+    }
+
+    public Object getTransition() {
+        return transition;
+    }
+
+    public InjectState setTransition(Object transition) {
+        this.transition = transition;
+        return this;
+    }
+
+    public Object getEnd() {
+        return end;
+    }
+
+    public InjectState setEnd(Object end) {
+        this.end = end;
+        return this;
+    }
+
+    public String getCompensatedBy() {
+        return compensatedBy;
+    }
+
+    public InjectState setCompensatedBy(String compensatedBy) {
+        this.compensatedBy = compensatedBy;
+        return this;
     }
 }

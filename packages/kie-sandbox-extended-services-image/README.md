@@ -1,10 +1,10 @@
 # kie-sandbox-extended-services-image
 
-This package contains the `Containerfile` and scripts to build a container image for the KIE Sandbox Extended Services.
+This package contains the `Containerfile` and scripts to build a container image for the Extended Services.
 
 ## Additional requirements
 
-- podman
+- docker or podman
 
 ## Build
 
@@ -34,12 +34,24 @@ $ pnpm build:prod @kie-tools/kie-sandbox-extended-services-image...
 Then check out the image:
 
 ```bash
+$ docker images
+```
+
+or
+
+```bash
 $ podman images
 ```
 
 ## Run
 
 Start up a new container with:
+
+```bash
+$ docker run -p 21345:21345 -i --rm quay.io/kie-tools/kie-sandbox-extended-services-image:latest
+```
+
+or
 
 ```bash
 $ podman run -p 21345:21345 -i --rm quay.io/kie-tools/kie-sandbox-extended-services-image:latest

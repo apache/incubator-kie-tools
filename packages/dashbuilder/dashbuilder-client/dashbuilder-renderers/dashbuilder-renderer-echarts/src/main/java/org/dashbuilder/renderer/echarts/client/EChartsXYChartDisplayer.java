@@ -36,7 +36,7 @@ public class EChartsXYChartDisplayer extends EChartsXYDisplayer {
     @Override
     protected Series[] buildSeries() {
         var nColumns = dataSet.getColumns().size();
-        if (nColumns > 0) {
+        if (nColumns < 2) {
             return new Series[0];
         }
         var allSeries = new Series[nColumns - 1];

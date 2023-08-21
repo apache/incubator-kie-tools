@@ -19,7 +19,7 @@ package org.jboss.errai.ui.test.quickhandler.client;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.HTMLButtonElement;
 import org.jboss.errai.enterprise.client.cdi.AbstractErraiCDITest;
 import org.jboss.errai.ioc.client.IOCUtil;
 import org.jboss.errai.ui.test.quickhandler.client.res.InteropEventQuickHandlerTemplate;
@@ -97,7 +97,7 @@ public class InteropEventQuickHandlerTemplateTest extends AbstractErraiCDITest {
   }
 
   public void testDataFieldOnlyInTemplate() throws Exception {
-    final Button button = (Button) bean.root.querySelector("button[data-field=\"noFieldButton\"]");
+    final HTMLButtonElement button = (HTMLButtonElement) bean.root.querySelector("button[data-field=\"noFieldButton\"]");
     assertNotNull(button);
     assertTrue(bean.observed.isEmpty());
     invokeEventListeners(button, "click");

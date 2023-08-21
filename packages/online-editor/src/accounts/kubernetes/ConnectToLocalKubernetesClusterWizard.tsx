@@ -159,7 +159,12 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
 
   useEffect(() => {
     setPreviousConnection(props.connection);
-    props.setConnection({ namespace: DEFAULT_LOCAL_CLUSTER_NAMESPACE, host: DEFAULT_LOCAL_CLUSTER_HOST, token: "" });
+    props.setConnection({
+      namespace: DEFAULT_LOCAL_CLUSTER_NAMESPACE,
+      host: DEFAULT_LOCAL_CLUSTER_HOST,
+      token: "",
+      insecurelyDisableTlsCertificateValidation: false,
+    });
   }, []);
 
   const isNamespaceValidated = useMemo(() => {
@@ -205,6 +210,12 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     },
     [props]
   );
+
+  /* 
+  TODO: uncomment when enabling kubernetes deployment to use cors-proxy
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback((checked: boolean) => {
+    props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
+  }, [props]); */
 
   const onStepChanged = useCallback(
     async ({ id }) => {
@@ -292,11 +303,9 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 </TextContent>
                 <CommandCopyBlock
                   command={clusterConfigCommands.createCluster(
-                    routes.static.kubernetes.kindClusterConfig.url({
-                      base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
-                      static: true,
-                      pathParams: {},
-                    })
+                    `${window.location.origin}${
+                      window.location.pathname
+                    }${routes.static.kubernetes.kindClusterConfig.path({})}`
                   )}
                 />
               </ListItem>
@@ -316,11 +325,9 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 </TextContent>
                 <CommandCopyBlock
                   command={clusterConfigCommands.applyDeploymentResources(
-                    routes.static.kubernetes.kieSandboxDevDeploymentsResources.url({
-                      base: process.env.WEBPACK_REPLACE__devDeployments_onlineEditorUrl,
-                      static: true,
-                      pathParams: {},
-                    })
+                    `${window.location.origin}${
+                      window.location.pathname
+                    }${routes.static.kubernetes.kieSandboxDevDeploymentsResources.path({})}`
                   )}
                 />
               </ListItem>
@@ -492,6 +499,20 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   </InputGroupText>
                 </InputGroup>
               </FormGroup>
+              {/* 
+              TODO: uncomment when enabling kubernetes deployment to use cors-proxy
+              <FormGroup fieldId="disable-tls-validation">
+                <Checkbox
+                  id="disable-tls-validation"
+                  name="disable-tls-validation"
+                  label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
+                  description={<I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>}
+                  aria-label="Disable TLS Certificate Validation"
+                  tabIndex={3}
+                  isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
+                  onChange={onInsecurelyDisableTlsCertificateValidationChange}
+                />
+              </FormGroup> */}
             </Form>
             <Text className="pf-u-my-md" component={TextVariants.p}>
               {i18n.devDeployments.kubernetesConfigWizard.steps.third.tokenInputReason}

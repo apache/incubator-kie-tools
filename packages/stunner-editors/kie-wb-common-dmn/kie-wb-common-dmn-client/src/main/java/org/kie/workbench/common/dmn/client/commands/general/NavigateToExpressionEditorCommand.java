@@ -87,6 +87,7 @@ public class NavigateToExpressionEditorCommand extends BaseNavigateCommand imple
             public CommandResult<CanvasViolation> undo(final AbstractCanvasHandler context) {
                 enableHandlers(true);
                 hidePaletteWidget(false);
+                unmountNewBoxedExpressionEditor();
                 addDRGEditorToCanvasWidget();
 
                 //Stunner de-selects nodes when a Command is undone; so we need to clear the Form Properties too

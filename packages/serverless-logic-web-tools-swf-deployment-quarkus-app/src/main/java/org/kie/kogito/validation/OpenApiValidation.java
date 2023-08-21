@@ -29,7 +29,7 @@ public class OpenApiValidation implements FileValidation {
     private final OpenAPIV3Parser parser = new OpenAPIV3Parser();
 
     @Override
-    public FileValidationResult isValid(final Path path) {
+    public FileValidationResult validate(final Path path) {
         try {
             final SwaggerParseResult result = parser.readLocation(path.toAbsolutePath().toString(), null, null);
             if (result.getMessages() != null && result.getMessages().size() > 0) {

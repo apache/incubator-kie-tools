@@ -13,35 +13,33 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module>
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="org.jboss.errai.common.ErraiCommon"/>
-  <inherits name="org.jboss.errai.common.Logging"/>
-  <inherits name="javax.enterprise.Support"/>
-  <inherits name="com.google.common.collect.Collect"/>
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name="org.jboss.errai.common.ErraiCommon" />
+  <inherits name="org.jboss.errai.common.Logging" />
+  <inherits name="javax.enterprise.Support" />
+  <inherits name="com.google.common.collect.Collect" />
 
-  <entry-point class='org.jboss.errai.ioc.client.Container'/>
+  <entry-point class='org.jboss.errai.ioc.client.Container' />
 
   <generate-with class="org.jboss.errai.ioc.rebind.ioc.bootstrapper.IOCGenerator">
-    <when-type-assignable
-        class="org.jboss.errai.ioc.client.Bootstrapper"/>
+    <when-type-assignable class="org.jboss.errai.ioc.client.Bootstrapper" />
   </generate-with>
 
   <generate-with class="org.jboss.errai.ioc.rebind.ioc.bootstrapper.QualifierEqualityFactoryGenerator">
-    <when-type-assignable class="org.jboss.errai.ioc.client.QualifierEqualityFactory"/>
+    <when-type-assignable class="org.jboss.errai.ioc.client.QualifierEqualityFactory" />
   </generate-with>
 
   <generate-with class="org.jboss.errai.ioc.rebind.ioc.bootstrapper.IOCEnvironmentGenerator">
-    <when-type-assignable class="org.jboss.errai.ioc.client.container.IOCEnvironment"/>
+    <when-type-assignable class="org.jboss.errai.ioc.client.container.IOCEnvironment" />
   </generate-with>
 
   <generate-with class="org.jboss.errai.ioc.rebind.ioc.bootstrapper.FactoryGenerator">
-    <when-type-assignable class="org.jboss.errai.ioc.client.container.Factory"/>
+    <when-type-assignable class="org.jboss.errai.ioc.client.container.Factory" />
   </generate-with>
 
-  <super-source path="compat"/>
-  <source path="client"/>
+  <super-source path="compat" />
+  <source path="client" />
 </module>

@@ -43,7 +43,7 @@ import static org.kie.workbench.common.stunner.core.documentation.model.Document
 @Templated
 public class DMNDocumentationView extends DefaultDiagramDocumentationView {
 
-    static final String DOCUMENTATION_FILENAME = "Documentation";
+    static final String DOCUMENTATION_FILENAME = "Dokumentation";
 
     @DataField("documentation-content")
     private final HTMLDivElement documentationContent;

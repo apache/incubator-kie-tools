@@ -15,12 +15,12 @@
  */
 
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
-import { EmbeddedEditorChannelApiImpl, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
-import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "../../impl/ServerlessWorkflowDiagramEditorChannelApiImpl";
+import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "../../channel/ServerlessWorkflowDiagramEditorChannelApiImpl";
 
 export function useSwfDiagramEditorChannelApi(args: {
   locale: string;
@@ -30,6 +30,7 @@ export function useSwfDiagramEditorChannelApi(args: {
   swfTextEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
 }) {
   // Keep getFileContents in the dependency list to update the stateControl instance
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
   const channelApiImpl = useMemo(
@@ -48,7 +49,10 @@ export function useSwfDiagramEditorChannelApi(args: {
       args.channelApi &&
       channelApiImpl &&
       args.swfTextEditorEnvelopeApi &&
-      new ServerlessWorkflowDiagramEditorChannelApiImpl(channelApiImpl, args.swfTextEditorEnvelopeApi),
+      new ServerlessWorkflowDiagramEditorChannelApiImpl({
+        defaultApiImpl: channelApiImpl,
+        textEditorEnvelopeApi: args.swfTextEditorEnvelopeApi,
+      }),
     [args.channelApi, channelApiImpl, args.swfTextEditorEnvelopeApi]
   );
 

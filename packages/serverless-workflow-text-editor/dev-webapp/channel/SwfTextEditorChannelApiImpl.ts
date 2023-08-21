@@ -124,6 +124,13 @@ export class SwfTextEditorChannelApiImpl implements ServerlessWorkflowTextEditor
     this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_logInServiceRegistries();
   }
 
+  kogitoSwfServiceCatalog_importEventFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.args.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_importEventFromCompletionItem(args);
+  }
+
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
     uri: string;

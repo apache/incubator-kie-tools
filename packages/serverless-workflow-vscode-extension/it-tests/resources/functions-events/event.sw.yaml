@@ -1,0 +1,10 @@
+id: "YAML Events"
+specVersion: "0.8"
+start: "YAML State"
+states:
+  - name: "YAML State"
+    type: inject
+    data: {}
+    end: true
+events:
+  -

@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.client.yaml.mapper.api;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLDeserializationException;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
 
 /**
  * Base class for all the deserializer. It handles null values and exceptions. The rest is delegated

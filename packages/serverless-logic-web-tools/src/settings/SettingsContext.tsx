@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,20 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../cookies";
 import { Octokit } from "@octokit/rest";
-import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
+import * as React from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
+import { getCookie, setCookie } from "../cookies";
+import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { readDevModeEnabledConfigCookie, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
-import { isKubernetesConnectionValid } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "@kie-tools-core/kubernetes-bridge/dist/service/OpenShiftService";
-import { useHistory } from "react-router";
-import { QueryParams } from "../navigation/Routes";
-import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
+import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettings";
 import { readServiceAccountConfigCookie, ServiceAccountSettingsConfig } from "./serviceAccount/ServiceAccountConfig";
 import {
   readServiceRegistryConfigCookie,
   ServiceRegistrySettingsConfig,
 } from "./serviceRegistry/ServiceRegistryConfig";
-import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
-import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 import { useEnv } from "../env/EnvContext";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
@@ -58,27 +49,11 @@ interface GithubUser {
   email: string;
 }
 
-export class ExtendedServicesConfig {
-  constructor(public readonly host: string, public readonly port: string) {}
-
-  public buildUrl(): string {
-    if (this.port.trim().length === 0) {
-      return this.host;
-    }
-    return `${this.host}:${this.port}`;
-  }
-}
-
 export interface SettingsContextType {
-  isOpen: boolean;
-  activeTab: SettingsTabs;
   openshift: {
     status: OpenShiftInstanceStatus;
     config: KubernetesConnection;
     isDevModeEnabled: boolean;
-  };
-  kieSandboxExtendedServices: {
-    config: ExtendedServicesConfig;
   };
   github: {
     token?: string;
@@ -92,22 +67,14 @@ export interface SettingsContextType {
   serviceRegistry: {
     config: ServiceRegistrySettingsConfig;
   };
-  featurePreview: {
-    config: FeaturePreviewSettingsConfig;
-  };
 }
 
 export interface SettingsDispatchContextType {
-  open: (activeTab?: SettingsTabs) => void;
-  close: () => void;
   openshift: {
     service: OpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
     setConfig: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
     setDevModeEnabled: React.Dispatch<React.SetStateAction<boolean>>;
-  };
-  kieSandboxExtendedServices: {
-    setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
   };
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
@@ -120,41 +87,14 @@ export interface SettingsDispatchContextType {
     setConfig: React.Dispatch<React.SetStateAction<ServiceRegistrySettingsConfig>>;
     catalogStore: SwfServiceCatalogStore;
   };
-  featurePreview: {
-    setConfig: React.Dispatch<React.SetStateAction<FeaturePreviewSettingsConfig>>;
-  };
 }
 
+export const SETTINGS_PAGE_SECTION_TITLE = "Settings";
 export const SettingsContext = React.createContext<SettingsContextType>({} as any);
 export const SettingsDispatchContext = React.createContext<SettingsDispatchContextType>({} as any);
 
 export function SettingsContextProvider(props: any) {
-  const queryParams = useQueryParams();
-  const history = useHistory();
   const { env } = useEnv();
-  const [isOpen, setOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(SettingsTabs.GITHUB);
-
-  useEffect(() => {
-    setOpen(queryParams.has(QueryParams.SETTINGS));
-    setActiveTab((queryParams.get(QueryParams.SETTINGS) as SettingsTabs) ?? SettingsTabs.GITHUB);
-  }, [queryParams]);
-
-  const open = useCallback(
-    (activeTab = SettingsTabs.GITHUB) => {
-      history.replace({
-        search: queryParams.with(QueryParams.SETTINGS, activeTab).toString(),
-      });
-    },
-    [history, queryParams]
-  );
-
-  const close = useCallback(() => {
-    history.replace({
-      search: queryParams.without(QueryParams.SETTINGS).toString(),
-    });
-  }, [history, queryParams]);
-
   //github
   const [githubAuthStatus, setGitHubAuthStatus] = useState(AuthStatus.LOADING);
   const [githubOctokit, setGitHubOctokit] = useState<Octokit>(new Octokit());
@@ -213,26 +153,19 @@ export function SettingsContextProvider(props: any) {
     });
   }, [githubAuthService]);
 
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
-
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState(readServiceAccountConfigCookie());
   const [serviceRegistryConfig, setServiceRegistryConfig] = useState(readServiceRegistryConfigCookie());
-  const [featurePreviewConfig, setFeaturePreviewConfig] = useState(readFeaturePreviewConfigCookie());
 
-  const [openshiftStatus, setOpenshiftStatus] = useState(
-    kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
-      ? OpenShiftInstanceStatus.DISCONNECTED
-      : OpenShiftInstanceStatus.UNAVAILABLE
-  );
+  const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
 
   const openshiftService = useMemo(
     () =>
       new OpenShiftService({
         connection: openshiftConfig,
-        proxyUrl: `${kieSandboxExtendedServices.config.buildUrl()}/${"cors-proxy"}`,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
-    [openshiftConfig, kieSandboxExtendedServices.config]
+    [openshiftConfig]
   );
 
   const [isOpenShiftDevModeEnabled, setOpenShiftDevModeEnabled] = useState(readDevModeEnabledConfigCookie());
@@ -242,15 +175,13 @@ export function SettingsContextProvider(props: any) {
       new SwfServiceCatalogStore({
         serviceAccount: serviceAccountConfig,
         serviceRegistry: serviceRegistryConfig,
-        extendedServicesConfig: kieSandboxExtendedServices.config,
+        proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
-    [kieSandboxExtendedServices.config, serviceAccountConfig, serviceRegistryConfig]
+    [serviceAccountConfig, serviceRegistryConfig]
   );
 
   const dispatch = useMemo(() => {
     return {
-      open,
-      close,
       openshift: {
         service: openshiftService,
         setStatus: setOpenshiftStatus,
@@ -261,9 +192,6 @@ export function SettingsContextProvider(props: any) {
         authService: githubAuthService,
         octokit: githubOctokit,
       },
-      kieSandboxExtendedServices: {
-        setConfig: kieSandboxExtendedServices.saveNewConfig,
-      },
       serviceAccount: {
         setConfig: setServiceAccountConfig,
       },
@@ -271,24 +199,11 @@ export function SettingsContextProvider(props: any) {
         setConfig: setServiceRegistryConfig,
         catalogStore: serviceCatalogStore,
       },
-      featurePreview: {
-        setConfig: setFeaturePreviewConfig,
-      },
     };
-  }, [
-    close,
-    githubAuthService,
-    githubOctokit,
-    open,
-    openshiftService,
-    kieSandboxExtendedServices.saveNewConfig,
-    serviceCatalogStore,
-  ]);
+  }, [githubAuthService, githubOctokit, openshiftService, serviceCatalogStore]);
 
   const value = useMemo(() => {
     return {
-      isOpen,
-      activeTab,
       openshift: {
         status: openshiftStatus,
         config: openshiftConfig,
@@ -300,22 +215,14 @@ export function SettingsContextProvider(props: any) {
         user: githubUser,
         scopes: githubScopes,
       },
-      kieSandboxExtendedServices: {
-        config: kieSandboxExtendedServices.config,
-      },
       serviceAccount: {
         config: serviceAccountConfig,
       },
       serviceRegistry: {
         config: serviceRegistryConfig,
       },
-      featurePreview: {
-        config: featurePreviewConfig,
-      },
     };
   }, [
-    isOpen,
-    activeTab,
     openshiftStatus,
     openshiftConfig,
     isOpenShiftDevModeEnabled,
@@ -323,22 +230,13 @@ export function SettingsContextProvider(props: any) {
     githubToken,
     githubUser,
     githubScopes,
-    kieSandboxExtendedServices.config,
     serviceAccountConfig,
     serviceRegistryConfig,
-    featurePreviewConfig,
   ]);
 
   return (
     <SettingsContext.Provider value={value}>
-      <SettingsDispatchContext.Provider value={dispatch}>
-        {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
-        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
-          <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--settings-modal-content"}>
-            <SettingsModalBody />
-          </div>
-        </Modal>
-      </SettingsDispatchContext.Provider>
+      <SettingsDispatchContext.Provider value={dispatch}>{props.children}</SettingsDispatchContext.Provider>
     </SettingsContext.Provider>
   );
 }

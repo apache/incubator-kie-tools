@@ -15,15 +15,16 @@
  */
 
 const IS_HASH_ROUTER = true;
+const SETTINGS_ROUTE = "/settings";
 
 export enum QueryParams {
   SETTINGS = "settings",
   URL = "url",
   BRANCH = "branch",
-  EXPAND = "expand",
   REMOVE_REMOTE = "removeRemote",
   RENAME_WORKSPACE = "renameWorkspace",
   SAMPLE_ID = "sampleId",
+  SAMPLES_CATEGORY = "category",
 }
 
 export enum PathParams {
@@ -110,9 +111,7 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  home: new Route<{
-    queryParams: QueryParams.EXPAND;
-  }>(() => `/`),
+  home: new Route<{}>(() => `/`),
 
   newModel: new Route<{
     pathParams: PathParams.EXTENSION;
@@ -131,12 +130,27 @@ export const routes = {
       `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
   ),
 
+  workspaceWithFiles: new Route<{
+    pathParams: PathParams.WORKSPACE_ID;
+  }>(({ workspaceId }) => `/${workspaceId}/files`),
+
+  recentModels: new Route<{}>(() => `/recent-models`),
+  sampleCatalog: new Route<{}>(() => `/sample-catalog`),
+
+  settings: {
+    home: new Route<{}>(() => SETTINGS_ROUTE),
+    github: new Route<{}>(() => `${SETTINGS_ROUTE}/github`),
+    openshift: new Route<{}>(() => `${SETTINGS_ROUTE}/openshift`),
+    service_account: new Route<{}>(() => `${SETTINGS_ROUTE}/service-account`),
+    service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
+    storage: new Route<{}>(() => `${SETTINGS_ROUTE}/storage`),
+  },
+
   static: {
     sample: new Route<{ pathParams: "type" | "name" }>(({ type, name }) => `samples/${name}/${name}.${type}`),
     images: {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
-      kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
   },

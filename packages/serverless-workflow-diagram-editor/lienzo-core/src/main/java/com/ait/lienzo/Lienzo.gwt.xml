@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN" "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN"
+  "http://gwtproject.org/doctype/2.7.0/gwt-module.dtd">
 <!--
    Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
 
@@ -19,7 +20,7 @@
 	<inherits name='com.google.gwt.user.User' />
 	<inherits name='com.google.gwt.regexp.RegExp' />
 	<inherits name='elemental2.core.Core' />
-	<inherits name="elemental2.dom.Dom"/>
+	<inherits name="elemental2.dom.Dom" />
 
 	<entry-point class='com.ait.lienzo.client.core.config.LienzoGWT2CoreEntryPoint' />
 

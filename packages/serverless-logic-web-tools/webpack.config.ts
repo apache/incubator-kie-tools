@@ -50,12 +50,6 @@ export default async (env: any, argv: any) => {
     dashbuilderViewerImageName,
     dashbuilderViewerImageTag,
   ] = getDashbuilderViewerImageArgs();
-  const [
-    kieSandboxExtendedServices_linuxDownloadUrl,
-    kieSandboxExtendedServices_macOsDownloadUrl,
-    kieSandboxExtendedServices_windowsDownloadUrl,
-    kieSandboxExtendedServices_compatibleVersion,
-  ] = getKieSandboxExtendedServicesArgs();
 
   return [
     merge(common(env), {
@@ -68,7 +62,7 @@ export default async (env: any, argv: any) => {
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
-          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -84,13 +78,13 @@ export default async (env: any, argv: any) => {
       ...merge(common(env), {
         entry: {
           index: "./src/index.tsx",
+          "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",
           "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
           "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
           "serverless-workflow-combined-editor-envelope":
             "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
           "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
           "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
-          "serverless-workflow-mermaid-viewer-envelope": "./src/envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
         },
         plugins: [
           new HtmlWebpackPlugin({
@@ -111,12 +105,7 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
             WEBPACK_REPLACE__devModeImageFullUrl: `${swfDevModeImageRegistry}/${swfDevModeImageAccount}/${swfDevModeImageName}:${swfDevModeImageTag}`,
             WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl:
-              kieSandboxExtendedServices_windowsDownloadUrl,
-            WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-            WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+            WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
             WEBPACK_REPLACE__samplesRepositoryRef: buildEnv.serverlessLogicWebTools.samplesRepositoryRef,
           }),
           new CopyPlugin({
@@ -138,13 +127,10 @@ export default async (env: any, argv: any) => {
                 to: "./serverless-workflow-diagram-editor-envelope.html",
               },
               {
-                from: "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html",
-                to: "./serverless-workflow-mermaid-viewer-envelope.html",
-              },
-              {
                 from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
                 to: "./serverless-workflow-text-editor-envelope.html",
               },
+              { from: "./static/envelope/yard-editor-envelope.html", to: "./yard-editor-envelope.html" },
               { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
               { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
@@ -311,18 +297,4 @@ function getBuildInfo() {
   const buildInfo = buildEnv.serverlessLogicWebTools.buildInfo;
   console.info(`Serverless Logic Web Tools :: Build info: ${buildInfo}`);
   return buildInfo;
-}
-
-function getKieSandboxExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.serverlessLogicWebTools.kieSandboxExtendedServices.compatibleVersion;
-
-  console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Windows download URL: " + windowsDownloadUrl);
-  console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
-
-  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }

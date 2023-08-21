@@ -88,8 +88,8 @@ import { WorkspaceLoadingCard } from "../workspace/components/WorkspaceLoadingCa
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { listDeletedFiles } from "../workspace/components/WorkspaceStatusIndicator";
 import { useEditorsConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEnv } from "../env/hooks/EnvContext";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -98,6 +98,7 @@ export function HomePage() {
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
   const editorsConfig = useEditorsConfig();
+  const { env } = useEnv();
 
   const closeExpandedWorkspace = useCallback(() => {
     history.replace({
@@ -123,8 +124,8 @@ export function HomePage() {
   );
 
   useEffect(() => {
-    document.title = "KIE Sandbox :: Home";
-  }, []);
+    document.title = `${env.KIE_SANDBOX_APP_NAME} :: Home`;
+  }, [env.KIE_SANDBOX_APP_NAME]);
 
   return (
     <OnlineEditorPage>
@@ -220,6 +221,9 @@ export function HomePage() {
                                   workspaceId={workspace.workspaceId}
                                   onSelect={() => expandWorkspace(workspace.workspaceId)}
                                   isSelected={workspace.workspaceId === expandedWorkspaceId}
+                                  onDelete={() =>
+                                    workspace.workspaceId === expandedWorkspaceId && closeExpandedWorkspace()
+                                  }
                                 />
                               </ErrorBoundary>
                             </StackItem>
@@ -288,7 +292,12 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   );
 }
 
-export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
+export function WorkspaceCard(props: {
+  workspaceId: string;
+  isSelected: boolean;
+  onSelect: () => void;
+  onDelete?: () => void;
+}) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const routes = useRoutes();
   const history = useHistory();
@@ -343,6 +352,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
+                      props.onDelete?.();
                       workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
                     }}
                     item={
@@ -389,6 +399,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                   <DeleteDropdownWithConfirmation
                     key={`${workspace.descriptor.workspaceId}-${isHovered}`}
                     onDelete={() => {
+                      props.onDelete?.();
                       workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
                     }}
                     item={

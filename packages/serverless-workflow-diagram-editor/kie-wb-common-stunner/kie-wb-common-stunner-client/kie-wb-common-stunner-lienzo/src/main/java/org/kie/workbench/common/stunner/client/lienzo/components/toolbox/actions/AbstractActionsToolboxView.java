@@ -54,9 +54,9 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     public static final double BUTTON_PADDING = 5;
 
     private final LienzoGlyphRenderers glyphRenderers;
-    private final ToolboxFactory toolboxFactory;
+    final ToolboxFactory toolboxFactory;
     private WiresShapeToolbox toolboxView;
-    private ToolboxTextTooltip tooltip;
+    ToolboxTextTooltip tooltip;
     private WiresCanvas canvas;
 
     public AbstractActionsToolboxView(final LienzoGlyphRenderers glyphRenderers,
@@ -139,7 +139,7 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
     }
 
     @SuppressWarnings("unchecked")
-    private void initButtons(final ActionsToolbox<ActionsToolboxView<?>> toolbox) {
+    void initButtons(final ActionsToolbox<ActionsToolboxView<?>> toolbox) {
         for (ToolboxAction toolboxAction : toolbox) {
             final ButtonItem button = addButton(toolbox.getGlyph(toolboxAction),
                                                 toolbox.getTitle(toolboxAction));
@@ -226,13 +226,13 @@ public abstract class AbstractActionsToolboxView<V extends AbstractActionsToolbo
                 .box();
     }
 
-    private void onMouseEnter() {
+    void onMouseEnter() {
         if (null != canvas) {
             canvas.getView().setCursor(AbstractCanvas.Cursors.POINTER);
         }
     }
 
-    private void onMouseExit() {
+    void onMouseExit() {
         if (null != canvas) {
             canvas.getView().setCursor(AbstractCanvas.Cursors.DEFAULT);
         }

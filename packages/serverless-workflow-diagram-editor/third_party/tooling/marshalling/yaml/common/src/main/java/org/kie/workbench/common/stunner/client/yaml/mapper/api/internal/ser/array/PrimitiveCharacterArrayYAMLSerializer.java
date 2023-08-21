@@ -19,9 +19,8 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.arr
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.AbstractYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.CharacterYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.DefaultYAMLSequenceWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for array of char.
@@ -45,20 +44,19 @@ public class PrimitiveCharacterArrayYAMLSerializer extends BasicArrayYAMLSeriali
   /** {@inheritDoc} */
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, char[] values, YAMLSerializationContext ctx) {
+      YamlMapping writer, String propertyName, char[] values, YAMLSerializationContext ctx) {
     if (!ctx.isWriteEmptyYAMLArrays() && values.length == 0) {
-      writer.nullValue(propertyName);
+      writer.addScalarNode(propertyName, null);
       return;
     }
-    YAMLSequenceWriter yamlSequenceWriter = new DefaultYAMLSequenceWriter();
+    YamlSequence yamlSequence = writer.addSequenceNode(propertyName);
     for (char value : values) {
-      serializer.serialize(yamlSequenceWriter, value, ctx);
+      serializer.serialize(yamlSequence, value, ctx);
     }
-    writer.value(propertyName, yamlSequenceWriter.getWriter());
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, char[] value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, char[] value, YAMLSerializationContext ctx) {
     for (char o : value) {
       serializer.serialize(writer, o, ctx);
     }

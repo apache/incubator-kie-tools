@@ -23,8 +23,6 @@ import { useOpenApi } from "./hooks/useOpenApi";
 import { useRemoteServiceRegistry } from "./hooks/useRemoteServiceRegistry";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { KnativeDeploymentLoaderPipeline } from "./pipelines/KnativeDeploymentLoaderPipeline";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
-import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import {
   KubernetesConnectionStatus,
@@ -36,7 +34,6 @@ const FETCH_OPEN_API_POLLING_TIME = 5000;
 export function OpenShiftContextProvider(props: React.PropsWithChildren<{}>) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const { createDeploymentStrategy } = useDeploymentStrategy();
   const { fetchOpenApiContent } = useOpenApi();
   const { uploadArtifact } = useRemoteServiceRegistry();
@@ -110,11 +107,6 @@ export function OpenShiftContextProvider(props: React.PropsWithChildren<{}>) {
   );
 
   useEffect(() => {
-    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
-      onDisconnect();
-      return;
-    }
-
     if (!isKubernetesConnectionValid(settings.openshift.config)) {
       return;
     }
@@ -133,7 +125,6 @@ export function OpenShiftContextProvider(props: React.PropsWithChildren<{}>) {
   }, [
     deploymentLoaderPipeline,
     isDeploymentsDropdownOpen,
-    kieSandboxExtendedServices.status,
     onDisconnect,
     settings.openshift.config,
     settings.openshift.status,

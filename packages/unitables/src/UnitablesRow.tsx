@@ -21,6 +21,7 @@ import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
 import { AUTO_ROW_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import { DmnAutoFieldProvider } from "@kie-tools/dmn-runner/dist/uniforms/DmnAutoFieldProvider";
+import { unitablesDmnRunnerAutoFieldValue } from "./uniforms/UnitablesDmnRunnerAutoFieldValue";
 
 interface Props {
   formsId: string;
@@ -40,7 +41,7 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
 
     const onSubmit = useCallback(
       (rowInput: Record<string, any>) => {
-        console.log("SUBMITTING ROW: " + rowIndex);
+        console.debug("DMN RUNNER TABLE: submit row: ", rowIndex);
         onSubmitRow(rowInput, rowIndex, {});
       },
       [onSubmitRow, rowIndex]
@@ -85,7 +86,7 @@ export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<
                   <form id={`${AUTO_ROW_ID}-${rowIndex}`} onSubmit={(data) => uniformsContext?.onSubmit(data)} />,
                   document.getElementById(formsId)!
                 )}
-                <DmnAutoFieldProvider>{children}</DmnAutoFieldProvider>
+                <DmnAutoFieldProvider value={unitablesDmnRunnerAutoFieldValue}>{children}</DmnAutoFieldProvider>
               </>
             )}
           </UniformsContext.Consumer>

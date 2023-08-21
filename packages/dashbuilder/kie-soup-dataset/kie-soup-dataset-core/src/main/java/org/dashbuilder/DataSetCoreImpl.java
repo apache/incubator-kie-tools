@@ -19,7 +19,6 @@ import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.DataSetProviderRegistryImpl;
 import org.dashbuilder.dataprovider.StaticDataSetProvider;
 import org.dashbuilder.dataset.ChronometerImpl;
-import org.dashbuilder.dataset.DataSetDefDeployer;
 import org.dashbuilder.dataset.DataSetDefRegistryImpl;
 import org.dashbuilder.dataset.DataSetManager;
 import org.dashbuilder.dataset.DataSetManagerImpl;
@@ -29,7 +28,6 @@ import org.dashbuilder.dataset.UUIDGeneratorImpl;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.engine.Chronometer;
 import org.dashbuilder.dataset.engine.group.IntervalBuilderLocator;
-import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.dataset.uuid.UUIDGenerator;
 import org.dashbuilder.scheduler.Scheduler;
 
@@ -42,14 +40,12 @@ public class DataSetCoreImpl extends DataSetCore {
     private Scheduler scheduler;
     private DataSetDefRegistry dataSetDefRegistry;
     private DataSetProviderRegistry dataSetProviderRegistry;
-    private DataSetDefDeployer dataSetDefDeployer;
     private DataSetManagerImpl dataSetManagerImpl;
     private StaticDataSetProvider staticDataSetProvider;
     private IntervalBuilderLocatorImpl intervalBuilderLocator;
     private IntervalBuilderDynamicDate intervalBuilderDynamicDate;
     private ChronometerImpl chronometerImpl;
     private UUIDGeneratorImpl uuidGeneratorImpl;
-    private DataSetDefJSONMarshaller dataSetDefJSONMarshaller;
 
     // Factory methods
 
@@ -112,15 +108,6 @@ public class DataSetCoreImpl extends DataSetCore {
         return dataSetProviderRegistry;
     }
 
-    public DataSetDefDeployer getDataSetDefDeployer() {
-        if (dataSetDefDeployer == null) {
-            dataSetDefDeployer = new DataSetDefDeployer(
-                    checkNotNull(getDataSetDefJSONMarshaller(), "DataSetDefJSONMarshaller"),
-                    checkNotNull(getDataSetDefRegistry(), DATA_SET_DEF_REGISTRY));
-        }
-        return dataSetDefDeployer;
-    }
-
     public Scheduler getScheduler() {
         if (scheduler == null) {
             scheduler = new Scheduler();
@@ -167,15 +154,6 @@ public class DataSetCoreImpl extends DataSetCore {
         return uuidGeneratorImpl;
     }
 
-    @Override
-    public DataSetDefJSONMarshaller getDataSetDefJSONMarshaller() {
-        if (dataSetDefJSONMarshaller == null) {
-            dataSetDefJSONMarshaller = new DataSetDefJSONMarshaller(
-                    checkNotNull(getDataSetProviderRegistry(), "DataSetProviderRegistry"));
-        }
-        return dataSetDefJSONMarshaller;
-    }
-
     // Setters
 
     public void setDataSetPushEnabled(boolean dataSetPushEnabled) {
@@ -188,10 +166,6 @@ public class DataSetCoreImpl extends DataSetCore {
 
     public void setScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
-    }
-
-    public void setDataSetDefDeployer(DataSetDefDeployer dataSetDefDeployer) {
-        this.dataSetDefDeployer = dataSetDefDeployer;
     }
 
     public void setStaticDataSetProvider(StaticDataSetProvider staticDataSetProvider) {
@@ -210,10 +184,6 @@ public class DataSetCoreImpl extends DataSetCore {
         this.intervalBuilderDynamicDate = intervalBuilderDynamicDate;
     }
 
-    @Override
-    public void setDataSetDefJSONMarshaller(DataSetDefJSONMarshaller dataSetDefJSONMarshaller) {
-        this.dataSetDefJSONMarshaller = dataSetDefJSONMarshaller;
-    }
 }
 
 

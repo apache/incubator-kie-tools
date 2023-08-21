@@ -16,16 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
-import java.lang.annotation.Annotation;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
@@ -33,20 +29,16 @@ import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFac
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.RequestSessionRefreshEvent;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
-import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
-import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandUndoneEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMaximizedEvent;
 import org.kie.workbench.common.stunner.core.client.event.screen.ScreenMinimizedEvent;
 import org.kie.workbench.common.stunner.core.client.session.event.SessionDiagramOpenedEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
-import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -68,7 +60,6 @@ public class SessionEditorPresenter<S extends EditorSession>
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent;
     private final SessionEditorImpl<S> editor;
     private final SessionCardinalityStateHandler cardinalityStateHandler;
-    private final ManagedInstance<EditorToolbar> toolbars;
 
     @Inject
     @SuppressWarnings("unchecked")
@@ -77,7 +68,6 @@ public class SessionEditorPresenter<S extends EditorSession>
                                   final SessionEditorImpl<S> editor,
                                   final SessionCardinalityStateHandler cardinalityStateHandler,
                                   final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
-                                  final @Any ManagedInstance<EditorToolbar> toolbars,
                                   final DefaultPaletteFactory<AbstractCanvasHandler> paletteWidgetFactory,
                                   final NotificationsObserver notificationsObserver,
                                   final Event<SessionFocusedEvent> sessionFocusedEvent,
@@ -95,7 +85,6 @@ public class SessionEditorPresenter<S extends EditorSession>
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.editor = editor;
         this.cardinalityStateHandler = cardinalityStateHandler;
-        this.toolbars = toolbars;
     }
 
     @PostConstruct
@@ -116,10 +105,6 @@ public class SessionEditorPresenter<S extends EditorSession>
 
     void onScreenMinimizedEvent(@Observes ScreenMinimizedEvent event) {
         getPalette().onScreenMinimized(event);
-    }
-
-    void commandExecutedFired(@Observes final CanvasCommandExecutedEvent event) {
-        refreshOnEvent(event);
     }
 
     void commandUndoExecutedFired(@Observes final CanvasCommandUndoneEvent event) {
@@ -144,19 +129,6 @@ public class SessionEditorPresenter<S extends EditorSession>
     public void refresh() {
         super.refresh();
         getSession().ifPresent(SessionEditorPresenter::clearSelection);
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected Toolbar<S> newToolbar(final Annotation qualifier) {
-        return (Toolbar<S>) InstanceUtils.lookup(toolbars,
-                                                 qualifier);
-    }
-
-    @Override
-    protected void destroyToolbarInstace(final Toolbar<S> toolbar) {
-        toolbars.destroy((EditorToolbar) toolbar);
-        toolbars.destroyAll();
     }
 
     @Override

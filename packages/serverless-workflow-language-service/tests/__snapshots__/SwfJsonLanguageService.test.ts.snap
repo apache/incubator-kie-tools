@@ -20790,7 +20790,7 @@ Array [
     "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20850,7 +20850,7 @@ Array [
     "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20887,7 +20887,7 @@ Array [
     "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20947,7 +20947,7 @@ Array [
     "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -20984,7 +20984,7 @@ Array [
     "sortText": "100_Serverless Workflow Example",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -21044,7 +21044,7 @@ Array [
     "sortText": "100_Empty Serverless Workflow",
     "textEdit": Object {
       "newText": "{
-  \\"id\\": \\"\${1:Workflow unique identifier}\\",
+  \\"id\\": \\"\${1:workflow_unique_identifier}\\",
   \\"version\\": \\"\${2:0.1}\\",
   \\"specVersion\\": \\"\${3:0.8}\\",
   \\"name\\": \\"\${4:Workflow name}\\",
@@ -21208,7 +21208,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 },",
       "range": Object {
         "end": Object {
@@ -21240,7 +21242,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 }",
       "range": Object {
         "end": Object {
@@ -21272,7 +21276,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 }",
       "range": Object {
         "end": Object {
@@ -21304,7 +21310,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 },",
       "range": Object {
         "end": Object {
@@ -21336,7 +21344,9 @@ Array [
       "newText": "{
   \\"name\\": \\"\${1:Unique event name}\\",
   \\"source\\": \\"\${2:CloudEvent source}\\",
-  \\"type\\": \\"\${3:CloudEvent type}\\"
+  \\"type\\": \\"\${3:CloudEvent type}\\",
+  \\"kind\\": \\"\${4:Eventdef kind}\\",
+  \\"metadata\\": \\"\${5:Eventdef metdata}\\"
 }",
       "range": Object {
         "end": Object {
@@ -21624,6 +21634,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21715,6 +21726,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21806,6 +21818,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21897,6 +21910,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {
@@ -21988,6 +22002,7 @@ Array [
       "arguments": Array [
         Object {
           "containingService": Object {
+            "events": Array [],
             "functions": Array [
               Object {
                 "arguments": Object {

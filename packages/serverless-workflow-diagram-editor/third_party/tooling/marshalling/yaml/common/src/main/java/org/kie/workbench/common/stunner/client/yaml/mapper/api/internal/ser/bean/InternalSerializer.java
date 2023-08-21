@@ -17,7 +17,7 @@
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.bean;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
 
 /**
  * Interface hiding the actual implementation doing the bean serialization.
@@ -29,9 +29,9 @@ public interface InternalSerializer<T> {
   /**
    * serializeInternally
    *
-   * @param writer a {@link YAMLWriter} object.
+   * @param writer a {@link YamlMapping} object.
    * @param value a T object.
    * @param ctx a {@link YAMLSerializationContext} object.
    */
-  void serializeInternally(YAMLWriter writer, T value, YAMLSerializationContext ctx);
+  void serializeInternally(YamlMapping writer, T value, YAMLSerializationContext ctx);
 }

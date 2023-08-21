@@ -94,6 +94,11 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
             }
 
             @Override
+            public Class<? extends ElementFactory> getElementFactory(Object pojo) {
+                return ElementFactory.class;
+            }
+
+            @Override
             public String getTitle(Object pojo) {
                 return "";
             }

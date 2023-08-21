@@ -35,3 +35,7 @@
 .table-context-menu .pf-c-menu__item {
   color: var(--pf-c-menu__item--Color);
 }
+
+.table-context-menu .pf-c-number-input .pf-c-form-control {
+  text-align: center;
+}

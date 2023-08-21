@@ -18,14 +18,11 @@ import React, { useMemo, useState } from "react";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
-import {
-  DependentFeature,
-  useExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
@@ -34,6 +31,7 @@ import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList"
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
+import { useEnv } from "../../env/hooks/EnvContext";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -41,6 +39,7 @@ export enum OpenShiftSettingsTabMode {
 }
 
 export function ConnectToOpenShiftSection() {
+  const { env } = useEnv();
   const extendedServices = useExtendedServices();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
@@ -48,7 +47,7 @@ export function ConnectToOpenShiftSection() {
   const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<OpenShiftAuthSession>();
   const [status, setStatus] = useState(
-    extendedServices.status === KieSandboxExtendedServicesStatus.RUNNING
+    extendedServices.status === ExtendedServicesStatus.RUNNING
       ? OpenShiftInstanceStatus.DISCONNECTED
       : OpenShiftInstanceStatus.UNAVAILABLE
   );
@@ -58,9 +57,9 @@ export function ConnectToOpenShiftSection() {
     () =>
       new KieSandboxOpenShiftService({
         connection,
-        proxyUrl: extendedServices.config.url.corsProxy,
+        proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
       }),
-    [connection, extendedServices.config]
+    [connection, env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
   const successPrimaryAction = useMemo(() => {
@@ -97,7 +96,7 @@ export function ConnectToOpenShiftSection() {
                   whiteSpace: "break-spaces",
                 }}
               >
-                {`Please setup KIE Sandbox Extended Services to be able to connect to OpenShift.`}
+                {`Please setup Extended Services to be able to connect to OpenShift.`}
               </Title>
               <br />
               <Button

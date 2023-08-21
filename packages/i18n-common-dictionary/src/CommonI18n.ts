@@ -68,6 +68,7 @@ export type CommonDictionary = {
   reset: string;
   run: string;
   save: string;
+  selection: string;
   setup: string;
   start: string;
   token: string;

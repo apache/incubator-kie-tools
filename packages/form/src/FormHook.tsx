@@ -139,6 +139,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
 
       setFormStatus(FormStatus.WITHOUT_ERROR);
     } catch (err) {
+      console.error(err);
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
   }, [setFormInputs, formSchema, formValidator, entryPath, removeRequired]);

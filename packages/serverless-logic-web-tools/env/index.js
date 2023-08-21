@@ -16,7 +16,7 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 const { version } = require("@kie-tools-scripts/build-env/package.json");
-const extendedServicesEnv = require("@kie-tools/extended-services/env");
+const corsProxyEnv = require("@kie-tools/cors-proxy/env");
 
 module.exports = composeEnv(
   [
@@ -44,26 +44,6 @@ module.exports = composeEnv(
         default: undefined,
         description: "Google Tag Manager ID for Analytics",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
-        description: "Download URL for getting KIE Sandbox Extended Services (Linux)",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
-        description: "Download URL for getting KIE Sandbox Extended Services (macOS)",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
-        description: "Download URL for getting KIE Sandbox Extended Services (Windows)",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl: {
-        default: `http://localhost:${extendedServicesEnv.env.extendedServices.port}`,
-        description: "Base URL to access KIE Sandbox Extended Services",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion: {
-        default: version,
-        description: "Compatible version to run KIE Sandbox Extended Services",
-      },
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: {
         default: "latest",
         description:
@@ -82,9 +62,9 @@ module.exports = composeEnv(
         description:
           "Tag for the Serverless Workflow Dev Mode Image that runs a pre-configured Serverless Workflow project in Quarkus Dev Mode",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl: {
-        default: "https://cors.isomorphic-git.org",
-        description: "Git CORS Proxy URL to make the application able to interact with GitHub using `isomorphic-git`",
+      SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl: {
+        default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
+        description: "CORS Proxy URL.",
       },
       SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl: {
         default: "https://localhost:9020/",
@@ -113,18 +93,7 @@ module.exports = composeEnv(
           swfDevModeImage: {
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag),
           },
-          kieSandboxExtendedServices: {
-            url: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesUrl),
-            compatibleVersion: getOrDefault(
-              this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesCompatibleVersion
-            ),
-            downloadUrl: {
-              linux: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlLinux),
-              macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlMacOs),
-              windows: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__kieSandboxExtendedServicesDownloadUrlWindows),
-            },
-          },
-          gitCorsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gitCorsProxyUrl),
+          corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl),
           samplesRepositoryRef: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef),
         },
       };

@@ -220,12 +220,12 @@ public class Tooltip {
             case NORTH:
                 path.setRotationDegrees(270);
                 textLoc.setX(-tpw - (tw / 2))
-                        .setY(-tph - hl);
+                        .setY((-tph - hl) * 2);
                 break;
             case SOUTH:
                 path.setRotationDegrees(90);
                 textLoc.setX(-tpw - (tw / 2))
-                        .setY(hl + th + tph);
+                        .setY(hl + (th / 2));
                 break;
             default:
                 path.setRotationDegrees(0);

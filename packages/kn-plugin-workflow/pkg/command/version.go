@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/cobra"
@@ -52,4 +51,6 @@ func runVersion(version string) {
 
 	fmt.Printf("Default Quarkus version:           %s\n", metadata.QuarkusVersion)
 	fmt.Printf("Default Quarkus platform group Id: %s\n", metadata.QuarkusPlatformGroupId)
+	fmt.Printf("Kogito Version: %s\n", metadata.KogitoVersion)
+	fmt.Printf("DevMode Image: %s\n", metadata.DevModeImage)
 }

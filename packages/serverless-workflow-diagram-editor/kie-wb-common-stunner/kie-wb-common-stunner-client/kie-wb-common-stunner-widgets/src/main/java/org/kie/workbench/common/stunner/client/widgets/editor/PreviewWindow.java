@@ -84,9 +84,9 @@ public class PreviewWindow {
         if (null != previewRoot && previewRoot.isVisible() && !closing) {
             closing = true;
             Animate.animate(previewRoot,
-                            Animation.FADE_OUT,
-                            1,
-                            DURATION);
+                    Animation.FADE_OUT,
+                    1,
+                    DURATION);
             final Timer hideTimer = new Timer() {
                 @Override
                 public void run() {
@@ -121,22 +121,22 @@ public class PreviewWindow {
             }
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
-                               new SessionViewer.SessionViewerCallback<Diagram>() {
-                                   @Override
-                                   public void afterCanvasInitialized() {
-                                       addWidget();
-                                       translate(x, y, width, height);
-                                       Animate.animate(previewRoot,
-                                                       Animation.FADE_IN,
-                                                       1,
-                                                       DURATION);
-                                   }
+                    new SessionViewer.SessionViewerCallback<Diagram>() {
+                        @Override
+                        public void afterCanvasInitialized() {
+                            addWidget();
+                            translate(x, y, width, height);
+                            Animate.animate(previewRoot,
+                                    Animation.FADE_IN,
+                                    1,
+                                    DURATION);
+                        }
 
-                                   @Override
-                                   public void onError(final ClientRuntimeError error) {
-                                       showError(error);
-                                   }
-                               });
+                        @Override
+                        public void onError(final ClientRuntimeError error) {
+                            showError(error);
+                        }
+                    });
         }
     }
 
@@ -186,9 +186,9 @@ public class PreviewWindow {
                 case SHOW:
                 case TOGGLE:
                     show(event.getX(),
-                         event.getY(),
-                         event.getWidth(),
-                         event.getHeight());
+                            event.getY(),
+                            event.getWidth(),
+                            event.getHeight());
                     break;
             }
         }

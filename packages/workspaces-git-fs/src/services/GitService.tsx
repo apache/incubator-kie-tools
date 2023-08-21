@@ -18,6 +18,7 @@ import git, { FetchResult, STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export interface CloneArgs {
   fs: KieSandboxWorkspacesFs;
@@ -32,6 +33,7 @@ export interface CloneArgs {
     username: string;
     password: string;
   };
+  insecurelyDisableTlsCertificateValidation?: boolean;
 }
 
 export interface CommitArgs {
@@ -56,6 +58,7 @@ export interface PushArgs {
     username: string;
     password: string;
   };
+  insecurelyDisableTlsCertificateValidation?: boolean;
 }
 
 export interface RemoteRefArgs {
@@ -66,6 +69,7 @@ export interface RemoteRefArgs {
     username: string;
     password: string;
   };
+  insecurelyDisableTlsCertificateValidation?: boolean;
 }
 
 export enum FileModificationStatus {
@@ -80,16 +84,26 @@ export type UnstagedModifiedFilesStatusEntryType = {
 export class GitService {
   public constructor(private readonly corsProxy: Promise<string>) {}
 
+  private getRequestHeaders(args: { insecurelyDisableTlsCertificateValidation?: boolean }) {
+    return {
+      [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+        args.insecurelyDisableTlsCertificateValidation
+      ).toString(),
+    };
+  }
+
   public async listServerRefs(args: {
     url: string;
     authInfo?: {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }) {
     return git.listServerRefs({
       http,
       corsProxy: await this.corsProxy,
+      headers: this.getRequestHeaders(args),
       onAuth: () => args.authInfo,
       url: args.url,
       symrefs: true,
@@ -103,6 +117,7 @@ export class GitService {
       fs: args.fs,
       http: http,
       corsProxy: await this.corsProxy,
+      headers: this.getRequestHeaders(args),
       dir: args.dir,
       url: args.repositoryUrl.href,
       singleBranch: true,
@@ -150,11 +165,13 @@ export class GitService {
     dir: string;
     remote: string;
     ref: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<FetchResult> {
     return await git.fetch({
       fs: args.fs,
       http: http,
       corsProxy: await this.corsProxy,
+      headers: this.getRequestHeaders(args),
       dir: args.dir,
       remote: args.remote,
       ref: args.ref,
@@ -226,11 +243,13 @@ export class GitService {
       username: string;
       password: string;
     };
+    insecurelyDisableTlsCertificateValidation?: boolean;
   }) {
     await git.pull({
       fs: args.fs,
       http: http,
       corsProxy: await this.corsProxy,
+      headers: this.getRequestHeaders(args),
       dir: args.dir,
       ref: args.ref,
       singleBranch: true,
@@ -259,6 +278,7 @@ export class GitService {
       http: http,
       url,
       corsProxy: await this.corsProxy,
+      headers: this.getRequestHeaders(args),
       onAuth: () => args.authInfo,
     });
 
@@ -283,6 +303,7 @@ export class GitService {
       dir: args.dir,
       remoteRef: args.remoteRef,
       authInfo: args.authInfo,
+      insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
     });
 
     if (serverRemoteRef?.oid && head === serverRemoteRef.oid) return;
@@ -291,6 +312,7 @@ export class GitService {
       fs: args.fs,
       http: http,
       corsProxy: await this.corsProxy,
+      headers: this.getRequestHeaders(args),
       dir: args.dir,
       ref: args.ref,
       remoteRef: args.remoteRef,

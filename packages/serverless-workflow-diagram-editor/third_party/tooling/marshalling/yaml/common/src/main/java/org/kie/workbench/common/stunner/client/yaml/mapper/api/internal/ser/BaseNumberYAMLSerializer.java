@@ -20,8 +20,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Base implementation of {@link AbstractYAMLSerializer} for {@link Number}.
@@ -34,18 +34,18 @@ public abstract class BaseNumberYAMLSerializer<N extends Number> implements YAML
   /** {@inheritDoc} */
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, N value, YAMLSerializationContext ctx) {
-    writer.value(propertyName, String.valueOf(value));
+      YamlMapping writer, String propertyName, N value, YAMLSerializationContext ctx) {
+    writer.addScalarNode(propertyName, value);
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, N value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, N value, YAMLSerializationContext ctx) {
     if (null == value) {
       if (ctx.isSerializeNulls()) {
-        writer.value("~");
+        writer.addScalarNode("~");
       }
     } else {
-      writer.value(value.toString());
+      writer.addScalarNode(value);
     }
   }
 
@@ -74,9 +74,9 @@ public abstract class BaseNumberYAMLSerializer<N extends Number> implements YAML
 
     @Override
     public void serialize(
-        YAMLWriter writer, String propertyName, Double value, YAMLSerializationContext ctx) {
+        YamlMapping writer, String propertyName, Double value, YAMLSerializationContext ctx) {
       // writer has a special method to write double, let's use instead of default Number method.
-      writer.value(propertyName, String.valueOf(value));
+      writer.addScalarNode(propertyName, value);
     }
   }
 
@@ -90,6 +90,17 @@ public abstract class BaseNumberYAMLSerializer<N extends Number> implements YAML
   public static final class IntegerYAMLSerializer extends BaseNumberYAMLSerializer<Integer> {
 
     public static final IntegerYAMLSerializer INSTANCE = new IntegerYAMLSerializer();
+
+    @Override
+    public void serialize(YamlSequence writer, Integer value, YAMLSerializationContext ctx) {
+      if (null == value) {
+        if (ctx.isSerializeNulls()) {
+          writer.addScalarNode("~");
+        }
+      } else {
+        writer.addScalarNode(value);
+      }
+    }
   }
 
   /** Default implementation of {@link BaseNumberYAMLSerializer} for {@link Long} */

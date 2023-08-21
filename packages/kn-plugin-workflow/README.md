@@ -1,6 +1,6 @@
 # kn-plugin-workflow
 
-`kn-plugin-workflow` is a plugin of the Knative Client, to enable users to quickly set up a local Kogito Serverless Workflow project from the command line.
+`kn-plugin-workflow` is a plugin of the Knative Client, to enable users to quickly set up a local SonataFlow project from the command line.
 
 [Read the documentation](https://kiegroup.github.io/kogito-docs/serverlessworkflow/main/tooling/kn-plugin-workflow-overview.html)
 
@@ -12,7 +12,12 @@ All the commands in this section should be performed in the monorepo root.
 
 - Node `>= 18.14.0` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
-- Go `1.19` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.20.7` _(To install, follow these instructions: https://go.dev/doc/install)_
+
+#### Prerequisites for running integration tests
+
+- docker _(To install, follow these instructions: https://docs.docker.com/engine/install)_
+- podman _(To install, follow these instructions: https://podman.io/docs/installation)_
 
 ### Installing and linking dependencies
 
@@ -31,3 +36,10 @@ It has two different strategies to build the `kn-plugin-workflow`:
 To build the `kn-plugin-workflow` run the following command:
 
 - `pnpm -r -F "@kie-tools/kn-plugin-workflow..." <build-strategy>`
+
+### Integration Tests
+
+To build the `kn-plugin-workflow` and run integration tests, use the following commands:
+
+- `export KIE_TOOLS_BUILD__runIntegrationTests=true`
+- `pnpm -r -F "@kie-tools/kn-plugin-workflow..." build:prod`

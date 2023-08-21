@@ -155,6 +155,6 @@ public class YearsMonthsValueConverter {
     }
 
     String removePrefixAndSuffix(final String dmnString) {
-        return DurationHelper.getFunctionParameter(dmnString).substring(1);
+        return StringUtils.isEmpty(dmnString) ? "" : DurationHelper.getFunctionParameter(dmnString).substring(1);
     }
 }

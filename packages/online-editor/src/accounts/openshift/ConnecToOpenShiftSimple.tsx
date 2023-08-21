@@ -24,11 +24,12 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
-import { useExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
+import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
@@ -38,6 +39,7 @@ import {
   KubernetesConnectionStatus,
   isKubernetesConnectionValid,
 } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -116,14 +118,21 @@ export function ConnecToOpenShiftSimple(props: {
     [props]
   );
 
+  const onInsecurelyDisableTlsCertificateValidationChange = useCallback(
+    (checked: boolean) => {
+      props.setConnection({ ...props.connection, insecurelyDisableTlsCertificateValidation: checked });
+    },
+    [props]
+  );
+
   return (
     <>
-      {extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+      {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
         <>
           <FormAlert>
             <Alert
               variant="danger"
-              title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
+              title={"Connect to Extended Services before configuring your OpenShift instance"}
               aria-live="polite"
               isInline
             />
@@ -167,7 +176,7 @@ export function ConnecToOpenShiftSimple(props: {
         key="use-wizard"
         className="pf-u-p-0"
         variant="link"
-        isDisabled={extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
+        isDisabled={extendedServices.status !== ExtendedServicesStatus.RUNNING}
         onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
         data-testid="use-wizard-button"
         isLoading={isConnecting}
@@ -301,6 +310,20 @@ export function ConnecToOpenShiftSimple(props: {
               </Button>
             </InputGroupText>
           </InputGroup>
+        </FormGroup>
+        <FormGroup fieldId="disable-tls-validation">
+          <Checkbox
+            id="disable-tls-validation"
+            name="disable-tls-validation"
+            label={i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidation}
+            description={
+              <I18nHtml>{i18n.devDeployments.configModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+            }
+            aria-label="Disable TLS Certificate Validation"
+            tabIndex={4}
+            isChecked={props.connection.insecurelyDisableTlsCertificateValidation}
+            onChange={onInsecurelyDisableTlsCertificateValidationChange}
+          />
         </FormGroup>
         <ActionGroup>
           <Button

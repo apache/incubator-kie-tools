@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser;
 
-import com.amihaiemil.eoyaml.YamlMapping;
-import com.amihaiemil.eoyaml.YamlNode;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
 
 /**
  * Default {@link YAMLDeserializer} implementation for {@link java.lang.Enum}.
@@ -58,7 +58,7 @@ public class EnumYAMLDeserializer<E extends Enum<E>> implements YAMLDeserializer
   /** {@inheritDoc} */
   @Override
   public E deserialize(YamlMapping yaml, String key, YAMLDeserializationContext ctx) {
-    return deserialize(yaml.value(key), ctx);
+    return deserialize(yaml.getNode(key), ctx);
   }
 
   @Override

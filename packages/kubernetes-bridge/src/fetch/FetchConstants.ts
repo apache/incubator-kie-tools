@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
+
 export enum ContentTypes {
   APPLICATION_JSON = "application/json",
   APPLICATION_YAML = "application/yaml",
@@ -32,5 +34,5 @@ export const HeaderKeys = {
   AUTHORIZATION: "Authorization",
   ACCEPT: "Accept",
   CONTENT_TYPE: "Content-Type",
-  TARGET_URL: "Target-Url",
+  ...CorsProxyHeaderKeys,
 };

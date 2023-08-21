@@ -122,7 +122,8 @@ export enum BeeTableSelectionPosition {
   Right = "right",
 }
 
-const CLIPBOARD_ROW_SEPARATOR = "\n";
+const TEXT_TO_CLIPBOARD_ROW_SEPARATOR = "\n";
+const CLIPBOARD_TO_TEXT_ROW_SEPARATOR = /\r?\n/;
 const CLIPBOARD_COLUMN_SEPARATOR = "\t";
 
 const NEUTRAL_SELECTION = {
@@ -261,7 +262,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
     }
 
     const clipboardMatrix = clipboardValue
-      .split(CLIPBOARD_ROW_SEPARATOR)
+      .split(CLIPBOARD_TO_TEXT_ROW_SEPARATOR)
       .map((r) => r.split(CLIPBOARD_COLUMN_SEPARATOR));
 
     const { startRow, endRow, startColumn, endColumn } = getSelectionIterationBoundaries(selectionRef.current);
@@ -588,7 +589,6 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         for (let r = startRow; r <= endRow; r++) {
           clipboardMatrix[r - startRow] ??= [];
           for (let c = startColumn; c <= endColumn; c++) {
-            clipboardMatrix[r - startRow] ??= [];
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
               ?.flatMap((ref) => (ref.getValue ? [ref.getValue()] : []))
               .join(""); // FIXME: What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
@@ -597,7 +597,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
 
         const clipboardValue = clipboardMatrix
           .map((r) => r.join(CLIPBOARD_COLUMN_SEPARATOR))
-          .join(CLIPBOARD_ROW_SEPARATOR);
+          .join(TEXT_TO_CLIPBOARD_ROW_SEPARATOR);
         navigator.clipboard.writeText(clipboardValue);
       },
       cut: () => {
@@ -611,11 +611,11 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
         for (let r = startRow; r <= endRow; r++) {
           clipboardMatrix[r - startRow] ??= [];
           for (let c = startColumn; c <= endColumn; c++) {
-            clipboardMatrix[r - startRow] ??= [];
             clipboardMatrix[r - startRow][c - startColumn] = [...(refs.current?.get(r)?.get(c) ?? [])]
               ?.flatMap((ref) => {
+                const cellValue = ref.getValue ? [ref.getValue()] : [];
                 ref.setValue?.(CELL_EMPTY_VALUE);
-                return ref.getValue ? [ref.getValue()] : [];
+                return cellValue;
               })
               .join(""); // What to do? Only one ref should be yielding the content. See https://github.com/kiegroup/kie-issues/issues/170
           }
@@ -623,7 +623,7 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
 
         const clipboardValue = clipboardMatrix
           .map((row) => row.join(CLIPBOARD_COLUMN_SEPARATOR))
-          .join(CLIPBOARD_ROW_SEPARATOR);
+          .join(TEXT_TO_CLIPBOARD_ROW_SEPARATOR);
 
         navigator.clipboard.writeText(clipboardValue);
       },
@@ -689,9 +689,13 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
               ? newSelectionEndAction(prev.selectionEnd)
               : newSelectionEndAction;
 
+          // do not change selection if currently a cell is being edited
+          if (prev.active?.isEditing) {
+            return prev;
+          }
           // Selecting a header cell from another header cell
           // Do not allow selecting multi-line header cells
-          if (
+          else if (
             (prev.selectionEnd?.rowIndex ?? 0) < 0 &&
             (newSelectionEnd?.rowIndex ?? 0) < 0 &&
             prev.selectionEnd?.rowIndex !== newSelectionEnd?.rowIndex
@@ -909,7 +913,7 @@ export function useBeeTableSelectableCellRef(
 
   const [status, setStatus] = useState<BeeTableCellStatus>(NEUTRAL_CELL_STATUS);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const ref = registerSelectableCellRef?.(rowIndex, columnIndex, {
       setStatus,
       setValue,

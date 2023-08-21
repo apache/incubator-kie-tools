@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,9 +14,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
   <parent>
     <artifactId>kie-wb-common-dmn</artifactId>
     <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -31,7 +33,8 @@
 
   <properties>
     <version.jaxb2-namespace-prefix>1.3</version.jaxb2-namespace-prefix>
-    <js.destination>${project.basedir}/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js</js.destination>
+    <js.destination
+    >${project.basedir}/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js</js.destination>
   </properties>
 
   <dependencyManagement>
@@ -169,11 +172,20 @@
             <configuration>
               <failOnError>false</failOnError>
               <target>
-                <copy file="${project.build.directory}/generated-sources/xjc/DC.js" tofile="${js.destination}/DC.js"/>
-                <copy file="${project.build.directory}/generated-sources/xjc/DI.js" tofile="${js.destination}/DI.js"/>
-                <copy file="${project.build.directory}/generated-sources/xjc/DMNDI12.js" tofile="${js.destination}/DMNDI12.js"/>
-                <copy file="${project.build.directory}/generated-sources/xjc/DMN12.js" tofile="${js.destination}/DMN12.js"/>
-                <copy file="${project.build.directory}/generated-sources/xjc/KIE.js" tofile="${js.destination}/KIE.js"/>
+                <copy file="${project.build.directory}/generated-sources/xjc/DC.js" tofile="${js.destination}/DC.js" />
+                <copy file="${project.build.directory}/generated-sources/xjc/DI.js" tofile="${js.destination}/DI.js" />
+                <copy
+                  file="${project.build.directory}/generated-sources/xjc/DMNDI12.js"
+                  tofile="${js.destination}/DMNDI12.js"
+                />
+                <copy
+                  file="${project.build.directory}/generated-sources/xjc/DMN12.js"
+                  tofile="${js.destination}/DMN12.js"
+                />
+                <copy
+                  file="${project.build.directory}/generated-sources/xjc/KIE.js"
+                  tofile="${js.destination}/KIE.js"
+                />
               </target>
             </configuration>
             <goals>

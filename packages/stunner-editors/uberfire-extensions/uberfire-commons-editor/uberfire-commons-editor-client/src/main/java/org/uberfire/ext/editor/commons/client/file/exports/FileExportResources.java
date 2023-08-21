@@ -32,7 +32,7 @@ public interface FileExportResources extends ClientBundle {
     TextResource fileSaver();
 
     // The jsPDF js.
-    @Source("js/jspdf.min.js")
+    @Source("js/jspdf.umd.min.js")
     TextResource jsPdf();
 
     @Source("js/canvas2svg.js")

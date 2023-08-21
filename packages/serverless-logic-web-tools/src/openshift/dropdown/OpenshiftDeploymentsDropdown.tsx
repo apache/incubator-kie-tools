@@ -26,7 +26,6 @@ import { useCallback, useMemo, useEffect, useState } from "react";
 import { ResponsiveDropdown } from "../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { useOpenShift } from "../OpenShiftContext";
 import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownItem";
 import { OpenShiftInstanceStatus } from "../OpenShiftInstanceStatus";
@@ -39,6 +38,8 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { routes } from "../../navigation/Routes";
+import { useHistory } from "react-router";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 20;
 
@@ -51,6 +52,7 @@ export function OpenshiftDeploymentsDropdown() {
   const [refreshCountdownInSeconds, setRefreshCountdownInSeconds] = useState(
     REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS
   );
+  const history = useHistory();
 
   const isConnected = useMemo(
     () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
@@ -58,8 +60,8 @@ export function OpenshiftDeploymentsDropdown() {
   );
 
   const openOpenShiftSettings = useCallback(() => {
-    settingsDispatch.open(SettingsTabs.OPENSHIFT);
-  }, [settingsDispatch]);
+    history.push(routes.settings.openshift.path({}));
+  }, [history]);
 
   const [deployments, refresh] = useLivePromiseState<WebToolsOpenShiftDeployedModel[]>(
     useMemo(() => {
@@ -189,6 +191,13 @@ export function OpenshiftDeploymentsDropdown() {
     }
   }, [deployments.data, deployments.status, refresh]);
 
+  const onDeploymensDropdownToggle = useCallback(() => {
+    if (!isConnected) {
+      history.push(routes.settings.openshift.path({}));
+    }
+    openshift.setDeploymentsDropdownOpen((dropdownOpen) => isConnected && !dropdownOpen);
+  }, [history, isConnected, openshift]);
+
   return (
     <>
       <Tooltip
@@ -204,7 +213,7 @@ export function OpenshiftDeploymentsDropdown() {
           toggle={
             <ResponsiveDropdownToggle
               toggleIndicator={null}
-              onToggle={() => openshift.setDeploymentsDropdownOpen((dropdownOpen) => isConnected && !dropdownOpen)}
+              onToggle={onDeploymensDropdownToggle}
               className={"kie-tools--masthead-hoverable-dark"}
             >
               <OpenshiftIcon color={!isConnected ? "gray" : undefined} />

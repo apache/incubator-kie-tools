@@ -16,9 +16,6 @@
 
 package org.dashbuilder.client.navigation.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -34,7 +31,6 @@ import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 public class ScreenLayoutDragComponent implements LayoutDragComponent {
 
     public static final String SCREEN_NAME_PARAMETER = "Screen Name";
-    protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
     PerspectivePluginManager perspectivePluginManager;
 
     @Inject

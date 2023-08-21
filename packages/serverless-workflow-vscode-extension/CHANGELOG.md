@@ -1,3 +1,21 @@
+# 0.31.0 (alpha)
+
+- [KOGITO-7733](https://issues.redhat.com/browse/KOGITO-7733) - SWF Editor - Enable & customize toolbox
+- [KOGITO-9397](https://issues.redhat.com/browse/KOGITO-9397) - Remove mermaid viewer for serverless workflow
+- [KOGITO-9583](https://issues.redhat.com/browse/KOGITO-9583) - SWF diagram editor is not opened when opening workflow while another is open
+- [KOGITO-9504](https://issues.redhat.com/browse/KOGITO-9504) - SWF Editor - In edit mode, Empty diagram page is shown if properties are edited
+
+# 0.30.0 (alpha)
+
+- [KOGITO-9100](https://issues.redhat.com/browse/KOGITO-9100) - [SWF Editor] Add AsyncAPI autocomplete support for events array
+- [KOGITO-9222](https://issues.redhat.com/browse/KOGITO-9222) - Workflow yaml file takes too much time to load
+
+# 0.29.0 (alpha)
+
+- [KOGITO-8986](https://issues.redhat.com/browse/KOGITO-8986) - SWF Viewer - missing icon for parameters for Switch state
+- [KOGITO-8288](https://issues.redhat.com/browse/KOGITO-8288) - SWF Editor - Issues on state selection & tooltip overlapping toolbox
+- [KOGITO-8988](https://issues.redhat.com/browse/KOGITO-8988) - SWF Viewer - add icons for ForEch state
+
 # 0.28.2 (alpha)
 
 - [KOGITO-9108](https://issues.redhat.com/browse/KOGITO-9108) - Rename the new Serverless Workflow VS Code extension to `swf-vscode-extension`

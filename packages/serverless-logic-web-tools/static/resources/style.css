@@ -253,21 +253,6 @@
   max-height: calc(100vh - 171px);
 }
 
-.kogito--editor__kie-sandbox-extended-services-modal-footer {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-footer-alert {
-  width: 100%;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-footer-alert-success {
-  display: flex;
-  justify-content: space-between;
-}
-
 @keyframes flickerAnimation {
   0% {
     opacity: 1;
@@ -295,63 +280,6 @@
 
 .static-opacity {
   animation: staticAnimation 10s infinite;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-initial {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-left: 20px;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-initial-center {
-  margin: 0 auto;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-initial img {
-  border: 1px solid #eee;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-initial-content {
-  display: flex;
-  flex-direction: row;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-initial-title {
-  margin: 20px 20px 0px;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-initial-margin {
-  margin: 10px;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-title {
-  margin: 20px;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-main-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-text-align {
-  text-align: center;
-}
-
-.kogito--editor__kie-sandbox-extended-services-modal-use-margin {
-  margin: 10px;
 }
 
 .kogito--editor__notifications-panel-button {
@@ -432,16 +360,12 @@
   }
 }
 
-.kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated {
+.kogito--editor__not-chromium-icon {
   color: var(--pf-global--warning-color--100);
 }
 
-.kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated:focus {
+.kogito--editor__not-chromium-icon:focus {
   outline: none;
-}
-
-.kogito--editor__kie-sandbox-extended-services-dropdown-icon-connected {
-  color: var(--pf-global--palette--green-300);
 }
 
 .kogito--editor__light-tooltip {
@@ -549,6 +473,9 @@ section.kie-tools--settings-tab {
 #editor-page-masthead-files-dropdown-toggle {
   padding-left: 0;
 }
+.kogito-tools-common--brand {
+  height: 28.6px;
+}
 
 .pf-c-expandable-section.plain .pf-c-expandable-section__toggle {
   color: black;
@@ -593,4 +520,28 @@ section.kie-tools--settings-tab {
 
 .pf-c-menu__item-description {
   word-break: normal !important;
+}
+.brand-name {
+  color: #fff;
+  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
+  font-weight: var(--pf-global--FontWeight--semi-bold);
+}
+.chr-c-app-title {
+  color: #fff;
+  padding: var(--pf-global--spacer--md) var(--pf-global--spacer--sm) var(--pf-global--spacer--md)
+    var(--pf-global--spacer--lg);
+  width: 100%;
+  border-bottom: var(--pf-global--spacer--xs) solid var(--pf-global--Color--300);
+  font-weight: var(--pf-global--FontWeight--semi-bold);
+  white-space: normal;
+  text-align: left;
+  font-size: 17px;
+}
+
+#page-container {
+  height: 100%;
+}
+
+#page-container .pf-c-backdrop {
+  position: absolute !important;
 }

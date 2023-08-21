@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.AbstractYAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser.YAMLSerializationContext;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Base implementation of {@link AbstractYAMLSerializer} for beans.
@@ -51,7 +51,7 @@ public abstract class AbstractBeanYAMLSerializer<T> extends AbstractYAMLSerializ
 
   /** {@inheritDoc} */
   @Override
-  public void doSerialize(YAMLWriter writer, T value, YAMLSerializationContext ctx) {
+  public void doSerialize(YamlMapping writer, T value, YAMLSerializationContext ctx) {
     serializeInternally(writer, value, ctx);
   }
 
@@ -63,7 +63,7 @@ public abstract class AbstractBeanYAMLSerializer<T> extends AbstractYAMLSerializ
   public abstract Class getSerializedType();
 
   /** {@inheritDoc} */
-  public void serializeInternally(YAMLWriter writer, T value, YAMLSerializationContext ctx) {
+  public void serializeInternally(YamlMapping writer, T value, YAMLSerializationContext ctx) {
     serializeObject(writer, value, ctx);
   }
 
@@ -74,7 +74,7 @@ public abstract class AbstractBeanYAMLSerializer<T> extends AbstractYAMLSerializ
    * @param value bean to serialize
    * @param ctx context of the serialization process
    */
-  private void serializeObject(YAMLWriter writer, T value, YAMLSerializationContext ctx) {
+  private void serializeObject(YamlMapping writer, T value, YAMLSerializationContext ctx) {
     serializeObject(writer, value, ctx, getSerializeObjectName());
   }
 
@@ -87,7 +87,7 @@ public abstract class AbstractBeanYAMLSerializer<T> extends AbstractYAMLSerializ
    * @param typeName in case of type info as property, the name of the property
    */
   protected void serializeObject(
-      YAMLWriter writer, T value, YAMLSerializationContext ctx, String typeName) {
+      YamlMapping writer, T value, YAMLSerializationContext ctx, String typeName) {
     if (value == null && !ctx.isSerializeNulls()) {
       return;
     }
@@ -99,7 +99,7 @@ public abstract class AbstractBeanYAMLSerializer<T> extends AbstractYAMLSerializ
     return getSerializedType().getSimpleName();
   }
 
-  private void serializeProperties(YAMLWriter writer, T value, YAMLSerializationContext ctx) {
+  private void serializeProperties(YamlMapping writer, T value, YAMLSerializationContext ctx) {
 
     for (BeanPropertySerializer<T, ?> propertySerializer : serializers) {
       if (propertySerializer.getValue(value, ctx) == null && !ctx.isSerializeNulls()) {
@@ -114,9 +114,8 @@ public abstract class AbstractBeanYAMLSerializer<T> extends AbstractYAMLSerializ
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, T value, YAMLSerializationContext ctx) {
-    YAMLWriter objWriter = ctx.newYAMLWriter();
+  public void serialize(YamlSequence writer, T value, YAMLSerializationContext ctx) {
+    YamlMapping objWriter = writer.addMappingNode();
     serializeObject(objWriter, value, ctx);
-    writer.value(objWriter.getWriter().build());
   }
 }

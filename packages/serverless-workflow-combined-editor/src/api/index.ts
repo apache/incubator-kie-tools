@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
+export * from "./ServerlessWorkflowCombinedEditorApi";
 export * from "./ServerlessWorkflowCombinedEditorChannelApi";
-export * from "./SwfFeatureToggleChannelApi";
+export * from "./ServerlessWorkflowCombinedEditorEnvelopeApi";
 export * from "./SwfPreviewOptionsChannelApi";
 export * from "./SwfStaticEnvelopeContentProviderChannelApi";

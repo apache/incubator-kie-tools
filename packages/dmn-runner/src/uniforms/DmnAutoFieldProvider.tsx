@@ -16,19 +16,15 @@
 
 import * as React from "react";
 import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
-import { DmnFeelContextField } from "./DmnFeelContextField";
-import { X_DMN_TYPE } from "@kie-tools/extended-services-api";
+import { ComponentDetector } from "uniforms/esm";
 
-export function DmnAutoFieldProvider(props: React.PropsWithChildren<{}>) {
+interface DmnAutoFieldValue {
+  value: ComponentDetector;
+}
+
+export function DmnAutoFieldProvider(props: React.PropsWithChildren<DmnAutoFieldValue>) {
   return (
-    <AutoField.componentDetectorContext.Provider
-      value={(props, uniforms) => {
-        if (props.field?.["x-dmn-type"] === X_DMN_TYPE.CONTEXT) {
-          return DmnFeelContextField;
-        }
-        return AutoField.defaultComponentDetector(props, uniforms);
-      }}
-    >
+    <AutoField.componentDetectorContext.Provider value={props.value}>
       {props.children ? props.children : <AutoFields />}
     </AutoField.componentDetectorContext.Provider>
   );

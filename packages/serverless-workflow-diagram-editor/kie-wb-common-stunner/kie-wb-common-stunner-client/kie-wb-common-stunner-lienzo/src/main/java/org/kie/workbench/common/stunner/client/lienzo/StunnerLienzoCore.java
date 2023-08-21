@@ -21,8 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
+import com.google.gwt.core.client.ScriptInjector;
+import com.google.gwt.dom.client.StyleInjector;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.patternfly.PatternFlyBundle;
 
 @ApplicationScoped
 @EntryPoint
@@ -39,6 +42,44 @@ public class StunnerLienzoCore {
      */
     @PostConstruct
     public void init() {
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.bootstrapcss().getText());
+
+        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.jquery().getText())
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .inject();
+
+        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.bootstrapjs().getText())
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .inject();
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.bootstrapselect().getText());
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.animate().getText());
+
+        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.gwtbootstrap3().getText())
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .inject();
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.fontawesome().getText());
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.patternflycss().getText());
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.patternflyadditions().getText());
+
+        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.patternflyjs().getText())
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .inject();
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.uberfirepatternfly().getText());
+
         LienzoCore.get().setDefaultImageSelectionMode(ImageSelectionMode.SELECT_BOUNDS);
     }
 }

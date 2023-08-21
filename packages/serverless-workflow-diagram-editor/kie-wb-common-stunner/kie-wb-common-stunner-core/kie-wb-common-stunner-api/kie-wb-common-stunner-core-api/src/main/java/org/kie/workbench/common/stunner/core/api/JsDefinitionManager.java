@@ -13,6 +13,7 @@ import org.kie.workbench.common.stunner.core.definition.jsadapter.JsDefinitionSe
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsPropertyAdapter;
 import org.kie.workbench.common.stunner.core.definition.jsadapter.JsRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.i18n.StunnerTranslationService;
 import org.kie.workbench.common.stunner.core.registry.DynamicRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
@@ -81,6 +82,10 @@ public class JsDefinitionManager {
         ruleAdapter.setRuleSet(ruleSet);
     }
 
+    public void initializeElementFactory(String category, Class<? extends ElementFactory> factory) {
+        definitionAdapter.setElementFactory(category, factory);
+    }
+
     public DefinitionId getId(Object pojo) {
         return definitionAdapter.getId(pojo);
     }
@@ -101,6 +106,14 @@ public class JsDefinitionManager {
             return name;
         }
         return null;
+    }
+
+    public void setName(Object pojo, String name) {
+        String field = definitionAdapter.getMetaPropertyField(pojo, PropertyMetaTypes.NAME);
+        Optional<?> property = definitionAdapter.getProperty(pojo, field);
+        if (property.isPresent()) {
+            propertyAdapter.setValue((JsDefinitionProperty) property.get(), name);
+        }
     }
 
     public String getDescription(Object pojo) {

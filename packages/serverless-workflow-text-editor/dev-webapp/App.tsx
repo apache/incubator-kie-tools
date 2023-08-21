@@ -21,7 +21,12 @@ import {
   EnvelopeMapping,
 } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
-import { EmbeddedEditor, EmbeddedEditorChannelApiImpl, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import {
+  EmbeddedEditor,
+  EmbeddedEditorChannelApiImpl,
+  useDirtyState,
+  useEditorRef,
+} from "@kie-tools-core/editor/dist/embedded";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename, extname } from "path";
@@ -44,6 +49,7 @@ export const App = () => {
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const [isReady, setReady] = useState(false);
+  const isDirty = useDirtyState(editor);
 
   const stateControl = useMemo(() => new StateControl(), [embeddedEditorFile?.getFileContents]);
 
@@ -175,7 +181,7 @@ export const App = () => {
       {embeddedEditorFile && (
         <>
           <PageSection padding={{ default: "noPadding" }}>
-            <HistoryButtons undo={onUndo} redo={onRedo} download={onDownload} validate={onValidate} />
+            <HistoryButtons undo={onUndo} redo={onRedo} download={onDownload} validate={onValidate} isDirty={isDirty} />
           </PageSection>
           <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
             <div className="editor-container">

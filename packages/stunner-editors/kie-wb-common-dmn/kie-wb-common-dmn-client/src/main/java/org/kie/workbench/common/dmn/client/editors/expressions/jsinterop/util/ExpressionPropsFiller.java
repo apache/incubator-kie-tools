@@ -70,7 +70,7 @@ public class ExpressionPropsFiller {
         if (wrappedExpression instanceof IsLiteralExpression) {
             final LiteralExpression literalExpression = (LiteralExpression) wrappedExpression;
             final Double width = literalExpression.getComponentWidths().get(0);
-            return new LiteralProps(expressionId, expressionName, dataType, literalExpression.getText().getValue(), width);
+            return new LiteralProps(expressionId, expressionName, dataType, literalExpression.getText().getValue(), literalExpression.getDescription().getValue(), literalExpression.getExpressionLanguage().getValue(), width);
         } else if (wrappedExpression instanceof Context) {
             final Context contextExpression = (Context) wrappedExpression;
             final Double entryInfoWidth = contextExpression.getComponentWidths().get(1);
@@ -130,7 +130,7 @@ public class ExpressionPropsFiller {
                 .mapToObj(index -> {
                     final InformationItem informationItem = relationExpression.getColumn().get(index);
                     final Double columnWidth = relationExpression.getComponentWidths().get(index + 1);
-                    return new Column(informationItem.getId().getValue(), informationItem.getName().getValue(), informationItem.getTypeRef().getLocalPart(), columnWidth);
+                    return new Column(informationItem.getId().getValue(), informationItem.getName().getValue(), informationItem.getTypeRef().getLocalPart(), informationItem.getDescription().getValue(), columnWidth);
                 })
                 .toArray(Column[]::new);
     }
@@ -144,7 +144,9 @@ public class ExpressionPropsFiller {
                                  .getExpression()
                                  .stream()
                                  .map(wrappedLiteralExpression -> new Cell(wrappedLiteralExpression.getExpression().getId().getValue(),
-                                                                           ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue())
+                                                                           ((LiteralExpression) wrappedLiteralExpression.getExpression()).getText().getValue(),
+                                                                           wrappedLiteralExpression.getExpression().getDescription().getValue(),
+                                                                           ((LiteralExpression) wrappedLiteralExpression.getExpression()).getExpressionLanguage().getValue())
                                  )
                                  .toArray(Cell[]::new);
                          return new Row(list.getId().getValue(), cells);
@@ -180,7 +182,8 @@ public class ExpressionPropsFiller {
         final String entryId = contextEntryVariable.getId().getValue();
         final String entryName = contextEntryVariable.getName().getValue();
         final String entryDataType = contextEntryVariable.getTypeRef().getLocalPart();
-        final EntryInfo entryInfo = new EntryInfo(entryId, entryName, entryDataType);
+        final String description = contextEntryVariable.getDescription().getValue();
+        final EntryInfo entryInfo = new EntryInfo(entryId, entryName, entryDataType, description);
         final ExpressionProps entryExpression = buildAndFillJsInteropProp(expression, entryName, entryDataType);
         return new ContextEntryProps(entryInfo, entryExpression);
     }
@@ -189,7 +192,7 @@ public class ExpressionPropsFiller {
         return functionExpression
                 .getFormalParameter()
                 .stream()
-                .map(parameter -> new EntryInfo(parameter.getId().getValue(), parameter.getName().getValue(), parameter.getTypeRefHolder().getValue().getLocalPart()))
+                .map(parameter -> new EntryInfo(parameter.getId().getValue(), parameter.getName().getValue(), parameter.getTypeRefHolder().getValue().getLocalPart(),  parameter.getDescription().getValue()))
                 .toArray(EntryInfo[]::new);
     }
 
@@ -258,9 +261,13 @@ public class ExpressionPropsFiller {
                 .map(rule -> new DecisionTableRule(
                         rule.getId().getValue(),
                         rule.getInputEntry().stream().map(inputEntry -> new RuleEntry(inputEntry.getDomainObjectUUID(),
-                                                                                      inputEntry.getText().getValue())).toArray(RuleEntry[]::new),
+                                                                                      inputEntry.getText().getValue(),
+                                                                                      inputEntry.getDescription().getValue(),
+                                                                                      inputEntry.getExpressionLanguage().getValue())).toArray(RuleEntry[]::new),
                         rule.getOutputEntry().stream().map(outputEntry -> new RuleEntry(outputEntry.getDomainObjectUUID(),
-                                                                                        outputEntry.getText().getValue())).toArray(RuleEntry[]::new),
+                                                                                        outputEntry.getText().getValue(),
+                                                                                        outputEntry.getDescription().getValue(),
+                                                                                        outputEntry.getExpressionLanguage().getValue())).toArray(RuleEntry[]::new),
                         rule.getAnnotationEntry().stream().map(annotationClauseText -> annotationClauseText.getText().getValue()).toArray(String[]::new)))
                 .toArray(DecisionTableRule[]::new);
     }
@@ -274,7 +281,7 @@ public class ExpressionPropsFiller {
                     final String name = inputClause.getInputExpression().getText().getValue();
                     final String dataType = inputClause.getInputExpression().getTypeRefHolder().getValue().getLocalPart();
                     final Double width = decisionTableExpression.getComponentWidths().get(index + 1);
-                    return new InputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(inputClause.getInputValues()), idLiteralExpression);
+                    return new InputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(inputClause.getInputValues()), idLiteralExpression, inputClause.getDescription().getValue());
                 })
                 .toArray(InputClauseProps[]::new);
     }
@@ -286,20 +293,23 @@ public class ExpressionPropsFiller {
                     final String id = outputClause.getId().getValue();
                     final String name = outputClause.getName();
                     final String dataType = outputClause.getTypeRef().getLocalPart();
+                    final String description = outputClause.getDescription().getValue();
                     final ExpressionProps defaultOutputValue =
                             (outputClause.getDefaultOutputEntry() != null && outputClause.getDefaultOutputEntry().getText() != null) ?
                                     new LiteralProps(outputClause.getDefaultOutputEntry().getDomainObjectUUID(),
                                                      null,
                                                      UNDEFINED.getText(),
                                                      outputClause.getDefaultOutputEntry().getText().getValue(),
+                                                     outputClause.getDefaultOutputEntry().getDescription().getValue(),
+                                                     null,
                                                      null) :
                                     null;
                     final Double width = decisionTableExpression.getComponentWidths().get(decisionTableExpression.getInput().size() + index + 1);
                     // When output clause is empty, then we should use expression name and dataType for it
                     if (name == null) {
-                        return new OutputClauseProps(id, expressionName, expressionDataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()), defaultOutputValue);
+                        return new OutputClauseProps(id, expressionName, expressionDataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()), defaultOutputValue, description);
                     }
-                    return new OutputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()), defaultOutputValue);
+                    return new OutputClauseProps(id, name, dataType, width, convertToClauseUnaryTests(outputClause.getOutputValues()), defaultOutputValue, description);
                 })
                 .toArray(OutputClauseProps[]::new);
     }

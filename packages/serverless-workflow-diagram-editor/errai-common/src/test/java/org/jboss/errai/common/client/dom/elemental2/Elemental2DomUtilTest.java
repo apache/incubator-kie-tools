@@ -161,41 +161,7 @@ public class Elemental2DomUtilTest {
     assertSame(expectedElement, actualElement);
   }
 
-  @Test
-  public void testAsHTMLElementForErraiHTMLElement() throws Exception {
-
-    final org.jboss.errai.common.client.dom.HTMLElement htmlElement = mock(
-        org.jboss.errai.common.client.dom.HTMLElement.class);
-    final HTMLElement expectedElement = mock(HTMLElement.class);
-
-    mockJsCast(expectedElement, htmlElement);
-
-    final HTMLElement actualElement = elemental2DomUtil.asHTMLElement(htmlElement);
-
-    assertSame(expectedElement, actualElement);
-  }
-
-  @Test
-  public void testAsHTMLElementForHTMLElement() throws Exception {
-
-    final org.jboss.errai.common.client.dom.HTMLElement deprecatedElement = mock(
-            org.jboss.errai.common.client.dom.HTMLElement.class);
-    final HTMLElement htmlElement = mock(HTMLElement.class);
-
-    mockJsCast(deprecatedElement, htmlElement);
-
-    org.jboss.errai.common.client.dom.HTMLElement actualElement = elemental2DomUtil.asHTMLElement(htmlElement);
-
-    assertSame(deprecatedElement, actualElement);
-  }
-
   private void mockJsCast(final HTMLElement htmlElement, final Object obj) {
-    PowerMockito.spy(Js.class);
-    PowerMockito.doReturn(htmlElement).when(Js.class);
-    Js.cast(obj);
-  }
-
-  private void mockJsCast(final org.jboss.errai.common.client.dom.HTMLElement htmlElement, final Object obj) {
     PowerMockito.spy(Js.class);
     PowerMockito.doReturn(htmlElement).when(Js.class);
     Js.cast(obj);

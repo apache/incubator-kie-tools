@@ -17,6 +17,8 @@
 import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
+import { useEnv } from "../env/hooks/EnvContext";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export enum AuthOptionsType {
   UNDEFINED = "UNDEFINED",
@@ -34,10 +36,12 @@ const undefinedAuthOptions = {
 export type AuthOptions = BasicAuthOptions | typeof undefinedAuthOptions;
 
 export interface Options {
+  appName: string;
   username?: string;
   domain?: string;
   auth?: AuthOptions;
   headers?: Record<string, string>;
+  proxyUrl?: string;
 }
 
 type GetRepositoryContentsArgsType = {
@@ -77,6 +81,7 @@ type CreateSnippetArgsType = {
 };
 
 export interface BitbucketClientApi {
+  appName: string;
   domain?: string;
   auth?: AuthOptions;
   headers?: Record<string, string>;
@@ -90,19 +95,24 @@ export interface BitbucketClientApi {
   listWorkspaces(): Promise<Response>;
 }
 export class BitbucketClient implements BitbucketClientApi {
-  constructor(options: Options = {}) {
+  constructor(options: Options) {
+    this.appName = options.appName;
     this.domain = options?.domain ?? "bitbucket.org";
-    this.headers = options?.headers ?? {
+    this.headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...options?.headers,
     };
     this.auth = options?.auth ?? undefinedAuthOptions;
     this.username = options.username ?? (options?.auth as BasicAuthOptions)?.username;
+    this.proxyUrl = options.proxyUrl;
   }
+  appName: string;
   auth: AuthOptions;
   domain: string;
   headers: Record<string, string>;
   username?: string;
+  proxyUrl?: string;
 
   request = async (props: {
     urlContext: string;
@@ -131,6 +141,9 @@ export class BitbucketClient implements BitbucketClientApi {
     });
   };
   getApiUrl = () => {
+    if (this.proxyUrl) {
+      return `${this.proxyUrl}/api.${this.domain}/2.0`;
+    }
     return `https://api.${this.domain}/2.0`;
   };
   getAuthedUser = () => {
@@ -157,7 +170,7 @@ export class BitbucketClient implements BitbucketClientApi {
   pushEmptyCommit = (args: PushEmptyCommitArgsType) => {
     const formData: FormData = new FormData();
     formData.append("branch", args.branch);
-    formData.append("message", "KIE Sandbox Initial Push");
+    formData.append("message", `${this.appName} Initial Push`);
     return this.request({
       urlContext: `/repositories/${args.workspace}/${args.repository}/src`,
       method: "post",
@@ -205,26 +218,50 @@ export class BitbucketClient implements BitbucketClientApi {
   };
 }
 
+export function getBitbucketClient(args: {
+  appName: string;
+  auth?: AuthOptions;
+  domain?: string;
+  proxyUrl?: string;
+  insecurelyDisableTlsCertificateValidation?: boolean;
+}) {
+  return new BitbucketClient({
+    appName: args.appName,
+    domain: args.domain,
+    auth: args.auth,
+    proxyUrl: args.insecurelyDisableTlsCertificateValidation ? args.proxyUrl : undefined,
+    headers: {
+      [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+        args.insecurelyDisableTlsCertificateValidation
+      ).toString(),
+    },
+  });
+}
+
 export function useBitbucketClient(authSession: AuthSession | undefined): BitbucketClientApi {
   const authProviders = useAuthProviders();
+  const { env } = useEnv();
 
   return useMemo(() => {
     if (authSession?.type !== "git") {
-      return new BitbucketClient();
+      return getBitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
     const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
     if (authProvider?.type !== "bitbucket") {
-      return new BitbucketClient();
+      return getBitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
-    return new BitbucketClient({
+    return getBitbucketClient({
+      appName: env.KIE_SANDBOX_APP_NAME,
       domain: authProvider.domain,
       auth: {
         type: AuthOptionsType.BASIC,
         username: authSession.login,
         password: authSession.token,
       },
+      proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+      insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
     });
-  }, [authProviders, authSession]);
+  }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]);
 }

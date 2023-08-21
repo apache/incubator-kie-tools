@@ -92,7 +92,7 @@ export function EmbedModal(props: {
       const gistId = (props.workspace.origin as GistOrigin).url.toString().split("/").pop()!.replace(".git", "");
       return `
 <script type="module">
-  import {Octokit} from "https://cdn.skypack.dev/@octokit/rest";
+  import {Octokit} from "https://esm.sh/@octokit/rest";
   async function main() {
     const gist = await new Octokit().gists.get({ gist_id: "${gistId}" });
     ${libraryName}.open({

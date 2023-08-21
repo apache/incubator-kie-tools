@@ -1,0 +1,56 @@
+{
+  "name": "@kie-tools/dmn-marshaller",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:codegen": "pnpm build:codegen:dmn10 && pnpm build:codegen:dmn11 && pnpm build:codegen:dmn12 && pnpm build:codegen:dmn13 && pnpm build:codegen:dmn14 && pnpm build:codegen:dmn15 && pnpm build:codegen:kie10",
+    "build:codegen:dmn10": "xml-parser-ts-codegen ./src/schemas/dmn-1_0/dmn3.xsd Definitions",
+    "build:codegen:dmn11": "xml-parser-ts-codegen ./src/schemas/dmn-1_1/dmn.xsd definitions",
+    "build:codegen:dmn12": "xml-parser-ts-codegen ./src/schemas/dmn-1_2/DMN12.xsd definitions",
+    "build:codegen:dmn13": "xml-parser-ts-codegen ./src/schemas/dmn-1_3/DMN13.xsd definitions",
+    "build:codegen:dmn14": "xml-parser-ts-codegen ./src/schemas/dmn-1_4/DMN14.xsd definitions",
+    "build:codegen:dmn15": "xml-parser-ts-codegen ./src/schemas/dmn-1_5/DMN15.xsd definitions",
+    "build:codegen:kie10": "xml-parser-ts-codegen ./src/schemas/kie-1_0/KIE.xsd ComponentsWidthsExtension",
+    "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist &&  pnpm build:codegen && tsc -p tsconfig.json && pnpm test",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "@kie-tools/xml-parser-ts": "workspace:*"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@kie-tools/xml-parser-ts-codegen": "workspace:*",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/react": "^17.0.6",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "jest-when": "^3.5.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.6.2"
+  }
+}

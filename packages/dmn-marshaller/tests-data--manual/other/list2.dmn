@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_6FBAFC0B-CF8F-4180-B3DB-1DD14427FEDF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi13="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc2="http://www.omg.org/spec/DMN/20180521/DC/" id="_BB0A378D-2999-402B-9A5D-BE84BC30D531" name="My DMN" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_6FBAFC0B-CF8F-4180-B3DB-1DD14427FEDF">
+  <dmn:extensionElements/>
+  <dmn:decision id="_67BE9B5A-48A4-4528-9AF9-99846FAA82A3" name="MyDecision">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5B0D413E-1779-4299-85A2-EB61890EEE07" name="MyDecision"/>
+    <dmn:list id="_CB17C4D9-ED9D-4731-A954-051F1517C416">
+      <dmn:literalExpression id="_7CFCD268-6AE7-42C5-82F0-CF1289E1EDFA">
+        <dmn:text>A</dmn:text>
+      </dmn:literalExpression>
+      <dmn:context id="_1E9B4B98-B56D-4A0B-87D4-3BE3D09143D2">
+        <dmn:contextEntry>
+          <dmn:variable id="_7FF04279-3010-49A5-9F28-F3029A7B39EA" name="Entry 1"/>
+          <dmn:literalExpression id="_69610EF3-5C30-4454-AA8B-EB6865C787CA">
+            <dmn:text>C</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:literalExpression id="_B8C55262-64D9-49D1-B941-4F83242DA1C3">
+            <dmn:text>D</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+      </dmn:context>
+      <dmn:literalExpression id="_58EC9A57-2BDE-4D14-B13C-901AB09F0830">
+        <dmn:text>B</dmn:text>
+      </dmn:literalExpression>
+      <dmn:literalExpression id="_3C4A5897-71BA-47A3-B933-89420BDD88B3">
+        <dmn:text>C</dmn:text>
+      </dmn:literalExpression>
+      <dmn:expression/>
+      <dmn:literalExpression id="_13CBF20B-E17F-480C-A5D3-B1B96B3CB766">
+        <dmn:text>D</dmn:text>
+      </dmn:literalExpression>
+    </dmn:list>
+  </dmn:decision>
+  <dmndi13:DMNDI>
+    <dmndi13:DMNDiagram id="_ACC47ADB-F712-4F4F-B864-3D6EB63522F6" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_CB17C4D9-ED9D-4731-A954-051F1517C416">
+            <kie:width>50</kie:width>
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_7CFCD268-6AE7-42C5-82F0-CF1289E1EDFA">
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_1E9B4B98-B56D-4A0B-87D4-3BE3D09143D2">
+            <kie:width>50</kie:width>
+            <kie:width>120</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_69610EF3-5C30-4454-AA8B-EB6865C787CA">
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_B8C55262-64D9-49D1-B941-4F83242DA1C3">
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_58EC9A57-2BDE-4D14-B13C-901AB09F0830">
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_3C4A5897-71BA-47A3-B933-89420BDD88B3">
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_13CBF20B-E17F-480C-A5D3-B1B96B3CB766">
+            <kie:width>290</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi13:DMNShape id="dmnshape-drg-_67BE9B5A-48A4-4528-9AF9-99846FAA82A3" dmnElementRef="_67BE9B5A-48A4-4528-9AF9-99846FAA82A3" isCollapsed="false">
+        <dmndi13:DMNStyle>
+          <dmndi13:FillColor red="255" green="255" blue="255"/>
+          <dmndi13:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi13:FontColor red="0" green="0" blue="0"/>
+        </dmndi13:DMNStyle>
+        <dc2:Bounds x="443" y="217" width="100" height="50"/>
+        <dmndi13:DMNLabel/>
+      </dmndi13:DMNShape>
+    </dmndi13:DMNDiagram>
+  </dmndi13:DMNDI>
+</dmn:definitions>

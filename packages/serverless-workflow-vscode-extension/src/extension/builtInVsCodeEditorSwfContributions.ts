@@ -33,7 +33,7 @@ import { TextDocument } from "vscode";
 import * as ls from "vscode-languageserver-types";
 import { debounce } from "../debounce";
 import { COMMAND_IDS } from "./commandIds";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
+import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
@@ -67,6 +67,9 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
       args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(cmdArgs);
+    },
+    "swf.ls.commands.ImportEventFromCompletionItem": (cmdArgs) => {
+      args.swfServiceCatalogSupportActions.importEventFromCompletionItem(cmdArgs);
     },
     "editor.ls.commands.OpenCompletionItems": (cmdArgs) => {
       if (!vscode.window.activeTextEditor) {
@@ -240,25 +243,6 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       `"`,
       "."
     )
-  );
-
-  args.context.subscriptions.push(
-    vscode.workspace.onDidChangeConfiguration(async (event) => {
-      if (event.affectsConfiguration(CONFIGURATION_SECTIONS.enableKogitoServerlessWorkflowVisualizationPreview)) {
-        const isStunnerEnabled = args.configuration.isKogitoServerlessWorkflowVisualizationPreviewEnabled();
-        const restartNowLabel = "Restart now";
-        const selection = await vscode.window.showInformationMessage(
-          `Kogito Serverless Workflow Visualization Preview will be ${
-            isStunnerEnabled ? "enabled" : "disabled"
-          } for JSON and YAML files after VS Code is restarted.`,
-          restartNowLabel
-        );
-        if (selection !== restartNowLabel) {
-          return;
-        }
-        vscode.commands.executeCommand("workbench.action.reloadWindow");
-      }
-    })
   );
 
   vscode.window.onDidChangeTextEditorSelection((e) => {

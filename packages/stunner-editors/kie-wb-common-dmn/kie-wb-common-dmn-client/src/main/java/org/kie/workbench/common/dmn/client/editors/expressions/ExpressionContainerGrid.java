@@ -188,7 +188,6 @@ public class ExpressionContainerGrid extends BaseGrid<Expression> {
         uiModelMapper.fromDMNModel(0, 0);
 
         expressionColumn.setWidthInternal(getExistingEditorWidth());
-        selectExpressionEditorFirstCell();
     }
 
     public void clearExpression(final String nodeUUID) {

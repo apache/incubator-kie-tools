@@ -16,7 +16,7 @@
 
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useMemo } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as _ from "lodash";
 import { DmnBuiltInDataType, DmnDataType } from "../../api";
@@ -35,6 +35,12 @@ export interface DataTypeSelectorProps {
   onKeyDown?: (e: React.KeyboardEvent) => void;
   menuAppendTo?: HTMLElement | "inline" | (() => HTMLElement) | "parent";
 }
+
+/** This is the optimal height for the dropdown menu for the "Data Type" */
+const DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT = 500;
+
+/** This margin is the height of the status bar in the on-line editor because it can't be overlaped */
+const POPUP_BOTTOM_MARGIN = 46;
 
 export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = ({
   value,
@@ -121,6 +127,21 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
     [onToggle]
   );
 
+  const boundingClientRect = selectContainerRef.current?.getBoundingClientRect();
+  const selectMenuHeight = useMemo(() => {
+    if (boundingClientRect) {
+      const yPos = boundingClientRect.top;
+      const availableHeight = document.documentElement.clientHeight;
+      if (
+        DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT <= availableHeight &&
+        DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT + yPos > availableHeight
+      ) {
+        const offset = DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT + yPos - availableHeight;
+        return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT - offset - POPUP_BOTTOM_MARGIN;
+      }
+    }
+    return DEFAULT_SELECT_DATA_TYPE_MENU_HEIGHT;
+  }, [boundingClientRect]);
   return (
     <div ref={selectContainerRef} onKeyDown={onKeyDown}>
       <Select
@@ -137,7 +158,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         isGrouped={true}
         hasInlineFilter={true}
         inlineFilterPlaceholderText={i18n.choose}
-        maxHeight={500}
+        maxHeight={selectMenuHeight}
       >
         {buildSelectGroups()}
       </Select>

@@ -18,8 +18,7 @@ package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.exception.YAMLSerializationException;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.DefaultYAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
 
 /**
  * Base class for all the serializer. It handles null values and exceptions. The rest is delegated
@@ -30,7 +29,7 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.impl.Defau
  */
 public abstract class AbstractYAMLSerializer<T> implements YAMLSerializer<T> {
 
-  public void serialize(YAMLWriter writer, T value, YAMLSerializationContext ctx)
+  public void serialize(YamlMapping writer, T value, YAMLSerializationContext ctx)
       throws YAMLSerializationException {
     if (null == value) {
       if (ctx.isSerializeNulls()) {
@@ -43,30 +42,29 @@ public abstract class AbstractYAMLSerializer<T> implements YAMLSerializer<T> {
 
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, T value, YAMLSerializationContext ctx) {
-    DefaultYAMLWriter childWriter = new DefaultYAMLWriter();
+      YamlMapping writer, String propertyName, T value, YAMLSerializationContext ctx) {
+    YamlMapping childWriter = writer.addMappingNode(propertyName);
     serialize(childWriter, value, ctx);
-    writer.value(propertyName, childWriter.getWriter().build());
   }
 
   /**
    * Serialize the null value. This method allows children to override the default behaviour.
    *
-   * @param writer {@link YAMLWriter} used to write the serialized YAML
+   * @param writer {@link YamlMapping} used to write the serialized YAML
    * @param ctx Context for the full serialization process
    */
-  protected void serializeNullValue(YAMLWriter writer, YAMLSerializationContext ctx) {
+  protected void serializeNullValue(YamlMapping writer, YAMLSerializationContext ctx) {
     // writer.nullValue(propertyName); //TODO
   }
 
   /**
    * Serializes a non-null object into YAML output.
    *
-   * @param writer {@link YAMLWriter} used to write the serialized YAML
+   * @param writer {@link YamlMapping} used to write the serialized YAML
    * @param value Object to serialize
    * @param ctx Context for the full serialization process
    */
-  protected void doSerialize(YAMLWriter writer, T value, YAMLSerializationContext ctx) {
+  protected void doSerialize(YamlMapping writer, T value, YAMLSerializationContext ctx) {
     throw new RuntimeException("Not implemented");
   }
 

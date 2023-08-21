@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.ser;
 
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLSerializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLSequenceWriter;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLWriter;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlSequence;
 
 /**
  * Default {@link AbstractYAMLSerializer} implementation for {@link Enum}.
@@ -33,18 +33,18 @@ public class EnumYAMLSerializer<E extends Enum<E>> implements YAMLSerializer<E> 
   /** {@inheritDoc} */
   @Override
   public void serialize(
-      YAMLWriter writer, String propertyName, E value, YAMLSerializationContext ctx) {
-    writer.value(propertyName, value.name());
+      YamlMapping writer, String propertyName, E value, YAMLSerializationContext ctx) {
+    writer.addScalarNode(propertyName, value.name());
   }
 
   @Override
-  public void serialize(YAMLSequenceWriter writer, E value, YAMLSerializationContext ctx) {
+  public void serialize(YamlSequence writer, E value, YAMLSerializationContext ctx) {
     if (null == value) {
       if (ctx.isSerializeNulls()) {
-        writer.value("~");
+        writer.addScalarNode("~");
       }
     } else {
-      writer.value(value.name());
+      writer.addScalarNode(value.name());
     }
   }
 }

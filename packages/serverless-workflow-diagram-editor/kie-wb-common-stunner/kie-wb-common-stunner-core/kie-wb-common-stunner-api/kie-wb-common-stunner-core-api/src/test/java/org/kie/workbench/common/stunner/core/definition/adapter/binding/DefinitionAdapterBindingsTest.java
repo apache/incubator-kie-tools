@@ -40,6 +40,8 @@ public class DefinitionAdapterBindingsTest {
         bindings.setTypedPropertyFields(Arrays.asList(true, false));
         DefinitionAdapterBindings.PropertyMetaTypes metaTypes = new DefinitionAdapterBindings.PropertyMetaTypes();
         bindings.setMetaTypes(metaTypes);
+        bindings.setElementFactory(NodeFactory.class);
+
         assertEquals(SomeBaseType.class, bindings.getBaseType());
         assertEquals(NodeFactory.class, bindings.getGraphFactory());
         assertEquals("idField", bindings.getIdField());
@@ -50,6 +52,7 @@ public class DefinitionAdapterBindingsTest {
         assertEquals(Arrays.asList("p1", "p2"), bindings.getPropertiesFieldNames());
         assertEquals(Arrays.asList(true, false), bindings.getTypedPropertyFields());
         assertEquals(metaTypes, bindings.getMetaTypes());
+        assertEquals(NodeFactory.class, bindings.getElementFactory());
     }
 
     @Test

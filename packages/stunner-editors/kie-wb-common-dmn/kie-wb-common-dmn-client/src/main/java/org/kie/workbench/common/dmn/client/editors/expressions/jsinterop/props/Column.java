@@ -24,12 +24,14 @@ public class Column {
     public final String id;
     public final String name;
     public final String dataType;
+    public final String description;
     public final Double width;
 
-    public Column(final String id, final String name, final String dataType, final Double width) {
+    public Column(final String id, final String name, final String dataType, String description, final Double width) {
         this.id = id;
         this.name = name;
         this.dataType = dataType;
+        this.description = description;
         this.width = width;
     }
 }

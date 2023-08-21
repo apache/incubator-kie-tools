@@ -22,10 +22,12 @@ import { joinName } from "uniforms";
 import { UnitablesColumnType } from "../UnitablesTypes";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-const DEFAULT_COLUMN_MIN_WIDTH = 150;
-const DEFAULT_DATE_TIME_CELL_WDITH = 188;
+export const DEFAULT_COLUMN_MIN_WIDTH = 150;
+const DEFAULT_DATE_TIME_CELL_WDITH = 210;
 const DEFAULT_DATE_CELL_WIDTH = 170;
 const DEFAULT_TIME_CELL_WIDTH = 150;
+const DEFAULT_DAYS_DURATION_CELL_WIDTH = 245;
+const DEFAULT_YEARS_DURATION_CELL_WIDTH = 180;
 
 export const FORMS_ID = "unitables-forms";
 export const AUTO_ROW_ID = "unitables-row";
@@ -42,7 +44,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
   public getProps(name: string, props: Record<string, any> = {}) {
     const finalProps = super.getProps(name, props);
     finalProps.label = "";
-    finalProps.style = { height: "100%" };
+    finalProps.style = { ...finalProps.style, height: "100%" };
     if (finalProps.required) {
       finalProps.required = false;
     }
@@ -58,53 +60,117 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     } else if (!field.type) {
       field.type = "string";
     }
+    if (field.type === "string" || field.type === "number") {
+      field.style = { width: "100%" };
+    }
+    field.style = { ...field.style, minWidth: this.getFieldDataType(field).width };
     return field;
   }
 
-  public getFieldDataType(field: Record<string, any>) {
+  public getFieldDataType(field: Record<string, any>): { dataType: DmnBuiltInDataType; width: number; type: string } {
     const xDmnType: string | undefined = field["x-dmn-type"]; // FIXME: Please address this as part of https://github.com/kiegroup/kie-issues/issues/166
 
     let type: string | undefined;
     if (!xDmnType) {
       type = field.type;
     } else {
-      const splitedXDmnType: string[] | undefined = xDmnType.split(":");
-      if (!splitedXDmnType) {
-        type = undefined;
-      } else if (splitedXDmnType.length > 2) {
-        type = splitedXDmnType[2].split("}")?.[0]?.trim();
+      if (field.format?.includes("date") || field.format?.includes("time") || field.format?.includes("duration")) {
+        type = field.format;
       } else {
-        type = splitedXDmnType[1];
+        const splitedXDmnType: string[] | undefined = xDmnType.split(":");
+        if (!splitedXDmnType) {
+          type = undefined;
+        } else if (splitedXDmnType.length > 2) {
+          type = splitedXDmnType[2].split("}")?.[0]?.trim();
+        } else if (splitedXDmnType.length === 2) {
+          type = splitedXDmnType[1];
+        } else {
+          type = splitedXDmnType[0];
+        }
       }
     }
 
     switch (type) {
       case "<Undefined>":
-        return { dataType: DmnBuiltInDataType.Undefined, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Undefined,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "Any":
-        return { dataType: DmnBuiltInDataType.Any, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Any,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "boolean":
-        return { dataType: DmnBuiltInDataType.Boolean, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Boolean,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "context":
-        return { dataType: DmnBuiltInDataType.Context, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Context,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "date":
-        return { dataType: DmnBuiltInDataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Date,
+          width: DEFAULT_DATE_CELL_WIDTH,
+          type: field.type,
+        };
+      case "date-time":
       case "date and time":
-        return { dataType: DmnBuiltInDataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
+        return {
+          dataType: DmnBuiltInDataType.DateTime,
+          width: DEFAULT_DATE_TIME_CELL_WDITH,
+          type: field.type,
+        };
       case "days and time duration":
-        return { dataType: DmnBuiltInDataType.DateTimeDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.DateTimeDuration,
+          width: DEFAULT_DAYS_DURATION_CELL_WIDTH,
+          type: field.type,
+        };
       case "number":
-        return { dataType: DmnBuiltInDataType.Number, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Number,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "string":
-        return { dataType: DmnBuiltInDataType.String, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.String,
+          width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
+        };
       case "time":
-        return { dataType: DmnBuiltInDataType.Time, width: DEFAULT_TIME_CELL_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.Time,
+          width: DEFAULT_TIME_CELL_WIDTH,
+          type: field.type,
+        };
       case "years and months duration":
-        return { dataType: DmnBuiltInDataType.YearsMonthsDuration, width: DEFAULT_COLUMN_MIN_WIDTH };
+        return {
+          dataType: DmnBuiltInDataType.YearsMonthsDuration,
+          width: DEFAULT_YEARS_DURATION_CELL_WIDTH,
+          type: field.type,
+        };
       default:
+        if (field.type === "array") {
+          const itemsType = this.getFieldDataType(field.items);
+          return {
+            dataType: `List<${itemsType.dataType}>` as DmnBuiltInDataType,
+            width: DEFAULT_COLUMN_MIN_WIDTH,
+            type: field.type,
+          };
+        }
         return {
           dataType: (type as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
           width: DEFAULT_COLUMN_MIN_WIDTH,
+          type: field.type,
         };
     }
   }

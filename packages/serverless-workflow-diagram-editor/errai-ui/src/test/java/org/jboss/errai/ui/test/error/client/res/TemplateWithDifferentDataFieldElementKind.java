@@ -18,7 +18,7 @@ package org.jboss.errai.ui.test.error.client.res;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.dom.Anchor;
+import elemental2.dom.HTMLAnchorElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -31,6 +31,6 @@ public class TemplateWithDifferentDataFieldElementKind {
 
   @Inject
   @DataField("field")
-  private Anchor notDiv;
+  private HTMLAnchorElement notDiv;
 
 }

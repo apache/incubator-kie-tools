@@ -15,11 +15,11 @@
  */
 
 import * as React from "react";
-import _ from "lodash";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
   BeeTableCellProps,
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -101,7 +101,11 @@ export function FeelFunctionExpression({
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
     return [
       {
-        group: _.upperCase(i18n.function),
+        group: i18n.terms.selection.toUpperCase(),
+        items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
+      },
+      {
+        group: i18n.function.toUpperCase(),
         items: [{ name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset }],
       },
     ];
@@ -155,6 +159,17 @@ export function FeelFunctionExpression({
       }, [functionExpression])
     );
 
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+      return [];
+    }
+
+    return [
+      BeeTableOperation.SelectionCopy,
+      ...(conditions.selection.selectionStart.rowIndex >= 0 ? [BeeTableOperation.RowReset] : []),
+    ];
+  }, []);
+
   /// //////////////////////////////////////////////////////
 
   return (
@@ -164,6 +179,7 @@ export function FeelFunctionExpression({
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           onColumnUpdates={onColumnUpdates}
           getRowKey={getRowKey}
           onRowReset={onRowReset}

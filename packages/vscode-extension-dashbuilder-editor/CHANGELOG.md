@@ -1,3 +1,23 @@
+# 0.31.0 (alpha)
+
+- [KOGITO-9425](https://issues.redhat.com/browse/KOGITO-9425) - Make sure that column settings are respected for meters and timeseries in Dashbuilder
+- [KOGITO-9062](https://issues.redhat.com/browse/KOGITO-9062) - Update Dashbuilder Editor Schema with latest fields
+- NO-ISSUE - Dashbuilder Editor Schema Fix
+- [KOGITO-9499](https://issues.redhat.com/browse/KOGITO-9499) - Support POST for Dashbuilder external DataSets
+
+# 0.30.0 (alpha)
+
+- [KOGITO-9227](https://issues.redhat.com/browse/KOGITO-9227) - Make an internal Dashbuilder timeseries component
+- [KOGITO-9325](https://issues.redhat.com/browse/KOGITO-9325) - Support Join in Dashbuilder DataSets
+- [KOGITO-9384](https://issues.redhat.com/browse/KOGITO-9384) - [Dashbuilder] Keep order and ignore empty in Join datasets
+- [KOGITO-9389](https://issues.redhat.com/browse/KOGITO-9389) - Support query params in dashbuilder datasets
+- [KOGITO-9390](https://issues.redhat.com/browse/KOGITO-9390) - Support for Global Datasets declarations in Dashbuilder YAML
+
+# 0.29.0 (alpha)
+
+- [KOGITO-9175](https://issues.redhat.com/browse/KOGITO-9175) - Support types for Dashbuilder external datasets
+- [KOGITO-9186](https://issues.redhat.com/browse/KOGITO-9186) - Handle NaN values in Dashbuilder metrics dataset
+
 # 0.28.0 (alpha)
 
 - [KOGITO-8543](https://issues.redhat.com/browse/KOGITO-8543) - Support Samples Dashboard Repository by @jesuino in https://github.com/kiegroup/kie-tools/pull/1445

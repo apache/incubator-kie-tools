@@ -26,14 +26,14 @@ To start building the KIE Tools project, you're going to need:
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.6`
 - Java `11`
-- Go `1.19` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.20.7` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 > **ℹ️ NOTE:** Some packages will require that `make` is available as well.
 
 > **ℹ️ NOTE:** \*nix users will also need:
 >
 > - `lib-gtk-3-dev`
-> - `appindicator3-0.1` (`libappindicator3-dev` and `gir1.2-appindicator3-0.1`)
+> - `appindicator3-0.1` (`libayatana-appindicator3-dev` or `libappindicator-gtk3-devel` and `gir1.2-appindicator3-0.1`)
 
 > **ℹ️ NOTE:** Users of Fedora or RHEL will need to add a repository:
 >
@@ -104,13 +104,14 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, go to `packages/online-editor`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Online Editor resources.
 3. From now on you can use the development version of the Online Editor by accessing `https://localhost:9001`.
-4. Run the Git CORS Proxy by running `pnpm start` at `packages/git-cors-proxy-image`.
+4. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
 
 #### Serverless Logic Web Tools
 
 1. After you've successfully built the project following the instructions above, go to `packages/serverless-logic-web-tools`.
 1. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Serverless Logic Web Tools resources.
 1. From now on you can use the development version of the Serverless Logic Web Tools by accessing `https://localhost:9020`.
+1. Run the CORS Proxy by running `pnpm start` at `packages/cors-proxy`.
 
 #### Standalone Editors (DMN and BPMN)
 

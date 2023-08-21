@@ -28,17 +28,18 @@ import {
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
-import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
-import { useExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { InputRow, extractDifferences } from "@kie-tools/form-dmn";
+import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
+import { InputRow } from "@kie-tools/form-dmn";
 import {
   DecisionResult,
   ExtendedServicesDmnJsonSchema,
   DmnEvaluationMessages,
   ExtendedServicesModelPayload,
-  DmnInputFieldProperties,
 } from "@kie-tools/extended-services-api";
+import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
+import { SCHEMA_DRAFT4 } from "@kie-tools/dmn-runner/dist/constants";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
@@ -49,7 +50,6 @@ import { UnitablesInputsConfigs } from "@kie-tools/unitables/dist/UnitablesTypes
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useOnlineI18n } from "../i18n";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { diff } from "deep-object-diff";
 import { useCompanionFsFileSyncedWithWorkspaceFile } from "../companionFs/CompanionFsHooks";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { DmnRunnerPersistenceReducerActionType } from "../dmnRunnerPersistence/DmnRunnerPersistenceTypes";
@@ -67,12 +67,13 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import getObjectValueByPath from "lodash/get";
-import setObjectValueByPath from "lodash/set";
-import unsetObjectValueByPath from "lodash/unset";
-import { dereferenceProperties } from "../jsonSchema/dereference";
-
-const JSON_SCHEMA_PROPERTIES_PATH = "definitions.InputSet.properties";
+import { diff } from "deep-object-diff";
+import {
+  resolveReferencesAndCheckForRecursion,
+  removeChangedPropertiesAndAdditionalProperties,
+  getDefaultValues,
+} from "@kie-tools/dmn-runner/dist/jsonSchema";
+import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 
 interface Props {
   isEditorReady?: boolean;
@@ -109,7 +110,7 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
       resultsDifference: dmnRunnerResults.resultsDifference,
     };
   } else if (action.type === DmnRunnerResultsActionType.DEFAULT) {
-    const differences = extractDifferences(action.newResults ?? [], dmnRunnerResults.results);
+    const differences = extractDifferencesFromArray(action.newResults ?? [], dmnRunnerResults.results);
     return {
       results: action.newResults ? [...action.newResults] : [],
       resultsDifference: [...differences],
@@ -121,6 +122,9 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
+  // Calling forceDmnRunnerReRender will cause a update in the dmnRunnerKey
+  // dmnRunnerKey should be placed in the Unitables and DmnForm;
+  const [dmnRunnerKey, forceDmnRunnerReRender] = useReducer((x) => x + 1, 0);
 
   // States that can be changed down in the tree with dmnRunnerDispatcher;
   const [{ currentInputIndex, isExpanded }, setDmnRunnerContextProviderState] = useReducer(
@@ -147,7 +151,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     dmnRunnerPersistenceJsonDispatcher,
   } = useDmnRunnerPersistenceDispatch();
   useDmnRunnerPersistence(props.workspaceFile.workspaceId, props.workspaceFile.relativePath);
-  const prevKieSandboxExtendedServicesStatus = usePrevious(extendedServices.status);
+  const prevExtendedServicesStatus = usePrevious(extendedServices.status);
   const { panel, setNotifications, addToggleItem, removeToggleItem, onOpenPanel, onTogglePanel } =
     useEditorDockContext();
 
@@ -158,6 +162,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [dmnRunnerPersistenceJson?.configs?.inputs]
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
+  const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -171,10 +176,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     setExtendedServicesError(false);
   }, [jsonSchema]);
 
-  // Reset JSON Schema and PersistenceJson;
+  // Refer to effect responsible for getting decision results
+  const hasJsonSchema = useRef<boolean>(false);
+  // Reset JSON Schema;
   useLayoutEffect(() => {
     setJsonSchema(undefined);
+    hasJsonSchema.current = false;
   }, [props.workspaceFile.relativePath]);
+
+  useLayoutEffect(() => {
+    if (jsonSchema) {
+      hasJsonSchema.current = true;
+    }
+  }, [jsonSchema]);
 
   // Control the isExpaded state based on the extended services status;
   useLayoutEffect(() => {
@@ -183,12 +197,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
 
     if (
-      extendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
-      extendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING
+      extendedServices.status === ExtendedServicesStatus.STOPPED ||
+      extendedServices.status === ExtendedServicesStatus.NOT_RUNNING
     ) {
       setDmnRunnerContextProviderState({ type: DmnRunnerProviderActionType.DEFAULT, newState: { isExpanded: false } });
     }
-  }, [prevKieSandboxExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
+  }, [prevExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
   const extendedServicesModelPayload = useCallback(
     async (formInputs?: InputRow) => {
@@ -214,21 +228,25 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         context: formInputs,
       } as ExtendedServicesModelPayload;
     },
-    [props.workspaceFile, workspaces, props.dmnLanguageService]
+    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
-  // Responsible for get decision results;
+  // Responsible for getting decision results
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          props.workspaceFile.extension !== "dmn" ||
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-        ) {
+        if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
           return;
         }
 
-        Promise.all(dmnRunnerInputs.map((inputs) => extendedServicesModelPayload(inputs)))
+        Promise.all(
+          dmnRunnerInputs.map((dmnRunnerInput) => {
+            // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
+            // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+            const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
+            return extendedServicesModelPayload(input);
+          })
+        )
           .then((payloads) =>
             Promise.all(
               payloads.map((payload) => {
@@ -257,6 +275,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
           })
           .catch((err) => {
+            console.log(err);
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT });
           });
       },
@@ -311,10 +330,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   // Set execution tab on Problems panel;
   useEffect(() => {
-    if (
-      props.workspaceFile.extension !== "dmn" ||
-      extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-    ) {
+    if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       return;
     }
 
@@ -427,38 +443,6 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [setDmnRunnerPersistenceJson]
   );
 
-  const getFieldDefaultValue = useCallback((dmnField: DmnInputFieldProperties) => {
-    if (dmnField?.type === "string") {
-      return "";
-    }
-    if (dmnField?.type === "number") {
-      return undefined;
-    }
-    if (dmnField?.type === "boolean") {
-      return false;
-    }
-    if (dmnField?.type === "array") {
-      return [];
-    }
-    if (dmnField?.type === "object") {
-      return {};
-    }
-    return undefined;
-  }, []);
-
-  const getDefaultValues = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema) => {
-      return Object.entries(getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {})?.reduce(
-        (acc, [key, field]: [string, Record<string, string>]) => {
-          acc[key] = getFieldDefaultValue(field);
-          return acc;
-        },
-        {} as Record<string, any>
-      );
-    },
-    [getFieldDefaultValue]
-  );
-
   // The refreshCallback is called after a CompanionFS event;
   // When another TAB updates the FS, this callback will sync up;
   useCompanionFsFileSyncedWithWorkspaceFile(
@@ -478,18 +462,16 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           );
 
           // Remove incompatible values and add default values;
-          const jsonSchemaProperties = getObjectValueByPath(jsonSchema, JSON_SCHEMA_PROPERTIES_PATH);
-          if (jsonSchemaProperties) {
-            Object.entries(jsonSchemaProperties).forEach(
-              ([propertyName, dmnField]: [string, DmnInputFieldProperties]) => {
-                dmnRunnerPersistenceJson.inputs.forEach((input) => {
-                  // if the input has the property name, its value should match the property attribute type/format;
-                  if (input[propertyName] && typeof input[propertyName] !== (dmnField.type ?? "string")) {
-                    input[propertyName] = getFieldDefaultValue(dmnField);
-                  }
-                });
-              }
-            );
+          try {
+            const validate = dmnRunnerAjv.compile(jsonSchema);
+            dmnRunnerPersistenceJson.inputs.forEach((input) => {
+              // save id;
+              const id = input.id;
+              removeChangedPropertiesAndAdditionalProperties(validate, input);
+              input.id = id;
+            });
+          } catch (error) {
+            console.debug("DMN RUNNER AJV:", error);
           }
 
           setDmnRunnerPersistenceJson({
@@ -501,6 +483,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             shouldUpdateFs: false,
             cancellationToken,
           });
+          forceDmnRunnerReRender();
           return;
         }
 
@@ -529,71 +512,15 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerPersistenceService, getFieldDefaultValue, getDefaultValues, jsonSchema, setDmnRunnerPersistenceJson]
+      [dmnRunnerAjv, dmnRunnerPersistenceService, jsonSchema, setDmnRunnerPersistenceJson]
     )
-  );
-
-  const dereferenceExtendedServicesJsonSchema = useCallback(
-    (jsonSchema: ExtendedServicesDmnJsonSchema): ExtendedServicesDmnJsonSchema => {
-      const inputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.InputSet?.properties);
-      const outputSet = dereferenceProperties(jsonSchema, jsonSchema.definitions?.OutputSet?.properties);
-      return {
-        $ref: "#/definitions/InputSet",
-        definitions: {
-          InputSet: { properties: inputSet, type: "object" },
-          OutputSet: { properties: outputSet, type: "object" },
-        },
-      };
-    },
-    []
-  );
-
-  // Unset changed and/or removed types
-  // Set to undefined changed formats;
-  const handleJsonSchemaDifferences = useCallback(
-    <T extends Record<string, any>>(inputs: T, propertiesDifference: Record<string, any>, parentKey?: string): T => {
-      return Object.entries(propertiesDifference).reduce((inputs, [propertyKey, propertyValue]: [string, any]) => {
-        if (propertyKey === "properties") {
-          return handleJsonSchemaDifferences(inputs, propertyValue, parentKey);
-        }
-
-        const fullKey = parentKey ? `${parentKey}.${propertyKey}` : propertyKey;
-        if (
-          propertyValue !== null &&
-          typeof propertyValue === "object" &&
-          (!Object.prototype.hasOwnProperty.call(propertyValue, "type") ||
-            (Object.prototype.hasOwnProperty.call(propertyValue, "type") && propertyValue.type === undefined)) &&
-          (!Object.prototype.hasOwnProperty.call(propertyValue, "format") ||
-            (Object.prototype.hasOwnProperty.call(propertyValue, "format") && propertyValue.format === undefined))
-        ) {
-          // not leaf;
-          return handleJsonSchemaDifferences(inputs, propertyValue, fullKey);
-        }
-
-        if (!propertyValue || propertyValue?.type) {
-          unsetObjectValueByPath(inputs, fullKey);
-          return inputs;
-        }
-
-        if (propertyValue?.format) {
-          setObjectValueByPath(inputs, fullKey, undefined);
-          return inputs;
-        }
-
-        return inputs;
-      }, inputs);
-    },
-    []
   );
 
   // Responsible to set the JSON schema based on the DMN model;
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (
-          props.workspaceFile.extension !== "dmn" ||
-          extendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING
-        ) {
+        if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
           setDmnRunnerContextProviderState({
             type: DmnRunnerProviderActionType.DEFAULT,
             newState: { isExpanded: false },
@@ -611,30 +538,58 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 return;
               }
 
-              setJsonSchema((previousJsonSchema) => {
-                const derefererJsonSchema = dereferenceExtendedServicesJsonSchema(cloneDeep(jsonSchema));
-                // On the first render the previous will be undefined;
-                if (!previousJsonSchema) {
-                  return derefererJsonSchema;
-                }
+              const jsonSchemaDraft4 = {
+                $schema: SCHEMA_DRAFT4,
+                ...jsonSchema,
+              };
 
-                const propertiesDifference = diff(
-                  getObjectValueByPath(previousJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {},
-                  getObjectValueByPath(derefererJsonSchema, JSON_SCHEMA_PROPERTIES_PATH) ?? {}
-                );
+              resolveReferencesAndCheckForRecursion(jsonSchemaDraft4, canceled)
+                .then((resolvedSchema) => {
+                  if (canceled.get() || !resolvedSchema) {
+                    return;
+                  }
 
-                // Add default values and delete changed data types;
-                setDmnRunnerPersistenceJson({
-                  newConfigInputs: (previousConfigInputs) =>
-                    handleJsonSchemaDifferences(cloneDeep(previousConfigInputs), propertiesDifference),
-                  newInputsRow: (previousInputs) =>
-                    cloneDeep(previousInputs).map((inputs) =>
-                      handleJsonSchemaDifferences(inputs, propertiesDifference)
-                    ),
-                  cancellationToken: canceled,
+                  setJsonSchema((previousJsonSchema) => {
+                    // Early bailout in the DMN first render;
+                    // This prevents to set the inputs from the previous DMN
+                    if (!previousJsonSchema) {
+                      return resolvedSchema;
+                    }
+
+                    const validateInputs = dmnRunnerAjv.compile(resolvedSchema);
+
+                    // Add default values and delete changed data types;
+                    setDmnRunnerPersistenceJson({
+                      newConfigInputs: (previousConfigInputs) => {
+                        const newConfigInputs = cloneDeep(previousConfigInputs);
+                        removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
+                        return newConfigInputs;
+                      },
+                      newInputsRow: (previousInputs) => {
+                        return cloneDeep(previousInputs).map((input) => {
+                          const id = input.id;
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
+                          input.id = id;
+                          return { ...getDefaultValues(resolvedSchema), ...input };
+                        });
+                      },
+                      cancellationToken: canceled,
+                    });
+
+                    // This should be done to remove any previous errors or to add new errors
+                    if (Object.keys(diff(previousJsonSchema, resolvedSchema)).length > 0) {
+                      forceDmnRunnerReRender();
+                    }
+                    return resolvedSchema;
+                  });
+                })
+                .catch((err) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  console.log(err);
+                  setJsonSchema(undefined);
                 });
-                return derefererJsonSchema;
-              });
             });
           })
           .catch((err) => {
@@ -643,48 +598,22 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
-        dereferenceExtendedServicesJsonSchema,
+        dmnRunnerAjv,
         extendedServices.client,
         extendedServices.status,
         extendedServicesModelPayload,
-        handleJsonSchemaDifferences,
         props.workspaceFile.extension,
         setDmnRunnerPersistenceJson,
       ]
     )
   );
 
-  const getDefaultValuesForInputs = useCallback((inputs: InputRow) => {
-    return Object.entries(inputs).reduce(
-      (acc, [key, value]) => {
-        if (key === "id") {
-          return acc;
-        }
-        if (typeof value === "string") {
-          acc[key] = "";
-        } else if (typeof value === "number") {
-          acc[key] = null;
-        } else if (typeof value === "boolean") {
-          acc[key] = false;
-        } else if (Array.isArray(value)) {
-          acc[key] = [];
-        } else if (typeof value === "object") {
-          acc[key] = {};
-        }
-        return acc;
-      },
-      { id: generateUuid() } as Record<string, any>
-    );
-  }, []);
-
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setDmnRunnerInputs((previousInputs) => {
         const newInputs = cloneDeep(previousInputs);
-        const index = args.beforeIndex === 0 ? 0 : args.beforeIndex - 1;
-
-        const newInputsRow = getDefaultValuesForInputs(newInputs[index]);
-        newInputs.splice(args.beforeIndex, 0, newInputsRow);
+        const defaultValues = getDefaultValues(jsonSchema ?? {});
+        newInputs.splice(args.beforeIndex, 0, { id: generateUuid(), ...defaultValues });
         return newInputs;
       });
       setDmnRunnerContextProviderState({
@@ -693,7 +622,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       });
       setDmnRunnerResults({ type: DmnRunnerResultsActionType.CLONE_LAST });
     },
-    [setDmnRunnerInputs, getDefaultValuesForInputs]
+    [setDmnRunnerInputs, jsonSchema]
   );
 
   const onRowDuplicated = useCallback(
@@ -715,12 +644,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     (args: { rowIndex: number }) => {
       setDmnRunnerInputs((previousInputs) => {
         const newInputs = cloneDeep(previousInputs);
-        const resetedInputRows = getDefaultValuesForInputs(newInputs[args.rowIndex]);
-        newInputs[args.rowIndex] = resetedInputRows;
+        const defaultValues = getDefaultValues(jsonSchema ?? {});
+        newInputs[args.rowIndex] = { id: generateUuid(), ...defaultValues };
         return newInputs;
       });
     },
-    [setDmnRunnerInputs, getDefaultValuesForInputs]
+    [jsonSchema, setDmnRunnerInputs]
   );
 
   const onRowDeleted = useCallback(
@@ -768,6 +697,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       canBeVisualized,
       configs: dmnRunnerConfigInputs,
       currentInputIndex,
+      dmnRunnerKey,
       dmnRunnerPersistenceJson,
       extendedServicesError,
       inputs: dmnRunnerInputs,
@@ -783,6 +713,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       currentInputIndex,
       dmnRunnerConfigInputs,
       dmnRunnerInputs,
+      dmnRunnerKey,
       dmnRunnerMode,
       dmnRunnerPersistenceJson,
       extendedServicesError,
@@ -815,6 +746,11 @@ export function DmnRunnerExtendedServicesError() {
         </TextContent>
         <EmptyStateBody>
           <p>An error has happened while trying to show your inputs</p>
+          <br />
+          <p>
+            If your DMN file has included models, please check if they still exist. If you have deleted a file that was
+            being used as an included model, please remove its reference in the Included Models tab.
+          </p>
         </EmptyStateBody>
       </EmptyState>
     </div>

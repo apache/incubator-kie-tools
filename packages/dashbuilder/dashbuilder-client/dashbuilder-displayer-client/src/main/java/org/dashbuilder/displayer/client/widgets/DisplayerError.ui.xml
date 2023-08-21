@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2012 Red Hat, Inc. and/or its affiliates.
   ~
@@ -15,13 +14,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'
-             xmlns:b="urn:import:org.gwtbootstrap3.client.ui">
+<ui:UiBinder
+  xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:g='urn:import:com.google.gwt.user.client.ui'
+  xmlns:b="urn:import:org.gwtbootstrap3.client.ui"
+>
 
-  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants"/>
+  <ui:with field="i18n" type="org.dashbuilder.displayer.client.resources.i18n.CommonConstants" />
 
   <ui:style>
     .errorPanel {
@@ -40,18 +40,18 @@
   <g:FlowPanel addStyleNames="{style.errorPanel}">
     <b:Row ui:field="errorMessageRow" addStyleNames="{style.errorRow}">
       <b:Column size="MD_1">
-        <g:Label text="{i18n.error}" addStyleNames="{style.errorLabel}"/>
+        <g:Label text="{i18n.error}" addStyleNames="{style.errorLabel}" />
       </b:Column>
       <b:Column size="MD_3">
-        <g:HTML ui:field="errorMessage" text=""/>
+        <g:HTML ui:field="errorMessage" text="" />
       </b:Column>
     </b:Row>
     <b:Row ui:field="errorCauseRow" addStyleNames="{style.errorRow}">
       <b:Column size="MD_1">
-        <g:Label text="{i18n.cause}" addStyleNames="{style.errorLabel}"/>
+        <g:Label text="{i18n.cause}" addStyleNames="{style.errorLabel}" />
       </b:Column>
       <b:Column size="MD_3">
-        <g:HTML ui:field="errorCause" text=""/>
+        <g:HTML ui:field="errorCause" text="" />
       </b:Column>
     </b:Row>
   </g:FlowPanel>

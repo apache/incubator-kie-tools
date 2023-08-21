@@ -70,7 +70,6 @@ import {
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
 import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
@@ -83,8 +82,8 @@ import {
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { FileSwitcher } from "./FileSwitcher";
-import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
-import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
+import { DeployButtons } from "./Deploy/DeployButtons";
+import { DeployDropdownGroup } from "./Deploy/DeployDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
@@ -94,6 +93,10 @@ import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocat
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { useEnv } from "../env/EnvContext";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
+import { Link } from "react-router-dom";
+import { routes } from "../navigation/Routes";
+import { isEditable } from "../extension";
+import { ConfirmDeleteModal } from "../table";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -153,6 +156,7 @@ export function EditorToolbar(props: Props) {
     isFileSupported: (path: string) => editorEnvelopeLocator.hasMappingFor(path),
     urlString: workspacePromise.data?.descriptor.origin.url?.toString(),
   });
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
@@ -721,10 +725,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
               {!canPushToGitRepository && (
                 <>
                   <Divider />
-                  <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
-                    <Button isInline={true} variant={ButtonVariant.link}>
-                      Configure GitHub token...
-                    </Button>
+                  <DropdownItem>
+                    <Link to={routes.settings.github.path({})}>
+                      <Button isInline={true} variant={ButtonVariant.link}>
+                        Configure GitHub token...
+                      </Button>
+                    </Link>
                   </DropdownItem>
                 </>
               )}
@@ -742,7 +748,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       downloadWorkspaceZip,
       i18n,
       canCreateGitRepository,
-      settingsDispatch,
+      routes,
     ]
   );
 
@@ -840,7 +846,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
   const deleteFileDropdownItem = useMemo(() => {
     return (
-      <DropdownItem key={"delete-dropdown-item"} onClick={deleteWorkspaceFile} ouiaId={"delete-file-button"}>
+      <DropdownItem
+        key={"delete-dropdown-item"}
+        onClick={() => setIsConfirmDeleteModalOpen(true)}
+        ouiaId={"delete-file-button"}
+      >
         <Flex flexWrap={{ default: "nowrap" }}>
           <FlexItem>
             <TrashIcon />
@@ -854,7 +864,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         </Flex>
       </DropdownItem>
     );
-  }, [deleteWorkspaceFile, props.workspaceFile]);
+  }, [props.workspaceFile]);
 
   const pushingAlert = useGlobalAlert(
     useCallback(
@@ -1058,7 +1068,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 )}
 
                 {!canPushToGitRepository && (
-                  <AlertActionLink onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                  <AlertActionLink onClick={() => history.push(routes.settings.github.path({}))}>
                     {`Configure GitHub token...`}
                   </AlertActionLink>
                 )}
@@ -1074,7 +1084,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           </Alert>
         );
       },
-      [canPushToGitRepository, pushNewBranch, settingsDispatch, workspacePromise]
+      [canPushToGitRepository, pushNewBranch, workspacePromise, history, routes]
     )
   );
 
@@ -1281,6 +1291,36 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     [workspacePromise.data?.descriptor.origin.kind, workspacePromise.data?.files.length]
   );
 
+  const deleteSuccessAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }) => {
+      return <Alert variant="success" title={`File deleted successfully`} />;
+    }, []),
+    { durationInSeconds: 2 }
+  );
+
+  const deleteErrorAlert = useGlobalAlert<{ elementsTypeName: string }>(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          variant="danger"
+          title={`Oops, something went wrong while trying to delete the selected file. Please refresh the page and try again. If the problem persists, you can try deleting site data for this application in your browser's settings.`}
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const onConfirmDeleteModalDelete = useCallback(async () => {
+    setIsConfirmDeleteModalOpen(false);
+
+    try {
+      await deleteWorkspaceFile();
+      deleteSuccessAlert.show();
+    } catch (e) {
+      deleteErrorAlert.show();
+    }
+  }, [deleteSuccessAlert, deleteErrorAlert, deleteWorkspaceFile]);
+
   return (
     <PromiseStateWrapper
       promise={workspacePromise}
@@ -1293,7 +1333,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <Button
                     className={"kie-tools--masthead-hoverable"}
                     variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: routes.home.path({}) })}
+                    onClick={() => history.push({ pathname: routes.workspaceWithFiles.path(props.workspaceFile) })}
                   >
                     <AngleLeftIcon />
                   </Button>
@@ -1479,6 +1519,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         </Tooltip>
                       )}
                     </FlexItem>
+                    {!isEditable(props.workspaceFile.name) && (
+                      <FlexItem>
+                        <Text component={TextVariants.small}>Readonly</Text>
+                      </FlexItem>
+                    )}
                   </Flex>
                 </PageHeaderToolsItem>
               </FlexItem>
@@ -1492,7 +1537,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         toggle={
                           <DropdownToggle
                             onToggle={setNewFileDropdownMenuOpen}
-                            isPrimary={true}
+                            toggleVariant="primary"
                             toggleIndicator={CaretDownIcon}
                           >
                             <PlusIcon />
@@ -1522,7 +1567,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     {canBeDeployed && (
                       <ToolbarItem visibility={hideWhenSmall}>
-                        <KieSandboxExtendedServicesButtons workspace={workspace} workspaceFile={props.workspaceFile} />
+                        <DeployButtons workspace={workspace} workspaceFile={props.workspaceFile} />
                       </ToolbarItem>
                     )}
                     {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
@@ -1582,7 +1627,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   {!canPushToGitRepository && (
                                     <>
                                       <Divider />
-                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                      <DropdownItem onClick={() => history.push(routes.settings.github.path({}))}>
                                         <Button isInline={true} variant={ButtonVariant.link}>
                                           Configure GitHub token...
                                         </Button>
@@ -1640,7 +1685,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   {!canPushToGitRepository && (
                                     <>
                                       <Divider />
-                                      <DropdownItem onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+                                      <DropdownItem onClick={() => history.push(routes.settings.github.path({}))}>
                                         <Button isInline={true} variant={ButtonVariant.link}>
                                           Configure GitHub token...
                                         </Button>
@@ -1692,10 +1737,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             ? []
                             : [
                                 <Divider key={"divider-2"} />,
-                                <KieSandboxExtendedServicesDropdownGroup
+                                <DeployDropdownGroup
                                   workspace={workspace}
                                   workspaceFile={props.workspaceFile}
-                                  key="kie-sandbox-extended-services-group"
+                                  key="deploy-group"
                                 />,
                               ]),
                         ]}
@@ -1720,6 +1765,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           <a ref={downloadRef} />
           <a ref={downloadAllRef} />
           <a ref={downloadPreviewRef} />
+          <ConfirmDeleteModal
+            isOpen={isConfirmDeleteModalOpen}
+            onClose={() => setIsConfirmDeleteModalOpen(false)}
+            onDelete={() => onConfirmDeleteModalDelete()}
+            elementsTypeName="file"
+            deleteMessage={
+              <>
+                Deleting this <b>{props.workspaceFile.nameWithoutExtension}</b> file.
+              </>
+            }
+          />
         </>
       )}
     />
@@ -1732,7 +1788,7 @@ export function PushToGitHubAlertActionLinks(props: {
   kind?: WorkspaceKind;
   remoteRef?: string;
 }) {
-  const settingsDispatch = useSettingsDispatch();
+  const history = useHistory();
 
   if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
     throw new Error("Should specify remoteRef for GIT workspaces");
@@ -1741,7 +1797,7 @@ export function PushToGitHubAlertActionLinks(props: {
   return (
     <>
       {!props.canPush && (
-        <AlertActionLink onClick={() => settingsDispatch.open(SettingsTabs.GITHUB)}>
+        <AlertActionLink onClick={() => history.push(routes.settings.github.path({}))}>
           {`Configure GitHub token...`}
         </AlertActionLink>
       )}

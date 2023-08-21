@@ -1,0 +1,47 @@
+datasets:
+  - uuid: products
+    content: >-
+      [
+        ["Computers", "Printer", 7, 4],
+        ["Computers", "Laptop", 3, 2],
+        ["Electronics", "Camera", 10, 7],
+        ["Electronics", "Headphones", 5, 9]
+      ]
+    columns:
+      - id: Section
+        type: LABEL
+      - id: Product
+        type: LABEL
+      - id: Quantity1
+        type: NUMBER
+      - id: Quantity2
+        type:
+pages:
+  - components:
+      - settings:
+          type: Barchart
+          chart:
+            bgColor: DEDEDE
+            width: "800"
+            height: "400"
+            zoom: "true"
+            margin:
+              right: "50"
+              top: "50"
+            legend:
+              show: "true"
+              position: "bottom"
+            grid:
+              x: "false"
+              y: "false"
+          dataSetLookup:
+            uuid: products
+            group:
+              - columnGroup:
+                  source: Product
+                groupFunctions:
+                  - source: Product
+                  - source: Quantity1
+                    function:
+                  - source: Quantity2
+                    function: SUM

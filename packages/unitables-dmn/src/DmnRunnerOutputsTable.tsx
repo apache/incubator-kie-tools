@@ -27,7 +27,9 @@ import { DmnUnitablesI18n } from "./i18n";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
+  BeeTableOperation,
   BeeTableOperationConfig,
   DmnBuiltInDataType,
   generateUuid,
@@ -58,11 +60,16 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
     outputErrorBoundaryRef.current?.reset();
   }, [outputsPropertiesMap]);
 
+  const numberOfResults = useMemo(
+    () => results?.reduce((acc, result) => acc + (result?.length ?? 0), 0) ?? 0,
+    [results]
+  );
+
   return (
     <>
       {outputError ? (
         outputError
-      ) : Array.from(outputsPropertiesMap).length > 0 ? (
+      ) : numberOfResults > 0 ? (
         <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
           <OutputsBeeTable
             scrollableParentRef={scrollableParentRef}
@@ -125,8 +132,8 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
-        group: i18n.rows,
-        items: [],
+        group: i18n.terms.selection.toUpperCase(),
+        items: [{ name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy }],
       },
     ],
     [i18n]
@@ -194,6 +201,19 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
 
         if (value !== null && !Array.isArray(value) && typeof value === "object") {
           return deepFlattenObjectRow(value, myKey, acc);
+        }
+        if (value !== null && Array.isArray(value)) {
+          return value.reduce((acc, v, index) => {
+            if (v !== null && !Array.isArray(v) && typeof v === "object") {
+              return { ...acc, ...deepFlattenObjectRow(v, `${myKey}-${index}`, acc) };
+            } else {
+              const rowValue = getRowValue(v);
+              if (rowValue) {
+                acc[`${myKey}-${index}`] = rowValue;
+              }
+              return acc;
+            }
+          }, acc);
         }
         const rowValue = getRowValue(value);
         if (rowValue) {
@@ -372,9 +392,14 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
     return row.original.id;
   }, []);
 
+  const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+    return [BeeTableOperation.SelectionCopy];
+  }, []);
+
   return (
     <StandaloneBeeTable
       scrollableParentRef={scrollableParentRef}
+      allowedOperations={allowedOperations}
       getColumnKey={getColumnKey}
       getRowKey={getRowKey}
       tableId={id}

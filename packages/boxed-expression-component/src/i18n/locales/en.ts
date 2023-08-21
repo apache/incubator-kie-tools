@@ -75,6 +75,13 @@ export const en: BoxedExpressionEditorI18n = {
   },
   inputClause: "INPUT CLAUSE",
   invocation: "Invocation",
+  insert: "Insert",
+  insertDirections: {
+    above: "Above",
+    below: "Below",
+    toTheLeft: "To the left",
+    toTheRight: "To the right",
+  },
   list: "List",
   literal: "Literal",
   manage: "Manage",

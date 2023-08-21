@@ -14,14 +14,35 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/dmn-dev-deployment-base-image-env/env")],
-  {
-    vars: varsWithName({}),
-    get env() {
-      return {};
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({
+    DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: {
+      default: "quay.io",
+      description: "The image registry.",
     },
-  }
-);
+    DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: {
+      default: "kie-tools",
+      description: "The image registry account.",
+    },
+    DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: {
+      default: "dmn-dev-deployment-base-image",
+      description: "The image name.",
+    },
+    DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags: {
+      default: "daily-dev",
+      description: "The image tag.",
+    },
+  }),
+  get env() {
+    return {
+      dmnDevDeploymentBaseImage: {
+        registry: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry),
+        account: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT_BASE_IMAGE__account),
+        name: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT_BASE_IMAGE__name),
+        tags: getOrDefault(this.vars.DMN_DEV_DEPLOYMENT_BASE_IMAGE__buildTags),
+      },
+    };
+  },
+});

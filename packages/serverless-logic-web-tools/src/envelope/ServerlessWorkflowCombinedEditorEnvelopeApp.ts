@@ -16,11 +16,24 @@
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
+import {
+  ServerlessWorkflowCombinedEditorApi,
+  ServerlessWorkflowCombinedEditorChannelApi,
+  ServerlessWorkflowCombinedEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
+import { ServerlessWorkflowCombinedEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/envelope";
 
-EditorEnvelope.init({
+EditorEnvelope.initCustom<
+  ServerlessWorkflowCombinedEditorApi,
+  ServerlessWorkflowCombinedEditorEnvelopeApi,
+  ServerlessWorkflowCombinedEditorChannelApi
+>({
   container: document.getElementById("swf-combined-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowCombinedEditorFactory(),
+  apiImplFactory: {
+    create: (args) =>
+      new ServerlessWorkflowCombinedEditorEnvelopeApiImpl(args, new ServerlessWorkflowCombinedEditorFactory()),
+  },
   keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });

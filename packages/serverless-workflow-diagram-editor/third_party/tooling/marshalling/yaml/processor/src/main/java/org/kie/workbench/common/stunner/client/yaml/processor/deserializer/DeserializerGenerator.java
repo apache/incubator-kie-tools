@@ -41,7 +41,6 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLContextProvider;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.YAMLDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean.AbstractBeanYAMLDeserializer;
@@ -49,7 +48,6 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.be
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean.HasDeserializerAndParameters;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean.Instance;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.deser.bean.InstanceBuilder;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.stream.YAMLReader;
 import org.kie.workbench.common.stunner.client.yaml.processor.TypeUtils;
 import org.kie.workbench.common.stunner.client.yaml.processor.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.yaml.processor.definition.BeanDefinition;
@@ -71,7 +69,6 @@ public class DeserializerGenerator extends AbstractGenerator {
 
   @Override
   protected void configureClassType(BeanDefinition type) {
-    cu.addImport(YAMLContextProvider.class);
     cu.addImport(YAMLDeserializationContext.class);
     cu.addImport(YAMLDeserializer.class);
     cu.addImport(AbstractBeanYAMLDeserializer.class);
@@ -81,7 +78,6 @@ public class DeserializerGenerator extends AbstractGenerator {
     cu.addImport(Map.class);
     cu.addImport(HashMap.class);
     cu.addImport(InstanceBuilder.class);
-    cu.addImport(YAMLReader.class);
     cu.addImport(type.getQualifiedName());
 
     declaration

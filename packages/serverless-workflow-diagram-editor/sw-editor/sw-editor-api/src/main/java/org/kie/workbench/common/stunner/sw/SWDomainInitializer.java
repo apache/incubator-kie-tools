@@ -23,6 +23,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.DomainInitializer;
+import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
@@ -74,7 +76,6 @@ public class SWDomainInitializer {
     public static final String LABEL_ACTION = "action";
     public static final String LABEL_ACTIONS = "actions";
     public static final String LABEL_METADATA = "metadata";
-    public static final String LABEL_STATE = "state";
     public static final String LABEL_TRANSITION = "transition";
     public static final String LABEL_TRANSITION_START = "transition_start";
     public static final String LABEL_TRANSITION_ERROR = "transition_error";
@@ -83,6 +84,14 @@ public class SWDomainInitializer {
     public static final String LABEL_TRANSITION_DEFAULT_CONDITION = "transition_default_condition";
     public static final String LABEL_TRANSITION_COMPENSATION = "transition_compensation";
     public static final String LABEL_TRANSITION_ACTION = "transition_action";
+    public static final String LABEL_INJECT_STATE = "inject_state";
+    public static final String LABEL_EVENT_STATE = "event_state";
+    public static final String LABEL_OPERATION_STATE = "operation_state";
+    public static final String LABEL_SWITCH_STATE = "switch_state";
+    public static final String LABEL_SLEEP_STATE = "sleep_state";
+    public static final String LABEL_PARALLEL_STATE = "parallel_state";
+    public static final String LABEL_FOREACH_STATE = "foreach_state";
+    public static final String LABEL_CALLBACK_STATE = "callback_state";
 
     public void initialize() {
         domainInitializer
@@ -95,6 +104,11 @@ public class SWDomainInitializer {
                         return SWEditor.class;
                     }
                 })
+
+                // Element Factories
+                .initializeElementFactory(NodeFactory.class, CATEGORY_STATES)
+                .initializeElementFactory(EdgeFactory.class, CATEGORY_TRANSITIONS)
+
                 // Categories.
                 .initializeCategory(Workflow.class, CATEGORY_STATES)
                 .initializeCategory(EventRef.class, CATEGORY_EVENTS)
@@ -123,30 +137,16 @@ public class SWDomainInitializer {
                 .initializeCategory(DefaultConditionTransition.class, CATEGORY_TRANSITIONS)
                 .initializeCategory(CompensationTransition.class, CATEGORY_TRANSITIONS)
                 .initializeCategory(ActionTransition.class, CATEGORY_TRANSITIONS)
+
                 // Labels.
                 .initializeLabels(Workflow.class, LABEL_WORKFLOW)
                 .initializeLabels(EventRef.class, LABEL_ROOT_NODE, LABEL_EVENT)
                 .initializeLabels(OnEvent.class, LABEL_ROOT_NODE, LABEL_ON_EVENTS)
                 .initializeLabels(EventTimeout.class, LABEL_ROOT_NODE, LABEL_TIMEOUT)
-                .initializeLabels(Start.class, LABEL_ROOT_NODE, LABEL_START)
-                .initializeLabels(End.class, LABEL_ROOT_NODE, LABEL_END)
                 .initializeLabels(ActionsContainer.class, LABEL_ROOT_NODE, LABEL_ACTIONS)
                 .initializeLabels(CallFunctionAction.class, LABEL_ROOT_NODE, LABEL_ACTION)
                 .initializeLabels(CallSubflowAction.class, LABEL_ROOT_NODE, LABEL_ACTION)
                 .initializeLabels(Metadata.class, LABEL_ROOT_NODE, LABEL_METADATA)
-                .initializeLabels(State.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(InjectState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(SwitchState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(EventState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(OperationState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(SleepState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(ParallelState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(ForEachState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(ForEachState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(ForEachState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(ForEachState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(ForEachState.class, LABEL_ROOT_NODE, LABEL_STATE)
-                .initializeLabels(CallbackState.class, LABEL_ROOT_NODE, LABEL_STATE)
                 .initializeLabels(Transition.class, LABEL_TRANSITION)
                 .initializeLabels(StartTransition.class, LABEL_TRANSITION, LABEL_TRANSITION_START)
                 .initializeLabels(ErrorTransition.class, LABEL_TRANSITION, LABEL_TRANSITION_ERROR)
@@ -155,73 +155,377 @@ public class SWDomainInitializer {
                 .initializeLabels(DefaultConditionTransition.class, LABEL_TRANSITION, LABEL_TRANSITION_DEFAULT_CONDITION)
                 .initializeLabels(CompensationTransition.class, LABEL_TRANSITION, LABEL_TRANSITION_COMPENSATION)
                 .initializeLabels(ActionTransition.class, LABEL_TRANSITION_ACTION)
-                // Rules.
+                .initializeLabels(Start.class, LABEL_ROOT_NODE, LABEL_START)
+                .initializeLabels(End.class, LABEL_ROOT_NODE, LABEL_END)
+                .initializeLabels(InjectState.class, LABEL_ROOT_NODE, LABEL_INJECT_STATE)
+                .initializeLabels(EventState.class, LABEL_ROOT_NODE, LABEL_EVENT_STATE)
+                .initializeLabels(OperationState.class, LABEL_ROOT_NODE, LABEL_OPERATION_STATE)
+                .initializeLabels(SwitchState.class, LABEL_ROOT_NODE, LABEL_SWITCH_STATE)
+                .initializeLabels(SleepState.class, LABEL_ROOT_NODE, LABEL_SLEEP_STATE)
+                .initializeLabels(ParallelState.class, LABEL_ROOT_NODE, LABEL_PARALLEL_STATE)
+                .initializeLabels(ForEachState.class, LABEL_ROOT_NODE, LABEL_FOREACH_STATE)
+                .initializeLabels(CallbackState.class, LABEL_ROOT_NODE, LABEL_CALLBACK_STATE)
+
+                // Occurrence Rules
+                .setOccurrences(LABEL_WORKFLOW, 0, 1)
+                .setOccurrences(LABEL_START, 0, 1)
+                .setOccurrences(LABEL_END, 0, 1)
+                .setOccurrences(LABEL_INJECT_STATE, 0, -1)
+                .setOccurrences(LABEL_EVENT_STATE, 0, -1)
+                .setOccurrences(LABEL_OPERATION_STATE, 0, -1)
+                .setOccurrences(LABEL_SWITCH_STATE, 0, -1)
+                .setOccurrences(LABEL_SLEEP_STATE, 0, -1)
+                .setOccurrences(LABEL_PARALLEL_STATE, 0, -1)
+                .setOccurrences(LABEL_FOREACH_STATE, 0, -1)
+                .setOccurrences(LABEL_CALLBACK_STATE, 0, -1)
+
+                // Docking Rules
+                .setDockingRule(State.class, LABEL_TIMEOUT)
+
+                // Containment Rules
                 .setContainmentRule(OnEvent.class, LABEL_EVENT)
                 .setContainmentRule(Workflow.class, LABEL_ROOT_NODE)
                 .setContainmentRule(SWDefinitionSet.class, LABEL_WORKFLOW)
                 .setContainmentRule(ActionsContainer.class, LABEL_ACTION)
-                .setConnectionRule(DataConditionTransition.class,
-                                   new String[]{LABEL_STATE, LABEL_STATE},
-                                   new String[]{LABEL_STATE, LABEL_END})
-                .setConnectionRule(DefaultConditionTransition.class,
-                                   new String[]{LABEL_STATE, LABEL_STATE},
-                                   new String[]{LABEL_STATE, LABEL_END})
-                .setConnectionRule(ErrorTransition.class,
-                                   new String[]{LABEL_STATE, LABEL_STATE},
-                                   new String[]{LABEL_STATE, LABEL_END})
-                .setConnectionRule(EventConditionTransition.class,
-                                   new String[]{LABEL_STATE, LABEL_STATE},
-                                   new String[]{LABEL_STATE, LABEL_END})
+
+                // Connection Rules
+                .setConnectionRule(StartTransition.class,
+                                   // Start State
+                                   new String[]{LABEL_START, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_START, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_START, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_START, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_START, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_START, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_START, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_START, LABEL_CALLBACK_STATE})
                 .setConnectionRule(Transition.class,
-                                   new String[]{LABEL_STATE, LABEL_STATE},
-                                   new String[]{LABEL_STATE, LABEL_END})
-                .setConnectionRule(CompensationTransition.class, new String[]{LABEL_STATE, LABEL_STATE})
-                .setConnectionRule(StartTransition.class, new String[]{LABEL_START, LABEL_STATE})
+                                   // Inject State
+                                   new String[]{LABEL_INJECT_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_CALLBACK_STATE},
+                                   // Event State
+                                   new String[]{LABEL_EVENT_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_CALLBACK_STATE},
+                                   // Operation State
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_CALLBACK_STATE},
+                                   // Sleep State
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_SLEEP_STATE, LABEL_CALLBACK_STATE},
+                                   // Parallel State
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_CALLBACK_STATE},
+                                   // Foreach State
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_CALLBACK_STATE},
+                                   // Callback State
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_CALLBACK_STATE})
+                .setConnectionRule(CompensationTransition.class,
+                                   // Inject State
+                                   new String[]{LABEL_INJECT_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_INJECT_STATE, LABEL_CALLBACK_STATE},
+                                   // Event State
+                                   new String[]{LABEL_EVENT_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_CALLBACK_STATE},
+                                   // Operation State
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_CALLBACK_STATE},
+                                   // Switch State
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_CALLBACK_STATE},
+                                   // Parallel State
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_CALLBACK_STATE},
+                                   // Foreach State
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_CALLBACK_STATE},
+                                   // Callback State
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_CALLBACK_STATE})
+                .setConnectionRule(ErrorTransition.class,
+                                   // Event State
+                                   new String[]{LABEL_EVENT_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_EVENT_STATE, LABEL_CALLBACK_STATE},
+                                   // Operation State
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_OPERATION_STATE, LABEL_CALLBACK_STATE},
+                                   // Switch State
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_CALLBACK_STATE},
+                                   // Parallel State
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_PARALLEL_STATE, LABEL_CALLBACK_STATE},
+                                   // Foreach State
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_FOREACH_STATE, LABEL_CALLBACK_STATE},
+                                   // Callback State
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_CALLBACK_STATE, LABEL_CALLBACK_STATE})
+                .setConnectionRule(DataConditionTransition.class,
+                                   // Switch State
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_CALLBACK_STATE})
+                .setConnectionRule(DefaultConditionTransition.class,
+                                   // Switch State
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_CALLBACK_STATE})
+                .setConnectionRule(EventConditionTransition.class,
+                                   // Switch State
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_INJECT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_EVENT_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_OPERATION_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SWITCH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_SLEEP_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_PARALLEL_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_FOREACH_STATE},
+                                   new String[]{LABEL_SWITCH_STATE, LABEL_CALLBACK_STATE})
                 .setConnectionRule(ActionTransition.class, new String[]{LABEL_EVENT, LABEL_ACTION})
-                .setDockingRule(State.class, LABEL_TIMEOUT)
-                .setOccurrences(LABEL_WORKFLOW, 0, 1)
-                .setOccurrences(LABEL_START, 0, 1)
-                .setOccurrences(LABEL_END, 0, 1)
-                .setEdgeOccurrences(CompensationTransition.class, LABEL_STATE, true, 0, -1)
-                .setEdgeOccurrences(CompensationTransition.class, LABEL_STATE, false, 0, 1)
-                .setEdgeOccurrences(CompensationTransition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(CompensationTransition.class, LABEL_START, false, 0, 0)
-                .setEdgeOccurrences(CompensationTransition.class, LABEL_END, true, 0, 0)
-                .setEdgeOccurrences(CompensationTransition.class, LABEL_END, false, 0, 0)
-                .setEdgeOccurrences(DataConditionTransition.class, LABEL_STATE, true, 0, -1)
-                .setEdgeOccurrences(DataConditionTransition.class, LABEL_STATE, false, 0, 1)
-                .setEdgeOccurrences(DataConditionTransition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(DataConditionTransition.class, LABEL_START, false, 0, 0)
-                .setEdgeOccurrences(DataConditionTransition.class, LABEL_END, false, 0, 0)
-                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_STATE, true, 0, -1)
-                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_STATE, false, 0, 1)
-                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_START, false, 0, 0)
-                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_END, false, 0, 0)
-                .setEdgeOccurrences(ErrorTransition.class, LABEL_STATE, true, 0, -1)
-                .setEdgeOccurrences(ErrorTransition.class, LABEL_STATE, false, 0, -1)
-                .setEdgeOccurrences(ErrorTransition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(ErrorTransition.class, LABEL_START, false, 0, 0)
-                .setEdgeOccurrences(ErrorTransition.class, LABEL_END, false, 0, 0)
-                .setEdgeOccurrences(EventConditionTransition.class, LABEL_STATE, true, 0, -1)
-                .setEdgeOccurrences(EventConditionTransition.class, LABEL_STATE, false, 0, 1)
-                .setEdgeOccurrences(EventConditionTransition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(EventConditionTransition.class, LABEL_START, false, 0, 0)
-                .setEdgeOccurrences(EventConditionTransition.class, LABEL_END, false, 0, 0)
-                .setEdgeOccurrences(StartTransition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(StartTransition.class, LABEL_START, false, 0, 1)
-                .setEdgeOccurrences(Transition.class, LABEL_STATE, true, 0, -1)
-                .setEdgeOccurrences(Transition.class, LABEL_STATE, false, 0, 1)
-                .setEdgeOccurrences(Transition.class, LABEL_START, true, 0, 0)
-                .setEdgeOccurrences(Transition.class, LABEL_START, false, 0, 0)
-                .setEdgeOccurrences(Transition.class, LABEL_END, false, 0, 0)
+
+                // Edge Occurrence Rules
+                // Event
                 .setEdgeOccurrences(ActionTransition.class, LABEL_EVENT, true, 0, 0)
                 .setEdgeOccurrences(ActionTransition.class, LABEL_EVENT, false, 0, -1)
+                // Action
                 .setEdgeOccurrences(ActionTransition.class, LABEL_ACTION, true, 0, -1)
                 .setEdgeOccurrences(ActionTransition.class, LABEL_ACTION, false, 0, 0)
+                // Start State
+                .setEdgeOccurrences(StartTransition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(StartTransition.class, LABEL_START, false, 0, 1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_START, false, 0, 0)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_START, false, 0, 0)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_START, false, 0, 0)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_START, false, 0, 0)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_START, false, 0, 0)
+                .setEdgeOccurrences(Transition.class, LABEL_START, true, 0, 0)
+                .setEdgeOccurrences(Transition.class, LABEL_START, false, 0, 0)
                 .setEdgeOccurrences(ActionTransition.class, LABEL_START, true, 0, 0)
                 .setEdgeOccurrences(ActionTransition.class, LABEL_START, false, 0, 0)
+                // End State
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_END, true, 0, 0)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_END, false, 0, 0)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_END, false, 0, 0)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_END, false, 0, 0)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_END, false, 0, 0)
+                .setEdgeOccurrences(Transition.class, LABEL_END, false, 0, 0)
                 .setEdgeOccurrences(ActionTransition.class, LABEL_END, false, 0, 0)
+                // Inject State
+                .setEdgeOccurrences(Transition.class, LABEL_INJECT_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_INJECT_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_INJECT_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_INJECT_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_INJECT_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_INJECT_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_INJECT_STATE, false, 0, 1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_INJECT_STATE, false, 0, 1)
+                // Event State
+                .setEdgeOccurrences(Transition.class, LABEL_EVENT_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_EVENT_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_EVENT_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_EVENT_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_EVENT_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_EVENT_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_EVENT_STATE, false, 0, 1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_EVENT_STATE, false, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_EVENT_STATE, false, 0, 1)
+                // Operation State
+                .setEdgeOccurrences(Transition.class, LABEL_OPERATION_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_OPERATION_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_OPERATION_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_OPERATION_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_OPERATION_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_OPERATION_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_OPERATION_STATE, false, 0, 1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_OPERATION_STATE, false, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_OPERATION_STATE, false, 0, 1)
+                // Switch State
+                .setEdgeOccurrences(Transition.class, LABEL_SWITCH_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_SWITCH_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_SWITCH_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_SWITCH_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_SWITCH_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_SWITCH_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_SWITCH_STATE, false, 1, 1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_SWITCH_STATE, false, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_SWITCH_STATE, false, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_SWITCH_STATE, false, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_SWITCH_STATE, false, 0, 1)
+                // Sleep State
+                .setEdgeOccurrences(Transition.class, LABEL_SLEEP_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_SLEEP_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_SLEEP_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_SLEEP_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_SLEEP_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_SLEEP_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_SLEEP_STATE, false, 0, 1)
+                // Parallel State
+                .setEdgeOccurrences(Transition.class, LABEL_PARALLEL_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_PARALLEL_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_PARALLEL_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_PARALLEL_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_PARALLEL_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_PARALLEL_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_PARALLEL_STATE, false, 0, 1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_PARALLEL_STATE, false, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_PARALLEL_STATE, false, 0, 1)
+                // Foreach State
+                .setEdgeOccurrences(Transition.class, LABEL_FOREACH_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_FOREACH_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_FOREACH_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_FOREACH_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_FOREACH_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_FOREACH_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_FOREACH_STATE, false, 0, 1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_FOREACH_STATE, false, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_FOREACH_STATE, false, 0, 1)
+                // Callback State
+                .setEdgeOccurrences(Transition.class, LABEL_CALLBACK_STATE, true, 0, -1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_CALLBACK_STATE, true, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_CALLBACK_STATE, true, 0, -1)
+                .setEdgeOccurrences(EventConditionTransition.class, LABEL_CALLBACK_STATE, true, 0, -1)
+                .setEdgeOccurrences(DefaultConditionTransition.class, LABEL_CALLBACK_STATE, true, 0, -1)
+                .setEdgeOccurrences(DataConditionTransition.class, LABEL_CALLBACK_STATE, true, 0, -1)
+                .setEdgeOccurrences(Transition.class, LABEL_CALLBACK_STATE, false, 0, 1)
+                .setEdgeOccurrences(ErrorTransition.class, LABEL_CALLBACK_STATE, false, 0, -1)
+                .setEdgeOccurrences(CompensationTransition.class, LABEL_CALLBACK_STATE, false, 0, 1)
+
                 .initializeRules();
     }
 }

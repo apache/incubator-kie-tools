@@ -14,4 +14,5 @@
  * limitations under the License.
  */
 
+export * from "./api";
 export * from "./editor";

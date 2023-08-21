@@ -17,8 +17,6 @@
 import {
   ServerlessWorkflowCombinedEditorChannelApi,
   SwfStaticEnvelopeContentProviderChannelApi,
-  SwfFeatureToggle,
-  SwfFeatureToggleChannelApi,
   SwfPreviewOptions,
   SwfPreviewOptionsChannelApi,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
@@ -51,7 +49,6 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
 {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
     private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
@@ -161,14 +158,6 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
     this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
 
-  public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
-    return (
-      this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
-        defaultValue: { stunnerEnabled: true },
-      }
-    );
-  }
-
   kogitoSwfPreviewOptions_get(): SharedValueProvider<SwfPreviewOptions> {
     return (
       this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
@@ -185,24 +174,12 @@ export class StandaloneServerlessWorkflowCombinedEditorChannelApi
     );
   }
 
-  public kogitoSwfGetMermaidEnvelopeContent(): SharedValueProvider<string> {
-    return (
-      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetMermaidEnvelopeContent() ?? {
-        defaultValue: "",
-      }
-    );
-  }
-
   public kogitoSwfGetTextEditorEnvelopeContent(): SharedValueProvider<string> {
     return (
       this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ?? {
         defaultValue: "",
       }
     );
-  }
-
-  public kogitoSwfCombinedEditor_moveCursorToPosition(_position: MonacoPosition): void {
-    // no-op
   }
 
   kogitoSwfCombinedEditor_combinedEditorReady(): void {

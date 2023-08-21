@@ -39,6 +39,12 @@ declare namespace Cypress {
      * @param opts optional - config object
      */
     ouia<S = any>(locator: { ouiaType?: string; ouiaId?: string }, opts?: Record<string, any>): Chainable<S>;
+
+    /**
+     * Go to a link in the sidebar menu
+     * @param locator component id according to OUIA specification
+     */
+    goToSidebarLink(locator: { ouiaId: string }): void;
   }
 }
 
@@ -84,4 +90,14 @@ Cypress.Commands.add("ouia", { prevSubject: "optional" }, (subject, locator, opt
   } else {
     cy.get(selector, options);
   }
+});
+
+Cypress.Commands.add("goToSidebarLink", { prevSubject: false }, (locator) => {
+  cy.get("#page-sidebar").then((pageSidebar) => {
+    if (!pageSidebar.is(":visible")) {
+      cy.get("#nav-toggle").click();
+    }
+    cy.ouia({ ouiaId: locator.ouiaId }).click();
+    cy.get("#nav-toggle").click();
+  });
 });

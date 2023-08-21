@@ -23,12 +23,11 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
     cy.ouia({ ouiaId: "new-sw.json-button" }).should("have.text", "JSON");
     cy.ouia({ ouiaId: "new-sw.yaml-button" }).should("have.text", "YAML");
 
-    cy.ouia({ ouiaId: "Decision-card" }).find("button").should("have.length", 2);
-    cy.ouia({ ouiaId: "new-yard.json-button" }).should("have.text", "JSON");
+    cy.ouia({ ouiaId: "Decision-card" }).find("button").should("have.length", 1);
     cy.ouia({ ouiaId: "new-yard.yaml-button" }).should("have.text", "YAML");
 
     cy.ouia({ ouiaId: "Dashboard-card" }).find("button").should("have.length", 1);
-    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "New Dashboard");
+    cy.ouia({ ouiaId: "new-dash.yaml-button" }).should("have.text", "YAML");
   });
 
   it("should create a new JSON serverless workflow", () => {
@@ -47,7 +46,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
-          .should("contain.value", '"id": "Workflow unique identifier",')
+          .should("contain.value", '"id": "workflow_unique_identifier",')
           .should("contain.value", '"name": "Workflow name",')
           .should("contain.value", '"start": "StartState",');
 
@@ -86,7 +85,7 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
 
         // check basic workflow parameters
         cy.get(".monaco-editor textarea")
-          .should("contain.value", "id: 'Workflow unique identifier'")
+          .should("contain.value", "id: 'workflow_unique_identifier'")
           .should("contain.value", "name: 'Workflow name'")
           .should("contain.value", "start: 'StartState'");
 

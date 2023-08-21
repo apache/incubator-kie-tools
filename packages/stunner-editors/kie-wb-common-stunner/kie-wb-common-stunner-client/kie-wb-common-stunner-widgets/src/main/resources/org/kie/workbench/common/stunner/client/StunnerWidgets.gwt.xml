@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,20 +14,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
-
+<!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.5.1//EN"
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.1/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='com.google.gwt.user.User'/>
-  <inherits name="org.gwtbootstrap3.extras.notify.Notify"/>
-  <inherits name="org.gwtbootstrap3.extras.animate.Animate"/>
-  <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient"/>
-  <inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi"/>
-  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
-  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
-  <inherits name="org.uberfire.client.views.PatternFly"/>
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name="org.gwtbootstrap3.extras.notify.Notify" />
+  <inherits name="org.gwtbootstrap3.extras.animate.Animate" />
+  <inherits name="org.kie.workbench.common.stunner.svg.StunnerSvgClient" />
+  <inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi" />
+  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore" />
+  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons" />
+  <inherits name="org.uberfire.client.views.PatternFly" />
 
-  <source path="widgets"/>
+  <source path="widgets" />
 
 </module>

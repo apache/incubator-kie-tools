@@ -15,6 +15,7 @@
  */
 
 import { en } from "./locales";
+import { de } from "./locales";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 import { NotificationsApiVsCodeI18nDictionary } from "./NotificationsApiVsCodeI18nDictionary";
 
@@ -25,4 +26,5 @@ export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVs
 
 export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
   ["en", en],
+  ["de", de],
 ]);

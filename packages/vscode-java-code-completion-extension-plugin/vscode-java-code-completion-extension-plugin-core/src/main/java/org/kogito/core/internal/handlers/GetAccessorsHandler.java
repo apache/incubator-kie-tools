@@ -35,7 +35,6 @@ import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
 
-
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
     private final JavaEngine javaEngine;

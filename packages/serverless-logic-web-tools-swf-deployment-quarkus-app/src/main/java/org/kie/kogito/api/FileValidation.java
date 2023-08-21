@@ -22,5 +22,5 @@ import org.kie.kogito.model.FileValidationResult;
 
 public interface FileValidation {
 
-    FileValidationResult isValid(Path path);
+    FileValidationResult validate(Path path);
 }

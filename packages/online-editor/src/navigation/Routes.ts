@@ -22,6 +22,7 @@ export enum QueryParams {
   BRANCH = "branch",
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
+  INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurelyDisableTlsCertificateValidation",
   CONFIRM = "confirm",
 }
 
@@ -132,7 +133,12 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   import: new Route<{
-    queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.AUTH_SESSION_ID | QueryParams.CONFIRM;
+    queryParams:
+      | QueryParams.URL
+      | QueryParams.BRANCH
+      | QueryParams.AUTH_SESSION_ID
+      | QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
+      | QueryParams.CONFIRM;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{
@@ -145,8 +151,8 @@ export const routes = {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
       kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
-      kieHorizontalLogoDefault: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_default.svg`),
-      kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
+      appLogoDefault: new Route<{}>(() => `images/app_logo_rgb_fullcolor_default.svg`),
+      appLogoReverse: new Route<{}>(() => `images/app_logo_rgb_fullcolor_reverse.svg`),
       dmnRunnerGif: new Route<{}>(() => `images/dmn-runner2.gif`),
       dmnDevDeploymentGif: new Route<{}>(() => `images/dmn-dev-deployment.gif`),
       kubernetesLogo: new Route<{}>(() => `images/kubernetes-logo.svg`),

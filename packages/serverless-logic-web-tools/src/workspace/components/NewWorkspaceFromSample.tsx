@@ -24,11 +24,9 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParam } from "../../queryParams/QueryParamsContext";
-import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
-import { KIE_SAMPLES_REPO } from "../../home/sample/SampleApi";
-import { useSampleDispatch } from "../../home/sample/hooks/SampleContext";
+import { ErrorPage } from "../../error/ErrorPage";
+import { useSampleDispatch } from "../../samples/hooks/SampleContext";
 
 export function NewWorkspaceFromSample() {
   const sampleDispatch = useSampleDispatch();
@@ -56,28 +54,26 @@ export function NewWorkspaceFromSample() {
         });
       })
       .catch((e) => {
-        setOpeningError(e.toString());
+        setOpeningError(e.message);
       });
   }, [history, routes.workspaceWithFilePath, sampleId, workspaces, sampleDispatch]);
 
   return (
     <>
-      <OnlineEditorPage>
-        {openingError && <EditorPageErrorPage path={`${KIE_SAMPLES_REPO.path}/${sampleId}`} errors={[openingError]} />}
-        {!openingError && (
-          <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
-            <Bullseye>
-              <TextContent>
-                <Bullseye>
-                  <Spinner />
-                </Bullseye>
-                <br />
-                <Text component={TextVariants.p}>{`Loading sample...`}</Text>
-              </TextContent>
-            </Bullseye>
-          </PageSection>
-        )}
-      </OnlineEditorPage>
+      {openingError && <ErrorPage kind="Sample" sampleId={sampleId} errors={[openingError]} />}
+      {!openingError && (
+        <PageSection variant={"light"} isFilled={true} padding={{ default: "noPadding" }}>
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Loading sample...`}</Text>
+            </TextContent>
+          </Bullseye>
+        </PageSection>
+      )}
     </>
   );
 }

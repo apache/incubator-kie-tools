@@ -27,11 +27,18 @@ import org.kie.kogito.model.FileValidationResult;
 public class PropertiesValidation implements FileValidation {
 
     @Override
-    public FileValidationResult isValid(final Path path) {
+    public FileValidationResult validate(final Path path) {
         try {
             final Properties properties = new Properties();
             try (var inputStream = Files.newInputStream(path)) {
                 properties.load(inputStream);
+            }
+            for (String key : properties.stringPropertyNames()) {
+                final String value = properties.getProperty(key);
+
+                if (key.isEmpty() || value.isEmpty()) {
+                    return FileValidationResult.createInvalidResult(path, "Key or value cannot be empty");
+                }
             }
             return FileValidationResult.createValidResult(path);
         } catch (IOException e) {

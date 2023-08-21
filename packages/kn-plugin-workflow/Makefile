@@ -27,8 +27,10 @@ MAIN_PATH        := cmd/main.go
 METADATA_PATH                 := github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata
 SET_QUARKUS_PLATFORM_GROUP_ID := $(METADATA_PATH).QuarkusPlatformGroupId=$(QUARKUS_PLATFORM_GROUP_ID)
 SET_QUARKUS_VERSION           := $(METADATA_PATH).QuarkusVersion=$(QUARKUS_VERSION)
+SET_DEV_MODE_IMAGE            := $(METADATA_PATH).DevModeImage=$(DEV_MODE_IMAGE)
 SET_VERSION                   := $(METADATA_PATH).PluginVersion=$(PLUGIN_VERSION)
-LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION)"
+SET_KOGITO_VERSION            := $(METADATA_PATH).KogitoVersion=$(KOGITO_VERSION)
+LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION) -X $(SET_DEV_MODE_IMAGE) -X $(SET_KOGITO_VERSION)"
 
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)

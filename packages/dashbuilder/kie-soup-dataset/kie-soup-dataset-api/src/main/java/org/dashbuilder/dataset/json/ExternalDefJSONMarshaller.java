@@ -16,10 +16,12 @@
 package org.dashbuilder.dataset.json;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.def.ExternalServiceType;
+import org.dashbuilder.dataset.def.HttpMethod;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonObject;
 
@@ -34,8 +36,13 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
     public static final String EXPRESSION = "expression";
     public static final String CONTENT = "content";
     public static final String HEADERS = "headers";
+    public static final String QUERY = "query";
     public static final String ACCUMULATE = "accumulate";
     public static final String TYPE = "type";
+    public static final String JOIN = "join";
+    public static final String FORM = "form";
+    public static final String METHOD = "method";
+    public static final String PATH = "path";
 
     @Override
     public void fromJson(ExternalDataSetDef def, JsonObject json) {
@@ -44,12 +51,13 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var content = json.getString(CONTENT);
         var expression = json.getString(EXPRESSION);
         var headers = json.getObject(HEADERS);
+        var form = json.getObject(FORM);
+        var query = json.getObject(QUERY);
         var accumulate = json.getBoolean(ACCUMULATE);
         var type = json.getString(TYPE);
-
-        if (isBlank(url) && isBlank(content)) {
-            throw new IllegalArgumentException("External Data Sets must have \"url\" or \"content\" field");
-        }
+        var path = json.getString(PATH);
+        var method = json.getString(METHOD);
+        var join = json.getArray(JOIN);
 
         if (!isBlank(url)) {
             def.setUrl(url);
@@ -63,9 +71,27 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             def.setExpression(expression);
         }
 
+        if (!isBlank(method)) {
+            def.setMethod(HttpMethod.byName(method));
+        }
+
+        if (!isBlank(path)) {
+            def.setPath(path);
+        }
+
         if (headers != null) {
-            var headersMap = getHeaders(headers);
+            var headersMap = getMap(headers);
             def.setHeaders(headersMap);
+        }
+
+        if (query != null) {
+            var queryMap = getMap(query);
+            def.setQuery(queryMap);
+        }
+
+        if (form != null) {
+            var formMap = getMap(form);
+            def.setForm(formMap);
         }
 
         if (!isBlank(type)) {
@@ -73,6 +99,12 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             def.setType(serviceType);
         }
 
+        def.setJoin(new HashSet<>());
+        if (join != null) {
+            for (var i = 0; i < join.length(); i++) {
+                def.getJoin().add(join.getString(i));
+            }
+        }
         def.setDynamic(dynamic);
         def.setAccumulate(accumulate);
     }
@@ -89,18 +121,49 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
             json.put(TYPE, def.getType().name());
         }
 
+        if (def.getMethod() != null) {
+            json.put(METHOD, def.getMethod().name());
+        }
+
+        if (def.getPath() != null) {
+            json.put(PATH, def.getPath());
+        }
+
         if (def.getHeaders() != null) {
-            var headers = Json.createObject();
-            def.getHeaders().forEach((k, v) -> headers.set(k, Json.create(v)));
+            var headers = mapToObject(def.getHeaders());
             json.set(HEADERS, headers);
+        }
+
+        if (def.getQuery() != null) {
+            var query = mapToObject(def.getQuery());
+            json.set(QUERY, query);
+        }
+
+        if (def.getForm() != null) {
+            var form = mapToObject(def.getForm());
+            json.set(FORM, form);
+        }
+
+        if (def.getJoin() != null) {
+            var join = Json.createArray();
+            for (var i = 0; i < def.getJoin().size(); i++) {
+                join.set(i, join.get(i));
+            }
+            json.set(JOIN, join);
         }
     }
 
-    private Map<String, String> getHeaders(JsonObject headers) {
-        var headersMap = new HashMap<String, String>();
-        for (var key : headers.keys()) {
-            headersMap.put(key, headers.getString(key));
+    private JsonObject mapToObject(Map<String, String> map) {
+        var object = Json.createObject();
+        map.forEach((k, v) -> object.set(k, Json.create(v)));
+        return object;
+    }
+
+    private Map<String, String> getMap(JsonObject map) {
+        var hashMap = new HashMap<String, String>();
+        for (var key : map.keys()) {
+            hashMap.put(key, map.getString(key));
         }
-        return headersMap;
+        return hashMap;
     }
 }

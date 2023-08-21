@@ -17,12 +17,16 @@
 package common
 
 import (
+	"context"
 	"fmt"
 	"os"
-	"os/exec"
+	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
@@ -42,7 +46,7 @@ func checkJava() error {
 	version, err := javaCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Java not found")
-		fmt.Printf("At least Java %.2d is required to use this command\n", metadata.JAVA_VERSION)
+		fmt.Printf("At least Java %.2d is required to use this command\n", metadata.JavaVersion)
 		return err
 	}
 	userJavaVersion, err := parseJavaVersion(string(version))
@@ -50,8 +54,8 @@ func checkJava() error {
 		return fmt.Errorf("error while parsing Java version: %w", err)
 	}
 
-	if userJavaVersion < metadata.JAVA_VERSION {
-		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", metadata.JAVA_VERSION)
+	if userJavaVersion < metadata.JavaVersion {
+		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", metadata.JavaVersion)
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
 		os.Exit(1)
 	} else {
@@ -65,7 +69,7 @@ func checkMaven() error {
 	version, err := mavenCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Maven not found")
-		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", metadata.MAVEN_MAJOR_VERSION, metadata.MAVEN_MINOR_VERSION)
+		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", metadata.MavenMajorVersion, metadata.MavenMinorVersion)
 		return err
 	}
 	major, minor, err := parseMavenVersion(string(version))
@@ -73,7 +77,7 @@ func checkMaven() error {
 		return fmt.Errorf("error while parsing Maven version: %w", err)
 	}
 
-	if major < metadata.MAVEN_MAJOR_VERSION && minor < metadata.MAVEN_MINOR_VERSION {
+	if major < metadata.MavenMajorVersion && minor < metadata.MavenMinorVersion {
 		fmt.Printf("ERROR: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
 		os.Exit(1)
@@ -86,14 +90,18 @@ func checkMaven() error {
 
 func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	dockerCheck := ExecCommand("docker", "stats", "--no-stream")
-	if err := dockerCheck.Run(); err != nil {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		fmt.Println("Error creating docker client")
+		return err
+	}
+	_, err = cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
 		fmt.Println("If it's already installed, check if the docker daemon is running")
 		return err
 	}
-
 	fmt.Println(" - Docker is running")
 	return nil
 }
@@ -109,21 +117,6 @@ func CheckPodman() error {
 	}
 
 	fmt.Println(" - Podman is running")
-	return nil
-}
-
-func CheckKubectl() error {
-	fmt.Println("✅ Checking if kubectl is available...")
-	_, kubectlCheck := exec.LookPath("kubectl")
-	if err := kubectlCheck; err != nil {
-		fmt.Println("ERROR: kubectl not found")
-		fmt.Println("kubectl is required for deploy")
-		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
-		os.Exit(1)
-		return err
-	}
-
-	fmt.Println(" - kubectl is available")
 	return nil
 }
 
@@ -159,4 +152,45 @@ func CheckIfDirExists(dirName string) (bool, error) {
 		return false, nil
 	}
 	return false, err
+}
+
+func IsQuarkusSonataFlowProject() bool {
+	if fileExists("pom.xml") {
+		return true
+	}
+	return false
+}
+
+func IsSonataFlowProject() bool {
+	if anyFileExists("*.sw.*") {
+		return true
+	}
+	return false
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return !os.IsNotExist(err)
+}
+
+func anyFileExists(extension string) bool {
+	matches, err := filepath.Glob(extension)
+	if err != nil {
+		return false
+	}
+
+	if len(matches) > 0 {
+		return true
+	}
+	return false
+}
+
+func CheckProjectName(name string) (err error) {
+	matched, err := regexp.MatchString(`^([_\-\.a-zA-Z0-9]+)$`, name)
+	if !matched {
+		fmt.Printf("The project name (\"%s\") contains invalid characters. Valid characters are alphanumeric (A-Za-z), underscore, dash and dot.", name)
+		err = fmt.Errorf("invalid project name")
+
+	}
+	return
 }

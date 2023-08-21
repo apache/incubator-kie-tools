@@ -21,10 +21,10 @@ import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLUListElement;
+import elemental2.dom.Node;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Node;
-import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -40,11 +40,11 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
 
     @Inject
     @DataField("kie-palette")
-    private Div palette;
+    private HTMLDivElement palette;
 
     @Inject
     @DataField("list-group")
-    private UnorderedList ul;
+    private HTMLUListElement ul;
 
     private BS3PaletteWidget presenter;
 
@@ -137,13 +137,13 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
 
     @Override
     public void setBackgroundColor(String backgroundColor) {
-        palette.getStyle().setProperty("background-color",
+        palette.style.setProperty("background-color",
                                        backgroundColor);
     }
 
     @Override
     public void showEmptyView(boolean showEmptyView) {
-        palette.setHidden(showEmptyView);
-        ul.setHidden(showEmptyView);
+        palette.hidden = showEmptyView;
+        ul.hidden = showEmptyView;
     }
 }

@@ -22,6 +22,7 @@ export interface UnitablesColumnType {
   joinedName: string;
   dataType: DmnBuiltInDataType; // FIXME: Decouple from DMN --> https://github.com/kiegroup/kie-issues/issues/166
   width?: number;
+  type: string;
 
   cellDelegate?: (id: string) => React.ReactNode;
   insideProperties?: any[];

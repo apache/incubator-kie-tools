@@ -1,0 +1,24 @@
+{
+  "id": "JSON Events",
+  "specVersion": "0.8",
+  "start": "JSON State",
+  "states": [
+    {
+      "name": "JSON State",
+      "type": "inject",
+      "data": {},
+      "end": true
+    }
+  ],
+  "events": [
+    {
+      "name": "publishYamlOperation",
+      "source": "",
+      "type": "",
+      "kind": "produced",
+      "metadata": {
+        "reference": "specs/asyncapi.yaml#publishYamlOperation"
+      }
+    }
+  ]
+}

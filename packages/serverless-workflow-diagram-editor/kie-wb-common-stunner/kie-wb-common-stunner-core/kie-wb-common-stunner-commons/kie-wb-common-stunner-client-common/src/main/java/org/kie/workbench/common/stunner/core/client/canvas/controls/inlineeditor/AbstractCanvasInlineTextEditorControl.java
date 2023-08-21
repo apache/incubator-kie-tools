@@ -22,10 +22,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.MouseWheelEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.touch.client.Point;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -48,11 +46,8 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterHa
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextExitHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
 
@@ -63,16 +58,6 @@ public abstract class AbstractCanvasInlineTextEditorControl
     public static final double SHAPE_EDIT_ALPHA = 0.2d;
     public static final double TITLE_EDIT_ALPHA = 0.0d;
     public static final double NOT_EDIT_ALPHA = 1.0d;
-    public static final String ALIGN_MIDDLE = "MIDDLE";
-    public static final String ALIGN_LEFT = "LEFT";
-    public static final String ALIGN_TOP = "TOP";
-    public static final String POSITION_INSIDE = "INSIDE";
-    public static final String POSITION_OUTSIDE = "OUTSIDE";
-    public static final String ORIENTATION_VERTICAL = "VERTICAL";
-    public static final String ORIENTATION_HORIZONTAL = "HORIZONTAL";
-    public static final double DEFAULT_MARGIN_X = 0d;
-    public static final double DEFAULT_FONT_SIZE = 14d;
-    public static final String DEFAULT_FONT_FAMILY = "Open Sans";
 
     private String uuid;
     private Point shapePosition;
@@ -80,11 +65,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     private Point2D canvasPosition;
     private Point scrollBarsPosition;
     private double zoomFactor;
-    private BoxType boxType;
     private HandlerRegistration mouseWheelHandler;
-    private String fontFamily;
-    private double fontSize;
-    private double marginX;
 
     // Configurable parameters
     protected boolean isMultiline;
@@ -101,17 +82,11 @@ public abstract class AbstractCanvasInlineTextEditorControl
     protected double paletteOffsetX;
     protected double innerBoxOffsetY;
     protected EditorSession session;
+    private int EDIT_TEXTBOX_BOTTOM_PADDING = 10;
 
-    protected abstract FloatingView<IsWidget> getFloatingView();
+    protected abstract FloatingView<IsElement> getFloatingView();
 
     protected abstract TextEditorBox<AbstractCanvasHandler, Element> getTextEditorBox();
-
-    private enum BoxType {
-        OUTSIDE,
-        INSIDE_MIDDLE,
-        INSIDE_LEFT,
-        INSIDE_TOP
-    }
 
     @Override
     public void bind(final EditorSession session) {
@@ -128,14 +103,10 @@ public abstract class AbstractCanvasInlineTextEditorControl
 
         getFloatingView()
                 .hide()
-                .add(wrapTextEditorBoxElement(getTextEditorBox().getElement()));
+                .add(getTextEditorBox());
 
         // if the user tries to scroll the editor must be closed
         setMouseWheelHandler();
-    }
-
-    protected IsWidget wrapTextEditorBoxElement(final HTMLElement element) {
-        return ElementWrapperWidget.getWidget(element);
     }
 
     @Override
@@ -167,9 +138,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
         final TextDoubleClickHandler clickHandler = new TextDoubleClickHandler() {
             @Override
             public void handle(final TextDoubleClickEvent event) {
-                if (isEditableForDoubleClick(element)) {
-                    scheduleDeferredCommand(() -> AbstractCanvasInlineTextEditorControl.this.show(element));
-                }
+                scheduleDeferredCommand(() -> AbstractCanvasInlineTextEditorControl.this.show(element));
             }
         };
         hasEventHandlers.addHandler(ViewEventType.TEXT_DBL_CLICK,
@@ -180,24 +149,9 @@ public abstract class AbstractCanvasInlineTextEditorControl
 
     void onEnableInlineEdit(@Observes InlineTextEditEvent event) {
         final Element element = CanvasLayoutUtils.getElement(canvasHandler, event.getUuid());
-        if (element != null && isEditable(element)) {
+        if (element != null) {
             AbstractCanvasInlineTextEditorControl.this.show(element);
         }
-    }
-
-    protected boolean isEditableForDoubleClick(Element element) {
-        return true;
-    }
-
-    protected boolean isEditable(Element element) {
-        Node<View<?>, Edge> sourceNode = (Node<View<?>, Edge>) element;
-        final Object sourceDefinition = null != sourceNode ? sourceNode.getContent().getDefinition() : null;
-        final boolean isEditable = isFiltered(sourceDefinition);
-        return isEditable;
-    }
-
-    public boolean isFiltered(final Object bean) {
-        return true;
     }
 
     private void changeMouseCursorOnTextEnter(final Shape<?> shape, final HasEventHandlers hasEventHandlers) {
@@ -226,51 +180,33 @@ public abstract class AbstractCanvasInlineTextEditorControl
                         exitHandler);
     }
 
-    boolean allowOnlyVisualChanges(final Element element) {
-        // TODO
-        /*if (element.getContent() instanceof Definition) {
-            final Definition definition = (Definition) element.getContent();
-            if (definition.getDefinition() instanceof DynamicReadOnly) {
-                return ((DynamicReadOnly) definition.getDefinition()).isAllowOnlyVisualChange();
-            }
-        }*/
-        return true;
-    }
-
     @Override
     public CanvasInlineTextEditorControl<AbstractCanvasHandler, EditorSession, Element> show(final Element item) {
         final double editorBoxWidth;
         final double editorBoxHeight;
-        final String editorBoxAlign;
         final double floatingViewPositionX;
         final double floatingViewPositionY;
 
-        setInlineBoxContext(item.getUUID());
+        this.uuid = item.getUUID();
 
-        if (boxType == BoxType.INSIDE_LEFT) {
-            editorBoxWidth = getInnerLeftBoxWidth();
-            editorBoxHeight = getInnerLeftBoxHeight();
-            editorBoxAlign = ALIGN_LEFT;
-            floatingViewPositionX = getInnerLeftBoxPosition().getX();
-            floatingViewPositionY = getInnerLeftBoxPosition().getY();
-        } else if (boxType == BoxType.INSIDE_TOP) {
-            editorBoxWidth = getInnerTopBoxWidth();
-            editorBoxHeight = getInnerTopBoxHeight();
-            editorBoxAlign = ALIGN_TOP;
-            floatingViewPositionX = getInnerTopBoxPosition().getX();
-            floatingViewPositionY = getInnerTopBoxPosition().getY();
-        } else if (boxType == BoxType.OUTSIDE) {
-            editorBoxWidth = getUnderBoxWidth();
-            editorBoxHeight = getUnderBoxHeight();
-            editorBoxAlign = ALIGN_TOP;
-            floatingViewPositionX = getUnderBoxPosition().getX();
-            floatingViewPositionY = getUnderBoxPosition().getY();
+        shapePosition = getShapePosition();
+        shapeSize = getShapeSize();
+        canvasPosition = getCanvasAbsolutePosition();
+        scrollBarsPosition = getScrollBarsPosition();
+        zoomFactor = getZoomFactor();
+        final HasTitle hasTitle = getHasTitle();
+
+        if (hasTitle != null) {
+            Point shapePosition = getInnerLeftBoxPosition();
+            editorBoxWidth = zoomFactor * hasTitle.getTextboxWidth();
+            editorBoxHeight = zoomFactor * (hasTitle.getTextboxHeight() - EDIT_TEXTBOX_BOTTOM_PADDING);
+            floatingViewPositionX = (zoomFactor * (hasTitle.getTitlePosition().getX() - borderOffsetX)) + shapePosition.getX();
+            floatingViewPositionY = (zoomFactor * (hasTitle.getTitlePosition().getY() - borderOffsetY)) + shapePosition.getY();
         } else {
-            editorBoxWidth = getInnerBoxWidth();
-            editorBoxHeight = getInnerBoxHeight();
-            editorBoxAlign = ALIGN_MIDDLE;
-            floatingViewPositionX = getInnerBoxPosition().getX();
-            floatingViewPositionY = getInnerBoxPosition().getY();
+            editorBoxWidth = 0;
+            editorBoxHeight = 0;
+            floatingViewPositionX = 0;
+            floatingViewPositionY = 0;
         }
 
         // Do not show editBox if position is out of canvas bounds
@@ -278,12 +214,12 @@ public abstract class AbstractCanvasInlineTextEditorControl
                 && isPositionYValid(floatingViewPositionY)) {
             enableShapeEdit();
 
-            getTextEditorBox().setFontFamily(fontFamily);
-            getTextEditorBox().setFontSize((fontSize + fontSizeCorrection) * zoomFactor);
-            getTextEditorBox().setTextBoxInternalAlignment(editorBoxAlign);
+            getTextEditorBox().setFontFamily(hasTitle.getTitleFontFamily());
+            getTextEditorBox().setFontSize(ptToPx(hasTitle.getTitleFontSize() * zoomFactor));
             getTextEditorBox().setMultiline(isMultiline);
             getFloatingView().setX(floatingViewPositionX);
             getFloatingView().setY(floatingViewPositionY);
+            getTextEditorBox().setTextBoxInternalAlignment("LEFT");
             getFloatingView().clearTimeOut();
 
             getTextEditorBox().show(item,
@@ -295,9 +231,12 @@ public abstract class AbstractCanvasInlineTextEditorControl
         return this;
     }
 
+    private double ptToPx(double value) {
+        return value * 4 / 3;
+    }
+
     private boolean isPositionXValid(final double floatingViewPositionX) {
-        final boolean atLeft = (canvasPosition.getX() + paletteOffsetX <= floatingViewPositionX);
-        boolean isValid = atLeft;
+        boolean isValid = (canvasPosition.getX() + paletteOffsetX) <= floatingViewPositionX;
         if (DomGlobal.document != null) {
             final elemental2.dom.Element editorPanel = DomGlobal.document.getElementById("canvasPanel");
             final double canvasWidth = editorPanel.clientWidth;
@@ -355,101 +294,6 @@ public abstract class AbstractCanvasInlineTextEditorControl
         setShapeEditMode(false);
     }
 
-    private void setInlineBoxContext(final String uuid) {
-        this.uuid = uuid;
-        final String titlePosition;
-        final String orientation;
-        final String fontAlignment;
-        final HasTitle hasTitle = getHasTitle();
-
-        if (null != hasTitle) {
-            titlePosition = hasTitle.getTitlePosition();
-            orientation = hasTitle.getOrientation();
-            fontAlignment = hasTitle.getFontAlignment();
-            marginX = hasTitle.getMarginX();
-            fontSize = hasTitle.getTitleFontSize();
-            fontFamily = hasTitle.getTitleFontFamily();
-        } else {
-            titlePosition = POSITION_INSIDE;
-            orientation = ORIENTATION_HORIZONTAL;
-            fontAlignment = ALIGN_MIDDLE;
-            marginX = DEFAULT_MARGIN_X;
-            fontSize = DEFAULT_FONT_SIZE;
-            fontFamily = DEFAULT_FONT_FAMILY;
-        }
-
-        shapePosition = getShapePosition();
-        shapeSize = getShapeSize();
-        canvasPosition = getCanvasAbsolutePosition();
-        scrollBarsPosition = getScrollBarsPosition();
-        zoomFactor = getZoomFactor();
-
-        // Find out BoxType
-        switch (titlePosition) {
-            case POSITION_INSIDE:
-                if (orientation.equals(ORIENTATION_HORIZONTAL) && fontAlignment.equals(ALIGN_MIDDLE)) {
-                    boxType = BoxType.INSIDE_MIDDLE;
-                } else if (orientation.equals(ORIENTATION_HORIZONTAL) && fontAlignment.equals(ALIGN_TOP)) {
-                    boxType = BoxType.INSIDE_TOP;
-                } else if (orientation.equals(ORIENTATION_VERTICAL)) {
-                    boxType = BoxType.INSIDE_LEFT;
-                }
-                break;
-            case POSITION_OUTSIDE:
-                boxType = BoxType.OUTSIDE;
-                break;
-            default:
-                boxType = BoxType.INSIDE_MIDDLE;
-                break;
-        }
-    }
-
-    private double getUnderBoxWidth() {
-        return shapeSize.getX() * 2d * zoomFactor;
-    }
-
-    private double getUnderBoxHeight() {
-        return shapeSize.getY() * zoomFactor;
-    }
-
-    private Point getUnderBoxPosition() {
-        final double x = ((shapePosition.getX() - (shapeSize.getX() / 2d)) * zoomFactor) +
-                canvasPosition.getX() +
-                scrollBarsPosition.getX();
-        final double y = ((shapePosition.getY() + shapeSize.getY() + underBoxOffset) * zoomFactor) +
-                canvasPosition.getY() +
-                scrollBarsPosition.getY();
-
-        return new Point(x, y);
-    }
-
-    private double getInnerBoxWidth() {
-        return (shapeSize.getX() - marginX - borderOffsetX * 2d) * zoomFactor;
-    }
-
-    private double getInnerBoxHeight() {
-        return (shapeSize.getY() - borderOffsetY * 2d) * zoomFactor;
-    }
-
-    private Point getInnerBoxPosition() {
-        final double x = ((shapePosition.getX() + borderOffsetX + marginX) * zoomFactor) +
-                canvasPosition.getX() +
-                scrollBarsPosition.getX();
-        final double y = ((shapePosition.getY() + borderOffsetY + innerBoxOffsetY) * zoomFactor) +
-                canvasPosition.getY() +
-                scrollBarsPosition.getY();
-
-        return new Point(x, y);
-    }
-
-    private double getInnerLeftBoxWidth() {
-        if (shapeSize.getX() > maxInnerLeftBoxWidth) {
-            return maxInnerLeftBoxWidth * zoomFactor;
-        } else {
-            return shapeSize.getX() * zoomFactor;
-        }
-    }
-
     private double getInnerLeftBoxHeight() {
         if (shapeSize.getY() > maxInnerLeftBoxHeight) {
             return maxInnerLeftBoxHeight * zoomFactor;
@@ -466,42 +310,6 @@ public abstract class AbstractCanvasInlineTextEditorControl
                 scrollBarsPosition.getX();
         final double y = (shapePosition.getY() * zoomFactor) +
                 offsetY +
-                canvasPosition.getY() +
-                scrollBarsPosition.getY();
-
-        return new Point(x, y);
-    }
-
-    private double getInnerTopBoxWidth() {
-        if (shapeSize.getX() > maxInnerTopBoxWidth) {
-            return maxInnerTopBoxWidth * zoomFactor;
-        } else {
-            return (shapeSize.getX() - borderOffsetX * 2d) * zoomFactor;
-        }
-    }
-
-    private double getInnerTopBoxHeight() {
-        if (shapeSize.getY() > maxInnerTopBoxHeight) {
-            return maxInnerTopBoxHeight * zoomFactor;
-        } else {
-            return (shapeSize.getY() - topBorderOffset) * zoomFactor;
-        }
-    }
-
-    private Point getInnerTopBoxPosition() {
-        final double x;
-
-        if (shapeSize.getX() > maxInnerTopBoxWidth) {
-            x = ((shapePosition.getX() + marginX + ((shapeSize.getX() - maxInnerTopBoxWidth) / 2d)) * zoomFactor) +
-                    canvasPosition.getX() +
-                    scrollBarsPosition.getX();
-        } else {
-            x = ((shapePosition.getX() + borderOffsetX + marginX) * zoomFactor) +
-                    canvasPosition.getX() +
-                    scrollBarsPosition.getX();
-        }
-
-        final double y = ((shapePosition.getY() + topBorderOffset) * zoomFactor) +
                 canvasPosition.getY() +
                 scrollBarsPosition.getY();
 

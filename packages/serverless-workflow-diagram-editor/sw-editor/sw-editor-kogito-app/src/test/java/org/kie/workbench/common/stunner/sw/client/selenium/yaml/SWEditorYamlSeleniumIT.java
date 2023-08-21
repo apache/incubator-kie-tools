@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,14 +18,21 @@ package org.kie.workbench.common.stunner.sw.client.selenium.yaml;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.internal.utils.Pair;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.NodeType;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlMapping;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.YamlNode;
+import org.kie.workbench.common.stunner.client.yaml.mapper.api.node.impl.Yaml;
 import org.kie.workbench.common.stunner.sw.client.selenium.SWEditorSeleniumBase;
 import org.openqa.selenium.JavascriptExecutor;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
 
@@ -131,6 +138,7 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
     public void testParallelExecutionExample() throws Exception {
         testExampleYaml("ParallelExecutionExample.sw.yaml");
     }
+
     @Test
     public void testProcessTransactionsExample() throws Exception {
         testExampleYaml("ProcessTransactionsExample.sw.yaml");
@@ -156,21 +164,25 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
         testExampleYaml("SolveMathProblemsExample.sw.yaml");
     }
 
+    @Test
+    public void testFoodOrderWorkflowExample() throws Exception {
+        testExampleYaml("main-workflow-definition.sw.yaml");
+    }
+
     private void testExampleYaml(String exampleName) throws Exception {
         final String expected = loadResourceYaml(exampleName);
         final String yaml = loadResourceEscapedYaml(exampleName);
         setContentYaml(yaml);
         waitCanvasPanel();
         final String actual = getContent();
-        assertEquals(actual, expected);
+        assertYamlStructureIsTheSame(actual, expected);
     }
-
 
     protected String loadResourceEscapedYaml(final String filename) throws IOException {
         return IOUtils.readLines(this.getClass().getResourceAsStream(filename), StandardCharsets.UTF_8)
                 .stream()
                 .map(s -> s.replace("\"", "\\\""))
-                .map(s ->  "\"" + s)
+                .map(s -> "\"" + s)
                 .collect(Collectors.joining("\\n\" + "));
     }
 
@@ -187,6 +199,42 @@ public class SWEditorYamlSeleniumIT extends SWEditorSeleniumBase {
             ((JavascriptExecutor) driver).executeScript(content);
         } catch (Exception e) {
             LOG.error("Exception during JS execution. Ex: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Asserts the yaml structure is the same as the expected one.
+     * The method checks all yaml nodes.
+     *
+     * @param actualYaml   yaml to be checked
+     * @param expectedYaml yaml to be compared with
+     */
+    private void assertYamlStructureIsTheSame(String actualYaml, String expectedYaml) {
+        final YamlMapping actualMapping = Yaml.fromString(actualYaml);
+        final YamlMapping expectedMapping = Yaml.fromString(expectedYaml);
+        Pair<YamlNode, YamlNode> pair = new Pair<>(actualMapping, expectedMapping);
+        Queue<Pair<YamlNode, YamlNode>> queue = new LinkedList<>();
+        queue.add(pair);
+
+        while (!queue.isEmpty()) {
+            Pair<YamlNode, YamlNode> current = queue.poll();
+            assertThat(current.key.type()).isEqualTo(current.value.type());
+            if (current.key.type() == NodeType.MAPPING) {
+                assertThat(current.key.asMapping().keys().size()).isEqualTo(current.value.asMapping().keys().size());
+
+                for (String key : current.key.asMapping().keys()) {
+                    assertThat(current.value.asMapping().getNode(key)).isNotNull();
+                    queue.add(new Pair<>(current.key.asMapping().getNode(key), current.value.asMapping().getNode(key)));
+                }
+            } else if (current.key.type() == NodeType.SEQUENCE) {
+                assertThat(current.key.asSequence().size()).isEqualTo(current.value.asSequence().size());
+
+                for (int i = 0; i < current.key.asSequence().size(); i++) {
+                    queue.add(new Pair<>(current.key.asSequence().node(i), current.value.asSequence().node(i)));
+                }
+            } else if (current.key.type() == NodeType.SCALAR) {
+                assertThat(current.key.asScalar().value()).isEqualTo(current.value.asScalar().value());
+            }
         }
     }
 }

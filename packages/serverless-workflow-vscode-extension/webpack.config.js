@@ -51,8 +51,6 @@ module.exports = async (env) => [
     entry: {
       "webview/editors/serverless-workflow/serverless-workflow-diagram-editor-envelope":
         "./src/webview/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
-      "webview/editors/serverless-workflow/serverless-workflow-mermaid-viewer-envelope":
-        "./src/webview/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
     },
     plugins: [
       new CopyWebpackPlugin({

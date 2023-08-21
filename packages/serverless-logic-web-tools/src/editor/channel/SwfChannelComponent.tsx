@@ -34,17 +34,13 @@ import { useVirtualServiceRegistry } from "../../virtualServiceRegistry/VirtualS
 import { SwfLanguageServiceChannelApiImpl } from "../api/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "../api/SwfServiceCatalogChannelApiImpl";
 import { WebToolsSwfLanguageService } from "../api/WebToolsSwfLanguageService";
-import { useSwfFeatureToggle } from "../hooks/useSwfFeatureToggle";
 import { EditorChannelComponentProps, EditorChannelComponentRef } from "../WebToolsEmbeddedEditor";
-import {
-  SwfCombinedEditorChannelApiImpl,
-  SwfFeatureToggleChannelApiImpl,
-} from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+import { SwfCombinedEditorChannelApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/channel";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { ServerlessWorkflowCombinedEditorEnvelopeApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api/ServerlessWorkflowCombinedEditorEnvelopeApi";
 
 const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   EditorChannelComponentRef,
@@ -53,7 +49,6 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   const { editor, workspaceFile, channelApiImpl } = { ...props };
   const [isReady, setReady] = useState(false);
   const virtualServiceRegistry = useVirtualServiceRegistry();
-  const swfFeatureToggle = useSwfFeatureToggle(editor);
   const {
     serviceRegistry: { catalogStore },
   } = useSettingsDispatch();
@@ -96,14 +91,12 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   const apiImpl = useMemo(() => {
     const lsChannelApiImpl = new SwfLanguageServiceChannelApiImpl(languageService);
     const serviceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(catalogStore);
-    const featureToggleChannelApiImpl = new SwfFeatureToggleChannelApiImpl(swfFeatureToggle);
-    return new SwfCombinedEditorChannelApiImpl(
-      channelApiImpl,
-      featureToggleChannelApiImpl,
-      serviceCatalogChannelApiImpl,
-      lsChannelApiImpl
-    );
-  }, [languageService, catalogStore, swfFeatureToggle, channelApiImpl]);
+    return new SwfCombinedEditorChannelApiImpl({
+      defaultApiImpl: channelApiImpl,
+      swfServiceCatalogApiImpl: serviceCatalogChannelApiImpl,
+      swfLanguageServiceChannelApiImpl: lsChannelApiImpl,
+    });
+  }, [languageService, catalogStore, channelApiImpl]);
 
   const onNotificationClick = useCallback(
     (notification: Notification) => {
@@ -111,10 +104,10 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
         return;
       }
 
-      const messageBusClient = editor.getEnvelopeServer()
-        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>;
+      const swfCombinedEditorEnvelopeApi = editor.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorEnvelopeApi>;
 
-      messageBusClient.notifications.kogitoSwfCombinedEditor_moveCursorToPosition.send(
+      swfCombinedEditorEnvelopeApi.notifications.kogitoSwfCombinedEditor_moveCursorToPosition.send(
         new Position(notification.position.startLineNumber, notification.position.startColumn)
       );
     },

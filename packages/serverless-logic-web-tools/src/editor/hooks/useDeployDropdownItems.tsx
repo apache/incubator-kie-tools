@@ -28,16 +28,9 @@ import { UploadIcon } from "@patternfly/react-icons/dist/js/icons/upload-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { useAppI18n } from "../../i18n";
-import { FeatureDependentOnKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/FeatureDependentOnKieSandboxExtendedServices";
-import {
-  DependentFeature,
-  useKieSandboxExtendedServices,
-} from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
-import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
-import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { useSettings } from "../../settings/SettingsContext";
 import { useVirtualServiceRegistryDependencies } from "../../virtualServiceRegistry/hooks/useVirtualServiceRegistryDependencies";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -48,6 +41,8 @@ import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { useHistory } from "react-router";
+import { routes } from "../../navigation/Routes";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
 
@@ -63,13 +58,12 @@ export function useDeployDropdownItems(props: Props) {
   const devMode = useDevMode();
   const devModeDispatch = useDevModeDispatch();
   const settings = useSettings();
-  const settingsDispatch = useSettingsDispatch();
-  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const openshift = useOpenShift();
   const [canContentBeDeployed, setCanContentBeDeployed] = useState(true);
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
+  const history = useHistory();
 
   useEffect(() => {
     props.workspaceFile.getFileContentsAsString().then((content) => {
@@ -196,11 +190,6 @@ export function useDeployDropdownItems(props: Props) {
     }, [])
   );
 
-  const isKieSandboxExtendedServicesRunning = useMemo(
-    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
-    [kieSandboxExtendedServices.status]
-  );
-
   const isOpenShiftConnected = useMemo(
     () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
     [settings.openshift.status]
@@ -212,56 +201,45 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const onSetup = useCallback(() => {
-    settingsDispatch.open(SettingsTabs.OPENSHIFT);
-  }, [settingsDispatch]);
+    history.push(routes.settings.openshift.path({}));
+  }, [history]);
 
   const onDeploy = useCallback(() => {
-    if (isKieSandboxExtendedServicesRunning) {
-      openshift.setConfirmDeployModalOpen(true);
-      return;
-    }
-    kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-    kieSandboxExtendedServices.setModalOpen(true);
-  }, [isKieSandboxExtendedServicesRunning, kieSandboxExtendedServices, openshift]);
+    openshift.setConfirmDeployModalOpen(true);
+  }, [openshift]);
 
   const onUploadDevMode = useCallback(async () => {
-    if (isKieSandboxExtendedServicesRunning) {
-      devModeUploadingAlert.show();
-      const result = await devModeDispatch.upload({
-        targetSwfFile: props.workspaceFile,
-        allFiles: props.workspace.files,
-      });
-      devModeUploadingAlert.close();
+    devModeUploadingAlert.show();
+    const result = await devModeDispatch.upload({
+      targetSwfFile: props.workspaceFile,
+      allFiles: props.workspace.files,
+    });
+    devModeUploadingAlert.close();
 
-      if (result.success) {
-        uploadToDevModeSuccessAlert.show();
+    if (result.success) {
+      uploadToDevModeSuccessAlert.show();
 
-        let attemptsLeft = 15;
-        const fetchDevModeDeploymentTask = window.setInterval(async () => {
-          const isReady = await devModeDispatch.checkHealthReady();
-          attemptsLeft--;
-          if (attemptsLeft === 0) {
-            uploadToDevModeSuccessAlert.close();
-            uploadToDevModeTimeoutErrorAlert.show();
-            window.clearInterval(fetchDevModeDeploymentTask);
-            return;
-          }
-          if (!isReady) {
-            return;
-          }
+      let attemptsLeft = 15;
+      const fetchDevModeDeploymentTask = window.setInterval(async () => {
+        const isReady = await devModeDispatch.checkHealthReady();
+        attemptsLeft--;
+        if (attemptsLeft === 0) {
           uploadToDevModeSuccessAlert.close();
-          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
+          uploadToDevModeTimeoutErrorAlert.show();
           window.clearInterval(fetchDevModeDeploymentTask);
-        }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
-      } else {
-        uploadToDevModeErrorAlert.show({ messages: result.messages });
-      }
+          return;
+        }
+        if (!isReady) {
+          return;
+        }
+        uploadToDevModeSuccessAlert.close();
+        devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
+        window.clearInterval(fetchDevModeDeploymentTask);
+      }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
     } else {
-      kieSandboxExtendedServices.setInstallTriggeredBy(DependentFeature.OPENSHIFT);
-      kieSandboxExtendedServices.setModalOpen(true);
+      uploadToDevModeErrorAlert.show({ messages: result.messages });
     }
   }, [
-    isKieSandboxExtendedServicesRunning,
     devModeUploadingAlert,
     devModeDispatch,
     props.workspaceFile,
@@ -270,115 +248,110 @@ export function useDeployDropdownItems(props: Props) {
     devModeReadyAlert,
     devMode.endpoints,
     uploadToDevModeErrorAlert,
-    kieSandboxExtendedServices,
     uploadToDevModeTimeoutErrorAlert,
   ]);
 
   return useMemo(() => {
     return [
       <React.Fragment key={"deploy-dropdown-items"}>
-        {props.workspace && (
-          <FeatureDependentOnKieSandboxExtendedServices isLight={false} position="left">
-            {isUploadToDevModeEnabled && (
-              <DropdownItem
-                icon={<UploadIcon />}
-                id="upload-dev-mode-button"
-                key={`dropdown-upload-dev-mode`}
-                component={"button"}
-                onClick={onUploadDevMode}
-                isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
-                ouiaId={"upload-to-openshift-dev-mode-dropdown-button"}
-              >
-                {props.workspace.files.length > 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Upload <b>{`"${props.workspace.descriptor.name}"`}</b> to Dev Mode
-                    </FlexItem>
-                  </Flex>
-                )}
-                {props.workspace.files.length === 1 && (
-                  <Flex flexWrap={{ default: "nowrap" }}>
-                    <FlexItem>
-                      Upload <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b> to Dev Mode
-                    </FlexItem>
-                    <FlexItem>
-                      <b>
-                        <FileLabel extension={props.workspace.files[0].extension} />
-                      </b>
-                    </FlexItem>
-                  </Flex>
-                )}
-              </DropdownItem>
+        {props.workspace && isUploadToDevModeEnabled && (
+          <DropdownItem
+            icon={<UploadIcon />}
+            id="upload-dev-mode-button"
+            key={`dropdown-upload-dev-mode`}
+            component={"button"}
+            onClick={onUploadDevMode}
+            isDisabled={!isOpenShiftConnected || !canContentBeDeployed}
+            ouiaId={"upload-to-openshift-dev-mode-dropdown-button"}
+          >
+            {props.workspace.files.length > 1 && (
+              <Flex flexWrap={{ default: "nowrap" }}>
+                <FlexItem>
+                  Upload <b>{`"${props.workspace.descriptor.name}"`}</b> to Dev Mode
+                </FlexItem>
+              </Flex>
             )}
-            <DropdownItem
-              icon={<OpenshiftIcon />}
-              id="deploy-your-model-button"
-              key={`dropdown-deploy`}
-              component={"button"}
-              onClick={onDeploy}
-              isDisabled={isKieSandboxExtendedServicesRunning && (!isOpenShiftConnected || !canContentBeDeployed)}
-              ouiaId={"deploy-to-openshift-dropdown-button"}
-            >
-              {props.workspace.files.length > 1 && (
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>
-                    Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
-                  </FlexItem>
-                </Flex>
-              )}
-              {props.workspace.files.length === 1 && (
-                <Flex flexWrap={{ default: "nowrap" }}>
-                  <FlexItem>
-                    Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
-                  </FlexItem>
-                  <FlexItem>
-                    <b>
-                      <FileLabel extension={props.workspace.files[0].extension} />
-                    </b>
-                  </FlexItem>
-                </Flex>
-              )}
-            </DropdownItem>
-            {needsDependencyDeployment && (
-              <>
-                <Divider />
-                <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
-                  <DropdownItem icon={<RegistryIcon color="var(--pf-global--warning-color--100)" />} isDisabled>
-                    <Flex flexWrap={{ default: "nowrap" }}>
-                      <FlexItem>
-                        <Text component="small" style={{ color: "var(--pf-global--warning-color--200)" }}>
-                          This model has foreign workspace dependencies
-                        </Text>
-                      </FlexItem>
-                    </Flex>
-                  </DropdownItem>
-                </Tooltip>
-              </>
+            {props.workspace.files.length === 1 && (
+              <Flex flexWrap={{ default: "nowrap" }}>
+                <FlexItem>
+                  Upload <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b> to Dev Mode
+                </FlexItem>
+                <FlexItem>
+                  <b>
+                    <FileLabel extension={props.workspace.files[0].extension} />
+                  </b>
+                </FlexItem>
+              </Flex>
             )}
-            {!canContentBeDeployed && (
-              <>
-                <Divider />
-                <Tooltip
-                  content={
-                    "Models with errors or empty ones cannot be deployed. Check the Problems tab for more information."
-                  }
-                  position="bottom"
-                >
-                  <DropdownItem icon={<ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />} isDisabled>
-                    <Flex flexWrap={{ default: "nowrap" }}>
-                      <FlexItem>
-                        <Text component="small" style={{ color: "var(--pf-global--danger-color--300)" }}>
-                          This model cannot be deployed
-                        </Text>
-                      </FlexItem>
-                    </Flex>
-                  </DropdownItem>
-                </Tooltip>
-              </>
-            )}
-          </FeatureDependentOnKieSandboxExtendedServices>
+          </DropdownItem>
         )}
-        {!isOpenShiftConnected && isKieSandboxExtendedServicesRunning && (
+        <DropdownItem
+          icon={<OpenshiftIcon />}
+          id="deploy-your-model-button"
+          key={`dropdown-deploy`}
+          component={"button"}
+          onClick={onDeploy}
+          isDisabled={!isOpenShiftConnected || !canContentBeDeployed}
+          ouiaId={"deploy-to-openshift-dropdown-button"}
+        >
+          {props.workspace.files.length > 1 && (
+            <Flex flexWrap={{ default: "nowrap" }}>
+              <FlexItem>
+                Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
+              </FlexItem>
+            </Flex>
+          )}
+          {props.workspace.files.length === 1 && (
+            <Flex flexWrap={{ default: "nowrap" }}>
+              <FlexItem>
+                Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
+              </FlexItem>
+              <FlexItem>
+                <b>
+                  <FileLabel extension={props.workspace.files[0].extension} />
+                </b>
+              </FlexItem>
+            </Flex>
+          )}
+        </DropdownItem>
+        {needsDependencyDeployment && (
+          <>
+            <Divider />
+            <Tooltip content={i18n.deployments.virtualServiceRegistry.dependencyWarningTooltip} position="bottom">
+              <DropdownItem icon={<RegistryIcon color="var(--pf-global--warning-color--100)" />} isDisabled>
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    <Text component="small" style={{ color: "var(--pf-global--warning-color--200)" }}>
+                      This model has foreign workspace dependencies
+                    </Text>
+                  </FlexItem>
+                </Flex>
+              </DropdownItem>
+            </Tooltip>
+          </>
+        )}
+        {!canContentBeDeployed && (
+          <>
+            <Divider />
+            <Tooltip
+              content={
+                "Models with errors or empty ones cannot be deployed. Check the Problems tab for more information."
+              }
+              position="bottom"
+            >
+              <DropdownItem icon={<ExclamationCircleIcon color="var(--pf-global--danger-color--100)" />} isDisabled>
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    <Text component="small" style={{ color: "var(--pf-global--danger-color--300)" }}>
+                      This model cannot be deployed
+                    </Text>
+                  </FlexItem>
+                </Flex>
+              </DropdownItem>
+            </Tooltip>
+          </>
+        )}
+        {!isOpenShiftConnected && (
           <>
             <Divider />
             <DropdownItem
@@ -398,7 +371,6 @@ export function useDeployDropdownItems(props: Props) {
   }, [
     props.workspace,
     onDeploy,
-    isKieSandboxExtendedServicesRunning,
     isOpenShiftConnected,
     canContentBeDeployed,
     isUploadToDevModeEnabled,

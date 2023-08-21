@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
@@ -45,6 +46,7 @@ import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
 import "./InvocationExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -80,12 +82,18 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const entriesWidths = invocationExpression.bindingEntries.map((e) =>
+          getExpressionTotalMinWidth(0, e.entryExpression)
+        );
+
+        const maxNestedExpressionWidth = Math.max(...entriesWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
+
         return {
           nestedExpressions: invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [],
           fixedColumnActualWidth: parametersWidth,
           fixedColumnResizingWidth: parametersResizingWidth,
           fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
-          nestedExpressionMinWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
+          nestedExpressionMinWidth: maxNestedExpressionWidth,
           extraWidth: INVOCATION_EXTRA_WIDTH,
           expression: invocationExpression,
           flexibleColumnIndex: 2,
@@ -181,6 +189,12 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
               name: u.name,
             },
           }));
+        } else {
+          setExpression((prev: InvocationExpressionDefinition) => ({
+            ...prev,
+            dataType: u.dataType,
+            name: u.name,
+          }));
         }
       }
     },
@@ -224,7 +238,17 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           { name: i18n.rowOperations.reset, type: BeeTableOperation.RowReset },
           { name: i18n.rowOperations.insertAbove, type: BeeTableOperation.RowInsertAbove },
           { name: i18n.rowOperations.insertBelow, type: BeeTableOperation.RowInsertBelow },
+          { name: i18n.insert, type: BeeTableOperation.RowInsertN },
           { name: i18n.rowOperations.delete, type: BeeTableOperation.RowDelete },
+        ],
+      },
+      {
+        group: i18n.terms.selection.toUpperCase(),
+        items: [
+          { name: i18n.terms.copy, type: BeeTableOperation.SelectionCopy },
+          { name: i18n.terms.cut, type: BeeTableOperation.SelectionCut },
+          { name: i18n.terms.paste, type: BeeTableOperation.SelectionPaste },
+          { name: i18n.terms.reset, type: BeeTableOperation.SelectionReset },
         ],
       },
     ];
@@ -300,6 +324,28 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     [getDefaultArgumentEntry, setExpression]
   );
 
+  const allowedOperations = useCallback(
+    (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
+      if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
+        return [];
+      }
+
+      return [
+        BeeTableOperation.SelectionCopy,
+        ...(conditions.selection.selectionStart.rowIndex >= 0
+          ? [
+              BeeTableOperation.RowInsertAbove,
+              BeeTableOperation.RowInsertBelow,
+              BeeTableOperation.RowInsertN,
+              ...(beeTableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowReset,
+            ]
+          : []),
+      ];
+    },
+    [beeTableRows.length]
+  );
+
   return (
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`invocation-expression ${invocationExpression.id}`}>
@@ -315,6 +361,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           onColumnUpdates={onColumnUpdates}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           operationConfig={beeTableOperationConfig}
+          allowedOperations={allowedOperations}
           getRowKey={getRowKey}
           onRowAdded={onRowAdded}
           onRowReset={onRowReset}

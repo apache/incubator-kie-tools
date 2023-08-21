@@ -19,7 +19,7 @@ import { createContext, useContext } from "react";
 import { AppData, Dashboard } from "../data";
 
 export interface AppContextType {
-  appDataPromise: PromiseState<{ appData: AppData }>;
+  appDataPromise: PromiseState<AppData>;
   dashboards: Dashboard[];
   current?: Dashboard;
 }
