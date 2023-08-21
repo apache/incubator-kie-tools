@@ -4612,9 +4612,9 @@ importers:
 
   packages/k8s-yaml-to-apiserver-requests:
     dependencies:
-      yaml:
-        specifier: ^2.0.1
-        version: 2.0.1
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -4649,9 +4649,6 @@ importers:
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
       react-router:
         specifier: ^5.2.1
         version: 5.2.1

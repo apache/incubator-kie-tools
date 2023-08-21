@@ -14,74 +14,100 @@
  * limitations under the License.
  */
 
-export enum DeploymentTokens {
-  "uniqueId" = "uniqueId",
-  "name" = "name",
-  "resourceName" = "resourceName",
-  "workspaceId" = "workspaceId",
-  "workspaceName" = "workspaceName",
-  "namespace" = "namespace",
-}
-
-export enum LabelTokens {
-  "createdByLabel" = "createdByLabel",
-}
-
-export enum AnnotationTokens {
-  "uriAnnotation" = "uriAnnotation",
-  "workspaceIdAnnotation" = "workspaceIdAnnotation",
-}
-
-export enum UploadServiceTokens {
-  "apiKey" = "apiKey",
-}
-
-export type Tokens = DeploymentTokens | LabelTokens | AnnotationTokens | UploadServiceTokens;
-
-export type TokensMap = {
-  [P in DeploymentTokens | UploadServiceTokens]: string;
-} &
-  {
-    [L in LabelTokens | AnnotationTokens]?: string;
-  };
-
-export type FullTokensMap = {
-  [P in DeploymentTokens | UploadServiceTokens | LabelTokens | AnnotationTokens]: string;
+export type DevDeploymentTokens = {
+  uniqueId: string;
+  name: string;
+  defaultContainerImageUrl: string;
 };
 
-const TEMPLATE = {
-  OPEN: "${{",
-  CLOSE: "}}",
+export type WorkspaceTokens = {
+  id: string;
+  name: string;
+  resourceName: string;
+};
+
+export type KubernetesTokens = {
+  namespace: string;
+};
+
+export type UploadServiceTokens = {
+  apiKey: string;
+};
+
+export type LabelTokens = {
+  createdBy: string;
+};
+
+export type AnnotationTokens = {
+  uri: string;
+  workspaceId: string;
+};
+
+const defaultLabelTokens: LabelTokens = {
+  createdBy: "tools.kie.org/created-by",
 } as const;
 
-const defaultLabelTokens = {
-  [LabelTokens.createdByLabel]: "tools.kie.org/created-by",
-} as const;
-
-const defaultAnnotationTokens = {
-  [AnnotationTokens.uriAnnotation]: "tools.kie.org/uri",
-  [AnnotationTokens.workspaceIdAnnotation]: "tools.kie.org/workspace-id",
+const defaultAnnotationTokens: AnnotationTokens = {
+  uri: "tools.kie.org/uri",
+  workspaceId: "tools.kie.org/workspace-id",
 } as const;
 
 export const CREATED_BY_KIE_TOOLS = "kie-tools";
+
+export const TOKENS_PREFIX = "devDeployment";
+
+export type Tokens = DevDeploymentTokens & {
+  workspace: WorkspaceTokens;
+  kubernetes: KubernetesTokens;
+  uploadService: UploadServiceTokens;
+  labels: LabelTokens;
+  annotations: AnnotationTokens;
+};
+
+export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
+
+const TEMPLATE = {
+  OPEN: "{{",
+  CLOSE: "}}",
+} as const;
 
 function escapeRegex(regexInput: string) {
   return regexInput.replace(/[/\-\\^$*+?.()|[\]{}]/g, "\\$&");
 }
 
-export class TokenInterpolationService {
-  tokensMap: FullTokensMap;
+function flattenObj(
+  obj: Record<string, any>,
+  parent: any = undefined,
+  res: Record<string, any> = {}
+): Record<string, any> {
+  for (const key in obj) {
+    const propName = parent ? parent + "." + key : key;
+    if (typeof obj[key] == "object") {
+      flattenObj(obj[key], propName, res);
+    } else {
+      res[propName] = obj[key];
+    }
+  }
+  return res;
+}
 
-  constructor(args: TokensMap) {
+export class TokenInterpolationService {
+  tokensMap: Tokens;
+
+  constructor(args: TokensArg) {
     this.tokensMap = this.buildTokensMap(args);
   }
 
-  public buildTokensMap(args: TokensMap): FullTokensMap {
+  public buildTokensMap(args: TokensArg): Tokens {
     return {
-      ...defaultLabelTokens,
-      ...defaultAnnotationTokens,
+      labels: defaultLabelTokens,
+      annotations: defaultAnnotationTokens,
       ...args,
     };
+  }
+
+  get flattenedTokens() {
+    return flattenObj(this.tokensMap, "devDeployment");
   }
 
   private trimTokensFromInputText(inputText: string) {
@@ -89,10 +115,12 @@ export class TokenInterpolationService {
 
     let trimmedInputText = inputText;
 
+    console.log(this.flattenedTokens);
+
     inputText.match(regex)?.forEach((match) => {
       const strippedAndTrimmedTemplateMatch = match.replaceAll(TEMPLATE.OPEN, "").replaceAll(TEMPLATE.CLOSE, "").trim();
 
-      if (Object.keys(this.tokensMap).includes(strippedAndTrimmedTemplateMatch)) {
+      if (Object.keys(this.flattenedTokens).includes(strippedAndTrimmedTemplateMatch)) {
         trimmedInputText = trimmedInputText.replaceAll(
           match,
           `${TEMPLATE.OPEN}${strippedAndTrimmedTemplateMatch}${TEMPLATE.CLOSE}`
@@ -105,7 +133,7 @@ export class TokenInterpolationService {
   public doInterpolation(inputText: string): string {
     const trimmedTokensFromInputText = this.trimTokensFromInputText(inputText);
 
-    return Object.entries(this.tokensMap).reduce(
+    return Object.entries(this.flattenedTokens).reduce(
       (result, [tokenName, tokenValue]) =>
         result.replaceAll(`${TEMPLATE.OPEN}${tokenName}${TEMPLATE.CLOSE}`, tokenValue),
       trimmedTokensFromInputText
