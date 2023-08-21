@@ -4,15 +4,18 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback } from "react";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
+import { useDmnEditorStoreApi } from "../store/Store";
 
-export function DecisionServiceProperties({ decisionService }: { decisionService: DMN14__tDecisionService }) {
-  const setName = useCallback((dataType: string) => {
-    // TODO: Remember to set the variable name here as well.
-    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
-  }, []);
+export function DecisionServiceProperties({
+  decisionService,
+  index,
+}: {
+  decisionService: DMN14__tDecisionService;
+  index: number;
+}) {
+  const { setState } = useDmnEditorStoreApi();
 
   return (
     <>
@@ -21,14 +24,27 @@ export function DecisionServiceProperties({ decisionService }: { decisionService
           aria-label={"Name"}
           type={"text"}
           isDisabled={false}
-          onChange={setName}
+          onChange={(newName) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService).variable!["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService)["@_name"] = newName;
+            });
+          }}
           value={decisionService["@_name"]}
           placeholder={"Enter a name..."}
         />
       </FormGroup>
 
       <FormGroup label="Data type">
-        <DataTypeSelector typeRef={decisionService.variable?.["@_typeRef"]} />
+        <DataTypeSelector
+          name={decisionService.variable?.["@_typeRef"]}
+          onChange={(newTypeRef) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService).variable!["@_typeRef"] =
+                newTypeRef;
+            });
+          }}
+        />
       </FormGroup>
 
       <FormGroup label="Description">
@@ -37,6 +53,11 @@ export function DecisionServiceProperties({ decisionService }: { decisionService
           type={"text"}
           isDisabled={false}
           value={decisionService.description}
+          onChange={(newDescription) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService).description = newDescription;
+            });
+          }}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}

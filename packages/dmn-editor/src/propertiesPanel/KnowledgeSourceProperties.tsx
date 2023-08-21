@@ -4,14 +4,17 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback } from "react";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
+import { useDmnEditorStoreApi } from "../store/Store";
 
-export function KnowledgeSourceProperties({ knowledgeSource }: { knowledgeSource: DMN14__tKnowledgeSource }) {
-  const setName = useCallback((dataType: string) => {
-    // TODO: Remember to set the variable name here as well.
-    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
-  }, []);
+export function KnowledgeSourceProperties({
+  knowledgeSource,
+  index,
+}: {
+  knowledgeSource: DMN14__tKnowledgeSource;
+  index: number;
+}) {
+  const { setState } = useDmnEditorStoreApi();
 
   return (
     <>
@@ -20,7 +23,11 @@ export function KnowledgeSourceProperties({ knowledgeSource }: { knowledgeSource
           aria-label={"Name"}
           type={"text"}
           isDisabled={false}
-          onChange={setName}
+          onChange={(newName) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource)["@_name"] = newName;
+            });
+          }}
           value={knowledgeSource["@_name"]}
           placeholder={"Enter a name..."}
         />
@@ -32,6 +39,11 @@ export function KnowledgeSourceProperties({ knowledgeSource }: { knowledgeSource
           type={"text"}
           isDisabled={false}
           value={knowledgeSource.description}
+          onChange={(newDescription) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource).description = newDescription;
+            });
+          }}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
@@ -50,6 +62,11 @@ export function KnowledgeSourceProperties({ knowledgeSource }: { knowledgeSource
           type={"text"}
           isDisabled={false}
           value={knowledgeSource.type}
+          onChange={(newType) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource).type = newType;
+            });
+          }}
           placeholder={"Enter source type..."}
         />
       </FormGroup>
@@ -60,6 +77,12 @@ export function KnowledgeSourceProperties({ knowledgeSource }: { knowledgeSource
           type={"text"}
           isDisabled={false}
           value={knowledgeSource["@_locationURI"]}
+          onChange={(newLocationUri) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource)["@_locationURI"] =
+                newLocationUri;
+            });
+          }}
           placeholder={"Enter location URI..."}
         />
       </FormGroup>

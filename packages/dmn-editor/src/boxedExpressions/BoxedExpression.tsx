@@ -75,6 +75,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
+  // FIXME: Tiago -->  This is duplicated.
   const dataTypes = useMemo(
     () =>
       (dmn.model.definitions.itemDefinition ?? []).map((item) => ({

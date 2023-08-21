@@ -4,15 +4,12 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback } from "react";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
+import { useDmnEditorStoreApi } from "../store/Store";
 
-export function DecisionProperties({ decision }: { decision: DMN14__tDecision }) {
-  const setName = useCallback((dataType: string) => {
-    // TODO: Remember to set the variable name here as well.
-    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
-  }, []);
+export function DecisionProperties({ decision, index }: { decision: DMN14__tDecision; index: number }) {
+  const { setState } = useDmnEditorStoreApi();
 
   return (
     <>
@@ -21,14 +18,26 @@ export function DecisionProperties({ decision }: { decision: DMN14__tDecision })
           aria-label={"Name"}
           type={"text"}
           isDisabled={false}
-          onChange={setName}
+          onChange={(newName) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).variable!["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision)["@_name"] = newName;
+            });
+          }}
           value={decision["@_name"]}
           placeholder={"Enter a name..."}
         />
       </FormGroup>
 
       <FormGroup label="Data type">
-        <DataTypeSelector typeRef={decision.variable?.["@_typeRef"]} />
+        <DataTypeSelector
+          name={decision.variable?.["@_typeRef"]}
+          onChange={(newTypeRef) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).variable!["@_typeRef"] = newTypeRef;
+            });
+          }}
+        />
       </FormGroup>
 
       <FormGroup label="Description">
@@ -37,6 +46,11 @@ export function DecisionProperties({ decision }: { decision: DMN14__tDecision })
           type={"text"}
           isDisabled={false}
           value={decision.description}
+          onChange={(newDescription) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).description = newDescription;
+            });
+          }}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
@@ -55,6 +69,11 @@ export function DecisionProperties({ decision }: { decision: DMN14__tDecision })
           type={"text"}
           isDisabled={false}
           value={decision.question}
+          onChange={(newQuestion) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).question = newQuestion;
+            });
+          }}
           placeholder={"Enter a question..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={3}
@@ -67,6 +86,11 @@ export function DecisionProperties({ decision }: { decision: DMN14__tDecision })
           type={"text"}
           isDisabled={false}
           value={decision.allowedAnswers}
+          onChange={(newAllowedAnswers) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).allowedAnswers = newAllowedAnswers;
+            });
+          }}
           placeholder={"Enter allowed answers..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}

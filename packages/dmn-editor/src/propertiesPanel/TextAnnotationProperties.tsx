@@ -4,8 +4,17 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { useDmnEditorStoreApi } from "../store/Store";
 
-export function TextAnnotationProperties({ textAnnotation }: { textAnnotation: DMN14__tTextAnnotation }) {
+export function TextAnnotationProperties({
+  textAnnotation,
+  index,
+}: {
+  textAnnotation: DMN14__tTextAnnotation;
+  index: number;
+}) {
+  const { setState } = useDmnEditorStoreApi();
+
   return (
     <>
       <FormGroup label="Format">
@@ -15,6 +24,11 @@ export function TextAnnotationProperties({ textAnnotation }: { textAnnotation: D
           isDisabled={false}
           value={textAnnotation["@_textFormat"]}
           placeholder={"Enter a text format..."}
+          onChange={(newTextFormat) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tTextAnnotation)["@_textFormat"] = newTextFormat;
+            });
+          }}
         />
       </FormGroup>
 
@@ -24,6 +38,11 @@ export function TextAnnotationProperties({ textAnnotation }: { textAnnotation: D
           type={"text"}
           isDisabled={false}
           value={textAnnotation.text}
+          onChange={(newText) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tTextAnnotation).text = newText;
+            });
+          }}
           placeholder={"Enter text..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
@@ -36,6 +55,11 @@ export function TextAnnotationProperties({ textAnnotation }: { textAnnotation: D
           type={"text"}
           isDisabled={false}
           value={textAnnotation.description}
+          onChange={(newDescription) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tTextAnnotation).description = newDescription;
+            });
+          }}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={2}

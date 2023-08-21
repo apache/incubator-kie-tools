@@ -4,15 +4,12 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback } from "react";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
+import { useDmnEditorStoreApi } from "../store/Store";
 
-export function BkmProperties({ bkm }: { bkm: DMN14__tBusinessKnowledgeModel }) {
-  const setName = useCallback((dataType: string) => {
-    // TODO: Remember to set the variable name here as well.
-    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
-  }, []);
+export function BkmProperties({ bkm, index }: { bkm: DMN14__tBusinessKnowledgeModel; index: number }) {
+  const { setState } = useDmnEditorStoreApi();
 
   return (
     <>
@@ -21,14 +18,28 @@ export function BkmProperties({ bkm }: { bkm: DMN14__tBusinessKnowledgeModel }) 
           aria-label={"Name"}
           type={"text"}
           isDisabled={false}
-          onChange={setName}
+          onChange={(newName) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel).variable!["@_name"] =
+                newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel)["@_name"] = newName;
+            });
+          }}
           value={bkm["@_name"]}
           placeholder={"Enter a name..."}
         />
       </FormGroup>
 
       <FormGroup label="Data type">
-        <DataTypeSelector typeRef={bkm.variable?.["@_typeRef"]} />
+        <DataTypeSelector
+          name={bkm.variable?.["@_typeRef"]}
+          onChange={(newTypeRef) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel).variable!["@_typeRef"] =
+                newTypeRef;
+            });
+          }}
+        />
       </FormGroup>
 
       <FormGroup label="Description">
@@ -37,6 +48,12 @@ export function BkmProperties({ bkm }: { bkm: DMN14__tBusinessKnowledgeModel }) 
           type={"text"}
           isDisabled={false}
           value={bkm.description}
+          onChange={(newDescription) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel).description =
+                newDescription;
+            });
+          }}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}

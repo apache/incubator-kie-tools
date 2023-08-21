@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as RF from "reactflow";
 
 import {
   DrawerActions,
@@ -21,17 +20,28 @@ import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useDmnEditorStore } from "../store/Store";
-import "./PropertiesPanel.css";
 import { GlobalProperties } from "./GlobalProperties";
+import "./PropertiesPanel.css";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const { dmn } = useDmnEditorStore();
 
-  const node = useMemo(() => {
-    return (
-      dmn.model.definitions.drgElement?.find((s) => s["@_id"] === nodeId) ??
-      dmn.model.definitions.artifact?.find((s) => s["@_id"] === nodeId)
-    );
+  const { node, index } = useMemo(() => {
+    for (let i = 0; i < (dmn.model.definitions.drgElement ?? []).length; i++) {
+      const element = (dmn.model.definitions.drgElement ?? [])[i];
+      if (element["@_id"] === nodeId) {
+        return { node: element, index: i };
+      }
+    }
+
+    for (let i = 0; i < (dmn.model.definitions.artifact ?? []).length; i++) {
+      const element = (dmn.model.definitions.artifact ?? [])[i];
+      if (element["@_id"] === nodeId) {
+        return { node: element, index: i };
+      }
+    }
+
+    return { node: undefined, index: -1 };
   }, [dmn.model.definitions.artifact, dmn.model.definitions.drgElement, nodeId]);
 
   return (
@@ -80,17 +90,17 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           {(() => {
             switch (node?.__$$element) {
               case "inputData":
-                return <InputDataProperties inputData={node} />;
+                return <InputDataProperties inputData={node} index={index} />;
               case "decision":
-                return <DecisionProperties decision={node} />;
+                return <DecisionProperties decision={node} index={index} />;
               case "businessKnowledgeModel":
-                return <BkmProperties bkm={node} />;
+                return <BkmProperties bkm={node} index={index} />;
               case "decisionService":
-                return <DecisionServiceProperties decisionService={node} />;
+                return <DecisionServiceProperties decisionService={node} index={index} />;
               case "knowledgeSource":
-                return <KnowledgeSourceProperties knowledgeSource={node} />;
+                return <KnowledgeSourceProperties knowledgeSource={node} index={index} />;
               case "textAnnotation":
-                return <TextAnnotationProperties textAnnotation={node} />;
+                return <TextAnnotationProperties textAnnotation={node} index={index} />;
               // case "group":
               //   return <>Group</>;
               // case "association":

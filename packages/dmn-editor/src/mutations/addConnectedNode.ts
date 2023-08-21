@@ -1,4 +1,4 @@
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
   DMN14__tAuthorityRequirement,
@@ -35,6 +35,10 @@ export function addConnectedNode({
     const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge);
 
     definitions.drgElement ??= [];
+    const variableBase = {
+      "@_id": generateUuid(),
+      "@_typeRef": DmnBuiltInDataType.Undefined,
+    };
     definitions.drgElement?.push(
       switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation">, {
         [NODE_TYPES.bkm]: {
@@ -42,30 +46,50 @@ export function addConnectedNode({
           "@_name": "New BKM",
           "@_id": newNodeId,
           ...requirements,
+          variable: {
+            ...variableBase,
+            "@_name": "New BKM",
+          },
         },
         [NODE_TYPES.decision]: {
           __$$element: "decision",
           "@_name": "New Decision",
           "@_id": newNodeId,
           ...requirements,
+          variable: {
+            ...variableBase,
+            "@_name": "New Decision",
+          },
         },
         [NODE_TYPES.decisionService]: {
           __$$element: "decisionService",
           "@_name": "New Decision Service",
           "@_id": newNodeId,
           ...requirements,
+          variable: {
+            ...variableBase,
+            "@_name": "New Decision Service",
+          },
         },
         [NODE_TYPES.inputData]: {
           __$$element: "inputData",
           "@_name": "New Input Data",
           "@_id": newNodeId,
           ...requirements,
+          variable: {
+            ...variableBase,
+            "@_name": "New Input Data",
+          },
         },
         [NODE_TYPES.knowledgeSource]: {
           __$$element: "knowledgeSource",
           "@_name": "New Knowledge Source",
           "@_id": newNodeId,
           ...requirements,
+          variable: {
+            ...variableBase,
+            "@_name": "New Knowledge Source",
+          },
         },
       })
     );

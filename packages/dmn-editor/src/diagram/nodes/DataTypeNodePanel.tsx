@@ -1,10 +1,10 @@
 import * as React from "react";
-import * as RF from "reactflow";
 import {
   DMN14__tInformationItem,
   DMNDI13__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
@@ -15,7 +15,7 @@ export function DataTypeNodePanel(props: {
     <>
       {props.isVisible && (
         <Label className={"kie-dmn-editor--data-type-node-panel"} isCompact={true}>{`🔹 ${
-          props.variable?.["@_typeRef"] ?? "<Undefined>"
+          props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined
         }`}</Label>
       )}
     </>

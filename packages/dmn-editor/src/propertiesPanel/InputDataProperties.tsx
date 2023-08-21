@@ -4,15 +4,12 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { useCallback } from "react";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
+import { useDmnEditorStoreApi } from "../store/Store";
 
-export function InputDataProperties({ inputData }: { inputData: DMN14__tInputData }) {
-  const setName = useCallback((dataType: string) => {
-    // TODO: Remember to set the variable name here as well.
-    console.log(`TIAGO WRITE: Set data type --> ${dataType}`);
-  }, []);
+export function InputDataProperties({ inputData, index }: { inputData: DMN14__tInputData; index: number }) {
+  const { setState } = useDmnEditorStoreApi();
 
   return (
     <>
@@ -21,14 +18,26 @@ export function InputDataProperties({ inputData }: { inputData: DMN14__tInputDat
           aria-label={"Name"}
           type={"text"}
           isDisabled={false}
-          onChange={setName}
+          onChange={(newName) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData).variable!["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData)["@_name"] = newName;
+            });
+          }}
           value={inputData["@_name"]}
           placeholder={"Enter a name..."}
         />
       </FormGroup>
 
       <FormGroup label="Data type">
-        <DataTypeSelector typeRef={inputData.variable?.["@_typeRef"]} />
+        <DataTypeSelector
+          name={inputData.variable?.["@_typeRef"]}
+          onChange={(newTypeRef) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData).variable!["@_typeRef"] = newTypeRef;
+            });
+          }}
+        />
       </FormGroup>
 
       <FormGroup label="Description">
@@ -37,6 +46,11 @@ export function InputDataProperties({ inputData }: { inputData: DMN14__tInputDat
           type={"text"}
           isDisabled={false}
           value={inputData.description}
+          onChange={(newDescription) => {
+            setState((dmn) => {
+              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData).description = newDescription;
+            });
+          }}
           placeholder={"Enter a description..."}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}

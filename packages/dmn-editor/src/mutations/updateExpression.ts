@@ -16,16 +16,19 @@ export function updateExpression({
   index: number;
 }) {
   const updatedWidthsMap = new Map<string, number[]>();
+  const updatedExpression = beeToDmn(expression, updatedWidthsMap);
 
   const drgElement = definitions.drgElement?.[index];
   if (drgElement?.__$$element === "decision") {
-    drgElement.expression = beeToDmn(expression, updatedWidthsMap);
+    drgElement.expression = updatedExpression;
+    drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"];
   } else if (drgElement?.__$$element === "businessKnowledgeModel") {
     if (expression.logicType !== ExpressionDefinitionLogicType.Function) {
       throw new Error("Can't have an expression on a BKM that is not a Function.");
     }
 
-    drgElement.encapsulatedLogic = beeToDmn(expression, updatedWidthsMap) as DMN14__tFunctionDefinition;
+    drgElement.encapsulatedLogic = updatedExpression as DMN14__tFunctionDefinition;
+    drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"];
   } else {
     throw new Error("Can't update expression for drgElement that is not a Decision or a BKM.");
   }

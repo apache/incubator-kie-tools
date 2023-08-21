@@ -1,5 +1,5 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds, DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
@@ -18,32 +18,56 @@ export function addStandaloneNode({
 
   if (nature === NodeNature.DRG_ELEMENT) {
     definitions.drgElement ??= [];
+    const variableBase = {
+      "@_id": generateUuid(),
+      "@_typeRef": DmnBuiltInDataType.Undefined,
+    };
     definitions.drgElement?.push(
       switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation">, {
         [NODE_TYPES.bkm]: {
           __$$element: "businessKnowledgeModel",
           "@_name": "New BKM",
           "@_id": newNodeId,
+          variable: {
+            "@_name": "New BKM",
+            ...variableBase,
+          },
         },
         [NODE_TYPES.decision]: {
           __$$element: "decision",
           "@_name": "New Decision",
           "@_id": newNodeId,
+          variable: {
+            "@_name": "New Decision",
+            ...variableBase,
+          },
         },
         [NODE_TYPES.decisionService]: {
           __$$element: "decisionService",
           "@_name": "New Decision Service",
           "@_id": newNodeId,
+          variable: {
+            "@_name": "New Decision Service",
+            ...variableBase,
+          },
         },
         [NODE_TYPES.inputData]: {
           __$$element: "inputData",
           "@_name": "New Input Data",
           "@_id": newNodeId,
+          variable: {
+            "@_name": "New Input Data",
+            ...variableBase,
+          },
         },
         [NODE_TYPES.knowledgeSource]: {
           __$$element: "knowledgeSource",
           "@_name": "New Knowledge Source",
           "@_id": newNodeId,
+          variable: {
+            "@_name": "New Knowledge Source",
+            ...variableBase,
+          },
         },
       })
     );
