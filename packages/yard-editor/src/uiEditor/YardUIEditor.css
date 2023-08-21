@@ -16,6 +16,7 @@
 
 .yard-ui-editor {
   margin: 10px;
+  width: calc(100% - 20px);
 }
 
 .yard-ui-editor .separator {
@@ -45,8 +46,9 @@
   margin-bottom: 20px;
 }
 
-yard-ui-editor .boxed-expression {
-  overflow-y: auto;
-  height: 40vh;
-  border: 1px dashed rgb(211, 211, 211);
+.yard-ui-editor section,
+.yard-ui-editor .react-transform-wrapper {
+  max-width: 100%;
+  max-height: calc(100vh - 70px);
+  overflow: hidden;
 }

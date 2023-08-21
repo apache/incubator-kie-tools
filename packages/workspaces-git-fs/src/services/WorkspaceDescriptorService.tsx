@@ -72,6 +72,7 @@ export class WorkspaceDescriptorService {
     origin: WorkspaceOrigin;
     preferredName?: string;
     gitAuthSessionId: string | undefined;
+    gitInsecurelyDisableTlsCertificateValidation?: boolean;
   }) {
     const workspace: WorkspaceDescriptor = {
       workspaceId: this.newWorkspaceId(),
@@ -80,6 +81,7 @@ export class WorkspaceDescriptorService {
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
       gitAuthSessionId: args.gitAuthSessionId,
+      gitInsecurelyDisableTlsCertificateValidation: args.gitInsecurelyDisableTlsCertificateValidation,
     };
     await this.storageService.createOrOverwriteFile(args.fs, this.toStorageFile(workspace));
     return workspace;
@@ -97,7 +99,13 @@ export class WorkspaceDescriptorService {
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
   }
 
-  public async turnIntoGist(fs: KieSandboxWorkspacesFs, workspaceId: string, gistUrl: URL, branch: string) {
+  public async turnIntoGist(
+    fs: KieSandboxWorkspacesFs,
+    workspaceId: string,
+    gistUrl: URL,
+    branch: string,
+    insecurelyDisableTlsCertificateValidation?: boolean
+  ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       origin: {
@@ -105,6 +113,7 @@ export class WorkspaceDescriptorService {
         url: gistUrl.toString(),
         branch,
       },
+      gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
@@ -118,7 +127,13 @@ export class WorkspaceDescriptorService {
       message: async () => ({ type: "WSS_UPDATE", workspaceId }),
     });
   }
-  public async turnIntoSnippet(fs: KieSandboxWorkspacesFs, workspaceId: string, snippetUrl: URL, branch: string) {
+  public async turnIntoSnippet(
+    fs: KieSandboxWorkspacesFs,
+    workspaceId: string,
+    snippetUrl: URL,
+    branch: string,
+    insecurelyDisableTlsCertificateValidation?: boolean
+  ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       origin: {
@@ -126,6 +141,7 @@ export class WorkspaceDescriptorService {
         url: snippetUrl.toString(),
         branch,
       },
+      gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
@@ -140,7 +156,13 @@ export class WorkspaceDescriptorService {
     });
   }
 
-  public async turnIntoGit(fs: KieSandboxWorkspacesFs, workspaceId: string, url: URL, branch?: string) {
+  public async turnIntoGit(
+    fs: KieSandboxWorkspacesFs,
+    workspaceId: string,
+    url: URL,
+    branch?: string,
+    insecurelyDisableTlsCertificateValidation?: boolean
+  ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       origin: {
@@ -148,6 +170,7 @@ export class WorkspaceDescriptorService {
         url: url.toString(),
         branch: branch ?? GIT_DEFAULT_BRANCH,
       },
+      gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
@@ -165,11 +188,13 @@ export class WorkspaceDescriptorService {
   public async changeGitAuthSessionId(
     fs: KieSandboxWorkspacesFs,
     workspaceId: string,
-    gitAuthSessionId: string | undefined
+    gitAuthSessionId: string | undefined,
+    insecurelyDisableTlsCertificateValidation?: boolean
   ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       gitAuthSessionId,
+      gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 

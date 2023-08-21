@@ -31,6 +31,8 @@ export const startServer = (args: ServerArgs): void => {
 
   const app: express.Express = express();
 
+  app.disable("x-powered-by");
+
   const proxy = new ExpressCorsProxy(args);
 
   dnsFix();
