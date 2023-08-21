@@ -15,4 +15,3 @@
  */
 
 export * from "./DecisionDataTypes";
-export * from "./DecisionExpressionDefinitions";
