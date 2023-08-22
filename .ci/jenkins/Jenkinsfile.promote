@@ -97,11 +97,13 @@ pipeline {
         stage('Create release') {
             steps {
                 script {
-                    if (githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
-                        githubscm.deleteReleaseAndTag(getGitTag(), getGitAuthorCredsID())
+                    dir(getRepoName()) {
+                        if (githubscm.isReleaseExist(getGitTag(), getGitAuthorCredsID())) {
+                            githubscm.deleteReleaseAndTag(getGitTag(), getGitAuthorCredsID())
+                        }
+                        githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorCredsID())
+                        githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                     }
-                    githubscm.createReleaseWithGeneratedReleaseNotes(getGitTag(), getBuildBranch(), githubscm.getPreviousTagFromVersion(getGitTag()), getGitAuthorCredsID())
-                    githubscm.updateReleaseBody(getGitTag(), getGitAuthorCredsID())
                 }
             }
         }
