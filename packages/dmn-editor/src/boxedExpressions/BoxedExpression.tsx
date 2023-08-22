@@ -62,7 +62,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     [boxedExpression.drgElement?.index, dmnEditorStoreApi, expression]
   );
 
-  //Necessary, since `state.boxedExpression.drgElement!.content` is a copy of the original element.
+  // Necessary, since `state.boxedExpression.drgElement!.content` is a copy of the original element.
   useEffect(() => {
     dmnEditorStoreApi.setState((state) => {
       state.boxedExpression.drgElement!.content =
