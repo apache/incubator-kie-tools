@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
+import { OpenApi } from "openapi-v3";
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
-import { useAppDataPromise } from "../hooks/useAppDataPromise";
-import { AppContext } from "./AppContext";
+import { useOpenApiPromise } from "../hooks/useOpenApiPromise";
+import { OpenApiContext } from "./OpenApiContext";
 
-export function AppContextProvider(props: PropsWithChildren<{}>) {
-  const appDataPromise = useAppDataPromise();
-  const [appTitle, setAppTitle] = useState("");
+export function OpenApiContextProvider(props: PropsWithChildren<{}>) {
+  const openApiPromise = useOpenApiPromise();
+  const [openApiData, setOpenApiData] = useState<OpenApi>();
 
   useEffect(() => {
-    if (!appDataPromise.data) {
+    if (!openApiPromise.data) {
       return;
     }
 
-    setAppTitle(appDataPromise.data.appTitle);
-
-    document.title = appDataPromise.data.appTitle;
-  }, [appDataPromise.data]);
+    setOpenApiData(openApiPromise.data);
+  }, [openApiPromise.data]);
 
   const value = useMemo(
     () => ({
-      appDataPromise,
-      appTitle,
+      openApiPromise,
+      openApiData,
     }),
-    [appTitle, appDataPromise]
+    [openApiPromise, openApiData]
   );
 
-  return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;
+  return <OpenApiContext.Provider value={value}>{props.children}</OpenApiContext.Provider>;
 }

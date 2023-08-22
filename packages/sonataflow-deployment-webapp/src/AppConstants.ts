@@ -14,14 +14,5 @@
  * limitations under the License.
  */
 
-import { createContext, useContext } from "react";
-import { AppData } from "../data";
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AppContextType extends AppData {}
-
-export const AppContext = createContext<AppContextType>({} as any);
-
-export function useApp() {
-  return useContext(AppContext);
-}
+export const SONATAFLOW_DEPLOYMENT_DOCUMENTATION_URL = "https://sonataflow.org/serverlessworkflow/latest/index.html";
+export const KUBESTAMRTS_URL = "https://start.kubesmarts.org";

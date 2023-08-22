@@ -15,13 +15,16 @@
  */
 
 import { createContext, useContext } from "react";
-import { AppData } from "../data";
+import { OpenApi } from "openapi-v3";
+import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AppContextType extends AppData {}
+export interface OpenApiContextType {
+  openApiData: OpenApi | undefined;
+  openApiPromise: PromiseState<OpenApi>;
+}
 
-export const AppContext = createContext<AppContextType>({} as any);
+export const OpenApiContext = createContext<OpenApiContextType>({} as any);
 
-export function useApp() {
-  return useContext(AppContext);
+export function useOpenApi() {
+  return useContext(OpenApiContext);
 }

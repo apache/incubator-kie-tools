@@ -7852,6 +7852,9 @@ importers:
       "@patternfly/react-icons":
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
+      "@patternfly/react-table":
+        specifier: ^4.112.39
+        version: 4.112.39(react-dom@17.0.2)(react@17.0.2)
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
@@ -15194,7 +15197,6 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       tslib: 2.5.0
-    dev: false
 
   /@patternfly/react-tokens@4.94.6:
     resolution:

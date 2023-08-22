@@ -18,6 +18,7 @@ import React from "react";
 import { Route, Switch } from "react-router";
 import { HashRouter } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
+import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
 import { HomePage } from "./pages/HomePage";
 import { NoMatchPage } from "./pages/NoMatchPage";
 import { routes } from "./routes";
@@ -25,14 +26,16 @@ import { routes } from "./routes";
 export function App() {
   return (
     <AppContextProvider>
-      <HashRouter>
-        <Switch>
-          <Route path={routes.root.path({})}>
-            <HomePage />
-          </Route>
-          <Route component={NoMatchPage} />
-        </Switch>
-      </HashRouter>
+      <OpenApiContextProvider>
+        <HashRouter>
+          <Switch>
+            <Route path={routes.root.path({})}>
+              <HomePage />
+            </Route>
+            <Route component={NoMatchPage} />
+          </Switch>
+        </HashRouter>
+      </OpenApiContextProvider>
     </AppContextProvider>
   );
 }

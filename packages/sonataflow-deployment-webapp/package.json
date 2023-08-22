@@ -33,6 +33,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
+    "@patternfly/react-table": "^4.112.39",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/openapi-v3": "^3.0.0",

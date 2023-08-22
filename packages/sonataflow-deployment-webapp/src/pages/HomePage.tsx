@@ -14,43 +14,145 @@
  * limitations under the License.
  */
 
-import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
+import React from "react";
+import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import * as React from "react";
-import { routes } from "../routes";
+import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
+import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { CubesIcon, ExclamationCircleIcon, PlayIcon } from "@patternfly/react-icons/dist/js/icons";
+import { Table } from "@patternfly/react-table/dist/js/components/Table";
+import { Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table/dist/js/components/TableComposable";
+import { KUBESTAMRTS_URL } from "../AppConstants";
+import { useOpenApi } from "../context/OpenApiContext";
 import { BasePage } from "./BasePage";
 
 export function HomePage() {
+  const openApi = useOpenApi();
+
   return (
     <BasePage>
       <PageSection>
-        <TextContent>
-          <Text component={TextVariants.h3}>Welcome to your deployment</Text>
-        </TextContent>
-        <br />
-        <TextContent>
-          <Text component={TextVariants.h5}>Explore:</Text>
-        </TextContent>
-        <br />
-        <List>
-          <LinkListItem title="Swagger UI" href={routes.swaggerUi.path({})} />
-          <LinkListItem title="Open API" href={routes.openApi.path({})} />
-          <LinkListItem title="Metrics" href={routes.metrics.path({})} />
-        </List>
+        <Toolbar>
+          <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>
+            <ToolbarItem alignment={{ default: "alignLeft" }}>
+              <Button>Trigger Cloud Event</Button>
+            </ToolbarItem>
+          </ToolbarContent>
+        </Toolbar>
+
+        <Table aria-label="Simple table">
+          <Thead>
+            <Tr>
+              <Th>Workflow Name</Th>
+              <Th>Endpoint</Th>
+              <Th>Actions</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <PromiseStateWrapper
+              promise={openApi.openApiPromise}
+              pending={
+                <>
+                  <Tr>
+                    <Td>
+                      <Skeleton></Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton></Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton></Skeleton>
+                    </Td>
+                  </Tr>
+                  <Tr>
+                    <Td>
+                      <Skeleton></Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton></Skeleton>
+                    </Td>
+                    <Td>
+                      <Skeleton></Skeleton>
+                    </Td>
+                  </Tr>
+                </>
+              }
+              rejected={(errors) => <ErrorTableState errors={errors}></ErrorTableState>}
+              resolved={(data) =>
+                !data.tags || !data.tags.length ? (
+                  <EmptyTableState />
+                ) : (
+                  data.tags?.map((tag) => (
+                    <Tr key={tag.name}>
+                      <Td>{tag.name}</Td>
+                      <Td>
+                        {window.location.origin}/{tag.name}
+                      </Td>
+                      <Td>
+                        <Button icon={<PlayIcon />} variant="link"></Button>
+                      </Td>
+                    </Tr>
+                  ))
+                )
+              }
+            />
+          </Tbody>
+        </Table>
       </PageSection>
     </BasePage>
   );
 }
 
-function LinkListItem(props: { title: string; href: string }) {
+function EmptyTableState() {
   return (
-    <ListItem>
-      <Text component={TextVariants.a} href={props.href} target="_blank">
-        {props.title}&nbsp;&nbsp;
-        <ExternalLinkAltIcon />
-      </Text>
-    </ListItem>
+    <Tr>
+      <Td colSpan={3}>
+        <Bullseye>
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title headingLevel="h4" size="lg">
+              {`Nothing here`}
+            </Title>
+            <EmptyStateBody>
+              <TextContent>
+                <Text>
+                  Start by creating a model on{" "}
+                  <a href={KUBESTAMRTS_URL} target="_blank" rel="noopener noreferrer">
+                    {KUBESTAMRTS_URL}
+                  </a>
+                </Text>
+              </TextContent>
+            </EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
+      </Td>
+    </Tr>
+  );
+}
+
+function ErrorTableState(props: { errors: string[] }) {
+  return (
+    <Tr>
+      <Td colSpan={3}>
+        <Bullseye>
+          <EmptyState>
+            <EmptyStateIcon icon={ExclamationCircleIcon} color="#a30000" />
+            <Title headingLevel="h4" size="lg">
+              {`Unable to connect`}
+            </Title>
+            <EmptyStateBody>
+              <TextContent>
+                <Text>There was a problem fetching the data: {props.errors.join(", ")}!</Text>
+              </TextContent>
+            </EmptyStateBody>
+          </EmptyState>
+        </Bullseye>
+      </Td>
+    </Tr>
   );
 }

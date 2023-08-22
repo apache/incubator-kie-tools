@@ -42,7 +42,7 @@ export function useOpenApiPromise() {
               return;
             }
 
-            setOpenApiPromise({ data: data });
+            setOpenApiPromise({ data });
           })
           .catch((e) => {
             setOpenApiPromise({ error: e });
