@@ -80,7 +80,7 @@ pipeline {
                 }
             }
         }
-        stage('Merge PR, tag and release CLI') {
+        stage('Merge PR and create tags') {
             when {
                 expression { return helper.isRelease() }
             }
@@ -122,16 +122,18 @@ pipeline {
         stage('Create Release') {
             steps {
                 script {
-                    if(githubscm.isReleaseExist(helper.getGitTag(), helper.getGitAuthorCredsID())) {
-                        githubscm.deleteReleaseAndTag(helper.getGitTag(), helper.getGitAuthorCredsID())
-                    }
-                    githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTagFromVersion(helper.getGitTag(), 'v', '', ['/']), helper.getGitAuthorCredsID())
-                    githubscm.updateReleaseBody(helper.getGitTag(), helper.getGitAuthorCredsID())
-
-                    withCredentials([usernamePassword(credentialsId: helper.getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-                        sh """
-                            gh release upload ${helper.getGitTag()} "operator.yaml"
-                        """
+                    dir(helper.getRepoName()) {
+                        if(githubscm.isReleaseExist(helper.getGitTag(), helper.getGitAuthorCredsID())) {
+                            githubscm.deleteReleaseAndTag(helper.getGitTag(), helper.getGitAuthorCredsID())
+                        }
+                        githubscm.createReleaseWithGeneratedReleaseNotes(helper.getGitTag(), helper.getBuildBranch(), githubscm.getPreviousTagFromVersion(helper.getProjectVersion(), 'v', '', ['/']), helper.getGitAuthorCredsID())
+                        githubscm.updateReleaseBody(helper.getGitTag(), helper.getGitAuthorCredsID())
+    
+                        withCredentials([usernamePassword(credentialsId: helper.getGitAuthorCredsID(), usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                            sh """
+                                gh release upload ${helper.getGitTag()} "operator.yaml"
+                            """
+                        }
                     }
                 }
             }
