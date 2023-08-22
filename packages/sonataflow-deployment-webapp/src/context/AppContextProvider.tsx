@@ -20,7 +20,7 @@ import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
-  const [appTitle, setAppTitle] = useState("");
+  const [appTitle, setAppTitle] = useState("Deployment");
 
   useEffect(() => {
     if (!appDataPromise.data) {

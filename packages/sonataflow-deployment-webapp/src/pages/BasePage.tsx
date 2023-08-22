@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -40,7 +41,9 @@ export function BasePage(props: { children?: React.ReactNode }) {
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>{app.appTitle}</Text>
+                  <Text component={TextVariants.h1}>
+                    {app.appDataPromise.status === PromiseStateStatus.PENDING ? "" : app.appTitle}
+                  </Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>

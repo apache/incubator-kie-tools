@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { createContext, useContext } from "react";
 import { AppData } from "../data";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AppContextType extends AppData {}
+export interface AppContextType extends AppData {
+  appDataPromise: PromiseState<AppData>;
+}
 
 export const AppContext = createContext<AppContextType>({} as any);
 
