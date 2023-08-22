@@ -1,3 +1,4 @@
+import { DmnDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN14__tDefinitions, DMNDI13__DMNDiagram } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
 export interface DmnIndex {

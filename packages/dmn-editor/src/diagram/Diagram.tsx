@@ -374,8 +374,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   }, []);
 
   const rfSnapGrid = useMemo<[number, number]>(
-    () => (diagram.snapGrid.isOn ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
-    [diagram.snapGrid.isOn, diagram.snapGrid.x, diagram.snapGrid.y]
+    () => (diagram.snapGrid.isEnabled ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
+    [diagram.snapGrid.isEnabled, diagram.snapGrid.x, diagram.snapGrid.y]
   );
 
   return (

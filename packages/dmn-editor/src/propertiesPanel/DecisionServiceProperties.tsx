@@ -74,7 +74,7 @@ export function DecisionServiceProperties({
       <FormGroup label="Input decisions"></FormGroup>
       <FormGroup label="Input data"></FormGroup>
 
-      <FormGroup label="Documentation links">
+      <FormGroup label="Documentation links (Work in progress 🔧)">
         <DocumentationLinksInput />
       </FormGroup>
     </>

@@ -97,7 +97,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN14__tDeci
         />
       </FormGroup>
 
-      <FormGroup label="Documentation links">
+      <FormGroup label="Documentation links (Work in progress 🔧)">
         <DocumentationLinksInput />
       </FormGroup>
 

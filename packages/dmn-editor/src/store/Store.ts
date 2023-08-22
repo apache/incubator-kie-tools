@@ -14,7 +14,7 @@ export interface DmnEditorDiagramNodeStatus {
 }
 
 export interface SnapGrid {
-  isOn: boolean;
+  isEnabled: boolean;
   x: number;
   y: number;
 }
@@ -142,7 +142,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           enableCustomNodeStyles: true,
           enableDataTypesOnNodes: true,
         },
-        snapGrid: { isOn: true, x: 20, y: 20 },
+        snapGrid: { isEnabled: true, x: 20, y: 20 },
         selected: [],
         dragging: [],
         resizing: [],

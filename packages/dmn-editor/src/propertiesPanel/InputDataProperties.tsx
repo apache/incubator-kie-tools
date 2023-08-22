@@ -63,7 +63,7 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN14__tI
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Documentation links">
+      <FormGroup label="Documentation links (Work in progress 🔧)">
         <DocumentationLinksInput />
       </FormGroup>
     </>

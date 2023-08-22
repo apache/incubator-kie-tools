@@ -47,7 +47,7 @@ export function snapPoint(grid: SnapGrid, point: DC__Point, method: "floor" | "c
 }
 
 export function snap(grid: SnapGrid, coord: "x" | "y", value: number | undefined, method: "floor" | "ceil" = "floor") {
-  return grid.isOn //
+  return grid.isEnabled //
     ? Math[method]((value ?? 0) / grid[coord]) * grid[coord]
     : value ?? 0;
 }

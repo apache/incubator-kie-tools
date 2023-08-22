@@ -24,10 +24,10 @@ export function OverlaysPanel() {
         <FormGroup label="Snapping">
           <Switch
             aria-label={"Snapping"}
-            isChecked={diagram.snapGrid.isOn}
+            isChecked={diagram.snapGrid.isEnabled}
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.snapGrid.isOn = newValue;
+                state.diagram.snapGrid.isEnabled = newValue;
               })
             }
           />
@@ -35,7 +35,7 @@ export function OverlaysPanel() {
         <FormGroup label="Horizontal">
           <Slider
             className={"kie-dmn-editor--snap-slider"}
-            isDisabled={!diagram.snapGrid.isOn}
+            isDisabled={!diagram.snapGrid.isEnabled}
             value={diagram.snapGrid.x}
             min={MIN_SNAP}
             max={MAX_SNAP}
@@ -54,7 +54,7 @@ export function OverlaysPanel() {
         <FormGroup label="Vertical">
           <Slider
             className={"kie-dmn-editor--snap-slider"}
-            isDisabled={!diagram.snapGrid.isOn}
+            isDisabled={!diagram.snapGrid.isEnabled}
             value={diagram.snapGrid.y}
             min={MIN_SNAP}
             max={MAX_SNAP}

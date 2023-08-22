@@ -87,7 +87,7 @@ export function KnowledgeSourceProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Documentation links">
+      <FormGroup label="Documentation links (Work in progress 🔧)">
         <DocumentationLinksInput />
       </FormGroup>
     </>

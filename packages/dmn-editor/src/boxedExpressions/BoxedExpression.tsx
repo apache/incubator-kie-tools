@@ -22,6 +22,7 @@ import {
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
 import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressionDefinitionByLogicType";
 import "@kie-tools/dmn-marshaller";
+import { useDataTypes } from "../dataTypes/Hooks";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const { dispatch, dmn, boxedExpression } = useDmnEditorStore();
@@ -75,16 +76,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  // FIXME: Tiago -->  This is duplicated.
-  const dataTypes = useMemo(
-    () =>
-      (dmn.model.definitions.itemDefinition ?? []).map((item) => ({
-        isCustom: true,
-        typeRef: item.typeRef!,
-        name: item["@_name"]!,
-      })),
-    [dmn.model.definitions.itemDefinition]
-  );
+  const { all: dataTypes } = useDataTypes(dmn.model.definitions);
 
   const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
 
