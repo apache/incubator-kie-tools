@@ -21,7 +21,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
@@ -29,7 +28,6 @@ import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.AbstractRendererLibrary;
 import org.dashbuilder.displayer.client.Displayer;
 import org.dashbuilder.renderer.echarts.client.exports.ResourcesInjector;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 import static org.dashbuilder.displayer.DisplayerSubType.AREA;
 import static org.dashbuilder.displayer.DisplayerSubType.AREA_STACKED;
@@ -62,7 +60,7 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             PIECHART,
             AREACHART,
             BUBBLECHART,
-            METERCHART, 
+            METERCHART,
             SCATTERCHART,
             TIMESERIES);
 
@@ -70,9 +68,6 @@ public class EChartsRenderer extends AbstractRendererLibrary {
     public void prepare() {
         ResourcesInjector.ensureEChartsInjected();
     }
-
-    @Inject
-    protected SyncBeanManager beanManager;
 
     @Override
     public String getUUID() {
@@ -108,15 +103,15 @@ public class EChartsRenderer extends AbstractRendererLibrary {
             case BARCHART:
             case AREACHART:
             case SCATTERCHART:
-                return beanManager.lookupBean(EChartsXYChartDisplayer.class).newInstance();
+                return buildAndManageInstance(EChartsXYChartDisplayer.class);
             case TIMESERIES:
-                return beanManager.lookupBean(EChartsTimeseriesDisplayer.class).newInstance();
+                return buildAndManageInstance(EChartsTimeseriesDisplayer.class);
             case BUBBLECHART:
-                return beanManager.lookupBean(EChartsBubbleChartDisplayer.class).newInstance();
+                return buildAndManageInstance(EChartsBubbleChartDisplayer.class);
             case PIECHART:
-                return beanManager.lookupBean(EChartsPieChartDisplayer.class).newInstance();
+                return buildAndManageInstance(EChartsPieChartDisplayer.class);
             case METERCHART:
-                return beanManager.lookupBean(EChartsMeterChartDisplayer.class).newInstance();
+                return buildAndManageInstance(EChartsMeterChartDisplayer.class);
             case MAP:
             default:
                 throw new IllegalArgumentException("Type not supported by ECharts, use C3 renderer instead");
@@ -132,4 +127,5 @@ public class EChartsRenderer extends AbstractRendererLibrary {
     public boolean isDefault(DisplayerType type) {
         return SUPPORTED_TYPES.contains(type);
     }
+
 }

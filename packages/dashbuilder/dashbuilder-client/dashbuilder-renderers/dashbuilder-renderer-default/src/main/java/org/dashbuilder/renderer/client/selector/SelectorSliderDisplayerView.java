@@ -32,7 +32,6 @@ import org.dashbuilder.patternfly.label.LabelColor;
 import org.dashbuilder.patternfly.slider.Slider;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
 import org.dashbuilder.renderer.client.resources.i18n.SliderConstants;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
 @Dependent
 public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorSliderDisplayer>
@@ -59,10 +58,9 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
         StyleInjector.inject(".slider .tooltip-inner { max-width: 900px; }");
 
         header.setVisible(false);
-        
-        
+
         // TODO: Slider setup
-        body.add(ElementWrapperWidget.getWidget(slider.getElement()));
+        body.getElement().appendChild(Js.cast(slider.getElement()));
         body.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         container.add(header);
@@ -156,6 +154,6 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
         error.clear();
         label.setLabelColor(LabelColor.RED);
         label.setText(msg);
-        error.add(ElementWrapperWidget.getWidget(label.getElement()));
+        error.getElement().appendChild(Js.cast(label.getElement()));
     }
 }

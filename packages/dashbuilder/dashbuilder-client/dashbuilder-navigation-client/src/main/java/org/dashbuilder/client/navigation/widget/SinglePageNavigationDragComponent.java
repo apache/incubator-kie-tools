@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 import elemental2.dom.HTMLElement;
@@ -31,9 +33,12 @@ public abstract class SinglePageNavigationDragComponent implements LayoutDragCom
 
     PerspectivePluginManager perspectivePluginManager;
 
+    Map<String, HTMLElement> perspectiveCache;
+
     SinglePageNavigationDragComponent(SyncBeanManager beanManager, PerspectivePluginManager perspectivePluginManager) {
         this.beanManager = beanManager;
         this.perspectivePluginManager = perspectivePluginManager;
+        perspectiveCache = new HashMap<>();
     }
 
     @Override
@@ -45,8 +50,15 @@ public abstract class SinglePageNavigationDragComponent implements LayoutDragCom
         if (perspectiveId == null) {
             return alert("Page " + perspectiveId + "  not Found");
         } else {
-            perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
-                    page -> pageBuilder.accept(perspectiveId, page));
+            if (perspectiveCache.containsKey(perspectiveId)) {
+                pageBuilder.accept(perspectiveId, perspectiveCache.get(perspectiveId));
+            } else {
+                perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
+                        page -> {
+                            perspectiveCache.put(perspectiveId, page);
+                            pageBuilder.accept(perspectiveId, perspectiveCache.get(perspectiveId));
+                        });
+            }
         }
 
         return root;

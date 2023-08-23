@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
@@ -65,8 +64,7 @@ public class PatternflyLayoutGeneratorDriver implements LayoutGeneratorDriver {
     public HTMLElement createComponent(HTMLElement column, LayoutComponent layoutComponent) {
         final var dragComponent = lookupComponent(layoutComponent);
         if (dragComponent != null) {
-            var columnWidget = ElementWrapperWidget.getWidget(column);
-            var componentContext = new RenderingContext(layoutComponent, columnWidget);
+            var componentContext = new RenderingContext(layoutComponent, column);
             return dragComponent.getShowWidget(componentContext);
         }
         return null;

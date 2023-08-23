@@ -15,7 +15,9 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -47,6 +49,7 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
     String targetDivId = null;
     String defaultNavItemId = null;
     boolean gotoItemEnabled = false;
+    Map<String, HTMLElement> perspectiveCache;
 
     @Inject
     public TargetDivNavWidget(View view,
@@ -55,6 +58,7 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
         super(view, navigationManager);
         this.view = view;
         this.pluginManager = pluginManager;
+        perspectiveCache = new HashMap<>();
     }
 
     public void setGotoItemEnabled(boolean enabled) {
@@ -145,7 +149,15 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
             NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(getItemSelected());
             String resourceId = navCtx.getResourceId();
             if (resourceId != null) {
-                pluginManager.buildPerspectiveWidget(resourceId, w -> view.showContent(targetDivId, w));
+
+                if (perspectiveCache.containsKey(resourceId)) {
+                    view.showContent(targetDivId, perspectiveCache.get(resourceId));
+                    return;
+                }
+                pluginManager.buildPerspectiveWidget(resourceId, page -> {
+                    perspectiveCache.put(resourceId, page);
+                    view.showContent(targetDivId, page);
+                });
             } else {
                 view.clearContent(targetDivId);
             }

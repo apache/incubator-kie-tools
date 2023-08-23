@@ -16,11 +16,17 @@
 
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.patternfly.panel.Panel;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @ApplicationScoped
@@ -28,6 +34,18 @@ public class PanelLayoutDragComponent extends SinglePageNavigationDragComponent 
 
     public static final String PAGE_NAME_PARAMETER = "Page Name";
     PerspectivePluginManager perspectivePluginManager;
+
+    Map<String, Panel> panels;
+
+    @PostConstruct
+    void setup() {
+        panels = new HashMap<>();
+    }
+
+    @PreDestroy
+    void destroy() {
+        panels.values().forEach(this::destroy);
+    }
 
     @Inject
     public PanelLayoutDragComponent(SyncBeanManager beanManager,
@@ -37,10 +55,16 @@ public class PanelLayoutDragComponent extends SinglePageNavigationDragComponent 
 
     @Override
     ComponentBuilder getComponentBuilder() {
-        var panel = beanManager.lookupBean(Panel.class).newInstance();
-        return componentBuilder(panel.getElement(), (name, page) -> {
-            panel.setTitle(name);
-            panel.setContent(page);
+        var newPanel = beanManager.lookupBean(Panel.class).newInstance();
+        return componentBuilder(newPanel.getElement(), (name, page) -> {
+            panels.compute(name, (n, oldPanel) -> {
+                if (oldPanel != null) {
+                    destroy(oldPanel);
+                }
+                return newPanel;
+            });
+            newPanel.setTitle(name);
+            newPanel.setContent(page);
         });
     }
 
@@ -48,5 +72,9 @@ public class PanelLayoutDragComponent extends SinglePageNavigationDragComponent 
     String getPageParameterName() {
         return PAGE_NAME_PARAMETER;
     }
-    
+
+    private void destroy(Panel oldPanel) {
+        IOC.getBeanManager().destroyBean(oldPanel);
+    }
+
 }

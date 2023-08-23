@@ -159,7 +159,7 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
         span.appendChild(i);
         return span;
     }
-    
+
     @Override
     public HTMLElement getElement() {
         return mainDiv;

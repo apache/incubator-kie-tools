@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -29,6 +30,7 @@ import org.dashbuilder.displayer.client.DisplayerListener;
 import org.dashbuilder.displayer.client.DisplayerLocator;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ioc.client.container.IOC;
 
 import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -135,5 +137,14 @@ public class DisplayerViewer {
 
     public HTMLElement getDisplayerContainer() {
         return container;
+    }
+
+    @PreDestroy
+    void destroy() {
+        if (displayer != null) {
+            displayer.close();
+            IOC.getBeanManager().destroyBean(displayer);
+            this.displayer = null;
+        }
     }
 }

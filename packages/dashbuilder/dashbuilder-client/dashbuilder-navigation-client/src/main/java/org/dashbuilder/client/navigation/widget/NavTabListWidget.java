@@ -93,4 +93,5 @@ public class NavTabListWidget extends TargetDivNavWidget {
     public HTMLElement getElement() {
         return view.getElement();
     }
+
 }

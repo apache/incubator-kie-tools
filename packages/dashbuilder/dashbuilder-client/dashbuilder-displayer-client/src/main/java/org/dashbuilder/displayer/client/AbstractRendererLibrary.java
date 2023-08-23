@@ -15,14 +15,45 @@
  */
 package org.dashbuilder.displayer.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+
 import org.dashbuilder.displayer.DisplayerType;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 /**
  * Base class for implementing custom renderer libraries.
  */
 public abstract class AbstractRendererLibrary implements RendererLibrary {
+
+    List<AbstractDisplayer<?>> displayersToBeDestroyed;
+
+    @Inject
+    protected SyncBeanManager beanManager;
+
+    @PostConstruct
+    void setup() {
+        displayersToBeDestroyed = new ArrayList<>();
+    }
+
+    @PreDestroy
+    public void cleanUp() {
+        displayersToBeDestroyed.forEach(d -> {
+            IOC.getBeanManager().destroyBean(d);
+        });
+
+    }
+
+    protected <T extends AbstractDisplayer<?>> T buildAndManageInstance(Class<T> clazz) {
+        var newInstance = beanManager.lookupBean(clazz).newInstance();
+        displayersToBeDestroyed.add(newInstance);
+        return newInstance;
+    }
 
     @Override
     public boolean isDefault(DisplayerType type) {

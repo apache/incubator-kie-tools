@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 /**
@@ -24,10 +24,10 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 public class RenderingContext {
 
     private LayoutComponent component;
-    private Widget container;
+    private HTMLElement container;
 
     public RenderingContext(LayoutComponent component,
-                            Widget container) {
+                            HTMLElement container) {
         this.component = component;
         this.container = container;
     }
@@ -40,7 +40,7 @@ public class RenderingContext {
         return component;
     }
 
-    public Widget getContainer() {
+    public HTMLElement getContainer() {
         return container;
     }
 }

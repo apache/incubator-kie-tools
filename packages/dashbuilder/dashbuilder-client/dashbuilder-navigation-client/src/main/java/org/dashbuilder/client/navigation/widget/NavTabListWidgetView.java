@@ -15,6 +15,10 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -25,6 +29,7 @@ import jsinterop.base.Js;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.tab.Tab;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -57,11 +62,14 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
     @Inject
     protected SyncBeanManager beanManager;
 
+    Map<String, Tab> tabsCache;
+
     NavTabListWidget presenter;
 
     @Inject
     public NavTabListWidgetView(Alert alertBox) {
         super(alertBox);
+        tabsCache = new HashMap<>();
     }
 
     @Override
@@ -82,7 +90,7 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
 
     @Override
     public void addItem(String id, String name, String description, Command onItemSelected) {
-        var tab = beanManager.lookupBean(Tab.class).newInstance();
+        var tab = produceTab(id);
         var element = tab.getElement();
         if (tabList.childElementCount == 0) {
             selectItem(tabList, tab.getElement());
@@ -98,9 +106,18 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
         super.itemMap.put("id", Js.cast(element));
     }
 
+    private Tab produceTab(String id) {
+        return tabsCache.compute(id, (key, value) -> {
+            if (value != null) {
+                IOC.getBeanManager().destroyBean(value);
+            }
+            return beanManager.lookupBean(Tab.class).newInstance();
+        });
+    }
+
     @Override
     public void showAsSubmenu(boolean enabled) {
-        // TODO TBD
+        tabsDiv.classList.add("pf-m-secondary");
     }
 
     @Override
@@ -134,6 +151,11 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
     @Override
     public HTMLElement getElement() {
         return mainDiv;
+    }
+
+    @PreDestroy
+    void destroy() {
+        tabsCache.values().forEach(IOC.getBeanManager()::destroyBean);
     }
 
 }

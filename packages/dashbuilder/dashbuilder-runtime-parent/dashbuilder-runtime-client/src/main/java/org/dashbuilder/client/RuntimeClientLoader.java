@@ -39,6 +39,7 @@ import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.client.setup.RuntimeClientSetup;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
+import org.dashbuilder.displayer.client.RendererManager;
 import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
 import org.dashbuilder.renderer.client.DefaultRenderer;
 import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
@@ -46,6 +47,7 @@ import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
+import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.mvp.Command;
 
 import static elemental2.dom.DomGlobal.fetch;
@@ -82,6 +84,8 @@ public class RuntimeClientLoader {
     RuntimeModel clientModel;
 
     RuntimeClientSetup setup;
+    
+    LayoutDragComponentHelper componentHelper;
 
     private SamplesService samplesService;
 
@@ -90,6 +94,8 @@ public class RuntimeClientLoader {
     String clientModelBaseUrl;
 
     boolean samplesDefaultHome;
+
+    private RendererManager rendererManager;
 
     public RuntimeClientLoader() {
         // do nothing
@@ -106,6 +112,8 @@ public class RuntimeClientLoader {
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
                                Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent,
                                Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent,
+                               LayoutDragComponentHelper componentHelper,
+                               RendererManager rendererManager,
                                Router router) {
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
         this.navigationManager = navigationManager;
@@ -117,6 +125,8 @@ public class RuntimeClientLoader {
         this.updatedRuntimeModelEvent = updatedRuntimeModelEvent;
         this.dataSetDefRemovedEvent = dataSetDefRemovedEvent;
         this.updatedGlobalSettingsEvent = updatedGlobalSettingsEvent;
+        this.componentHelper = componentHelper;
+        this.rendererManager = rendererManager;
         this.router = router;
     }
 
@@ -296,6 +306,8 @@ public class RuntimeClientLoader {
 
     private void clearLayoutRetainedData() {
         DefaultRenderer.closeAllDisplayers();
+        componentHelper.destroy();
+        rendererManager.cleanUp();
         // TODO: Identify and remove beans created with newInstance
     }
 

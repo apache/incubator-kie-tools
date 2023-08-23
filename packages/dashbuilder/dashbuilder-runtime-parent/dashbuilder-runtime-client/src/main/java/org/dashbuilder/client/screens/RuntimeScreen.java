@@ -68,7 +68,7 @@ public class RuntimeScreen implements Place {
         newNavigation = this.currentRuntimeModel != null &&
                         !this.currentRuntimeModel.getNavTree().equals(runtimeModel.getNavTree());
         this.currentRuntimeModel = runtimeModel;
-        view.loadNavTree(runtimeModel.getNavTree(), !newNavigation);
+        loadNavTree();
     }
 
     public void goToIndex(List<LayoutTemplate> templates) {
@@ -79,6 +79,8 @@ public class RuntimeScreen implements Place {
             loadTemplate(indexOp.get());
         } else if (templates.size() == 1) {
             loadTemplate(templates.get(0));
+        } else {
+            loadNavTree();
         }
     }
 
@@ -98,5 +100,11 @@ public class RuntimeScreen implements Place {
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    private void loadNavTree() {
+        if (this.currentRuntimeModel != null) {
+            view.loadNavTree(this.currentRuntimeModel.getNavTree(), !newNavigation);
+        }
     }
 }

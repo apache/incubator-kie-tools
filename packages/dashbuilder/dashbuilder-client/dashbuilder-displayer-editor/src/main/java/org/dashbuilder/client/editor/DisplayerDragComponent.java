@@ -18,6 +18,7 @@ package org.dashbuilder.client.editor;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,7 +29,7 @@ import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
-import org.dashbuilder.displayer.client.PerspectiveCoordinator;
+import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.dashbuilder.displayer.client.widgets.DisplayerErrorWidget;
 import org.dashbuilder.displayer.client.widgets.DisplayerViewer;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
@@ -44,7 +45,7 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
     SyncBeanManager beanManager;
     DisplayerViewer viewer;
-    PerspectiveCoordinator perspectiveCoordinator;
+    DisplayerCoordinator displayerCoordinator;
     GlobalDisplayerSettings globalDisplayerSettings;
 
     @Inject
@@ -56,12 +57,12 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
                                   DisplayerViewer viewer,
-                                  PerspectiveCoordinator perspectiveCoordinator,
+                                  DisplayerCoordinator displayerCoordinator,
                                   GlobalDisplayerSettings globalDisplayerSettings) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
-        this.perspectiveCoordinator = perspectiveCoordinator;
+        this.displayerCoordinator = displayerCoordinator;
         this.globalDisplayerSettings = globalDisplayerSettings;
     }
 
@@ -90,10 +91,10 @@ public class DisplayerDragComponent implements LayoutDragComponent {
                 return displayError.getElement();
             }
             viewer.init(settings);
-            int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
+            int containerWidth = ctx.getContainer().offsetWidth - 40;
             adjustSize(settings, containerWidth);
             var displayer = viewer.draw();
-            perspectiveCoordinator.addDisplayer(displayer);
+            displayerCoordinator.addDisplayer(displayer);
             return Js.cast(viewer.getDisplayerContainer());
         }
         return null;
@@ -129,5 +130,10 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     private boolean isDataMissing(DisplayerSettings displayerSettings) {
         var lookup = displayerSettings.getDataSetLookup();
         return (lookup == null || isBlank(lookup.getDataSetUUID())) && displayerSettings.getDataSet() == null;
+    }
+
+    @PreDestroy
+    void destroy() {
+        displayerCoordinator.clear();
     }
 }

@@ -63,7 +63,7 @@ public class NavTilesWidgetTest {
     @Before
     public void setUp() throws Exception {
         when(beanManager.lookupBean(NavItemTileWidget.class)).thenReturn(tileWidgetBeanDef);
-        when(tileWidgetBeanDef.getInstance()).thenReturn(tileWidget);
+        when(tileWidgetBeanDef.newInstance()).thenReturn(tileWidget);
         presenter = new NavTilesWidget(view, navigationManager, pluginManager, beanManager);
 
         tree = new NavTreeBuilder()
@@ -75,10 +75,11 @@ public class NavTilesWidgetTest {
                 .item("A31", "A3", null, false)
                 .build();
     }
-    
+
     @Test
     public void testOpenItem() {
         NavItem navItem = tree.getItemById("A");
+        navItem.setId("item");
         presenter.openItem(navItem);
         assertEquals(presenter.getNavItemStack().size(), 2);
 

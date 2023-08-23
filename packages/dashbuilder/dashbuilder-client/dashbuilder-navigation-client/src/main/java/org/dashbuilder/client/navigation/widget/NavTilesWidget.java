@@ -15,9 +15,12 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,6 +31,7 @@ import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 /**
@@ -56,8 +60,10 @@ public class NavTilesWidget extends BaseNavWidget {
     View view;
     PerspectivePluginManager perspectivePluginManager;
     SyncBeanManager beanManager;
+    Map<String, NavItemTileWidget> tilesCache;
     NavItem currentPerspectiveNavItem = null;
     Stack<NavItem> navItemStack = new Stack<>();
+    Map<String, HTMLElement> perspectiveCache;
 
     @Inject
     public NavTilesWidget(View view,
@@ -68,6 +74,8 @@ public class NavTilesWidget extends BaseNavWidget {
         this.view = view;
         this.perspectivePluginManager = perspectivePluginManager;
         this.beanManager = beanManager;
+        tilesCache = new HashMap<>();
+        perspectiveCache = new HashMap<>();
     }
 
     public Stack<NavItem> getNavItemStack() {
@@ -110,7 +118,7 @@ public class NavTilesWidget extends BaseNavWidget {
 
     @Override
     protected void showItem(NavItem navItem) {
-        NavItemTileWidget tileWidget = beanManager.lookupBean(NavItemTileWidget.class).getInstance();
+        var tileWidget = produceTile(navItem.getId());
         tileWidget.setOnClick(() -> this.openItem(navItem));
         tileWidget.show(navItem);
         view.addTileWidget(tileWidget.getElement());
@@ -148,7 +156,14 @@ public class NavTilesWidget extends BaseNavWidget {
         NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(perspectiveItem);
         String perspectiveId = navCtx.getResourceId();
         currentPerspectiveNavItem = perspectiveItem;
-        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, view::showTileContent);
+        if (perspectiveCache.containsKey(perspectiveId)) {
+            view.showTileContent(perspectiveCache.get(perspectiveId));
+            return;
+        }
+        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, page -> {
+            perspectiveCache.put(perspectiveId, page);
+            view.showTileContent(page);
+        });
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
@@ -187,6 +202,20 @@ public class NavTilesWidget extends BaseNavWidget {
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    @PreDestroy
+    void destroy() {
+        tilesCache.values().forEach(IOC.getBeanManager()::destroyBean);
+    }
+
+    private NavItemTileWidget produceTile(String id) {
+        return tilesCache.compute(id, (key, value) -> {
+            if (value != null) {
+                IOC.getBeanManager().destroyBean(value);
+            }
+            return beanManager.lookupBean(NavItemTileWidget.class).newInstance();
+        });
     }
 
 }

@@ -19,6 +19,7 @@ package org.dashbuilder.renderer.echarts.client;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.json.client.JSONParser;
@@ -302,6 +303,11 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         super.close();
 
         view.close();
+    }
+    
+    @PreDestroy
+    void destroy() {
+        this.close();
     }
 
     abstract DataSetLookupConstraints getDataSetLookupConstraints();
