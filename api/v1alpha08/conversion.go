@@ -112,11 +112,11 @@ func ToCNCFWorkflow(workflowCR *SonataFlow, context context.Context) (*cncfmodel
 // Clearly this will be reviewed once we support 0.9.
 func warnIfSpecVersionNotSupported(workflow *cncfmodel.Workflow, context context.Context) {
 	// simple guard to avoid polluting user's log.
-	if len(workflow.Version) == 0 {
-		workflow.Version = metadata.SpecVersion
+	if len(workflow.SpecVersion) == 0 {
+		workflow.SpecVersion = metadata.SpecVersion
 		return
 	}
-	if metadata.SpecVersion != workflow.Version {
+	if metadata.SpecVersion != workflow.SpecVersion {
 		controllerruntime.LoggerFrom(context).Info("SpecVersion not supported", "Workflow SpecVersion", workflow.Version)
 	}
 }

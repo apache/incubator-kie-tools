@@ -196,7 +196,7 @@ type ContainerBuildStatus struct {
 	// https://github.com/OAI/OpenAPI-Specification/issues/845
 	Duration string `json:"duration,omitempty"`
 	// reference to where the build resources are located
-	ResourceVolume *ContainerBuildResourceVolume `json:"resourceVolume,omitempty"`
+	ResourceVolumes []ContainerBuildResourceVolume `json:"resourceVolumes,omitempty"`
 }
 
 // ContainerBuildFailure represent a message specifying the reason and the time of an event failure
@@ -232,4 +232,6 @@ type ContainerBuildResourceVolume struct {
 	ReferenceName string `json:"referenceName"`
 	// ReferenceType type of the resource holding the reference
 	ReferenceType ContainerBuildResourceReferenceType `json:"referenceType"`
+	// DestinationDir where to mount the given volume in the build context
+	DestinationDir string `json:"destinationDir,omitempty"`
 }

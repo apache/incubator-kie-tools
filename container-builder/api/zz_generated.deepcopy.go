@@ -163,10 +163,10 @@ func (in *ContainerBuildStatus) DeepCopyInto(out *ContainerBuildStatus) {
 			(*in)[i].DeepCopyInto(&(*out)[i])
 		}
 	}
-	if in.ResourceVolume != nil {
-		in, out := &in.ResourceVolume, &out.ResourceVolume
-		*out = new(ContainerBuildResourceVolume)
-		**out = **in
+	if in.ResourceVolumes != nil {
+		in, out := &in.ResourceVolumes, &out.ResourceVolumes
+		*out = make([]ContainerBuildResourceVolume, len(*in))
+		copy(*out, *in)
 	}
 }
 

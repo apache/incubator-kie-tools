@@ -107,7 +107,7 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 	}
 
 	// TODO: should be handled by a mount build context handler instead since we can have many possibilities
-	if err := addResourcesToVolume(ctx, c, task.PublishTask, build, &volumes, &volumeMounts); err != nil {
+	if err := addResourcesToBuilderContextVolume(ctx, c, task.PublishTask, build, &volumes, &volumeMounts); err != nil {
 		return err
 	}
 

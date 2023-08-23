@@ -19,6 +19,8 @@ import (
 
 	"k8s.io/klog/v2"
 
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
@@ -47,10 +49,6 @@ type containerBuilderManager struct {
 }
 
 func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) error {
-	workflowDef, imageNameTag, err := c.fetchWorkflowDefinitionAndImageTag(build)
-	if err != nil {
-		return err
-	}
 	kanikoTaskCache := api.KanikoTaskCache{}
 	if platform.IsKanikoCacheEnabled(c.platform) {
 		kanikoTaskCache.Enabled = utils.Pbool(true)
@@ -62,7 +60,7 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 		Resources:              build.Spec.Resources,
 		AdditionalFlags:        build.Spec.Arguments,
 	}
-	containerBuilder, err := c.scheduleNewKanikoBuildWithContainerFile(build.Name, imageNameTag, workflowDef, kanikoTask)
+	containerBuilder, err := c.scheduleNewKanikoBuildWithContainerFile(build, kanikoTask)
 	if err = build.Status.SetInnerBuild(containerBuilder); err != nil {
 		return err
 	}
@@ -97,23 +95,32 @@ func newContainerBuilderManager(managerContext buildManagerContext, config *rest
 	}
 }
 
-func (c *containerBuilderManager) getImageBuilderForKaniko(workflowID string, imageNameTag string, workflowDefinition []byte, task *api.KanikoTask) imageBuilder {
+func (c *containerBuilderManager) getImageBuilderForKaniko(workflow *operatorapi.SonataFlow, imageNameTag string, workflowDefinition []byte, task *api.KanikoTask) imageBuilder {
 	containerFile := platform.GetCustomizedDockerfile(c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]], *c.platform)
-	ib := NewImageBuilder(workflowID, workflowDefinition, []byte(containerFile))
+	ib := newImageBuilder(workflow, workflowDefinition, []byte(containerFile))
 	ib.OnNamespace(c.platform.Namespace)
-	ib.WithPodMiddleName(workflowID)
+	ib.WithPodMiddleName(workflow.Name)
 	ib.WithInsecureRegistry(false)
 	ib.WithImageNameTag(imageNameTag)
 	ib.WithSecret(c.platform.Spec.Build.Config.Registry.Secret)
 	ib.WithRegistryAddress(c.platform.Spec.Build.Config.Registry.Address)
 	ib.WithCache(task.Cache)
-	ib.WithResources(task.Resources)
+	ib.WithResourcesReqs(task.Resources)
 	ib.WithAdditionalFlags(task.AdditionalFlags)
 	return ib
 }
 
-func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(workflowName string, imageNameTag string, workflowDefinition []byte, task *api.KanikoTask) (*api.ContainerBuild, error) {
-	ib := c.getImageBuilderForKaniko(workflowName, imageNameTag, workflowDefinition, task)
+func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build *operatorapi.SonataFlowBuild, task *api.KanikoTask) (*api.ContainerBuild, error) {
+	workflow, err := c.fetchWorkflowForBuild(build)
+	if err != nil {
+		return nil, err
+	}
+	workflowDef, err := workflowdef.GetJSONWorkflow(workflow, c.ctx)
+	if err != nil {
+		return nil, err
+	}
+	imageTag := workflowdef.GetWorkflowAppImageNameTag(workflow)
+	ib := c.getImageBuilderForKaniko(workflow, imageTag, workflowDef, task)
 	ib.WithTimeout(5 * time.Minute)
 	return c.buildImage(ib.Build())
 }
@@ -156,17 +163,22 @@ func (c *containerBuilderManager) buildImage(kb internalBuilder) (*api.Container
 func newBuild(kb internalBuilder, platform api.PlatformContainerBuild, defaultExtension string, cli client.Client) (*api.ContainerBuild, error) {
 	buildInfo := builder.ContainerBuilderInfo{FinalImageName: kb.ImageName, BuildUniqueName: kb.PodMiddleName, Platform: platform}
 
-	return builder.NewBuild(buildInfo).
+	scheduler := builder.NewBuild(buildInfo).
 		WithResource(resourceDockerfile, kb.ContainerFile).
-		WithResource(kb.WorkflowID+defaultExtension, kb.WorkflowDefinition).
-		WithClient(cli).
-		Schedule()
+		WithResource(kb.Workflow.Name+defaultExtension, kb.WorkflowDefinition).
+		WithClient(cli)
+
+	for _, res := range kb.Workflow.Spec.Resources.ConfigMaps {
+		scheduler.WithConfigMapResource(res.ConfigMap, res.WorkflowPath)
+	}
+
+	return scheduler.Schedule()
 }
 
 // Fluent API section
 
 type internalBuilder struct {
-	WorkflowID           string
+	Workflow             *operatorapi.SonataFlow
 	WorkflowDefinition   []byte
 	ContainerFile        []byte
 	Namespace            string
@@ -178,7 +190,7 @@ type internalBuilder struct {
 	RegistryOrganization string
 	Secret               string
 	Cache                api.KanikoTaskCache
-	Resources            corev1.ResourceRequirements
+	ResourceReqs         corev1.ResourceRequirements
 	AdditionalFlags      []string
 }
 
@@ -186,8 +198,12 @@ type imageBuilder struct {
 	builder *internalBuilder
 }
 
-func NewImageBuilder(sourceSwfName string, sourceSwf []byte, containerFile []byte) imageBuilder {
-	return imageBuilder{builder: &internalBuilder{WorkflowID: sourceSwfName, WorkflowDefinition: sourceSwf, ContainerFile: containerFile}}
+func newImageBuilder(workflow *operatorapi.SonataFlow, sourceSwf []byte, containerFile []byte) imageBuilder {
+	return imageBuilder{builder: &internalBuilder{
+		Workflow:           workflow,
+		WorkflowDefinition: sourceSwf,
+		ContainerFile:      containerFile,
+	}}
 }
 
 func (ib *imageBuilder) OnNamespace(namespace string) *imageBuilder {
@@ -229,8 +245,8 @@ func (ib *imageBuilder) WithCache(cache api.KanikoTaskCache) *imageBuilder {
 	ib.builder.Cache = cache
 	return ib
 }
-func (ib *imageBuilder) WithResources(resources corev1.ResourceRequirements) *imageBuilder {
-	ib.builder.Resources = resources
+func (ib *imageBuilder) WithResourcesReqs(resources corev1.ResourceRequirements) *imageBuilder {
+	ib.builder.ResourceReqs = resources
 	return ib
 }
 

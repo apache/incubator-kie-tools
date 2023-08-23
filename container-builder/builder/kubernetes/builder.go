@@ -40,6 +40,12 @@ type ContainerBuilderInfo struct {
 type resource struct {
 	Target  string
 	Content []byte
+	Path    string
+}
+
+type resourceConfigMap struct {
+	Ref  corev1.LocalObjectReference
+	Path string
 }
 
 type containerBuildContext struct {
@@ -54,9 +60,9 @@ type builder struct {
 }
 
 type scheduler struct {
-	Scheduler
-	builder   builder
-	Resources []resource
+	builder            builder
+	Resources          []resource
+	ResourceConfigMaps []resourceConfigMap
 }
 
 var _ Scheduler = &scheduler{}
@@ -69,8 +75,11 @@ var schedulers = map[string]schedulerHandler{
 
 // Scheduler provides an interface to add resources and schedule a new build
 type Scheduler interface {
-	// WithResource the actual file/resource to add to the builder. Might be called multiple times.
+	// WithResource the actual file/resource to add to the build context in the relative root path. Might be called multiple times.
 	WithResource(target string, content []byte) Scheduler
+	// WithConfigMapResource the configMap to add to the build context. Might be called multiple times.
+	// This ConfigMap is a Kubernetes LocalObjectReference, meaning that must be within the Platform namespace.
+	WithConfigMapResource(configMap corev1.LocalObjectReference, path string) Scheduler
 	WithClient(client client.Client) Scheduler
 	// WithResourceRequirements Kubernetes resource requirements to be passed to the underlying builder if necessary. For example, a builder pod might require specific resources underneath.
 	WithResourceRequirements(res corev1.ResourceRequirements) Scheduler
@@ -118,35 +127,42 @@ func NewBuild(info ContainerBuilderInfo) Scheduler {
 
 func (s *scheduler) WithClient(client client.Client) Scheduler {
 	s.builder.WithClient(client)
-	return s.Scheduler
+	return s
 }
 
 func (s *scheduler) WithResource(target string, content []byte) Scheduler {
-	s.Resources = append(s.Resources, resource{target, content})
-	return s.Scheduler
+	s.Resources = append(s.Resources, resource{target, content, ""})
+	return s
+}
+
+func (s *scheduler) WithConfigMapResource(configMap corev1.LocalObjectReference, path string) Scheduler {
+	s.ResourceConfigMaps = append(s.ResourceConfigMaps, resourceConfigMap{configMap, path})
+	return s
 }
 
 func (s *scheduler) WithResourceRequirements(res corev1.ResourceRequirements) Scheduler {
 	// no default implementation.
-	return s.Scheduler
+	return s
 }
 
 func (s *scheduler) WithAdditionalArgs(args []string) Scheduler {
 	// no default implementation.
-	return s.Scheduler
+	return s
 }
 
 func (s *scheduler) WithProperty(property BuilderProperty, object interface{}) Scheduler {
 	// no default implementation
-	return s.Scheduler
+	return s
 }
 
 // Schedule schedules a new build in the platform
 func (s *scheduler) Schedule() (*api.ContainerBuild, error) {
-	// TODO: create a handler to mount the resources according to the platform/context options (for now we only have CM, PoC level)
-	if err := mountResourcesWithConfigMap(&s.builder.Context, &s.Resources); err != nil {
+	// TODO: create a handler to mount the resources according to the platform/context options, for now only CM
+	if err := mountResourcesBinaryWithConfigMapToBuild(&s.builder.Context, &s.Resources); err != nil {
 		return nil, err
 	}
+	// Add the CMs to the build volume
+	mountResourcesConfigMapToBuild(&s.builder.Context, &s.ResourceConfigMaps)
 	return s.builder.Reconcile()
 }
 
@@ -202,6 +218,6 @@ func (b *builder) Reconcile() (*api.ContainerBuild, error) {
 }
 
 func (b *builder) CancelBuild() (*api.ContainerBuild, error) {
-	//TODO implement me
-	panic("implement me")
+	// TODO: do the actual implementation if that makes sense
+	panic("CancelBuild: Operation Not Supported")
 }

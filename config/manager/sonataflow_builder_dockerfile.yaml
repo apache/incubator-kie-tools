@@ -1,7 +1,7 @@
 FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder
   
   # Copy from build context to skeleton resources project
-COPY * ./resources/
+COPY --chmod=644 * ./resources/
 
 RUN /home/kogito/launch/build-app.sh ./resources
   

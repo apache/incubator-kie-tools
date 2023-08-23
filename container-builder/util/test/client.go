@@ -41,7 +41,7 @@ import (
 )
 
 // NewFakeClient ---.
-func NewFakeClient(initObjs ...runtime.Object) (client.Client, error) {
+func NewFakeClient(initObjs ...runtime.Object) client.Client {
 	scheme := clientscheme.Scheme
 
 	c := fake.NewClientBuilder().WithScheme(scheme).WithRuntimeObjects(initObjs...).Build()
@@ -86,7 +86,7 @@ func NewFakeClient(initObjs ...runtime.Object) (client.Client, error) {
 		Client:    c,
 		Interface: clientset,
 		scales:    &fakescaleclient,
-	}, nil
+	}
 }
 
 func filterObjects(scheme *runtime.Scheme, input []runtime.Object, filter func(gvk schema.GroupVersionKind) bool) []runtime.Object {

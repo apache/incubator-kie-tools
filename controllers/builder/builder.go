@@ -24,8 +24,6 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
-
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 	"github.com/kiegroup/kogito-serverless-operator/log"
@@ -72,19 +70,6 @@ func NewBuildManager(ctx context.Context, client client.Client, cliConfig *rest.
 		klog.V(log.I).InfoS("Impossible to check the Cluster type in the SonataFlowPlatform")
 		return newContainerBuilderManager(managerContext, cliConfig), nil
 	}
-}
-
-// fetchWorkflowDefinitionAndImageTag fetches the workflow instance by name and namespace and convert it to JSON bytes.
-func (b *buildManagerContext) fetchWorkflowDefinitionAndImageTag(build *operatorapi.SonataFlowBuild) (workflowDef []byte, imageTag string, err error) {
-	instance, err := b.fetchWorkflowForBuild(build)
-	if err != nil {
-		return nil, "", err
-	}
-	if workflowDef, err = workflowdef.GetJSONWorkflow(instance, b.ctx); err != nil {
-		return nil, "", err
-	}
-	imageTag = workflowdef.GetWorkflowAppImageNameTag(instance)
-	return
 }
 
 // fetchWorkflowForBuild fetches the k8s API for the workflow from the given build

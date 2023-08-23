@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/docker/docker v23.0.3+incompatible
 	github.com/docker/go-connections v0.4.1-0.20210727194412-58542c764a11
+	github.com/google/uuid v1.3.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/heroku/docker-registry-client v0.0.0-20211012143308-9463674c8930
 	github.com/jpillora/backoff v1.0.0
@@ -42,7 +43,6 @@ require (
 	github.com/google/gnostic v0.6.9 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/josharian/intern v1.0.0 // indirect

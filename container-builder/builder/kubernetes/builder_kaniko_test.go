@@ -34,8 +34,7 @@ import (
 // Test that verify we are able to create a Kaniko build with cache enabled, a specific set of resources and additional flags
 func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 	ns := "test"
-	c, err := test.NewFakeClient()
-	assert.NoError(t, err)
+	c := test.NewFakeClient()
 
 	dockerFile, err := os.ReadFile("testdata/Dockerfile")
 	assert.NoError(t, err)

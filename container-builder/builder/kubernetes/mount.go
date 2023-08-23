@@ -19,8 +19,11 @@ package kubernetes
 import (
 	"context"
 	"fmt"
+	"path"
 
+	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"k8s.io/klog/v2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	corev1 "k8s.io/api/core/v1"
@@ -30,67 +33,109 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
-// addResourcesToVolume add to the given volumes the build resources context. The resources reference must be previously created.
-func addResourcesToVolume(ctx context.Context, client client.Client, task api.PublishTask, build *api.ContainerBuild, volumes *[]corev1.Volume, volumeMounts *[]corev1.VolumeMount) error {
-	// TODO: do it via specialized handlers
-	switch build.Status.ResourceVolume.ReferenceType {
-	case api.ResourceReferenceTypeConfigMap:
-		configMap, err := getResourcesConfigMap(ctx, client, build)
-		if err != nil {
-			return err
-		}
-		if configMap == nil {
-			return errors.Errorf("can't find configMap for resources context for build %s in ns %s", build.Name, build.Namespace)
-		}
-		keys := make([]corev1.KeyToPath, len(configMap.Data))
-		i := 0
-		for fileName := range configMap.Data {
-			keys[i].Key = fileName
-			keys[i].Path = fileName
+type configMapVolumeBuildContext struct {
+	VolumeMount []corev1.VolumeMount
+	Volume      corev1.Volume
+}
 
-			*volumeMounts = append(*volumeMounts, corev1.VolumeMount{
-				Name:      "builder-context",
-				MountPath: task.ContextDir + "/" + fileName,
-				SubPath:   fileName,
-				ReadOnly:  true,
-			})
+// addResourcesToBuilderContextVolume add the build resources to volumes. Usually these volumes are added to a build pod. The resources reference must be previously created.
+func addResourcesToBuilderContextVolume(ctx context.Context, client client.Client, task api.PublishTask, build *api.ContainerBuild, volumes *[]corev1.Volume, volumeMounts *[]corev1.VolumeMount) error {
+	// TODO: do it via specialized handlers, since we might have multiple volumeMounts types (configMap, Secrets, AWS, GCP, etc).
+	// TODO: for now, what we have is a context based on CMs so one projected volume for everything is enough and easier to setup.
+	// See https://kubernetes.io/docs/concepts/storage/projected-volumes/
+	mounts := make(map[string]configMapVolumeBuildContext, 0)
 
-			i++
-		}
-		// mount volumes
-		*volumes = append(*volumes, corev1.Volume{
-			Name: "builder-context",
-			VolumeSource: corev1.VolumeSource{
-				ConfigMap: &corev1.ConfigMapVolumeSource{
-					LocalObjectReference: corev1.LocalObjectReference{Name: build.Status.ResourceVolume.ReferenceName},
-					Items:                keys,
+	for _, resVol := range build.Status.ResourceVolumes {
+		switch resVol.ReferenceType {
+		case api.ResourceReferenceTypeConfigMap:
+			configMap := &corev1.ConfigMap{}
+			err := client.Get(ctx, types.NamespacedName{Name: resVol.ReferenceName, Namespace: build.Namespace}, configMap)
+			if err != nil {
+				klog.ErrorS(err, "Failed to fetch configMap to add to build context", "configMap", resVol.ReferenceName, "Namespace", build.Namespace)
+				return err
+			}
+			entry, ok := mounts[resVol.DestinationDir]
+			var volName string
+			if ok {
+				volName = entry.Volume.Name
+			} else {
+				volName = uuid.NewString()
+				mounts[resVol.DestinationDir] = configMapVolumeBuildContext{
+					Volume: corev1.Volume{
+						Name: volName,
+						VolumeSource: corev1.VolumeSource{
+							Projected: &corev1.ProjectedVolumeSource{},
+						},
+					},
+				}
+				entry = mounts[resVol.DestinationDir]
+			}
+
+			cmMounts := make([]corev1.VolumeMount, len(configMap.Data))
+			i := 0
+			for fileName := range configMap.Data {
+				cmMounts[i] = corev1.VolumeMount{
+					Name:      volName,
+					MountPath: path.Join(task.ContextDir, resVol.DestinationDir, fileName),
+					SubPath:   fileName,
+					ReadOnly:  true,
+				}
+				i++
+			}
+			entry.VolumeMount = append(entry.VolumeMount, cmMounts...)
+			entry.Volume.Projected.Sources = append(entry.Volume.Projected.Sources, corev1.VolumeProjection{
+				ConfigMap: &corev1.ConfigMapProjection{
+					LocalObjectReference: corev1.LocalObjectReference{Name: configMap.Name},
 				},
-			},
-		})
+			})
+			mounts[resVol.DestinationDir] = entry
+		default:
+			return errors.Errorf("unsupported resource mount type for build %s on ns %s", build.Name, build.Namespace)
+		}
+	}
 
-	default:
-		return errors.Errorf("unsupported resource mount type for build %s on ns %s", build.Name, build.Namespace)
+	for _, cmMount := range mounts {
+		*volumeMounts = append(*volumeMounts, cmMount.VolumeMount...)
+		*volumes = append(*volumes, cmMount.Volume)
 	}
 
 	return nil
 }
 
-// TODO: create an actual handler for resources build context. For PoC level, CM will do
-func mountResourcesWithConfigMap(buildContext *containerBuildContext, resources *[]resource) error {
-	configMap, err := getOrCreateResourcesConfigMap(buildContext, resources)
+// Mount the given ConfigMaps to the ContainerBuild that later will be mounted in the build context.
+func mountResourcesConfigMapToBuild(buildContext *containerBuildContext, cms *[]resourceConfigMap) {
+	if cms == nil || len(*cms) == 0 {
+		return
+	}
+	for _, cm := range *cms {
+		buildContext.ContainerBuild.Status.ResourceVolumes = append(buildContext.ContainerBuild.Status.ResourceVolumes, api.ContainerBuildResourceVolume{
+			ReferenceName:  cm.Ref.Name,
+			ReferenceType:  api.ResourceReferenceTypeConfigMap,
+			DestinationDir: cm.Path,
+		})
+	}
+}
+
+// Mount the given resource(s) files in a ConfigMap and then add it to the ContainerBuild that later will be mounted in the build context
+func mountResourcesBinaryWithConfigMapToBuild(buildContext *containerBuildContext, resources *[]resource) error {
+	if resources == nil || len(*resources) == 0 {
+		return nil
+	}
+	configMap, err := getOrCreateResourcesBinaryConfigMap(buildContext, resources)
 	if err != nil {
 		return err
 	}
 
-	buildContext.ContainerBuild.Status.ResourceVolume = &api.ContainerBuildResourceVolume{
-		ReferenceName: configMap.Name,
-		ReferenceType: api.ResourceReferenceTypeConfigMap,
-	}
+	buildContext.ContainerBuild.Status.ResourceVolumes = append(buildContext.ContainerBuild.Status.ResourceVolumes, api.ContainerBuildResourceVolume{
+		ReferenceName:  configMap.Name,
+		ReferenceType:  api.ResourceReferenceTypeConfigMap,
+		DestinationDir: "",
+	})
 
 	return nil
 }
 
-func getResourcesConfigMap(c context.Context, client client.Client, build *api.ContainerBuild) (*corev1.ConfigMap, error) {
+func getResourcesBinaryConfigMap(c context.Context, client client.Client, build *api.ContainerBuild) (*corev1.ConfigMap, error) {
 	resourcesConfigMap := corev1.ConfigMap{}
 	configMapId := types.NamespacedName{Name: buildPodName(build), Namespace: build.Namespace}
 
@@ -104,9 +149,9 @@ func getResourcesConfigMap(c context.Context, client client.Client, build *api.C
 	return &resourcesConfigMap, nil
 }
 
-func getOrCreateResourcesConfigMap(buildContext *containerBuildContext, resources *[]resource) (*corev1.ConfigMap, error) {
+func getOrCreateResourcesBinaryConfigMap(buildContext *containerBuildContext, resources *[]resource) (*corev1.ConfigMap, error) {
 	// TODO: build an actual configMap builder context handler
-	resourcesConfigMap, err := getResourcesConfigMap(buildContext.C, buildContext.Client, buildContext.ContainerBuild)
+	resourcesConfigMap, err := getResourcesBinaryConfigMap(buildContext.C, buildContext.Client, buildContext.ContainerBuild)
 	if err != nil {
 		return nil, err
 	}
@@ -116,13 +161,13 @@ func getOrCreateResourcesConfigMap(buildContext *containerBuildContext, resource
 		configMapId := types.NamespacedName{Name: buildPodName(buildContext.ContainerBuild), Namespace: buildContext.ContainerBuild.Namespace}
 		resourcesConfigMap.Namespace = configMapId.Namespace
 		resourcesConfigMap.Name = configMapId.Name
-		addContentToConfigMap(resourcesConfigMap, resources)
+		addBinaryContentToConfigMap(resourcesConfigMap, resources)
 		// TODO: every object we create, must pass to a listener for our client code. For example, an operator would like to add their labels/owner refs
 		if err := buildContext.Client.Create(buildContext.C, resourcesConfigMap); err != nil {
 			return nil, err
 		}
 	} else {
-		addContentToConfigMap(resourcesConfigMap, resources)
+		addBinaryContentToConfigMap(resourcesConfigMap, resources)
 		if err := buildContext.Client.Update(buildContext.C, resourcesConfigMap); err != nil {
 			return nil, err
 		}
@@ -131,7 +176,7 @@ func getOrCreateResourcesConfigMap(buildContext *containerBuildContext, resource
 	return resourcesConfigMap, nil
 }
 
-func addContentToConfigMap(configMap *corev1.ConfigMap, resources *[]resource) {
+func addBinaryContentToConfigMap(configMap *corev1.ConfigMap, resources *[]resource) {
 	configMap.BinaryData = make(map[string][]byte)
 	configMap.Data = make(map[string]string)
 	for _, resource := range *resources {

@@ -32,8 +32,7 @@ import (
 
 func TestNewBuild(t *testing.T) {
 	ns := "test"
-	c, err := test.NewFakeClient()
-	assert.NoError(t, err)
+	c := test.NewFakeClient()
 
 	dockerFile, err := os.ReadFile("testdata/Dockerfile")
 	assert.NoError(t, err)

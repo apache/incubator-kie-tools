@@ -195,10 +195,18 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 		})
 
 		It("should successfully deploy the Greeting Workflow in prod mode and verify if it's running", func() {
+			By("creating external resources DataInputSchema configMap")
+			EventuallyWithOffset(1, func() error {
+				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
+					"test/testdata/"+test.SonataFlowGreetingsDataInputSchemaConfig), "-n", namespace)
+				_, err := utils.Run(cmd)
+				return err
+			}, time.Minute, time.Second).Should(Succeed())
+
 			By("creating an instance of the SonataFlow Operand(CR)")
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.SonataFlowSampleYamlCR), "-n", namespace)
+					"test/testdata/"+test.SonataFlowGreetingsWithDataInputSchemaCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())
@@ -208,7 +216,7 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 			EventuallyWithOffset(1, func() error {
 				cmd := exec.Command("kubectl", "delete", "-f", filepath.Join(projectDir,
-					"config/samples/"+test.SonataFlowSampleYamlCR), "-n", namespace)
+					"test/testdata/"+test.SonataFlowGreetingsWithDataInputSchemaCR), "-n", namespace)
 				_, err := utils.Run(cmd)
 				return err
 			}, time.Minute, time.Second).Should(Succeed())

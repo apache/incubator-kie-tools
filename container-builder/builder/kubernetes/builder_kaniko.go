@@ -22,6 +22,8 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
+var _ Scheduler = &kanikoScheduler{}
+
 type kanikoScheduler struct {
 	*scheduler
 	KanikoTask *api.KanikoTask
@@ -64,8 +66,6 @@ func (k kanikoSchedulerHandler) CreateScheduler(info ContainerBuilderInfo, build
 		},
 		&kanikoTask,
 	}
-	// we hold our own reference for the default methods to return the right object
-	sched.Scheduler = sched
 	return sched
 }
 
