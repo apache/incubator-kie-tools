@@ -15,6 +15,8 @@
  */
 package org.dashbuilder.displayer.client.widgets;
 
+import java.util.function.Consumer;
+
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -37,6 +39,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class DisplayerViewer {
 
+    private static final int ERROR_RETRY_MS = 2000;
     protected DisplayerSettings displayerSettings;
     protected HTMLElement container;
     protected Displayer displayer;
@@ -66,6 +69,7 @@ public class DisplayerViewer {
         public void onError(Displayer displayer,
                             ClientRuntimeError error) {
             error(error);
+            retry();
         }
     };
 
@@ -91,12 +95,12 @@ public class DisplayerViewer {
             this.displayerSettings = displayerSettings;
             this.displayer = displayerLocator.lookupDisplayer(displayerSettings);
             this.displayer.addListener(displayerListener);
-
             // Make the displayer visible
             show();
         } catch (Exception e) {
             displayerInitializationError = new ClientRuntimeError(e);
             error(displayerInitializationError);
+            retry();
         }
     }
 
@@ -115,8 +119,13 @@ public class DisplayerViewer {
             try {
                 // Draw the displayer
                 displayer.draw();
+                if (error) {
+                    error = false;
+                    show();
+                }
             } catch (Exception e) {
                 error(new ClientRuntimeError(e));
+                retry();
             }
         }
         return displayer;
@@ -133,6 +142,19 @@ public class DisplayerViewer {
         error = true;
         GWT.log(e.getMessage(),
                 e.getThrowable());
+    }
+
+    public void retry() {
+        Consumer<Object> initAction = e -> this.init(displayerSettings);
+        Consumer<Object> drawAction = e -> this.draw();
+        Consumer<Object> retryAction;
+        if (displayerInitializationError != null) {
+            displayerInitializationError = null;
+            retryAction = initAction.andThen(drawAction);
+        } else {
+            retryAction = drawAction;
+        }
+        DomGlobal.setTimeout(retryAction::accept, ERROR_RETRY_MS);
     }
 
     public HTMLElement getDisplayerContainer() {

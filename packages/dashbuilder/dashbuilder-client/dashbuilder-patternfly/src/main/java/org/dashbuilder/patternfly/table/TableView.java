@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import elemental2.dom.CSSProperties.HeightUnionType;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLDivElement;
@@ -52,6 +53,10 @@ public class TableView implements Table.View {
     @Inject
     @DataField
     HTMLTableElement table;
+
+    @Inject
+    @DataField
+    HTMLDivElement dataTableContainer;
 
     @Inject
     @DataField
@@ -160,6 +165,12 @@ public class TableView implements Table.View {
     @Override
     public void setSelectable(boolean selectable) {
         this.selectable = selectable;
+    }
+
+    @Override
+    public void setHeight(int chartHeight) {
+        var tableHeight = chartHeight - 50;
+        dataTableContainer.style.height = HeightUnionType.of(tableHeight + "px");
     }
 
     Element createHeaderCell(String header) {

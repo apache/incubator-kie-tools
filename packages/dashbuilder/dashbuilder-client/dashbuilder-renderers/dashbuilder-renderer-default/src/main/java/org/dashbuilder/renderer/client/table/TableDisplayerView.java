@@ -19,7 +19,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import elemental2.dom.CSSProperties.HeightUnionType;
 import elemental2.dom.CSSProperties.WidthUnionType;
 import elemental2.dom.HTMLDivElement;
 import jsinterop.base.Js;
@@ -90,7 +89,7 @@ public class TableDisplayerView extends AbstractDisplayerView<TableDisplayer> im
 
     @Override
     public void setHeight(int chartHeight) {
-        table.getElement().style.height = HeightUnionType.of(chartHeight + "px");
+        table.setHeight(chartHeight);
     }
 
     @Override

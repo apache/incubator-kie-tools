@@ -51,6 +51,8 @@ public class Table {
 
         void setSelectable(boolean selectable);
 
+        void setHeight(int chartHeight);
+
     }
 
     @PostConstruct
@@ -173,6 +175,10 @@ public class Table {
             return value;
         }
 
+    }
+
+    public void setHeight(int chartHeight) {
+        view.setHeight(chartHeight);
     }
 
 }

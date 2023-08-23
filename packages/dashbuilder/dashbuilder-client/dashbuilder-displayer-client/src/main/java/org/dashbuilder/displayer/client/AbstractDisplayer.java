@@ -338,6 +338,7 @@ public abstract class AbstractDisplayer<V extends AbstractDisplayer.View> implem
     }
 
     public void showError(ClientRuntimeError error) {
+        drawn = false;
         getView().error(error);
         handleError(error);
     }
