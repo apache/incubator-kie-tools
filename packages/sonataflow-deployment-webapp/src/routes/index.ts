@@ -102,7 +102,7 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  root: new Route<{}>(() => "/"),
+  home: new Route<{}>(() => "/"),
   dataJson: new Route<{}>(() => "/data.json"),
   swaggerUi: new Route<{}>(() => "/q/swagger-ui"),
   openApi: new Route<{}>(() => "/q/openapi?format=json"),

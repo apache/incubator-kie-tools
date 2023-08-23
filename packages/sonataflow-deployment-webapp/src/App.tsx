@@ -29,7 +29,7 @@ export function App() {
       <OpenApiContextProvider>
         <HashRouter>
           <Switch>
-            <Route path={routes.root.path({})}>
+            <Route path={routes.home.path({})}>
               <HomePage />
             </Route>
             <Route component={NoMatchPage} />

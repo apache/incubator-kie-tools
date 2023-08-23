@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,26 @@
  * limitations under the License.
  */
 
-.app--masthead {
-  background-color: var(--pf-global--palette--blue-500);
+:root {
+  --masthead-bg: var(--pf-global--palette--blue-500);
+  --sidebar-bg: #002f5e;
+  --sidebar-bg-selected: #1f4e7d;
+  --sidebar-bg-hover: #1c4671;
+}
+
+.kogito-tools-common--brand {
+  vertical-align: top;
+  height: 28.6px;
+}
+
+.brand-name {
+  color: #fff;
+  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
+}
+
+.app--masthead,
+#toolbar {
+  background-color: var(--masthead-bg);
 }
 
 .app--masterhead__disclaimer {
@@ -25,4 +43,17 @@
 
 .app--masterhead__disclaimer-icon {
   margin-left: 8px;
+}
+
+#page-sidebar {
+  --pf-c-page__sidebar--BackgroundColor: var(--sidebar-bg);
+}
+
+#page-sidebar .pf-m-current {
+  --pf-c-nav__link--m-current--BackgroundColor: var(--sidebar-bg-selected);
+}
+#page-sidebar .pf-c-nav__link:hover,
+#page-sidebar .pf-c-nav__link:active,
+#page-sidebar .pf-c-nav__link:focus {
+  background-color: var(--sidebar-bg-hover);
 }

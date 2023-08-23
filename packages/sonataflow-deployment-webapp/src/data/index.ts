@@ -17,6 +17,7 @@
 import { routes } from "../routes";
 
 export interface AppData {
+  /* TODO: rename in appName */
   appTitle: string;
 }
 
