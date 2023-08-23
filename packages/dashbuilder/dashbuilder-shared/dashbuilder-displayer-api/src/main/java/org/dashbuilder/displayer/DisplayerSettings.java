@@ -383,7 +383,8 @@ public class DisplayerSettings {
     public boolean isFilterEnabled() {
         return parseBoolean(settings.get(getSettingPath(DisplayerAttributeDef.FILTER_ENABLED))) ||
                isFilterListeningEnabled() ||
-               isFilterNotificationEnabled();
+               isFilterNotificationEnabled() ||
+               isFilterSelfApplyEnabled();
     }
 
     public void setFilterEnabled(boolean filterEnabled) {

@@ -516,7 +516,7 @@
           </execution>
           <execution>
             <id>copy-patternfly-resources</id>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
