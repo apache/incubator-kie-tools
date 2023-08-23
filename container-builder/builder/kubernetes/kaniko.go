@@ -78,6 +78,7 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 		"--dockerfile=Dockerfile",
 		"--context=dir://" + task.ContextDir,
 		"--destination=" + task.GetRepositoryImageTag(),
+		"--ignore-path=/product_uuid",
 	}
 
 	if task.AdditionalFlags != nil && len(task.AdditionalFlags) > 0 {
