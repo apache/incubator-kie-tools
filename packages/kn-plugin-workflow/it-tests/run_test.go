@@ -48,7 +48,7 @@ var cfgTestInputRun_Success = []cfgTestInputRun{
 func transformRunCmdCfgToArgs(cfg command.RunCmdConfig) []string {
 	args := []string{"run"}
 	if !cfg.OpenDevUI {
-		args = append(args, "--open-dev-ui=", "false")
+		args = append(args, "--open-dev-ui=false")
 	}
 	if cfg.PortMapping != "" {
 		args = append(args, "--port", cfg.PortMapping)
@@ -67,8 +67,6 @@ func getRunProjectPort(t *testing.T, config cfgTestInputRun) string {
 }
 
 func TestRunCommand(t *testing.T) {
-	//testPrintCmdOutput = true
-	t.Skip("Skipping test because of `run` not working properly on osx")
 	for testIndex, test := range cfgTestInputRun_Success {
 		t.Run(fmt.Sprintf("Test run project success index: %d", testIndex), func(t *testing.T) {
 			defer CleanUpAndChdirTemp(t)
