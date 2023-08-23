@@ -164,6 +164,7 @@ public class NavTilesWidget extends BaseNavWidget {
             perspectiveCache.put(perspectiveId, page);
             view.showTileContent(page);
         });
+
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {

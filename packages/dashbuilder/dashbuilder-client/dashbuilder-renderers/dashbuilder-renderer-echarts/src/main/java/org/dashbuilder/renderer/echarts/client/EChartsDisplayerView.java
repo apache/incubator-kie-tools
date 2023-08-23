@@ -16,6 +16,7 @@
 package org.dashbuilder.renderer.echarts.client;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
@@ -32,6 +33,7 @@ import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 import org.dashbuilder.renderer.echarts.client.resources.i18n.EChartsDisplayerConstants;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.uberfire.ext.layout.editor.api.event.LayoutTemplateDisplayed;
 
 @Dependent
 public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
@@ -128,17 +130,23 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
         }
     }
 
-    private void disposeChart() {
-        if (chart != null) {
-            chart.dispose();
-        }
-    }
-
     @Override
     public void close() {
         disposeChart();
         if (chart != null) {
             eChartsResizeHandlerRegister.remove(chart);
+        }
+    }
+
+    public void listenToDisplayedLayout(@Observes LayoutTemplateDisplayed layoutTemplateDisplayedEvent) {
+        if (chart != null && bootstrapParams != null && bootstrapParams.isResizable()) {
+            chart.resize();
+        }
+    }
+
+    private void disposeChart() {
+        if (chart != null) {
+            chart.dispose();
         }
     }
 

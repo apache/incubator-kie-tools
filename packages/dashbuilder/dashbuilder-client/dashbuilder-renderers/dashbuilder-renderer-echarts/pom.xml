@@ -97,6 +97,10 @@
       <artifactId>errai-ui</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-layout-editor-api</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

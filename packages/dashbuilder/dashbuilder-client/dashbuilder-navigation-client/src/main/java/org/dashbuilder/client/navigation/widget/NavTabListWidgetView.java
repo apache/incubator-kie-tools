@@ -117,7 +117,7 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
 
     @Override
     public void showAsSubmenu(boolean enabled) {
-        tabsDiv.classList.add("pf-m-secondary");
+        mainDiv.classList.add("pf-m-secondary");
     }
 
     @Override

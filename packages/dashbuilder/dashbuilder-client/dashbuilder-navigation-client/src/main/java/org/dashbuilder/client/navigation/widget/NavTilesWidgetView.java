@@ -16,6 +16,7 @@
 package org.dashbuilder.client.navigation.widget;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import elemental2.dom.DomGlobal;
@@ -31,6 +32,7 @@ import org.dashbuilder.patternfly.alert.AlertType;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.ext.layout.editor.api.event.LayoutTemplateDisplayed;
 
 @Dependent
 @Templated
@@ -57,6 +59,9 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
 
     @Inject
     Elemental2DomUtil domUtil;
+
+    @Inject
+    Event<LayoutTemplateDisplayed> layoutTemplateDisplayedEvent;
 
     NavTilesWidget presenter;
     Alert alertBox;
@@ -90,6 +95,7 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
     public void showTileContent(HTMLElement tileContent) {
         domUtil.removeAllElementChildren(tilesDiv);
         tilesDiv.appendChild(tileContent);
+        layoutTemplateDisplayedEvent.fire(new LayoutTemplateDisplayed());
     }
 
     @Override

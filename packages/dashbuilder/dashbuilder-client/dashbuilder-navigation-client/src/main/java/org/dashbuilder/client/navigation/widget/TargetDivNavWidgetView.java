@@ -17,6 +17,9 @@ package org.dashbuilder.client.navigation.widget;
 
 import java.util.function.Consumer;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
@@ -25,6 +28,7 @@ import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
+import org.uberfire.ext.layout.editor.api.event.LayoutTemplateDisplayed;
 import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
 import org.uberfire.mvp.Command;
 
@@ -34,6 +38,9 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     private static final String PF5_SELECTED_CLASS = "pf-m-current";
 
     Alert alertBox;
+    
+    @Inject
+    Event<LayoutTemplateDisplayed> layoutTemplateDisplayedEvent;
 
     TargetDivNavWidgetView(Alert alertBox) {
         this.alertBox = alertBox;
@@ -56,7 +63,8 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
             var container = (HTMLElement) DomGlobal.document.createElement("div");
             container.style.setProperty("overflow", "hidden");
             targetDiv.appendChild(container);
-            container.appendChild(Js.cast(content));
+            container.appendChild(content);
+            layoutTemplateDisplayedEvent.fire(new LayoutTemplateDisplayed());
         }, () -> error(NavigationConstants.INSTANCE.navWidgetTargetDivMissing()));
     }
 
