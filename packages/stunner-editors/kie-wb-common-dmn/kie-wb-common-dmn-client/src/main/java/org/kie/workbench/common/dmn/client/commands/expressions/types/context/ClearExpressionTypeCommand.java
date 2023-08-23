@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.commands.expressions.types.context;
 
 import org.kie.workbench.common.dmn.api.definition.HasExpression;

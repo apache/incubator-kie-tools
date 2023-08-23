@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.uberfire.mocks;
 
 import java.lang.annotation.Annotation;

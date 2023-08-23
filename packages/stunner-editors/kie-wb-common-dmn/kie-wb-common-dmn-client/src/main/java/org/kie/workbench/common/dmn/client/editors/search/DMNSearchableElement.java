@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.search;
 
 import org.kie.workbench.common.widgets.client.search.common.Searchable;

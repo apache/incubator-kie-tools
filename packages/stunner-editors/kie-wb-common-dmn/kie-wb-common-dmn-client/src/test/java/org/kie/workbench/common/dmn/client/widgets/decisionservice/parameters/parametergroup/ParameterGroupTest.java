@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.decisionservice.parameters.parametergroup;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;

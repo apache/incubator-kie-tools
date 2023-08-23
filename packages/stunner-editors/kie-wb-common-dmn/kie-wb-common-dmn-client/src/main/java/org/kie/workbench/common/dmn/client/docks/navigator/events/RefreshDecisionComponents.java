@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.docks.navigator.events;
 
 import org.uberfire.workbench.events.UberFireEvent;

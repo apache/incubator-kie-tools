@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.api.editors.types;
 
 import java.util.ArrayList;

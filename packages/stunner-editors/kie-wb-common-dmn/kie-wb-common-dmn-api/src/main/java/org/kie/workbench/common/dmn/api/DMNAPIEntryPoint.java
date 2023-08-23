@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.api;
 
 import org.jboss.errai.ioc.client.api.EntryPoint;

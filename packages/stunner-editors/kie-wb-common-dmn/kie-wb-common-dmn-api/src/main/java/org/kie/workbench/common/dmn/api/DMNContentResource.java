@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.api;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;

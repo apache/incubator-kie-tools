@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.expressions.types;
 
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;

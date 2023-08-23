@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.number;
 
 import javax.enterprise.context.Dependent;

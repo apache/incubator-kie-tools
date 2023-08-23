@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.showcase.client.editor;
 
 import java.util.Collections;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.listview.confirmation;
 
 import org.jboss.errai.ui.client.local.spi.TranslationService;

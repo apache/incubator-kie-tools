@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.common.messages;
 
 import org.uberfire.mvp.Command;

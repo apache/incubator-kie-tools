@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.session.presenters.impl;
 
 import javax.annotation.PostConstruct;

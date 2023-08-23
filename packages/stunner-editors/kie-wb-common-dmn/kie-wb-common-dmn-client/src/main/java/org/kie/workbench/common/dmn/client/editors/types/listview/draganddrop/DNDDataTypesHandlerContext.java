@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.listview.draganddrop;
 
 import java.util.Objects;

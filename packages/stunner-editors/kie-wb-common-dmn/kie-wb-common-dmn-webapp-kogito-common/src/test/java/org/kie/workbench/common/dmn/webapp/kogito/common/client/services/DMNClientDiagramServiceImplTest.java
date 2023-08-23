@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.services;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.persistence.handlers.common;
 
 import java.util.List;

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
 import org.junit.Before;

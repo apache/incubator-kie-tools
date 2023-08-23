@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.grid.controls.container;
 
 import org.kie.workbench.common.dmn.client.session.DMNSession;

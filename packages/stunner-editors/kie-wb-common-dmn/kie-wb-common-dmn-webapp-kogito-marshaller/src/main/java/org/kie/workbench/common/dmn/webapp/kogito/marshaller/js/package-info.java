@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 /**
  * Container for generated GWT compatible model POJOs and jsonix JS.
  */

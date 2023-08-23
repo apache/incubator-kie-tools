@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.range;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;

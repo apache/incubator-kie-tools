@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 
 import javax.enterprise.context.ApplicationScoped;

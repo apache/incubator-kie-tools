@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.uberfire.stubs;
 
 import java.lang.annotation.Annotation;

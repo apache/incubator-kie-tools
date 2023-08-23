@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.property.dmn;
 
 import com.google.gwt.event.dom.client.ChangeEvent;

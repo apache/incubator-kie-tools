@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.api.workaround;
 
 import org.jboss.errai.common.client.api.annotations.Portable;

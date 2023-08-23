@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.showcase.client.selenium.component;
 
 import org.junit.Assert;

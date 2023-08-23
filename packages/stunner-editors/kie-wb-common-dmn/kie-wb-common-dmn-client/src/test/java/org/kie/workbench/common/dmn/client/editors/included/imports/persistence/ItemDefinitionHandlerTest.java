@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.included.imports.persistence;
 
 import java.util.ArrayList;

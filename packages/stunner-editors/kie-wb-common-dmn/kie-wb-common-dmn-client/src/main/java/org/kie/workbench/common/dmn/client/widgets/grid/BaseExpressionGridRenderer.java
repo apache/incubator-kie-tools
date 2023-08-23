@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridData;

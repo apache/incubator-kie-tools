@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.dnd;
 
 import com.ait.lienzo.client.core.shape.Viewport;

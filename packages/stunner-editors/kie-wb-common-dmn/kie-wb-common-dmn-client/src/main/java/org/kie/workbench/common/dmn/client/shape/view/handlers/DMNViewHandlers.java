@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.shape.view.handlers;
 
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;

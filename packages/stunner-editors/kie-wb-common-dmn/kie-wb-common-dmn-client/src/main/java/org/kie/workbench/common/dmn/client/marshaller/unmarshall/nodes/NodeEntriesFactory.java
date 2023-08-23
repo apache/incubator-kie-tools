@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.marshaller.unmarshall.nodes;
 
 import java.util.ArrayList;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.common.page;
 
 import com.google.gwt.user.client.ui.RootPanel;

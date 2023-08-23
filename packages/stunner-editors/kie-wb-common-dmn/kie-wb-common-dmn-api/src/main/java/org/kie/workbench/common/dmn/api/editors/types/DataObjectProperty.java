@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.api.editors.types;
 
 import org.jboss.errai.common.client.api.annotations.Portable;

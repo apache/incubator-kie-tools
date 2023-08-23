@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.resources;
 
 import org.kie.workbench.common.stunner.core.client.shape.ImageDataUriGlyph;

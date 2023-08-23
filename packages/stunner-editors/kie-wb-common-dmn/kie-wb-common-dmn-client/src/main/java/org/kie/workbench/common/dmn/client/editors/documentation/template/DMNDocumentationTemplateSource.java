@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.documentation.template;
 
 import com.google.gwt.resources.client.ClientBundle;

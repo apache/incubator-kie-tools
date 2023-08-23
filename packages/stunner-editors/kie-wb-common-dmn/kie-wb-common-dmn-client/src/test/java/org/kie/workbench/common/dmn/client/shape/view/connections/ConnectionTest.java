@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.shape.view.connections;
 
 import java.util.Objects;

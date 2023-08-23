@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.client.widgets.panel;
 
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;

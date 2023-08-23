@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.shape.factory;
 
 import java.util.function.Supplier;

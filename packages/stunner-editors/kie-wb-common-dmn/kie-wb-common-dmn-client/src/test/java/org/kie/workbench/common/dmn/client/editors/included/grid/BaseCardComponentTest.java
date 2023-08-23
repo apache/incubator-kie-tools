@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.included.grid;
 
 import javax.enterprise.event.Event;

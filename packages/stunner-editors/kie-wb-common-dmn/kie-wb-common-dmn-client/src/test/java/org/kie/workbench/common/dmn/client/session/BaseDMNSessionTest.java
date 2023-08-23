@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.session;
 
 import java.lang.annotation.Annotation;

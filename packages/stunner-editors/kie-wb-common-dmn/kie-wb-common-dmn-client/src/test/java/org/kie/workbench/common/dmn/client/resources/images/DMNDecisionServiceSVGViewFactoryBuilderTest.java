@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.client.resources.images;
 
 import com.ait.lienzo.client.core.shape.Node;

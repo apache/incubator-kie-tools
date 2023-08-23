@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.webapp.kogito.common.client.session;
 
 import javax.enterprise.context.Dependent;

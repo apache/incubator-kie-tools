@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.api.property.dmn;
 
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridCell;

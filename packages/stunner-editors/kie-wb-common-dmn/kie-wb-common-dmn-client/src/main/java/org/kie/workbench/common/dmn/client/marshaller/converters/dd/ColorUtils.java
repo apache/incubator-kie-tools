@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.marshaller.converters.dd;
 
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dc.JSIColor;

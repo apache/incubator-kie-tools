@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 /**
  * Container for GWT "super source" files where GWT does not provide an emulation of JRE classes.
  * See http://www.gwtproject.org/doc/latest/DevGuideOrganizingProjects.html

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.expressions.mocks;
 
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;

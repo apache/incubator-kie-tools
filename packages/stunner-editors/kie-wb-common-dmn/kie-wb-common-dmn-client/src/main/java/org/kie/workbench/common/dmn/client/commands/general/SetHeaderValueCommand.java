@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.commands.general;
 
 import org.kie.workbench.common.dmn.client.commands.VetoExecutionCommand;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.drd;
 
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;

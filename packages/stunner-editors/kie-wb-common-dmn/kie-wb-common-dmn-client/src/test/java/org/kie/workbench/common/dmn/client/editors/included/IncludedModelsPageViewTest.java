@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.included;
 
 import com.google.gwt.event.dom.client.ClickEvent;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.documentation.common;
 
 import org.kie.workbench.common.stunner.core.diagram.Diagram;

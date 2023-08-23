@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.expressions.jsinterop.props;
 
 import jsinterop.annotations.JsType;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.common.page;
 
 import org.jboss.errai.ui.shared.api.annotations.Templated;

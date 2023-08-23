@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.marshaller.converters;
 
 import org.kie.workbench.common.dmn.api.definition.model.RuleAnnotationClauseText;

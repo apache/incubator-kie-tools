@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function.kindselector;
 
 import org.kie.workbench.common.dmn.api.definition.model.FunctionDefinition;

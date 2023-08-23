@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.shape.view.decisionservice;
 
 import com.ait.lienzo.gwtlienzo.event.shared.EventHandler;

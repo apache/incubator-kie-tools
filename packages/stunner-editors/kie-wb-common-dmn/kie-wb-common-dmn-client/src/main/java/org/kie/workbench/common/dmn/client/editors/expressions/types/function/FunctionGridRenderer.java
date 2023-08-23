@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.expressions.types.function;
 
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGridRenderer;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.canvas.controls.toolbox;
 
 import java.util.Arrays;

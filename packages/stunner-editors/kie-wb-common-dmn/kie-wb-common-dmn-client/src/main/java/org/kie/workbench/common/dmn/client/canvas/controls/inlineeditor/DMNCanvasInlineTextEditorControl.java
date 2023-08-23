@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.canvas.controls.inlineeditor;
 
 import javax.annotation.PostConstruct;

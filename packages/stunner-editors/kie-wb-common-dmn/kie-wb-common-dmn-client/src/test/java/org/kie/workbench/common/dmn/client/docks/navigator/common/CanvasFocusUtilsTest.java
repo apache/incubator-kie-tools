@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.docks.navigator.common;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;

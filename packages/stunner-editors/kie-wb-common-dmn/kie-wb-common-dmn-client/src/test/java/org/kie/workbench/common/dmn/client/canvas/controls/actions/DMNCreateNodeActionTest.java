@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.canvas.controls.actions;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;

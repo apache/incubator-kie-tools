@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.marshaller.converters.dd;
 
 import java.util.List;

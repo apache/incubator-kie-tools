@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.grid.controls;
 
 import org.jboss.errai.common.client.api.IsElement;

@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.uberfire.promise;
 
 import elemental2.promise.IThenable;

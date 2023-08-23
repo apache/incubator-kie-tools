@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.layer;
 
 import com.ait.lienzo.client.core.Context2D;

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License. 
  */
-
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
 import java.util.Objects;

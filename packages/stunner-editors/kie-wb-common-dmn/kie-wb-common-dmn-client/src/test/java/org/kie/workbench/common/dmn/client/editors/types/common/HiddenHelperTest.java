@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.common;
 
 import elemental2.dom.DOMTokenList;

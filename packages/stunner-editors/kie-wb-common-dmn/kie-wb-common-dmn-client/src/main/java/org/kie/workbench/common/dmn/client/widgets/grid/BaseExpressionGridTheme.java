@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
 import com.ait.lienzo.client.core.shape.Line;

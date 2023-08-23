@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.imported.treelist;
 
 import elemental2.dom.HTMLElement;

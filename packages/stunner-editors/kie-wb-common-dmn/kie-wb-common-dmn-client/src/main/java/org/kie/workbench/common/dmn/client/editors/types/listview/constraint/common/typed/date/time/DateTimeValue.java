@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.editors.types.listview.constraint.common.typed.date.time;
 
 import org.kie.workbench.common.stunner.core.util.StringUtils;

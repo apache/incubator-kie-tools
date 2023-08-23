@@ -17,7 +17,6 @@
  * under the License. 
  */
 
-
 package org.kie.workbench.common.dmn.client.commands.factory.canvas;
 
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
