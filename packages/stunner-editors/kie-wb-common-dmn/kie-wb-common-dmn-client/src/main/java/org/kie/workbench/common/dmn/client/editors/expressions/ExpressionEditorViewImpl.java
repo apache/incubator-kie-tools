@@ -84,6 +84,7 @@ import org.kie.workbench.common.dmn.client.editors.expressions.types.function.su
 import org.kie.workbench.common.dmn.client.editors.types.DataTypePageTabActiveEvent;
 import org.kie.workbench.common.dmn.client.editors.types.common.ItemDefinitionUtils;
 import org.kie.workbench.common.dmn.client.js.DMNLoader;
+import org.kie.workbench.common.dmn.client.marshaller.DMNMarshallerService;
 import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.client.session.DMNSession;
 import org.kie.workbench.common.dmn.client.widgets.grid.BoundaryTransformMediator;
@@ -103,6 +104,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.domainobject.DomainObject;
@@ -132,6 +135,7 @@ import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BU
 public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     static final double VP_SCALE = 1.0;
+    private DMNMarshallerService marshaller;
 
     private ExpressionEditorView.Presenter presenter;
 
@@ -197,7 +201,8 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
                                     final Event<DataTypePageTabActiveEvent> dataTypePageActiveEvent,
                                     final PMMLDocumentMetadataProvider pmmlDocumentMetadataProvider,
                                     final DefinitionUtils definitionUtils,
-                                    final ItemDefinitionUtils itemDefinitionUtils) {
+                                    final ItemDefinitionUtils itemDefinitionUtils,
+                                    final DMNMarshallerService marshaller) {
         this.returnToDRGLink = returnToDRGLink;
         this.returnToDRGLabel = returnToDRGLabel;
         this.expressionName = expressionName;
@@ -218,6 +223,7 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
         this.updateCanvasNodeNameCommand = new UpdateCanvasNodeNameCommand(sessionManager,
                                                                            definitionUtils,
                                                                            canvasCommandFactory);
+        this.marshaller = marshaller;
     }
 
     @Override
@@ -346,20 +352,34 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     void loadNewBoxedExpressionEditor() {
         ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
-        String decisionNodeId = null;
+        final String decisionNodeId;
         if (hasExpression instanceof Decision) {
             decisionNodeId = ((Decision) hasExpression).getId().getValue();
         } else if (hasExpression.getExpression() instanceof FunctionDefinition) {
             decisionNodeId = getBusinessKnowledgeModel().getId().getValue();
+        } else {
+            decisionNodeId = null;
         }
-        DMNLoader.renderBoxedExpressionEditor(
-                ".kie-dmn-new-expression-editor",
-                decisionNodeId,
-                expression,
-                concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
-                hasExpression.isClearSupported(),
-                buildPmmlParams()
-        );
+
+        marshaller.marshall(sessionManager.getCurrentSession().getCanvasHandler().getDiagram(), new ServiceCallback<String>() {
+            @Override
+            public void onSuccess(final String item) {
+                final Object variables = DMNLoader.getVariables(item);
+                DMNLoader.renderBoxedExpressionEditor(
+                        ".kie-dmn-new-expression-editor",
+                        decisionNodeId,
+                        expression,
+                        concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
+                        hasExpression.isClearSupported(),
+                        buildPmmlParams(),
+                        variables);
+            }
+
+            @Override
+            public void onError(final ClientRuntimeError error) {
+
+            }
+        });
     }
 
     @Override

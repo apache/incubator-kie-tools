@@ -103,6 +103,7 @@ export function BeeTableInternal<R extends object>({
   resizerStopBehavior,
   lastColumnMinWidth,
   rowWrapper,
+  variables,
 }: BeeTableProps<R>) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
@@ -247,6 +248,7 @@ export function BeeTableInternal<R extends object>({
               setEditing={_setEditing(cellProps.rows.length, () => cellProps.allColumns.length)}
               navigateHorizontally={_navigateHorizontally(cellProps.rows.length, () => cellProps.allColumns.length)}
               navigateVertically={_navigateVertically(cellProps.rows.length, () => cellProps.allColumns.length)}
+              variables={variables}
             />
           );
         }

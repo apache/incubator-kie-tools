@@ -22,6 +22,7 @@ import * as ReactTable from "react-table";
 import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
 import { BeeTableSelection } from "../selection/BeeTableSelectionContext";
+import { FeelVariables } from "@kie-tools/dmn-language-service";
 
 export interface BeeTableCellProps<R extends object> {
   data: readonly R[];
@@ -83,6 +84,8 @@ export interface BeeTableProps<R extends object> {
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  /** The variables for the current expression context */
+  variables?: FeelVariables;
 }
 
 /** Possible status for the visibility of the Table's Header */

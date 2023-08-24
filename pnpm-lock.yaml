@@ -595,8 +595,8 @@ importers:
         specifier: ^4.93.6
         version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -749,6 +749,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/dmn-language-service":
+        specifier: workspace:*
+        version: link:../dmn-language-service
       "@kie-tools/feel-input-component":
         specifier: workspace:*
         version: link:../feel-input-component
@@ -1310,14 +1313,14 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0(jest@26.6.3)
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
       monaco-yaml:
         specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        version: 4.0.0(monaco-editor@0.39.0)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -2565,11 +2568,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
         specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        version: 4.0.0(monaco-editor@0.39.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2642,7 +2645,7 @@ importers:
         version: 3.5.0(jest@26.6.3)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3202,6 +3205,13 @@ importers:
         version: 1.1.6
 
   packages/dmn-language-service:
+    dependencies:
+      "@kie-tools/dmn-marshaller":
+        specifier: workspace:*
+        version: link:../dmn-marshaller
+      antlr4:
+        specifier: ^4.13.0
+        version: 4.13.0
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -3784,12 +3794,18 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/dmn-language-service":
+        specifier: workspace:*
+        version: link:../dmn-language-service
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      antlr4:
+        specifier: ^4.13.0
+        version: 4.13.0
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -4802,8 +4818,8 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -5299,8 +5315,8 @@ importers:
   packages/monaco-editor:
     dependencies:
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -5824,8 +5840,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -5837,7 +5853,7 @@ importers:
         version: 17.0.2(react@17.0.2)
       react-monaco-editor:
         specifier: ^0.49.0
-        version: 0.49.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2)
+        version: 0.49.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2)
       react-redux:
         specifier: ^7.2.4
         version: 7.2.4(react-dom@17.0.2)(react@17.0.2)
@@ -6447,8 +6463,8 @@ importers:
         specifier: ^2.29.4
         version: 2.29.4
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       openapi-types:
         specifier: ^7.0.1
         version: 7.2.3
@@ -6596,7 +6612,7 @@ importers:
         version: 3.0.5
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -6981,11 +6997,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       path-browserify:
         specifier: ^1.0.1
         version: 1.0.1
@@ -7058,7 +7074,7 @@ importers:
         version: 3.5.0(jest@26.6.3)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7520,11 +7536,11 @@ importers:
         specifier: ^3.0.5
         version: 3.0.5
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       raw-loader:
         specifier: ^4.0.2
         version: 4.0.2(webpack@5.88.2)
@@ -7619,11 +7635,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -7690,7 +7706,7 @@ importers:
         version: 3.5.0(jest@26.6.3)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7767,11 +7783,11 @@ importers:
         specifier: ^0.34.1
         version: 0.34.1
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       openapi-types:
         specifier: ^7.0.1
         version: 7.2.3
@@ -7850,7 +7866,7 @@ importers:
         version: 1.5.1(mocha@9.2.0)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7909,6 +7925,9 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
+      "@kie-tools/dmn-language-service":
+        specifier: workspace:*
+        version: link:../dmn-language-service
       "@kie-tools/import-java-classes-component":
         specifier: workspace:*
         version: link:../import-java-classes-component
@@ -7916,8 +7935,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -8016,11 +8035,11 @@ importers:
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -9447,11 +9466,11 @@ importers:
         specifier: ^0.4.0
         version: 0.4.0
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -9524,7 +9543,7 @@ importers:
         version: 3.5.0(jest@26.6.3)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -9653,11 +9672,11 @@ importers:
         specifier: workspace:*
         version: link:../yard-editor
       monaco-editor:
-        specifier: ^0.33.0
-        version: 0.33.0
+        specifier: ^0.39.0
+        version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.33.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       openapi-types:
         specifier: ^7.0.1
         version: 7.2.3
@@ -9730,7 +9749,7 @@ importers:
         version: 1.5.1(mocha@9.2.0)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -18487,6 +18506,12 @@ packages:
       { integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug== }
     engines: { node: ">=12" }
     dev: true
+
+  /antlr4@4.13.0:
+    resolution:
+      { integrity: sha512-zooUbt+UscjnWyOrsuY/tVFL4rwrAGwOivpQmvmUDE22hy/lUA467Rc1rcixyRwcRUIXFYBwv7+dClDSHdmmew== }
+    engines: { node: ">=16" }
+    dev: false
 
   /any-promise@1.3.0:
     resolution:
@@ -27963,7 +27988,7 @@ packages:
       { integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w== }
     dev: false
 
-  /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2):
+  /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.0)(webpack@5.88.2):
     resolution:
       { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
     peerDependencies:
@@ -27972,22 +27997,49 @@ packages:
       webpack: ^4.5.0 || 5.x
     dependencies:
       loader-utils: 2.0.2
-      monaco-editor: 0.33.0
-      monaco-yaml: 4.0.0(monaco-editor@0.33.0)
+      monaco-editor: 0.39.0
+      monaco-yaml: 4.0.0(monaco-editor@0.39.0)
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
-  /monaco-editor@0.33.0:
+  /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2):
     resolution:
-      { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
+      { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
+    peerDependencies:
+      monaco-editor: ">= 0.31.0"
+      monaco-yaml: "*"
+      webpack: ^4.5.0 || 5.x
+    dependencies:
+      loader-utils: 2.0.2
+      monaco-editor: 0.39.0
+      monaco-yaml: 4.0.4(monaco-editor@0.39.0)
+      webpack: 5.88.2(webpack-cli@4.10.0)
+    dev: true
 
-  /monaco-marker-data-provider@1.1.0(monaco-editor@0.33.0):
+  /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(webpack@5.88.2):
+    resolution:
+      { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
+    peerDependencies:
+      monaco-editor: ">= 0.31.0"
+      monaco-yaml: "*"
+      webpack: ^4.5.0 || 5.x
+    dependencies:
+      loader-utils: 2.0.2
+      monaco-editor: 0.39.0
+      webpack: 5.88.2(webpack-cli@4.10.0)
+    dev: true
+
+  /monaco-editor@0.39.0:
+    resolution:
+      { integrity: sha512-zhbZ2Nx93tLR8aJmL2zI1mhJpsl87HMebNBM6R8z4pLfs8pj604pIVIVwyF1TivcfNtIPpMXL+nb3DsBmE/x6Q== }
+
+  /monaco-marker-data-provider@1.1.0(monaco-editor@0.39.0):
     resolution:
       { integrity: sha512-g5YH4FLItl3usf0Qxr1Td/vCd4XZmPOFh+dFpo8d+Q5mp8nJZTPFMVA7kwz0vWAy0zBd7bzQYUmfdvHfR1ETBw== }
     peerDependencies:
       monaco-editor: ">=0.30.0"
     dependencies:
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
 
   /monaco-page-objects@3.9.1(selenium-webdriver@4.10.0)(typescript@4.8.4):
     resolution:
@@ -28005,15 +28057,15 @@ packages:
       typescript: 4.8.4
     dev: true
 
-  /monaco-worker-manager@2.0.1(monaco-editor@0.33.0):
+  /monaco-worker-manager@2.0.1(monaco-editor@0.39.0):
     resolution:
       { integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg== }
     peerDependencies:
       monaco-editor: ">=0.30.0"
     dependencies:
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
 
-  /monaco-yaml@4.0.0(monaco-editor@0.33.0):
+  /monaco-yaml@4.0.0(monaco-editor@0.39.0):
     resolution:
       { integrity: sha512-7/CbvZIHE1iOQF6ny+uPclcsrBnkK54lcZugIB9SzqADljhb3TliJyYs7vouaGNDF73RWvrtZrMsWCC5N/GW+g== }
     peerDependencies:
@@ -28021,14 +28073,32 @@ packages:
     dependencies:
       "@types/json-schema": 7.0.11
       jsonc-parser: 3.2.0
-      monaco-editor: 0.33.0
-      monaco-marker-data-provider: 1.1.0(monaco-editor@0.33.0)
-      monaco-worker-manager: 2.0.1(monaco-editor@0.33.0)
+      monaco-editor: 0.39.0
+      monaco-marker-data-provider: 1.1.0(monaco-editor@0.39.0)
+      monaco-worker-manager: 2.0.1(monaco-editor@0.39.0)
       path-browserify: 1.0.1
       prettier: 2.3.0
       vscode-languageserver-textdocument: 1.0.7
       vscode-languageserver-types: 3.17.2
       vscode-uri: 3.0.6
+      yaml: 2.0.1
+
+  /monaco-yaml@4.0.4(monaco-editor@0.39.0):
+    resolution:
+      { integrity: sha512-qbM36fY1twpDUs4lhhxoXDQGUPVyYAFCPJi3E0JKgLioD8wzsD/pawgauFFXSzpMa09z8wbt/DTLXjXEehnVFA== }
+    peerDependencies:
+      monaco-editor: ">=0.30"
+    dependencies:
+      "@types/json-schema": 7.0.11
+      jsonc-parser: 3.2.0
+      monaco-editor: 0.39.0
+      monaco-marker-data-provider: 1.1.0(monaco-editor@0.39.0)
+      monaco-worker-manager: 2.0.1(monaco-editor@0.39.0)
+      path-browserify: 1.0.1
+      prettier: 2.3.0
+      vscode-languageserver-textdocument: 1.0.7
+      vscode-languageserver-types: 3.17.2
+      vscode-uri: 3.0.7
       yaml: 2.0.1
 
   /mongo-object@0.1.4:
@@ -30705,7 +30775,7 @@ packages:
       { integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA== }
     dev: true
 
-  /react-monaco-editor@0.49.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2):
+  /react-monaco-editor@0.49.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2):
     resolution:
       { integrity: sha512-KZTNn1vJh1rlzIRPXjr/5HWYMPfbOoDhR+prCR7mIQCssjlkn8+SfpN4lNsiCTECo/UdpnyAdqgaIyY3yYjVeg== }
     peerDependencies:
@@ -30714,7 +30784,7 @@ packages:
       react: ">=17 <= 18"
     dependencies:
       "@types/react": 17.0.21
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
       prop-types: 15.8.1
       react: 17.0.2
     dev: false

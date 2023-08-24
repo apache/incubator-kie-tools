@@ -61,6 +61,7 @@ export interface ExpressionDefinitionLogicTypeSelectorProps {
   getPlacementRef: () => HTMLDivElement;
   isResetSupported: boolean;
   isNested: boolean;
+  parentElementId: string;
 }
 
 export function ExpressionDefinitionLogicTypeSelector({
@@ -70,6 +71,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   getPlacementRef,
   isResetSupported,
   isNested,
+  parentElementId,
 }: ExpressionDefinitionLogicTypeSelectorProps) {
   const nonSelectableLogicTypes = useMemo(
     () =>
@@ -102,17 +104,17 @@ export function ExpressionDefinitionLogicTypeSelector({
       case ExpressionDefinitionLogicType.Literal:
         return <LiteralExpression {...expression} isNested={isNested} />;
       case ExpressionDefinitionLogicType.Relation:
-        return <RelationExpression {...expression} isNested={isNested} />;
+        return <RelationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Context:
-        return <ContextExpression {...expression} isNested={isNested} />;
+        return <ContextExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.DecisionTable:
-        return <DecisionTableExpression {...expression} isNested={isNested} />;
+        return <DecisionTableExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Invocation:
-        return <InvocationExpression {...expression} isNested={isNested} />;
+        return <InvocationExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.List:
-        return <ListExpression {...expression} isNested={isNested} />;
+        return <ListExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Function:
-        return <FunctionExpression {...expression} isNested={isNested} />;
+        return <FunctionExpression {...expression} isNested={isNested} parentElementId={parentElementId} />;
       case ExpressionDefinitionLogicType.Undefined:
         return <></>; // Shouldn't ever reach this point, though
       default:

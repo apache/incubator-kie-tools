@@ -43,7 +43,10 @@ import {
   INVOCATION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
@@ -57,9 +60,11 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefinitionLogicType.Undefined;
 
-export function InvocationExpression(invocationExpression: InvocationExpressionDefinition & { isNested: boolean }) {
+export function InvocationExpression(
+  invocationExpression: InvocationExpressionDefinition & { isNested: boolean; parentElementId: string }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
-
+  const { variables } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersWidth = useMemo(() => {
@@ -228,7 +233,9 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />,
-      argumentExpression: (props) => <ArgumentEntryExpressionCell {...props} />,
+      argumentExpression: (props) => (
+        <ArgumentEntryExpressionCell {...props} parentElementId={invocationExpression.parentElementId} />
+      ),
     }),
     [updateEntry]
   );
@@ -284,7 +291,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
     (args: { beforeIndex: number }) => {
       setExpression((prev: InvocationExpressionDefinition) => {
         const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        newArgumentEntries.splice(args.beforeIndex, 0, getDefaultArgumentEntry());
+        const newArgumentEntry = getDefaultArgumentEntry();
+        newArgumentEntries.splice(args.beforeIndex, 0, newArgumentEntry);
 
         return {
           ...prev,
@@ -372,6 +380,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
+          variables={variables}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

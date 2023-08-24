@@ -22,14 +22,16 @@ import { useContext, useMemo } from "react";
 import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
 import { useRef, useState } from "react";
 import "./BoxedExpressionEditorContext.css";
-import * as _ from "lodash";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
+import { FeelVariables } from "@kie-tools/dmn-language-service";
 
 export interface BoxedExpressionEditorContextType {
   // Plumbing
   beeGwtService?: BeeGwtService;
   editorRef: React.RefObject<HTMLDivElement>;
   scrollableParentRef: React.RefObject<HTMLElement>;
+
+  variables?: FeelVariables;
 
   // Props
   decisionNodeId: string;
@@ -69,6 +71,7 @@ export function BoxedExpressionEditorContextProvider({
   children,
   pmmlParams,
   scrollableParentRef,
+  variables,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
 
@@ -88,6 +91,7 @@ export function BoxedExpressionEditorContextProvider({
         beeGwtService, // Move to a separate context?
         editorRef,
         scrollableParentRef,
+        variables,
 
         // props
         decisionNodeId,

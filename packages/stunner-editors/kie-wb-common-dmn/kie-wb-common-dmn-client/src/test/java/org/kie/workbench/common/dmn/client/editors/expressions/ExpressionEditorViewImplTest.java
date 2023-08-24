@@ -240,9 +240,6 @@ public class ExpressionEditorViewImplTest {
     private HasExpression hasExpression;
 
     @Mock
-    private HasName hasName;
-
-    @Mock
     private HTMLDivElement betaBoxedExpressionToggle;
 
     @Mock
@@ -313,7 +310,8 @@ public class ExpressionEditorViewImplTest {
                                                      dataTypePageActiveEvent,
                                                      pmmlDocumentMetadataProvider,
                                                      definitionUtils,
-                                                     itemDefinitionUtils));
+                                                     itemDefinitionUtils,
+                                                     null));
         view.init(presenter);
         view.bind(session);
 

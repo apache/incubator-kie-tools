@@ -19,7 +19,7 @@
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import {
   feelDefaultConfig,
   feelDefaultSuggestions,
@@ -28,6 +28,7 @@ import {
   MONACO_FEEL_LANGUAGE,
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
+import { FeelVariables, VariableType } from "@kie-tools/dmn-language-service";
 
 export type SuggestionProvider = (
   feelExpression: string,
@@ -44,6 +45,8 @@ export interface FeelInputProps {
   onKeyDown?: (event: Monaco.IKeyboardEvent, value: string) => void;
   onChange?: (event: Monaco.editor.IModelContentChangedEvent, value: string, preview: string) => void;
   options?: Monaco.editor.IStandaloneEditorConstructionOptions;
+  feelVariables?: FeelVariables;
+  expressionId?: string;
 }
 
 export interface FeelInputRef {
@@ -57,20 +60,49 @@ export interface FeelInputRef {
 }
 
 Monaco.languages.register({
-  id: MONACO_FEEL_LANGUAGE,
   aliases: [MONACO_FEEL_LANGUAGE, "feel", "feel-dmn"],
+  id: MONACO_FEEL_LANGUAGE,
   mimetypes: ["text/feel"],
 });
 
-Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
-
 Monaco.languages.setMonarchTokensProvider(MONACO_FEEL_LANGUAGE, feelTokensConfig());
+
+Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 
 // Don't remove this mechanism. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
 let __firstTimeInitializingMonacoToEnableColorizingCorrectly = true;
 
+function getTokenTypeIndex(variableType: VariableType) {
+  switch (variableType) {
+    default:
+    case VariableType.LocalVariable:
+    case VariableType.Input:
+      return 0;
+    case VariableType.Unknown:
+      return 1;
+    case VariableType.BusinessKnowledgeModel:
+      return 2;
+    case VariableType.Parameter:
+      return 3;
+  }
+}
+
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
-  ({ enabled, value, suggestionProvider, onBlur, onPreviewChanged, onKeyDown, onChange, options }, forwardRef) => {
+  (
+    {
+      enabled,
+      value,
+      suggestionProvider,
+      onBlur,
+      onPreviewChanged,
+      onKeyDown,
+      onChange,
+      options,
+      feelVariables,
+      expressionId,
+    },
+    forwardRef
+  ) => {
     const monacoContainer = useRef<HTMLDivElement>(null);
 
     const monacoRef = useRef<Monaco.editor.IStandaloneCodeEditor>();
@@ -82,7 +114,11 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
       console.info("Registered FEEL language on Monaco Editor to enable correct 'colorize' call.");
       Monaco.editor
-        .create(monacoContainer.current!, { theme: MONACO_FEEL_THEME, language: MONACO_FEEL_LANGUAGE })
+        .create(monacoContainer.current!, {
+          theme: MONACO_FEEL_THEME,
+          language: MONACO_FEEL_LANGUAGE,
+          "semanticHighlighting.enabled": true,
+        })
         .dispose();
       __firstTimeInitializingMonacoToEnableColorizingCorrectly = false;
     }, []);
@@ -91,7 +127,6 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       if (!enabled) {
         return;
       }
-
       const disposable = Monaco.languages.registerCompletionItemProvider(MONACO_FEEL_LANGUAGE, {
         provideCompletionItems: (model: Monaco.editor.ITextModel, position: Monaco.Position) => {
           let completionItems = feelDefaultSuggestions();
@@ -108,11 +143,59 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
           };
         },
       });
-
       return () => {
         disposable.dispose();
       };
     }, [enabled, suggestionProvider]);
+
+    useEffect(() => {
+      if (!enabled) {
+        return;
+      }
+
+      const disposable = Monaco.languages.registerDocumentSemanticTokensProvider(
+        { language: MONACO_FEEL_LANGUAGE },
+        {
+          provideDocumentSemanticTokens: function (model) {
+            const tokens = new Array<number>();
+
+            if (feelVariables) {
+              const text = model.getValue();
+              const feels = feelVariables.parser.parse(expressionId ?? "", text);
+
+              let lastPosition = 0;
+              let offset = 0;
+              for (const variable of feels) {
+                lastPosition = variable.startIndex;
+                // lineIndex
+                // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
+                // tokenLength
+                // token type
+                // token modifier
+                tokens.push(0, lastPosition - offset, variable.length, getTokenTypeIndex(variable.variableType), 0);
+                offset = lastPosition;
+              }
+            }
+            return {
+              data: new Uint32Array(tokens),
+              resultId: undefined,
+            };
+          },
+          getLegend: function (): Monaco.languages.SemanticTokensLegend {
+            return {
+              tokenTypes: ["input-node", "invalid-variable", "bkm-node", "parameter"],
+              tokenModifiers: [],
+            };
+          },
+          releaseDocumentSemanticTokens: function (resultId: string | undefined): void {
+            // do nothing
+          },
+        }
+      );
+      return () => {
+        disposable.dispose();
+      };
+    }, [enabled]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);
@@ -122,7 +205,6 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     useEffect(() => {
       if (enabled && !monacoRef.current) {
         const element = monacoContainer.current!;
-
         const editor = Monaco.editor.create(element, config);
 
         editor.onDidChangeModelContent((event) => {

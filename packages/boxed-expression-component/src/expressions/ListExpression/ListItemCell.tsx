@@ -8,7 +8,10 @@ import {
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./ListExpression";
 
-export function ListItemCell({ rowIndex, data: items, columnIndex }: BeeTableCellProps<ROWTYPE>) {
+export function ListItemCell(
+  parentElementId: string,
+  { rowIndex, data: items, columnIndex }: BeeTableCellProps<ROWTYPE>
+) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
@@ -32,6 +35,7 @@ export function ListItemCell({ rowIndex, data: items, columnIndex }: BeeTableCel
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
+        parentElementId={parentElementId}
       />
     </NestedExpressionDispatchContextProvider>
   );
