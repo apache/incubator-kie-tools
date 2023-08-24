@@ -34,6 +34,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
@@ -90,6 +91,9 @@ public class DiagramEditor {
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final DiagramApi diagramApi;
     private DocType currentDocType = DocType.JSON;
+
+    @Inject
+    private TranslationService translationService;
 
     @Inject
     public DiagramEditor(Promises promises,
@@ -195,7 +199,7 @@ public class DiagramEditor {
                                                                    scaleToFitWorkflow(stunnerEditor);
                                                                    if (parseResult.getMessages().length > 0) {
                                                                        for (Message m : parseResult.getMessages()) {
-                                                                           stunnerEditor.addError(m.toString());
+                                                                           stunnerEditor.addError(m.translateMessage(translationService));
                                                                        }
                                                                    }
                                                                    success.onInvoke((Void) null);
@@ -243,7 +247,7 @@ public class DiagramEditor {
                                              updateDiagram(parseResult.getDiagram());
                                              if (parseResult.getMessages().length > 0) {
                                                  for (Message m : parseResult.getMessages()) {
-                                                     stunnerEditor.addError(m.toString());
+                                                     stunnerEditor.addError(m.translateMessage(translationService));
                                                  }
                                              }
                                              success.onInvoke((Void) null);

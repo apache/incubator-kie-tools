@@ -53,7 +53,6 @@ export class BpmnEditorResources extends BaseEditorResources {
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     return [
-      { path: `${resourcesPathPrefix}/${gwtModuleName}/jquery-ui/jquery-ui.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-daterangepicker/daterangepicker.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/bootstrap-select/css/bootstrap-select.min.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/uberfire-patternfly.css` },

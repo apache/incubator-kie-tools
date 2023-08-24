@@ -1,6 +1,6 @@
 ## Kogito Serverless Workflow Editor
 
-![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.66.0+-blue.svg)
+![vs-code-support](https://img.shields.io/badge/Visual%20Studio%20Code-1.67.0+-blue.svg)
 ![github-ci](https://github.com/kiegroup/kie-tools/actions/workflows/ci_build.yml/badge.svg)
 
 Create and edit Serverless Workflow definition files (\*.sw.json, \*.sw.yaml, \*.sw.yml).

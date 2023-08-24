@@ -37,24 +37,27 @@ public class ContinueAs {
         return workflowId;
     }
 
-    public final void setWorkflowId(String workflowId) {
+    public final ContinueAs setWorkflowId(String workflowId) {
         this.workflowId = workflowId;
+        return this;
     }
 
     public final String getVersion() {
         return version;
     }
 
-    public final void setVersion(String version) {
+    public final ContinueAs setVersion(String version) {
         this.version = version;
+        return this;
     }
 
     public final String getData() {
         return data;
     }
 
-    public final void setData(String data) {
+    public final ContinueAs setData(String data) {
         this.data = data;
+        return this;
     }
 
     public final String getWorkflowExecTimeout() {

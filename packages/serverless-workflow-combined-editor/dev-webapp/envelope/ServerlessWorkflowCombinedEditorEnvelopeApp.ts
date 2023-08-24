@@ -16,7 +16,7 @@
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
 import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
-import { ServerlessWorkflowCombinedEditorFactory } from "../../src";
+import { ServerlessWorkflowCombinedEditorFactory } from "../../src/editor";
 
 init({
   container: document.getElementById("combined-envelope-app")!,

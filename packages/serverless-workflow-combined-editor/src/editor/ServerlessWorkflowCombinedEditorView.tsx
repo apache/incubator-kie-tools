@@ -55,6 +55,9 @@ export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowC
         channelType={this.initArgs.channel}
         resourcesPathPrefix={this.initArgs.resourcesPathPrefix}
         onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
+        onStateControlCommandUpdate={
+          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send
+        }
       />
     );
   }

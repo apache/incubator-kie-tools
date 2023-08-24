@@ -16,7 +16,6 @@
 
 import React from "react";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -25,10 +24,6 @@ import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Tex
 import { AddCircleOIcon } from "@patternfly/react-icons/dist/js/icons/add-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { useCallback, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
-import { routes } from "../../navigation/Routes";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { obfuscate } from "../github/GitHubSettings";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
@@ -43,7 +38,6 @@ export function OpenShiftSettings(props: SettingsPageProps) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const extendedServices = useExtendedServices();
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -78,25 +72,6 @@ export function OpenShiftSettings(props: SettingsPageProps) {
       }
     >
       <PageSection>
-        {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
-          <>
-            <Alert
-              variant="danger"
-              title={
-                <Text>
-                  Connect to <Link to={routes.settings.extended_services.path({})}>Extended Services</Link> before
-                  configuring your OpenShift instance
-                </Text>
-              }
-              aria-live="polite"
-              isInline
-            >
-              Extended Services is necessary for proxying Serverless Logic Web Tools requests to OpenShift, thus making
-              it possible to deploy models.
-            </Alert>
-            <br />
-          </>
-        )}
         <PageSection variant={"light"}>
           {settings.openshift.status === OpenShiftInstanceStatus.CONNECTED ? (
             <EmptyState>
@@ -150,7 +125,6 @@ export function OpenShiftSettings(props: SettingsPageProps) {
           title="Add connection"
           isOpen={
             isModalOpen &&
-            extendedServices.status !== ExtendedServicesStatus.STOPPED &&
             (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
               settings.openshift.status === OpenShiftInstanceStatus.EXPIRED)
           }

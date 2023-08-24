@@ -1,9 +1,10 @@
 const kieSandboxDistributionEnv = require("../env");
+const execSync = require("child_process").execSync;
 
 const env = kieSandboxDistributionEnv.env;
-const kieSandboxUrl = `http://127.0.0.1:${env.kieSandboxDistribution.kieSandbox.port}`;
-const corsProxyUrl = `http://127.0.0.1:${env.kieSandboxDistribution.corsProxy.port}`;
-const extendedServicesUrl = `http://127.0.0.1:${env.kieSandboxDistribution.extendedServices.port}`;
+const kieSandboxUrl = `http://127.0.0.1:${env.kieSandboxDistribution.kieSandbox.exposedPort}`;
+const corsProxyUrl = `http://127.0.0.1:${env.kieSandboxDistribution.corsProxy.exposedPort}`;
+const extendedServicesUrl = `http://127.0.0.1:${env.kieSandboxDistribution.extendedServices.exposedPort}`;
 
 describe("Test built images individually", async () => {
   it("cors-proxy homepage", async () => {

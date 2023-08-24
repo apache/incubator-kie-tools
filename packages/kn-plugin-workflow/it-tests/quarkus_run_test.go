@@ -55,7 +55,7 @@ var cfgTestInputQuarkusRun_Success = []cfgTestInputQuarkusRun{
 func transformQuarkusRunCmdCfgToArgs(cfg quarkus.RunCmdConfig) []string {
 	args := []string{"run"}
 	if !cfg.OpenDevUI {
-		args = append(args, "--open-dev-ui=", "false")
+		args = append(args, "--open-dev-ui=false")
 	}
 	if cfg.PortMapping != "" {
 		args = append(args, "--port", cfg.PortMapping)
@@ -74,7 +74,6 @@ func getRunQuarkusProjectPort(t *testing.T, config cfgTestInputQuarkusRun) strin
 }
 
 func TestQuarkusRunCommand(t *testing.T) {
-	t.Skip("Skipping test because of `quarkus run` not working properly. Probably related to https://issues.redhat.com/browse/KOGITO-9449")
 	for testIndex, test := range cfgTestInputQuarkusRun_Success {
 		t.Run(fmt.Sprintf("Test quarkus run project success index: %d", testIndex), func(t *testing.T) {
 			defer CleanUpAndChdirTemp(t)

@@ -21,8 +21,7 @@ import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 
-// The following test is failing in github CI. See https://issues.redhat.com/browse/KOGITO-8952.
-describe.skip("Serverless workflow editor - Basic operations tests", () => {
+describe("Serverless workflow editor - Basic operations tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "basic-operations");
   const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
 
@@ -48,7 +47,7 @@ describe.skip("Serverless workflow editor - Basic operations tests", () => {
   });
 
   it("Opens, edits and saves the *.sw.json file", async function () {
-    this.timeout(30000);
+    this.timeout(50000);
 
     const WORKFLOW_NAME = "greet.sw.json";
 

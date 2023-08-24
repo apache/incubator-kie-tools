@@ -367,6 +367,9 @@ export const de: OnlineI18n = {
     status: {
       loading: "Laden...",
     },
+    insecurelyDisableTlsCertificateValidation: "Unsichere Deaktivierung der TLS Zertifikat Validierung",
+    insecurelyDisableTlsCertificateValidationInfo:
+      "Checking this option will insecurely disable TLS certificate verification for this account. Only check this option if you trust the Git provider and it's behind an HTTPS endpoint with a self-signed certificate. Please be advised that the use of self-signed certificates is a weaker form of security, so consider contacting your Git provider to use a trusted certificate. For more information, refer to <a href='https://cwe.mitre.org/data/definitions/295.html' target='_blank'>https://cwe.mitre.org/data/definitions/295.html</a>.",
   },
   commitModal: {
     title: "Benutzerdefinierte Commit-Nachricht eingeben",

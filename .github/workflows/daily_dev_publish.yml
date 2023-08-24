@@ -64,7 +64,6 @@ jobs:
       DASHBUILDER__viewerImageName: "dashbuilder-viewer-image"
       DASHBUILDER__viewerImageBuildTags: "daily-dev"
       SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag: "daily-dev"
-      SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion: "0.0.0"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry: "quay.io"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount: "kie-tools"
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName: "serverless-logic-web-tools-swf-builder-image"
@@ -133,10 +132,6 @@ jobs:
           ONLINE_EDITOR__extendedServicesCompatibleVersion: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}"
           ONLINE_EDITOR__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
           DISPLAY: ":99.0"
-          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_linux_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.tar.gz"
-          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_macos_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.dmg"
-          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}/kie_sandbox_extended_services_windows_${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}.exe"
-          SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesCompatibleVersion: "${{ env.SERVERLESS_LOGIC_WEB_TOOLS__extendedServicesVersion }}"
           SERVERLESS_LOGIC_WEB_TOOLS__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
         run: |
           cd kie-tools

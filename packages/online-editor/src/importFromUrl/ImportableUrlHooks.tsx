@@ -419,13 +419,15 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 export function useClonableUrl(
   url: string | undefined,
   authInfo: AuthInfo | undefined,
-  gitRefName: string | undefined
+  gitRefName: string | undefined,
+  insecurelyDisableTlsCertificateValidation?: boolean
 ) {
   const importableUrl = useImportableUrl(url);
 
   const gitServerRefsPromise = useGitServerRefs(
     isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined,
-    authInfo
+    authInfo,
+    insecurelyDisableTlsCertificateValidation
   );
 
   const gitRefNameFromUrl = useMemo(() => {
@@ -488,7 +490,11 @@ export function useClonableUrl(
   return { clonableUrl, selectedGitRefName, gitServerRefsPromise };
 }
 
-export function useGitServerRefs(url: URL | undefined, authInfo: AuthInfo | undefined) {
+export function useGitServerRefs(
+  url: URL | undefined,
+  authInfo: AuthInfo | undefined,
+  insecurelyDisableTlsCertificateValidation?: boolean
+) {
   const workspaces = useWorkspaces();
 
   const [gitServerRefsPromise] = useLivePromiseState<{ refs: GitServerRef[]; defaultBranch: string; headRef: string }>(
@@ -500,6 +506,7 @@ export function useGitServerRefs(url: URL | undefined, authInfo: AuthInfo | unde
         const refs = await workspaces.getGitServerRefs({
           url: url.toString(),
           authInfo,
+          insecurelyDisableTlsCertificateValidation,
         });
 
         const headRef = refs.filter((f) => f.ref === "HEAD").pop()!.target!;
@@ -508,7 +515,7 @@ export function useGitServerRefs(url: URL | undefined, authInfo: AuthInfo | unde
 
         return { refs, defaultBranch, headRef };
       };
-    }, [authInfo, url, workspaces])
+    }, [authInfo, url, workspaces, insecurelyDisableTlsCertificateValidation])
   );
 
   return gitServerRefsPromise;

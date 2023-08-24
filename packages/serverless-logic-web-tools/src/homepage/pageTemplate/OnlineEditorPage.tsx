@@ -33,7 +33,6 @@ import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons
 import { useMemo, useState } from "react";
 import { useHistory, useRouteMatch } from "react-router";
 import { useLocation } from "react-router-dom";
-import { ExtendedServicesIcon } from "../../extendedServices/ExtendedServicesIcon";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -86,9 +85,6 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           <ToolbarItem>
             <SettingsButton />
           </ToolbarItem>
-          <ToolbarItem>
-            <ExtendedServicesIcon />
-          </ToolbarItem>
           {!isChromiumBased && (
             <ToolbarItem>
               <Tooltip
@@ -100,8 +96,8 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
               >
                 <ExclamationIcon
                   data-testid="not-chromium-icon"
-                  className="kogito--editor__extended-services-dropdown-icon-outdated static-opacity"
-                  id="extended-services-not-chromium-icon"
+                  className="kogito--editor__not-chromium-icon static-opacity"
+                  id="browser-not-chromium-icon"
                   style={{ cursor: "pointer" }}
                 />
               </Tooltip>

@@ -27,6 +27,7 @@
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/cors-proxy-api": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",
     "@kie-tools/kie-sandbox-fs": "workspace:*",
     "client-zip": "^2.3.1",
