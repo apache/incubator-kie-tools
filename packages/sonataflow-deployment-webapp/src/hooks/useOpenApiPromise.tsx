@@ -53,6 +53,9 @@ export function useOpenApiPromise() {
             .catch((e) => {
               setOpenApiPromise({ error: e });
             });
+        } else if (app.appDataPromise.status === PromiseStateStatus.REJECTED) {
+          setOpenApiPromise({ error: "data.json file not available" });
+          return;
         }
       },
       [setOpenApiPromise, app.appDataPromise.status]
