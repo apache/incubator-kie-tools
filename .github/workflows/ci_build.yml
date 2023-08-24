@@ -92,11 +92,11 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
-          KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
+          KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
@@ -128,7 +128,7 @@ jobs:
           WEBPACK__minimize: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"

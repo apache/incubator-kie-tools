@@ -26,7 +26,7 @@ import Window from "./tools/Window";
 import { resolve } from "path";
 
 export default class Tools {
-  private static readonly SCREENSHOTS_DIR: string = resolve("dist-it-tests", "screenshots");
+  private static readonly SCREENSHOTS_DIR: string = resolve("dist-e2e-tests", "screenshots");
 
   private readonly screenShot: Screenshot;
 

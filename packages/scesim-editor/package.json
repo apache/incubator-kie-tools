@@ -6,11 +6,11 @@
   "keywords": [],
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:it",
+    "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:e2e",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "echo 'No Tests to run at this moment.'",
-    "test:it": "echo 'No IT Tests to run at this moment.'"
+    "test:e2e": "echo 'No IT Tests to run at this moment.'"
   },
   "dependencies": {
     "@kie-tools-core/patternfly-base": "workspace:*",

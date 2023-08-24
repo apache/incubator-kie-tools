@@ -14,7 +14,7 @@ All the commands in this section should be performed in the monorepo root.
 - pnpm `7.26.3` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Go `1.20.5` _(To install, follow these instructions: https://go.dev/doc/install)_
 
-#### Prerequisites for running integration tests
+#### Prerequisites for running end-to-end tests
 
 - docker _(To install, follow these instructions: https://docs.docker.com/engine/install)_
 - podman _(To install, follow these instructions: https://podman.io/docs/installation)_
@@ -39,7 +39,7 @@ To build the `kn-plugin-workflow` run the following command:
 
 ### Integration Tests
 
-To build the `kn-plugin-workflow` and run integration tests, use the following commands:
+To build the `kn-plugin-workflow` and run end-to-end tests, use the following commands:
 
-- `export KIE_TOOLS_BUILD__runIntegrationTests=true`
+- `export KIE_TOOLS_BUILD__runEndToEndTests=true`
 - `pnpm -r -F "@kie-tools/kn-plugin-workflow..." build:prod`

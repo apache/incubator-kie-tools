@@ -31,13 +31,13 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Ignores failures on tests and continues with the build until the end.",
     },
-    KIE_TOOLS_BUILD__runIntegrationTests: {
+    KIE_TOOLS_BUILD__runEndToEndTests: {
       default: `${false}`,
-      description: "Enables/disables running integration tests during the build.",
+      description: "Enables/disables running end-to-end tests during the build.",
     },
-    KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: {
+    KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: {
       default: `${false}`,
-      description: "Ignores failures on integration tests and continues with the build until the end.",
+      description: "Ignores failures on end-to-end tests and continues with the build until the end.",
     },
     KIE_TOOLS_BUILD__buildContainerImages: {
       default: `${false}`,
@@ -65,9 +65,9 @@ module.exports = composeEnv([], {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runTests)),
         ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreTestFailures)),
       },
-      integrationTests: {
-        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runIntegrationTests)),
-        ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreIntegrationTestFailures)),
+      endToEndTests: {
+        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runEndToEndTests)),
+        ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreEndToEndTestFailures)),
       },
       linters: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runLinters)),

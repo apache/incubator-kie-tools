@@ -1282,13 +1282,13 @@
           </executions>
           <configuration>
             <includes>
-              <!-- Include integration tests from appformer and uberfire -->
+              <!-- Include end-to-end tests from appformer and uberfire -->
               <include>org/appformer/**/*IntegrationTest.java</include>
               <include>org/uberfire/**/*IntegrationTest.java</include>
-              <!-- Include integration tests from kie-wb-common -->
+              <!-- Include end-to-end tests from kie-wb-common -->
               <include>org/kie/workbench/**/*IntegrationTest.java</include>
               <include>org/kie/workbench/**/*IT.java</include>
-              <!-- Include integration tests from drools-wb -->
+              <!-- Include end-to-end tests from drools-wb -->
               <include>org/drools/workbench/**/*IntegrationTest.java</include>
               <include>org/drools/workbench/**/*IT.java</include>
             </includes>
@@ -1500,13 +1500,13 @@
             <excludes>
               <!-- Exclude all from errai as each module has its own configuration -->
               <exclude>org/jboss/errai/**/*.java</exclude>
-              <!-- Exclude integration tests from appformer and uberfire -->
+              <!-- Exclude end-to-end tests from appformer and uberfire -->
               <exclude>org/appformer/**/*IntegrationTest.java</exclude>
               <exclude>org/uberfire/**/*IntegrationTest.java</exclude>
-              <!-- Exclude integration tests from kie-wb-common -->
+              <!-- Exclude end-to-end tests from kie-wb-common -->
               <exclude>org/kie/workbench/**/*IntegrationTest.java</exclude>
               <exclude>org/kie/workbench/**/*IT.java</exclude>
-              <!-- Exclude integration tests from drools-wb -->
+              <!-- Exclude end-to-end tests from drools-wb -->
               <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
               <exclude>org/drools/workbench/**/*IT.java</exclude>
             </excludes>
