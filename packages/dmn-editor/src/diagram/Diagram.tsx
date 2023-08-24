@@ -39,7 +39,7 @@ import {
 } from "./nodes/Nodes";
 import { idFromHref, useDmnDiagramData } from "./useDmnDiagramData";
 import { deleteNode } from "../mutations/deleteNode";
-import { DMN14__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 
@@ -300,7 +300,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
                 // Update nested
                 if (node.type === NODE_TYPES.decisionService) {
-                  const decisionService = node.data.dmnObject as DMN14__tDecisionService;
+                  const decisionService = node.data.dmnObject as DMN15__tDecisionService;
                   const nested = [
                     ...(decisionService.outputDecision ?? []),
                     ...(decisionService.encapsulatedDecision ?? []),

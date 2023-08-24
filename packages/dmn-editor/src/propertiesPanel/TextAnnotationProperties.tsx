@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMN14__tTextAnnotation } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tTextAnnotation } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -10,7 +10,7 @@ export function TextAnnotationProperties({
   textAnnotation,
   index,
 }: {
-  textAnnotation: DMN14__tTextAnnotation;
+  textAnnotation: DMN15__tTextAnnotation;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
@@ -26,7 +26,7 @@ export function TextAnnotationProperties({
           placeholder={"Enter a text format..."}
           onChange={(newTextFormat) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tTextAnnotation)["@_textFormat"] = newTextFormat;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tTextAnnotation)["@_textFormat"] = newTextFormat;
             });
           }}
         />
@@ -40,7 +40,7 @@ export function TextAnnotationProperties({
           value={textAnnotation.text}
           onChange={(newText) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tTextAnnotation).text = newText;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tTextAnnotation).text = newText;
             });
           }}
           placeholder={"Enter text..."}
@@ -57,7 +57,7 @@ export function TextAnnotationProperties({
           value={textAnnotation.description}
           onChange={(newDescription) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tTextAnnotation).description = newDescription;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tTextAnnotation).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}

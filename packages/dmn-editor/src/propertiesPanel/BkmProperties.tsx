@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMN14__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -8,7 +8,7 @@ import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
 import { useDmnEditorStoreApi } from "../store/Store";
 
-export function BkmProperties({ bkm, index }: { bkm: DMN14__tBusinessKnowledgeModel; index: number }) {
+export function BkmProperties({ bkm, index }: { bkm: DMN15__tBusinessKnowledgeModel; index: number }) {
   const { setState } = useDmnEditorStoreApi();
 
   return (
@@ -20,9 +20,9 @@ export function BkmProperties({ bkm, index }: { bkm: DMN14__tBusinessKnowledgeMo
           isDisabled={false}
           onChange={(newName) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel).variable!["@_name"] =
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable!["@_name"] =
                 newName;
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel)["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel)["@_name"] = newName;
             });
           }}
           value={bkm["@_name"]}
@@ -35,7 +35,7 @@ export function BkmProperties({ bkm, index }: { bkm: DMN14__tBusinessKnowledgeMo
           name={bkm.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel).variable!["@_typeRef"] =
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable!["@_typeRef"] =
                 newTypeRef;
             });
           }}
@@ -50,7 +50,7 @@ export function BkmProperties({ bkm, index }: { bkm: DMN14__tBusinessKnowledgeMo
           value={bkm.description}
           onChange={(newDescription) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tBusinessKnowledgeModel).description =
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).description =
                 newDescription;
             });
           }}

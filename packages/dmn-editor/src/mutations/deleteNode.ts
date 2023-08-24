@@ -1,4 +1,4 @@
-import { DMN14__tDecision, DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDecision, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
@@ -10,7 +10,7 @@ export function deleteNode({
   node,
   targetEdges,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   node: { type: NodeType; id: string };
   targetEdges: { id: string; data: DmnEditorDiagramEdgeData }[];
 }) {
@@ -25,7 +25,7 @@ export function deleteNode({
       uniqueTargetEdgeIds.add(edge.id);
     }
 
-    const dmnObjects: DMN14__tDefinitions["artifact"] | DMN14__tDefinitions["drgElement"] =
+    const dmnObjects: DMN15__tDefinitions["artifact"] | DMN15__tDefinitions["drgElement"] =
       switchExpression(edge.data?.dmnObject.type, {
         association: definitions.artifact,
         default: definitions.drgElement,
@@ -38,10 +38,10 @@ export function deleteNode({
 
     const requirements =
       switchExpression(edge.data?.dmnObject.requirementType, {
-        // Casting to DMN14__tDefinitions because if has all types of requirement
-        informationRequirement: (dmnObjects[dmnObjectIndex] as DMN14__tDecision).informationRequirement,
-        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN14__tDecision).knowledgeRequirement,
-        authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN14__tDecision).authorityRequirement,
+        // Casting to DMN15__tDefinitions because if has all types of requirement
+        informationRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).informationRequirement,
+        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).knowledgeRequirement,
+        authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).authorityRequirement,
         association: dmnObjects,
       }) ?? [];
 

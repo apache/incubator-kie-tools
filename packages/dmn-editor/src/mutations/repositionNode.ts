@@ -1,8 +1,8 @@
 import {
-  DMN14__tDefinitions,
-  DMNDI13__DMNEdge,
-  DMNDI13__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tDefinitions,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
@@ -10,7 +10,7 @@ export function repositionNode({
   definitions,
   change,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   change: {
     shapeIndex: number;
     position: { x: number; y: number };
@@ -22,7 +22,7 @@ export function repositionNode({
 
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
-  const bounds = (diagramElements?.[change.shapeIndex] as DMNDI13__DMNShape | undefined)?.["dc:Bounds"];
+  const bounds = (diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined)?.["dc:Bounds"];
   if (!bounds) {
     throw new Error("Cannot reposition non-existent shape bounds");
   }
@@ -41,7 +41,7 @@ export function repositionNode({
 
       edgeIndexesAlreadyUpdated.add(edgeIndex);
 
-      const edge = diagramElements[edgeIndex] as DMNDI13__DMNEdge | undefined;
+      const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("Cannot reposition non-existent edge");
       }

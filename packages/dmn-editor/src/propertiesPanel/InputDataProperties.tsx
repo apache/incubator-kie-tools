@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMN14__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -8,7 +8,7 @@ import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
 import { useDmnEditorStoreApi } from "../store/Store";
 
-export function InputDataProperties({ inputData, index }: { inputData: DMN14__tInputData; index: number }) {
+export function InputDataProperties({ inputData, index }: { inputData: DMN15__tInputData; index: number }) {
   const { setState } = useDmnEditorStoreApi();
 
   return (
@@ -20,8 +20,8 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN14__tI
           isDisabled={false}
           onChange={(newName) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData).variable!["@_name"] = newName;
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData)["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData)["@_name"] = newName;
             });
           }}
           value={inputData["@_name"]}
@@ -34,7 +34,7 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN14__tI
           name={inputData.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData).variable!["@_typeRef"] = newTypeRef;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
             });
           }}
         />
@@ -48,7 +48,7 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN14__tI
           value={inputData.description}
           onChange={(newDescription) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tInputData).description = newDescription;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}

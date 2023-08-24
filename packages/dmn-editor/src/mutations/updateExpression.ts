@@ -1,8 +1,8 @@
 import { ExpressionDefinition, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import {
-  DMN14__tDefinitions,
-  DMN14__tFunctionDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tDefinitions,
+  DMN15__tFunctionDefinition,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { beeToDmn } from "../boxedExpressions/beeToDmn";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
@@ -11,7 +11,7 @@ export function updateExpression({
   expression,
   index,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   expression: ExpressionDefinition;
   index: number;
 }) {
@@ -27,7 +27,7 @@ export function updateExpression({
       throw new Error("Can't have an expression on a BKM that is not a Function.");
     }
 
-    drgElement.encapsulatedLogic = updatedExpression as DMN14__tFunctionDefinition;
+    drgElement.encapsulatedLogic = updatedExpression as DMN15__tFunctionDefinition;
     drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"];
   } else {
     throw new Error("Can't update expression for drgElement that is not a Decision or a BKM.");

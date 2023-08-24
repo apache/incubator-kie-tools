@@ -1,12 +1,12 @@
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
-  DMN14__tAuthorityRequirement,
-  DMN14__tDecision,
-  DMN14__tDefinitions,
-  DMN14__tInformationRequirement,
-  DMN14__tKnowledgeRequirement,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tAuthorityRequirement,
+  DMN15__tDecision,
+  DMN15__tDefinitions,
+  DMN15__tInformationRequirement,
+  DMN15__tKnowledgeRequirement,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { AutoPositionedEdgeMarker } from "../diagram/edges/AutoPositionedEdgeMarker";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
@@ -22,7 +22,7 @@ export function addConnectedNode({
   newNode,
   edge,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
   edge: EdgeType;
@@ -152,8 +152,8 @@ export function addConnectedNode({
 export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string }, newEdgeId: string, edge: EdgeType) {
   const ir:
     | undefined //
-    | Required<Pick<DMN14__tInformationRequirement, "requiredInput" | "@_id">>
-    | Required<Pick<DMN14__tInformationRequirement, "requiredDecision" | "@_id">> = switchExpression(sourceNode.type, {
+    | Required<Pick<DMN15__tInformationRequirement, "requiredInput" | "@_id">>
+    | Required<Pick<DMN15__tInformationRequirement, "requiredDecision" | "@_id">> = switchExpression(sourceNode.type, {
     [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `#${sourceNode.id}` } },
     [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `#${sourceNode.id}` } },
     default: undefined,
@@ -161,7 +161,7 @@ export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string
 
   const kr:
     | undefined //
-    | Required<Pick<DMN14__tKnowledgeRequirement, "requiredKnowledge" | "@_id">> = switchExpression(sourceNode.type, {
+    | Required<Pick<DMN15__tKnowledgeRequirement, "requiredKnowledge" | "@_id">> = switchExpression(sourceNode.type, {
     [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `#${sourceNode.id}` } },
     [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `#${sourceNode.id}` } },
     default: undefined,
@@ -169,9 +169,9 @@ export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string
 
   const ar:
     | undefined //
-    | Required<Pick<DMN14__tAuthorityRequirement, "requiredInput" | "@_id">>
-    | Required<Pick<DMN14__tAuthorityRequirement, "requiredDecision" | "@_id">>
-    | Required<Pick<DMN14__tAuthorityRequirement, "requiredAuthority" | "@_id">> = switchExpression(sourceNode.type, {
+    | Required<Pick<DMN15__tAuthorityRequirement, "requiredInput" | "@_id">>
+    | Required<Pick<DMN15__tAuthorityRequirement, "requiredDecision" | "@_id">>
+    | Required<Pick<DMN15__tAuthorityRequirement, "requiredAuthority" | "@_id">> = switchExpression(sourceNode.type, {
     [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `#${sourceNode.id}` } },
     [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `#${sourceNode.id}` } },
     [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `#${sourceNode.id}` } },
@@ -180,9 +180,9 @@ export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string
 
   // We can use tDecision to type here, because it contains all requirement types.
   const requirements:
-    | (Pick<DMN14__tDecision, "informationRequirement"> &
-        Pick<DMN14__tDecision, "knowledgeRequirement"> &
-        Pick<DMN14__tDecision, "authorityRequirement">)
+    | (Pick<DMN15__tDecision, "informationRequirement"> &
+        Pick<DMN15__tDecision, "knowledgeRequirement"> &
+        Pick<DMN15__tDecision, "authorityRequirement">)
     | undefined = switchExpression(edge, {
     [EDGE_TYPES.informationRequirement]: ir ? { informationRequirement: [ir] } : undefined,
     [EDGE_TYPES.knowledgeRequirement]: kr ? { knowledgeRequirement: [kr] } : undefined,

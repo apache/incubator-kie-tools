@@ -1,14 +1,14 @@
 import {
-  DMN14__tDefinitions,
-  DMN14__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tDefinitions,
+  DMN15__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function renameDrgElement({
   definitions,
   newName,
   index,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   newName: string;
   index: number;
 }) {
@@ -20,9 +20,9 @@ export function updateTextAnnotation({
   newText,
   index,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   newText: string;
   index: number;
 }) {
-  (definitions.artifact![index] as DMN14__tTextAnnotation).text = newText;
+  (definitions.artifact![index] as DMN15__tTextAnnotation).text = newText;
 }

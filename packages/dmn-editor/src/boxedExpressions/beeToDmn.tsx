@@ -3,7 +3,7 @@ import {
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
 } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN14__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SPEC } from "../Spec";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
@@ -18,7 +18,7 @@ import {
 export function beeToDmn(
   expression: ExpressionDefinition,
   __widths: Map<string, number[]>
-): DMN14__tDecision["expression"] {
+): DMN15__tDecision["expression"] {
   switch (expression.logicType) {
     case ExpressionDefinitionLogicType.Undefined:
       return undefined;

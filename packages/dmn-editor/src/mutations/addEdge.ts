@@ -1,13 +1,13 @@
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
-  DMN14__tAssociation,
-  DMN14__tAuthorityRequirement,
-  DMN14__tDecision,
-  DMN14__tDefinitions,
-  DMN14__tInformationRequirement,
-  DMN14__tKnowledgeRequirement,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tAssociation,
+  DMN15__tAuthorityRequirement,
+  DMN15__tDecision,
+  DMN15__tDefinitions,
+  DMN15__tInformationRequirement,
+  DMN15__tKnowledgeRequirement,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { TargetHandleId } from "../diagram/connections/NodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { _checkIsValidConnection } from "../diagram/connections/isValidConnection";
@@ -22,7 +22,7 @@ export function addEdge({
   targetNode,
   edge,
 }: {
-  definitions: DMN14__tDefinitions;
+  definitions: DMN15__tDefinitions;
   sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
   targetNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined; index: number };
   edge: { type: EdgeType; handle: TargetHandleId };
@@ -39,7 +39,7 @@ export function addEdge({
   if (edge.type === EDGE_TYPES.association) {
     definitions.artifact ??= [];
 
-    const newAssociation: DMN14__tAssociation = {
+    const newAssociation: DMN15__tAssociation = {
       "@_id": newEdgeId,
       "@_associationDirection": "Both",
       sourceRef: { "@_href": `#${sourceNode.id}` },
@@ -62,7 +62,7 @@ export function addEdge({
   // Requirements
   else {
     const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
-    const drgElement = definitions.drgElement![targetNode.index] as DMN14__tDecision; // We cast to tDecision here because it has all three types of requirement.
+    const drgElement = definitions.drgElement![targetNode.index] as DMN15__tDecision; // We cast to tDecision here because it has all three types of requirement.
     if (requirements?.informationRequirement) {
       drgElement.informationRequirement ??= [];
       const removed = removeFirstMatchIfPresent(drgElement.informationRequirement, (ir) =>
@@ -113,18 +113,18 @@ export function addEdge({
   });
 }
 
-function doesInformationRequirementsPointTo(a: DMN14__tInformationRequirement, drgElementId: string) {
+function doesInformationRequirementsPointTo(a: DMN15__tInformationRequirement, drgElementId: string) {
   return (
     a.requiredInput?.["@_href"] === `#${drgElementId}` || //
     a.requiredDecision?.["@_href"] === `#${drgElementId}`
   );
 }
 
-function doesKnowledgeRequirementsPointTo(a: DMN14__tKnowledgeRequirement, drgElementId: string) {
+function doesKnowledgeRequirementsPointTo(a: DMN15__tKnowledgeRequirement, drgElementId: string) {
   return a.requiredKnowledge?.["@_href"] === `#${drgElementId}`;
 }
 
-function doesAuthorityRequirementsPointTo(a: DMN14__tAuthorityRequirement, drgElementId: string) {
+function doesAuthorityRequirementsPointTo(a: DMN15__tAuthorityRequirement, drgElementId: string) {
   return (
     a.requiredInput?.["@_href"] === `#${drgElementId}` ||
     a.requiredDecision?.["@_href"] === `#${drgElementId}` ||
@@ -132,7 +132,7 @@ function doesAuthorityRequirementsPointTo(a: DMN14__tAuthorityRequirement, drgEl
   );
 }
 
-function areAssociationsEquivalent(a: DMN14__tAssociation, b: DMN14__tAssociation) {
+function areAssociationsEquivalent(a: DMN15__tAssociation, b: DMN15__tAssociation) {
   return (
     (a.sourceRef["@_href"] === b.sourceRef["@_href"] && a.targetRef["@_href"] === b.targetRef["@_href"]) ||
     (a.sourceRef["@_href"] === b.targetRef["@_href"] && a.targetRef["@_href"] === b.sourceRef["@_href"])

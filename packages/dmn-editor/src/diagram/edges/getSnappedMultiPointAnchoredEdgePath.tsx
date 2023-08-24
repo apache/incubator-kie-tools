@@ -1,8 +1,8 @@
 import {
   DC__Point,
-  DMNDI13__DMNEdge,
-  DMNDI13__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
@@ -21,11 +21,11 @@ export function getSnappedMultiPointAnchoredEdgePath({
   dmnShapeTarget,
 }: {
   snapGrid: SnapGrid;
-  dmnEdge: DMNDI13__DMNEdge | undefined;
+  dmnEdge: DMNDI15__DMNEdge | undefined;
   sourceNode: RF.Node<any, string | undefined> | undefined;
   targetNode: RF.Node<any, string | undefined> | undefined;
-  dmnShapeSource: DMNDI13__DMNShape | undefined;
-  dmnShapeTarget: DMNDI13__DMNShape | undefined;
+  dmnShapeSource: DMNDI15__DMNShape | undefined;
+  dmnShapeTarget: DMNDI15__DMNShape | undefined;
 }) {
   if (!sourceNode || !targetNode) {
     return { path: undefined, points: [] };
@@ -87,7 +87,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
 }
 
 export function getSnappedHandlePosition(
-  shape: DMNDI13__DMNShape,
+  shape: DMNDI15__DMNShape,
   handleWaypoint: DC__Point,
   snappedNode: RF.Node,
   snappedSecondWaypoint: DC__Point

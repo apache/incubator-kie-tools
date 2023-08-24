@@ -2,25 +2,25 @@ import * as React from "react";
 import * as RF from "reactflow";
 import { useCallback, useMemo } from "react";
 import {
-  DMN14__tDefinitions,
-  DMNDI13__DMNEdge,
-  DMNDI13__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tDefinitions,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
 import { Unpacked } from "../useDmnDiagramData";
 import { useDmnEditorStore } from "../../store/Store";
 
 export type DmnEditorDiagramEdgeData = {
-  dmnEdge: (DMNDI13__DMNEdge & { index: number }) | undefined;
+  dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
   dmnObject: {
     id: string;
     type:
-      | Unpacked<DMN14__tDefinitions["artifact"]>["__$$element"]
-      | Unpacked<DMN14__tDefinitions["drgElement"]>["__$$element"];
+      | Unpacked<DMN15__tDefinitions["artifact"]>["__$$element"]
+      | Unpacked<DMN15__tDefinitions["drgElement"]>["__$$element"];
     requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";
   };
-  dmnShapeSource: DMNDI13__DMNShape | undefined;
-  dmnShapeTarget: DMNDI13__DMNShape | undefined;
+  dmnShapeSource: DMNDI15__DMNShape | undefined;
+  dmnShapeTarget: DMNDI15__DMNShape | undefined;
 };
 
 export function useKieEdgePath(source: string, target: string, data: DmnEditorDiagramEdgeData | undefined) {

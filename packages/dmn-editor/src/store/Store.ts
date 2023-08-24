@@ -1,8 +1,8 @@
 import {
-  DMN14__tBusinessKnowledgeModel,
-  DMN14__tDecision,
-  DMN14__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tBusinessKnowledgeModel,
+  DMN15__tDecision,
+  DMN15__tDefinitions,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { createContext, useContext } from "react";
 import { StoreApi, UseBoundStore, create, useStore as useZustandStore } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
@@ -22,7 +22,7 @@ export interface SnapGrid {
 export interface State {
   dispatch: Dispatch;
   dmn: {
-    model: { definitions: DMN14__tDefinitions };
+    model: { definitions: DMN15__tDefinitions };
   };
   boxedExpression: {
     drgElement: DrgElementWithExpression | undefined;
@@ -90,12 +90,12 @@ export type DrgElementWithExpression =
   | {
       index: number;
       type: TypeOfDrgElementWithExpression.BKM;
-      content: DMN14__tBusinessKnowledgeModel;
+      content: DMN15__tBusinessKnowledgeModel;
     }
   | {
       index: number;
       type: TypeOfDrgElementWithExpression.DECISION;
-      content: DMN14__tDecision;
+      content: DMN15__tDecision;
     };
 
 export const NODE_LAYERS = {

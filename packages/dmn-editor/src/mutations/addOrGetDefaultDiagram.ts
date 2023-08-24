@@ -1,6 +1,6 @@
-import { DMN14__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export function addOrGetDefaultDiagram({ definitions }: { definitions: DMN14__tDefinitions }) {
+export function addOrGetDefaultDiagram({ definitions }: { definitions: DMN15__tDefinitions }) {
   // diagram
   definitions["dmndi:DMNDI"] ??= {};
   definitions["dmndi:DMNDI"]["dmndi:DMNDiagram"] ??= [];

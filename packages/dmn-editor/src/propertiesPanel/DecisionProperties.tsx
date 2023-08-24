@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMN14__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -8,7 +8,7 @@ import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
 import { useDmnEditorStoreApi } from "../store/Store";
 
-export function DecisionProperties({ decision, index }: { decision: DMN14__tDecision; index: number }) {
+export function DecisionProperties({ decision, index }: { decision: DMN15__tDecision; index: number }) {
   const { setState } = useDmnEditorStoreApi();
 
   return (
@@ -20,8 +20,8 @@ export function DecisionProperties({ decision, index }: { decision: DMN14__tDeci
           isDisabled={false}
           onChange={(newName) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).variable!["@_name"] = newName;
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision)["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision).variable!["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision)["@_name"] = newName;
             });
           }}
           value={decision["@_name"]}
@@ -34,7 +34,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN14__tDeci
           name={decision.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).variable!["@_typeRef"] = newTypeRef;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision).variable!["@_typeRef"] = newTypeRef;
             });
           }}
         />
@@ -48,7 +48,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN14__tDeci
           value={decision.description}
           onChange={(newDescription) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).description = newDescription;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}
@@ -71,7 +71,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN14__tDeci
           value={decision.question}
           onChange={(newQuestion) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).question = newQuestion;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision).question = newQuestion;
             });
           }}
           placeholder={"Enter a question..."}
@@ -88,7 +88,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN14__tDeci
           value={decision.allowedAnswers}
           onChange={(newAllowedAnswers) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecision).allowedAnswers = newAllowedAnswers;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision).allowedAnswers = newAllowedAnswers;
             });
           }}
           placeholder={"Enter allowed answers..."}

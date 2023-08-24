@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMN14__tKnowledgeSource } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tKnowledgeSource } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -11,7 +11,7 @@ export function KnowledgeSourceProperties({
   knowledgeSource,
   index,
 }: {
-  knowledgeSource: DMN14__tKnowledgeSource;
+  knowledgeSource: DMN15__tKnowledgeSource;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
@@ -25,7 +25,7 @@ export function KnowledgeSourceProperties({
           isDisabled={false}
           onChange={(newName) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource)["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_name"] = newName;
             });
           }}
           value={knowledgeSource["@_name"]}
@@ -41,7 +41,7 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource.description}
           onChange={(newDescription) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource).description = newDescription;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}
@@ -64,7 +64,7 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource.type}
           onChange={(newType) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource).type = newType;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = newType;
             });
           }}
           placeholder={"Enter source type..."}
@@ -79,7 +79,7 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource["@_locationURI"]}
           onChange={(newLocationUri) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tKnowledgeSource)["@_locationURI"] =
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_locationURI"] =
                 newLocationUri;
             });
           }}

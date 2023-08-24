@@ -1,13 +1,13 @@
 import { DmnDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN14__tDefinitions, DMNDI13__DMNDiagram } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDefinitions, DMNDI15__DMNDiagram } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export interface DmnIndex {
-  drgElements: Index<Required<DMN14__tDefinitions["drgElement"]>>;
-  artifacts: Index<Required<DMN14__tDefinitions["artifact"]>>;
-  diagramElements: Index<Required<DMNDI13__DMNDiagram["dmndi:DMNDiagramElement"]>>;
+  drgElements: Index<Required<DMN15__tDefinitions["drgElement"]>>;
+  artifacts: Index<Required<DMN15__tDefinitions["artifact"]>>;
+  diagramElements: Index<Required<DMNDI15__DMNDiagram["dmndi:DMNDiagramElement"]>>;
 }
 
-export function createDmnIndex(dmn: { definitions: DMN14__tDefinitions }): DmnIndex {
+export function createDmnIndex(dmn: { definitions: DMN15__tDefinitions }): DmnIndex {
   return {
     drgElements: (dmn.definitions.drgElement ?? []).reduce<DmnIndex["drgElements"]>((acc, e, index) => {
       const m = acc.get(e.__$$element) ?? new Map<string, SubIndex<DmnIndex["drgElements"]>>();

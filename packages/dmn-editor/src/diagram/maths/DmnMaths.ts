@@ -1,4 +1,4 @@
-import { DC__Bounds, DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DC__Bounds, DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 import { TargetHandleId } from "../connections/NodeHandles";
 import { getCenter } from "./Maths";

@@ -9,11 +9,11 @@ import {
   generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
-  DMN14__tContext,
-  DMN14__tDecision,
-  DMN14__tFunctionDefinition,
-  DMN14__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tContext,
+  DMN15__tDecision,
+  DMN15__tFunctionDefinition,
+  DMN15__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SPEC } from "../Spec";
 
 /** Converts a DMN JSON to an ExpressionDefinition. This convertion is
@@ -21,7 +21,7 @@ import { SPEC } from "../Spec";
  *  created prior to the DMN Editor, needing to declare its own model. */
 export function dmnToBee(
   widthsById: Map<string, number[]>,
-  dmnExpr: DMN14__tDecision | DMN14__tFunctionDefinition
+  dmnExpr: DMN15__tDecision | DMN15__tFunctionDefinition
 ): ExpressionDefinition {
   if (!dmnExpr) {
     return getUndefinedExpressionDefinition();
@@ -84,7 +84,7 @@ export function dmnToBee(
       rows: (r.row ?? []).map((row) => ({
         id: row["@_id"]!,
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
-        cells: ((row.expression as DMN14__tLiteralExpression[]) ?? []).map((s) => ({
+        cells: ((row.expression as DMN15__tLiteralExpression[]) ?? []).map((s) => ({
           id: s["@_id"]!,
           content: s.text ?? "",
         })),
@@ -140,7 +140,7 @@ export function dmnToBee(
     // commonly, it is a LiteralExpression naming a BusinessKnowledgeModel.
     //
     // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 71, document page 57. Section "7.3.6 Invocation metamodel".
-    const calledFunction = i.expression! as DMN14__tLiteralExpression;
+    const calledFunction = i.expression! as DMN15__tLiteralExpression;
 
     return {
       id: i["@_id"]!,
@@ -194,7 +194,7 @@ export function dmnToBee(
         // and the form of the mapping information SHALL be the pmml form.
         //
         // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 106, document page 92. Section "10.2.1.7 Boxed Function".
-        const c = f.expression! as DMN14__tContext;
+        const c = f.expression! as DMN15__tContext;
         const clazz = c.contextEntry?.find(
           ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.classFieldName
         );
@@ -205,9 +205,9 @@ export function dmnToBee(
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Java,
-          className: (clazz?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          className: (clazz?.expression as DMN15__tLiteralExpression | undefined)?.text,
           classFieldId: clazz?.expression?.["@_id"],
-          methodName: (method?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text,
           methodFieldId: method?.expression?.["@_id"],
           // `clazz` and `method` would have the exact same width, as they're always in sync, so it doens't matter which one we use.
           classAndMethodNamesWidth: widthsById.get(clazz?.expression?.["@_id"] ?? "")?.[0],
@@ -215,7 +215,7 @@ export function dmnToBee(
       }
       case "PMML": {
         // Special case, defined by the spec, where the implementation is a context expression with two fields.
-        const c = f.expression as DMN14__tContext;
+        const c = f.expression as DMN15__tContext;
         const document = c.contextEntry?.find(
           ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
         );
@@ -225,9 +225,9 @@ export function dmnToBee(
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Pmml,
-          document: (document?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          document: (document?.expression as DMN15__tLiteralExpression | undefined)?.text,
           documentFieldId: document?.expression?.["@_id"],
-          model: (model?.expression as DMN14__tLiteralExpression | undefined)?.text,
+          model: (model?.expression as DMN15__tLiteralExpression | undefined)?.text,
           modelFieldId: model?.expression?.["@_id"],
         };
       }

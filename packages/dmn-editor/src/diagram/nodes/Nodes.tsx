@@ -1,13 +1,13 @@
 import {
-  DMN14__tBusinessKnowledgeModel,
-  DMN14__tDecision,
-  DMN14__tDecisionService,
-  DMN14__tGroup,
-  DMN14__tInputData,
-  DMN14__tKnowledgeSource,
-  DMN14__tTextAnnotation,
-  DMNDI13__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tBusinessKnowledgeModel,
+  DMN15__tDecision,
+  DMN15__tDecisionService,
+  DMN15__tGroup,
+  DMN15__tInputData,
+  DMN15__tKnowledgeSource,
+  DMN15__tTextAnnotation,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
@@ -35,7 +35,7 @@ import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 
 export type DmnEditorDiagramNodeData<T> = {
   dmnObject: T;
-  shape: DMNDI13__DMNShape & { index: number };
+  shape: DMNDI15__DMNShape & { index: number };
   index: number;
 };
 
@@ -46,7 +46,7 @@ export const InputDataNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tInputData>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -111,7 +111,7 @@ export const DecisionNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tDecision>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -183,7 +183,7 @@ export const BkmNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tBusinessKnowledgeModel>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -254,7 +254,7 @@ export const KnowledgeSourceNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tKnowledgeSource>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -317,7 +317,7 @@ export const TextAnnotationNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tTextAnnotation>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -380,7 +380,7 @@ export const DecisionServiceNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tDecisionService>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tDecisionService>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -444,7 +444,7 @@ export const GroupNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN14__tGroup>>) => {
+  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tGroup>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
@@ -539,7 +539,7 @@ function useNodeResizing(id: string): boolean {
 
   return node.resizing ?? false;
 }
-function useNodeDimensions(snapGrid: SnapGrid, id: string, shape: DMNDI13__DMNShape): RF.Dimensions {
+function useNodeDimensions(snapGrid: SnapGrid, id: string, shape: DMNDI15__DMNShape): RF.Dimensions {
   const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
   if (!node) {
     throw new Error("Can't use nodeInternals of non-existent node " + id);

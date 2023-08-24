@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DMN14__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -12,7 +12,7 @@ export function DecisionServiceProperties({
   decisionService,
   index,
 }: {
-  decisionService: DMN14__tDecisionService;
+  decisionService: DMN15__tDecisionService;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
@@ -26,8 +26,8 @@ export function DecisionServiceProperties({
           isDisabled={false}
           onChange={(newName) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService).variable!["@_name"] = newName;
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService)["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).variable!["@_name"] = newName;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService)["@_name"] = newName;
             });
           }}
           value={decisionService["@_name"]}
@@ -40,7 +40,7 @@ export function DecisionServiceProperties({
           name={decisionService.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService).variable!["@_typeRef"] =
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).variable!["@_typeRef"] =
                 newTypeRef;
             });
           }}
@@ -55,7 +55,7 @@ export function DecisionServiceProperties({
           value={decisionService.description}
           onChange={(newDescription) => {
             setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN14__tDecisionService).description = newDescription;
+              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}

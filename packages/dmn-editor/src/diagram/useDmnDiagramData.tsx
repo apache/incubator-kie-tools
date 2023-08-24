@@ -1,8 +1,8 @@
 import {
-  DMN14__tDefinitions,
-  DMNDI13__DMNEdge,
-  DMNDI13__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+  DMN15__tDefinitions,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
 import { NODE_LAYERS, useDmnEditorStore } from "../store/Store";
@@ -32,8 +32,8 @@ export function useDmnDiagramData() {
             return acc;
           },
           {
-            edgesById: new Map<string, DMNDI13__DMNEdge & { index: number }>(),
-            shapesById: new Map<string, DMNDI13__DMNShape & { index: number }>(),
+            edgesById: new Map<string, DMNDI15__DMNEdge & { index: number }>(),
+            shapesById: new Map<string, DMNDI15__DMNShape & { index: number }>(),
           }
         ),
     [dmn.model.definitions]
@@ -67,7 +67,7 @@ export function useDmnDiagramData() {
     const nodesById = new Map<string, RF.Node<DmnEditorDiagramNodeData<any>>>();
     const parentIdsById = new Map<
       string,
-      Unpacked<DMN14__tDefinitions["drgElement"] | DMN14__tDefinitions["artifact"]>
+      Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
     >();
 
     const { selected, dragging, resizing } = {
@@ -185,7 +185,7 @@ export function useDmnDiagramData() {
     // console.timeEnd("edges");
 
     function ackNode(
-      dmnObject: Unpacked<DMN14__tDefinitions["drgElement"] | DMN14__tDefinitions["artifact"]>,
+      dmnObject: Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>,
       index: number
     ) {
       const type = switchExpression(dmnObject.__$$element, {

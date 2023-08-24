@@ -1,4 +1,4 @@
-import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
+import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SnapGrid } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, NODE_MIN_WIDTH } from "../SnapGrid";
 import { NodeType } from "../connections/graphStructure";
