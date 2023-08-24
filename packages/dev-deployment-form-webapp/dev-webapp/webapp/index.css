@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,31 @@
  * limitations under the License.
  */
 
-const buildEnv = require(`${__dirname}/../env`);
-const { setup } = require("@kie-tools/maven-config-setup-helper");
+.showcase {
+  display: flex;
+  flex-direction: column;
+}
 
-setup(`
-    -Drevision=${buildEnv.env.dmnDevDeploymentSampleImage.version}
-    -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
-    -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
-`);
+.showcase .boxed-expression {
+  overflow-y: auto;
+  height: calc(70vh - 8px);
+}
+
+.showcase .updated-json {
+  border-style: inset;
+  padding: 1em;
+  height: calc(30vh - 8px - 2em - 4px);
+  overflow-y: auto;
+}
+
+.showcase .updated-json .buttons button,
+.expression-definition-editor-modal button {
+  cursor: pointer;
+}
+
+.expression-definition-editor-modal .typed-expression {
+  height: 20em;
+  width: 100%;
+  overflow: auto;
+  resize: none;
+}
