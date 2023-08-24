@@ -22,7 +22,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.webjars.npm</groupId>
     <artifactId>sonataflow-deployment-webapp</artifactId>
-    <version>0.1.0</version>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
 
     <name>SonataFlow Deployment Webapp</name>
@@ -115,7 +115,7 @@
                         <configuration>
                             <file>${project.build.directory}/${project.artifactId}-${project.version}.jar</file>
                             <groupId>org.webjars</groupId>
-                            <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
+                            <artifactId>sonataflow-deployment-webapp</artifactId>
                             <version>${project.version}</version>
                             <packaging>jar</packaging>
                             <description></description>

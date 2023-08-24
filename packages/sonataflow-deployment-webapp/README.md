@@ -43,33 +43,32 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ```xml
 <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.2.0</version>
-            <executions>
-                <execution>
-                    <id>unpack-webjar</id>
-                    <phase>process-resources</phase>
-                    <goals>
-                        <goal>unpack</goal>
-                    </goals>
-                    <configuration>
-                        <artifactItems>
-                            <artifactItem>
-                                <groupId>org.webjars.npm</groupId>
-                                <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
-                                <version>0.1.0</version>
-                                <type>jar</type>
-                                <overWrite>true</overWrite>
-                                <outputDirectory
-            >${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
-                                <includes>**/*</includes>
-                            </artifactItem>
-                        </artifactItems>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-dependency-plugin</artifactId>
+    <version>3.2.0</version>
+    <executions>
+        <execution>
+            <id>unpack-webjar</id>
+            <phase>process-resources</phase>
+            <goals>
+                <goal>unpack</goal>
+            </goals>
+            <configuration>
+                <artifactItems>
+                    <artifactItem>
+                        <groupId>org.webjars.npm</groupId>
+                        <artifactId>sonataflow-deployment-webapp</artifactId>
+                        <version>0.1.0</version>
+                        <type>jar</type>
+                        <overWrite>true</overWrite>
+                        <outputDirectory>${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
+                        <includes>**/*</includes>
+                    </artifactItem>
+                </artifactItems>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
 ```
 
 ## Using the deployed webjar
@@ -88,7 +87,7 @@ Add the webjar as a dependency in the dependencies section
 <dependencies>
     <dependency>
         <groupId>org.webjars.npm</groupId>
-        <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
+        <artifactId>sonataflow-deployment-webapp</artifactId>
         <version>${slwtDeploymentWebapp.version}</version>
     </dependency>
   </dependencies>
@@ -113,7 +112,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                       <artifactItems>
                           <artifactItem>
                               <groupId>org.webjars.npm</groupId>
-                              <artifactId>@kie-tools/sonataflow-deployment-webapp</artifactId>
+                              <artifactId>sonataflow-deployment-webapp</artifactId>
                               <version>${slwtDeploymentWebapp.version}</version>
                               <outputDirectory>${project.build.directory}/sonataflow-deployment-webapp</outputDirectory>
                           </artifactItem>
@@ -152,4 +151,18 @@ Add a plugin to unpack and copy the Webjar in the plugins section
   </build>
 ```
 
-An example can be found in [sonataflow-deployment-webapp-consumer](https://github.com/fantonangeli/sonataflow-deployment-webapp-consumer)
+## Data.json
+
+After the installation a file `/src/main/resources/META-INF/resources/data.json` is needed to be created with the following text:
+
+```JSON
+{
+  "appName": "SonataFlow Deployment",
+  "openApiUrl": "/q/openapi?format=json"
+}
+```
+
+Please replace:
+
+- `appName` with the desired name for the app
+- `openApiUrl` with the url to the OpenAPI json
