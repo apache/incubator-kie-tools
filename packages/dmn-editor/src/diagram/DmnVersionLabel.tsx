@@ -3,7 +3,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import { useMemo } from "react";
 
-const latest = "1.4";
+const latest = "1.5";
 
 export function DmnVersionLabel(props: { version: string }) {
   const label = useMemo(
