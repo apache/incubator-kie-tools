@@ -64,24 +64,53 @@ export type TestScenarioEditorRef = {
   setContent(path: string, content: string): void;
 };
 
-export function TestScenarioCreationPanel({
-  assetType,
-  onAssetTypeChange,
-  onCreateScesimButtonClicked,
-  onSkipFileChange,
-  skipFile,
+export function TestScenarioDocksPanel({
+  setDockPanel,
 }: {
-  assetType: string;
-  onAssetTypeChange: (value: string) => void;
-  onCreateScesimButtonClicked: () => void;
-  onSkipFileChange: (value: boolean) => void;
-  skipFile: boolean;
+  setDockPanel: (isOpen: boolean, selected: TestScenarioEditorDock) => void;
+}) {
+  return (
+    <div className="kie-scesim-editor--right-sidebar">
+      <Tooltip content={<div>Data Objects tool: It provides a tool to add your Data Objects in Test Scenarios</div>}>
+        <Button
+          variant="plain"
+          onClick={() => setDockPanel(true, TestScenarioEditorDock.DATA_OBJECT)}
+          icon={<EditIcon />}
+        />
+      </Tooltip>
+      <Tooltip content={<div>Settings</div>}>
+        <Button
+          variant="plain"
+          onClick={() => setDockPanel(true, TestScenarioEditorDock.SETTINGS)}
+          icon={<CogIcon />}
+        />
+      </Tooltip>
+      <Tooltip content={<div>CheatSheet: In this panel you can found useful information for Test Scenario Usage</div>}>
+        <Button
+          variant="plain"
+          onClick={() => setDockPanel(true, TestScenarioEditorDock.CHEATSHEET)}
+          icon={<InfoIcon />}
+        />
+      </Tooltip>
+    </div>
+  );
+}
+
+/* Test Scenario Creation Panel  */
+
+export function TestScenarioCreationPanel({
+  onCreateScesimButtonClicked,
+}: {
+  onCreateScesimButtonClicked: (assetType: string, skipFile: boolean) => void;
 }) {
   const assetsOption = [
     { value: "select one", label: "Select a type", disabled: true },
     { value: "DMN", label: "Decision (DMN)", disabled: false },
     { value: "RULE", label: "Rule (DRL)", disabled: true },
   ];
+
+  const [assetType, setAssetType] = React.useState("select one");
+  const [skipFile, setSkipFile] = React.useState(false);
 
   return (
     <EmptyState>
@@ -91,7 +120,11 @@ export function TestScenarioCreationPanel({
       </Title>
       <Form isHorizontal className="kie-scesim-editor--creation-form">
         <FormGroup label="Asset type" isRequired>
-          <FormSelect value={assetType} onChange={onAssetTypeChange} id="asset-type-select" name="asset-type-select">
+          <FormSelect value={assetType} id="asset-type-select" name="asset-type-select">
+            onChange=
+            {(value: string) => {
+              setAssetType(value);
+            }}
             {assetsOption.map((option, index) => (
               <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
             ))}
@@ -108,11 +141,13 @@ export function TestScenarioCreationPanel({
             isChecked={skipFile}
             label="Skip this file during the test"
             name="skip-scesim-checkbox"
-            onChange={onSkipFileChange}
+            onChange={(value: boolean) => {
+              setSkipFile(value);
+            }}
           />
         </FormGroup>
       </Form>
-      <Button variant="primary" icon={<AddIcon />} onClick={onCreateScesimButtonClicked}>
+      <Button variant="primary" icon={<AddIcon />} onClick={() => onCreateScesimButtonClicked(assetType, skipFile)}>
         Create
       </Button>
     </EmptyState>
@@ -147,7 +182,24 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
     [marshaller.builder, scesim]
   );
 
-  /** Test Scenario Right Dock Panel  */
+  /** scesim model update functions */
+
+  const setInitialSettings = useCallback(
+    (assetType: string, skipFile: boolean) =>
+      setScesim((prevState) => ({
+        ScenarioSimulationModel: {
+          ...prevState.ScenarioSimulationModel,
+          ["settings"]: {
+            ...prevState.ScenarioSimulationModel["settings"],
+            ["type"]: assetType,
+            ["skipFromBuild"]: skipFile,
+          },
+        },
+      })),
+    [setScesim]
+  );
+
+  /** Test Scenario Tab Panel  */
 
   const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
 
@@ -159,34 +211,9 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
 
-  /** Test Scenario Creation Panel  */
-
-  const [assetType, setAssetType] = React.useState("please choose");
-
-  const onAssetTypeChange = useCallback((value: string) => {
-    setAssetType(value);
+  const onDockPanelChange = useCallback((isOpen: boolean, selected: TestScenarioEditorDock.DATA_OBJECT) => {
+    setDockPanel({ isOpen: isOpen, selected: selected });
   }, []);
-
-  const [skipFile, setSkipFile] = React.useState(false);
-
-  const onSkipFileChange = useCallback((value: boolean) => {
-    setSkipFile(value);
-  }, []);
-
-  const onCreateScesimButtonClicked = useCallback(
-    () =>
-      setScesim((prevState) => ({
-        ScenarioSimulationModel: {
-          ...prevState.ScenarioSimulationModel,
-          ["settings"]: {
-            ...prevState.ScenarioSimulationModel["settings"],
-            ["type"]: assetType,
-            ["skipFromBuild"]: skipFile,
-          },
-        },
-      })),
-    [assetType, setScesim, skipFile]
-  );
 
   return (
     <>
@@ -248,42 +275,10 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
               </Tab>
             </Tabs>
           </div>
-          <div className="kie-scesim-editor--right-sidebar">
-            <Tooltip
-              content={<div>Data Objects tool: It provides a tool to add your Data Objects in Test Scenarios</div>}
-            >
-              <Button
-                variant="plain"
-                onClick={() => setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT })}
-                icon={<EditIcon />}
-              />
-            </Tooltip>
-            <Tooltip content={<div>Settings</div>}>
-              <Button
-                variant="plain"
-                onClick={() => setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.SETTINGS })}
-                icon={<CogIcon />}
-              />
-            </Tooltip>
-            <Tooltip
-              content={<div>CheatSheet: In this panel you can found useful information for Test Scenario Usage</div>}
-            >
-              <Button
-                variant="plain"
-                onClick={() => setDockPanel({ isOpen: true, selected: TestScenarioEditorDock.CHEATSHEET })}
-                icon={<InfoIcon />}
-              />
-            </Tooltip>
-          </div>
+          <TestScenarioDocksPanel setDockPanel={onDockPanelChange} />
         </>
       ) : (
-        <TestScenarioCreationPanel
-          assetType={assetType}
-          onAssetTypeChange={onAssetTypeChange}
-          onCreateScesimButtonClicked={onCreateScesimButtonClicked}
-          onSkipFileChange={onSkipFileChange}
-          skipFile={skipFile}
-        />
+        <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />
       )}
     </>
   );
