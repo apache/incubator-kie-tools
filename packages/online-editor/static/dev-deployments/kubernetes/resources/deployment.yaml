@@ -1,43 +1,43 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: ${{ name }}-${{ uniqueId }}
-  namespace: ${{ namespace }}
+  name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+  namespace: ${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/component: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/instance: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/name: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/part-of: ${{ name }}-${{ uniqueId }}
-    ${{ createdByLabel }}: kie-tools
+    app: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/component: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/instance: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/part-of: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    ${{ devDeployment.labels.createdBy }}: kie-tools
   annotations:
-    ${{ uriAnnotation }}: ${{ resourceName }}
-    ${{ workspaceIdAnnotation }}: ${{ workspaceId }}
+    ${{ devDeployment.annotations.uri }}: ${{ devDeployment.workspace.resourceName }}
+    ${{ devDeployment.annotations.workspaceId }}: ${{ devDeployment.workspace.id }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${{ name }}-${{ uniqueId }}
+      app: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
   template:
     metadata:
       labels:
-        app: ${{ name }}-${{ uniqueId }}
-        deploymentconfig: ${{ name }}-${{ uniqueId }}
+        app: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+        deploymentconfig: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
     spec:
       containers:
-        - name: ${{ name }}-${{ uniqueId }}
-          image: quay.io/kie-tools/dmn-dev-deployment-base-image:daily-dev
+        - name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+          image: ${{ devDeployment.defaultContainerImageUrl }}
           ports:
             - containerPort: 8080
               protocol: TCP
           env:
             - name: BASE_URL
-              value: http://localhost/${{ name }}-${{ uniqueId }}
+              value: http://localhost/${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
             - name: QUARKUS_PLATFORM_VERSION
               value: 2.16.7.Final
             - name: KOGITO_RUNTIME_VERSION
               value: 1.40.0.Final
             - name: ROOT_PATH
-              value: /${{ name }}-${{ uniqueId }}
+              value: /${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
           resources: {}
           imagePullPolicy: Always

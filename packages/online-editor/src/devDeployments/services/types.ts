@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DeployedModel } from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { DeployedModel, DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
 export type KieSandboxDeployedModel = DeployedModel & {
@@ -40,4 +40,10 @@ export type KieSandboxDeploymentService = {
   loadDeployedModels(): Promise<KieSandboxDeployedModel[]>;
   deploy(args: DeployArgs): Promise<void>;
   deleteDevDeployment(resourceName: string): Promise<void>;
+  uploadAssets(args: {
+    resourceArgs: ResourceArgs;
+    deployment: DeploymentDescriptor;
+    workspaceZipBlob: Blob;
+    baseUrl: string;
+  }): Promise<void>;
 };

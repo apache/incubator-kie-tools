@@ -73,7 +73,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
     }
 
     setConfirmLoading(true);
-    const deployStarted = await devDeployments.deploy(props.workspaceFile, authSession);
+    const deployStarted = await devDeployments.dynamicDeploy(props.workspaceFile, authSession);
     setConfirmLoading(false);
 
     devDeployments.setConfirmDeployModalState({ isOpen: false });

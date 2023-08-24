@@ -24,6 +24,7 @@ import {
   DeleteService,
   CreateService,
   ResourceDataSource,
+  DeploymentDescriptor,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import {
@@ -42,6 +43,14 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
   constructor(readonly args: KubernetesServiceArgs) {
     this.kieSandboxKubernetesService = new KieSandboxKubernetesService(args);
     this.openshiftService = new OpenShiftService(args);
+  }
+  uploadAssets(args: {
+    resourceArgs: ResourceArgs;
+    deployment: DeploymentDescriptor;
+    workspaceZipBlob: Blob;
+    baseUrl: string;
+  }): Promise<void> {
+    return this.kieSandboxKubernetesService.uploadAssets(args);
   }
 
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {

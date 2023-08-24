@@ -225,6 +225,8 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     this.uploadAssets({ resourceArgs, deployment, workspaceZipBlob: args.workspaceZipBlob, baseUrl: ingressUrl });
   }
 
+  public async dynamicDeploy(args: DeployArgs): Promise<void> {}
+
   public async deleteDeployment(resourceName: string) {
     await this.service.withFetch((fetcher: ResourceFetcher) =>
       fetcher.execute({

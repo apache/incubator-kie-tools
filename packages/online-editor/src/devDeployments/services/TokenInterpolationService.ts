@@ -67,7 +67,7 @@ export type Tokens = DevDeploymentTokens & {
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
 
 const TEMPLATE = {
-  OPEN: "{{",
+  OPEN: "${{",
   CLOSE: "}}",
 } as const;
 
@@ -98,7 +98,7 @@ export class TokenInterpolationService {
     this.tokensMap = this.buildTokensMap(args);
   }
 
-  public buildTokensMap(args: TokensArg): Tokens {
+  private buildTokensMap(args: TokensArg): Tokens {
     return {
       labels: defaultLabelTokens,
       annotations: defaultAnnotationTokens,

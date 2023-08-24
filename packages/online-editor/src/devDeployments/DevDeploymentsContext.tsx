@@ -59,6 +59,7 @@ export interface DevDeploymentsContextType {
 
   // Actions
   deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
+  dynamicDeploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
   loadDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployedModel[]>;
   deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
   deleteDeployments: (args: { authSession: CloudAuthSession; resourceNames: string[] }) => Promise<boolean>;

@@ -1,15 +1,15 @@
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: ${{ name }}-${{ uniqueId }}
-  namespace: ${{ namespace }}
+  name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+  namespace: ${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/component: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/instance: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/name: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/part-of: ${{ name }}-${{ uniqueId }}
-    ${{ createdByLabel }}: kie-tools
+    app: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/component: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/instance: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/part-of: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    ${{ devDeployment.labels.createdBy }}: kie-tools
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -17,10 +17,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: /${{ name }}-${{ uniqueId }}
+          - path: /${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
             pathType: Prefix
             backend:
               service:
-                name: ${{ name }}-${{ uniqueId }}
+                name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
                 port:
                   number: 8080

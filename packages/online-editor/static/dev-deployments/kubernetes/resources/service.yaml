@@ -1,15 +1,15 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: ${{ name }}-${{ uniqueId }}
-  namespace: ${{ namespace }}
+  name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+  namespace: ${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/component: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/instance: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/name: ${{ name }}-${{ uniqueId }}
-    app.kubernetes.io/part-of: ${{ name }}-${{ uniqueId }}
-    ${{ createdByLabel }}: kie-tools
+    app: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/component: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/instance: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/name: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    app.kubernetes.io/part-of: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    ${{ devDeployment.labels.createdBy }}: kie-tools
 spec:
   ports:
     - name: 8080-tcp
@@ -17,6 +17,6 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    app: ${{ name }}-${{ uniqueId }}
-    deploymentconfig: ${{ name }}-${{ uniqueId }}
+    app: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
+    deploymentconfig: ${{ devDeployment.name }}-${{ devDeployment.uniqueId }}
   type: ClusterIP
