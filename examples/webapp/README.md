@@ -29,13 +29,17 @@ pnpm init
 
 ### Build
 
+To build the webapp execute one of the following commands on the root folder of the project:
+
 ```shell script
-pnpm build:fast // Normal build
-pnpm build:prod // Optimized build, run TsLint
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/webapp... build:dev
+KIE_TOOLS_BUILD__buildExamples=true pnpm -F @kie-tools-examples/webapp... build:prod
 ```
 
 ### Run
 
+To start the webapp execute the following command on the root folder of the project:
+
 ```shell script
-pnpm start // Starts the dev server on localhost:9001
+pnpm -F @kie-tools-examples/webapp start
 ```
