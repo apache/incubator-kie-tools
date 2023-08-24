@@ -120,21 +120,26 @@ export function TestScenarioCreationPanel({
       </Title>
       <Form isHorizontal className="kie-scesim-editor--creation-form">
         <FormGroup label="Asset type" isRequired>
-          <FormSelect value={assetType} id="asset-type-select" name="asset-type-select">
-            onChange=
-            {(value: string) => {
+          <FormSelect
+            value={assetType}
+            id="asset-type-select"
+            name="asset-type-select"
+            onChange={(value: string) => {
               setAssetType(value);
             }}
+          >
             {assetsOption.map((option, index) => (
               <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
             ))}
           </FormSelect>
         </FormGroup>
-        <FormGroup label="Select DMN" isRequired>
-          <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
-            <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
-          </FormSelect>
-        </FormGroup>
+        {assetType == "DMN" && (
+          <FormGroup label="Select DMN" isRequired>
+            <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
+              <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
+            </FormSelect>
+          </FormGroup>
+        )}
         <FormGroup>
           <Checkbox
             id="skip-scesim-checkbox"
