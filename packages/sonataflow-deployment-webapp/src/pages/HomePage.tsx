@@ -20,7 +20,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -36,6 +36,12 @@ export function HomePage() {
 
   return (
     <BasePage>
+      <PageSection variant={"light"}>
+        <TextContent>
+          <Text component={TextVariants.h1}>Workflows</Text>
+        </TextContent>
+      </PageSection>
+
       <PageSection>
         <Toolbar>
           <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { DownloadIcon, ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Link, useLocation } from "react-router-dom";
@@ -38,7 +39,7 @@ export function BasePageNav() {
         <NavItem
           itemId={3}
           key={"OpenApi-nav"}
-          onClick={() => handleDownloadClick(routes.openApi.path({}), "openapi.json")}
+          onClick={() => handleDownloadClick(routes.openApiJson.path({}), "openapi.json")}
         >
           Open API &nbsp;
           <DownloadIcon />

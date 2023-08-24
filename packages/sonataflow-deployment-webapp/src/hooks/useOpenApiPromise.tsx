@@ -15,40 +15,44 @@
  */
 
 import { useCallback } from "react";
-import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { OpenApi } from "openapi-v3";
 import { routes } from "../routes";
+import { useApp } from "../context/AppContext";
 
 async function fetchOpenApi(): Promise<OpenApi> {
-  const response = await fetch(routes.openApi.path({}));
+  const response = await fetch(routes.openApiJson.path({}));
   return (await response.json()) as OpenApi;
 }
 
 export function useOpenApiPromise() {
+  const app = useApp();
   const [openApiPromise, setOpenApiPromise] = usePromiseState<OpenApi>();
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        fetchOpenApi()
-          .then((data) => {
-            if (canceled.get()) {
-              return;
-            }
+        if (app.appDataPromise.status === PromiseStateStatus.RESOLVED) {
+          fetchOpenApi()
+            .then((data) => {
+              if (canceled.get()) {
+                return;
+              }
 
-            if (!data) {
-              setOpenApiPromise({ error: "Cannot fetch data file" });
-              return;
-            }
+              if (!data) {
+                setOpenApiPromise({ error: "Cannot fetch data file" });
+                return;
+              }
 
-            setOpenApiPromise({ data });
-          })
-          .catch((e) => {
-            setOpenApiPromise({ error: e });
-          });
+              setOpenApiPromise({ data });
+            })
+            .catch((e) => {
+              setOpenApiPromise({ error: e });
+            });
+        }
       },
-      [setOpenApiPromise]
+      [setOpenApiPromise, app.appDataPromise.status]
     )
   );
 

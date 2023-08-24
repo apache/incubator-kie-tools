@@ -17,8 +17,8 @@
 import { routes } from "../routes";
 
 export interface AppData {
-  /* TODO: rename in appName */
-  appTitle: string;
+  appName: string;
+  openApiUrl: string;
 }
 
 export async function fetchAppData(): Promise<AppData> {

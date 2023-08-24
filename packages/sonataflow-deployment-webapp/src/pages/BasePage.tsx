@@ -57,7 +57,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
               <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
               <TextContent className="brand-name">
                 <Text component={TextVariants.h1}>
-                  {app.appDataPromise.status === PromiseStateStatus.PENDING ? "" : app.appTitle}
+                  {app.appDataPromise.status === PromiseStateStatus.PENDING ? "" : app.data.appName}
                 </Text>
               </TextContent>
             </MastheadBrand>
@@ -89,7 +89,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadMain>
       </Masthead>
     ),
-    [app.appTitle, history, app.appDataPromise.status]
+    [app.data.appName, history, app.appDataPromise.status]
   );
 
   return (

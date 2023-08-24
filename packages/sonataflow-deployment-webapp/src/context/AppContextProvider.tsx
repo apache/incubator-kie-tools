@@ -15,29 +15,30 @@
  */
 
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { AppData } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
-  const [appTitle, setAppTitle] = useState("Deployment");
+  const [data, setData] = useState<AppData>({ appName: "Deployment", openApiUrl: "" });
 
   useEffect(() => {
     if (!appDataPromise.data) {
       return;
     }
 
-    setAppTitle(appDataPromise.data.appTitle);
+    setData(appDataPromise.data);
 
-    document.title = appDataPromise.data.appTitle;
+    document.title = appDataPromise.data.appName;
   }, [appDataPromise.data]);
 
   const value = useMemo(
     () => ({
       appDataPromise,
-      appTitle,
+      data,
     }),
-    [appTitle, appDataPromise]
+    [data, appDataPromise]
   );
 
   return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;

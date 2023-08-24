@@ -1,3 +1,4 @@
 {
-  "appTitle": "SonataFlow Deployment"
+  "appName": "SonataFlow Deployment",
+  "openApiUrl": "/openapi.json"
 }
