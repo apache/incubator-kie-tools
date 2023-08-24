@@ -5,8 +5,15 @@ import * as InvocationExpression from "./InvocationExpression.stories";
 
 # Invocation Expression
 
-With `MDX` we can include a story for `Checkbox` right in the middle of our
-markdown documentation.
+The syntax for boxed invocation is described in clause 7.2.3. This syntax may be used to invoke any function
+(e.g., business knowledge model, FEEL built-in function, boxed function definition).
+The box labeled 'invoked business knowledge model' can be any boxed expression whose value is a function, as shown in Figure 10-4:
+
+The boxed syntax maps to the textual syntax defined by grammar rules 38, 39, 40, 41. Boxed invocation uses named parameters.
+Positional invocation can be achieved using a boxed expression containing a textual positional invocation.
+
+The boxed syntax requires at least one parameter. A parameterless function must be invoked using the textual syntax,
+e.g., as shown in Figure 10-5.
 
 <Canvas>
   <Story of={InvocationExpression.Base} />

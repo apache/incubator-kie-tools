@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
+import { BoxedExpressionEditorWrapper, dataTypes } from "../boxedExpressionWrapper";
 import { Base as EmptyExpression } from "./EmptyExpression.stories";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../../src/expressions/RelationExpression";
@@ -48,5 +48,95 @@ export const Base: Story = {
       ],
     },
     isResetSupportedOnRootExpression: false,
+  },
+};
+
+export const CustomerProfiles: Story = {
+  render: () => {
+    const dataTypes = Base.args?.dataTypes;
+    dataTypes?.push({ typeRef: "tCustomer", name: "tCustomer", isCustom: true });
+    return BoxedExpressionEditorWrapper({ dataTypes });
+  },
+  args: {
+    ...Base.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Employee Information",
+      dataType: "tCustomer" as DmnBuiltInDataType,
+      logicType: ExpressionDefinitionLogicType.Relation,
+      columns: [
+        {
+          id: generateUuid(),
+          name: "Name",
+          dataType: DmnBuiltInDataType.String,
+          width: 100,
+        },
+        {
+          id: generateUuid(),
+          name: "Age",
+          dataType: DmnBuiltInDataType.Number,
+          width: 100,
+        },
+        {
+          id: generateUuid(),
+          name: "Salary",
+          dataType: DmnBuiltInDataType.Number,
+          width: 100,
+        },
+      ],
+      rows: [
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "John",
+            },
+            {
+              id: generateUuid(),
+              content: "32",
+            },
+            {
+              id: generateUuid(),
+              content: "100000",
+            },
+          ],
+        },
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "Mary",
+            },
+            {
+              id: generateUuid(),
+              content: "42",
+            },
+            {
+              id: generateUuid(),
+              content: "120000",
+            },
+          ],
+        },
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "Joseph",
+            },
+            {
+              id: generateUuid(),
+              content: "30",
+            },
+            {
+              id: generateUuid(),
+              content: "110000",
+            },
+          ],
+        },
+      ],
+    },
   },
 };

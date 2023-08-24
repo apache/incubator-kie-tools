@@ -19,8 +19,6 @@ import {
   DecisionTableExpressionDefinitionHitPolicy,
   DecisionTableExpressionDefinitionBuiltInAggregation,
   ExpressionDefinitionBase,
-  DmnDataType,
-  PmmlParam,
 } from "../src/api";
 import {
   LITERAL_EXPRESSION_MIN_WIDTH,

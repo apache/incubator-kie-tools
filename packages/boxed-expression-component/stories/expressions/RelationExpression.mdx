@@ -5,9 +5,14 @@ import * as RelationExpression from "./RelationExpression.stories";
 
 # Relation Expression
 
-With `MDX` we can include a story for `Checkbox` right in the middle of our
-markdown documentation.
+A Relation Expression is a vertical list of horizontal values (with no result cells) with the variable names appearing just once at the top of the list, like a relational table.
 
 <Canvas>
   <Story of={RelationExpression.Base} />
+</Canvas>
+
+For example, the following Relation Expression provides customers profiles:
+
+<Canvas>
+  <Story of={RelationExpression.CustomerProfiles} />
 </Canvas>
