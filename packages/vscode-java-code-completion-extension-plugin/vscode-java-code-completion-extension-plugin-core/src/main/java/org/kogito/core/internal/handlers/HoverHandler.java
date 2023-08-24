@@ -21,18 +21,19 @@ import org.eclipse.jdt.ls.core.internal.handlers.JDTLanguageServer;
 import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 
-import org.eclipse.lsp4j.Hover;
-import org.eclipse.lsp4j.HoverParams;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.TextDocumentContentChangeEvent;
 import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.TextDocumentIdentifier;
+import org.eclipse.lsp4j.TypeHierarchyItem;
+import org.eclipse.lsp4j.TypeHierarchyPrepareParams;
 import org.eclipse.lsp4j.VersionedTextDocumentIdentifier;
 
 import org.kogito.core.internal.engine.ActivationChecker;
 import org.kogito.core.internal.engine.BuildInformation;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class HoverHandler {
@@ -43,7 +44,7 @@ public class HoverHandler {
         this.activationChecker = activationChecker;
     }
 
-    public Hover handle(String identifier, BuildInformation buildInformation) {
+    public List<TypeHierarchyItem> handle(String identifier, BuildInformation buildInformation) {
 
         JDTLanguageServer languageServer = (JDTLanguageServer) JavaLanguageServerPlugin.getInstance().getProtocol();
 
@@ -67,11 +68,11 @@ public class HoverHandler {
         TextDocumentIdentifier textDocumentIdentifier = new TextDocumentIdentifier();
         textDocumentIdentifier.setUri(uri);
 
-        HoverParams hoverParams = new HoverParams();
-        hoverParams.setTextDocument(textDocumentIdentifier);
-        hoverParams.setPosition(pos);
+        TypeHierarchyPrepareParams typeHierarchyPrepareParams = new TypeHierarchyPrepareParams();
+        typeHierarchyPrepareParams.setTextDocument(textDocumentIdentifier);
+        typeHierarchyPrepareParams.setPosition(pos);
 
-        CompletableFuture<Hover> javaCompletion = languageServer.hover(hoverParams);
+        CompletableFuture<List<TypeHierarchyItem>> javaCompletion = languageServer.prepareTypeHierarchy(typeHierarchyPrepareParams);
         try {
             return javaCompletion.get();
         } catch (Exception e) {

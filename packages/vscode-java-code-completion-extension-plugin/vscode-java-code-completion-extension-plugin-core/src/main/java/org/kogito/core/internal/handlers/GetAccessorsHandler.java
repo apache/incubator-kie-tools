@@ -17,19 +17,12 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.CompletionProposal;
-import org.eclipse.jdt.ls.core.internal.handlers.CompletionResponse;
-import org.eclipse.jdt.ls.core.internal.handlers.CompletionResponses;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
-import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.eclipse.lsp4j.CompletionItem;
-import org.eclipse.lsp4j.Hover;
-import org.eclipse.lsp4j.MarkedString;
-import org.eclipse.lsp4j.MarkupContent;
+import org.eclipse.lsp4j.TypeHierarchyItem;
 import org.kogito.core.internal.api.GetPublicParameters;
 import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
@@ -73,39 +66,18 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
                     JavaLanguageServerPlugin.logInfo(hoverBuildInformation.getText());
 
-                    Hover hoverResult = this.hoverHandler.handle("GetAccessorsHandler", hoverBuildInformation);
-                    if (hoverResult != null && hoverResult.getContents() != null) {
-                        JavaLanguageServerPlugin.logInfo("Hover results content found!");
-
-                        Either<List<Either<String, MarkedString>>, MarkupContent> content = hoverResult.getContents();
-                        JavaLanguageServerPlugin.logInfo("CONTENT " + content);
-
-                        if (content.isRight()) {
-                            JavaLanguageServerPlugin.logInfo("CONTENT RIGHT");
-                            JavaLanguageServerPlugin.logInfo("MarkupContent " + content.getRight().getValue());
-                        } else if (content.isLeft() && content != null) {
-                            List<Either<String, MarkedString>> contentList = content.getLeft();
-                            JavaLanguageServerPlugin.logInfo("CONTENT LEFT");
-                            JavaLanguageServerPlugin.logInfo("CONTENT LEFT " + content.getRight());
-
-                            JavaLanguageServerPlugin.logInfo("Hover result size " + contentList.size());
-
-                            contentList.stream().forEach(item -> {
-
-                                if (item.isLeft() && item != null) {
-                                    JavaLanguageServerPlugin.logInfo("String " + content.getLeft());
-                                } else if (item.isRight() && content.getRight() != null) {
-                                    JavaLanguageServerPlugin.logInfo("MarkedString " + content.getRight().getValue());
-                                } else {
-                                    JavaLanguageServerPlugin.logInfo("Item empty right and left");
-                                }
-                            });
-                        } else {
-                            JavaLanguageServerPlugin.logInfo("Content empty right and left");
+                    List<TypeHierarchyItem> hoverResult = this.hoverHandler.handle("GetAccessorsHandler", hoverBuildInformation);
+                    for (TypeHierarchyItem item : hoverResult) {
+                        if (item.getData() != null) {
+                            JavaLanguageServerPlugin.logInfo("CALL HIERARCHY DATA: " + item.getData());
                         }
-                        //getPublicResult.setType(null);
-                    } else {
-                        JavaLanguageServerPlugin.logInfo("No info Hovering on " + getPublicResult.getAccessor());
+                        JavaLanguageServerPlugin.logInfo("CALL HIERARCHY Name: " + item.getName());
+                        if (item.getDetail() != null) {
+                            JavaLanguageServerPlugin.logInfo("CALL HIERARCHY Detail: " + item.getDetail());
+                        }
+                        if (item.getUri() != null) {
+                            JavaLanguageServerPlugin.logInfo("CALL HIERARCHY Detail: " + item.getUri());
+                        }
                     }
                 });
 
