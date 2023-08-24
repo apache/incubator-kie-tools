@@ -16,7 +16,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import * as os from "os";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
@@ -40,20 +39,17 @@ describe("type safety", () => {
 
       const json = parser.parse();
 
-      const thisPath = path.resolve(__dirname);
-
       const minorVersion = version.split(".")[1];
       const tmpFile = `
-import { SceSim__ScenarioSimulationModelType } from "${thisPath}/../dist/schemas/scesim-1_${minorVersion}/ts-gen/types";
+import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_${minorVersion}/ts-gen/types";
 
 const scesim: SceSim__ScenarioSimulationModelType = ${JSON.stringify(json.ScenarioSimulationModel, undefined, 2)};`;
 
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
 
-      const tsc = child_process.execSync(`tsc --noEmit --strict ${tmpFilePath}`, {
+      const tsc = child_process.execSync(`pnpm tsc --noEmit --strict ${tmpFilePath}`, {
         stdio: "pipe",
-        shell: true as any,
       });
 
       expect(tsc.toString()).toStrictEqual("");

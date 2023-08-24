@@ -39,10 +39,15 @@ export class Input {
   type: string;
 }
 
+export interface WhenThenRule {
+  when: any[];
+  then: any;
+}
+
 export class Logic {
   inputs?: string[];
   expression?: string;
   outputComponents?: string[];
-  rules?: string[][];
+  rules?: WhenThenRule[] | any[][];
   type: string;
 }

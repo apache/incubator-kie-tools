@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import DecisionNavigator from "../framework/editor/dmn/DecisionNavigator";
-import DmnEditor from "../framework/editor/dmn/DmnEditor";
-import DmnSideBar from "../framework/editor/dmn/DmnSideBar";
-import GitHubPrPage from "../framework/github-pr/GitHubPrPage";
-import Tools from "../utils/Tools";
+import DecisionNavigator from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DecisionNavigator";
+import DmnEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnEditor";
+import DmnSideBar from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/dmn/DmnSideBar";
+import GitHubPrPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-pr/GitHubPrPage";
+import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
 
 const TEST_NAME = "DmnPrTest";
 

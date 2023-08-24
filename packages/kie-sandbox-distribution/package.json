@@ -19,12 +19,13 @@
     "docker:create-env-file": "rimraf .env && pnpm build-env --print-env-file:self > .env",
     "docker:down": "docker compose down",
     "docker:start": "docker compose up -d --wait",
+    "docker:start-no-pull": "docker compose up -d --wait --pull=never",
     "docker:stop": "docker compose stop",
     "install": "pnpm docker:create-env-file",
-    "test": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"pnpm docker:start\" \"jest --silent --verbose\" \"pnpm docker:stop\""
+    "test": "run-script-if --bool \"$(build-env containerImages.build)\" --bool \"$(build-env tests.run)\" --ignore-errors \"$(build-env tests.ignoreFailures)\" --then  \"pnpm docker:start-no-pull\" \"jest --silent --verbose\" \"pnpm docker:stop\""
   },
   "dependencies": {
-    "@kie-tools/git-cors-proxy-image": "workspace:*",
+    "@kie-tools/cors-proxy-image": "workspace:*",
     "@kie-tools/kie-sandbox-extended-services-image": "workspace:*",
     "@kie-tools/kie-sandbox-image": "workspace:*"
   },

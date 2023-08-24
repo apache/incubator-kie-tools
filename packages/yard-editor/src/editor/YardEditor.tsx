@@ -32,7 +32,9 @@ import { editor } from "monaco-editor";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { YardUIEditor } from "../uiEditor";
 import { YardFile } from "../types";
+import { Position } from "monaco-editor";
 import "./YardEditor.css";
+import { deserialize, YardModel } from "../model";
 
 interface Props {
   /**
@@ -67,6 +69,7 @@ interface Props {
 
 export type YardEditorRef = {
   setContent(path: string, content: string): Promise<void>;
+  moveCursorToPosition(position: Position): void;
 };
 
 const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | undefined, Props> = (
@@ -74,6 +77,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   forwardedRef
 ) => {
   const [file, setFile] = useState<YardFile | undefined>(undefined);
+  const [yardData, setYardData] = useState<YardModel | undefined>();
   const yardTextEditorRef = useRef<YardTextEditorApi>(null);
 
   useImperativeHandle(
@@ -86,6 +90,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
               content: newContent,
               path: path,
             });
+            setYardData(deserialize(newContent));
             return Promise.resolve();
           } catch (e) {
             console.error(e);
@@ -109,6 +114,9 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
         },
         setTheme: (theme: EditorTheme): Promise<void> => {
           return yardTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+        },
+        moveCursorToPosition: (position: Position) => {
+          yardTextEditorRef.current?.moveCursorToPosition(position);
         },
       };
     },
@@ -160,10 +168,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           props.onStateControlCommandUpdate(StateControlCommand.REDO);
           break;
       }
-      // Necessary because monaco does not have a callback for the undo/redo methods
-      setTimeout(() => {
-        // FUTURE CALL TO UPDATE YARD UI HERE
-      }, 100);
+      setYardData(deserialize(newContent));
     },
     [props, isVscode]
   );
@@ -183,15 +188,19 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
     [file, props.channelType, onContentChanged, setValidationErrors, props.isReadOnly]
   );
 
-  const yardUIContainer = (
-    <I18nDictionariesProvider
-      defaults={yardEditorI18nDefaults}
-      dictionaries={yardEditorDictionaries}
-      initialLocale={navigator.language}
-      ctx={YardEditorI18nContext}
-    >
-      <YardUIEditor file={file} isReadOnly={true} />
-    </I18nDictionariesProvider>
+  const yardUIContainer = useMemo(
+    () =>
+      file && (
+        <I18nDictionariesProvider
+          defaults={yardEditorI18nDefaults}
+          dictionaries={yardEditorDictionaries}
+          initialLocale={navigator.language}
+          ctx={YardEditorI18nContext}
+        >
+          <YardUIEditor yardData={yardData} isReadOnly={props.isReadOnly} />
+        </I18nDictionariesProvider>
+      ),
+    [file, yardData, props.isReadOnly]
   );
 
   return (

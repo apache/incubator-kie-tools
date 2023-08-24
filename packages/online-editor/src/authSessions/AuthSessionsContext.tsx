@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
-import * as React from "react";
-import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
+import {
+  AuthenticatedUserResponse,
+  fetchAuthenticatedBitbucketUser,
+  fetchAuthenticatedGitHubUser,
+} from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
-import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
-import { isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
+import {
+  GitAuthProvider,
+  SupportedGitAuthProviders,
+  isGitAuthProvider,
+  isSupportedGitAuthProviderType,
+} from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
@@ -64,7 +71,6 @@ const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
-  const extendedServices = useExtendedServices();
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
@@ -138,17 +144,25 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
           [...(authSessions?.values() ?? [])].map(async (authSession) => {
             if (authSession.type === "git") {
               const authProvider = authProviders.find(({ id }) => id === authSession.authProviderId);
-              if (isSupportedGitAuthProviderType(authProvider?.type)) {
+              if (isGitAuthProvider(authProvider) && isSupportedGitAuthProviderType(authProvider.type)) {
                 try {
                   const fetchUser = switchExpression(authProvider?.type, {
-                    bitbucket: async () =>
+                    bitbucket: () =>
                       fetchAuthenticatedBitbucketUser(
                         env.KIE_SANDBOX_APP_NAME,
                         authSession.login,
                         authSession.token,
-                        authProvider?.domain
+                        authProvider?.domain,
+                        env.KIE_SANDBOX_CORS_PROXY_URL,
+                        authProvider?.insecurelyDisableTlsCertificateValidation
                       ),
-                    github: async () => fetchAuthenticatedGitHubUser(authSession.token, authProvider?.domain),
+                    github: () =>
+                      fetchAuthenticatedGitHubUser(
+                        authSession.token,
+                        authProvider?.domain,
+                        env.KIE_SANDBOX_CORS_PROXY_URL,
+                        authProvider?.insecurelyDisableTlsCertificateValidation
+                      ),
                   });
                   await fetchUser();
                   return [authSession.id, AuthSessionStatus.VALID];
@@ -163,7 +177,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 if (
                   (await new KieSandboxOpenShiftService({
                     connection: authSession,
-                    proxyUrl: extendedServices.config.url.corsProxy,
+                    proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
                   }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
                 ) {
                   return [authSession.id, AuthSessionStatus.VALID];
@@ -201,7 +215,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       }
       run();
     },
-    [authProviders, authSessions, env.KIE_SANDBOX_APP_NAME, extendedServices.config.url.corsProxy]
+    [authProviders, authSessions, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
   useCancelableEffect(recalculateAuthSessionStatus);
@@ -242,6 +256,7 @@ export function useAuthSession(authSessionId: string | undefined): {
   gitConfig: GitConfig | undefined;
 } {
   const { authSessions } = useAuthSessions();
+
   const authSession = useMemo(() => {
     if (!authSessionId) {
       return undefined;

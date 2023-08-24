@@ -41,12 +41,15 @@ type cfgTestInputRun struct {
 }
 
 var cfgTestInputRun_Success = []cfgTestInputRun{
-	{input: command.RunCmdConfig{PortMapping: "8081"}},
+	{input: command.RunCmdConfig{PortMapping: "8081", OpenDevUI: false}},
 	{input: command.RunCmdConfig{}},
 }
 
 func transformRunCmdCfgToArgs(cfg command.RunCmdConfig) []string {
 	args := []string{"run"}
+	if !cfg.OpenDevUI {
+		args = append(args, "--open-dev-ui=false")
+	}
 	if cfg.PortMapping != "" {
 		args = append(args, "--port", cfg.PortMapping)
 	}
@@ -74,9 +77,6 @@ func TestRunCommand(t *testing.T) {
 
 func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test cfgTestInputRun) string {
 	var err error
-
-	os.Setenv("KN_PLUGIN_WORKFLOW__suppressBrowserWindow", "true")
-	defer os.Setenv("KN_PLUGIN_WORKFLOW__suppressBrowserWindow", "false")
 
 	// Create the project
 	RunCreateTest(t, cfgTestInputPrepareCreate)

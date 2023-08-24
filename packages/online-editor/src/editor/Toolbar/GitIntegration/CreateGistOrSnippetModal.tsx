@@ -34,6 +34,7 @@ import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-i
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { useGitHubClient } from "../../../github/Hooks";
 import {
+  AuthProviderGroup,
   AuthProviderType,
   GistEnabledAuthProviderType,
   isGistEnabledAuthProviderType,
@@ -139,6 +140,9 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       const gistEnabledAuthProvider = authProvider?.type as GistEnabledAuthProviderType;
       setGistOrSnippetLoading(true);
 
+      const insecurelyDisableTlsCertificateValidation =
+        authProvider?.group === AuthProviderGroup.GIT && authProvider.insecurelyDisableTlsCertificateValidation;
+
       const createGistOrSnippetCommand: () => Promise<CreateGistOrSnippetResponse> = switchExpression(
         gistEnabledAuthProvider,
         {
@@ -152,20 +156,26 @@ If you are, it means that creating this Snippet failed and it can safely be dele
         await workspaces.getGitServerRefs({
           url: new URL(gistOrSnippet.cloneUrl).toString(),
           authInfo,
+          insecurelyDisableTlsCertificateValidation,
         })
       )
         .find((serverRef) => serverRef.ref === "HEAD")!
         .target!.replace("refs/heads/", "");
 
-      const initWorkspaceCommand: (args: { workspaceId: string; remoteUrl: URL; branch: string }) => Promise<void> =
-        switchExpression(gistEnabledAuthProvider, {
-          github: workspaces.initGistOnWorkspace,
-          bitbucket: workspaces.initSnippetOnWorkspace,
-        });
+      const initWorkspaceCommand: (args: {
+        workspaceId: string;
+        remoteUrl: URL;
+        branch: string;
+        insecurelyDisableTlsCertificateValidation?: boolean;
+      }) => Promise<void> = switchExpression(gistEnabledAuthProvider, {
+        github: workspaces.initGistOnWorkspace,
+        bitbucket: workspaces.initSnippetOnWorkspace,
+      });
       await initWorkspaceCommand({
         workspaceId: props.workspace.workspaceId,
         remoteUrl: new URL(gistOrSnippet.cloneUrl),
         branch: gistOrSnippetDefaultBranch,
+        insecurelyDisableTlsCertificateValidation,
       });
 
       await workspaces.addRemote({
@@ -192,10 +202,12 @@ If you are, it means that creating this Snippet failed and it can safely be dele
         remoteRef: `refs/heads/${gistOrSnippetDefaultBranch}`,
         force: true,
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
       await workspaces.pull({
         workspaceId: props.workspace.workspaceId,
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
 
       props.onClose();
@@ -212,7 +224,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
     }
   }, [
     authInfo,
-    authProvider?.type,
+    authProvider,
     createGitHubGist,
     createBitbucketSnippet,
     workspaces,

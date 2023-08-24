@@ -43,9 +43,9 @@
     "immer": "^10.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "reactflow": "^11.7.4",
+    "reactflow": "^11.8.3",
     "uuid": "^8.3.2",
-    "zustand": "^4.3.9"
+    "zustand": "^4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

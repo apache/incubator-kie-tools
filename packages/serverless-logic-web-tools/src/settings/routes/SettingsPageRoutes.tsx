@@ -19,7 +19,6 @@ import { Redirect, Switch } from "react-router";
 import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettings } from "../github/GitHubSettings";
-import { ExtendedServicesSettings } from "../extendedServices/ExtendedServicesSettings";
 import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
 import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings";
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
@@ -36,9 +35,6 @@ export function SettingsPageRoutes(props: {} & SettingsPageProps) {
     <Switch>
       <Route path={routes.settings.github.path({})}>
         <GitHubSettings {...settingsPageProps} />
-      </Route>
-      <Route path={routes.settings.extended_services.path({})}>
-        <ExtendedServicesSettings {...settingsPageProps} />
       </Route>
       <Route path={routes.settings.openshift.path({})}>
         <OpenShiftSettings {...settingsPageProps} />

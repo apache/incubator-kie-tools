@@ -29,14 +29,15 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/yard-language-service": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@types/js-yaml": "^4.0.5",
@@ -46,7 +47,10 @@
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^4.0.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-zoom-pan-pinch": "^3.1.0",
+    "reaflow": "5.1.2",
+    "vscode-languageserver-types": "^3.16.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

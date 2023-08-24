@@ -123,6 +123,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       hostInfo: string;
       namespaceInfo: string;
       tokenInfo: string;
+      insecurelyDisableTlsCertificateValidation: string;
+      insecurelyDisableTlsCertificateValidationInfo: string;
       validationError: string;
       connectionError: string;
       missingPermissions: string;
@@ -306,6 +308,8 @@ interface OnlineDictionary extends ReferenceDictionary {
       seeConnectedAccounts: string;
       continue: string;
     };
+    insecurelyDisableTlsCertificateValidation: string;
+    insecurelyDisableTlsCertificateValidationInfo: string;
   };
   commitModal: {
     title: string;

@@ -50,12 +50,6 @@ export default async (env: any, argv: any) => {
     dashbuilderViewerImageName,
     dashbuilderViewerImageTag,
   ] = getDashbuilderViewerImageArgs();
-  const [
-    extendedServices_linuxDownloadUrl,
-    extendedServices_macOsDownloadUrl,
-    extendedServices_windowsDownloadUrl,
-    extendedServices_compatibleVersion,
-  ] = getextendedServicesArgs();
 
   return [
     merge(common(env), {
@@ -68,7 +62,7 @@ export default async (env: any, argv: any) => {
           Buffer: ["buffer", "Buffer"],
         }),
         new EnvironmentPlugin({
-          WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
         }),
         new CopyPlugin({
           patterns: [
@@ -84,6 +78,7 @@ export default async (env: any, argv: any) => {
       ...merge(common(env), {
         entry: {
           index: "./src/index.tsx",
+          "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",
           "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
           "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
           "serverless-workflow-combined-editor-envelope":
@@ -110,11 +105,7 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__baseBuilderImageFullUrl: `${baseBuilderImageRegistry}/${baseBuilderImageAccount}/${baseBuilderImageName}:${baseBuilderImageTag}`,
             WEBPACK_REPLACE__devModeImageFullUrl: `${swfDevModeImageRegistry}/${swfDevModeImageAccount}/${swfDevModeImageName}:${swfDevModeImageTag}`,
             WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
-            WEBPACK_REPLACE__extendedServicesLinuxDownloadUrl: extendedServices_linuxDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
-            WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
-            WEBPACK_REPLACE__gitCorsProxyUrl: buildEnv.serverlessLogicWebTools.gitCorsProxyUrl,
+            WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
             WEBPACK_REPLACE__samplesRepositoryRef: buildEnv.serverlessLogicWebTools.samplesRepositoryRef,
           }),
           new CopyPlugin({
@@ -139,6 +130,7 @@ export default async (env: any, argv: any) => {
                 from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
                 to: "./serverless-workflow-text-editor-envelope.html",
               },
+              { from: "./static/envelope/yard-editor-envelope.html", to: "./yard-editor-envelope.html" },
               { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
               { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
               { from: "./static/favicon.svg", to: "./favicon.svg" },
@@ -305,18 +297,4 @@ function getBuildInfo() {
   const buildInfo = buildEnv.serverlessLogicWebTools.buildInfo;
   console.info(`Serverless Logic Web Tools :: Build info: ${buildInfo}`);
   return buildInfo;
-}
-
-function getextendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.serverlessLogicWebTools.extendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.serverlessLogicWebTools.extendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.serverlessLogicWebTools.extendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.serverlessLogicWebTools.extendedServices.compatibleVersion;
-
-  console.info("Extended Services :: Linux download URL: " + linuxDownloadUrl);
-  console.info("Extended Services :: macOS download URL: " + macOsDownloadUrl);
-  console.info("Extended Services :: Windows download URL: " + windowsDownloadUrl);
-  console.info("Extended Services :: Compatible version: " + compatibleVersion);
-
-  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }

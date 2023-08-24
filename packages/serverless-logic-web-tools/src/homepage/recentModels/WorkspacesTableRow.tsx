@@ -31,6 +31,7 @@ import "../../table/Table.css";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { columnNames, WorkspacesTableRowData } from "./WorkspacesTable";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 export type WorkspacesTableRowProps = {
   rowIndex: TdSelectType["rowIndex"];
@@ -125,7 +126,10 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
           {linkTo ? (
             <>
               {isWsFolder ? <FolderIcon /> : <TaskIcon />}
-              &nbsp;&nbsp;&nbsp;<Link to={linkTo}>{descriptor.name}</Link>
+              &nbsp;&nbsp;&nbsp;
+              <Tooltip content={isWsFolder ? descriptor.name : editableFiles[0].relativePath}>
+                <Link to={linkTo}>{descriptor.name}</Link>
+              </Tooltip>
             </>
           ) : (
             descriptor.name

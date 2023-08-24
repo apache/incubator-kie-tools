@@ -48,12 +48,15 @@ type cfgTestInputQuarkusRun struct {
 }
 
 var cfgTestInputQuarkusRun_Success = []cfgTestInputQuarkusRun{
-	{input: quarkus.RunCmdConfig{PortMapping: "8081"}},
-	{input: quarkus.RunCmdConfig{}},
+	{input: quarkus.RunCmdConfig{PortMapping: "8081", OpenDevUI: false}},
+	{input: quarkus.RunCmdConfig{OpenDevUI: true}},
 }
 
 func transformQuarkusRunCmdCfgToArgs(cfg quarkus.RunCmdConfig) []string {
 	args := []string{"run"}
+	if !cfg.OpenDevUI {
+		args = append(args, "--open-dev-ui=false")
+	}
 	if cfg.PortMapping != "" {
 		args = append(args, "--port", cfg.PortMapping)
 	}
@@ -71,7 +74,6 @@ func getRunQuarkusProjectPort(t *testing.T, config cfgTestInputQuarkusRun) strin
 }
 
 func TestQuarkusRunCommand(t *testing.T) {
-	t.Skip("Skipping test because of `quarkus run` not working properly.")
 	for testIndex, test := range cfgTestInputQuarkusRun_Success {
 		t.Run(fmt.Sprintf("Test quarkus run project success index: %d", testIndex), func(t *testing.T) {
 			defer CleanUpAndChdirTemp(t)

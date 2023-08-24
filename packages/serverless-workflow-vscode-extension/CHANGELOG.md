@@ -1,3 +1,10 @@
+# 0.31.0 (alpha)
+
+- [KOGITO-7733](https://issues.redhat.com/browse/KOGITO-7733) - SWF Editor - Enable & customize toolbox
+- [KOGITO-9397](https://issues.redhat.com/browse/KOGITO-9397) - Remove mermaid viewer for serverless workflow
+- [KOGITO-9583](https://issues.redhat.com/browse/KOGITO-9583) - SWF diagram editor is not opened when opening workflow while another is open
+- [KOGITO-9504](https://issues.redhat.com/browse/KOGITO-9504) - SWF Editor - In edit mode, Empty diagram page is shown if properties are edited
+
 # 0.30.0 (alpha)
 
 - [KOGITO-9100](https://issues.redhat.com/browse/KOGITO-9100) - [SWF Editor] Add AsyncAPI autocomplete support for events array

@@ -114,9 +114,12 @@ export function getParser<T extends object>(args: {
         // xmlns --> URL
         if (k.endsWith(":") || k === "") {
           const instanceNsKey = instanceNs.get(v)?.slice(0, -1);
-          if (!instanceNsKey || !__json[args.root.element][`@_xmlns:${instanceNsKey}`]) {
-            console.warn(`Adding NS mapping to XML: xmlns:${k.slice(0, -1)} --> ${v}`);
-            __json[args.root.element][`@_xmlns:${k.slice(0, -1)}`] = v;
+          const originalXmlnsPropName = instanceNsKey ? `@_xmlns:${instanceNsKey}` : `@_xmlns`;
+          if (!instanceNsKey || !__json[args.root.element][originalXmlnsPropName]) {
+            const nsName = k.slice(0, -1);
+            const newXmlnsPropName = nsName ? `@_xmlns:${nsName}` : `@_xmlns`;
+            console.warn(`Adding NS mapping to XML: ${newXmlnsPropName} --> ${v}`);
+            __json[args.root.element][newXmlnsPropName] = v;
           }
         }
       }

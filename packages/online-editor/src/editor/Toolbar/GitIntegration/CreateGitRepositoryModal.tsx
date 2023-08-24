@@ -36,7 +36,7 @@ import { useBitbucketClient } from "../../../bitbucket/Hooks";
 import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { useGitHubClient } from "../../../github/Hooks";
-import { isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
+import { AuthProviderGroup, isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
@@ -118,9 +118,13 @@ export function CreateGitRepositoryModal(props: {
       throw new Error("Repo creation failed.");
     }
 
-    const cloneUrl = repo.data.clone_url;
+    // The cloneUrl host is replaced with the authProvider domain because when GitHub is being proxied it will return
+    // the original URL (with github.com) instead of the proxy URL.
+    // This won't affect usaged when GitHub is not being proxied.
+    const host = new URL(repo.data.clone_url).host;
+    const cloneUrl = repo.data.clone_url.replace(host, authProvider?.domain ?? host);
     return { cloneUrl, htmlUrl: repo.data.html_url };
-  }, [selectedOrganization, gitHubClient.repos, name, isPrivate]);
+  }, [selectedOrganization, gitHubClient.repos, name, isPrivate, authProvider?.domain]);
 
   const pushEmptyCommitIntoBitbucket = useCallback(async (): Promise<void> => {
     if (selectedOrganization?.kind !== "organization") {
@@ -145,6 +149,9 @@ export function CreateGitRepositoryModal(props: {
       if (!authInfo || !gitConfig || !isSupportedGitAuthProviderType(authProvider?.type)) {
         return;
       }
+
+      const insecurelyDisableTlsCertificateValidation =
+        authProvider?.group === AuthProviderGroup.GIT && authProvider.insecurelyDisableTlsCertificateValidation;
 
       setError(undefined);
       setLoading(true);
@@ -186,12 +193,14 @@ export function CreateGitRepositoryModal(props: {
           bitbucket: true,
         }),
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
 
       await workspaces.initGitOnWorkspace({
         workspaceId: props.workspace.workspaceId,
         remoteUrl: new URL(cloneUrl),
         branch: props.workspace.origin.branch,
+        insecurelyDisableTlsCertificateValidation,
       });
 
       await workspaces.renameWorkspace({
@@ -212,7 +221,7 @@ export function CreateGitRepositoryModal(props: {
   }, [
     authInfo,
     gitConfig,
-    authProvider?.type,
+    authProvider,
     createBitbucketRepository,
     createGitHubRepository,
     pushEmptyCommitIntoBitbucket,

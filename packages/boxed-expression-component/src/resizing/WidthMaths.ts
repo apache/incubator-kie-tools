@@ -108,6 +108,30 @@ export function getExpressionMinWidth(expression?: ExpressionDefinition): number
   }
 }
 
+/**
+ * This function goes recursively through all `expression`'s nested expressions and sums either `entryInfoWidth` or default minimal width, returned by `getExpressionMinWidth`, if it is the last nested expression in the chain.
+ *
+ * This function returns maximal sum found in all `expression`'s nested expressions.
+ */
+export function getExpressionTotalMinWidth(currentWidth: number, expression: ExpressionDefinition): number {
+  if (expression.logicType === ExpressionDefinitionLogicType.Context) {
+    const width = currentWidth + (expression.entryInfoWidth ?? 0);
+    const contextEntriesMaxWidth = expression.contextEntries.reduce((maxWidth, currentExpression) => {
+      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.entryExpression));
+    }, width);
+    const resultWidth = getExpressionTotalMinWidth(width, expression.result);
+    return Math.max(contextEntriesMaxWidth, resultWidth);
+  } else if (expression.logicType === ExpressionDefinitionLogicType.Invocation) {
+    const width = currentWidth + (expression.entryInfoWidth ?? 0);
+    return expression.bindingEntries.reduce((maxWidth, currentExpression) => {
+      return Math.max(maxWidth, getExpressionTotalMinWidth(width, currentExpression.entryExpression));
+    }, width);
+  } else {
+    // it is an expression without entryInfoWidth
+    return currentWidth + getExpressionMinWidth(expression);
+  }
+}
+
 export function getExpressionResizingWidth(
   expression: ExpressionDefinition | undefined,
   resizingWidths: Map<string, ResizingWidth>

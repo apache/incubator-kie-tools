@@ -13,18 +13,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder" xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <ui:with field='res' type='org.uberfire.client.resources.WebAppResource'/>
+  <ui:with field='res' type='org.uberfire.client.resources.WebAppResource' />
 
 
   <g:FlowPanel styleName="{res.CSS.dockExpanded}">
-    <g:FlowPanel ui:field="titlePanel" styleName="{res.CSS.dockExpandedTitlePanel}"/>
+    <g:FlowPanel ui:field="titlePanel" styleName="{res.CSS.dockExpandedTitlePanel}" />
     <g:ScrollPanel styleName="{res.CSS.dockExpandedContentPanel}">
-      <g:FlowPanel ui:field="targetPanel"/>
+      <g:FlowPanel ui:field="targetPanel" />
     </g:ScrollPanel>
   </g:FlowPanel>
 

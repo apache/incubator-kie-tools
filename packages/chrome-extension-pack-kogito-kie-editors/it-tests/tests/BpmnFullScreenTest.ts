@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import BpmnEditor from "../framework/editor/bpmn/BpmnEditor";
-import Explorer from "../framework/editor/Explorer";
-import FullScreenPage from "../framework/fullscreen-editor/FullScreenPage";
-import GitHubEditorPage from "../framework/github-editor/GitHubEditorPage";
-import SideBar from "../framework/editor/SideBar";
-import Tools from "../utils/Tools";
+import BpmnEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/bpmn/BpmnEditor";
+import Explorer from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/Explorer";
+import FullScreenPage from "@kie-tools/chrome-extension-test-helper/dist/framework/fullscreen-editor/FullScreenPage";
+import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import SideBar from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/SideBar";
+import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
 
 const TEST_NAME = "BpmnFullScreenTest";
 

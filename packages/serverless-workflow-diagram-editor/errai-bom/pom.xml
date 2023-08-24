@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -65,7 +68,7 @@
     <gmaven.mojo.version>1.5</gmaven.mojo.version>
     <guice.version>3.0</guice.version>
     <gwt.phonegap.version>3.5.0.1</gwt.phonegap.version>
-    <gwt.version>2.9.0</gwt.version>
+    <gwt.version>2.10.0</gwt.version>
     <javaee.api.version>8.0.1</javaee.api.version>
 
     <!-- ip-bom uses artifact with groupId org.jboss.remoting3 -->
@@ -106,21 +109,35 @@
     <version.org.jboss.shrinkwrap.descriptors>2.0.0</version.org.jboss.shrinkwrap.descriptors>
     <version.org.jboss.shrinkwrap.resolver>2.2.0</version.org.jboss.shrinkwrap.resolver>
 
-    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.3_spec>2.0.1.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.3_spec>
-    <version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec>1.0.1.Final</version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec>
-    <version.org.jboss.spec.javax.el.jboss-el-api_3.0_spec>1.0.12.Final</version.org.jboss.spec.javax.el.jboss-el-api_3.0_spec>
+    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.3_spec
+    >2.0.1.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.3_spec>
+    <version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec
+    >1.0.1.Final</version.org.jboss.spec.javax.ejb.jboss-ejb-api_3.2_spec>
+    <version.org.jboss.spec.javax.el.jboss-el-api_3.0_spec
+    >1.0.12.Final</version.org.jboss.spec.javax.el.jboss-el-api_3.0_spec>
     <version.org.jboss.spec.javax.enterprise.concurrent>1.0.2.Final</version.org.jboss.spec.javax.enterprise.concurrent>
-    <version.org.jboss.spec.javax.interceptor.jboss-interceptors-api_1.2_spec>1.0.1.Final</version.org.jboss.spec.javax.interceptor.jboss-interceptors-api_1.2_spec>
-    <version.org.jboss.spec.javax.jms.jboss-jms-api_2.0_spec>1.0.2.Final</version.org.jboss.spec.javax.jms.jboss-jms-api_2.0_spec>
-    <version.org.jboss.spec.javax.resource.jboss-connector-api_1.7_spec>1.0.1.Final</version.org.jboss.spec.javax.resource.jboss-connector-api_1.7_spec>
-    <version.org.jboss.spec.javax.security.jacc.jboss-jacc-api_1.5_spec>1.0.2.Final</version.org.jboss.spec.javax.security.jacc.jboss-jacc-api_1.5_spec>
-    <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec>1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec>
-    <version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>1.0.3.Final</version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>
-    <version.org.jboss.spec.javax.servlet.jstl.jboss-jstl-api_1.2_spec>1.1.3.Final</version.org.jboss.spec.javax.servlet.jstl.jboss-jstl-api_1.2_spec>
-    <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>1.1.1.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
-    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>1.0.2.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
-    <version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec>1.0.0.Final</version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec>
-    <version.org.jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec>1.0.1.Final</version.org.jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec>
+    <version.org.jboss.spec.javax.interceptor.jboss-interceptors-api_1.2_spec
+    >1.0.1.Final</version.org.jboss.spec.javax.interceptor.jboss-interceptors-api_1.2_spec>
+    <version.org.jboss.spec.javax.jms.jboss-jms-api_2.0_spec
+    >1.0.2.Final</version.org.jboss.spec.javax.jms.jboss-jms-api_2.0_spec>
+    <version.org.jboss.spec.javax.resource.jboss-connector-api_1.7_spec
+    >1.0.1.Final</version.org.jboss.spec.javax.resource.jboss-connector-api_1.7_spec>
+    <version.org.jboss.spec.javax.security.jacc.jboss-jacc-api_1.5_spec
+    >1.0.2.Final</version.org.jboss.spec.javax.security.jacc.jboss-jacc-api_1.5_spec>
+    <version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec
+    >1.0.2.Final</version.org.jboss.spec.javax.servlet.jboss-servlet-api_3.1_spec>
+    <version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec
+    >1.0.3.Final</version.org.jboss.spec.javax.servlet.jsp.jboss-jsp-api_2.3_spec>
+    <version.org.jboss.spec.javax.servlet.jstl.jboss-jstl-api_1.2_spec
+    >1.1.3.Final</version.org.jboss.spec.javax.servlet.jstl.jboss-jstl-api_1.2_spec>
+    <version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec
+    >1.1.1.Final</version.org.jboss.spec.javax.transaction.jboss-transaction-api_1.2_spec>
+    <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec
+    >1.0.2.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
+    <version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec
+    >1.0.0.Final</version.org.jboss.spec.javax.xml.ws.jboss-jaxws-api_2.3_spec>
+    <version.org.jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec
+    >1.0.1.Final</version.org.jboss.spec.javax.xml.bind.jboss-jaxb-api_2.3_spec>
     <version.org.jboss.spec.javax.xml.bind>2.0.0.Final</version.org.jboss.spec.javax.xml.bind>
     <version.org.jboss.websocket.spec>2.0.0.Final</version.org.jboss.websocket.spec>
     <version.org.jboss.weld.weld>3.1.5.SP1</version.org.jboss.weld.weld>
@@ -130,11 +147,8 @@
     <version.org.mvel>2.4.8.Final</version.org.mvel>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.org.powermock>2.0.7</version.org.powermock>
-    <version.org.quartz-scheduler>2.3.2 </version.org.quartz-scheduler>
+    <version.org.quartz-scheduler>2.3.2</version.org.quartz-scheduler>
     <version.org.slf4j>1.7.26</version.org.slf4j>
-    <version.org.wildfly>19.1.0.Final</version.org.wildfly>
-    <version.org.wildfly.arquillian>2.2.0.Final</version.org.wildfly.arquillian>
-    <version.org.wildfly.core>18.1.1.Final</version.org.wildfly.core>
     <version.xml-apis>1.4.01</version.xml-apis>
   </properties>
 
@@ -411,11 +425,6 @@
         <version>${javaee.api.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-cli</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
         <version>${version.org.jboss.logging.jboss-logging}</version>
@@ -509,17 +518,12 @@
         <version>${version.org.jboss.spec.javax.xml.bind}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.gwt</groupId>
+        <groupId>org.gwtproject</groupId>
         <artifactId>gwt-user</artifactId>
         <version>${gwt.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-elemental</artifactId>
-        <version>${gwt.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.gwt</groupId>
+        <groupId>org.gwtproject</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${gwt.version}</version>
       </dependency>
@@ -693,23 +697,6 @@
         <groupId>org.jboss.spec.javax.websocket</groupId>
         <artifactId>jboss-websocket-api_1.1_spec</artifactId>
         <version>${version.org.jboss.websocket.spec}</version>
-      </dependency>
-      <!-- This artifact is not managed in the ip-bom -->
-      <dependency>
-        <groupId>org.wildfly.arquillian</groupId>
-        <artifactId>wildfly-arquillian-container-embedded</artifactId>
-        <version>${version.org.wildfly.arquillian}</version>
-      </dependency>
-      <!-- Transitively inherited in errai-bus-jsr356-websocket-weld tests-->
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-embedded</artifactId>
-        <version>${version.org.wildfly.core}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.wildfly.core</groupId>
-        <artifactId>wildfly-protocol</artifactId>
-        <version>${version.org.wildfly.core}</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>

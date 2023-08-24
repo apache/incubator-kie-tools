@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,7 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <configuration>
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
@@ -25,10 +24,10 @@
     </encoder>
   </appender>
 
-  <logger name="org.drools" level="info"/>
+  <logger name="org.drools" level="info" />
 
   <root level="warn">
-    <appender-ref ref="consoleAppender"/>
+    <appender-ref ref="consoleAppender" />
   </root>
 
 </configuration>

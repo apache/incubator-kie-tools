@@ -16,7 +16,6 @@
 
 import * as fs from "fs";
 import * as path from "path";
-import * as os from "os";
 import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 
@@ -48,26 +47,21 @@ describe("type safety", () => {
     test(path.basename(file), () => {
       const xml = fs.readFileSync(path.join(__dirname, file), "utf-8");
 
-      const { parser, version, builder } = getMarshaller(xml);
+      const { parser, version } = getMarshaller(xml);
       const json = parser.parse();
-
-      const thisPath = path.resolve(__dirname);
 
       const minorVersion = version.split(".")[1];
       const tmpFile = `
-import { DMN1${minorVersion}__tDefinitions } from "${thisPath}/../dist/schemas/dmn-1_${minorVersion}/ts-gen/types";
-import "${thisPath}/../dist/kie-extensions";
+import { DMN1${minorVersion}__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_${minorVersion}/ts-gen/types";
+import "@kie-tools/dmn-marshaller/dist/kie-extensions";
 
 const dmn: DMN1${minorVersion}__tDefinitions = ${JSON.stringify(json.definitions, undefined, 2)};`;
 
       const tmpFilePath = path.join(tmpDir, `${path.basename(file)}.ts`);
       fs.writeFileSync(tmpFilePath, tmpFile);
-      // fs.writeFileSync(path.join(tmpDir, `${path.basename(file)}.xml`), builder.build(json));
-      // fs.writeFileSync(path.join(tmpDir, `${path.basename(file)}.original.xml`), xml);
 
-      const tsc = child_process.execSync(`tsc --noEmit --strict ${tmpFilePath}`, {
+      const tsc = child_process.execSync(`pnpm tsc --noEmit --strict ${tmpFilePath}`, {
         stdio: "pipe",
-        shell: true as any,
       });
 
       expect(tsc.toString()).toStrictEqual("");

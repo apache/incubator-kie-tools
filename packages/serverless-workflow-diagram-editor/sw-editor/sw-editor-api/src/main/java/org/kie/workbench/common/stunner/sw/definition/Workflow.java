@@ -24,20 +24,20 @@ import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YAMLMa
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
 import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.ErrorJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.EventJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.StartDefinitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.StateJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.ValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowFunctionsJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.json.WorkflowTimeoutsJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ErrorYamlSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.EventYamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StartDefinitionYamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.StateYamlSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.ValueHolderYamlTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowFunctionsYamlSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.yaml.WorkflowTimeoutsYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.ErrorJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.EventJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StartDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StateJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.ValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowFunctionsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowTimeoutsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.ErrorYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.EventYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StartDefinitionYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StateYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.ValueHolderYamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowFunctionsYamlSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowTimeoutsYamlSerializer;
 
 @JSONMapper
 @YAMLMapper

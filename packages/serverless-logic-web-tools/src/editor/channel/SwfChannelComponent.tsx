@@ -35,7 +35,7 @@ import { SwfLanguageServiceChannelApiImpl } from "../api/SwfLanguageServiceChann
 import { SwfServiceCatalogChannelApiImpl } from "../api/SwfServiceCatalogChannelApiImpl";
 import { WebToolsSwfLanguageService } from "../api/WebToolsSwfLanguageService";
 import { EditorChannelComponentProps, EditorChannelComponentRef } from "../WebToolsEmbeddedEditor";
-import { SwfCombinedEditorChannelApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+import { SwfCombinedEditorChannelApiImpl } from "@kie-tools/serverless-workflow-combined-editor/dist/channel";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
@@ -91,7 +91,11 @@ const RefForwardingSwfChannelComponent: ForwardRefRenderFunction<
   const apiImpl = useMemo(() => {
     const lsChannelApiImpl = new SwfLanguageServiceChannelApiImpl(languageService);
     const serviceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(catalogStore);
-    return new SwfCombinedEditorChannelApiImpl(channelApiImpl, serviceCatalogChannelApiImpl, lsChannelApiImpl);
+    return new SwfCombinedEditorChannelApiImpl({
+      defaultApiImpl: channelApiImpl,
+      swfServiceCatalogApiImpl: serviceCatalogChannelApiImpl,
+      swfLanguageServiceChannelApiImpl: lsChannelApiImpl,
+    });
   }, [languageService, catalogStore, channelApiImpl]);
 
   const onNotificationClick = useCallback(

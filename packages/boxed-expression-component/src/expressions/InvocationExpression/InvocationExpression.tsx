@@ -46,6 +46,7 @@ import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
 import "./InvocationExpression.css";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
+import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 
 type ROWTYPE = ContextExpressionDefinitionEntry;
 
@@ -81,12 +82,18 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const entriesWidths = invocationExpression.bindingEntries.map((e) =>
+          getExpressionTotalMinWidth(0, e.entryExpression)
+        );
+
+        const maxNestedExpressionWidth = Math.max(...entriesWidths, INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH);
+
         return {
           nestedExpressions: invocationExpression.bindingEntries?.map((e) => e.entryExpression) ?? [],
           fixedColumnActualWidth: parametersWidth,
           fixedColumnResizingWidth: parametersResizingWidth,
           fixedColumnMinWidth: INVOCATION_PARAMETER_MIN_WIDTH,
-          nestedExpressionMinWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
+          nestedExpressionMinWidth: maxNestedExpressionWidth,
           extraWidth: INVOCATION_EXTRA_WIDTH,
           expression: invocationExpression,
           flexibleColumnIndex: 2,

@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-	bean-discovery-mode="all">
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
 	<scan>
     <!-- These exclusions were added by Errai to avoid deploying client-side classes to the server -->
     <!-- End of Errai exclusions -->
@@ -44,9 +43,7 @@
 		<exclude name="org.uberfire.ext.wires.core.api.**" />
 		<exclude name="org.uberfire.ext.wires.core.client.**" />
 		<exclude name="org.uberfire.ext.wires.core.trees.client.**" />
-		<exclude
-			name="org.uberfire.ext.wires.core.scratchpad.client.**" />
-		<exclude
-			name="org.uberfire.ext.wires.bayesian.network.client.**" />
+		<exclude name="org.uberfire.ext.wires.core.scratchpad.client.**" />
+		<exclude name="org.uberfire.ext.wires.bayesian.network.client.**" />
 	</scan>
 </beans>

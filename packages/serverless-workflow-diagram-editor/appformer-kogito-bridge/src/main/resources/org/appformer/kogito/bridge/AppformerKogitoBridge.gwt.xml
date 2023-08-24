@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2020 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,13 +14,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name="org.appformer.AppformerClientAPI"/>
-  <inherits name="org.uberfire.UberfireAPI"/>
-  <source path='client'/>
+  <inherits name="org.appformer.AppformerClientAPI" />
+  <inherits name="org.uberfire.UberfireAPI" />
+  <source path='client' />
 
 </module>

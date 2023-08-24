@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2015 Red Hat, Inc. and/or its affiliates.
   ~
@@ -14,49 +14,48 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
-    "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
+  "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
   <!-- Inherit the core Web Toolkit stuff. -->
 
-  <inherits name="com.google.gwt.i18n.I18N"/>
-  <inherits name="com.google.gwt.http.HTTP"/>
-  <inherits name="com.google.gwt.user.User"/>
-  <inherits name="com.google.gwt.resources.Resources"/>
-  <inherits name="com.google.gwt.activity.Activity"/>
+  <inherits name="com.google.gwt.i18n.I18N" />
+  <inherits name="com.google.gwt.http.HTTP" />
+  <inherits name="com.google.gwt.user.User" />
+  <inherits name="com.google.gwt.resources.Resources" />
+  <inherits name="com.google.gwt.activity.Activity" />
 
   <!-- Errai modules -->
-  <inherits name="org.jboss.errai.enterprise.CDI"/>
+  <inherits name="org.jboss.errai.enterprise.CDI" />
 
-  <inherits name="org.uberfire.commons.UberfireCommons"/>
+  <inherits name="org.uberfire.commons.UberfireCommons" />
 
   <!-- Prevent compilation warning -->
-  <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
+  <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true" />
 
   <!-- GWT-DnD module inherits -->
-  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 
   <!-- GuvnorNG API common interfaces -->
-  <inherits name="org.uberfire.UberfireClientAPI"/>
+  <inherits name="org.uberfire.UberfireClientAPI" />
 
   <!-- Google Guava -->
-  <inherits name="com.google.common.collect.Collect"/>
+  <inherits name="com.google.common.collect.Collect" />
 
   <!-- Specify the paths for translatable code -->
-  <source path='client'/>
-  <source path='shared'/>
+  <source path='client' />
+  <source path='shared' />
 
   <replace-with class="org.uberfire.client.workbench.WorkbenchCloseHandlerImpl">
-    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
+    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler" />
   </replace-with>
   <replace-with class="org.uberfire.client.workbench.WorkbenchCloseHandlerImplFallback">
-    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
-    <when-property-is name="user.agent" value="ie9"/>
+    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler" />
+    <when-property-is name="user.agent" value="ie9" />
   </replace-with>
   <replace-with class="org.uberfire.client.workbench.WorkbenchCloseHandlerImplFallback">
-    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler"/>
-    <when-property-is name="user.agent" value="gecko1_8"/>
+    <when-type-is class="org.uberfire.client.workbench.WorkbenchCloseHandler" />
+    <when-property-is name="user.agent" value="gecko1_8" />
   </replace-with>
 
 </module>

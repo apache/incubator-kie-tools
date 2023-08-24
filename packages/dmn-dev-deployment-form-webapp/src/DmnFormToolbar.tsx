@@ -55,16 +55,16 @@ export function DmnFormToolbar(props: Props) {
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
 
   const onOpenSwaggerUI = useCallback(() => {
-    window.open(routes.swaggerUi.path({}), "_blank");
-  }, []);
+    window.open(routes.swaggerUi.path({}, app?.data?.baseUrl), "_blank");
+  }, [app?.data?.baseUrl]);
 
   const openForm = useCallback(
     (uri: string) => {
       history.push({
-        pathname: routes.form.path({ filePath: uri.slice(1) }),
+        pathname: routes.form.path({ filePath: uri.slice(1) }, app?.data?.baseUrl),
       });
     },
-    [history]
+    [history, app?.data?.baseUrl]
   );
 
   const filename = useMemo(() => {
@@ -145,8 +145,12 @@ export function DmnFormToolbar(props: Props) {
       logo={
         <Flex alignItems={{ default: "alignItemsCenter" }}>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
-            <Brand src={routes.static.images.appLogoReverse.path({})} alt={"Logo"} heights={{ default: "38px" }}>
-              <source srcSet={routes.static.images.appLogoReverse.path({})} />
+            <Brand
+              src={routes.static.images.appLogoReverse.path({}, app?.data?.baseUrl)}
+              alt={"Logo"}
+              heights={{ default: "38px" }}
+            >
+              <source srcSet={routes.static.images.appLogoReverse.path({}, app?.data?.baseUrl)} />
             </Brand>
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>

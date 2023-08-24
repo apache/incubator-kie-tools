@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
@@ -23,36 +23,152 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useBoxedExpressionEditorI18n } from "../i18n";
-import { YardFile } from "../types";
-import { deserialize } from "../model/YardSerializer";
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions/BoxedExpressionEditor";
-import { ExpressionDefinition } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinition";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api/DmnBuiltInDataType";
-import { ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api/ExpressionDefinitionLogicType";
 import "./YardUIEditor.css";
-import { generateDecisionTypes, dataTypes, generateDecisionExpressionDefinition } from "../decision";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api/Bee";
+import {
+  Arrow,
+  Canvas,
+  createEdgeFromNodes,
+  detectCircular,
+  Edge,
+  EdgeData,
+  hasLink,
+  Label,
+  Node,
+  NodeData,
+  NodeProps,
+  Port,
+  Remove,
+} from "reaflow";
+import { YardModel } from "../model";
+import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 interface Props {
-  file: YardFile | undefined;
+  yardData: YardModel | undefined;
   isReadOnly: boolean;
 }
 
-const INITIAL_EXPRESSION: ExpressionDefinition = {
-  id: generateUuid(),
-  name: "Expression Name",
-  logicType: ExpressionDefinitionLogicType.Undefined,
-  dataType: DmnBuiltInDataType.Undefined,
-};
+const NODE_FONT_WIDTH: number = 9;
+const NODE_FONT_HEIGHT: number = 24;
+const NODE_MIN_WIDTH: number = 60;
+const NODE_MIN_HEIGHT: number = 44;
+const NODE_VERTICAL_SPACING: number = 20;
 
-export const YardUIEditor = ({ file, isReadOnly }: Props) => {
-  const decisionDevElementRef = React.useRef(null);
-  const [expression, setExpression] = useState<ExpressionDefinition>(INITIAL_EXPRESSION);
-  const { i18n } = useBoxedExpressionEditorI18n();
+export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
+  const [nodes, setNodes] = useState<NodeData[]>([]);
+  const [edges, setEdges] = useState<EdgeData[]>([]);
+  const [diagramHeight, setDiagramHeight] = useState<number>(0);
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+
+  const transformComponentRef = useRef<ReactZoomPanPinchRef | null>(null);
+
+  const { i18n } = useBoxedExpressionEditorI18n();
+
   const handleTabClick = useCallback((_event, tabIndex) => setActiveTabIndex(tabIndex), []);
-  const yardData = file?.content ? deserialize(file.content) : undefined;
-  const types = yardData?.inputs ? generateDecisionTypes(yardData?.inputs) : dataTypes;
+
+  const createNode = useCallback((id: number, text: string) => {
+    let textLines = text.split("\n");
+    textLines = textLines.length > 1 ? textLines.slice(0, -1) : textLines;
+    const textLength = textLines.reduce((largest: string, current: string) => {
+      if (current.length > largest.length) {
+        return current;
+      }
+      return largest;
+    }, "").length;
+
+    return {
+      id: id.toString(),
+      data: {
+        text: text,
+      },
+      width: NODE_MIN_WIDTH + NODE_FONT_WIDTH * textLength,
+      height: NODE_MIN_HEIGHT + NODE_FONT_HEIGHT * (textLines.length - 1),
+    };
+  }, []);
+
+  const createEdge = useCallback((fromId: number, toId: number) => {
+    return {
+      id: fromId.toString() + "-" + toId.toString(),
+      from: fromId.toString(),
+      to: toId.toString(),
+    };
+  }, []);
+
+  const setupDiagram = useCallback(() => {
+    try {
+      let nodesData: NodeData[] = [];
+      let edgesData: EdgeData[] = [];
+      let nodeId: number = 0;
+      let height: number = 0;
+
+      if (yardData?.elements) {
+        yardData.elements.map((element) => {
+          if (!element.logic?.type || !element.name) {
+            nodesData = [];
+            edgesData = [];
+            return;
+          }
+
+          const elementNodeId = ++nodeId;
+          nodesData.push(createNode(elementNodeId, element.name));
+
+          if (element.logic.type === "LiteralExpression") {
+            const expressionNode = createNode(++nodeId, element.logic.expression ?? "");
+            nodesData.push(expressionNode);
+            edgesData.push(createEdge(elementNodeId, nodeId));
+            height += NODE_VERTICAL_SPACING + expressionNode.height;
+          } else if (element.logic.type === "DecisionTable") {
+            element.logic.rules?.map((rule) => {
+              let inputText = "";
+              let outputText = "";
+              let ruleIndex = 0;
+
+              element.logic.inputs?.map((input) => {
+                if (!Array.isArray(rule)) {
+                  inputText += input + ": " + (rule?.when ? rule.when[ruleIndex++] : "") + "\n";
+                } else {
+                  inputText += input + ": " + rule[ruleIndex++] + "\n";
+                }
+              });
+
+              const inputsNode = createNode(++nodeId, inputText);
+              nodesData.push(inputsNode);
+              edgesData.push(createEdge(elementNodeId, nodeId));
+
+              if (element.logic.outputComponents) {
+                if (!Array.isArray(rule)) {
+                  outputText += element.logic.outputComponents[0] + ": " + (rule?.then ?? "") + "\n";
+                } else {
+                  element.logic.outputComponents.map((output) => {
+                    outputText += output + ": " + rule[ruleIndex++] + "\n";
+                  });
+                }
+              } else {
+                if (!Array.isArray(rule)) {
+                  outputText += (rule?.then ?? "") + "\n";
+                } else {
+                  while (ruleIndex < rule.length) {
+                    outputText += rule[ruleIndex++] + "\n";
+                  }
+                }
+              }
+
+              const outputsNode = createNode(++nodeId, outputText);
+              nodesData.push(outputsNode);
+              edgesData.push(createEdge(nodeId - 1, nodeId));
+
+              height += NODE_VERTICAL_SPACING + Math.max(inputsNode.height, outputsNode.height);
+            });
+          }
+        });
+
+        setNodes(nodesData);
+        setEdges(edgesData);
+        setDiagramHeight(height);
+      }
+    } catch (e) {
+      console.debug("Error during building diagram phase of yard model" + e.toString());
+    }
+  }, [yardData, setNodes, setEdges]);
 
   const EmptyStep = ({
     emptyStateBodyText,
@@ -71,6 +187,71 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
       </EmptyState>
     );
   };
+
+  useEffect(() => {
+    setupDiagram();
+  }, [yardData, setupDiagram]);
+
+  useEffect(() => {
+    if (activeTabIndex === 2) {
+      transformComponentRef.current?.centerView();
+    }
+  }, [activeTabIndex]);
+
+  const diagram = useMemo(
+    () => (
+      <Canvas
+        maxWidth={Math.max(4000, diagramHeight / 5)}
+        maxHeight={diagramHeight + 2000}
+        fit={true}
+        direction={"RIGHT"}
+        nodes={nodes}
+        edges={edges}
+        arrow={<Arrow />}
+        node={(node: NodeProps) => (
+          <Node
+            {...node}
+            dragType="node"
+            remove={<Remove />}
+            port={<Port />}
+            label={<Label />}
+            style={{ fill: "white" }}
+          >
+            {(event) => (
+              <foreignObject height={event.height} width={event.width} x={0} y={0} key={new Date().getTime()}>
+                <div
+                  style={{
+                    padding: 10,
+                    textAlign: "center",
+                  }}
+                >
+                  <label style={{ whiteSpace: "pre" }}>{event.node.data.text}</label>
+                </div>
+              </foreignObject>
+            )}
+          </Node>
+        )}
+        edge={<Edge />}
+        onNodeLink={(_event, from, to) => {
+          const newEdges = edges.filter((e) => e.to !== from.id);
+          setEdges([...newEdges, createEdgeFromNodes(to, from)]);
+        }}
+        onNodeLinkCheck={(_event, from: NodeData, to: NodeData) => {
+          if (from.id === to.id) {
+            return false;
+          }
+          if (hasLink(edges, to, from)) {
+            return false;
+          }
+          if (detectCircular(nodes, edges, to, from)) {
+            return false;
+          }
+          return true;
+        }}
+      />
+    ),
+    [nodes, edges]
+  );
 
   return (
     <div className={"yard-ui-editor"}>
@@ -126,7 +307,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
                     <TextInput
                       id={"expression-lang-text-input"}
                       isReadOnly={isReadOnly}
-                      value={input.name ? input.name : ""}
+                      value={input?.name ? input.name : ""}
                     ></TextInput>
                     <div className={"separator"}></div>
                     <Title headingLevel="h6" size={TitleSizes.md}>
@@ -135,7 +316,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
                     <TextInput
                       id={"expression-lang-text-input"}
                       isReadOnly={isReadOnly}
-                      value={input.type ? input.type : ""}
+                      value={input?.type ? input.type : ""}
                     ></TextInput>
                     <Divider />
                   </div>
@@ -150,23 +331,11 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
           </div>
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
-          <div className={"decision-element-body"} ref={decisionDevElementRef}>
-            {yardData?.elements && yardData?.elements.length > 0 ? (
-              yardData.elements.map((element, index) => {
-                return (
-                  <div className={"boxed-expression"} key={index}>
-                    <BoxedExpressionEditor
-                      decisionNodeId="_00000000-0000-0000-0000-000000000000"
-                      expressionDefinition={generateDecisionExpressionDefinition(element)}
-                      dataTypes={types}
-                      isResetSupportedOnRootExpression={false}
-                      setExpressionDefinition={setExpression}
-                      scrollableParentRef={decisionDevElementRef}
-                    />
-                    <Divider />
-                  </div>
-                );
-              })
+          <div className={"decision-element-body"} style={{ maxWidth: "100%", maxHeight: "100%" }}>
+            {yardData?.elements && yardData?.elements.length > 0 && nodes.length > 0 ? (
+              <TransformWrapper centerOnInit={true} initialScale={0.7} minScale={0.3} ref={transformComponentRef}>
+                <TransformComponent>{diagram}</TransformComponent>
+              </TransformWrapper>
             ) : (
               <EmptyStep
                 emptyStateTitleText={i18n.decisionElementsTab.emptyStateTitle}

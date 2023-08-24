@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,6 @@
   -->
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee" bean-discovery-mode="all">
   <scan>
-    <exclude name="org.kie.workbench.common.dmn.showcase.client.**"/>
+    <exclude name="org.kie.workbench.common.dmn.showcase.client.**" />
   </scan>
 </beans>

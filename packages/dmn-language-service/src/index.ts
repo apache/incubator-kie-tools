@@ -43,7 +43,7 @@ export class DmnLanguageService {
 
   constructor(
     private readonly args: {
-      getDmnImportedModel: (importedModelRelativePath: string) => Promise<DmnLanguageServiceImportedModel>;
+      getDmnImportedModel: (importedModelRelativePath: string) => Promise<DmnLanguageServiceImportedModel | undefined>;
     }
   ) {}
 

@@ -177,6 +177,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
 
   const handleViewRoCheckboxChange = useCallback((checked: boolean) => {
     setIsViewRoFilesChecked(checked);
+    setPage(1);
   }, []);
 
   const filterFiles = useCallback(

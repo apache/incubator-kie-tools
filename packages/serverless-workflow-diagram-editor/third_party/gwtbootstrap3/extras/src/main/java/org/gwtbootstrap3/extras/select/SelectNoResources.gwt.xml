@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
   #%L
   GwtBootstrap3
@@ -18,9 +18,8 @@
   limitations under the License.
   #L%
   -->
-
 <module rename-to='select'>
-    <inherits name="org.gwtbootstrap3.GwtBootstrap3Base"/>
+    <inherits name="org.gwtbootstrap3.GwtBootstrap3Base" />
 
-    <source path='client'/>
+    <source path='client' />
 </module>
