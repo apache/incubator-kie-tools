@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/dmn-dev-deployment-sample",
+  "name": "@kie-tools/dev-deployment-base-image",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -29,7 +29,7 @@
     "image:build-args": "echo \"--build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/\"",
     "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
     "image:podman:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) -e podman",
-    "image:tag-info": "echo -r \"$(pnpm build-env dmnDevDeploymentSampleImage.registry)\" -a \"$(pnpm build-env dmnDevDeploymentSampleImage.account)\" -n \"$(pnpm build-env dmnDevDeploymentSampleImage.name)\" -t \"$(pnpm build-env dmnDevDeploymentSampleImage.tags)\"",
+    "image:tag-info": "echo -r \"$(pnpm build-env devDeploymentBaseImage.registry)\" -a \"$(pnpm build-env devDeploymentBaseImage.account)\" -n \"$(pnpm build-env devDeploymentBaseImage.name)\" -t \"$(pnpm build-env devDeploymentBaseImage.tags)\"",
     "install": "cd quarkus-app && node install.js",
     "install:mvnw": "run-script-os",
     "install:mvnw:darwin:linux": "cd quarkus-app && mvn wrapper:wrapper",

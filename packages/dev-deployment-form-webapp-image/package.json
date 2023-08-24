@@ -1,0 +1,42 @@
+{
+  "private": true,
+  "name": "@kie-tools/dev-deployment-form-webapp-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "scripts": {
+    "build:dev": "pnpm build:prod",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
+    "copy-assets": "cp -R ../dev-deployment-form-webapp/dist dist-dev",
+    "create-test-image:build-only": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1)",
+    "create-test-image:kind": "kie-tools--image-builder kind $(pnpm image:tag-info | tail -1) --kind-cluster-name kie-sandbox-dev-cluster",
+    "create-test-image:minikube": "kie-tools--image-builder minikube $(pnpm image:tag-info | tail -1)",
+    "create-test-image:openshift": "kie-tools--image-builder openshift $(pnpm image:tag-info | tail -1)",
+    "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1)",
+    "image:podman:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) -e podman",
+    "image:tag-info": "echo -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\"",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
+  "dependencies": {
+    "@kie-tools/dev-deployment-form-webapp": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools/image-builder": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
+  }
+}
