@@ -17,5 +17,11 @@
  * under the License.
  */
 
+import { AppData } from "./data";
+
 export const SONATAFLOW_DEPLOYMENT_DOCUMENTATION_URL = "https://sonataflow.org/serverlessworkflow/latest/index.html";
 export const KUBESTAMRTS_URL = "https://start.kubesmarts.org";
+
+export const DEFAULT_APPDATA_VALUES: AppData = {
+  appName: "Deployment",
+};
