@@ -21,11 +21,7 @@ const IS_HASH_ROUTER = true;
 
 export enum QueryParams {}
 
-export enum PathParams {
-  EXTENSION = "extension",
-  FILE_PATH = "filePath",
-  MODEL_NAME = "modelName",
-}
+export enum PathParams {}
 
 export class Route<
   T extends {
