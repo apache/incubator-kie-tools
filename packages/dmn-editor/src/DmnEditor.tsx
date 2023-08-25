@@ -2,7 +2,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useRef } from "react";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
@@ -47,7 +47,14 @@ export const DmnEditorInternal = ({
   onModelChange,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
-  const { propertiesPanel, boxedExpression, dmn, navigation, dispatch, diagram } = useDmnEditorStore();
+  const {
+    propertiesPanel,
+    boxedExpressionEditor: boxedExpression,
+    dmn,
+    navigation,
+    dispatch,
+    diagram,
+  } = useDmnEditorStore();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   // Allow imperativelly controlling the Editor.
@@ -116,9 +123,9 @@ export const DmnEditorInternal = ({
               <DrawerContent panelContent={<PropertiesPanel />}>
                 <DrawerContentBody>
                   <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                    <DmnVersionLabel version={"1.4"} />
-                    {!boxedExpression.drgElement && <Diagram container={diagramContainerRef} />}
-                    {boxedExpression.drgElement && <BoxedExpression container={diagramContainerRef} />}
+                    <DmnVersionLabel version={"1.4"} /> {/** FiXME: Tiago --> This version is wrong. */}
+                    {!boxedExpression.id && <Diagram container={diagramContainerRef} />}
+                    {boxedExpression.id && <BoxedExpression container={diagramContainerRef} />}
                   </div>
                 </DrawerContentBody>
               </DrawerContent>

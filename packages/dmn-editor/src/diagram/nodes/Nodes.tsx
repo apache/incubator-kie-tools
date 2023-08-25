@@ -9,10 +9,10 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
-import { SnapGrid, TypeOfDrgElementWithExpression, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
 import { outgoing } from "../connections/graphStructure";
@@ -151,13 +151,7 @@ export const DecisionNode = React.memo(
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decision.variable} shape={shape} />
-          <EditExpressionNodePanel
-            isVisible={!isTargeted && isHovered}
-            drgElementWithExpression={useMemo(
-              () => ({ type: TypeOfDrgElementWithExpression.DECISION, content: decision, index }),
-              [decision, index]
-            )}
-          />
+          <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
             nodes={outgoing.decision.nodes}
@@ -222,13 +216,7 @@ export const BkmNode = React.memo(
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={bkm.variable} shape={shape} />
-          <EditExpressionNodePanel
-            isVisible={!isTargeted && isHovered}
-            drgElementWithExpression={useMemo(
-              () => ({ type: TypeOfDrgElementWithExpression.BKM, content: bkm, index }),
-              [bkm, index]
-            )}
-          />
+          <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
             nodes={outgoing.bkm.nodes}

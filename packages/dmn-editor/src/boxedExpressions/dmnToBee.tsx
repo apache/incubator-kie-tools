@@ -21,67 +21,69 @@ import { SPEC } from "../Spec";
  *  created prior to the DMN Editor, needing to declare its own model. */
 export function dmnToBee(
   widthsById: Map<string, number[]>,
-  dmnExpr: DMN15__tDecision | DMN15__tFunctionDefinition
+  expressionHolder: DMN15__tDecision | DMN15__tFunctionDefinition | undefined
 ): ExpressionDefinition {
-  if (!dmnExpr) {
+  if (!expressionHolder?.expression) {
     return getUndefinedExpressionDefinition();
-  } else if (dmnExpr.expression?.__$$element === "literalExpression") {
-    const l = dmnExpr.expression;
+  }
+
+  const expr = expressionHolder.expression;
+
+  if (expr.__$$element === "literalExpression") {
     return {
-      id: l["@_id"]!,
-      name: l["@_label"],
+      id: expr["@_id"]!,
+      name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Literal,
-      dataType: (l["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
-      content: l.text,
-      width: widthsById.get(l["@_id"]!)?.[0],
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      content: expr.text,
+      width: widthsById.get(expr["@_id"]!)?.[0],
     };
-  } else if (dmnExpr.expression?.__$$element === "decisionTable") {
-    const d = dmnExpr.expression;
+  } else if (expr.__$$element === "decisionTable") {
     return {
-      id: d["@_id"]!,
-      name: d["@_label"],
+      id: expr["@_id"]!,
+      name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.DecisionTable,
-      dataType: (d["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
-      aggregation: d["@_aggregation"]
-        ? DecisionTableExpressionDefinitionBuiltInAggregation[d["@_aggregation"]]
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      aggregation: expr["@_aggregation"]
+        ? DecisionTableExpressionDefinitionBuiltInAggregation[expr["@_aggregation"]]
         : DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
       hitPolicy:
-        (d["@_hitPolicy"] as DecisionTableExpressionDefinitionHitPolicy) ?? SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
-      input: (d.input ?? []).map((input, i) => ({
+        (expr["@_hitPolicy"] as DecisionTableExpressionDefinitionHitPolicy) ??
+        SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
+      input: (expr.input ?? []).map((input, i) => ({
         idLiteralExpression: input.inputExpression["@_id"]!,
         id: input["@_id"]!,
         name: input["@_label"] ?? input.inputExpression["@_label"] ?? input.inputExpression.text ?? "",
         dataType: (input.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
-        width: widthsById.get(d["@_id"]!)?.[1 + i],
+        width: widthsById.get(expr["@_id"]!)?.[1 + i],
         //FIXME: Tiago --> Add clauseUnitaryTests?
       })),
-      output: (d.output ?? []).map((output, i) => ({
+      output: (expr.output ?? []).map((output, i) => ({
         id: output["@_id"]!,
         name: output["@_label"] ?? output["@_name"] ?? "",
         dataType: (output["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
-        width: widthsById.get(d["@_id"]!)?.[1 + (d.input ?? []).length + i],
+        width: widthsById.get(expr["@_id"]!)?.[1 + (expr.input ?? []).length + i],
         //FIXME: Tiago --> Add defaultOutputEntry?
         //FIXME: Tiago --> Add clauseUnaryTests?
       })),
-      annotations: (d.annotation ?? []).map((a, i) => ({
+      annotations: (expr.annotation ?? []).map((a, i) => ({
         name: a["@_name"] ?? "",
-        width: widthsById.get(d["@_id"]!)?.[1 + (d.input ?? []).length + (d.output ?? []).length + i],
+        width: widthsById.get(expr["@_id"]!)?.[1 + (expr.input ?? []).length + (expr.output ?? []).length + i],
       })),
-      rules: (d.rule ?? []).map((r) => ({
+      rules: (expr.rule ?? []).map((r) => ({
         id: r["@_id"]!,
         inputEntries: (r.inputEntry ?? []).map((i) => ({ id: i["@_id"]!, content: i.text ?? "" })),
         outputEntries: (r.outputEntry ?? []).map((o) => ({ id: o["@_id"]!, content: o.text ?? "" })),
         annotationEntries: (r.annotationEntry ?? []).map((a) => a.text ?? ""),
       })),
     };
-  } else if (dmnExpr.expression?.__$$element === "relation") {
-    const r = dmnExpr.expression;
+  } else if (expr.__$$element === "relation") {
     return {
-      id: r["@_id"]!,
-      name: r["@_label"],
+      id: expr["@_id"]!,
+      name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Relation,
-      dataType: (r["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
-      rows: (r.row ?? []).map((row) => ({
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      rows: (expr.row ?? []).map((row) => ({
         id: row["@_id"]!,
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
         cells: ((row.expression as DMN15__tLiteralExpression[]) ?? []).map((s) => ({
@@ -89,17 +91,15 @@ export function dmnToBee(
           content: s.text ?? "",
         })),
       })),
-      columns: (r.column ?? []).map((c, i) => ({
+      columns: (expr.column ?? []).map((c, i) => ({
         id: c["@_id"]!,
         name: c["@_label"] ?? c["@_name"] ?? "",
         dataType: (c["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
-        width: widthsById.get(r["@_id"]!)?.[1 + i],
+        width: widthsById.get(expr["@_id"]!)?.[1 + i],
       })),
     };
-  } else if (dmnExpr.expression?.__$$element === "context") {
-    const c = dmnExpr.expression;
-
-    const { contextEntries, result } = (c.contextEntry ?? []).reduce(
+  } else if (expr.__$$element === "context") {
+    const { contextEntries, result } = (expr.contextEntry ?? []).reduce(
       (acc, e) => {
         if (!e.variable) {
           acc.result = dmnToBee(widthsById, e);
@@ -123,36 +123,34 @@ export function dmnToBee(
     );
 
     return {
-      id: c["@_id"]!,
-      dataType: c["@_typeRef"] as DmnBuiltInDataType,
+      id: expr["@_id"]!,
+      dataType: expr["@_typeRef"] as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Context as const,
-      name: c["@_label"],
-      entryInfoWidth: widthsById.get(c["@_id"] ?? "")?.[0],
+      name: expr["@_label"],
+      entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
       result,
       contextEntries,
     };
-  } else if (dmnExpr.expression?.__$$element === "invocation") {
-    const i = dmnExpr.expression;
-
+  } else if (expr.__$$element === "invocation") {
     // From the spec:
     //
     // An Invocation contains a calledFunction, an Expression, which must evaluate to a function. Most
     // commonly, it is a LiteralExpression naming a BusinessKnowledgeModel.
     //
     // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 71, document page 57. Section "7.3.6 Invocation metamodel".
-    const calledFunction = i.expression! as DMN15__tLiteralExpression;
+    const calledFunction = expr.expression! as DMN15__tLiteralExpression;
 
     return {
-      id: i["@_id"]!,
-      dataType: (i["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      id: expr["@_id"]!,
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Invocation as const,
-      name: i["@_label"],
-      entryInfoWidth: widthsById.get(i["@_id"] ?? "")?.[0],
+      name: expr["@_label"],
+      entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
       invokedFunction: {
         id: calledFunction["@_id"]!,
         name: calledFunction.text!,
       },
-      bindingEntries: (i.binding ?? []).map((b) => ({
+      bindingEntries: (expr.binding ?? []).map((b) => ({
         entryInfo: {
           id: b.parameter["@_id"]!,
           name: b.parameter["@_name"],
@@ -161,27 +159,26 @@ export function dmnToBee(
         entryExpression: dmnToBee(widthsById, b),
       })),
     };
-  } else if (dmnExpr.expression?.__$$element === "functionDefinition") {
-    const f = dmnExpr.expression;
+  } else if (expr.__$$element === "functionDefinition") {
     const basic = {
-      id: f["@_id"]!,
-      name: f["@_label"],
-      dataType: f["@_typeRef"] as DmnBuiltInDataType,
+      id: expr["@_id"]!,
+      name: expr["@_label"],
+      dataType: expr["@_typeRef"] as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Function as const,
-      formalParameters: (f.formalParameter ?? []).map((p) => ({
+      formalParameters: (expr.formalParameter ?? []).map((p) => ({
         id: p["@_id"]!,
         name: p["@_name"]!,
         dataType: (p["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
       })),
     };
 
-    const kind = f["@_kind"] ?? SPEC.BOXED.FUNCTION.kind.default;
+    const kind = expr["@_kind"] ?? SPEC.BOXED.FUNCTION.kind.default;
     switch (kind) {
       case "FEEL": {
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Feel,
-          expression: dmnToBee(widthsById, f),
+          expression: dmnToBee(widthsById, expr),
         };
       }
       case "Java": {
@@ -194,7 +191,7 @@ export function dmnToBee(
         // and the form of the mapping information SHALL be the pmml form.
         //
         // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 106, document page 92. Section "10.2.1.7 Boxed Function".
-        const c = f.expression! as DMN15__tContext;
+        const c = expr.expression! as DMN15__tContext;
         const clazz = c.contextEntry?.find(
           ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.classFieldName
         );
@@ -215,7 +212,7 @@ export function dmnToBee(
       }
       case "PMML": {
         // Special case, defined by the spec, where the implementation is a context expression with two fields.
-        const c = f.expression as DMN15__tContext;
+        const c = expr.expression as DMN15__tContext;
         const document = c.contextEntry?.find(
           ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
         );
@@ -232,17 +229,15 @@ export function dmnToBee(
         };
       }
       default:
-        throw new Error(`Unknown function expression kind '${f["@_kind"]}'`);
+        throw new Error(`Unknown function expression kind '${expr["@_kind"]}'`);
     }
-  } else if (dmnExpr.expression?.__$$element === "list") {
-    const l = dmnExpr.expression;
-
+  } else if (expr.__$$element === "list") {
     return {
-      id: l["@_id"]!,
-      name: l["@_label"],
-      dataType: (l["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      id: expr["@_id"]!,
+      name: expr["@_label"],
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.List as const,
-      items: (l.expression ?? []).map((e) => dmnToBee(widthsById, { expression: e })),
+      items: (expr.expression ?? []).map((e) => dmnToBee(widthsById, { expression: e })),
     };
   } else {
     return getUndefinedExpressionDefinition();

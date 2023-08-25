@@ -24,8 +24,8 @@ export interface State {
   dmn: {
     model: { definitions: DMN15__tDefinitions };
   };
-  boxedExpression: {
-    drgElement: DrgElementWithExpression | undefined;
+  boxedExpressionEditor: {
+    id: string | undefined;
   };
   propertiesPanel: {
     isOpen: boolean;
@@ -56,7 +56,7 @@ export type Dispatch = {
     reset: (model: State["dmn"]["model"]) => void;
   };
   boxedExpression: {
-    open: (nodeWithExpression: DrgElementWithExpression) => void;
+    open: (id: string) => void;
     close: () => void;
   };
   propertiesPanel: {
@@ -80,23 +80,6 @@ export enum DmnEditorTab {
   INCLUDED_MODELS,
   DOCUMENTATION,
 }
-
-export enum TypeOfDrgElementWithExpression {
-  DECISION,
-  BKM,
-}
-
-export type DrgElementWithExpression =
-  | {
-      index: number;
-      type: TypeOfDrgElementWithExpression.BKM;
-      content: DMN15__tBusinessKnowledgeModel;
-    }
-  | {
-      index: number;
-      type: TypeOfDrgElementWithExpression.DECISION;
-      content: DMN15__tDecision;
-    };
 
 export const NODE_LAYERS = {
   PARENT_NODES: 0,
@@ -122,8 +105,8 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
       dmn: {
         model,
       },
-      boxedExpression: {
-        drgElement: undefined,
+      boxedExpressionEditor: {
+        id: undefined,
       },
       propertiesPanel: {
         isOpen: false,
@@ -155,19 +138,19 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
               state.diagram.dragging = [];
               state.diagram.resizing = [];
               state.navigation.tab = DmnEditorTab.EDITOR;
-              state.boxedExpression.drgElement = undefined;
+              state.boxedExpressionEditor.id = undefined;
             });
           },
         },
         boxedExpression: {
-          open: (node) => {
+          open: (id) => {
             set((state) => {
-              state.boxedExpression.drgElement = node;
+              state.boxedExpressionEditor.id = id;
             });
           },
           close: () => {
             set((state) => {
-              state.boxedExpression.drgElement = undefined;
+              state.boxedExpressionEditor.id = undefined;
             });
           },
         },
