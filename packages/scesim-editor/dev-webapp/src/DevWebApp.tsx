@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { TestScenarioEditor, TestScenarioEditorRef } from "../../src/TestScenarioEditor";
 
@@ -23,6 +23,12 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 export function DevWebApp() {
+  const ref = useRef<TestScenarioEditorRef>(null);
+
+  useEffect(() => {
+    ref.current?.setContent("", "");
+  }, [ref]);
+
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
 
@@ -43,8 +49,6 @@ export function DevWebApp() {
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
   }, []);
-
-  const ref = useRef<TestScenarioEditorRef>(null);
 
   const copyAsXml = useCallback(() => {
     navigator.clipboard.writeText(ref.current?.getContent() || "");
