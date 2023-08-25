@@ -9,8 +9,7 @@ import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionConta
 import { ROWTYPE } from "./ListExpression";
 
 export function ListItemCell(
-  parentElementId: string,
-  { rowIndex, data: items, columnIndex }: BeeTableCellProps<ROWTYPE>
+  { rowIndex, data: items, columnIndex, parentElementId }: BeeTableCellProps<ROWTYPE> &  { parentElementId: string },
 ) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
