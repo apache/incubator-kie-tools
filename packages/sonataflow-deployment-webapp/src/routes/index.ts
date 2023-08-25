@@ -102,6 +102,6 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 
 export const routes = {
   home: new Route<{}>(() => "/"),
-  dataJson: new Route<{}>(() => "/data.json"),
+  dataJson: new Route<{}>(() => "/sonataflow-deploy-webapp-data.json"),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
 };

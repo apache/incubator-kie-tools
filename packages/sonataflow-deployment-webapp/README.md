@@ -153,7 +153,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
 
 ## Data.json
 
-After the installation a file `/src/main/resources/META-INF/resources/data.json` is needed to be created with the following text:
+After the installation a file `/src/main/resources/META-INF/resources/sonataflow-deploy-webapp-data.json` is needed to be created with the following text:
 
 ```JSON
 {
