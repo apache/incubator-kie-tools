@@ -34,6 +34,7 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
@@ -189,21 +190,23 @@ public class ZoomLevelSelectorPresenterTest {
 
     //TODO: Fix me when the widgets are migrated to J2CL
     // temporary Js.uncheckedCast() breaks these tests
-//    @Test
-//    public void testShow() {
-//        tested.show();
-//        verify(floatingView, times(1)).show();
-//    }
-//
-//    @Test
-//    public void testHideZoomOnLoad() {
-//        //First call on canvas loading
-//        verify(floatingView, times(0)).show();
-//
-//        //Calls when mouse pointer is over the canvas and it has focus
-//        tested.show();
-//        verify(floatingView, times(1)).show();
-//    }
+    @Ignore
+    public void testShow() {
+        tested.show();
+        verify(floatingView, times(1)).show();
+    }
+
+    //TODO: Fix me when the widgets are migrated to J2CL
+    // temporary Js.uncheckedCast() breaks these tests
+    @Ignore
+    public void testHideZoomOnLoad() {
+        //First call on canvas loading
+        verify(floatingView, times(0)).show();
+
+        //Calls when mouse pointer is over the canvas and it has focus
+        tested.show();
+        verify(floatingView, times(1)).show();
+    }
 
     @Test
     public void testHide() {
