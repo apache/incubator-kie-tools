@@ -127,6 +127,7 @@ function App(args: BoxedExpressionEditorProps) {
 }
 
 const meta: Meta<typeof App> = {
+  title: "_dev/Web App",
   component: App,
 };
 

@@ -1,9 +1,9 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
-import * as ContextExpression from "./ContextExpression.stories";
+import * as Context from "./Context.stories";
 
-<Meta title="MDX/Context Expression" of={ContextExpression} />
+<Meta title="MDX/Context" of={Context} />
 
-# Context Expression
+# Context Boxed Expression
 
 A boxed context is a collection of n (name, value) pairs with an optional result value.
 The names SHALL be distinct within a context. Each pair is called a context entry.
@@ -11,9 +11,5 @@ The intent is that all the entries of a context should be easily identified by l
 context or across the top edge of a horizontal context. Cells SHALL be arranged in one of the following ways.
 
 <Canvas>
-  <Story of={ContextExpression.Base} />
-</Canvas>{" "}
-
-<Canvas>
-  <Story of={ContextExpression.PostBureauRiskCategory} />
+  <Story of={Context.Base} />
 </Canvas>

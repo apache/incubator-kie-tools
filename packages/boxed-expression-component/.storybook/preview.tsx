@@ -12,6 +12,11 @@ const preview: Preview = {
         date: /Date$/,
       },
     },
+    options: {
+      storySort: {
+        order: ["_dev", "Boxed Expressions", "Use cases"],
+      },
+    },
     docs: {
       toc: true,
       page: () => (

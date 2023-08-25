@@ -1,0 +1,13 @@
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import * as StandaloneBeeTable from "./StandaloneBeeTable.stories";
+
+<Meta title="MDX/Post Bureau Risk Category" of={StandaloneBeeTable} />
+
+# Standalone Bee Table
+
+With `MDX` we can include a story for `Checkbox` right in the middle of our
+markdown documentation.
+
+<Canvas>
+  <Story of={StandaloneBeeTable.Base} />
+</Canvas>

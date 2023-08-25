@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "./EmptyExpression.stories";
+import { Base as EmptyExpression } from "../use-cases/EmptyExpression.stories";
 import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
@@ -22,7 +22,7 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Expressions/Decision Table Expression",
+  title: "Boxed Expressions/Decision Table",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
   excludeStories: ["BoxedExpressionEditorWrapper"],

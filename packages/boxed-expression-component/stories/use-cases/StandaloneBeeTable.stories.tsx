@@ -7,6 +7,7 @@ import { StandaloneBeeTable } from "../../src/table/BeeTable";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof StandaloneBeeTable> = {
+  title: "Use cases/Standalone Bee Table",
   component: StandaloneBeeTable,
 };
 
@@ -45,7 +46,7 @@ const defaultProps: BeeTableProps<object> = {
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Default: Story = {
+export const Base: Story = {
   render: (args) => StandaloneBeeTableWrapper(args),
   args: {
     ...defaultProps,

@@ -2,12 +2,17 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "./EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
+import { Base as EmptyExpression } from "../use-cases/EmptyExpression.stories";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
+  FunctionExpressionDefinitionKind,
+  generateUuid,
+} from "../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Expressions/Literal Expression",
+  title: "Boxed Expressions/Function",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
   excludeStories: ["BoxedExpressionEditorWrapper"],
@@ -25,7 +30,14 @@ export const Base: Story = {
       id: generateUuid(),
       name: "Expression Name",
       dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Literal,
+      logicType: ExpressionDefinitionLogicType.Function,
+      functionKind: FunctionExpressionDefinitionKind.Feel,
+      formalParameters: [],
+      expression: {
+        id: generateUuid(),
+        logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
+      },
     },
     isResetSupportedOnRootExpression: false,
   },

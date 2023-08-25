@@ -25,4 +25,5 @@
   padding: 1em;
   overflow-y: auto;
   height: calc(50vh - 8px);
+  width: 90vw;
 }
