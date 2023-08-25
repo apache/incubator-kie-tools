@@ -25,7 +25,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       sonataFlowDeploymentWebapp: {
         dev: {
-          port: 9022,
+          port: 9023,
         },
       },
     };
