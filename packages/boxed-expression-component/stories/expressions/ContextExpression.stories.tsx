@@ -8,6 +8,7 @@ import {
   DecisionTableExpressionDefinitionHitPolicy,
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
+  FunctionExpressionDefinitionKind,
   generateUuid,
 } from "../../src/api";
 import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../src/resizing/WidthConstants";
@@ -59,44 +60,158 @@ export const Base: Story = {
   },
 };
 
+const dataTypes = Base.args?.dataTypes;
+dataTypes?.push({ typeRef: "tRisk", name: "tRisk", isCustom: true });
+dataTypes?.push({ typeRef: "tApplicant", name: "tApplicant", isCustom: true });
+dataTypes?.push({ typeRef: "tReport", name: "tReport", isCustom: true });
+
 export const PostBureauRiskCategory: Story = {
-  render: () => {
-    const dataTypes = Base.args?.dataTypes;
-    dataTypes?.push({ typeRef: "tRisk", name: "tRisk", isCustom: true });
-    return BoxedExpressionEditorWrapper({ dataTypes });
-  },
+  render: (args) => BoxedExpressionEditorWrapper({ dataTypes }),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
     ...EmptyExpression.args,
     expressionDefinition: {
-      id: "_558F8D91-80DE-41DD-B45D-FD8C97974138",
+      id: "_F6913551-7226-4F7C-A006-05AA0443C1AD",
       name: "Post-Bureau Risk Category",
       dataType: "tRisk" as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Context,
-      entryInfoWidth: 120,
+      contextEntries: [
+        {
+          entryInfo: {
+            id: "_D65ECF44-9D87-4ED8-8407-57FC63C589E8",
+            name: "Product",
+            dataType: DmnBuiltInDataType.String,
+          },
+          entryExpression: {
+            id: "_FF02E828-2931-4607-A1BD-02D26CA05F27",
+            name: "Product",
+            dataType: DmnBuiltInDataType.String,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: '"Special Loan"',
+            width: 665,
+          },
+        },
+        {
+          entryInfo: {
+            id: "_ED2FF8D1-3640-4D81-9549-15B7BE383408",
+            name: "Is existing customer?",
+            dataType: DmnBuiltInDataType.Boolean,
+          },
+          entryExpression: {
+            id: "_DCC28FDF-8A0A-4E40-8E0B-5FCC9F8756A3",
+            name: "Is existing customer?",
+            dataType: DmnBuiltInDataType.Boolean,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: "true",
+            width: 665,
+          },
+        },
+        {
+          entryInfo: {
+            id: "_73DDBA41-C75A-403C-8932-5D28489A1C4B",
+            name: "Credit Score",
+            dataType: DmnBuiltInDataType.Number,
+          },
+          entryExpression: {
+            id: "_50A7F560-A6E8-4C67-8A2D-D88672167493",
+            name: "Credit Score",
+            dataType: DmnBuiltInDataType.Number,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: "610",
+            width: 665,
+          },
+        },
+        {
+          entryInfo: {
+            id: "_ADBC9A2A-885C-4477-8CE8-0F9B6338E060",
+            name: "Affordability Model",
+            dataType: DmnBuiltInDataType.Number,
+          },
+          entryExpression: {
+            id: "_3871BC41-C750-49CD-9D6C-8A062132F17E",
+            name: "Affordability Model",
+            dataType: DmnBuiltInDataType.Number,
+            logicType: ExpressionDefinitionLogicType.Function,
+            formalParameters: [
+              { id: "_DE366C1F-CCCF-4E1B-9154-31A247EF2559", name: "Product", dataType: DmnBuiltInDataType.String },
+            ],
+            functionKind: FunctionExpressionDefinitionKind.Feel,
+            expression: {
+              id: "_4565F1AE-9522-4D1F-A090-F4092DACBEA3",
+              name: "Feel Expression",
+              dataType: DmnBuiltInDataType.Undefined,
+              logicType: ExpressionDefinitionLogicType.Context,
+              contextEntries: [
+                {
+                  entryInfo: {
+                    id: "_D5EA69E0-B81A-46A2-B326-8B0E4CF1FB60",
+                    name: "Product Multiplier",
+                    dataType: DmnBuiltInDataType.Number,
+                  },
+                  entryExpression: {
+                    id: "_845E9BB4-662B-41FB-BB2E-C6049D6735CE",
+                    name: "Product Multiplier",
+                    dataType: DmnBuiltInDataType.Number,
+                    logicType: ExpressionDefinitionLogicType.Literal,
+                    content: 'if Product = "Special Loan" then 1.2 else 1',
+                    width: 438,
+                  },
+                },
+              ],
+              result: {
+                id: "_3BE079EB-4555-498C-AAF9-4124BFFCBA7E",
+                name: "Result Expression",
+                dataType: DmnBuiltInDataType.Undefined,
+                logicType: ExpressionDefinitionLogicType.Literal,
+                content: "100 * Product Multiplier",
+                width: 438,
+              },
+              entryInfoWidth: 163,
+            },
+          },
+        },
+        {
+          entryInfo: {
+            id: "_DACF7738-1B70-410C-BD00-2E0B651E55E3",
+            name: "Application Risk Score",
+            dataType: DmnBuiltInDataType.Number,
+          },
+          entryExpression: {
+            id: "_9524EE95-E8F8-4AED-A543-3C82CCEE0EAB",
+            name: "Application Risk Score",
+            dataType: DmnBuiltInDataType.Number,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: "Affordability Model(Product)",
+            width: 665,
+          },
+        },
+      ],
       result: {
-        dataType: "tRisk" as DmnBuiltInDataType,
+        id: "_F06A52FE-A5EB-42F1-B35B-C5403813AD19",
+        name: "Result Expression",
+        dataType: DmnBuiltInDataType.Undefined,
         logicType: ExpressionDefinitionLogicType.DecisionTable,
         hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
         aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
+        annotations: [{ name: "Annotations", width: 100 }],
         input: [
           {
-            id: "_A32DDD63-A665-44D9-AAB1-BDA3FC237DC4",
-            idLiteralExpression: "_DC904D7F-C388-4095-814F-1A763A080D9B",
-            name: "Existing Customer",
+            id: "_6B891640-E70B-43AA-8140-771E194C424C",
+            idLiteralExpression: "_F007BA54-9BBB-4975-8A6D-E8D7E4B58359",
+            name: "Is existing customer?",
             dataType: DmnBuiltInDataType.Boolean,
-            width: 150,
+            width: 148,
           },
           {
-            id: "_620D5267-2D0A-4C4E-A1C7-8A8ACE804CBD",
-            idLiteralExpression: "_6D72FAD6-DD23-42C0-9F6A-C781448A2CC9",
+            id: "_096D9801-63C1-425C-B1C0-519C664749E1",
+            idLiteralExpression: "_F4DF902D-2E6B-4F33-9A80-26AE8AF8AB26",
             name: "Application Risk Score",
             dataType: DmnBuiltInDataType.Number,
-            width: 170,
+            width: 154,
           },
           {
-            id: "_398342CD-15AD-439D-B582-D191F6443F3C",
-            idLiteralExpression: "_682FDD07-632B-43EC-9E98-EC831252CDB6",
+            id: "_E1DB636C-390D-450F-A365-20B99FFF7182",
+            idLiteralExpression: "_1FDBAE87-3164-464F-A0D7-E26F6D566A62",
             name: "Credit Score",
             dataType: DmnBuiltInDataType.Number,
             width: 100,
@@ -104,358 +219,96 @@ export const PostBureauRiskCategory: Story = {
         ],
         output: [
           {
-            id: "_86D8EA57-40AF-45E6-91DF-49B6E8FB6802",
-            name: "Post-Bureau Risk Category",
+            id: "_4DDC5414-53C9-4709-ACEC-C2FFA0EBE715",
+            name: "Result Expression",
             dataType: "tRisk" as DmnBuiltInDataType,
-            width: 195,
-          },
-        ],
-        annotations: [
-          {
-            name: "Annotations",
-            width: 100,
+            width: 123,
           },
         ],
         rules: [
           {
-            id: "_3BB21202-73B3-4903-A59D-3392E97F17B5",
+            id: "_753AB9A4-A48C-4E5E-852D-F405936CD9C8",
             inputEntries: [
-              {
-                id: "_C4B220C1-2A9A-44D2-8EB3-668268A028B8",
-                content: "true",
-              },
-              {
-                id: "_AF8CA3DE-A30C-41CE-B022-1F78896F273A",
-                content: "<=120",
-              },
-              {
-                id: "_4092C947-FA5E-442F-A031-93A2935AB166",
-                content: "<590",
-              },
+              { id: "_A006C541-FCEB-4662-9C1F-E375E01C73D7", content: "true" },
+              { id: "_2AED60E8-0940-44BA-9CF9-2E425B63D01B", content: "<=120" },
+              { id: "_590BAC11-F696-449B-A00E-E03F76E03E4A", content: "<590" },
             ],
-            outputEntries: [
-              {
-                id: "_E96AF270-605F-455D-900E-92375CE031B8",
-                content: '"HIGH"',
-              },
-            ],
+            outputEntries: [{ id: "_18462712-012C-4808-9581-2CD9B6080330", content: '"HIGH"' }],
             annotationEntries: [""],
           },
           {
-            id: "_1A985B72-8D6C-4FD7-AC2B-C320E935212D",
+            id: "_ED418F80-B496-47E9-B5D3-09E093E2378E",
             inputEntries: [
-              {
-                id: "_31FC61AC-E232-4E08-843D-3BA41D54689C",
-                content: "true",
-              },
-              {
-                id: "_4400FCE5-3792-4583-96B4-35F98016BEB3",
-                content: "<=120",
-              },
-              {
-                id: "_18CA90A4-998B-4130-B64A-F66F07374715",
-                content: "[590..610]",
-              },
+              { id: "_399EDF13-95AC-4FF5-8153-9E5925D08B2A", content: "true" },
+              { id: "_352E13BF-675E-4ECB-9F2D-0058FAE13AC0", content: "<=120" },
+              { id: "_2BED1DCA-9E99-4DA7-A074-9570681F616A", content: ">=590" },
             ],
-            outputEntries: [
-              {
-                id: "_1DAA52AF-3FAD-4D75-8599-2906F8AA57B9",
-                content: '"MEDIUM"',
-              },
-            ],
+            outputEntries: [{ id: "_5C066C81-A3EC-48AC-A26E-0AB610F582C0", content: '"LOW"' }],
             annotationEntries: [""],
           },
           {
-            id: "_29414A6D-7D02-4CFF-99C4-FE9528882553",
+            id: "_D2CBB191-0C08-448B-B019-4557952EB98D",
             inputEntries: [
-              {
-                id: "_693A8E9E-5D7C-4BA2-983C-3320B3CB1866",
-                content: "true",
-              },
-              {
-                id: "_F643692C-300E-42CE-BB6C-66E243F58D2A",
-                content: "<=120",
-              },
-              {
-                id: "_06BDCEB9-A784-4BEC-9AD1-1FBE678427A3",
-                content: ">610",
-              },
+              { id: "_8A91E8F8-79D2-4A8F-A25E-0768779092BC", content: "true" },
+              { id: "_E973BAE2-D165-4CAB-8F0A-E6E649D98EF6", content: ">120" },
+              { id: "_43611647-BD27-4842-8BCC-885280BBA139", content: "<610" },
             ],
-            outputEntries: [
-              {
-                id: "_6B999377-D69D-41EB-9558-C071592BB198",
-                content: '"LOW"',
-              },
-            ],
+            outputEntries: [{ id: "_0A9DC20A-DFD7-4827-92E4-302BD0DB86F9", content: '"HIGH"' }],
             annotationEntries: [""],
           },
           {
-            id: "_54EE45CF-CF97-4F0F-B8FA-4C202374D547",
+            id: "_6241662D-9DBD-47EE-A463-EBACB1AB8611",
             inputEntries: [
-              {
-                id: "_94D89903-ED25-41B7-8055-01E7635DC688",
-                content: "true",
-              },
-              {
-                id: "_336B3D04-4FCC-4DEC-98B7-541BAEACD31D",
-                content: ">120",
-              },
-              {
-                id: "_8D288F94-ADF0-4773-917C-0C9B772E56D4",
-                content: "<600",
-              },
+              { id: "_18576417-6218-4E88-B1F4-33DE1B1C3208", content: "true" },
+              { id: "_A995F892-8E0B-4C50-9060-30AA6282F9F5", content: ">120" },
+              { id: "_8AD1F3F4-33FE-4D41-8444-CA9024E07B84", content: ">=610" },
             ],
-            outputEntries: [
-              {
-                id: "_3C456009-E330-448D-B8CE-DB32AE9B4518",
-                content: '"HIGH"',
-              },
-            ],
+            outputEntries: [{ id: "_EB28BE28-B6EE-4322-A2E1-A896AFE2D09F", content: '"LOW"' }],
             annotationEntries: [""],
           },
           {
-            id: "_47D493BE-B6E6-4F02-9DFE-645E29C1389F",
+            id: "_A8385DBA-FE69-4CC5-8492-2CB2ECCC64C2",
             inputEntries: [
-              {
-                id: "_75521E86-6FA8-47E6-A592-6B44C8247F40",
-                content: "true",
-              },
-              {
-                id: "_9BB52ACC-E333-4A24-8A00-27156E83EEE9",
-                content: ">120",
-              },
-              {
-                id: "_7746F0BD-6544-4368-81A9-29C3A32BF329",
-                content: "[600..625]",
-              },
+              { id: "_1E74598B-6E2C-4BC4-B6C6-60B78239C4B4", content: "false" },
+              { id: "_05397DE6-85B7-4323-8C5C-CA30843F0D21", content: "<=120" },
+              { id: "_2D5675B2-1398-4E0F-B04E-3C481B774A6F", content: "<600" },
             ],
-            outputEntries: [
-              {
-                id: "_11D8FE09-300D-4496-BBB6-BD46DE3A5A28",
-                content: '"MEDIUM"',
-              },
-            ],
+            outputEntries: [{ id: "_C4F7DB89-1826-46CB-A7CE-8C605F4EA725", content: '"HIGH"' }],
             annotationEntries: [""],
           },
           {
-            id: "_89A281A2-CBA6-4700-9A95-EF5BFD3F6620",
+            id: "_E30809AC-C526-49E7-B36A-616899CB0D8E",
             inputEntries: [
-              {
-                id: "_228E741F-6BE4-4A63-AF5A-D196649A4BE8",
-                content: "true",
-              },
-              {
-                id: "_901699D1-AB01-4027-9511-44195D3E32B6",
-                content: ">120",
-              },
-              {
-                id: "_E8126296-7282-4A37-B46D-54EA6C5E79F0",
-                content: ">625",
-              },
+              { id: "_F827EDA0-A2A0-42EC-9B06-5218319873C9", content: "false" },
+              { id: "_1F7E7076-E691-4348-BAC5-31FDF2D978AF", content: "<=120" },
+              { id: "_9CD83BD7-CE45-4437-9FD7-A676E38B6115", content: ">=600" },
             ],
-            outputEntries: [
-              {
-                id: "_742D72BB-E0B3-4BA1-A81D-62C89154BA6D",
-                content: '"LOW"',
-              },
-            ],
+            outputEntries: [{ id: "_9F760DAC-6F84-48D1-B20D-C158287ECB7A", content: '"LOW"' }],
             annotationEntries: [""],
           },
           {
-            id: "_9A4A4F12-9FDA-459C-B113-E1F36AE90668",
+            id: "_EEAE58D2-1505-4970-A916-D0FC00C9FA6C",
             inputEntries: [
-              {
-                id: "_5CA4FFB1-999E-47E4-A540-EE579A27575D",
-                content: "false",
-              },
-              {
-                id: "_D6FF22EF-7C91-4A61-BA13-2225DC4C41EB",
-                content: "<=100",
-              },
-              {
-                id: "_422CC163-D94D-4E8F-89B1-07ECC2DA3627",
-                content: "<580",
-              },
+              { id: "_30254C45-5E3D-4396-B787-0A588F552B02", content: "false" },
+              { id: "_B8E616E0-658A-4FF2-9F3A-E330852307CA", content: ">120" },
+              { id: "_60C79895-66E6-4FDF-9D58-A338DD8086F0", content: "<620" },
             ],
-            outputEntries: [
-              {
-                id: "_3439B665-E6EE-4D47-B22D-583207A7DCF9",
-                content: '"HIGH"',
-              },
-            ],
+            outputEntries: [{ id: "_46586589-377F-442E-A95C-0E46653919B3", content: '"HIGH"' }],
             annotationEntries: [""],
           },
           {
-            id: "_CF3F4B9F-4D25-479A-8163-0682F0FAD3BB",
+            id: "_05E65344-58C4-4703-8B45-8C75E67F5915",
             inputEntries: [
-              {
-                id: "_ECEC7B07-7220-4FFB-BED3-63E1430D2638",
-                content: "false",
-              },
-              {
-                id: "_7213B7D7-36B0-4B2C-9289-AC4B831768E7",
-                content: "<=100",
-              },
-              {
-                id: "_3D1C9B36-4BC0-4D0B-9E32-8F698167C713",
-                content: "[580..600]",
-              },
+              { id: "_26D9F0F9-C823-4DDE-AD85-3859BBD52100", content: "false" },
+              { id: "_6B30E225-C43A-4095-916A-C3911256C9E1", content: ">120" },
+              { id: "_3AEA2719-2523-4D9C-A02E-7A968B39BD36", content: ">=620" },
             ],
-            outputEntries: [
-              {
-                id: "_3E5D2444-1F65-4AB2-A620-45E34E0AC2BC",
-                content: '"MEDIUM"',
-              },
-            ],
-            annotationEntries: [""],
-          },
-          {
-            id: "_A10434D8-6FA0-4B98-A9BC-8AADF37E4D4E",
-            inputEntries: [
-              {
-                id: "_B719673B-BF84-4E1D-B6DD-3B27B63106E7",
-                content: "false",
-              },
-              {
-                id: "_86885A60-9950-41D6-BD4D-B2F7EB0A4F1F",
-                content: "<=100",
-              },
-              {
-                id: "_F17D2031-CB32-4B64-968F-BA5FF7DA8C24",
-                content: ">600",
-              },
-            ],
-            outputEntries: [
-              {
-                id: "_E68B8176-7D89-4BF4-8143-832C6516F96F",
-                content: '"LOW"',
-              },
-            ],
-            annotationEntries: [""],
-          },
-          {
-            id: "_7BEA0C4C-B1BD-4FD9-8D46-C8ACD0798AA8",
-            inputEntries: [
-              {
-                id: "_6C647CC4-8C02-4D4B-A12C-7C851D674847",
-                content: "false",
-              },
-              {
-                id: "_A680B024-D6CC-4790-BFD6-202E8BE59A86",
-                content: ">100",
-              },
-              {
-                id: "_177B136C-87C5-4AD2-9F42-E5BE6DA0E764",
-                content: "<590",
-              },
-            ],
-            outputEntries: [
-              {
-                id: "_BDFAB34A-102A-4C97-9900-A64CF7C9A682",
-                content: '"HIGH"',
-              },
-            ],
-            annotationEntries: [""],
-          },
-          {
-            id: "_B41387A3-D664-4233-8BE7-803CEE378FAB",
-            inputEntries: [
-              {
-                id: "_D2F328A9-C72E-48C7-A5E3-C0E289D9E2B8",
-                content: "false",
-              },
-              {
-                id: "_B081C5BC-2FF8-4219-B3F1-9522DFE9C1EE",
-                content: ">100",
-              },
-              {
-                id: "_280D9B8C-789E-4D25-8179-AF3635F8E4EB",
-                content: "[590..615]",
-              },
-            ],
-            outputEntries: [
-              {
-                id: "_CDAEAD71-A033-40C4-8086-DC4D559B4C64",
-                content: '"MEDIUM"',
-              },
-            ],
-            annotationEntries: [""],
-          },
-          {
-            id: "_2B36F39E-3BA0-4991-8E48-FCADDFDC48CF",
-            inputEntries: [
-              {
-                id: "_A179C9F0-E065-4F25-A103-172D445A6AE0",
-                content: "false",
-              },
-              {
-                id: "_B48A6A8A-CD73-4D82-B651-AD1AE0666D9A",
-                content: ">100",
-              },
-              {
-                id: "_F0EFFDA9-0A08-4D56-938B-21BB496FDF27",
-                content: ">615",
-              },
-            ],
-            outputEntries: [
-              {
-                id: "_00EE5B75-CADC-40B4-A437-FD0AD8341A30",
-                content: '"LOW"',
-              },
-            ],
+            outputEntries: [{ id: "_9EEAEC41-96AC-4017-9331-94919AB1D94B", content: '"LOW"' }],
             annotationEntries: [""],
           },
         ],
-        id: "_90B25A9D-89C1-43BB-A3B8-590C6B16BF1C",
-        name: "Post-Bureau Risk Category",
       },
-      contextEntries: [
-        {
-          entryInfo: {
-            id: "_9E3859FC-E71E-4921-8718-5B0F0AA25DF9",
-            name: "Existing Customer",
-            dataType: DmnBuiltInDataType.Boolean,
-          },
-          entryExpression: {
-            id: "_2FDCA1B9-4308-4C7A-A570-9D0A5D7C4D78",
-            name: "Existing Customer",
-            dataType: DmnBuiltInDataType.Boolean,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            content: "Applicant.Existing Customer",
-            width: 750,
-          },
-        },
-        {
-          entryInfo: {
-            id: "_068C1B61-B5E5-44FA-9B81-5132995E6770",
-            name: "Credit Score",
-            dataType: DmnBuiltInDataType.Number,
-          },
-          entryExpression: {
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            width: 750,
-            id: "_681ED43C-3598-45B1-B283-B57D7EEEF66B",
-            name: "Credit Score",
-            content: "Report.Credit Score",
-          },
-        },
-        {
-          entryInfo: {
-            id: "_92EC5BEC-FF73-4D6E-9622-108DFA42D81C",
-            name: "Application Risk Score",
-            dataType: DmnBuiltInDataType.Number,
-          },
-          entryExpression: {
-            dataType: DmnBuiltInDataType.Number,
-            logicType: ExpressionDefinitionLogicType.Literal,
-            width: 750,
-            id: "_E7AD166F-A9A4-4D5C-B47D-54EE76F23991",
-            name: "Application Risk Score",
-            content: "Affordability Model(Applicant, Product).\nApplication Risk Score",
-          },
-        },
-      ],
+      entryInfoWidth: 182,
     },
     isResetSupportedOnRootExpression: false,
   },

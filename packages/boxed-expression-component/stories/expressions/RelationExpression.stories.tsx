@@ -54,7 +54,7 @@ export const Base: Story = {
 export const CustomerProfiles: Story = {
   render: () => {
     const dataTypes = Base.args?.dataTypes;
-    dataTypes?.push({ typeRef: "tCustomer", name: "tCustomer", isCustom: true });
+    dataTypes?.push({ typeRef: "tEmployee", name: "tEmployee", isCustom: true });
     return BoxedExpressionEditorWrapper({ dataTypes });
   },
   args: {
@@ -62,7 +62,7 @@ export const CustomerProfiles: Story = {
     expressionDefinition: {
       id: generateUuid(),
       name: "Employee Information",
-      dataType: "tCustomer" as DmnBuiltInDataType,
+      dataType: "tEmployee" as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Relation,
       columns: [
         {
