@@ -157,7 +157,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
         { language: MONACO_FEEL_LANGUAGE },
         {
           provideDocumentSemanticTokens: function (model) {
-            const tokens = new Array<number>();
+            const tokenTypes = new Array<number>();
 
             if (feelVariables) {
               const text = model.getValue();
