@@ -108,7 +108,7 @@ export const routes = {
   home: new Route<{}>(() => "/"),
   dataJson: new Route<{}>(() => "/data.json"),
   swaggerUi: new Route<{}>(() => "/q/swagger-ui"),
-  openApiJson: new Route<{}>(() => "/openapi.json"),
+  openApiJson: new Route<{}>(() => "/q/openapi.json"),
   metrics: new Route<{}>(() => "/metrics/index.html"),
   model: new Route<{
     pathParams: PathParams.FILE_PATH;
