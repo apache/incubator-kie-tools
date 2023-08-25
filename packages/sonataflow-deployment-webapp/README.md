@@ -1,6 +1,6 @@
 # SonataFlow Deployment Webapp
 
-This is the web application for SonataFlow Deployment to be used in Kogito-runtime.
+This is the web application for SonataFlow Deployments.
 
 ## Run local web server
 
