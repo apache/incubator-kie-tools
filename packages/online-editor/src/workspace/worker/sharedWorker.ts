@@ -25,7 +25,7 @@ import { EditorConfig } from "../../envelopeLocator/EditorEnvelopeLocatorApi";
 declare const importScripts: any;
 importScripts("fsMain.js");
 
-async function corsProxyUrl(): Promise<string> {
+export async function corsProxyUrl(): Promise<string> {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = (await (await fetch(envFilePath)).json()) as EnvJson;
   return env.KIE_SANDBOX_CORS_PROXY_URL;

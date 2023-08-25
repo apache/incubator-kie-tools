@@ -81,6 +81,7 @@ export class LfsWorkspaceDescriptorService {
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
       gitAuthSessionId: undefined,
+      gitInsecurelyDisableTlsCertificateValidation: undefined,
     };
     await this.storageService.createOrOverwriteFile(this.descriptorFs, this.toStorageFile(descriptor));
     return descriptor;

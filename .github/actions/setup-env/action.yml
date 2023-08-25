@@ -10,6 +10,22 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # This cleans up the GitHub action images, removing unnecessary packages such as Android Studio and DOTNet libraries.
+    # This can provide up to 7GB of free space for the rest of the build.
+    - name: "Clear storage usage from unnecessary packages"
+      uses: jlumbroso/free-disk-space@76866dbe54312617f00798d1762df7f43def6e5c
+      if: runner.os == 'Linux'
+      with:
+        # this might remove tools that are actually needed,
+        # if set to "true" but frees about 6 GB
+        tool-cache: false
+        # other packages
+        android: true
+        dotnet: true
+        haskell: true
+        large-packages: false
+        swap-storage: false
+
     - name: "Print storage usage (before setup)"
       shell: bash
       run: |
@@ -40,10 +56,10 @@ runs:
         java-version: 11
         distribution: "zulu"
 
-    - name: "Set up GOLANG 1.20.5"
+    - name: "Set up GOLANG 1.20.7"
       uses: actions/setup-go@v3
       with:
-        go-version: "1.20.5"
+        go-version: "1.20.7"
 
     - name: "Set up Maven"
       uses: stCarolas/setup-maven@07fbbe97d97ef44336b7382563d66743297e442f #v4.5
@@ -59,11 +75,26 @@ runs:
         brew untap homebrew/core homebrew/cask
         brew update
         brew install docker docker-compose
+        cat >entitlements.xml <<EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>com.apple.security.hypervisor</key>
+            <true/>
+        </dict>
+        </plist>
+        EOF
+
+        codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
         mkdir -p ~/.docker/cli-plugins
         ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
         brew install docker-Buildx
         ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
-        colima start --memory 4 --network-address
+        colima stop
+        colima delete
+        colima start --memory 4 --network-address --verbose
+      # QEMU is reinstalled due to this bug: https://github.com/lima-vm/lima/issues/1742
 
     - name: "Setup network timeout"
       shell: bash
