@@ -30,7 +30,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon, ExclamationCircleIcon, PlayIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Table } from "@patternfly/react-table/dist/js/components/Table";
 import { Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table/dist/js/components/TableComposable";
-import { KUBESTAMRTS_URL } from "../AppConstants";
+import { KUBESMARTS_URL } from "../AppConstants";
 import { useOpenApi } from "../context/OpenApiContext";
 import { BasePage } from "./BasePage";
 
@@ -131,8 +131,8 @@ function EmptyTableState() {
               <TextContent>
                 <Text>
                   Start by creating a model on{" "}
-                  <a href={KUBESTAMRTS_URL} target="_blank" rel="noopener noreferrer">
-                    {KUBESTAMRTS_URL}
+                  <a href={KUBESMARTS_URL} target="_blank" rel="noopener noreferrer">
+                    {KUBESMARTS_URL}
                   </a>
                 </Text>
               </TextContent>
