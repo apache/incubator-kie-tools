@@ -22,8 +22,8 @@ import {
 } from "@kie-tools/vscode-extension-common-test-helpers";
 import { expandedDocksBarE, h3ComponentWithText } from "../CommonLocators";
 import { assert } from "chai";
-import PropertiesPanelHelper from "./PropertiesPanelHelper";
-import DiagramExplorerHelper from "./DiagramExplorerHelper";
+import PropertiesPanelHelper from "../bpmn/PropertiesPanelHelper";
+import DiagramExplorerHelper from "../bpmn/DiagramExplorerHelper";
 
 export enum PaletteCategories {
   START_EVENTS = "Start Events",
