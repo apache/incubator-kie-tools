@@ -57,7 +57,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
               onClick={() => history.push({ pathname: routes.home.path({}) })}
               style={{ textDecoration: "none" }}
             >
-              <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
+              <Brand className="sonataflow-deployment-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
               <TextContent className="brand-name">
                 <Text component={TextVariants.h1}>
                   {app.appDataPromise.status === PromiseStateStatus.PENDING ? "" : app.data.appName}
