@@ -29,11 +29,11 @@ test.describe("DMN runner", () => {
   // check download/import inputs;
 
   test.describe("Form", () => {
-    test("", async ({ page, upload, onlineEditor }) => {});
+    test("", async ({ page, upload, kieSandbox }) => {});
   });
 
   test.describe("Table", () => {
-    test("", async ({ page, upload, onlineEditor }) => {});
+    test("", async ({ page, upload, kieSandbox }) => {});
   });
 
   // check change between form/table view

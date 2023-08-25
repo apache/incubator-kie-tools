@@ -2,11 +2,11 @@ import { Locator, Page, test as base } from "@playwright/test";
 import { Upload } from "./upload";
 
 type BaseFixtures = {
-  onlineEditor: OnlineEditor;
+  kieSandbox: KieSandbox;
   upload: Upload;
 };
 
-class OnlineEditor {
+class KieSandbox {
   constructor(public page: Page, public baseURL?: string) {
     this.page = page;
   }
@@ -17,8 +17,8 @@ class OnlineEditor {
 }
 
 export const test = base.extend<BaseFixtures>({
-  onlineEditor: async ({ page, baseURL }, use) => {
-    await use(new OnlineEditor(page, baseURL));
+  kieSandbox: async ({ page, baseURL }, use) => {
+    await use(new KieSandbox(page, baseURL));
   },
   upload: async ({ page }, use) => {
     await use(new Upload(page));

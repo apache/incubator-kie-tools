@@ -28,53 +28,50 @@ test.describe("Import from URL", () => {
 
     test.describe("GitHub", () => {
       test.describe("Unauthenticated", () => {
-        test("should open a repository from GitHub on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a repository from GitHub on default branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a repository from GitHub on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a repository from GitHub on different branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a GitHub Gist on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a GitHub Gist on default branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a GitHub Gist on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a GitHub Gist on different branch", async ({ page, kieSandbox }) => {});
       });
 
       test.describe("Authenticated", () => {
-        test("should open a private repository from GitHub on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a private repository from GitHub on default branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a private repository from GitHub on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a private repository from GitHub on different branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a private GitHub Gist on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a private GitHub Gist on different branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a private GitHub Gist on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a private GitHub Gist on default branch", async ({ page, kieSandbox }) => {});
       });
     });
 
     test.describe("BitBucket", () => {
       test.describe("Unauthenticated", () => {
-        test("should open a repository from BitBucket on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a repository from BitBucket on default branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a repository from BitBucket on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a repository from BitBucket on different branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a BitBucket Snippet on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a BitBucket Snippet on default branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a BitBucket Snippet on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a BitBucket Snippet on different branch", async ({ page, kieSandbox }) => {});
       });
 
       test.describe("Authenticated", () => {
-        test("should open a private repository from BitBucket on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a private repository from BitBucket on default branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a private repository from BitBucket on different branch", async ({
-          page,
-          onlineEditor,
-        }) => {});
+        test("should open a private repository from BitBucket on different branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a private BitBucket Snippet on different branch", async ({ page, onlineEditor }) => {});
+        test("should open a private BitBucket Snippet on different branch", async ({ page, kieSandbox }) => {});
 
-        test("should open a private BitBucket Snippet on default branch", async ({ page, onlineEditor }) => {});
+        test("should open a private BitBucket Snippet on default branch", async ({ page, kieSandbox }) => {});
       });
     });
 
     test.describe("File URL", () => {
-      test("should open a file by URL", async ({ page, onlineEditor }) => {});
+      test("should open a file by URL", async ({ page, kieSandbox }) => {});
     });
   });
 });
