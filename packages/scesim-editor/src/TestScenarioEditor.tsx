@@ -104,12 +104,12 @@ export function TestScenarioCreationPanel({
   onCreateScesimButtonClicked: (assetType: string, skipFile: boolean) => void;
 }) {
   const assetsOption = [
-    { value: "select one", label: "Select a type", disabled: true },
+    { value: "", label: "Select a type", disabled: true },
     { value: "DMN", label: "Decision (DMN)", disabled: false },
     { value: "RULE", label: "Rule (DRL)", disabled: true },
   ];
 
-  const [assetType, setAssetType] = React.useState("select one");
+  const [assetType, setAssetType] = React.useState("");
   const [skipFile, setSkipFile] = React.useState(false);
 
   return (
