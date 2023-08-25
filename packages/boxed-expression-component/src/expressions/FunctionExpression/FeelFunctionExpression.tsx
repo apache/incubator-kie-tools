@@ -205,8 +205,7 @@ export function FeelFunctionExpression({
 }
 
 export function FeelFunctionImplementationCell(
-  { data, rowIndex, columnIndex }: BeeTableCellProps<FEEL_ROWTYPE>,
-  parentElementId: string
+  { data, rowIndex, columnIndex, parentElementId }: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string },
 ) {
   const functionExpression = data[rowIndex].functionExpression as FeelFunctionExpressionDefinition;
 
