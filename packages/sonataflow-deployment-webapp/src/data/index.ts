@@ -21,6 +21,7 @@ import { routes } from "../routes";
 
 export interface AppData {
   appName: string;
+  showDisclaimer: boolean;
 }
 
 export async function fetchAppData(): Promise<AppData> {

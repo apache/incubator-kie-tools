@@ -18,13 +18,14 @@
  */
 
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { DEFAULT_APPDATA_VALUES } from "../AppConstants";
 import { AppData } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
-  const [data, setData] = useState<AppData>({ appName: "Deployment" });
+  const [data, setData] = useState<AppData>(DEFAULT_APPDATA_VALUES);
 
   useEffect(() => {
     if (!appDataPromise.data) {

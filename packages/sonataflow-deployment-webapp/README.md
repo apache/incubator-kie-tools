@@ -165,4 +165,4 @@ After the installation a file `/src/main/resources/META-INF/resources/sonataflow
 Please replace:
 
 - `appName` with the desired name for the app
-- `openApiUrl` with the url to the OpenAPI json
+- `showDisclaimer` show/hide the development disclamer

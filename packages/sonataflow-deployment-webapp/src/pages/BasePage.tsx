@@ -65,34 +65,36 @@ export function BasePage(props: { children?: React.ReactNode }) {
               </TextContent>
             </MastheadBrand>
           </PageHeaderToolsItem>
-          <Flex justifyContent={{ default: "justifyContentCenter" }}>
-            <FlexItem>
-              <PageHeaderToolsItem>
-                <Tooltip
-                  className="app--masterhead__disclaimer"
-                  position="bottom-end"
-                  key="disclaimer-tooltip"
-                  content={
-                    <>
-                      This deployment is intended to be used during <b>development</b>, so users should not use the
-                      deployed services in production or for any type of business-critical workloads.
-                    </>
-                  }
-                >
-                  <TextContent>
-                    <Text component={TextVariants.h5}>
-                      Development only
-                      <HelpIcon className="app--masterhead__disclaimer-icon" />
-                    </Text>
-                  </TextContent>
-                </Tooltip>
-              </PageHeaderToolsItem>
-            </FlexItem>
-          </Flex>
+          {app.data.showDisclaimer && (
+            <Flex justifyContent={{ default: "justifyContentCenter" }}>
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <Tooltip
+                    className="app--masterhead__disclaimer"
+                    position="bottom-end"
+                    key="disclaimer-tooltip"
+                    content={
+                      <>
+                        This deployment is intended to be used during <b>development</b>, so users should not use the
+                        deployed services in production or for any type of business-critical workloads.
+                      </>
+                    }
+                  >
+                    <TextContent>
+                      <Text component={TextVariants.h5}>
+                        Development only
+                        <HelpIcon className="app--masterhead__disclaimer-icon" />
+                      </Text>
+                    </TextContent>
+                  </Tooltip>
+                </PageHeaderToolsItem>
+              </FlexItem>
+            </Flex>
+          )}
         </MastheadMain>
       </Masthead>
     ),
-    [app.data.appName, history, app.appDataPromise.status]
+    [app.data.appName, history, app.appDataPromise.status, app.data.showDisclaimer]
   );
 
   return (

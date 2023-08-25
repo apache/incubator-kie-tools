@@ -24,4 +24,5 @@ export const KUBESTAMRTS_URL = "https://start.kubesmarts.org";
 
 export const DEFAULT_APPDATA_VALUES: AppData = {
   appName: "Deployment",
+  showDisclaimer: false,
 };

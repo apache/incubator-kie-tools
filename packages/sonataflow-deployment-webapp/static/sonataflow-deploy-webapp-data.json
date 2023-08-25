@@ -1,3 +1,4 @@
 {
-  "appName": "SonataFlow Deployment"
+  "appName": "SonataFlow Deployment",
+  "showDisclaimer": true
 }
