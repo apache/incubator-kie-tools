@@ -21,7 +21,6 @@ import { useCallback } from "react";
 import { usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { AppData, fetchAppData } from "../data";
-import { Route, routes } from "../routes";
 
 export function useAppDataPromise() {
   const [appDataPromise, setAppDataPromise] = usePromiseState<AppData>();
@@ -41,7 +40,6 @@ export function useAppDataPromise() {
             }
 
             setAppDataPromise({ data });
-            routes.openApiJson = new Route<{}>(() => data.openApiUrl);
           })
           .catch((e) => {
             setAppDataPromise({ error: e });

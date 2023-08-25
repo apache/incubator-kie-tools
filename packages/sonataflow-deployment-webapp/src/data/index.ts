@@ -21,7 +21,6 @@ import { routes } from "../routes";
 
 export interface AppData {
   appName: string;
-  openApiUrl: string;
 }
 
 export async function fetchAppData(): Promise<AppData> {

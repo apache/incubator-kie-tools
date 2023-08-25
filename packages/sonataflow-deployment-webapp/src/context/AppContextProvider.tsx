@@ -24,7 +24,7 @@ import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
-  const [data, setData] = useState<AppData>({ appName: "Deployment", openApiUrl: "" });
+  const [data, setData] = useState<AppData>({ appName: "Deployment" });
 
   useEffect(() => {
     if (!appDataPromise.data) {
