@@ -120,7 +120,7 @@
 - [KOGITO-8101](https://issues.redhat.com/browse/KOGITO-8101) - SWF Viewer - warn user about duplicated state name
 - [KOGITO-7736](https://issues.redhat.com/browse/KOGITO-7736) - SWF Viewer - Performance improvements
 - [KOGITO-8093](https://issues.redhat.com/browse/KOGITO-8093) - [SWF Editor] Improve auto-completion experience
-- [KOGITO-7954](https://issues.redhat.com/browse/KOGITO-7954) - SWF Editor - Some basic automated end-to-end tests
+- [KOGITO-7954](https://issues.redhat.com/browse/KOGITO-7954) - SWF Editor - Some basic automated integration tests
 - [KOGITO-7098](https://issues.redhat.com/browse/KOGITO-7098) - SWF Viewer - refactor shapes from SVG to pure lienzo
 - [KOGITO-8227](https://issues.redhat.com/browse/KOGITO-8227) - [SWF Editor] Add comma automatically after completions
 - [KOGITO-7717](https://issues.redhat.com/browse/KOGITO-7717) - Migrate to apt-based json marshallers
