@@ -46,7 +46,7 @@ import static org.gwtbootstrap3.client.shared.js.JQuery.$;
 public class Animate {
 
     // store used styles, so they are not injected to the DOM everytime.
-    private static final ArrayList<String> usedStyles = new ArrayList<String>();
+    private static final ArrayList<String> usedStyles = new ArrayList<>();
 
     /**
      * Animate any element with specific animation. Animation is done by CSS and runs only once.
@@ -113,6 +113,7 @@ public class Animate {
     public static String animate(final HTMLElement widget, final Animation animation, final int count, final int duration, final int delay) {
 
         if (widget != null && animation != null) {
+
             // on valid input
             if (widget.classList.contains(animation.getCssName())) {
                 // animation is present, remove it and run again.
