@@ -30,7 +30,6 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import elemental2.dom.CSSProperties;
@@ -39,6 +38,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
+import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;

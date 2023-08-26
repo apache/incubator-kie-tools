@@ -24,14 +24,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.CSSProperties;
 import elemental2.dom.CSSStyleDeclaration;
-import jsinterop.base.Js;
+import elemental2.dom.DomGlobal;
 import org.gwtbootstrap3.extras.animate.client.ui.Animate;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
+import org.gwtproject.timer.client.Timer;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.PreviewLienzoPanel;
@@ -42,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.FlowPanel;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
@@ -68,8 +67,8 @@ public class PreviewWindow {
         deleteWidget();
 
         previewRoot = new FlowPanel();
-        RootPanel.get().add(previewRoot);
-        previewRoot.getElement().appendChild(Js.uncheckedCast(previewWidget.getView().getElement()));
+        DomGlobal.document.body.appendChild(previewRoot.getElement());
+        previewRoot.add(previewWidget.getView());
 
         AbstractCanvasHandler abstractCanvasHandler = previewWidget.getHandler();
         AbstractCanvas abstractCanvas = abstractCanvasHandler.getAbstractCanvas();
@@ -84,7 +83,7 @@ public class PreviewWindow {
     private void close() {
         if (null != previewRoot && previewRoot.isVisible() && !closing) {
             closing = true;
-            Animate.animate(previewRoot,
+            Animate.animate(previewRoot.getElement(),
                             Animation.FADE_OUT,
                             1,
                             DURATION);
@@ -106,7 +105,7 @@ public class PreviewWindow {
 
     private void deleteWidget() {
         if (null != previewRoot) {
-            previewRoot.removeFromParent();
+            DomGlobal.document.body.removeChild(previewRoot.getElement());
             previewRoot = null;
         }
     }
@@ -122,22 +121,22 @@ public class PreviewWindow {
             }
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
-                               new SessionViewer.SessionViewerCallback<Diagram>() {
-                                   @Override
-                                   public void afterCanvasInitialized() {
-                                       addWidget();
-                                       translate(x, y, width, height);
-                                       Animate.animate(previewRoot,
-                                                       Animation.FADE_IN,
-                                                       1,
-                                                       DURATION);
-                                   }
+                    new SessionViewer.SessionViewerCallback<Diagram>() {
+                            @Override
+                            public void afterCanvasInitialized() {
+                                addWidget();
+                                translate(x, y, width, height);
+                                Animate.animate(previewRoot.getElement(),
+                                        Animation.FADE_IN,
+                                         1,
+                                         DURATION);
+                                }
 
-                                   @Override
-                                   public void onError(final ClientRuntimeError error) {
-                                       showError(error);
-                                   }
-                               });
+                            @Override
+                            public void onError(final ClientRuntimeError error) {
+                                 showError(error);
+                                 }
+                            });
         }
     }
 
@@ -159,13 +158,13 @@ public class PreviewWindow {
         final double previewX = clientLeft + clientWidth - width - MARGIN;
         final double previewY = clientTop + clientHeight - height - MARGIN;
 
-        Style style = previewRoot.getElement().getStyle();
-        style.setPosition(Style.Position.ABSOLUTE);
-        style.setLeft(previewX, Style.Unit.PX);
-        style.setTop(previewY, Style.Unit.PX);
-        style.setBorderWidth(1, Style.Unit.PX);
-        style.setBorderStyle(Style.BorderStyle.SOLID);
-        style.setBorderColor("#808080");
+        CSSStyleDeclaration style = previewRoot.getElement().style;
+        style.position = "absolute";
+        style.left = previewX + "px";
+        style.top = previewY + "px";
+        style.borderWidth = CSSProperties.BorderWidthUnionType.of("1px");
+        style.borderStyle = "solid";
+        style.borderColor = "#808080";
     }
 
     void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
@@ -187,9 +186,9 @@ public class PreviewWindow {
                 case SHOW:
                 case TOGGLE:
                     show(event.getX(),
-                         event.getY(),
-                         event.getWidth(),
-                         event.getHeight());
+                            event.getY(),
+                            event.getWidth(),
+                            event.getHeight());
                     break;
             }
         }

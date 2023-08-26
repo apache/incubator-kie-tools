@@ -23,7 +23,6 @@ package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
@@ -31,6 +30,7 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 import jsinterop.base.Js;
+import org.gwtproject.core.client.Scheduler;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;

@@ -24,10 +24,10 @@ import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.Timer;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import org.gwtproject.timer.client.Timer;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;

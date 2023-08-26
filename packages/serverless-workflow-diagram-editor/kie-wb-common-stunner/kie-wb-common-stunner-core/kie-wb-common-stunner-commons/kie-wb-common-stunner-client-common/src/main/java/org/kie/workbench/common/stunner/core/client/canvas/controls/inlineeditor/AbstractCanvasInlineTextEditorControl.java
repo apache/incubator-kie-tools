@@ -22,11 +22,11 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 
 import javax.enterprise.event.Observes;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.touch.client.Point;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import org.gwtproject.core.client.Scheduler;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -365,15 +365,13 @@ public abstract class AbstractCanvasInlineTextEditorControl
     }
 
     double getCanvasAbsoluteWidth() {
-        String offsetWidth = getAbstractCanvas().getView().getPanel().getElement().style.getPropertyValue("offsetWidth");
-        return Integer.parseInt(offsetWidth) +
+        return getAbstractCanvas().getView().getPanel().getElement().offsetWidth +
                 canvasPosition.getX() -
                 scrollBarOffset;
     }
 
     double getCanvasAbsoluteHeight() {
-        String offsetHeight = getAbstractCanvas().getView().getPanel().getElement().style.getPropertyValue("offsetHeight");
-        return Integer.parseInt(offsetHeight) +
+        return getAbstractCanvas().getView().getPanel().getElement().offsetHeight +
                 canvasPosition.getY() -
                 scrollBarOffset;
     }
@@ -421,7 +419,6 @@ public abstract class AbstractCanvasInlineTextEditorControl
     }
 
     void setMouseWheelHandler() {
-        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
         HTMLElement panelElement = getAbstractCanvas()
                                        .getView()
                                        .getPanel()
