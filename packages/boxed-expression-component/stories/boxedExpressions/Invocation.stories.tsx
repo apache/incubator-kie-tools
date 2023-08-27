@@ -2,13 +2,18 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "../use-cases/EmptyExpression.stories";
+import { Base as EmptyExpression } from "../useCases/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
 import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../src/resizing/WidthConstants";
+import {
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+  INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+} from "../../src/expressions/InvocationExpression";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Boxed Expressions/Context",
+  title: "Boxed Expressions/Invocation",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
   excludeStories: ["BoxedExpressionEditorWrapper"],
@@ -26,28 +31,27 @@ export const Base: Story = {
       id: generateUuid(),
       name: "Expression Name",
       dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Context,
+      logicType: ExpressionDefinitionLogicType.Invocation,
       entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-      result: {
-        logicType: ExpressionDefinitionLogicType.Undefined,
-        dataType: DmnBuiltInDataType.Undefined,
-        id: generateUuid(),
-      },
-      contextEntries: [
+      bindingEntries: [
         {
           entryInfo: {
             id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
+            name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+            dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
           },
           entryExpression: {
             id: generateUuid(),
-            name: "ContextEntry-1",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.Undefined,
+            name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+            dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+            logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
           },
         },
       ],
+      invokedFunction: {
+        id: generateUuid(),
+        name: "FUNCTION",
+      },
     },
     isResetSupportedOnRootExpression: false,
   },

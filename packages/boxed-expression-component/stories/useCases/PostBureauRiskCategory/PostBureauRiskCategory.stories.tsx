@@ -1,15 +1,15 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "./EmptyExpression.stories";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditorWrapper } from "../../boxedExpressionWrapper";
+import { Base as EmptyExpression } from "../Empty/EmptyExpression.stories";
 import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
   FunctionExpressionDefinitionKind,
-} from "../../src/api";
+} from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -21,13 +21,11 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
-const dataTypes = EmptyExpression.args?.dataTypes;
-dataTypes?.push({ typeRef: "tRisk", name: "tRisk", isCustom: true });
-dataTypes?.push({ typeRef: "tApplicant", name: "tApplicant", isCustom: true });
-dataTypes?.push({ typeRef: "tReport", name: "tReport", isCustom: true });
-
 export const Base: Story = {
-  render: (args) => BoxedExpressionEditorWrapper({ dataTypes }),
+  render: (args) => {
+    const dataTypes = [...(EmptyExpression.args?.dataTypes ?? []), { typeRef: "tRisk", name: "tRisk", isCustom: true }];
+    return BoxedExpressionEditorWrapper({ dataTypes });
+  },
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
     ...EmptyExpression.args,

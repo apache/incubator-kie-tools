@@ -2,12 +2,12 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "../use-cases/EmptyExpression.stories";
+import { Base as EmptyExpression } from "../useCases/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Boxed Expressions/Literal",
+  title: "Boxed Expressions/List",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
   excludeStories: ["BoxedExpressionEditorWrapper"],
@@ -25,7 +25,14 @@ export const Base: Story = {
       id: generateUuid(),
       name: "Expression Name",
       dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.Literal,
+      logicType: ExpressionDefinitionLogicType.List,
+      items: [
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Undefined,
+          dataType: DmnBuiltInDataType.Undefined,
+        },
+      ],
     },
     isResetSupportedOnRootExpression: false,
   },

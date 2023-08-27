@@ -10,7 +10,17 @@ export const config: StorybookConfig = {
   },
   docs: {
     autodocs: "tag",
+    defaultName: "Overview",
   },
+  addons: [
+    "@storybook/addon-controls",
+    "@storybook/addon-docs",
+    "@storybook/addon-highlight",
+    "@storybook/addon-measure",
+    "@storybook/addon-outline",
+    "@storybook/addon-toolbars",
+    "@storybook/addon-viewport",
+  ],
   webpackFinal: async (config) => {
     if (process.env.STORYBOOK_BASE_WRAPPER_INTERNAL__liveReload) {
       config.module?.rules?.push({

@@ -1,13 +1,20 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
 import * as PostBureauRiskCategory from "./PostBureauRiskCategory.stories";
+import dataTypesImage from "./post-bureau-risk-category-data-types.png";
+import dmnImage from "./post-bureau-risk-category-dmn.png";
 
 <Meta title="MDX/Post Bureau Risk Category" of={PostBureauRiskCategory} />
 
 # Post Bureau Risk Category Expression
 
-With `MDX` we can include a story for `Checkbox` right in the middle of our
-markdown documentation.
-
 <Canvas>
   <Story of={PostBureauRiskCategory.Base} />
 </Canvas>
+
+<p>
+  <img src={dmnImage} alt="Alt text" title="title" />
+</p>
+
+<p>
+  <img src={dataTypesImage} alt="Alt text" title="title" />
+</p>

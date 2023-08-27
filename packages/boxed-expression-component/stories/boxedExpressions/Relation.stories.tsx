@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
 import { BoxedExpressionEditorWrapper, dataTypes } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "../use-cases/EmptyExpression.stories";
+import { Base as EmptyExpression } from "../useCases/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../../src/expressions/RelationExpression";
 

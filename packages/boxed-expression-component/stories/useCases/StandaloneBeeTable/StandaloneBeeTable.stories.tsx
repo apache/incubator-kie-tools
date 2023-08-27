@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { ResizerStopBehavior } from "../../src/resizing/ResizingWidthsContext";
-import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../../src/api";
-import { StandaloneBeeTable } from "../../src/table/BeeTable";
+import { ResizerStopBehavior } from "../../../src/resizing/ResizingWidthsContext";
+import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../../../src/api";
+import { StandaloneBeeTable } from "../../../src/table/BeeTable";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof StandaloneBeeTable> = {
