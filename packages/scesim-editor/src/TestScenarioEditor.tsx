@@ -27,23 +27,20 @@ import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshalle
 
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
-import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import EditIcon from "@patternfly/react-icons/dist/esm/icons/edit-alt-icon";
+import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
+import TestScenarioCreationPanel from "./panels/TestScenarioCreationPanel";
 import { TestToolsPanel } from "./panels/TestToolsPanel";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
@@ -61,13 +58,21 @@ export enum TestScenarioEditorDock {
   SETTINGS,
 }
 
+enum TestScenarioFileStatus {
+  EMPTY,
+  ERROR,
+  NEW,
+  UNSUPPORTED,
+  VALID,
+}
+
 export type TestScenarioEditorRef = {
   /** TODO Convert these to Promises */
   getContent(): string;
   setContent(path: string, content: string): void;
 };
 
-export function TestScenarioDocksPanel({
+function TestScenarioDocksPanel({
   setDockPanel,
 }: {
   setDockPanel: (isOpen: boolean, selected: TestScenarioEditorDock) => void;
@@ -99,70 +104,27 @@ export function TestScenarioDocksPanel({
   );
 }
 
-/* Test Scenario Creation Panel  */
-
-export function TestScenarioCreationPanel({
-  onCreateScesimButtonClicked,
+function TestScenarioParserErrorPanel({
+  scesimFileStatus,
+  scesimFileVersion,
 }: {
-  onCreateScesimButtonClicked: (assetType: string, skipFile: boolean) => void;
+  scesimFileStatus: TestScenarioFileStatus;
+  scesimFileVersion: string;
 }) {
-  const assetsOption = [
-    { value: "", label: "Select a type", disabled: true },
-    { value: "DMN", label: "Decision (DMN)", disabled: false },
-    { value: "RULE", label: "Rule (DRL)", disabled: true },
-  ];
-
-  const [assetType, setAssetType] = React.useState("");
-  const [skipFile, setSkipFile] = React.useState(false);
-
   return (
     <EmptyState>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
-        Create a new Test Scenario
+      <EmptyStateIcon icon={ErrorIcon} />
+
+      <Title headingLevel="h4" size="lg">
+        {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
+          ? "This file holds a Test Scenario asset version (" + scesimFileVersion + ") not supported"
+          : "Generic parser error"}
       </Title>
-      <Form isHorizontal className="kie-scesim-editor--creation-form">
-        <FormGroup label="Asset type" isRequired>
-          <FormSelect
-            value={assetType}
-            id="asset-type-select"
-            name="asset-type-select"
-            onChange={(value: string) => {
-              setAssetType(value);
-            }}
-          >
-            {assetsOption.map((option, index) => (
-              <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-        {assetType == "DMN" && (
-          <FormGroup label="Select DMN" isRequired>
-            <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
-              <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
-            </FormSelect>
-          </FormGroup>
-        )}
-        <FormGroup>
-          <Checkbox
-            id="skip-scesim-checkbox"
-            isChecked={skipFile}
-            label="Skip this file during the test"
-            name="skip-scesim-checkbox"
-            onChange={(value: boolean) => {
-              setSkipFile(value);
-            }}
-          />
-        </FormGroup>
-      </Form>
-      <Button
-        variant="primary"
-        icon={<AddIcon />}
-        isDisabled={assetType == ""}
-        onClick={() => onCreateScesimButtonClicked(assetType, skipFile)}
-      >
-        Create
-      </Button>
+      <EmptyStateBody>
+        {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
+          ? "Most likely, this file has been generated with a very old Business Central version."
+          : "Impossibile to correctly parse the provided scesim file."}
+      </EmptyStateBody>
     </EmptyState>
   );
 }
@@ -174,24 +136,43 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const marshaller = useMemo(() => getMarshaller(scesimFile.content.trim()), [scesimFile]);
 
-  const scesimInitial: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = useMemo(
+  const scesimLoaded: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType } = useMemo(
     () => marshaller.parser.parse(),
     [marshaller.parser]
   );
 
-  const [scesim, setScesim] = useState(scesimInitial);
+  const [scesimModel, setScesimModel] = useState(scesimLoaded);
+
+  const scesimFileStatus = useMemo(() => {
+    if (scesimModel.ScenarioSimulationModel) {
+      /* NOT ACCESSIBLE
+      if (scesim?.ScenarioSimulationModel["parsererror"]) {
+        return TestScenarioFileStatus.ERROR;
+      } */
+      if (scesimModel.ScenarioSimulationModel["@_version"] != "1.8") {
+        return TestScenarioFileStatus.UNSUPPORTED;
+      } else if (scesimModel.ScenarioSimulationModel["settings"]?.["type"]) {
+        return TestScenarioFileStatus.VALID;
+      } else {
+        return TestScenarioFileStatus.NEW;
+      }
+    } else {
+      return TestScenarioFileStatus.EMPTY;
+    }
+  }, [scesimModel]);
+
   useEffect(() => {
-    console.log("SCESIM Model updated");
-    console.log(scesimInitial);
-    setScesim(scesimInitial);
-  }, [scesimInitial]);
+    console.debug("SCESIM Model updated");
+    console.debug(scesimLoaded);
+    setScesimModel(scesimLoaded);
+  }, [scesimLoaded]);
 
   /** Implementing Editor APIs */
 
   useImperativeHandle(
     ref,
     () => ({
-      getContent: () => marshaller.builder.build(scesim),
+      getContent: () => marshaller.builder.build(scesimModel),
       setContent: (path, content) => {
         console.debug("SCESIM setContent called");
         console.debug("=== FILE CONTENT ===");
@@ -201,14 +182,14 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
         setScesimFile({ content: content || EMPTY_ONE_EIGHT, path: path });
       },
     }),
-    [marshaller.builder, scesim]
+    [marshaller.builder, scesimModel]
   );
 
   /** scesim model update functions */
 
   const setInitialSettings = useCallback(
     (assetType: string, skipFile: boolean) =>
-      setScesim((prevState) => ({
+      setScesimModel((prevState) => ({
         ScenarioSimulationModel: {
           ...prevState.ScenarioSimulationModel,
           ["settings"]: {
@@ -218,7 +199,7 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
           },
         },
       })),
-    [setScesim]
+    [setScesimModel]
   );
 
   /** Test Scenario Tab Panel  */
@@ -239,77 +220,87 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   return (
     <>
-      {scesim.ScenarioSimulationModel ? (
-        <>
-          {scesim.ScenarioSimulationModel["settings"]?.["type"] ? (
-            <>
-              <div className="kie-scesim-editor--content">
-                <Tabs
-                  isFilled={true}
-                  activeKey={tab}
-                  onSelect={onTabChanged}
-                  role="region"
-                  className={"kie-scesim-editor--tabs"}
-                >
-                  <Tab
-                    eventKey={TestScenarioEditorTab.EDITOR}
-                    title={
-                      <>
-                        <TabTitleIcon>
-                          <TableIcon />
-                        </TabTitleIcon>
-                        <TabTitleText>Test Scenarios</TabTitleText>
-                      </>
-                    }
+      {(() => {
+        switch (scesimFileStatus) {
+          case TestScenarioFileStatus.EMPTY:
+            return (
+              <Bullseye>
+                <Spinner aria-label="SCESIM Data loading .." />
+              </Bullseye>
+            );
+          case TestScenarioFileStatus.NEW:
+            return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
+          case TestScenarioFileStatus.UNSUPPORTED:
+            return (
+              <TestScenarioParserErrorPanel
+                scesimFileStatus={scesimFileStatus}
+                scesimFileVersion={scesimModel.ScenarioSimulationModel["@_version"]!}
+              />
+            );
+          case TestScenarioFileStatus.VALID:
+            return (
+              <>
+                <div className="kie-scesim-editor--content">
+                  <Tabs
+                    isFilled={true}
+                    activeKey={tab}
+                    onSelect={onTabChanged}
+                    role="region"
+                    className={"kie-scesim-editor--tabs"}
                   >
-                    {tab === TestScenarioEditorTab.EDITOR && (
-                      <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
-                        <DrawerContent
-                          panelContent={
-                            <TestToolsPanel
-                              selectedDock={dockPanel.selected}
-                              onClose={() =>
-                                setDockPanel((prev) => {
-                                  return { ...prev, isOpen: false };
-                                })
-                              }
-                            />
-                          }
-                        >
-                          <DrawerContentBody>
-                            <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
-                          </DrawerContentBody>
-                        </DrawerContent>
-                      </Drawer>
-                    )}
-                  </Tab>
-                  <Tab
-                    eventKey={TestScenarioEditorTab.BACKGROUND}
-                    isDisabled
-                    title={
-                      <>
-                        <TabTitleIcon>
-                          <TableIcon />
-                        </TabTitleIcon>
-                        <TabTitleText>Background</TabTitleText>
-                      </>
-                    }
-                  >
-                    Backgroud
-                  </Tab>
-                </Tabs>
-              </div>
-              <TestScenarioDocksPanel setDockPanel={onDockPanelChange} />
-            </>
-          ) : (
-            <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />
-          )}
-        </>
-      ) : (
-        <Bullseye>
-          <Spinner aria-label="SCESIM Data loading .." />
-        </Bullseye>
-      )}
+                    <Tab
+                      eventKey={TestScenarioEditorTab.EDITOR}
+                      title={
+                        <>
+                          <TabTitleIcon>
+                            <TableIcon />
+                          </TabTitleIcon>
+                          <TabTitleText>Test Scenarios</TabTitleText>
+                        </>
+                      }
+                    >
+                      {tab === TestScenarioEditorTab.EDITOR && (
+                        <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
+                          <DrawerContent
+                            panelContent={
+                              <TestToolsPanel
+                                selectedDock={dockPanel.selected}
+                                onClose={() =>
+                                  setDockPanel((prev) => {
+                                    return { ...prev, isOpen: false };
+                                  })
+                                }
+                              />
+                            }
+                          >
+                            <DrawerContentBody>
+                              <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
+                            </DrawerContentBody>
+                          </DrawerContent>
+                        </Drawer>
+                      )}
+                    </Tab>
+                    <Tab
+                      eventKey={TestScenarioEditorTab.BACKGROUND}
+                      isDisabled
+                      title={
+                        <>
+                          <TabTitleIcon>
+                            <TableIcon />
+                          </TabTitleIcon>
+                          <TabTitleText>Background</TabTitleText>
+                        </>
+                      }
+                    >
+                      Backgroud
+                    </Tab>
+                  </Tabs>
+                </div>
+                <TestScenarioDocksPanel setDockPanel={onDockPanelChange} />
+              </>
+            );
+        }
+      })()}
     </>
   );
 });

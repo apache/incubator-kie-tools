@@ -26,7 +26,10 @@ export function DevWebApp() {
   const ref = useRef<TestScenarioEditorRef>(null);
 
   useEffect(() => {
-    ref.current?.setContent("", "");
+    /* Simulating a call from "Foundation" code */
+    setTimeout(() => {
+      ref.current?.setContent("", "");
+    }, 1000);
   }, [ref]);
 
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -67,7 +70,7 @@ export function DevWebApp() {
   return (
     <>
       <Page onDragOver={onDragOver} onDrop={onDrop}>
-        <PageSection variant={"light"} isFilled={false} padding={{ default: "padding" }}>
+        <PageSection aria-label={"dev-app-header"} variant={"light"} isFilled={false} padding={{ default: "padding" }}>
           <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
             <FlexItem shrink={{ default: "shrink" }}>
               <h3>Test Scenario Editor :: Dev WebApp</h3>
@@ -84,7 +87,7 @@ export function DevWebApp() {
           <a ref={downloadRef} />
         </PageSection>
         <hr />
-        <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true}>
+        <PageSection aria-label={"dev-app-body"} variant={"light"} isFilled={true} hasOverflowScroll={true}>
           <TestScenarioEditor ref={ref} />
         </PageSection>
       </Page>
