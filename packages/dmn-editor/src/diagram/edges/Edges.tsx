@@ -111,7 +111,7 @@ export function useEdgeClassName() {
 //
 
 const interactionStrokeProps = {
-  strokeOpacity: 0,
+  strokeOpacity: 0.01,
   markerEnd: undefined,
   style: undefined,
   className: "react-flow__edge-interaction",
@@ -123,13 +123,12 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
-      <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-
       <InformationRequirementPath
         d={path}
         {...interactionStrokeProps}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
       />
+      <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
 });
@@ -139,13 +138,12 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
-      <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-
       <KnowledgeRequirementPath
         d={path}
         {...interactionStrokeProps}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
       />
+      <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
     </>
   );
 });
@@ -157,14 +155,14 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
     <>
       <AuthorityRequirementPath
         d={path}
-        className={`kie-dmn-editor--edge ${className}`}
-        centerToConnectionPoint={false}
-      />
-      <AuthorityRequirementPath
-        d={path}
         centerToConnectionPoint={false}
         {...interactionStrokeProps}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+      />
+      <AuthorityRequirementPath
+        d={path}
+        className={`kie-dmn-editor--edge ${className}`}
+        centerToConnectionPoint={false}
       />
     </>
   );
@@ -175,14 +173,12 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
+      <AssociationPath
+        d={path}
+        {...interactionStrokeProps}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+      />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {(props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH) && (
-        <AssociationPath
-          d={path}
-          {...interactionStrokeProps}
-          strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
-        />
-      )}
     </>
   );
 });

@@ -354,6 +354,10 @@ the cursor is inside it. By making it adimensional, that never happens.
   stroke: #006ba4 !important;
   stroke-width: 3px !important;
 }
+.react-flow__edge:not(.selected) .kie-dmn-editor--edge:hover,
+.react-flow__edge:not(.selected) .react-flow__edge-interaction:hover + .kie-dmn-editor--edge {
+  stroke-width: 2px !important;
+}
 
 /* nodes selection / hover */
 
