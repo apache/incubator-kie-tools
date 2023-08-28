@@ -27,35 +27,45 @@ import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshalle
 
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
+import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
 import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
+import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import EditIcon from "@patternfly/react-icons/dist/esm/icons/edit-alt-icon";
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-import TestScenarioCreationPanel from "./panels/TestScenarioCreationPanel";
 import { TestToolsPanel } from "./panels/TestToolsPanel";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
 
-export enum TestScenarioEditorTab {
-  EDITOR,
-  BACKGROUND,
-}
+/* Constants */
+
+const CURRENT_SUPPORTED_VERSION = "1.8";
+
+/* Enums */
 
 export enum TestScenarioEditorDock {
   CHEATSHEET,
   DATA_OBJECT,
   SETTINGS,
+}
+
+enum TestScenarioEditorTab {
+  EDITOR,
+  BACKGROUND,
 }
 
 enum TestScenarioFileStatus {
@@ -66,37 +76,113 @@ enum TestScenarioFileStatus {
   VALID,
 }
 
+export enum TestScenarioType {
+  DMN,
+  RULE,
+}
+
+/* Types */
+
 export type TestScenarioEditorRef = {
-  /** TODO Convert these to Promises */
+  /* TODO Convert these to Promises */
   getContent(): string;
   setContent(path: string, content: string): void;
 };
 
-function TestScenarioDocksPanel({
-  setDockPanel,
+/* Sub-Components */
+
+function TestScenarioCreationPanel({
+  onCreateScesimButtonClicked,
 }: {
-  setDockPanel: (isOpen: boolean, selected: TestScenarioEditorDock) => void;
+  onCreateScesimButtonClicked: (assetType: string, skipFile: boolean) => void;
+}) {
+  const assetsOption = [
+    { value: "", label: "Select a type", disabled: true },
+    { value: TestScenarioType[TestScenarioType.DMN], label: "Decision (DMN)", disabled: false },
+    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: true },
+  ];
+
+  const [assetType, setAssetType] = React.useState("");
+  const [skipFile, setSkipFile] = React.useState(false);
+
+  return (
+    <EmptyState>
+      <EmptyStateIcon icon={CubesIcon} />
+      <Title headingLevel={"h6"} size={"md"}>
+        Create a new Test Scenario
+      </Title>
+      <Form isHorizontal className="kie-scesim-editor--creation-form">
+        <FormGroup label="Asset type" isRequired>
+          <FormSelect
+            value={assetType}
+            id="asset-type-select"
+            name="asset-type-select"
+            onChange={(value: string) => {
+              console.log(assetType);
+              setAssetType(value);
+            }}
+          >
+            {assetsOption.map((option, index) => (
+              <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label={option.label} />
+            ))}
+          </FormSelect>
+        </FormGroup>
+        {assetType == TestScenarioType[TestScenarioType.DMN] && (
+          <FormGroup label="Select DMN" isRequired>
+            <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
+              <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
+            </FormSelect>
+          </FormGroup>
+        )}
+        <FormGroup>
+          <Checkbox
+            id="skip-scesim-checkbox"
+            isChecked={skipFile}
+            label="Skip this file during the test"
+            name="skip-scesim-checkbox"
+            onChange={(value: boolean) => {
+              setSkipFile(value);
+            }}
+          />
+        </FormGroup>
+      </Form>
+      <Button
+        variant="primary"
+        icon={<AddIcon />}
+        isDisabled={assetType == ""}
+        onClick={() => onCreateScesimButtonClicked(assetType, skipFile)}
+      >
+        Create
+      </Button>
+    </EmptyState>
+  );
+}
+
+function TestScenarioDocksPanel({
+  onDockButtonClicked,
+}: {
+  onDockButtonClicked: (selected: TestScenarioEditorDock) => void;
 }) {
   return (
     <div className="kie-scesim-editor--right-sidebar">
       <Tooltip content={<div>Data Objects tool: It provides a tool to add your Data Objects in Test Scenarios</div>}>
         <Button
           variant="plain"
-          onClick={() => setDockPanel(true, TestScenarioEditorDock.DATA_OBJECT)}
+          onClick={() => onDockButtonClicked(TestScenarioEditorDock.DATA_OBJECT)}
           icon={<EditIcon />}
         />
       </Tooltip>
       <Tooltip content={<div>Settings</div>}>
         <Button
           variant="plain"
-          onClick={() => setDockPanel(true, TestScenarioEditorDock.SETTINGS)}
+          onClick={() => onDockButtonClicked(TestScenarioEditorDock.SETTINGS)}
           icon={<CogIcon />}
         />
       </Tooltip>
       <Tooltip content={<div>CheatSheet: In this panel you can found useful information for Test Scenario Usage</div>}>
         <Button
           variant="plain"
-          onClick={() => setDockPanel(true, TestScenarioEditorDock.CHEATSHEET)}
+          onClick={() => onDockButtonClicked(TestScenarioEditorDock.CHEATSHEET)}
           icon={<InfoIcon />}
         />
       </Tooltip>
@@ -104,12 +190,87 @@ function TestScenarioDocksPanel({
   );
 }
 
+function TestScenarioMainPanel() {
+  const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
+
+  const onTabChanged = useCallback((_event, tab) => {
+    setTab(tab);
+  }, []);
+
+  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
+
+  const closeDockPanel = useCallback(() => {
+    setDockPanel((prev) => {
+      return { ...prev, isOpen: false };
+    });
+  }, []);
+
+  const openDockPanel = useCallback((selected: TestScenarioEditorDock.DATA_OBJECT) => {
+    setDockPanel({ isOpen: true, selected: selected });
+  }, []);
+
+  return (
+    <>
+      <div className="kie-scesim-editor--content">
+        <Tabs
+          isFilled={true}
+          activeKey={tab}
+          onSelect={onTabChanged}
+          role="region"
+          className={"kie-scesim-editor--tabs"}
+        >
+          <Tab
+            eventKey={TestScenarioEditorTab.EDITOR}
+            title={
+              <>
+                <TabTitleIcon>
+                  <TableIcon />
+                </TabTitleIcon>
+                <TabTitleText>Test Scenarios</TabTitleText>
+              </>
+            }
+          >
+            {tab === TestScenarioEditorTab.EDITOR && (
+              <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
+                <DrawerContent
+                  panelContent={<TestToolsPanel selectedDock={dockPanel.selected} onClose={closeDockPanel} />}
+                >
+                  <DrawerContentBody>
+                    <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
+                  </DrawerContentBody>
+                </DrawerContent>
+              </Drawer>
+            )}
+          </Tab>
+          <Tab
+            eventKey={TestScenarioEditorTab.BACKGROUND}
+            isDisabled
+            title={
+              <>
+                <TabTitleIcon>
+                  <TableIcon />
+                </TabTitleIcon>
+                <TabTitleText>Background</TabTitleText>
+              </>
+            }
+          >
+            Backgroud
+          </Tab>
+        </Tabs>
+      </div>
+      <TestScenarioDocksPanel onDockButtonClicked={openDockPanel} />
+    </>
+  );
+}
+
 function TestScenarioParserErrorPanel({
+  parserErrorMessage,
   scesimFileStatus,
   scesimFileVersion,
 }: {
+  parserErrorMessage?: string;
   scesimFileStatus: TestScenarioFileStatus;
-  scesimFileVersion: string;
+  scesimFileVersion?: string;
 }) {
   return (
     <EmptyState>
@@ -123,7 +284,7 @@ function TestScenarioParserErrorPanel({
       <EmptyStateBody>
         {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
           ? "Most likely, this file has been generated with a very old Business Central version."
-          : "Impossibile to correctly parse the provided scesim file."}
+          : "Impossibile to correctly parse the provided scesim file. " + parserErrorMessage}
       </EmptyStateBody>
     </EmptyState>
   );
@@ -145,11 +306,10 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const scesimFileStatus = useMemo(() => {
     if (scesimModel.ScenarioSimulationModel) {
-      /* NOT ACCESSIBLE
-      if (scesim?.ScenarioSimulationModel["parsererror"]) {
+      if (scesimModel?.ScenarioSimulationModel["parsererror"]) {
         return TestScenarioFileStatus.ERROR;
-      } */
-      if (scesimModel.ScenarioSimulationModel["@_version"] != "1.8") {
+      }
+      if (scesimModel.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
         return TestScenarioFileStatus.UNSUPPORTED;
       } else if (scesimModel.ScenarioSimulationModel["settings"]?.["type"]) {
         return TestScenarioFileStatus.VALID;
@@ -164,6 +324,8 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
   useEffect(() => {
     console.debug("SCESIM Model updated");
     console.debug(scesimLoaded);
+    console.debug(marshaller);
+
     setScesimModel(scesimLoaded);
   }, [scesimLoaded]);
 
@@ -202,22 +364,6 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
     [setScesimModel]
   );
 
-  /** Test Scenario Tab Panel  */
-
-  const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
-
-  const onTabChanged = useCallback((event, tab) => {
-    setTab(tab);
-  }, []);
-
-  /** Test Scenario Right Dock Panel  */
-
-  const [dockPanel, setDockPanel] = useState({ isOpen: true, selected: TestScenarioEditorDock.DATA_OBJECT });
-
-  const onDockPanelChange = useCallback((isOpen: boolean, selected: TestScenarioEditorDock.DATA_OBJECT) => {
-    setDockPanel({ isOpen: isOpen, selected: selected });
-  }, []);
-
   return (
     <>
       {(() => {
@@ -228,6 +374,8 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
                 <Spinner aria-label="SCESIM Data loading .." />
               </Bullseye>
             );
+          case TestScenarioFileStatus.ERROR:
+            <TestScenarioParserErrorPanel scesimFileStatus={scesimFileStatus} />;
           case TestScenarioFileStatus.NEW:
             return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
           case TestScenarioFileStatus.UNSUPPORTED:
@@ -240,63 +388,7 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
           case TestScenarioFileStatus.VALID:
             return (
               <>
-                <div className="kie-scesim-editor--content">
-                  <Tabs
-                    isFilled={true}
-                    activeKey={tab}
-                    onSelect={onTabChanged}
-                    role="region"
-                    className={"kie-scesim-editor--tabs"}
-                  >
-                    <Tab
-                      eventKey={TestScenarioEditorTab.EDITOR}
-                      title={
-                        <>
-                          <TabTitleIcon>
-                            <TableIcon />
-                          </TabTitleIcon>
-                          <TabTitleText>Test Scenarios</TabTitleText>
-                        </>
-                      }
-                    >
-                      {tab === TestScenarioEditorTab.EDITOR && (
-                        <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
-                          <DrawerContent
-                            panelContent={
-                              <TestToolsPanel
-                                selectedDock={dockPanel.selected}
-                                onClose={() =>
-                                  setDockPanel((prev) => {
-                                    return { ...prev, isOpen: false };
-                                  })
-                                }
-                              />
-                            }
-                          >
-                            <DrawerContentBody>
-                              <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
-                            </DrawerContentBody>
-                          </DrawerContent>
-                        </Drawer>
-                      )}
-                    </Tab>
-                    <Tab
-                      eventKey={TestScenarioEditorTab.BACKGROUND}
-                      isDisabled
-                      title={
-                        <>
-                          <TabTitleIcon>
-                            <TableIcon />
-                          </TabTitleIcon>
-                          <TabTitleText>Background</TabTitleText>
-                        </>
-                      }
-                    >
-                      Backgroud
-                    </Tab>
-                  </Tabs>
-                </div>
-                <TestScenarioDocksPanel setDockPanel={onDockPanelChange} />
+                <TestScenarioMainPanel />
               </>
             );
         }

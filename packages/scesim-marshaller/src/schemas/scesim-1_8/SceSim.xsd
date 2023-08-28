@@ -143,15 +143,22 @@
       <xsd:element type="wrappedImportsType" name="imports" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
+  <xsd:complexType name="parserError">
+    <xsd:sequence>
+      <xsd:attribute type="xsd:string" name="style" />
+    </xsd:sequence>
+  </xsd:complexType>
+
   <xsd:complexType name="ScenarioSimulationModelType">
     <xsd:sequence>
       <xsd:element type="simulationType" name="simulation" />
       <xsd:element type="backgroundType" name="background" />
       <xsd:element type="settingsType" name="settings" />
       <xsd:element type="importsType" name="imports" />
+      <!-- Runtime element only: It holds data in case of error on unmarshalling phase -->
+      <xsd:element type="parserError" name="parsererror" minOccurs="0" maxOccurs="1" />
     </xsd:sequence>
     <xsd:attribute type="xsd:string" name="version" />
   </xsd:complexType>
-
 
 </xsd:schema>
