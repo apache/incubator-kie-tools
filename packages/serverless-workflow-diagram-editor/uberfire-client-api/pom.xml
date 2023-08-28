@@ -79,6 +79,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>errai-ui</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
     </dependency>
@@ -87,7 +92,7 @@
       <groupId>com.google.jsinterop</groupId>
       <artifactId>jsinterop-annotations</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.gwtproject</groupId>
       <artifactId>gwt-user</artifactId>

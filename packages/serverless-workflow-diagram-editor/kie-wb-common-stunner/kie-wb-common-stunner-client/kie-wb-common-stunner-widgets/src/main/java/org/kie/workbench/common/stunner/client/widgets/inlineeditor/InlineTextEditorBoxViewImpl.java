@@ -20,18 +20,17 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.Event;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
 import jsinterop.base.Js;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
+import org.jboss.errai.ui.shared.api.annotations.ForEvent;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditorBox;
@@ -98,6 +97,12 @@ public class InlineTextEditorBoxViewImpl
         placeholder = translationService.getTranslation(StunnerWidgetsConstants.NameEditBoxWidgetViewImp_name);
         fontSize = DEFAULT_FONT_SIZE;
         fontFamily = DEFAULT_FONT_FAMILY;
+
+        //TODO restore event binding via @EventHandler annotation once J2CL migration is complete
+        nameField.addEventListener("keydown", this::onChangeName);
+        nameField.addEventListener("keyup", this::onChangeName);
+        nameField.addEventListener("keypress", this::onChangeName);
+        nameField.addEventListener("blur", this::onChangeName);
     }
 
     @Override
@@ -177,21 +182,21 @@ public class InlineTextEditorBoxViewImpl
         return style.toString();
     }
 
-    @EventHandler("nameField")
-    @SinkNative(Event.ONKEYDOWN | Event.ONKEYUP | Event.ONKEYPRESS | Event.ONBLUR)
-    void onChangeName(Event e) {
+    //@EventHandler("nameField")
+    void onChangeName(@ForEvent({"keydown", "keyup", "keypress", "blur"}) Event event) {
+        KeyboardEvent e = Js.uncheckedCast(event);
         if (isVisible()) {
             e.stopPropagation();
-            if (e.getTypeInt() == Event.ONBLUR) {
+            if (e.type.equals("blur")) {
                 saveChanges();
-            } else if (e.getTypeInt() == Event.ONKEYDOWN) {
-                if (e.getKeyCode() == KeyCodes.KEY_ENTER && !e.getShiftKey()) {
+            } else if (e.type.equals("keydown")) {
+                if (e.key.equals("Enter")&& !e.shiftKey) {
                     e.preventDefault();
                     saveChanges();
-                } else if ((!isMultiline && e.getKeyCode() == KeyCodes.KEY_ENTER && e.getShiftKey()) ||
-                        e.getKeyCode() == KeyCodes.KEY_TAB) {
+                } else if ((!isMultiline && e.key.equals("Enter") && e.shiftKey) ||
+                        e.key.equals("Tab")) {
                     e.preventDefault();
-                } else if (e.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                } else if (e.key.equals("Escape")) {
                     rollback();
                 }
             }

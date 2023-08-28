@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 
 /**
  * Just a simple view that wraps any widget.
  */
-public interface WidgetWrapperView extends IsWidget {
+public interface WidgetWrapperView extends IsElement {
 
     /**
      * Clears the current widget, if any, and sets the new widget to wrap.
      */
-    WidgetWrapperView setWidget(final IsWidget widget);
+    WidgetWrapperView setWidget(final IsElement widget);
 
     /**
      * Clears the wrapped widget.

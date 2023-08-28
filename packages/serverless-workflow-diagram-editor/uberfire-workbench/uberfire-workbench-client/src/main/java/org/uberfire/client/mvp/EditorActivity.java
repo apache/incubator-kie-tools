@@ -17,8 +17,7 @@ package org.uberfire.client.mvp;
 
 import java.util.List;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.Element;
 import elemental2.promise.Promise;
 import org.uberfire.workbench.model.bridge.Notification;
 
@@ -41,8 +40,7 @@ public interface EditorActivity extends Activity {
     Promise<List<Notification>> validate();
 
     default Element getWidgetElement() {
-        IsWidget widget = getWidget();
-        return (widget == null) ? null : widget.asWidget().getElement();
+        throw new UnsupportedOperationException("The editor does not support widget element.");
     }
 
     default Promise<Void> undo() {

@@ -19,9 +19,8 @@ package org.kie.workbench.common.stunner.client.widgets.views;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.common.client.dom.DOMUtil;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -37,9 +36,8 @@ public class WidgetElementRendererViewImpl implements WidgetElementRendererView,
     private HTMLDivElement content;
 
     @Override
-    public WidgetElementRendererView setWidget(final IsWidget widget) {
-        DOMUtil.appendWidgetToElement(content,
-                                      widget);
+    public WidgetElementRendererView setWidget(final HTMLElement widget) {
+        content.appendChild(widget);
         return this;
     }
 }

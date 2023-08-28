@@ -12,14 +12,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div>
-  <!-- The outer <div> is important - for some reason - to receive browser events in sessionContainer -->
-  <div class="session-container" data-field="sessionContainer">
-    <div data-field="toolbarPanel" class="toolbar-panel"></div>
-    <div data-field="diagramContainer" class="diagram-container">
-      <div data-field="sessionHeaderContainer" class="session-header-container" style="display: none"></div>
-      <div data-field="palettePanel" class="palette-panel"></div>
-      <div id="canvasPanel" data-field="canvasPanel" class="canvas-panel"></div>
-    </div>
-  </div>
+<!-- The outer <div> is important - for some reason - to receive browser events in sessionContainer -->
+<div class="session-container" data-field="sessionContainer">
+  <div id="canvasPanel" data-field="canvasPanel" class="canvas-panel" style="width: 100%; height: 100%"></div>
 </div>

@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.HTMLDivElement;
+import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -118,7 +119,7 @@ public class ShapeGlyphDragHandler {
 
         // Handle the proxy panel instance.
         moveProxyTo(x, y);
-        rootPanelSupplier.get().add(dragProxyPanel);
+        rootPanelSupplier.get().getElement().appendChild(Js.cast(dragProxyPanel.getElement()));
 
         return this;
     }
@@ -169,7 +170,7 @@ public class ShapeGlyphDragHandler {
     void onMouseUp(final MouseUpEvent event,
                    final ShapeGlyphDragHandler.Callback callback) {
         clearHandlers();
-        rootPanelSupplier.get().remove(dragProxyPanel);
+        rootPanelSupplier.get().getElement().removeChild(Js.cast(dragProxyPanel.getElement()));
         callback.onComplete(event.getClientX(),
                             event.getClientY());
     }
@@ -189,7 +190,7 @@ public class ShapeGlyphDragHandler {
     private void clearState(final Command proxyDestroyCommand) {
         clearHandlers();
         if (Objects.nonNull(dragProxyPanel)) {
-            rootPanelSupplier.get().remove(dragProxyPanel);
+            rootPanelSupplier.get().getElement().removeChild(Js.cast(dragProxyPanel.getElement()));
             if (null != proxyDestroyCommand) {
                 proxyDestroyCommand.execute();
             }

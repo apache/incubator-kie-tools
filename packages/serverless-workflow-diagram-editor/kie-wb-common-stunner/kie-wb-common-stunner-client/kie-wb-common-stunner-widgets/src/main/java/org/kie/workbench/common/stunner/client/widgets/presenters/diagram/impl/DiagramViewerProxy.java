@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
+import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
@@ -50,8 +51,8 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     @Override
     protected void scalePanel(final int width,
                               final int height) {
-        getLienzoCanvas().getView().setPixelSize(width,
-                                                 height);
+        getLienzoCanvas().getView().getElement().style.width = Js.cast(width + "px");
+        getLienzoCanvas().getView().getElement().style.height = Js.cast(height + "px");
     }
 
     @SuppressWarnings("unchecked")

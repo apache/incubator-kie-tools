@@ -19,21 +19,21 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
-import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
+
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 public abstract class AbstractCanvasView<V extends AbstractCanvasView>
-        extends Composite
-        implements AbstractCanvas.CanvasView<V>,
-                   ProvidesResize,
-                   RequiresResize {
+        implements AbstractCanvas.CanvasView<V> {
 
     public static final String CURSOR = "cursor";
 
-    private final ResizeFlowPanel mainPanel = new ResizeFlowPanel();
+    private final HTMLDivElement mainPanel = (HTMLDivElement) DomGlobal.document.createElement("div");
     private CanvasPanel canvasPanel;
 
     protected abstract V doInitialize(final CanvasSettings canvasSettings);
@@ -42,9 +42,8 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
 
     @PostConstruct
     public void init() {
-        initWidget(mainPanel);
-        mainPanel.getElement().getStyle().setWidth(100, Style.Unit.PCT);
-        mainPanel.getElement().getStyle().setHeight(100, Style.Unit.PCT);
+        mainPanel.style.width = CSSProperties.WidthUnionType.of("100%");
+        mainPanel.style.height = CSSProperties.HeightUnionType.of("100%");
     }
 
     @Override
@@ -52,13 +51,8 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
                               final CanvasSettings canvasSettings) {
         this.canvasPanel = canvasPanel;
         doInitialize(canvasSettings);
-        mainPanel.add(canvasPanel);
+        mainPanel.appendChild(Js.uncheckedCast(canvasPanel.asWidget().getElement()));
         return cast();
-    }
-
-    @Override
-    public void onResize() {
-        mainPanel.onResize();
     }
 
     @Override
@@ -70,7 +64,37 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
 
     @Override
     public Point2D getAbsoluteLocation() {
-        return new Point2D(getAbsoluteLeft(), getAbsoluteTop());
+        return new Point2D(getAbsoluteLeft(mainPanel), getAbsoluteTop(mainPanel));
+    }
+
+    private int getAbsoluteLeft(HTMLElement elem) {
+        int left = 0;
+        HTMLElement curr = elem;
+        // This intentionally excludes body which has a null offsetParent.
+        while (curr.offsetParent != null) {
+          left -= curr.scrollLeft;
+          curr = (HTMLElement) curr.parentNode;
+        }
+        while (elem != null) {
+          left += elem.offsetLeft;
+          elem = (HTMLElement) elem.offsetParent;
+        }
+        return left;
+    }
+
+    private int getAbsoluteTop(HTMLElement elem) {
+        int top = 0;
+        HTMLElement curr = elem;
+        // This intentionally excludes body which has a null offsetParent.
+        while (curr.offsetParent != null) {
+            top -= curr.scrollTop;
+            curr = (HTMLElement) curr.parentNode;
+        }
+        while (elem != null) {
+            top += elem.offsetTop;
+            elem = (HTMLElement) elem.offsetParent;
+        }
+        return top;
     }
 
     @Override
@@ -79,10 +103,15 @@ public abstract class AbstractCanvasView<V extends AbstractCanvasView>
     }
 
     @Override
+    public HTMLElement getElement() {
+        return mainPanel;
+    }
+
+    @Override
     public final void destroy() {
         doDestroy();
         canvasPanel.destroy();
-        mainPanel.clear();
+        removeAllChildren(mainPanel);
         canvasPanel = null;
     }
 
