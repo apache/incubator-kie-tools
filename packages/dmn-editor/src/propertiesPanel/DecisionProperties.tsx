@@ -104,6 +104,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN15__tDeci
       {/* 
       
       What about:
+      
       - supportedObjective
       - impactedPerformanceIndicator
       - decisionMaker
@@ -111,6 +112,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN15__tDeci
       - usingProcess
       - usingTask 
 
+      ?
       */}
     </>
   );

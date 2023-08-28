@@ -347,6 +347,14 @@ the cursor is inside it. By making it adimensional, that never happens.
 /* ⬇ react flow theming ⬇ */
 /* *********************** */
 
+/* edge selection / hover */
+
+.react-flow__edge.selected > * {
+  fill: #006ba4 !important;
+  stroke: #006ba4 !important;
+  stroke-width: 3px !important;
+}
+
 /* nodes selection / hover */
 
 .react-flow__node:not(.selected):hover > .kie-dmn-editor--node-shape.normal {

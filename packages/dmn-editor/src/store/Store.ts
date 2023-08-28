@@ -12,6 +12,9 @@ export interface DmnEditorDiagramNodeStatus {
   dragging: boolean;
   resizing: boolean;
 }
+export interface DmnEditorDiagramEdgeStatus {
+  selected: boolean;
+}
 
 export interface SnapGrid {
   isEnabled: boolean;
@@ -45,9 +48,10 @@ export interface State {
       enableDataTypesOnNodes: boolean;
     };
     snapGrid: SnapGrid;
-    selected: Array<string>;
-    dragging: Array<string>;
-    resizing: Array<string>;
+    selectedNodes: Array<string>;
+    draggingNodes: Array<string>;
+    resizingNodes: Array<string>;
+    selectedEdges: Array<string>;
   };
 }
 
@@ -71,6 +75,7 @@ export type Dispatch = {
     toggleOverlaysPanel: (state: State) => void;
     setSnapGrid: (state: State, snap: SnapGrid) => void;
     setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
+    setEdgeStatus: (state: State, edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
   };
 };
 
@@ -126,17 +131,18 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           enableDataTypesOnNodes: false,
         },
         snapGrid: { isEnabled: true, x: 20, y: 20 },
-        selected: [],
-        dragging: [],
-        resizing: [],
+        selectedNodes: [],
+        draggingNodes: [],
+        resizingNodes: [],
+        selectedEdges: [],
       },
       dispatch: {
         dmn: {
           reset: (model) => {
             set((state) => {
-              state.diagram.selected = [];
-              state.diagram.dragging = [];
-              state.diagram.resizing = [];
+              state.diagram.selectedNodes = [];
+              state.diagram.draggingNodes = [];
+              state.diagram.resizingNodes = [];
               state.navigation.tab = DmnEditorTab.EDITOR;
               state.boxedExpressionEditor.id = undefined;
             });
@@ -189,25 +195,34 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
             //selected
             if (newStatus.selected !== undefined) {
               if (newStatus.selected) {
-                prev.diagram.selected.push(nodeId);
+                prev.diagram.selectedNodes.push(nodeId);
               } else {
-                prev.diagram.selected = prev.diagram.selected.filter((s) => s !== nodeId);
+                prev.diagram.selectedNodes = prev.diagram.selectedNodes.filter((s) => s !== nodeId);
               }
             }
             //dragging
             if (newStatus.dragging !== undefined) {
               if (newStatus.dragging) {
-                prev.diagram.dragging.push(nodeId);
+                prev.diagram.draggingNodes.push(nodeId);
               } else {
-                prev.diagram.dragging = prev.diagram.dragging.filter((s) => s !== nodeId);
+                prev.diagram.draggingNodes = prev.diagram.draggingNodes.filter((s) => s !== nodeId);
               }
             }
             // resizing
             if (newStatus.resizing !== undefined) {
               if (newStatus.resizing) {
-                prev.diagram.resizing.push(nodeId);
+                prev.diagram.resizingNodes.push(nodeId);
               } else {
-                prev.diagram.resizing = prev.diagram.resizing.filter((s) => s !== nodeId);
+                prev.diagram.resizingNodes = prev.diagram.resizingNodes.filter((s) => s !== nodeId);
+              }
+            }
+          },
+          setEdgeStatus: (prev, edgeId, newStatus) => {
+            if (newStatus.selected !== undefined) {
+              if (newStatus.selected) {
+                prev.diagram.selectedEdges.push(edgeId);
+              } else {
+                prev.diagram.selectedEdges = prev.diagram.selectedEdges.filter((s) => s !== edgeId);
               }
             }
           },

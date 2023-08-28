@@ -75,7 +75,7 @@ export const DmnEditorInternal = ({
 
   // Only notify changes when dragging/resizing operations are not happening.
   useEffectAfterFirstRender(() => {
-    const isChanging = diagram.dragging.length > 0 || diagram.resizing.length > 0;
+    const isChanging = diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0;
     if (isChanging) {
       return;
     }
@@ -87,7 +87,7 @@ export const DmnEditorInternal = ({
     return () => {
       clearTimeout(timeout);
     };
-  }, [diagram.dragging.length, diagram.resizing.length, dmn.model, onModelChange]);
+  }, [diagram.draggingNodes.length, diagram.resizingNodes.length, dmn.model, onModelChange]);
 
   const onTabChanged = useCallback(
     (e, tab) => {

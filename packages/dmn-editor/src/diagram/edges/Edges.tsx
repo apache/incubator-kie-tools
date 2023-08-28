@@ -10,6 +10,8 @@ import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnch
 import { Unpacked } from "../useDmnDiagramData";
 import { useDmnEditorStore } from "../../store/Store";
 
+const DEFAULT_EDGE_INTRACTION_WDITH = 20;
+
 export type DmnEditorDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
   dmnObject: {
@@ -50,7 +52,7 @@ export function useKieEdgePath(source: string, target: string, data: DmnEditorDi
 export const InformationRequirementPath = React.memo((props: React.SVGProps<SVGPathElement>) => {
   return (
     <>
-      <path {...props} style={{ strokeWidth: 1, stroke: "black" }} markerEnd={"url(#closed-arrow)"} />
+      <path style={{ strokeWidth: 1, stroke: "black" }} markerEnd={"url(#closed-arrow)"} {...props} />
     </>
   );
 });
@@ -59,9 +61,9 @@ export const KnowledgeRequirementPath = React.memo((props: React.SVGProps<SVGPat
   return (
     <>
       <path
-        {...props}
         style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
         markerEnd={"url(#open-arrow)"}
+        {...props}
       />
     </>
   );
@@ -73,9 +75,9 @@ export const AuthorityRequirementPath = React.memo(
     return (
       <>
         <path
-          {...props}
           style={{ strokeWidth: 1, stroke: "black", strokeDasharray: "5,5" }}
           markerEnd={center ? `url(#closed-circle-at-center)` : `url(#closed-circle-at-border)`}
+          {...props}
         />
       </>
     );
@@ -87,11 +89,11 @@ export const AssociationPath = React.memo((props: React.SVGProps<SVGPathElement>
   return (
     <>
       <path
-        {...props}
         strokeWidth={strokeWidth}
         strokeLinecap="butt"
         strokeLinejoin="round"
         style={{ stroke: "black", strokeDasharray: `${strokeWidth},10` }}
+        {...props}
       />
     </>
   );
@@ -108,12 +110,26 @@ export function useEdgeClassName() {
 
 //
 
+const interactionStrokeProps = {
+  strokeOpacity: 0,
+  markerEnd: undefined,
+  style: undefined,
+  className: "react-flow__edge-interaction",
+  stroke: "transparent",
+};
+
 export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
   const className = useEdgeClassName();
   const path = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+
+      <InformationRequirementPath
+        d={path}
+        {...interactionStrokeProps}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+      />
     </>
   );
 });
@@ -124,6 +140,12 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
   return (
     <>
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+
+      <KnowledgeRequirementPath
+        d={path}
+        {...interactionStrokeProps}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+      />
     </>
   );
 });
@@ -138,6 +160,12 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
       />
+      <AuthorityRequirementPath
+        d={path}
+        centerToConnectionPoint={false}
+        {...interactionStrokeProps}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+      />
     </>
   );
 });
@@ -148,6 +176,13 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
   return (
     <>
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+      {(props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH) && (
+        <AssociationPath
+          d={path}
+          {...interactionStrokeProps}
+          strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+        />
+      )}
     </>
   );
 });

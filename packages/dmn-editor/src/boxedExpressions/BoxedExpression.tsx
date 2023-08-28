@@ -150,7 +150,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
                 {`Expression with ID '${boxedExpression.id}' doesn't exist.`}
               </Title>
               <EmptyStateBody>
-                This happens when the DMN file was modified externally while the expression was open here.
+                This happens when the DMN file is modified externally while the expression was open here.
               </EmptyStateBody>
               <EmptyStatePrimary>
                 <Button variant="link" onClick={dispatch.boxedExpression.close}>

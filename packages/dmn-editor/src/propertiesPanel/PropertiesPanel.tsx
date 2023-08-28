@@ -129,16 +129,16 @@ export function PropertiesPanel() {
       onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
     >
       <DrawerHead>
-        {diagram.selected.length === 1 && (
+        {diagram.selectedNodes.length === 1 && (
           <>
-            <SingleNodeProperties nodeId={diagram.selected[0]} />
+            <SingleNodeProperties nodeId={diagram.selectedNodes[0]} />
           </>
         )}
-        {diagram.selected.length > 1 && (
+        {diagram.selectedNodes.length > 1 && (
           <>
             <Flex justifyContent={{ default: "justifyContentCenter" }}>
               <TextContent>
-                <Text component={TextVariants.h4}>Multiple nodes selected ({diagram.selected.length})</Text>
+                <Text component={TextVariants.h4}>Multiple nodes selected ({diagram.selectedNodes.length})</Text>
               </TextContent>
             </Flex>
             <Form>
@@ -146,7 +146,7 @@ export function PropertiesPanel() {
             </Form>
           </>
         )}
-        {diagram.selected.length <= 0 && <GlobalProperties />}
+        {diagram.selectedNodes.length <= 0 && <GlobalProperties />}
         <DrawerActions>
           <DrawerCloseButton onClick={() => dispatch.propertiesPanel.close()} />
         </DrawerActions>

@@ -14,6 +14,12 @@ import { DmnEditorDiagramEdgeData } from "./edges/Edges";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import { DmnEditorDiagramNodeData } from "./nodes/Nodes";
 
+const diagramColors = {
+  hierarchyUp: "#0083a4",
+  hierarchyDown: "#003fa4",
+  selected: "#006ba4",
+};
+
 export function useDmnDiagramData() {
   const { diagram, dmn } = useDmnEditorStore();
 
@@ -70,10 +76,11 @@ export function useDmnDiagramData() {
       Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
     >();
 
-    const { selected, dragging, resizing } = {
-      selected: new Set(diagram.selected),
-      dragging: new Set(diagram.dragging),
-      resizing: new Set(diagram.resizing),
+    const { selectedNodes, draggingNodes, resizingNodes, selectedEdges } = {
+      selectedNodes: new Set(diagram.selectedNodes),
+      draggingNodes: new Set(diagram.draggingNodes),
+      resizingNodes: new Set(diagram.resizingNodes),
+      selectedEdges: new Set(diagram.selectedEdges),
     };
 
     function newEdge({
@@ -88,13 +95,14 @@ export function useDmnDiagramData() {
       type: EdgeType;
       source: string;
       target: string;
-    }) {
+    }): RF.Edge<DmnEditorDiagramEdgeData> {
       return {
         data: getEdgeData({ id, source, target, dmnObject }),
         id,
         type,
         source,
         target,
+        selected: selectedEdges.has(id),
       };
     }
 
@@ -208,9 +216,9 @@ export function useDmnDiagramData() {
       const newNode = {
         id,
         type,
-        selected: selected.has(id),
-        dragging: dragging.has(id),
-        resizing: resizing.has(id),
+        selected: selectedNodes.has(id),
+        dragging: draggingNodes.has(id),
+        resizing: resizingNodes.has(id),
         position: snapShapePosition(diagram.snapGrid, shape),
         data: { dmnObject, shape, index },
         zIndex: NODE_LAYERS.NODES,
@@ -245,7 +253,7 @@ export function useDmnDiagramData() {
     ];
 
     if (diagram.overlays.enableNodeHierarchyHighlight) {
-      assignClassesToHighlightedHierarchyNodes([...selected], nodesById, edges);
+      assignClassesToHighlightedHierarchyNodes([...selectedNodes], nodesById, edges);
     }
 
     // Assign parents & classNames to NODES
@@ -277,9 +285,10 @@ export function useDmnDiagramData() {
       nodesById,
     };
   }, [
-    diagram.selected,
-    diagram.dragging,
-    diagram.resizing,
+    diagram.selectedNodes,
+    diagram.draggingNodes,
+    diagram.resizingNodes,
+    diagram.selectedEdges,
     diagram.overlays.enableNodeHierarchyHighlight,
     diagram.snapGrid,
     dmn.model.definitions.drgElement,

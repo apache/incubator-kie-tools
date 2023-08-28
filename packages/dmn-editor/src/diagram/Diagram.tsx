@@ -164,7 +164,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             },
           },
         });
-        state.diagram.selected = [newNodeId];
+        state.diagram.selectedNodes = [newNodeId];
       });
     },
     [container, diagram.snapGrid, dmnEditorStoreApi, reactFlowInstance]
@@ -236,7 +236,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           },
         });
 
-        state.diagram.selected = [newNodeId];
+        state.diagram.selectedNodes = [newNodeId];
       });
     },
     [connection, container, diagram.snapGrid, dmnEditorStoreApi, nodesById, reactFlowInstance, shapesById]
@@ -365,13 +365,24 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi, edges, nodesById, reactFlowInstance, diagram.snapGrid]
   );
 
-  const onEdgeUpdate: RF.OnEdgeUpdateFunc = useCallback((args) => {
-    //
-  }, []);
-
-  const onEdgesChange = useCallback<RF.OnEdgesChange>(() => {
-    //
-  }, []);
+  const onEdgesChange = useCallback<RF.OnEdgesChange>(
+    (changes) => {
+      dmnEditorStoreApi.setState((state) => {
+        for (const change of changes) {
+          switch (change.type) {
+            case "select":
+              state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: change.selected });
+              break;
+            case "add":
+            case "remove":
+            case "reset":
+              console.log("CHANGED EDGE -->", change);
+          }
+        }
+      });
+    },
+    [dmnEditorStoreApi]
+  );
 
   const rfSnapGrid = useMemo<[number, number]>(
     () => (diagram.snapGrid.isEnabled ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
@@ -394,9 +405,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         panOnDrag={PAN_ON_DRAG}
         panActivationKeyCode={"Alt"}
         selectionMode={RF.SelectionMode.Partial}
-        edgesUpdatable={true}
         connectionLineComponent={ConnectionLine}
-        onEdgeUpdate={onEdgeUpdate}
         onConnect={onConnect}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
@@ -418,7 +427,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         <TopRightCornerPanels />
         <PanWhenAltPressed />
         <KeyboardShortcuts />
-        <RF.Background />
+        <RF.Background />{" "}
+        {/** FIXME: Tiago --> This is making the Diagram VERY slow on Firefox. Render this conditionally. */}
         <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
       </RF.ReactFlow>
     </>
@@ -488,10 +498,10 @@ export function SelectionStatus() {
   const { diagram } = useDmnEditorStore();
 
   useEffect(() => {
-    if (diagram.selected.length >= 2) {
+    if (diagram.selectedNodes.length >= 2) {
       rfStoreApi.setState({ nodesSelectionActive: true });
     }
-  }, [rfStoreApi, diagram.selected.length]);
+  }, [rfStoreApi, diagram.selectedNodes.length]);
 
   const onClose = useCallback(
     (e: React.MouseEvent) => {
@@ -502,9 +512,12 @@ export function SelectionStatus() {
   );
   return (
     <>
-      {(diagram.selected.length >= 2 && (
+      {(diagram.selectedNodes.length >= 2 && (
         <RF.Panel position={"top-center"}>
-          <Label style={{ paddingLeft: "24px" }} onClose={onClose}>{`${diagram.selected.length} nodes selected`}</Label>
+          <Label
+            style={{ paddingLeft: "24px" }}
+            onClose={onClose}
+          >{`${diagram.selectedNodes.length} nodes selected`}</Label>
         </RF.Panel>
       )) || <></>}
     </>
@@ -526,7 +539,7 @@ export function KeyboardShortcuts() {
       if (isConnecting) {
         prev.cancelConnection();
       } else {
-        if (diagram.selected.length > 0) {
+        if (diagram.selectedNodes.length > 0) {
           prev.resetSelectedElements();
         }
         (document.activeElement as any)?.blur?.();
@@ -534,7 +547,7 @@ export function KeyboardShortcuts() {
 
       return prev;
     });
-  }, [diagram.selected.length, esc, isConnecting, rfStoreApi]);
+  }, [diagram.selectedNodes.length, esc, isConnecting, rfStoreApi]);
 
   const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {
