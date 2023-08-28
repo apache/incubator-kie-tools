@@ -1317,10 +1317,10 @@ importers:
         version: 0.39.0
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.39.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -2571,8 +2571,8 @@ importers:
         specifier: ^0.39.0
         version: 0.39.0
       monaco-yaml:
-        specifier: ^4.0.0
-        version: 4.0.0(monaco-editor@0.39.0)
+        specifier: ^4.0.4
+        version: 4.0.4(monaco-editor@0.39.0)
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -2645,7 +2645,7 @@ importers:
         version: 3.5.0(jest@26.6.3)
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -27988,20 +27988,6 @@ packages:
       { integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w== }
     dev: false
 
-  /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.0)(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
-    peerDependencies:
-      monaco-editor: ">= 0.31.0"
-      monaco-yaml: "*"
-      webpack: ^4.5.0 || 5.x
-    dependencies:
-      loader-utils: 2.0.2
-      monaco-editor: 0.39.0
-      monaco-yaml: 4.0.0(monaco-editor@0.39.0)
-      webpack: 5.88.2(webpack-cli@4.10.0)
-    dev: true
-
   /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2):
     resolution:
       { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
@@ -28064,24 +28050,6 @@ packages:
       monaco-editor: ">=0.30.0"
     dependencies:
       monaco-editor: 0.39.0
-
-  /monaco-yaml@4.0.0(monaco-editor@0.39.0):
-    resolution:
-      { integrity: sha512-7/CbvZIHE1iOQF6ny+uPclcsrBnkK54lcZugIB9SzqADljhb3TliJyYs7vouaGNDF73RWvrtZrMsWCC5N/GW+g== }
-    peerDependencies:
-      monaco-editor: ">=0.30"
-    dependencies:
-      "@types/json-schema": 7.0.11
-      jsonc-parser: 3.2.0
-      monaco-editor: 0.39.0
-      monaco-marker-data-provider: 1.1.0(monaco-editor@0.39.0)
-      monaco-worker-manager: 2.0.1(monaco-editor@0.39.0)
-      path-browserify: 1.0.1
-      prettier: 2.3.0
-      vscode-languageserver-textdocument: 1.0.7
-      vscode-languageserver-types: 3.17.2
-      vscode-uri: 3.0.6
-      yaml: 2.0.1
 
   /monaco-yaml@4.0.4(monaco-editor@0.39.0):
     resolution:
@@ -34556,6 +34524,7 @@ packages:
   /vscode-uri@3.0.6:
     resolution:
       { integrity: sha512-fmL7V1eiDBFRRnu+gfRWTzyPpNIHJTc4mWnFkwBUmO9U3KPgJAmTx7oxi2bl/Rh6HLdU7+4C9wlj0k2E4AdKFQ== }
+    dev: true
 
   /vscode-uri@3.0.7:
     resolution:

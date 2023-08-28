@@ -120,7 +120,7 @@ export function ExpressionDefinitionLogicTypeSelector({
       default:
         assertUnreachable(logicType);
     }
-  }, [expression, isNested]);
+  }, [expression, isNested, parentElementId]);
 
   const getPopoverArrowPlacement = useCallback(() => {
     return getPlacementRef() as HTMLDivElement;

@@ -69,6 +69,95 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
     }
   }, [beeGwtService, isActive]);
 
+  const addContextExpressionToVariables = useCallback(
+    (contextExpressionDefinition: ContextExpressionDefinition) => {
+      const contextEntries = contextExpressionDefinition.contextEntries;
+      for (const contextEntry of contextEntries) {
+        variables?.repository.addVariableToContext(
+          contextEntry.entryInfo.id,
+          contextEntry.entryInfo.name,
+          contextExpressionDefinition.id
+        );
+      }
+    },
+    [variables?.repository]
+  );
+
+  const addRelationExpressionToVariables = useCallback(
+    (relationExpressionDefinition: RelationExpressionDefinition) => {
+      const rowEntries = relationExpressionDefinition.rows;
+      if (rowEntries) {
+        for (const rowEntry of rowEntries) {
+          for (const cell of rowEntry.cells) {
+            // The name is not relevant here because Relation does not declare variables, so we're reusing ID.
+            variables?.repository.addVariableToContext(cell.id, cell.id, relationExpressionDefinition.id);
+          }
+        }
+      }
+    },
+    [variables?.repository]
+  );
+
+  const addInvocationExpressionToVariables = useCallback(
+    (newExpression: InvocationExpressionDefinition) => {
+      const bindingEntries = newExpression.bindingEntries;
+      for (const bindingEntry of bindingEntries) {
+        variables?.repository.addVariableToContext(
+          bindingEntry.entryInfo.id,
+          bindingEntry.entryInfo.name,
+          newExpression.id
+        );
+      }
+    },
+    [variables?.repository]
+  );
+
+  const addListExpressionToVariables = useCallback(
+    (newExpression: ListExpressionDefinition) => {
+      const items = newExpression.items;
+      for (const item of items) {
+        // The name is not relevant here because ListExpression does not declare variables, so we're reusing ID.
+        variables?.repository.addVariableToContext(item.id, item.id, newExpression.id);
+      }
+    },
+    [variables?.repository]
+  );
+
+  const addDecisionTableExpressionToVariables = useCallback(
+    (decisionTable: DecisionTableExpressionDefinition) => {
+      if (decisionTable.rules) {
+        for (const rule of decisionTable.rules) {
+          if (rule.inputEntries) {
+            for (const inputEntry of rule.inputEntries) {
+              variables?.repository.addVariableToContext(inputEntry.id, inputEntry.id, decisionTable.id);
+            }
+          }
+
+          if (rule.outputEntries) {
+            for (const outputEntry of rule.outputEntries) {
+              variables?.repository.addVariableToContext(outputEntry.id, outputEntry.id, decisionTable.id);
+            }
+          }
+        }
+      }
+    },
+    [variables?.repository]
+  );
+
+  const addFunctionExpressionToVariables = useCallback(
+    (functionExpression: FunctionExpressionDefinition) => {
+      if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
+        const expression = (functionExpression as FeelFunctionExpressionDefinition).expression;
+        variables?.repository.addVariableToContext(
+          expression.id,
+          expression.name ?? expression.id,
+          functionExpression.id
+        );
+      }
+    },
+    [variables?.repository]
+  );
+
   const onLogicTypeSelected = useCallback(
     (logicType) => {
       setExpression((prev: ExpressionDefinition) => {
@@ -111,79 +200,20 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         return newExpression;
       });
     },
-    [beeGwtService, isNested, setExpression]
+    [
+      addContextExpressionToVariables,
+      addDecisionTableExpressionToVariables,
+      addFunctionExpressionToVariables,
+      addInvocationExpressionToVariables,
+      addListExpressionToVariables,
+      addRelationExpressionToVariables,
+      beeGwtService,
+      isNested,
+      parentElementId,
+      setExpression,
+      variables?.repository,
+    ]
   );
-
-  function addContextExpressionToVariables(contextExpressionDefinition: ContextExpressionDefinition) {
-    const contextEntries = contextExpressionDefinition.contextEntries;
-    for (const contextEntry of contextEntries) {
-      variables?.repository.addVariableToContext(
-        contextEntry.entryInfo.id,
-        contextEntry.entryInfo.name,
-        contextExpressionDefinition.id
-      );
-    }
-  }
-
-  function addRelationExpressionToVariables(relationExpressionDefinition: RelationExpressionDefinition) {
-    const rowEntries = relationExpressionDefinition.rows;
-    if (rowEntries) {
-      for (const rowEntry of rowEntries) {
-        for (const cell of rowEntry.cells) {
-          // The name is not relevant here because Relation does not declare variables, so we're reusing ID.
-          variables?.repository.addVariableToContext(cell.id, cell.id, relationExpressionDefinition.id);
-        }
-      }
-    }
-  }
-
-  function addInvocationExpressionToVariables(newExpression: InvocationExpressionDefinition) {
-    const bindingEntries = newExpression.bindingEntries;
-    for (const bindingEntry of bindingEntries) {
-      variables?.repository.addVariableToContext(
-        bindingEntry.entryInfo.id,
-        bindingEntry.entryInfo.name,
-        newExpression.id
-      );
-    }
-  }
-
-  function addListExpressionToVariables(newExpression: ListExpressionDefinition) {
-    const items = newExpression.items;
-    for (const item of items) {
-      // The name is not relevant here because ListExpression does not declare variables, so we're reusing ID.
-      variables?.repository.addVariableToContext(item.id, item.id, newExpression.id);
-    }
-  }
-
-  function addDecisionTableExpressionToVariables(decisionTable: DecisionTableExpressionDefinition) {
-    if (decisionTable.rules) {
-      for (const rule of decisionTable.rules) {
-        if (rule.inputEntries) {
-          for (const inputEntry of rule.inputEntries) {
-            variables?.repository.addVariableToContext(inputEntry.id, inputEntry.id, decisionTable.id);
-          }
-        }
-
-        if (rule.outputEntries) {
-          for (const outputEntry of rule.outputEntries) {
-            variables?.repository.addVariableToContext(outputEntry.id, outputEntry.id, decisionTable.id);
-          }
-        }
-      }
-    }
-  }
-
-  function addFunctionExpressionToVariables(functionExpression: FunctionExpressionDefinition) {
-    if (functionExpression.functionKind === FunctionExpressionDefinitionKind.Feel) {
-      const expression = (functionExpression as FeelFunctionExpressionDefinition).expression;
-      variables?.repository.addVariableToContext(
-        expression.id,
-        expression.name ?? expression.id,
-        functionExpression.id
-      );
-    }
-  }
 
   const onLogicTypeReset = useCallback(() => {
     variables?.repository.removeVariable(expression.id, true);
@@ -194,7 +224,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       dataType: prev.dataType,
       logicType: ExpressionDefinitionLogicType.Undefined,
     }));
-  }, [setExpression]);
+  }, [expression.id, setExpression, variables?.repository]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 

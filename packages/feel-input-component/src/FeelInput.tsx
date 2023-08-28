@@ -161,30 +161,30 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
             if (feelVariables) {
               const text = model.getValue();
-              const feels = feelVariables.parser.parse(expressionId ?? "", text);
 
               let lastPosition = 0;
               let offset = 0;
-              for (const variable of feels) {
+              for (const variable of feelVariables.parser.parse(expressionId ?? "", text)) {
                 lastPosition = variable.startIndex;
-                tokens.push(
+
+                tokenTypes.push(
                   0, // lineIndex
-                   lastPosition - offset, // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
-                   variable.length, // tokenLength
-                   getTokenTypeIndex(variable.variableType), // token type
-                   0 // token modifier
-                 );
+                  lastPosition - offset, // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
+                  variable.length, // tokenLength
+                  getTokenTypeIndex(variable.variableType), // token type
+                  0 // token modifier
+                );
                 offset = lastPosition;
               }
             }
             return {
-              data: new Uint32Array(tokens),
+              data: new Uint32Array(tokenTypes),
               resultId: undefined,
             };
           },
           getLegend: function (): Monaco.languages.SemanticTokensLegend {
             return {
-              tokenTypes: ["input-node", "invalid-variable", "bkm-node", "parameter"],
+              tokenTypes: ["input-data-variable", "unknown-variable", "bkm-variable", "function-parameter-variable"],
               tokenModifiers: [],
             };
           },

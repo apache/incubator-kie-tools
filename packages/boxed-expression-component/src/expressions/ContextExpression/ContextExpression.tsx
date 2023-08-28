@@ -166,7 +166,7 @@ export function ContextExpression(
         ],
       },
     ];
-  }, [contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [contextExpression.id, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
@@ -193,7 +193,7 @@ export function ContextExpression(
         return { ...prev, contextEntries };
       });
     },
-    [setExpression]
+    [setExpression, variables?.repository]
   );
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
@@ -270,29 +270,37 @@ export function ContextExpression(
     [contextExpression]
   );
 
-  function addVariable(
-    args: {
-      beforeIndex: number;
+  const addVariable = useCallback(
+    (
+      args: {
+        beforeIndex: number;
+      },
+      newContextEntries: ContextExpressionDefinitionEntry[],
+      prev: ContextExpressionDefinition,
+      newVariable: ContextExpressionDefinitionEntry
+    ) => {
+      const parentIndex = args.beforeIndex - 1;
+      let parentId = contextExpression.parentElementId;
+      if (parentIndex >= 0 && parentIndex < newContextEntries.length) {
+        parentId = newContextEntries[parentIndex].entryInfo.id;
+      }
+
+      let childId: undefined | string;
+      if (args.beforeIndex < newContextEntries.length) {
+        childId = newContextEntries[args.beforeIndex].entryInfo.id;
+      } else {
+        childId = prev.result.id;
+      }
+
+      variables?.repository.addVariableToContext(
+        newVariable.entryInfo.id,
+        newVariable.entryInfo.name,
+        parentId,
+        childId
+      );
     },
-    newContextEntries: ContextExpressionDefinitionEntry[],
-    prev: ContextExpressionDefinition,
-    newVariable: ContextExpressionDefinitionEntry
-  ) {
-    const parentIndex = args.beforeIndex - 1;
-    let parentId = contextExpression.parentElementId;
-    if (parentIndex >= 0 && parentIndex < newContextEntries.length) {
-      parentId = newContextEntries[parentIndex].entryInfo.id;
-    }
-
-    let childId: undefined | string;
-    if (args.beforeIndex < newContextEntries.length) {
-      childId = newContextEntries[args.beforeIndex].entryInfo.id;
-    } else {
-      childId = prev.result.id;
-    }
-
-    variables?.repository.addVariableToContext(newVariable.entryInfo.id, newVariable.entryInfo.name, parentId, childId);
-  }
+    [contextExpression.parentElementId, variables?.repository]
+  );
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
@@ -309,7 +317,7 @@ export function ContextExpression(
         };
       });
     },
-    [getDefaultContextEntry, setExpression]
+    [addVariable, getDefaultContextEntry, setExpression]
   );
 
   const onRowDeleted = useCallback(
@@ -326,7 +334,7 @@ export function ContextExpression(
         };
       });
     },
-    [setExpression]
+    [setExpression, variables?.repository]
   );
 
   const onRowReset = useCallback(

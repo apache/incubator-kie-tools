@@ -75,6 +75,20 @@ export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
+function createInputEntry() {
+  return {
+    id: generateUuid(),
+    content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
+  };
+}
+
+function createOutputEntry() {
+  return {
+    id: generateUuid(),
+    content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+  };
+}
+
 export function DecisionTableExpression(
   decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean; parentElementId: string }
 ) {
@@ -446,29 +460,32 @@ export function DecisionTableExpression(
     ]
   );
 
-  function addVariables(newRules: DecisionTableExpressionDefinitionRule[]) {
-    for (const rule of newRules) {
-      if (rule.inputEntries) {
-        for (const inputEntry of rule.inputEntries) {
-          variables?.repository.addVariableToContext(
-            inputEntry.id,
-            inputEntry.id,
-            decisionTableExpression.parentElementId
-          );
+  const addVariables = useCallback(
+    (newRules: DecisionTableExpressionDefinitionRule[]) => {
+      for (const rule of newRules) {
+        if (rule.inputEntries) {
+          for (const inputEntry of rule.inputEntries) {
+            variables?.repository.addVariableToContext(
+              inputEntry.id,
+              inputEntry.id,
+              decisionTableExpression.parentElementId
+            );
+          }
         }
-      }
 
-      if (rule.outputEntries) {
-        for (const outputEntry of rule.outputEntries) {
-          variables?.repository.addVariableToContext(
-            outputEntry.id,
-            outputEntry.id,
-            decisionTableExpression.parentElementId
-          );
+        if (rule.outputEntries) {
+          for (const outputEntry of rule.outputEntries) {
+            variables?.repository.addVariableToContext(
+              outputEntry.id,
+              outputEntry.id,
+              decisionTableExpression.parentElementId
+            );
+          }
         }
       }
-    }
-  }
+    },
+    [decisionTableExpression.parentElementId, variables?.repository]
+  );
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
@@ -495,7 +512,7 @@ export function DecisionTableExpression(
         };
       });
     },
-    [setExpression]
+    [addVariables, setExpression]
   );
 
   const getSectionIndexForGroupType = useCallback(
@@ -515,24 +532,6 @@ export function DecisionTableExpression(
     },
     [decisionTableExpression.input?.length, decisionTableExpression.output?.length]
   );
-
-  function createOutputEntry() {
-    return {
-      id: generateUuid(),
-      content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-    };
-  }
-
-  function createInputEntry() {
-    return {
-      id: generateUuid(),
-      content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
-    };
-  }
-
-  function addVariableToContext(id: string) {
-    variables?.repository.addVariableToContext(id, id, decisionTableExpression.parentElementId);
-  }
 
   const onColumnAdded = useCallback(
     (args: { beforeIndex: number; groupType: DecisionTableColumnType | undefined }) => {
@@ -559,7 +558,11 @@ export function DecisionTableExpression(
 
             newRules.forEach((r) => {
               const inputEntry = createInputEntry();
-              addVariableToContext(inputEntry.id);
+              variables?.repository.addVariableToContext(
+                inputEntry.id,
+                inputEntry.id,
+                decisionTableExpression.parentElementId
+              );
               r.inputEntries.splice(sectionIndex, 0, inputEntry);
             });
 
@@ -579,7 +582,11 @@ export function DecisionTableExpression(
 
             newRules.forEach((r) => {
               const outputEntry = createOutputEntry();
-              addVariableToContext(outputEntry.id);
+              variables?.repository.addVariableToContext(
+                outputEntry.id,
+                outputEntry.id,
+                decisionTableExpression.parentElementId
+              );
               r.outputEntries.splice(sectionIndex, 0, outputEntry);
             });
 

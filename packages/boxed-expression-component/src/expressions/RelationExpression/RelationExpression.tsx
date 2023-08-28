@@ -229,11 +229,11 @@ export function RelationExpression(
     [setExpression]
   );
 
-  function createCell() {
+  const createCell = useCallback(() => {
     const cell = { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE };
     variables?.repository.addVariableToContext(cell.id, cell.id, relationExpression.parentElementId);
     return cell;
-  }
+  }, [relationExpression.parentElementId, variables?.repository]);
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
@@ -252,7 +252,7 @@ export function RelationExpression(
         };
       });
     },
-    [setExpression]
+    [createCell, setExpression]
   );
 
   const onColumnAdded = useCallback(
@@ -282,7 +282,7 @@ export function RelationExpression(
         };
       });
     },
-    [setExpression]
+    [createCell, setExpression]
   );
 
   const onColumnDeleted = useCallback(

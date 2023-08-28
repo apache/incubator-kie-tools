@@ -18,115 +18,57 @@
  */
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import {
-  DMN12__tBusinessKnowledgeModel,
-  DMN12__tContext,
-  DMN12__tContextEntry,
-  DMN12__tDecision,
-  DMN12__tDecisionTable,
-  DMN12__tDefinitions,
-  DMN12__tFunctionDefinition,
-  DMN12__tInformationRequirement,
-  DMN12__tInputData,
-  DMN12__tInvocation,
-  DMN12__tItemDefinition,
-  DMN12__tKnowledgeRequirement,
-  DMN12__tList,
-  DMN12__tLiteralExpression,
-  DMN12__tRelation,
-} from "@kie-tools/dmn-marshaller/src/schemas/dmn-1_2/ts-gen/types";
-import {
-  DMN13__tBusinessKnowledgeModel,
-  DMN13__tContext,
-  DMN13__tContextEntry,
-  DMN13__tDecision,
-  DMN13__tDecisionTable,
-  DMN13__tDefinitions,
-  DMN13__tFunctionDefinition,
-  DMN13__tInformationRequirement,
-  DMN13__tInputData,
-  DMN13__tInvocation,
-  DMN13__tItemDefinition,
-  DMN13__tKnowledgeRequirement,
-  DMN13__tList,
-  DMN13__tLiteralExpression,
-  DMN13__tRelation,
-} from "@kie-tools/dmn-marshaller/src/schemas/dmn-1_3/ts-gen/types";
-import {
-  DMN14__tConditional,
-  DMN14__tContext,
-  DMN14__tContextEntry,
-  DMN14__tDecision,
-  DMN14__tDecisionTable,
-  DMN14__tDefinitions,
-  DMN14__tFilter,
-  DMN14__tFor,
-  DMN14__tFunctionDefinition,
-  DMN14__tInformationRequirement,
-  DMN14__tInputData,
-  DMN14__tInvocation,
-  DMN14__tItemDefinition,
-  DMN14__tKnowledgeRequirement,
-  DMN14__tList,
-  DMN14__tLiteralExpression,
-  DMN14__tQuantified,
-  DMN14__tRelation,
-} from "@kie-tools/dmn-marshaller/src/schemas/dmn-1_4/ts-gen/types";
 import { DataType } from "./DataType";
 import { VariableType } from "./VariableType";
 import { VariableContext } from "./VariableContext";
+import {
+  DMN15__tBusinessKnowledgeModel,
+  DMN15__tContext,
+  DMN15__tContextEntry,
+  DMN15__tDecision,
+  DMN15__tDecisionTable,
+  DMN15__tDefinitions,
+  DMN15__tFunctionDefinition,
+  DMN15__tInformationRequirement,
+  DMN15__tInputData,
+  DMN15__tInvocation,
+  DMN15__tItemDefinition,
+  DMN15__tKnowledgeRequirement,
+  DMN15__tList,
+  DMN15__tLiteralExpression,
+  DMN15__tRelation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-type DMNLiteralExpression =
-  | ({ __$$element: "literalExpression" } & DMN12__tLiteralExpression)
-  | ({ __$$element: "literalExpression" } & DMN13__tLiteralExpression)
-  | ({ __$$element: "literalExpression" } & DMN14__tLiteralExpression);
+import {
+  DMN14__tConditional,
+  DMN14__tFilter,
+  DMN14__tFor,
+  DMN14__tQuantified,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
-type DMNInvocation =
-  | ({ __$$element: "invocation" } & DMN13__tInvocation)
-  | ({ __$$element: "invocation" } & DMN12__tInvocation)
-  | ({ __$$element: "invocation" } & DMN14__tInvocation);
+type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
+type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
+type DmnDecisionTable = { __$$element: "decisionTable" } & DMN15__tDecisionTable;
+type DmnContext = { __$$element: "context" } & DMN15__tContext;
+type DmnFunctionDefinition = { __$$element: "functionDefinition" } & DMN15__tFunctionDefinition;
+type DmnRelation = { __$$element: "relation" } & DMN15__tRelation;
+type DmnList = { __$$element: "list" } & DMN15__tList;
+type DmnKnowledgeRequirement = DMN15__tKnowledgeRequirement;
 
-type DMNDecisionTable =
-  | ({ __$$element: "decisionTable" } & DMN12__tDecisionTable)
-  | ({ __$$element: "decisionTable" } & DMN13__tDecisionTable)
-  | ({ __$$element: "decisionTable" } & DMN14__tDecisionTable);
-
-type DMNContext =
-  | ({ __$$element: "context" } & DMN12__tContext)
-  | ({ __$$element: "context" } & DMN13__tContext)
-  | ({ __$$element: "context" } & DMN14__tContext);
-
-type DMNFunctionDefinition =
-  | ({ __$$element: "functionDefinition" } & DMN12__tFunctionDefinition)
-  | ({ __$$element: "functionDefinition" } & DMN13__tFunctionDefinition)
-  | ({ __$$element: "functionDefinition" } & DMN14__tFunctionDefinition);
-
-type DMNRelation =
-  | ({ __$$element: "relation" } & DMN12__tRelation)
-  | ({ __$$element: "relation" } & DMN13__tRelation)
-  | ({ __$$element: "relation" } & DMN14__tRelation);
-
-type DMNList =
-  | ({ __$$element: "list" } & DMN12__tList)
-  | ({ __$$element: "list" } & DMN13__tList)
-  | ({ __$$element: "list" } & DMN14__tList);
-
-type UnsupportedDMN14Types =
+type UnsupportedDmn14Types =
   | ({ __$$element: "for" } & DMN14__tFor)
   | ({ __$$element: "every" } & DMN14__tQuantified)
   | ({ __$$element: "some" } & DMN14__tQuantified)
   | ({ __$$element: "conditional" } & DMN14__tConditional)
   | ({ __$$element: "filter" } & DMN14__tFilter);
 
-type DMNDecisionNode = ({ __$$element: "decision" } & DMN12__tDecision) | DMN13__tDecision | DMN14__tDecision;
-type DMNBusinessKnowledgeModel =
-  | ({
-      __$$element: "businessKnowledgeModel";
-    } & DMN12__tBusinessKnowledgeModel)
-  | DMN13__tBusinessKnowledgeModel
-  | DMN12__tBusinessKnowledgeModel;
-type DMNContextEntry = DMN12__tContextEntry | DMN13__tContextEntry | DMN14__tContextEntry;
-type DMNInputData = DMN12__tInputData | DMN13__tInputData | DMN14__tInputData;
+type DmnDecisionNode = { __$$element: "decision" } & DMN15__tDecision;
+type DmnBusinessKnowledgeModel = DMN15__tBusinessKnowledgeModel;
+type DmnDefinitions = DMN15__tDefinitions;
+type DmnItemDefinition = DMN15__tItemDefinition;
+type DmnContextEntry = DMN15__tContextEntry;
+type DmnInputData = DMN15__tInputData;
+type DmnInformationRequirement = DMN15__tInformationRequirement;
 
 export class VariablesRepository {
   private readonly variablesIndexedByUuid: Map<string, VariableContext>;
@@ -187,7 +129,7 @@ export class VariablesRepository {
       if (!removeChildren) {
         if (newChildParent) {
           newChildParent.children.delete(variableUuid);
-          for (let child of variable.children.values()) {
+          for (const child of variable.children.values()) {
             child.parent = newChildParent;
             newChildParent.children.set(child.uuid, child);
           }
@@ -218,7 +160,7 @@ export class VariablesRepository {
     }
   }
 
-  private createDataTypes(definitions: DMN12__tDefinitions | DMN13__tDefinitions | DMN14__tDefinitions) {
+  private createDataTypes(definitions: DmnDefinitions) {
     definitions.itemDefinition?.forEach((itemDefinition) => {
       const dataType = this.createDataType(itemDefinition);
 
@@ -231,7 +173,7 @@ export class VariablesRepository {
     });
   }
 
-  private createVariables(definitions: DMN12__tDefinitions | DMN13__tDefinitions | DMN14__tDefinitions) {
+  private createVariables(definitions: DmnDefinitions) {
     definitions.drgElement?.forEach((drg) => {
       switch (drg.__$$element) {
         case "decision":
@@ -253,11 +195,11 @@ export class VariablesRepository {
     });
   }
 
-  private createVariablesFromInputData(drg: DMNInputData) {
+  private createVariablesFromInputData(drg: DmnInputData) {
     this.addVariable(drg["@_id"] ?? "", drg["@_name"], VariableType.Input, undefined, drg.variable?.["@_typeRef"]);
   }
 
-  private createVariablesFromBkm(drg: DMNBusinessKnowledgeModel) {
+  private createVariablesFromBkm(drg: DmnBusinessKnowledgeModel) {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
@@ -286,7 +228,7 @@ export class VariablesRepository {
     }
   }
 
-  private createVariablesFromDecision(drg: DMNDecisionNode) {
+  private createVariablesFromDecision(drg: DmnDecisionNode) {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
@@ -350,23 +292,21 @@ export class VariablesRepository {
     return this.dataTypes.has(typeRef ?? "") ? this.dataTypes.get(typeRef ?? "") : undefined;
   }
 
-  private createDataType(itemDefinition: DMN12__tItemDefinition | DMN13__tItemDefinition | DMN14__tItemDefinition) {
+  private createDataType(itemDefinition: DmnItemDefinition) {
     return {
       name: itemDefinition["@_name"],
       properties: new Map<string, DataType>(),
     };
   }
 
-  private createInnerType(itemComponent: DMN12__tItemDefinition | DMN13__tItemDefinition | DMN14__tItemDefinition) {
+  private createInnerType(itemComponent: DmnItemDefinition) {
     return {
       name: itemComponent["@_name"],
       properties: this.buildProperties(itemComponent),
     };
   }
 
-  private buildProperties(
-    itemComponent: DMN12__tItemDefinition | DMN13__tItemDefinition | DMN14__tItemDefinition
-  ): Map<string, DataType> {
+  private buildProperties(itemComponent: DmnItemDefinition): Map<string, DataType> {
     const properties = new Map<string, DataType>();
 
     itemComponent.itemComponent?.forEach((def) => {
@@ -381,11 +321,11 @@ export class VariablesRepository {
     return properties;
   }
 
-  private addLiteralExpression(parent: VariableContext, element: DMNLiteralExpression) {
+  private addLiteralExpression(parent: VariableContext, element: DmnLiteralExpression) {
     this.addVariable(element["@_id"] ?? "", "<literalExpression>", VariableType.LocalVariable, parent);
   }
 
-  private addInvocation(parent: VariableContext, element: DMNInvocation) {
+  private addInvocation(parent: VariableContext, element: DmnInvocation) {
     if (element.binding) {
       for (const bindingElement of element.binding) {
         if (bindingElement.expression) {
@@ -395,7 +335,7 @@ export class VariablesRepository {
     }
   }
 
-  private addContext(parent: VariableContext, element: DMNContext) {
+  private addContext(parent: VariableContext, element: DmnContext) {
     let parentNode = parent;
     if (element.contextEntry) {
       for (const innerEntry of element.contextEntry) {
@@ -404,7 +344,7 @@ export class VariablesRepository {
     }
   }
 
-  private addContextEntry(parentNode: VariableContext, contextEntry: DMNContextEntry) {
+  private addContextEntry(parentNode: VariableContext, contextEntry: DmnContextEntry) {
     const variableNode = this.addVariable(
       contextEntry.variable?.["@_id"] ?? "",
       contextEntry.variable?.["@_name"] ?? "",
@@ -424,7 +364,7 @@ export class VariablesRepository {
     return variableNode;
   }
 
-  private addFunctionDefinition(parent: VariableContext, element: DMNFunctionDefinition) {
+  private addFunctionDefinition(parent: VariableContext, element: DmnFunctionDefinition) {
     let parentElement = parent;
 
     if (element.formalParameter) {
@@ -443,7 +383,7 @@ export class VariablesRepository {
     }
   }
 
-  private addRelation(parent: VariableContext, element: DMNRelation) {
+  private addRelation(parent: VariableContext, element: DmnRelation) {
     if (element.row) {
       for (const rowElement of element.row) {
         if (rowElement.expression) {
@@ -455,7 +395,7 @@ export class VariablesRepository {
     }
   }
 
-  private addList(parent: VariableContext, element: DMNList) {
+  private addList(parent: VariableContext, element: DmnList) {
     if (element.expression) {
       for (const expression of element.expression) {
         this.addInnerExpression(parent, expression);
@@ -466,14 +406,14 @@ export class VariablesRepository {
   private addInnerExpression(
     parent: VariableContext,
     expression:
-      | DMNLiteralExpression
-      | DMNInvocation
-      | DMNDecisionTable
-      | DMNContext
-      | DMNFunctionDefinition
-      | DMNRelation
-      | DMNList
-      | UnsupportedDMN14Types
+      | DmnLiteralExpression
+      | DmnInvocation
+      | DmnDecisionTable
+      | DmnContext
+      | DmnFunctionDefinition
+      | DmnRelation
+      | DmnList
+      | UnsupportedDmn14Types
   ) {
     switch (expression.__$$element) {
       case "literalExpression":
@@ -485,7 +425,7 @@ export class VariablesRepository {
         break;
 
       case "decisionTable":
-        // Do nothing
+        // Do nothing because DecisionTable does not define variables
         break;
 
       case "context":
@@ -509,10 +449,7 @@ export class VariablesRepository {
     }
   }
 
-  private addInputVariable(
-    parent: VariableContext,
-    requirement: DMN12__tInformationRequirement | DMN13__tInformationRequirement | DMN14__tInformationRequirement
-  ) {
+  private addInputVariable(parent: VariableContext, requirement: DmnInformationRequirement) {
     if (requirement.requiredDecision) {
       parent.inputVariables.push(requirement.requiredDecision["@_href"]?.replace("#", ""));
     } else if (requirement.requiredInput) {
@@ -520,10 +457,7 @@ export class VariablesRepository {
     }
   }
 
-  private addInputVariableFromKnowledge(
-    parent: VariableContext,
-    knowledgeRequirement: DMN12__tKnowledgeRequirement | DMN13__tKnowledgeRequirement | DMN14__tKnowledgeRequirement
-  ) {
+  private addInputVariableFromKnowledge(parent: VariableContext, knowledgeRequirement: DmnKnowledgeRequirement) {
     if (knowledgeRequirement.requiredKnowledge) {
       parent.inputVariables.push(knowledgeRequirement.requiredKnowledge["@_href"]?.replace("#", ""));
     }

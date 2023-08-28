@@ -254,7 +254,15 @@ export function BeeTableInternal<R extends object>({
         }
       },
     }),
-    [cellComponentByColumnAccessor, onCellUpdates, isReadOnly, _setEditing, _navigateHorizontally, _navigateVertically]
+    [
+      cellComponentByColumnAccessor,
+      onCellUpdates,
+      isReadOnly,
+      _setEditing,
+      _navigateHorizontally,
+      _navigateVertically,
+      variables,
+    ]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(

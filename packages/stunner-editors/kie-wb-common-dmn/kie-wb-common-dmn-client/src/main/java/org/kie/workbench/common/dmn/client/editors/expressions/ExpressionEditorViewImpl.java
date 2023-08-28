@@ -22,6 +22,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -135,6 +137,8 @@ import static org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType.BU
 public class ExpressionEditorViewImpl implements ExpressionEditorView {
 
     static final double VP_SCALE = 1.0;
+    private static final Logger LOGGER = Logger.getLogger(ExpressionEditorViewImpl.class.getName());
+
     private DMNMarshallerService marshaller;
 
     private ExpressionEditorView.Presenter presenter;
@@ -351,33 +355,32 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     void loadNewBoxedExpressionEditor() {
-        ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
-        final String decisionNodeId;
+        final ExpressionProps expression = ExpressionPropsFiller.buildAndFillJsInteropProp(hasExpression.getExpression(), getExpressionName(), getTypeRef());
+        final String expressionContainerId;
         if (hasExpression instanceof Decision) {
-            decisionNodeId = ((Decision) hasExpression).getId().getValue();
+            expressionContainerId = ((Decision) hasExpression).getId().getValue();
         } else if (hasExpression.getExpression() instanceof FunctionDefinition) {
-            decisionNodeId = getBusinessKnowledgeModel().getId().getValue();
+            expressionContainerId = getBusinessKnowledgeModel().getId().getValue();
         } else {
-            decisionNodeId = null;
+            throw new IllegalStateException("It is not possible to open Boxed Expression Editor without an expression container.");
         }
 
         marshaller.marshall(sessionManager.getCurrentSession().getCanvasHandler().getDiagram(), new ServiceCallback<String>() {
             @Override
             public void onSuccess(final String item) {
-                final Object variables = DMNLoader.getVariables(item);
                 DMNLoader.renderBoxedExpressionEditor(
                         ".kie-dmn-new-expression-editor",
-                        decisionNodeId,
+                        expressionContainerId,
                         expression,
                         concat(retrieveDefaultDataTypeProps(), retrieveCustomDataTypeProps()).toArray(DataTypeProps[]::new),
                         hasExpression.isClearSupported(),
                         buildPmmlParams(),
-                        variables);
+                        DMNLoader.getVariables(item));
             }
 
             @Override
             public void onError(final ClientRuntimeError error) {
-
+                LOGGER.log(Level.SEVERE, error.getMessage(), error.getThrowable());
             }
         });
     }

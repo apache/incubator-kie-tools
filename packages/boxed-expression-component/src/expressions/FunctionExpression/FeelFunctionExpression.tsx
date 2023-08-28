@@ -120,13 +120,13 @@ export function FeelFunctionExpression({
 
   const controllerCell = useFunctionExpressionControllerCell(FunctionExpressionDefinitionKind.Feel);
 
-  function getFeelFunctionImplementationCell(props: BeeTableCellProps<FEEL_ROWTYPE>) {
-    return FeelFunctionImplementationCell(props, functionExpression.parentElementId);
-  }
-
   const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
-    return { parameters: getFeelFunctionImplementationCell };
-  }, []);
+    return {
+      parameters: (props) => (
+        <FeelFunctionImplementationCell {...props} parentElementId={functionExpression.parentElementId} />
+      ),
+    };
+  }, [functionExpression.parentElementId]);
 
   const getRowKey = useCallback((r: ReactTable.Row<FEEL_ROWTYPE>) => {
     return r.original.functionExpression.id;
@@ -204,9 +204,12 @@ export function FeelFunctionExpression({
   );
 }
 
-export function FeelFunctionImplementationCell(
-  { data, rowIndex, columnIndex, parentElementId }: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string },
-) {
+export function FeelFunctionImplementationCell({
+  data,
+  rowIndex,
+  columnIndex,
+  parentElementId,
+}: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string }) {
   const functionExpression = data[rowIndex].functionExpression as FeelFunctionExpressionDefinition;
 
   const { setExpression } = useBoxedExpressionEditorDispatch();

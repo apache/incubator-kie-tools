@@ -125,22 +125,18 @@ export function ListExpression(
         width: undefined,
       },
     ],
-    [listExpression.dataType, listExpression.name]
+    [decisionNodeId, listExpression.dataType, listExpression.name]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.original.entryExpression.id;
   }, []);
 
-  function getListItemCell({ rowIndex, data, columnIndex, columnId }: BeeTableCellProps<ROWTYPE>) {
-    return ListItemCell(listExpression.parentElementId, { rowIndex, data, columnIndex, columnId });
-  }
-
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
-      [decisionNodeId]: getListItemCell,
+      [decisionNodeId]: (props) => <ListItemCell parentElementId={listExpression.parentElementId} {...props} />,
     }),
-    []
+    [decisionNodeId, listExpression.parentElementId]
   );
 
   const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {
@@ -164,7 +160,7 @@ export function ListExpression(
         return { ...prev, items: newItems };
       });
     },
-    [getDefaultListItem, setExpression]
+    [getDefaultListItem, listExpression.parentElementId, setExpression, variables?.repository]
   );
 
   const onRowDeleted = useCallback(

@@ -28,10 +28,10 @@ import { MapBackedType } from "./grammar/MapBackedType";
 import { VariableContext } from "./VariableContext";
 
 export class FeelVariablesParser {
-  private variablesSource: VariablesRepository;
+  private variablesRepository: VariablesRepository;
 
   constructor(variablesSource: VariablesRepository) {
-    this.variablesSource = variablesSource;
+    this.variablesRepository = variablesSource;
   }
 
   public parse(variableContextUuid: string, expression: string): FeelVariable[] {
@@ -41,7 +41,7 @@ export class FeelVariablesParser {
     const feelTokens = new CommonTokenStream(lexer);
     const parser = new FEEL_1_1Parser(feelTokens);
 
-    const variableContext = this.variablesSource.variables.get(variableContextUuid);
+    const variableContext = this.variablesRepository.variables.get(variableContextUuid);
     if (variableContext) {
       this.defineVariables(variableContext, parser);
     }
@@ -65,7 +65,7 @@ export class FeelVariablesParser {
     }
 
     for (const inputVariableContext of variableContext.inputVariables) {
-      const localVariable = this.variablesSource.variables.get(inputVariableContext);
+      const localVariable = this.variablesRepository.variables.get(inputVariableContext);
       if (localVariable) {
         this.addToParser(parser, localVariable);
       }
@@ -94,7 +94,7 @@ export class FeelVariablesParser {
 
   private defineInputVariables(inputVariables: Array<string>, parser: FEEL_1_1Parser) {
     for (const inputVariableId of inputVariables) {
-      const inputVariable = this.variablesSource.variables.get(inputVariableId);
+      const inputVariable = this.variablesRepository.variables.get(inputVariableId);
       if (inputVariable) {
         this.addToParser(parser, inputVariable);
       }

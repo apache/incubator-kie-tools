@@ -291,8 +291,7 @@ export function InvocationExpression(
     (args: { beforeIndex: number }) => {
       setExpression((prev: InvocationExpressionDefinition) => {
         const newArgumentEntries = [...(prev.bindingEntries ?? [])];
-        const newArgumentEntry = getDefaultArgumentEntry();
-        newArgumentEntries.splice(args.beforeIndex, 0, newArgumentEntry);
+        newArgumentEntries.splice(args.beforeIndex, 0, getDefaultArgumentEntry());
 
         return {
           ...prev,
