@@ -21,8 +21,25 @@
       "type": "shell",
       "group": "none",
       "problemMatcher": [],
-      "label": "clean image",
-      "command": "docker image rm kn-workflow:debug"
+      "label": "create",
+      "command": "kn workflow create --name='debug'"
+    },
+    {
+      "type": "shell",
+      "group": "none",
+      "problemMatcher": [],
+      "label": "quarkus create",
+      "command": "kn workflow quarkus create --name='debug'"
+    },
+    {
+      "label": "build and create",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build", "create"]
+    },
+    {
+      "label": "build and quarkus create",
+      "dependsOrder": "sequence",
+      "dependsOn": ["build", "quarkus create"]
     }
   ]
 }
