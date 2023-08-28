@@ -26,18 +26,18 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import elemental2.dom.CSSProperties;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 import org.uberfire.mvp.Command;
 
@@ -66,16 +66,22 @@ public class ShapeGlyphDragHandler {
     }
 
     private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
-    private final GWTHandlerRegistration handlerRegistrations;
+    final NativeHandlerRegistration handlerRegistrations;
     private final Supplier<AbsolutePanel> rootPanelSupplier;
     private final Function<ShapeGlyphDragHandler.Item, LienzoPanelWidget> lienzoPanelBuilder;
     private final BiConsumer<Command, Integer> timer;
     private LienzoPanelWidget dragProxyPanel;
+    static final String MOUSE_MOVE = "mousemove";
+    static final String MOUSE_UP = "mouseup";
+    static final String KEY_DOWN = "keydown";
+    NativeHandler mouseMoveHandler;
+    NativeHandler mouseUpHandler;
+    NativeHandler keyDownHandler;
 
     @Inject
     public ShapeGlyphDragHandler(final LienzoGlyphRenderers glyphLienzoGlyphRenderer) {
         this(glyphLienzoGlyphRenderer,
-             new GWTHandlerRegistration(),
+             new NativeHandlerRegistration(),
              RootPanel::get,
              item -> LienzoPanelWidget.create(item.getWidth() * 2,
                                               item.getHeight() * 2),
@@ -88,7 +94,7 @@ public class ShapeGlyphDragHandler {
     }
 
     ShapeGlyphDragHandler(final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer,
-                          final GWTHandlerRegistration handlerRegistrations,
+                          final NativeHandlerRegistration handlerRegistrations,
                           final Supplier<AbsolutePanel> rootPanelSupplier,
                           final Function<ShapeGlyphDragHandler.Item, LienzoPanelWidget> lienzoPanelBuilder,
                           final BiConsumer<Command, Integer> timer) {
@@ -125,7 +131,7 @@ public class ShapeGlyphDragHandler {
     }
 
     public void clear() {
-       clearState(null);
+        clearState(null);
     }
 
     public void destroy() {
@@ -142,49 +148,67 @@ public class ShapeGlyphDragHandler {
         element.style.zIndex = CSSProperties.ZIndexUnionType.of(Integer.MAX_VALUE);
     }
 
-    private void attachHandlers(final ShapeGlyphDragHandler.Callback callback) {
-        final AbsolutePanel root = rootPanelSupplier.get();
-        register(
-                root.addDomHandler(event -> onMouseMove(event, callback),
-                                   MouseMoveEvent.getType())
-        );
+    void attachHandlers(final ShapeGlyphDragHandler.Callback callback) {
+        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
+        HTMLElement panelElement = Js.uncheckedCast(rootPanelSupplier.get().getElement());
+
+        mouseMoveHandler = new NativeHandler(MOUSE_MOVE,
+                                             mouseMoveEvent -> onMouseMove(mouseMoveEvent, callback),
+                                             panelElement).add();
+        register(mouseMoveHandler);
+
         //delay to attach the MouseUpEvent handler, to avoid "clicking" to drop item.
         timer.accept(() -> {
-            register(
-                    root.addDomHandler(event -> onMouseUp(event, callback),
-                                       MouseUpEvent.getType())
-            );
+            mouseUpHandler = new NativeHandler(MOUSE_UP,
+                                               mouseUpEvent -> onMouseUp(mouseUpEvent, callback),
+                                               panelElement).add();
+            register(mouseUpHandler);
         }, 200);
-        register(root.addDomHandler(this::onKeyDown,
-                                    KeyDownEvent.getType()));
+
+        keyDownHandler = new NativeHandler(KEY_DOWN,
+                                           keyDownEvent -> onKeyDown(keyDownEvent),
+                                           panelElement).add();
+        register(keyDownHandler);
     }
 
-    void onMouseMove(final MouseMoveEvent event,
+    void onMouseMove(final Event event,
                      final ShapeGlyphDragHandler.Callback callback) {
-        HTMLDivElement element = dragProxyPanel.getElement();
-        element.style.left = event.getX() + Style.Unit.PX.getType();
-        element.style.top = event.getY() + Style.Unit.PX.getType();
-        callback.onMove(event.getClientX(), event.getClientY());
+        if (event.type.equals(MOUSE_MOVE)) {
+            MouseEvent mouseEvent = (MouseEvent) event;
+
+            HTMLDivElement element = dragProxyPanel.getElement();
+            element.style.left = (int) mouseEvent.x + Style.Unit.PX.getType();
+            element.style.top = (int) mouseEvent.y + Style.Unit.PX.getType();
+            callback.onMove((int) mouseEvent.clientX, (int) mouseEvent.clientY);
+        }
     }
 
-    void onMouseUp(final MouseUpEvent event,
+    void onMouseUp(final Event event,
                    final ShapeGlyphDragHandler.Callback callback) {
-        clearHandlers();
-        rootPanelSupplier.get().getElement().removeChild(Js.cast(dragProxyPanel.getElement()));
-        callback.onComplete(event.getClientX(),
-                            event.getClientY());
+        if (event.type.equals(MOUSE_UP)) {
+            MouseEvent mouseEvent = (MouseEvent) event;
+            clearHandlers();
+            rootPanelSupplier.get().getElement().removeChild(Js.cast(dragProxyPanel.getElement()));
+            callback.onComplete((int) mouseEvent.clientX,
+                                (int) mouseEvent.clientY);
+        }
     }
 
-    void onKeyDown(final KeyDownEvent event) {
-        clear();
+    void onKeyDown(final Event event) {
+        if (event.type.equals(KEY_DOWN)) {
+            clear();
+        }
     }
 
-    private void register(final HandlerRegistration registration) {
+    private void register(final NativeHandler registration) {
         handlerRegistrations.register(registration);
     }
 
     private void clearHandlers() {
         handlerRegistrations.removeHandler();
+        mouseMoveHandler = null;
+        mouseUpHandler = null;
+        keyDownHandler = null;
     }
 
     private void clearState(final Command proxyDestroyCommand) {

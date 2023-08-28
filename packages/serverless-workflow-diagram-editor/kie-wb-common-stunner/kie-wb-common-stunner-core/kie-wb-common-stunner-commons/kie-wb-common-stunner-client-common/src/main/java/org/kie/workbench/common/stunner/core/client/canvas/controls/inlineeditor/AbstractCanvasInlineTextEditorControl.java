@@ -19,10 +19,11 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 import javax.enterprise.event.Observes;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.MouseWheelEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.touch.client.Point;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -39,6 +40,7 @@ import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextDoubleClickHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.TextEnterEvent;
@@ -65,7 +67,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
     private Point2D canvasPosition;
     private Point scrollBarsPosition;
     private double zoomFactor;
-    private HandlerRegistration mouseWheelHandler;
+    private NativeHandler mouseWheelHandler;
 
     // Configurable parameters
     protected boolean isMultiline;
@@ -83,6 +85,8 @@ public abstract class AbstractCanvasInlineTextEditorControl
     protected double innerBoxOffsetY;
     protected EditorSession session;
     private int EDIT_TEXTBOX_BOTTOM_PADDING = 10;
+
+    private static final String MOUSE_WHEEL = "wheel";
 
     protected abstract FloatingView<IsElement> getFloatingView();
 
@@ -284,6 +288,7 @@ public abstract class AbstractCanvasInlineTextEditorControl
         uuid = null;
 
         mouseWheelHandler.removeHandler();
+        mouseWheelHandler = null;
     }
 
     private void enableShapeEdit() {
@@ -411,16 +416,21 @@ public abstract class AbstractCanvasInlineTextEditorControl
     }
 
     void setMouseWheelHandler() {
-        mouseWheelHandler = getAbstractCanvas()
-                .getView()
-                .getPanel()
-                .asWidget()
-                .addDomHandler(this::onMouseWheel,
-                               MouseWheelEvent.getType());
+        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
+        HTMLElement panelElement = Js.uncheckedCast(getAbstractCanvas()
+                                                            .getView()
+                                                            .getPanel()
+                                                            .asWidget().getElement());
+
+        mouseWheelHandler = new NativeHandler(MOUSE_WHEEL,
+                                              this::onMouseWheel,
+                                              panelElement).add();
     }
 
-    void onMouseWheel(final MouseWheelEvent event) {
-        rollback();
+    void onMouseWheel(final Event event) {
+        if (event.type.equals(MOUSE_WHEEL)) {
+            rollback();
+        }
     }
 
     @Override
