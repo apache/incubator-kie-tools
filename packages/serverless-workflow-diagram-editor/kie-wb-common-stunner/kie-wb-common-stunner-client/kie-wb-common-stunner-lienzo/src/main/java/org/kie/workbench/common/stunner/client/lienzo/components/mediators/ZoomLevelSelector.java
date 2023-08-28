@@ -23,13 +23,13 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class ZoomLevelSelector implements IsWidget {
+public class ZoomLevelSelector implements IsElement {
 
     public interface View extends UberView<ZoomLevelSelector> {
 
@@ -132,8 +132,8 @@ public class ZoomLevelSelector implements IsWidget {
     }
 
     @Override
-    public Widget asWidget() {
-        return view.asWidget();
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
     void onPreview() {

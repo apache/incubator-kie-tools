@@ -16,7 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 
 /**
  * Interface to inject a Presenter into a View for MVP-based Widget
@@ -28,5 +28,5 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Presenter.
  * @param <T> The Presenter type
  */
-public interface UberView<T> extends IsWidget, HasPresenter<T> {
+public interface UberView<T> extends IsElement, HasPresenter<T> {
 }

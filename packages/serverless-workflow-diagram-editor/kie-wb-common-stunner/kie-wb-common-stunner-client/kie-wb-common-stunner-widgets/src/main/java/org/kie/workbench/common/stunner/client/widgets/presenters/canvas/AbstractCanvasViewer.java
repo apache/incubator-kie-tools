@@ -103,7 +103,7 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
         enableControls();
 
         // Use the canvas as view.
-        getView().setWidget(canvas.getView().asWidget());
+        getView().setWidget(canvas.getView());
     }
 
     protected abstract void scalePanel(final int width,

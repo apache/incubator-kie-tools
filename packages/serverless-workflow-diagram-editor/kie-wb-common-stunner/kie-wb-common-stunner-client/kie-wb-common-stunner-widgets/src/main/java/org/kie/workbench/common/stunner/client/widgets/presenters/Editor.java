@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 
@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
  * @param <V> The view type.
  * @param <C> The callback type.
  */
-public interface Editor<T, H extends CanvasHandler, V extends IsWidget, C extends Viewer.Callback>
+public interface Editor<T, H extends CanvasHandler, V extends IsElement, C extends Viewer.Callback>
         extends Viewer<T, H, V, C> {
 
     /**

@@ -28,15 +28,14 @@ import com.ait.lienzo.tools.client.event.EventType;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
-import jsinterop.base.Js;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
@@ -52,7 +51,7 @@ public class AlertsPresenter {
     private static final int ALERT_LONG_DELAY = 1000;
     private static final int NOTIFY_DELAY = 3000;
 
-    private final FloatingView<IsWidget> floatingView;
+    private final FloatingView<IsElement> floatingView;
     private final Alerts alerts;
     private final Element alertsElement;
     private Supplier<LienzoCanvas> canvas;
@@ -70,13 +69,13 @@ public class AlertsPresenter {
     private List<String> errorsList;
 
     @Inject
-    public AlertsPresenter(final FloatingView<IsWidget> floatingView,
+    public AlertsPresenter(final FloatingView<IsElement> floatingView,
                            final Alerts alerts,
                            final ClientTranslationService clientTranslationService) {
-        this(floatingView, alerts, Js.cast(alerts.asWidget().getElement()), clientTranslationService);
+        this(floatingView, alerts, alerts.getElement(), clientTranslationService);
     }
 
-    AlertsPresenter(final FloatingView<IsWidget> floatingView,
+    AlertsPresenter(final FloatingView<IsElement> floatingView,
                     final Alerts alerts,
                     final Element alertsElement,
                     final ClientTranslationService clientTranslationService) {
@@ -216,7 +215,7 @@ public class AlertsPresenter {
         final LienzoPanel panel = getPanel();
         final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(panel.getView().getElement());
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
-        final double x = absoluteLeft + width - alerts.asWidget().getElement().getClientWidth() - MARGIN;
+        final double x = absoluteLeft + width - alerts.getElement().clientWidth - MARGIN;
         final double y = absoluteTop + MARGIN;
         return at(x, y);
     }

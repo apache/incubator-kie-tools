@@ -27,7 +27,6 @@ import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -44,7 +43,6 @@ import org.uberfire.mvp.Command;
 @Dependent
 @Templated
 public class ZoomLevelSelectorView
-        extends Composite
         implements ZoomLevelSelector.View {
 
     static final String CSS_DROP_UP = "dropup";

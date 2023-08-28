@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -32,7 +31,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 @Templated
 public class AlertsView
-        extends Composite
         implements Alerts.View {
 
     private final String HIDDEN = "hidden";

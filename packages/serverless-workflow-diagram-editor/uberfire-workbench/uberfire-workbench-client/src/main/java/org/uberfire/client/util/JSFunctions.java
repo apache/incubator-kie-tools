@@ -50,10 +50,6 @@ public class JSFunctions {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::getPreview()();
         };
 
-        $wnd.GWTEditor.prototype.getView = function () {
-            return this.instance.@org.uberfire.client.mvp.EditorActivity::getWidgetElement()();
-        };
-
          $wnd.GWTEditor.prototype.validate = function () {
             return this.instance.@org.uberfire.client.mvp.EditorActivity::validate()();
         };

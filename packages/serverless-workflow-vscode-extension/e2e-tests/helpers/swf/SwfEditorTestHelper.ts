@@ -56,7 +56,7 @@ export default class SwfEditorTestHelper extends EditorTestHelper {
 
   public async getWorkbenchPanelViewElement(): Promise<WebElement> {
     await this.switchToEditorFrame();
-    const result = await this.webview.findWebElement(By.xpath(".//div[@class='qe-static-workbench-panel-view']"));
+    const result = await this.webview.findWebElement(By.xpath(".//div[@class='root-container']"));
     await this.switchBack();
     return Promise.resolve(result);
   }

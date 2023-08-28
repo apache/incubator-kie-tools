@@ -17,7 +17,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 
 import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

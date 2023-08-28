@@ -20,7 +20,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.client.mvp.EditorActivity;
@@ -51,11 +50,6 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
     public void onOpen() {
         super.onOpen();
         realPresenter.onOpen();
-    }
-
-    @Override
-    public IsWidget getWidget() {
-        return realPresenter.asWidget();
     }
 
     @Override

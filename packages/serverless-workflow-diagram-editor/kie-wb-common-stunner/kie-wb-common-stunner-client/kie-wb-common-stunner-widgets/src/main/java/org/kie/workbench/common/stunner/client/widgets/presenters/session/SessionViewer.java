@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.widgets.presenters.canvas.CanvasViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -43,7 +43,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * @param <D> The diagram type.
  */
 public interface SessionViewer<S extends ClientSession, H extends CanvasHandler, D extends Diagram>
-        extends CanvasViewer<S, H, IsWidget, SessionViewer.SessionViewerCallback<D>> {
+        extends CanvasViewer<S, H, IsElement, SessionViewer.SessionViewerCallback<D>> {
 
     /**
      * The callback type for session viewers.

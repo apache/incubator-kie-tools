@@ -21,15 +21,11 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.style.Style;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 
-public class LienzoPanelWidget extends LienzoPanel implements IsWidget {
+public class LienzoPanelWidget extends LienzoPanel {
 
     private final LienzoFixedPanel panel;
-    private final Widget widget;
 
     public static LienzoPanelWidget create(int wide,
                                            int high) {
@@ -38,7 +34,6 @@ public class LienzoPanelWidget extends LienzoPanel implements IsWidget {
 
     LienzoPanelWidget(LienzoFixedPanel panel) {
         this.panel = panel;
-        this.widget = ElementWrapperWidget.getWidget(panel.getElement());
     }
 
     @Override
@@ -84,8 +79,4 @@ public class LienzoPanelWidget extends LienzoPanel implements IsWidget {
         panel.destroy();
     }
 
-    @Override
-    public Widget asWidget() {
-        return widget;
-    }
 }
