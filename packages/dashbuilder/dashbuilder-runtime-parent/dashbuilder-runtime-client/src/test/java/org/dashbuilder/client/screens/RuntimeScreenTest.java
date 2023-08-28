@@ -20,15 +20,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
+import org.dashbuilder.client.place.PlaceManager;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -44,6 +47,9 @@ public class RuntimeScreenTest {
     @Mock
     RuntimeScreen.View view;
 
+    @Mock
+    PerspectivePluginManager pluginManager;
+
     @InjectMocks
     RuntimeScreen runtimeScreen;
 
@@ -55,8 +61,8 @@ public class RuntimeScreenTest {
 
         runtimeScreen.goToIndex(templates);
 
-        verify(placeManager).goTo(RuntimeScreen.INDEX_PAGE_NAME);
-        verify(placeManager, times(0)).goTo(randomPage);
+        verify(pluginManager).buildPerspectiveWidget(eq(RuntimeScreen.INDEX_PAGE_NAME), any());
+        verify(pluginManager, times(0)).buildPerspectiveWidget(eq(randomPage), any());
     }
 
     @Test
@@ -66,43 +72,13 @@ public class RuntimeScreenTest {
 
         runtimeScreen.goToIndex(templates);
 
-        verify(placeManager).goTo(randomPage);
+        verify(pluginManager).buildPerspectiveWidget(eq(randomPage), any());
     }
 
     @Test
     public void testGoToIndexWithoutIndex() {
         List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
                 new LayoutTemplate("page2"));
-        runtimeScreen.goToIndex(templates);
-        verify(placeManager, times(0)).goTo(anyString());
-    }
-
-    @Test
-    public void testGoToIndexWithHistoryAndKeepIndex() {
-        List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
-                new LayoutTemplate("page2"));
-        runtimeScreen.keepHistory = true;
-        runtimeScreen.lastVisited = "page1";
-        runtimeScreen.goToIndex(templates);
-        verify(placeManager).goTo("page1");
-    }
-
-    @Test
-    public void testGoToIndexWithoutHistory() {
-        List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
-                new LayoutTemplate("page2"));
-        runtimeScreen.keepHistory = false;
-        runtimeScreen.lastVisited = "page1";
-        runtimeScreen.goToIndex(templates);
-        verify(placeManager, times(0)).goTo(anyString());
-    }
-
-    @Test
-    public void testGoToIndexWithDeletedPage() {
-        List<LayoutTemplate> templates = Arrays.asList(new LayoutTemplate("page1"),
-                new LayoutTemplate("page2"));
-        runtimeScreen.keepHistory = true;
-        runtimeScreen.lastVisited = "deleted";
         runtimeScreen.goToIndex(templates);
         verify(placeManager, times(0)).goTo(anyString());
     }

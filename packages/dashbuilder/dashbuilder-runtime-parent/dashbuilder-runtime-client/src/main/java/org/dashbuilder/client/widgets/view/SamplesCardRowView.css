@@ -18,6 +18,10 @@
   margin-right: 30px;
 }
 
+.samplesRowLine {
+  align-items: flex-start;
+}
+
 .samplesCardRowContainer h3 {
   scroll-margin-top: 70px;
   margin-bottom: 20px;

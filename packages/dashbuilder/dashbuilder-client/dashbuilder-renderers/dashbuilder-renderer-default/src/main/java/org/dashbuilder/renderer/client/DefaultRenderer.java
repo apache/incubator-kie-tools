@@ -112,17 +112,17 @@ public class DefaultRenderer extends AbstractRendererLibrary {
         DisplayerSubType subtype = displayerSettings.getSubtype();
 
         if (TABLE.equals(type)) {
-            return  beanManager.lookupBean(TableDisplayer.class).newInstance();
+            return  buildAndManageInstance(TableDisplayer.class);
         }
         if (SELECTOR.equals(type)) {
             if (SELECTOR_DROPDOWN.equals(subtype)) {
-                return beanManager.lookupBean(SelectorDropDownDisplayer.class).newInstance();
+                return buildAndManageInstance(SelectorDropDownDisplayer.class);
             }
             if (SELECTOR_LABELS.equals(subtype)) {
-                return beanManager.lookupBean(SelectorLabelSetDisplayer.class).newInstance();
+                return buildAndManageInstance(SelectorLabelSetDisplayer.class);
             }
             if (SELECTOR_SLIDER.equals(subtype)) {
-                return beanManager.lookupBean(SelectorSliderDisplayer.class).newInstance();
+                return buildAndManageInstance(SelectorSliderDisplayer.class);
             }
             // Keep backward compatibility with 0.6 and prior versions
             return beanManager.lookupBean(SelectorDisplayer.class).newInstance();
@@ -153,7 +153,7 @@ public class DefaultRenderer extends AbstractRendererLibrary {
         }
     }
 
-    public static void closeDisplayer(String displayerId) {
-        _metricDisplayerMap.remove(displayerId);
+    public static void closeAllDisplayers() {
+        _metricDisplayerMap.clear();
     }
 }

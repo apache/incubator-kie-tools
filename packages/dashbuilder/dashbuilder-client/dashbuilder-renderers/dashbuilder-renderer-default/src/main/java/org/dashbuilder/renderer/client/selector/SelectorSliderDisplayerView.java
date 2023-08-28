@@ -15,47 +15,52 @@
  */
 package org.dashbuilder.renderer.client.selector;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayerView;
+import elemental2.dom.CSSProperties.WidthUnionType;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
+import org.dashbuilder.patternfly.label.Label;
+import org.dashbuilder.patternfly.label.LabelColor;
+import org.dashbuilder.patternfly.slider.Slider;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
 import org.dashbuilder.renderer.client.resources.i18n.SliderConstants;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.extras.slider.client.ui.Range;
-import org.gwtbootstrap3.extras.slider.client.ui.RangeSlider;
-import org.gwtbootstrap3.extras.slider.client.ui.base.constants.HandleType;
-import org.gwtbootstrap3.extras.slider.client.ui.base.constants.TooltipType;
 
-public class SelectorSliderDisplayerView extends AbstractGwtDisplayerView<SelectorSliderDisplayer>
-        implements SelectorSliderDisplayer.View {
+@Dependent
+public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorSliderDisplayer>
+                                         implements SelectorSliderDisplayer.View {
 
     FlowPanel container = new FlowPanel();
     HTML header = new HTML();
     FlowPanel body = new FlowPanel();
-    RangeSlider slider = new RangeSlider();
     HorizontalPanel inputs = new HorizontalPanel();
     FlowPanel error = new FlowPanel();
 
+    @Inject
+    Slider slider;
+
+    @Inject
+    Label label;
+
     @Override
     public void init(SelectorSliderDisplayer presenter) {
-        super.setPresenter(presenter);
-        super.setVisualization(container);
+        super.init(presenter);
+        super.setVisualization(Js.cast(container.getElement()));
 
         // Enlarge the tooltip max width
         StyleInjector.inject(".slider .tooltip-inner { max-width: 900px; }");
 
         header.setVisible(false);
-        slider.setHandle(HandleType.ROUND);
-        slider.setFormatter(r -> presenter.formatRange(r.getMinValue(), r.getMaxValue()));
-        slider.addSlideStopHandler(e -> presenter.onSliderChange(e.getValue().getMinValue(), e.getValue().getMaxValue()));
-        slider.getElement().getStyle().setWidth(100, Style.Unit.PCT);
-        inputs.getElement().getStyle().setWidth(100, Style.Unit.PCT);
 
-        body.add(slider);
+        // TODO: Slider setup
+        body.getElement().appendChild(Js.cast(slider.getElement()));
         body.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
 
         container.add(header);
@@ -78,7 +83,7 @@ public class SelectorSliderDisplayerView extends AbstractGwtDisplayerView<Select
 
     @Override
     public void setWidth(int width) {
-        slider.getElement().getStyle().setWidth(width, Style.Unit.PX);
+        slider.getElement().style.width = WidthUnionType.of(width + "px");
         inputs.getElement().getStyle().setWidth(width, Style.Unit.PX);
     }
 
@@ -93,14 +98,14 @@ public class SelectorSliderDisplayerView extends AbstractGwtDisplayerView<Select
     @Override
     public void setSliderEnabled(boolean enabled) {
         slider.setEnabled(enabled);
-        slider.setTooltip(enabled ? TooltipType.SHOW : TooltipType.HIDE);
+        slider.setShowTooltip(enabled);
     }
 
     @Override
     public void showSlider(double min, double max, double step, double minSelected, double maxSelected) {
         slider.setMin(min);
         slider.setMax(max);
-        slider.setValue(new Range(minSelected, maxSelected));
+        slider.setValue(minSelected, maxSelected);
         slider.setStep(step);
 
         header.setVisible(true);
@@ -109,16 +114,17 @@ public class SelectorSliderDisplayerView extends AbstractGwtDisplayerView<Select
     }
 
     @Override
-    public void showInputs(IsWidget minValueEditor, IsWidget maxValueEditor) {
-        minValueEditor.asWidget().getElement().getStyle().setMarginTop(5, Style.Unit.PX);
-        maxValueEditor.asWidget().getElement().getStyle().setMarginTop(5, Style.Unit.PX);
-        minValueEditor.asWidget().getElement().getStyle().setMarginBottom(5, Style.Unit.PX);
-        maxValueEditor.asWidget().getElement().getStyle().setMarginBottom(5, Style.Unit.PX);
-        maxValueEditor.asWidget().getElement().getStyle().setFloat(Style.Float.RIGHT);
+    public void showInputs(HTMLElement minValueEditor, HTMLElement maxValueEditor) {
+        minValueEditor.style.set("margin-top", "5px");
+        maxValueEditor.style.set("margin-top", "5px");
+        minValueEditor.style.set("margin-bottom", "5px");
+        maxValueEditor.style.set("margin-bottom", "5px");
+        maxValueEditor.style.set("float", "right");
 
         inputs.clear();
-        inputs.add(minValueEditor);
-        inputs.add(maxValueEditor);
+        // change inputs to other panel
+        //inputs.add(minValueEditor);
+        //inputs.add(maxValueEditor);
 
         header.setVisible(true);
         inputs.setVisible(true);
@@ -146,6 +152,8 @@ public class SelectorSliderDisplayerView extends AbstractGwtDisplayerView<Select
         inputs.setVisible(false);
         error.setVisible(true);
         error.clear();
-        error.add(new Label(msg));
+        label.setLabelColor(LabelColor.RED);
+        label.setText(msg);
+        error.getElement().appendChild(Js.cast(label.getElement()));
     }
 }

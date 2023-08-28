@@ -18,14 +18,14 @@ package org.dashbuilder.displayer.client.widgets.filter;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.UberView;
+import elemental2.dom.HTMLElement;
+import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
 @Dependent
 public class NumberParameterEditor implements FunctionParameterEditor {
 
-    public interface View extends UberView<NumberParameterEditor> {
+    public interface View extends UberElemental<NumberParameterEditor> {
 
         String getValue();
 
@@ -46,11 +46,6 @@ public class NumberParameterEditor implements FunctionParameterEditor {
     public NumberParameterEditor(View view) {
         this.view = view;
         this.view.init(this);
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
     }
 
     public void setOnChangeCommand(Command onChangeCommand) {
@@ -108,5 +103,9 @@ public class NumberParameterEditor implements FunctionParameterEditor {
 
     public String format(Number n) {
         return n.toString();
+    }
+    
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

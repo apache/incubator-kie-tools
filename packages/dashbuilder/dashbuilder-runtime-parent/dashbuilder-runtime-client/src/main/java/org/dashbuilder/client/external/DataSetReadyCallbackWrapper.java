@@ -30,7 +30,6 @@ class DataSetReadyCallbackWrapper implements DataSetReadyCallback {
     @Override
     public void callback(DataSet dataSet) {
         wrapped.callback(dataSet);
-
     }
 
     @Override

@@ -15,9 +15,9 @@
  */
 package org.dashbuilder.renderer.client.selector;
 
-import org.uberfire.client.mvp.UberElement;
+import org.uberfire.client.mvp.UberElemental;
 
-public interface SelectorItemView<P extends SelectorItemPresenter> extends UberElement<P> {
+public interface SelectorItemView<P extends SelectorItemPresenter> extends UberElemental<P> {
 
     void setValue(String value);
 

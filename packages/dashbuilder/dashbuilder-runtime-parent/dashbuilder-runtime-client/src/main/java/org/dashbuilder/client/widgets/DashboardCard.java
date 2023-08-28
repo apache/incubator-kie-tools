@@ -22,9 +22,8 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.client.screens.RouterScreen;
+import org.dashbuilder.client.screens.Router;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElemental;
 
 /**
@@ -40,11 +39,8 @@ public class DashboardCard implements IsElement {
     View view;
 
     @Inject
-    RouterScreen routerScreen;
+    Router routerScreen;
 
-    @Inject
-    PlaceManager placeManager;
-    
 
     public interface View extends UberElemental<DashboardCard> {
 

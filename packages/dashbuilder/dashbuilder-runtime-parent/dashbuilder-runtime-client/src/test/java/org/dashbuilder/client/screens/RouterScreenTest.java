@@ -23,9 +23,7 @@ import java.util.Optional;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.client.RuntimeClientLoader;
-import org.dashbuilder.client.perspective.DashboardsListPerspective;
-import org.dashbuilder.client.perspective.EmptyPerspective;
-import org.dashbuilder.client.perspective.RuntimePerspective;
+import org.dashbuilder.client.place.PlaceManager;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
@@ -33,7 +31,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.uberfire.client.mvp.PlaceManager;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -42,73 +39,72 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RouterScreenTest {
-    
+
     @Mock
     PlaceManager placeManager;
 
     @Mock
     RuntimeScreen runtimeScreen;
-    
+
     @Mock
     RuntimeClientLoader clientLoader;
-    
+
     @Mock
     DashboardsListScreen dashboardsListScreen;
-    
+
     @InjectMocks
-    RouterScreen routerScreen;
-    
+    Router routerScreen;
+
     @Test
     public void testRouteToRuntimePerspective() {
         RuntimeModel runtimeModel = mock(RuntimeModel.class);
-        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.SINGLE_IMPORT, 
-                                                                     Optional.of(runtimeModel), 
-                                                                     Collections.emptyList(),
-                                                                     false);
+        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.SINGLE_IMPORT,
+                Optional.of(runtimeModel),
+                Collections.emptyList(),
+                false);
         routerScreen.route(response);
-        
+
         verify(runtimeScreen).loadDashboards(eq(runtimeModel));
-        verify(placeManager).goTo(eq(RuntimePerspective.ID));
+        verify(placeManager).goTo(eq(RuntimeScreen.ID));
     }
-    
+
     @Test
     public void testRouteToEmptyPerspective() {
-        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.SINGLE_IMPORT, 
-                                                                     Optional.empty(), 
-                                                                     Collections.emptyList(),
-                                                                     false);
+        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.SINGLE_IMPORT,
+                Optional.empty(),
+                Collections.emptyList(),
+                false);
         routerScreen.route(response);
-        
-        verify(placeManager).goTo(eq(EmptyPerspective.ID));
+
+        verify(placeManager).goTo(eq(EmptyScreen.ID));
     }
-    
-    
+
     @Test
     public void testRouteToDashboardsListPerspective() {
         List<String> models = Arrays.asList("m1", "m2");
-        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.MULTIPLE_IMPORT, 
-                                                                     Optional.empty(), 
-                                                                     models,
-                                                                     false);
+        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.MULTIPLE_IMPORT,
+                Optional.empty(),
+                models,
+                false);
         routerScreen.route(response);
-        
+
         verify(dashboardsListScreen).disableUpload();
         verify(dashboardsListScreen).loadList(eq(models));
-        verify(placeManager).goTo(eq(DashboardsListPerspective.ID));
+        verify(placeManager).goTo(eq(DashboardsListScreen.ID));
     }
-    
+
     @Test
     public void testRouteToDashboardsListPerspectiveWithUploadEnabled() {
         List<String> models = Arrays.asList("m1", "m2");
-        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.MULTIPLE_IMPORT, 
-                                                                     Optional.empty(), 
-                                                                     models,
-                                                                     true);
+        RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.MULTIPLE_IMPORT,
+                Optional.empty(),
+                models,
+                true);
         routerScreen.route(response);
-        
+
         verify(dashboardsListScreen, times(0)).disableUpload();
         verify(dashboardsListScreen).loadList(eq(models));
-        verify(placeManager).goTo(eq(DashboardsListPerspective.ID));
+        verify(placeManager).goTo(eq(DashboardsListScreen.ID));
     }
 
 }

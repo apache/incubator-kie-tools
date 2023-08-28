@@ -18,52 +18,64 @@ package org.dashbuilder.common.client.widgets;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.resources.i18n.DashbuilderCommonConstants;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class FilterLabelSetView implements FilterLabelSet.View, IsElement {
+public class FilterLabelSetView implements FilterLabelSet.View {
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    Anchor clearAll;
+    HTMLDivElement clearAllContainer;
+
+    @Inject
+    @DataField
+    HTMLAnchorElement clearAll;
+
+    @Inject
+    Elemental2DomUtil domUtil;
 
     FilterLabelSet presenter;
 
     @Override
     public void init(FilterLabelSet presenter) {
         this.presenter = presenter;
-        clearAll.setTextContent(DashbuilderCommonConstants.INSTANCE.clearAll());
+        clearAll.textContent = DashbuilderCommonConstants.INSTANCE.clearAll();
     }
 
     @Override
     public void clearAll() {
-        DOMUtil.removeAllChildren(mainDiv);
-        mainDiv.appendChild(clearAll);
+        domUtil.removeAllElementChildren(mainDiv);
+        mainDiv.appendChild(clearAllContainer);
     }
 
     @Override
     public void setClearAllEnabled(boolean enabled) {
-        clearAll.setHidden(!enabled);
+        clearAll.style.display = enabled ? "block" : "none";
     }
 
     @Override
     public void addLabel(FilterLabel label) {
-        mainDiv.insertBefore(label.getElement(), clearAll);
+        mainDiv.insertBefore(label.getElement(), clearAllContainer);
     }
 
     @EventHandler("clearAll")
     private void onClearAll(ClickEvent event) {
         presenter.onClearAll();
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
     }
 }

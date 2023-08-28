@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.MessageEvent;
 import jsinterop.base.Js;
-import org.dashbuilder.client.screens.RouterScreen;
+import org.dashbuilder.client.screens.Router;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
 
 @ApplicationScoped
@@ -35,7 +35,7 @@ public class RuntimeModelContentListener {
     RuntimeCommunication runtimeCommunication;
 
     @Inject
-    RouterScreen routerScreen;
+    Router routerScreen;
     
     public void start(Consumer<String> contentConsumer) {
         setupBridge(contentConsumer);

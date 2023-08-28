@@ -23,27 +23,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.dashbuilder.dataset.group.DataSetGroup;
-import org.uberfire.mvp.Command;
+import org.jboss.errai.ioc.client.container.IOC;
 
 /**
  * The coordinator class holds a list of Displayer instances and it makes sure that the data shared among
  * all of them is properly synced. This means every time a data display modification request comes from any
  * of the displayer components the rest are updated to reflect those changes.
  */
-@Dependent
+@ApplicationScoped
 public class DisplayerCoordinator {
 
     protected List<Displayer> displayerList = new ArrayList<>();
     protected Set<DisplayerListener> listenerSet = new HashSet<>();
-    protected Map<RendererLibrary,List<Displayer>> rendererMap = new HashMap<>();
+    protected Map<RendererLibrary, List<Displayer>> rendererMap = new HashMap<>();
     protected CoordinatorListener coordinatorListener = new CoordinatorListener();
-    protected Map<Displayer,List<Displayer>> notificationVetoMap = new HashMap<>();
+    protected Map<Displayer, List<Displayer>> notificationVetoMap = new HashMap<>();
     protected RendererManager rendererManager;
 
     @Inject
@@ -65,7 +65,7 @@ public class DisplayerCoordinator {
             displayers.stream().forEach(this::addDisplayer);
         }
     }
-    
+
     public void addDisplayers(Displayer... displayers) {
         if (displayers != null) {
             for (Displayer displayer : displayers) {
@@ -101,7 +101,8 @@ public class DisplayerCoordinator {
         }
         RendererLibrary renderer = rendererManager.getRendererForDisplayer(displayer.getDisplayerSettings());
         List<Displayer> rendererGroup = rendererMap.get(renderer);
-        if (rendererGroup != null) rendererGroup.remove(displayer);
+        if (rendererGroup != null)
+            rendererGroup.remove(displayer);
 
         return displayerList.remove(displayer);
     }
@@ -114,7 +115,7 @@ public class DisplayerCoordinator {
         redrawAll(null, null);
     }
 
-    public void drawAll(Command onSuccess, Command onFailure) {
+    public void drawAll(Runnable onSuccess, Runnable onFailure) {
         coordinatorListener.init(onSuccess, onFailure, displayerList.size(), true);
         for (RendererLibrary renderer : rendererMap.keySet()) {
             List<Displayer> rendererGroup = rendererMap.get(renderer);
@@ -122,13 +123,14 @@ public class DisplayerCoordinator {
         }
     }
 
-    public void redrawAll(Command onSuccess, Command onFailure) {
+    public void redrawAll(Runnable onSuccess, Runnable onFailure) {
         coordinatorListener.init(onSuccess, onFailure, displayerList.size(), false);
         rendererMap.forEach(RendererLibrary::redraw);
     }
 
     public void closeAll() {
         displayerList.stream().forEach(Displayer::close);
+        displayerList.stream().forEach(IOC.getBeanManager()::destroyBean);
     }
 
     public void clear() {
@@ -144,7 +146,7 @@ public class DisplayerCoordinator {
     }
 
     public void addNotificationVeto(List<Displayer> vetoedDisplayers) {
-        for (Displayer target: vetoedDisplayers) {
+        for (Displayer target : vetoedDisplayers) {
             notificationVetoMap.put(target, vetoedDisplayers);
         }
     }
@@ -161,11 +163,11 @@ public class DisplayerCoordinator {
 
         int count = 0;
         int total = 0;
-        Command onSuccess;
-        Command onFailure;
+        Runnable onSuccess;
+        Runnable onFailure;
         boolean draw;
 
-        protected void init(Command onSuccess, Command onFailure, int total, boolean draw) {
+        protected void init(Runnable onSuccess, Runnable onFailure, int total, boolean draw) {
             count = 0;
             this.onSuccess = onSuccess;
             this.onFailure = onFailure;
@@ -176,14 +178,14 @@ public class DisplayerCoordinator {
         protected void count() {
             count++;
             if (count == total && onSuccess != null) {
-                onSuccess.execute();
+                onSuccess.run();
             }
         }
 
         protected void error() {
             count++;
             if (count == total && onFailure != null) {
-                onFailure.execute();
+                onFailure.run();
             }
         }
 

@@ -18,19 +18,21 @@ package org.dashbuilder.renderer.client.selector;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class SelectorLabelItemView implements SelectorLabelItem.View, IsElement {
+public class SelectorLabelItemView implements SelectorLabelItem.View {
+
+    private static final String SELECTED_CLASS = "pf-m-primary";
+    private static final String UNSELECTED_CLASS = "pf-m-secondary";
 
     @Inject
     @DataField
-    Button item;
+    HTMLButtonElement item;
 
     SelectorLabelItem presenter;
 
@@ -41,40 +43,47 @@ public class SelectorLabelItemView implements SelectorLabelItem.View, IsElement 
 
     @Override
     public void setValue(String value) {
-        item.setTextContent(value);
+        item.textContent = value;
         // setTitle to make the whole value visible on mouse over when selector width is restricted and value is trimmed
-        item.setTitle(value);
+        item.title = value;
     }
 
     @Override
     public void setDescription(String description) {
-        item.setTitle(description);
+        item.title = description;
     }
 
     @Override
     public void setWidth(int percentage) {
-        CSSStyleDeclaration style = item.getStyle();
+        var style = item.style;
         style.setProperty("width", percentage + "%");
 
         // Labels too long to fit into the button width will be trimmed and ended with "..."
         // Based on https://www.w3schools.com/cssref/css3_pr_text-overflow.asp
-        style.setProperty("white-space","nowrap");
-        style.setProperty("overflow","hidden");
-        style.setProperty("text-overflow","ellipsis");
+        style.setProperty("white-space", "nowrap");
+        style.setProperty("overflow", "hidden");
+        style.setProperty("text-overflow", "ellipsis");
     }
 
     @Override
     public void select() {
-        item.setClassName("btn btn-primary");
+        item.classList.add(SELECTED_CLASS);
+        item.classList.remove(UNSELECTED_CLASS);
     }
 
     @Override
     public void reset() {
-        item.setClassName("btn btn-default");
+        item.classList.add(UNSELECTED_CLASS);
+        item.classList.remove(SELECTED_CLASS);
     }
 
     @EventHandler("item")
     public void onItemClick(ClickEvent event) {
         presenter.onItemClick();
+    }
+    
+    @Override
+    public HTMLElement getElement() {
+        return item;
     }
 }

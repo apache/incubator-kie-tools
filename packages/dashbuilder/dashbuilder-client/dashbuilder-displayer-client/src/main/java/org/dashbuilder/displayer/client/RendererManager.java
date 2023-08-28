@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -33,6 +34,7 @@ import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.client.resources.i18n.CommonConstants;
 import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
@@ -198,5 +200,10 @@ public class RendererManager {
 
     public boolean isTypeSupported(DisplayerType type) {
         return !getRenderersForType(type).isEmpty();
+    }
+    
+    @PreDestroy
+    public void cleanUp() {
+        renderersList.forEach(IOC.getBeanManager()::destroyBean);
     }
 }

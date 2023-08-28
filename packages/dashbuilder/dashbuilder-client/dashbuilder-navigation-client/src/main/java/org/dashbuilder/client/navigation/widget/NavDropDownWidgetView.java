@@ -17,22 +17,21 @@ package org.dashbuilder.client.navigation.widget;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LIElement;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.DOMUtil;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import jsinterop.base.Js;
 import org.jboss.errai.common.client.dom.ListItem;
-import org.jboss.errai.common.client.dom.Node;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
 public class NavDropDownWidgetView extends BaseNavWidgetView<NavDropDownWidget>
-    implements NavDropDownWidget.View {
+                                   implements NavDropDownWidget.View {
 
     @Inject
     @DataField
@@ -40,15 +39,16 @@ public class NavDropDownWidgetView extends BaseNavWidgetView<NavDropDownWidget>
 
     @Inject
     @DataField
-    Anchor dropDownAnchor;
+    HTMLAnchorElement dropDownAnchor;
 
     @Inject
     @DataField
-    Span dropDownName;
+    @Named("span")
+    HTMLElement dropDownName;
 
     @Inject
     @DataField
-    UnorderedList dropDownMenu;
+    HTMLUListElement dropDownMenu;
 
     NavDropDownWidget presenter;
     boolean active = false;
@@ -62,7 +62,7 @@ public class NavDropDownWidgetView extends BaseNavWidgetView<NavDropDownWidget>
 
     @Override
     public void setDropDownName(String name) {
-        dropDownName.setTextContent(name);
+        dropDownName.textContent = (name);
     }
 
     private String calculateDropDownClassName() {
@@ -87,7 +87,7 @@ public class NavDropDownWidgetView extends BaseNavWidgetView<NavDropDownWidget>
         String className = calculateDropDownClassName();
         dropDownItem.setClassName(className);
         if (enabled) {
-            DOMUtil.removeAllChildren(dropDownAnchor);
+            domUtil.removeAllElementChildren(dropDownAnchor);
             dropDownAnchor.appendChild(dropDownName);
         }
     }
@@ -101,13 +101,18 @@ public class NavDropDownWidgetView extends BaseNavWidgetView<NavDropDownWidget>
 
     @Override
     public void addDivider() {
-        LIElement li = Document.get().createLIElement();
-        li.setClassName("divider");
-        dropDownMenu.appendChild((Node) li);
+        var li = DomGlobal.document.createElement("li");
+        li.className = ("divider");
+        dropDownMenu.appendChild(li);
     }
 
     @Override
     public void errorNavGroupNotFound() {
         setDropDownName("ERROR: Nav group not found");
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return Js.cast(dropDownItem);
     }
 }

@@ -17,46 +17,54 @@ package org.dashbuilder.client.navigation.widget;
 
 import java.util.function.Consumer;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
-import org.dashbuilder.common.client.widgets.AlertBox;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
+import org.dashbuilder.patternfly.alert.Alert;
+import org.dashbuilder.patternfly.alert.AlertType;
+import org.uberfire.ext.layout.editor.api.event.LayoutTemplateDisplayed;
 import org.uberfire.ext.layout.editor.client.generator.AbstractLayoutGenerator;
 import org.uberfire.mvp.Command;
 
 public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> extends BaseNavWidgetView<T>
                                             implements TargetDivNavWidget.View<T> {
 
-    AlertBox alertBox;
+    private static final String PF5_SELECTED_CLASS = "pf-m-current";
 
-    public TargetDivNavWidgetView(AlertBox alertBox) {
+    Alert alertBox;
+    
+    @Inject
+    Event<LayoutTemplateDisplayed> layoutTemplateDisplayedEvent;
+
+    TargetDivNavWidgetView(Alert alertBox) {
         this.alertBox = alertBox;
-        alertBox.setLevel(AlertBox.Level.WARNING);
-        alertBox.setCloseEnabled(false);
-        alertBox.getElement().getStyle().setProperty("width", "96%");
+        alertBox.setType(AlertType.WARNING);
+        alertBox.getElement().style.setProperty("width", "96%");
     }
 
     @Override
     public void clearContent(String targetDivId) {
-        Element targetDiv = getTargetDiv(targetDivId);
+        var targetDiv = getTargetDiv(targetDivId);
         if (targetDiv != null) {
-            DOMUtil.removeAllChildren(targetDiv);
+            domUtil.removeAllElementChildren(targetDiv);
         }
     }
 
     @Override
-    public void showContent(String targetDivId, IsWidget content) {
+    public void showContent(String targetDivId, elemental2.dom.HTMLElement content) {
         getTargetDiv(targetDivId, targetDiv -> {
-            DOMUtil.removeAllChildren(targetDiv);
-            Div container = (Div) Window.getDocument().createElement("div");
-            container.getStyle().setProperty("overflow", "hidden");
+            domUtil.removeAllElementChildren(targetDiv);
+            var container = (HTMLElement) DomGlobal.document.createElement("div");
+            container.style.setProperty("overflow", "hidden");
             targetDiv.appendChild(container);
-            super.appendWidgetToElement(container, content);
+            container.appendChild(content);
+            layoutTemplateDisplayedEvent.fire(new LayoutTemplateDisplayed());
         }, () -> error(NavigationConstants.INSTANCE.navWidgetTargetDivMissing()));
     }
 
@@ -74,19 +82,19 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     public void infiniteRecursionError(String targetDivId, String cause) {
         Element targetDiv = getTargetDiv(targetDivId);
         if (targetDiv != null) {
-            DOMUtil.removeAllChildren(targetDiv);
+            domUtil.removeAllElementChildren(targetDiv);
             String message = NavigationConstants.INSTANCE.targetDivIdPerspectiveInfiniteRecursion() + cause;
             alertBox.setMessage(message);
-            targetDiv.appendChild(alertBox.getElement());
+            targetDiv.appendChild(Js.cast(alertBox.getElement()));
         } else {
             error(NavigationConstants.INSTANCE.targetDivIdPerspectiveInfiniteRecursion());
         }
     }
 
     public void error(String message) {
-        DOMUtil.removeAllChildren(navWidget);
+        domUtil.removeAllElementChildren(navWidget);
         alertBox.setMessage(message);
-        navWidget.appendChild(alertBox.getElement());
+        navWidget.appendChild(Js.cast(alertBox.getElement()));
     }
 
     protected Element getLayoutRootElement(Element el) {
@@ -97,7 +105,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
         if (id != null && (id.equals(AbstractLayoutGenerator.CONTAINER_ID) || id.equals("layout"))) {
             return el;
         } else {
-            return getLayoutRootElement(el.getParentElement());
+            return getLayoutRootElement(el.parentElement);
         }
     }
 
@@ -118,11 +126,19 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     public HTMLElement getTargetDiv(String targetDivId) {
         HTMLElement targetDiv = null;
         if (targetDivId != null) {
-            Element layoutRoot = getLayoutRootElement(navWidget.getParentElement());
+            var layoutRoot = getLayoutRootElement(navWidget.parentElement);
             if (layoutRoot != null) {
                 targetDiv = (HTMLElement) layoutRoot.querySelector("#" + targetDivId);
             }
         }
         return targetDiv;
+    }
+
+    protected void selectItem(elemental2.dom.Element parent, elemental2.dom.Element selected) {
+        parent.childNodes.forEach((currentValue, currentIndex, listObj) -> {
+            ((elemental2.dom.Element) currentValue).classList.remove(PF5_SELECTED_CLASS);
+            return null;
+        });
+        selected.classList.add(PF5_SELECTED_CLASS);
     }
 }

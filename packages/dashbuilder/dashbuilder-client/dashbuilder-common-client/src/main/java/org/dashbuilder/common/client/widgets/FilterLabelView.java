@@ -16,40 +16,49 @@
 package org.dashbuilder.common.client.widgets;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
-public class FilterLabelView implements FilterLabel.View, IsElement {
+public class FilterLabelView implements FilterLabel.View {
 
     @Inject
     @DataField
-    Span labelText;
+    HTMLDivElement lblRoot;
 
     @Inject
     @DataField
-    Anchor labelRemove;
+    @Named("span")
+    HTMLElement labelText;
+
+    @Inject
+    @DataField
+    HTMLButtonElement labelRemove;
 
     FilterLabel presenter;
 
     @Override
     public void init(FilterLabel presenter) {
         this.presenter = presenter;
+        labelRemove.onclick = e -> {
+            presenter.onRemove();
+            return null;
+        };
     }
 
     @Override
     public void setLabel(String label) {
-        labelText.setTextContent(label);
+        labelText.textContent = label;
     }
 
-    @EventHandler("labelRemove")
-    private void onRemove(ClickEvent event) {
-        presenter.onRemove();
+    @Override
+    public HTMLElement getElement() {
+        return lblRoot;
     }
+
 }

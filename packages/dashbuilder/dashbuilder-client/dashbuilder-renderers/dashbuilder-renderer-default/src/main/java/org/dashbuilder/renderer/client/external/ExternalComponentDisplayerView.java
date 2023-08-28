@@ -24,14 +24,14 @@ import elemental2.dom.CSSProperties.WidthUnionType;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.dashbuilder.displayer.client.AbstractErraiDisplayerView;
+import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
-public class ExternalComponentDisplayerView extends AbstractErraiDisplayerView<ExternalComponentDisplayer>
+public class ExternalComponentDisplayerView extends AbstractDisplayerView<ExternalComponentDisplayer>
                                             implements ExternalComponentDisplayer.View {
 
     @Inject
@@ -45,15 +45,10 @@ public class ExternalComponentDisplayerView extends AbstractErraiDisplayerView<E
 
     @Override
     public void init(ExternalComponentDisplayer presenter) {
-        super.setPresenter(presenter);
-        externalComponentView = Js.cast(presenter.getExternalComponentPresenter().getView().asWidget().getElement());
+        super.init(presenter);
+        externalComponentView = Js.cast(presenter.getExternalComponentPresenter().getView().getElement());
         externalComponentDisplayerRoot.appendChild(externalComponentView);
         super.setVisualization(Js.cast(externalComponentDisplayerRoot));
-    }
-
-    @Override
-    public org.jboss.errai.common.client.dom.HTMLElement getElement() {
-        return Js.cast(externalComponentDisplayerRoot);
     }
 
     @Override

@@ -18,16 +18,13 @@ package org.dashbuilder.client.navigation.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.NavTree;
-import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.uberfire.mvp.Command;
 
 public abstract class BaseNavWidget implements NavWidget {
@@ -55,11 +52,6 @@ public abstract class BaseNavWidget implements NavWidget {
 
     public NavigationManager getNavigationManager() {
         return navigationManager;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
     }
 
     @Override
@@ -131,7 +123,7 @@ public abstract class BaseNavWidget implements NavWidget {
     }
 
     public boolean areSubGroupsSupported() {
-        return maxLevels < 1 || getLevel() < maxLevels-1;
+        return maxLevels < 1 || getLevel() < maxLevels - 1;
     }
 
     protected NavWidget getSubgroupNavWidget(String groupId) {
@@ -221,7 +213,7 @@ public abstract class BaseNavWidget implements NavWidget {
             subGroupNavWidget.setOnItemSelectedCommand(() -> onSubGroupItemClicked(subGroupNavWidget));
             subGroupNavWidget.show(navGroup);
             navSubgroupList.add(subGroupNavWidget);
-            view.addGroupItem(navGroup.getId(), navGroup.getName(), navGroup.getDescription(), subGroupNavWidget);
+            view.addGroupItem(navGroup.getId(), navGroup.getName(), navGroup.getDescription(), subGroupNavWidget.getElement());
         }
     }
 
@@ -288,8 +280,6 @@ public abstract class BaseNavWidget implements NavWidget {
         itemSelected = navItem;
         view.setSelectedItem(navItem.getId());
 
-        navigationManager.navItemClicked(navItem);
-
         if (onItemSelectedCommand != null) {
             onItemSelectedCommand.execute();
         }
@@ -305,13 +295,6 @@ public abstract class BaseNavWidget implements NavWidget {
     public void dispose() {
         view.clearItems();
         navSubgroupList.forEach(NavWidget::dispose);
-    }
-
-    // Listen to changes in the navigation tree
-
-    public void onNavTreeChanged(@Observes final NavTreeChangedEvent event) {
-        navigationManager.update(event.getNavTree());
-        refresh();
     }
 
 }

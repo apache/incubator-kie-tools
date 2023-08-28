@@ -34,8 +34,10 @@
   }
 }
 
-.panel-group .panel-heading {
-  cursor: pointer;
-  font-size: medium;
-  font-weight: bold;
+#app {
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  position: absolute;
+  overflow-y: auto;
 }

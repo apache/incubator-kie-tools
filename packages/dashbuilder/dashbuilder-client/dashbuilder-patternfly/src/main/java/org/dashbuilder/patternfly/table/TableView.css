@@ -1,0 +1,9 @@
+.tableContainer {
+  padding: 10px;
+}
+.dataTableContainer {
+  overflow-y: auto;
+}
+.tblTitle {
+  margin-bottom: 10px;
+}

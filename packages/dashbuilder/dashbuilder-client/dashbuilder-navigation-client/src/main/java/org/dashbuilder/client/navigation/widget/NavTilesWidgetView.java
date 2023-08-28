@@ -16,61 +16,67 @@
 package org.dashbuilder.client.navigation.widget;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.AnchorElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.LIElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLAnchorElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLOListElement;
+import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
-import org.dashbuilder.common.client.widgets.AlertBox;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Node;
-import org.jboss.errai.common.client.dom.OrderedList;
+import org.dashbuilder.patternfly.alert.Alert;
+import org.dashbuilder.patternfly.alert.AlertType;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.uberfire.mvp.Command;
+import org.uberfire.ext.layout.editor.api.event.LayoutTemplateDisplayed;
 
 @Dependent
 @Templated
 public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
-    implements NavTilesWidget.View {
+                                implements NavTilesWidget.View {
+
+    private static final String CURRENT_ITEM_CLASS = "pf-m-current";
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    Div contentDiv;
+    HTMLDivElement contentDiv;
 
     @Inject
     @DataField
-    Div tilesDiv;
+    HTMLDivElement tilesDiv;
 
     @Inject
-    @DataField("breadcrumb")
-    OrderedList breadcrumb;
+    @DataField
+    HTMLOListElement breadcrumb;
+
+    @Inject
+    Elemental2DomUtil domUtil;
+
+    @Inject
+    Event<LayoutTemplateDisplayed> layoutTemplateDisplayedEvent;
 
     NavTilesWidget presenter;
-    AlertBox alertBox;
+    Alert alertBox;
 
     @Inject
-    public NavTilesWidgetView(AlertBox alertBox) {
+    public NavTilesWidgetView(Alert alertBox) {
         this.alertBox = alertBox;
-        alertBox.setLevel(AlertBox.Level.WARNING);
-        alertBox.setCloseEnabled(false);
-        alertBox.getElement().getStyle().setProperty("width", "96%");
+        alertBox.setType(AlertType.WARNING);
+        alertBox.getElement().style.setProperty("width", "96%");
     }
 
     @Override
     public void init(NavTilesWidget presenter) {
         this.presenter = presenter;
-        super.navWidget = tilesDiv;
+        super.navWidget = Js.cast(tilesDiv);
     }
 
     @Override
@@ -79,42 +85,43 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
     }
 
     @Override
-    public void addTileWidget(IsElement tileWidget) {
-        DOMUtil.removeAllChildren(mainDiv);
+    public void addTileWidget(HTMLElement tileWidget) {
+        domUtil.removeAllElementChildren(mainDiv);
         mainDiv.appendChild(contentDiv);
-        tilesDiv.appendChild(tileWidget.getElement());
+        tilesDiv.appendChild(Js.cast(tileWidget));
     }
 
     @Override
-    public void showTileContent(IsWidget tileContent) {
-        DOMUtil.removeAllChildren(tilesDiv);
-        super.appendWidgetToElement(tilesDiv, tileContent);
+    public void showTileContent(HTMLElement tileContent) {
+        domUtil.removeAllElementChildren(tilesDiv);
+        tilesDiv.appendChild(tileContent);
+        layoutTemplateDisplayedEvent.fire(new LayoutTemplateDisplayed());
     }
 
     @Override
     public void errorNavItemsEmpty() {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navGroupEmptyError());
-        mainDiv.appendChild(alertBox.getElement());
+        mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void errorNavGroupNotFound() {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navGroupNotFound());
-        mainDiv.appendChild(alertBox.getElement());
+        mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void infiniteRecursionError(String cause) {
-        DOMUtil.removeAllChildren(tilesDiv);
+        domUtil.removeAllElementChildren(tilesDiv);
         alertBox.setMessage(NavigationConstants.INSTANCE.navTilesDragComponentInfiniteRecursion() + cause);
-        tilesDiv.appendChild(alertBox.getElement());
+        tilesDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void clearBreadcrumb() {
-        DOMUtil.removeAllChildren(breadcrumb);
+        domUtil.removeAllElementChildren(breadcrumb);
     }
 
     @Override
@@ -123,25 +130,45 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
     }
 
     @Override
-    public void addBreadcrumbItem(String navItemName, Command onClicked) {
-        LIElement li = Document.get().createLIElement();
-        breadcrumb.appendChild((Node) li);
+    public void addBreadcrumbItem(String navItemName, Runnable onClicked) {
+        var li = DomGlobal.document.createElement("li");
+        var divider = createBreadcrumbDivider();
+        li.appendChild(divider);
 
-        if (onClicked != null) {
-            AnchorElement anchor = Document.get().createAnchorElement();
-            anchor.setInnerText(navItemName);
-            li.appendChild(anchor);
-            li.getStyle().setCursor(Style.Cursor.POINTER);
+        var anchor = (HTMLAnchorElement) DomGlobal.document.createElement("a");
+        anchor.textContent = navItemName;
+        anchor.href = "#";
+        anchor.className = "pf-v5-c-breadcrumb__link";
+        li.appendChild(anchor);
+        li.className = "pf-v5-c-breadcrumb__item";
 
-            Event.sinkEvents(anchor, Event.ONCLICK);
-            Event.setEventListener(anchor, event -> {
-                if (Event.ONCLICK == event.getTypeInt()) {
-                    onClicked.execute();
-                }
+        anchor.onclick = e -> {
+            onClicked.run();
+            return null;
+        };
+        // add here the divider
+        if (onClicked == null) {
+            breadcrumb.querySelectorAll("li > a").forEach((v, i, list) -> {
+                v.classList.remove(CURRENT_ITEM_CLASS);
+                return null;
             });
-        } else {
-            ((Node) li).setTextContent(navItemName);
-            li.setClassName("active");
+            anchor.classList.add(CURRENT_ITEM_CLASS);
         }
+        breadcrumb.appendChild(li);
     }
+
+    Element createBreadcrumbDivider() {
+        var span = DomGlobal.document.createElement("span");
+        var i = DomGlobal.document.createElement("i");
+        span.className = "pf-v5-c-breadcrumb__item-divider";
+        i.className = "fas fa-angle-right";
+        span.appendChild(i);
+        return span;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
+    }
+
 }

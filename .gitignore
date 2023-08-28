@@ -169,6 +169,7 @@ packages/dashbuilder/**/dependency-reduced-pom.xml
 packages/dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component
 **/.apt_generated/
 **/.apt_generated_tests/
+packages/dashbuilder/**/.checkstyle
 
 #kie-sandbox-fs
 packages/kie-sandbox-fs/dist

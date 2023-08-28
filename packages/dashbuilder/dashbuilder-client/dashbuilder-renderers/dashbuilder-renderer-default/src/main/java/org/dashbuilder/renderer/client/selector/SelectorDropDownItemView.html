@@ -1,6 +1,20 @@
-<li data-field="item">
-  <a data-field="itemAnchor">
-    <span data-field="itemText" class="text"></span>
-    <span data-field="itemIcon" class="glyphicon glyphicon-ok check-mark selector-dditem-icon"></span>
-  </a>
-</li>
+<div class="pf-v5-c-menu">
+  <li class="pf-v5-c-menu__list-item" role="none" data-field="item">
+    <button
+      tabindex="-1"
+      class="pf-v5-c-menu__item"
+      role="option"
+      aria-selected="false"
+      type="button"
+      data-field="itemButton"
+    >
+      <span class="pf-v5-c-menu__item-main">
+        <span class="pf-v5-c-menu__item-text" data-field="itemText"> </span>
+        <!--  -->
+        <span class="pf-v5-c-menu__item-select-icon" data-field="itemIcon">
+          <i class="fas fa-check" aria-hidden="true"></i>
+        </span>
+      </span>
+    </button>
+  </li>
+</div>

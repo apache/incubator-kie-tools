@@ -18,17 +18,14 @@ package org.dashbuilder.client.navigation.layout.editor;
 import java.util.Collections;
 import java.util.Map;
 
-import javax.enterprise.event.Observes;
-
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.client.navigation.widget.HasDefaultNavItem;
 import org.dashbuilder.client.navigation.widget.HasTargetDiv;
 import org.dashbuilder.client.navigation.widget.NavWidget;
-import org.dashbuilder.client.navigation.widget.TargetDivNavWidget;
 import org.dashbuilder.navigation.NavGroup;
-import org.dashbuilder.navigation.event.NavTreeChangedEvent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
@@ -61,12 +58,11 @@ public abstract class AbstractNavDragComponent implements NavDragComponent {
     }
 
     @Override
-    public IsWidget getShowWidget(RenderingContext ctx) {
+    public HTMLElement getShowWidget(RenderingContext ctx) {
         Map<String, String> properties = ctx.getComponent().getProperties();
 
         // Nav group settings
-        NavGroup navGroup = pluginManager.getLastBuildPerspectiveNavGroup();
-        navGroupId = navGroup != null ? navGroup.getId() : properties.get(NAV_GROUP_ID);
+        navGroupId = properties.get(NAV_GROUP_ID);
         navWidget.setHideEmptyGroups(true);
 
         // Default item settings
@@ -81,7 +77,7 @@ public abstract class AbstractNavDragComponent implements NavDragComponent {
             ((HasTargetDiv) navWidget).setGotoItemEnabled(true);
         }
         this.showNavWidget();
-        return navWidget;
+        return Js.cast(navWidget.getElement());
     }
 
     @Override
@@ -98,20 +94,4 @@ public abstract class AbstractNavDragComponent implements NavDragComponent {
         }
     }
 
-    protected void checkLayoutTemplate() {
-        if ((navWidget instanceof TargetDivNavWidget) && layoutTemplate != null) {
-            pluginManager.getLayoutTemplateInfo(layoutTemplate, layoutTemplateInfo -> {
-                if (!layoutTemplateInfo.getRecursionIssue().isEmpty()) {
-                    TargetDivNavWidget targetDivNavWidget = (TargetDivNavWidget) navWidget;
-                    targetDivNavWidget.onInfiniteRecursion(layoutTemplateInfo.getRecursionIssue());
-                }
-            });
-        }
-    }
-
-    // Check the layout template every time the navigation tree changes
-
-    public void onNavTreeChanged(@Observes final NavTreeChangedEvent event) {
-        checkLayoutTemplate();
-    }
 }

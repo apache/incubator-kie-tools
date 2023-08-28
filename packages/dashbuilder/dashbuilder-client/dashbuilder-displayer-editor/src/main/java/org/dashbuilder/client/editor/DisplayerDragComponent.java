@@ -18,22 +18,22 @@ package org.dashbuilder.client.editor;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.dashbuilder.dataset.client.ExternalDataSetParserProvider;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.DisplayerSubType;
 import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
-import org.dashbuilder.displayer.client.Displayer;
-import org.dashbuilder.displayer.client.PerspectiveCoordinator;
+import org.dashbuilder.displayer.client.DisplayerCoordinator;
 import org.dashbuilder.displayer.client.widgets.DisplayerErrorWidget;
 import org.dashbuilder.displayer.client.widgets.DisplayerViewer;
 import org.dashbuilder.displayer.json.DisplayerSettingsJSONMarshaller;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
@@ -45,8 +45,7 @@ public class DisplayerDragComponent implements LayoutDragComponent {
 
     SyncBeanManager beanManager;
     DisplayerViewer viewer;
-    PlaceManager placeManager;
-    PerspectiveCoordinator perspectiveCoordinator;
+    DisplayerCoordinator displayerCoordinator;
     GlobalDisplayerSettings globalDisplayerSettings;
 
     @Inject
@@ -58,14 +57,12 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     @Inject
     public DisplayerDragComponent(SyncBeanManager beanManager,
                                   DisplayerViewer viewer,
-                                  PlaceManager placeManager,
-                                  PerspectiveCoordinator perspectiveCoordinator,
+                                  DisplayerCoordinator displayerCoordinator,
                                   GlobalDisplayerSettings globalDisplayerSettings) {
 
         this.beanManager = beanManager;
         this.viewer = viewer;
-        this.placeManager = placeManager;
-        this.perspectiveCoordinator = perspectiveCoordinator;
+        this.displayerCoordinator = displayerCoordinator;
         this.globalDisplayerSettings = globalDisplayerSettings;
     }
 
@@ -84,31 +81,23 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     }
 
     @Override
-    public IsWidget getShowWidget(final RenderingContext ctx) {
+    public HTMLElement getShowWidget(final RenderingContext ctx) {
         var settingsOp = getDisplayerSettings(ctx.getComponent());
-        return settingsOp.map(settings -> {
+        if (settingsOp.isPresent()) {
+            var settings = settingsOp.get();
             var error = settings.getError();
             if (error.isPresent()) {
                 displayError.show(error.get(), null);
-                return displayError;
+                return displayError.getElement();
             }
-            viewer.removeFromParent();
             viewer.init(settings);
-            viewer.addAttachHandler(attachEvent -> {
-                if (attachEvent.isAttached()) {
-                    final int offsetWidth = ctx.getContainer().getOffsetWidth();
-                    int containerWidth = offsetWidth > 40 ? offsetWidth - 40 : 0;
-                    adjustSize(settings, containerWidth);
-                    Displayer displayer = viewer.draw();
-                    perspectiveCoordinator.addDisplayer(displayer);
-                }
-            });
-            int containerWidth = ctx.getContainer().getOffsetWidth() - 40;
+            int containerWidth = ctx.getContainer().offsetWidth - 40;
             adjustSize(settings, containerWidth);
-            Displayer displayer = viewer.draw();
-            perspectiveCoordinator.addDisplayer(displayer);
-            return viewer;
-        }).orElse(null);
+            var displayer = viewer.draw();
+            displayerCoordinator.addDisplayer(displayer);
+            return Js.cast(viewer.getDisplayerContainer());
+        }
+        return null;
     }
 
     protected void adjustSize(DisplayerSettings settings, int containerWidth) {
@@ -141,5 +130,10 @@ public class DisplayerDragComponent implements LayoutDragComponent {
     private boolean isDataMissing(DisplayerSettings displayerSettings) {
         var lookup = displayerSettings.getDataSetLookup();
         return (lookup == null || isBlank(lookup.getDataSetUUID())) && displayerSettings.getDataSet() == null;
+    }
+
+    @PreDestroy
+    void destroy() {
+        displayerCoordinator.clear();
     }
 }

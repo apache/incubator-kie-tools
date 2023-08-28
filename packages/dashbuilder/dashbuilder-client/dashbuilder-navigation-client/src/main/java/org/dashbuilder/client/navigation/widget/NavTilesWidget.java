@@ -15,26 +15,24 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
 import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
-import org.dashbuilder.navigation.layout.LayoutRecursionIssueI18n;
-import org.dashbuilder.navigation.layout.LayoutTemplateContext;
 import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
-import org.jboss.errai.common.client.api.IsElement;
+import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.mvp.Command;
-import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * A navigation widget that displays a set of navigation items using a navigable tile based approach where
@@ -44,39 +42,40 @@ import org.uberfire.workbench.model.ActivityResourceType;
 @Dependent
 public class NavTilesWidget extends BaseNavWidget {
 
-    public interface View extends NavWidgetView<NavTilesWidget>, LayoutRecursionIssueI18n {
+    public interface View extends NavWidgetView<NavTilesWidget>, ClientLayoutRecursionIssueI18n {
 
-        void addTileWidget(IsElement tileWidget);
+        void addTileWidget(HTMLElement tileWidget);
 
-        void showTileContent(IsWidget tileContent);
+        void showTileContent(HTMLElement tileContent);
 
         void clearBreadcrumb();
 
         void addBreadcrumbItem(String navItemName);
 
-        void addBreadcrumbItem(String navItemName, Command onClicked);
+        void addBreadcrumbItem(String navItemName, Runnable onClicked);
 
         void infiniteRecursionError(String cause);
     }
 
     View view;
     PerspectivePluginManager perspectivePluginManager;
-    PlaceManager placeManager;
     SyncBeanManager beanManager;
+    Map<String, NavItemTileWidget> tilesCache;
     NavItem currentPerspectiveNavItem = null;
     Stack<NavItem> navItemStack = new Stack<>();
+    Map<String, HTMLElement> perspectiveCache;
 
     @Inject
     public NavTilesWidget(View view,
                           NavigationManager navigationManager,
                           PerspectivePluginManager perspectivePluginManager,
-                          PlaceManager placeManager,
                           SyncBeanManager beanManager) {
         super(view, navigationManager);
         this.view = view;
         this.perspectivePluginManager = perspectivePluginManager;
-        this.placeManager = placeManager;
         this.beanManager = beanManager;
+        tilesCache = new HashMap<>();
+        perspectiveCache = new HashMap<>();
     }
 
     public Stack<NavItem> getNavItemStack() {
@@ -119,10 +118,10 @@ public class NavTilesWidget extends BaseNavWidget {
 
     @Override
     protected void showItem(NavItem navItem) {
-        NavItemTileWidget tileWidget = beanManager.lookupBean(NavItemTileWidget.class).getInstance();
+        var tileWidget = produceTile(navItem.getId());
         tileWidget.setOnClick(() -> this.openItem(navItem));
         tileWidget.show(navItem);
-        view.addTileWidget(tileWidget);
+        view.addTileWidget(tileWidget.getElement());
     }
 
     @Override
@@ -147,16 +146,8 @@ public class NavTilesWidget extends BaseNavWidget {
         } else {
             NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
             String resourceId = navCtx.getResourceId();
-            if (resourceId != null && ActivityResourceType.PERSPECTIVE.equals(navCtx.getResourceType())) {
-
-                // Runtime perspectives are displayed inline
-                if (perspectivePluginManager.isRuntimePerspective(resourceId)) {
-                    openPerspective(navItem);
-                }
-                // Classic UF perspectives take over the entire window
-                else {
-                    placeManager.goTo(resourceId);
-                }
+            if (resourceId != null) {
+                openPerspective(navItem);
             }
         }
     }
@@ -164,11 +155,16 @@ public class NavTilesWidget extends BaseNavWidget {
     protected void openPerspective(NavItem perspectiveItem) {
         NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(perspectiveItem);
         String perspectiveId = navCtx.getResourceId();
-        String navRootId = navCtx.getNavGroupId();
         currentPerspectiveNavItem = perspectiveItem;
-        LayoutTemplateContext layoutCtx = new LayoutTemplateContext(navRootId);
-        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, layoutCtx, view::showTileContent,
-                this::onInfiniteRecursion);
+        if (perspectiveCache.containsKey(perspectiveId)) {
+            view.showTileContent(perspectiveCache.get(perspectiveId));
+            return;
+        }
+        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, page -> {
+            perspectiveCache.put(perspectiveId, page);
+            view.showTileContent(page);
+        });
+
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
@@ -199,10 +195,28 @@ public class NavTilesWidget extends BaseNavWidget {
         openItem(navItem);
     }
 
-
     private void clearBreadcrumb() {
         navItemStack.clear();
         updateBreadcrumb();
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
+    }
+
+    @PreDestroy
+    void destroy() {
+        tilesCache.values().forEach(IOC.getBeanManager()::destroyBean);
+    }
+
+    private NavItemTileWidget produceTile(String id) {
+        return tilesCache.compute(id, (key, value) -> {
+            if (value != null) {
+                IOC.getBeanManager().destroyBean(value);
+            }
+            return beanManager.lookupBean(NavItemTileWidget.class).newInstance();
+        });
     }
 
 }

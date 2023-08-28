@@ -78,6 +78,12 @@ public class LayoutTemplateJSONMarshaller {
     static final String HTML = "HTML";
     static final String HTML_CODE_PROP = "HTML_CODE";
 
+    // Drag types constants
+    static final String TITLE_DRAG_TYPE =
+            "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TitleLayoutDragComponent";
+    static final String TITLE = "TITLE";
+    static final String TITLE_TEXT_PROP = "text";
+
     static final String SCREEN_DRAG_TYPE = "org.dashbuilder.client.navigation.widget.ScreenLayoutDragComponent";
     static final String SCREEN = "SCREEN";
     static final String SCREEN_NAME_PROP = "Screen Name";
@@ -160,6 +166,8 @@ public class LayoutTemplateJSONMarshaller {
         } else if (components != null) {
             var row = new LayoutRow(DEFAULT_HEIGHT, Collections.emptyMap());
             var column = new LayoutColumn(DEFAULT_SPAN);
+            row.setIndex(1);
+            column.setIndex(1);
             row.add(column);
             extractComponents(components, column::add);
             template.addRow(row);
@@ -183,6 +191,7 @@ public class LayoutTemplateJSONMarshaller {
         var row = new LayoutRow(height == null ? DEFAULT_HEIGHT : height,
                 extractProperties(object.getObject(PROPERTIES)));
         var ltColumns = Optional.ofNullable(object.getArray(LAYOUT_COLUMNS)).orElse(object.getArray(COLUMNS));
+        row.setIndex(i);
         extractColumns(ltColumns, i, row::add);
         return row;
     }
@@ -210,7 +219,7 @@ public class LayoutTemplateJSONMarshaller {
         var column = new LayoutColumn(span,
                 height == null ? DEFAULT_HEIGHT : height,
                 extractProperties(object.getObject(PROPERTIES)));
-
+        column.setIndex(i);
         extractRows(object.getArray(ROWS), column::addRow);
         var componentsArray = Optional.ofNullable(object.getArray(LAYOUT_COMPONENTS)).orElse(object.getArray(
                 COMPONENTS));
@@ -376,6 +385,7 @@ public class LayoutTemplateJSONMarshaller {
     protected Optional<LayoutComponent> findComponentByShortcut(JsonObject object) {
         return Stream.of(
                 elementShortcut(object, HTML, HTML_CODE_PROP, HTML_DRAG_TYPE),
+                elementShortcut(object, TITLE, TITLE_TEXT_PROP, TITLE_DRAG_TYPE),
                 elementShortcut(object, SCREEN, SCREEN_NAME_PROP, SCREEN_DRAG_TYPE),
                 elementShortcut(object, DIV, DIV_ID_PROP, DIV_DRAG_TYPE),
                 elementShortcut(object, MARKDOWN, MARKDOWN_CODE_PROP, MARKDOWN_DRAG_TYPE),

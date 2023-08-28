@@ -21,25 +21,22 @@ import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import elemental2.dom.DomGlobal;
 import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
 import org.jboss.errai.bus.client.api.InvalidBusContentException;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
-import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
-
-import static org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup.newYesNoCancelPopup;
 
 @Dependent
 public class DefaultRuntimeErrorCallback {
 
-    public static final String PARSING_JSON_SYNTAX_MSG = "Error parsing JSON: SyntaxError: JSON.parse: unexpected character at line 1 column 2 of the JSON data";
-    public static final String PARSING_JSON_MSG = "Error parsing JSON: SyntaxError: Unexpected token � in JSON at position 1";
+    public static final String PARSING_JSON_SYNTAX_MSG =
+            "Error parsing JSON: SyntaxError: JSON.parse: unexpected character at line 1 column 2 of the JSON data";
+    public static final String PARSING_JSON_MSG =
+            "Error parsing JSON: SyntaxError: Unexpected token � in JSON at position 1";
     public static final String SCRIPT_ERROR_MSG = "Script error. (:0)";
 
     @Inject
-    BusyIndicatorView loading;
+    BusyIndicator busyIndicator;
 
     AppConstants i18n = AppConstants.INSTANCE;
 
@@ -72,36 +69,34 @@ public class DefaultRuntimeErrorCallback {
         if (errorPopUpLock) {
             return;
         }
-        loading.hideBusyIndicator();
+        busyIndicator.hide();
         errorPopUpLock = true;
 
         switch (type) {
             case NOT_LOGGED:
-                showPopup(i18n.sessionTimeout(), i18n.invalidBusResponseProbablySessionTimeout());
+                showPopup(i18n.invalidBusResponseProbablySessionTimeout());
                 break;
             case SERVER_OFFLINE:
-                showPopup(i18n.disconnectedFromServer(), i18n.couldNotConnectToServer());
+                showPopup(i18n.couldNotConnectToServer());
                 break;
             case NOT_AUTHORIZED:
-                showPopup(i18n.notAuthorizedTitle(), i18n.notAuthorized());
+                showPopup(i18n.notAuthorized());
                 break;
             case OTHER:
             default:
-                String popupMessage = message == null ? i18n.defaultErrorMessage() : message;
-                DomGlobal.console.log(CommonConstants.INSTANCE.ExceptionGeneric0(popupMessage));
-                this.unlock();                
+                DomGlobal.console.log(message);
+                this.unlock();
                 break;
         }
     }
 
-    private void showPopup(String title, String content) {
-        final YesNoCancelPopup result = newYesNoCancelPopup(title,
-                                                            content,
-                                                            Window.Location::reload,
-                                                            null,
-                                                            this::unlock);
-        result.clearScrollHeight();
-        result.show();
+    private void showPopup(String content) {
+        var result = DomGlobal.confirm(content);
+        if (result) {
+            DomGlobal.window.location.reload();
+        }
+
+        this.unlock();
     }
 
     protected static String extractMessageRecursively(final Throwable t) {
@@ -122,8 +117,8 @@ public class DefaultRuntimeErrorCallback {
         Throwable cause = throwable.getCause();
         String message = throwable.getMessage();
         List<String> messages = Arrays.asList(SCRIPT_ERROR_MSG,
-                                              PARSING_JSON_MSG,
-                                              PARSING_JSON_SYNTAX_MSG);
+                PARSING_JSON_MSG,
+                PARSING_JSON_SYNTAX_MSG);
 
         return cause == null && message != null && messages.stream().anyMatch(message::equals);
     }

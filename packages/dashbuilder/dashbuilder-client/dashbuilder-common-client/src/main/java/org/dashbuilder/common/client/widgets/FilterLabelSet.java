@@ -17,15 +17,13 @@ package org.dashbuilder.common.client.widgets;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.client.mvp.UberElement;
-import org.uberfire.mvp.Command;
+import org.uberfire.client.mvp.UberElemental;
 
-public class FilterLabelSet implements IsElement {
+public class FilterLabelSet {
 
-    public interface View extends UberElement<FilterLabelSet> {
+    public interface View extends UberElemental<FilterLabelSet> {
 
         void clearAll();
 
@@ -36,7 +34,7 @@ public class FilterLabelSet implements IsElement {
 
     private View view;
     private SyncBeanManager beanManager;
-    private Command onClearAllCommand;
+    private Runnable onClearAllCommand;
     private int numberOfLabels = 0;
 
     @Inject
@@ -47,7 +45,6 @@ public class FilterLabelSet implements IsElement {
         this.view.setClearAllEnabled(false);
     }
 
-    @Override
     public HTMLElement getElement() {
         return view.getElement();
     }
@@ -63,18 +60,18 @@ public class FilterLabelSet implements IsElement {
         filterLabel.setLabel(label);
         view.addLabel(filterLabel);
         numberOfLabels++;
-        view.setClearAllEnabled(numberOfLabels>1);
+        view.setClearAllEnabled(numberOfLabels > 1);
         return filterLabel;
     }
 
-    public void setOnClearAllCommand(Command onClearAllCommand) {
+    public void setOnClearAllCommand(Runnable onClearAllCommand) {
         this.onClearAllCommand = onClearAllCommand;
     }
 
     void onClearAll() {
         this.clear();
         if (onClearAllCommand != null) {
-            onClearAllCommand.execute();
+            onClearAllCommand.run();
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.    private static final String SELECTED_CLASS = "pf-m-current";
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,49 +15,67 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.dashbuilder.common.client.widgets.AlertBox;
-import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.UnorderedList;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import jsinterop.base.Js;
+import org.dashbuilder.patternfly.alert.Alert;
+import org.dashbuilder.patternfly.tab.Tab;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.uberfire.mvp.Command;
 
 @Dependent
 @Templated
 public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidget>
-    implements NavTabListWidget.View {
+                                  implements NavTabListWidget.View {
 
     @Inject
     @DataField
-    Div mainDiv;
+    HTMLDivElement mainDiv;
 
     @Inject
     @DataField
-    Div tabsDiv;
+    HTMLDivElement tabsDiv;
 
     @Inject
     @DataField
-    UnorderedList tabList;
+    HTMLUListElement tabList;
 
     @Inject
     @DataField
-    Div childrenDiv;
+    HTMLDivElement childrenDiv;
+
+    @Inject
+    Elemental2DomUtil domUtil;
+
+    @Inject
+    protected SyncBeanManager beanManager;
+
+    Map<String, Tab> tabsCache;
 
     NavTabListWidget presenter;
 
     @Inject
-    public NavTabListWidgetView(AlertBox alertBox) {
+    public NavTabListWidgetView(Alert alertBox) {
         super(alertBox);
+        tabsCache = new HashMap<>();
     }
 
     @Override
     public void init(NavTabListWidget presenter) {
         this.presenter = presenter;
-        super.navWidget = tabList;
+        super.navWidget = Js.cast(tabList);
     }
 
     @Override
@@ -66,40 +84,78 @@ public class NavTabListWidgetView extends TargetDivNavWidgetView<NavTabListWidge
     }
 
     @Override
-    public void addGroupItem(String id, String name, String description, IsWidget widget) {
+    public void addGroupItem(String id, String name, String description, HTMLElement el) {
         this.addItem(id, name, description, () -> presenter.onGroupTabClicked(id));
     }
 
     @Override
+    public void addItem(String id, String name, String description, Command onItemSelected) {
+        var tab = produceTab(id);
+        var element = tab.getElement();
+        if (tabList.childElementCount == 0) {
+            selectItem(tabList, tab.getElement());
+        }
+        tab.setTitle(name);
+        tab.setOnSelect(() -> {
+            selectItem(tabList, tab.getElement());
+            onItemSelected.execute();
+        });
+
+        tabList.appendChild(element);
+
+        super.itemMap.put("id", Js.cast(element));
+    }
+
+    private Tab produceTab(String id) {
+        return tabsCache.compute(id, (key, value) -> {
+            if (value != null) {
+                IOC.getBeanManager().destroyBean(value);
+            }
+            return beanManager.lookupBean(Tab.class).newInstance();
+        });
+    }
+
+    @Override
     public void showAsSubmenu(boolean enabled) {
-        tabList.setClassName("nav nav-tabs" + (enabled ? " nav-tabs-pf" : ""));
+        mainDiv.classList.add("pf-m-secondary");
     }
 
     @Override
     public void clearChildrenTabs() {
-        DOMUtil.removeAllChildren(childrenDiv);
+        domUtil.removeAllElementChildren(childrenDiv);
     }
 
     @Override
-    public void showChildrenTabs(IsWidget tabListWidget) {
-        DOMUtil.removeAllChildren(childrenDiv);
-        super.appendWidgetToElement(childrenDiv, tabListWidget);
+    public void showChildrenTabs(HTMLElement tabListWidget) {
+        domUtil.removeAllElementChildren(childrenDiv);
+        childrenDiv.appendChild(tabListWidget);
         if (presenter.getLevel() == 0) {
-            childrenDiv.getStyle().setProperty("margin-left", "15px");
+            childrenDiv.style.setProperty("margin-left", "15px");
         }
     }
 
     @Override
     public void clearItems() {
         super.clearItems();
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         mainDiv.appendChild(tabsDiv);
     }
 
     @Override
     public void error(String message) {
-        DOMUtil.removeAllChildren(mainDiv);
+        domUtil.removeAllElementChildren(mainDiv);
         alertBox.setMessage(message);
-        mainDiv.appendChild(alertBox.getElement());
+        mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
+
+    @Override
+    public HTMLElement getElement() {
+        return mainDiv;
+    }
+
+    @PreDestroy
+    void destroy() {
+        tabsCache.values().forEach(IOC.getBeanManager()::destroyBean);
+    }
+
 }

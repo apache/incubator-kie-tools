@@ -16,47 +16,40 @@
 package org.dashbuilder.displayer.client.widgets.filter;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import elemental2.dom.CSSProperties.WidthUnionType;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import org.dashbuilder.patternfly.textbox.TextBox;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
 
 @Dependent
-public class NumberParameterEditorView extends Composite implements NumberParameterEditor.View {
-
-    interface Binder extends UiBinder<Widget, NumberParameterEditorView> {}
-    private static Binder uiBinder = GWT.create(Binder.class);
+public class NumberParameterEditorView implements NumberParameterEditor.View {
 
     NumberParameterEditor presenter;
 
-    @UiField
-    FormGroup form;
+    @Inject
+    @DataField
+    HTMLDivElement formGroup;
 
-    @UiField
+    @Inject
+    @DataField
+    HTMLDivElement txtContainer;
+
+    @Inject
     TextBox input;
-
-    public NumberParameterEditorView() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
 
     @Override
     public void init(final NumberParameterEditor presenter) {
         this.presenter = presenter;
-        input.addValueChangeHandler(new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> event) {
-                form.setValidationState(ValidationState.NONE);
-                presenter.valueChanged();
-            }
+        txtContainer.appendChild(input.getElement());
+        input.setOnValueChangeAction(value -> {
+            input.clearValidation();
+            presenter.valueChanged();
         });
+
     }
 
     @Override
@@ -67,26 +60,28 @@ public class NumberParameterEditorView extends Composite implements NumberParame
     @Override
     public void setValue(String value) {
         input.setValue(value);
-        form.setValidationState(ValidationState.NONE);
+        input.clearValidation();
     }
 
     @Override
     public void setWidth(int width) {
-        input.asWidget().getElement().getStyle().setWidth(width, Style.Unit.PX);
+        input.getElement().style.width = WidthUnionType.of(width + "px");
     }
 
     @Override
     public void setFocus(final boolean focus) {
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            public void execute () {
-                input.setFocus(focus);
-            }
+        Scheduler.get().scheduleDeferred(() -> {
+            input.setFocus(focus);
         });
     }
 
     @Override
     public void error() {
-        form.setValidationState(ValidationState.ERROR);
+        input.validationError();
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return txtContainer;
     }
 }
-

@@ -32,21 +32,22 @@ import com.google.gwt.user.client.Window;
 import org.dashbuilder.client.external.ExternalDataSetClientProvider;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
-import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
 import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
 import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.dashbuilder.client.screens.RouterScreen;
+import org.dashbuilder.client.screens.Router;
 import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.client.setup.RuntimeClientSetup;
 import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
+import org.dashbuilder.displayer.client.RendererManager;
+import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
+import org.dashbuilder.renderer.client.DefaultRenderer;
 import org.dashbuilder.shared.event.UpdatedGlobalSettingsEvent;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
-import org.jboss.resteasy.util.HttpResponseCodes;
-import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
+import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.mvp.Command;
 
 import static elemental2.dom.DomGlobal.fetch;
@@ -54,17 +55,17 @@ import static elemental2.dom.DomGlobal.fetch;
 @ApplicationScoped
 public class RuntimeClientLoader {
 
+    private static final int NOT_FOUND_CODE = 404;
+
     private static AppConstants i18n = AppConstants.INSTANCE;
 
     public static final String IMPORT_ID_PARAM = "import";
-
-    RuntimePerspectiveGenerator perspectiveEditorGenerator;
 
     RuntimePerspectivePluginManager runtimePerspectivePluginManager;
 
     NavigationManager navigationManager;
 
-    BusyIndicatorView loading;
+    BusyIndicator busyIndicator;
 
     ExternalDataSetClientProvider externalDataSetProvider;
 
@@ -76,13 +77,15 @@ public class RuntimeClientLoader {
 
     Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent;
 
-    RouterScreen router;
+    Router router;
 
     RuntimeClientMode mode;
 
     RuntimeModel clientModel;
 
     RuntimeClientSetup setup;
+    
+    LayoutDragComponentHelper componentHelper;
 
     private SamplesService samplesService;
 
@@ -92,15 +95,16 @@ public class RuntimeClientLoader {
 
     boolean samplesDefaultHome;
 
+    private RendererManager rendererManager;
+
     public RuntimeClientLoader() {
         // do nothing
     }
 
     @Inject
-    public RuntimeClientLoader(RuntimePerspectiveGenerator perspectiveEditorGenerator,
-                               RuntimePerspectivePluginManager runtimePerspectivePluginManager,
+    public RuntimeClientLoader(RuntimePerspectivePluginManager runtimePerspectivePluginManager,
                                NavigationManager navigationManager,
-                               BusyIndicatorView loading,
+                               BusyIndicator busyIndicator,
                                ExternalDataSetClientProvider externalDataSetRegister,
                                SamplesService samplesService,
                                RuntimeModelClientParserFactory parserFactory,
@@ -108,18 +112,21 @@ public class RuntimeClientLoader {
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
                                Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent,
                                Event<UpdatedGlobalSettingsEvent> updatedGlobalSettingsEvent,
-                               RouterScreen router) {
-        this.perspectiveEditorGenerator = perspectiveEditorGenerator;
+                               LayoutDragComponentHelper componentHelper,
+                               RendererManager rendererManager,
+                               Router router) {
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
         this.navigationManager = navigationManager;
         this.externalDataSetProvider = externalDataSetRegister;
         this.samplesService = samplesService;
         this.parserFactory = parserFactory;
         this.contentListener = contentListener;
-        this.loading = loading;
+        this.busyIndicator = busyIndicator;
         this.updatedRuntimeModelEvent = updatedRuntimeModelEvent;
         this.dataSetDefRemovedEvent = dataSetDefRemovedEvent;
         this.updatedGlobalSettingsEvent = updatedGlobalSettingsEvent;
+        this.componentHelper = componentHelper;
+        this.rendererManager = rendererManager;
         this.router = router;
     }
 
@@ -164,18 +171,18 @@ public class RuntimeClientLoader {
     public void load(Consumer<RuntimeServiceResponse> responseConsumer,
                      BiConsumer<Object, Throwable> error) {
         final var importID = getImportId();
-        loading.showBusyIndicator(i18n.loadingDashboards());
+        busyIndicator.show(i18n.loadingDashboards());
         if (mode == RuntimeClientMode.CLIENT) {
             if ((importID != null && !importID.trim().isEmpty())) {
                 loadClientModelInfo(resolveModel(importID), responseConsumer, error);
             } else if (setup.getDashboards() != null && setup.getDashboards().length == 1) {
                 loadClientModelInfo(resolveModel(setup.getDashboards()[0]), responseConsumer, error);
             } else {
-                loading.hideBusyIndicator();
+                busyIndicator.hide();
                 responseConsumer.accept(buildClientResponse(clientModel));
             }
         } else if (mode == RuntimeClientMode.EDITOR) {
-            loading.hideBusyIndicator();
+            busyIndicator.hide();
             responseConsumer.accept(buildEditorResponse());
         }
 
@@ -185,11 +192,11 @@ public class RuntimeClientLoader {
                           Consumer<RuntimeModel> modelLoaded,
                           Command emptyModel,
                           BiConsumer<Object, Throwable> error) {
-        loading.showBusyIndicator(i18n.loadingDashboards());
+        busyIndicator.show(i18n.loadingDashboards());
         if (mode == RuntimeClientMode.CLIENT) {
             loadClientModel(clientModelBaseUrl + importId, modelLoaded, error);
         } else if (mode == RuntimeClientMode.EDITOR) {
-            loading.hideBusyIndicator();
+            busyIndicator.hide();
             if (clientModel != null) {
                 modelLoaded.accept(clientModel);
             } else {
@@ -232,7 +239,7 @@ public class RuntimeClientLoader {
      * @return
      *  true if client model was sucessfully loaded.
      */
-    public boolean loadContentAndRoute(String content) {
+    public RuntimeModel loadContentAndRoute(String content) {
         try {
             if (content == null || content.trim().isEmpty()) {
                 clientModel = null;
@@ -244,13 +251,13 @@ public class RuntimeClientLoader {
                 this.clientModel = runtimeModel;
                 updatedGlobalSettingsEvent.fire(new UpdatedGlobalSettingsEvent(runtimeModel.getGlobalSettings()));
                 updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
-                return true;
+                return clientModel;
             }
         } catch (Exception e) {
             router.goToContentError(e);
         }
 
-        return false;
+        return null;
     }
 
     private void loadClientModel(String url,
@@ -258,14 +265,14 @@ public class RuntimeClientLoader {
                                  BiConsumer<Object, Throwable> error) {
 
         fetch(url).then(response -> {
-            if (response.status == HttpResponseCodes.SC_NOT_FOUND) {
+            if (response.status == NOT_FOUND_CODE) {
                 throw new RuntimeException("Content not found on URL '" + url + "'");
             }
             return response.text();
         }).then(content -> {
-            loading.hideBusyIndicator();
+            busyIndicator.hide();
             try {
-                if (loadContentAndRoute(content)) {
+                if (loadContentAndRoute(content) != null) {
                     responseConsumer.accept(this.clientModel);
                 }
             } catch (Exception e) {
@@ -273,7 +280,7 @@ public class RuntimeClientLoader {
             }
             return null;
         }).catch_(errorResponse -> {
-            loading.hideBusyIndicator();
+            busyIndicator.hide();
             error.accept(errorResponse, new RuntimeException("Not able to load client model"));
             return null;
         });
@@ -290,12 +297,18 @@ public class RuntimeClientLoader {
     }
 
     private void registerModel(RuntimeModel runtimeModel) {
-        clearObsoletePerspectives(runtimeModel);
+        clearLayoutRetainedData();
         clearObsoleteDataSets(runtimeModel);
-        runtimeModel.getLayoutTemplates().forEach(perspectiveEditorGenerator::generatePerspective);
         runtimeModel.getClientDataSets().forEach(externalDataSetProvider::register);
         runtimePerspectivePluginManager.setTemplates(runtimeModel.getLayoutTemplates());
         navigationManager.setDefaultNavTree(runtimeModel.getNavTree());
+    }
+
+    private void clearLayoutRetainedData() {
+        DefaultRenderer.closeAllDisplayers();
+        componentHelper.destroy();
+        rendererManager.cleanUp();
+        // TODO: Identify and remove beans created with newInstance
     }
 
     private RuntimeServiceResponse buildEditorResponse() {
@@ -316,17 +329,6 @@ public class RuntimeClientLoader {
                 Optional.ofNullable(clientModel),
                 list,
                 false);
-    }
-
-    private void clearObsoletePerspectives(RuntimeModel runtimeModel) {
-        if (clientModel != null) {
-            clientModel.getLayoutTemplates()
-                    .stream()
-                    .filter(lt -> runtimeModel.getLayoutTemplates()
-                            .stream()
-                            .noneMatch(lt2 -> lt2.getName().equals(lt.getName())))
-                    .forEach(lt -> perspectiveEditorGenerator.unregisterPerspective(lt));
-        }
     }
 
     private void clearObsoleteDataSets(RuntimeModel runtimeModel) {

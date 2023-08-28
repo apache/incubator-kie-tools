@@ -20,14 +20,14 @@ import java.util.Date;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.mvp.UberView;
+import elemental2.dom.HTMLElement;
+import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
 @Dependent
 public class DateParameterEditor implements FunctionParameterEditor {
 
-    public interface View extends UberView<DateParameterEditor> {
+    public interface View extends UberElemental<DateParameterEditor> {
 
         Date getValue();
 
@@ -36,9 +36,12 @@ public class DateParameterEditor implements FunctionParameterEditor {
         void setWidth(int width);
     }
 
-    Command onChangeCommand = () -> {};
-    Command onFocusCommand = () -> {};
-    Command onBlurCommand = () -> {};
+    Command onChangeCommand = () -> {
+    };
+    Command onFocusCommand = () -> {
+    };
+    Command onBlurCommand = () -> {
+    };
     View view;
     Date currentValue = null;
 
@@ -46,11 +49,6 @@ public class DateParameterEditor implements FunctionParameterEditor {
     public DateParameterEditor(View view) {
         this.view = view;
         this.view.init(this);
-    }
-
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
     }
 
     public void setOnChangeCommand(Command onChangeCommand) {
@@ -87,8 +85,7 @@ public class DateParameterEditor implements FunctionParameterEditor {
     }
 
     @Override
-    public void setFocus(boolean focus) {
-    }
+    public void setFocus(boolean focus) {}
 
     void onChange() {
         if (onChangeCommand != null && !currentValue.equals(getValue())) {
@@ -104,8 +101,12 @@ public class DateParameterEditor implements FunctionParameterEditor {
     }
 
     void onFocus() {
-        if (onFocusCommand!= null) {
+        if (onFocusCommand != null) {
             onFocusCommand.execute();
         }
+    }
+    
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }

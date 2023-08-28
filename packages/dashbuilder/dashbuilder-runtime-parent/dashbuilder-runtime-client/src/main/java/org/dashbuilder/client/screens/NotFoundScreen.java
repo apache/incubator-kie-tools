@@ -16,31 +16,22 @@
 
 package org.dashbuilder.client.screens;
 
-import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
-import org.dashbuilder.client.RuntimeEntryPoint;
-import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import elemental2.dom.HTMLElement;
+import org.dashbuilder.client.RuntimeClientLoader;
+import org.dashbuilder.client.place.Place;
 import org.uberfire.client.mvp.UberElemental;
-import org.uberfire.lifecycle.OnOpen;
 
 /**
  * Screen displayed when a perspective is not found.
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = NotFoundScreen.ID)
-public class NotFoundScreen {
+public class NotFoundScreen implements Place {
 
     public static final String ID = "NotFoundScreen";
-    
-    private static AppConstants i18n = AppConstants.INSTANCE;
 
     public interface View extends UberElemental<NotFoundScreen> {
 
@@ -49,24 +40,26 @@ public class NotFoundScreen {
 
     @Inject
     View view;
-    
-    @OnOpen
+
+    @Inject
+    RuntimeClientLoader loader;
+
+    @Override
     public void onOpen() {
-        List<String> targetParams = Window.Location.getParameterMap().get(RuntimeEntryPoint.DASHBOARD_PARAM);
-        if (targetParams != null && !targetParams.isEmpty()) {
-            String dashboardName = targetParams.get(0);
-            view.setNotFoundDashboard(dashboardName);
+        var dashboard = loader.getImportId();
+        if (dashboard != null) {
+            view.setNotFoundDashboard(dashboard);
         }
     }
 
-    @WorkbenchPartTitle
-    public String getScreenTitle() {
-        return i18n.notFoundScreenTitle();
+    @Override
+    public String getId() {
+        return ID;
     }
 
-    @WorkbenchPartView
-    public View workbenchPart() {
-        return this.view;
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
 }

@@ -52,42 +52,25 @@
     <version.org.webjars.bower.d3geoprojection>2.5.1</version.org.webjars.bower.d3geoprojection>
     <version.org.webjars.npm.marked>4.3.0</version.org.webjars.npm.marked>
     <version.org.webjars.npm.jsonata>1.8.0</version.org.webjars.npm.jsonata>
+    <version.org.webjars.npm.patternfly>5.0.2</version.org.webjars.npm.patternfly>
     <version.javax.validation>1.0.0.GA</version.javax.validation>
 
     <!-- Resolved artifacts -->
     <version.org.junit>4.13.1</version.org.junit>
     <version.org.assertj>3.14.0</version.org.assertj>
     <version.org.mockito>3.6.0</version.org.mockito>
-    <version.org.kie>7.59.0.Final</version.org.kie>
-    <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
+    <version.org.kie>7.74.1.Final</version.org.kie>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.commons-io>2.7</version.commons-io>
     <version.commons-codec>1.11</version.commons-codec>
-    <version.com.google.gwt>2.9.0</version.com.google.gwt>
-    <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
-    <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
-    <version.net.sf.opencsv>2.3</version.net.sf.opencsv>
-    <version.org.apache.tomcat>6.0.32</version.org.apache.tomcat>
+    <version.org.gwtproject>2.10.0</version.org.gwtproject>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
-    <version.org.apache.poi>4.1.2</version.org.apache.poi>
-    <version.org.owasp.encoder>1.2</version.org.owasp.encoder>
-    <version.org.jboss.xnio>3.8.4.Final</version.org.jboss.xnio>
     <version.io.netty>4.1.59.Final</version.io.netty>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <version.com.allen-sauer.gwt.dnd>3.3.3</version.com.allen-sauer.gwt.dnd>
-    <version.org.freemarker>2.3.30</version.org.freemarker>
-    <version.jakarta.activation-api>1.2.2</version.jakarta.activation-api>
-    <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
+    <version.com.google.jsinterop.base>1.0.1</version.com.google.jsinterop.base>
     <version.com.google.jsinterop.annotations>2.0.0</version.com.google.jsinterop.annotations>
-    <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
-    <version.org.jboss.narayana.tomcat>5.9.0.Final</version.org.jboss.narayana.tomcat>
-    <version.org.jboss.arquillian.container.weld>1.0.0.CR5</version.org.jboss.arquillian.container.weld>
     <version.org.ow2.asm>7.1</version.org.ow2.asm>
-    <version.org.apache.httpcomponents.httpclient>4.5.13</version.org.apache.httpcomponents.httpclient>
-    <version.org.apache.httpcomponents.httpcore>4.4.6</version.org.apache.httpcomponents.httpcore>
     <version.com.gwtmockito>1.1.9</version.com.gwtmockito>
-    <version.org.wildfly>23.0.2.Final</version.org.wildfly>
-    <version.org.jboss.errai.wildfly>${version.org.wildfly}</version.org.jboss.errai.wildfly>
     <version.org.javassist>3.26.0-GA</version.org.javassist>
 
     <!-- Plugins -->
@@ -129,7 +112,6 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
-    <version.org.maven.dependency.plugin>3.1.2</version.org.maven.dependency.plugin>
 
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
@@ -144,7 +126,18 @@
         <artifactId>javassist</artifactId>
         <version>${version.org.javassist}</version>
       </dependency>
-
+      <!-- Testing Utils -->
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-testing-utils</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.uberfire</groupId>
+        <artifactId>uberfire-testing-utils</artifactId>
+        <version>${version.org.kie}</version>
+        <classifier>sources</classifier>
+      </dependency>
       <dependency>
         <groupId>org.kie.soup</groupId>
         <artifactId>kie-soup-commons</artifactId>
@@ -172,115 +165,29 @@
         <artifactId>mockito-core</artifactId>
         <version>${version.org.mockito}</version>
       </dependency>
-      <!-- RESTEASY -->
       <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jaxrs</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
+        <groupId>org.gwtproject</groupId>
+        <artifactId>gwt-user</artifactId>
+	<version>${version.org.gwtproject}</version>
         <exclusions>
           <exclusion>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-          </exclusion>
-          <!-- Collides with org.javassist:javassist -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:provided -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.activation:jakarta.activation-api:jar:1.2.2:provided -->
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+	    <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-multipart-provider</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
+        <groupId>org.gwtproject</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${version.org.gwtproject}</version>
         <exclusions>
           <exclusion>
-            <groupId>jakarta.validation</groupId>
-            <artifactId>jakarta.validation-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+	    <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-          </exclusion>
-          <!-- Collides with org.javassist:javassist -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.annotation-api -->
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:provided -->
-          <exclusion>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-          </exclusion>
-          <!-- Collides with jakarta.activation:jakarta.activation-api:jar:1.2.2:provided -->
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-client</artifactId>
-        <version>${version.org.jboss.resteasy}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.xml.bind</groupId>
-            <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.activation</groupId>
-            <artifactId>activation</artifactId>
+	    <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -307,22 +214,7 @@
       <dependency>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
-        <version>${version.com.google.gwt}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3</artifactId>
-        <version>${version.org.gwtbootstrap3}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gwtbootstrap3</groupId>
-        <artifactId>gwtbootstrap3-extras</artifactId>
-        <version>${version.org.gwtbootstrap3-extras}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.allen-sauer.gwt.dnd</groupId>
-        <artifactId>gwt-dnd</artifactId>
-        <version>${version.com.allen-sauer.gwt.dnd}</version>
+        <version>${version.org.gwtproject}</version>
       </dependency>
       <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
@@ -337,6 +229,20 @@
           <exclusion>
             <groupId>org.mortbay.jasper</groupId>
             <artifactId>apache-el</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+          </exclusion>
+          <!-- Excluding old com.google.gwt 2.8.0 gwt-user and gwt-dev assets 
+               that collides with newer org.gwtproject assets in gwt 2.10+ versions -->
+          <exclusion>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-dev</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -358,56 +264,7 @@
         <version>${version.com.google.elemental2}</version>
       </dependency>
 
-      <!-- Jakarta -->
-      <dependency>
-        <groupId>com.sun.activation</groupId>
-        <artifactId>jakarta.activation</artifactId>
-        <version>${version.jakarta.activation-api}</version>
-      </dependency>
-      <dependency>
-        <groupId>jakarta.activation</groupId>
-        <artifactId>jakarta.activation-api</artifactId>
-        <version>${version.jakarta.activation-api}</version>
-      </dependency>
-
-
       <!-- Misc -->
-      <dependency>
-        <groupId>net.sf.opencsv</groupId>
-        <artifactId>opencsv</artifactId>
-        <version>${version.net.sf.opencsv}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>catalina</artifactId>
-        <version>${version.org.apache.tomcat}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi</artifactId>
-        <version>${version.org.apache.poi}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml</artifactId>
-        <version>${version.org.apache.poi}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.owasp.encoder</groupId>
-        <artifactId>encoder</artifactId>
-        <version>${version.org.owasp.encoder}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.freemarker</groupId>
-        <artifactId>freemarker</artifactId>
-        <version>${version.org.freemarker}</version>
-      </dependency>
       <dependency>
         <groupId>com.google.jsinterop</groupId>
         <artifactId>jsinterop-annotations</artifactId>
@@ -417,37 +274,6 @@
         <groupId>com.google.jsinterop</groupId>
         <artifactId>base</artifactId>
         <version>${version.com.google.jsinterop.base}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.xnio</groupId>
-        <artifactId>xnio-api</artifactId>
-        <version>${version.org.jboss.xnio}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.xnio</groupId>
-        <artifactId>xnio-nio</artifactId>
-        <version>${version.org.jboss.xnio}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-dbcp</artifactId>
-        <version>${version.org.apache.tomcat.tomcat-dbcp}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.narayana.jta</groupId>
-        <artifactId>narayana-jta</artifactId>
-        <version>${version.org.jboss.narayana.tomcat}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.spec.javax.resource</groupId>
-            <artifactId>jboss-connector-api_1.7_spec</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.arquillian.container</groupId>
-        <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-        <version>${version.org.jboss.arquillian.container.weld}</version>
       </dependency>
       <dependency>
         <groupId>org.webjars.npm</groupId>
@@ -461,7 +287,6 @@
   <modules>
     <module>dashbuilder-bom</module>
     <module>kie-soup-dataset</module>
-    <module>appformer</module>
     <module>dashbuilder-shared</module>
     <module>dashbuilder-client</module>
     <module>dashbuilder-runtime-parent</module>
@@ -767,10 +592,8 @@
                       <exclude
                       >log4j:log4j</exclude> <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' 
                         instead -->
-                      <exclude
-                      >javassist:javassist</exclude>  <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' 
-                        instead -->
-                      <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
+		      <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
+		      <exclude>javassist:javassist</exclude>
                       <exclude>org.jboss.weld.se:weld-se</exclude> <!-- Use weld-se-core instead -->
                       <exclude>org.jboss.weld.servlet:weld-servlet</exclude> <!-- Use weld-servlet-core instead -->
                       <exclude>org.mockito:mockito-all</exclude> <!-- Use mockito-core instead -->
@@ -947,7 +770,7 @@
                         using the com.google.gwt classes inside. Ignoring it for the duplicate classes 
                         check seems to be the only way. -->
                       <dependency>
-                        <groupId>com.google.gwt</groupId>
+                        <groupId>org.gwtproject</groupId>
                         <artifactId>gwt-dev</artifactId>
                         <type>jar</type>
                         <ignoreClasses>
@@ -1002,47 +825,18 @@
                         </ignoreClasses>
                       </dependency>
 
-                      <!-- ignore jboss-logging included in kie server router 
-                        as it is required by undertow and uberjar usage -->
+                      <!-- sundr-codegen is required to compile test classes. -->
                       <dependency>
-                        <groupId>org.kie.server</groupId>
-                        <artifactId>kie-server-router-proxy</artifactId>
-                        <type>jar</type>
+                        <groupId>io.sundr</groupId>
+                        <artifactId>sundr-codegen</artifactId>
                         <ignoreClasses>
-                          <ignoreClass>org.jboss.logging.*</ignoreClass>
-                          <ignoreClass>io.undertow.*</ignoreClass>
-                          <ignoreClass>org.json.*</ignoreClass>
-                          <ignoreClass>org.jboss.threads.*</ignoreClass>
-                          <ignoreClass>org.xnio.*</ignoreClass>
-                          <ignoreClass>org.wildfly.*</ignoreClass>
-                          <ignoreClass>org.apache.commons.*</ignoreClass>
+                          <ignoreClass>*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
                       <dependency>
                         <groupId>org.wildfly.security</groupId>
                         <artifactId>wildfly-elytron</artifactId>
                         <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <!-- The openshift-client duplicates these classes 
-                          from the kubernetes-client. It is an upstream io.fabric8 issue that needs 
-                          to be fixed there: https://github.com/fabric8io/kubernetes-client/issues/828 -->
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>openshift-client</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluent</ignoreClass>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigBuilder</ignoreClass>
-                          <ignoreClass>io.fabric8.kubernetes.client.ConfigFluentImpl</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- sundr-codegen is required to compile test classes. -->
-                      <dependency>
-                        <groupId>io.sundr</groupId>
-                        <artifactId>sundr-codegen</artifactId>
                         <ignoreClasses>
                           <ignoreClass>*</ignoreClass>
                         </ignoreClasses>
@@ -1091,7 +885,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.com.google.gwt}</version>
+          <version>${version.org.gwtproject}</version>
           <configuration>
             <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
             <strict>true</strict>
@@ -1163,10 +957,6 @@
           <artifactId>maven-dependency-plugin</artifactId>
           <version>${version.org.apache.maven.plugins.dependency}</version>
         </plugin>
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-	<version>${version.org.maven.dependency.plugin}</version>
-      </plugin>
       </plugins>
     </pluginManagement>
     <plugins>

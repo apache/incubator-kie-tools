@@ -19,6 +19,7 @@ package org.dashbuilder.renderer.echarts.client;
 import java.util.ArrayList;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
 import com.google.gwt.json.client.JSONParser;
@@ -31,7 +32,7 @@ import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
 import org.dashbuilder.displayer.Mode;
 import org.dashbuilder.displayer.Position;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.renderer.echarts.client.js.ECharts;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Option;
 import org.dashbuilder.renderer.echarts.client.js.ECharts.Renderer;
@@ -39,7 +40,7 @@ import org.dashbuilder.renderer.echarts.client.js.ECharts.ValueFormatterCallback
 import org.dashbuilder.renderer.echarts.client.js.EChartsTypeFactory;
 
 public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplayer.View> extends
-                                              AbstractGwtDisplayer<V> {
+                                              AbstractDisplayer<V> {
 
     /**
      * Internal property to define the echarts renderer
@@ -54,7 +55,7 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
 
     protected String echartsType;
 
-    public interface View<P extends EChartsAbstractDisplayer<?>> extends AbstractGwtDisplayer.View<P> {
+    public interface View<P extends EChartsAbstractDisplayer<?>> extends AbstractDisplayer.View<P> {
 
         void noData();
 
@@ -214,7 +215,6 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
 
         tooltip.setValueFormatter(buildNumberLabelFormatterForColumn(1));
 
-        option.setColor(COLOR_PATTERN);
         option.setTooltip(tooltip);
         option.setDataset(echartsDataSet);
         option.setTitle(title);
@@ -303,6 +303,11 @@ public abstract class EChartsAbstractDisplayer<V extends EChartsAbstractDisplaye
         super.close();
 
         view.close();
+    }
+    
+    @PreDestroy
+    void destroy() {
+        this.close();
     }
 
     abstract DataSetLookupConstraints getDataSetLookupConstraints();

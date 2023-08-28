@@ -1,0 +1,55 @@
+<div class="tableContainer f-v5-l-flex pf-m-space-items-none pf-m-column pf-v5-c-panel">
+  <div class="pf-v5-l-flex__item">
+    <h1 class="pf-v5-c-title pf-m-md tblTitle"></h1>
+  </div>
+  <div class="pf-v5-l-flex__item">
+    <div class="pf-v5-l-split">
+      <div class="pf-v5-l-split__item">
+        <div class="pf-v5-c-text-input-group">
+          <div class="pf-v5-c-text-input-group__main pf-m-icon">
+            <span class="pf-v5-c-text-input-group__text">
+              <span class="pf-v5-c-text-input-group__icon">
+                <i class="fas fa-search"></i>
+              </span>
+              <input
+                type="text"
+                class="pf-v5-c-text-input-group__text-input"
+                value=""
+                data-field="searchInput"
+                placeholder="Filter"
+              />
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="pf-v5-l-split__item pf-m-fill" data-field="paginationContainer"></div>
+    </div>
+  </div>
+  <div class="pf-v5-l-flex__item dataTableContainer">
+    <table class="pf-v5-c-table pf-m-compact pf-m-grid-md pf-m-sticky-header" data-field="table">
+      <thead class="pf-v5-c-table__thead">
+        <tr class="pf-v5-c-table__tr" role="row" data-field="tblHeadRow"></tr>
+      </thead>
+      <tbody class="pf-v5-c-table__tbody" role="rowgroup" data-field="tblBody">
+        <tr class="pf-v5-c-table__tr emptyRow">
+          <td class="pf-v5-c-table__td" data-field="emptyCell">
+            <div class="pf-v5-l-bullseye">
+              <div class="pf-v5-c-empty-state pf-m-sm">
+                <div class="pf-v5-c-empty-state__content">
+                  <div class="pf-v5-c-empty-state__header">
+                    <div class="pf-v5-c-empty-state__icon">
+                      <i class="fas fa-search"></i>
+                    </div>
+                    <div class="pf-v5-c-empty-state__title">
+                      <h2 class="pf-v5-c-empty-state__title-text">No results found</h2>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

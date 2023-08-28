@@ -19,10 +19,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.dashbuilder.client.resources.i18n.AppConstants;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
+import elemental2.dom.HTMLElement;
+import org.dashbuilder.client.place.Place;
 import org.uberfire.client.mvp.UberElemental;
 
 /**
@@ -30,12 +28,9 @@ import org.uberfire.client.mvp.UberElemental;
  *
  */
 @ApplicationScoped
-@WorkbenchScreen(identifier = ContentErrorScreen.ID)
-public class ContentErrorScreen {
+public class ContentErrorScreen implements Place {
 
     public static final String ID = "ContentErrorScreen";
-
-    private static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;
@@ -51,18 +46,18 @@ public class ContentErrorScreen {
         view.init(this);
     }
 
-    @WorkbenchPartTitle
-    public String title() {
-        return i18n.errorContentTitle();
-    }
-
-    @WorkbenchPartView
-    protected View getPart() {
-        return view;
-    }
-
     public void showContentError(String contentError) {
         view.showContentError(contentError);
+    }
+
+    @Override
+    public String getId() {
+        return ID;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
 }

@@ -19,9 +19,9 @@ package org.dashbuilder.displayer.client.widgets;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Composite;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLIFrameElement;
 import elemental2.dom.HTMLParagraphElement;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
@@ -31,7 +31,7 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
 @Templated
-public class ExternalComponentView extends Composite implements ExternalComponentPresenter.View {
+public class ExternalComponentView implements ExternalComponentPresenter.View {
 
     @Inject
     @DataField
@@ -127,6 +127,11 @@ public class ExternalComponentView extends Composite implements ExternalComponen
             postMessageToComponent(lastMessage);
         }
         return null;
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return componentRoot;
     }
 
 }

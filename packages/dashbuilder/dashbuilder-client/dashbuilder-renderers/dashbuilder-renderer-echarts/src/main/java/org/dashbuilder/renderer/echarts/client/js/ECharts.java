@@ -31,6 +31,8 @@ public interface ECharts {
     Chart init(HTMLElement element, String theme);
 
     Chart init(HTMLElement element, String theme, ChartInitParams initParams);
+    
+    void registerTheme(String themeName, Object theme);
 
     @JsType(isNative = true)
     public class Chart {
@@ -71,6 +73,9 @@ public interface ECharts {
 
         @JsProperty
         public native void setBackgroundColor(String bgColor);
+        
+        @JsProperty
+        public native String getBackgroundColor();
 
         @JsProperty
         public native void setSeries(Series[] series);

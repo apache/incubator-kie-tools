@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JBoss, by Red Hat, Inc
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,57 +16,65 @@
 
 package org.dashbuilder.client.navigation.widget;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.Toggle;
-import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
-import org.uberfire.ext.layout.editor.client.api.RenderingContext;
+import org.dashbuilder.patternfly.panel.Panel;
+import org.jboss.errai.ioc.client.container.IOC;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 
 @ApplicationScoped
-public class PanelLayoutDragComponent implements LayoutDragComponent {
+public class PanelLayoutDragComponent extends SinglePageNavigationDragComponent {
 
     public static final String PAGE_NAME_PARAMETER = "Page Name";
     PerspectivePluginManager perspectivePluginManager;
 
+    Map<String, Panel> panels;
+
+    @PostConstruct
+    void setup() {
+        panels = new HashMap<>();
+    }
+
+    @PreDestroy
+    void destroy() {
+        panels.values().forEach(this::destroy);
+    }
+
     @Inject
-    public PanelLayoutDragComponent(PerspectivePluginManager perspectivePluginManager) {
-        this.perspectivePluginManager = perspectivePluginManager;
+    public PanelLayoutDragComponent(SyncBeanManager beanManager,
+                                    PerspectivePluginManager perspectivePluginManager) {
+        super(beanManager, perspectivePluginManager);
     }
 
     @Override
-    public IsWidget getShowWidget(RenderingContext ctx) {
-        PanelHeader header = GWT.create(PanelHeader.class);
-        PanelCollapse panel = GWT.create(PanelCollapse.class);
-        PanelGroup group = GWT.create(PanelGroup.class);
+    ComponentBuilder getComponentBuilder() {
+        var newPanel = beanManager.lookupBean(Panel.class).newInstance();
+        return componentBuilder(newPanel.getElement(), (name, page) -> {
+            panels.compute(name, (n, oldPanel) -> {
+                if (oldPanel != null) {
+                    destroy(oldPanel);
+                }
+                return newPanel;
+            });
+            newPanel.setTitle(name);
+            newPanel.setContent(page);
+        });
+    }
 
-        var perspectiveId = ctx.getComponent().getProperties().get(PAGE_NAME_PARAMETER);
-        if (perspectiveId == null) {
-            return null;
-        }
+    @Override
+    String getPageParameterName() {
+        return PAGE_NAME_PARAMETER;
+    }
 
-        perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
-                panel::add,
-                issue -> panel.add(new Label("Error with infinite recursion. Review the embedded page")));
-
-        header.setDataTargetWidget(panel);
-        header.setDataToggle(Toggle.COLLAPSE);
-        header.setText(perspectiveId);
-
-        panel.setToggle(true);
-
-        group.add(header);
-        group.add(panel);
-        group.asWidget().getElement().addClassName("uf-perspective-col");
-
-        return group;
+    private void destroy(Panel oldPanel) {
+        IOC.getBeanManager().destroyBean(oldPanel);
     }
 
 }

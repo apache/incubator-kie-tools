@@ -17,6 +17,7 @@ package org.dashbuilder.renderer.client.selector;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -28,13 +29,13 @@ import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerAttributeDef;
 import org.dashbuilder.displayer.DisplayerAttributeGroupDef;
 import org.dashbuilder.displayer.DisplayerConstraints;
-import org.dashbuilder.displayer.client.AbstractGwtDisplayer;
+import org.dashbuilder.displayer.client.AbstractDisplayer;
 import org.dashbuilder.displayer.client.Displayer;
 
 @Dependent
-public class SelectorDisplayer extends AbstractGwtDisplayer<SelectorDisplayer.View> {
+public class SelectorDisplayer extends AbstractDisplayer<SelectorDisplayer.View> {
 
-    public interface View extends AbstractGwtDisplayer.View<SelectorDisplayer> {
+    public interface View extends AbstractDisplayer.View<SelectorDisplayer> {
 
         void showSelectHint(String column);
 
@@ -57,17 +58,17 @@ public class SelectorDisplayer extends AbstractGwtDisplayer<SelectorDisplayer.Vi
         String getColumnsTitle();
     }
 
-    protected View view;
+    View view;
     protected boolean filterOn = false;
-
-    public SelectorDisplayer() {
-        this(new SelectorDisplayerView());
-    }
 
     @Inject
     public SelectorDisplayer(View view) {
         this.view = view;
-        this.view.init(this);
+    }
+
+    @PostConstruct
+    public void init() {
+        view.init(this);
     }
 
     @Override
@@ -86,15 +87,15 @@ public class SelectorDisplayer extends AbstractGwtDisplayer<SelectorDisplayer.Vi
                 .setExtraColumnsAllowed(true)
                 .setGroupsTitle(view.getGroupsTitle())
                 .setColumnsTitle(view.getColumnsTitle())
-                .setColumnTypes(new ColumnType[] {
-                        ColumnType.LABEL});
+                .setColumnTypes(new ColumnType[]{
+                                                 ColumnType.LABEL});
 
         return new DisplayerConstraints(lookupConstraints)
-                .supportsAttribute( DisplayerAttributeDef.TYPE )
-                .supportsAttribute( DisplayerAttributeGroupDef.COLUMNS_GROUP )
-                .supportsAttribute( DisplayerAttributeGroupDef.FILTER_GROUP )
-                .supportsAttribute( DisplayerAttributeGroupDef.REFRESH_GROUP )
-                .supportsAttribute( DisplayerAttributeGroupDef.GENERAL_GROUP );
+                .supportsAttribute(DisplayerAttributeDef.TYPE)
+                .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
+                .supportsAttribute(DisplayerAttributeGroupDef.GENERAL_GROUP);
     }
 
     @Override
@@ -148,7 +149,7 @@ public class SelectorDisplayer extends AbstractGwtDisplayer<SelectorDisplayer.Vi
                         out.append(extraColumnName).append("=").append(formattedValue);
                     }
                 }
-                view.setItemTitle(view.getItemCount()-1, out.toString());
+                view.setItemTitle(view.getItemCount() - 1, out.toString());
             }
         }
     }

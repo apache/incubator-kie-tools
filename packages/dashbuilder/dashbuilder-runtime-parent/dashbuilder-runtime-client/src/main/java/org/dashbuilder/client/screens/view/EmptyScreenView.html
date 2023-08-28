@@ -13,15 +13,25 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<div class="blank-slate-pf" id="emptyImport">
-  <div class="blank-slate-pf-icon">
-    <span class="pficon pficon pficon-add-circle-o"></span>
-  </div>
-  <h1 data-i18n-key="title"></h1>
-  <p data-i18n-key="subTitle" id="subTitleParagraph"></p>
-  <p data-i18n-key="learnMore"></p>
-  <div class="blank-slate-pf-main-action" id="uploadContainer"></div>
-  <div class="blank-slate-pf-main-action" id="trySamplesContainer" style="display: none">
-    <button class="btn btn-primary btn-lg" data-field="trySamples" data-i18n-key="TrySamples"></button>
+<div class="pf-v5-c-empty-state pf-m-xl" id="emptyImport">
+  <div class="pf-v5-c-empty-state__content">
+    <div class="pf-v5-c-empty-state__header">
+      <div class="pf-v5-c-empty-state__icon">
+        <i class="fa fa-plus-circle" aria-hidden="true"></i>
+      </div>
+      <div class="pf-v5-c-empty-state__title">
+        <h1 class="pf-v5-c-empty-state__title-text" data-i18n-key="title"></h1>
+      </div>
+      <p data-i18n-key="subTitle" id="subTitleParagraph" class="pf-v5-c-empty-state__body"></p>
+      <p data-i18n-key="learnMore" class="pf-v5-c-empty-state__body"></p>
+    </div>
+    <div class="pf-v5-c-empty-state__footer">
+      <div class="pf-v5-c-empty-state__actions">
+        <div class="blank-slate-pf-main-action" id="uploadContainer"></div>
+        <div class="blank-slate-pf-main-action" id="trySamplesContainer" style="display: none">
+          <button class="btn btn-primary btn-lg" data-field="trySamples" data-i18n-key="TrySamples"></button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

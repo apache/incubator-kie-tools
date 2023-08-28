@@ -17,21 +17,19 @@ package org.dashbuilder.common.client.widgets;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.uberfire.client.mvp.UberElement;
-import org.uberfire.mvp.Command;
+import elemental2.dom.HTMLElement;
+import org.uberfire.client.mvp.UberElemental;
 
-public class FilterLabel implements IsElement {
+public class FilterLabel {
 
-    public interface View extends UberElement<FilterLabel> {
+    public interface View extends UberElemental<FilterLabel> {
 
         void setLabel(String label);
     }
 
     private View view;
     private String label;
-    private Command onRemoveCommand;
+    private Runnable onRemoveCommand;
 
     @Inject
     public FilterLabel(View view) {
@@ -39,7 +37,6 @@ public class FilterLabel implements IsElement {
         this.view.init(this);
     }
 
-    @Override
     public HTMLElement getElement() {
         return view.getElement();
     }
@@ -53,13 +50,13 @@ public class FilterLabel implements IsElement {
         return label;
     }
 
-    public void setOnRemoveCommand(Command onRemoveCommand) {
+    public void setOnRemoveCommand(Runnable onRemoveCommand) {
         this.onRemoveCommand = onRemoveCommand;
     }
 
     void onRemove() {
         if (onRemoveCommand != null) {
-            onRemoveCommand.execute();
+            onRemoveCommand.run();
         }
     }
 }

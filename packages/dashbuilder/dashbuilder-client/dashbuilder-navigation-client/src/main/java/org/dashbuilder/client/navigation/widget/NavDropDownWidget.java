@@ -19,6 +19,7 @@ package org.dashbuilder.client.navigation.widget;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.NavigationManager;
 import org.dashbuilder.navigation.NavGroup;
 import org.dashbuilder.navigation.NavItem;
@@ -90,5 +91,10 @@ public class NavDropDownWidget extends BaseNavWidget {
     private void setActive(boolean enabled) {
         // Disable for subgroups, as it is not working well
         view.setActive(enabled && getLevel() == 1);
+    }
+
+    @Override
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 }
