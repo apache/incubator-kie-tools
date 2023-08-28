@@ -167,12 +167,13 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
               let offset = 0;
               for (const variable of feels) {
                 lastPosition = variable.startIndex;
-                // lineIndex
-                // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
-                // tokenLength
-                // token type
-                // token modifier
-                tokens.push(0, lastPosition - offset, variable.length, getTokenTypeIndex(variable.variableType), 0);
+                tokens.push(
+                  0, // lineIndex
+                   lastPosition - offset, // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
+                   variable.length, // tokenLength
+                   getTokenTypeIndex(variable.variableType), // token type
+                   0 // token modifier
+                 );
                 offset = lastPosition;
               }
             }
