@@ -1,9 +1,9 @@
-import { DMN15__tDecision, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
-import { NodeNature, nodeNatures } from "./NodeNature";
 import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { deleteEdge } from "./deleteEdge";
 
 export function deleteNode({
   definitions,
@@ -25,37 +25,7 @@ export function deleteNode({
       uniqueTargetEdgeIds.add(edge.id);
     }
 
-    const dmnObjects: DMN15__tDefinitions["artifact"] | DMN15__tDefinitions["drgElement"] =
-      switchExpression(edge.data?.dmnObject.type, {
-        association: definitions.artifact,
-        default: definitions.drgElement,
-      }) ?? [];
-
-    const dmnObjectIndex = dmnObjects.findIndex((d) => d["@_id"] === edge.data.dmnObject.id);
-    if (dmnObjectIndex < 0) {
-      throw new Error("STOP!");
-    }
-
-    const requirements =
-      switchExpression(edge.data?.dmnObject.requirementType, {
-        // Casting to DMN15__tDefinitions because if has all types of requirement
-        informationRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).informationRequirement,
-        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).knowledgeRequirement,
-        authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).authorityRequirement,
-        association: dmnObjects,
-      }) ?? [];
-
-    // Deleting the requirement
-    requirements?.splice(
-      (requirements ?? []).findIndex((d) => d["@_id"] === edge.id),
-      1
-    );
-
-    // Deleting the DMNEdge's
-    diagramElements?.splice(
-      (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === edge.id),
-      1
-    );
+    deleteEdge({ definitions, edge: { id: edge.id, dmnObject: edge.data.dmnObject } });
   }
 
   // FIXME: Tiago --> Delete extension elements when deleting nodes that contain expressions. What else needs to be clened up?

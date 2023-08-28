@@ -42,6 +42,7 @@ import { deleteNode } from "../mutations/deleteNode";
 import { DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
+import { deleteEdge } from "../mutations/deleteEdge";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -373,15 +374,23 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             case "select":
               state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: change.selected });
               break;
-            case "add":
             case "remove":
+              const edge = edges.find(({ id }) => change.id === id);
+              if (edge?.data) {
+                deleteEdge({
+                  definitions: state.dmn.model.definitions,
+                  edge: { id: change.id, dmnObject: edge.data.dmnObject },
+                });
+              }
+              break;
+            case "add":
             case "reset":
               console.log("CHANGED EDGE -->", change);
           }
         }
       });
     },
-    [dmnEditorStoreApi]
+    [dmnEditorStoreApi, edges]
   );
 
   const rfSnapGrid = useMemo<[number, number]>(
