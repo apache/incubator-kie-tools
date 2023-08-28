@@ -60,7 +60,14 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 		Resources:              build.Spec.Resources,
 		AdditionalFlags:        build.Spec.Arguments,
 	}
-	containerBuilder, err := c.scheduleNewKanikoBuildWithContainerFile(build, kanikoTask)
+	var containerBuilder *api.ContainerBuild
+	var err error
+	if containerBuilder, err = c.scheduleNewKanikoBuildWithContainerFile(build, kanikoTask); err != nil {
+		return err
+	}
+	if containerBuilder == nil {
+		return nil
+	}
 	if err = build.Status.SetInnerBuild(containerBuilder); err != nil {
 		return err
 	}
@@ -166,6 +173,8 @@ func newBuild(kb internalBuilder, platform api.PlatformContainerBuild, defaultEx
 	scheduler := builder.NewBuild(buildInfo).
 		WithResource(resourceDockerfile, kb.ContainerFile).
 		WithResource(kb.Workflow.Name+defaultExtension, kb.WorkflowDefinition).
+		WithAdditionalArgs(kb.AdditionalFlags).
+		WithResourceRequirements(kb.ResourceReqs).
 		WithClient(cli)
 
 	for _, res := range kb.Workflow.Spec.Resources.ConfigMaps {

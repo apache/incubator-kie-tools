@@ -62,3 +62,40 @@ func TestSonataFlowBuildController(t *testing.T) {
 	assert.NoError(t, ksb.Status.GetInnerBuild(containerBuild))
 	assert.Equal(t, string(ksb.Status.BuildPhase), string(containerBuild.Status.Phase))
 }
+
+func TestSonataFlowBuildController_WithArgs(t *testing.T) {
+	namespace := t.Name()
+	ksw := test.GetBaseSonataFlow(namespace)
+	ksb := test.GetNewEmptySonataFlowBuild(ksw.Name, namespace)
+
+	ksb.Spec.Arguments = make([]string, 1)
+	ksb.Spec.Arguments[0] = "--build-args=MYENV=VALUE"
+
+	cl := test.NewKogitoClientBuilder().
+		WithRuntimeObjects(ksb, ksw).
+		WithRuntimeObjects(test.GetBasePlatformInReadyPhase(namespace)).
+		WithRuntimeObjects(test.GetSonataFlowBuilderConfig("../", namespace)).
+		WithStatusSubresource(ksb, ksw).
+		Build()
+
+	r := &SonataFlowBuildReconciler{cl, cl.Scheme(), &record.FakeRecorder{}, &rest.Config{}}
+	req := reconcile.Request{
+		NamespacedName: types.NamespacedName{
+			Name:      ksb.Name,
+			Namespace: ksb.Namespace,
+		},
+	}
+
+	result, err := r.Reconcile(context.TODO(), req)
+	assert.NoError(t, err)
+	assert.Equal(t, requeueAfterForNewBuild, result.RequeueAfter)
+
+	assert.NoError(t, cl.Get(context.TODO(), req.NamespacedName, ksb))
+	assert.Equal(t, operatorapi.BuildPhaseScheduling, ksb.Status.BuildPhase)
+	assert.NotNil(t, ksb.Status.InnerBuild)
+
+	containerBuild := &api.ContainerBuild{}
+	assert.NoError(t, ksb.Status.GetInnerBuild(containerBuild))
+	assert.Equal(t, string(ksb.Status.BuildPhase), string(containerBuild.Status.Phase))
+	assert.Len(t, containerBuild.Spec.Tasks[0].Kaniko.AdditionalFlags, 1)
+}

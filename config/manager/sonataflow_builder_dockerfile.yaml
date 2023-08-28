@@ -1,5 +1,8 @@
 FROM quay.io/kiegroup/kogito-swf-builder-nightly:latest AS builder
-  
+
+ # variables that can be overridden by the builder
+ARG QUARKUS_EXTENSIONS
+
   # Copy from build context to skeleton resources project
 COPY --chmod=644 * ./resources/
 

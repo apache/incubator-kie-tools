@@ -19,14 +19,16 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
+	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
 var _ Scheduler = &kanikoScheduler{}
 
 type kanikoScheduler struct {
-	*scheduler
-	KanikoTask *api.KanikoTask
+	baseScheduler *scheduler
+	KanikoTask    *api.KanikoTask
 }
 
 type kanikoSchedulerHandler struct {
@@ -90,13 +92,28 @@ func (sk *kanikoScheduler) WithAdditionalArgs(flags []string) Scheduler {
 	return sk
 }
 
+func (sk *kanikoScheduler) WithResource(target string, content []byte) Scheduler {
+	sk.baseScheduler.WithResource(target, content)
+	return sk
+}
+
+func (sk *kanikoScheduler) WithConfigMapResource(configMap corev1.LocalObjectReference, path string) Scheduler {
+	sk.baseScheduler.WithConfigMapResource(configMap, path)
+	return sk
+}
+
+func (sk *kanikoScheduler) WithClient(client client.Client) Scheduler {
+	sk.baseScheduler.WithClient(client)
+	return sk
+}
+
 func (sk *kanikoScheduler) Schedule() (*api.ContainerBuild, error) {
 	// verify if we really need this
-	for _, task := range sk.builder.Context.ContainerBuild.Spec.Tasks {
+	for _, task := range sk.baseScheduler.builder.Context.ContainerBuild.Spec.Tasks {
 		if task.Kaniko != nil {
 			task.Kaniko = sk.KanikoTask
 			break
 		}
 	}
-	return sk.scheduler.Schedule()
+	return sk.baseScheduler.Schedule()
 }
