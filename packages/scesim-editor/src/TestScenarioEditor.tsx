@@ -306,9 +306,10 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const scesimFileStatus = useMemo(() => {
     if (scesimModel.ScenarioSimulationModel) {
+      /*
       if (scesimModel?.ScenarioSimulationModel["parsererror"]) {
         return TestScenarioFileStatus.ERROR;
-      }
+      }*/
       if (scesimModel.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
         return TestScenarioFileStatus.UNSUPPORTED;
       } else if (scesimModel.ScenarioSimulationModel["settings"]?.["type"]) {
@@ -374,8 +375,8 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
                 <Spinner aria-label="SCESIM Data loading .." />
               </Bullseye>
             );
-          case TestScenarioFileStatus.ERROR:
-            <TestScenarioParserErrorPanel scesimFileStatus={scesimFileStatus} />;
+          /*case TestScenarioFileStatus.ERROR:
+            <TestScenarioParserErrorPanel scesimFileStatus={scesimFileStatus} />; */
           case TestScenarioFileStatus.NEW:
             return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
           case TestScenarioFileStatus.UNSUPPORTED:
