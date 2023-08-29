@@ -384,11 +384,7 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
               />
             );
           case TestScenarioFileStatus.VALID:
-            return (
-              <>
-                <TestScenarioMainPanel />
-              </>
-            );
+            return <TestScenarioMainPanel />;
         }
       })()}
     </>
