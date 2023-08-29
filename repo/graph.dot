@@ -132,6 +132,7 @@ digraph G {
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "swf-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "sonataflow-deploy-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -403,6 +404,9 @@ digraph G {
   "swf-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
+  "sonataflow-deploy-webapp" -> "@kie-tools-core/patternfly-base" [ style = "dashed", color = "blue" ];
+  "sonataflow-deploy-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "blue" ];
+  "sonataflow-deploy-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
