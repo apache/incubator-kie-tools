@@ -36,3 +36,14 @@ Change the _inotify_ limits configuration as noted below to avoid further issues
 3. IDEA executable
 
 - The default setup creates a shortcut to idea.exe. Be sure to change to idea64.exe, otherwise you'll be running 32-bits version
+
+## Building Stunner in IntelliJ
+
+In order to build `kie-wb-common-stunner-lienzo` internal module in IntelliJ it is needed to add a `Maven Goal` to the `Run` configurations of the IDE.
+
+1. Open the menu `Run`
+2. Click on `Edit Configurations...`
+3. In the session `Before Launch` click on `+` and select `Run Maven Goal`
+4. Select as `Working directory` the path to module `kie-wb-common-stuner-lienzo` and for `Command line` the phase `generate-resources`
+
+When `Maven Goal` is executed the required resources will be added to the build.
