@@ -39,7 +39,7 @@ import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull
 @Dependent
 public class DisplayerViewer {
 
-    private static final int ERROR_RETRY_MS = 2000;
+    private static final int ERROR_RETRY_MS = 4000;
     protected DisplayerSettings displayerSettings;
     protected HTMLElement container;
     protected Displayer displayer;
@@ -72,6 +72,7 @@ public class DisplayerViewer {
             retry();
         }
     };
+    private double currentRetry;
 
     @Inject
     public DisplayerViewer(DisplayerLocator displayerLocator) {
@@ -154,7 +155,7 @@ public class DisplayerViewer {
         } else {
             retryAction = drawAction;
         }
-        DomGlobal.setTimeout(retryAction::accept, ERROR_RETRY_MS);
+        this.currentRetry = DomGlobal.setTimeout(retryAction::accept, ERROR_RETRY_MS);
     }
 
     public HTMLElement getDisplayerContainer() {
@@ -163,6 +164,7 @@ public class DisplayerViewer {
 
     @PreDestroy
     void destroy() {
+        DomGlobal.clearTimeout(this.currentRetry);
         if (displayer != null) {
             displayer.close();
             IOC.getBeanManager().destroyBean(displayer);
