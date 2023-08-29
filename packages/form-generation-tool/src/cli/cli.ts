@@ -93,7 +93,7 @@ export function run() {
   console.log("Kogito Form Generation CLI");
   console.log("===========================");
   console.log();
-  console.log("This tool will help you generate forms for User Tasks in your Kogito Projects.");
+  console.log("This tool will help you generate forms for the Processes and User Tasks in your Kogito Projects.");
   console.log(
     "The tool will search for the User Tasks JSON schemas generated in your project, so make sure the project is build."
   );
