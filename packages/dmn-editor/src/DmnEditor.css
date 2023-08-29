@@ -354,13 +354,23 @@ the cursor is inside it. By making it adimensional, that never happens.
   height: 100%;
 }
 
+/* edges */
+.kie-dmn-editor--diagram-edge-waypoints circle {
+  fill: black;
+  stroke-width: 8;
+  stroke: #006ba4;
+}
+.kie-dmn-editor--diagram-edge-waypoints circle:hover {
+  stroke-width: 16;
+}
+
 /* *********************** */
 /* ⬇ react flow theming ⬇ */
 /* *********************** */
 
 /* edge selection / hover */
 
-.react-flow__edge.selected > * {
+.react-flow__edge.selected > path {
   fill: #006ba4 !important;
   stroke: #006ba4 !important;
   stroke-width: 3px !important;

@@ -14,7 +14,7 @@ import { DmnEditorDiagramEdgeData } from "./edges/Edges";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import { DmnEditorDiagramNodeData } from "./nodes/Nodes";
 
-const diagramColors = {
+export const diagramColors = {
   hierarchyUp: "#0083a4",
   hierarchyDown: "#003fa4",
   selected: "#006ba4",

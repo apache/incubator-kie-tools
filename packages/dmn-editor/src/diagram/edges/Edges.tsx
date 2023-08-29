@@ -2,13 +2,15 @@ import * as React from "react";
 import * as RF from "reactflow";
 import { useCallback, useMemo } from "react";
 import {
+  DC__Point,
   DMN15__tDefinitions,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
-import { Unpacked } from "../useDmnDiagramData";
+import { Unpacked, diagramColors } from "../useDmnDiagramData";
 import { useDmnEditorStore } from "../../store/Store";
+import { useNodeHovered } from "../nodes/Nodes";
 
 const DEFAULT_EDGE_INTRACTION_WDITH = 20;
 
@@ -25,6 +27,33 @@ export type DmnEditorDiagramEdgeData = {
   dmnShapeTarget: DMNDI15__DMNShape | undefined;
 };
 
+export function Waypoint({ index: i, point: p }: { index: number; point: DC__Point }) {
+  const circleRef = React.useRef<SVGCircleElement>(null);
+  const isHovered = useNodeHovered(circleRef);
+
+  return (
+    <circle
+      ref={circleRef}
+      cx={p["@_x"]}
+      cy={p["@_y"]}
+      r={1}
+      onDoubleClick={() => {
+        console.info("Deleting waypoint with index " + i);
+      }}
+    />
+  );
+}
+
+export function Waypoints(props: { points: DC__Point[] }) {
+  return (
+    <g className={"kie-dmn-editor--diagram-edge-waypoints"}>
+      {props.points.slice(1, -1).map((p, i) => (
+        <Waypoint key={i} index={i + 1 /* Add one because we're removing the 1st element of the array */} point={p} />
+      ))}
+    </g>
+  );
+}
+
 export function useKieEdgePath(source: string, target: string, data: DmnEditorDiagramEdgeData | undefined) {
   const { diagram } = useDmnEditorStore();
   const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
@@ -33,7 +62,7 @@ export function useKieEdgePath(source: string, target: string, data: DmnEditorDi
   const dmnShapeSource = data?.dmnShapeSource;
   const dmnShapeTarget = data?.dmnShapeTarget;
 
-  const { path } = useMemo(
+  return useMemo(
     () =>
       getSnappedMultiPointAnchoredEdgePath({
         snapGrid: diagram.snapGrid,
@@ -45,8 +74,6 @@ export function useKieEdgePath(source: string, target: string, data: DmnEditorDi
       }),
     [diagram.snapGrid, dmnEdge, dmnShapeSource, dmnShapeTarget, sourceNode, targetNode]
   );
-
-  return path;
 }
 
 export const InformationRequirementPath = React.memo((props: React.SVGProps<SVGPathElement>) => {
@@ -99,8 +126,7 @@ export const AssociationPath = React.memo((props: React.SVGProps<SVGPathElement>
   );
 });
 
-export function useEdgeClassName() {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+export function useEdgeClassName(isConnecting: boolean) {
   if (isConnecting) {
     return "dimmed";
   }
@@ -119,8 +145,9 @@ const interactionStrokeProps = {
 };
 
 export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const className = useEdgeClassName();
-  const path = useKieEdgePath(props.source, props.target, props.data);
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting);
+  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
       <InformationRequirementPath
@@ -129,13 +156,15 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+      {props.selected && !isConnecting && <Waypoints points={points} />}
     </>
   );
 });
 
 export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const className = useEdgeClassName();
-  const path = useKieEdgePath(props.source, props.target, props.data);
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting);
+  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
       <KnowledgeRequirementPath
@@ -144,13 +173,15 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+      {props.selected && !isConnecting && <Waypoints points={points} />}
     </>
   );
 });
 
 export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const className = useEdgeClassName();
-  const path = useKieEdgePath(props.source, props.target, props.data);
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting);
+  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
       <AuthorityRequirementPath
@@ -164,13 +195,15 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
       />
+      {props.selected && !isConnecting && <Waypoints points={points} />}
     </>
   );
 });
 
 export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const className = useEdgeClassName();
-  const path = useKieEdgePath(props.source, props.target, props.data);
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting);
+  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
   return (
     <>
       <AssociationPath
@@ -179,6 +212,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
+      {props.selected && !isConnecting && <Waypoints points={points} />}
     </>
   );
 });

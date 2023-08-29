@@ -494,7 +494,7 @@ export function NodeResizerHandle(props: { snapGrid: SnapGrid; nodeId: string; n
 
 // Hooks
 
-export function useNodeHovered(ref: React.RefObject<HTMLElement>) {
+export function useNodeHovered(ref: React.RefObject<HTMLElement | SVGElement>) {
   const [isHovered, setHovered] = React.useState(false);
 
   useEffect(() => {
