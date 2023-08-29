@@ -64,7 +64,7 @@ public class DefinitionTests {
     private static final String INDEX_HTML = "../sw-editor-kogito-app/target/sw-editor-kogito-app/index.html";
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
-    private static final String DIAGRAM_PANEL = "qe-static-workbench-panel-view";
+    private static final String DIAGRAM_PANEL = "root-container";
     private static final String CANVAS_PANEL = "canvas-panel";
     private static final Boolean HEADLESS = Boolean.valueOf(System.getProperty("org.kie.sw.editor.browser.headless"));
 

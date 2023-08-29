@@ -16,10 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.api.IsElement;
+import elemental2.dom.HTMLElement;
+import org.jboss.errai.ui.client.local.api.IsElement;
 
 public interface WidgetElementRendererView extends IsElement {
 
-    public WidgetElementRendererView setWidget(IsWidget widget);
+    WidgetElementRendererView setWidget(HTMLElement widget);
 }

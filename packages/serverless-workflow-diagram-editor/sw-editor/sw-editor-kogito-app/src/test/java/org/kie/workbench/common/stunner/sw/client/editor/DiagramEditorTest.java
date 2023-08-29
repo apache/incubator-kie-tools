@@ -32,7 +32,6 @@ import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.promise.Promise;
@@ -311,13 +310,6 @@ public class DiagramEditorTest {
     public void testDomainInitializer() {
         tested.onStartup(new DefaultPlaceRequest());
         verify(domainInitializer, times(1)).initialize();
-    }
-
-    @Test
-    public void testAsWidget() {
-        IsWidget w = mock(IsWidget.class);
-        when(stunnerEditor2.getView()).thenReturn(w);
-        assertEquals(w, tested.asWidget());
     }
 
     @Test

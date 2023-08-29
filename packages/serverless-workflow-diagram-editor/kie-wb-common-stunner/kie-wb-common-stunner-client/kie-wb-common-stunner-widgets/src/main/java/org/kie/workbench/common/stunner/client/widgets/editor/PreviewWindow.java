@@ -26,6 +26,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import jsinterop.base.Js;
 import org.gwtbootstrap3.extras.animate.client.ui.Animate;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -65,7 +66,7 @@ public class PreviewWindow {
 
         previewRoot = new FlowPanel();
         RootPanel.get().add(previewRoot);
-        previewRoot.add(previewWidget.getView());
+        previewRoot.getElement().appendChild(Js.uncheckedCast(previewWidget.getView().getElement()));
 
         AbstractCanvasHandler abstractCanvasHandler = previewWidget.getHandler();
         AbstractCanvas abstractCanvas = abstractCanvasHandler.getAbstractCanvas();

@@ -27,7 +27,6 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
@@ -118,9 +117,6 @@ public class DiagramEditor {
         stunnerEditor.setReadOnly(true);
     }
 
-    public IsWidget asWidget() {
-        return stunnerEditor.getView();
-    }
 
     @SuppressWarnings("all")
     public Promise<String> getPreview() {

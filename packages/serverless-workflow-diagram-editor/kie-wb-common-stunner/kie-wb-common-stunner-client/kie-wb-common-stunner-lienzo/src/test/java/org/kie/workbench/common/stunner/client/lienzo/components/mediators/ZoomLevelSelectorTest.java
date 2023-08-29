@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -109,8 +108,8 @@ public class ZoomLevelSelectorTest {
 
     @Test
     public void testAsWidget() {
-        Widget w = mock(Widget.class);
-        when(view.asWidget()).thenReturn(w);
-        assertEquals(w, tested.asWidget());
+        elemental2.dom.HTMLElement w = mock(elemental2.dom.HTMLElement.class);
+        when(view.getElement()).thenReturn(w);
+        assertEquals(w, tested.getElement());
     }
 }

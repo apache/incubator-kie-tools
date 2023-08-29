@@ -16,7 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Assert;
 import org.junit.Test;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -24,10 +23,6 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 public class AbstractActivityTest {
 
     private final AbstractActivity activity = new AbstractActivity() {
-        @Override
-        public IsWidget getWidget() {
-            return null;
-        }
 
         @Override
         public String getIdentifier() {
