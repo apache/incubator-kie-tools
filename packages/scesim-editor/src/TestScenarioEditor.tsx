@@ -284,7 +284,7 @@ function TestScenarioParserErrorPanel({
       <EmptyStateBody>
         {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
           ? "Most likely, this file has been generated with a very old Business Central version."
-          : "Impossibile to correctly parse the provided scesim file. " + parserErrorMessage}
+          : "Impossibile to correctly parse the provided scesim file. " + (parserErrorMessage || "")}
       </EmptyStateBody>
     </EmptyState>
   );
@@ -306,10 +306,9 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const scesimFileStatus = useMemo(() => {
     if (scesimModel.ScenarioSimulationModel) {
-      /*
-      if (scesimModel?.ScenarioSimulationModel["parsererror"]) {
+      if (scesimModel.ScenarioSimulationModel["parsererror"]) {
         return TestScenarioFileStatus.ERROR;
-      }*/
+      }
       if (scesimModel.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
         return TestScenarioFileStatus.UNSUPPORTED;
       } else if (scesimModel.ScenarioSimulationModel["settings"]?.["type"]) {
@@ -325,8 +324,6 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
   useEffect(() => {
     console.debug("SCESIM Model updated");
     console.debug(scesimLoaded);
-    console.debug(marshaller);
-
     setScesimModel(scesimLoaded);
   }, [scesimLoaded]);
 
@@ -375,8 +372,8 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
                 <Spinner aria-label="SCESIM Data loading .." />
               </Bullseye>
             );
-          /*case TestScenarioFileStatus.ERROR:
-            <TestScenarioParserErrorPanel scesimFileStatus={scesimFileStatus} />; */
+          case TestScenarioFileStatus.ERROR:
+            return <TestScenarioParserErrorPanel scesimFileStatus={scesimFileStatus} />;
           case TestScenarioFileStatus.NEW:
             return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
           case TestScenarioFileStatus.UNSUPPORTED:
