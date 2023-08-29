@@ -360,7 +360,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public compilation_unit(): Compilation_unitContext {
-    let localctx: Compilation_unitContext = new Compilation_unitContext(this, this._ctx, this.state);
+    const localctx: Compilation_unitContext = new Compilation_unitContext(this, this._ctx, this.state);
     this.enterRule(localctx, 0, FEEL_1_1Parser.RULE_compilation_unit);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -409,7 +409,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public textualExpression(): TextualExpressionContext {
-    let localctx: TextualExpressionContext = new TextualExpressionContext(this, this._ctx, this.state);
+    const localctx: TextualExpressionContext = new TextualExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 4, FEEL_1_1Parser.RULE_textualExpression);
     try {
       this.state = 117;
@@ -526,7 +526,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public namedParameters(): NamedParametersContext {
-    let localctx: NamedParametersContext = new NamedParametersContext(this, this._ctx, this.state);
+    const localctx: NamedParametersContext = new NamedParametersContext(this, this._ctx, this.state);
     this.enterRule(localctx, 8, FEEL_1_1Parser.RULE_namedParameters);
     let _la: number;
     try {
@@ -566,7 +566,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public namedParameter(): NamedParameterContext {
-    let localctx: NamedParameterContext = new NamedParameterContext(this, this._ctx, this.state);
+    const localctx: NamedParameterContext = new NamedParameterContext(this, this._ctx, this.state);
     this.enterRule(localctx, 10, FEEL_1_1Parser.RULE_namedParameter);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -593,7 +593,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public positionalParameters(): PositionalParametersContext {
-    let localctx: PositionalParametersContext = new PositionalParametersContext(this, this._ctx, this.state);
+    const localctx: PositionalParametersContext = new PositionalParametersContext(this, this._ctx, this.state);
     this.enterRule(localctx, 12, FEEL_1_1Parser.RULE_positionalParameters);
     let _la: number;
     try {
@@ -633,7 +633,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public forExpression(): ForExpressionContext {
-    let localctx: ForExpressionContext = new ForExpressionContext(this, this._ctx, this.state);
+    const localctx: ForExpressionContext = new ForExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 14, FEEL_1_1Parser.RULE_forExpression);
 
     this.helper.pushScope();
@@ -670,7 +670,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public iterationContexts(): IterationContextsContext {
-    let localctx: IterationContextsContext = new IterationContextsContext(this, this._ctx, this.state);
+    const localctx: IterationContextsContext = new IterationContextsContext(this, this._ctx, this.state);
     this.enterRule(localctx, 16, FEEL_1_1Parser.RULE_iterationContexts);
     let _la: number;
     try {
@@ -710,7 +710,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public iterationContext(): IterationContextContext {
-    let localctx: IterationContextContext = new IterationContextContext(this, this._ctx, this.state);
+    const localctx: IterationContextContext = new IterationContextContext(this, this._ctx, this.state);
     this.enterRule(localctx, 18, FEEL_1_1Parser.RULE_iterationContext);
     try {
       this.state = 177;
@@ -762,7 +762,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public ifExpression(): IfExpressionContext {
-    let localctx: IfExpressionContext = new IfExpressionContext(this, this._ctx, this.state);
+    const localctx: IfExpressionContext = new IfExpressionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 20, FEEL_1_1Parser.RULE_ifExpression);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -1004,7 +1004,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public list(): ListContext {
-    let localctx: ListContext = new ListContext(this, this._ctx, this.state);
+    const localctx: ListContext = new ListContext(this, this._ctx, this.state);
     this.enterRule(localctx, 26, FEEL_1_1Parser.RULE_list);
     try {
       this.state = 250;
@@ -1046,7 +1046,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public functionDefinition(): FunctionDefinitionContext {
-    let localctx: FunctionDefinitionContext = new FunctionDefinitionContext(this, this._ctx, this.state);
+    const localctx: FunctionDefinitionContext = new FunctionDefinitionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 28, FEEL_1_1Parser.RULE_functionDefinition);
 
     this.helper.pushScope();
@@ -1104,7 +1104,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public formalParameters(): FormalParametersContext {
-    let localctx: FormalParametersContext = new FormalParametersContext(this, this._ctx, this.state);
+    const localctx: FormalParametersContext = new FormalParametersContext(this, this._ctx, this.state);
     this.enterRule(localctx, 30, FEEL_1_1Parser.RULE_formalParameters);
     let _la: number;
     try {
@@ -1144,7 +1144,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public formalParameter(): FormalParameterContext {
-    let localctx: FormalParameterContext = new FormalParameterContext(this, this._ctx, this.state);
+    const localctx: FormalParameterContext = new FormalParameterContext(this, this._ctx, this.state);
     this.enterRule(localctx, 32, FEEL_1_1Parser.RULE_formalParameter);
     try {
       this.state = 278;
@@ -1184,7 +1184,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public context(): ContextContext {
-    let localctx: ContextContext = new ContextContext(this, this._ctx, this.state);
+    const localctx: ContextContext = new ContextContext(this, this._ctx, this.state);
     this.enterRule(localctx, 34, FEEL_1_1Parser.RULE_context);
 
     this.helper.pushScope();
@@ -1232,7 +1232,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public contextEntries(): ContextEntriesContext {
-    let localctx: ContextEntriesContext = new ContextEntriesContext(this, this._ctx, this.state);
+    const localctx: ContextEntriesContext = new ContextEntriesContext(this, this._ctx, this.state);
     this.enterRule(localctx, 36, FEEL_1_1Parser.RULE_contextEntries);
     let _la: number;
     try {
@@ -1272,7 +1272,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public contextEntry(): ContextEntryContext {
-    let localctx: ContextEntryContext = new ContextEntryContext(this, this._ctx, this.state);
+    const localctx: ContextEntryContext = new ContextEntryContext(this, this._ctx, this.state);
     this.enterRule(localctx, 38, FEEL_1_1Parser.RULE_contextEntry);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -1342,7 +1342,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public nameDefinition(): NameDefinitionContext {
-    let localctx: NameDefinitionContext = new NameDefinitionContext(this, this._ctx, this.state);
+    const localctx: NameDefinitionContext = new NameDefinitionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 42, FEEL_1_1Parser.RULE_nameDefinition);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -1366,7 +1366,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public nameDefinitionWithEOF(): NameDefinitionWithEOFContext {
-    let localctx: NameDefinitionWithEOFContext = new NameDefinitionWithEOFContext(this, this._ctx, this.state);
+    const localctx: NameDefinitionWithEOFContext = new NameDefinitionWithEOFContext(this, this._ctx, this.state);
     this.enterRule(localctx, 44, FEEL_1_1Parser.RULE_nameDefinitionWithEOF);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -1391,7 +1391,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public nameDefinitionTokens(): NameDefinitionTokensContext {
-    let localctx: NameDefinitionTokensContext = new NameDefinitionTokensContext(this, this._ctx, this.state);
+    const localctx: NameDefinitionTokensContext = new NameDefinitionTokensContext(this, this._ctx, this.state);
     this.enterRule(localctx, 46, FEEL_1_1Parser.RULE_nameDefinitionTokens);
     let _la: number;
     try {
@@ -1493,7 +1493,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public iterationNameDefinition(): IterationNameDefinitionContext {
-    let localctx: IterationNameDefinitionContext = new IterationNameDefinitionContext(this, this._ctx, this.state);
+    const localctx: IterationNameDefinitionContext = new IterationNameDefinitionContext(this, this._ctx, this.state);
     this.enterRule(localctx, 48, FEEL_1_1Parser.RULE_iterationNameDefinition);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -1517,7 +1517,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public iterationNameDefinitionTokens(): IterationNameDefinitionTokensContext {
-    let localctx: IterationNameDefinitionTokensContext = new IterationNameDefinitionTokensContext(
+    const localctx: IterationNameDefinitionTokensContext = new IterationNameDefinitionTokensContext(
       this,
       this._ctx,
       this.state
@@ -1617,7 +1617,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public additionalNameSymbol(): AdditionalNameSymbolContext {
-    let localctx: AdditionalNameSymbolContext = new AdditionalNameSymbolContext(this, this._ctx, this.state);
+    const localctx: AdditionalNameSymbolContext = new AdditionalNameSymbolContext(this, this._ctx, this.state);
     this.enterRule(localctx, 52, FEEL_1_1Parser.RULE_additionalNameSymbol);
     let _la: number;
     try {
@@ -1654,11 +1654,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: ConditionalOrExpressionContext = new ConditionalOrExpressionContext(this, this._ctx, _parentState);
     let _prevctx: ConditionalOrExpressionContext = localctx;
-    let _startState: number = 54;
+    const _startState: number = 54;
     this.enterRecursionRule(localctx, 54, FEEL_1_1Parser.RULE_conditionalOrExpression, _p);
     try {
       let _alt: number;
@@ -1725,11 +1725,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: ConditionalAndExpressionContext = new ConditionalAndExpressionContext(this, this._ctx, _parentState);
     let _prevctx: ConditionalAndExpressionContext = localctx;
-    let _startState: number = 56;
+    const _startState: number = 56;
     this.enterRecursionRule(localctx, 56, FEEL_1_1Parser.RULE_conditionalAndExpression, _p);
     try {
       let _alt: number;
@@ -1799,11 +1799,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: ComparisonExpressionContext = new ComparisonExpressionContext(this, this._ctx, _parentState);
     let _prevctx: ComparisonExpressionContext = localctx;
-    let _startState: number = 58;
+    const _startState: number = 58;
     this.enterRecursionRule(localctx, 58, FEEL_1_1Parser.RULE_comparisonExpression, _p);
     let _la: number;
     try {
@@ -1881,11 +1881,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: RelationalExpressionContext = new RelationalExpressionContext(this, this._ctx, _parentState);
     let _prevctx: RelationalExpressionContext = localctx;
-    let _startState: number = 60;
+    const _startState: number = 60;
     this.enterRecursionRule(localctx, 60, FEEL_1_1Parser.RULE_relationalExpression, _p);
     try {
       let _alt: number;
@@ -2018,7 +2018,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public expressionList(): ExpressionListContext {
-    let localctx: ExpressionListContext = new ExpressionListContext(this, this._ctx, this.state);
+    const localctx: ExpressionListContext = new ExpressionListContext(this, this._ctx, this.state);
     this.enterRule(localctx, 62, FEEL_1_1Parser.RULE_expressionList);
     let _la: number;
     try {
@@ -2065,11 +2065,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: AdditiveExpressionContext = new AdditiveExpressionContext(this, this._ctx, _parentState);
     let _prevctx: AdditiveExpressionContext = localctx;
-    let _startState: number = 64;
+    const _startState: number = 64;
     this.enterRecursionRule(localctx, 64, FEEL_1_1Parser.RULE_additiveExpression, _p);
     try {
       let _alt: number;
@@ -2161,11 +2161,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: MultiplicativeExpressionContext = new MultiplicativeExpressionContext(this, this._ctx, _parentState);
     let _prevctx: MultiplicativeExpressionContext = localctx;
-    let _startState: number = 66;
+    const _startState: number = 66;
     this.enterRecursionRule(localctx, 66, FEEL_1_1Parser.RULE_multiplicativeExpression, _p);
     let _la: number;
     try {
@@ -2242,11 +2242,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: PowerExpressionContext = new PowerExpressionContext(this, this._ctx, _parentState);
     let _prevctx: PowerExpressionContext = localctx;
-    let _startState: number = 68;
+    const _startState: number = 68;
     this.enterRecursionRule(localctx, 68, FEEL_1_1Parser.RULE_powerExpression, _p);
     try {
       let _alt: number;
@@ -2312,11 +2312,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: FilterPathExpressionContext = new FilterPathExpressionContext(this, this._ctx, _parentState);
     let _prevctx: FilterPathExpressionContext = localctx;
-    let _startState: number = 70;
+    const _startState: number = 70;
     this.enterRecursionRule(localctx, 70, FEEL_1_1Parser.RULE_filterPathExpression, _p);
 
     let count = 0;
@@ -2411,11 +2411,11 @@ export default class FEEL_1_1Parser extends Parser {
       _p = 0;
     }
 
-    let _parentctx: ParserRuleContext = this._ctx;
-    let _parentState: number = this.state;
+    const _parentctx: ParserRuleContext = this._ctx;
+    const _parentState: number = this.state;
     let localctx: UnaryExpressionContext = new UnaryExpressionContext(this, this._ctx, _parentState);
     let _prevctx: UnaryExpressionContext = localctx;
-    let _startState: number = 72;
+    const _startState: number = 72;
     this.enterRecursionRule(localctx, 72, FEEL_1_1Parser.RULE_unaryExpression, _p);
     try {
       let _alt: number;
@@ -2755,7 +2755,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public atLiteral(): AtLiteralContext {
-    let localctx: AtLiteralContext = new AtLiteralContext(this, this._ctx, this.state);
+    const localctx: AtLiteralContext = new AtLiteralContext(this, this._ctx, this.state);
     this.enterRule(localctx, 80, FEEL_1_1Parser.RULE_atLiteral);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -2780,7 +2780,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public atLiteralValue(): AtLiteralValueContext {
-    let localctx: AtLiteralValueContext = new AtLiteralValueContext(this, this._ctx, this.state);
+    const localctx: AtLiteralValueContext = new AtLiteralValueContext(this, this._ctx, this.state);
     this.enterRule(localctx, 82, FEEL_1_1Parser.RULE_atLiteralValue);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -2909,7 +2909,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public simplePositiveUnaryTests(): SimplePositiveUnaryTestsContext {
-    let localctx: SimplePositiveUnaryTestsContext = new SimplePositiveUnaryTestsContext(this, this._ctx, this.state);
+    const localctx: SimplePositiveUnaryTestsContext = new SimplePositiveUnaryTestsContext(this, this._ctx, this.state);
     this.enterRule(localctx, 86, FEEL_1_1Parser.RULE_simplePositiveUnaryTests);
     let _la: number;
     try {
@@ -3011,7 +3011,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public positiveUnaryTest(): PositiveUnaryTestContext {
-    let localctx: PositiveUnaryTestContext = new PositiveUnaryTestContext(this, this._ctx, this.state);
+    const localctx: PositiveUnaryTestContext = new PositiveUnaryTestContext(this, this._ctx, this.state);
     this.enterRule(localctx, 90, FEEL_1_1Parser.RULE_positiveUnaryTest);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -3034,7 +3034,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public positiveUnaryTests(): PositiveUnaryTestsContext {
-    let localctx: PositiveUnaryTestsContext = new PositiveUnaryTestsContext(this, this._ctx, this.state);
+    const localctx: PositiveUnaryTestsContext = new PositiveUnaryTestsContext(this, this._ctx, this.state);
     this.enterRule(localctx, 92, FEEL_1_1Parser.RULE_positiveUnaryTests);
     let _la: number;
     try {
@@ -3074,7 +3074,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public unaryTestsRoot(): UnaryTestsRootContext {
-    let localctx: UnaryTestsRootContext = new UnaryTestsRootContext(this, this._ctx, this.state);
+    const localctx: UnaryTestsRootContext = new UnaryTestsRootContext(this, this._ctx, this.state);
     this.enterRule(localctx, 94, FEEL_1_1Parser.RULE_unaryTestsRoot);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -3151,7 +3151,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public endpoint(): EndpointContext {
-    let localctx: EndpointContext = new EndpointContext(this, this._ctx, this.state);
+    const localctx: EndpointContext = new EndpointContext(this, this._ctx, this.state);
     this.enterRule(localctx, 98, FEEL_1_1Parser.RULE_endpoint);
     try {
       this.enterOuterAlt(localctx, 1);
@@ -3174,7 +3174,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public interval(): IntervalContext {
-    let localctx: IntervalContext = new IntervalContext(this, this._ctx, this.state);
+    const localctx: IntervalContext = new IntervalContext(this, this._ctx, this.state);
     this.enterRule(localctx, 100, FEEL_1_1Parser.RULE_interval);
     try {
       this.state = 647;
@@ -3331,7 +3331,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public qualifiedName(): QualifiedNameContext {
-    let localctx: QualifiedNameContext = new QualifiedNameContext(this, this._ctx, this.state);
+    const localctx: QualifiedNameContext = new QualifiedNameContext(this, this._ctx, this.state);
     this.enterRule(localctx, 102, FEEL_1_1Parser.RULE_qualifiedName);
 
     let name = ""; // null?
@@ -3392,7 +3392,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public nameRef(): NameRefContext {
-    let localctx: NameRefContext = new NameRefContext(this, this._ctx, this.state);
+    const localctx: NameRefContext = new NameRefContext(this, this._ctx, this.state);
     this.enterRule(localctx, 104, FEEL_1_1Parser.RULE_nameRef);
     try {
       let _alt: number;
@@ -3450,7 +3450,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public nameRefOtherToken(): NameRefOtherTokenContext {
-    let localctx: NameRefOtherTokenContext = new NameRefOtherTokenContext(this, this._ctx, this.state);
+    const localctx: NameRefOtherTokenContext = new NameRefOtherTokenContext(this, this._ctx, this.state);
     this.enterRule(localctx, 106, FEEL_1_1Parser.RULE_nameRefOtherToken);
     let _la: number;
     try {
@@ -3484,7 +3484,7 @@ export default class FEEL_1_1Parser extends Parser {
   }
   // @RuleVersion(0)
   public reusableKeywords(): ReusableKeywordsContext {
-    let localctx: ReusableKeywordsContext = new ReusableKeywordsContext(this, this._ctx, this.state);
+    const localctx: ReusableKeywordsContext = new ReusableKeywordsContext(this, this._ctx, this.state);
     this.enterRule(localctx, 108, FEEL_1_1Parser.RULE_reusableKeywords);
     let _la: number;
     try {
