@@ -11,19 +11,19 @@ export class Expressions {
   }
 
   public async openLiteralExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-literal-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-literal--base")}` ?? "");
   }
 
   public async openContextExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-context-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-context--base")}` ?? "");
   }
 
   public async openDecisionTableExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-decision-table-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-decision-table--base")}` ?? "");
   }
 
   public async openRelationExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-relation-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-relation--base")}` ?? "");
   }
 
   public async createRelationExpression() {
@@ -48,14 +48,14 @@ export class Expressions {
   }
 
   public async openInvocationExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-invocation-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-invocation--base")}` ?? "");
   }
 
   public async openListExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-list-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-list--base")}` ?? "");
   }
 
   public async openFunctionExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("expressions-function-expression--base")}` ?? "");
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-function--base")}` ?? "");
   }
 }

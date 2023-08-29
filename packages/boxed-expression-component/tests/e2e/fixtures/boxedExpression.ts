@@ -30,7 +30,7 @@ class BoxedExpressionEditor {
   }
 
   public async goto() {
-    await this.page.goto(`${this.baseURL}/iframe.html?id=expressions-empty-expression--base` ?? "");
+    await this.page.goto(`${this.baseURL}/iframe.html?id=misc-empty-boxed-expression--base` ?? "");
   }
 
   public getContainer() {

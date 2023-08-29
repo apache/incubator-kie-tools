@@ -1,24 +1,24 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "../useCases/Empty/EmptyExpression.stories";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditorWrapper } from "../../boxedExpressionWrapper";
+import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
   generateUuid,
-} from "../../src/api";
+} from "../../../src/api";
 import {
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
-} from "../../src/resizing/WidthConstants";
+} from "../../../src/resizing/WidthConstants";
 import {
   DECISION_TABLE_INPUT_DEFAULT_VALUE,
   DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-} from "../../src/expressions/DecisionTableExpression";
+} from "../../../src/expressions/DecisionTableExpression";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {

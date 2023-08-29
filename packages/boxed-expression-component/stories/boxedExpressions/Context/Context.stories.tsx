@@ -1,10 +1,10 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
-import { Base as EmptyExpression } from "../useCases/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../src/api";
-import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../src/resizing/WidthConstants";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import { BoxedExpressionEditorWrapper } from "../../boxedExpressionWrapper";
+import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
+import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
