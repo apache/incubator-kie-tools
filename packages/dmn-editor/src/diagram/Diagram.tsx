@@ -255,6 +255,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
 
       dmnEditorStoreApi.setState((state) => {
+        const edgeIndexesAlreadyUpdated = new Set<number>();
         for (const change of changes) {
           switch (change.type) {
             case "add":
@@ -287,7 +288,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 const node = nodesById.get(change.id)!;
                 const { delta } = repositionNode({
                   definitions: state.dmn.model.definitions,
+                  edgeIndexesAlreadyUpdated,
                   change: {
+                    selectedEdges: state.diagram.selectedEdges,
                     shapeIndex: node.data.shape.index,
                     sourceEdgeIndexes: edges.flatMap((e) =>
                       e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
@@ -315,7 +318,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                     );
                     repositionNode({
                       definitions: state.dmn.model.definitions,
+                      edgeIndexesAlreadyUpdated,
                       change: {
+                        selectedEdges: state.diagram.selectedEdges,
                         shapeIndex: nestedNode.data.shape.index,
                         sourceEdgeIndexes: edges.flatMap((e) =>
                           e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []

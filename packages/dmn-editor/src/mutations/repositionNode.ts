@@ -8,18 +8,19 @@ import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function repositionNode({
   definitions,
+  edgeIndexesAlreadyUpdated,
   change,
 }: {
   definitions: DMN15__tDefinitions;
+  edgeIndexesAlreadyUpdated: Set<number>;
   change: {
     shapeIndex: number;
     position: { x: number; y: number };
     sourceEdgeIndexes: number[];
     targetEdgeIndexes: number[];
+    selectedEdges: string[];
   };
 }) {
-  const edgeIndexesAlreadyUpdated = new Set<number>();
-
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   const bounds = (diagramElements?.[change.shapeIndex] as DMNDI15__DMNShape | undefined)?.["dc:Bounds"];
@@ -46,13 +47,21 @@ export function repositionNode({
         throw new Error("Cannot reposition non-existent edge");
       }
 
-      const wapoint = switchExpression(args.waypoint, {
-        first: edge["di:waypoint"][0],
-        last: edge["di:waypoint"][edge["di:waypoint"].length - 1],
+      const isEdgeSelected = change.selectedEdges.indexOf(edge["@_dmnElementRef"]!) >= 0;
+
+      const waypoints = switchExpression(args.waypoint, {
+        first: isEdgeSelected
+          ? [...edge["di:waypoint"]].slice(0, -1) // All except last element
+          : [edge["di:waypoint"][0]],
+        last: isEdgeSelected
+          ? [...edge["di:waypoint"]].slice(1, edge["di:waypoint"].length) // All except first element
+          : [edge["di:waypoint"][edge["di:waypoint"].length - 1]],
       });
 
-      wapoint["@_x"] += deltaX;
-      wapoint["@_y"] += deltaY;
+      for (const w of waypoints) {
+        w["@_x"] += deltaX;
+        w["@_y"] += deltaY;
+      }
     }
   };
 
