@@ -34,7 +34,7 @@ export function dmnToBee(
       id: expr["@_id"]!,
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Literal,
-      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       content: expr.text,
       width: widthsById.get(expr["@_id"]!)?.[0],
     };
@@ -43,7 +43,7 @@ export function dmnToBee(
       id: expr["@_id"]!,
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.DecisionTable,
-      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       aggregation: expr["@_aggregation"]
         ? DecisionTableExpressionDefinitionBuiltInAggregation[expr["@_aggregation"]]
         : DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
@@ -54,14 +54,14 @@ export function dmnToBee(
         idLiteralExpression: input.inputExpression["@_id"]!,
         id: input["@_id"]!,
         name: input["@_label"] ?? input.inputExpression["@_label"] ?? input.inputExpression.text ?? "",
-        dataType: (input.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        dataType: (input.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         width: widthsById.get(expr["@_id"]!)?.[1 + i],
         //FIXME: Tiago --> Add clauseUnitaryTests?
       })),
       output: (expr.output ?? []).map((output, i) => ({
         id: output["@_id"]!,
         name: output["@_label"] ?? output["@_name"] ?? "",
-        dataType: (output["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        dataType: (output["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         width: widthsById.get(expr["@_id"]!)?.[1 + (expr.input ?? []).length + i],
         //FIXME: Tiago --> Add defaultOutputEntry?
         //FIXME: Tiago --> Add clauseUnaryTests?
@@ -82,7 +82,7 @@ export function dmnToBee(
       id: expr["@_id"]!,
       name: expr["@_label"],
       logicType: ExpressionDefinitionLogicType.Relation,
-      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       rows: (expr.row ?? []).map((row) => ({
         id: row["@_id"]!,
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
@@ -94,7 +94,7 @@ export function dmnToBee(
       columns: (expr.column ?? []).map((c, i) => ({
         id: c["@_id"]!,
         name: c["@_label"] ?? c["@_name"] ?? "",
-        dataType: (c["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        dataType: (c["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         width: widthsById.get(expr["@_id"]!)?.[1 + i],
       })),
     };
@@ -108,7 +108,7 @@ export function dmnToBee(
             entryInfo: {
               id: e.variable?.["@_id"] ?? e["@_id"]!,
               name: e.variable?.["@_label"] ?? e.variable?.["@_name"] ?? e["@_label"]!,
-              dataType: (e.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+              dataType: (e.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
             },
             entryExpression: dmnToBee(widthsById, e),
           });
@@ -137,12 +137,12 @@ export function dmnToBee(
     // An Invocation contains a calledFunction, an Expression, which must evaluate to a function. Most
     // commonly, it is a LiteralExpression naming a BusinessKnowledgeModel.
     //
-    // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 71, document page 57. Section "7.3.6 Invocation metamodel".
+    // Source: https://www.omg.org/spec/DMN/1.4/PDF. PDF page 71, document page 57. Section "7.3.6 Invocation metamodel".
     const calledFunction = expr.expression! as DMN15__tLiteralExpression;
 
     return {
       id: expr["@_id"]!,
-      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Invocation as const,
       name: expr["@_label"],
       entryInfoWidth: widthsById.get(expr["@_id"] ?? "")?.[0],
@@ -154,7 +154,7 @@ export function dmnToBee(
         entryInfo: {
           id: b.parameter["@_id"]!,
           name: b.parameter["@_name"],
-          dataType: (b.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+          dataType: (b.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         },
         entryExpression: dmnToBee(widthsById, b),
       })),
@@ -168,7 +168,7 @@ export function dmnToBee(
       formalParameters: (expr.formalParameter ?? []).map((p) => ({
         id: p["@_id"]!,
         name: p["@_name"]!,
-        dataType: (p["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        dataType: (p["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       })),
     };
 
@@ -235,7 +235,7 @@ export function dmnToBee(
     return {
       id: expr["@_id"]!,
       name: expr["@_label"],
-      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+      dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.List as const,
       items: (expr.expression ?? []).map((e) => dmnToBee(widthsById, { expression: e })),
     };

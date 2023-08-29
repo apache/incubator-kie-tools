@@ -10,7 +10,7 @@ export function InfoNodePanel(props: { isVisible: boolean }) {
     <>
       {props.isVisible && (
         <div className={"kie-dmn-editor--info-node-panel"}>
-          <Label onClick={dispatch.propertiesPanel.open} className={"kie-dmn-editor--info-label"}>
+          <Label onClick={dispatch.diagram.propertiesPanel.open} className={"kie-dmn-editor--info-label"}>
             <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
           </Label>
         </div>

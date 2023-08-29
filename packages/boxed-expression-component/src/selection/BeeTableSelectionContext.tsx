@@ -2,6 +2,7 @@ import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { assertUnreachable } from "../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { ResizingWidth, useResizingWidthsDispatch } from "../resizing/ResizingWidthsContext";
+import { useBoxedExpressionEditor } from "../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 
 export const SELECTION_MIN_ACTIVE_DEPTH = -1;
 export const SELECTION_MIN_MAX_DEPTH = 0;
@@ -146,8 +147,16 @@ export function BeeTableCoordinatesContextProvider({
 }: React.PropsWithChildren<{ coordinates: BeeTableCellCoordinates }>) {
   const { activeCell, depth } = useBeeTableSelection();
 
-  //
+  // FIXME: Tiago --> Temporary fix for the Boxed Expression Editor to work well. Ideally this wouldn't bee here, as the BeeTable should be decoupled from the DMN Editor's Boxed Expression Editor use-case.
+  const { beeGwtService } = useBoxedExpressionEditor();
 
+  useEffect(() => {
+    if (!activeCell && depth === SELECTION_MIN_MAX_DEPTH) {
+      beeGwtService?.selectObject(undefined);
+    }
+  }, [activeCell, beeGwtService, depth]);
+
+  //
   const { setMaxDepth: setParentMaxDepth } = useBeeTableCoordinatesDispatch();
   const [_maxDepth, _setMaxDepth] = useState<number>(depth);
 

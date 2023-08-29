@@ -445,7 +445,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 }
 
 export function TopRightCornerPanels() {
-  const { propertiesPanel, dispatch, diagram } = useDmnEditorStore();
+  const { dispatch, diagram } = useDmnEditorStore();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const toggleOverlaysPanel = useCallback(() => {
@@ -464,14 +464,14 @@ export function TopRightCornerPanels() {
       }
       state.diagram.overlaysPanel.isOpen = false;
     });
-  }, [dmnEditorStoreApi, propertiesPanel.isOpen]);
+  }, [dmnEditorStoreApi, diagram.propertiesPanel.isOpen]);
 
   return (
     <>
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
         <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
           <Popover
-            key={`${propertiesPanel.isOpen}`}
+            key={`${diagram.propertiesPanel.isOpen}`}
             aria-label="Advanced popover usages example"
             position={"left-start"}
             hideOnOutsideClick={false}
@@ -485,11 +485,11 @@ export function TopRightCornerPanels() {
             </button>
           </Popover>
         </aside>
-        {!propertiesPanel.isOpen && (
+        {!diagram.propertiesPanel.isOpen && (
           <aside className={"kie-dmn-editor--properties-panel-toggle"}>
             <button
               className={"kie-dmn-editor--properties-panel-toggle-button"}
-              onClick={dispatch.propertiesPanel.toggle}
+              onClick={dispatch.diagram.propertiesPanel.toggle}
             >
               <InfoIcon size={"sm"} />
             </button>

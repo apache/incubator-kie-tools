@@ -29,10 +29,11 @@ import {
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
+import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import "@kie-tools/dmn-marshaller"; // This is here because of the KIE Extension for DMN.
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
-  const { dispatch, dmn, boxedExpressionEditor: boxedExpression } = useDmnEditorStore();
+  const { dispatch, dmn, boxedExpressionEditor } = useDmnEditorStore();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -51,11 +52,13 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   }, [dmn.model.definitions]);
 
   const expression = useMemo(() => {
-    if (!boxedExpression.id) {
+    if (!boxedExpressionEditor.openExpressionId) {
       return undefined;
     }
 
-    const drgElementIndex = (dmn.model.definitions.drgElement ?? []).findIndex((e) => e["@_id"] === boxedExpression.id);
+    const drgElementIndex = (dmn.model.definitions.drgElement ?? []).findIndex(
+      (e) => e["@_id"] === boxedExpressionEditor.openExpressionId
+    );
     if (drgElementIndex < 0) {
       return undefined;
     }
@@ -70,7 +73,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       drgElementIndex,
       drgElementType: drgElement.__$$element,
     };
-  }, [boxedExpression.id, dmn.model.definitions.drgElement, widthsById]);
+  }, [boxedExpressionEditor.openExpressionId, dmn.model.definitions.drgElement, widthsById]);
 
   const [lastValidExpression, setLastValidExpression] = useState<typeof expression>(undefined);
   useEffect(() => {
@@ -119,41 +122,54 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       },
       selectObject(uuid) {
         dmnEditorStoreApi.setState((state) => {
-          dispatch.diagram.setNodeStatus(state, uuid!, { selected: true });
+          state.boxedExpressionEditor.selectedObjectId = uuid;
         });
       },
       openDataTypePage() {
         dispatch.navigation.setTab(DmnEditorTab.DATA_TYPES);
       },
     };
-  }, [dispatch.diagram, dispatch.navigation, dmnEditorStoreApi]);
+  }, [dispatch.navigation, dmnEditorStoreApi]);
 
   ////
 
   return (
     <>
       <>
+        {!boxedExpressionEditor.propertiesPanel.isOpen && (
+          <aside className={"kie-dmn-editor--properties-panel-toggle"}>
+            <button
+              className={"kie-dmn-editor--properties-panel-toggle-button"}
+              onClick={dispatch.boxedExpressionEditor.propertiesPanel.toggle}
+            >
+              <InfoIcon size={"sm"} />
+            </button>
+          </aside>
+        )}
         <Label
           isCompact={true}
           className={"kie-dmn-editor--boxed-expression-back"}
-          onClick={dispatch.boxedExpression.close}
+          onClick={dispatch.boxedExpressionEditor.close}
         >
           Back to Diagram
         </Label>
-        <Divider inset={{ default: "insetMd" }} />
+        <Divider
+          inset={{ default: "insetMd" }}
+          style={{ paddingRight: boxedExpressionEditor.propertiesPanel.isOpen ? "24px" : "56px" }}
+        />
         <br />
         {!expression && (
           <>
             <EmptyState>
               <EmptyStateIcon icon={ErrorCircleOIcon} />
               <Title size="lg" headingLevel="h4">
-                {`Expression with ID '${boxedExpression.id}' doesn't exist.`}
+                {`Expression with ID '${boxedExpressionEditor.openExpressionId}' doesn't exist.`}
               </Title>
               <EmptyStateBody>
                 This happens when the DMN file is modified externally while the expression was open here.
               </EmptyStateBody>
               <EmptyStatePrimary>
-                <Button variant="link" onClick={dispatch.boxedExpression.close}>
+                <Button variant="link" onClick={dispatch.boxedExpressionEditor.close}>
                   Go back to the Diagram
                 </Button>
               </EmptyStatePrimary>
@@ -167,7 +183,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               beeGwtService={beeGwtService}
               pmmlParams={pmmlParams}
               isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
-              decisionNodeId={boxedExpression.id!}
+              decisionNodeId={boxedExpressionEditor.openExpressionId!}
               expressionDefinition={expression.beeExpression}
               setExpressionDefinition={setExpression}
               dataTypes={dataTypes}
@@ -196,7 +212,7 @@ function drgElementToBoxedExpression(
       }),
       dataType: (drgElement.variable?.["@_typeRef"] ??
         drgElement.encapsulatedLogic?.["@_typeRef"] ??
-        DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       name: drgElement["@_name"],
     };
   } else if (drgElement.__$$element === "decision") {
@@ -204,7 +220,7 @@ function drgElementToBoxedExpression(
       ...dmnToBee(widthsById, drgElement),
       dataType: (drgElement.variable?.["@_typeRef"] ??
         drgElement.expression?.["@_typeRef"] ??
-        DmnBuiltInDataType.Undefined) as DmnBuiltInDataType,
+        DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       name: drgElement["@_name"],
     };
   } else {

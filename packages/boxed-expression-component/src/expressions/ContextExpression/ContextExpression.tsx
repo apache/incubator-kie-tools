@@ -58,6 +58,7 @@ type ROWTYPE = ContextExpressionDefinitionEntry;
 
 export function ContextExpression(contextExpression: ContextExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const entryInfoWidth = useMemo(
@@ -130,7 +131,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: contextExpression.id as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: contextExpression.name ?? DEFAULT_EXPRESSION_NAME,
         isRowIndexColumn: false,
         dataType: contextExpression.dataType,
@@ -157,7 +158,7 @@ export function ContextExpression(contextExpression: ContextExpressionDefinition
         ],
       },
     ];
-  }, [contextExpression.id, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
+  }, [decisionNodeId, contextExpression.name, contextExpression.dataType, entryInfoWidth, setEntryInfoWidth]);
 
   const onColumnUpdates = useCallback(
     ([{ name, dataType }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
@@ -398,7 +399,7 @@ export function ContextResultInfoCell() {
 
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject("");
+      beeGwtService?.selectObject(""); // FIXME: Tiago --> This should actually be the id of the parent expression, as the <result> of a context follows its parent's data type.
     }
   }, [beeGwtService, isActive]);
 

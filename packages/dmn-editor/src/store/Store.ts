@@ -28,16 +28,20 @@ export interface State {
     model: { definitions: DMN15__tDefinitions };
   };
   boxedExpressionEditor: {
-    id: string | undefined;
-  };
-  propertiesPanel: {
-    isOpen: boolean;
-    elementId: string | undefined;
+    openExpressionId: string | undefined;
+    selectedObjectId: string | undefined;
+    propertiesPanel: {
+      isOpen: boolean;
+    };
   };
   navigation: {
     tab: DmnEditorTab;
   };
   diagram: {
+    propertiesPanel: {
+      isOpen: boolean;
+      elementId: string | undefined;
+    };
     overlaysPanel: {
       isOpen: boolean;
     };
@@ -59,19 +63,24 @@ export type Dispatch = {
   dmn: {
     reset: (model: State["dmn"]["model"]) => void;
   };
-  boxedExpression: {
+  boxedExpressionEditor: {
     open: (id: string) => void;
     close: () => void;
-  };
-  propertiesPanel: {
-    open: () => void;
-    close: () => void;
-    toggle: () => void;
+    propertiesPanel: {
+      open: () => void;
+      close: () => void;
+      toggle: () => void;
+    };
   };
   navigation: {
     setTab: (tab: DmnEditorTab) => void;
   };
   diagram: {
+    propertiesPanel: {
+      open: () => void;
+      close: () => void;
+      toggle: () => void;
+    };
     toggleOverlaysPanel: (state: State) => void;
     setSnapGrid: (state: State, snap: SnapGrid) => void;
     setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
@@ -111,16 +120,20 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         model,
       },
       boxedExpressionEditor: {
-        id: undefined,
-      },
-      propertiesPanel: {
-        isOpen: false,
-        elementId: undefined,
+        openExpressionId: undefined,
+        selectedObjectId: undefined,
+        propertiesPanel: {
+          isOpen: false,
+        },
       },
       navigation: {
         tab: DmnEditorTab.EDITOR,
       },
       diagram: {
+        propertiesPanel: {
+          isOpen: false,
+          elementId: undefined,
+        },
         overlaysPanel: {
           isOpen: false,
         },
@@ -144,39 +157,46 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
               state.diagram.draggingNodes = [];
               state.diagram.resizingNodes = [];
               state.navigation.tab = DmnEditorTab.EDITOR;
-              state.boxedExpressionEditor.id = undefined;
+              state.boxedExpressionEditor.openExpressionId = undefined;
+              state.boxedExpressionEditor.selectedObjectId = undefined;
             });
           },
         },
-        boxedExpression: {
+        boxedExpressionEditor: {
+          propertiesPanel: {
+            open: () => {
+              set((state) => {
+                state.boxedExpressionEditor.propertiesPanel.isOpen = true;
+              });
+            },
+            close: () => {
+              set((state) => {
+                state.boxedExpressionEditor.propertiesPanel.isOpen = false;
+              });
+            },
+            toggle: () => {
+              set((state) => {
+                state.boxedExpressionEditor.propertiesPanel.isOpen =
+                  !state.boxedExpressionEditor.propertiesPanel.isOpen;
+              });
+            },
+          },
           open: (id) => {
             set((state) => {
-              state.boxedExpressionEditor.id = id;
+              state.boxedExpressionEditor.openExpressionId = id;
+              state.boxedExpressionEditor.selectedObjectId = undefined;
+              state.boxedExpressionEditor.propertiesPanel.isOpen = state.diagram.propertiesPanel.isOpen;
             });
           },
           close: () => {
             set((state) => {
-              state.boxedExpressionEditor.id = undefined;
+              state.diagram.propertiesPanel.isOpen = state.boxedExpressionEditor.propertiesPanel.isOpen;
+              state.boxedExpressionEditor.openExpressionId = undefined;
+              state.boxedExpressionEditor.selectedObjectId = undefined;
             });
           },
         },
-        propertiesPanel: {
-          open: () => {
-            set((state) => {
-              state.propertiesPanel.isOpen = true;
-            });
-          },
-          close: () => {
-            set((state) => {
-              state.propertiesPanel.isOpen = false;
-            });
-          },
-          toggle: () => {
-            set((state) => {
-              state.propertiesPanel.isOpen = !state.propertiesPanel.isOpen;
-            });
-          },
-        },
+
         navigation: {
           setTab: (tab) => {
             set((state) => {
@@ -185,6 +205,23 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           },
         },
         diagram: {
+          propertiesPanel: {
+            open: () => {
+              set((state) => {
+                state.diagram.propertiesPanel.isOpen = true;
+              });
+            },
+            close: () => {
+              set((state) => {
+                state.diagram.propertiesPanel.isOpen = false;
+              });
+            },
+            toggle: () => {
+              set((state) => {
+                state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
+              });
+            },
+          },
           toggleOverlaysPanel: (prev) => {
             prev.diagram.overlaysPanel.isOpen = !prev.diagram.overlaysPanel.isOpen;
           },

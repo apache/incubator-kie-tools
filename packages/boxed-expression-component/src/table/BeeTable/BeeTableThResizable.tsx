@@ -43,7 +43,7 @@ export interface BeeTableThResizableProps<R extends object> {
   getColumnKey: (column: ReactTable.ColumnInstance<R>) => string;
   getColumnLabel: (groupType: string | undefined) => string | undefined;
   onExpressionHeaderUpdated: (args: Pick<ExpressionDefinition, "name" | "dataType">) => void;
-  onHeaderClick: (columnKey: string) => () => void;
+  onHeaderClick?: (columnKey: string) => () => void;
   reactTableInstance: ReactTable.TableInstance<R>;
   headerCellInfo: React.ReactElement;
   shouldShowColumnsInlineControls: boolean;
@@ -89,7 +89,7 @@ export function BeeTableThResizable<R extends object>({
   }, [columnKey, column.dataType, column.groupType]);
 
   const onClick = useMemo(() => {
-    return onHeaderClick(columnKey);
+    return onHeaderClick?.(columnKey);
   }, [columnKey, onHeaderClick]);
 
   const { resizingWidth, setResizingWidth } = useBeeTableResizableCell(
@@ -164,7 +164,7 @@ export function BeeTableThResizable<R extends object>({
 
   const getAppendToElement = useCallback(() => {
     return headerCellRef.current!;
-  }, [headerCellRef, headerCellRef.current]);
+  }, [headerCellRef]);
 
   return (
     <BeeTableTh<R>
@@ -184,6 +184,7 @@ export function BeeTableThResizable<R extends object>({
         },
       }}
       onClick={onClick}
+      columnKey={columnKey}
       columnIndex={columnIndex}
       rowIndex={rowIndex}
       rowSpan={rowSpan}

@@ -25,6 +25,7 @@ import {
 } from "../../i18n";
 import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
 import "./base-no-reset-wrapped.css";
+import "../../@types/react-table";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
 
 export interface BoxedExpressionEditorProps {

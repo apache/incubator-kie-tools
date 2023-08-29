@@ -49,7 +49,10 @@ import {
   BeeTableRef,
   getColumnsAtLastLevel,
 } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import { assertUnreachable } from "../ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { HitPolicySelector, HIT_POLICIES_THAT_SUPPORT_AGGREGATION } from "./HitPolicySelector";
@@ -72,6 +75,7 @@ export function DecisionTableExpression(
   decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const generateOperationConfig = useCallback(
@@ -237,7 +241,7 @@ export function DecisionTableExpression(
 
     const outputSection = {
       groupType: DecisionTableColumnType.OutputClause,
-      id: decisionTableExpression.id,
+      id: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
       accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
       label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
       dataType: decisionTableExpression.dataType,
@@ -272,9 +276,9 @@ export function DecisionTableExpression(
       return [...inputColumns, outputSection, ...annotationColumns];
     }
   }, [
+    decisionNodeId,
     decisionTableExpression.annotations,
     decisionTableExpression.dataType,
-    decisionTableExpression.id,
     decisionTableExpression.input,
     decisionTableExpression.name,
     decisionTableExpression.output,

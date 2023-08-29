@@ -102,10 +102,14 @@ export function BeeTableTd<R extends object>({
   const { beeGwtService, editorRef } = useBoxedExpressionEditor();
 
   useEffect(() => {
-    if (isActive && column.isRowIndexColumn) {
-      beeGwtService?.selectObject("");
+    if (isActive) {
+      if (column.isRowIndexColumn) {
+        beeGwtService?.selectObject("");
+      } else {
+        beeGwtService?.selectObject(typeof cell.value === "string" ? "" : cell.value?.id ?? "");
+      }
     }
-  }, [beeGwtService, isActive, column]);
+  }, [beeGwtService, isActive, column.isRowIndexColumn, cell.value]);
 
   useEffect(() => {
     const td = tdRef.current;

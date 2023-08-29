@@ -15,7 +15,7 @@ import { Diagram } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
 import { Documentation } from "./documentation/Documentation";
 import { IncludedModels } from "./includedModels/IncludedModels";
-import { PropertiesPanel } from "./propertiesPanel/PropertiesPanel";
+import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
 import {
   DmnEditorStoreApiContext,
   DmnEditorTab,
@@ -30,6 +30,7 @@ import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 
 const ON_CHANGE_THROTTLE_TIME_IN_MS = 500;
 
@@ -47,14 +48,7 @@ export const DmnEditorInternal = ({
   onModelChange,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
-  const {
-    propertiesPanel,
-    boxedExpressionEditor: boxedExpression,
-    dmn,
-    navigation,
-    dispatch,
-    diagram,
-  } = useDmnEditorStore();
+  const { boxedExpressionEditor, dmn, navigation, dispatch, diagram } = useDmnEditorStore();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   // Allow imperativelly controlling the Editor.
@@ -97,6 +91,7 @@ export const DmnEditorInternal = ({
   );
 
   const diagramContainerRef = useRef<HTMLDivElement>(null);
+  const beeContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -119,17 +114,31 @@ export const DmnEditorInternal = ({
           }
         >
           {navigation.tab === DmnEditorTab.EDITOR && (
-            <Drawer isExpanded={propertiesPanel.isOpen} isInline={true} position={"right"}>
-              <DrawerContent panelContent={<PropertiesPanel />}>
-                <DrawerContentBody>
-                  <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                    <DmnVersionLabel version={"1.4"} /> {/** FiXME: Tiago --> This version is wrong. */}
-                    {!boxedExpression.id && <Diagram container={diagramContainerRef} />}
-                    {boxedExpression.id && <BoxedExpression container={diagramContainerRef} />}
-                  </div>
-                </DrawerContentBody>
-              </DrawerContent>
-            </Drawer>
+            <>
+              {!boxedExpressionEditor.openExpressionId && (
+                <Drawer isExpanded={diagram.propertiesPanel.isOpen} isInline={true} position={"right"}>
+                  <DrawerContent panelContent={<DiagramPropertiesPanel />}>
+                    <DrawerContentBody>
+                      <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
+                        <DmnVersionLabel version={"1.4"} /> {/** FiXME: Tiago --> This version is wrong. */}
+                        <Diagram container={diagramContainerRef} />
+                      </div>
+                    </DrawerContentBody>
+                  </DrawerContent>
+                </Drawer>
+              )}
+              {boxedExpressionEditor.openExpressionId && (
+                <Drawer isExpanded={boxedExpressionEditor.propertiesPanel.isOpen} isInline={true} position={"right"}>
+                  <DrawerContent panelContent={<BeePropertiesPanel />}>
+                    <DrawerContentBody>
+                      <div className={"kie-dmn-editor--bee-container"} ref={beeContainerRef}>
+                        <BoxedExpression container={beeContainerRef} />
+                      </div>
+                    </DrawerContentBody>
+                  </DrawerContent>
+                </Drawer>
+              )}
+            </>
           )}
         </Tab>
 

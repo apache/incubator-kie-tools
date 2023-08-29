@@ -108,7 +108,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
-        accessor: decisionNodeId as any,
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: listExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: listExpression.dataType,
         isRowIndexColumn: false,

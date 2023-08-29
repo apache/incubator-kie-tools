@@ -9,7 +9,7 @@ export function EditExpressionNodePanel(props: { isVisible: boolean; id: string 
     <>
       {props.isVisible && (
         <Label
-          onClick={() => dispatch.boxedExpression.open(props.id)}
+          onClick={() => dispatch.boxedExpressionEditor.open(props.id)}
           className={"kie-dmn-editor--edit-expression-node-panel"}
         >
           Edit

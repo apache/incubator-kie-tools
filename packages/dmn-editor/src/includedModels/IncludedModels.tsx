@@ -94,7 +94,7 @@ export function IncludedModels() {
 
   const add = useCallback(() => {
     const valid = true; // FIXME: Tiago --> Do additional checks here like unicity etc
-    if (!selectedModel || !valid || !SPEC.namedElement.isValidName(modelAlias)) {
+    if (!selectedModel || !valid || !SPEC.IMPORT.name.isValid(modelAlias)) {
       return;
     }
 

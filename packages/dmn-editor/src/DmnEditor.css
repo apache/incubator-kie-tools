@@ -3,6 +3,17 @@
   position: relative;
 }
 
+.kie-dmn-editor--bee-container {
+  /* height: 100%; */
+  position: relative;
+}
+
+.kie-dmn-editor--bee-container .kie-dmn-editor--properties-panel-toggle {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
 .kie-dmn-editor--node {
   height: 100%;
   width: 100%;

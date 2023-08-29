@@ -135,6 +135,7 @@ export function BeeTableHeader<R extends object>({
           rowSpan={rowSpan}
           key={columnKey}
           column={column}
+          columnKey={columnKey}
           columnIndex={0}
           rowIndex={rowIndex}
           thProps={column.getHeaderProps()}
@@ -150,13 +151,6 @@ export function BeeTableHeader<R extends object>({
       );
     },
     [getColumnKey, shouldShowRowsInlineControls]
-  );
-
-  const onHeaderClick = useCallback(
-    (columnKey: string) => () => {
-      beeGwtService?.selectObject(columnKey);
-    },
-    [beeGwtService]
   );
 
   const renderColumn = useCallback<
@@ -187,7 +181,6 @@ export function BeeTableHeader<R extends object>({
               shouldShowColumnsInlineControls={shouldShowRowsInlineControls}
               getColumnKey={getColumnKey}
               getColumnLabel={getColumnLabel}
-              onHeaderClick={onHeaderClick}
               reactTableInstance={reactTableInstance}
               column={column}
               columnIndex={columnIndex}
@@ -258,7 +251,6 @@ export function BeeTableHeader<R extends object>({
       isEditableHeader,
       shouldShowRowsInlineControls,
       getColumnLabel,
-      onHeaderClick,
       onColumnAdded,
       lastColumnMinWidth,
       setEditing,

@@ -35,6 +35,7 @@ export interface BeeTableThProps<R extends object> {
   isLastLevelColumn: boolean;
   rowIndex: number;
   rowSpan: number;
+  columnKey: string;
   columnIndex: number;
   column: ReactTable.ColumnInstance<R>;
   shouldShowColumnsInlineControls: boolean;
@@ -58,6 +59,7 @@ export function BeeTableTh<R extends object>({
   thProps,
   onClick,
   columnIndex,
+  columnKey,
   rowIndex,
   rowSpan,
   groupType,
@@ -90,10 +92,14 @@ export function BeeTableTh<R extends object>({
   const { beeGwtService } = useBoxedExpressionEditor();
 
   useEffect(() => {
-    if (isActive && column.isRowIndexColumn) {
-      beeGwtService?.selectObject("");
+    if (isActive) {
+      if (column.isRowIndexColumn) {
+        beeGwtService?.selectObject("");
+      } else {
+        beeGwtService?.selectObject(columnKey);
+      }
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, column.isRowIndexColumn, columnKey, isActive]);
 
   const _thRef = useRef<HTMLTableCellElement>(null);
   const thRef = forwardRef ?? _thRef;

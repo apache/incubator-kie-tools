@@ -16,6 +16,7 @@ export function ShapeOptions(props: { startExpanded: boolean }) {
       header={
         <FormFieldGroupHeader
           titleText={{
+            id: "properties-panel-shape-options",
             text: (
               <TextContent>
                 <Text component={TextVariants.h4}>
@@ -24,7 +25,6 @@ export function ShapeOptions(props: { startExpanded: boolean }) {
                 </Text>
               </TextContent>
             ),
-            id: "properties-panel-shape-options",
           }}
         />
       }

@@ -40,7 +40,10 @@ import {
   INVOCATION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
 import { ArgumentEntryExpressionCell } from "./ArgumentEntryExpressionCell";
 import { ContextEntryInfoCell } from "../ContextExpression";
@@ -56,7 +59,7 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefi
 
 export function InvocationExpression(invocationExpression: InvocationExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersWidth = useMemo(() => {
@@ -131,8 +134,8 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(
     () => [
       {
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169,
         label: invocationExpression.name ?? DEFAULT_EXPRESSION_NAME,
-        accessor: invocationExpression.id as keyof ROWTYPE,
         dataType: invocationExpression.dataType,
         isRowIndexColumn: false,
         width: undefined,
@@ -170,7 +173,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
       },
     ],
     [
-      invocationExpression.id,
+      decisionNodeId,
       invocationExpression.name,
       invocationExpression.dataType,
       invocationExpression.invokedFunction.name,

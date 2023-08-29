@@ -39,7 +39,10 @@ import {
   RELATION_EXPRESSION_COLUMN_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
-import { useBoxedExpressionEditorDispatch } from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
+import {
+  useBoxedExpressionEditor,
+  useBoxedExpressionEditorDispatch,
+} from "../BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_NAME } from "../ExpressionDefinitionHeaderMenu";
 import "./RelationExpression.css";
 
@@ -49,6 +52,7 @@ export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
 export function RelationExpression(relationExpression: RelationExpressionDefinition & { isNested: boolean }) {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
@@ -133,7 +137,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return [
       {
-        accessor: relationExpression.id as any,
+        accessor: decisionNodeId as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
         label: relationExpression.name ?? DEFAULT_EXPRESSION_NAME,
         dataType: relationExpression.dataType,
         isRowIndexColumn: false,
@@ -149,7 +153,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         })),
       },
     ];
-  }, [columns, relationExpression.dataType, relationExpression.id, relationExpression.name, setColumnWidth]);
+  }, [columns, decisionNodeId, relationExpression.dataType, relationExpression.name, setColumnWidth]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(
     () =>
