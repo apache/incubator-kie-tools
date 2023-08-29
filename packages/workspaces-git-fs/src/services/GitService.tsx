@@ -88,11 +88,13 @@ export class GitService {
   public constructor(private readonly corsProxy: Promise<string>) {}
 
   private getRequestHeaders(args: { insecurelyDisableTlsCertificateValidation?: boolean }) {
-    return {
-      [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
-        args.insecurelyDisableTlsCertificateValidation
-      ).toString(),
-    };
+    return args.insecurelyDisableTlsCertificateValidation
+      ? {
+          [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+            args.insecurelyDisableTlsCertificateValidation
+          ).toString(),
+        }
+      : undefined;
   }
 
   public async listServerRefs(args: {
