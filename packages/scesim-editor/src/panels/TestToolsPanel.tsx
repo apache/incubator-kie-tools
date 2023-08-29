@@ -28,8 +28,19 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 import { TestScenarioEditorDock } from "../editor/TestScenarioEditor";
+
+export function SettingPanel() {
+  return (
+    <>
+      <Title headingLevel={"h4"}>Name</Title>
+      <TextInput value={"scesim"} isDisabled />
+    </>
+  );
+}
 
 export function TestToolsPanel({
   selectedDock,
@@ -45,7 +56,7 @@ export function TestToolsPanel({
           <DrawerCloseButton onClose={onClose} />
         </DrawerActions>
         <TextContent>
-          <Text component={TextVariants.h4}>
+          <Text component={TextVariants.h3}>
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
@@ -79,7 +90,7 @@ export function TestToolsPanel({
                     </>
                   );
                 case TestScenarioEditorDock.SETTINGS:
-                  return <>Settings</>;
+                  return <SettingPanel />;
                 default:
                   throw new Error("");
               }
