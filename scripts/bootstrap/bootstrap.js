@@ -31,7 +31,7 @@ const execOpts = { stdio: "inherit" };
 
 console.info("\n\n[bootstrap] Installing packages dependencies...");
 execSync(
-  `pnpm install --use-lockfile-v6 --strict-peer-dependencies=false -F !kie-tools-root... ${pnpmFilterStringForInstalling}`,
+  `pnpm install --strict-peer-dependencies=false -F !kie-tools-root... ${pnpmFilterStringForInstalling}`,
   execOpts
 );
 
