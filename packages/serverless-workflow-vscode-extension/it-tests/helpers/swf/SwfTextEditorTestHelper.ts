@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { TextEditor, WebView } from "vscode-extension-tester";
+import { WebView } from "vscode-extension-tester";
+import SwfTextEditor from "./SwfTextEditor";
 
 /**
  * Helper class to easen work with swf text editor.
@@ -27,7 +28,7 @@ import { TextEditor, WebView } from "vscode-extension-tester";
 export default class SwfTextEditorTestHelper {
   constructor(private readonly webview: WebView) {}
 
-  public async getSwfTextEditor(): Promise<TextEditor> {
-    return Promise.resolve(new TextEditor());
+  public async getSwfTextEditor(): Promise<SwfTextEditor> {
+    return Promise.resolve(new SwfTextEditor());
   }
 }
