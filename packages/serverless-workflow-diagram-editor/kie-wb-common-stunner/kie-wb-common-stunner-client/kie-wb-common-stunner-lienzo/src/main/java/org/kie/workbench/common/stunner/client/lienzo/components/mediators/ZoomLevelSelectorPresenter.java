@@ -1,18 +1,22 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
@@ -29,10 +33,9 @@ import com.ait.lienzo.tools.client.event.EventType;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
-import jsinterop.base.Js;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
@@ -60,7 +63,7 @@ public class ZoomLevelSelectorPresenter {
     static final String ON_MOUSE_OVER = EventType.MOUSE_OVER.getType();
 
     private final ClientTranslationService translationService;
-    private final FloatingView<IsWidget> floatingView;
+    private final FloatingView<IsElement> floatingView;
     private final ZoomLevelSelector selector;
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final Element selectorElement;
@@ -77,14 +80,14 @@ public class ZoomLevelSelectorPresenter {
 
     @Inject
     public ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
-                                      final FloatingView<IsWidget> floatingView,
+                                      final FloatingView<IsElement> floatingView,
                                       final ZoomLevelSelector selector,
                                       final Event<TogglePreviewEvent> togglePreviewEvent) {
-        this(translationService, floatingView, selector, togglePreviewEvent, Js.cast(selector.asWidget().getElement()));
+        this(translationService, floatingView, selector, togglePreviewEvent, selector.getElement());
     }
 
     ZoomLevelSelectorPresenter(final ClientTranslationService translationService,
-                               final FloatingView<IsWidget> floatingView,
+                               final FloatingView<IsElement> floatingView,
                                final ZoomLevelSelector selector,
                                final Event<TogglePreviewEvent> togglePreviewEvent,
                                final Element selectorElement) {
@@ -239,8 +242,8 @@ public class ZoomLevelSelectorPresenter {
         final LienzoPanel panel = getPanel();
         final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(panel.getView().getElement());
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
-        final int zoomLevelSelectorWidth = selector.asWidget().getElement().getOffsetWidth();
-        final int zoomLevelSelectorHeight = selector.asWidget().getElement().getOffsetHeight();
+        final int zoomLevelSelectorWidth = selector.getElement().offsetWidth;
+        final int zoomLevelSelectorHeight = selector.getElement().offsetHeight;
         final double x = absoluteLeft + width - zoomLevelSelectorWidth - MARGIN;
         final double y = absoluteTop + height - zoomLevelSelectorHeight - MARGIN;
         return at(x, y);

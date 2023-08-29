@@ -6,7 +6,7 @@
   "scripts": {
     "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
-    "bootstrap:root": "pnpm install --use-lockfile-v6 --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
+    "bootstrap:root": "pnpm install --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
     "format": "prettier --write . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
     "format:check": "prettier --check . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
     "prepare": "husky install",
@@ -34,7 +34,7 @@
   },
   "engines": {
     "node": ">=18",
-    "pnpm": "7.26.3"
+    "pnpm": "8.7.0"
   },
   "pnpm": {
     "packageExtensions": {
