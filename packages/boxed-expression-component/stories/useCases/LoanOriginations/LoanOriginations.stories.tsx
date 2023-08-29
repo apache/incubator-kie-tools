@@ -13,7 +13,7 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
-  title: "Use cases/Post Bureau Risk Category",
+  title: "Use cases/Loan Originations",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
   excludeStories: ["BoxedExpressionEditorWrapper"],
