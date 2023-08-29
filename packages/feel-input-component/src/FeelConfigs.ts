@@ -19,6 +19,7 @@
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { ReservedWords } from "../../dmn-language-service";
+import { Element } from "./themes/Element";
 
 export const MONACO_FEEL_LANGUAGE = "feel-language";
 
@@ -29,15 +30,15 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
     base: "vs",
     inherit: true,
     rules: [
-      { token: "feel-keyword", foreground: "#26268C", fontStyle: "bold" },
-      { token: "feel-numeric", foreground: "#1750EB" },
-      { token: "feel-boolean", foreground: "#26268D", fontStyle: "bold" },
-      { token: "feel-string", foreground: "#067D17" },
-      { token: "feel-function", foreground: "#00627A" },
-      { token: "input-data-variable", foreground: "#917632", fontStyle: "underline" },
-      { token: "bkm-variable", foreground: "#917632", fontStyle: "underline italic" },
-      { token: "unknown-variable", foreground: "#ff0000", fontStyle: "underline bold" },
-      { token: "function-parameter-variable", foreground: "#036e9b", fontStyle: "italic" },
+      { token: Element[Element.FeelKeyword], foreground: "#26268C", fontStyle: "bold" },
+      { token: Element[Element.FeelNumeric], foreground: "#1750EB" },
+      { token: Element[Element.FeelBoolean], foreground: "#26268D", fontStyle: "bold" },
+      { token: Element[Element.FeelString], foreground: "#067D17" },
+      { token: Element[Element.FeelFunction], foreground: "#00627A" },
+      { token: Element[Element.InputDataVariable], foreground: "#917632", fontStyle: "underline" },
+      { token: Element[Element.BkmVariable], foreground: "#917632", fontStyle: "underline italic" },
+      { token: Element[Element.UnknownVariable], foreground: "#ff0000", fontStyle: "underline bold" },
+      { token: Element[Element.FunctionParameterVariable], foreground: "#036e9b", fontStyle: "italic" },
     ],
     colors: {
       "editorLineNumber.foreground": "#000000",

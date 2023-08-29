@@ -29,6 +29,7 @@ import {
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
 import { FeelVariables, VariableType } from "@kie-tools/dmn-language-service";
+import { Element } from "./themes/Element";
 
 export type SuggestionProvider = (
   feelExpression: string,
@@ -77,13 +78,13 @@ function getTokenTypeIndex(variableType: VariableType) {
     default:
     case VariableType.LocalVariable:
     case VariableType.Input:
-      return 0;
+      return Element.InputDataVariable;
     case VariableType.Unknown:
-      return 1;
+      return Element.UnknownVariable;
     case VariableType.BusinessKnowledgeModel:
-      return 2;
+      return Element.BkmVariable;
     case VariableType.Parameter:
-      return 3;
+      return Element.FunctionParameterVariable;
   }
 }
 
@@ -177,6 +178,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
                 offset = lastPosition;
               }
             }
+
             return {
               data: new Uint32Array(tokenTypes),
               resultId: undefined,
@@ -184,7 +186,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
           },
           getLegend: function (): Monaco.languages.SemanticTokensLegend {
             return {
-              tokenTypes: ["input-data-variable", "unknown-variable", "bkm-variable", "function-parameter-variable"],
+              tokenTypes: Object.values(Element).filter((x) => typeof x === "string") as string[],
               tokenModifiers: [],
             };
           },
