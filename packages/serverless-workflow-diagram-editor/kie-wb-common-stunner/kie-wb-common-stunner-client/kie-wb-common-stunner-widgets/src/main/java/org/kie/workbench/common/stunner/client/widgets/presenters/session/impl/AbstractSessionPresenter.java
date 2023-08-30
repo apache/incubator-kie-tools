@@ -1,18 +1,22 @@
 /*
- * Copyright 2017 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
@@ -30,19 +34,15 @@ import org.kie.workbench.common.stunner.client.widgets.notification.Notification
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.notification.ValidationFailedNotification;
-import org.kie.workbench.common.stunner.client.widgets.palette.DefaultPaletteFactory;
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasLostFocusEvent;
-import org.kie.workbench.common.stunner.core.client.components.palette.PaletteDefinition;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 public abstract class AbstractSessionPresenter<D extends Diagram, H extends AbstractCanvasHandler,
         S extends AbstractSession, E extends SessionViewer<S, H, D>>
@@ -50,9 +50,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     private static final Logger LOGGER = Logger.getLogger(AbstractSessionPresenter.class.getName());
 
-    private final DefinitionUtils definitionUtils;
     private final SessionManager sessionManager;
-    private final DefaultPaletteFactory<H> paletteFactory;
     private final SessionPresenter.View view;
     private final NotificationsObserver notificationsObserver;
     private final Event<SessionFocusedEvent> sessionFocusedEvent;
@@ -60,30 +58,21 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     private final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent;
 
     private D diagram;
-    private PaletteWidget<PaletteDefinition> palette;
-    private boolean hasToolbar = false;
-    private boolean hasPalette = false;
     private Optional<Predicate<Notification.Type>> typePredicate;
 
     @SuppressWarnings("unchecked")
-    protected AbstractSessionPresenter(final DefinitionUtils definitionUtils,
-                                       final SessionManager sessionManager,
+    protected AbstractSessionPresenter(final SessionManager sessionManager,
                                        final SessionPresenter.View view,
-                                       final DefaultPaletteFactory<H> paletteFactory,
                                        final NotificationsObserver notificationsObserver,
                                        final Event<SessionFocusedEvent> sessionFocusedEvent,
                                        final Event<SessionLostFocusEvent> sessionLostFocusEvent,
                                        final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent) {
-        this.definitionUtils = definitionUtils;
         this.sessionManager = sessionManager;
-        this.paletteFactory = paletteFactory;
         this.notificationsObserver = notificationsObserver;
         this.sessionFocusedEvent = sessionFocusedEvent;
         this.sessionLostFocusEvent = sessionLostFocusEvent;
         this.canvasLostFocusEventEvent = canvasLostFocusEventEvent;
         this.view = view;
-        this.hasToolbar = true;
-        this.hasPalette = true;
         this.typePredicate = Optional.empty();
     }
 
@@ -131,18 +120,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @Override
-    public SessionPresenter<S, H, D> withToolbar(final boolean hasToolbar) {
-        this.hasToolbar = hasToolbar;
-        return this;
-    }
-
-    @Override
-    public SessionPresenter<S, H, D> withPalette(final boolean hasPalette) {
-        this.hasPalette = hasPalette;
-        return this;
-    }
-
-    @Override
     public SessionPresenter<S, H, D> displayNotifications(final Predicate<Notification.Type> typePredicate) {
         this.typePredicate = Optional.of(typePredicate);
         return this;
@@ -172,16 +149,12 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     public void clear() {
-        if (null != palette) {
-            palette.unbind();
-        }
         getDisplayer().clear();
         diagram = null;
     }
 
     @Override
     public void destroy() {
-        destroyPalette();
         getSession().ifPresent(sessionManager::destroy);
         getDisplayer().destroy();
         getView().destroy();
@@ -197,11 +170,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     public Optional<S> getSession() {
         return Optional.ofNullable(getInstance());
-    }
-
-    @Override
-    public PaletteWidget<PaletteDefinition> getPalette() {
-        return palette;
     }
 
     @Override
@@ -229,8 +197,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     @SuppressWarnings("unchecked")
     protected void onSessionOpened(final S session) {
-        destroyPalette();
-        initPalette(session);
         getView().setCanvasWidget(getDisplayer().getView());
     }
 
@@ -244,18 +210,7 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     @SuppressWarnings("unchecked")
-    private void initPalette(final S session) {
-        if (hasPalette) {
-            palette = (PaletteWidget<PaletteDefinition>) buildPalette(session);
-            if (null != palette) {
-                getView().setPaletteWidget(palette);
-            }
-        }
-    }
-
     public void refresh() {
-        destroyPalette();
-        getSession().ifPresent(this::initPalette);
     }
 
     private void showMessage(final String message) {
@@ -284,21 +239,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
 
         log(error.getMessage(), error.getThrowable());
-    }
-
-    @SuppressWarnings("unchecked")
-    private PaletteWidget<? extends PaletteDefinition> buildPalette(final S session) {
-        if (null != paletteFactory) {
-            return paletteFactory.newPalette((H) session.getCanvasHandler());
-        }
-        return null;
-    }
-
-    private void destroyPalette() {
-        if (null != palette) {
-            palette.destroy();
-            palette = null;
-        }
     }
 
     private void showNotificationMessage(final Notification notification) {
