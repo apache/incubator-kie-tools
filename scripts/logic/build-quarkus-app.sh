@@ -22,6 +22,8 @@ quarkus_extensions_arch_specific="com.aayushatharva.brotli4j:native-linux-aarch6
 quarkus_extensions="quarkus-kubernetes,kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,smallrye-health,org.kie.kogito:kogito-addons-quarkus-fabric8-kubernetes-service-catalog:${kogito_version},org.kie.kogito:kogito-addons-quarkus-kubernetes:${kogito_version}"
 # dev mode purpose extensions used only by the kogito-swf-devmode
 kogito_swf_devmode_extensions="kogito-quarkus-serverless-workflow-devui,kogito-addons-quarkus-source-files,kogito-addons-quarkus-process-management,org.kie.kogito:kogito-addons-quarkus-jobs-service-embedded:${kogito_version},org.kie.kogito:kogito-addons-quarkus-data-index-inmemory:${kogito_version}"
+# builder/prod extensitons used only by the kogito-swf-builder
+kogito_swf_builder_extensions="org.kie.kogito:kogito-addons-quarkus-events-process:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-process-management:${KOGITO_VERSION},org.kie.kogito:kogito-addons-quarkus-source-files:${KOGITO_VERSION}"
 
 if [ -z ${quarkus_platform_version} ]; then
     echo "Please provide the quarkus version"
@@ -30,7 +32,7 @@ fi
 
 case ${image_name} in
     "kogito-swf-builder")
-        quarkus_extensions="${quarkus_extensions},${quarkus_extensions_arch_specific}"
+        quarkus_extensions="${quarkus_extensions},${kogito_swf_builder_extensions},${quarkus_extensions_arch_specific}"
         ;;
     "kogito-swf-devmode")
         quarkus_extensions="${quarkus_extensions},${kogito_swf_devmode_extensions},${quarkus_extensions_arch_specific}"
