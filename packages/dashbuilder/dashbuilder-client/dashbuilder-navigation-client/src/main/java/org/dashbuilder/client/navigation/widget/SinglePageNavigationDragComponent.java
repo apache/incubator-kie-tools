@@ -15,9 +15,11 @@
  */
 package org.dashbuilder.client.navigation.widget;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
+
+import javax.annotation.PreDestroy;
 
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.navigation.plugin.PerspectivePluginManager;
@@ -33,12 +35,12 @@ public abstract class SinglePageNavigationDragComponent implements LayoutDragCom
 
     PerspectivePluginManager perspectivePluginManager;
 
-    Map<String, HTMLElement> perspectiveCache;
+    List<HTMLElement> pages;
 
     SinglePageNavigationDragComponent(SyncBeanManager beanManager, PerspectivePluginManager perspectivePluginManager) {
         this.beanManager = beanManager;
         this.perspectivePluginManager = perspectivePluginManager;
-        perspectiveCache = new HashMap<>();
+        pages = new ArrayList<>();
     }
 
     @Override
@@ -50,15 +52,11 @@ public abstract class SinglePageNavigationDragComponent implements LayoutDragCom
         if (perspectiveId == null) {
             return alert("Page " + perspectiveId + "  not Found");
         } else {
-            if (perspectiveCache.containsKey(perspectiveId)) {
-                pageBuilder.accept(perspectiveId, perspectiveCache.get(perspectiveId));
-            } else {
-                perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
-                        page -> {
-                            perspectiveCache.put(perspectiveId, page);
-                            pageBuilder.accept(perspectiveId, perspectiveCache.get(perspectiveId));
-                        });
-            }
+            perspectivePluginManager.buildPerspectiveWidget(perspectiveId,
+                    page -> {
+                        pages.add(page);
+                        pageBuilder.accept(perspectiveId, page);
+                    });
         }
 
         return root;
@@ -76,6 +74,11 @@ public abstract class SinglePageNavigationDragComponent implements LayoutDragCom
         var alert = beanManager.lookupBean(Alert.class).newInstance();
         alert.setup(AlertType.WARNING, message);
         return alert.getElement();
+    }
+
+    @PreDestroy
+    void destroy() {
+        pages.forEach(HTMLElement::remove);
     }
 
     static class ComponentBuilder {
