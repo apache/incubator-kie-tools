@@ -29,11 +29,7 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
@@ -89,12 +85,8 @@ public class StunnerLienzoBoundsPanel
         return this;
     }
 
-    private void broadcastBlurEvent() {
-        final NativeEvent blur = Document.get().createBlurEvent();
-        for (int i = 0; i < RootPanel.get().getWidgetCount(); i++) {
-            final Widget w = RootPanel.get().getWidget(i);
-            DomEvent.fireNativeEvent(blur, w);
-        }
+    protected void broadcastBlurEvent() {
+        DomGlobal.document.body.blur();
     }
 
     private void initHandlers() {
