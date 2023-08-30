@@ -41,9 +41,13 @@ export function getOctokitClient(args: {
         return fetch(newUrl, {
           ...options,
           headers: {
-            [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
-              args.insecurelyDisableTlsCertificateValidation
-            ).toString(),
+            ...(args.insecurelyDisableTlsCertificateValidation
+              ? {
+                  [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+                    args.insecurelyDisableTlsCertificateValidation
+                  ).toString(),
+                }
+              : {}),
             ...options.headers,
           },
         });
