@@ -28,9 +28,9 @@ import {
 
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 
 const ON_CHANGE_THROTTLE_TIME_IN_MS = 500;
 
@@ -65,7 +65,7 @@ export const DmnEditorInternal = ({
     dmnEditorStoreApi.setState((state) => {
       state.dmn.model = model;
     });
-  }, [dispatch.dmn, model]);
+  }, [dmnEditorStoreApi, dispatch.dmn, model]);
 
   const isDiagramMidEditing = useMemo(
     () => diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0 || diagram.draggingWaypoints.length > 0,
@@ -79,13 +79,14 @@ export const DmnEditorInternal = ({
     }
 
     const timeout = setTimeout(() => {
+      console.log("Model changed!");
       onModelChange?.(dmn.model);
     }, ON_CHANGE_THROTTLE_TIME_IN_MS);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [diagram.draggingNodes.length, diagram.resizingNodes.length, dmn.model, onModelChange]);
+  }, [isDiagramMidEditing, onModelChange, dmn.model]);
 
   const onTabChanged = useCallback(
     (e, tab) => {

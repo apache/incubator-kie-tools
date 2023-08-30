@@ -360,6 +360,8 @@ the cursor is inside it. By making it adimensional, that never happens.
   stroke-width: 8;
   stroke: #006ba4;
 }
+
+.kie-dmn-editor--diagram-edge-waypoints circle:active,
 .kie-dmn-editor--diagram-edge-waypoints circle:hover {
   stroke-width: 16;
 }
@@ -374,7 +376,9 @@ the cursor is inside it. By making it adimensional, that never happens.
   fill: #006ba4 !important;
   stroke: #006ba4 !important;
   stroke-width: 3px !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
 }
+
 .react-flow__edge:not(.selected) .kie-dmn-editor--edge:hover,
 .react-flow__edge:not(.selected) .react-flow__edge-interaction:hover + .kie-dmn-editor--edge {
   stroke-width: 2px !important;

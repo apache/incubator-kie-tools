@@ -1,4 +1,4 @@
-import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SnapGrid } from "../store/Store";
 
 export const NODE_MIN_WIDTH = 160;
@@ -39,14 +39,19 @@ export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI15__DMNShape) {
   };
 }
 
-export function snapPoint(grid: SnapGrid, point: DC__Point, method: "floor" | "ceil" = "floor"): DC__Point {
+export function snapPoint(grid: SnapGrid, point: DC__Point, method: "floor" | "ceil" | "round" = "round"): DC__Point {
   return {
     "@_x": snap(grid, "x", point?.["@_x"], method),
     "@_y": snap(grid, "y", point?.["@_y"], method),
   };
 }
 
-export function snap(grid: SnapGrid, coord: "x" | "y", value: number | undefined, method: "floor" | "ceil" = "floor") {
+export function snap(
+  grid: SnapGrid,
+  coord: "x" | "y",
+  value: number | undefined,
+  method: "floor" | "ceil" | "round" = "round"
+) {
   return grid.isEnabled //
     ? Math[method]((value ?? 0) / grid[coord]) * grid[coord]
     : value ?? 0;

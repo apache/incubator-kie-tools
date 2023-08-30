@@ -190,6 +190,9 @@ export function useDmnDiagramData() {
       ),
     ];
 
+    // Selected edges go to the end of the array. This is necessary because z-index doesn't work on SVGs.
+    const sortedEdges = edges.sort((a, b) => Number(selectedEdges.has(a.id)) - Number(selectedEdges.has(b.id)));
+
     // console.timeEnd("edges");
 
     function ackNode(
@@ -281,7 +284,7 @@ export function useDmnDiagramData() {
 
     return {
       nodes,
-      edges,
+      edges: sortedEdges,
       nodesById,
     };
   }, [

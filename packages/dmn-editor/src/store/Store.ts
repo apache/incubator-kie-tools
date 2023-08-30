@@ -1,8 +1,4 @@
-import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { createContext, useContext } from "react";
 import { StoreApi, UseBoundStore, create, useStore as useZustandStore } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
@@ -14,7 +10,7 @@ export interface DmnEditorDiagramNodeStatus {
 }
 export interface DmnEditorDiagramEdgeStatus {
   selected: boolean;
-  isDraggingWaypoint: boolean;
+  draggingWaypoint: boolean;
 }
 
 export interface SnapGrid {
@@ -267,11 +263,11 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
               }
             }
             //dragging
-            if (newStatus.isDraggingWaypoint !== undefined) {
-              if (newStatus.isDraggingWaypoint) {
+            if (newStatus.draggingWaypoint !== undefined) {
+              if (newStatus.draggingWaypoint) {
                 prev.diagram.draggingWaypoints.push(edgeId);
               } else {
-                prev.diagram.draggingNodes = prev.diagram.draggingWaypoints.filter((s) => s !== edgeId);
+                prev.diagram.draggingWaypoints = prev.diagram.draggingWaypoints.filter((s) => s !== edgeId);
               }
             }
           },

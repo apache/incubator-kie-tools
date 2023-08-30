@@ -1,14 +1,16 @@
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
-export function removeEdgeWaypoint({
+export function repositionEdgeWaypoint({
   definitions,
   edgeIndex,
   waypointIndex,
+  waypoint,
 }: {
   definitions: DMN15__tDefinitions;
   edgeIndex: number;
   waypointIndex: number;
+  waypoint: DC__Point;
 }) {
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
@@ -19,9 +21,9 @@ export function removeEdgeWaypoint({
 
   if (waypointIndex > (diagramElement["di:waypoint"]?.length ?? 0) - 1) {
     throw new Error(
-      `Can't remove waypoint with index '${waypointIndex}' from DMNEdge '${diagramElement["@_id"]}' because it doesn't exist.`
+      `Can't reposition waypoint with index '${waypointIndex}' from DMNEdge '${diagramElement["@_id"]}' because it doesn't exist.`
     );
   }
 
-  diagramElement["di:waypoint"]!.splice(waypointIndex, 1);
+  diagramElement["di:waypoint"]![waypointIndex] = waypoint;
 }
