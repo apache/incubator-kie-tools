@@ -154,13 +154,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       zip-webpack-plugin:
         specifier: ^4.0.1
         version: 4.0.1(webpack-sources@3.2.3)(webpack@5.88.2)
@@ -212,13 +212,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   examples/commit-message-validation-service:
     devDependencies:
@@ -454,13 +454,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   examples/uniforms-patternfly:
     dependencies:
@@ -542,13 +542,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   examples/webapp:
     dependencies:
@@ -645,13 +645,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/backend:
     dependencies:
@@ -914,13 +914,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/bpmn-marshaller:
     dependencies:
@@ -1036,13 +1036,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/chrome-extension:
     dependencies:
@@ -1230,13 +1230,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       zip-webpack-plugin:
         specifier: ^4.0.1
         version: 4.0.1(webpack-sources@3.2.3)(webpack@5.88.2)
@@ -1335,13 +1335,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       zip-webpack-plugin:
         specifier: ^4.0.1
         version: 4.0.1(webpack-sources@3.2.3)(webpack@5.88.2)
@@ -1434,8 +1434,8 @@ importers:
         specifier: ^4.10.0
         version: 4.10.0(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/cors-proxy-api:
     devDependencies:
@@ -1642,13 +1642,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-dev:
     dependencies:
@@ -1809,13 +1809,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-echarts-base:
     dependencies:
@@ -1988,13 +1988,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-svg-heatmap:
     dependencies:
@@ -2088,13 +2088,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-table:
     dependencies:
@@ -2191,13 +2191,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-timeseries:
     dependencies:
@@ -2288,13 +2288,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-uniforms:
     dependencies:
@@ -2403,13 +2403,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-component-victory-charts:
     dependencies:
@@ -2518,13 +2518,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-editor:
     dependencies:
@@ -2663,13 +2663,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-language-service:
     dependencies:
@@ -2866,13 +2866,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-viewer-deployment-webapp:
     dependencies:
@@ -2993,13 +2993,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dashbuilder-viewer-image:
     devDependencies:
@@ -3181,13 +3181,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/dmn-dev-deployment-quarkus-app:
     devDependencies:
@@ -3439,13 +3439,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/editor:
     dependencies:
@@ -3874,13 +3874,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/form:
     dependencies:
@@ -4192,13 +4192,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -4394,13 +4394,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -4512,13 +4512,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/json-yaml-language-service:
     dependencies:
@@ -4915,13 +4915,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/kie-editors-standalone:
     devDependencies:
@@ -5062,13 +5062,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/kie-sandbox-distribution:
     dependencies:
@@ -5358,13 +5358,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/notifications:
     dependencies:
@@ -5699,13 +5699,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/operating-system:
     devDependencies:
@@ -5988,13 +5988,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/pmml-editor-marshaller:
     dependencies:
@@ -6107,13 +6107,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/react-hooks:
     dependencies:
@@ -6249,13 +6249,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.11.0(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/scesim-marshaller:
     dependencies:
@@ -6614,13 +6614,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/serverless-logic-web-tools-base-builder-image:
     devDependencies:
@@ -6783,13 +6783,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/serverless-logic-web-tools-swf-deployment-webapp2:
     dependencies:
@@ -7073,13 +7073,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/serverless-workflow-diagram-editor:
     devDependencies:
@@ -7563,13 +7563,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       yaml-language-server-parser:
         specifier: ^0.1.3
         version: 0.1.3
@@ -7705,13 +7705,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/serverless-workflow-vscode-extension:
     dependencies:
@@ -7865,13 +7865,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/stunner-editors:
     dependencies:
@@ -7978,13 +7978,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/text-editor:
     dependencies:
@@ -8185,11 +8185,11 @@ importers:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -8292,13 +8292,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/uniforms-patternfly-codegen:
     dependencies:
@@ -8401,13 +8401,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
       webpack-node-externals:
         specifier: ^3.0.0
         version: 3.0.0
@@ -8904,13 +8904,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/vscode-extension-kie-ba-bundle:
     devDependencies:
@@ -8940,13 +8940,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/vscode-extension-kogito-bundle:
     devDependencies:
@@ -8976,13 +8976,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/vscode-java-code-completion:
     devDependencies:
@@ -9536,13 +9536,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   packages/yard-language-service:
     dependencies:
@@ -9745,13 +9745,13 @@ importers:
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
+        specifier: ^5.9.0
+        version: 5.9.0
 
   scripts/bootstrap:
     devDependencies:
@@ -17261,16 +17261,16 @@ packages:
     resolution:
       { integrity: sha512-GH8BDf8cw9AC9080uneJfulhSa7KHSMI2s/CyKePXoGNos9J486w2V4YKoeNUqIEkW4hKoEAWp6/cXTwyGj47g== }
 
-  /@types/ws@8.2.2:
+  /@types/ws@8.5.4:
     resolution:
-      { integrity: sha512-NOn5eIcgWLOo6qW8AcuLZ7G8PycXu0xTxxkS6Q18VWFxgPUSOwV0pBj2a/4viNZVu25i7RIB7GttdkAIUUXOOg== }
+      { integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg== }
     dependencies:
       "@types/node": 18.13.0
     dev: true
 
-  /@types/ws@8.5.4:
+  /@types/ws@8.5.5:
     resolution:
-      { integrity: sha512-zdQDHKUgcX/zBc4GrwsE/7dVdAD8JR4EuiAXiiUhhfyIJXXb2+PrGshFyeXWQPMmmZ2XxgaqclgpIC7eTXc1mg== }
+      { integrity: sha512-lwhs8hktwxSjf9UaZ9tG5M03PGogvFaH8gUgLNbN9HKIg0dvv6q+gkSuJ8HN4/VbyxkuLzCjlN7GquQ0gUJfIg== }
     dependencies:
       "@types/node": 18.13.0
     dev: true
@@ -17779,7 +17779,7 @@ packages:
       webpack-cli: 4.x.x
     dependencies:
       webpack: 5.88.2(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
     dev: true
 
   /@webpack-cli/info@1.5.0(webpack-cli@4.10.0):
@@ -17789,7 +17789,7 @@ packages:
       webpack-cli: 4.x.x
     dependencies:
       envinfo: 7.8.1
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
     dev: true
 
   /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0):
@@ -17819,7 +17819,7 @@ packages:
       webpack-dev-server: 4.11.0(webpack-cli@4.10.0)(webpack@5.88.2)
     dev: true
 
-  /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.7.3):
+  /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.15.1):
     resolution:
       { integrity: sha512-oxnCNGj88fL+xzV+dacXs44HcDwf1ovs3AuEzvP7mqXw7fQntqIhQ1BRmynh4qEKQSSSRSWVyXRjmTbZIX9V2Q== }
     peerDependencies:
@@ -17829,8 +17829,8 @@ packages:
       webpack-dev-server:
         optional: true
     dependencies:
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
-      webpack-dev-server: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
+      webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
     dev: true
 
   /@xml-tools/parser@1.0.11:
@@ -19211,25 +19211,6 @@ packages:
       { integrity: sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg== }
     dev: true
 
-  /body-parser@1.19.0:
-    resolution:
-      { integrity: sha512-dhEPs72UPbDnAQJ9ZKMNTP6ptJaionhP5cBb541nXPlW60Jepo9RV/a4fX4XWW9CuFNK22krhrj1+rgzifNCsw== }
-    engines: { node: ">= 0.8" }
-    dependencies:
-      bytes: 3.1.0
-      content-type: 1.0.4
-      debug: 2.6.9
-      depd: 1.1.2
-      http-errors: 1.7.2
-      iconv-lite: 0.4.24
-      on-finished: 2.3.0
-      qs: 6.7.0
-      raw-body: 2.4.0
-      type-is: 1.6.18
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /body-parser@1.19.1:
     resolution:
       { integrity: sha512-8ljfQi5eBk8EJfECMrgqNGWPEY5jWP+1IzkzkGdFFEwFQZZyaZ21UqdaHktgiMlH0xLHqIFtE/u2OYE5dOtViA== }
@@ -19290,18 +19271,6 @@ packages:
       dns-equal: 1.0.0
       fast-deep-equal: 3.1.3
       multicast-dns: 7.2.5
-    dev: true
-
-  /bonjour@3.5.0:
-    resolution:
-      { integrity: sha512-RaVTblr+OnEli0r/ud8InrU7D+G0y6aJhlxaLa6Pwty4+xoxboF1BsUI45tujvRpbj9dQVoglChqonGAsjEBYg== }
-    dependencies:
-      array-flatten: 2.1.2
-      deep-equal: 1.1.1
-      dns-equal: 1.0.0
-      dns-txt: 2.0.2
-      multicast-dns: 6.2.3
-      multicast-dns-service-types: 1.1.0
     dev: true
 
   /boolbase@1.0.0:
@@ -19482,11 +19451,6 @@ packages:
     engines: { node: ">=0.10" }
     dev: true
 
-  /buffer-indexof@1.1.1:
-    resolution:
-      { integrity: sha512-4/rOEg86jivtPTeOUUT61jJO1Ya1TrR/OkqCSZDyq84WJh3LuuiphBYJN+fm5xufIk4XAFcEwte/8WzC8If/1g== }
-    dev: true
-
   /buffer@5.7.1:
     resolution:
       { integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ== }
@@ -19518,12 +19482,6 @@ packages:
   /bytes@3.0.0:
     resolution:
       { integrity: sha512-pMhOfFDPiv9t5jjIXkHosWmkSyQbvsgEVNkz0ERHbuLh2T/7j4Mqqpz523Fe8MVY89KC6Sh/QfS2sM+SjgFDcw== }
-    engines: { node: ">= 0.8" }
-    dev: true
-
-  /bytes@3.1.0:
-    resolution:
-      { integrity: sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg== }
     engines: { node: ">= 0.8" }
     dev: true
 
@@ -20319,12 +20277,6 @@ packages:
       proto-list: 1.2.4
     dev: true
 
-  /connect-history-api-fallback@1.6.0:
-    resolution:
-      { integrity: sha512-e54B99q/OUoH64zYYRf3HBP5z24G38h5D3qXu23JGRoigpX5Ss4r9ZnDk3g0Z8uQC2x2lPaJ+UlWBc1ZWBWdLg== }
-    engines: { node: ">=0.8" }
-    dev: true
-
   /connect-history-api-fallback@2.0.0:
     resolution:
       { integrity: sha512-U73+6lQFmfiNPrYbXqr6kZ1i1wiRqXnp2nhMsINseWXO8lDau0LGEffJ8kQi4EjLZympVgRdvqjAgiZ1tgzDDA== }
@@ -20349,14 +20301,6 @@ packages:
       { integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ== }
     dev: true
 
-  /content-disposition@0.5.3:
-    resolution:
-      { integrity: sha512-ExO0774ikEObIAEV9kDo50o+79VCUdEB6n6lzKgGwupcVeRlhrj3qGAfwq8G6uBJjkqLrhT0qEYFcWng8z1z0g== }
-    engines: { node: ">= 0.6" }
-    dependencies:
-      safe-buffer: 5.1.2
-    dev: true
-
   /content-disposition@0.5.4:
     resolution:
       { integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ== }
@@ -20379,12 +20323,6 @@ packages:
   /cookie-signature@1.0.6:
     resolution:
       { integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ== }
-
-  /cookie@0.4.0:
-    resolution:
-      { integrity: sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg== }
-    engines: { node: ">= 0.6" }
-    dev: true
 
   /cookie@0.4.1:
     resolution:
@@ -21392,6 +21330,7 @@ packages:
       object-is: 1.0.2
       object-keys: 1.1.1
       regexp.prototype.flags: 1.5.0
+    dev: false
 
   /deep-extend@0.6.0:
     resolution:
@@ -21562,11 +21501,6 @@ packages:
       { integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ== }
     dev: false
 
-  /destroy@1.0.4:
-    resolution:
-      { integrity: sha512-3NdhDuEXnfun/z7x9GOElY49LoqVHoGScmOKwmxhsS8N5Y+Z8KyPPDnaSzqWgYt/ji4mqwfTS34Htrk0zPIXVg== }
-    dev: true
-
   /destroy@1.2.0:
     resolution:
       { integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg== }
@@ -21659,27 +21593,12 @@ packages:
       { integrity: sha512-z+paD6YUQsk+AbGCEM4PrOXSss5gd66QfcVBFTKR/HpFL9jCqikS94HYwKww6fQyO7IxrIIyUu+g0Ka9tUS2Cg== }
     dev: true
 
-  /dns-packet@1.3.4:
-    resolution:
-      { integrity: sha512-BQ6F4vycLXBvdrJZ6S3gZewt6rcrks9KBgM9vrhW+knGRqc8uEdT7fuCwloc7nny5xNoMJ17HGH0R/6fpo8ECA== }
-    dependencies:
-      ip: 1.1.5
-      safe-buffer: 5.2.1
-    dev: true
-
   /dns-packet@5.6.0:
     resolution:
       { integrity: sha512-rza3UH1LwdHh9qyPXp8lkwpjSNk/AMD3dPytUoRoqnypDUhY0xvbdmVhWOfxO68frEfV9BU8V12Ez7ZsHGZpCQ== }
     engines: { node: ">=6" }
     dependencies:
       "@leichtgewicht/ip-codec": 2.0.4
-    dev: true
-
-  /dns-txt@2.0.2:
-    resolution:
-      { integrity: sha512-Ix5PrWjphuSoUXV/Zv5gaFHjnaJtb02F2+Si3Ht9dyJ87+Z/lMmy+dpNHtTGraNK958ndXq2i+GLkWsWHcKaBQ== }
-    dependencies:
-      buffer-indexof: 1.1.1
     dev: true
 
   /doctrine@2.1.0:
@@ -23064,45 +22983,6 @@ packages:
       jest-matcher-utils: 26.6.2
       jest-message-util: 26.6.2
       jest-regex-util: 26.0.0
-    dev: true
-
-  /express@4.17.1:
-    resolution:
-      { integrity: sha512-mHJ9O79RqluphRrcw2X/GTh3k9tVv8YcoyY4Kkh4WDMUYKRZUq0h1o0w2rrrxBqM7VoeUVqgb27xlEMXTnYt4g== }
-    engines: { node: ">= 0.10.0" }
-    dependencies:
-      accepts: 1.3.8
-      array-flatten: 1.1.1
-      body-parser: 1.19.0
-      content-disposition: 0.5.3
-      content-type: 1.0.4
-      cookie: 0.4.0
-      cookie-signature: 1.0.6
-      debug: 2.6.9
-      depd: 1.1.2
-      encodeurl: 1.0.2
-      escape-html: 1.0.3
-      etag: 1.8.1
-      finalhandler: 1.1.2
-      fresh: 0.5.2
-      merge-descriptors: 1.0.1
-      methods: 1.1.2
-      on-finished: 2.3.0
-      parseurl: 1.3.3
-      path-to-regexp: 0.1.7
-      proxy-addr: 2.0.7
-      qs: 6.7.0
-      range-parser: 1.2.1
-      safe-buffer: 5.1.2
-      send: 0.17.1
-      serve-static: 1.14.1
-      setprototypeof: 1.1.1
-      statuses: 1.5.0
-      type-is: 1.6.18
-      utils-merge: 1.0.1
-      vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /express@4.18.2:
@@ -24614,30 +24494,6 @@ packages:
       statuses: 1.5.0
     dev: true
 
-  /http-errors@1.7.2:
-    resolution:
-      { integrity: sha512-uUQBt3H/cSIVfch6i1EuPNy/YsRSOUBXTVfZ+yR7Zjez3qjBz6i9+i4zjNaoqcoFVI4lQJ5plg63TvGfRSDCRg== }
-    engines: { node: ">= 0.6" }
-    dependencies:
-      depd: 1.1.2
-      inherits: 2.0.3
-      setprototypeof: 1.1.1
-      statuses: 1.5.0
-      toidentifier: 1.0.0
-    dev: true
-
-  /http-errors@1.7.3:
-    resolution:
-      { integrity: sha512-ZTTX0MWrsQ2ZAhA1cejAwDLycFsd7I7nVtnkT3Ol0aqodaKW+0CTZDQ1uBv5whptCnc8e8HeRRJxRs0kmm/Qfw== }
-    engines: { node: ">= 0.6" }
-    dependencies:
-      depd: 1.1.2
-      inherits: 2.0.4
-      setprototypeof: 1.1.1
-      statuses: 1.5.0
-      toidentifier: 1.0.0
-    dev: true
-
   /http-errors@1.8.1:
     resolution:
       { integrity: sha512-Kpk9Sm7NmI+RHhnj6OIWDI1d6fIoFAtFt9RLaTMRlg/8w49juAStsrBgp0Dp4OdxdVbRIeKhtCUvoi/RuAhO4g== }
@@ -24688,23 +24544,6 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /http-proxy-middleware@2.0.2(@types/express@4.17.17):
-    resolution:
-      { integrity: sha512-XtmDN5w+vdFTBZaYhdJAbMqn0DP/EhkUaAeo963mojwpKMMbw6nivtFKw07D7DDOH745L5k0VL0P8KRYNEVF/g== }
-    engines: { node: ">=12.0.0" }
-    peerDependencies:
-      "@types/express": ^4.17.13
-    dependencies:
-      "@types/express": 4.17.17
-      "@types/http-proxy": 1.17.8
-      http-proxy: 1.18.1
-      is-glob: 4.0.3
-      is-plain-obj: 3.0.0
-      micromatch: 4.0.5
-    transitivePeerDependencies:
-      - debug
     dev: true
 
   /http-proxy-middleware@2.0.6(@types/express@4.17.17):
@@ -25152,6 +24991,7 @@ packages:
     resolution:
       { integrity: sha512-xPh0Rmt8NE65sNzvyUmWgI1tz3mKq74lGA0mL8LYZcoIzKOzDh6HmrYm3d18k60nHerC8A9Km8kYu87zfSFnLA== }
     engines: { node: ">= 0.4" }
+    dev: false
 
   /is-array-buffer@3.0.2:
     resolution:
@@ -27124,6 +26964,14 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /launch-editor@2.6.0:
+    resolution:
+      { integrity: sha512-JpDCcQnyAAzZZaZ7vEiSqL690w7dAEyLao+KC96zBplnYbJS7TYNjvM3M7y3dGz+v7aIsJk3hllWuc0kWAjyRQ== }
+    dependencies:
+      picocolors: 1.0.0
+      shell-quote: 1.8.1
+    dev: true
+
   /lazy-ass@1.6.0:
     resolution:
       { integrity: sha512-cc8oEVoctTvsFZ/Oje/kGnHbpWHYBe8IAJe4C0QNc3t8uM/0Y8+erSz/7Y1ALuXTEZTMvxXwO6YbX1ey3ujiZw== }
@@ -27571,7 +27419,7 @@ packages:
       minipass-fetch: 1.3.3
       minipass-flush: 1.0.5
       minipass-pipeline: 1.2.4
-      negotiator: 0.6.2
+      negotiator: 0.6.3
       promise-retry: 2.0.1
       socks-proxy-agent: 6.1.1
       ssri: 8.0.1
@@ -28211,11 +28059,6 @@ packages:
     resolution:
       { integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A== }
 
-  /ms@2.1.1:
-    resolution:
-      { integrity: sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg== }
-    dev: true
-
   /ms@2.1.2:
     resolution:
       { integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w== }
@@ -28223,20 +28066,6 @@ packages:
   /ms@2.1.3:
     resolution:
       { integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA== }
-
-  /multicast-dns-service-types@1.1.0:
-    resolution:
-      { integrity: sha512-cnAsSVxIDsYt0v7HmC0hWZFwwXSh+E6PgCrREDuN/EsjgLwA5XRmlMHhSiDPrt6HxY1gTivEa/Zh7GtODoLevQ== }
-    dev: true
-
-  /multicast-dns@6.2.3:
-    resolution:
-      { integrity: sha512-ji6J5enbMyGRHIAkAOu3WdV8nggqviKCEKtXcOqfphZZtQrmHKycfynJ2V7eVPUA4NhJ6V7Wf4TmGbTwKE9B6g== }
-    hasBin: true
-    dependencies:
-      dns-packet: 1.3.4
-      thunky: 1.1.0
-    dev: true
 
   /multicast-dns@7.2.5:
     resolution:
@@ -28352,12 +28181,6 @@ packages:
       - supports-color
     dev: true
     optional: true
-
-  /negotiator@0.6.2:
-    resolution:
-      { integrity: sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw== }
-    engines: { node: ">= 0.6" }
-    dev: true
 
   /negotiator@0.6.3:
     resolution:
@@ -28839,6 +28662,7 @@ packages:
     resolution:
       { integrity: sha512-Epah+btZd5wrrfjkJZq1AOB9O6OxUQto45hzFd7lXGrpHPGE0W1k+426yrZV+k6NJOzLNNW/nVsmZdIWsAqoOQ== }
     engines: { node: ">= 0.4" }
+    dev: false
 
   /object-keys@1.1.1:
     resolution:
@@ -29725,6 +29549,7 @@ packages:
       mkdirp: 0.5.6
     transitivePeerDependencies:
       - supports-color
+    dev: false
 
   /posix-character-classes@0.1.1:
     resolution:
@@ -30621,12 +30446,6 @@ packages:
     engines: { node: ">=0.6" }
     dev: true
 
-  /qs@6.7.0:
-    resolution:
-      { integrity: sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ== }
-    engines: { node: ">=0.6" }
-    dev: true
-
   /qs@6.9.6:
     resolution:
       { integrity: sha512-TIRk4aqYLNoJUbd+g2lEdz5kLWIuTMRagAXxl78Q0RiVjAOugHmeKNGdd3cwo/ktpf9aL9epCfFqWDEKysUlLQ== }
@@ -30670,17 +30489,6 @@ packages:
       bytes: 3.0.0
       http-errors: 1.6.2
       iconv-lite: 0.4.19
-      unpipe: 1.0.0
-    dev: true
-
-  /raw-body@2.4.0:
-    resolution:
-      { integrity: sha512-4Oz8DUIwdvoa5qMJelxipzi/iJIi40O5cGV1wNYp5hvZP8ZN0T+jiNkL0QepXs+EsQ9XJ8ipEDoiH70ySUJP3Q== }
-    engines: { node: ">= 0.8" }
-    dependencies:
-      bytes: 3.1.0
-      http-errors: 1.7.2
-      iconv-lite: 0.4.24
       unpipe: 1.0.0
     dev: true
 
@@ -31988,14 +31796,6 @@ packages:
       - utf-8-validate
     patched: true
 
-  /selfsigned@2.0.0:
-    resolution:
-      { integrity: sha512-cUdFiCbKoa1mZ6osuJs2uDHrs0k0oprsKveFiiaBKCNq3SYyb5gs2HxhQyDNLCmL51ZZThqi4YNDpCK6GOP1iQ== }
-    engines: { node: ">=10" }
-    dependencies:
-      node-forge: 1.3.1
-    dev: true
-
   /selfsigned@2.1.1:
     resolution:
       { integrity: sha512-GSL3aowiF7wa/WtSFwnUrludWFoNhftq8bUkH9pkzjpN2XSPOAYEgg6e0sS9s0rZwgJzJiQRPU18A6clnoW5wQ== }
@@ -32071,28 +31871,6 @@ packages:
     dependencies:
       lru-cache: 6.0.0
 
-  /send@0.17.1:
-    resolution:
-      { integrity: sha512-BsVKsiGcQMFwT8UxypobUKyv7irCNRHk1T0G680vk88yf6LBByGcZJOTJCrTP2xVN6yI+XjPJcNuE3V4fT9sAg== }
-    engines: { node: ">= 0.8.0" }
-    dependencies:
-      debug: 2.6.9
-      depd: 1.1.2
-      destroy: 1.0.4
-      encodeurl: 1.0.2
-      escape-html: 1.0.3
-      etag: 1.8.1
-      fresh: 0.5.2
-      http-errors: 1.7.3
-      mime: 1.6.0
-      ms: 2.1.1
-      on-finished: 2.3.0
-      range-parser: 1.2.1
-      statuses: 1.5.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /send@0.18.0:
     resolution:
       { integrity: sha512-qqWzuOjSFOuqPjFe4NOsMLafToQQwBSOEpS+FwEt3A2V3vKubTquT3vmLTQpFgMXp8AlFWFuP1qKaJZOtPpVXg== }
@@ -32144,19 +31922,6 @@ packages:
       - supports-color
     dev: true
 
-  /serve-static@1.14.1:
-    resolution:
-      { integrity: sha512-JMrvUwE54emCYWlTI+hGrGv5I8dEwmco/00EvkzIIsR7MqrHonbD9pO2MOfFnpFntl7ecpZs+3mW+XbQZu9QCg== }
-    engines: { node: ">= 0.8.0" }
-    dependencies:
-      encodeurl: 1.0.2
-      escape-html: 1.0.3
-      parseurl: 1.3.3
-      send: 0.17.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /serve-static@1.15.0:
     resolution:
       { integrity: sha512-XGuRDNjXUijsUL0vl6nSD7cwURuzEgglbOaFuZM9g3kwDXOWVTck0jLzjPzGD+TazWbboZYu52/9/XPdUgne9g== }
@@ -32197,11 +31962,6 @@ packages:
   /setprototypeof@1.1.0:
     resolution:
       { integrity: sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ== }
-    dev: true
-
-  /setprototypeof@1.1.1:
-    resolution:
-      { integrity: sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw== }
     dev: true
 
   /setprototypeof@1.2.0:
@@ -32251,6 +32011,11 @@ packages:
     resolution:
       { integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A== }
     engines: { node: ">=8" }
+    dev: true
+
+  /shell-quote@1.8.1:
+    resolution:
+      { integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA== }
     dev: true
 
   /shellwords@0.1.1:
@@ -32450,15 +32215,6 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
-    dev: true
-
-  /sockjs@0.3.21:
-    resolution:
-      { integrity: sha512-DhbPFGpxjc6Z3I+uX07Id5ZO2XwYsWOrYjaSeieES78cq+JaJvVe5q/m1uvjIQhXinhIeCFRH6JgXe+mvVMyXw== }
-    dependencies:
-      faye-websocket: 0.11.3
-      uuid: 3.4.0
-      websocket-driver: 0.7.4
     dev: true
 
   /sockjs@0.3.24:
@@ -33325,7 +33081,7 @@ packages:
     dependencies:
       esbuild: 0.15.5
       jest-worker: 27.4.6
-      schema-utils: 3.1.1
+      schema-utils: 3.3.0
       serialize-javascript: 6.0.0
       source-map: 0.6.1
       terser: 5.14.2
@@ -33350,7 +33106,7 @@ packages:
         optional: true
     dependencies:
       jest-worker: 27.4.6
-      schema-utils: 3.1.1
+      schema-utils: 3.3.0
       serialize-javascript: 6.0.0
       source-map: 0.6.1
       terser: 5.14.2
@@ -33557,12 +33313,6 @@ packages:
       extend-shallow: 3.0.2
       regex-not: 1.0.2
       safe-regex: 1.1.0
-    dev: true
-
-  /toidentifier@1.0.0:
-    resolution:
-      { integrity: sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw== }
-    engines: { node: ">=0.6" }
     dev: true
 
   /toidentifier@1.0.1:
@@ -34906,7 +34656,7 @@ packages:
       webpack-merge: 5.8.0
     dev: true
 
-  /webpack-cli@4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2):
+  /webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2):
     resolution:
       { integrity: sha512-NLhDfH/h4O6UOy+0LSso42xvYypClINuMNBVVzX4vX98TmTaTUxwRbXdhucbFMd2qLaCTcLq/PdYrvi8onw90w== }
     engines: { node: ">=10.13.0" }
@@ -34930,7 +34680,7 @@ packages:
       "@discoveryjs/json-ext": 0.5.7
       "@webpack-cli/configtest": 1.2.0(webpack-cli@4.10.0)(webpack@5.88.2)
       "@webpack-cli/info": 1.5.0(webpack-cli@4.10.0)
-      "@webpack-cli/serve": 1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.7.3)
+      "@webpack-cli/serve": 1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.15.1)
       colorette: 2.0.16
       commander: 7.2.0
       cross-spawn: 7.0.3
@@ -34939,8 +34689,8 @@ packages:
       interpret: 2.2.0
       rechoir: 0.7.0
       webpack: 5.88.2(webpack-cli@4.10.0)
-      webpack-dev-server: 4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2)
-      webpack-merge: 5.8.0
+      webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
+      webpack-merge: 5.9.0
     dev: true
 
   /webpack-cli@4.10.0(webpack@5.76.1):
@@ -35012,22 +34762,7 @@ packages:
       interpret: 2.2.0
       rechoir: 0.7.0
       webpack: 5.88.2(webpack-cli@4.10.0)
-      webpack-merge: 5.8.0
-    dev: true
-
-  /webpack-dev-middleware@5.3.0(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-MouJz+rXAm9B1OTOYaJnn6rtD/lWZPy2ufQCH3BPs8Rloh/Du6Jze4p7AeLYHkVi0giJnYLaSGDC7S+GM9arhg== }
-    engines: { node: ">= 12.13.0" }
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      colorette: 2.0.16
-      memfs: 3.5.1
-      mime-types: 2.1.34
-      range-parser: 1.2.1
-      schema-utils: 4.0.0
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack-merge: 5.9.0
     dev: true
 
   /webpack-dev-middleware@5.3.3(webpack@5.76.1):
@@ -35209,51 +34944,53 @@ packages:
       - utf-8-validate
     dev: true
 
-  /webpack-dev-server@4.7.3(@types/express@4.17.17)(webpack-cli@4.10.0)(webpack@5.88.2):
+  /webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.88.2):
     resolution:
-      { integrity: sha512-mlxq2AsIw2ag016nixkzUkdyOE8ST2GTy34uKSABp1c4nhjZvH90D5ZRR+UOLSsG4Z3TFahAi72a3ymRtfRm+Q== }
+      { integrity: sha512-5hbAst3h3C3L8w6W4P96L5vaV0PxSmJhxZvWKYIdgxOQm8pNZ5dEOmmSLBVpP85ReeyRt6AS1QJNyo/oFFPeVA== }
     engines: { node: ">= 12.13.0" }
     hasBin: true
     peerDependencies:
       webpack: ^4.37.0 || ^5.0.0
       webpack-cli: "*"
     peerDependenciesMeta:
+      webpack:
+        optional: true
       webpack-cli:
         optional: true
     dependencies:
       "@types/bonjour": 3.5.10
       "@types/connect-history-api-fallback": 1.3.5
+      "@types/express": 4.17.17
       "@types/serve-index": 1.9.1
+      "@types/serve-static": 1.13.10
       "@types/sockjs": 0.3.33
-      "@types/ws": 8.2.2
+      "@types/ws": 8.5.5
       ansi-html-community: 0.0.8
-      bonjour: 3.5.0
+      bonjour-service: 1.1.1
       chokidar: 3.5.3
       colorette: 2.0.16
       compression: 1.7.4
-      connect-history-api-fallback: 1.6.0
+      connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3
-      del: 6.1.1
-      express: 4.17.1
-      graceful-fs: 4.2.10
+      express: 4.18.2
+      graceful-fs: 4.2.11
       html-entities: 2.3.2
-      http-proxy-middleware: 2.0.2(@types/express@4.17.17)
+      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
       ipaddr.js: 2.0.1
+      launch-editor: 2.6.0
       open: 8.4.0
       p-retry: 4.6.1
-      portfinder: 1.0.32
+      rimraf: 3.0.2
       schema-utils: 4.0.0
-      selfsigned: 2.0.0
+      selfsigned: 2.1.1
       serve-index: 1.9.1
-      sockjs: 0.3.21
+      sockjs: 0.3.24
       spdy: 4.0.2
-      strip-ansi: 7.0.1
       webpack: 5.88.2(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
-      webpack-dev-middleware: 5.3.0(webpack@5.88.2)
-      ws: 8.12.0
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
+      webpack-dev-middleware: 5.3.3(webpack@5.88.2)
+      ws: 8.13.0
     transitivePeerDependencies:
-      - "@types/express"
       - bufferutil
       - debug
       - supports-color
@@ -35270,6 +35007,15 @@ packages:
   /webpack-merge@5.8.0:
     resolution:
       { integrity: sha512-/SaI7xY0831XwP6kzuwhKWVKDP9t1QY1h65lAFLbZqMPIuYcD9QAW4u9STIbU9kaJbPBB/geU/gLr1wDjOhQ+Q== }
+    engines: { node: ">=10.0.0" }
+    dependencies:
+      clone-deep: 4.0.1
+      wildcard: 2.0.0
+    dev: true
+
+  /webpack-merge@5.9.0:
+    resolution:
+      { integrity: sha512-6NbRQw4+Sy50vYNTw7EyOn41OZItPiXB8GNv3INSoe3PSFaHJEz3SHTrYVaRm2LilNGnFUzh0FAwqPEmU/CwDg== }
     engines: { node: ">=10.0.0" }
     dependencies:
       clone-deep: 4.0.1
@@ -35333,7 +35079,7 @@ packages:
       loader-runner: 4.2.0
       mime-types: 2.1.34
       neo-async: 2.6.2
-      schema-utils: 3.1.1
+      schema-utils: 3.3.0
       tapable: 2.2.0
       terser-webpack-plugin: 5.3.0(esbuild@0.15.5)(webpack@5.76.1)
       watchpack: 2.4.0
@@ -35420,7 +35166,7 @@ packages:
       tapable: 2.2.0
       terser-webpack-plugin: 5.3.9(webpack@5.88.2)
       watchpack: 2.4.0
-      webpack-cli: 4.10.0(webpack-dev-server@4.7.3)(webpack@5.88.2)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-sources: 3.2.3
     transitivePeerDependencies:
       - "@swc/core"
@@ -35645,20 +35391,6 @@ packages:
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dev: true
-
-  /ws@8.12.0:
-    resolution:
-      { integrity: sha512-kU62emKIdKVeEIOIKVegvqpXMSTAMLJozpHZaJNDYqBjzlSYXQGviYwN1osDLJ9av68qHd4a2oSjd7yD4pacig== }
-    engines: { node: ">=10.0.0" }
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ">=5.0.2"
     peerDependenciesMeta:
       bufferutil:
         optional: true
