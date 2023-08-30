@@ -39,7 +39,7 @@ type KanikoVanillaConfig struct {
 	ReadBuildOutput        bool
 }
 
-const EXECUTOR_IMAGE = "gcr.io/kaniko-project/executor:latest"
+const executorImage = "gcr.io/kaniko-project/executor:latest"
 
 func KanikoBuild(connection *client.Client, config KanikoVanillaConfig) (string, error) {
 

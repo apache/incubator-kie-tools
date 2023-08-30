@@ -54,8 +54,15 @@ type BuildTemplate struct {
 	Timeout metav1.Duration `json:"timeout,omitempty"`
 	// Resources optional compute resource requirements for the builder
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
-	// Arguments lists the command line arguments to send to the builder
+	// Arguments lists the command line arguments to send to the internal builder command.
+	// Depending on the build method you might set this attribute instead of BuildArgs.
+	// For example: ".spec.arguments=verbose=3".
+	// Please see the SonataFlow guides.
 	Arguments []string `json:"arguments,omitempty"`
+	// Optional build arguments that can be set to the internal build (e.g. Docker ARG)
+	BuildArgs []corev1.EnvVar `json:"buildArgs,omitempty"`
+	// Optional environment variables to add to the internal build
+	Envs []corev1.EnvVar `json:"envs,omitempty"`
 }
 
 // SonataFlowBuildSpec an abstraction over the actual build process performed by the platform.

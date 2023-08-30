@@ -159,6 +159,8 @@ func (o *openshiftBuilderManager) newDefaultBuildConfig(build *operatorapi.Sonat
 					Type: buildv1.DockerBuildStrategyType,
 					DockerStrategy: &buildv1.DockerBuildStrategy{
 						ImageOptimizationPolicy: &optimizationPol,
+						BuildArgs:               build.Spec.BuildArgs,
+						Env:                     build.Spec.Envs,
 					},
 				},
 				Output: buildv1.BuildOutput{

@@ -64,6 +64,10 @@ func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 
 	// create the new build, schedule with cache enabled, a specific set of resources and additional flags
 	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+		AddResource("Dockerfile", dockerFile).
+		AddResource("greetings.sw.json", workflowDefinition).
+		WithClient(c).
+		Scheduler().
 		WithProperty(KanikoCache, api.KanikoTaskCache{Enabled: util.Pbool(true), PersistentVolumeClaim: "kaniko-cache-pv"}).
 		WithResourceRequirements(v1.ResourceRequirements{
 			Limits: v1.ResourceList{
@@ -76,9 +80,6 @@ func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 			},
 		}).
 		WithAdditionalArgs(addFlags).
-		WithResource("Dockerfile", dockerFile).
-		WithResource("greetings.sw.json", workflowDefinition).
-		WithClient(c).
 		Schedule()
 
 	assert.NoError(t, err)
@@ -104,4 +105,59 @@ func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 	assert.Len(t, pod.Spec.Volumes, 1)
 
 	assert.Subset(t, pod.Spec.Containers[0].Args, addFlags)
+}
+
+func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
+	ns := "test"
+	c := test.NewFakeClient()
+
+	dockerFile, err := os.ReadFile("testdata/Dockerfile")
+	assert.NoError(t, err)
+
+	workflowDefinition, err := os.ReadFile("testdata/greetings.sw.json")
+	assert.NoError(t, err)
+
+	platform := api.PlatformContainerBuild{
+		ObjectReference: api.ObjectReference{
+			Namespace: ns,
+			Name:      "testPlatform",
+		},
+		Spec: api.PlatformContainerBuildSpec{
+			BuildStrategy:   api.ContainerBuildStrategyPod,
+			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
+			Timeout:         &metav1.Duration{Duration: 5 * time.Minute},
+		},
+	}
+
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+		AddResource("Dockerfile", dockerFile).
+		AddResource("greetings.sw.json", workflowDefinition).
+		WithClient(c).
+		Scheduler().
+		WithBuildArgs([]v1.EnvVar{{
+			Name:  "QUARKUS_EXTENSIONS",
+			Value: "extension1,extension2",
+		}}).
+		WithEnvs([]v1.EnvVar{{
+			Name:  "MYENV",
+			Value: "value",
+		}}).
+		Schedule()
+
+	// reconcile twice to push forward to the pod creation
+	build, err = FromBuild(build).WithClient(c).Reconcile()
+	assert.NoError(t, err)
+	assert.NotNil(t, build)
+	build, err = FromBuild(build).WithClient(c).Reconcile()
+	assert.NoError(t, err)
+	assert.NotNil(t, build)
+
+	podName := buildPodName(build)
+	pod := &v1.Pod{}
+	err = c.Get(context.TODO(), types.NamespacedName{Name: podName, Namespace: ns}, pod)
+	assert.NoError(t, err)
+	assert.NotNil(t, pod)
+
+	assert.Subset(t, pod.Spec.Containers[0].Args, []string{"--build-arg=QUARKUS_EXTENSIONS=extension1,extension2"})
+	assert.Subset(t, pod.Spec.Containers[0].Env, []v1.EnvVar{{Name: "MYENV", Value: "value"}})
 }

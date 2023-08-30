@@ -16,6 +16,7 @@ package kubernetes
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
@@ -52,6 +53,9 @@ var (
 	}
 )
 
+// see: https://github.com/GoogleContainerTools/kaniko#flag---build-arg
+const kanikoBuildArgs = "--build-arg"
+
 func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.ContainerBuild, task *api.KanikoTask, pod *corev1.Pod) error {
 	// TODO: perform an actual registry lookup based on the environment
 	if task.Registry.Address == "" {
@@ -62,7 +66,7 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 		if address != nil {
 			task.Registry.Address = *address
 		} else {
-			address, err := minikube.FindRegistry(ctx, c)
+			address, err = minikube.FindRegistry(ctx, c)
 			if err != nil {
 				return err
 			}
@@ -91,6 +95,7 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 
 	affinity := &corev1.Affinity{}
 	env := make([]corev1.EnvVar, 0)
+	env = append(env, task.Envs...)
 	volumes := make([]corev1.Volume, 0)
 	volumeMounts := make([]corev1.VolumeMount, 0)
 
@@ -113,6 +118,14 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 	}
 
 	env = append(env, proxyFromEnvironment()...)
+
+	buildArgs, err := FromEnvToArgs(c, pod.Namespace, task.BuildArgs...)
+	if err != nil {
+		return err
+	}
+	if len(buildArgs) > 0 {
+		args = append(args, fmt.Sprintf("%s=%s", kanikoBuildArgs, strings.Join(buildArgs, ",")))
+	}
 
 	container := corev1.Container{
 		Name:            strings.ToLower(task.Name),

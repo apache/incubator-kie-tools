@@ -19,6 +19,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/record"
@@ -63,13 +64,18 @@ func TestSonataFlowBuildController(t *testing.T) {
 	assert.Equal(t, string(ksb.Status.BuildPhase), string(containerBuild.Status.Phase))
 }
 
-func TestSonataFlowBuildController_WithArgs(t *testing.T) {
+func TestSonataFlowBuildController_WithArgsAndEnv(t *testing.T) {
 	namespace := t.Name()
 	ksw := test.GetBaseSonataFlow(namespace)
 	ksb := test.GetNewEmptySonataFlowBuild(ksw.Name, namespace)
 
 	ksb.Spec.Arguments = make([]string, 1)
 	ksb.Spec.Arguments[0] = "--build-args=MYENV=VALUE"
+	ksb.Spec.Envs = make([]v1.EnvVar, 1)
+	ksb.Spec.Envs[0] = v1.EnvVar{
+		Name:  "QUARKUS_EXTENSIONS",
+		Value: "extension1,extension2",
+	}
 
 	cl := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(ksb, ksw).
@@ -98,4 +104,5 @@ func TestSonataFlowBuildController_WithArgs(t *testing.T) {
 	assert.NoError(t, ksb.Status.GetInnerBuild(containerBuild))
 	assert.Equal(t, string(ksb.Status.BuildPhase), string(containerBuild.Status.Phase))
 	assert.Len(t, containerBuild.Spec.Tasks[0].Kaniko.AdditionalFlags, 1)
+	assert.Len(t, containerBuild.Spec.Tasks[0].Kaniko.Envs, 1)
 }

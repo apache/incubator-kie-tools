@@ -72,7 +72,9 @@ func main() {
 	memQty, _ := resource2.ParseQuantity("4Gi")
 
 	build, err := builder.NewBuild(builder.ContainerBuilderInfo{FinalImageName: "greetings:latest", BuildUniqueName: "sonataflow-test", Platform: platform}).
-		WithResource("Dockerfile", dockerFile).WithResource("greetings.sw.json", source).
+		WithClient(cli).
+		AddResource("Dockerfile", dockerFile).AddResource("greetings.sw.json", source).
+		Scheduler().
 		WithAdditionalArgs([]string{"--build-arg=QUARKUS_PACKAGE_TYPE=mutable-jar", "--build-arg=QUARKUS_LAUNCH_DEVMODE=true", "--build-arg=SCRIPT_DEBUG=false"}).
 		WithResourceRequirements(v1.ResourceRequirements{
 			Limits: v1.ResourceList{
@@ -84,7 +86,6 @@ func main() {
 				v1.ResourceMemory: memQty,
 			},
 		}).
-		WithClient(cli).
 		Schedule()
 	if err != nil {
 		fmt.Println(err.Error())

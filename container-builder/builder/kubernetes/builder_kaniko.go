@@ -19,24 +19,24 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-
 	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
 )
 
 var _ Scheduler = &kanikoScheduler{}
 
 type kanikoScheduler struct {
-	baseScheduler *scheduler
-	KanikoTask    *api.KanikoTask
+	schedulerHook         schedulerHook
+	kanikoTask            *api.KanikoTask
+	info                  ContainerBuilderInfo
+	containerBuildContext *containerBuildContext
 }
 
-type kanikoSchedulerHandler struct {
+type kanikoSchedulerManager struct {
 }
 
-var _ schedulerHandler = &kanikoSchedulerHandler{}
+var _ schedulerManager = &kanikoSchedulerManager{}
 
-func (k kanikoSchedulerHandler) CreateScheduler(info ContainerBuilderInfo, buildCtx containerBuildContext) Scheduler {
+func (k kanikoSchedulerManager) CreateScheduler(info ContainerBuilderInfo, ctx *containerBuildContext, hook schedulerHook) Scheduler {
 	kanikoTask := api.KanikoTask{
 		ContainerBuildBaseTask: api.ContainerBuildBaseTask{Name: "KanikoTask"},
 		PublishTask: api.PublishTask{
@@ -48,7 +48,7 @@ func (k kanikoSchedulerHandler) CreateScheduler(info ContainerBuilderInfo, build
 		Cache: api.KanikoTaskCache{},
 	}
 
-	buildCtx.ContainerBuild = &api.ContainerBuild{
+	ctx.containerBuild = &api.ContainerBuild{
 		Spec: api.ContainerBuildSpec{
 			Tasks:    []api.ContainerBuildTask{{Kaniko: &kanikoTask}},
 			Strategy: api.ContainerBuildStrategyPod,
@@ -56,64 +56,47 @@ func (k kanikoSchedulerHandler) CreateScheduler(info ContainerBuilderInfo, build
 		},
 		Status: api.ContainerBuildStatus{},
 	}
-	buildCtx.ContainerBuild.Name = info.BuildUniqueName
-	buildCtx.ContainerBuild.Namespace = info.Platform.Namespace
+	ctx.containerBuild.Name = info.BuildUniqueName
+	ctx.containerBuild.Namespace = info.Platform.Namespace
 
 	sched := &kanikoScheduler{
-		&scheduler{
-			builder: builder{
-				Context: buildCtx,
-			},
-			Resources: make([]resource, 0),
-		},
-		&kanikoTask,
+		schedulerHook: hook,
+		kanikoTask:    &kanikoTask,
 	}
 	return sched
 }
 
-func (k kanikoSchedulerHandler) CanHandle(info ContainerBuilderInfo) bool {
+func (k kanikoSchedulerManager) CanHandle(info ContainerBuilderInfo) bool {
 	return info.Platform.Spec.BuildStrategy == api.ContainerBuildStrategyPod && info.Platform.Spec.PublishStrategy == api.PlatformBuildPublishStrategyKaniko
 }
 
 func (sk *kanikoScheduler) WithProperty(property BuilderProperty, object interface{}) Scheduler {
 	if property == KanikoCache {
-		sk.KanikoTask.Cache = object.(api.KanikoTaskCache)
+		sk.kanikoTask.Cache = object.(api.KanikoTaskCache)
 	}
 	return sk
 }
 
 func (sk *kanikoScheduler) WithResourceRequirements(res corev1.ResourceRequirements) Scheduler {
-	sk.KanikoTask.Resources = res
+	sk.kanikoTask.Resources = res
 	return sk
 }
 
 func (sk *kanikoScheduler) WithAdditionalArgs(flags []string) Scheduler {
-	sk.KanikoTask.AdditionalFlags = flags
+	sk.kanikoTask.AdditionalFlags = flags
 	return sk
 }
 
-func (sk *kanikoScheduler) WithResource(target string, content []byte) Scheduler {
-	sk.baseScheduler.WithResource(target, content)
+func (sk *kanikoScheduler) WithBuildArgs(args []corev1.EnvVar) Scheduler {
+	sk.kanikoTask.BuildArgs = args
 	return sk
 }
 
-func (sk *kanikoScheduler) WithConfigMapResource(configMap corev1.LocalObjectReference, path string) Scheduler {
-	sk.baseScheduler.WithConfigMapResource(configMap, path)
-	return sk
-}
-
-func (sk *kanikoScheduler) WithClient(client client.Client) Scheduler {
-	sk.baseScheduler.WithClient(client)
+func (sk *kanikoScheduler) WithEnvs(envs []corev1.EnvVar) Scheduler {
+	sk.kanikoTask.Envs = envs
 	return sk
 }
 
 func (sk *kanikoScheduler) Schedule() (*api.ContainerBuild, error) {
-	// verify if we really need this
-	for _, task := range sk.baseScheduler.builder.Context.ContainerBuild.Spec.Tasks {
-		if task.Kaniko != nil {
-			task.Kaniko = sk.KanikoTask
-			break
-		}
-	}
-	return sk.baseScheduler.Schedule()
+	return sk.schedulerHook()
 }

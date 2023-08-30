@@ -108,7 +108,7 @@ func mountResourcesConfigMapToBuild(buildContext *containerBuildContext, cms *[]
 		return
 	}
 	for _, cm := range *cms {
-		buildContext.ContainerBuild.Status.ResourceVolumes = append(buildContext.ContainerBuild.Status.ResourceVolumes, api.ContainerBuildResourceVolume{
+		buildContext.containerBuild.Status.ResourceVolumes = append(buildContext.containerBuild.Status.ResourceVolumes, api.ContainerBuildResourceVolume{
 			ReferenceName:  cm.Ref.Name,
 			ReferenceType:  api.ResourceReferenceTypeConfigMap,
 			DestinationDir: cm.Path,
@@ -126,7 +126,7 @@ func mountResourcesBinaryWithConfigMapToBuild(buildContext *containerBuildContex
 		return err
 	}
 
-	buildContext.ContainerBuild.Status.ResourceVolumes = append(buildContext.ContainerBuild.Status.ResourceVolumes, api.ContainerBuildResourceVolume{
+	buildContext.containerBuild.Status.ResourceVolumes = append(buildContext.containerBuild.Status.ResourceVolumes, api.ContainerBuildResourceVolume{
 		ReferenceName:  configMap.Name,
 		ReferenceType:  api.ResourceReferenceTypeConfigMap,
 		DestinationDir: "",
@@ -151,24 +151,24 @@ func getResourcesBinaryConfigMap(c context.Context, client client.Client, build 
 
 func getOrCreateResourcesBinaryConfigMap(buildContext *containerBuildContext, resources *[]resource) (*corev1.ConfigMap, error) {
 	// TODO: build an actual configMap builder context handler
-	resourcesConfigMap, err := getResourcesBinaryConfigMap(buildContext.C, buildContext.Client, buildContext.ContainerBuild)
+	resourcesConfigMap, err := getResourcesBinaryConfigMap(buildContext.ctx, buildContext.c, buildContext.containerBuild)
 	if err != nil {
 		return nil, err
 	}
 
 	if resourcesConfigMap == nil {
 		resourcesConfigMap = &corev1.ConfigMap{}
-		configMapId := types.NamespacedName{Name: buildPodName(buildContext.ContainerBuild), Namespace: buildContext.ContainerBuild.Namespace}
+		configMapId := types.NamespacedName{Name: buildPodName(buildContext.containerBuild), Namespace: buildContext.containerBuild.Namespace}
 		resourcesConfigMap.Namespace = configMapId.Namespace
 		resourcesConfigMap.Name = configMapId.Name
 		addBinaryContentToConfigMap(resourcesConfigMap, resources)
 		// TODO: every object we create, must pass to a listener for our client code. For example, an operator would like to add their labels/owner refs
-		if err := buildContext.Client.Create(buildContext.C, resourcesConfigMap); err != nil {
+		if err := buildContext.c.Create(buildContext.ctx, resourcesConfigMap); err != nil {
 			return nil, err
 		}
 	} else {
 		addBinaryContentToConfigMap(resourcesConfigMap, resources)
-		if err := buildContext.Client.Update(buildContext.C, resourcesConfigMap); err != nil {
+		if err := buildContext.c.Update(buildContext.ctx, resourcesConfigMap); err != nil {
 			return nil, err
 		}
 	}

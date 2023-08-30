@@ -21,7 +21,6 @@ import (
 
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
@@ -42,6 +41,15 @@ const (
 
 var _ BuildManager = &containerBuilderManager{}
 
+type kanikoBuildInput struct {
+	name               string
+	task               *api.KanikoTask
+	workflowDefinition []byte
+	workflow           *operatorapi.SonataFlow
+	dockerfile         string
+	imageTag           string
+}
+
 type containerBuilderManager struct {
 	buildManagerContext
 	// needed for the internal container-builder
@@ -54,11 +62,15 @@ func (c *containerBuilderManager) Schedule(build *operatorapi.SonataFlowBuild) e
 		kanikoTaskCache.Enabled = utils.Pbool(true)
 	}
 	kanikoTask := &api.KanikoTask{
-		ContainerBuildBaseTask: api.ContainerBuildBaseTask{Name: "kaniko"},
-		PublishTask:            api.PublishTask{},
-		Cache:                  kanikoTaskCache,
-		Resources:              build.Spec.Resources,
-		AdditionalFlags:        build.Spec.Arguments,
+		ContainerBuildBaseTask: api.ContainerBuildBaseTask{
+			Name:      "kaniko",
+			BuildArgs: build.Spec.BuildArgs,
+			Envs:      build.Spec.Envs,
+			Resources: build.Spec.Resources,
+		},
+		PublishTask:     api.PublishTask{},
+		Cache:           kanikoTaskCache,
+		AdditionalFlags: build.Spec.Arguments,
 	}
 	var containerBuilder *api.ContainerBuild
 	var err error
@@ -102,21 +114,6 @@ func newContainerBuilderManager(managerContext buildManagerContext, config *rest
 	}
 }
 
-func (c *containerBuilderManager) getImageBuilderForKaniko(workflow *operatorapi.SonataFlow, imageNameTag string, workflowDefinition []byte, task *api.KanikoTask) imageBuilder {
-	containerFile := platform.GetCustomizedDockerfile(c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]], *c.platform)
-	ib := newImageBuilder(workflow, workflowDefinition, []byte(containerFile))
-	ib.OnNamespace(c.platform.Namespace)
-	ib.WithPodMiddleName(workflow.Name)
-	ib.WithInsecureRegistry(false)
-	ib.WithImageNameTag(imageNameTag)
-	ib.WithSecret(c.platform.Spec.Build.Config.Registry.Secret)
-	ib.WithRegistryAddress(c.platform.Spec.Build.Config.Registry.Address)
-	ib.WithCache(task.Cache)
-	ib.WithResourcesReqs(task.Resources)
-	ib.WithAdditionalFlags(task.AdditionalFlags)
-	return ib
-}
-
 func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build *operatorapi.SonataFlowBuild, task *api.KanikoTask) (*api.ContainerBuild, error) {
 	workflow, err := c.fetchWorkflowForBuild(build)
 	if err != nil {
@@ -126,10 +123,20 @@ func (c *containerBuilderManager) scheduleNewKanikoBuildWithContainerFile(build 
 	if err != nil {
 		return nil, err
 	}
-	imageTag := workflowdef.GetWorkflowAppImageNameTag(workflow)
-	ib := c.getImageBuilderForKaniko(workflow, imageTag, workflowDef, task)
-	ib.WithTimeout(5 * time.Minute)
-	return c.buildImage(ib.Build())
+
+	buildInput := kanikoBuildInput{
+		name:               workflow.Name,
+		task:               task,
+		workflowDefinition: workflowDef,
+		workflow:           workflow,
+		dockerfile:         platform.GetCustomizedDockerfile(c.commonConfig.Data[c.commonConfig.Data[configKeyDefaultBuilderResourceName]], *c.platform),
+		imageTag:           workflowdef.GetWorkflowAppImageNameTag(workflow),
+	}
+
+	if c.platform.Spec.Build.Config.Timeout == nil {
+		c.platform.Spec.Build.Config.Timeout = &metav1.Duration{Duration: 5 * time.Minute}
+	}
+	return c.buildImage(buildInput)
 }
 
 func (c *containerBuilderManager) reconcileBuild(build *api.ContainerBuild, cli client.Client) (*api.ContainerBuild, error) {
@@ -137,28 +144,28 @@ func (c *containerBuilderManager) reconcileBuild(build *api.ContainerBuild, cli 
 	return result, err
 }
 
-func (c *containerBuilderManager) buildImage(kb internalBuilder) (*api.ContainerBuild, error) {
+func (c *containerBuilderManager) buildImage(buildInput kanikoBuildInput) (*api.ContainerBuild, error) {
 	cli, err := client.FromCtrlClientSchemeAndConfig(c.client, c.client.Scheme(), c.restConfig)
 	plat := api.PlatformContainerBuild{
 		ObjectReference: api.ObjectReference{
-			Namespace: kb.Namespace,
-			Name:      kb.PodMiddleName,
+			Namespace: c.platform.Namespace,
+			Name:      buildInput.name,
 		},
 		Spec: api.PlatformContainerBuildSpec{
 			BuildStrategy:   api.ContainerBuildStrategyPod,
 			PublishStrategy: api.PlatformBuildPublishStrategyKaniko,
 			Registry: api.ContainerRegistrySpec{
-				Insecure: kb.InsecureRegistry,
-				Address:  kb.RegistryAddress,
-				Secret:   kb.Secret,
+				Insecure: c.platform.Spec.Build.Config.Registry.Insecure,
+				Address:  c.platform.Spec.Build.Config.Registry.Address,
+				Secret:   c.platform.Spec.Build.Config.Registry.Secret,
 			},
 			Timeout: &metav1.Duration{
-				Duration: kb.Timeout,
+				Duration: c.platform.Spec.Build.Config.Timeout.Duration,
 			},
 		},
 	}
 
-	build, err := newBuild(kb, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
+	build, err := newBuild(buildInput, plat, c.commonConfig.Data[configKeyDefaultExtension], cli)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "error during build Image")
 		return nil, err
@@ -167,103 +174,20 @@ func (c *containerBuilderManager) buildImage(kb internalBuilder) (*api.Container
 }
 
 // Helper function to create a new container-builder build and schedule it
-func newBuild(kb internalBuilder, platform api.PlatformContainerBuild, defaultExtension string, cli client.Client) (*api.ContainerBuild, error) {
-	buildInfo := builder.ContainerBuilderInfo{FinalImageName: kb.ImageName, BuildUniqueName: kb.PodMiddleName, Platform: platform}
+func newBuild(buildInput kanikoBuildInput, platform api.PlatformContainerBuild, defaultExtension string, cli client.Client) (*api.ContainerBuild, error) {
+	buildInfo := builder.ContainerBuilderInfo{FinalImageName: buildInput.imageTag, BuildUniqueName: buildInput.name, Platform: platform}
 
-	scheduler := builder.NewBuild(buildInfo).
-		WithResource(resourceDockerfile, kb.ContainerFile).
-		WithResource(kb.Workflow.Name+defaultExtension, kb.WorkflowDefinition).
-		WithAdditionalArgs(kb.AdditionalFlags).
-		WithResourceRequirements(kb.ResourceReqs).
-		WithClient(cli)
-
-	for _, res := range kb.Workflow.Spec.Resources.ConfigMaps {
-		scheduler.WithConfigMapResource(res.ConfigMap, res.WorkflowPath)
+	newBuilder := builder.NewBuild(buildInfo).
+		WithClient(cli).
+		AddResource(resourceDockerfile, []byte(buildInput.dockerfile)).
+		AddResource(buildInput.name+defaultExtension, buildInput.workflowDefinition)
+	for _, res := range buildInput.workflow.Spec.Resources.ConfigMaps {
+		newBuilder.AddConfigMapResource(res.ConfigMap, res.WorkflowPath)
 	}
 
-	return scheduler.Schedule()
-}
-
-// Fluent API section
-
-type internalBuilder struct {
-	Workflow             *operatorapi.SonataFlow
-	WorkflowDefinition   []byte
-	ContainerFile        []byte
-	Namespace            string
-	InsecureRegistry     bool
-	Timeout              time.Duration
-	ImageName            string
-	PodMiddleName        string
-	RegistryAddress      string
-	RegistryOrganization string
-	Secret               string
-	Cache                api.KanikoTaskCache
-	ResourceReqs         corev1.ResourceRequirements
-	AdditionalFlags      []string
-}
-
-type imageBuilder struct {
-	builder *internalBuilder
-}
-
-func newImageBuilder(workflow *operatorapi.SonataFlow, sourceSwf []byte, containerFile []byte) imageBuilder {
-	return imageBuilder{builder: &internalBuilder{
-		Workflow:           workflow,
-		WorkflowDefinition: sourceSwf,
-		ContainerFile:      containerFile,
-	}}
-}
-
-func (ib *imageBuilder) OnNamespace(namespace string) *imageBuilder {
-	ib.builder.Namespace = namespace
-	return ib
-}
-
-func (ib *imageBuilder) WithTimeout(timeout time.Duration) *imageBuilder {
-	ib.builder.Timeout = timeout
-	return ib
-}
-
-func (ib *imageBuilder) WithSecret(secret string) *imageBuilder {
-	ib.builder.Secret = secret
-	return ib
-}
-
-func (ib *imageBuilder) WithRegistryAddress(registryAddress string) *imageBuilder {
-	ib.builder.RegistryAddress = registryAddress
-	return ib
-}
-
-func (ib *imageBuilder) WithInsecureRegistry(insecureRegistry bool) *imageBuilder {
-	ib.builder.InsecureRegistry = insecureRegistry
-	return ib
-}
-
-func (ib *imageBuilder) WithPodMiddleName(buildName string) *imageBuilder {
-	ib.builder.PodMiddleName = buildName
-	return ib
-}
-
-func (ib *imageBuilder) WithImageNameTag(imageName string) *imageBuilder {
-	ib.builder.ImageName = imageName
-	return ib
-}
-
-func (ib *imageBuilder) WithCache(cache api.KanikoTaskCache) *imageBuilder {
-	ib.builder.Cache = cache
-	return ib
-}
-func (ib *imageBuilder) WithResourcesReqs(resources corev1.ResourceRequirements) *imageBuilder {
-	ib.builder.ResourceReqs = resources
-	return ib
-}
-
-func (ib *imageBuilder) WithAdditionalFlags(flags []string) *imageBuilder {
-	ib.builder.AdditionalFlags = flags
-	return ib
-}
-
-func (ib *imageBuilder) Build() internalBuilder {
-	return *ib.builder
+	return newBuilder.Scheduler().
+		WithAdditionalArgs(buildInput.task.AdditionalFlags).
+		WithResourceRequirements(buildInput.task.Resources).
+		WithBuildArgs(buildInput.task.BuildArgs).
+		WithEnvs(buildInput.task.Envs).Schedule()
 }

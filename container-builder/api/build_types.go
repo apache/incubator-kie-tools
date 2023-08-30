@@ -83,6 +83,12 @@ type ContainerBuildTask struct {
 type ContainerBuildBaseTask struct {
 	// name of the task
 	Name string `json:"name,omitempty"`
+	// Resources -- optional compute resource requirements for the Kaniko container
+	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
+	// Build arguments passed to the internal build system (e.g. Dockerfile ARG)
+	BuildArgs []corev1.EnvVar
+	// Environment variable passed to the internal build container.
+	Envs []corev1.EnvVar `json:"envs,omitempty"`
 }
 
 // PublishTask image publish configuration
@@ -114,8 +120,6 @@ type KanikoTask struct {
 	Verbose *bool `json:"verbose,omitempty"`
 	// use a cache
 	Cache KanikoTaskCache `json:"cache,omitempty"`
-	// Resources -- optional compute resource requirements for the Kaniko container
-	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// AdditionalFlags -- List of additional flags for  the Kaniko process (see https://github.com/GoogleContainerTools/kaniko/blob/main/README.md#additional-flags)
 	AdditionalFlags []string `json:"additionalFlags,omitempty"`
 }

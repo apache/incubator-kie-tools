@@ -54,9 +54,9 @@ func TestNewBuild(t *testing.T) {
 	// create the new build, schedule
 	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "quay.io/kiegroup/buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
 		WithClient(c).
-		WithResource("Dockerfile", dockerFile).
-		WithResource("greetings.sw.json", workflowDefinition).
-		Schedule()
+		AddResource("Dockerfile", dockerFile).
+		AddResource("greetings.sw.json", workflowDefinition).
+		Scheduler().Schedule()
 
 	assert.NoError(t, err)
 	assert.NotNil(t, build)

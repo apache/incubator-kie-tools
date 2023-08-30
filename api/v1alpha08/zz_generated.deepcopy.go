@@ -21,7 +21,8 @@ package v1alpha08
 
 import (
 	"github.com/serverlessworkflow/sdk-go/v2/model"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"knative.dev/pkg/apis"
 )
@@ -31,7 +32,7 @@ func (in *BuildPlatformConfig) DeepCopyInto(out *BuildPlatformConfig) {
 	*out = *in
 	if in.Timeout != nil {
 		in, out := &in.Timeout, &out.Timeout
-		*out = new(v1.Duration)
+		*out = new(metav1.Duration)
 		**out = **in
 	}
 	if in.BuildStrategyOptions != nil {
@@ -80,6 +81,20 @@ func (in *BuildTemplate) DeepCopyInto(out *BuildTemplate) {
 		in, out := &in.Arguments, &out.Arguments
 		*out = make([]string, len(*in))
 		copy(*out, *in)
+	}
+	if in.BuildArgs != nil {
+		in, out := &in.BuildArgs, &out.BuildArgs
+		*out = make([]v1.EnvVar, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.Envs != nil {
+		in, out := &in.Envs, &out.Envs
+		*out = make([]v1.EnvVar, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
 	}
 }
 

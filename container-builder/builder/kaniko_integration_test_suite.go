@@ -45,7 +45,7 @@ func (suite *KanikoDockerTestSuite) SetupSuite() {
 		assert.FailNow(suite.T(), "Initialization failed %s", registryID)
 	}
 
-	pullErr := suite.Docker.PullImage(EXECUTOR_IMAGE)
+	pullErr := suite.Docker.PullImage(executorImage)
 	if pullErr != nil {
 		klog.V(log.E).ErrorS(pullErr, "Pull Kaniko executor")
 	}
@@ -65,7 +65,7 @@ func (suite *KanikoDockerTestSuite) TearDownSuite() {
 		klog.V(log.E).ErrorS(err, "Purged registry")
 	}
 
-	purgedBuild, err := suite.Docker.PurgeContainer("", EXECUTOR_IMAGE)
+	purgedBuild, err := suite.Docker.PurgeContainer("", executorImage)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Purged container")
 	}

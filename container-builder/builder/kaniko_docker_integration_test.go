@@ -43,11 +43,11 @@ func (suite *KanikoDockerTestSuite) TestKanikoBuild() {
 		klog.V(log.E).ErrorS(err, "error getting working directory.")
 	}
 	dockefileDir := mydir + "/../examples/dockerfiles"
-	assert.Nil(suite.T(), suite.Docker.PullImage("gcr.io/kaniko-project/executor:latest"), "Pull image failed")
+	assert.Nil(suite.T(), suite.Docker.PullImage(executorImage), "Pull image failed")
 	config := KanikoVanillaConfig{
 		DockerFilePath:         dockefileDir,
 		VerbosityLevel:         "info",
-		KanikoExecutorImage:    EXECUTOR_IMAGE,
+		KanikoExecutorImage:    executorImage,
 		ContainerName:          "kaniko-build",
 		DockerFileName:         "SonataFlow.dockerfile",
 		RegistryFinalImageName: imageName,
@@ -55,11 +55,11 @@ func (suite *KanikoDockerTestSuite) TestKanikoBuild() {
 	}
 	klog.V(log.I).InfoS("Start Kaniko build")
 	start := time.Now()
-	imageID, error := KanikoBuild(suite.Docker.Connection, config)
+	imageID, err := KanikoBuild(suite.Docker.Connection, config)
 	timeElapsed := time.Since(start)
 	klog.V(log.I).InfoS("The Kaniko build took", "duration", timeElapsed)
-	assert.Nil(suite.T(), error, "ContainerBuild failed")
-	assert.NotNil(suite.T(), imageID, error, "ContainerBuild failed")
+	assert.Nil(suite.T(), err, "ContainerBuild failed")
+	assert.NotNil(suite.T(), imageID, err, "ContainerBuild failed")
 	//@TODO investigate when the code will be in the mono repo
 	//checkImageOnDockerRegistry(suite, imageName, repos, registry)
 }
