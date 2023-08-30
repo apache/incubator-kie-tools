@@ -8,11 +8,12 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getSnappedMultiPointAnchoredEdgePath } from "./getSnappedMultiPointAnchoredEdgePath";
-import { Unpacked, diagramColors } from "../useDmnDiagramData";
-import { useDmnEditorStore } from "../../store/Store";
+import { Unpacked } from "../useDmnDiagramData";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { useNodeHovered } from "../nodes/Nodes";
+import { removeEdgeWaypoint } from "../../mutations/removeEdgeWaypoint";
 
-const DEFAULT_EDGE_INTRACTION_WDITH = 20;
+const DEFAULT_EDGE_INTRACTION_WIDTH = 20;
 
 export type DmnEditorDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
@@ -27,28 +28,70 @@ export type DmnEditorDiagramEdgeData = {
   dmnShapeTarget: DMNDI15__DMNShape | undefined;
 };
 
-export function Waypoint({ index: i, point: p }: { index: number; point: DC__Point }) {
+export function Waypoint({
+  edgeId,
+  edgeIndex,
+  index,
+  point,
+}: {
+  edgeId: string;
+  edgeIndex: number;
+  index: number;
+  point: DC__Point;
+}) {
   const circleRef = React.useRef<SVGCircleElement>(null);
   const isHovered = useNodeHovered(circleRef);
+  const { dispatch, diagram } = useDmnEditorStore();
+  const { setState } = useDmnEditorStoreApi();
 
   return (
     <circle
       ref={circleRef}
-      cx={p["@_x"]}
-      cy={p["@_y"]}
+      cx={point["@_x"]}
+      cy={point["@_y"]}
+      stroke={isHovered ? "red" : undefined}
       r={1}
-      onDoubleClick={() => {
-        console.info("Deleting waypoint with index " + i);
+      // FIXME: Tiago --> Use `d3-drag` for this. That's how ReactFlow does it.
+      onMouseDown={() => {
+        setState((state) => dispatch.diagram.setEdgeStatus(state, edgeId, { isDraggingWaypoint: true }));
+        console.info("start");
+      }}
+      onMouseMove={(e) => {
+        if (diagram.draggingWaypoints.find((s) => s === edgeId)) {
+          return console.info("dragging", e);
+        }
+      }}
+      onMouseUp={() => {
+        setState((state) => dispatch.diagram.setEdgeStatus(state, edgeId, { isDraggingWaypoint: false }));
+        console.info("end");
+      }}
+      onDoubleClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setState((state) => {
+          removeEdgeWaypoint({
+            definitions: state.dmn.model.definitions,
+            edgeIndex,
+            waypointIndex: index,
+          });
+        });
       }}
     />
   );
 }
 
-export function Waypoints(props: { points: DC__Point[] }) {
+export function Waypoints(props: { edgeId: string; edgeIndex: number; points: DC__Point[] }) {
   return (
     <g className={"kie-dmn-editor--diagram-edge-waypoints"}>
       {props.points.slice(1, -1).map((p, i) => (
-        <Waypoint key={i} index={i + 1 /* Add one because we're removing the 1st element of the array */} point={p} />
+        <Waypoint
+          key={i}
+          edgeIndex={props.edgeIndex}
+          edgeId={props.edgeId}
+          point={p}
+          index={i + 1 /* Plus one because we're removing the 1st element of the array before iterating */}
+        />
       ))}
     </g>
   );
@@ -153,10 +196,12 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
       <InformationRequirementPath
         d={path}
         {...interactionStrokeProps}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {props.selected && !isConnecting && <Waypoints points={points} />}
+      {props.selected && !isConnecting && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} points={points} />
+      )}
     </>
   );
 });
@@ -170,10 +215,12 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
       <KnowledgeRequirementPath
         d={path}
         {...interactionStrokeProps}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {props.selected && !isConnecting && <Waypoints points={points} />}
+      {props.selected && !isConnecting && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} points={points} />
+      )}
     </>
   );
 });
@@ -188,14 +235,16 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         d={path}
         centerToConnectionPoint={false}
         {...interactionStrokeProps}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <AuthorityRequirementPath
         d={path}
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
       />
-      {props.selected && !isConnecting && <Waypoints points={points} />}
+      {props.selected && !isConnecting && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} points={points} />
+      )}
     </>
   );
 });
@@ -209,10 +258,12 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
       <AssociationPath
         d={path}
         {...interactionStrokeProps}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WDITH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {props.selected && !isConnecting && <Waypoints points={points} />}
+      {props.selected && !isConnecting && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} points={points} />
+      )}
     </>
   );
 });

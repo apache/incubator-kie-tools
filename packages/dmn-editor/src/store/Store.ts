@@ -14,6 +14,7 @@ export interface DmnEditorDiagramNodeStatus {
 }
 export interface DmnEditorDiagramEdgeStatus {
   selected: boolean;
+  isDraggingWaypoint: boolean;
 }
 
 export interface SnapGrid {
@@ -56,6 +57,7 @@ export interface State {
     draggingNodes: Array<string>;
     resizingNodes: Array<string>;
     selectedEdges: Array<string>;
+    draggingWaypoints: Array<string>;
   };
 }
 
@@ -148,6 +150,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         draggingNodes: [],
         resizingNodes: [],
         selectedEdges: [],
+        draggingWaypoints: [],
       },
       dispatch: {
         dmn: {
@@ -255,11 +258,20 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
             }
           },
           setEdgeStatus: (prev, edgeId, newStatus) => {
+            //selected
             if (newStatus.selected !== undefined) {
               if (newStatus.selected) {
                 prev.diagram.selectedEdges.push(edgeId);
               } else {
                 prev.diagram.selectedEdges = prev.diagram.selectedEdges.filter((s) => s !== edgeId);
+              }
+            }
+            //dragging
+            if (newStatus.isDraggingWaypoint !== undefined) {
+              if (newStatus.isDraggingWaypoint) {
+                prev.diagram.draggingWaypoints.push(edgeId);
+              } else {
+                prev.diagram.draggingNodes = prev.diagram.draggingWaypoints.filter((s) => s !== edgeId);
               }
             }
           },

@@ -2,7 +2,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useRef } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
@@ -67,10 +67,14 @@ export const DmnEditorInternal = ({
     });
   }, [dispatch.dmn, model]);
 
+  const isDiagramMidEditing = useMemo(
+    () => diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0 || diagram.draggingWaypoints.length > 0,
+    [diagram.draggingNodes.length, diagram.draggingWaypoints.length, diagram.resizingNodes.length]
+  );
+
   // Only notify changes when dragging/resizing operations are not happening.
   useEffectAfterFirstRender(() => {
-    const isChanging = diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0;
-    if (isChanging) {
+    if (isDiagramMidEditing) {
       return;
     }
 
