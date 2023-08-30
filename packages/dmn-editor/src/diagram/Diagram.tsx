@@ -508,8 +508,8 @@ export function TopRightCornerPanels() {
 export function SelectionStatus() {
   const rfStoreApi = RF.useStoreApi();
 
-  const resetSelectedElements = RF.useStore((state) => state.resetSelectedElements);
   const { diagram } = useDmnEditorStore();
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   useEffect(() => {
     if (diagram.selectedNodes.length >= 2) {
@@ -520,18 +520,25 @@ export function SelectionStatus() {
   const onClose = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      resetSelectedElements();
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.selectedNodes = [];
+        state.diagram.selectedEdges = [];
+      });
     },
-    [resetSelectedElements]
+    [dmnEditorStoreApi]
   );
+
   return (
     <>
-      {(diagram.selectedNodes.length >= 2 && (
+      {(diagram.selectedNodes.length + diagram.selectedEdges.length >= 2 && (
         <RF.Panel position={"top-center"}>
-          <Label
-            style={{ paddingLeft: "24px" }}
-            onClose={onClose}
-          >{`${diagram.selectedNodes.length} nodes selected`}</Label>
+          <Label style={{ paddingLeft: "24px" }} onClose={onClose}>
+            {(diagram.selectedEdges.length === 0 && `${diagram.selectedNodes.length} nodes selected`) ||
+              (diagram.selectedNodes.length === 0 && `${diagram.selectedEdges.length} edges selected`) ||
+              `${diagram.selectedNodes.length} node${diagram.selectedNodes.length === 1 ? "" : "s"}, ${
+                diagram.selectedEdges.length
+              } edge${diagram.selectedEdges.length === 1 ? "" : "s"} selected`}
+          </Label>
         </RF.Panel>
       )) || <></>}
     </>

@@ -105,8 +105,8 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {props.selected && !isConnecting && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} waypoints={points} />
+      {props.selected && !isConnecting && props.data?.dmnEdge && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
       )}
     </>
   );
@@ -124,8 +124,8 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {props.selected && !isConnecting && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} waypoints={points} />
+      {props.selected && !isConnecting && props.data?.dmnEdge && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
       )}
     </>
   );
@@ -148,8 +148,8 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         className={`kie-dmn-editor--edge ${className}`}
         centerToConnectionPoint={false}
       />
-      {props.selected && !isConnecting && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} waypoints={points} />
+      {props.selected && !isConnecting && props.data?.dmnEdge && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
       )}
     </>
   );
@@ -167,8 +167,8 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
-      {props.selected && !isConnecting && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data!.dmnEdge!.index} waypoints={points} />
+      {props.selected && !isConnecting && props.data?.dmnEdge && (
+        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
       )}
     </>
   );
