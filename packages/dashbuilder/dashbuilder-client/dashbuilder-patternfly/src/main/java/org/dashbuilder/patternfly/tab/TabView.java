@@ -19,13 +19,11 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
@@ -53,6 +51,10 @@ public class TabView implements Tab.View {
     @Override
     public void init(Tab presenter) {
         this.presenter = presenter;
+        tabButton.onclick = e -> {
+            presenter.onTabClick();
+            return null;
+        };
     }
 
     @Override
@@ -60,11 +62,6 @@ public class TabView implements Tab.View {
         return tabItem;
     }
 
-    @EventHandler("tabButton")
-    public void onTabClick(ClickEvent event) {
-        presenter.onTabClick();
-    }
-    
     public void setTitle(String title) {
         tabTitle.textContent = title;
     }

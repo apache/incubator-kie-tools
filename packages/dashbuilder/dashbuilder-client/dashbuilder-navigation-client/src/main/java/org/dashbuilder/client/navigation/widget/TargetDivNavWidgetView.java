@@ -20,7 +20,6 @@ import java.util.function.Consumer;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
@@ -38,7 +37,7 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     private static final String PF5_SELECTED_CLASS = "pf-m-current";
 
     Alert alertBox;
-    
+
     @Inject
     Event<LayoutTemplateDisplayed> layoutTemplateDisplayedEvent;
 
@@ -112,15 +111,15 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
     public void getTargetDiv(String targetDivId,
                              Consumer<HTMLElement> divConsumer,
                              Command notFoundDivCallback) {
-        Scheduler.get().scheduleDeferred(() -> {
-            HTMLElement targetDiv = getTargetDiv(targetDivId);
+        DomGlobal.setTimeout(e -> {
+            var targetDiv = getTargetDiv(targetDivId);
             if (targetDiv != null) {
                 divConsumer.accept(targetDiv);
             } else {
                 notFoundDivCallback.execute();
             }
-        });
 
+        }, 1);
     }
 
     public HTMLElement getTargetDiv(String targetDivId) {

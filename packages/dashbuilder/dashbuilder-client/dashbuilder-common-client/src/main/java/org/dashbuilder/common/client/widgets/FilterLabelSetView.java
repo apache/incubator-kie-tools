@@ -17,14 +17,12 @@ package org.dashbuilder.common.client.widgets;
 
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.resources.i18n.DashbuilderCommonConstants;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
@@ -51,6 +49,10 @@ public class FilterLabelSetView implements FilterLabelSet.View {
     public void init(FilterLabelSet presenter) {
         this.presenter = presenter;
         clearAll.textContent = DashbuilderCommonConstants.INSTANCE.clearAll();
+        clearAll.onclick = e -> {
+            presenter.onClearAll();
+            return null;
+        };
     }
 
     @Override
@@ -67,11 +69,6 @@ public class FilterLabelSetView implements FilterLabelSet.View {
     @Override
     public void addLabel(FilterLabel label) {
         mainDiv.insertBefore(label.getElement(), clearAllContainer);
-    }
-
-    @EventHandler("clearAll")
-    private void onClearAll(ClickEvent event) {
-        presenter.onClearAll();
     }
 
     @Override

@@ -19,14 +19,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
@@ -62,6 +60,10 @@ public class PanelView implements Panel.View {
     @Override
     public void init(Panel presenter) {
         this.presenter = presenter;
+        pnlExpandButton.onclick = e -> {
+            presenter.collapseAction();
+            return null;
+        };
     }
 
     @Override
@@ -77,11 +79,6 @@ public class PanelView implements Panel.View {
     public void show() {
         pnlRoot.classList.add("pf-m-expanded");
         pnlBody.style.display = "block";
-    }
-
-    @EventHandler("pnlExpandButton")
-    public void onExpandClick(ClickEvent e) {
-        presenter.collapseAction();
     }
 
     @Override

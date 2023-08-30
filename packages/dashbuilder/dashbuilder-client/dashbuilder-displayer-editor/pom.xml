@@ -53,12 +53,6 @@ under the License.
 		</dependency>
 
 		<dependency>
-			<groupId>org.gwtproject</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>org.jboss.errai</groupId>
 			<artifactId>errai-ioc</artifactId>
 		</dependency>

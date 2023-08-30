@@ -3,12 +3,10 @@ package org.dashbuilder.patternfly.menu;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Dependent
@@ -28,16 +26,15 @@ public class MenuItemView implements MenuItem.View {
     @Override
     public void init(MenuItem presenter) {
         this.presenter = presenter;
+        item.onclick = e -> {
+            presenter.onItemClick();
+            return null;
+        };
     }
 
     @Override
     public HTMLElement getElement() {
         return menu;
-    }
-
-    @EventHandler("item")
-    public void onItemClick(ClickEvent event) {
-        presenter.onItemClick();
     }
 
     public void setText(String text) {

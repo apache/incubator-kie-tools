@@ -19,14 +19,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLInputElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 /**
@@ -113,6 +111,34 @@ public class PaginationView implements Pagination.View {
             selectPage(page);
             return null;
         };
+
+        btnPreviousPage.onclick = e -> {
+            if (this.currentPage > 1) {
+                selectPage(this.currentPage - 1);
+            }
+            return null;
+        };
+
+        btnNextPage.onclick = e -> {
+            if (this.currentPage < totalPages) {
+                selectPage(this.currentPage + 1);
+            }
+            return null;
+        };
+
+        btnFirstPage.onclick = e -> {
+            if (this.currentPage != 1) {
+                selectPage(1);
+            }
+            return null;
+        };
+
+        btnLastPage.onclick = e -> {
+            if (this.currentPage != totalPages) {
+                selectPage(totalPages);
+            }
+            return null;
+        };
     }
 
     public void setup(int nRows,
@@ -131,34 +157,6 @@ public class PaginationView implements Pagination.View {
     @Override
     public HTMLElement getElement() {
         return paginationContainer;
-    }
-
-    @EventHandler("btnPreviousPage")
-    public void previousClick(ClickEvent e) {
-        if (this.currentPage > 1) {
-            selectPage(this.currentPage - 1);
-        }
-    }
-
-    @EventHandler("btnNextPage")
-    public void nextClick(ClickEvent e) {
-        if (this.currentPage < totalPages) {
-            selectPage(this.currentPage + 1);
-        }
-    }
-
-    @EventHandler("btnFirstPage")
-    public void firstClick(ClickEvent e) {
-        if (this.currentPage != 1) {
-            selectPage(1);
-        }
-    }
-
-    @EventHandler("btnLastPage")
-    public void lastClick(ClickEvent e) {
-        if (this.currentPage != totalPages) {
-            selectPage(totalPages);
-        }
     }
 
     void selectPage(int page) {

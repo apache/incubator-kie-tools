@@ -19,7 +19,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
 import elemental2.dom.CSSProperties.HeightUnionType;
 import elemental2.dom.CSSProperties.WidthUnionType;
 import elemental2.dom.DomGlobal;
@@ -83,7 +82,7 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
         if (chart == null) {
             initChart();
         }
-        Scheduler.get().scheduleDeferred(() -> {
+        DomGlobal.setTimeout(e -> {
             // Needs to differ the default dark theme background to match PF5
             // This is a workaround since a custom theme is failing 
             // possibly related https://github.com/chartjs/Chart.js/issues/7761
@@ -92,9 +91,9 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
             }
             chart.setOption(option);
             chart.resize();
-        });
-        // timeout reinforcement, some parent may not be completed resized
-        DomGlobal.setTimeout(e -> chart.resize(), 100);
+
+        }, 100);
+
     }
 
     @Override
