@@ -3,7 +3,7 @@ module github.com/kiegroup/kogito-serverless-operator/api
 go 1.19
 
 require (
-	github.com/serverlessworkflow/sdk-go/v2 v2.2.3
+	github.com/serverlessworkflow/sdk-go/v2 v2.2.4
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
 	knative.dev/pkg v0.0.0-20230525143525-9bda38b21643

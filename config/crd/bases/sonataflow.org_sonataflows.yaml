@@ -1070,7 +1070,7 @@ spec:
                                     - workflowId
                                     type: object
                                 type: object
-                              minItems: 1
+                              minItems: 0
                               type: array
                             batchSize:
                               anyOf:
@@ -1405,7 +1405,7 @@ spec:
                                     - workflowId
                                     type: object
                                 type: object
-                              minItems: 1
+                              minItems: 0
                               type: array
                             timeouts:
                               description: State specific timeouts
