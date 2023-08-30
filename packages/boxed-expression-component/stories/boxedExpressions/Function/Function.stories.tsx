@@ -15,7 +15,6 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   title: "Boxed Expressions/Function",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
-  excludeStories: ["BoxedExpressionEditorWrapper"],
 };
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;

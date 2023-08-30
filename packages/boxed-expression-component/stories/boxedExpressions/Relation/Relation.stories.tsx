@@ -11,7 +11,6 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   title: "Boxed Expressions/Relation",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
-  excludeStories: ["BoxedExpressionEditorWrapper"],
 };
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
@@ -51,36 +50,33 @@ export const Base: Story = {
   },
 };
 
-export const CustomerProfiles: Story = {
-  render: () => {
-    const dataTypes = Base.args?.dataTypes;
-    dataTypes?.push({ typeRef: "tEmployee", name: "tEmployee", isCustom: true });
-    return BoxedExpressionEditorWrapper({ dataTypes });
-  },
+export const BiggerRelation: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
     ...Base.args,
     expressionDefinition: {
       id: generateUuid(),
-      name: "Employee Information",
-      dataType: "tEmployee" as DmnBuiltInDataType,
+      name: "Example",
+      dataType: DmnBuiltInDataType.Undefined,
       logicType: ExpressionDefinitionLogicType.Relation,
       columns: [
         {
           id: generateUuid(),
-          name: "Name",
-          dataType: DmnBuiltInDataType.String,
+          name: "column-1",
+          dataType: DmnBuiltInDataType.Undefined,
           width: 100,
         },
         {
           id: generateUuid(),
-          name: "Age",
-          dataType: DmnBuiltInDataType.Number,
+          name: "column-2",
+          dataType: DmnBuiltInDataType.Undefined,
           width: 100,
         },
         {
           id: generateUuid(),
-          name: "Salary",
-          dataType: DmnBuiltInDataType.Number,
+          name: "column-3",
+          dataType: DmnBuiltInDataType.Undefined,
           width: 100,
         },
       ],
@@ -90,32 +86,15 @@ export const CustomerProfiles: Story = {
           cells: [
             {
               id: generateUuid(),
-              content: "John",
+              content: "",
             },
             {
               id: generateUuid(),
-              content: "32",
+              content: "",
             },
             {
               id: generateUuid(),
-              content: "100000",
-            },
-          ],
-        },
-        {
-          id: generateUuid(),
-          cells: [
-            {
-              id: generateUuid(),
-              content: "Mary",
-            },
-            {
-              id: generateUuid(),
-              content: "42",
-            },
-            {
-              id: generateUuid(),
-              content: "120000",
+              content: "",
             },
           ],
         },
@@ -124,15 +103,49 @@ export const CustomerProfiles: Story = {
           cells: [
             {
               id: generateUuid(),
-              content: "Joseph",
+              content: "",
             },
             {
               id: generateUuid(),
-              content: "30",
+              content: "",
             },
             {
               id: generateUuid(),
-              content: "110000",
+              content: "",
+            },
+          ],
+        },
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+          ],
+        },
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
             },
           ],
         },

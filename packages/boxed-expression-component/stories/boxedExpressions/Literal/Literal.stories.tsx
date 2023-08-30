@@ -10,7 +10,6 @@ const meta: Meta<BoxedExpressionEditorProps> = {
   title: "Boxed Expressions/Literal",
   component: BoxedExpressionEditor,
   includeStories: /^[A-Z]/,
-  excludeStories: ["BoxedExpressionEditorWrapper"],
 };
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;

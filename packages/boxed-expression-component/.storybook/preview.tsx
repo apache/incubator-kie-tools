@@ -14,7 +14,13 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: ["_dev", "Boxed Expressions", "Use cases", ["*", ["Overview", "*", ["Overview", "*"]]]],
+        order: [
+          "_dev",
+          "Boxed Expressions",
+          ["Overview", "*"],
+          "Use cases",
+          ["*", ["Overview", "*", ["Overview", "*"]]],
+        ],
       },
     },
     docs: {

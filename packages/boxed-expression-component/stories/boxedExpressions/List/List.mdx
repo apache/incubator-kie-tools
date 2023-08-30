@@ -3,11 +3,32 @@ import * as List from "./List.stories";
 
 <Meta title="MDX/List" of={List} />
 
-# List Boxed Expression
+# Boxed List
 
-With `MDX` we can include a story for `Checkbox` right in the middle of our
-markdown documentation.
+A Boxed List enables you to create a list of expressions. The starting Boxed List expression is a empty list with one empty element.
+
+## Overview
+
+1. Top of the element: it has "List" name which identifies it as a Boxed List expression. By clicking on it you can copy or paste a new expression;
+2. First row:
+   1. First column: it has a "#" symbol which is a placeholder;
+   2. Second column: it has the expression name and its type. By clicking on it you can edit its name and type;
+3. Second row:
+   1. First column: it has the "1" number which represents the row number;
+   1. Second column: it's where the expression of the first row is placed. This expression can be any other expression a nested list is included.
 
 <Canvas>
   <Story of={List.Base} />
+</Canvas>
+
+## Bigger Example
+
+This example brings a bigger list with some expressions.
+
+1. The expression of the first row is a Boxed Literal;
+2. The expression of the second row is a Boxed List with a Literal expression inside of it;
+3. The expression of the third row is a Boxed Context;
+
+<Canvas>
+  <Story of={List.BiggerList} />
 </Canvas>

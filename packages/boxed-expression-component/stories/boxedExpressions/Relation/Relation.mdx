@@ -3,16 +3,56 @@ import * as Relation from "./Relation.stories";
 
 <Meta title="MDX/Relation" of={Relation} />
 
-# Relation Boxed Expression
+# Relation
 
-A Relation Expression is a vertical list of horizontal values (with no result cells) with the variable names appearing just once at the top of the list, like a relational table.
+A Relation is a vertical list of horizontal values with no result cell. The variable names appears just once at the top of the list.
+
+## Overview
+
+1. First row:
+
+   1. First column: It has a "#" symbol which is a placeholder;
+   2. Second column:
+
+      1. First row:
+
+         - This row will **not** exist if the Relation is a nested expression, making the second row the only row.
+         - It has the expression name and its type;
+         - By clicking on it you can edit its name and type;
+         - By hovering the mouse on the cell, a resize handle will show up on the right side of the cell.
+           Clicking on it's possible to resize the cell to the minimum of 100px and without a maximum size;
+
+      2. Second row:
+         - It has the column name an type;
+         - By clicking on it you can edit its name and type;
+         - By hovering the mouse on the cell, a resize handle will show up on the right side of the cell;
+           Clicking on it's possible to resize the cell to the minimum of 100px and without a maximum size;
+         - By hovering the mouse on the cell, a plus sign will appear on the right or left side of the cell, depending on the mouse position.
+           Clicking on it's will add a new column on the right or left side of the actual column;
+
+2. Second row:
+
+   1. First column:
+
+      - It has the "1" number which represents the row number;
+      - By hovering the mouse on the cell, a plus sign will appear on the top or bottom part of the cell, depending on the mouse position.
+        Clicking on it's will add a new row on the above or below side of the actual column;
+
+   2. Second column:
+      - It's where the value of the first row is placed;
+      - By hovering the mouse on the cell, a resize handle will show up on the right side of the cell.
+        Clicking on it's possible to resize the cell to the minimum of 100px and without a maximum size;
+
+**Important**: Only literal expressions are supported on Relations.
 
 <Canvas>
   <Story of={Relation.Base} />
 </Canvas>
 
-For example, the following Relation Expression provides customers profiles:
+## Bigger Relation
+
+This example brings a bigger Relation with the size of 3 columns by 4 rows.
 
 <Canvas>
-  <Story of={Relation.CustomerProfiles} />
+  <Story of={Relation.BiggerRelation} />
 </Canvas>
