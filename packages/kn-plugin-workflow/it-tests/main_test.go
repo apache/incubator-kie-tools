@@ -1,19 +1,22 @@
 //go:build it_tests
 
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
 
 package it_tests
@@ -25,6 +28,7 @@ import (
 	"runtime"
 	"strings"
 	"testing"
+	"time"
 )
 
 var parentPath string
@@ -37,15 +41,15 @@ func TestMain(m *testing.M) {
 	workingPath, _ := os.Getwd()
 	parentPath = filepath.Dir(workingPath)
 	tempDirName := "temp-tests"
-	_, err := os.Stat(tempDirName)
-	if os.IsNotExist(err) == false {
+	if fileExists(tempDirName) {
 		cleanUpTemp(workingPath, tempDirName)
 	}
 	setUpTempDir(tempDirName)
 	TempTestsPath = filepath.Join(workingPath, tempDirName)
 
-	// Build the executable inside the 'dist' folder that is later used for testing.
-	KnExecutable = build()
+	KnExecutable = getPlatformSpecificExecutablePath()
+
+	checkAndBuildExecutable()
 
 	// Run tests
 	exitCode := m.Run()
@@ -84,13 +88,7 @@ func cleanUpTemp(workingPath string, tempDirName string) {
 	}
 }
 
-func build() string {
-	err := ExecuteCommand("pnpm", "build:dev")
-	if err != nil {
-		fmt.Println("Failed to build:", err)
-		os.Exit(1)
-	}
-
+func getPlatformSpecificExecutablePath() string {
 	binaryDirPath := filepath.Join(parentPath, "dist")
 	buildOutput := filepath.Join(binaryDirPath, "/kn-workflow-")
 	switch osAndArch := strings.ToLower(runtime.GOOS); osAndArch {
@@ -118,13 +116,86 @@ func build() string {
 		fmt.Println("Unsupported OS:", osAndArch)
 		os.Exit(1)
 	}
+	return buildOutput
+}
 
-	executable := buildOutput
-	err = ExecuteCommand("chmod", "+x", executable)
+func checkAndBuildExecutable() {
+	// Check if rebuilding the executable is needed
+	executableExists := fileExists(KnExecutable)
+	executableIsExecutable := isExecAny(KnExecutable)
+	lastBuildTimestamp, errTimestamp := getDistFolderTimestamp(filepath.Join(parentPath, "dist"))
+	codeModified, errModified := areSourceFilesModifiedSince(lastBuildTimestamp)
+	if executableExists == false || executableIsExecutable == false || codeModified == true || errTimestamp != nil || errModified != nil {
+		buildDev() // Build the executable for current platform (`build:dev`)
+	}
+}
+
+func getDistFolderTimestamp(path string) (time.Time, error) {
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return fileInfo.ModTime(), nil
+}
+
+func areSourceFilesModifiedSince(timestamp time.Time) (bool, error) {
+	excludedFolders := []string{"it-tests", "dist-tests", "dist"}
+	modificationsDetected := false
+
+	err := filepath.Walk(parentPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if info.IsDir() {
+			for _, excludedFolder := range excludedFolders {
+				if strings.Contains(path, excludedFolder) {
+					return filepath.SkipDir
+				}
+			}
+			return nil
+		}
+
+		modifiedTime := info.ModTime()
+		if modifiedTime.After(timestamp) {
+			modificationsDetected = true
+			return filepath.SkipDir
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return false, err
+	}
+
+	return modificationsDetected, nil
+}
+
+func buildDev() {
+	err := ExecuteCommand("pnpm", "build:dev")
+	if err != nil {
+		fmt.Println("Failed to build:", err)
+		os.Exit(1)
+	}
+
+	err = ExecuteCommand("chmod", "+x", KnExecutable)
 	if err != nil {
 		fmt.Println("Failed to make the built executable file executable:", err)
 		os.Exit(1)
 	}
 
-	return executable
+	return
+}
+
+func fileExists(filePath string) bool {
+	_, err := os.Stat(filePath)
+	return err == nil
+}
+
+func isExecAny(filePath string) bool {
+	fileInfo, _ := os.Stat(filePath)
+	fileMode := fileInfo.Mode()
+	return fileMode&0111 != 0
 }

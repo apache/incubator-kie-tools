@@ -1,18 +1,22 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
@@ -43,7 +47,6 @@ import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
 import org.kie.workbench.common.stunner.sw.autolayout.AutoLayout;
-import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
@@ -54,7 +57,6 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
-import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
@@ -97,11 +99,11 @@ import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling
 import static org.kie.workbench.common.stunner.sw.marshall.WorkflowMarshalling.START_NODE_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.WorkflowMarshalling.WORKFLOW_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.WorkflowMarshalling.WORKFLOW_UNMARSHALLER;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.INVALID_TARGET_NAME;
 
 @ApplicationScoped
 public class Marshaller {
 
-    public static final int SPACING_LEVEL = 2;
     public static boolean LOAD_DETAILS = false;
     public static final String STATE_START = "startState";
     public static final String STATE_END = "endState";
@@ -115,8 +117,6 @@ public class Marshaller {
 
     private Context context;
     private Workflow workflow;
-    private DocType docType;
-
     private final Workflow_JsonMapperImpl jsonMapper = Workflow_JsonMapperImpl.INSTANCE;
     private final Workflow_YamlMapperImpl yamlMapper = Workflow_YamlMapperImpl.INSTANCE;
 
@@ -132,14 +132,12 @@ public class Marshaller {
         this.parser = parser;
         this.promises = promises;
         workflow = null;
-        docType = null;
     }
 
     @SuppressWarnings("all")
     public Promise<ParseResult> unmarshallGraph(String raw, DocType docType) {
         try {
             Workflow result = docType.equals(DocType.JSON) ? jsonMapper.fromJSON(raw) : yamlMapper.read(raw);
-            this.docType = docType;
             workflow = parser.parse(result);
             MarshallerUtils.onPostDeserialize(raw, workflow, docType);
         } catch (Exception e) {
@@ -284,7 +282,7 @@ public class Marshaller {
                         .collect(Collectors.toList());
                 for (Edge e : invalidEdges) {
                     if (((View) e.getSourceNode().getContent()).getDefinition() instanceof State) {
-                        getContext().addMessage(new Message(MessageCode.INVALID_TARGET_NAME,
+                        getContext().addMessage(new Message(INVALID_TARGET_NAME,
                                                             ((State) ((View) e.getSourceNode().getContent()).getDefinition()).getName()));
                     }
                 }
@@ -337,33 +335,31 @@ public class Marshaller {
 
     @SuppressWarnings("unchecked")
     public static <T> NodeUnmarshaller<T> getNodeUnmarshaller(Object bean) {
-        final Class<?> type = bean.getClass();
-        if (Workflow.class.equals(type)) {
-            return (NodeUnmarshaller<T>) WORKFLOW_UNMARSHALLER;
-        } else if (EventState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) EVENT_STATE_UNMARSHALLER;
-        } else if (OperationState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) OPERATION_STATE_UNMARSHALLER;
-        } else if (InjectState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) STATE_UNMARSHALLER;
-        } else if (SwitchState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) SWITCH_STATE_UNMARSHALLER;
-        } else if (SleepState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) STATE_UNMARSHALLER;
-        } else if (ParallelState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) STATE_UNMARSHALLER;
-        } else if (ForEachState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) FOREACH_STATE_UNMARSHALLER;
-        } else if (CallbackState.class.equals(type)) {
-            return (NodeUnmarshaller<T>) CALLBACK_STATE_UNMARSHALLER;
-        } else if (State.class.equals(type)) {
-            return (NodeUnmarshaller<T>) STATE_UNMARSHALLER;
-        } else if (ActionNode[].class.equals(type)) {
-            return (NodeUnmarshaller<T>) ACTIONS_UNMARSHALLER;
-        } else if (OnEvent[].class.equals(type)) {
-            return (NodeUnmarshaller<T>) ONEVENTS_UNMARSHALLER;
+        switch (bean.getClass().getSimpleName()) {
+            case "Workflow":
+                return (NodeUnmarshaller<T>) WORKFLOW_UNMARSHALLER;
+            case "EventState":
+                return (NodeUnmarshaller<T>) EVENT_STATE_UNMARSHALLER;
+            case "OperationState":
+                return (NodeUnmarshaller<T>) OPERATION_STATE_UNMARSHALLER;
+            case "SwitchState":
+                return (NodeUnmarshaller<T>) SWITCH_STATE_UNMARSHALLER;
+            case "InjectState":
+            case "SleepState":
+            case "ParallelState":
+            case "State":
+                return (NodeUnmarshaller<T>) STATE_UNMARSHALLER;
+            case "ForEachState":
+                return (NodeUnmarshaller<T>) FOREACH_STATE_UNMARSHALLER;
+            case "CallbackState":
+                return (NodeUnmarshaller<T>) CALLBACK_STATE_UNMARSHALLER;
+            case "ActionNode[]":
+                return (NodeUnmarshaller<T>) ACTIONS_UNMARSHALLER;
+            case "OnEvent[]":
+                return (NodeUnmarshaller<T>) ONEVENTS_UNMARSHALLER;
+            default:
+                throw new UnsupportedOperationException("No NodeUnmarshaller found for " + bean.getClass().getName());
         }
-        throw new UnsupportedOperationException("No NodeUnmarshaller found for " + type.getName());
     }
 
     @SuppressWarnings("unchecked")

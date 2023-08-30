@@ -1,17 +1,20 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -31,6 +34,12 @@ import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
+import { useOnlineI18n } from "../i18n";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -47,12 +56,15 @@ export interface AdvancedImportModalProps {
   setAuthSessionId: React.Dispatch<React.SetStateAction<string | undefined>>;
   gitRefName: string;
   setGitRefName: React.Dispatch<React.SetStateAction<string>>;
+  insecurelyDisableTlsCertificateValidation: boolean;
+  setInsecurelyDisableTlsCertificateValidation: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, AdvancedImportModalProps>(
   (props, forwardedRef) => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [isGitRefNameSelectorOpen, setGitRefNameSelectorOpen] = useState(false);
+    const { i18n } = useOnlineI18n();
 
     useImperativeHandle(
       forwardedRef,
@@ -125,9 +137,37 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   setAuthSessionId={props.setAuthSessionId}
                   isPlain={false}
                   showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
-                  filter={authSessionsSelectFilterCompatibleWithGitUrlDomain(
-                    props.clonableUrl.clonableUrl.url?.hostname
-                  )}
+                  filter={authSessionsSelectFilterCompatibleWithGitUrlDomain(props.clonableUrl.clonableUrl.url?.host)}
+                />
+              </FormGroup>
+              <FormGroup fieldId="disable-tls-validation">
+                <Checkbox
+                  id="disable-tls-validation"
+                  name="disable-tls-validation"
+                  label={
+                    <>
+                      {i18n.connectToGitModal.insecurelyDisableTlsCertificateValidation}
+                      <Popover
+                        bodyContent={
+                          <I18nHtml>{i18n.connectToGitModal.insecurelyDisableTlsCertificateValidationInfo}</I18nHtml>
+                        }
+                      >
+                        <button
+                          type="button"
+                          aria-label="More info for disable-tls-validation field"
+                          onClick={(e) => e.preventDefault()}
+                          aria-describedby="disable-tls-validation-field"
+                          className="pf-c-form__group-label-help"
+                        >
+                          <HelpIcon noVerticalAlign />
+                        </button>
+                      </Popover>
+                    </>
+                  }
+                  aria-label="Disable TLS Certificate Validation"
+                  tabIndex={4}
+                  isChecked={props.insecurelyDisableTlsCertificateValidation}
+                  onChange={props.setInsecurelyDisableTlsCertificateValidation}
                 />
               </FormGroup>
               <FormGroup

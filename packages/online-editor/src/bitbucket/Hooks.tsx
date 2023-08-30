@@ -1,23 +1,27 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { useMemo } from "react";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { useEnv } from "../env/hooks/EnvContext";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api/dist";
 
 export enum AuthOptionsType {
   UNDEFINED = "UNDEFINED",
@@ -40,6 +44,7 @@ export interface Options {
   domain?: string;
   auth?: AuthOptions;
   headers?: Record<string, string>;
+  proxyUrl?: string;
 }
 
 type GetRepositoryContentsArgsType = {
@@ -96,18 +101,21 @@ export class BitbucketClient implements BitbucketClientApi {
   constructor(options: Options) {
     this.appName = options.appName;
     this.domain = options?.domain ?? "bitbucket.org";
-    this.headers = options?.headers ?? {
+    this.headers = {
       "Content-Type": "application/json",
       Accept: "application/json",
+      ...options?.headers,
     };
     this.auth = options?.auth ?? undefinedAuthOptions;
     this.username = options.username ?? (options?.auth as BasicAuthOptions)?.username;
+    this.proxyUrl = options.proxyUrl;
   }
   appName: string;
   auth: AuthOptions;
   domain: string;
   headers: Record<string, string>;
   username?: string;
+  proxyUrl?: string;
 
   request = async (props: {
     urlContext: string;
@@ -136,6 +144,9 @@ export class BitbucketClient implements BitbucketClientApi {
     });
   };
   getApiUrl = () => {
+    if (this.proxyUrl) {
+      return `${this.proxyUrl}/api.${this.domain}/2.0`;
+    }
     return `https://api.${this.domain}/2.0`;
   };
   getAuthedUser = () => {
@@ -210,21 +221,45 @@ export class BitbucketClient implements BitbucketClientApi {
   };
 }
 
+export function getBitbucketClient(args: {
+  appName: string;
+  auth?: AuthOptions;
+  domain?: string;
+  proxyUrl?: string;
+  insecurelyDisableTlsCertificateValidation?: boolean;
+}) {
+  return new BitbucketClient({
+    appName: args.appName,
+    domain: args.domain,
+    auth: args.auth,
+    proxyUrl: args.insecurelyDisableTlsCertificateValidation ? args.proxyUrl : undefined,
+    headers: {
+      ...(args.insecurelyDisableTlsCertificateValidation
+        ? {
+            [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+              args.insecurelyDisableTlsCertificateValidation
+            ).toString(),
+          }
+        : {}),
+    },
+  });
+}
+
 export function useBitbucketClient(authSession: AuthSession | undefined): BitbucketClientApi {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
 
   return useMemo(() => {
     if (authSession?.type !== "git") {
-      return new BitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
+      return getBitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
     const authProvider = authProviders.find((a) => a.id === authSession.authProviderId);
     if (authProvider?.type !== "bitbucket") {
-      return new BitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
+      return getBitbucketClient({ appName: env.KIE_SANDBOX_APP_NAME });
     }
 
-    return new BitbucketClient({
+    return getBitbucketClient({
       appName: env.KIE_SANDBOX_APP_NAME,
       domain: authProvider.domain,
       auth: {
@@ -232,6 +267,8 @@ export function useBitbucketClient(authSession: AuthSession | undefined): Bitbuc
         username: authSession.login,
         password: authSession.token,
       },
+      proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+      insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
     });
-  }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME]);
+  }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]);
 }

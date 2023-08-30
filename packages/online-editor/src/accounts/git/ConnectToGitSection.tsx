@@ -1,34 +1,35 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
-import { Octokit } from "@octokit/rest";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import InfoAltIcon from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
-import * as React from "react";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { useCallback, useMemo, useState } from "react";
 import { v4 as uuid } from "uuid";
-import { getGithubInstanceApiUrl } from "../../github/Hooks";
+import { getOctokitClient } from "../../github/Hooks";
 import { useOnlineI18n } from "../../i18n";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
@@ -42,7 +43,7 @@ import {
   SupportedGitAuthProviders,
 } from "../../authProviders/AuthProvidersApi";
 import { switchExpression } from "../../switchExpression/switchExpression";
-import { AuthOptionsType, BitbucketClient } from "../../bitbucket/Hooks";
+import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
@@ -115,9 +116,17 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                   env.KIE_SANDBOX_APP_NAME,
                   usernameInput,
                   tokenInput,
-                  props.authProvider.domain
+                  props.authProvider.domain,
+                  env.KIE_SANDBOX_CORS_PROXY_URL,
+                  props.authProvider.insecurelyDisableTlsCertificateValidation
                 ),
-              github: () => fetchAuthenticatedGitHubUser(tokenInput, props.authProvider.domain),
+              github: () =>
+                fetchAuthenticatedGitHubUser(
+                  tokenInput,
+                  props.authProvider.domain,
+                  env.KIE_SANDBOX_CORS_PROXY_URL,
+                  props.authProvider.insecurelyDisableTlsCertificateValidation
+                ),
             })
           )
           .then((response) => {
@@ -164,14 +173,16 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
       [
         props.authProvider.type,
         props.authProvider.domain,
+        props.authProvider.insecurelyDisableTlsCertificateValidation,
         props.authProvider.id,
         tokenInput,
         success,
         setNewAuthSession,
         authSessions,
         i18n.connectToGitModal.auth.error,
-        usernameInput,
         env.KIE_SANDBOX_APP_NAME,
+        env.KIE_SANDBOX_CORS_PROXY_URL,
+        usernameInput,
         authSessionsDispatch,
       ]
     )
@@ -383,11 +394,13 @@ export function assertUnreachable(_x: never): never {
   throw new Error("Didn't expect to get here");
 }
 
-export const fetchAuthenticatedGitHubUser = async (githubToken: string, domain?: string) => {
-  const octokit = new Octokit({
-    auth: githubToken,
-    baseUrl: getGithubInstanceApiUrl(domain),
-  });
+export const fetchAuthenticatedGitHubUser = async (
+  githubToken: string,
+  domain?: string,
+  proxyUrl?: string,
+  insecurelyDisableTlsCertificateValidation?: boolean
+) => {
+  const octokit = getOctokitClient({ githubToken, domain, proxyUrl, insecurelyDisableTlsCertificateValidation });
   const response = await octokit.users.getAuthenticated();
   return {
     data: {
@@ -395,16 +408,20 @@ export const fetchAuthenticatedGitHubUser = async (githubToken: string, domain?:
       login: response.data.login,
       email: response.data.email ?? undefined,
     },
-    headers: { scopes: response.headers["x-oauth-scopes"]?.split(", ") ?? [] },
+    headers: {
+      scopes: response.headers["x-oauth-scopes"]?.split(", ") ?? [],
+    },
   };
 };
 export const fetchAuthenticatedBitbucketUser = async (
   appName: string,
   bitbucketUsername: string,
   bitbucketToken: string,
-  domain?: string
+  domain?: string,
+  proxyUrl?: string,
+  insecurelyDisableTlsCertificateValidation?: boolean
 ) => {
-  const bitbucket = new BitbucketClient({
+  const bitbucketClient = getBitbucketClient({
     appName,
     domain,
     auth: {
@@ -412,9 +429,11 @@ export const fetchAuthenticatedBitbucketUser = async (
       username: bitbucketUsername,
       password: bitbucketToken,
     },
+    proxyUrl,
+    insecurelyDisableTlsCertificateValidation,
   });
 
-  const response = await bitbucket.getAuthedUser();
+  const response = await bitbucketClient.getAuthedUser();
   if (!response.ok) {
     const message = await response.text();
     throw new Error(

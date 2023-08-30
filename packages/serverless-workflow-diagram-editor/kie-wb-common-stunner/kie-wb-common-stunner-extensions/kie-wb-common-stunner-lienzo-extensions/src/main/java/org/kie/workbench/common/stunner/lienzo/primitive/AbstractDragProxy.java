@@ -1,31 +1,35 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.lienzo.primitive;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Transform;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
+import com.ait.lienzo.tools.client.event.EventType;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.Event;
+import elemental2.dom.EventListener;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.MouseEvent;
+import jsinterop.base.Js;
 
 public abstract class AbstractDragProxy<T> {
 
@@ -48,7 +52,8 @@ public abstract class AbstractDragProxy<T> {
     private Integer yDiff = null;
     private Layer layer = null;
     private T shapeProxy = null;
-    private final HandlerRegistration[] handlerRegs = new HandlerRegistration[3];
+
+    private final EventListener[] eventListeners = new EventListener[3];
 
     protected abstract void addToLayer(final Layer layer,
                                        final T shape);
@@ -93,53 +98,71 @@ public abstract class AbstractDragProxy<T> {
                              initialY);
         }
 
-        handlerRegs[0] = RootPanel.get().addDomHandler(getMouseMoveHandler(initialX, initialY, timeout, callback),
-                                                       MouseMoveEvent.getType());
-        handlerRegs[1] = RootPanel.get().addDomHandler(mouseDownEvent -> {
-                                                           mouseDownEvent.stopPropagation();
-                                                           mouseDownEvent.preventDefault();
-                                                       },
-                                                       MouseDownEvent.getType());
-        handlerRegs[2] = RootPanel.get().addDomHandler(getMouseUpHandler(callback),
-                                                       MouseUpEvent.getType());
+        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
+        final HTMLElement rootPanel = Js.uncheckedCast(RootPanel.get().getElement());
+
+        eventListeners[0] = mouseMoveEvent -> onMouseMove(mouseMoveEvent, initialX, initialY, timeout, callback);
+        eventListeners[1] = mouseDownEvent -> {
+            if (mouseDownEvent.type.equals(EventType.MOUSE_DOWN.getType())) {
+                mouseDownEvent.stopPropagation();
+                mouseDownEvent.preventDefault();
+            }
+        };
+        eventListeners[2] = event -> onMouseUp(event, callback);
+
+        rootPanel.addEventListener(EventType.MOUSE_MOVE.getType(), eventListeners[0]);
+        rootPanel.addEventListener(EventType.MOUSE_DOWN.getType(), eventListeners[1]);
+        rootPanel.addEventListener(EventType.MOUSE_UP.getType(), eventListeners[2]);
     }
 
-    MouseUpHandler getMouseUpHandler(final Callback callback) {
-        return mouseUpEvent -> {
+    void onMouseUp(final Event event,
+                   final Callback callback) {
+
+        if (event.type.equals(EventType.MOUSE_UP.getType())) {
+            MouseEvent mouseEvent = (MouseEvent) event;
+
             if (isAttached()) {
                 timer.cancel();
 
-                final int x = relativeX(getXDiff() + mouseUpEvent.getX());
-                final int y = relativeY(getYDiff() + mouseUpEvent.getY());
+                final int x = (int) mouseEvent.x;
+                final int y = (int) mouseEvent.y;
+
+                final int relativeX = relativeX(getXDiff() + x);
+                final int relativeY = relativeY(getYDiff() + y);
 
                 clear();
 
-                callback.onComplete(x, y);
+                callback.onComplete(relativeX, relativeY);
             }
-        };
+        }
     }
 
-    MouseMoveHandler getMouseMoveHandler(final int initialX,
-                                         final int initialY,
-                                         final int timeout,
-                                         final Callback callback) {
-        return mouseMoveEvent -> {
+    void onMouseMove(final Event event,
+                     final int initialX,
+                     final int initialY,
+                     final int timeout,
+                     final Callback callback) {
+        if (event.type.equals(EventType.MOUSE_MOVE.getType())) {
+            MouseEvent mouseEvent = (MouseEvent) event;
 
             if (isAttached()) {
+                final int x = (int) mouseEvent.x;
+                final int y = (int) mouseEvent.y;
+
                 if (xDiff() == null) {
-                    xDiff = initialX - mouseMoveEvent.getX();
+                    xDiff = initialX - x;
                 }
                 if (yDiff() == null) {
-                    yDiff = initialY - mouseMoveEvent.getY();
+                    yDiff = initialY - y;
                 }
 
-                final int x = relativeX(getXDiff() + mouseMoveEvent.getX());
-                final int y = relativeY(getYDiff() + mouseMoveEvent.getY());
+                final int relativeX = relativeX(getXDiff() + x);
+                final int relativeY = relativeY(getYDiff() + y);
 
-                setLocation(shapeProxy, x, y);
-                scheduleMove(callback, x, y, timeout);
+                setLocation(shapeProxy, relativeX, relativeY);
+                scheduleMove(callback, relativeX, relativeY, timeout);
             }
-        };
+        }
     }
 
     boolean isAttached() {
@@ -180,9 +203,12 @@ public abstract class AbstractDragProxy<T> {
     }
 
     private void removeHandlers() {
-        handlerRegs[0].removeHandler();
-        handlerRegs[1].removeHandler();
-        handlerRegs[2].removeHandler();
+        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
+        final HTMLElement rootPanel = Js.uncheckedCast(RootPanel.get().getElement());
+
+        rootPanel.removeEventListener(EventType.MOUSE_MOVE.getType(), eventListeners[0]);
+        rootPanel.removeEventListener(EventType.MOUSE_DOWN.getType(), eventListeners[1]);
+        rootPanel.removeEventListener(EventType.MOUSE_UP.getType(), eventListeners[2]);
     }
 
     public void clear() {

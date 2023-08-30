@@ -1,24 +1,30 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
@@ -45,24 +51,24 @@ import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeUnmarshaller;
 
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.marshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.isValidString;
+import static org.kie.workbench.common.stunner.sw.resources.i18n.SWConstants.DUPLICATE_STATE_NAME;
 
 public interface StateMarshalling {
 
     NodeMarshaller<Object> ANY_NODE_MARSHALLER =
             (context, node) -> node.getContent().getDefinition();
 
-    NodeUnmarshaller<State> STATE_UNMARSHALLER =
+    NodeUnmarshaller<State<?>> STATE_UNMARSHALLER =
             (context, state) -> {
                 // Parse common fields.
                 String name = state.getName();
                 if (context.isStateAlreadyExist(name)) {
-                    context.getContext().addMessage(new Message(MessageCode.DUPLICATE_STATE_NAME,
+                    context.getContext().addMessage(new Message(DUPLICATE_STATE_NAME,
                                                                 name));
                 }
                 final Node stateNode = context.addNode(name, state);
@@ -70,8 +76,8 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                boolean end = getEnd(state.getEnd());
-                if (end) {
+                JsPropertyMap<Object> map = Js.asPropertyMap(state);
+                if (map.has("end") && DefinitionTypeUtils.toEnd(map.get("end"))) {
                     final End endBean = new End();
                     String endName = UUID.uuid();
                     Node endNode = context.addNode(endName, endBean);
@@ -82,38 +88,37 @@ public interface StateMarshalling {
                 }
 
                 // Parse transition.
-                String transition = getTransition(state.getTransition());
-                if (isValidString(transition)) {
-                    final Transition t = new Transition();
-                    t.setTo(transition);
-                    Edge edge = unmarshallEdge(context, t);
-                }
-
-                // Parse compensation transition.
-                if (isValidString(state.getCompensatedBy())) {
-                    CompensationTransition compensationTransition = new CompensationTransition();
-                    compensationTransition.setTransition(state.getCompensatedBy());
-                    Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
-                }
-
-                // Parse on-errors.
-                ErrorTransition[] onErrors = state.getOnErrors();
-                if (null != onErrors && onErrors.length > 0) {
-                    for (int i = 0; i < onErrors.length; i++) {
-                        ErrorTransition onError = onErrors[i];
-                        if (null != onError) {
-                            Edge errorEdge = unmarshallEdge(context, onError);
-                        }
+                if (map.has("transition")) {
+                    String transition = getTransition(map.get("transition"));
+                    if (isValidString(transition)) {
+                        final Transition t = new Transition();
+                        t.setTo(transition);
+                        Edge edge = unmarshallEdge(context, t);
                     }
                 }
 
-                // TODO: Timeouts not in use, just was a PoC, consider dropping at the end if not making sense.
-                /*if (isValidString(state.eventTimeout)) {
-                    EventTimeout eventTimeout = new EventTimeout();
-                    eventTimeout.setEventTimeout(state.eventTimeout);
-                    Node eventTimeoutNode = context.addNode(null, eventTimeout);
-                    context.dock(stateNode, eventTimeoutNode);
-                }*/
+                if (map.has("compensatedBy")) {
+                    String compensatedBy = (String) map.get("compensatedBy");
+                    // Parse compensation transition.
+                    if (isValidString(compensatedBy)) {
+                        CompensationTransition compensationTransition = new CompensationTransition();
+                        compensationTransition.setTransition(compensatedBy);
+                        Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
+                    }
+                }
+
+                if (map.has("onErrors")) {
+                    // Parse on-errors.
+                    ErrorTransition[] onErrors = (ErrorTransition[]) map.get("onErrors");
+                    if (null != onErrors && onErrors.length > 0) {
+                        for (int i = 0; i < onErrors.length; i++) {
+                            ErrorTransition onError = onErrors[i];
+                            if (null != onError) {
+                                Edge errorEdge = unmarshallEdge(context, onError);
+                            }
+                        }
+                    }
+                }
 
                 context.sourceNode = null;
 
@@ -137,7 +142,11 @@ public interface StateMarshalling {
                         marshallEdge(context, edge);
                     }
                 }
-                state.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+
+                JsPropertyMap<Object> map = Js.asPropertyMap(state);
+                if (map.has("onErrors")) {
+                    map.set("onErrors", errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
+                }
                 return state;
             };
 
@@ -185,7 +194,6 @@ public interface StateMarshalling {
 
     NodeUnmarshaller<OnEvent[]> ONEVENTS_UNMARSHALLER =
             (context, onEvents) -> {
-                // TODO: Only parsing a SINGLE (FIRST) onEvent def.
                 OnEvent onEvent = onEvents[0];
                 final Node onEventsNode = context.addNode(null, onEvent);
 
@@ -196,7 +204,6 @@ public interface StateMarshalling {
                 String[] eventRefs = onEvent.getEventRefs();
                 ActionNode[] actions = onEvent.getActions();
 
-                // TODO: Only parsing a SINGLE (FIRST) event definition.
                 // Event Node.
                 String eventRef = eventRefs[0];
                 EventRef event = new EventRef();
@@ -204,14 +211,12 @@ public interface StateMarshalling {
                 event.setName(eventRef);
                 final Node eventNode = context.addNode(null, event);
 
-                // TODO: Only parsing a SINGLE (FIRST) action definition.
                 // Action Node.
                 ActionNode action = actions[0];
                 final Node actionNode = context.addNode(null, action);
 
                 // Transition to Actions Node.
                 final ActionTransition at = new ActionTransition();
-                // at.setName("Call " + action.getName());
                 Edge actionsEdge = context.addEdgeToTargetUUID(at, eventNode, actionNode.getUUID());
 
                 // Set the original parent.
@@ -255,7 +260,6 @@ public interface StateMarshalling {
     NodeUnmarshaller<CallbackState> CALLBACK_STATE_UNMARSHALLER =
             (context, state) -> {
                 Node stateNode = STATE_UNMARSHALLER.unmarshall(context, state);
-                // TODO: Parser for [eventRef + Action]
                 return stateNode;
             };
 
@@ -296,11 +300,6 @@ public interface StateMarshalling {
                     ActionNode[] actions = state.getActions();
                     if (null != actions && actions.length > 0) {
                         Node actionsNode = ACTIONS_UNMARSHALLER.unmarshall(context, actions);
-                        /*
-                        TODO: If necessary, enable the transition (but missing to check connection rules for ActionTransition)
-                        final ActionTransition actionsTransition = new ActionTransition();
-                        Edge onEventsEdge = context.addEdgeToTargetUUID(actionsTransition, stateNode, actionsNode.getUUID());
-                        */
                     }
                 }
                 return stateNode;

@@ -1,18 +1,22 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 package org.kie.workbench.common.stunner.sw.client.editor;
 
 import java.util.ArrayList;
@@ -27,13 +31,13 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
@@ -92,6 +96,9 @@ public class DiagramEditor {
     private DocType currentDocType = DocType.JSON;
 
     @Inject
+    private TranslationService translationService;
+
+    @Inject
     public DiagramEditor(Promises promises,
                          StunnerEditor stunnerEditor,
                          ClientDiagramService diagramService,
@@ -114,9 +121,6 @@ public class DiagramEditor {
         stunnerEditor.setReadOnly(true);
     }
 
-    public IsWidget asWidget() {
-        return stunnerEditor.getView();
-    }
 
     @SuppressWarnings("all")
     public Promise<String> getPreview() {
@@ -195,7 +199,7 @@ public class DiagramEditor {
                                                                    scaleToFitWorkflow(stunnerEditor);
                                                                    if (parseResult.getMessages().length > 0) {
                                                                        for (Message m : parseResult.getMessages()) {
-                                                                           stunnerEditor.addError(m.toString());
+                                                                           stunnerEditor.addError(m.translateMessage(translationService));
                                                                        }
                                                                    }
                                                                    success.onInvoke((Void) null);
@@ -243,7 +247,7 @@ public class DiagramEditor {
                                              updateDiagram(parseResult.getDiagram());
                                              if (parseResult.getMessages().length > 0) {
                                                  for (Message m : parseResult.getMessages()) {
-                                                     stunnerEditor.addError(m.toString());
+                                                     stunnerEditor.addError(m.translateMessage(translationService));
                                                  }
                                              }
                                              success.onInvoke((Void) null);

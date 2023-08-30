@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -28,12 +31,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
+import { AUTH_SESSION_NONE, AuthSession } from "../authSessions/AuthSessionApi";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
@@ -42,6 +46,7 @@ export function ImportFromUrlCard() {
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>(AUTH_SESSION_NONE.id);
   const [url, setUrl] = useState("");
+  const [insecurelyDisableTlsCertificateValidation, setInsecurelyDisableTlsCertificateValidation] = useState(false);
   const [gitRefName, setGitRef] = useState("");
 
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
@@ -49,14 +54,29 @@ export function ImportFromUrlCard() {
   const { authInfo, authSession } = useAuthSession(authSessionId);
 
   const importableUrl = useImportableUrl(url);
-  const clonableUrl = useClonableUrl(url, authInfo, gitRefName);
+
+  const clonableUrl = useClonableUrl(url, authInfo, gitRefName, insecurelyDisableTlsCertificateValidation);
 
   // Select authSession based on the importableUrl domain (begin)
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
 
+  const updateInsecurelyDisableTlsCertificateValidation = useCallback(
+    (newAuthSession: AuthSession) => {
+      if (newAuthSession?.type === "git") {
+        const localAuthProvider = authProviders.find((provider) => provider.id === newAuthSession.authProviderId);
+        if (localAuthProvider?.group === AuthProviderGroup.GIT) {
+          setInsecurelyDisableTlsCertificateValidation(
+            localAuthProvider.insecurelyDisableTlsCertificateValidation ?? false
+          );
+        }
+      }
+    },
+    [authProviders]
+  );
+
   useEffect(() => {
-    const urlDomain = importableUrl.url?.hostname;
+    const urlDomain = importableUrl.url?.host;
     const { compatible } = getCompatibleAuthSessionWithUrlDomain({
       authProviders,
       authSessions,
@@ -64,12 +84,17 @@ export function ImportFromUrlCard() {
       urlDomain,
     });
     setAuthSessionId(compatible[0]!.id);
-  }, [authProviders, authSessionStatus, authSessions, importableUrl]);
+    updateInsecurelyDisableTlsCertificateValidation(compatible[0]);
+  }, [authProviders, authSessionStatus, authSessions, importableUrl, updateInsecurelyDisableTlsCertificateValidation]);
   // Select authSession based on the importableUrl domain (end)
 
   useEffect(() => {
     setGitRef(clonableUrl.selectedGitRefName ?? "");
   }, [clonableUrl.selectedGitRefName]);
+
+  useEffect(() => {
+    authSession && updateInsecurelyDisableTlsCertificateValidation(authSession);
+  }, [authSession, updateInsecurelyDisableTlsCertificateValidation]);
 
   const validation = useImportableUrlValidation(authSession, url, gitRefName, clonableUrl, advancedImportModalRef);
 
@@ -88,10 +113,15 @@ export function ImportFromUrlCard() {
 
       history.push({
         pathname: routes.import.path({}),
-        search: routes.import.queryString({ url, branch: gitRefName, authSessionId }),
+        search: routes.import.queryString({
+          url,
+          branch: gitRefName,
+          authSessionId,
+          insecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation.toString(),
+        }),
       });
     },
-    [authSessionId, gitRefName, history, isValid, routes.import, url]
+    [authSessionId, gitRefName, history, isValid, routes.import, url, insecurelyDisableTlsCertificateValidation]
   );
 
   const buttonLabel = useMemo(() => {
@@ -188,6 +218,8 @@ export function ImportFromUrlCard() {
         setUrl={setUrl}
         gitRefName={gitRefName}
         setGitRefName={setGitRef}
+        insecurelyDisableTlsCertificateValidation={insecurelyDisableTlsCertificateValidation}
+        setInsecurelyDisableTlsCertificateValidation={setInsecurelyDisableTlsCertificateValidation}
       />
     </>
   );

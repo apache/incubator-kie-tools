@@ -1,28 +1,35 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.Optional;
 
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
+import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -34,6 +41,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
 
+@RunWith(LienzoMockitoTestRunner.class)
 public class StateMarshallingTest extends BaseMarshallingTest {
 
     private static final String WORKFLOW_ID = "workflow1";
@@ -45,7 +53,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                 .setId(WORKFLOW_ID)
                 .setName(WORKFLOW_NAME)
                 .setStates(new State[]{
-                        new State()
+                        new OperationState()
                                 .setName("State1")
                 });
     }
@@ -57,12 +65,12 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         endObject.setContinueAs("{}");
         endObject.setCompensate(false);
 
-        workflow.getStates()[0].setEnd(endObject);
+        ((OperationState) workflow.getStates()[0]).setEnd(endObject);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(isConnectedToEnd("State1"));
-        assertTrue(workflow.getStates()[0].getEnd() instanceof StateEnd);
-        final StateEnd end = (StateEnd) workflow.getStates()[0].getEnd();
+        assertTrue(((OperationState) workflow.getStates()[0]).getEnd() instanceof StateEnd);
+        final StateEnd end = (StateEnd) ((OperationState) workflow.getStates()[0]).getEnd();
         assertTrue(end.getTerminate());
         assertEquals("{}", end.getContinueAs());
         assertFalse(end.getCompensate());
@@ -108,7 +116,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
 
     @Test
     public void testUnmarshallEndState() {
-        workflow.getStates()[0].setEnd(true);
+        ((OperationState) workflow.getStates()[0]).setEnd(true);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(isConnectedToEnd("State1"));
@@ -119,9 +127,9 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         unmarshallWorkflow();
         Workflow workflow = marshallWorkflow();
         assertEquals(1, workflow.getStates().length);
-        State state1 = workflow.getStates()[0];
+        OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
-        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertFalse(DefinitionTypeUtils.toEnd(state1.getEnd()));
         assertNull(state1.getCompensatedBy());
         assertNull(state1.getOnErrors());
     }
@@ -139,15 +147,16 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                                graphHandler.newNode(Marshaller.STATE_END, Optional.of(new End())));
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
-        State state1 = workflow.getStates()[0];
+        OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
-        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertFalse(DefinitionTypeUtils.toEnd(state1.getEnd()));
         assertNull(state1.getCompensatedBy());
-        assertNotNull(state1.getOnErrors());
-        assertEquals(1, state1.getOnErrors().length);
-        ErrorTransition onError = state1.getOnErrors()[0];
+        ErrorTransition[] errorTransitions = state1.getOnErrors();
+        assertNotNull(errorTransitions);
+        assertEquals(1, errorTransitions.length);
+        ErrorTransition onError = errorTransitions[0];
         assertNull(onError.getTransition());
-        assertTrue(DefinitionTypeUtils.getEnd(onError.getEnd()));
+        assertTrue(DefinitionTypeUtils.toEnd(onError.getEnd()));
     }
 
     @Test
@@ -156,7 +165,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         unmarshallWorkflow();
 
         // Create a compensation state and transition from State1 to new State.
-        State compensationState = new State().setName("new State").setEnd(true);
+        InjectState compensationState = new InjectState().setName("new State").setEnd(true);
         CompensationTransition compensationTransition = new CompensationTransition();
         compensationTransition.setTransition(compensationState.getName());
         graphHandler.addEdgeTo(graphHandler.newEdge("Compensation_1", Optional.of(compensationTransition)),
@@ -165,11 +174,11 @@ public class StateMarshallingTest extends BaseMarshallingTest {
 
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
-        State state1 = workflow.getStates()[0];
+        OperationState state1 = (OperationState) workflow.getStates()[0];
         assertNull(state1.getTransition());
-        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
-        assertEquals(compensationState.getName(), state1.getCompensatedBy());
+        assertFalse(DefinitionTypeUtils.toEnd(state1.getEnd()));
         assertNull(state1.getTransition());
         assertNull(state1.getOnErrors());
+        assertEquals(compensationState.getName(), state1.getCompensatedBy());
     }
 }

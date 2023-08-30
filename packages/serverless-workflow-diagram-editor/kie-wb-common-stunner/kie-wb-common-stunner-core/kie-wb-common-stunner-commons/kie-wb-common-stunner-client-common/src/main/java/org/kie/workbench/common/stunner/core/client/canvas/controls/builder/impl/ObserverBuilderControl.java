@@ -1,18 +1,22 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
@@ -26,6 +30,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLElement;
+import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -42,6 +48,9 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+
+import static org.jboss.errai.common.client.dom.DOMUtil.getAbsoluteLeft;
+import static org.jboss.errai.common.client.dom.DOMUtil.getAbsoluteTop;
 
 @Default
 @Observer
@@ -131,8 +140,8 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
      * @return the relative x-position
      */
     private double getRelativeX(final double clientX) {
-        return clientX - getCanvasElement().getAbsoluteLeft() + getCanvasElement().getScrollLeft() +
-                getCanvasElement().getOwnerDocument().getScrollLeft();
+        return clientX - getAbsoluteLeft(getCanvasElement()) + getCanvasElement().scrollLeft +
+                (Js.<HTMLElement>uncheckedCast(getCanvasElement().ownerDocument)).scrollLeft;
     }
 
     /**
@@ -141,11 +150,11 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
      * @return the relative y-position
      */
     private double getRelativeY(final double clientY) {
-        return clientY - getCanvasElement().getAbsoluteTop() + getCanvasElement().getScrollTop() +
-                getCanvasElement().getOwnerDocument().getScrollTop();
+        return clientY - getAbsoluteTop(getCanvasElement()) + getCanvasElement().scrollTop +
+                (Js.<HTMLElement>uncheckedCast(getCanvasElement().ownerDocument)).scrollTop;
     }
 
-    private com.google.gwt.user.client.Element getCanvasElement() {
-        return canvasHandler.getAbstractCanvas().getView().asWidget().getElement();
+    private HTMLElement getCanvasElement() {
+        return canvasHandler.getAbstractCanvas().getView().getElement();
     }
 }

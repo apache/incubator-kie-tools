@@ -1,17 +1,20 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
@@ -66,6 +69,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
+  const { onStateControlCommandUpdate, onNewEdit } = props;
   const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | undefined>(undefined);
   const swfTextEditorRef = useRef<SwfTextEditorApi>(null);
 
@@ -91,13 +95,19 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
         getPreview: (): Promise<string> => {
           return Promise.resolve("");
         },
-        undo: (): Promise<void> => {
-          props.onStateControlCommandUpdate(StateControlCommand.UNDO);
-          return swfTextEditorRef.current?.undo() || Promise.resolve();
+        undo: async (): Promise<void> => {
+          if (!swfTextEditorRef.current) {
+            return;
+          }
+          swfTextEditorRef.current.undo();
+          onStateControlCommandUpdate(StateControlCommand.UNDO);
         },
-        redo: (): Promise<void> => {
-          props.onStateControlCommandUpdate(StateControlCommand.REDO);
-          return swfTextEditorRef.current?.redo() || Promise.resolve();
+        redo: async (): Promise<void> => {
+          if (!swfTextEditorRef.current) {
+            return;
+          }
+          swfTextEditorRef.current.redo();
+          onStateControlCommandUpdate(StateControlCommand.REDO);
         },
         validate: (): Promise<Notification[]> => {
           return Promise.resolve([]);
@@ -113,7 +123,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
         },
       };
     },
-    [props]
+    [onStateControlCommandUpdate]
   );
 
   const setValidationErrors = useCallback(
@@ -143,26 +153,26 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
   }, [props.channelType]);
 
   const onContentChanged = useCallback(
-    (newContent: string, operation?: SwfTextEditorOperation) => {
-      switch (operation) {
+    (args: { content: string; operation: SwfTextEditorOperation }) => {
+      switch (args.operation) {
         case SwfTextEditorOperation.EDIT:
-          props.onNewEdit(new WorkspaceEdit(newContent));
+          onNewEdit(new WorkspaceEdit(args.content));
           break;
         case SwfTextEditorOperation.UNDO:
           if (!isVscode()) {
             swfTextEditorRef.current?.undo();
           }
-          props.onStateControlCommandUpdate(StateControlCommand.UNDO);
+          onStateControlCommandUpdate(StateControlCommand.UNDO);
           break;
         case SwfTextEditorOperation.REDO:
           if (!isVscode()) {
             swfTextEditorRef.current?.redo();
           }
-          props.onStateControlCommandUpdate(StateControlCommand.REDO);
+          onStateControlCommandUpdate(StateControlCommand.REDO);
           break;
       }
     },
-    [props, isVscode]
+    [onNewEdit, isVscode, onStateControlCommandUpdate]
   );
 
   return (

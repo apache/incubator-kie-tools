@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as React from "react";
@@ -51,6 +54,7 @@ import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
+import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -65,14 +69,31 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
   const queryParamAuthSessionId = useQueryParam(QueryParams.AUTH_SESSION_ID);
+  const queryParamInsecurelyDisableTlsCertificateValidation = useQueryParam(
+    QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
+  );
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
   const { authSession, gitConfig, authInfo } = useAuthSession(queryParamAuthSessionId);
+  const authProvider = useAuthProvider(authSession);
+  const insecurelyDisableTlsCertificateValidation = useMemo(() => {
+    if (typeof queryParamInsecurelyDisableTlsCertificateValidation === "string") {
+      return queryParamInsecurelyDisableTlsCertificateValidation === "true";
+    }
+    return authProvider?.group === AuthProviderGroup.GIT
+      ? authProvider.insecurelyDisableTlsCertificateValidation
+      : false;
+  }, [queryParamInsecurelyDisableTlsCertificateValidation, authProvider]);
 
   const importableUrl = useImportableUrl(queryParamUrl);
-  const clonableUrlObject = useClonableUrl(queryParamUrl, authInfo, queryParamBranch);
+  const clonableUrlObject = useClonableUrl(
+    queryParamUrl,
+    authInfo,
+    queryParamBranch,
+    insecurelyDisableTlsCertificateValidation
+  );
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
   const setAuthSessionId = useCallback(
@@ -138,6 +159,30 @@ export function NewWorkspaceFromUrlPage() {
       });
     },
     [history, queryParams, routes.import, selectedGitRefName]
+  );
+
+  const setInsecurelyDisableTlsCertificateValidation = useCallback(
+    (newInsecurelyDisableTlsCertificateValidation) => {
+      if (!newInsecurelyDisableTlsCertificateValidation) {
+        history.replace({
+          pathname: routes.import.path({}),
+          search: queryParams.without(QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION).toString(),
+        });
+        return;
+      }
+      history.replace({
+        pathname: routes.import.path({}),
+        search: queryParams
+          .with(
+            QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION,
+            typeof newInsecurelyDisableTlsCertificateValidation === "function"
+              ? newInsecurelyDisableTlsCertificateValidation(insecurelyDisableTlsCertificateValidation ?? false)
+              : newInsecurelyDisableTlsCertificateValidation
+          )
+          .toString(),
+      });
+    },
+    [history, insecurelyDisableTlsCertificateValidation, queryParams, routes.import]
   );
 
   // Startup the page. Only import if those are set.
@@ -268,6 +313,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             gitAuthSessionId: queryParamAuthSessionId,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -290,6 +336,7 @@ export function NewWorkspaceFromUrlPage() {
             gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -311,6 +358,7 @@ export function NewWorkspaceFromUrlPage() {
             gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -331,6 +379,7 @@ export function NewWorkspaceFromUrlPage() {
             gitAuthSessionId: queryParamAuthSessionId,
             gitConfig,
             authInfo,
+            insecurelyDisableTlsCertificateValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -363,6 +412,7 @@ export function NewWorkspaceFromUrlPage() {
     authInfo,
     doImportAsSingleFile,
     queryParamBranch,
+    insecurelyDisableTlsCertificateValidation,
   ]);
 
   useEffect(() => {
@@ -443,9 +493,11 @@ export function NewWorkspaceFromUrlPage() {
               authSessionId={queryParamAuthSessionId}
               url={queryParamUrl ?? ""}
               gitRefName={selectedGitRefName ?? ""}
+              insecurelyDisableTlsCertificateValidation={insecurelyDisableTlsCertificateValidation ?? false}
               setAuthSessionId={setAuthSessionId}
               setUrl={setUrl}
               setGitRefName={setGitRefName}
+              setInsecurelyDisableTlsCertificateValidation={setInsecurelyDisableTlsCertificateValidation}
             />
           )}
         </PageSection>

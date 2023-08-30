@@ -1,17 +1,20 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import React, {
@@ -50,7 +53,7 @@ import {
 import { useNavigationBlockersBypass, useRoutes } from "../../../navigation/Hooks";
 import { useHistory } from "react-router";
 import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
-import { isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
+import { AuthProviderGroup, isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 
 export type GitIntegrationContextType = {
@@ -105,6 +108,13 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const [bitbucketSnippet, setBitbucketSnippet] = useState<any>(undefined);
+
+  const insecurelyDisableTlsCertificateValidation = useMemo(() => {
+    if (authProvider?.group === AuthProviderGroup.GIT) {
+      return authProvider.insecurelyDisableTlsCertificateValidation;
+    }
+    return props.workspace.descriptor.gitInsecurelyDisableTlsCertificateValidation;
+  }, [authProvider, props.workspace]);
 
   useCancelableEffect(
     useCallback(
@@ -168,21 +178,19 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     }
 
     if (props.workspace.descriptor.origin.kind === WorkspaceKind.GIT) {
-      return authSessionsSelectFilterCompatibleWithGitUrlDomain(
-        new URL(props.workspace.descriptor.origin.url).hostname
-      );
+      return authSessionsSelectFilterCompatibleWithGitUrlDomain(new URL(props.workspace.descriptor.origin.url).host);
     }
 
     if (props.workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST) {
       return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
-        new URL(props.workspace.descriptor.origin.url).hostname,
+        new URL(props.workspace.descriptor.origin.url).host,
         gitHubGist?.owner?.login
       );
     }
 
     if (props.workspace.descriptor.origin.kind === WorkspaceKind.BITBUCKET_SNIPPET) {
       return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
-        new URL(props.workspace.descriptor.origin.url).hostname,
+        new URL(props.workspace.descriptor.origin.url).host,
         bitbucketSnippet?.owner?.login
       );
     }
@@ -196,9 +204,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         workspaceId: props.workspace.descriptor.workspaceId,
         gitAuthSessionId:
           typeof newGitAuthSessionId === "function" ? newGitAuthSessionId(lastAuthSessionId) : newGitAuthSessionId,
+        insecurelyDisableTlsCertificateValidation,
       });
     },
-    [props.workspace.descriptor.workspaceId, workspaces]
+    [props.workspace.descriptor.workspaceId, workspaces, insecurelyDisableTlsCertificateValidation]
   );
 
   const workspaceHasNestedDirectories = useMemo(
@@ -290,6 +299,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           ref: newBranchName,
           force: false,
           authInfo,
+          insecurelyDisableTlsCertificateValidation,
         });
 
         history.push({
@@ -315,6 +325,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       gitConfig,
       history,
       routes.import,
+      insecurelyDisableTlsCertificateValidation,
     ]
   );
 
@@ -336,6 +347,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         await workspaces.pull({
           workspaceId: props.workspace.descriptor.workspaceId,
           authInfo,
+          insecurelyDisableTlsCertificateValidation,
         });
 
         if (args.showAlerts) {
@@ -365,6 +377,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       authInfo,
       canPushToGitRepository,
       pushNewBranch,
+      insecurelyDisableTlsCertificateValidation,
     ]
   );
 
@@ -393,6 +406,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         remoteRef: `refs/heads/${workspace.origin.branch}`,
         force: false,
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
       await pullFromGitRepository({ showAlerts: false });
       alerts.pushSuccessAlert.show();
@@ -411,6 +425,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     workspaces,
     gitConfig,
     pullFromGitRepository,
+    insecurelyDisableTlsCertificateValidation,
   ]);
 
   const forceUpdateGistOrSnippet = useCallback(async () => {
@@ -433,6 +448,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       await workspaces.pull({
         workspaceId: props.workspace.descriptor.workspaceId,
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
     } catch (e) {
       alerts.errorAlert.show();
@@ -449,6 +465,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     props.workspace,
     setSyncGistOrSnippetDropdownOpen,
     workspaces,
+    insecurelyDisableTlsCertificateValidation,
   ]);
 
   const updateGistOrSnippet = useCallback(async () => {
@@ -475,6 +492,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         remoteRef: `refs/heads/${props.workspace.descriptor.origin.branch}`,
         force: false,
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
 
       await workspaces.pull({
@@ -500,6 +518,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     gitConfig,
     forceUpdateGistOrSnippet,
     setSyncGistOrSnippetDropdownOpen,
+    insecurelyDisableTlsCertificateValidation,
   ]);
 
   const forkGitHubGist = useCallback(async () => {
@@ -539,6 +558,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         remoteRef: `refs/heads/${props.workspace.descriptor.origin.branch}`,
         force: true,
         authInfo,
+        insecurelyDisableTlsCertificateValidation,
       });
 
       // Redirect to import workspace
@@ -569,6 +589,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     history,
     routes.import,
     alerts.errorAlert,
+    insecurelyDisableTlsCertificateValidation,
   ]);
 
   useEffect(() => {

@@ -1,17 +1,20 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { Meta, domParser, getInstanceNs, getParser } from "@kie-tools/xml-parser-ts";
@@ -50,8 +53,16 @@ import {
   root as dmn14root,
   ns as dmn14ns,
 } from "./schemas/dmn-1_4/ts-gen/meta";
+import {
+  subs as dmn15subs,
+  elements as dmn15elements,
+  meta as dmn15meta,
+  root as dmn15root,
+  ns as dmn15ns,
+} from "./schemas/dmn-1_5/ts-gen/meta";
 // import { dmn3__tDefinitions as DMN10__tDefinitions } from "./schemas/dmn-1_0/ts-gen/types";
 // import { dmn__tDefinitions as DMN11__tDefinitions } from "./schemas/dmn-1_1/ts-gen/types";
+import { DMN15__tDefinitions } from "./schemas/dmn-1_5/ts-gen/types";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";
@@ -63,11 +74,11 @@ type DmnMarshaller = {
   instanceNs: Map<string, string>;
   root: { element: string; type: string };
   meta: Meta;
-  version: "1.0" | "1.1" | "1.2" | "1.3" | "1.4";
+  version: "1.0" | "1.1" | "1.2" | "1.3" | "1.4" | "1.5";
 };
 
 export type DmnDefinitions = {
-  definitions: DMN14__tDefinitions; // Keeping the latest version for now, as the other should be retro-compatible with it.
+  definitions: DMN15__tDefinitions; // Keeping the latest version for now, as the other should be retro-compatible with it.
 };
 
 // FIXME: Tiago --> DMN 1.1 doesn't seem to have diagram types, which is too much of a deal breaker... What to do?
@@ -169,6 +180,23 @@ export function getMarshaller(xml: string): DmnMarshaller {
       meta: dmn14meta,
       parser: { parse: () => p.parse({ xml, domdoc, instanceNs }).json },
       builder: { build: (json: { definitions: DMN14__tDefinitions }) => p.build({ json, instanceNs }) },
+    };
+  } else if (instanceNs.get(dmn15ns.get("")!) !== undefined) {
+    const p = getParser<{ definitions: DMN15__tDefinitions }>({
+      ns: dmn15ns,
+      meta: dmn15meta,
+      subs: dmn15subs,
+      elements: dmn15elements,
+      root: dmn15root,
+    });
+
+    return {
+      instanceNs,
+      version: "1.5",
+      root: dmn15root,
+      meta: dmn15meta,
+      parser: { parse: () => p.parse({ xml, domdoc, instanceNs }).json },
+      builder: { build: (json: { definitions: DMN15__tDefinitions }) => p.build({ json, instanceNs }) },
     };
   } else {
     throw new Error(

@@ -1,26 +1,25 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   getJsonStateNameFromOffset,
   getJsonStateNameOffset,
@@ -65,7 +64,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
   constructor(
     content: string,
-    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
+    private readonly onContentChange: (args: { content: string; operation: SwfTextEditorOperation }) => void,
     private readonly language: FileLanguage,
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
@@ -76,7 +75,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.model.onDidChangeContent((event) => {
       if (!event.isUndoing && !event.isRedoing) {
         this.editor?.pushUndoStop();
-        onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT);
+        onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.EDIT });
       }
     });
 
@@ -127,16 +126,16 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
-      this.onContentChange(this.model.getValue(), SwfTextEditorOperation.UNDO);
+      this.onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.UNDO });
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyZ, () => {
-      this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
+      this.onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.REDO });
     });
 
     if (this.operatingSystem !== OperatingSystem.MACOS) {
       this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
-        this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
+        this.onContentChange({ content: this.model.getValue(), operation: SwfTextEditorOperation.REDO });
       });
     }
 

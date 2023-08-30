@@ -1,18 +1,22 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
@@ -22,7 +26,6 @@ import elemental2.core.Global;
 import elemental2.core.JsObject;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -64,19 +67,6 @@ public class MarshallerUtils {
         return (T) JsObject.assign(instance, jso);
     }
 
-    private static <T> T stunnerMerge(DefinitionManager definitionManager, Object instance, Object jso) {
-        JsPropertyMap<Object> instanceMap = Js.asPropertyMap(instance);
-        JsPropertyMap<Object> jsoMap = Js.asPropertyMap(jso);
-        String[] propertyFields = definitionManager.adapters().forDefinition().getPropertyFields(instance);
-        for (String propertyField : propertyFields) {
-            Object value = jsoMap.get(propertyField);
-            if (null != value) {
-                instanceMap.set(propertyField, value);
-            }
-        }
-        return Js.uncheckedCast(instance);
-    }
-
     /**
      * The original JSON could have the properties, that are not defined in Java based models.
      * But we still need to have them in the JSON after the serialization. So we preserve them
@@ -90,17 +80,16 @@ public class MarshallerUtils {
      * @param workflow - the definition of the workflow
      */
     static void onPostDeserialize(String json, Workflow workflow, DocType docType) {
-        if(docType == DocType.JSON) {
+        if (docType == DocType.JSON) {
             Object parsed = Global.JSON.parse(json);
             Js.asPropertyMap(workflow).set("__original__", parsed);
         } else {
             Js.asPropertyMap(workflow).set("__original__", "empty");
-
         }
     }
 
     static String onPostSerialize(String model, Workflow workflow, DocType docType) {
-        if(docType == DocType.YAML) {
+        if (docType == DocType.YAML) {
             return model;
         }
         Object parsed = Global.JSON.parse(model);
@@ -131,5 +120,4 @@ public class MarshallerUtils {
             });
         }
     }
-
 }

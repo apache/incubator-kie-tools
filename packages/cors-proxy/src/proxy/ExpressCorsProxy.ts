@@ -1,27 +1,35 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
-import { INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION, CorsConfig, CorsProxy, TARGET_URL_HEADER } from "./types";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
+import { CorsProxyHeaderKeys, CorsConfig, CorsProxy } from "@kie-tools/cors-proxy-api/dist";
 
 const HTTPS_PROTOCOL = "https:";
-const BANNED_PROXY_HEADERS = ["origin", "host", TARGET_URL_HEADER, INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION];
+const BANNED_PROXY_HEADERS = [
+  "origin",
+  "host",
+  CorsProxyHeaderKeys.TARGET_URL,
+  CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION,
+];
 
 export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   private readonly logger: Logger;
@@ -59,6 +67,11 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
           }
         }
       });
+
+      // TO DO: Figure out why this gzip encoding is broken with insecure tls certificates!
+      if (req.headers[CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true") {
+        outHeaders["accept-encoding"] = "identity";
+      }
 
       this.logger.log("Proxying to: ", info.proxyUrl.toString());
       this.logger.debug("Proxy Method: ", req.method);
@@ -121,7 +134,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   }
 
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
-    const targetUrl: string = (request.headers[TARGET_URL_HEADER] as string) ?? request.url;
+    const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
 
     if (!targetUrl || targetUrl == "/") {
       throw new Error("Couldn't resolve the target url...");
@@ -134,7 +147,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       proxyUrl,
       corsConfig: this.resolveCorsConfig(targetUrl, request),
       insecurelyDisableTLSCertificateValidation:
-        request.headers[INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true",
+        request.headers[CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true",
     });
   }
 

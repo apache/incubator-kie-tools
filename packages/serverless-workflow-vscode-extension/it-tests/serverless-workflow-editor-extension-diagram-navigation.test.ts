@@ -1,17 +1,20 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import { expect } from "chai";
@@ -45,40 +48,35 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  //TOD - fix test environment
-  it.skip("Select states", async function () {
-    this.timeout(30000);
+  it("Select states", async function () {
+    this.timeout(50000);
 
     const WORKFLOW_NAME = "applicant-request-decision.sw.json";
 
-    try {
-      const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
-      const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
-      const swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
+    const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
+    const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
+    const swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
 
-      const nodeIds = await swfEditor.getAllNodeIds();
-      expect(nodeIds.length).equal(6);
+    const nodeIds = await swfEditor.getAllNodeIds();
+    expect(nodeIds.length).equal(6);
 
-      // Select CheckApplication node
-      await swfEditor.selectNode(nodeIds[1]);
+    // Select CheckApplication node
+    await swfEditor.selectNode(nodeIds[1]);
 
-      const textEditor = await swfTextEditor.getSwfTextEditor();
-      let lineNumber = (await textEditor.getCoordinates())[0];
-      let columnNumber = (await textEditor.getCoordinates())[1];
+    const textEditor = await swfTextEditor.getSwfTextEditor();
+    let lineNumber = (await textEditor.getCoordinates())[0];
+    let columnNumber = (await textEditor.getCoordinates())[1];
 
-      expect(lineNumber).equal(16);
-      expect(columnNumber).equal(7);
+    expect(lineNumber).equal(16);
+    expect(columnNumber).equal(7);
 
-      // Select StartApplication node
-      await swfEditor.selectNode(nodeIds[2]);
+    // Select StartApplication node
+    await swfEditor.selectNode(nodeIds[2]);
 
-      lineNumber = (await textEditor.getCoordinates())[0];
-      columnNumber = (await textEditor.getCoordinates())[1];
+    lineNumber = (await textEditor.getCoordinates())[0];
+    columnNumber = (await textEditor.getCoordinates())[1];
 
-      expect(lineNumber).equal(33);
-      expect(columnNumber).equal(7);
-    } catch (error) {
-      console.error("Select states: " + error);
-    }
+    expect(lineNumber).equal(33);
+    expect(columnNumber).equal(7);
   });
 });
