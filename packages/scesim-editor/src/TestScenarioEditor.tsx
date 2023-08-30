@@ -50,6 +50,7 @@ import { TestToolsPanel } from "./panels/TestToolsPanel";
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
 
 /* Constants */
 
@@ -283,7 +284,9 @@ function TestScenarioParserErrorPanel({
       </Title>
       <EmptyStateBody>
         {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
-          ? "Most likely, this file has been generated with a very old Business Central version."
+          ? "Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version (" +
+            CURRENT_SUPPORTED_VERSION +
+            ")."
           : "Impossibile to correctly parse the provided scesim file. " + (parserErrorMessage || "")}
       </EmptyStateBody>
     </EmptyState>
