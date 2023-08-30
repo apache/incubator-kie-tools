@@ -30,6 +30,7 @@
     "@storybook/addon-controls": "^7.3.2",
     "@storybook/addon-docs": "^7.3.2",
     "@storybook/addon-highlight": "^7.3.2",
+    "@storybook/addon-links": "^7.3.2",
     "@storybook/addon-measure": "^7.3.2",
     "@storybook/addon-outline": "^7.3.2",
     "@storybook/addon-toolbars": "^7.3.2",

@@ -16,6 +16,7 @@ export const config: StorybookConfig = {
     "@storybook/addon-controls",
     "@storybook/addon-docs",
     "@storybook/addon-highlight",
+    "@storybook/addon-links",
     "@storybook/addon-measure",
     "@storybook/addon-outline",
     "@storybook/addon-toolbars",

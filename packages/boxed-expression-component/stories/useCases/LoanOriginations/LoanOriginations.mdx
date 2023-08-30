@@ -1,12 +1,79 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
 import loanOrigination from "./assets/loan-origination.png";
+import dataTypesApplicantData from "./assets/data-types-applicant-data.png";
+import dataTypesBureauData from "./assets/data-types-bureau-data.png";
+import dataTypesRequestedProduct from "./assets/data-types-requested-product.png";
+import dataTypesDecisions from "./assets/data-types-decisions.png";
 
 <Meta title="Use cases/Loan Originations/Overview" />
 
 # Loan Originations Example
 
-The following example was picked from the [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=180).
+## Overview
+
+The loan origination process is example that was picked from the [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=180).
+This example brings varius different decisions with a big variaty of boxed expressions. The loan origination process can be modeled in a BPMN as follow:
 
 <p>
-  <img src={loanOrigination} alt="Alt text" title="title" />
+  <img src={loanOrigination} alt="Loan Origination BPMN" title="Loan Origination BPMN" />
 </p>
+
+A brief summary of the loan origination process:
+
+First, is collected the application data. The application data is used as input for the "Decide bureau strategy"
+which uses the [Bureau Strategy Decision Service](/docs/use-cases-loan-originations-bureau-strategy-decision-service-overview--overview) DRD.
+This Decision Service will outputs which strategy should be used:
+
+- Bureau: collect bureau data before proceding;
+- Through: approve to the next steps;
+- Decline: decline the application and ends the process;
+
+After collecting bureau data, if required, all the information is passed to the
+[Routing Decision Service](/docs/use-cases-loan-originations-routing-decision-service-overview--overview) DRD. Now, this Decision Service will:
+
+- Accept: accept the application and ends the process;
+- Decline: decline the application and ends the process;
+- Refer: manually review the application;
+
+In case the application should be manually reviewed, supporting documents are required to be reviewed by a credit officer,
+which can accept or decline the application.
+
+## Data Types
+
+In this section we have the daya types that were used for this example.
+
+### Applicant data
+
+All the applicant relevant information for the loan origination process.
+
+<p align="center">
+  <img src={dataTypesApplicantData} alt="Applicant Data" title="Applicant Data" />
+</p>
+
+### Requested product
+
+The information related to the requested loan.
+
+<p align="center">
+  <img src={dataTypesRequestedProduct} alt="Requested Product" title="Requested Product" />
+</p>
+
+### Bureau data
+
+The buearu information related to the applicant.
+
+<p align="center">
+  <img src={dataTypesBureauData} alt="Bureau Data" title="Bureau Data" />
+</p>
+
+### Decision types
+
+The decision types.
+
+<p align="center">
+  <img src={dataTypesDecisions} alt="Decisions Data Types" title="Decisions Data Types" />
+</p>
+
+---
+
+This example was picked from the [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=180).

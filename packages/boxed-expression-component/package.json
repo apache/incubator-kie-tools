@@ -50,6 +50,7 @@
     "@kie-tools/storybook-base": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@playwright/test": "^1.37.0",
+    "@storybook/addon-links": "^7.3.2",
     "@storybook/blocks": "^7.3.2",
     "@storybook/manager-api": "^7.3.2",
     "@storybook/preview-api": "^7.3.2",
