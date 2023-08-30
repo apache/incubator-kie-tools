@@ -18,9 +18,9 @@ package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.HTMLPanel;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
@@ -31,12 +31,15 @@ public class HTMLLayoutDragComponent implements LayoutDragComponent {
 
     @Override
     public HTMLElement getShowWidget(RenderingContext context) {
+        var parent = (HTMLDivElement) DomGlobal.document.createElement("div");
         var properties = context.getComponent().getProperties();
         var html = properties.get(HTMLLayoutDragComponent.HTML_CODE_PARAMETER);
         if (html == null) {
             return null;
         }
-        return Js.cast(new HTMLPanel(html).getElement());
+        // TODO: sanitize HTML
+        parent.innerHTML = html;
+        return parent;
     }
 
 }

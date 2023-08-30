@@ -21,8 +21,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -99,7 +97,7 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                 column.appendChild(componentWidget);
                 applyCssToElement(layoutComponent.getProperties(), componentWidget);
                 layoutComponent.getParts().forEach(p -> {
-                    final Optional<IsWidget> partWidget = driver.getComponentPart(column, layoutComponent, p
+                    final Optional<HTMLElement> partWidget = driver.getComponentPart(column, layoutComponent, p
                             .getPartId());
                     partWidget.ifPresent(widget -> applyCssToElement(p.getCssProperties(), widget));
                 });
@@ -117,18 +115,6 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
             cssPropertiesHelper.readCssValues(properties)
                     .stream().forEach(cssValue -> {
                         String prop = cssValue.getProperty();
-                        String val = cssValue.getValue();
-                        style.setProperty(prop, val);
-                    });
-        }
-    }
-
-    protected void applyCssToElement(Map<String, String> properties, IsWidget element) {
-        if (properties != null && !properties.isEmpty()) {
-            final Style style = element.asWidget().getElement().getStyle();
-            cssPropertiesHelper.readCssValues(properties)
-                    .stream().forEach(cssValue -> {
-                        String prop = cssValue.getPropertyInCamelCase();
                         String val = cssValue.getValue();
                         style.setProperty(prop, val);
                     });

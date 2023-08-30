@@ -19,9 +19,9 @@ package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.HTMLPanel;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.ext.plugin.client.resources.ResourcesInjector;
@@ -38,13 +38,15 @@ public class MarkdownLayoutDragComponent implements LayoutDragComponent {
 
     @Override
     public HTMLElement getShowWidget(RenderingContext context) {
+        var parent = (HTMLDivElement) DomGlobal.document.createElement("div");
         var properties = context.getComponent().getProperties();
         var markdown = properties.get(MarkdownLayoutDragComponent.MARKDOWN_CODE_PARAMETER);
         if (markdown == null) {
             return null;
         }
         var html = Marked.Builder.get().parse(markdown);
-        return Js.cast(new HTMLPanel(html).getElement());
+        parent.innerHTML = html;
+        return parent;
     }
 
 }

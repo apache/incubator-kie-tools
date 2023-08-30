@@ -16,17 +16,13 @@
 package org.dashbuilder.client.navigation.widget;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLAnchorElement;
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.Node;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -37,25 +33,17 @@ public abstract class BaseNavWidgetView<T> implements NavWidgetView<T> {
     protected Node navWidget = null;
     protected Element selectedItem = null;
     protected Map<String, Element> itemMap = new HashMap<>();
-    protected Set<IsWidget> widgetSet = new HashSet<>();
     @Inject
     Elemental2DomUtil domUtil;
-
-    protected void appendWidgetToElement(HTMLElement element, IsWidget widget) {
-        domUtil.appendWidgetToElement(element, widget.asWidget());
-        widgetSet.add(widget);
-    }
 
     @Override
     public void clearItems() {
         domUtil.removeAllElementChildren(navWidget);
-
-        widgetSet.forEach(w -> w.asWidget().getElement().removeFromParent());
     }
 
     @Override
     public void addGroupItem(String id, String name, String description, elemental2.dom.HTMLElement el) {
-        navWidget.appendChild((Node) el);
+        navWidget.appendChild(el);
     }
 
     @Override

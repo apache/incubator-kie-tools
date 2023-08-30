@@ -20,10 +20,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.RootPanel;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
-import jsinterop.base.Js;
 import org.dashbuilder.client.place.PlaceManager;
 import org.dashbuilder.client.screens.Router;
 import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
@@ -51,14 +49,11 @@ public class RuntimeEntryPoint {
     @PostConstruct
     public void onLoad() {
         var root = DomGlobal.document.getElementById("app");
-
-        RootPanel.get().getElement().appendChild(Js.cast(root));
-
+        root.appendChild(busyIndicator.getElement());
+        DomGlobal.document.body.appendChild(root);
         hideLoading();
         placeManager.setup(root);
         router.doRoute();
-
-        DomGlobal.document.body.appendChild(busyIndicator.getElement());
 
     }
 

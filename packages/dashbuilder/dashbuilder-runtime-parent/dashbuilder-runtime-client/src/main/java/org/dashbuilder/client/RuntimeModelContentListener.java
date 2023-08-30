@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import elemental2.dom.DomGlobal;
 import elemental2.dom.MessageEvent;
+import elemental2.dom.Window;
 import jsinterop.base.Js;
 import org.dashbuilder.client.screens.Router;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
@@ -36,7 +37,7 @@ public class RuntimeModelContentListener {
 
     @Inject
     Router routerScreen;
-    
+
     public void start(Consumer<String> contentConsumer) {
         setupBridge(contentConsumer);
         if (!hasEnvelope()) {
@@ -50,7 +51,7 @@ public class RuntimeModelContentListener {
 
             });
             if (DomGlobal.window.parent != null) {
-                DomGlobal.window.parent.postMessage(READY, null);
+                DomGlobal.window.parent.postMessage(READY, Window.PostMessageTargetOriginOrOptionsUnionType.of("*"));
             }
         }
     }

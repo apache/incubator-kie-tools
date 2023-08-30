@@ -18,30 +18,30 @@ package org.dashbuilder.renderer.client.selector;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.StyleInjector;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
+import elemental2.dom.CSSProperties.MarginBottomUnionType;
+import elemental2.dom.CSSProperties.MarginLeftUnionType;
+import elemental2.dom.CSSProperties.MarginRightUnionType;
+import elemental2.dom.CSSProperties.MarginTopUnionType;
 import elemental2.dom.CSSProperties.WidthUnionType;
+import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import jsinterop.base.Js;
 import org.dashbuilder.displayer.client.AbstractDisplayerView;
 import org.dashbuilder.patternfly.label.Label;
 import org.dashbuilder.patternfly.label.LabelColor;
 import org.dashbuilder.patternfly.slider.Slider;
 import org.dashbuilder.renderer.client.resources.i18n.SelectorConstants;
 import org.dashbuilder.renderer.client.resources.i18n.SliderConstants;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
+// TODO: Need to create a slider component - for now it is not available for use
 @Dependent
+@Templated
 public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorSliderDisplayer>
                                          implements SelectorSliderDisplayer.View {
 
-    FlowPanel container = new FlowPanel();
-    HTML header = new HTML();
-    FlowPanel body = new FlowPanel();
-    HorizontalPanel inputs = new HorizontalPanel();
-    FlowPanel error = new FlowPanel();
+    @Inject
+    HTMLDivElement container;
 
     @Inject
     Slider slider;
@@ -52,21 +52,12 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
     @Override
     public void init(SelectorSliderDisplayer presenter) {
         super.init(presenter);
-        super.setVisualization(Js.cast(container.getElement()));
+        super.setVisualization(container);
 
         // Enlarge the tooltip max width
         StyleInjector.inject(".slider .tooltip-inner { max-width: 900px; }");
 
-        header.setVisible(false);
-
         // TODO: Slider setup
-        body.getElement().appendChild(Js.cast(slider.getElement()));
-        body.getElement().getStyle().setMarginLeft(10, Style.Unit.PX);
-
-        container.add(header);
-        container.add(body);
-        container.add(inputs);
-        container.add(error);
     }
 
     @Override
@@ -76,23 +67,20 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
 
     @Override
     public void showTitle(String title) {
-        error.setVisible(false);
-        header.setVisible(true);
-        header.setText(title);
+        // TBD
     }
 
     @Override
     public void setWidth(int width) {
         slider.getElement().style.width = WidthUnionType.of(width + "px");
-        inputs.getElement().getStyle().setWidth(width, Style.Unit.PX);
     }
 
     @Override
     public void margins(int top, int bottom, int left, int right) {
-        container.getElement().getStyle().setMarginTop(top, Style.Unit.PX);
-        container.getElement().getStyle().setMarginBottom(bottom, Style.Unit.PX);
-        container.getElement().getStyle().setMarginLeft(left, Style.Unit.PX);
-        container.getElement().getStyle().setMarginRight(right, Style.Unit.PX);
+        container.style.marginTop = MarginTopUnionType.of(top + "px");
+        container.style.marginBottom = MarginBottomUnionType.of(bottom + "px");
+        container.style.marginLeft = MarginLeftUnionType.of(left + "px");
+        container.style.marginRight = MarginRightUnionType.of(right + "px");
     }
 
     @Override
@@ -108,9 +96,6 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
         slider.setValue(minSelected, maxSelected);
         slider.setStep(step);
 
-        header.setVisible(true);
-        body.setVisible(true);
-        error.setVisible(false);
     }
 
     @Override
@@ -120,15 +105,6 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
         minValueEditor.style.set("margin-bottom", "5px");
         maxValueEditor.style.set("margin-bottom", "5px");
         maxValueEditor.style.set("float", "right");
-
-        inputs.clear();
-        // change inputs to other panel
-        //inputs.add(minValueEditor);
-        //inputs.add(maxValueEditor);
-
-        header.setVisible(true);
-        inputs.setVisible(true);
-        error.setVisible(false);
     }
 
     @Override
@@ -138,7 +114,6 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
 
     @Override
     public void textColumnsNotSupported() {
-        header.setVisible(false);
         error(SliderConstants.INSTANCE.textColumnsNotSupported());
     }
 
@@ -148,12 +123,7 @@ public class SelectorSliderDisplayerView extends AbstractDisplayerView<SelectorS
     }
 
     protected void error(String msg) {
-        body.setVisible(false);
-        inputs.setVisible(false);
-        error.setVisible(true);
-        error.clear();
         label.setLabelColor(LabelColor.RED);
         label.setText(msg);
-        error.getElement().appendChild(Js.cast(label.getElement()));
     }
 }

@@ -66,7 +66,7 @@
     <version.org.gwtproject>2.10.0</version.org.gwtproject>
     <version.jakarta.enterprise.cdi-api>2.0.2</version.jakarta.enterprise.cdi-api>
     <version.io.netty>4.1.59.Final</version.io.netty>
-    <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
+    <version.com.google.elemental2>1.2.1</version.com.google.elemental2>
     <version.com.google.jsinterop.base>1.0.1</version.com.google.jsinterop.base>
     <version.com.google.jsinterop.annotations>2.0.0</version.com.google.jsinterop.annotations>
     <version.org.ow2.asm>7.1</version.org.ow2.asm>

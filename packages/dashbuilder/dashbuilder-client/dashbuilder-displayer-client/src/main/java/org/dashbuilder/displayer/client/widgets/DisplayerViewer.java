@@ -155,7 +155,8 @@ public class DisplayerViewer {
         } else {
             retryAction = drawAction;
         }
-        this.currentRetry = DomGlobal.setTimeout(retryAction::accept, ERROR_RETRY_MS);
+        DomGlobal.clearTimeout(currentRetry);
+        currentRetry = DomGlobal.setTimeout(retryAction::accept, ERROR_RETRY_MS);
     }
 
     public HTMLElement getDisplayerContainer() {
@@ -164,7 +165,10 @@ public class DisplayerViewer {
 
     @PreDestroy
     void destroy() {
-        DomGlobal.clearTimeout(this.currentRetry);
+        DomGlobal.clearTimeout(currentRetry);
+        if (container != null) {
+            container.remove();
+        }
         if (displayer != null) {
             displayer.close();
             IOC.getBeanManager().destroyBean(displayer);
