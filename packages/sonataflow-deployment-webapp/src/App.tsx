@@ -19,10 +19,10 @@
 
 import React from "react";
 import { Route, Switch } from "react-router";
-import { HashRouter } from "react-router-dom";
+import { HashRouter, Redirect } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
-import { HomePage } from "./pages/HomePage";
+import { WorkflowForm, Workflows } from "./pages/Workflows/";
 import { NoMatchPage } from "./pages/NoMatchPage";
 import { routes } from "./routes";
 
@@ -32,8 +32,14 @@ export function App() {
       <OpenApiContextProvider>
         <HashRouter>
           <Switch>
+            <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })}>
+              {({ match }) => <WorkflowForm workflowId={match!.params.workflowId!} />}
+            </Route>
+            <Route path={routes.workflows.home.path({})}>
+              <Workflows />
+            </Route>
             <Route path={routes.home.path({})}>
-              <HomePage />
+              <Redirect to={routes.workflows.home.path({})} />
             </Route>
             <Route component={NoMatchPage} />
           </Switch>

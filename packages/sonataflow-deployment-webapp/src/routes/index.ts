@@ -21,7 +21,9 @@ const IS_HASH_ROUTER = true;
 
 export enum QueryParams {}
 
-export enum PathParams {}
+export enum PathParams {
+  WORKFLOW_ID = "workflowId",
+}
 
 export class Route<
   T extends {
@@ -102,6 +104,14 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 
 export const routes = {
   home: new Route<{}>(() => "/"),
+
+  workflows: {
+    home: new Route<{}>(() => "/workflows"),
+    form: new Route<{
+      pathParams: PathParams.WORKFLOW_ID;
+    }>(({ workflowId }) => `/workflows/${workflowId}`),
+  },
+
   dataJson: new Route<{}>(() => "/sonataflow-deploy-webapp-data.json"),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
 };

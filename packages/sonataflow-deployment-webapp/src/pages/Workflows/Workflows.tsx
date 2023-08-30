@@ -30,11 +30,13 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon, ExclamationCircleIcon, PlayIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Table } from "@patternfly/react-table/dist/js/components/Table";
 import { Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table/dist/js/components/TableComposable";
-import { KUBESMARTS_URL } from "../AppConstants";
-import { useOpenApi } from "../context/OpenApiContext";
-import { BasePage } from "./BasePage";
+import { KUBESMARTS_URL } from "../../AppConstants";
+import { useOpenApi } from "../../context/OpenApiContext";
+import { BasePage } from "../BasePage";
+import { Link } from "react-router-dom";
+import { routes } from "../../routes";
 
-export function HomePage() {
+export function Workflows() {
   const openApi = useOpenApi();
 
   return (
@@ -103,7 +105,9 @@ export function HomePage() {
                         {window.location.origin}/{tag.name}
                       </Td>
                       <Td>
-                        <Button icon={<PlayIcon />} variant="link"></Button>
+                        <Link to={routes.workflows.form.path({ workflowId: tag.name })}>
+                          <PlayIcon />
+                        </Link>
                       </Td>
                     </Tr>
                   ))

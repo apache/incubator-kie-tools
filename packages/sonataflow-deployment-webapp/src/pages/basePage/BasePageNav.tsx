@@ -20,7 +20,7 @@
 import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { DownloadIcon, ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, matchPath } from "react-router-dom";
 import { SONATAFLOW_DEPLOYMENT_DOCUMENTATION_URL } from "../../AppConstants";
 import { routes } from "../../routes";
 
@@ -33,7 +33,10 @@ export function BasePageNav() {
         <NavItem
           itemId={0}
           key={"Workflows-nav"}
-          isActive={location.pathname === routes.home.path({})}
+          isActive={
+            location.pathname === routes.workflows.home.path({}) ||
+            matchPath(location.pathname, { path: routes.workflows.form.path({ workflowId: ":workflowId" }) })?.isExact
+          }
           ouiaId="workflows-nav"
         >
           <Link to={routes.home.path({})}>Workflows</Link>

@@ -21,6 +21,7 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
 const buildEnv = env;
@@ -37,6 +38,9 @@ module.exports = async (env) =>
           { from: "./static/resources", to: "./resources" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
+      }),
+      new MonacoWebpackPlugin({
+        languages: ["json"],
       }),
     ],
     module: {
