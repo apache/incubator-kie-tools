@@ -19,6 +19,7 @@
 
 import * as React from "react";
 
+import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   DrawerActions,
@@ -27,6 +28,7 @@ import {
   DrawerPanelBody,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
+import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -36,8 +38,20 @@ import { TestScenarioEditorDock } from "../editor/TestScenarioEditor";
 export function SettingPanel() {
   return (
     <>
-      <Title headingLevel={"h4"}>Name</Title>
-      <TextInput value={"scesim"} isDisabled />
+      <Title headingLevel={"h6"}>Name</Title>
+      <TextInput value={"test.scesim"} type="text" isDisabled />
+      <Title headingLevel={"h6"}>Type</Title>
+      <TextInput value={"DMN"} type="text" isDisabled />
+      <Title headingLevel={"h6"}>DMN Model</Title>
+      <FormSelect value={"1"} aria-label="FormSelect Input" ouiaId="BasicFormSelect">
+        <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
+        <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
+      </FormSelect>
+      <Title headingLevel={"h6"}>DMN Namespace</Title>
+      <TextInput value={"Not available"} type="text" isDisabled />
+      <Title headingLevel={"h6"}>DMN Name</Title>
+      <TextInput value={"MockedDMN"} type="text" isDisabled />
+      <Checkbox id="skip-test" label="Skip this test scenario during the test" />
     </>
   );
 }
@@ -56,15 +70,15 @@ export function TestToolsPanel({
           <DrawerCloseButton onClose={onClose} />
         </DrawerActions>
         <TextContent>
-          <Text component={TextVariants.h3}>
+          <Text component={TextVariants.h2}>
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
-                  return <>Scenario Cheatsheet</>;
+                  return "Scenario Cheatsheet";
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return <>Data Objects tool</>;
+                  return "Data Objects tool";
                 case TestScenarioEditorDock.SETTINGS:
-                  return <>Settings</>;
+                  return "Settings";
                 default:
                   throw new Error("");
               }
@@ -76,7 +90,7 @@ export function TestToolsPanel({
       <DrawerPanelBody>
         {/* The following is a temporary text content. Specific panel for all Docks will be managed */}
         <TextContent>
-          <Text component={TextVariants.small}>
+          <Text>
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
