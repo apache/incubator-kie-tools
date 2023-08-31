@@ -1,34 +1,65 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
+import { Meta, Story, Canvas, Subtitle } from "@storybook/blocks";
 import * as List from "./List.stories";
 
 <Meta title="MDX/List" of={List} />
 
 # Boxed List
 
-A Boxed List enables you to create a list of expressions. The starting Boxed List expression is a empty list with one empty element.
+A boxed list enables you to create a list of boxed expressions.
 
 ## Overview
 
-1. Top of the element: it has "List" name which identifies it as a Boxed List expression. By clicking on it you can copy or paste a new expression;
-2. First row:
-   1. First column: it has a "#" symbol which is a placeholder;
-   2. Second column: it has the expression name and its type. By clicking on it you can edit its name and type;
-3. Second row:
-   1. First column: it has the "1" number which represents the row number;
-   1. Second column: it's where the expression of the first row is placed. This expression can be any other expression a nested list is included.
+### Index column
+
+#### Header
+
+The header row has a "#" symbol which is a placeholder and has any purposes.
+
+#### Rows
+
+The first and any other additional rows has the row number.
+
+### Items columns
+
+#### Header
+
+The header of the Boxed List expression will only exist if it's the root expression of a Decision node,
+and the header will represets the Decision name and type. Clicking on it a context menu will open enabling to edit its values.
+
+#### Items
+
+The items can be any type of expression, even other boxed list.
+
+### Controls
+
+##### Resizing
+
+Hovering the mouse on the header or item cell will show a resize handle on the right side of the cell.
+Clicking on it and draging enables to resize the cell to the minimum of 190px and without a maximum size.
+
+**Important**: This action is only possible if an item has an expression, and this operation will resize all cells in the column.
+
+#### Items
+
+Left clicking on the index column cells or in the header cell (if applicable) will open the "Row" context menu.
+It's possible to insert above, insert below, insert multiples and delete the row.
+
+Another way to add columns is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
+or on the bottom (insert below) of the cell, the position of the plus sign will depend of the mouse position.
+Right clicking on it will add a new row above or below of the actual row.
+
+**Important**: It's not possible to perform the above process in the header row index ("#").
 
 <Canvas>
-  <Story of={List.Base} />
-</Canvas>
+  <div style={{ display: "flex", flexDirection: "column"}}>
+  <Subtitle>
+    {`A Boxed List expression with one row`}
+    <Story of={List.Base} />
+  </Subtitle>
 
-## Bigger Example
-
-This example brings a bigger list with some expressions.
-
-1. The expression of the first row is a Boxed Literal;
-2. The expression of the second row is a Boxed List with a Literal expression inside of it;
-3. The expression of the third row is a Boxed Context;
-
-<Canvas>
-  <Story of={List.BiggerList} />
+  <Subtitle>
+    {`A Boxed List expression with nested expressions`}
+    <Story of={List.BiggerList} />
+  </Subtitle>
+  </div>
 </Canvas>

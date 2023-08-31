@@ -1,13 +1,34 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
+import { Meta, Story, Canvas, Subtitle } from "@storybook/blocks";
 import * as Literal from "./Literal.stories";
 
 <Meta title="MDX/Literal" of={Literal} />
 
-# Boxed Literal
+# Boxed FEEL expression
 
-With `MDX` we can include a story for `Checkbox` right in the middle of our
-markdown documentation.
+A Boxed FEEL expression or literal expression is any FEEL expression defined by the FEEL grammar ([DMN 1.4 Spec](www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)).
+This FEEL expression has access to the scope context derived from the DRD.
+
+## Overview
+
+### Header
+
+The header of the Boxed FEEL expression will only exist if it's the root expression of a decision node,
+and the header will represets the decision name and type. Right clicking on it a context menu will open enabling to edit its values.
+
+### Value
+
+The FEEL expression with the DRD scope.
+
+### Resizing
+
+Hovering the mouse on the header or value cell will show a resize handle on the right side of the cell.
+Right clicking on it and draging enables to resize the cell to the minimum of 190px and without a maximum size;
+
+**Important**: Independently of the cell that was resized, all cells will have the same size.
 
 <Canvas>
-  <Story of={Literal.Base} />
+  <Subtitle>
+    {`A Boxed FEEL expression`}
+    <Story of={Literal.Base} />
+  </Subtitle>
 </Canvas>

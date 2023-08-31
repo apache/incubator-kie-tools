@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Relation: Story = {
+export const Base: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
@@ -54,7 +54,7 @@ export const BiggerRelation: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
-    ...Relation.args,
+    ...Base.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Example",
