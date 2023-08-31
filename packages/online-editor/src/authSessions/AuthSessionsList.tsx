@@ -30,7 +30,7 @@ import {
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
-import { useMemo, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -53,13 +53,11 @@ export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const devDeployments = useDevDeployments();
-  const [openshiftUsages, setOpenshiftUsages] = useState(new Map());
 
-  useMemo(() => {
-    [...authSessions.values()].map(async (authSession) => {
+  useEffect(() => {
+    [...authSessions.values()].map((authSession) => {
       if (authSession.type === "openshift") {
-        const getOpenshiftUsages = await devDeployments.loadDeployments({ authSession });
-        setOpenshiftUsages((prev) => new Map([...prev, [authSession.id, getOpenshiftUsages]]));
+        devDeployments.getUsages({ authSession });
       }
     });
   }, [authSessions, devDeployments]);
@@ -100,7 +98,7 @@ export function AuthSessionsList(props: {}) {
               authSession={authSession}
               usages={
                 authSession.type === "openshift"
-                  ? openshiftUsages.get(authSession.id)
+                  ? devDeployments.openshiftUsages.get(authSession.id)
                   : usagesByWorkspace.get(authSession.id)
               }
             />

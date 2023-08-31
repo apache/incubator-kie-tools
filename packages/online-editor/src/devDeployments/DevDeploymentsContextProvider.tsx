@@ -48,6 +48,9 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeployModalState, setConfirmDeployModalState] = useState<ConfirmDeployModalState>({ isOpen: false });
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
+  // Usages
+  const [openshiftUsages, setOpenshiftUsages] = useState(new Map());
+
   // Service
   const getService = useCallback(
     (authSession: CloudAuthSession) => {
@@ -139,30 +142,45 @@ export function DevDeploymentsContextProvider(props: Props) {
     [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, getService, workspaces]
   );
 
+  const getUsages = useCallback(
+    async (args: { authSession: CloudAuthSession }) => {
+      if (args.authSession.type === "openshift") {
+        const getOpenshiftUsages = await loadDeployments({ authSession: args.authSession });
+        setOpenshiftUsages((prev) => new Map([...prev, [args.authSession.id, getOpenshiftUsages]]));
+      }
+    },
+    [loadDeployments]
+  );
+
   const value = useMemo(
     () => ({
       isDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
       confirmDeleteModalState,
+      openshiftUsages,
       setDeployDropdownOpen,
       setConfirmDeployModalState,
       setConfirmDeleteModalState,
       setDeploymentsDropdownOpen,
+      setOpenshiftUsages,
       deploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,
+      getUsages,
     }),
     [
       isDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
       confirmDeleteModalState,
+      openshiftUsages,
       deploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,
+      getUsages,
     ]
   );
 

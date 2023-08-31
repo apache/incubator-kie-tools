@@ -60,7 +60,12 @@ export interface DevDeploymentsContextType {
   confirmDeleteModalState: DeleteDeployModalState;
   setConfirmDeleteModalState: React.Dispatch<React.SetStateAction<DeleteDeployModalState>>;
 
+  // Usages
+  openshiftUsages: Map<any, any>;
+  setOpenshiftUsages: React.Dispatch<React.SetStateAction<Map<any, any>>>;
+
   // Actions
+  getUsages: (args: { authSession: CloudAuthSession }) => void;
   deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
   loadDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployedModel[]>;
   deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
