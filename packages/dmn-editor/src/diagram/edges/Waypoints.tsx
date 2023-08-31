@@ -2,7 +2,7 @@ import * as React from "react";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { deleteEdgeWaypoint } from "../../mutations/deleteEdgeWaypoint";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { useNodeHovered } from "../nodes/Nodes";
+import { useIsHovered } from "../useIsHovered";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { useEffect } from "react";
@@ -36,7 +36,7 @@ export function Waypoint({
   point: DC__Point;
 }) {
   const circleRef = React.useRef<SVGCircleElement>(null);
-  const isHovered = useNodeHovered(circleRef);
+  const isHovered = useIsHovered(circleRef);
   const { dispatch } = useDmnEditorStore();
   const { setState } = useDmnEditorStoreApi();
 

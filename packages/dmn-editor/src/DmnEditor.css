@@ -276,7 +276,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 
 .kie-dmn-editor--tabs ~ section {
-  overflow: scroll;
+  overflow: auto;
   height: calc(100% - 40px);
 }
 
@@ -372,7 +372,11 @@ the cursor is inside it. By making it adimensional, that never happens.
 
 /* edge selection / hover */
 
-.react-flow__edge.selected > path {
+.react-flow__edge > .kie-dmn-editor--edge {
+  pointer-events: none;
+}
+
+.react-flow__edge.selected > .kie-dmn-editor--edge {
   fill: #006ba4 !important;
   stroke: #006ba4 !important;
   stroke-width: 3px !important;

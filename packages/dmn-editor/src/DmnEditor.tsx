@@ -25,14 +25,13 @@ import {
   useDmnEditorStore,
   useDmnEditorStoreApi,
 } from "./store/Store";
-
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
-const ON_CHANGE_THROTTLE_TIME_IN_MS = 500;
+const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
 export type DmnEditorRef = {
   reset: (mode: State["dmn"]["model"]) => void;
@@ -81,7 +80,7 @@ export const DmnEditorInternal = ({
     const timeout = setTimeout(() => {
       console.log("Model changed!");
       onModelChange?.(dmn.model);
-    }, ON_CHANGE_THROTTLE_TIME_IN_MS);
+    }, ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS);
 
     return () => {
       clearTimeout(timeout);

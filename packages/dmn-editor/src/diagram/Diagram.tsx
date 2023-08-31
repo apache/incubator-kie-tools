@@ -43,6 +43,7 @@ import { DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
+import { DiagramContainerContextProvider } from "./DiagramContainerContext";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -144,11 +145,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       e.stopPropagation();
 
       // we need to remove the wrapper bounds, in order to get the correct position
-      const rfBounds = container.current.getBoundingClientRect();
-      const dropPoint = {
-        x: e.clientX - rfBounds.left - reactFlowInstance.getViewport().x,
-        y: e.clientY - rfBounds.top - reactFlowInstance.getViewport().y,
-      };
+      const containerBounds = container.current.getBoundingClientRect();
+      const dropPoint = reactFlowInstance.project({
+        x: e.clientX - containerBounds.left,
+        y: e.clientY - containerBounds.top,
+      });
 
       // --------- This is where we draw the line between the diagram and the model.
 
@@ -180,12 +181,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         return;
       }
 
-      // we need to remove the wrapper bounds, in order to get the correct position
-      const rfBounds = container.current.getBoundingClientRect();
-      const dropPoint = {
-        x: e.clientX - rfBounds.left - reactFlowInstance.getViewport().x,
-        y: e.clientY - rfBounds.top - reactFlowInstance.getViewport().y,
-      };
+      // we need to remove the container bounds, in order to get the correct position
+      const containerBounds = container.current.getBoundingClientRect();
+      const dropPoint = reactFlowInstance.project({
+        x: e.clientX - containerBounds.left,
+        y: e.clientY - containerBounds.top,
+      });
 
       // only try to create node if source handle is compatible
       if (!Object.values(NODE_TYPES).find((n) => n === connection.handleId)) {
@@ -405,46 +406,48 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   return (
     <>
-      <EdgeMarkers />
-      <RF.ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onlyRenderVisibleElements={true}
-        zoomOnDoubleClick={false}
-        elementsSelectable={true}
-        panOnScroll={true}
-        selectionOnDrag={true}
-        panOnDrag={PAN_ON_DRAG}
-        panActivationKeyCode={"Alt"}
-        selectionMode={RF.SelectionMode.Partial}
-        connectionLineComponent={ConnectionLine}
-        onConnect={onConnect}
-        onConnectStart={onConnectStart}
-        onConnectEnd={onConnectEnd}
-        isValidConnection={isValidConnection}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        snapToGrid={true}
-        snapGrid={rfSnapGrid}
-        defaultViewport={DEFAULT_VIEWPORT}
-        fitView={false}
-        fitViewOptions={FIT_VIEW_OPTIONS}
-        attributionPosition={"bottom-right"}
-        onInit={setReactFlowInstance}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-      >
-        <SelectionStatus />
-        <Pallete />
-        <TopRightCornerPanels />
-        <PanWhenAltPressed />
-        <KeyboardShortcuts />
-        <RF.Background />{" "}
-        {/** FIXME: Tiago --> This is making the Diagram VERY slow on Firefox. Render this conditionally. */}
-        <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
-      </RF.ReactFlow>
+      <DiagramContainerContextProvider container={container}>
+        <EdgeMarkers />
+        <RF.ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onlyRenderVisibleElements={true}
+          zoomOnDoubleClick={false}
+          elementsSelectable={true}
+          panOnScroll={true}
+          selectionOnDrag={true}
+          panOnDrag={PAN_ON_DRAG}
+          panActivationKeyCode={"Alt"}
+          selectionMode={RF.SelectionMode.Partial}
+          connectionLineComponent={ConnectionLine}
+          onConnect={onConnect}
+          onConnectStart={onConnectStart}
+          onConnectEnd={onConnectEnd}
+          isValidConnection={isValidConnection}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          snapToGrid={true}
+          snapGrid={rfSnapGrid}
+          defaultViewport={DEFAULT_VIEWPORT}
+          fitView={false}
+          fitViewOptions={FIT_VIEW_OPTIONS}
+          attributionPosition={"bottom-right"}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+        >
+          <SelectionStatus />
+          <Pallete />
+          <TopRightCornerPanels />
+          <PanWhenAltPressed />
+          <KeyboardShortcuts />
+          {/** FIXME: Tiago --> The background is making the Diagram VERY slow on Firefox. Render this conditionally. */}
+          <RF.Background />
+          <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
+        </RF.ReactFlow>
+      </DiagramContainerContextProvider>
     </>
   );
 }

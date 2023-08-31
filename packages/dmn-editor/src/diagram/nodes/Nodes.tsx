@@ -32,6 +32,7 @@ import {
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
+import { useIsHovered } from "../useIsHovered";
 
 export type DmnEditorDiagramNodeData<T> = {
   dmnObject: T;
@@ -49,7 +50,7 @@ export const InputDataNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
@@ -114,7 +115,7 @@ export const DecisionNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
@@ -180,7 +181,7 @@ export const BkmNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
@@ -245,7 +246,7 @@ export const KnowledgeSourceNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
@@ -308,7 +309,7 @@ export const TextAnnotationNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
@@ -371,7 +372,7 @@ export const DecisionServiceNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tDecisionService>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
 
@@ -435,7 +436,7 @@ export const GroupNode = React.memo(
   }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tGroup>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useNodeHovered(ref) || isResizing) && !dragging;
+    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(isConnecting, isValidTarget, id);
@@ -490,33 +491,6 @@ export function NodeResizerHandle(props: { snapGrid: SnapGrid; nodeId: string; n
       />
     </RF.NodeResizeControl>
   );
-}
-
-// Hooks
-
-export function useNodeHovered(ref: React.RefObject<HTMLElement | SVGElement>) {
-  const [isHovered, setHovered] = React.useState(false);
-
-  useEffect(() => {
-    function onEnter() {
-      setHovered(true);
-    }
-
-    function onLeave() {
-      setHovered(false);
-    }
-
-    const r = ref.current;
-
-    r?.addEventListener("mouseenter", onEnter);
-    r?.addEventListener("mouseleave", onLeave);
-    return () => {
-      r?.removeEventListener("mouseleave", onLeave);
-      r?.removeEventListener("mouseenter", onEnter);
-    };
-  }, [ref]);
-
-  return isHovered;
 }
 
 function useNodeResizing(id: string): boolean {
