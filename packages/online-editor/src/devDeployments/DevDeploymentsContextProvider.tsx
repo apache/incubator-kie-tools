@@ -30,6 +30,7 @@ import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesServ
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
+import { KieSandboxDeployedModel } from "./services/types";
 
 interface Props {
   children: React.ReactNode;
@@ -49,7 +50,7 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
   // Usages
-  const [openshiftUsages, setOpenshiftUsages] = useState(new Map());
+  const [openshiftUsages, setOpenshiftUsages] = useState(new Map<string, KieSandboxDeployedModel[]>);
 
   // Service
   const getService = useCallback(
