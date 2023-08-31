@@ -1,9 +1,4 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
-import loanOrigination from "./assets/loan-origination.png";
-import dataTypesApplicantData from "./assets/data-types-applicant-data.png";
-import dataTypesBureauData from "./assets/data-types-bureau-data.png";
-import dataTypesRequestedProduct from "./assets/data-types-requested-product.png";
-import dataTypesDecisions from "./assets/data-types-decisions.png";
 
 <Meta title="Use cases/Loan Originations/Overview" />
 
@@ -15,7 +10,7 @@ The loan origination process is example that was picked from the [DMN 1.4 Spec](
 This example brings varius different decisions with a big variaty of boxed expressions. The loan origination process can be modeled in a BPMN as follow:
 
 <p>
-  <img src={loanOrigination} alt="Loan Origination BPMN" title="Loan Origination BPMN" />
+  <img src={"/loan-origination.png"} alt="Loan Origination BPMN" title="Loan Origination BPMN" />
 </p>
 
 A brief summary of the loan origination process:
@@ -47,7 +42,7 @@ In this section we have the daya types that were used for this example.
 All the applicant relevant information for the loan origination process.
 
 <p align="center">
-  <img src={dataTypesApplicantData} alt="Applicant Data" title="Applicant Data" />
+  <img src={"/data-types-applicant-data.png"} alt="Applicant Data" title="Applicant Data" />
 </p>
 
 ### Requested product
@@ -55,7 +50,7 @@ All the applicant relevant information for the loan origination process.
 The information related to the requested loan.
 
 <p align="center">
-  <img src={dataTypesRequestedProduct} alt="Requested Product" title="Requested Product" />
+  <img src={"/data-types-requested-product.png"} alt="Requested Product" title="Requested Product" />
 </p>
 
 ### Bureau data
@@ -63,7 +58,7 @@ The information related to the requested loan.
 The buearu information related to the applicant.
 
 <p align="center">
-  <img src={dataTypesBureauData} alt="Bureau Data" title="Bureau Data" />
+  <img src={"/data-types-bureau-data.png"} alt="Bureau Data" title="Bureau Data" />
 </p>
 
 ### Decision types
@@ -71,7 +66,7 @@ The buearu information related to the applicant.
 The decision types.
 
 <p align="center">
-  <img src={dataTypesDecisions} alt="Decisions Data Types" title="Decisions Data Types" />
+  <img src={"/data-types-decisions.png"} alt="Decisions Data Types" title="Decisions Data Types" />
 </p>
 
 ---

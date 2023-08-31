@@ -25,16 +25,6 @@ const preview: Preview = {
     },
     docs: {
       toc: true,
-      page: () => (
-        <>
-          <Title />
-          <Subtitle />
-          <Description />
-          <Primary />
-          <Controls />
-          <Stories />
-        </>
-      ),
     },
   },
 

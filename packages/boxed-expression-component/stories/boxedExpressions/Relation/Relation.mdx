@@ -1,58 +1,82 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
+import { Meta, Story, Canvas, Subtitle } from "@storybook/blocks";
 import * as Relation from "./Relation.stories";
 
 <Meta title="MDX/Relation" of={Relation} />
 
 # Relation
 
-A Relation is a vertical list of horizontal values with no result cell. The variable names appears just once at the top of the list.
+A Relation is a vertical list of horizontal values with no result cell. This expression can be used to store static values.
 
 ## Overview
 
-1. First row:
+### Index column
 
-   1. First column: It has a "#" symbol which is a placeholder;
-   2. Second column:
+#### Headers
 
-      1. First row:
+The header row has a "#" symbol which is a placeholder and has any purposes.
 
-         - This row will **not** exist if the Relation is a nested expression, making the second row the only row.
-         - It has the expression name and its type;
-         - By clicking on it you can edit its name and type;
-         - By hovering the mouse on the cell, a resize handle will show up on the right side of the cell.
-           Clicking on it's possible to resize the cell to the minimum of 100px and without a maximum size;
+#### Values
 
-      2. Second row:
-         - It has the column name an type;
-         - By clicking on it you can edit its name and type;
-         - By hovering the mouse on the cell, a resize handle will show up on the right side of the cell;
-           Clicking on it's possible to resize the cell to the minimum of 100px and without a maximum size;
-         - By hovering the mouse on the cell, a plus sign will appear on the right or left side of the cell, depending on the mouse position.
-           Clicking on it's will add a new column on the right or left side of the actual column;
+The first and any other additional rows has the row number.
 
-2. Second row:
+#### Adding more rows
 
-   1. First column:
+A plus sign will appear on the top or bottom of the row number cell by hovering the mouse on it,
+the position of the plus sign will depend of the mouse position.
+Clicking on it will add a new row above or below of the actual row.
 
-      - It has the "1" number which represents the row number;
-      - By hovering the mouse on the cell, a plus sign will appear on the top or bottom part of the cell, depending on the mouse position.
-        Clicking on it's will add a new row on the above or below side of the actual column;
+It's not possible to perform the above process in the header row index ("#").
 
-   2. Second column:
-      - It's where the value of the first row is placed;
-      - By hovering the mouse on the cell, a resize handle will show up on the right side of the cell.
-        Clicking on it's possible to resize the cell to the minimum of 100px and without a maximum size;
+### Variable columns
+
+The variable columns can't be less then 1 and doesn't have a maximum number.
+
+#### Headers
+
+If the Relation is the root expression of a Decision node, the header row will be split into two rows.
+The first will represents the Decision name and type, and the second will represents the variables name and type.
+Now, if the Relation is a nested expression, it will have only one row, which will be the variables name and type.
+
+> ##### Row responsible for the Decision name and type
+>
+> This row will be a single cell which has the Decision name and its type,
+> and by clicking on it a context menu will open enabling to edit its values.
+> Hovering the mouse on this cell will show the resize handle on the right side of the cell.
+> Clicking on it and draging is possible to resize the cell to the minimum of 100px and without a maximum size.
+
+> ##### Row responsible for the Relation variables
+>
+> This row has a cell for each variable name and type, and by clicking on it a context menu will open enabling to edit its values.
+> Hovering the mouse on one variable cell will show the resize handle on the right side of the cell.
+> Clicking on it and draging is possible to resize the cell to the minimum of 100px and without a maximum size.
+
+##### Adding new variables
+
+Hovering the mouse on a variable cell shows a plus sign on the right or left side of the cell, depending on the mouse position.
+Clicking on it will add a new column on the right or left side of the actual column.
+
+#### Values
+
+The value rows are literal expressions which can be filled with static data.
+Hovering the mouse on the value cell will show a resize handle on the right side of the cell.
+Clicking on it and draging is possible to resize the cell to the minimum of 100px and without a maximum size;
 
 **Important**: Only literal expressions are supported on Relations.
 
 <Canvas>
-  <Story of={Relation.Base} />
-</Canvas>
+  <div style={{ display: "flex", flexDirection: "column"}}>
+  <Subtitle>
+    {`A simple Relation expression with size 1x1`}
+    <Story of={Relation.Relation} />
+  </Subtitle>
+  <Subtitle>
+    {`A bigger Relation expression with size 3x4`}
+    <Story of={Relation.BiggerRelation} />
+  </Subtitle>
 
-## Bigger Relation
-
-This example brings a bigger Relation with the size of 3 columns by 4 rows.
-
-<Canvas>
-  <Story of={Relation.BiggerRelation} />
+  <Subtitle>
+    {`A nested Relation expression with size 1x1 inside a Boxed List`}
+    <Story of={Relation.NestedRelation} />
+  </Subtitle>
+  </div>
 </Canvas>

@@ -16,7 +16,7 @@ export default meta;
 type Story = StoryObj<BoxedExpressionEditorProps>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Base: Story = {
+export const Relation: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
@@ -54,7 +54,7 @@ export const BiggerRelation: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
-    ...Base.args,
+    ...Relation.args,
     expressionDefinition: {
       id: generateUuid(),
       name: "Example",
@@ -151,5 +151,46 @@ export const BiggerRelation: Story = {
         },
       ],
     },
+  },
+};
+
+export const NestedRelation: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  args: {
+    ...EmptyExpression.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Expression Name",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.List,
+      items: [
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Relation,
+          dataType: DmnBuiltInDataType.Undefined,
+          columns: [
+            {
+              id: generateUuid(),
+              name: "column-1",
+              dataType: DmnBuiltInDataType.Undefined,
+              width: 100,
+            },
+          ],
+          rows: [
+            {
+              id: generateUuid(),
+              cells: [
+                {
+                  id: generateUuid(),
+                  content: RELATION_EXPRESSION_DEFAULT_VALUE,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    isResetSupportedOnRootExpression: false,
   },
 };
