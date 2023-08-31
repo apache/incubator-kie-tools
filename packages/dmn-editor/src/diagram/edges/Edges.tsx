@@ -7,13 +7,14 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import * as RF from "reactflow";
 import { Unpacked } from "../useDmnDiagramData";
-import { Waypoints } from "./Waypoints";
+import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { useIsHovered } from "../useIsHovered";
 import { useDmnEditorDiagramContainer } from "../DiagramContainerContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
 import { snapPoint } from "../SnapGrid";
+import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
 
 const DEFAULT_EDGE_INTRACTION_WIDTH = 40;
 
@@ -96,9 +97,13 @@ export const AssociationPath = React.memo(
   }
 );
 
-export function useEdgeClassName(isConnecting: boolean) {
+export function useEdgeClassName(isConnecting: boolean, isDraggingWaypoint: boolean) {
   if (isConnecting) {
     return "dimmed";
+  }
+
+  if (isDraggingWaypoint) {
+    return "dragging-waypoint";
   }
 
   return "normal";
@@ -121,74 +126,15 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
   const interactionPathRef = React.useRef<SVGPathElement>(null);
   const isHovered = useIsHovered(interactionPathRef);
 
-  //
-
-  const { diagram } = useDmnEditorStore();
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const reactFlowInstance = RF.useReactFlow();
-
-  const [potentialWaypoint, setPotentialWaypoint] =
-    useState<ReturnType<typeof approximateClosestPoint> | undefined>(undefined);
-
-  const { container } = useDmnEditorDiagramContainer();
-
-  const onMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      const containerBounds = container.current!.getBoundingClientRect();
-      const projectedPoint = reactFlowInstance.project({
-        x: e.clientX - containerBounds.left,
-        y: e.clientY - containerBounds.top,
-      });
-
-      setPotentialWaypoint(approximateClosestPoint(interactionPathRef.current!, [projectedPoint.x, projectedPoint.y]));
-    },
-    [container, reactFlowInstance]
+  const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
+    waypoints,
+    props.id,
+    props.data?.dmnEdge?.index,
+    interactionPathRef
   );
 
-  const onDoubleClick = useCallback(() => {
-    if (!potentialWaypoint || props.data?.dmnEdge?.index === undefined) {
-      return;
-    }
-
-    const snappedPotentialWaypoint = snapPoint(diagram.snapGrid, {
-      "@_x": potentialWaypoint.point.x,
-      "@_y": potentialWaypoint.point.y,
-    });
-
-    const existingWaypoint = waypoints.find(
-      (w) => w["@_x"] === snappedPotentialWaypoint["@_x"] && w["@_y"] === snappedPotentialWaypoint["@_y"]
-    );
-    if (existingWaypoint) {
-      console.debug("Preventing overlapping waypoint creation.");
-      return;
-    }
-
-    // This only works because the lines connecting waypoints are ALWAYS straight lines.
-    // This code will stop working properly if the interpolation method changes.
-    let i = 1;
-    for (let currentLength = 0; currentLength < potentialWaypoint.lengthInPath; i++) {
-      currentLength += Math.sqrt(
-        distanceComponentsSquared([waypoints[i]["@_x"], waypoints[i]["@_y"]], {
-          x: waypoints[i - 1]["@_x"],
-          y: waypoints[i - 1]["@_y"],
-        })
-      );
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      addEdgeWaypoint({
-        definitions: state.dmn.model.definitions,
-        beforeIndex: i - 1,
-        edgeIndex: props.data!.dmnEdge!.index,
-        waypoint: snappedPotentialWaypoint,
-      });
-    });
-  }, [diagram.snapGrid, dmnEditorStoreApi, potentialWaypoint, props.data, waypoints]);
-
-  //
-
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const className = useEdgeClassName(isConnecting);
+  const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
   return (
     <>
@@ -196,47 +142,80 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
         svgRef={interactionPathRef}
         d={path}
         {...interactionStrokeProps}
+        className={`${interactionStrokeProps.className} ${className}`}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
       />
       <InformationRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
       {props.selected && !isConnecting && props.data?.dmnEdge && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={waypoints} />
+        <Waypoints
+          edgeId={props.id}
+          edgeIndex={props.data.dmnEdge.index}
+          waypoints={waypoints}
+          onDragStop={onMouseMove}
+        />
       )}
-      {isHovered && potentialWaypoint && (
-        <circle r={4} fill={"red"} cx={potentialWaypoint.point.x} cy={potentialWaypoint.point.y}></circle>
-      )}
+      {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 });
 
 export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const className = useEdgeClassName(isConnecting);
-  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
+  const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
+
   const interactionPathRef = React.useRef<SVGPathElement>(null);
+  const isHovered = useIsHovered(interactionPathRef);
+
+  const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
+    waypoints,
+    props.id,
+    props.data?.dmnEdge?.index,
+    interactionPathRef
+  );
+
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
   return (
     <>
       <KnowledgeRequirementPath
         svgRef={interactionPathRef}
         d={path}
         {...interactionStrokeProps}
+        className={`${interactionStrokeProps.className} ${className}`}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        onMouseMove={onMouseMove}
+        onDoubleClick={onDoubleClick}
       />
       <KnowledgeRequirementPath d={path} className={`kie-dmn-editor--edge ${className}`} />
       {props.selected && !isConnecting && props.data?.dmnEdge && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
+        <Waypoints
+          edgeId={props.id}
+          edgeIndex={props.data.dmnEdge.index}
+          waypoints={waypoints}
+          onDragStop={onMouseMove}
+        />
       )}
+      {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 });
 
 export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const className = useEdgeClassName(isConnecting);
-  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
+  const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
+
   const interactionPathRef = React.useRef<SVGPathElement>(null);
+  const isHovered = useIsHovered(interactionPathRef);
+
+  const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
+    waypoints,
+    props.id,
+    props.data?.dmnEdge?.index,
+    interactionPathRef
+  );
+
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
   return (
     <>
       <AuthorityRequirementPath
@@ -244,7 +223,10 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         d={path}
         centerToConnectionPoint={false}
         {...interactionStrokeProps}
+        className={`${interactionStrokeProps.className} ${className}`}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        onMouseMove={onMouseMove}
+        onDoubleClick={onDoubleClick}
       />
       <AuthorityRequirementPath
         d={path}
@@ -252,87 +234,54 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
         centerToConnectionPoint={false}
       />
       {props.selected && !isConnecting && props.data?.dmnEdge && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
+        <Waypoints
+          edgeId={props.id}
+          edgeIndex={props.data.dmnEdge.index}
+          waypoints={waypoints}
+          onDragStop={onMouseMove}
+        />
       )}
+      {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 });
 
 export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const className = useEdgeClassName(isConnecting);
-  const { path, points } = useKieEdgePath(props.source, props.target, props.data);
+  const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
+
   const interactionPathRef = React.useRef<SVGPathElement>(null);
+  const isHovered = useIsHovered(interactionPathRef);
+
+  const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
+    waypoints,
+    props.id,
+    props.data?.dmnEdge?.index,
+    interactionPathRef
+  );
+
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
   return (
     <>
       <AssociationPath
         svgRef={interactionPathRef}
         d={path}
         {...interactionStrokeProps}
+        className={`${interactionStrokeProps.className} ${className}`}
         strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        onMouseMove={onMouseMove}
+        onDoubleClick={onDoubleClick}
       />
       <AssociationPath d={path} className={`kie-dmn-editor--edge ${className}`} />
       {props.selected && !isConnecting && props.data?.dmnEdge && (
-        <Waypoints edgeId={props.id} edgeIndex={props.data.dmnEdge.index} waypoints={points} />
+        <Waypoints
+          edgeId={props.id}
+          edgeIndex={props.data.dmnEdge.index}
+          waypoints={waypoints}
+          onDragStop={onMouseMove}
+        />
       )}
+      {isHovered && potentialWaypoint && <PotentialWaypoint point={potentialWaypoint.point} />}
     </>
   );
 });
-
-function approximateClosestPoint(
-  pathNode: SVGPathElement,
-  point: [number, number]
-): { point: DOMPoint; lengthInPath: number } {
-  const pathLength = pathNode.getTotalLength();
-  let precision = Math.floor(pathLength / 10);
-  let best: DOMPoint;
-  let bestLength = 0;
-  let bestDistance = Infinity;
-
-  let scan: DOMPoint;
-  let scanDistance: number;
-  for (let scanLength = 0; scanLength <= pathLength; scanLength += precision) {
-    scan = pathNode.getPointAtLength(scanLength);
-    scanDistance = distanceComponentsSquared(point, scan);
-
-    if (scanDistance < bestDistance) {
-      best = scan;
-      bestLength = scanLength;
-      bestDistance = scanDistance;
-    }
-  }
-
-  precision /= 2;
-
-  while (precision > 1) {
-    const bLength = bestLength - precision;
-    const b = pathNode.getPointAtLength(bLength);
-    const bDistance = distanceComponentsSquared(point, b);
-    if (bLength >= 0 && bDistance < bestDistance) {
-      best = b;
-      bestLength = bLength;
-      bestDistance = bDistance;
-      continue;
-    }
-
-    const afterLength = bestLength + precision;
-    const after = pathNode.getPointAtLength(afterLength);
-    const afterDistance = distanceComponentsSquared(point, after);
-    if (afterLength <= pathLength && afterDistance < bestDistance) {
-      best = after;
-      bestLength = afterLength;
-      bestDistance = afterDistance;
-      continue;
-    }
-
-    precision /= 2;
-  }
-
-  return { point: best!, lengthInPath: bestLength };
-}
-
-function distanceComponentsSquared(a: [number, number], b: { x: number; y: number }) {
-  const dx = b.x - a[0];
-  const dy = b.y - a[1];
-  return dx * dx + dy * dy;
-}

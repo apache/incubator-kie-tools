@@ -343,11 +343,6 @@ the cursor is inside it. By making it adimensional, that never happens.
   display: block;
 }
 
-.kie-dmn-editor--edge.dimmed {
-  opacity: 0.3;
-  pointer-events: none;
-}
-
 .kie-dmn-editor--round-svg-container {
   pointer-events: none;
   width: 100%;
@@ -355,6 +350,12 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 
 /* edges */
+
+.kie-dmn-editor--edge.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
 .kie-dmn-editor--diagram-edge-waypoints circle {
   fill: black;
   stroke-width: 8;
@@ -364,6 +365,16 @@ the cursor is inside it. By making it adimensional, that never happens.
 .kie-dmn-editor--diagram-edge-waypoints circle:active,
 .kie-dmn-editor--diagram-edge-waypoints circle:hover {
   stroke-width: 16;
+  cursor: grab;
+}
+
+.react-flow__edge.selected .kie-dmn-editor--edge-waypoint-potential,
+.react-flow__edge:not(.selected) .kie-dmn-editor--edge-waypoint-potential {
+  fill: #4d809b96;
+}
+
+.kie-dmn-editor--edge-waypoint-potential {
+  pointer-events: none;
 }
 
 /* *********************** */
@@ -381,6 +392,18 @@ the cursor is inside it. By making it adimensional, that never happens.
   stroke: #006ba4 !important;
   stroke-width: 3px !important;
   filter: drop-shadow(2px 2px 2px #006ba477);
+}
+
+.react-flow__edge.selected .react-flow__edge-interaction.normal {
+  cursor: crosshair;
+}
+
+.react-flow__edge.selected .react-flow__edge-interaction.dragging-waypoint,
+.react-flow__edge.selected
+  .react-flow__edge-interaction.dragging-waypoint
+  ~ .kie-dmn-editor--diagram-edge-waypoints
+  circle {
+  cursor: grabbing;
 }
 
 .react-flow__edge:not(.selected) .kie-dmn-editor--edge:hover,
