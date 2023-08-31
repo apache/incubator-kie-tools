@@ -20,7 +20,6 @@ import javax.inject.Named;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
@@ -65,13 +64,13 @@ public class NavItemTileWidgetView implements NavItemTileWidget.View {
 
         if (ItemType.GROUP == type) {
             iconSpan.className = GROUP_ICON;
-            mainDiv.title = NavigationConstants.INSTANCE.openNavItem(name);
+            mainDiv.title = NavigationConstants.open(name);
         } else if (ItemType.PERSPECTIVE == type) {
             iconSpan.className = PERSPECTIVE_ICON;
-            mainDiv.title = NavigationConstants.INSTANCE.gotoNavItem(name);
+            mainDiv.title = NavigationConstants.go(name);
         } else if (ItemType.RUNTIME_PERSPECTIVE == type) {
             iconSpan.className = RUNTIME_ICON;
-            mainDiv.title = NavigationConstants.INSTANCE.showNavItem(name);
+            mainDiv.title = NavigationConstants.show(name);
         }
     }
 

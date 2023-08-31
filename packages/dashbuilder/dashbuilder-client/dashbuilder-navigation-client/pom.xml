@@ -80,13 +80,6 @@
       <artifactId>uberfire-layout-editor-client</artifactId>
     </dependency>
 
-    <!-- GWT and GWT Extensions -->
-    <dependency>
-      <groupId>org.gwtproject</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Test dependencies -->
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>

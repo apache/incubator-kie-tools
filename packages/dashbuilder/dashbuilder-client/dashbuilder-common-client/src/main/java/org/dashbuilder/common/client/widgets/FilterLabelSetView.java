@@ -20,13 +20,14 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLAnchorElement;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.common.client.resources.i18n.DashbuilderCommonConstants;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 
 @Templated
 public class FilterLabelSetView implements FilterLabelSet.View {
+
+    private static final String CLEAR_ALL = "Clear All";
 
     @Inject
     @DataField
@@ -48,7 +49,7 @@ public class FilterLabelSetView implements FilterLabelSet.View {
     @Override
     public void init(FilterLabelSet presenter) {
         this.presenter = presenter;
-        clearAll.textContent = DashbuilderCommonConstants.INSTANCE.clearAll();
+        clearAll.textContent = CLEAR_ALL;
         clearAll.onclick = e -> {
             presenter.onClearAll();
             return null;

@@ -34,7 +34,7 @@ import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
  */
 public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTargetDiv, HasDefaultNavItem {
 
-    public interface View<T extends TargetDivNavWidget> extends NavWidgetView<T>, ClientLayoutRecursionIssueI18n {
+    public interface View<T extends TargetDivNavWidget> extends NavWidgetView<T> {
 
         void clearContent(String targetDivId);
 
@@ -165,7 +165,7 @@ public abstract class TargetDivNavWidget extends BaseNavWidget implements HasTar
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
-        String cause = issue.printReport(navigationManager.getNavTree(), view);
+        String cause = issue.printReport(navigationManager.getNavTree());
         view.infiniteRecursionError(targetDivId, cause);
     }
 

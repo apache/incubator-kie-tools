@@ -26,7 +26,6 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLOListElement;
 import jsinterop.base.Js;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
@@ -101,21 +100,21 @@ public class NavTilesWidgetView extends BaseNavWidgetView<NavTilesWidget>
     @Override
     public void errorNavItemsEmpty() {
         domUtil.removeAllElementChildren(mainDiv);
-        alertBox.setMessage(NavigationConstants.INSTANCE.navGroupEmptyError());
+        alertBox.setMessage(NavigationConstants.navGroupEmpty());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void errorNavGroupNotFound() {
         domUtil.removeAllElementChildren(mainDiv);
-        alertBox.setMessage(NavigationConstants.INSTANCE.navGroupNotFound());
+        alertBox.setMessage(NavigationConstants.navGroupNotFound());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void infiniteRecursionError(String cause) {
         domUtil.removeAllElementChildren(tilesDiv);
-        alertBox.setMessage(NavigationConstants.INSTANCE.navTilesDragComponentInfiniteRecursion() + cause);
+        alertBox.setMessage(NavigationConstants.infiniteRecursion(cause));
         tilesDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 

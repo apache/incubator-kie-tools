@@ -31,14 +31,13 @@ public class LayoutRecursionIssue {
 
     List<LayoutNavigationRef> refList = new ArrayList<>();
 
-    public LayoutRecursionIssue() {
-    }
+    public LayoutRecursionIssue() {}
 
     public boolean contains(LayoutNavigationRef other) {
         if (other != null) {
             for (LayoutNavigationRef ref : refList) {
-                if (ref.getType() != null && ref.getType().equals(other.getType())
-                        && ref.getName() != null && ref.getName().equals(other.getName())) {
+                if (ref.getType() != null && ref.getType().equals(other.getType()) && ref.getName() != null && ref
+                        .getName().equals(other.getName())) {
                     return true;
                 }
             }
@@ -51,7 +50,7 @@ public class LayoutRecursionIssue {
     }
 
     public LayoutNavigationRef pop() {
-        return refList.remove(refList.size()-1);
+        return refList.remove(refList.size() - 1);
     }
 
     public boolean isEmpty() {
@@ -64,20 +63,20 @@ public class LayoutRecursionIssue {
 
     public LayoutNavigationRef getLastDefaultItemRef() {
         for (LayoutNavigationRef ref : refList) {
-            if (ref.getType().equals(LayoutNavigationRefType.DEFAULT_ITEM_FOUND)
-                    || ref.getType().equals(LayoutNavigationRefType.DEFAULT_ITEM_DEFINED)) {
+            if (ref.getType().equals(LayoutNavigationRefType.DEFAULT_ITEM_FOUND) || ref.getType().equals(
+                    LayoutNavigationRefType.DEFAULT_ITEM_DEFINED)) {
                 return ref;
             }
         }
         return null;
     }
 
-    public String printReport(NavTree navTree, LayoutRecursionIssueI18n i18n) {
+    public String printReport(NavTree navTree) {
         String msg = "";
         LayoutNavigationRef previousRef = null;
-        for (int i=0; i<refList.size(); i++) {
+        for (int i = 0; i < refList.size(); i++) {
             LayoutNavigationRef navigationRef = refList.get(i);
-            boolean isLast = (i==refList.size()-1);
+            boolean isLast = (i == refList.size() - 1);
             String name = navigationRef.getName();
 
             switch (navigationRef.getType()) {
@@ -85,21 +84,20 @@ public class LayoutRecursionIssue {
                 case PERSPECTIVE:
                     String perspective = enclose(name);
                     if (previousRef == null) {
-                        msg += " " + i18n.navRefPerspectiveI18n(perspective);
-                    }
-                    else {
-                        String lastMsg = isLast ? perspective + " " + i18n.navRefPerspectiveRecursionEndI18n() : perspective;
+                        msg += " " + perspective;
+                    } else {
+                        String lastMsg = perspective;
                         switch (previousRef.getType()) {
                             case NAV_GROUP_DEFINED:
-                                msg += " " + i18n.navRefPerspectiveInGroupI18n(lastMsg);
+                                msg += " " + lastMsg;
                                 break;
                             case DEFAULT_ITEM_DEFINED:
-                                msg += " " + i18n.navRefPerspectiveDefaultI18n(lastMsg);
-                                msg += isLast ? "" : " " + i18n.navRefPerspectiveI18n(perspective);
+                                msg += " " + lastMsg;
+                                msg += isLast ? "" : " " + perspective;
                                 break;
                             case DEFAULT_ITEM_FOUND:
-                                msg += " " + i18n.navRefPerspectiveFoundI18n(lastMsg);
-                                msg += isLast ? "" : " " + i18n.navRefPerspectiveI18n(perspective);
+                                msg += " " + lastMsg;
+                                msg += isLast ? "" : " " + perspective;
                                 break;
                         }
                     }
@@ -107,28 +105,26 @@ public class LayoutRecursionIssue {
 
                 case NAV_GROUP_DEFINED:
                     NavItem navGroup = navTree.getItemById(name);
-                    msg += " " + i18n.navRefGroupDefinedI18n(enclose(navGroup.getName()));
+                    msg += " " + enclose(navGroup.getName());
                     break;
 
                 case NAV_GROUP_CONTEXT:
                     navGroup = navTree.getItemById(name);
-                    msg += " " + i18n.navRefGroupContextI18n(enclose(navGroup.getName()));
+                    msg += " " + enclose(navGroup.getName());
                     break;
 
                 case NAV_COMPONENT:
-                    NavDragComponentType dragType = NavDragComponentType.getByClassName(name);
-                    String dragName = dragType != null ? getNavDragTypeI18nName(dragType, i18n) : name;
-                    msg += " " + i18n.navRefComponentI18n(enclose(dragName));
+                    msg += " " + enclose(name);
                     break;
 
                 case DEFAULT_ITEM_DEFINED:
                     NavItem navItem = navTree.getItemById(name);
-                    msg += " " + i18n.navRefDefaultItemDefinedI18n(enclose(navItem.getName()));
+                    msg += " " + enclose(navItem.getName());
                     break;
 
                 case DEFAULT_ITEM_FOUND:
                     navItem = navTree.getItemById(name);
-                    msg += " " + i18n.navRefDefaultItemFoundI18n(enclose(navItem.getName()));
+                    msg += " " + enclose(navItem.getName());
                     break;
 
                 default:
@@ -144,20 +140,4 @@ public class LayoutRecursionIssue {
         return "\"" + name + "\"";
     }
 
-    public String getNavDragTypeI18nName(NavDragComponentType dragType, LayoutRecursionIssueI18n i18n) {
-        switch (dragType) {
-            case CAROUSEL:
-                return i18n.navCarouselDragComponentI18n();
-            case TABLIST:
-                return i18n.navTabListDragComponentI18n();
-            case TILES:
-                return i18n.navTilesDragComponentI18n();
-            case TREE:
-                return i18n.navTreeDragComponentI18n();
-            case MENUBAR:
-                return i18n.navMenubarDragComponentI18n();
-            default:
-                return null;
-        }
-    }
 }

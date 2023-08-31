@@ -24,7 +24,6 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
 import org.uberfire.ext.layout.editor.api.event.LayoutTemplateDisplayed;
@@ -35,6 +34,8 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
                                             implements TargetDivNavWidget.View<T> {
 
     private static final String PF5_SELECTED_CLASS = "pf-m-current";
+
+    private static final String MISSING_DIV = "Target div is required. Use divId to specify an existing div.";
 
     Alert alertBox;
 
@@ -64,29 +65,29 @@ public abstract class TargetDivNavWidgetView<T extends TargetDivNavWidget> exten
             targetDiv.appendChild(container);
             container.appendChild(content);
             layoutTemplateDisplayedEvent.fire(new LayoutTemplateDisplayed());
-        }, () -> error(NavigationConstants.INSTANCE.navWidgetTargetDivMissing()));
+        }, () -> error(MISSING_DIV));
     }
 
     @Override
     public void errorNavGroupNotFound() {
-        error(NavigationConstants.INSTANCE.navGroupNotFound());
+        error(NavigationConstants.navGroupNotFound());
     }
 
     @Override
     public void errorNavItemsEmpty() {
-        error(NavigationConstants.INSTANCE.navGroupEmptyError());
+        error(NavigationConstants.navGroupEmpty());
     }
 
     @Override
     public void infiniteRecursionError(String targetDivId, String cause) {
-        Element targetDiv = getTargetDiv(targetDivId);
+        var targetDiv = getTargetDiv(targetDivId);
         if (targetDiv != null) {
             domUtil.removeAllElementChildren(targetDiv);
-            String message = NavigationConstants.INSTANCE.targetDivIdPerspectiveInfiniteRecursion() + cause;
+            var message = NavigationConstants.infiniteRecursion(cause);
             alertBox.setMessage(message);
             targetDiv.appendChild(Js.cast(alertBox.getElement()));
         } else {
-            error(NavigationConstants.INSTANCE.targetDivIdPerspectiveInfiniteRecursion());
+            error(NavigationConstants.infiniteRecursion("Unkown cause"));
         }
     }
 

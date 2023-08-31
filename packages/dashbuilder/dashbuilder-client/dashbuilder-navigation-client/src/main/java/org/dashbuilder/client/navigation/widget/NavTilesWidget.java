@@ -42,7 +42,7 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 @Dependent
 public class NavTilesWidget extends BaseNavWidget {
 
-    public interface View extends NavWidgetView<NavTilesWidget>, ClientLayoutRecursionIssueI18n {
+    public interface View extends NavWidgetView<NavTilesWidget> {
 
         void addTileWidget(HTMLElement tileWidget);
 
@@ -168,7 +168,7 @@ public class NavTilesWidget extends BaseNavWidget {
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
-        String cause = issue.printReport(navigationManager.getNavTree(), view);
+        String cause = issue.printReport(navigationManager.getNavTree());
         view.infiniteRecursionError(cause);
     }
 

@@ -22,7 +22,6 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.dashbuilder.patternfly.alert.Alert;
 import org.dashbuilder.patternfly.alert.AlertType;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -80,14 +79,14 @@ public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
     @Override
     public void errorNavGroupNotFound() {
         domUtil.removeAllElementChildren(mainDiv);
-        alertBox.setMessage(NavigationConstants.INSTANCE.navGroupNotFound());
+        alertBox.setMessage(NavigationConstants.navGroupNotFound());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
     @Override
     public void errorNavItemsEmpty() {
         domUtil.removeAllElementChildren(mainDiv);
-        alertBox.setMessage(NavigationConstants.INSTANCE.navCarouselDragComponentEmptyError());
+        alertBox.setMessage(NavigationConstants.navGroupEmpty());
         mainDiv.appendChild(Js.cast(alertBox.getElement()));
     }
 
@@ -95,7 +94,7 @@ public class NavCarouselWidgetView extends BaseNavWidgetView<NavCarouselWidget>
     public void infiniteRecursionError(String cause) {
         var div = DomGlobal.document.createElement("div");
         div.className = (slidesDiv.childElementCount == 0 ? "item active" : "item");
-        alertBox.setMessage(NavigationConstants.INSTANCE.navCarouselDragComponentInfiniteRecursion() + " " + cause);
+        alertBox.setMessage(NavigationConstants.infiniteRecursion(cause));
         div.appendChild(Js.cast(alertBox.getElement()));
         slidesDiv.appendChild(div);
     }

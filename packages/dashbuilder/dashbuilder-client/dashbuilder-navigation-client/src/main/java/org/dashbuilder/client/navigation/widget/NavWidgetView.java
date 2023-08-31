@@ -16,7 +16,6 @@
 package org.dashbuilder.client.navigation.widget;
 
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.navigation.resources.i18n.NavigationConstants;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 
@@ -35,12 +34,12 @@ public interface NavWidgetView<T> extends UberElemental<T> {
     void clearSelectedItem();
 
     default void errorNavGroupNotFound() {
-        addItem("error", NavigationConstants.INSTANCE.navGroupNotFound(), null, () -> {
+        addItem("error", NavigationConstants.navGroupNotFound(), null, () -> {
         });
     }
 
     default void errorNavItemsEmpty() {
-        addItem("error", NavigationConstants.INSTANCE.navItemsEmpty(), null, () -> {
+        addItem("error", NavigationConstants.navGroupEmpty(), null, () -> {
         });
     }
 

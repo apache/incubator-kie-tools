@@ -30,7 +30,7 @@ import org.dashbuilder.navigation.layout.LayoutRecursionIssue;
 @Dependent
 public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavItem {
 
-    public interface View extends NavWidgetView<NavCarouselWidget>, ClientLayoutRecursionIssueI18n {
+    public interface View extends NavWidgetView<NavCarouselWidget> {
 
         void addContentSlide(HTMLElement widget);
 
@@ -100,7 +100,7 @@ public class NavCarouselWidget extends BaseNavWidget implements HasDefaultNavIte
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
-        String cause = issue.printReport(navigationManager.getNavTree(), view);
+        String cause = issue.printReport(navigationManager.getNavTree());
         view.infiniteRecursionError(cause);
     }
 
