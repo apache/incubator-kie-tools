@@ -50,7 +50,7 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
   // Usages
-  const [openshiftUsages, setOpenshiftUsages] = useState(new Map<string, KieSandboxDeployedModel[]>);
+  const [openshiftUsages, setOpenshiftUsages] = useState(new Map<string, KieSandboxDeployedModel[]>());
 
   // Service
   const getService = useCallback(
