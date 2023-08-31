@@ -143,7 +143,6 @@
       <xsd:element type="wrappedImportsType" name="imports" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
-
   <xsd:complexType name="ScenarioSimulationModelType">
     <xsd:sequence>
       <xsd:element type="simulationType" name="simulation" />
@@ -153,5 +152,6 @@
     </xsd:sequence>
     <xsd:attribute type="xsd:string" name="version" />
   </xsd:complexType>
+
 
 </xsd:schema>
