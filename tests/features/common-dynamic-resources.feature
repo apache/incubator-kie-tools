@@ -47,10 +47,10 @@ Feature: Common tests for Kogito images
 
   Scenario: Verify if Java Remote Debug is correctly configured
     When container is started with env
-      | variable       | value |
-      | SCRIPT_DEBUG   | true  |
-      | JAVA_DEBUG     | true  |
-      |JAVA_DEBUG_PORT | 9222  |
+      | variable        | value |
+      | SCRIPT_DEBUG    | true  |
+      | JAVA_DEBUG      | true  |
+      | JAVA_DEBUG_PORT | 9222  |
     Then container log should match regex -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9222
 
   Scenario: Verify if the DEFAULT MEM RATIO properties are overridden with different values from user provided Xmx and Xms

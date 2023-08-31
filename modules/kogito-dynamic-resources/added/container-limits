@@ -1,6 +1,5 @@
 #!/bin/sh
-
-# Detected container limits
+# Detects container limits
 # If found these are exposed as the following environment variables:
 #
 # - CONTAINER_MAX_MEMORY
@@ -11,6 +10,16 @@
 if [ "${SCRIPT_DEBUG}" = "true" ] ; then
     set -x
 fi
+
+# query the resources based on cgroups version
+# cgroups v1 points to tmpfs
+# cgroups v2 points to cgroup2fs
+CGROUPS_VERSION="v1"
+tmp_fs=$(stat -fc %T /sys/fs/cgroup)
+if [ "${tmp_fs}" = "cgroup2fs" ]; then
+    CGROUPS_VERSION="v2"
+fi
+
 
 ceiling() {
     awk -vnumber="$1" -vdiv="$2" '
@@ -23,21 +32,41 @@ ceiling() {
     '
 }
 
-# Based on the cgroup limits, figure out the max number of core we should utilize
+# Based on the cgroups limits, figure out the max number of core we should use
 core_limit() {
-    local cpu_period_file="/sys/fs/cgroup/cpu/cpu.cfs_period_us"
-    local cpu_quota_file="/sys/fs/cgroup/cpu/cpu.cfs_quota_us"
-    if [ -r "${cpu_period_file}" ]; then
-        local cpu_period="$(cat ${cpu_period_file})"
-
-        if [ -r "${cpu_quota_file}" ]; then
-            local cpu_quota="$(cat ${cpu_quota_file})"
-            # cfs_quota_us == -1 --> no restrictions
-            if [ "x$cpu_quota" != "x-1" ]; then
-                ceiling "$cpu_quota" "$cpu_period"
+    if [ "${CGROUPS_VERSION}" = "v1" ]; then
+        local cpu_period_file="/sys/fs/cgroup/cpu/cpu.cfs_period_us"
+        local cpu_quota_file="/sys/fs/cgroup/cpu/cpu.cfs_quota_us"
+        if [ -r "${cpu_period_file}" ]; then
+            local cpu_period="$(cat ${cpu_period_file})"
+            if [ -r "${cpu_quota_file}" ]; then
+                local cpu_quota="$(cat ${cpu_quota_file})"
+                # cfs_quota_us == -1 --> no restrictions
+                if [ "x$cpu_quota" != "x-1" ]; then
+                    ceiling "$cpu_quota" "$cpu_period"
+                fi
             fi
         fi
-  fi
+    else
+        # v2
+        # on cgroupsv2 the period and quota a queried from the same file
+        local cpu_max_file="/sys/fs/cgroup/cpu.max"
+        # when both are set we will have the following output:
+        # $MAX $PERIOD
+        # where the first number is the quota/max and the second is the period
+        # if the quota/max is not set then we will have only the period set:
+        # max 100000
+        if [ -r "${cpu_max_file}" ]; then
+            local cpu_max="$(cat ${cpu_max_file})"
+            if [ "x$cpu_max" != "x" ]; then
+                local cpu_quota="$(echo $cpu_max | awk '{print $1}')"
+                local cpu_period="$(echo $cpu_max | awk '{print $2}')"
+                if [ "$cpu_quota" != "max" ] && [ "x$cpu_period" != "x" ]; then
+                    ceiling "$cpu_quota" "$cpu_period"
+                fi
+            fi
+        fi
+    fi
 }
 
 max_unbounded() {
@@ -45,13 +74,27 @@ max_unbounded() {
 }
 
 container_memory() {
-    # High number which is the max limit unit which memory is supposed to be unbounded.
-    local mem_file="/sys/fs/cgroup/memory/memory.limit_in_bytes"
     local max_mem_unbounded="$(max_unbounded)"
-    if [ -r "${mem_file}" ]; then
-        local max_mem="$(cat ${mem_file})"
-        if [ ${max_mem} -lt ${max_mem_unbounded} ]; then
-            echo "${max_mem}"
+    # High number which is the max limit unit which memory is supposed to be unbounded.
+    if [ "${CGROUPS_VERSION}" = "v1" ]; then
+        local mem_file="/sys/fs/cgroup/memory/memory.limit_in_bytes"
+        if [ -r "${mem_file}" ]; then
+            local max_mem="$(cat ${mem_file})"
+            if [ ${max_mem} -lt ${max_mem_unbounded} ]; then
+                echo "${max_mem}"
+            fi
+        fi
+    else
+        # v2
+        local mem_file="/sys/fs/cgroup/memory.max"
+        if [ -r "${mem_file}" ]; then
+            local max_mem="$(cat ${mem_file})"
+            # if not set, it will contain only the string "max"
+            if [ "$max_mem" != "max" ]; then
+                if [ ${max_mem} -lt ${max_mem_unbounded} ]; then
+                    echo "${max_mem}"
+                fi
+            fi
         fi
     fi
 }

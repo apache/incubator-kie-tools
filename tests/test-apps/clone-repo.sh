@@ -69,5 +69,6 @@ cp ${base_dir}/application.properties /tmp/kogito-examples/kogito-quarkus-exampl
 
 set +x
 
+git config commit.gpgsign false
 git add --all  :/
 git commit -am "test"
