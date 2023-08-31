@@ -310,7 +310,8 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
 
   const scesimFileStatus = useMemo(() => {
     if (scesimModel.ScenarioSimulationModel) {
-      if (scesimModel.ScenarioSimulationModel["parsererror"]) {
+      const parserErrorField = "parsererror" as keyof typeof scesimModel.ScenarioSimulationModel;
+      if (scesimModel.ScenarioSimulationModel[parserErrorField]) {
         return TestScenarioFileStatus.ERROR;
       }
       if (scesimModel.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
