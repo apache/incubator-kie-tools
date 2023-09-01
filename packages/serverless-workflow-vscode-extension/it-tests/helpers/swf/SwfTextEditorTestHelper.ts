@@ -30,6 +30,7 @@ export default class SwfTextEditorTestHelper {
 
   /**
    * Creates and returns Serverless Workflow text editor.
+   *
    * @returns Serverless Workflow text editor.
    */
   public async getSwfTextEditor(): Promise<SwfTextEditor> {
