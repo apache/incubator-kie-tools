@@ -27,11 +27,9 @@ import org.dashbuilder.client.screens.Router;
 import org.dashbuilder.patternfly.busyindicator.BusyIndicator;
 import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
 @ApplicationScoped
-@Bundle("resources/i18n/AppConstants.properties")
 public class RuntimeEntryPoint {
 
     @Inject
