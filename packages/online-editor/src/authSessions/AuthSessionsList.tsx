@@ -30,7 +30,7 @@ import {
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -48,19 +48,31 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
 import { KieSandboxDeployedModel } from "../devDeployments/services/types";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const devDeployments = useDevDeployments();
+  const [devDeploymentsUsages, setDevDeploymentsUsages] = useState(new Map<string, KieSandboxDeployedModel[]>());
 
-  useEffect(() => {
-    [...authSessions.values()].map((authSession) => {
-      if (authSession.type === "openshift") {
-        devDeployments.getUsages({ authSession });
-      }
-    });
-  }, [authSessions, devDeployments]);
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        [...authSessions.values()].map((authSession) => {
+          if (authSession.type === "openshift" || authSession.type === "kubernetes") {
+            devDeployments.loadDeployments({ authSession }).then((deployments) => {
+              if (canceled.get()) {
+                return;
+              }
+              setDevDeploymentsUsages((prev) => new Map([...prev, [authSession.id, deployments]]));
+            });
+          }
+        });
+      },
+      [authSessions, devDeployments]
+    )
+  );
 
   const usagesByWorkspace = useMemo(() => {
     if (!workspaceDescriptorsPromise.data) {
@@ -97,8 +109,8 @@ export function AuthSessionsList(props: {}) {
               key={authSession.id}
               authSession={authSession}
               usages={
-                authSession.type === "openshift"
-                  ? devDeployments.openshiftUsages.get(authSession.id)
+                authSession.type === "openshift" || authSession.type === "kubernetes"
+                  ? devDeploymentsUsages.get(authSession.id)
                   : usagesByWorkspace.get(authSession.id)
               }
             />
@@ -139,16 +151,9 @@ function AuthSessionCard(props: {
           }}
         >
           <AuthSessionLabel authSession={props.authSession} />
-          {props.authSession.type === "git" && (
-            <>
-              &nbsp; &nbsp; &nbsp;
-              <Label>
-                &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
-                &nbsp;
-              </Label>
-            </>
-          )}
-          {props.authSession.type === "openshift" && (
+          {(props.authSession.type === "git" ||
+            props.authSession.type === "openshift" ||
+            props.authSession.type === "kubernetes") && (
             <>
               &nbsp; &nbsp; &nbsp;
               <Label>

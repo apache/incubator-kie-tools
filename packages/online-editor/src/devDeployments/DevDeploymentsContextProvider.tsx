@@ -30,7 +30,6 @@ import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesServ
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import { KieSandboxDeployedModel } from "./services/types";
 
 interface Props {
   children: React.ReactNode;
@@ -48,9 +47,6 @@ export function DevDeploymentsContextProvider(props: Props) {
   // Modals
   const [confirmDeployModalState, setConfirmDeployModalState] = useState<ConfirmDeployModalState>({ isOpen: false });
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
-
-  // Usages
-  const [openshiftUsages, setOpenshiftUsages] = useState(new Map<string, KieSandboxDeployedModel[]>());
 
   // Service
   const getService = useCallback(
@@ -143,45 +139,30 @@ export function DevDeploymentsContextProvider(props: Props) {
     [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, getService, workspaces]
   );
 
-  const getUsages = useCallback(
-    async (args: { authSession: CloudAuthSession }) => {
-      if (args.authSession.type === "openshift") {
-        const getOpenshiftUsages = await loadDeployments({ authSession: args.authSession });
-        setOpenshiftUsages((prev) => new Map([...prev, [args.authSession.id, getOpenshiftUsages]]));
-      }
-    },
-    [loadDeployments]
-  );
-
   const value = useMemo(
     () => ({
       isDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
       confirmDeleteModalState,
-      openshiftUsages,
       setDeployDropdownOpen,
       setConfirmDeployModalState,
       setConfirmDeleteModalState,
       setDeploymentsDropdownOpen,
-      setOpenshiftUsages,
       deploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,
-      getUsages,
     }),
     [
       isDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
       confirmDeleteModalState,
-      openshiftUsages,
       deploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,
-      getUsages,
     ]
   );
 
