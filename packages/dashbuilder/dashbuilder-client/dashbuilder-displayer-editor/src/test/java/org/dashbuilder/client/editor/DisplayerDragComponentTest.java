@@ -17,7 +17,6 @@ package org.dashbuilder.client.editor;
 
 import java.util.Map;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.dashbuilder.displayer.DisplayerSettings;
 import org.dashbuilder.displayer.GlobalDisplayerSettings;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -25,13 +24,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DisplayerDragComponentTest {
 
     @InjectMocks

@@ -1,11 +1,11 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,17 +15,22 @@
  */
 package org.dashbuilder.dataset.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+public class CommonConstants {
 
-public interface CommonConstants extends Messages {
+    private CommonConstants() {
+        // empty
+    }
 
-    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+    public static String exc_text_columns_no_grouping() {
+        return "TEXT columns do not support grouping.";
+    }
 
-    String weeks();
+    public static String exc_no_client_side_data_export() {
+        return "Client-side export is not available.";
+    }
 
-    String exc_text_columns_no_grouping();
-
-    String exc_no_client_side_data_export();
+    public static String weeks() {
+        return "weeks";
+    }
 
 }

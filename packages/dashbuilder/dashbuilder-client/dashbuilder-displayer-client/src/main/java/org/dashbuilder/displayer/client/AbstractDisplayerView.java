@@ -17,8 +17,6 @@ package org.dashbuilder.displayer.client;
 
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Timer;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
@@ -34,7 +32,7 @@ public abstract class AbstractDisplayerView<P extends AbstractDisplayer>
     @Inject
     private Label label = new Label();
     private HTMLElement visualization = null;
-    private Timer refreshTimer = null;
+    private double refreshTimerID = -1;
     protected P presenter;
 
     @Inject
@@ -62,12 +60,13 @@ public abstract class AbstractDisplayerView<P extends AbstractDisplayer>
 
     @Override
     public void clear() {
+        DomGlobal.clearInterval(refreshTimerID);
         domUtil.removeAllElementChildren(rootPanel);
     }
 
     @Override
     public void showLoading() {
-        displayMessage(DisplayerConstants.INSTANCE.initializing());
+        displayMessage(DisplayerConstants.initializing());
     }
 
     @Override
@@ -80,50 +79,43 @@ public abstract class AbstractDisplayerView<P extends AbstractDisplayer>
 
     @Override
     public void errorMissingSettings() {
-        displayMessage(DisplayerConstants.INSTANCE.error() + DisplayerConstants.INSTANCE.error_settings_unset());
+        displayMessage(DisplayerConstants.error() + DisplayerConstants.error_settings_unset());
     }
 
     @Override
     public void errorMissingHandler() {
-        displayMessage(DisplayerConstants.INSTANCE.error() + DisplayerConstants.INSTANCE.error_handler_unset());
+        displayMessage(DisplayerConstants.error() + DisplayerConstants.error_handler_unset());
     }
 
     @Override
     public void errorDataSetNotFound(String dataSetUUID) {
-        displayMessage(CommonConstants.INSTANCE.dataset_lookup_dataset_notfound(dataSetUUID));
+        displayMessage(CommonConstants.dataset_lookup_dataset_notfound(dataSetUUID));
     }
 
     @Override
     public void error(ClientRuntimeError e) {
-        displayMessage(DisplayerConstants.INSTANCE.error() + e.getMessage());
+        displayMessage(DisplayerConstants.error() + e.getMessage());
 
         if (e.getThrowable() != null) {
-            GWT.log(e.getMessage(), e.getThrowable());
+            DomGlobal.console.log(e.getMessage(), e.getThrowable());
         } else {
-            GWT.log(e.getMessage());
+            DomGlobal.console.log(e.getMessage());
         }
     }
 
     @Override
     public void enableRefreshTimer(int seconds) {
-        if (refreshTimer == null) {
-            refreshTimer = new Timer() {
-
-                public void run() {
-                    if (presenter.isDrawn()) {
-                        presenter.redraw();
-                    }
-                }
-            };
-        }
-        refreshTimer.schedule(seconds * 1000);
+        DomGlobal.clearInterval(refreshTimerID);
+        refreshTimerID = DomGlobal.setInterval(e -> {
+            if (presenter.isDrawn()) {
+                presenter.redraw();
+            }
+        }, seconds * 1000);
     }
 
     @Override
     public void cancelRefreshTimer() {
-        if (refreshTimer != null) {
-            refreshTimer.cancel();
-        }
+        DomGlobal.clearInterval(refreshTimerID);
     }
 
     public void displayMessage(String msg) {
@@ -131,7 +123,7 @@ public abstract class AbstractDisplayerView<P extends AbstractDisplayer>
         rootPanel.appendChild(label.getElement());
         label.setText(msg);
     }
-    
+
     @Override
     public HTMLElement getElement() {
         return rootPanel;

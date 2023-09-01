@@ -63,8 +63,8 @@ public class DisplayerLocator {
         Displayer displayer = renderer.lookupDisplayer(target);
         if (displayer == null) {
             var rendererUuid = target.getRenderer();
-            if (StringUtils.isBlank(rendererUuid)) throw new RuntimeException(CommonConstants.INSTANCE.displayerlocator_default_renderer_undeclared(target.getType().toString()));
-            throw new RuntimeException(CommonConstants.INSTANCE.displayerlocator_unsupported_displayer_renderer(target.getType().toString(), rendererUuid));
+            if (StringUtils.isBlank(rendererUuid)) throw new RuntimeException(CommonConstants.displayerlocator_default_renderer_undeclared(target.getType().toString()));
+            throw new RuntimeException(CommonConstants.displayerlocator_unsupported_displayer_renderer(target.getType().toString(), rendererUuid));
         }
         displayer.setDisplayerSettings(target);
 

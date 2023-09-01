@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2023 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.dataset.client.resources.i18n;
+package org.dashbuilder.common.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.ConstantsWithLookup;
+import org.junit.Test;
 
-public interface QuarterConstants extends ConstantsWithLookup {
+import static org.junit.Assert.assertEquals;
 
-    public static final QuarterConstants INSTANCE = GWT.create( QuarterConstants.class );
+public class StringUtilsTest {
 
-    String Q1();
-    String Q2();
-    String Q3();
-    String Q4();
+    @Test
+    public void testFirstCase() {
+        assertEquals("John", StringUtils.startCase("JOHN"));
+    }
+
 }

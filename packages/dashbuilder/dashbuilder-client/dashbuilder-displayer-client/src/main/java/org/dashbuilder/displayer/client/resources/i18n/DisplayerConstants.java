@@ -15,62 +15,29 @@
  */
 package org.dashbuilder.displayer.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+public interface DisplayerConstants {
 
-public interface DisplayerConstants extends Messages {
+    static String initializing() {
+        return "Initializing ...";
+    }
 
-    DisplayerConstants INSTANCE = GWT.create(DisplayerConstants.class);
+    static String error() {
+        return "ERROR: ";
+    }
 
-    String initializing();
+    static String error_settings_unset() {
+        return "DisplayerSettings property not set";
+    }
 
-    String error();
+    static String error_handler_unset() {
+        return "DataSetHandler property not set";
+    }
 
-    String error_settings_unset();
+    static String displayer_keyword_not_allowed(String expr) {
+        return "Not allowed ( " + expr + " )";
+    }
 
-    String error_handler_unset();
-
-    String error_dataset_notfound();
-
-    String displayer_keyword_not_allowed(String expr);
-
-    String displayer_expr_invalid_syntax(String expr);
-
-    String userDefinedVariableDescription();
-
-    String valueRawVariableDescription();
-
-    String valueStartVariableDescription();
-
-    String valueWarningVariableDescription();
-
-    String valueCriticalVariableDescription();
-
-    String valueEndVariableDescription();
-
-    String valueVariableDescription();
-
-    String titleVariableDescription();
-
-    String widthVariableDescription();
-
-    String heightVariableDescription();
-
-    String marginTopVariableDescription();
-
-    String marginBottomVariableDescription();
-
-    String marginRightVariableDescription();
-
-    String marginLeftVariableDescription();
-
-    String bgColorVariableDescription();
-
-    String isFilterEnabledVariableDescription();
-
-    String isFilterOnVariableDescription();
-
-    String isEmptyVariableDescription();
-
-    String doFilterVariableDescription();
+    static String displayer_expr_invalid_syntax(String expr) {
+        return "Invalid syntax ( " + expr + " )";
+    }
 }

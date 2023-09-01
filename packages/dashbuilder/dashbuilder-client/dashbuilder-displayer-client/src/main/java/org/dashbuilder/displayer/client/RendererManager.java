@@ -52,7 +52,6 @@ public class RendererManager {
     private Map<DisplayerType, List<RendererLibrary>> renderersByType = new EnumMap<>(DisplayerType.class);
     private Map<DisplayerSubType, List<RendererLibrary>> renderersBySubType = new EnumMap<>(DisplayerSubType.class);
 
-    CommonConstants i18n = CommonConstants.INSTANCE;
 
     public RendererManager() {}
 
@@ -168,7 +167,7 @@ public class RendererManager {
         return renderersList.stream()
                 .filter(test)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(i18n.rendererliblocator_renderer_not_found(renderer)));
+                .orElseThrow(() -> new RuntimeException(CommonConstants.rendererliblocator_renderer_not_found(renderer)));
     }
 
     public RendererLibrary getRendererForType(DisplayerType displayerType) {
@@ -195,7 +194,7 @@ public class RendererManager {
         // If no default then return the first supported one
         if (!renderersSupported.isEmpty())
             return renderersSupported.get(0);
-        throw new RuntimeException(i18n.renderermanager_renderer_not_available(target.getType().name()));
+        throw new RuntimeException(CommonConstants.renderermanager_renderer_not_available(target.getType().name()));
     }
 
     public boolean isTypeSupported(DisplayerType type) {

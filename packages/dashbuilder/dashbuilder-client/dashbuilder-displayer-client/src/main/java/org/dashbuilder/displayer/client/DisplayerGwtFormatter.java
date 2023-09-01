@@ -21,8 +21,6 @@ import java.util.Map;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
 import org.dashbuilder.common.client.StringUtils;
-import org.dashbuilder.dataset.client.resources.i18n.DayOfWeekConstants;
-import org.dashbuilder.dataset.client.resources.i18n.MonthConstants;
 import org.dashbuilder.dataset.date.DayOfWeek;
 import org.dashbuilder.dataset.date.Month;
 import org.dashbuilder.displayer.ColumnSettings;
@@ -52,12 +50,12 @@ public class DisplayerGwtFormatter implements AbstractDisplayer.Formatter {
 
     @Override
     public String formatDayOfWeek(DayOfWeek dayOfWeek) {
-        return DayOfWeekConstants.INSTANCE.getString(dayOfWeek.name());
+        return StringUtils.startCase(dayOfWeek.name());
     }
 
     @Override
     public String formatMonth(Month month) {
-        return MonthConstants.INSTANCE.getString(month.name());
+        return StringUtils.startCase(month.name());
     }
 
     protected NumberFormat getNumberFormat(String pattern) {

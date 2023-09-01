@@ -19,11 +19,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class StringUtils {
-    
+
     private StringUtils() {
         // no op
+    }
+
+    public static String startCase(String name) {
+        Objects.requireNonNull(name);
+        if (name.length() < 2) {
+            return name.toUpperCase();
+        }
+        var initial = name.substring(0, 1).toUpperCase();
+        var end = name.length();
+        return initial + name.substring(1, end).toLowerCase();
     }
 
     /**
@@ -172,7 +183,7 @@ public class StringUtils {
                 if (token.length() > 0) {
                     list.add(token);
                 }
-                start = i+1;
+                start = i + 1;
             }
         }
         String token = str.substring(start, str.length()).trim();

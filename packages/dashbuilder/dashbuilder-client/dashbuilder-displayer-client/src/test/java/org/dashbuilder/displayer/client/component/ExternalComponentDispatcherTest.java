@@ -104,7 +104,7 @@ public class ExternalComponentDispatcherTest {
 
         dispatcher.onMessage(configurationIssueMsg);
 
-        verify(listener).onConfigurationIssue(CommonConstants.INSTANCE.componentConfigDefaultMessage());
+        verify(listener).onConfigurationIssue(CommonConstants.componentConfigDefaultMessage());
     }
 
     @Test

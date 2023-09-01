@@ -60,7 +60,7 @@ public class ClientIntervalBuilderLocator implements IntervalBuilderLocator {
             return intervalBuilderDynamicLabel;
         }
         if (ColumnType.TEXT.equals(columnType)) {
-            throw new IllegalArgumentException( CommonConstants.INSTANCE.exc_text_columns_no_grouping());
+            throw new IllegalArgumentException( CommonConstants.exc_text_columns_no_grouping());
         }
         return null;
     }

@@ -53,7 +53,7 @@ public final class ClientChronometer implements Chronometer {
         double secondsd = (double) (seconds * 1000 + milliseconds) / 1000;
 
         StringBuilder buf = new StringBuilder();
-        if (weeks > 0) buf.append(weeks).append(" ").append( CommonConstants.INSTANCE.weeks()).append(" ");
+        if (weeks > 0) buf.append(weeks).append(" ").append( CommonConstants.weeks()).append(" ");
         if (days > 0) buf.append(days).append("d ");
         if (hours > 0) buf.append(hours).append("h ");
         if (minutes > 0) buf.append(minutes).append("m ");

@@ -23,8 +23,7 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.DOM;
+import elemental2.dom.DomGlobal;
 import org.dashbuilder.displayer.client.component.ExternalComponentDispatcher;
 import org.dashbuilder.displayer.client.component.ExternalComponentListener;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
@@ -35,6 +34,8 @@ import org.uberfire.client.mvp.UberElemental;
 @Dependent
 public class ExternalComponentPresenter implements ExternalComponentListener {
 
+    private static int componentIdTracker = 1;
+
     private static final String URL_SEPARATOR = "/";
     /**
      * The base URL for components server. It should match the 
@@ -43,7 +44,7 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
     /**
      * Unique Runtime ID for the component. It is used to identify messages coming from the component.
      */
-    final String componentRuntimeId = DOM.createUniqueId();
+    final String componentRuntimeId = String.valueOf(componentIdTracker++);
 
     private Consumer<ExternalFilterRequest> filterConsumer;
 
@@ -76,7 +77,7 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
     public void init() {
         view.init(this);
         dispatcher.register(this);
-        hostPageUrl = GWT.getHostPageBaseURL();
+        hostPageUrl = DomGlobal.window.location.href;
     }
 
     @PreDestroy

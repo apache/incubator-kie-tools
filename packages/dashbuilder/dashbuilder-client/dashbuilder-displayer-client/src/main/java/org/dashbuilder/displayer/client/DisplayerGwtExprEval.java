@@ -34,15 +34,15 @@ public class DisplayerGwtExprEval implements AbstractDisplayer.ExpressionEval {
         }
         for (String keyword : _jsMalicious) {
             if (expr.contains(keyword)) {
-                presenter.handleError(DisplayerConstants.INSTANCE.displayer_keyword_not_allowed(expr));
-                throw new RuntimeException(DisplayerConstants.INSTANCE.displayer_keyword_not_allowed(expr));
+                presenter.handleError(DisplayerConstants.displayer_keyword_not_allowed(expr));
+                throw new RuntimeException(DisplayerConstants.displayer_keyword_not_allowed(expr));
             }
         }
         try {
             return _evalExpression(val, expr);
         } catch (Exception e) {
-            presenter.handleError(DisplayerConstants.INSTANCE.displayer_expr_invalid_syntax(expr), e);
-            throw new RuntimeException(DisplayerConstants.INSTANCE.displayer_expr_invalid_syntax(expr));
+            presenter.handleError(DisplayerConstants.displayer_expr_invalid_syntax(expr), e);
+            throw new RuntimeException(DisplayerConstants.displayer_expr_invalid_syntax(expr));
         }
     }
 

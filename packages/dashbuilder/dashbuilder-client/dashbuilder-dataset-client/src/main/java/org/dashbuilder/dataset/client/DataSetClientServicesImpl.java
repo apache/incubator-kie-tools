@@ -175,7 +175,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
         if (dataSetLookupServices != null && clientDataSetManager.getDataSet(request.getDataSetUUID()) != null) {
             // TODO: implement the dataset export
             //var dataSet = clientDataSetManager.lookupDataSet(request);
-            listener.onError(new ClientRuntimeError(CommonConstants.INSTANCE.exc_no_client_side_data_export()));
+            listener.onError(new ClientRuntimeError(CommonConstants.exc_no_client_side_data_export()));
         }
 
     }
@@ -193,7 +193,7 @@ public class DataSetClientServicesImpl implements DataSetClientServices {
             // TODO: Create dataset export to excel
             //var dataSet = clientDataSetManager.lookupDataSet(request);
             try {
-                listener.onError(new ClientRuntimeError(CommonConstants.INSTANCE.exc_no_client_side_data_export()));
+                listener.onError(new ClientRuntimeError(CommonConstants.exc_no_client_side_data_export()));
             } catch (Exception e) {
                 throw new RuntimeException(e);
 

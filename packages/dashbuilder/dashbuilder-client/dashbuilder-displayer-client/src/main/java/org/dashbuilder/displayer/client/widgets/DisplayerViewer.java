@@ -21,7 +21,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
@@ -48,7 +47,6 @@ public class DisplayerViewer {
     protected boolean error = true;
     protected DisplayerLocator displayerLocator;
     ClientRuntimeError displayerInitializationError;
-    CommonConstants i18n = CommonConstants.INSTANCE;
     @Inject
     Elemental2DomUtil domUtil;
 
@@ -115,7 +113,7 @@ public class DisplayerViewer {
 
     public Displayer draw() {
         if (displayerInitializationError != null) {
-            error(displayerInitializationError, i18n.displayerviewer_displayer_not_created());
+            error(displayerInitializationError, CommonConstants.displayerviewer_displayer_not_created());
         } else {
             try {
                 // Draw the displayer
@@ -141,7 +139,7 @@ public class DisplayerViewer {
         container.appendChild(errorWidget.getElement());
         errorWidget.show(message, e.getThrowable());
         error = true;
-        GWT.log(e.getMessage(),
+        DomGlobal.console.log(e.getMessage(),
                 e.getThrowable());
     }
 

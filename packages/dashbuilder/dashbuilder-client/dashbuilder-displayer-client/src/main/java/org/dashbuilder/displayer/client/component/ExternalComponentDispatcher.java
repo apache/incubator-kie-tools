@@ -42,8 +42,6 @@ import org.slf4j.LoggerFactory;
 @ApplicationScoped
 public class ExternalComponentDispatcher {
 
-    private static final CommonConstants i18n = CommonConstants.INSTANCE;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ExternalComponentDispatcher.class);
 
     @Inject
@@ -100,7 +98,7 @@ public class ExternalComponentDispatcher {
 
     private void handleConfiguration(ExternalComponentMessage message) {
         findDestination(message, destination -> destination.onConfigurationIssue(messageHelper.getConfigurationIssue(message)
-                                                                                              .orElse(i18n.componentConfigDefaultMessage())));
+                                                                                              .orElse(CommonConstants.componentConfigDefaultMessage())));
     }
 
     private void handleReady(ExternalComponentMessage message) {
