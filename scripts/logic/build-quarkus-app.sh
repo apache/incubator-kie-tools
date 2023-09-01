@@ -103,7 +103,7 @@ mvn ${MAVEN_OPTIONS} \
     -DskipTests \
     -Dmaven.repo.local=${mvn_local_repo} \
     -Dquarkus.container-image.build=false \
-    clean install
+    install
 
 cd ${build_target_dir}
 
