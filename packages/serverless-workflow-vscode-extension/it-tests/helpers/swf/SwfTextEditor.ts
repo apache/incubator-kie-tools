@@ -34,6 +34,7 @@ export default class SwfTextEditor extends TextEditor {
 
   /**
    * Selects a value from the content assist.
+   *
    * @param value The value to be selected.
    */
   public async selectFromContentAssist(value: string): Promise<void> {
