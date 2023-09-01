@@ -22,14 +22,6 @@ public class AppConstants {
         // empty
     }
 
-    public static String logoutMenuTooltip() {
-        return "";
-    }
-
-    public static String errorLoadingDashboards() {
-        return "";
-    }
-
     public static String loadingDashboards() {
         return "Loading dashboard";
     }
@@ -38,52 +30,12 @@ public class AppConstants {
         return "Uploading Loading dashboards";
     }
 
-    public static String runtimeScreenTitle() {
-        return "";
-    }
-
-    public static String uploadDashboardsTitle() {
-        return "";
-    }
-
-    public static String notFoundScreenTitle() {
-        return "";
-    }
-
     public static String notFoundDashboard(String perspectiveName) {
         return "Dashboard " + perspectiveName + " not found. Please review the dashboard name and try again.";
     }
 
-    public static String routerScreenTitle() {
-        return "";
-    }
-
-    public static String dashboardsListScreenTitle() {
-        return "";
-    }
-
-    public static String dashboardListTooltip() {
-        return "";
-    }
-
-    public static String listDashboardsScreenTitle() {
-        return "";
-    }
-
-    public static String routerPerspective() {
-        return "";
-    }
-
-    public static String dashboardAlreadyImport(String newModelId, String exitingModel) {
-        return "";
-    }
-
     public static String importSuccess(String fileName) {
-        return "";
-    }
-
-    public static String disconnectedFromServer() {
-        return "";
+        return "Dashboard " + fileName + " successfully imported";
     }
 
     public static String couldNotConnectToServer() {
@@ -94,28 +46,12 @@ public class AppConstants {
         return "Invalid response received from the server. This very likely means that you have been logged out due to inactivity.";
     }
 
-    public static String dashboardOpenTooltip() {
-        return "";
-    }
-
-    public static String defaultErrorMessage() {
-        return "";
-    }
-
     public static String notAuthorized() {
         return "Not Authorized";
     }
 
-    public static String notAuthorizedTitle() {
-        return "";
-    }
-
     public static String notAbleToLoadDashboard(String message) {
-        return "";
-    }
-
-    public static String clientMode() {
-        return "";
+        return "Not able to load dashboard: " + message;
     }
 
     public static String emptyEditorMode() {
@@ -133,10 +69,6 @@ public class AppConstants {
 
     public static String errorContentTitle() {
         return "Error loading content";
-    }
-
-    public static String samplesScreenTitle() {
-        return "";
     }
 
     public static String emptyScreenTrySamples() {
