@@ -25,7 +25,8 @@ import { Variable } from "./Variable";
  * and a new context is created. In this context, we can have:
  * 1. Inner variables: declared inside the Boxed Expression Editor;
  * 2. Input variables: input nodes to DecisionNode-1;
- * 3.
+ * 3. The variable: the variable context may declare a Variable that is valid for this context and for its
+ * children, for example, a row in a Context Expression inside a Decision Node.
  */
 export interface VariableContext {
   /**
