@@ -31,8 +31,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Templated
 public class NotFoundScreenView implements NotFoundScreen.View {
     
-    private static AppConstants i18n = AppConstants.INSTANCE;
-    
     @Inject
     @DataField
     HTMLDivElement root;
@@ -53,7 +51,7 @@ public class NotFoundScreenView implements NotFoundScreen.View {
     
     @Override
     public void setNotFoundDashboard(String perspectiveName) {
-        subTitle.textContent = i18n.notFoundDashboard(perspectiveName);
+        subTitle.textContent = AppConstants.notFoundDashboard(perspectiveName);
     }
     
 }

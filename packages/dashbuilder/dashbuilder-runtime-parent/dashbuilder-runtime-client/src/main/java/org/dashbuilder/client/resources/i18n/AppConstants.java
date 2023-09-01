@@ -16,75 +16,131 @@
 
 package org.dashbuilder.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+public class AppConstants {
 
-public interface AppConstants extends Messages {
+    private AppConstants() {
+        // empty
+    }
 
-    public static final AppConstants INSTANCE = GWT.create(AppConstants.class);
+    public static String logoutMenuTooltip() {
+        return "";
+    }
 
-    String logoutMenuTooltip();
+    public static String errorLoadingDashboards() {
+        return "";
+    }
 
-    String errorLoadingDashboards();
+    public static String loadingDashboards() {
+        return "Loading dashboard";
+    }
 
-    String loadingDashboards();
+    public static String uploadingDashboards() {
+        return "Uploading Loading dashboards";
+    }
 
-    String errorUploadingDashboards();
+    public static String runtimeScreenTitle() {
+        return "";
+    }
 
-    String uploadingDashboards();
+    public static String uploadDashboardsTitle() {
+        return "";
+    }
 
-    String runtimeScreenTitle();
+    public static String notFoundScreenTitle() {
+        return "";
+    }
 
-    String uploadDashboardsTitle();
+    public static String notFoundDashboard(String perspectiveName) {
+        return "Dashboard " + perspectiveName + " not found. Please review the dashboard name and try again.";
+    }
 
-    String notFoundScreenTitle();
+    public static String routerScreenTitle() {
+        return "";
+    }
 
-    String notFoundDashboard(String perspectiveName);
+    public static String dashboardsListScreenTitle() {
+        return "";
+    }
 
-    String routerScreenTitle();
+    public static String dashboardListTooltip() {
+        return "";
+    }
 
-    String dashboardsListScreenTitle();
+    public static String listDashboardsScreenTitle() {
+        return "";
+    }
 
-    String dashboardListTooltip();
+    public static String routerPerspective() {
+        return "";
+    }
 
-    String listDashboardsScreenTitle();
+    public static String dashboardAlreadyImport(String newModelId, String exitingModel) {
+        return "";
+    }
 
-    String routerPerspective();
+    public static String importSuccess(String fileName) {
+        return "";
+    }
 
-    String dashboardAlreadyImport(String newModelId, String exitingModel);
+    public static String disconnectedFromServer() {
+        return "";
+    }
 
-    String importSuccess(String fileName);
+    public static String couldNotConnectToServer() {
+        return "Could not connect to server. This very likely means a network problem.";
+    }
 
-    String disconnectedFromServer();
+    public static String invalidBusResponseProbablySessionTimeout() {
+        return "Invalid response received from the server. This very likely means that you have been logged out due to inactivity.";
+    }
 
-    String couldNotConnectToServer();
+    public static String dashboardOpenTooltip() {
+        return "";
+    }
 
-    String sessionTimeout();
+    public static String defaultErrorMessage() {
+        return "";
+    }
 
-    String invalidBusResponseProbablySessionTimeout();
+    public static String notAuthorized() {
+        return "Not Authorized";
+    }
 
-    String dashboardOpenTooltip();
+    public static String notAuthorizedTitle() {
+        return "";
+    }
 
-    String defaultErrorMessage();
+    public static String notAbleToLoadDashboard(String message) {
+        return "";
+    }
 
-    String notAuthorized();
+    public static String clientMode() {
+        return "";
+    }
 
-    String notAuthorizedTitle();
+    public static String emptyEditorMode() {
+        return "No content to display. Start editing to see the result here.";
+    }
 
-    String notAbleToLoadDashboard(String message);
+    public static String emptyClientMode() {
+        return "Dashboards were not imported. You can import a dashboard by creating a supported YAML/JSON file";
+    }
 
-    String clientMode();
+    public static String emptyWithImportId(String modelId) {
+        return "Not able to load <strong>" + modelId +
+                "</strong>. You can import a dashboard by creating a supported YAML/JSON file";
+    }
 
-    String emptyEditorMode();
+    public static String errorContentTitle() {
+        return "Error loading content";
+    }
 
-    String emptyClientMode();
+    public static String samplesScreenTitle() {
+        return "";
+    }
 
-    String emptyWithImportId(String modelId);
-
-    String errorContentTitle();
-
-    String samplesScreenTitle();
-
-    String emptyScreenTrySamples();
+    public static String emptyScreenTrySamples() {
+        return "or you can try samples below.";
+    }
 
 }

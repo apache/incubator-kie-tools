@@ -68,7 +68,7 @@ public class EChartsDisplayerView<P extends EChartsAbstractDisplayer<?>>
 
     @Override
     public void noData() {
-        lblNoData.setText(EChartsDisplayerConstants.INSTANCE.common_noData());
+        lblNoData.setText(EChartsDisplayerConstants.common_noData());
 
         disposeChart();
         chart = null;

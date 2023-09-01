@@ -26,7 +26,6 @@ import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLFormElement;
 import elemental2.dom.HTMLInputElement;
-import elemental2.dom.Response;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.widgets.UploadWidget;
@@ -38,8 +37,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 @Templated
 public class UploadWidgetView implements UploadWidget.View {
-
-    private static final AppConstants i18n = AppConstants.INSTANCE;
 
     UploadWidget presenter;
 
@@ -76,27 +73,12 @@ public class UploadWidgetView implements UploadWidget.View {
 
     @Override
     public void loading() {
-        busyIndicator.show(i18n.uploadingDashboards());
+        busyIndicator.show(AppConstants.uploadingDashboards());
     }
 
     @Override
     public void stopLoading() {
         busyIndicator.hide();
-    }
-
-    @Override
-    public void badResponseUploading(Response response) {
-        runtimeCommunication.showError(i18n.errorUploadingDashboards(), response);
-    }
-
-    @Override
-    public void errorDuringUpload(Object error) {
-        runtimeCommunication.showError(i18n.errorUploadingDashboards(), error);
-    }
-
-    @Override
-    public void dashboardAlreadyImportedError(String newImportName, String existingImport) {
-        runtimeCommunication.showWarning(i18n.dashboardAlreadyImport(newImportName, existingImport));
     }
 
     @EventHandler("btnImport")
@@ -119,12 +101,12 @@ public class UploadWidgetView implements UploadWidget.View {
 
     @Override
     public void importSuccess(String importName) {
-        runtimeCommunication.showSuccess(i18n.importSuccess(importName));
+        runtimeCommunication.showSuccess(AppConstants.importSuccess(importName));
     }
 
     @Override
     public void errorLoadingDashboard(String message) {
-        runtimeCommunication.showWarning(i18n.notAbleToLoadDashboard(message));
+        runtimeCommunication.showWarning(AppConstants.notAbleToLoadDashboard(message));
     }
 
 }

@@ -30,8 +30,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 public class ContentErrorScreenView implements ContentErrorScreen.View {
 
-    AppConstants i18n = AppConstants.INSTANCE;
-
     @Inject
     @DataField
     HTMLDivElement errorContentRoot;
@@ -51,7 +49,7 @@ public class ContentErrorScreenView implements ContentErrorScreen.View {
 
     @Override
     public void init(ContentErrorScreen presenter) {
-        errorContentScreenTitle.innerHTML = i18n.errorContentTitle();
+        errorContentScreenTitle.innerHTML = AppConstants.errorContentTitle();
     }
 
     @Override

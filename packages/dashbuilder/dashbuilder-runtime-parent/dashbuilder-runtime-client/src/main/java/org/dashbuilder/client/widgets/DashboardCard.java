@@ -21,7 +21,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.Router;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.uberfire.client.mvp.UberElemental;
@@ -32,8 +31,6 @@ import org.uberfire.client.mvp.UberElemental;
  */
 @Dependent
 public class DashboardCard implements IsElement {
-
-    static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;

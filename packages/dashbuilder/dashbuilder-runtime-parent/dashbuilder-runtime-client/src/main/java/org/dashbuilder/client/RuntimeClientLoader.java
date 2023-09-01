@@ -57,7 +57,6 @@ public class RuntimeClientLoader {
 
     private static final int NOT_FOUND_CODE = 404;
 
-    private static AppConstants i18n = AppConstants.INSTANCE;
 
     public static final String IMPORT_ID_PARAM = "import";
 
@@ -171,7 +170,7 @@ public class RuntimeClientLoader {
     public void load(Consumer<RuntimeServiceResponse> responseConsumer,
                      BiConsumer<Object, Throwable> error) {
         final var importID = getImportId();
-        busyIndicator.show(i18n.loadingDashboards());
+        busyIndicator.show(AppConstants.loadingDashboards());
         if (mode == RuntimeClientMode.CLIENT) {
             if ((importID != null && !importID.trim().isEmpty())) {
                 loadClientModelInfo(resolveModel(importID), responseConsumer, error);
@@ -192,7 +191,7 @@ public class RuntimeClientLoader {
                           Consumer<RuntimeModel> modelLoaded,
                           Command emptyModel,
                           BiConsumer<Object, Throwable> error) {
-        busyIndicator.show(i18n.loadingDashboards());
+        busyIndicator.show(AppConstants.loadingDashboards());
         if (mode == RuntimeClientMode.CLIENT) {
             loadClientModel(clientModelBaseUrl + importId, modelLoaded, error);
         } else if (mode == RuntimeClientMode.EDITOR) {

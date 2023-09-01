@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.DashboardsListScreen;
 import org.dashbuilder.client.widgets.DashboardCard;
 import org.dashbuilder.client.widgets.UploadWidget;
@@ -30,8 +29,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Templated
 @Dependent
 public class DashboardsListScreenView implements DashboardsListScreen.View {
-
-    AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     @DataField

@@ -15,13 +15,14 @@
  */
 package org.dashbuilder.renderer.echarts.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+public class EChartsDisplayerConstants {
 
-public interface EChartsDisplayerConstants extends Messages {
+    private EChartsDisplayerConstants() {
+        // no data
+    }
 
-    public static final EChartsDisplayerConstants INSTANCE = GWT.create(EChartsDisplayerConstants.class);
-
-    String common_noData();
+    public static String common_noData() {
+        return "No data.";
+    }
 
 }

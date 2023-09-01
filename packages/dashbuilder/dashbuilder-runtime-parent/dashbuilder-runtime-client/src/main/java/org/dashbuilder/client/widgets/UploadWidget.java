@@ -23,13 +23,9 @@ import javax.inject.Inject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.File;
 import elemental2.dom.FileReader;
-import elemental2.dom.FormData;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLFormElement;
-import elemental2.dom.RequestInit;
-import elemental2.dom.Response;
 import org.dashbuilder.client.RuntimeClientLoader;
-import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.Router;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.uberfire.client.mvp.UberElemental;
@@ -40,8 +36,6 @@ import org.uberfire.client.mvp.UberElemental;
  */
 @Dependent
 public class UploadWidget implements IsElement {
-
-    static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;
@@ -58,13 +52,7 @@ public class UploadWidget implements IsElement {
 
         void stopLoading();
 
-        void badResponseUploading(Response response);
-
-        void errorDuringUpload(Object error);
-        
         void errorLoadingDashboard(String message);
-
-        void dashboardAlreadyImportedError(String importName, String modelId);
 
         void importSuccess(String importName);
 
@@ -79,7 +67,7 @@ public class UploadWidget implements IsElement {
     public HTMLElement getElement() {
         return this.view.getElement();
     }
-    
+
     public String getAcceptUpload() {
         return runtimeClientLoader.isClient() ? ".json,.yaml,.yml" : ".zip";
     }
@@ -88,57 +76,30 @@ public class UploadWidget implements IsElement {
                        final File file,
                        final HTMLFormElement uploadForm) {
 
-        if (runtimeClientLoader.isClient()) {
-            var reader = new FileReader();
-            reader.onload = p -> {
-                try {
-                    
-                    var loadedContent = runtimeClientLoader.loadContentAndRoute(reader.result.asString());
-                    if(loadedContent != null) {
-                        routerScreen.showRuntimeModel(loadedContent);
-                    } else {
-                        routerScreen.doRoute();
-                    }
-                } catch(Exception e) {
-                    e.printStackTrace();
-                    DomGlobal.console.log(e);
-                    view.errorLoadingDashboard(fileName);
+        var reader = new FileReader();
+        reader.onload = p -> {
+            try {
+
+                var loadedContent = runtimeClientLoader.loadContentAndRoute(reader.result.asString());
+                if (loadedContent != null) {
+                    routerScreen.showRuntimeModel(loadedContent);
+                } else {
+                    routerScreen.doRoute();
                 }
-                return null;
-            };
-            reader.readAsText(file);
-        } else {
-            var request = RequestInit.create();
-            request.setMethod("POST");
-            request.setBody(new FormData(uploadForm));
-            view.loading();
-            DomGlobal.window.fetch("./rest/upload", request)
-                    .then((Response response) -> response.text().then(newImportName -> {
-                        view.stopLoading();
-                        if (response.status == 200) {
-                            openImport(newImportName);
-                        } else if (response.status == 409) {
-                            importAlreadyExists(fileName, newImportName);
-                        } else {
-                            view.badResponseUploading(response);
-                        }
-                        return null;
-                    }), error -> {
-                        view.stopLoading();
-                        view.errorDuringUpload(error);
-                        return null;
-                    });
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+                DomGlobal.console.log(e);
+                view.errorLoadingDashboard(fileName);
+            }
+            return null;
+        };
+        reader.readAsText(file);
+
     }
 
     private void openImport(final String newImportName) {
         view.importSuccess(newImportName);
         routerScreen.afterDashboardUpload(newImportName);
-    }
-
-    private void importAlreadyExists(final String fileName, final String modelId) {
-        view.dashboardAlreadyImportedError(fileName, modelId);
-        routerScreen.afterDashboardUpload(modelId);
     }
 
     public String retrieveFileName(String value) {

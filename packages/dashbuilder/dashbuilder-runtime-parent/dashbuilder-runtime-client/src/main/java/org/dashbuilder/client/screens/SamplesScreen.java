@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.place.Place;
-import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.services.SamplesService;
 import org.dashbuilder.client.widgets.SampleCard;
 import org.dashbuilder.client.widgets.SamplesCardRow;
@@ -40,8 +39,6 @@ import org.uberfire.client.mvp.UberElemental;
 public class SamplesScreen implements Place {
 
     public static final String ID = "SamplesScreen";
-
-    private static final AppConstants i18n = AppConstants.INSTANCE;
 
     @Inject
     View view;

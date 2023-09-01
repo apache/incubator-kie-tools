@@ -38,8 +38,6 @@ public class DefaultRuntimeErrorCallback {
     @Inject
     BusyIndicator busyIndicator;
 
-    AppConstants i18n = AppConstants.INSTANCE;
-
     private boolean errorPopUpLock = false;
 
     public enum DefaultErrorType {
@@ -74,13 +72,13 @@ public class DefaultRuntimeErrorCallback {
 
         switch (type) {
             case NOT_LOGGED:
-                showPopup(i18n.invalidBusResponseProbablySessionTimeout());
+                showPopup(AppConstants.invalidBusResponseProbablySessionTimeout());
                 break;
             case SERVER_OFFLINE:
-                showPopup(i18n.couldNotConnectToServer());
+                showPopup(AppConstants.couldNotConnectToServer());
                 break;
             case NOT_AUTHORIZED:
-                showPopup(i18n.notAuthorized());
+                showPopup(AppConstants.notAuthorized());
                 break;
             case OTHER:
             default:

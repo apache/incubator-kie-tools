@@ -33,8 +33,6 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Dependent
 public class EmptyScreenView implements EmptyScreen.View {
 
-    AppConstants i18n = AppConstants.INSTANCE;
-
     @Inject
     @DataField
     HTMLDivElement emptyImport;
@@ -71,23 +69,23 @@ public class EmptyScreenView implements EmptyScreen.View {
     @Override
     public void editorMode() {
         uploadContainer.style.display = Display.NONE.getCssName();
-        subTitleParagraph.textContent = AppConstants.INSTANCE.emptyEditorMode();
+        subTitleParagraph.textContent = AppConstants.emptyEditorMode();
     }
 
     @Override
     public void noModel() {
-        subTitleParagraph.textContent = AppConstants.INSTANCE.emptyClientMode();
+        subTitleParagraph.textContent = AppConstants.emptyClientMode();
     }
 
     @Override
     public void modelId(String modelId) {
-        subTitleParagraph.innerHTML = AppConstants.INSTANCE.emptyWithImportId(modelId);
+        subTitleParagraph.innerHTML = AppConstants.emptyWithImportId(modelId);
     }
 
     @Override
     public void enableSamplesButton(Runnable action) {
         uploadContainer.style.display = Display.NONE.getCssName();
-        subTitleParagraph.textContent = subTitleParagraph.textContent + " " + AppConstants.INSTANCE
+        subTitleParagraph.textContent = subTitleParagraph.textContent + " " + AppConstants
                 .emptyScreenTrySamples();
         trySamplesContainer.style.display = Display.INLINE_BLOCK.getCssName();
         trySamples.onclick = e -> {
