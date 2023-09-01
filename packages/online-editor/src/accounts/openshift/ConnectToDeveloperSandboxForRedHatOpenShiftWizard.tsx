@@ -33,7 +33,7 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { v4 as uuid } from "uuid";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";

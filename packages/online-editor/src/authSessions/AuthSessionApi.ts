@@ -68,3 +68,11 @@ export enum AuthSessionStatus {
 }
 
 export type AuthSession = GitAuthSession | OpenShiftAuthSession | KubernetesAuthSession | NoneAuthSession;
+
+export function isCloudAuthSession(authSession: AuthSession): authSession is CloudAuthSession {
+  return ["openshift", "kubernetes"].includes(authSession.type);
+}
+
+export function isGitAuthSession(authSession: AuthSession): authSession is GitAuthSession {
+  return authSession.type === "git";
+}

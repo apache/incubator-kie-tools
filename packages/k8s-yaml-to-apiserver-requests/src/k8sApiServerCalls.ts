@@ -32,6 +32,8 @@ export async function callK8sApiServer(args: {
 
   // Simulate actual API calls
   console.info("Start calling API endpoints for each parsed YAML...");
+
+  const results = [];
   for (const apiCall of apiCalls) {
     // FIXME: Interpolate :namespace with actual namespace.
     const endpointUrl = new URL(apiCall.rawEndpoint);
@@ -41,21 +43,25 @@ export async function callK8sApiServer(args: {
     endpointUrl.pathname = interpolatedPathname;
 
     console.info(`Creating '${apiCall.kind}' with POST ${endpointUrl.toString()}`);
-    await fetch(endpointUrl.toString(), {
-      headers: {
-        Authorization: `Bearer ${args.k8sServiceAccountToken}`,
-        "Content-Type": "application/yaml",
-      },
-      method: "POST",
-      body: jsYaml.dump(apiCall.yaml),
-    })
-      .then((res) => {
-        console.info(`STATUS: ${res.status} - ${res.statusText}`);
-        res.text();
+    results.push(
+      await fetch(endpointUrl.toString(), {
+        headers: {
+          Authorization: `Bearer ${args.k8sServiceAccountToken}`,
+          "Content-Type": "application/yaml",
+        },
+        method: "POST",
+        body: jsYaml.dump(apiCall.yaml),
       })
-      .then((text) => {
-        console.info(text);
-      });
+    );
+    // .then((res) => {
+    //   console.info(`STATUS: ${res.status} - ${res.statusText}`);
+    //   res.text();
+    // })
+    // .then((text) => {
+    //   console.info(text);
+    // });
   }
   console.info("Done.");
+
+  return results;
 }

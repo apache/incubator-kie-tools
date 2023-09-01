@@ -171,18 +171,6 @@ export const routes = {
             () => `dev-deployments/kubernetes/cluster-config/kie-sandbox-dev-deployments-resources.yaml`
           ),
         },
-        resources: {
-          deployment: new Route<{}>(() => `dev-deployments/kubernetes/resources/deployment.yaml`),
-          service: new Route<{}>(() => `dev-deployments/kubernetes/resources/service.yaml`),
-          ingress: new Route<{}>(() => `dev-deployments/kubernetes/resources/ingress.yaml`),
-        },
-      },
-      openshift: {
-        resources: {
-          deployment: new Route<{}>(() => `dev-deployments/openshift/resources/deployment.yaml`),
-          service: new Route<{}>(() => `dev-deployments/openshift/resources/service.yaml`),
-          ingress: new Route<{}>(() => `dev-deployments/openshift/resources/route.yaml`),
-        },
       },
       uploadService: {
         linux: new Route<{}>(() => `dev-deployments/upload-service/linux/dev-deployments-upload-service`),

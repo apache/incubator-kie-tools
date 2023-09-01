@@ -30,7 +30,7 @@ import {
   fetchAuthenticatedGitHubUser,
 } from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
-import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
 import {
   GitAuthProvider,
   SupportedGitAuthProviders,

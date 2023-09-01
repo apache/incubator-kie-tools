@@ -17,24 +17,29 @@
  * under the License.
  */
 
-import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
-import { KieSandboxOpenShiftService } from "./services/openshift/KieSandboxOpenShiftService";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
+import { KieSandboxOpenShiftService } from "./services/KieSandboxOpenShiftService";
 import { ConfirmDeployModalState, DeleteDeployModalState, DevDeploymentsContext } from "./DevDeploymentsContext";
 import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
 import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
-import { CloudAuthSession } from "../authSessions/AuthSessionApi";
+import { AuthSession, CloudAuthSession, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import {
   parseK8sResourceYaml,
   buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
+  interpolateK8sResourceYamls,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { TokenInterpolationService } from "./services/TokenInterpolationService";
 import { useRoutes } from "../navigation/Hooks";
+import { KieSandboxDeploymentService, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
+import { KubernetesService } from "./services/KubernetesService";
+import { useAuthSessions } from "../authSessions/AuthSessionsContext";
+import { createDeploymentYaml } from "./services/resources/kubernetes/Deployment";
+import { createServiceYaml } from "./services/resources/kubernetes/Service";
+import { createIngressYaml } from "./services/resources/kubernetes/Ingress";
 
 interface Props {
   children: React.ReactNode;
@@ -53,17 +58,30 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeployModalState, setConfirmDeployModalState] = useState<ConfirmDeployModalState>({ isOpen: false });
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
+  // AuthSessions
+  const { authSessions } = useAuthSessions();
+
   // Service
+  const [devDeploymentServices, setDevDeploymentServices] = useState<Map<string, KieSandboxDeploymentService>>(
+    new Map()
+  );
+
   const getService = useCallback(
-    (authSession: CloudAuthSession) => {
+    async (authSession: CloudAuthSession) => {
       if (authSession.type === "openshift") {
-        return new KieSandboxOpenShiftService({
-          connection: authSession,
-          proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-        });
+        // const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({ connection: authSession, proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL });
+        // return new KieSandboxOpenShiftService({
+        //   connection: authSession,
+        //   proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+        //   k8sApiServerEndpointsByResourceKind
+        // });
       } else if (authSession.type === "kubernetes") {
+        const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
+          connection: authSession,
+        });
         return new KieSandboxKubernetesService({
           connection: authSession,
+          k8sApiServerEndpointsByResourceKind,
         });
       }
       throw new Error("Invalid AuthSession type.");
@@ -71,21 +89,33 @@ export function DevDeploymentsContextProvider(props: Props) {
     [env.KIE_SANDBOX_CORS_PROXY_URL]
   );
 
+  useEffect(() => {
+    const updateDevDeploymentServices = async () => {
+      const newDevDeploymentServices = new Map<string, KieSandboxDeploymentService>();
+      authSessions.forEach(async (authSession) => {
+        if (!isCloudAuthSession(authSession)) {
+          return;
+        }
+        newDevDeploymentServices.set(authSession.id, await getService(authSession));
+      });
+      setDevDeploymentServices(newDevDeploymentServices);
+    };
+    updateDevDeploymentServices();
+  }, [authSessions, getService]);
+
+  // Deployments
   const deleteDeployment = useCallback(
     async (args: { authSession: CloudAuthSession; resourceName: string }) => {
-      const service = getService(args.authSession);
-
       try {
-        await service.deleteDevDeployment(args.resourceName);
+        await devDeploymentServices.get(args.authSession.id)?.deleteDevDeployment(args.resourceName);
         return true;
       } catch (error) {
         console.error(error);
         return false;
       }
     },
-    [getService]
+    [devDeploymentServices]
   );
-
   const deleteDeployments = useCallback(
     async (args: { authSession: CloudAuthSession; resourceNames: string[] }) => {
       const result = await Promise.all(
@@ -101,19 +131,25 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   const loadDeployments = useCallback(
     async (args: { authSession: CloudAuthSession }) => {
-      const service = getService(args.authSession);
-
-      return service.loadDeployedModels().catch((e) => {
-        console.error(e);
-        throw e;
-      });
+      return (
+        devDeploymentServices
+          .get(args.authSession.id)
+          ?.loadDeployedModels()
+          .catch((e) => {
+            console.error(e);
+            throw e;
+          }) || []
+      );
     },
-    [getService]
+    [devDeploymentServices]
   );
 
   const deploy = useCallback(
     async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
-      const service = getService(authSession);
+      const service = devDeploymentServices.get(authSession.id);
+      if (!service) {
+        throw new Error(`Missing service for authSession with id ${authSession.id}.`);
+      }
 
       if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
         return false;
@@ -141,12 +177,15 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
     },
-    [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, getService, workspaces]
+    [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, devDeploymentServices, workspaces]
   );
 
   const dynamicDeploy = useCallback(
     async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
-      const service = getService(authSession);
+      const service = devDeploymentServices.get(authSession.id);
+      if (!service) {
+        throw new Error(`Missing service for authSession with id ${authSession.id}.`);
+      }
 
       if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
         return false;
@@ -167,9 +206,9 @@ export function DevDeploymentsContextProvider(props: Props) {
         authSession.token
       );
 
-      console.log(k8sApiServerEndpointsByResourceKind);
-
-      const tokenInterpolationService = new TokenInterpolationService({
+      const tokenMap = {
+        labels: defaultLabelTokens,
+        annotations: defaultAnnotationTokens,
         name: "dev-deployment",
         uniqueId: "123",
         uploadService: {
@@ -184,21 +223,11 @@ export function DevDeploymentsContextProvider(props: Props) {
           namespace: authSession.namespace,
         },
         defaultContainerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-      });
+      };
 
-      const deploymentResource = await fetch(routes.static.devDeployments.kubernetes.resources.deployment.path({}))
-        .then((res) => res.blob())
-        .then((res) => res.text());
-      const serviceResource = await fetch(routes.static.devDeployments.kubernetes.resources.service.path({}))
-        .then((res) => res.blob())
-        .then((res) => res.text());
-      const ingressResource = await fetch(routes.static.devDeployments.kubernetes.resources.ingress.path({}))
-        .then((res) => res.blob())
-        .then((res) => res.text());
-
-      const interpolatedDeploymentResource = tokenInterpolationService.doInterpolation(deploymentResource);
-      const interpolatedServiceResource = tokenInterpolationService.doInterpolation(serviceResource);
-      const interpolatedIngressResource = tokenInterpolationService.doInterpolation(ingressResource);
+      const interpolatedDeploymentResource = interpolateK8sResourceYamls(createDeploymentYaml, tokenMap);
+      const interpolatedServiceResource = interpolateK8sResourceYamls(createServiceYaml, tokenMap);
+      const interpolatedIngressResource = interpolateK8sResourceYamls(createIngressYaml, tokenMap);
 
       await callK8sApiServer({
         k8sApiServerEndpointsByResourceKind,
@@ -212,26 +241,21 @@ export function DevDeploymentsContextProvider(props: Props) {
         k8sServiceAccountToken: authSession.token,
       });
 
-      // try {
-      //   await service.deploy({
-      //     targetFilePath: workspaceFile.relativePath,
-      //     workspaceName,
-      //     workspaceZipBlob: zipBlob,
-      //     containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-      //   });
-      //   return true;
-      // } catch (error) {
-      //   console.error(error);
-      //   return false;
-      // }
+      try {
+        await service.dynamicDeploy({
+          targetFilePath: workspaceFile.relativePath,
+          workspaceName,
+          workspaceZipBlob: zipBlob,
+          containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+        });
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
       return true;
     },
-    [
-      env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-      getService,
-      routes.static.devDeployments.kubernetes.resources,
-      workspaces,
-    ]
+    [devDeploymentServices, env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, workspaces]
   );
 
   const value = useMemo(
@@ -240,6 +264,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
       confirmDeleteModalState,
+      devDeploymentServices,
       setDeployDropdownOpen,
       setConfirmDeployModalState,
       setConfirmDeleteModalState,
@@ -255,6 +280,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       isDeploymentsDropdownOpen,
       confirmDeployModalState,
       confirmDeleteModalState,
+      devDeploymentServices,
       deploy,
       dynamicDeploy,
       deleteDeployment,

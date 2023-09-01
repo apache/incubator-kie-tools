@@ -35,9 +35,9 @@ import {
   KubernetesServiceArgs,
   KubernetesConnectionStatus,
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { KieSandboxKubernetesService, RESOURCE_OWNER } from "../KieSandboxKubernetesService";
-import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "../types";
-import { getUploadStatus } from "../../DmnDevDeploymentQuarkusAppApi";
+import { KieSandboxKubernetesService, RESOURCE_OWNER } from "./KieSandboxKubernetesService";
+import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
+import { getUploadStatus } from "../DmnDevDeploymentQuarkusAppApi";
 
 export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
   openshiftService: OpenShiftService;

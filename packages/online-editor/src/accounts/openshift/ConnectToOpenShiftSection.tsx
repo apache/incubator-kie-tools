@@ -20,7 +20,7 @@
 import React, { useMemo, useState } from "react";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
-import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";

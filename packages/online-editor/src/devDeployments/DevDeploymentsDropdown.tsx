@@ -46,6 +46,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { KieSandboxDeployedModel } from "./services/types";
+import { isCloudAuthSession } from "../authSessions/AuthSessionApi";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 

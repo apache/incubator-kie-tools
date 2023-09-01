@@ -37,13 +37,21 @@ import {
   CreateDeploymentTemplateArgs,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
-import {
-  KubernetesConnectionStatus,
-  KubernetesService,
-  KubernetesServiceArgs,
-} from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
-import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
+import {
+  DeployArgs,
+  KieSandboxDeployedModel,
+  KieSandboxDeploymentService,
+  ResourceArgs,
+  defaultLabelTokens,
+} from "./types";
+import {
+  parseK8sResourceYaml,
+  buildK8sApiServerEndpointsByResourceKind,
+  callK8sApiServer,
+} from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
+import { getDeploymentListApiPath } from "./resources/kubernetes/Deployment";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
@@ -64,15 +72,15 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
   }
 
   public async listDeployments(): Promise<DeploymentDescriptor[]> {
-    const deployments = await this.service.withFetch((fetcher: ResourceFetcher) =>
-      fetcher.execute<DeploymentGroupDescriptor>({
-        target: new ListDeployments({
-          namespace: this.args.connection.namespace,
-          labelSelector: ResourceLabelNames.CREATED_BY,
-        }),
-      })
+    const deployments = await this.service.kubernetesFetch(
+      getDeploymentListApiPath(this.args.connection.namespace, defaultLabelTokens.createdBy)
     );
-    return deployments.items ?? [];
+
+    console.log(deployments);
+
+    // TO DO: Parse this.
+
+    return [];
   }
 
   public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {

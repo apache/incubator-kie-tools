@@ -33,7 +33,7 @@ import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
-import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
+import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";

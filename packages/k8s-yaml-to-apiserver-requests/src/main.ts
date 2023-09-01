@@ -29,12 +29,6 @@ async function main(args: {
   console.info("Done.");
   console.info("");
 
-  // Parse YAML (can be multiple, separated by `---`)
-  console.info("Starting to interpolate YAMLs with KIE Sandbox tokens...");
-  const interpolatedK8sResourceYamls: K8sResourceYaml[] = interpolateK8sResourceYamls(rawK8sResourceYamls);
-  console.info("Done.");
-  console.info("");
-
   // Build map of API endpoints by Resource kinds.
   console.info("Start mapping API Server endpoints by Resource kinds...");
   const k8sApiServerEndpointsByResourceKind = await buildK8sApiServerEndpointsByResourceKind(
@@ -48,7 +42,7 @@ async function main(args: {
   console.info("Start mapping API calls based on parsed YAML...");
   await callK8sApiServer({
     k8sApiServerEndpointsByResourceKind,
-    k8sResourceYamls: interpolatedK8sResourceYamls,
+    k8sResourceYamls: rawK8sResourceYamls,
     k8sApiServerUrl: args.k8sApiServerUrl,
     k8sNamespace: args.k8sNamespace,
     k8sServiceAccountToken: args.k8sServiceAccountToken,

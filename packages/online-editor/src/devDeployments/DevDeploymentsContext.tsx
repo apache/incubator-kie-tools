@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { KieSandboxDeployedModel } from "./services/types";
+import { KieSandboxDeployedModel, KieSandboxDeploymentService } from "./services/types";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 
 export interface DeploymentFile {
@@ -59,6 +59,9 @@ export interface DevDeploymentsContextType {
   setConfirmDeployModalState: React.Dispatch<React.SetStateAction<ConfirmDeployModalState>>;
   confirmDeleteModalState: DeleteDeployModalState;
   setConfirmDeleteModalState: React.Dispatch<React.SetStateAction<DeleteDeployModalState>>;
+
+  // Service
+  devDeploymentServices: Map<string, KieSandboxDeploymentService>;
 
   // Actions
   deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
