@@ -99,11 +99,10 @@ export function EditableNodeLabel({
   const positionClass = position ?? "center-center";
 
   return (
-    <>
+    <div className={`kie-dmn-editor--editable-node-name-input ${positionClass}`}>
       {(isEditing && (
         <input
           onMouseDownCapture={(e) => e.stopPropagation()} // Make sure mouse events stay inside the node.
-          className={`kie-dmn-editor--editable-node-name-input ${positionClass}`}
           onKeyDown={onKeyDown}
           tabIndex={-1}
           ref={ref}
@@ -113,7 +112,7 @@ export function EditableNodeLabel({
         />
       )) ||
         (value ?? <EmptyLabel />)}
-    </>
+    </div>
   );
 }
 
@@ -125,7 +124,7 @@ export function useEditableNodeLabel() {
     setEditingLabel(true);
   }, []);
 
-  // // Trigger editing on `Enter` pressed.
+  // Trigger editing on `Enter` pressed.
   const triggerEditingIfEnter = useCallback<React.KeyboardEventHandler>(
     (e) => {
       if (e.key === "Enter") {

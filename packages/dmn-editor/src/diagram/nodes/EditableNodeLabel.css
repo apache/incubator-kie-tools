@@ -1,4 +1,18 @@
 .kie-dmn-editor--editable-node-name-input {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.kie-dmn-editor--editable-node-name-input.top-center {
+  align-items: start;
+}
+.kie-dmn-editor--editable-node-name-input.center-center {
+  align-items: center;
+}
+
+.kie-dmn-editor--editable-node-name-input input {
   border: 0;
   width: 100%;
   text-align: center;
@@ -7,6 +21,6 @@
   background: transparent;
 }
 
-.kie-dmn-editor--editable-node-name-input:focus {
+.kie-dmn-editor--editable-node-name-input input:focus {
   outline: 0;
 }

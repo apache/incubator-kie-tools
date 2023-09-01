@@ -5,6 +5,7 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram as getDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 
 export function addStandaloneNode({
   definitions,
@@ -104,6 +105,9 @@ export function addStandaloneNode({
     "@_isCollapsed": false,
     "@_isListedInputData": false,
     "dc:Bounds": newNode.bounds,
+    ...(newNode.type === NODE_TYPES.decisionService
+      ? { "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(newNode.bounds) }
+      : {}),
   });
 
   return newNodeId;

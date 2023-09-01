@@ -62,31 +62,45 @@ export const graphStructure: Map<NodeType, Map<EdgeType, Set<NodeType>>> = new M
 ]);
 
 export const outgoing = {
-  inputData: {
+  [NODE_TYPES.inputData]: {
     nodes: outgoingNodes(NODE_TYPES.inputData),
     edges: outgoingEdges(NODE_TYPES.inputData),
   },
-  decision: {
+  [NODE_TYPES.decision]: {
     nodes: outgoingNodes(NODE_TYPES.decision),
     edges: outgoingEdges(NODE_TYPES.decision),
   },
-  bkm: {
+  [NODE_TYPES.bkm]: {
     nodes: outgoingNodes(NODE_TYPES.bkm),
     edges: outgoingEdges(NODE_TYPES.bkm),
   },
-  decisionService: {
+  [NODE_TYPES.decisionService]: {
     nodes: outgoingNodes(NODE_TYPES.decisionService),
     edges: outgoingEdges(NODE_TYPES.decisionService),
   },
-  knowledgeSource: {
+  [NODE_TYPES.knowledgeSource]: {
     nodes: outgoingNodes(NODE_TYPES.knowledgeSource),
     edges: outgoingEdges(NODE_TYPES.knowledgeSource),
   },
-  textAnnotation: {
+  [NODE_TYPES.textAnnotation]: {
     nodes: [],
     edges: outgoingEdges(NODE_TYPES.textAnnotation),
   },
 };
+
+export const containment = new Map<NodeType, Set<NodeType>>([
+  [NODE_TYPES.decisionService, new Set([NODE_TYPES.decision])],
+  [
+    NODE_TYPES.group,
+    new Set([
+      NODE_TYPES.inputData,
+      NODE_TYPES.bkm,
+      NODE_TYPES.decision,
+      NODE_TYPES.knowledgeSource,
+      NODE_TYPES.textAnnotation,
+    ]),
+  ],
+]);
 
 function outgoingNodes(srcNodeType: NodeType): NodeType[] {
   return Array.from((graphStructure.get(srcNodeType) ?? new Map()).values()).flatMap((tgt) => [...tgt]);

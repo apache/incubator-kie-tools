@@ -264,7 +264,7 @@ export function useDmnDiagramData() {
       const parent = parentIdsById.get(nodes[i].id);
       if (parent) {
         nodes[i].parentNode = parent["@_id"]!;
-        nodes[i].extent = "parent"; // FIXME: Tiago make these nodes deattach from parent when dragged outside. And vice-versa.
+        nodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
         nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
 
         // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.

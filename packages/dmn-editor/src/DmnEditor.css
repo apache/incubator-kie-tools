@@ -44,6 +44,19 @@
   pointer-events: none;
 }
 
+.react-flow__node-node_decisionService .kie-dmn-editor--node-shape rect {
+  fill: rgba(255, 255, 255, 0.25);
+}
+
+/* decision service */
+
+.react-flow__node-node_decisionService .kie-dmn-editor--node-shape text {
+  font-family: system-ui;
+  font-size: 0.6em;
+  letter-spacing: 8px;
+  fill: #a9a9a9;
+}
+
 .kie-dmn-editor--pallete {
   width: 42px;
   background: #fff;
@@ -420,10 +433,13 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__node.selected {
   color: #006ba4 !important;
 }
+.react-flow__node > .kie-dmn-editor--node-shape.targeted,
 .react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
   border-color: #006ba4 !important;
   filter: drop-shadow(4px 4px 2px #006ba477);
 }
+
+.react-flow__node > .kie-dmn-editor--node-shape.targeted > g *,
 .react-flow__node.selected > .kie-dmn-editor--node-shape > g * {
   stroke: #006ba4 !important;
 }

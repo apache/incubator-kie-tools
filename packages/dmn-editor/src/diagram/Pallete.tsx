@@ -73,7 +73,7 @@ export function Pallete() {
             draggable={true}
           >
             <RoundSvg>
-              <DecisionServiceNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} />
+              <DecisionServiceNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} showSectionLabels={false} />
             </RoundSvg>
           </button>
         </aside>

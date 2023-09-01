@@ -71,6 +71,7 @@ export function DecisionServiceProperties({
       </FormGroup>
 
       <FormGroup label="Output decisions"></FormGroup>
+      <FormGroup label="Encapsulated decisions"></FormGroup>
       <FormGroup label="Input decisions"></FormGroup>
       <FormGroup label="Input data"></FormGroup>
 

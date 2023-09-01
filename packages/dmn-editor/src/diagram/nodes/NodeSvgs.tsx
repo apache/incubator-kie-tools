@@ -116,10 +116,17 @@ export function KnowledgeSourceNodeSvg(_props: NodeSvgProps) {
   );
 }
 
-export function DecisionServiceNodeSvg(__props: NodeSvgProps & { dividerLineY?: number }) {
+export function DecisionServiceNodeSvg(
+  __props: NodeSvgProps & { dividerLineLocalY?: number; showSectionLabels: boolean }
+) {
   const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
-  const { dividerLineY, ...props } = _props;
+  const { dividerLineLocalY, showSectionLabels, ...props } = _props;
   const cornerRadius = 40;
+  const dividerLineCoors = {
+    x: x + strokeWidth / 2,
+    y: y + (dividerLineLocalY ? dividerLineLocalY : height / 2),
+  };
+
   return (
     <g>
       <rect
@@ -135,12 +142,30 @@ export function DecisionServiceNodeSvg(__props: NodeSvgProps & { dividerLineY?: 
         rx={cornerRadius}
         ry={cornerRadius}
       />
+      {showSectionLabels && (
+        <>
+          <text
+            textAnchor={"middle"}
+            dominantBaseline={"auto"}
+            transform={`translate(${dividerLineCoors.x + width / 2},${dividerLineCoors.y - 6})`}
+          >
+            OUTPUT
+          </text>
+          <text
+            textAnchor={"middle"}
+            dominantBaseline={"hanging"}
+            transform={`translate(${dividerLineCoors.x + width / 2},${dividerLineCoors.y + 6})`}
+          >
+            ENCAPSULATED
+          </text>
+        </>
+      )}
       <path
         d={`M0,0 L${width},0`}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}
         stroke={DEFAULT_NODE_STROKE_COLOR}
-        transform={`translate(${x + strokeWidth / 2},${y + (dividerLineY ? dividerLineY : height / 2)})`}
+        transform={`translate(${dividerLineCoors.x},${dividerLineCoors.y})`}
       />
     </g>
   );

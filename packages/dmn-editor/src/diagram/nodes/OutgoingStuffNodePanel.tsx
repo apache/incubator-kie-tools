@@ -102,7 +102,12 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
                   {n === NODE_TYPES.decision && <DecisionNodeSvg {...nodeSvgProps} />}
                   {n === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} />}
                   {n === NODE_TYPES.decisionService && (
-                    <DecisionServiceNodeSvg {...nodeSvgProps} y={0} height={nodeSvgProps.width} />
+                    <DecisionServiceNodeSvg
+                      {...nodeSvgProps}
+                      y={0}
+                      height={nodeSvgProps.width}
+                      showSectionLabels={true}
+                    />
                   )}
                   {n === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
                   {n === NODE_TYPES.textAnnotation && <TextAnnotationNodeSvg {...nodeSvgProps} />}

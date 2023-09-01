@@ -52,12 +52,14 @@ export const InputDataNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
 
     const setName = useCallback(
@@ -68,8 +70,6 @@ export const InputDataNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
       <>
@@ -89,8 +89,8 @@ export const InputDataNode = React.memo(
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={inputData.variable} shape={shape} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing.inputData.nodes}
-            edges={outgoing.inputData.edges}
+            nodes={outgoing[NODE_TYPES.inputData].nodes}
+            edges={outgoing[NODE_TYPES.inputData].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -117,13 +117,14 @@ export const DecisionNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
-
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -133,8 +134,6 @@ export const DecisionNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
       <>
@@ -155,8 +154,8 @@ export const DecisionNode = React.memo(
           <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing.decision.nodes}
-            edges={outgoing.decision.edges}
+            nodes={outgoing[NODE_TYPES.decision].nodes}
+            edges={outgoing[NODE_TYPES.decision].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -183,12 +182,14 @@ export const BkmNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -198,8 +199,6 @@ export const BkmNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
       <>
@@ -220,8 +219,8 @@ export const BkmNode = React.memo(
           <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing.bkm.nodes}
-            edges={outgoing.bkm.edges}
+            nodes={outgoing[NODE_TYPES.bkm].nodes}
+            edges={outgoing[NODE_TYPES.bkm].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -248,12 +247,14 @@ export const KnowledgeSourceNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -263,8 +264,6 @@ export const KnowledgeSourceNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
       <>
@@ -283,8 +282,8 @@ export const KnowledgeSourceNode = React.memo(
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing.knowledgeSource.nodes}
-            edges={outgoing.knowledgeSource.edges}
+            nodes={outgoing[NODE_TYPES.knowledgeSource].nodes}
+            edges={outgoing[NODE_TYPES.knowledgeSource].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -311,12 +310,14 @@ export const TextAnnotationNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setText = useCallback(
       (newText: string) => {
@@ -326,8 +327,6 @@ export const TextAnnotationNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
-
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
       <>
@@ -346,8 +345,8 @@ export const TextAnnotationNode = React.memo(
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing.textAnnotation.nodes}
-            edges={outgoing.textAnnotation.edges}
+            nodes={outgoing[NODE_TYPES.textAnnotation].nodes}
+            edges={outgoing[NODE_TYPES.textAnnotation].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -374,13 +373,14 @@ export const DecisionServiceNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected);
-
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
-
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
+    useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -390,12 +390,20 @@ export const DecisionServiceNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
-    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
-          <DecisionServiceNodeSvg {...nodeDimensions} x={0} y={0} />
+          <DecisionServiceNodeSvg
+            {...nodeDimensions}
+            x={0}
+            y={0}
+            showSectionLabels={diagram.dropTargetNodeId === id}
+            dividerLineLocalY={
+              (shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]["@_y"] ?? 0) -
+              (shape["dc:Bounds"]?.["@_y"] ?? 0)
+            }
+          />
         </svg>
         <NodeHandles isTargeted={isTargeted && isValidTarget} />
 
@@ -410,10 +418,11 @@ export const DecisionServiceNode = React.memo(
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decisionService.variable} shape={shape} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing.decisionService.nodes}
-            edges={outgoing.decisionService.edges}
+            nodes={outgoing[NODE_TYPES.decisionService].nodes}
+            edges={outgoing[NODE_TYPES.decisionService].edges}
           />
           <EditableNodeLabel
+            position={"top-center"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={decisionService["@_label"] ?? decisionService["@_name"]}
@@ -438,11 +447,11 @@ export const GroupNode = React.memo(
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(isConnecting, isValidTarget, id);
-
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const { diagram } = useDmnEditorStore();
+
+    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     return (
       <>
@@ -518,18 +527,19 @@ function useHoveredNodeAlwaysOnTop(
   layer: number,
   isHovered: boolean,
   dragging: boolean,
-  selected: boolean
+  selected: boolean,
+  isEditing: boolean
 ) {
   useEffect(() => {
     setTimeout(() => {
-      if (selected) {
+      if (selected && !isEditing) {
         ref.current?.focus();
       }
       if (ref.current) {
         ref.current.parentElement!.style.zIndex = `${isHovered || dragging ? layer + 1000 + 1 : layer}`;
       }
     }, 0);
-  }, [dragging, isHovered, ref, selected, layer]);
+  }, [dragging, isHovered, ref, selected, layer, isEditing]);
 }
 
 export function useTargetStatus(id: string, isHovered: boolean) {
@@ -549,7 +559,12 @@ export function useTargetStatus(id: string, isHovered: boolean) {
   return { isTargeted, isValidTarget, isConnecting: !!connectionNodeId };
 }
 
-export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean, id: string) {
+export function useNodeClassName(
+  targetNodeId: string | undefined,
+  isConnecting: boolean,
+  isValidTarget: boolean,
+  id: string
+) {
   const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
   const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
@@ -561,6 +576,10 @@ export function useNodeClassName(isConnecting: boolean, isValidTarget: boolean, 
 
   if (isEdgeConnection && isConnecting && !isValidTarget) {
     return "dimmed";
+  }
+
+  if (targetNodeId === id) {
+    return "targeted";
   }
 
   return "normal";

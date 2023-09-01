@@ -1,7 +1,7 @@
 import * as RF from "reactflow";
 
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
@@ -44,6 +44,12 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
+import { getNodeCenterPoint } from "./maths/DmnMaths";
+import { isValidContainment } from "./connections/isValidContainment";
+import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
+import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
+import { addNodeToGroup } from "../mutations/addNodeToGroup";
+import { deleteNodeFromGroup } from "../mutations/deleteNodeFromGroup";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -265,9 +271,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             case "dimensions":
               state.dispatch.diagram.setNodeStatus(state, change.id, { resizing: change.resizing });
               if (change.dimensions) {
+                const node = nodesById.get(change.id)!;
                 resizeNode({
                   definitions: state.dmn.model.definitions,
                   change: {
+                    nodeType: node.type as NodeType,
                     shapeIndex: nodesById.get(change.id)!.data.shape.index,
                     sourceEdgeIndexes: edges.flatMap((e) =>
                       e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
@@ -291,6 +299,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   definitions: state.dmn.model.definitions,
                   edgeIndexesAlreadyUpdated,
                   change: {
+                    nodeType: node.type as NodeType,
                     selectedEdges: state.diagram.selectedEdges,
                     shapeIndex: node.data.shape.index,
                     sourceEdgeIndexes: edges.flatMap((e) =>
@@ -321,6 +330,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                       definitions: state.dmn.model.definitions,
                       edgeIndexesAlreadyUpdated,
                       change: {
+                        nodeType: nestedNode.type as NodeType,
                         selectedEdges: state.diagram.selectedEdges,
                         shapeIndex: nestedNode.data.shape.index,
                         sourceEdgeIndexes: edges.flatMap((e) =>
@@ -372,6 +382,86 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi, edges, nodesById, reactFlowInstance, diagram.snapGrid]
   );
 
+  const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
+  const onNodeDrag = useCallback<RF.NodeDragHandler>(
+    (e, node) => {
+      nodeBeingDraggedRef.current = node;
+      const draggedNodeCenter = getNodeCenterPoint(node);
+      const dropTargetNode = nodes.find(
+        ({ id, data: { shape } }) =>
+          id !== node.id && // don't ever use the node being dragged
+          draggedNodeCenter["@_x"] > (shape["dc:Bounds"]?.["@_x"] ?? 0) &&
+          draggedNodeCenter["@_x"] < (shape["dc:Bounds"]?.["@_x"] ?? 0) + (shape["dc:Bounds"]?.["@_width"] ?? 0) &&
+          draggedNodeCenter["@_y"] > (shape["dc:Bounds"]?.["@_y"] ?? 0) &&
+          draggedNodeCenter["@_y"] < (shape["dc:Bounds"]?.["@_y"] ?? 0) + (shape["dc:Bounds"]?.["@_height"] ?? 0)
+      );
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.dropTargetNodeId = dropTargetNode?.id;
+      });
+    },
+    [dmnEditorStoreApi, nodes]
+  );
+
+  const onNodeDragStop = useCallback<RF.NodeDragHandler>(
+    (e, node) => {
+      dmnEditorStoreApi.setState((state) => {
+        const dropTargetNode = nodesById.get(state.diagram.dropTargetNodeId!);
+        const nodeBeingDragged = nodeBeingDraggedRef.current!;
+
+        // Un-parent
+        if (nodeBeingDragged.parentNode) {
+          const parentNode = nodesById.get(nodeBeingDragged.parentNode);
+          if (parentNode?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
+            deleteDecisionFromDecisionService({
+              definitions: state.dmn.model.definitions,
+              decisionId: nodeBeingDragged.id,
+              decisionServiceId: parentNode.id,
+            });
+          } else if (parentNode?.type === NODE_TYPES.group) {
+            deleteNodeFromGroup({
+              definitions: state.dmn.model.definitions,
+            });
+          } else {
+            console.debug(
+              `DIAGRAM: Ignoring '${nodeBeingDragged.type}' with parent '${dropTargetNode?.type}' dropping somewhere..`
+            );
+          }
+        }
+
+        // Validate
+        if (
+          dropTargetNode &&
+          !isValidContainment({ node: node.type as NodeType, inside: dropTargetNode.type as NodeType })
+        ) {
+          console.debug(
+            `DIAGRAM: Invalid containment: '${nodeBeingDragged.type}' inside '${dropTargetNode?.type}'. Ignoring.`
+          );
+          return;
+        }
+
+        // Parent
+        if (dropTargetNode?.type === NODE_TYPES.decisionService) {
+          addDecisionToDecisionService({
+            definitions: state.dmn.model.definitions,
+            decisionId: nodeBeingDragged.id,
+            decisionServiceId: dropTargetNode.id,
+          });
+        } else if (dropTargetNode?.type === NODE_TYPES.group) {
+          addNodeToGroup({
+            definitions: state.dmn.model.definitions,
+          });
+        } else {
+          console.debug(`DIAGRAM: Ignoring '${nodeBeingDragged.type}' dropped on top of '${dropTargetNode?.type}'`);
+        }
+
+        state.diagram.dropTargetNodeId = undefined;
+      });
+
+      nodeBeingDraggedRef.current = null;
+    },
+    [dmnEditorStoreApi, nodesById]
+  );
+
   const onEdgesChange = useCallback<RF.OnEdgesChange>(
     (changes) => {
       dmnEditorStoreApi.setState((state) => {
@@ -391,7 +481,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               break;
             case "add":
             case "reset":
-              console.log("CHANGED EDGE -->", change);
+              console.log("CHANGED EDGE ??? -->", change);
           }
         }
       });
@@ -425,6 +515,14 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onConnectEnd={onConnectEnd}
+          // (begin)
+          // 'Starting to drag' and 'dragging' should have the same behavior. Otherwise,
+          // clicking a node and letting it go, without moving, won't work properly, and
+          // Decisions will be removed from Decision Services.
+          onNodeDragStart={onNodeDrag}
+          onNodeDrag={onNodeDrag}
+          // (end)
+          onNodeDragStop={onNodeDragStop}
           isValidConnection={isValidConnection}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
@@ -435,8 +533,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           fitViewOptions={FIT_VIEW_OPTIONS}
           attributionPosition={"bottom-right"}
           onInit={setReactFlowInstance}
+          // (begin)
+          // Used to make the Pallete work by dropping nodes on the Reactflow Canvas
           onDrop={onDrop}
           onDragOver={onDragOver}
+          // (end)
         >
           <SelectionStatus />
           <Pallete />
