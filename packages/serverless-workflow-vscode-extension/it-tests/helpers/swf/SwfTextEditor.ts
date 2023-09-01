@@ -25,9 +25,6 @@ import { TextEditor } from "vscode-extension-tester";
  * Helper class which represents Serverless Workflow text editor.
  */
 export default class SwfTextEditor extends TextEditor {
-  /**
-   * The class constuctor.
-   */
   constructor() {
     super();
   }
