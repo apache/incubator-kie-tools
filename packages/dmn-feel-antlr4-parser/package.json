@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/dmn-language-service",
+  "name": "@kie-tools/dmn-feel-antlr4-parser",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -25,7 +25,6 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
     "antlr4": "^4.13.0"
   },

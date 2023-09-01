@@ -20,9 +20,9 @@
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
-    "antlr4": "^4.13.0",
     "monaco-editor": "^0.39.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"

@@ -23,7 +23,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils";
 import "./BeeTableEditableCellContent.css";
-import { FeelVariables } from "@kie-tools/dmn-language-service";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 const CELL_LINE_HEIGHT = 20;
 

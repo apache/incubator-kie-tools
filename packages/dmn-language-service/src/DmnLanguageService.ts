@@ -19,7 +19,7 @@
 
 import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
-import { FeelVariables } from "./FeelVariables";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 const IMPORT = "import";
 const INPUT_DATA = "inputData";

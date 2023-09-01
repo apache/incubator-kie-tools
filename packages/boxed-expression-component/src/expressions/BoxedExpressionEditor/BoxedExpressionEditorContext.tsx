@@ -23,7 +23,7 @@ import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../
 import { useRef, useState } from "react";
 import "./BoxedExpressionEditorContext.css";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
-import { FeelVariables } from "@kie-tools/dmn-language-service";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorContextType {
   // Plumbing

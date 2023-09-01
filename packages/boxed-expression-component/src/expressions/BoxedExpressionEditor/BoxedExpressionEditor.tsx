@@ -29,7 +29,7 @@ import {
 import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
 import "./base-no-reset-wrapped.css";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
-import { FeelVariables } from "@kie-tools/dmn-language-service";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */

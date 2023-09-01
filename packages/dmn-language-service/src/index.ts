@@ -18,8 +18,4 @@
  */
 
 export * from "./DmnDocumentData";
-export * from "./FeelVariables";
 export * from "./DmnLanguageService";
-export * from "./parser/FeelVariable";
-export * from "./parser/ReservedWords";
-export * from "./parser/VariableType";

@@ -5,7 +5,7 @@ import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import * as ReactTable from "react-table";
-import { FeelVariables } from "@kie-tools/dmn-language-service";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export function BeeTableDefaultCell<R extends object>({
   cellProps,

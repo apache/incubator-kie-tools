@@ -18,7 +18,7 @@
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
-import { ReservedWords } from "../../dmn-language-service";
+import { ReservedWords } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
 
 export const MONACO_FEEL_LANGUAGE = "feel-language";

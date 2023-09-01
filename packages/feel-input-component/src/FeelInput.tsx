@@ -28,7 +28,8 @@ import {
   MONACO_FEEL_LANGUAGE,
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
-import { FeelVariables, VariableType } from "@kie-tools/dmn-language-service";
+
+import { VariableType, FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
 
 export type SuggestionProvider = (

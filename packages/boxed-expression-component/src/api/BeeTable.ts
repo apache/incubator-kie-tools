@@ -22,7 +22,7 @@ import * as ReactTable from "react-table";
 import { ResizerStopBehavior } from "../resizing/ResizingWidthsContext";
 import { BeeTableCellUpdate, BeeTableColumnUpdate } from "../table/BeeTable/BeeTableHeader";
 import { BeeTableSelection } from "../selection/BeeTableSelectionContext";
-import { FeelVariables } from "@kie-tools/dmn-language-service";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BeeTableCellProps<R extends object> {
   data: readonly R[];

@@ -749,9 +749,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
-      "@kie-tools/dmn-language-service":
+      "@kie-tools/dmn-feel-antlr4-parser":
         specifier: workspace:*
-        version: link:../dmn-language-service
+        version: link:../dmn-feel-antlr4-parser
       "@kie-tools/feel-input-component":
         specifier: workspace:*
         version: link:../feel-input-component
@@ -3204,8 +3204,54 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  packages/dmn-feel-antlr4-parser:
+    dependencies:
+      "@kie-tools/dmn-marshaller":
+        specifier: workspace:*
+        version: link:../dmn-marshaller
+      antlr4:
+        specifier: ^4.13.0
+        version: 4.13.0
+    devDependencies:
+      "@babel/core":
+        specifier: ^7.16.0
+        version: 7.18.10
+      "@babel/preset-env":
+        specifier: ^7.16.0
+        version: 7.18.10(@babel/core@7.18.10)
+      "@kie-tools/eslint":
+        specifier: workspace:*
+        version: link:../eslint
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      "@kie-tools/tsconfig":
+        specifier: workspace:*
+        version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
+      jest:
+        specifier: ^26.6.3
+        version: 26.6.3
+      jest-junit:
+        specifier: ^14.0.0
+        version: 14.0.0
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-jest:
+        specifier: ^26.5.6
+        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
+      typescript:
+        specifier: ^4.6.2
+        version: 4.8.4
+
   packages/dmn-language-service:
     dependencies:
+      "@kie-tools/dmn-feel-antlr4-parser":
+        specifier: workspace:*
+        version: link:../dmn-feel-antlr4-parser
       "@kie-tools/dmn-marshaller":
         specifier: workspace:*
         version: link:../dmn-marshaller
@@ -3794,15 +3840,15 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/dmn-feel-antlr4-parser":
+        specifier: workspace:*
+        version: link:../dmn-feel-antlr4-parser
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
-      antlr4:
-        specifier: ^4.13.0
-        version: 4.13.0
       monaco-editor:
         specifier: ^0.39.0
         version: 0.39.0
@@ -7925,9 +7971,9 @@ importers:
       "@kie-tools/boxed-expression-component":
         specifier: workspace:*
         version: link:../boxed-expression-component
-      "@kie-tools/dmn-language-service":
+      "@kie-tools/dmn-feel-antlr4-parser":
         specifier: workspace:*
-        version: link:../dmn-language-service
+        version: link:../dmn-feel-antlr4-parser
       "@kie-tools/import-java-classes-component":
         specifier: workspace:*
         version: link:../import-java-classes-component

@@ -33,7 +33,7 @@ import {
   ExpressionDefinition,
   PmmlParam,
 } from "@kie-tools/boxed-expression-component/dist/api";
-import { FeelVariables } from "@kie-tools/dmn-language-service";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
