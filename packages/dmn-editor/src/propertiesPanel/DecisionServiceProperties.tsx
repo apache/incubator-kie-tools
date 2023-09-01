@@ -70,10 +70,34 @@ export function DecisionServiceProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Output decisions"></FormGroup>
-      <FormGroup label="Encapsulated decisions"></FormGroup>
-      <FormGroup label="Input decisions"></FormGroup>
-      <FormGroup label="Input data"></FormGroup>
+      <FormGroup label="Output decisions">
+        <ul>
+          {(decisionService.outputDecision ?? []).map((s) => (
+            <li key={s["@_href"]}>{s["@_href"]}</li>
+          ))}
+        </ul>
+      </FormGroup>
+      <FormGroup label="Encapsulated decisions">
+        <ul>
+          {(decisionService.encapsulatedDecision ?? []).map((s) => (
+            <li key={s["@_href"]}>{s["@_href"]}</li>
+          ))}
+        </ul>
+      </FormGroup>
+      <FormGroup label="Input decisions">
+        <ul>
+          {(decisionService.inputDecision ?? []).map((s) => (
+            <li key={s["@_href"]}>{s["@_href"]}</li>
+          ))}
+        </ul>
+      </FormGroup>
+      <FormGroup label="Input data">
+        <ul>
+          {(decisionService.inputData ?? []).map((s) => (
+            <li key={s["@_href"]}>{s["@_href"]}</li>
+          ))}
+        </ul>
+      </FormGroup>
 
       <FormGroup label="Documentation links (Work in progress 🔧)">
         <DocumentationLinksInput />

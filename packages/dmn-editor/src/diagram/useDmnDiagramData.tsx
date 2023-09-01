@@ -13,6 +13,7 @@ import { EDGE_TYPES } from "./edges/EdgeTypes";
 import { DmnEditorDiagramEdgeData } from "./edges/Edges";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import { DmnEditorDiagramNodeData } from "./nodes/Nodes";
+import { idFromHref } from "./maths/DmnMaths";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -301,10 +302,6 @@ export function useDmnDiagramData() {
   ]);
 
   return { shapesById, edgesById, nodesById, nodes, edges };
-}
-
-export function idFromHref(href: string | undefined) {
-  return href?.substring(1) ?? "";
 }
 
 export function assignClassesToHighlightedHierarchyNodes(

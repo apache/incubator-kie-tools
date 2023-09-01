@@ -1,7 +1,16 @@
 import {
   DMN15__tDecisionService,
   DMN15__tDefinitions,
+  DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  getBoundsCenterPoint,
+  getContainmentRelationship,
+  getDecisionServiceDivierLineLocalY,
+  getNodeCenterPoint,
+  idFromHref,
+} from "../diagram/maths/DmnMaths";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function addDecisionToDecisionService({
   definitions,
@@ -24,8 +33,16 @@ export function addDecisionToDecisionService({
     throw new Error(`DRG Element with id '${decision}' either is not a decision or doesn't exist.`);
   }
 
-  const section = "encapsulated"; // FIXME: Tiago --> Determine this automatically based on the Decision's position.
+  const diagram = addOrGetDefaultDiagram({ definitions });
+  const decisionShape = diagram.diagramElements.find(
+    (s) => s["@_dmnElementRef"] === decisionId && s.__$$element === "dmndi:DMNShape"
+  ) as DMNDI15__DMNShape;
 
+  const decisionServiceShape = diagram.diagramElements.find(
+    (s) => s["@_dmnElementRef"] === decisionServiceId && s.__$$element === "dmndi:DMNShape"
+  ) as DMNDI15__DMNShape;
+
+  const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape });
   if (section === "encapsulated") {
     decisionService.encapsulatedDecision ??= [];
     decisionService.encapsulatedDecision.push({ "@_href": `#${decisionId}` });
@@ -37,6 +54,34 @@ export function addDecisionToDecisionService({
   }
 
   repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService });
+}
+
+export function getSectionForDecisionInsideDecisionService({
+  decisionShape,
+  decisionServiceShape,
+}: {
+  decisionShape: DMNDI15__DMNShape;
+  decisionServiceShape: DMNDI15__DMNShape;
+}): "output" | "encapsulated" {
+  if (!decisionShape?.["dc:Bounds"] || !decisionServiceShape?.["dc:Bounds"]) {
+    throw new Error(
+      `Can't determine Decision Service section for Decision '${decisionShape["@_dmnElementRef"]}' because it doens't have a DMNShape.`
+    );
+  }
+
+  const contaimentRelationship = getContainmentRelationship({
+    bounds: decisionShape["dc:Bounds"],
+    container: decisionServiceShape["dc:Bounds"],
+    divingLineLocalY: getDecisionServiceDivierLineLocalY(decisionServiceShape),
+  });
+
+  if (!contaimentRelationship.isInside) {
+    throw new Error(
+      `Decision '${decisionShape["@_dmnElementRef"]}' can't be added to Decision Service '${decisionServiceShape["@_dmnElementRef"]}' because its shape is not visually contained by the Decision Service's shape.`
+    );
+  }
+
+  return contaimentRelationship.section === "upper" ? "output" : "encapsulated";
 }
 
 export function repopulateInputDataAndDecisionsOnDecisionService({
@@ -54,20 +99,33 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
     ...(decisionService.encapsulatedDecision ?? []).map((s) => s["@_href"]),
   ]);
 
+  const requirements = new Set<{ id: string; type: "decision" | "inputData" }>();
   for (let i = 0; i < definitions.drgElement!.length; i++) {
     const drgElement = definitions.drgElement![i];
-    if (!decisionsInsideDecisionService.has(`#${drgElement["@_id"]}`)) {
+    if (!decisionsInsideDecisionService.has(`#${drgElement["@_id"]}`) || drgElement.__$$element !== "decision") {
       continue;
     }
 
-    if (drgElement.__$$element === "inputData") {
+    (drgElement.informationRequirement ?? []).flatMap((s) => {
+      if (s.requiredDecision) {
+        requirements.add({ id: idFromHref(s.requiredDecision["@_href"]), type: "decision" });
+      } else if (s.requiredInput) {
+        requirements.add({ id: idFromHref(s.requiredInput["@_href"]), type: "inputData" });
+      }
+    });
+  }
+
+  const requirementsArray = [...requirements];
+  for (let i = 0; i < requirementsArray.length; i++) {
+    const r = requirementsArray[i];
+    if (r.type === "inputData") {
       decisionService.inputData ??= [];
-      decisionService.inputData.push({ "@_href": `#${drgElement["@_id"]}` });
-    } else if (drgElement.__$$element === "decision") {
+      decisionService.inputData.push({ "@_href": `#${r.id}` });
+    } else if (r.type === "decision") {
       decisionService.inputDecision ??= [];
-      decisionService.inputDecision.push({ "@_href": `#${drgElement["@_id"]}` });
+      decisionService.inputDecision.push({ "@_href": `#${r.id}` });
     } else {
-      throw new Error(`Invalid type of element to be referenced by DecisionService: '${drgElement.__$$element}'`);
+      throw new Error(`Invalid type of element to be referenced by DecisionService: '${r.type}'`);
     }
   }
 }

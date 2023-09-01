@@ -37,14 +37,14 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { idFromHref, useDmnDiagramData } from "./useDmnDiagramData";
+import { useDmnDiagramData } from "./useDmnDiagramData";
 import { deleteNode } from "../mutations/deleteNode";
 import { DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
-import { getNodeCenterPoint } from "./maths/DmnMaths";
+import { getNodeCenterPoint, idFromHref } from "./maths/DmnMaths";
 import { isValidContainment } from "./connections/isValidContainment";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";

@@ -1,4 +1,4 @@
-import { DC__Bounds, DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 import { TargetHandleId } from "../connections/NodeHandles";
 import { getCenter } from "./Maths";
@@ -99,6 +99,28 @@ export function getNodeIntersection(intersectionNode: RF.Node, point: DC__Point 
   return { "@_x": x, "@_y": y };
 }
 
+export function getContainmentRelationship({
+  bounds,
+  container,
+  divingLineLocalY,
+}: {
+  bounds: DC__Bounds;
+  container: DC__Bounds;
+  divingLineLocalY: number;
+}): { isInside: true; section: "upper" | "lower" } | { isInside: false } {
+  const center = getBoundsCenterPoint(bounds);
+  const isInside =
+    center["@_x"] > container["@_x"] &&
+    center["@_x"] < container["@_x"] + container["@_width"] &&
+    center["@_y"] > container["@_y"] &&
+    center["@_y"] < container["@_y"] + container["@_height"];
+  if (isInside) {
+    return { isInside: true, section: center["@_y"] > container["@_y"] + divingLineLocalY ? "lower" : "upper" };
+  } else {
+    return { isInside: false };
+  }
+}
+
 export function pointsToPath(points: DC__Point[]): string {
   const start = points[0];
   let path = `M ${start["@_x"]},${start["@_y"]}`;
@@ -110,4 +132,15 @@ export function pointsToPath(points: DC__Point[]): string {
   path += ` L ${end["@_x"]},${end["@_y"]}`;
 
   return path;
+}
+
+export function getDecisionServiceDivierLineLocalY(shape: DMNDI15__DMNShape) {
+  return (
+    (shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]["@_y"] ?? 0) -
+    (shape["dc:Bounds"]?.["@_y"] ?? 0)
+  );
+}
+
+export function idFromHref(href: string | undefined) {
+  return href?.substring(1) ?? "";
 }

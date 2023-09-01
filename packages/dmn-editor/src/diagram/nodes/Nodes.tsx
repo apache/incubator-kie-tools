@@ -33,6 +33,7 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { useIsHovered } from "../useIsHovered";
+import { getDecisionServiceDivierLineLocalY as getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 
 export type DmnEditorDiagramNodeData<T> = {
   dmnObject: T;
@@ -399,10 +400,7 @@ export const DecisionServiceNode = React.memo(
             x={0}
             y={0}
             showSectionLabels={diagram.dropTargetNodeId === id}
-            dividerLineLocalY={
-              (shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]["@_y"] ?? 0) -
-              (shape["dc:Bounds"]?.["@_y"] ?? 0)
-            }
+            dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
         </svg>
         <NodeHandles isTargeted={isTargeted && isValidTarget} />
