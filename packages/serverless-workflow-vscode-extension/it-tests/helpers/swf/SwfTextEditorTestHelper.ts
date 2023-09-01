@@ -28,6 +28,10 @@ import SwfTextEditor from "./SwfTextEditor";
 export default class SwfTextEditorTestHelper {
   constructor(private readonly webview: WebView) {}
 
+  /**
+   * Creates and returns Serverless Workflow text editor.
+   * @returns Serverless Workflow text editor.
+   */
   public async getSwfTextEditor(): Promise<SwfTextEditor> {
     return Promise.resolve(new SwfTextEditor());
   }

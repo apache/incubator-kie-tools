@@ -21,11 +21,21 @@ import { sleep } from "@kie-tools/vscode-extension-common-test-helpers";
 import { expect } from "chai";
 import { TextEditor } from "vscode-extension-tester";
 
+/**
+ * Helper class which represents Serverless Workflow text editor.
+ */
 export default class SwfTextEditor extends TextEditor {
+  /**
+   * The class constuctor.
+   */
   constructor() {
     super();
   }
 
+  /**
+   * Selects a value from the content assist.
+   * @param value The value to be selected.
+   */
   public async selectFromContentAssist(value: string): Promise<void> {
     try {
       const contentAssist = await this.toggleContentAssist(true);
