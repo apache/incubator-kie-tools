@@ -10,7 +10,7 @@ const MAX_SNAP = 50;
 const SNAP_STEP = 5;
 
 export function OverlaysPanel() {
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   return (

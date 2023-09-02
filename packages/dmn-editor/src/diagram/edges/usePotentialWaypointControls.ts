@@ -12,7 +12,7 @@ export function usePotentialWaypointControls(
   edgeIndex: number | undefined,
   interactionPathRef: React.RefObject<SVGPathElement>
 ) {
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const reactFlowInstance = RF.useReactFlow();
 

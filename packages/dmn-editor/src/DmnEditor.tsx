@@ -47,7 +47,7 @@ export const DmnEditorInternal = ({
   onModelChange,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
-  const { boxedExpressionEditor, dmn, navigation, dispatch, diagram } = useDmnEditorStore();
+  const { boxedExpressionEditor, dmn, navigation, dispatch, diagram } = useDmnEditorStore((s) => s);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   // Allow imperativelly controlling the Editor.

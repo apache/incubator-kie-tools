@@ -12,7 +12,7 @@ import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
+import { DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
 import { offsetShapePosition, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/NodeHandles";
@@ -39,7 +39,7 @@ import {
 } from "./nodes/Nodes";
 import { useDmnDiagramData } from "./useDmnDiagramData";
 import { deleteNode } from "../mutations/deleteNode";
-import { DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
@@ -81,7 +81,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   }, []);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
 
   const { shapesById, nodesById, nodes, edges } = useDmnDiagramData();
 
@@ -126,14 +126,44 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi, nodesById]
   );
 
-  const onDragOver = useCallback((e: React.DragEvent) => {
-    if (!e.dataTransfer.types.find((t) => t === PALLETE_ELEMENT_MIME_TYPE)) {
-      return;
-    }
+  const getFirstNodeUnderneath = useCallback(
+    (nodeIdToIgnore: string, point: DC__Point) =>
+      nodes.find(
+        ({ id, data: { shape } }) =>
+          id !== nodeIdToIgnore && // don't ever use the node being dragged
+          point["@_x"] > (shape["dc:Bounds"]?.["@_x"] ?? 0) &&
+          point["@_x"] < (shape["dc:Bounds"]?.["@_x"] ?? 0) + (shape["dc:Bounds"]?.["@_width"] ?? 0) &&
+          point["@_y"] > (shape["dc:Bounds"]?.["@_y"] ?? 0) &&
+          point["@_y"] < (shape["dc:Bounds"]?.["@_y"] ?? 0) + (shape["dc:Bounds"]?.["@_height"] ?? 0)
+      ),
+    [nodes]
+  );
 
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  }, []);
+  const onDragOver = useCallback(
+    (e: React.DragEvent) => {
+      if (!e.dataTransfer.types.find((t) => t === DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE)) {
+        return;
+      }
+
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+
+      if (!container.current || !reactFlowInstance) {
+        return;
+      }
+
+      const containerBounds = container.current!.getBoundingClientRect();
+      const dropPoint = reactFlowInstance.project({
+        x: e.clientX - containerBounds.left,
+        y: e.clientY - containerBounds.top,
+      });
+
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.dropTargetNodeId = getFirstNodeUnderneath("", { "@_x": dropPoint.x, "@_y": dropPoint.y })?.id;
+      });
+    },
+    [container, dmnEditorStoreApi, getFirstNodeUnderneath, reactFlowInstance]
+  );
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
@@ -143,7 +173,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         return;
       }
 
-      const type = e.dataTransfer.getData(PALLETE_ELEMENT_MIME_TYPE) as NodeType;
+      const type = e.dataTransfer.getData(DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE) as NodeType;
       if (typeof type === "undefined" || !type) {
         return;
       }
@@ -386,20 +416,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node) => {
       nodeBeingDraggedRef.current = node;
-      const draggedNodeCenter = getNodeCenterPoint(node);
-      const dropTargetNode = nodes.find(
-        ({ id, data: { shape } }) =>
-          id !== node.id && // don't ever use the node being dragged
-          draggedNodeCenter["@_x"] > (shape["dc:Bounds"]?.["@_x"] ?? 0) &&
-          draggedNodeCenter["@_x"] < (shape["dc:Bounds"]?.["@_x"] ?? 0) + (shape["dc:Bounds"]?.["@_width"] ?? 0) &&
-          draggedNodeCenter["@_y"] > (shape["dc:Bounds"]?.["@_y"] ?? 0) &&
-          draggedNodeCenter["@_y"] < (shape["dc:Bounds"]?.["@_y"] ?? 0) + (shape["dc:Bounds"]?.["@_height"] ?? 0)
-      );
       dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNodeId = dropTargetNode?.id;
+        state.diagram.dropTargetNodeId = getFirstNodeUnderneath(node.id, getNodeCenterPoint(node))?.id;
       });
     },
-    [dmnEditorStoreApi, nodes]
+    [dmnEditorStoreApi, getFirstNodeUnderneath]
   );
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
@@ -554,7 +575,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 }
 
 export function TopRightCornerPanels() {
-  const { dispatch, diagram } = useDmnEditorStore();
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const toggleOverlaysPanel = useCallback(() => {
@@ -612,7 +634,7 @@ export function TopRightCornerPanels() {
 export function SelectionStatus() {
   const rfStoreApi = RF.useStoreApi();
 
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   useEffect(() => {
@@ -652,7 +674,7 @@ export function SelectionStatus() {
 export function KeyboardShortcuts() {
   const rfStoreApi = RF.useStoreApi();
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
 
   const esc = RF.useKeyPress(["Escape"]);
   useEffect(() => {

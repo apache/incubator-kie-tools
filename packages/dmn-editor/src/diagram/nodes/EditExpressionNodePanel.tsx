@@ -3,7 +3,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useDmnEditorStore } from "../../store/Store";
 
 export function EditExpressionNodePanel(props: { isVisible: boolean; id: string }) {
-  const { dispatch } = useDmnEditorStore();
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
 
   return (
     <>

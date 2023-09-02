@@ -4,7 +4,7 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { useDmnEditorStore } from "../../store/Store";
 
 export function InfoNodePanel(props: { isVisible: boolean }) {
-  const { dispatch } = useDmnEditorStore();
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
 
   return (
     <>

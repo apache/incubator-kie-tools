@@ -33,7 +33,9 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import "@kie-tools/dmn-marshaller"; // This is here because of the KIE Extension for DMN.
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
-  const { dispatch, dmn, boxedExpressionEditor } = useDmnEditorStore();
+  const dmn = useDmnEditorStore((s) => s.dmn);
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const boxedExpressionEditor = useDmnEditorStore((s) => s.boxedExpressionEditor);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 

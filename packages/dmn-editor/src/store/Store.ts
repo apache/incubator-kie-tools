@@ -2,6 +2,7 @@ import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-
 import { createContext, useContext } from "react";
 import { StoreApi, UseBoundStore, create, useStore as useZustandStore } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
+import { useStoreWithEqualityFn } from "zustand/traditional";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -22,7 +23,9 @@ export interface SnapGrid {
 export interface State {
   dispatch: Dispatch;
   dmn: {
-    model: { definitions: DMN15__tDefinitions };
+    model: {
+      definitions: DMN15__tDefinitions;
+    };
   };
   boxedExpressionEditor: {
     openExpressionId: string | undefined;
@@ -100,8 +103,19 @@ export const NODE_LAYERS = {
   NESTED_NODES: 3000,
 };
 
-export function useDmnEditorStore() {
-  return useZustandStore(useDmnEditorStoreApi());
+type ExtractState = StoreApi<State> extends { getState: () => infer T } ? T : never;
+
+export function useDmnEditorStore<StateSlice = ExtractState>(
+  selector: (state: State) => StateSlice,
+  equalityFn?: (a: StateSlice, b: StateSlice) => boolean
+) {
+  const store = useContext(DmnEditorStoreApiContext);
+
+  if (store === null) {
+    throw new Error("Can't use DMN Editor Store outside of the DmnEditor component.");
+  }
+
+  return useStoreWithEqualityFn(store, selector, equalityFn);
 }
 
 export function useDmnEditorStoreApi() {

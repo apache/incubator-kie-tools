@@ -19,7 +19,7 @@ import { useDmnEditorStore } from "../../store/Store";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
 
   // Edges
   if (fromHandle?.id === EDGE_TYPES.informationRequirement) {

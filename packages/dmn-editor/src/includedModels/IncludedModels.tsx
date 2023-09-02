@@ -62,10 +62,9 @@ export function IncludedModels() {
     };
   }, []);
 
-  const { dmn } = useDmnEditorStore();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const imports = useMemo(() => dmn.model.definitions.import ?? [], [dmn.model.definitions.import]);
+  const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModelSelectOpen, setModelSelectOpen] = useState(false);

@@ -49,8 +49,8 @@ export function Waypoint({
   onDragStop: (e: React.MouseEvent) => void;
 }) {
   const circleRef = React.useRef<SVGCircleElement>(null);
-  const isHovered = useIsHovered(circleRef);
-  const { dispatch, diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
   const { setState } = useDmnEditorStoreApi();
 
   useEffect(() => {
@@ -89,7 +89,6 @@ export function Waypoint({
       ref={circleRef}
       cx={point["@_x"]}
       cy={point["@_y"]}
-      stroke={isHovered ? "red" : undefined}
       r={1}
       onDoubleClick={(e) => {
         e.preventDefault();

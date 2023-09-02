@@ -57,7 +57,7 @@ export const InputDataNode = React.memo(
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
@@ -122,7 +122,7 @@ export const DecisionNode = React.memo(
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
@@ -187,7 +187,7 @@ export const BkmNode = React.memo(
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
@@ -252,7 +252,7 @@ export const KnowledgeSourceNode = React.memo(
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
@@ -315,7 +315,7 @@ export const TextAnnotationNode = React.memo(
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
@@ -352,6 +352,7 @@ export const TextAnnotationNode = React.memo(
           <EditableNodeLabel
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
+            position={"top-center"}
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
           />
@@ -377,7 +378,7 @@ export const DecisionServiceNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
@@ -446,7 +447,7 @@ export const GroupNode = React.memo(
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { diagram } = useDmnEditorStore();
+    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);

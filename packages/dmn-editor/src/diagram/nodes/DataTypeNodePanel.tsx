@@ -12,7 +12,7 @@ export function DataTypeNodePanel(props: {
   variable: DMN15__tInformationItem | undefined;
   shape: DMNDI15__DMNShape | undefined;
 }) {
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
   return (
     <>
       {props.isVisible && diagram.overlays.enableDataTypesOnNodes && (

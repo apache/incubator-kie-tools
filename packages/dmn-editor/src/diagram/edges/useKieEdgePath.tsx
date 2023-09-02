@@ -5,7 +5,7 @@ import { useDmnEditorStore } from "../../store/Store";
 import { DmnEditorDiagramEdgeData } from "./Edges";
 
 export function useKieEdgePath(source: string, target: string, data: DmnEditorDiagramEdgeData | undefined) {
-  const { diagram } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
   const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
   const dmnEdge = data?.dmnEdge;

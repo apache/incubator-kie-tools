@@ -10,10 +10,8 @@ import { useDmnEditorStore } from "../store/Store";
 import { useMemo } from "react";
 
 export function BeePropertiesPanel() {
-  const {
-    dispatch,
-    boxedExpressionEditor: { selectedObjectId, openExpressionId },
-  } = useDmnEditorStore();
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const { selectedObjectId, openExpressionId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
     () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === openExpressionId),

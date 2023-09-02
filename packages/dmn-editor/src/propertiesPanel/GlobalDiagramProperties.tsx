@@ -13,7 +13,7 @@ import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-sourc
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 
 export function GlobalDiagramProperties() {
-  const { dmn } = useDmnEditorStore();
+  const dmn = useDmnEditorStore((s) => s.dmn);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 

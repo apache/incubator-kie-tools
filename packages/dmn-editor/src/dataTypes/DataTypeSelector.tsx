@@ -15,7 +15,7 @@ export function DataTypeSelector(props: {
     setOpen(isOpen);
   }, []);
 
-  const { dmn } = useDmnEditorStore();
+  const dmn = useDmnEditorStore((s) => s.dmn);
 
   const { builtInDataTypes, customDataTypes, importedDataTypes } = useDataTypes(dmn.model.definitions);
 

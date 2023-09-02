@@ -481,6 +481,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__controls {
   border-radius: 20px;
   border: 1px solid black;
+  background: white;
 }
 .react-flow__controls:hover {
   box-shadow: -4px -4px 2px 0px rgb(127 127 127);

@@ -24,7 +24,7 @@ import { GlobalDiagramProperties } from "./GlobalDiagramProperties";
 import "./DiagramPropertiesPanel.css";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
-  const { dmn } = useDmnEditorStore();
+  const dmn = useDmnEditorStore((s) => s.dmn);
 
   const { node, index } = useMemo(() => {
     for (let i = 0; i < (dmn.model.definitions.drgElement ?? []).length; i++) {
@@ -119,7 +119,8 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
 }
 
 export function DiagramPropertiesPanel() {
-  const { diagram, dispatch } = useDmnEditorStore();
+  const diagram = useDmnEditorStore((s) => s.diagram);
+  const dispatch = useDmnEditorStore((s) => s.dispatch);
 
   return (
     <DrawerPanelContent

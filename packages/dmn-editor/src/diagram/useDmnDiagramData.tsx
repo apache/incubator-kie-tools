@@ -22,7 +22,8 @@ export const diagramColors = {
 };
 
 export function useDmnDiagramData() {
-  const { diagram, dmn } = useDmnEditorStore();
+  const dmn = useDmnEditorStore((s) => s.dmn);
+  const diagram = useDmnEditorStore((s) => s.diagram);
 
   const { edgesById, shapesById } = useMemo(
     () =>

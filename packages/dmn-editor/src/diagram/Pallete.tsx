@@ -19,11 +19,11 @@ const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // Th
 const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
 const nodeSvgViewboxSize = nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
 
-export const PALLETE_ELEMENT_MIME_TYPE = "application/kie-dmn-editor";
+export const DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE = "application/kie-dmn-editor";
 
 export function Pallete() {
   const onDragStart = useCallback((event: React.DragEvent, nodeType: NodeType) => {
-    event.dataTransfer.setData(PALLETE_ELEMENT_MIME_TYPE, nodeType);
+    event.dataTransfer.setData(DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE, nodeType);
     event.dataTransfer.effectAllowed = "move";
   }, []);
 
