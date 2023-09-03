@@ -58,7 +58,6 @@ const __LOGS = {
 
 export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
   ["xsd:boolean", { type: "primitive", tsEquivalent: "boolean", doc: "xsd:boolean" }],
-  ["xsd:QName", { type: "primitive", tsEquivalent: "string", doc: "xsd:QName" }],
   ["xsd:string", { type: "primitive", tsEquivalent: "string", doc: "xsd:string" }],
   ["xsd:int", { type: "primitive", tsEquivalent: "number", doc: "xsd:int" }],
   ["xsd:integer", { type: "primitive", tsEquivalent: "number", doc: "xsd:integer" }],
@@ -67,11 +66,12 @@ export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
   ["xsd:long", { type: "primitive", tsEquivalent: "number", doc: "xsd:long" }],
   ["xsd:float", { type: "primitive", tsEquivalent: "number", doc: "xsd:float" }],
   ["xsd:duration", { type: "primitive", tsEquivalent: "string", doc: "xsd:duration" }],
-  ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREF" }],
-  ["xsd:anyURI", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyURI" }],
-  ["xsd:anyType", { type: "primitive", tsEquivalent: "string", doc: "xsd:antType" }],
-  ["xsd:IDREFS", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREFS" }],
-  ["xsd:ID", { type: "primitive", tsEquivalent: "string", doc: "xsd:ID" }],
+  ["xsd:anyType", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyType" }],
+  ["xsd:anyURI", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyURI" }], // Literally any URI
+  ["xsd:QName", { type: "primitive", tsEquivalent: "string", doc: "xsd:QName" }], // Qualified name. Can be prefixed by a local namespace. E.g., `import1:764374-384738-37843`
+  ["xsd:ID", { type: "primitive", tsEquivalent: "string", doc: "xsd:ID" }], // Unique IDs inside the document, independent of tag name
+  ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREF" }], // References to a xsd:ID
+  ["xsd:IDREFS", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREFS" }], // Space-separated xsd:IDREF's
 ]);
 
 // TODO: Tiago --> Write unit tests
