@@ -38,7 +38,48 @@ export const Base: Story = {
   },
 };
 
-export const BiggerList: Story = {
+export const List: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  args: {
+    ...EmptyExpression.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Age group",
+      dataType: DmnBuiltInDataType.Number,
+      logicType: ExpressionDefinitionLogicType.List,
+      items: [
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Literal,
+          dataType: DmnBuiltInDataType.Undefined,
+          content: `[18..30)`,
+        },
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Literal,
+          dataType: DmnBuiltInDataType.Undefined,
+          content: `[30..50)`,
+        },
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Literal,
+          dataType: DmnBuiltInDataType.Undefined,
+          content: `[50..70)`,
+        },
+        {
+          id: generateUuid(),
+          logicType: ExpressionDefinitionLogicType.Literal,
+          dataType: DmnBuiltInDataType.Undefined,
+          content: `>= 70`,
+        },
+      ],
+    },
+    isResetSupportedOnRootExpression: false,
+  },
+};
+
+export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {

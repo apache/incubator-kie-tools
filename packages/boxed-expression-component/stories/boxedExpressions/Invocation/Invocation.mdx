@@ -5,8 +5,8 @@ import * as Invocation from "./Invocation.stories";
 
 # Boxed Invocation
 
-The syntax for boxed invocation is described in clause 7.2.3. This syntax may be used to invoke any function
-(e.g., business knowledge model, FEEL built-in function, boxed function definition).
+The boxed invocation can be used to invoke any function (e.g., business knowledge model, FEEL built-in function, boxed function definition).
+
 The box labeled 'invoked business knowledge model' can be any boxed expression whose value is a function, as shown in Figure 10-4:
 
 The boxed syntax maps to the textual syntax defined by grammar rules 38, 39, 40, 41. Boxed invocation uses named parameters.
@@ -14,6 +14,65 @@ Positional invocation can be achieved using a boxed expression containing a text
 
 The boxed syntax requires at least one parameter. A parameterless function must be invoked using the textual syntax,
 e.g., as shown in Figure 10-5.
+
+A boxed invocation is a vertical list of horizontal values with no result cell. This expression can be used to store static values.
+
+### Index column
+
+#### Header
+
+The header row has a "#" symbol which is a placeholder and has any purposes.
+
+#### Values
+
+The first and any other additional rows has the row number.
+
+### Variable columns
+
+The variable columns can't be less then 1 and doesn't have a maximum number.
+
+#### Headers
+
+If the relation is the root expression of a decision node, the header row will be split into two rows.
+The first will represents the decision name and type, and the second will represents the variables name and type.
+Now, if the relation is a nested expression, it will have only one row, which will be the variables name and type.
+
+> ##### Decision header
+>
+> This row will be a single cell which has the decision name and its type,
+> and by right clicking on it a context menu will open enabling to edit its values.
+>
+> ##### Variable header
+>
+> This row has a cell for each variable name and type, and by right clicking on it a context menu will open enabling to edit its values.
+
+#### Values
+
+The value cells are literal expressions which can be filled with static data.
+
+**Important**: Only literal expressions are supported on relations.
+
+### Controls
+
+#### Rows
+
+Left clicking on the index column cells or in the value cells will open the "Row" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and duplicate the row.
+
+Another way to add columns is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
+or on the bottom (insert below) of the cell, the position of the plus sign will depend of the mouse position.
+Right clicking on it will add a new row above or below of the actual row.
+
+**Important**: It's not possible to perform the above process in the header row index ("#").
+
+#### Variables
+
+Left clicking on the header cells or in the value cells will open the "Column" context menu.
+It's possible to insert left, insert right, insert multiples and delete the column.
+
+Anoter way to add columns is by hovering the mouse on a variable cell will make appear a plus sign on the right (insert right)
+or left (insert left) side of the cell, the position of the plus sign will depend of the mouse position.
+Right clicking on it will add a new column on the right or left side of the actual column.
 
 <Canvas>
   <Story of={Invocation.Base} />

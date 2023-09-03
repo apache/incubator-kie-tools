@@ -29,3 +29,20 @@ export const Base: Story = {
     isResetSupportedOnRootExpression: false,
   },
 };
+
+export const CanDrive: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  args: {
+    ...EmptyExpression.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Can Drive?",
+      dataType: DmnBuiltInDataType.Boolean,
+      logicType: ExpressionDefinitionLogicType.Literal,
+      content: "Age >= 18 then true else false",
+      width: 320,
+    },
+    isResetSupportedOnRootExpression: false,
+  },
+};

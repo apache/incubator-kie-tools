@@ -50,33 +50,33 @@ export const Base: Story = {
   },
 };
 
-export const BiggerRelation: Story = {
+export const People: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
     ...Base.args,
     expressionDefinition: {
       id: generateUuid(),
-      name: "Example",
-      dataType: DmnBuiltInDataType.Undefined,
+      name: "People",
+      dataType: "tPeople" as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.Relation,
       columns: [
         {
           id: generateUuid(),
-          name: "column-1",
-          dataType: DmnBuiltInDataType.Undefined,
+          name: "Name",
+          dataType: DmnBuiltInDataType.String,
           width: 100,
         },
         {
           id: generateUuid(),
-          name: "column-2",
-          dataType: DmnBuiltInDataType.Undefined,
+          name: "Age",
+          dataType: DmnBuiltInDataType.Number,
           width: 100,
         },
         {
           id: generateUuid(),
-          name: "column-3",
-          dataType: DmnBuiltInDataType.Undefined,
+          name: "Country",
+          dataType: DmnBuiltInDataType.String,
           width: 100,
         },
       ],
@@ -86,32 +86,15 @@ export const BiggerRelation: Story = {
           cells: [
             {
               id: generateUuid(),
-              content: "",
+              content: '"Luiz"',
             },
             {
               id: generateUuid(),
-              content: "",
+              content: "30",
             },
             {
               id: generateUuid(),
-              content: "",
-            },
-          ],
-        },
-        {
-          id: generateUuid(),
-          cells: [
-            {
-              id: generateUuid(),
-              content: "",
-            },
-            {
-              id: generateUuid(),
-              content: "",
-            },
-            {
-              id: generateUuid(),
-              content: "",
+              content: '"Brazil"',
             },
           ],
         },
@@ -120,32 +103,15 @@ export const BiggerRelation: Story = {
           cells: [
             {
               id: generateUuid(),
-              content: "",
+              content: '"Tiago"',
             },
             {
               id: generateUuid(),
-              content: "",
+              content: "29",
             },
             {
               id: generateUuid(),
-              content: "",
-            },
-          ],
-        },
-        {
-          id: generateUuid(),
-          cells: [
-            {
-              id: generateUuid(),
-              content: "",
-            },
-            {
-              id: generateUuid(),
-              content: "",
-            },
-            {
-              id: generateUuid(),
-              content: "",
+              content: '"USA"',
             },
           ],
         },
@@ -154,7 +120,7 @@ export const BiggerRelation: Story = {
   },
 };
 
-export const NestedRelation: Story = {
+export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {

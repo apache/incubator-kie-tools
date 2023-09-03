@@ -5,55 +5,61 @@ import * as Relation from "./Relation.stories";
 
 # Relation
 
-A relation is a vertical list of horizontal values with no result cell. This expression can be used to store static values.
+A Relation is a form of boxed expression that shows a relational table.
+Each column has a variable associated with it, and each row starts with the row index
+and has one cell related to each column. Those cells store values for each variable.
+This expression doesn't have results, and its purpose is storing information [1].
 
-## Overview
+**Important**: Only literal expressions are supported on the Relations cells.
 
-### Index column
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Relation.People} />
+  <small>
+    <br />
+    <br />
+    <br />
+    This is a example of a Relation expression for a People decision which has the tPeople type. The columns Name, Age and
+    Country are variables from the tPeople type, and we have two data sets: - Row 1: "Luiz", "30", "Brazil" - Row 2: "Tiago",
+    "29", "USA"
+  </small>
+</div>
 
-#### Header
-
-The header row has a "#" symbol which is a placeholder and has any purposes.
-
-#### Values
-
-The first and any other additional rows has the row number.
-
-### Variable columns
+## Variable columns
 
 The variable columns can't be less then 1 and doesn't have a maximum number.
 
-#### Headers
+### Headers
 
-If the relation is the root expression of a decision node, the header row will be split into two rows.
+If the Relation is the root expression of a decision node, the header row will be split into two rows.
 The first will represents the decision name and type, and the second will represents the variables name and type.
-Now, if the relation is a nested expression, it will have only one row, which will be the variables name and type.
+Now, if the Relation is a nested expression, it will have only one row, which will be the variables name and type.
 
-> ##### Decision header
+> #### Decision header
 >
 > This row will be a single cell which has the decision name and its type,
 > and by right clicking on it a context menu will open enabling to edit its values.
 >
-> ##### Variable header
+> #### Variable header
 >
 > This row has a cell for each variable name and type, and by right clicking on it a context menu will open enabling to edit its values.
 
-#### Values
+### Values
 
 The value cells are literal expressions which can be filled with static data.
 
-**Important**: Only literal expressions are supported on relations.
+## Index column
 
-### Controls
+### Header
 
-#### Resizing
+The header row has a "#" symbol which is a placeholder and has any purposes.
 
-Hovering the mouse on the decision header cell, variable header cell or value cell will show the resize handle on the right side of the cell.
-Right clicking on it enables to drag and resize the cell to a minimum of 100px and a no limit maximum size.
+### Values
 
-**Important**: All cells in the same column will have the same size.
+The first and any other additional rows has the row index.
 
-#### Rows
+## Controls
+
+### Rows
 
 Left clicking on the index column cells or in the value cells will open the "Row" context menu.
 It's possible to insert above, insert below, insert multiples, delete, and duplicate the row.
@@ -64,7 +70,7 @@ Right clicking on it will add a new row above or below of the actual row.
 
 **Important**: It's not possible to perform the above process in the header row index ("#").
 
-#### Variables
+### Variables
 
 Left clicking on the header cells or in the value cells will open the "Column" context menu.
 It's possible to insert left, insert right, insert multiples and delete the column.
@@ -73,20 +79,30 @@ Anoter way to add columns is by hovering the mouse on a variable cell will make 
 or left (insert left) side of the cell, the position of the plus sign will depend of the mouse position.
 Right clicking on it will add a new column on the right or left side of the actual column.
 
-<Canvas>
-  <div style={{ display: "flex", flexDirection: "column"}}>
-  <Subtitle>
-    {`A Relation expression with size 1x1`}
-    <Story of={Relation.Base} />
-  </Subtitle>
-  <Subtitle>
-    {`A Relation expression with size 3x4`}
-    <Story of={Relation.BiggerRelation} />
-  </Subtitle>
+## Examples
 
-  <Subtitle>
-    {`A nested Relation expression with size 1x1 inside a Boxed List`}
-    <Story of={Relation.NestedRelation} />
-  </Subtitle>
+<div style={{ display: "flex", flexDirection: "column"}}>
+  <div style={{ display: "flex", flexDirection: "row"}}>
+    <Story of={Relation.Base} />
+    <small>
+      <br/>
+      <br/>
+      <br/>
+      The smallest Relation expression with one variable and one row.
+    </small>
   </div>
-</Canvas>
+
+  <div style={{ display: "flex", flexDirection: "row"}}>
+    <Story of={Relation.Nested} />
+    <small>
+      <br/>
+      <br/>
+      <br/>
+      The smallest Relation expression nested in a boxed list.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=108)

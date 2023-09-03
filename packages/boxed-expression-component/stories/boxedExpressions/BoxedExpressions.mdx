@@ -6,11 +6,9 @@ import { Meta, Story, Canvas } from "@storybook/blocks";
 
 ## What is a Boxed Expression?
 
-Boxed Expression Header: it has "Relation" name which identifies it as a Relation expression. By clicking on it you can copy/paste a new expression or reset the actual expression;
-
-#### Selection context menu
-
-The "Selection" context menu is available on all cells. It gives the option of "Copy", "Cut", "Paste", "Reset"
+We define a graphical notation for decision logic called boxed expressions. This notation serves to decompose the
+decision logic model into small pieces that can be associated with DRG artifacts. The DRD plus the boxed
+expressions form a complete, mostly graphical language that completely specifies Decision Models
 
 - [Context](/docs/boxed-expressions-context--overview)
 - [Decision Table](/docs/boxed-expressions-decision-table--overview)
@@ -19,3 +17,14 @@ The "Selection" context menu is available on all cells. It gives the option of "
 - [List](/docs/boxed-expressions-list--overview)
 - [Literal](/docs/boxed-expressions-literal--overview)
 - [Relation](/docs/boxed-expressions-relation--overview)
+
+#### Selection context menu
+
+The "Selection" context menu is available on all cells. It gives the option of "Copy", "Cut", "Paste", "Reset"
+
+##### Resizing
+
+Hovering the mouse on the header or item cell will show a resize handle on the right side of the cell.
+Clicking on it and draging enables to resize the cell to the minimum of 190px and without a maximum size.
+
+**Important**: This action is only possible if an item has an expression, and this operation will resize all cells in the column.

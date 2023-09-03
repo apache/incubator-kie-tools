@@ -5,41 +5,45 @@ import * as List from "./List.stories";
 
 # Boxed List
 
-A boxed list enables you to create a list of boxed expressions.
+A Boxed List expression enables to create a vertical list of boxed expressions.
+Each row starts with the row index and has an boxed expression item associated with it.
+It's possible to create any type of boxed expresison for each item, even nested lists [1].
 
-## Overview
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={List.List} />
+  <small>
+    <br />
+    <br />
+    This is a example of a Boxed List expression for an Age group decision which has the "number" type. In this Boxed
+    List each row is a Boxed Literal and on each one of these Boxed Literal we have four different number ranges.
+  </small>
+</div>
 
-### Index column
+## Items columns
 
-#### Header
+### Header
+
+The header of the Boxed List expression will only exist if it's the root expression
+of a decision node, and the header will represets the decision name and type.
+Right clicking on it a context menu will open enabling to edit its values.
+
+### Items
+
+The items can be any type of boxed expression, even other Boxed List.
+
+## Index column
+
+### Header
 
 The header row has a "#" symbol which is a placeholder and has any purposes.
 
-#### Rows
+### Rows
 
-The first and any other additional rows has the row number.
+Each item has a row number associated with it starting with the number 1.
 
-### Items columns
+## Controls
 
-#### Header
-
-The header of the Boxed List expression will only exist if it's the root expression of a Decision node,
-and the header will represets the Decision name and type. Clicking on it a context menu will open enabling to edit its values.
-
-#### Items
-
-The items can be any type of expression, even other boxed list.
-
-### Controls
-
-##### Resizing
-
-Hovering the mouse on the header or item cell will show a resize handle on the right side of the cell.
-Clicking on it and draging enables to resize the cell to the minimum of 190px and without a maximum size.
-
-**Important**: This action is only possible if an item has an expression, and this operation will resize all cells in the column.
-
-#### Items
+### Items
 
 Left clicking on the index column cells or in the header cell (if applicable) will open the "Row" context menu.
 It's possible to insert above, insert below, insert multiples and delete the row.
@@ -50,16 +54,29 @@ Right clicking on it will add a new row above or below of the actual row.
 
 **Important**: It's not possible to perform the above process in the header row index ("#").
 
-<Canvas>
-  <div style={{ display: "flex", flexDirection: "column"}}>
-  <Subtitle>
-    {`A Boxed List expression with one row`}
-    <Story of={List.Base} />
-  </Subtitle>
+## Examples
 
-  <Subtitle>
-    {`A Boxed List expression with nested expressions`}
-    <Story of={List.BiggerList} />
-  </Subtitle>
+<div style={{ display: "flex", flexDirection: "column"}}>
+  <div style={{ display: "flex", flexDirection: "row"}}>
+    <Story of={List.Base} />
+    <small>
+      <br/>
+      <br/>
+      The smallest Boxed List expression with a Boxed Literal expression on the first item.
+    </small>
   </div>
-</Canvas>
+
+  <div style={{ display: "flex", flexDirection: "row"}}>
+    <Story of={List.Nested} />
+    <small>
+      <br/>
+      <br/>
+      A Boxed List with thee rows, the first row is a Boxed Literal, the second row is
+      a Boxed List, and the third is a Boxed Context.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=107)

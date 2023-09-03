@@ -7,7 +7,7 @@ import { StandaloneBeeTable } from "../../../src/table/BeeTable";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof StandaloneBeeTable> = {
-  title: "Misc/Standalone Bee Table",
+  title: "Misc/Standalone Table",
   component: StandaloneBeeTable,
 };
 

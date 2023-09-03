@@ -5,30 +5,41 @@ import * as Literal from "./Literal.stories";
 
 # Boxed FEEL expression
 
-A Boxed FEEL expression or literal expression is any FEEL expression defined by the FEEL grammar ([DMN 1.4 Spec](www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)).
-This FEEL expression has access to the scope context derived from the DRD.
+The Boxed Literal expression was implemented as a boxed FEEL expression and it's defined by the FEEL grammar
+and has access to the scope context derived from the DRD [1].
 
-## Overview
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Literal.CanDrive} />
+  <small>
+    This is a example of a Boxed Literal expression for a "Can Drive?" decision which has the boolean type. The "Age"
+    derives from the DRD, and it comes from another decision or input. The expression uses the FEEL grammar to return a
+    "true" value when the "Age" is above or equal 18 and on the opposite side, it returns "false" when "Age" is below
+    18.
+  </small>
+</div>
 
-### Header
+## Header
 
-The header of the Boxed FEEL expression will only exist if it's the root expression of a decision node,
+The header of the boxed FEEL expression will only exist if it's the root expression of a decision node,
 and the header will represets the decision name and type. Right clicking on it a context menu will open enabling to edit its values.
 
-### Value
+## Value
 
-The FEEL expression with the DRD scope.
+The FEEL expression that has the DRD scope.
 
-### Resizing
+## Examples
 
-Hovering the mouse on the header or value cell will show a resize handle on the right side of the cell.
-Right clicking on it and draging enables to resize the cell to the minimum of 190px and without a maximum size;
-
-**Important**: Independently of the cell that was resized, all cells will have the same size.
-
-<Canvas>
-  <Subtitle>
-    {`A Boxed FEEL expression`}
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
     <Story of={Literal.Base} />
-  </Subtitle>
-</Canvas>
+    <small>
+      <br />
+      <br />
+      An empty Boxed Literal expression.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)

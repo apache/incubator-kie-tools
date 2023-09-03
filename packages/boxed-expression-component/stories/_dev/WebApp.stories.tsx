@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import "./index.css";
 import {
   BeeGwtService,
   DmnBuiltInDataType,
@@ -111,6 +110,7 @@ function App(args: BoxedExpressionEditorProps) {
 
   return (
     <div className="dev-webapp">
+      <h2> DEVE WEB APP</h2>
       <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
         {BoxedExpressionEditorWrapper({
