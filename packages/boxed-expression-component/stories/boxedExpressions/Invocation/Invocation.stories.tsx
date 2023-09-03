@@ -56,3 +56,67 @@ export const Base: Story = {
     isResetSupportedOnRootExpression: false,
   },
 };
+
+export const Example: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  args: {
+    ...EmptyExpression.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Monthly Installment",
+      dataType: DmnBuiltInDataType.Number,
+      logicType: ExpressionDefinitionLogicType.Invocation,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+      bindingEntries: [
+        {
+          entryInfo: {
+            id: generateUuid(),
+            name: "Rate",
+            dataType: DmnBuiltInDataType.Number,
+          },
+          entryExpression: {
+            id: generateUuid(),
+            name: "Rate",
+            dataType: DmnBuiltInDataType.Number,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: "0.08",
+          },
+        },
+        {
+          entryInfo: {
+            id: generateUuid(),
+            name: "Term",
+            dataType: DmnBuiltInDataType.Number,
+          },
+          entryExpression: {
+            id: generateUuid(),
+            name: "Term",
+            dataType: DmnBuiltInDataType.Number,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: "36",
+          },
+        },
+        {
+          entryInfo: {
+            id: generateUuid(),
+            name: "Amount",
+            dataType: DmnBuiltInDataType.Number,
+          },
+          entryExpression: {
+            id: generateUuid(),
+            name: "Amount",
+            dataType: DmnBuiltInDataType.Number,
+            logicType: ExpressionDefinitionLogicType.Literal,
+            content: "10000",
+          },
+        },
+      ],
+      invokedFunction: {
+        id: generateUuid(),
+        name: "Installment Calculation",
+      },
+    },
+    isResetSupportedOnRootExpression: false,
+  },
+};
