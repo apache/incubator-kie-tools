@@ -18,22 +18,22 @@
  */
 import React, { useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { WorkflowDefinition } from "../api";
+import { WorkflowDefinition, WorkflowFormDriver } from "../api";
 import { FormRendererApi } from "../types/types";
 import { ActionType, FormAction } from "./utils";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { FormRenderer } from "./FormRenderer";
-import { useOpenApi } from "../context/OpenApiContext";
 
 export interface CustomWorkflowFormProps {
   customFormSchema: Record<string, any>;
+  driver: WorkflowFormDriver;
   workflowDefinition: WorkflowDefinition;
 }
 
-export function CustomWorkflowForm({ workflowDefinition, customFormSchema }: CustomWorkflowFormProps) {
-  const openApi = useOpenApi();
+export function CustomWorkflowForm(props: CustomWorkflowFormProps) {
+  const { driver, workflowDefinition, customFormSchema } = props;
   const formRendererApi = React.useRef<FormRendererApi>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -52,8 +52,8 @@ export function CustomWorkflowForm({ workflowDefinition, customFormSchema }: Cus
 
   const startWorkflow = (data: Record<string, any>): void => {
     setIsLoading(true);
-    openApi.gatewayApi
-      ?.startWorkflow(workflowDefinition.endpoint, data)
+    driver
+      .startWorkflow(workflowDefinition.endpoint, data)
       .then(() => {
         formRendererApi?.current?.doReset();
       })

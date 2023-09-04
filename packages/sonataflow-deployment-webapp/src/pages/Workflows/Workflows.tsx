@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { PromiseStateStatus, PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -35,9 +35,14 @@ import { useOpenApi } from "../../context/OpenApiContext";
 import { BasePage } from "../BasePage";
 import { Link } from "react-router-dom";
 import { routes } from "../../routes";
+import { ErrorPage } from "../ErrorPage";
 
 export function Workflows() {
   const openApi = useOpenApi();
+
+  if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
+    return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;
+  }
 
   return (
     <BasePage>

@@ -16,10 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-export interface WorkflowFormGatewayApi {
-  setBusinessKey(bk: string): void;
-  getBusinessKey(): string;
-  getCustomWorkflowSchema(workflowName: string): Promise<Record<string, any>>;
-  startWorkflow(endpoint: string, data: Record<string, any>): Promise<string>;
+export interface WorkflowFormDriver {
+  resetBusinessKey(): Promise<void>;
+  getCustomWorkflowSchema(): Promise<Record<string, any>>;
+  startWorkflow(endpoint: string, data: Record<string, any>): Promise<void>;
 }

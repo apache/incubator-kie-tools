@@ -20,5 +20,6 @@
 export * from "./CustomWorkflowForm";
 export * from "./FormFooter";
 export * from "./FormRenderer";
+export * from "./FormNotification";
 export * from "./WorkflowForm";
 export * from "./validateWorkflowData";

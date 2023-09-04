@@ -30,14 +30,17 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useCallback, useState } from "react";
-import { WorkflowDefinition } from "../api";
-import { useOpenApi } from "../context/OpenApiContext";
+import { WorkflowDefinition, WorkflowFormDriver } from "../api";
 import { ErrorPage } from "../pages/ErrorPage";
 import { validateWorkflowData } from "./validateWorkflowData";
 
-export function WorkflowForm(props: { workflowDefinition: WorkflowDefinition }) {
-  const { workflowDefinition } = props;
-  const openApi = useOpenApi();
+export interface WorkflowFormProps {
+  workflowDefinition: WorkflowDefinition;
+  driver: WorkflowFormDriver;
+}
+
+export function WorkflowForm(props: WorkflowFormProps) {
+  const { workflowDefinition, driver } = props;
   const [data, setData] = useState<string>("");
   const [isValid, setIsValid] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,14 +63,14 @@ export function WorkflowForm(props: { workflowDefinition: WorkflowDefinition }) 
     setIsLoading(true);
 
     try {
-      await openApi.gatewayApi?.startWorkflow(workflowDefinition.endpoint, data.trim() ? JSON.parse(data) : {});
+      await driver.startWorkflow(workflowDefinition.endpoint, data.trim() ? JSON.parse(data) : {});
     } catch (error) {
       setWorkflowNetError(error);
     }
 
     setIsLoading(false);
     resetForm();
-  }, [resetForm, data, workflowDefinition, openApi.gatewayApi]);
+  }, [resetForm, data, workflowDefinition, driver]);
 
   if (workflowNetError) {
     return <ErrorPage kind="Workflow" workflowId={workflowDefinition.workflowName} errors={[workflowNetError]} />;

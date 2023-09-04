@@ -18,6 +18,6 @@
  */
 
 export * from "./WorkflowDefinition";
-export * from "./WorkflowFormDriver";
 export * from "./WorkflowFormGatewayApi";
+export * from "./WorkflowFormDriver";
 export * from "./api";

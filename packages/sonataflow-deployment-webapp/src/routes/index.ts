@@ -79,29 +79,6 @@ export interface QueryParamsImpl<Q extends string> {
   toString(): string;
 }
 
-export function newQueryParamsImpl<Q extends string>(queryString: string): QueryParamsImpl<Q> {
-  return {
-    has: (name) => new URLSearchParams(queryString).has(name),
-    get: (name) => {
-      const val = new URLSearchParams(queryString).get(name);
-      return !val ? undefined : decodeURIComponent(val);
-    },
-    with: (name, value) => {
-      const urlSearchParams = new URLSearchParams(queryString);
-      urlSearchParams.set(name, value);
-      return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
-    },
-    without: (name) => {
-      const urlSearchParams = new URLSearchParams(queryString);
-      urlSearchParams.delete(name);
-      return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
-    },
-    toString: () => {
-      return decodeURIComponent(new URLSearchParams(queryString).toString());
-    },
-  };
-}
-
 export const routes = {
   home: new Route<{}>(() => "/"),
 

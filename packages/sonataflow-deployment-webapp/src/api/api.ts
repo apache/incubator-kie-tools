@@ -23,7 +23,7 @@ import { OpenAPI } from "openapi-types";
 export const getCustomWorkflowSchema = async (
   api: OpenAPI.Document,
   workflowName: string
-): Promise<Record<string, any> | null> => {
+): Promise<Record<string, any>> => {
   let schema = {};
 
   try {
