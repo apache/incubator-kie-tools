@@ -69,9 +69,6 @@ public class StunnerLienzoCore {
                 .inject();
 
         StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.fontawesome().getText());
-
-        StyleInjector.injectStylesheet(
                 PatternFlyBundle.INSTANCE.patternflycss().getText());
 
         StyleInjector.injectStylesheet(
@@ -83,6 +80,12 @@ public class StunnerLienzoCore {
 
         StyleInjector.injectStylesheet(
                 PatternFlyBundle.INSTANCE.uberfirepatternfly().getText());
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.fontawesome().getText());
+
+        StyleInjector.injectStylesheet(
+                PatternFlyBundle.INSTANCE.fonts().getText());
 
         LienzoCore.get().setDefaultImageSelectionMode(ImageSelectionMode.SELECT_BOUNDS);
     }
