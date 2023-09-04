@@ -1,8 +1,9 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { createContext, useContext } from "react";
-import { StoreApi, UseBoundStore, create, useStore as useZustandStore } from "zustand";
+import { StoreApi, UseBoundStore, create } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
+import { NodeType } from "../diagram/connections/graphStructure";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -19,6 +20,8 @@ export interface SnapGrid {
   x: number;
   y: number;
 }
+
+export type DropTargetNode = undefined | { id: string; type: NodeType };
 
 export interface State {
   dispatch: Dispatch;
@@ -38,7 +41,7 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
-    dropTargetNodeId: string | undefined;
+    dropTargetNode: DropTargetNode;
     propertiesPanel: {
       isOpen: boolean;
       elementId: string | undefined;
@@ -143,7 +146,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         tab: DmnEditorTab.EDITOR,
       },
       diagram: {
-        dropTargetNodeId: undefined,
+        dropTargetNode: undefined,
         propertiesPanel: {
           isOpen: false,
           elementId: undefined,

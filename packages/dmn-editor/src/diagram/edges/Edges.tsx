@@ -6,7 +6,7 @@ import {
 import * as React from "react";
 import { useCallback, useState } from "react";
 import * as RF from "reactflow";
-import { Unpacked } from "../useDmnDiagramData";
+import { Unpacked } from "../../store/useDiagramData";
 import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { useIsHovered } from "../useIsHovered";

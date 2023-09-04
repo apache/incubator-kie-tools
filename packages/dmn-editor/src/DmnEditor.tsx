@@ -30,6 +30,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { DmnEditorDerivedStoreContextProvider } from "./store/DerivedStore";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -203,7 +204,9 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
 
   return (
     <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-      <DmnEditorInternal forwardRef={ref} {...props} />
+      <DmnEditorDerivedStoreContextProvider>
+        <DmnEditorInternal forwardRef={ref} {...props} />
+      </DmnEditorDerivedStoreContextProvider>
     </DmnEditorStoreApiContext.Provider>
   );
 });

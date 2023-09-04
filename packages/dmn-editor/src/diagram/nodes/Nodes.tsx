@@ -12,10 +12,10 @@ import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
-import { SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
+import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { NodeHandles } from "../connections/NodeHandles";
-import { outgoing } from "../connections/graphStructure";
+import { NodeType, containment, outgoing } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
@@ -34,6 +34,8 @@ import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { useIsHovered } from "../useIsHovered";
 import { getDecisionServiceDivierLineLocalY as getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
+import { isValidContainment } from "../connections/isValidContainment";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 
 export type DmnEditorDiagramNodeData<T> = {
   dmnObject: T;
@@ -59,8 +61,8 @@ export const InputDataNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
 
     const setName = useCallback(
@@ -77,7 +79,7 @@ export const InputDataNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidTarget} />
+        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -124,8 +126,8 @@ export const DecisionNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -141,7 +143,7 @@ export const DecisionNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidTarget} />
+        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -189,8 +191,8 @@ export const BkmNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -206,7 +208,7 @@ export const BkmNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidTarget} />
+        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -254,8 +256,8 @@ export const KnowledgeSourceNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
@@ -271,7 +273,7 @@ export const KnowledgeSourceNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidTarget} />
+        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -317,8 +319,8 @@ export const TextAnnotationNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setText = useCallback(
       (newText: string) => {
@@ -334,7 +336,7 @@ export const TextAnnotationNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidTarget} />
+        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -380,8 +382,8 @@ export const DecisionServiceNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
 
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     const setName = useCallback(
@@ -400,11 +402,11 @@ export const DecisionServiceNode = React.memo(
             {...nodeDimensions}
             x={0}
             y={0}
-            showSectionLabels={diagram.dropTargetNodeId === id}
+            showSectionLabels={diagram.dropTargetNode?.id === id}
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidTarget} />
+        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -449,8 +451,8 @@ export const GroupNode = React.memo(
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const diagram = useDmnEditorStore((s) => s.diagram);
 
-    const { isTargeted, isValidTarget, isConnecting } = useTargetStatus(id, isHovered);
-    const className = useNodeClassName(diagram.dropTargetNodeId, isConnecting, isValidTarget, id);
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
     return (
       <>
@@ -541,13 +543,13 @@ function useHoveredNodeAlwaysOnTop(
   }, [dragging, isHovered, ref, selected, layer, isEditing]);
 }
 
-export function useTargetStatus(id: string, isHovered: boolean) {
+export function useConnectionTargetStatus(id: string, isHovered: boolean) {
   const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
   const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
   const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
 
-  const isValidTarget =
+  const isValidConnectionTarget =
     isValidConnection?.({
       source: connectionNodeId,
       target: id,
@@ -555,15 +557,16 @@ export function useTargetStatus(id: string, isHovered: boolean) {
       targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
     }) ?? false;
 
-  return { isTargeted, isValidTarget, isConnecting: !!connectionNodeId };
+  return { isTargeted, isValidConnectionTarget, isConnecting: !!connectionNodeId };
 }
 
 export function useNodeClassName(
-  targetNodeId: string | undefined,
+  dropTargetNode: DropTargetNode,
   isConnecting: boolean,
-  isValidTarget: boolean,
+  isValidConnectionTarget: boolean,
   id: string
 ) {
+  const { dropTargetNodeIsValidForSelection } = useDmnEditorDerivedStore();
   const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
   const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
@@ -573,12 +576,12 @@ export function useNodeClassName(
     return "dimmed";
   }
 
-  if (isEdgeConnection && isConnecting && !isValidTarget) {
+  if (isEdgeConnection && isConnecting && !isValidConnectionTarget) {
     return "dimmed";
   }
 
-  if (targetNodeId === id) {
-    return "targeted";
+  if (dropTargetNode?.id === id && containment.get(dropTargetNode.type)) {
+    return dropTargetNodeIsValidForSelection ? "drop-target" : "drop-target-invalid";
   }
 
   return "normal";

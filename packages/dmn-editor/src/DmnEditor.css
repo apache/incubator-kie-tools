@@ -433,13 +433,21 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__node.selected {
   color: #006ba4 !important;
 }
-.react-flow__node > .kie-dmn-editor--node-shape.targeted,
+
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid {
+  border-color: red !important;
+}
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid > g * {
+  stroke: red !important;
+}
+
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target,
 .react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
   border-color: #006ba4 !important;
   filter: drop-shadow(4px 4px 2px #006ba477);
 }
 
-.react-flow__node > .kie-dmn-editor--node-shape.targeted > g *,
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target > g *,
 .react-flow__node.selected > .kie-dmn-editor--node-shape > g * {
   stroke: #006ba4 !important;
 }

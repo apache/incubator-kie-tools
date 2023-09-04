@@ -5,15 +5,15 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
-import { NODE_LAYERS, useDmnEditorStore } from "../store/Store";
+import { NODE_LAYERS, useDmnEditorStore } from "./Store";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
-import { EdgeType } from "./connections/graphStructure";
-import { EDGE_TYPES } from "./edges/EdgeTypes";
-import { DmnEditorDiagramEdgeData } from "./edges/Edges";
-import { NODE_TYPES } from "./nodes/NodeTypes";
-import { DmnEditorDiagramNodeData } from "./nodes/Nodes";
-import { idFromHref } from "./maths/DmnMaths";
+import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { EdgeType } from "../diagram/connections/graphStructure";
+import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
+import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { DmnEditorDiagramNodeData } from "../diagram/nodes/Nodes";
+import { idFromHref } from "../diagram/maths/DmnMaths";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -21,7 +21,7 @@ export const diagramColors = {
   selected: "#006ba4",
 };
 
-export function useDmnDiagramData() {
+export function useDiagramData() {
   const dmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
 

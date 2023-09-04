@@ -29,7 +29,7 @@ module.exports = (env) =>
       index: path.resolve(__dirname, "./src/index.tsx"),
     },
     output: {
-      path: path.resolve(__dirname, "../dist-dev"),
+      path: path.resolve(__dirname, "../dist-dev-webapp"),
     },
     plugins: [
       new CopyPlugin({

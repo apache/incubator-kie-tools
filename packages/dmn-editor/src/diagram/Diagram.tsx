@@ -37,7 +37,6 @@ import {
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
-import { useDmnDiagramData } from "./useDmnDiagramData";
 import { deleteNode } from "../mutations/deleteNode";
 import { DC__Point, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -45,11 +44,11 @@ import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
 import { getNodeCenterPoint, idFromHref } from "./maths/DmnMaths";
-import { isValidContainment } from "./connections/isValidContainment";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { addNodeToGroup } from "../mutations/addNodeToGroup";
 import { deleteNodeFromGroup } from "../mutations/deleteNodeFromGroup";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -83,11 +82,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { shapesById, nodesById, nodes, edges } = useDmnDiagramData();
+  const { shapesById, nodesById, nodes, edges, dropTargetNodeIsValidForSelection, selectedNodeTypes } =
+    useDmnEditorDerivedStore();
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
-  const onConnect: RF.OnConnect = useCallback(
+  const onConnect = useCallback<RF.OnConnect>(
     (args) => {
       const sourceNode = nodesById.get(args.source!);
       const targetNode = nodesById.get(args.target!);
@@ -159,7 +159,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       });
 
       dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNodeId = getFirstNodeUnderneath("", { "@_x": dropPoint.x, "@_y": dropPoint.y })?.id;
+        state.diagram.dropTargetNode = getFirstNodeUnderneath("", {
+          "@_x": dropPoint.x,
+          "@_y": dropPoint.y,
+        }) as typeof state.diagram.dropTargetNode;
       });
     },
     [container, dmnEditorStoreApi, getFirstNodeUnderneath, reactFlowInstance]
@@ -415,9 +418,17 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node) => {
-      nodeBeingDraggedRef.current = node;
+      nodeBeingDraggedRef.current = node.dragging ? node : null;
+      const nodeBeingDragged = nodeBeingDraggedRef.current!;
+      if (!nodeBeingDragged) {
+        return;
+      }
+
       dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNodeId = getFirstNodeUnderneath(node.id, getNodeCenterPoint(node))?.id;
+        state.diagram.dropTargetNode = getFirstNodeUnderneath(
+          node.id,
+          getNodeCenterPoint(node)
+        ) as typeof state.diagram.dropTargetNode;
       });
     },
     [dmnEditorStoreApi, getFirstNodeUnderneath]
@@ -425,19 +436,26 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
     (e, node) => {
+      const nodeBeingDragged = nodeBeingDraggedRef.current!;
+      if (!nodeBeingDragged) {
+        return;
+      }
+
       dmnEditorStoreApi.setState((state) => {
-        const dropTargetNode = nodesById.get(state.diagram.dropTargetNodeId!);
-        const nodeBeingDragged = nodeBeingDraggedRef.current!;
+        const dropTargetNode = state.diagram.dropTargetNode;
+        state.diagram.dropTargetNode = undefined;
 
         // Un-parent
         if (nodeBeingDragged.parentNode) {
           const parentNode = nodesById.get(nodeBeingDragged.parentNode);
           if (parentNode?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
-            deleteDecisionFromDecisionService({
-              definitions: state.dmn.model.definitions,
-              decisionId: nodeBeingDragged.id,
-              decisionServiceId: parentNode.id,
-            });
+            for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
+              deleteDecisionFromDecisionService({
+                definitions: state.dmn.model.definitions,
+                decisionId: state.diagram.selectedNodes[i],
+                decisionServiceId: parentNode.id,
+              });
+            }
           } else if (parentNode?.type === NODE_TYPES.group) {
             deleteNodeFromGroup({
               definitions: state.dmn.model.definitions,
@@ -450,37 +468,37 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
 
         // Validate
-        if (
-          dropTargetNode &&
-          !isValidContainment({ node: node.type as NodeType, inside: dropTargetNode.type as NodeType })
-        ) {
+        if (!dropTargetNodeIsValidForSelection) {
           console.debug(
-            `DIAGRAM: Invalid containment: '${nodeBeingDragged.type}' inside '${dropTargetNode?.type}'. Ignoring.`
+            `DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
+              dropTargetNode?.type
+            }'. Ignoring nodes dropped.`
           );
           return;
         }
 
         // Parent
         if (dropTargetNode?.type === NODE_TYPES.decisionService) {
-          addDecisionToDecisionService({
-            definitions: state.dmn.model.definitions,
-            decisionId: nodeBeingDragged.id,
-            decisionServiceId: dropTargetNode.id,
-          });
+          for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
+            addDecisionToDecisionService({
+              definitions: state.dmn.model.definitions,
+              decisionId: state.diagram.selectedNodes[i], // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+              decisionServiceId: dropTargetNode.id,
+            });
+          }
         } else if (dropTargetNode?.type === NODE_TYPES.group) {
-          addNodeToGroup({
-            definitions: state.dmn.model.definitions,
-          });
+          for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
+            const selectedNodeId = state.diagram.selectedNodes[i];
+            addNodeToGroup({
+              definitions: state.dmn.model.definitions,
+            });
+          }
         } else {
           console.debug(`DIAGRAM: Ignoring '${nodeBeingDragged.type}' dropped on top of '${dropTargetNode?.type}'`);
         }
-
-        state.diagram.dropTargetNodeId = undefined;
       });
-
-      nodeBeingDraggedRef.current = null;
     },
-    [dmnEditorStoreApi, nodesById]
+    [dmnEditorStoreApi, dropTargetNodeIsValidForSelection, nodesById, selectedNodeTypes]
   );
 
   const onEdgesChange = useCallback<RF.OnEdgesChange>(
