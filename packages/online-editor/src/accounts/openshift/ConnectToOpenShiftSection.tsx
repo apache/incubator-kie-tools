@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
@@ -35,6 +35,7 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
 import { useEnv } from "../../env/hooks/EnvContext";
+import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";
 
 export enum OpenShiftSettingsTabMode {
   SIMPLE,
@@ -56,14 +57,19 @@ export function ConnectToOpenShiftSection() {
   );
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
 
-  const openshiftService = useMemo(
-    () =>
-      new KieSandboxOpenShiftService({
+  const getKieSandboxOpenshiftService = useCallback(async () => {
+    if (isKubernetesConnectionValid(connection)) {
+      const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
         connection,
         proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-      }),
-    [connection, env.KIE_SANDBOX_CORS_PROXY_URL]
-  );
+      });
+      return new KieSandboxOpenShiftService({
+        connection,
+        proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+        k8sApiServerEndpointsByResourceKind,
+      });
+    }
+  }, [connection, env.KIE_SANDBOX_CORS_PROXY_URL]);
 
   const successPrimaryAction = useMemo(() => {
     if (accounts.section !== AccountsSection.CONNECT_TO_OPENSHIFT || !newAuthSession) {
@@ -142,7 +148,7 @@ export function ConnectToOpenShiftSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              openshiftService={openshiftService}
+              getKieSandboxOpenshiftService={getKieSandboxOpenshiftService}
             />
           )}
           {mode === OpenShiftSettingsTabMode.WIZARD && (
@@ -153,7 +159,7 @@ export function ConnectToOpenShiftSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              openshiftService={openshiftService}
+              getKieSandboxOpenshiftService={getKieSandboxOpenshiftService}
             />
           )}
         </>

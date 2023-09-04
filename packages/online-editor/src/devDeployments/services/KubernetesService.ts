@@ -23,6 +23,7 @@ import {
   callK8sApiServer,
   K8sApiServerEndpointByResourceKind,
   interpolateK8sResourceYamls,
+  TokenMap,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { getNamespaceApiPath } from "./resources/kubernetes/Namespace";
 import { createSelfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReview";
@@ -133,45 +134,65 @@ export class KubernetesService {
 
   public async isConnectionEstablished(
     connection: KubernetesConnection,
-    requiredResources: string[] = ["deployments", "services", "ingresses"]
+    requiredResources: string[] = ["deployments", "services", "ingresses"],
+    skipNamespaceCheck = false
   ): Promise<KubernetesConnectionStatus> {
-    try {
+    if (!skipNamespaceCheck) {
       try {
-        await this.kubernetesFetch(getNamespaceApiPath(this.args.connection.namespace), { method: "POST" });
-      } catch (e) {
-        if (e.cause.status === 404) {
-          return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+        try {
+          await this.kubernetesFetch(getNamespaceApiPath(this.args.connection.namespace), { method: "GET" });
+        } catch (e) {
+          if (e.cause.status === 404) {
+            return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+          }
+          throw e;
         }
-        throw e;
+        const permissionsResultMap = await callK8sApiServer({
+          k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
+          k8sResourceYamls: parseK8sResourceYaml(
+            requiredResources.map((resource) =>
+              interpolateK8sResourceYamls(createSelfSubjectAccessReviewYaml, {
+                namespace: this.args.connection.namespace,
+                resource,
+              })
+            )
+          ),
+          k8sApiServerUrl: KubernetesService.getBaseUrl({ ...this.args, connection }),
+          k8sNamespace: connection.namespace,
+          k8sServiceAccountToken: connection.token,
+        }).then((results) =>
+          results.map((result) => ({
+            resource: result.spec.resourceAttributes.resource,
+            allowed: result.status.allowed,
+          }))
+        );
+
+        console.log(permissionsResultMap);
+
+        if (permissionsResultMap.some((permissionResult) => !permissionResult.allowed)) {
+          return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+        }
+
+        return KubernetesConnectionStatus.CONNECTED;
+      } catch (error) {
+        console.error(error);
+        return KubernetesConnectionStatus.ERROR;
       }
-
-      const permissionsResultMap = await callK8sApiServer({
-        k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
-        k8sResourceYamls: parseK8sResourceYaml(
-          requiredResources.map((resource) =>
-            interpolateK8sResourceYamls(createSelfSubjectAccessReviewYaml, {
-              namespace: this.args.connection.namespace,
-              resource,
-            })
-          )
-        ),
-        k8sApiServerUrl: KubernetesService.getBaseUrl({ ...this.args, connection }),
-        k8sNamespace: connection.namespace,
-        k8sServiceAccountToken: connection.token,
-      });
-      // this.kubernetesFetch()
-      //   .then((result) => ({ resource, allowed: result.status?.allowed }))
-
-      console.log(permissionsResultMap);
-
-      // if (permissionsResultMap.some((permissionResult) => !permissionResult.status?.allowed)) {
-      //   return KubernetesConnectionStatus.MISSING_PERMISSIONS;
-      // }
-
-      return KubernetesConnectionStatus.CONNECTED;
-    } catch (error) {
-      return KubernetesConnectionStatus.ERROR;
     }
+    return KubernetesConnectionStatus.CONNECTED;
+  }
+
+  public async applyResourceYamls(k8sResourceYamls: string[], tokens?: TokenMap) {
+    const interpolatedYamls = tokens
+      ? k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYamls(yamlContent, tokens))
+      : k8sResourceYamls;
+    return await callK8sApiServer({
+      k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
+      k8sResourceYamls: parseK8sResourceYaml(interpolatedYamls),
+      k8sApiServerUrl: this.args.connection.host,
+      k8sNamespace: this.args.connection.namespace,
+      k8sServiceAccountToken: this.args.connection.token,
+    });
   }
 
   public newResourceName(prefix: string): string {

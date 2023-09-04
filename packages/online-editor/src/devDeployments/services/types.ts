@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeployedModel, DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 
@@ -26,10 +27,8 @@ export type KieSandboxDeployedModel = DeployedModel & {
 };
 
 export interface DeployArgs {
-  targetFilePath: string;
-  workspaceName: string;
   workspaceZipBlob: Blob;
-  containerImageUrl: string;
+  tokenMap: TokenMap;
 }
 
 export type ResourceArgs = {
@@ -42,7 +41,6 @@ export type KieSandboxDeploymentService = {
   isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
   loadDeployedModels(): Promise<KieSandboxDeployedModel[]>;
   deploy(args: DeployArgs): Promise<void>;
-  dynamicDeploy(args: DeployArgs): Promise<void>;
   deleteDevDeployment(resourceName: string): Promise<void>;
   uploadAssets(args: {
     resourceArgs: ResourceArgs;

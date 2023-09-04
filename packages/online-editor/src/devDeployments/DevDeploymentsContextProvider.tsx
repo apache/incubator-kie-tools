@@ -27,19 +27,10 @@ import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesServ
 import { AuthSession, CloudAuthSession, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import {
-  parseK8sResourceYaml,
-  buildK8sApiServerEndpointsByResourceKind,
-  callK8sApiServer,
-  interpolateK8sResourceYamls,
-} from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { useRoutes } from "../navigation/Hooks";
 import { KieSandboxDeploymentService, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { KubernetesService } from "./services/KubernetesService";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { createDeploymentYaml } from "./services/resources/kubernetes/Deployment";
-import { createServiceYaml } from "./services/resources/kubernetes/Service";
-import { createIngressYaml } from "./services/resources/kubernetes/Ingress";
 
 interface Props {
   children: React.ReactNode;
@@ -69,12 +60,15 @@ export function DevDeploymentsContextProvider(props: Props) {
   const getService = useCallback(
     async (authSession: CloudAuthSession) => {
       if (authSession.type === "openshift") {
-        // const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({ connection: authSession, proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL });
-        // return new KieSandboxOpenShiftService({
-        //   connection: authSession,
-        //   proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-        //   k8sApiServerEndpointsByResourceKind
-        // });
+        const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
+          connection: authSession,
+          proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+        });
+        return new KieSandboxOpenShiftService({
+          connection: authSession,
+          proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+          k8sApiServerEndpointsByResourceKind,
+        });
       } else if (authSession.type === "kubernetes") {
         const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
           connection: authSession,
@@ -144,43 +138,43 @@ export function DevDeploymentsContextProvider(props: Props) {
     [devDeploymentServices]
   );
 
+  // const deploy = useCallback(
+  //   async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
+  //     const service = devDeploymentServices.get(authSession.id);
+  //     if (!service) {
+  //       throw new Error(`Missing service for authSession with id ${authSession.id}.`);
+  //     }
+
+  //     if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
+  //       return false;
+  //     }
+
+  //     const zipBlob = await workspaces.prepareZip({
+  //       workspaceId: workspaceFile.workspaceId,
+  //       onlyExtensions: ["dmn"],
+  //     });
+
+  //     const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
+
+  //     const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
+
+  //     try {
+  //       await service.deploy({
+  //         targetFilePath: workspaceFile.relativePath,
+  //         workspaceName,
+  //         workspaceZipBlob: zipBlob,
+  //         containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+  //       });
+  //       return true;
+  //     } catch (error) {
+  //       console.error(error);
+  //       return false;
+  //     }
+  //   },
+  //   [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, devDeploymentServices, workspaces]
+  // );
+
   const deploy = useCallback(
-    async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
-      const service = devDeploymentServices.get(authSession.id);
-      if (!service) {
-        throw new Error(`Missing service for authSession with id ${authSession.id}.`);
-      }
-
-      if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
-        return false;
-      }
-
-      const zipBlob = await workspaces.prepareZip({
-        workspaceId: workspaceFile.workspaceId,
-        onlyExtensions: ["dmn"],
-      });
-
-      const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
-
-      const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
-
-      try {
-        await service.deploy({
-          targetFilePath: workspaceFile.relativePath,
-          workspaceName,
-          workspaceZipBlob: zipBlob,
-          containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-        });
-        return true;
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-    },
-    [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, devDeploymentServices, workspaces]
-  );
-
-  const dynamicDeploy = useCallback(
     async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
       const service = devDeploymentServices.get(authSession.id);
       if (!service) {
@@ -201,59 +195,37 @@ export function DevDeploymentsContextProvider(props: Props) {
       const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
       const workspaceId = workspace.workspaceId;
 
-      const k8sApiServerEndpointsByResourceKind = await buildK8sApiServerEndpointsByResourceKind(
-        authSession.host,
-        authSession.token
-      );
-
       const tokenMap = {
-        labels: defaultLabelTokens,
-        annotations: defaultAnnotationTokens,
-        name: "dev-deployment",
-        uniqueId: "123",
-        uploadService: {
-          apiKey: "abc123",
+        devDeployment: {
+          labels: defaultLabelTokens,
+          annotations: defaultAnnotationTokens,
+          name: "dev-deployment",
+          uniqueId: "123",
+          uploadService: {
+            apiKey: "abc123",
+          },
+          workspace: {
+            id: workspaceId,
+            name: workspaceName,
+            resourceName: workspaceFile.relativePath,
+          },
+          kubernetes: {
+            namespace: authSession.namespace,
+          },
+          defaultContainerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
         },
-        workspace: {
-          id: workspaceId,
-          name: workspaceName,
-          resourceName: workspaceFile.relativePath,
-        },
-        kubernetes: {
-          namespace: authSession.namespace,
-        },
-        defaultContainerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
       };
 
-      const interpolatedDeploymentResource = interpolateK8sResourceYamls(createDeploymentYaml, tokenMap);
-      const interpolatedServiceResource = interpolateK8sResourceYamls(createServiceYaml, tokenMap);
-      const interpolatedIngressResource = interpolateK8sResourceYamls(createIngressYaml, tokenMap);
-
-      await callK8sApiServer({
-        k8sApiServerEndpointsByResourceKind,
-        k8sResourceYamls: parseK8sResourceYaml([
-          interpolatedDeploymentResource,
-          interpolatedServiceResource,
-          interpolatedIngressResource,
-        ]),
-        k8sApiServerUrl: authSession.host,
-        k8sNamespace: authSession.namespace,
-        k8sServiceAccountToken: authSession.token,
-      });
-
       try {
-        await service.dynamicDeploy({
-          targetFilePath: workspaceFile.relativePath,
-          workspaceName,
+        await service.deploy({
           workspaceZipBlob: zipBlob,
-          containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+          tokenMap,
         });
         return true;
       } catch (error) {
         console.error(error);
         return false;
       }
-      return true;
     },
     [devDeploymentServices, env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, workspaces]
   );
@@ -270,7 +242,6 @@ export function DevDeploymentsContextProvider(props: Props) {
       setConfirmDeleteModalState,
       setDeploymentsDropdownOpen,
       deploy,
-      dynamicDeploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,
@@ -282,7 +253,6 @@ export function DevDeploymentsContextProvider(props: Props) {
       confirmDeleteModalState,
       devDeploymentServices,
       deploy,
-      dynamicDeploy,
       deleteDeployment,
       deleteDeployments,
       loadDeployments,

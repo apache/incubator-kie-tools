@@ -37,9 +37,10 @@ export async function callK8sApiServer(args: {
   for (const apiCall of apiCalls) {
     // FIXME: Interpolate :namespace with actual namespace.
     const endpointUrl = new URL(apiCall.rawEndpoint);
-    const interpolatedPathname = reactRouter.generatePath(endpointUrl.pathname, {
-      namespace: apiCall.yaml.metadata?.namespace ?? args.k8sNamespace,
-    });
+    const interpolatedPathname = endpointUrl.pathname.replace(
+      ":namespace",
+      apiCall.yaml.metadata?.namespace ?? args.k8sNamespace
+    );
     endpointUrl.pathname = interpolatedPathname;
 
     console.info(`Creating '${apiCall.kind}' with POST ${endpointUrl.toString()}`);
@@ -51,7 +52,7 @@ export async function callK8sApiServer(args: {
         },
         method: "POST",
         body: jsYaml.dump(apiCall.yaml),
-      })
+      }).then((response) => response.json())
     );
     // .then((res) => {
     //   console.info(`STATUS: ${res.status} - ${res.statusText}`);

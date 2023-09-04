@@ -51,7 +51,7 @@ enum FormValiationOptions {
 }
 
 export function ConnecToOpenShiftSimple(props: {
-  openshiftService: KieSandboxOpenShiftService;
+  getKieSandboxOpenshiftService: () => Promise<KieSandboxOpenShiftService | undefined>;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
@@ -76,7 +76,7 @@ export function ConnecToOpenShiftSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
+    const isConnectionEstablished = await (await props.getKieSandboxOpenshiftService())?.isConnectionEstablished();
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {

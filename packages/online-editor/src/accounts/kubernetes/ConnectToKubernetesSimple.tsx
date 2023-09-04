@@ -49,7 +49,7 @@ enum FormValiationOptions {
 }
 
 export function ConnectToKubernetesSimple(props: {
-  kubernetesService: KieSandboxKubernetesService;
+  kieSandboxKubernetesService?: KieSandboxKubernetesService;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
   status: KubernetesInstanceStatus;
@@ -73,7 +73,7 @@ export function ConnectToKubernetesSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kubernetesService.isConnectionEstablished();
+    const isConnectionEstablished = await props.kieSandboxKubernetesService?.isConnectionEstablished();
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {

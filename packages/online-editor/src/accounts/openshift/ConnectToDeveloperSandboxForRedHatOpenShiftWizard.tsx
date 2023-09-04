@@ -55,7 +55,7 @@ enum WizardStepIds {
 }
 
 export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
-  openshiftService: KieSandboxOpenShiftService;
+  getKieSandboxOpenshiftService: () => Promise<KieSandboxOpenShiftService | undefined>;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
@@ -136,12 +136,13 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(
-          (await props.openshiftService.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+          (await (await props.getKieSandboxOpenshiftService())?.isConnectionEstablished()) ===
+            KubernetesConnectionStatus.CONNECTED
         );
         setConnectLoading(false);
       }
     },
-    [props.openshiftService]
+    [props]
   );
 
   const onSave = useCallback(async () => {
@@ -154,7 +155,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.openshiftService.isConnectionEstablished();
+    const isConnectionEstablished = await (await props.getKieSandboxOpenshiftService())?.isConnectionEstablished();
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
@@ -440,11 +441,10 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       },
     ],
     [
-      i18n,
+      i18n.devDeployments,
+      i18n.terms,
       isNamespaceValidated,
-      props.connection.namespace,
-      props.connection.host,
-      props.connection.token,
+      props.connection,
       onNamespaceInputChanged,
       onClearNamespace,
       isHostValidated,
@@ -453,6 +453,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       isTokenValidated,
       onTokenInputChanged,
       onClearToken,
+      onInsecurelyDisableTlsCertificateValidationChange,
       isConnectLoading,
       isConnectionValidated,
     ]

@@ -39,12 +39,12 @@ spec:
             - name: KOGITO_RUNTIME_VERSION
               value: 1.40.0.Final
             - name: ROOT_PATH
-              value: /\${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+              value: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
           resources: {}
           imagePullPolicy: Always
 `;
 
 export const getDeploymentListApiPath = (namespace: string, labelSelector?: string) => {
   const selector = labelSelector ? `?labelSelector=${labelSelector}` : "";
-  return `/apis/app/v1/namespaces/${namespace}/deployments${selector}`;
+  return `apis/app/v1/namespaces/${namespace}/deployments${selector}`;
 };

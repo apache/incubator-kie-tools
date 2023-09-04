@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
@@ -34,6 +34,7 @@ import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-sa
 import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { ConnectToLocalKubernetesClusterWizard } from "./ConnectToLocalKubernetesClusterWizard";
+import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";
 
 export enum KubernetesSettingsTabMode {
   SIMPLE,
@@ -53,14 +54,18 @@ export function ConnectToKubernetesSection() {
       : KubernetesInstanceStatus.UNAVAILABLE
   );
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
+  const [kieSandboxKubernetesService, setKieSandboxKubernetesService] = useState<KieSandboxKubernetesService>();
 
-  const kubernetesService = useMemo(
-    () =>
-      new KieSandboxKubernetesService({
-        connection,
-      }),
-    [connection]
-  );
+  useEffect(() => {
+    (async () => {
+      if (isKubernetesConnectionValid(connection)) {
+        const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({ connection });
+        setKieSandboxKubernetesService(
+          new KieSandboxKubernetesService({ connection, k8sApiServerEndpointsByResourceKind })
+        );
+      }
+    })();
+  }, [connection]);
 
   const successPrimaryAction = useMemo(() => {
     if (accounts.section !== AccountsSection.CONNECT_TO_KUBERNETES || !newAuthSession) {
@@ -139,7 +144,7 @@ export function ConnectToKubernetesSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              kubernetesService={kubernetesService}
+              kieSandboxKubernetesService={kieSandboxKubernetesService}
             />
           )}
           {mode === KubernetesSettingsTabMode.WIZARD && (
@@ -150,7 +155,7 @@ export function ConnectToKubernetesSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              kubernetesService={kubernetesService}
+              kieSandboxKubernetesService={kieSandboxKubernetesService}
             />
           )}
         </>

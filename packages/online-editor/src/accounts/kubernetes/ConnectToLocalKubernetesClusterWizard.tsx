@@ -105,7 +105,7 @@ type ClusterConfigCommands = {
 };
 
 export function ConnectToLocalKubernetesClusterWizard(props: {
-  kubernetesService: KieSandboxKubernetesService;
+  kieSandboxKubernetesService?: KieSandboxKubernetesService;
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
@@ -225,12 +225,12 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(
-          (await props.kubernetesService.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+          (await props.kieSandboxKubernetesService?.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
         );
         setConnectLoading(false);
       }
     },
-    [props.kubernetesService]
+    [props.kieSandboxKubernetesService]
   );
 
   const onSave = useCallback(async () => {
@@ -243,7 +243,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kubernetesService.isConnectionEstablished();
+    const isConnectionEstablished = await props.kieSandboxKubernetesService?.isConnectionEstablished();
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
