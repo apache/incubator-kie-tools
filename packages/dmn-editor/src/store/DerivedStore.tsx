@@ -9,7 +9,7 @@ import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/d
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
-  dropTargetNodeIsValidForSelection: boolean;
+  isDropTargetNodeValidForSelection: boolean;
   nodes: RF.Node[];
   edges: RF.Edge[];
   nodesById: Map<string, RF.Node>;
@@ -36,21 +36,21 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     return ret;
   }, [diagram.selectedNodes, nodesById]);
 
-  const dropTargetNodeIsValidForSelection =
+  const isDropTargetNodeValidForSelection =
     !!diagram.dropTargetNode &&
     _isValidContainment({ nodeTypes: selectedNodeTypes, inside: diagram.dropTargetNode.type as NodeType });
 
   const value = useMemo(
     () => ({
       selectedNodeTypes,
-      dropTargetNodeIsValidForSelection,
+      isDropTargetNodeValidForSelection,
       nodes,
       edges,
       nodesById,
       edgesById,
       shapesById,
     }),
-    [edges, edgesById, dropTargetNodeIsValidForSelection, nodes, nodesById, selectedNodeTypes, shapesById]
+    [edges, edgesById, isDropTargetNodeValidForSelection, nodes, nodesById, selectedNodeTypes, shapesById]
   );
 
   return <DmnEditorDerivedStoreContext.Provider value={value}>{props.children}</DmnEditorDerivedStoreContext.Provider>;

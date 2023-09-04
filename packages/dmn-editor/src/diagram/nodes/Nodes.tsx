@@ -566,7 +566,7 @@ export function useNodeClassName(
   isValidConnectionTarget: boolean,
   id: string
 ) {
-  const { dropTargetNodeIsValidForSelection } = useDmnEditorDerivedStore();
+  const { isDropTargetNodeValidForSelection } = useDmnEditorDerivedStore();
   const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
   const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
@@ -581,7 +581,7 @@ export function useNodeClassName(
   }
 
   if (dropTargetNode?.id === id && containment.get(dropTargetNode.type)) {
-    return dropTargetNodeIsValidForSelection ? "drop-target" : "drop-target-invalid";
+    return isDropTargetNodeValidForSelection ? "drop-target" : "drop-target-invalid";
   }
 
   return "normal";

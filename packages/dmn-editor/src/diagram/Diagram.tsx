@@ -82,7 +82,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { shapesById, nodesById, nodes, edges, dropTargetNodeIsValidForSelection, selectedNodeTypes } =
+  const { shapesById, nodesById, nodes, edges, isDropTargetNodeValidForSelection, selectedNodeTypes } =
     useDmnEditorDerivedStore();
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
@@ -138,7 +138,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       ),
     [nodes]
   );
-
   const onDragOver = useCallback(
     (e: React.DragEvent) => {
       if (!e.dataTransfer.types.find((t) => t === DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE)) {
@@ -471,7 +470,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
 
         // Validate
-        if (!dropTargetNodeIsValidForSelection) {
+        if (!isDropTargetNodeValidForSelection) {
           console.debug(
             `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
               dropTargetNode?.type
@@ -501,7 +500,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [dmnEditorStoreApi, dropTargetNodeIsValidForSelection, nodesById, selectedNodeTypes]
+    [dmnEditorStoreApi, isDropTargetNodeValidForSelection, nodesById, selectedNodeTypes]
   );
 
   const onEdgesChange = useCallback<RF.OnEdgesChange>(
