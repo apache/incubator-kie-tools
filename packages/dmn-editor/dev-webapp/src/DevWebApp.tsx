@@ -10,15 +10,15 @@ import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
 import { DmnEditor, DmnEditorProps, DmnEditorRef } from "../../src/DmnEditor";
 import { DmnDefinitions, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 
-import { ns as dmn14ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/meta";
+import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { SPEC } from "../../src/Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN);
 
-const EMPTY_DMN_14 = () => `<?xml version="1.0" encoding="UTF-8"?>
+const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="${dmn14ns.get("")}"
+  xmlns="${dmn15ns.get("")}"
   expressionLanguage="${SPEC.expressionLanguage.default}"
   namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
@@ -53,7 +53,7 @@ export function DevWebApp() {
   const ref = useRef<DmnEditorRef>(null);
 
   const reset = useCallback(() => {
-    const marshaller = getMarshaller(EMPTY_DMN_14());
+    const marshaller = getMarshaller(EMPTY_DMN_15());
     setState({
       marshaller,
       stack: [marshaller.parser.parse()],

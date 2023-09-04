@@ -28,9 +28,9 @@ import {
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
+import { DmnEditorDerivedStoreContextProvider } from "./store/DerivedStore";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { DmnEditorDerivedStoreContextProvider } from "./store/DerivedStore";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -79,7 +79,7 @@ export const DmnEditorInternal = ({
     }
 
     const timeout = setTimeout(() => {
-      console.log("Model changed!");
+      console.debug("DMN EDITOR: Model changed!");
       onModelChange?.(dmn.model);
     }, ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS);
 
@@ -125,7 +125,7 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={<DiagramPropertiesPanel />}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                        <DmnVersionLabel version={"1.4"} /> {/** FiXME: Tiago --> This version is wrong. */}
+                        <DmnVersionLabel version={"1.5"} /> {/** FIXME: Tiago --> This version is wrong. */}
                         <Diagram container={diagramContainerRef} />
                       </div>
                     </DrawerContentBody>

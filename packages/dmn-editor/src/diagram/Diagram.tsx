@@ -457,12 +457,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               });
             }
           } else if (parentNode?.type === NODE_TYPES.group) {
-            deleteNodeFromGroup({
-              definitions: state.dmn.model.definitions,
-            });
+            for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
+              deleteNodeFromGroup({
+                definitions: state.dmn.model.definitions,
+                nodeId: state.diagram.selectedNodes[i],
+              });
+            }
           } else {
             console.debug(
-              `DIAGRAM: Ignoring '${nodeBeingDragged.type}' with parent '${dropTargetNode?.type}' dropping somewhere..`
+              `DMN DIAGRAM: Ignoring '${nodeBeingDragged.type}' with parent '${dropTargetNode?.type}' dropping somewhere..`
             );
           }
         }
@@ -470,7 +473,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         // Validate
         if (!dropTargetNodeIsValidForSelection) {
           console.debug(
-            `DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
+            `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
               dropTargetNode?.type
             }'. Ignoring nodes dropped.`
           );
@@ -488,13 +491,13 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           }
         } else if (dropTargetNode?.type === NODE_TYPES.group) {
           for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
-            const selectedNodeId = state.diagram.selectedNodes[i];
             addNodeToGroup({
               definitions: state.dmn.model.definitions,
+              nodeId: state.diagram.selectedNodes[i],
             });
           }
         } else {
-          console.debug(`DIAGRAM: Ignoring '${nodeBeingDragged.type}' dropped on top of '${dropTargetNode?.type}'`);
+          console.debug(`DMN DIAGRAM: Ignoring '${nodeBeingDragged.type}' dropped on top of '${dropTargetNode?.type}'`);
         }
       });
     },
