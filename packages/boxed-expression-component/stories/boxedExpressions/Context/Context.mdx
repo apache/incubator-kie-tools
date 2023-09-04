@@ -5,10 +5,9 @@ import * as Context from "./Context.stories";
 
 # Boxed Context
 
-A Boxed Context is a collection of n (name, value) pairs with an optional result value.
-The names SHALL be distinct within a context. Each pair is called a context entry.
-The intent is that all the entries of a context should be easily identified by looking down the left edge of a vertical
-context or across the top edge of a horizontal context [1].
+A Boxed Context is a set of names-value pairs, each one of this pairs is called context entry. The Boxed Context has an optional result value,
+and if the intent is to return the context entries the result should be left empty. The Boxed Context values and result can be any type of boxed
+expression, even nested Boxed Contexts [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
   <Story of={Context.InstallmentCalculation} />
@@ -16,7 +15,9 @@ context or across the top edge of a horizontal context [1].
     <br />
     <br />
     This is an example of an "Installment calculation" decision with the "number" type. It has a Boxed Context
-    expression,
+    expression with two context entries "Fee" with a Boxed Literal containing the value "25", and "Repayments" with
+    Boxed Literal containing a FEEL expression using values from the decision context, such as "Amount", "Rate" and
+    "Term". This Boxed Context has a result which is the sum of both context entries.
   </small>
 </div>
 
@@ -25,7 +26,10 @@ context or across the top edge of a horizontal context [1].
   <small>
     <br />
     <br />
-    This is an example of an "Customer" decision with the "tCustomer" type. It has a Boxed Context expression,
+    This is an example of an "Customer" decision with the "tCustomer" type. It has a Boxed Context expression with two
+    context entries "Name" with a Boxed Literal containg the value "Luiz", and "Age", with another Boxed Literal
+    containing the value "30". This Boxed Context doesn't have a result, therefore it will return a context with two
+    properties: "Name" and "Age".
   </small>
 </div>
 
