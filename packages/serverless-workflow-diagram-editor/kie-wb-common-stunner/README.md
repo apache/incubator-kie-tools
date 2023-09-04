@@ -39,7 +39,7 @@ Change the _inotify_ limits configuration as noted below to avoid further issues
 
 ## Building Stunner in IntelliJ
 
-In order to build `kie-wb-common-stunner-lienzo` internal module in IntelliJ it is needed to add a `Maven Goal` to the `Run` configurations of the IDE.
+In order to build `kie-wb-common-stunner-lienzo`, internal module in IntelliJ, it is needed to add a `Maven Goal` to the `Run` configurations of the IDE.
 
 1. Open the menu `Run`
 2. Click on `Edit Configurations...`
