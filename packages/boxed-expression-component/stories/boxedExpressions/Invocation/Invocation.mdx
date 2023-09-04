@@ -10,7 +10,7 @@ FEEL built-in function, boxed function expressions). It invokes a function by it
 in order. The parameters can be any type of expression [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
-  <Story of={Invocation.Example} />
+  <Story of={Invocation.MonthlyInstallment} />
   <small>
     <br />
     <br />
@@ -49,7 +49,7 @@ to be invoked.
 
 ## Paramters
 
-The paramers columns can't be less then 1 and doesn't have a maximum number. Each parameter has a name and type and has
+The paramers rows can't be less then one and doesn't have a maximum number. Each parameter has a name, type and has
 a boxed expression associated with it. Right cliking on the parameter name opens a context menu, enabling to edit its
 name and type.
 
@@ -60,9 +60,9 @@ name and type.
 ### Parameters
 
 Left clicking on a parameter cell will open the "Rows" context menu.
-It's possible to insert above, insert below, insert multiples, delete the parameter.
+It's possible to insert above, insert below, insert multiples, delete and reset the parameter.
 
-Another way to add rows is by hovering the mouse on the parameter cell, which will make appear a plus sign
+Another way to add rows is by hovering the mouse on a parameter cell, which will make appear a plus sign
 on the top (insert above) or on the bottom (insert below) of the cell, the position of the plus sign will
 depend of the mouse position. Right clicking on it will add a new parameter above or below of the actual parameter.
 
@@ -75,6 +75,15 @@ depend of the mouse position. Right clicking on it will add a new parameter abov
       <br />
       <br />
       An empty Boxed Invocation expression.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Invocation.Nested} />
+    <small>
+      <br />
+      <br />
+      An nested Boxed Invocation expression on a Boxed List expression.
     </small>
   </div>
 </div>

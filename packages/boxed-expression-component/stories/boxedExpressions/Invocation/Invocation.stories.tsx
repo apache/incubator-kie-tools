@@ -57,7 +57,7 @@ export const Base: Story = {
   },
 };
 
-export const Example: Story = {
+export const MonthlyInstallment: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
@@ -116,6 +116,49 @@ export const Example: Story = {
         id: generateUuid(),
         name: "Installment Calculation",
       },
+    },
+    isResetSupportedOnRootExpression: false,
+  },
+};
+
+export const Nested: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  args: {
+    ...EmptyExpression.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Expression Name",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.List,
+      items: [
+        {
+          id: generateUuid(),
+          name: "Expression Name",
+          dataType: DmnBuiltInDataType.Undefined,
+          logicType: ExpressionDefinitionLogicType.Invocation,
+          entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+          bindingEntries: [
+            {
+              entryInfo: {
+                id: generateUuid(),
+                name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+              },
+              entryExpression: {
+                id: generateUuid(),
+                name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+              },
+            },
+          ],
+          invokedFunction: {
+            id: generateUuid(),
+            name: "FUNCTION",
+          },
+        },
+      ],
     },
     isResetSupportedOnRootExpression: false,
   },

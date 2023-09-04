@@ -5,11 +5,84 @@ import * as Context from "./Context.stories";
 
 # Boxed Context
 
-A boxed context is a collection of n (name, value) pairs with an optional result value.
+A Boxed Context is a collection of n (name, value) pairs with an optional result value.
 The names SHALL be distinct within a context. Each pair is called a context entry.
 The intent is that all the entries of a context should be easily identified by looking down the left edge of a vertical
-context or across the top edge of a horizontal context.
+context or across the top edge of a horizontal context [1].
 
-<Canvas>
-  <Story of={Context.Base} />
-</Canvas>
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Context.InstallmentCalculation} />
+  <small>
+    <br />
+    <br />
+    This is an example of an "Installment calculation" decision with the "number" type. It has a Boxed Context
+    expression,
+  </small>
+</div>
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Context.Customer} />
+  <small>
+    <br />
+    <br />
+    This is an example of an "Customer" decision with the "tCustomer" type. It has a Boxed Context expression,
+  </small>
+</div>
+
+## Header
+
+If the Boxed Context is the root expression of a decision node, the Boxed Context will have one
+header row, which represets the decision name and type.
+Right clicking on it a context menu will open enabling to edit its values.
+
+## Context Entries
+
+The context entries rows can't be less then one and doesn't have a maximum number. Each context entry has a name, type and has
+a boxed expression associated with it. Right cliking on the parameter name opens a context menu, enabling to edit its
+name and type.
+
+## Result
+
+The result can't be less then one and doesn't have a maximum number. Each parameter has a name and type and has
+a boxed expression associated with it. Right cliking on the parameter name opens a context menu, enabling to edit its
+name and type.
+
+**Important**: It's not possible to have a parameterless function.
+
+## Controls
+
+### Context Entries
+
+Left clicking on a context entry cell will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete and reset the context entry.
+
+Another way to add context entries is by hovering the mouse on a context entry cell, which will
+make appear a plus sign on the top (insert above) or on the bottom (insert below) of the cell,
+the position of the plus sign will depend of the mouse position. Right clicking on it will add
+a new context entry above or below of the actual context entry.
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Context.Base} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Context expression.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Context.Nested} />
+    <small>
+      <br />
+      <br />
+      An nested Boxed Context expression on a Boxed List expression.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)
