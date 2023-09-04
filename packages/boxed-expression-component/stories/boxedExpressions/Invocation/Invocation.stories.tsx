@@ -121,6 +121,7 @@ export const MonthlyInstallment: Story = {
   },
 };
 
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
@@ -130,32 +131,45 @@ export const Nested: Story = {
       id: generateUuid(),
       name: "Expression Name",
       dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.List,
-      items: [
+      logicType: ExpressionDefinitionLogicType.Context,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+      result: {
+        logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
+        id: generateUuid(),
+      },
+      contextEntries: [
         {
-          id: generateUuid(),
-          name: "Expression Name",
-          dataType: DmnBuiltInDataType.Undefined,
-          logicType: ExpressionDefinitionLogicType.Invocation,
-          entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-          bindingEntries: [
-            {
-              entryInfo: {
-                id: generateUuid(),
-                name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-              },
-              entryExpression: {
-                id: generateUuid(),
-                name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
-                dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
-                logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
-              },
-            },
-          ],
-          invokedFunction: {
+          entryInfo: {
             id: generateUuid(),
-            name: "FUNCTION",
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
+          },
+          entryExpression: {
+            id: generateUuid(),
+            name: "Expression Name",
+            dataType: DmnBuiltInDataType.Undefined,
+            logicType: ExpressionDefinitionLogicType.Invocation,
+            entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+            bindingEntries: [
+              {
+                entryInfo: {
+                  id: generateUuid(),
+                  name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+                  dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                },
+                entryExpression: {
+                  id: generateUuid(),
+                  name: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+                  dataType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE,
+                  logicType: INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
+                },
+              },
+            ],
+            invokedFunction: {
+              id: generateUuid(),
+              name: "FUNCTION",
+            },
           },
         },
       ],

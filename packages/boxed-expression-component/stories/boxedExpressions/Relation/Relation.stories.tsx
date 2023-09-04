@@ -5,6 +5,7 @@ import { BoxedExpressionEditorWrapper } from "../../boxedExpressionWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../../../src/expressions/RelationExpression";
+import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -120,6 +121,7 @@ export const People: Story = {
   },
 };
 
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
@@ -129,31 +131,44 @@ export const Nested: Story = {
       id: generateUuid(),
       name: "Expression Name",
       dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.List,
-      items: [
+      logicType: ExpressionDefinitionLogicType.Context,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+      result: {
+        logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
+        id: generateUuid(),
+      },
+      contextEntries: [
         {
-          id: generateUuid(),
-          logicType: ExpressionDefinitionLogicType.Relation,
-          dataType: DmnBuiltInDataType.Undefined,
-          columns: [
-            {
-              id: generateUuid(),
-              name: "column-1",
-              dataType: DmnBuiltInDataType.Undefined,
-              width: 100,
-            },
-          ],
-          rows: [
-            {
-              id: generateUuid(),
-              cells: [
-                {
-                  id: generateUuid(),
-                  content: RELATION_EXPRESSION_DEFAULT_VALUE,
-                },
-              ],
-            },
-          ],
+          entryInfo: {
+            id: generateUuid(),
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
+          },
+          entryExpression: {
+            id: generateUuid(),
+            logicType: ExpressionDefinitionLogicType.Relation,
+            dataType: DmnBuiltInDataType.Undefined,
+            columns: [
+              {
+                id: generateUuid(),
+                name: "column-1",
+                dataType: DmnBuiltInDataType.Undefined,
+                width: 100,
+              },
+            ],
+            rows: [
+              {
+                id: generateUuid(),
+                cells: [
+                  {
+                    id: generateUuid(),
+                    content: RELATION_EXPRESSION_DEFAULT_VALUE,
+                  },
+                ],
+              },
+            ],
+          },
         },
       ],
     },

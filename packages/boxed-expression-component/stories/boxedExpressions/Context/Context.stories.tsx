@@ -163,34 +163,47 @@ export const Nested: Story = {
       id: generateUuid(),
       name: "Expression Name",
       dataType: DmnBuiltInDataType.Undefined,
-      logicType: ExpressionDefinitionLogicType.List,
-      items: [
+      logicType: ExpressionDefinitionLogicType.Context,
+      entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+      result: {
+        logicType: ExpressionDefinitionLogicType.Undefined,
+        dataType: DmnBuiltInDataType.Undefined,
+        id: generateUuid(),
+      },
+      contextEntries: [
         {
-          id: generateUuid(),
-          name: "Expression Name",
-          dataType: DmnBuiltInDataType.Undefined,
-          logicType: ExpressionDefinitionLogicType.Context,
-          entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
-          result: {
-            logicType: ExpressionDefinitionLogicType.Undefined,
-            dataType: DmnBuiltInDataType.Undefined,
+          entryInfo: {
             id: generateUuid(),
+            name: "ContextEntry-1",
+            dataType: DmnBuiltInDataType.Undefined,
           },
-          contextEntries: [
-            {
-              entryInfo: {
-                id: generateUuid(),
-                name: "ContextEntry-1",
-                dataType: DmnBuiltInDataType.Undefined,
-              },
-              entryExpression: {
-                id: generateUuid(),
-                name: "ContextEntry-1",
-                dataType: DmnBuiltInDataType.Undefined,
-                logicType: ExpressionDefinitionLogicType.Undefined,
-              },
+          entryExpression: {
+            id: generateUuid(),
+            name: "Expression Name",
+            dataType: DmnBuiltInDataType.Undefined,
+            logicType: ExpressionDefinitionLogicType.Context,
+            entryInfoWidth: CONTEXT_ENTRY_INFO_MIN_WIDTH,
+            result: {
+              logicType: ExpressionDefinitionLogicType.Undefined,
+              dataType: DmnBuiltInDataType.Undefined,
+              id: generateUuid(),
             },
-          ],
+            contextEntries: [
+              {
+                entryInfo: {
+                  id: generateUuid(),
+                  name: "ContextEntry-1",
+                  dataType: DmnBuiltInDataType.Undefined,
+                },
+                entryExpression: {
+                  id: generateUuid(),
+                  name: "ContextEntry-1",
+                  dataType: DmnBuiltInDataType.Undefined,
+                  logicType: ExpressionDefinitionLogicType.Undefined,
+                },
+              },
+            ],
+          },
         },
       ],
     },

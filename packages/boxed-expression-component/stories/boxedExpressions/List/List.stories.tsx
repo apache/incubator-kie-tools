@@ -38,7 +38,7 @@ export const Base: Story = {
   },
 };
 
-export const List: Story = {
+export const AgeGroups: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
   args: {
