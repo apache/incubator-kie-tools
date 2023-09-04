@@ -26,7 +26,7 @@ export type XmlParserTs<T extends object> = {
 };
 
 export type XmlParserTsRootElementBaseType = Partial<{ [k: `@_xmlns:${string}`]: string }> & { "@_xmlns"?: string } & {
-  "@_?xml": string;
+  "?xml"?: { "@_encoding"?: string; "@_version"?: string };
 };
 
 export type MetaTypeDef = { type: string; isArray: boolean };
