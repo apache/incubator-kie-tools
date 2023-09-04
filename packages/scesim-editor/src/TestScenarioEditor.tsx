@@ -45,12 +45,12 @@ import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-ico
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
+import { ErrorBoundary } from "./reactExt/ErrorBoundary";
 import { TestToolsPanel } from "./panels/TestToolsPanel";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
-import { Text } from "@patternfly/react-core/dist/js/components/Text";
 
 /* Constants */
 
@@ -265,36 +265,24 @@ function TestScenarioMainPanel() {
 }
 
 function TestScenarioParserErrorPanel({
+  parserErrorTitle,
   parserErrorMessage,
-  scesimFileStatus,
-  scesimFileVersion,
 }: {
-  parserErrorMessage?: string;
-  scesimFileStatus: TestScenarioFileStatus;
-  scesimFileVersion?: string;
+  parserErrorTitle: string;
+  parserErrorMessage: string;
 }) {
   return (
     <EmptyState>
       <EmptyStateIcon icon={ErrorIcon} />
-
       <Title headingLevel="h4" size="lg">
-        {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
-          ? "This file holds a Test Scenario asset version (" + scesimFileVersion + ") not supported"
-          : "Generic parser error"}
+        {parserErrorTitle}
       </Title>
-      <EmptyStateBody>
-        {scesimFileStatus === TestScenarioFileStatus.UNSUPPORTED
-          ? "Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). " +
-            "Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version (" +
-            CURRENT_SUPPORTED_VERSION +
-            ")."
-          : "Impossibile to correctly parse the provided scesim file. " + (parserErrorMessage || "")}
-      </EmptyStateBody>
+      <EmptyStateBody>{parserErrorMessage}</EmptyStateBody>
     </EmptyState>
   );
 }
 
-export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<TestScenarioEditorRef>) => {
+const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   /** Test Scenario File, Model and Marshaller Management  */
 
   const [scesimFile, setScesimFile] = useState({ content: "", path: "" });
@@ -335,7 +323,7 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
   /** Implementing Editor APIs */
 
   useImperativeHandle(
-    ref,
+    forwardRef,
     () => ({
       getContent: () => marshaller.builder.build(scesimModel),
       setContent: (path, content) => {
@@ -378,14 +366,31 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
               </Bullseye>
             );
           case TestScenarioFileStatus.ERROR:
-            return <TestScenarioParserErrorPanel scesimFileStatus={scesimFileStatus} />;
+            return (
+              <TestScenarioParserErrorPanel
+                parserErrorTitle={"File parsing error"}
+                parserErrorMessage={
+                  "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file " +
+                  "is invalid."
+                }
+              />
+            );
           case TestScenarioFileStatus.NEW:
             return <TestScenarioCreationPanel onCreateScesimButtonClicked={setInitialSettings} />;
           case TestScenarioFileStatus.UNSUPPORTED:
             return (
               <TestScenarioParserErrorPanel
-                scesimFileStatus={scesimFileStatus}
-                scesimFileVersion={scesimModel.ScenarioSimulationModel["@_version"]!}
+                parserErrorTitle={
+                  "This file holds a Test Scenario asset version (" +
+                  scesimModel.ScenarioSimulationModel["@_version"] +
+                  ") not supported"
+                }
+                parserErrorMessage={
+                  "Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). " +
+                  "Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version (" +
+                  CURRENT_SUPPORTED_VERSION +
+                  ")."
+                }
               />
             );
           case TestScenarioFileStatus.VALID:
@@ -393,5 +398,25 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
         }
       })()}
     </>
+  );
+};
+
+export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<TestScenarioEditorRef>) => {
+  const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
+
+  return (
+    <ErrorBoundary
+      error={
+        <TestScenarioParserErrorPanel
+          parserErrorTitle={"File parsing error"}
+          parserErrorMessage={
+            "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
+          }
+        />
+      }
+      setError={setScesimFileParsingError}
+    >
+      <TestScenarioEditorInternal forwardRef={ref} {...props} />
+    </ErrorBoundary>
   );
 });
