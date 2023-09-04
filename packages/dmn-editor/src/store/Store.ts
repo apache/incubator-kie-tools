@@ -4,6 +4,7 @@ import { StoreApi, UseBoundStore, create } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import { NodeType } from "../diagram/connections/graphStructure";
+import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -28,7 +29,7 @@ export interface State {
   dmn: {
     model: {
       definitions: DMN15__tDefinitions;
-    };
+    } & XmlParserTsRootElementBaseType;
   };
   boxedExpressionEditor: {
     openExpressionId: string | undefined;
