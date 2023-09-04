@@ -16,20 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from "react";
+import _ from "lodash";
+import { ActionList, ActionListItem } from "@patternfly/react-core/dist/js/components/ActionList";
+import { convertActionsToButton, FormAction } from "./utils";
 
-import { createContext, useContext } from "react";
-import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { WorkflowFormGatewayApi } from "../api";
-import { OpenAPI } from "openapi-types";
-
-export interface OpenApiContextType {
-  openApiData: OpenAPI.Document | undefined;
-  openApiPromise: PromiseState<OpenAPI.Document>;
-  gatewayApi: WorkflowFormGatewayApi | undefined;
+interface IOwnProps {
+  actions?: FormAction[];
+  enabled?: boolean;
+  onSubmitForm?: () => void;
 }
 
-export const OpenApiContext = createContext<OpenApiContextType>({} as any);
+export const FormFooter: React.FC<IOwnProps> = ({ actions, enabled = true, onSubmitForm }) => {
+  if (_.isEmpty(actions)) {
+    return null;
+  }
 
-export function useOpenApi() {
-  return useContext(OpenApiContext);
-}
+  const actionItems = convertActionsToButton(actions || [], enabled, onSubmitForm)?.map((button, index) => {
+    return <ActionListItem key={`form-action-${index}`}>{button}</ActionListItem>;
+  });
+
+  return (
+    <div className="sonataflow-deployment-common__form-footer-padding-top">
+      <ActionList>{actionItems}</ActionList>
+    </div>
+  );
+};

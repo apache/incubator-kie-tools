@@ -22,9 +22,10 @@ import { Route, Switch } from "react-router";
 import { HashRouter, Redirect } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
-import { WorkflowForm, Workflows } from "./pages/Workflows/";
+import { Workflows } from "./pages/Workflows/";
 import { NoMatchPage } from "./pages/NoMatchPage";
 import { routes } from "./routes";
+import { WorkflowFormPage } from "./pages/Workflows/WorkflowFormPage";
 
 export function App() {
   return (
@@ -33,7 +34,7 @@ export function App() {
         <HashRouter>
           <Switch>
             <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })}>
-              {({ match }) => <WorkflowForm workflowId={match!.params.workflowId!} />}
+              {({ match }) => <WorkflowFormPage workflowId={match!.params.workflowId!} />}
             </Route>
             <Route path={routes.workflows.home.path({})}>
               <Workflows />

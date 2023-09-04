@@ -20,18 +20,18 @@
 import { useCallback } from "react";
 import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { OpenApi } from "openapi-v3";
 import { routes } from "../routes";
 import { useApp } from "../context/AppContext";
+import SwaggerParser from "@apidevtools/swagger-parser";
+import { OpenAPI } from "openapi-types";
 
-async function fetchOpenApi(): Promise<OpenApi> {
-  const response = await fetch(routes.openApiJson.path({}));
-  return (await response.json()) as OpenApi;
+async function fetchOpenApi(): Promise<OpenAPI.Document> {
+  return SwaggerParser.parse(routes.openApiJson.path({}));
 }
 
 export function useOpenApiPromise() {
   const app = useApp();
-  const [openApiPromise, setOpenApiPromise] = usePromiseState<OpenApi>();
+  const [openApiPromise, setOpenApiPromise] = usePromiseState<OpenAPI.Document>();
 
   useCancelableEffect(
     useCallback(

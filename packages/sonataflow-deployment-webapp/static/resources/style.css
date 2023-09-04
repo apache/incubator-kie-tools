@@ -60,3 +60,7 @@
 #page-sidebar .pf-c-nav__link:focus {
   background-color: var(--sidebar-bg-hover);
 }
+
+.sonataflow-deployment-common__form-footer-padding-top {
+  padding-top: 20px;
+}

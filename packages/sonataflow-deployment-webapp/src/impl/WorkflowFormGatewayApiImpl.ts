@@ -16,6 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { OpenAPI } from "openapi-types";
+import { WorkflowFormGatewayApi, getCustomWorkflowSchema, startWorkflowRest } from "../api";
 
-export * from "./Workflows";
-export * from "./WorkflowFormPage";
+export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
+  private businessKey: string;
+
+  constructor(private api: OpenAPI.Document) {
+    this.businessKey = "";
+  }
+
+  setBusinessKey(bk: string) {
+    this.businessKey = bk;
+  }
+
+  getBusinessKey(): string {
+    return this.businessKey;
+  }
+
+  getCustomWorkflowSchema(workflowName: string) {
+    return getCustomWorkflowSchema(this.api, workflowName);
+  }
+
+  startWorkflow(endpoint: string, data: Record<string, any>) {
+    return startWorkflowRest(data, endpoint, "");
+  }
+}

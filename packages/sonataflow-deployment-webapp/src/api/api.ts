@@ -18,6 +18,32 @@
  */
 
 import axios from "axios";
+import { OpenAPI } from "openapi-types";
+
+export const getCustomWorkflowSchema = async (
+  api: OpenAPI.Document,
+  workflowName: string
+): Promise<Record<string, any> | null> => {
+  let schema = {};
+
+  try {
+    const schemaFromRequestBody = api.paths["/" + workflowName].post.requestBody.content["application/json"].schema;
+
+    if (schemaFromRequestBody.type) {
+      schema = {
+        type: schemaFromRequestBody.type,
+        properties: schemaFromRequestBody.properties,
+      };
+    } else {
+      schema = (api as any).components.schemas[workflowName + "_input"];
+    }
+  } catch (e) {
+    console.log(e);
+    schema = (api as any).components.schemas[workflowName + "_input"];
+  }
+
+  return schema ?? null;
+};
 
 export const startWorkflowRest = (
   data: Record<string, any>,

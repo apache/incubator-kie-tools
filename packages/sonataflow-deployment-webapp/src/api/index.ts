@@ -17,6 +17,7 @@
  * under the License.
  */
 
-export { WorkflowDefinition } from "./WorkflowDefinition";
-export { WorkflowFormDriver } from "./WorkflowFormDriver";
+export * from "./WorkflowDefinition";
+export * from "./WorkflowFormDriver";
+export * from "./WorkflowFormGatewayApi";
 export * from "./api";

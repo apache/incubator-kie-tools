@@ -17,14 +17,17 @@
  * under the License.
  */
 
-import { OpenApi } from "openapi-v3";
+import { OpenAPI } from "openapi-types";
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
+import { WorkflowFormGatewayApi } from "../api";
 import { useOpenApiPromise } from "../hooks/useOpenApiPromise";
+import { WorkflowFormGatewayApiImpl } from "../impl/WorkflowFormGatewayApiImpl";
 import { OpenApiContext } from "./OpenApiContext";
 
 export function OpenApiContextProvider(props: PropsWithChildren<{}>) {
   const openApiPromise = useOpenApiPromise();
-  const [openApiData, setOpenApiData] = useState<OpenApi>();
+  const [openApiData, setOpenApiData] = useState<OpenAPI.Document>();
+  const [gatewayApi, setGatewayApi] = useState<WorkflowFormGatewayApi>();
 
   useEffect(() => {
     if (!openApiPromise.data) {
@@ -32,14 +35,16 @@ export function OpenApiContextProvider(props: PropsWithChildren<{}>) {
     }
 
     setOpenApiData(openApiPromise.data);
+    setGatewayApi(new WorkflowFormGatewayApiImpl(openApiPromise.data));
   }, [openApiPromise.data]);
 
   const value = useMemo(
     () => ({
       openApiPromise,
       openApiData,
+      gatewayApi,
     }),
-    [openApiPromise, openApiData]
+    [openApiPromise, openApiData, gatewayApi]
   );
 
   return <OpenApiContext.Provider value={value}>{props.children}</OpenApiContext.Provider>;
