@@ -13,8 +13,8 @@ export type DerivedStore = {
   nodes: RF.Node[];
   edges: RF.Edge[];
   nodesById: Map<string, RF.Node>;
-  edgesById: Map<string, DMNDI15__DMNEdge & { index: number }>;
-  shapesById: Map<string, DMNDI15__DMNShape & { index: number }>;
+  dmnEdgesByDmnRefId: Map<string, DMNDI15__DMNEdge & { index: number }>;
+  dmnShapesByDmnRefId: Map<string, DMNDI15__DMNShape & { index: number }>;
 };
 
 const DmnEditorDerivedStoreContext = React.createContext<DerivedStore>({} as any);
@@ -26,7 +26,7 @@ export function useDmnEditorDerivedStore() {
 export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChildren<{}>) {
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { nodes, edges, nodesById, edgesById, shapesById } = useDiagramData();
+  const { nodes, edges, nodesById, dmnEdgesByDmnRefId, dmnShapesByDmnRefId } = useDiagramData();
 
   const selectedNodeTypes = useMemo(() => {
     const ret = new Set<NodeType>();
@@ -47,10 +47,18 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       nodes,
       edges,
       nodesById,
-      edgesById,
-      shapesById,
+      dmnEdgesByDmnRefId,
+      dmnShapesByDmnRefId,
     }),
-    [edges, edgesById, isDropTargetNodeValidForSelection, nodes, nodesById, selectedNodeTypes, shapesById]
+    [
+      edges,
+      dmnEdgesByDmnRefId,
+      isDropTargetNodeValidForSelection,
+      nodes,
+      nodesById,
+      selectedNodeTypes,
+      dmnShapesByDmnRefId,
+    ]
   );
 
   return <DmnEditorDerivedStoreContext.Provider value={value}>{props.children}</DmnEditorDerivedStoreContext.Provider>;

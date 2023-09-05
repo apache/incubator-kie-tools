@@ -25,23 +25,23 @@ export function useDiagramData() {
   const dmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { edgesById, shapesById } = useMemo(
+  const { dmnEdgesByDmnRefId, dmnShapesByDmnRefId } = useMemo(
     () =>
       (dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
         .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
         .reduce(
           (acc, e, index) => {
             if (e.__$$element === "dmndi:DMNShape") {
-              acc.shapesById.set(e["@_dmnElementRef"], { ...e, index });
+              acc.dmnShapesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
             } else if (e.__$$element === "dmndi:DMNEdge") {
-              acc.edgesById.set(e["@_dmnElementRef"], { ...e, index });
+              acc.dmnEdgesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
             }
 
             return acc;
           },
           {
-            edgesById: new Map<string, DMNDI15__DMNEdge & { index: number }>(),
-            shapesById: new Map<string, DMNDI15__DMNShape & { index: number }>(),
+            dmnEdgesByDmnRefId: new Map<string, DMNDI15__DMNEdge & { index: number }>(),
+            dmnShapesByDmnRefId: new Map<string, DMNDI15__DMNShape & { index: number }>(),
           }
         ),
     [dmn.model.definitions]
@@ -61,12 +61,12 @@ export function useDiagramData() {
     }): DmnEditorDiagramEdgeData => {
       return {
         dmnObject,
-        dmnEdge: id ? edgesById.get(id) : undefined,
-        dmnShapeSource: shapesById.get(source),
-        dmnShapeTarget: shapesById.get(target),
+        dmnEdge: id ? dmnEdgesByDmnRefId.get(id) : undefined,
+        dmnShapeSource: dmnShapesByDmnRefId.get(source),
+        dmnShapeTarget: dmnShapesByDmnRefId.get(target),
       };
     },
-    [edgesById, shapesById]
+    [dmnEdgesByDmnRefId, dmnShapesByDmnRefId]
   );
 
   const { nodes, edges, nodesById } = useMemo(() => {
@@ -104,6 +104,7 @@ export function useDiagramData() {
         type,
         source,
         target,
+        sourceHandle: type, // We have one source handle for each edge type. This is what makes the edge updaters work.
         selected: selectedEdges.has(id),
       };
     }
@@ -217,15 +218,19 @@ export function useDiagramData() {
       }
 
       const id = dmnObject["@_id"]!;
-      const shape = shapesById.get(id)!;
-      const newNode = {
+      const shape = dmnShapesByDmnRefId.get(id)!;
+      const newNode: RF.Node<DmnEditorDiagramNodeData<any>> = {
         id,
         type,
         selected: selectedNodes.has(id),
         dragging: draggingNodes.has(id),
         resizing: resizingNodes.has(id),
         position: snapShapePosition(diagram.snapGrid, shape),
-        data: { dmnObject, shape, index },
+        data: {
+          dmnObject,
+          shape,
+          index,
+        },
         zIndex: NODE_LAYERS.NODES,
         style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
       };
@@ -270,7 +275,7 @@ export function useDiagramData() {
         nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
 
         // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
-        const parentShape = shapesById.get(parent["@_id"]!)!;
+        const parentShape = dmnShapesByDmnRefId.get(parent["@_id"]!)!;
 
         nodes[i].position = snapShapePosition(
           diagram.snapGrid,
@@ -299,10 +304,10 @@ export function useDiagramData() {
     dmn.model.definitions.drgElement,
     dmn.model.definitions.artifact,
     getEdgeData,
-    shapesById,
+    dmnShapesByDmnRefId,
   ]);
 
-  return { shapesById, edgesById, nodesById, nodes, edges };
+  return { dmnShapesByDmnRefId, dmnEdgesByDmnRefId, nodesById, nodes, edges };
 }
 
 export function assignClassesToHighlightedHierarchyNodes(

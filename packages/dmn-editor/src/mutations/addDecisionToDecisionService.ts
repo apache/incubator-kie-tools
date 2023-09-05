@@ -3,13 +3,7 @@ import {
   DMN15__tDefinitions,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import {
-  getBoundsCenterPoint,
-  getContainmentRelationship,
-  getDecisionServiceDivierLineLocalY,
-  getNodeCenterPoint,
-  idFromHref,
-} from "../diagram/maths/DmnMaths";
+import { getContainmentRelationship, getDecisionServiceDividerLineLocalY, idFromHref } from "../diagram/maths/DmnMaths";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function addDecisionToDecisionService({
@@ -72,7 +66,7 @@ export function getSectionForDecisionInsideDecisionService({
   const contaimentRelationship = getContainmentRelationship({
     bounds: decisionShape["dc:Bounds"],
     container: decisionServiceShape["dc:Bounds"],
-    divingLineLocalY: getDecisionServiceDivierLineLocalY(decisionServiceShape),
+    divingLineLocalY: getDecisionServiceDividerLineLocalY(decisionServiceShape),
   });
 
   if (!contaimentRelationship.isInside) {

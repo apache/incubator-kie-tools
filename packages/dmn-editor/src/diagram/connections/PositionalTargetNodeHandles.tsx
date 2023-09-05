@@ -10,7 +10,7 @@ export enum TargetHandleId {
   TargetCenter = "target-center",
 }
 
-export function NodeHandles(props: { isTargeted: boolean }) {
+export function PositionalTargetNodeHandles(props: { isTargeted: boolean }) {
   const style: React.CSSProperties = useMemo(
     () => ({
       opacity: props.isTargeted ? 1 : 0,

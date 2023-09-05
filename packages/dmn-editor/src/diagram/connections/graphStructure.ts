@@ -61,7 +61,7 @@ export const graphStructure: Map<NodeType, Map<EdgeType, Set<NodeType>>> = new M
   [NODE_TYPES.group, new Map<EdgeType, Set<NodeType>>()],
 ]);
 
-export const outgoing = {
+export const outgoingStructure = {
   [NODE_TYPES.inputData]: {
     nodes: outgoingNodes(NODE_TYPES.inputData),
     edges: outgoingEdges(NODE_TYPES.inputData),

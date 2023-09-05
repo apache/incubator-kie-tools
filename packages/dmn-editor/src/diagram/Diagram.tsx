@@ -15,7 +15,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
 import { offsetShapePosition, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
-import { TargetHandleId } from "./connections/NodeHandles";
+import { TargetHandleId } from "./connections/PositionalTargetNodeHandles";
 import { EdgeType, NodeType, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeMarkers } from "./edges/EdgeMarkers";
@@ -82,7 +82,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { shapesById, nodesById, nodes, edges, isDropTargetNodeValidForSelection, selectedNodeTypes } =
+  const { dmnShapesByDmnRefId, nodesById, nodes, edges, isDropTargetNodeValidForSelection, selectedNodeTypes } =
     useDmnEditorDerivedStore();
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
@@ -214,6 +214,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => setConnection(b), []);
   const onConnectEnd = useCallback(
     (e: MouseEvent) => {
+      setConnection(undefined);
+
       const targetIsPane = (e.target as Element | null)?.classList?.contains("react-flow__pane");
       if (!targetIsPane || !container.current || !connection || !reactFlowInstance) {
         return;
@@ -240,7 +242,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         return;
       }
 
-      const sourceNodeBounds = shapesById.get(sourceNode.id)?.["dc:Bounds"];
+      const sourceNodeBounds = dmnShapesByDmnRefId.get(sourceNode.id)?.["dc:Bounds"];
       if (!sourceNodeBounds) {
         return;
       }
@@ -279,11 +281,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         state.diagram.selectedNodes = [newNodeId];
       });
     },
-    [connection, container, diagram.snapGrid, dmnEditorStoreApi, nodesById, reactFlowInstance, shapesById]
+    [connection, container, diagram.snapGrid, dmnEditorStoreApi, nodesById, reactFlowInstance, dmnShapesByDmnRefId]
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
-    (edge) => checkIsValidConnection(nodesById, edge),
+    (edgeOrConnection) => checkIsValidConnection(nodesById, edgeOrConnection),
     [nodesById]
   );
 
@@ -411,7 +413,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [dmnEditorStoreApi, edges, nodesById, reactFlowInstance, diagram.snapGrid]
+    [reactFlowInstance, diagram.snapGrid, dmnEditorStoreApi, nodesById, edges]
   );
 
   const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
@@ -535,6 +537,20 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [diagram.snapGrid.isEnabled, diagram.snapGrid.x, diagram.snapGrid.y]
   );
 
+  const onEdgesUpdate = useCallback<RF.OnEdgeUpdateFunc>((oldEdge, newConnection) => {
+    console.info("EDGE UPDATED!", oldEdge, newConnection); // FIXME: Tiago --> Actually update the edge.
+  }, []);
+
+  const onEdgeUpdateStart = useCallback(() => {
+    console.debug(
+      "DMN DIAGRAM: Doing nothing on `onEdgeUpdateStart` as `onConnectStart` will handle setting the connection already."
+    );
+  }, []);
+
+  const onEdgeUpdateEnd = useCallback((e: MouseEvent | TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
+    setConnection(undefined);
+  }, []);
+
   return (
     <>
       <DiagramContainerContextProvider container={container}>
@@ -544,6 +560,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
+          onEdgeUpdate={onEdgesUpdate}
           onlyRenderVisibleElements={true}
           zoomOnDoubleClick={false}
           elementsSelectable={true}
@@ -552,6 +571,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           panOnDrag={PAN_ON_DRAG}
           panActivationKeyCode={"Alt"}
           selectionMode={RF.SelectionMode.Partial}
+          isValidConnection={isValidConnection}
           connectionLineComponent={ConnectionLine}
           onConnect={onConnect}
           onConnectStart={onConnectStart}
@@ -564,7 +584,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           onNodeDrag={onNodeDrag}
           // (end)
           onNodeDragStop={onNodeDragStop}
-          isValidConnection={isValidConnection}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           snapToGrid={true}
@@ -588,10 +607,24 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           {/** FIXME: Tiago --> The background is making the Diagram VERY slow on Firefox. Render this conditionally. */}
           <RF.Background />
           <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
+          <SetConnectionToReactFlowStore connection={connection} />
         </RF.ReactFlow>
       </DiagramContainerContextProvider>
     </>
   );
+}
+
+export function SetConnectionToReactFlowStore({ connection }: { connection: RF.OnConnectStartParams | undefined }) {
+  const rfStoreApi = RF.useStoreApi();
+  useEffect(() => {
+    rfStoreApi.setState({
+      connectionHandleId: connection?.handleId,
+      connectionHandleType: connection?.handleType,
+      connectionNodeId: connection?.nodeId,
+    });
+  }, [connection?.handleId, connection?.handleType, connection?.nodeId, rfStoreApi]);
+
+  return <></>;
 }
 
 export function TopRightCornerPanels() {

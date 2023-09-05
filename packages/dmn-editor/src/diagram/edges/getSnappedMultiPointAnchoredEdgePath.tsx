@@ -6,7 +6,7 @@ import {
 import * as RF from "reactflow";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
-import { TargetHandleId } from "../connections/NodeHandles";
+import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
 import { getHandlePosition, getNodeCenterPoint, getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
 import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";

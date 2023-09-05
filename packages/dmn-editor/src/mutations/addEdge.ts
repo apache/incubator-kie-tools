@@ -8,7 +8,7 @@ import {
   DMN15__tInformationRequirement,
   DMN15__tKnowledgeRequirement,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { TargetHandleId } from "../diagram/connections/NodeHandles";
+import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { _checkIsValidConnection } from "../diagram/connections/isValidConnection";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
@@ -57,6 +57,7 @@ export function addEdge({
     definitions.artifact?.push({
       __$$element: "association",
       ...newAssociation,
+      "@_id": removed?.["@_id"] ?? newEdgeId /* Keep the same ID */,
     });
   }
   // Requirements
@@ -69,7 +70,12 @@ export function addEdge({
         doesInformationRequirementsPointTo(ir, sourceNode.id)
       );
       existingEdgeId = removed?.["@_id"];
-      drgElement.informationRequirement?.push(...(requirements?.informationRequirement ?? []));
+      drgElement.informationRequirement?.push(
+        ...requirements.informationRequirement.map((s) => ({
+          ...s,
+          "@_id": existingEdgeId ?? newEdgeId /* Keep the same ID */,
+        }))
+      );
     }
     //
     else if (requirements?.knowledgeRequirement) {
@@ -78,7 +84,12 @@ export function addEdge({
         doesKnowledgeRequirementsPointTo(kr, sourceNode.id)
       );
       existingEdgeId = removed?.["@_id"];
-      drgElement.knowledgeRequirement?.push(...(requirements?.knowledgeRequirement ?? []));
+      drgElement.knowledgeRequirement?.push(
+        ...requirements.knowledgeRequirement.map((s) => ({
+          ...s,
+          "@_id": existingEdgeId ?? newEdgeId /* Keep the same ID */,
+        }))
+      );
     }
     //
     else if (requirements?.authorityRequirement) {
@@ -87,14 +98,19 @@ export function addEdge({
         doesAuthorityRequirementsPointTo(ar, sourceNode.id)
       );
       existingEdgeId = removed?.["@_id"];
-      drgElement.authorityRequirement?.push(...(requirements?.authorityRequirement ?? []));
+      drgElement.authorityRequirement?.push(
+        ...requirements.authorityRequirement.map((s) => ({
+          ...s,
+          "@_id": existingEdgeId ?? newEdgeId /* Keep the same ID */,
+        }))
+      );
     }
   }
 
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   // Remove existing
-  removeFirstMatchIfPresent(
+  const removedDmnEdge = removeFirstMatchIfPresent(
     diagramElements,
     (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
   );
@@ -102,8 +118,8 @@ export function addEdge({
   // Replace with the new one.
   diagramElements.push({
     __$$element: "dmndi:DMNEdge",
-    "@_id": generateUuid(),
-    "@_dmnElementRef": newEdgeId,
+    "@_id": removedDmnEdge?.["@_id"] ?? generateUuid(),
+    "@_dmnElementRef": existingEdgeId ?? newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": targetNode.shapeId,
     "di:waypoint": [

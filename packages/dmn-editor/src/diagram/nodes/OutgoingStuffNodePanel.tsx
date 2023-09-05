@@ -34,7 +34,7 @@ export const handleStyle: React.CSSProperties = {
   transform: "unset",
 };
 
-export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeType[]; edges: EdgeType[] }) {
+export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: NodeType[]; edgeTypes: EdgeType[] }) {
   const style: React.CSSProperties = React.useMemo(
     () => ({
       visibility: props.isVisible ? undefined : "hidden",
@@ -45,12 +45,12 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
   return (
     <>
       <Flex className={"kie-dmn-editor--outgoing-stuff-node-panel"} style={style}>
-        {props.edges.length > 0 && (
+        {props.edgeTypes.length > 0 && (
           <FlexItem>
-            {props.edges.map((e) => (
+            {props.edgeTypes.map((edgeType) => (
               <RF.Handle
-                key={e}
-                id={e}
+                key={edgeType}
+                id={edgeType}
                 isConnectableEnd={false}
                 type={"source"}
                 style={handleStyle}
@@ -61,19 +61,19 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
                   viewBox={`0 0 ${edgeSvgViewboxSize} ${edgeSvgViewboxSize}`}
                   style={{ padding: `${svgViewboxPadding}px` }}
                 >
-                  {e === EDGE_TYPES.informationRequirement && (
+                  {edgeType === EDGE_TYPES.informationRequirement && (
                     <InformationRequirementPath d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize - 2},0`} />
                   )}
-                  {e === EDGE_TYPES.knowledgeRequirement && (
+                  {edgeType === EDGE_TYPES.knowledgeRequirement && (
                     <KnowledgeRequirementPath d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize - 2},0`} />
                   )}
-                  {e === EDGE_TYPES.authorityRequirement && (
+                  {edgeType === EDGE_TYPES.authorityRequirement && (
                     <AuthorityRequirementPath
                       d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize - 2},2`}
                       centerToConnectionPoint={false}
                     />
                   )}
-                  {e === EDGE_TYPES.association && (
+                  {edgeType === EDGE_TYPES.association && (
                     <AssociationPath d={`M2,${edgeSvgViewboxSize - 2} L${edgeSvgViewboxSize},0`} strokeWidth={2} />
                   )}
                 </svg>
@@ -82,12 +82,12 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
           </FlexItem>
         )}
 
-        {props.nodes.length > 0 && (
+        {props.nodeTypes.length > 0 && (
           <FlexItem>
-            {props.nodes.map((n) => (
+            {props.nodeTypes.map((nodeType) => (
               <RF.Handle
-                key={n}
-                id={n}
+                key={nodeType}
+                id={nodeType}
                 isConnectableEnd={false}
                 type={"source"}
                 style={handleStyle}
@@ -98,10 +98,10 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
                   viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
                   style={{ padding: `${svgViewboxPadding}px` }}
                 >
-                  {n === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} />}
-                  {n === NODE_TYPES.decision && <DecisionNodeSvg {...nodeSvgProps} />}
-                  {n === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} />}
-                  {n === NODE_TYPES.decisionService && (
+                  {nodeType === NODE_TYPES.inputData && <InputDataNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.decision && <DecisionNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.bkm && <BkmNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.decisionService && (
                     <DecisionServiceNodeSvg
                       {...nodeSvgProps}
                       y={0}
@@ -109,9 +109,9 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodes: NodeT
                       showSectionLabels={true}
                     />
                   )}
-                  {n === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
-                  {n === NODE_TYPES.textAnnotation && <TextAnnotationNodeSvg {...nodeSvgProps} />}
-                  {n === NODE_TYPES.group && <GroupNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.textAnnotation && <TextAnnotationNodeSvg {...nodeSvgProps} />}
+                  {nodeType === NODE_TYPES.group && <GroupNodeSvg {...nodeSvgProps} />}
                 </svg>
               </RF.Handle>
             ))}

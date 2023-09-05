@@ -525,3 +525,13 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__connectionline {
   z-index: 10000;
 }
+
+/**/
+
+.react-flow__edgeupdater-target {
+  fill: red;
+}
+
+.react-flow__edgeupdater-source {
+  fill: lightcoral;
+}

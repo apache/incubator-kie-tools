@@ -1,10 +1,9 @@
 import {
   DMN15__tDefinitions,
-  DMNDI15__DMNDecisionServiceDividerLine,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { TargetHandleId } from "../diagram/connections/NodeHandles";
+import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
 import { getHandlePosition } from "../diagram/maths/DmnMaths";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";

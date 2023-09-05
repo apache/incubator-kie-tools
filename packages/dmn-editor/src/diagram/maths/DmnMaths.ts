@@ -1,6 +1,6 @@
 import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
-import { TargetHandleId } from "../connections/NodeHandles";
+import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
 import { getCenter } from "./Maths";
 
 export function getDistance(a: DC__Point, b: DC__Point) {
@@ -134,7 +134,7 @@ export function pointsToPath(points: DC__Point[]): string {
   return path;
 }
 
-export function getDecisionServiceDivierLineLocalY(shape: DMNDI15__DMNShape) {
+export function getDecisionServiceDividerLineLocalY(shape: DMNDI15__DMNShape) {
   return (
     (shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]["@_y"] ?? 0) -
     (shape["dc:Bounds"]?.["@_y"] ?? 0)

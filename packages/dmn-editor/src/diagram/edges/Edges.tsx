@@ -4,17 +4,14 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import * as RF from "reactflow";
 import { Unpacked } from "../../store/useDiagramData";
 import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { useIsHovered } from "../useIsHovered";
-import { useDmnEditorDiagramContainer } from "../DiagramContainerContext";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
-import { snapPoint } from "../SnapGrid";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
+import { useEdgeUpdatersAtEdgeTips } from "./useEdgeUpdatersAtEdgeTips";
 
 const DEFAULT_EDGE_INTRACTION_WIDTH = 40;
 
@@ -136,6 +133,8 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+
   return (
     <>
       <InformationRequirementPath
@@ -176,6 +175,9 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
 
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
+
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+
   return (
     <>
       <KnowledgeRequirementPath
@@ -216,6 +218,9 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
 
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
+
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+
   return (
     <>
       <AuthorityRequirementPath
@@ -261,6 +266,9 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
 
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
+
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+
   return (
     <>
       <AssociationPath

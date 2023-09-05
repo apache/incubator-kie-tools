@@ -14,8 +14,8 @@ import * as RF from "reactflow";
 import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
 import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
-import { NodeHandles } from "../connections/NodeHandles";
-import { NodeType, containment, outgoing } from "../connections/graphStructure";
+import { PositionalTargetNodeHandles } from "../connections/PositionalTargetNodeHandles";
+import { containment, outgoingStructure } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
@@ -33,8 +33,7 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { useIsHovered } from "../useIsHovered";
-import { getDecisionServiceDivierLineLocalY as getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
-import { isValidContainment } from "../connections/isValidContainment";
+import { getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 
 export type DmnEditorDiagramNodeData<T> = {
@@ -79,7 +78,8 @@ export const InputDataNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -92,8 +92,8 @@ export const InputDataNode = React.memo(
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={inputData.variable} shape={shape} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing[NODE_TYPES.inputData].nodes}
-            edges={outgoing[NODE_TYPES.inputData].edges}
+            nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -143,7 +143,8 @@ export const DecisionNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -157,8 +158,8 @@ export const DecisionNode = React.memo(
           <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing[NODE_TYPES.decision].nodes}
-            edges={outgoing[NODE_TYPES.decision].edges}
+            nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -208,7 +209,8 @@ export const BkmNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -222,8 +224,8 @@ export const BkmNode = React.memo(
           <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing[NODE_TYPES.bkm].nodes}
-            edges={outgoing[NODE_TYPES.bkm].edges}
+            nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -273,7 +275,8 @@ export const KnowledgeSourceNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -285,8 +288,8 @@ export const KnowledgeSourceNode = React.memo(
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing[NODE_TYPES.knowledgeSource].nodes}
-            edges={outgoing[NODE_TYPES.knowledgeSource].edges}
+            nodeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -336,7 +339,8 @@ export const TextAnnotationNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -348,8 +352,8 @@ export const TextAnnotationNode = React.memo(
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing[NODE_TYPES.textAnnotation].nodes}
-            edges={outgoing[NODE_TYPES.textAnnotation].edges}
+            nodeTypes={outgoingStructure[NODE_TYPES.textAnnotation].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
           />
           <EditableNodeLabel
             isEditing={isEditingLabel}
@@ -406,7 +410,8 @@ export const DecisionServiceNode = React.memo(
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
         </svg>
-        <NodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
 
         <div
           ref={ref}
@@ -419,8 +424,8 @@ export const DecisionServiceNode = React.memo(
           <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decisionService.variable} shape={shape} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
-            nodes={outgoing[NODE_TYPES.decisionService].nodes}
-            edges={outgoing[NODE_TYPES.decisionService].edges}
+            nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
           />
           <EditableNodeLabel
             position={"top-center"}
