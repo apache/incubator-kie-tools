@@ -17,6 +17,7 @@ const preview: Preview = {
           "_dev",
           "Boxed Expressions",
           ["Overview", "*"],
+          "Features",
           "Use cases",
           ["*", ["Overview", "*", ["Overview", "*"]]],
         ],

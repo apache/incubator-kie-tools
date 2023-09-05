@@ -111,13 +111,13 @@ function App(args: BoxedExpressionEditorProps) {
   return (
     <div className="dev-webapp">
       <h2> DEVE WEB APP</h2>
-      <h3 style={{ position: "absolute", right: 0 }}>v{version}&nbsp;&nbsp;</h3>
+      <h3 style={{ position: "absolute", right: 0 }}>updates count: {version}&nbsp;&nbsp;</h3>
       <div className="boxed-expression">
         {BoxedExpressionEditorWrapper({
           decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-          dataTypes: dataTypes,
-          beeGwtService: beeGwtService,
-          pmmlParams: pmmlParams,
+          dataTypes: args.dataTypes,
+          beeGwtService: args.beeGwtService,
+          pmmlParams: args.pmmlParams,
           expressionDefinition: expressionDefinition,
           setExpressionDefinition: setExpressionDefinition,
         })}
@@ -136,4 +136,16 @@ type Story = StoryObj<typeof App>;
 
 export const WebApp: Story = {
   render: (args) => App(args),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Expression Name",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Undefined,
+    },
+    dataTypes: dataTypes,
+    beeGwtService: beeGwtService,
+    pmmlParams: pmmlParams,
+  },
 };

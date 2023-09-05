@@ -4,11 +4,15 @@ import { Meta, Story, Canvas } from "@storybook/blocks";
 
 # Boxed Expressions
 
-## What is a Boxed Expression?
+A boxed expression in DMN is how is defined a graphical notation for all decision logic. This notation is
+used to decompose the decision logic into small pieces that can be associated with the DRG artifacts.
+The combination of the DRG with the boxed expressions form a complete and mostly graphical langauge [1].
 
-We define a graphical notation for decision logic called boxed expressions. This notation serves to decompose the
-decision logic model into small pieces that can be associated with DRG artifacts. The DRD plus the boxed
-expressions form a complete, mostly graphical language that completely specifies Decision Models
+The boxed expressions are defined recursively, meaning that the some boxed expressions can contain another
+boxed expression. The top level of a boxed expression corresponds to the decision logic of a single DRG artifact,
+and this boxed expression will have a header with the DRG artifact name and type.
+
+Currently the following boxed expressions are supported:
 
 - [Context](/docs/boxed-expressions-context--overview)
 - [Decision Table](/docs/boxed-expressions-decision-table--overview)
@@ -18,13 +22,6 @@ expressions form a complete, mostly graphical language that completely specifies
 - [Literal](/docs/boxed-expressions-literal--overview)
 - [Relation](/docs/boxed-expressions-relation--overview)
 
-#### Selection context menu
+## Reference
 
-The "Selection" context menu is available on all cells. It gives the option of "Copy", "Cut", "Paste", "Reset"
-
-##### Resizing
-
-Hovering the mouse on the header or item cell will show a resize handle on the right side of the cell.
-Clicking on it and draging enables to resize the cell to the minimum of 190px and without a maximum size.
-
-**Important**: This action is only possible if an item has an expression, and this operation will resize all cells in the column.
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)
