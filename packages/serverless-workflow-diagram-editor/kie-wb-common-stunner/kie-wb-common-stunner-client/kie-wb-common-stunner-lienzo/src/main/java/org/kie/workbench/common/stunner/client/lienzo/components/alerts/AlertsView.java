@@ -25,6 +25,7 @@ import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLElement;
 import io.crysknife.ui.templates.client.annotation.DataField;
 import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
 import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.Dependent;
@@ -147,17 +148,17 @@ public class AlertsView
     }
 
     @EventHandler("infoButton")
-    void onShowInfos(Event event) {
+    void onShowInfos(@ForEvent("click") Event event) {
         presenter.onShowInfos();
     }
 
     @EventHandler("warningButton")
-    void onShowWarnings(Event event) {
+    void onShowWarnings(@ForEvent("click") Event event) {
         presenter.onShowWarnings();
     }
 
     @EventHandler("errorButton")
-    void onShowErrors(Event event) {
+    void onShowErrors(@ForEvent("click") Event event) {
         presenter.onShowErrors();
     }
 

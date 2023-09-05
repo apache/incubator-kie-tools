@@ -22,6 +22,7 @@ package org.kie.workbench.common.stunner.core.client.components.layout;
 
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -33,6 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutExecu
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
 
 @Default
+@Singleton
 public class LayoutHelper {
 
     private final LayoutService layoutService;

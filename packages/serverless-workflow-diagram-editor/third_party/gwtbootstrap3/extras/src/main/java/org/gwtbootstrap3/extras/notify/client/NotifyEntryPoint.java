@@ -23,15 +23,9 @@ package org.gwtbootstrap3.extras.notify.client;
 import elemental2.core.Reflect;
 import elemental2.dom.DomGlobal;
 import io.crysknife.ui.common.client.injectors.ScriptInjector;
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Startup;
-import jakarta.enterprise.context.ApplicationScoped;
 
-@Startup
-@ApplicationScoped
 public class NotifyEntryPoint {
 
-    @PostConstruct
     public void onModuleLoad() {
         if (!isNotifyLoaded()) {
             ScriptInjector.fromString(NotifyClientBundle.INSTANCE.notifyJS().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();

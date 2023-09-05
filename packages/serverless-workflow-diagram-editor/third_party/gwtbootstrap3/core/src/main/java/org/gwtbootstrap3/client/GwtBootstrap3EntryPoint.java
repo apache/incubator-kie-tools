@@ -21,9 +21,6 @@ package org.gwtbootstrap3.client;
  */
 
 import io.crysknife.ui.common.client.injectors.ScriptInjector;
-import jakarta.annotation.PostConstruct;
-import jakarta.ejb.Startup;
-import jakarta.enterprise.context.ApplicationScoped;
 import jsinterop.annotations.JsMethod;
 
 /**
@@ -32,8 +29,6 @@ import jsinterop.annotations.JsMethod;
  * @author Sven Jacobs
  * @author Steven Jardine
  */
-@Startup
-@ApplicationScoped
 public class GwtBootstrap3EntryPoint {
 
     /**
@@ -53,7 +48,6 @@ public class GwtBootstrap3EntryPoint {
     private static native boolean isjQueryLoaded();
 
     /** {@inheritDoc} */
-    @PostConstruct
     public void onModuleLoad() {
         ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.gwtBootstrap3().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)

@@ -28,7 +28,13 @@ import elemental2.core.Uint8Array;
 import elemental2.dom.Blob;
 import elemental2.dom.BlobPropertyBag;
 import elemental2.dom.DomGlobal;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Typed;
+import jakarta.inject.Named;
 
+@Typed(ImageFileExport.class)
+@Dependent
+@Named("ImageFileExport")
 public class ImageFileExport extends AbstractFileExport<ImageDataUriContent> {
 
     public ImageFileExport() {

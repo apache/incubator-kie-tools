@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views.session;
 
-import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLLabelElement;
 import io.crysknife.client.IsElement;
 import io.crysknife.ui.templates.client.annotation.DataField;
 import io.crysknife.ui.templates.client.annotation.Templated;
@@ -35,7 +35,7 @@ public class ScreenErrorViewImpl implements ScreenErrorView,
 
     @Inject
     @DataField
-    private HTMLElement message;
+    private HTMLLabelElement message;
 
     @Override
     public ScreenErrorView showError(final ClientRuntimeError error) {

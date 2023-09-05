@@ -24,10 +24,12 @@ import elemental2.dom.HTMLElement;
 import io.crysknife.client.IsElement;
 import io.crysknife.ui.templates.client.annotation.DataField;
 import io.crysknife.ui.templates.client.annotation.Templated;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 @Templated
+@Dependent
 public class AlertView implements IsElement {
 
     @Inject

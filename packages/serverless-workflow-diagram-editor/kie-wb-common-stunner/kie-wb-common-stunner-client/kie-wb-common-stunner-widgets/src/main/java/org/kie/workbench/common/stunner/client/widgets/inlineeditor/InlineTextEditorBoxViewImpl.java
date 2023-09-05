@@ -32,6 +32,7 @@ import io.crysknife.ui.templates.client.annotation.ForEvent;
 import io.crysknife.ui.templates.client.annotation.Templated;
 import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jsinterop.base.Js;
 import org.gwtproject.core.client.Scheduler;
@@ -41,6 +42,7 @@ import org.uberfire.mvp.Command;
 
 @Templated(value = "InlineTextEditorBox.html", stylesheet = "InlineTextEditorBox.css")
 @InlineTextEditorBox
+@Dependent
 public class InlineTextEditorBoxViewImpl
         extends AbstractInlineTextEditorBoxView
         implements InlineEditorBoxView,

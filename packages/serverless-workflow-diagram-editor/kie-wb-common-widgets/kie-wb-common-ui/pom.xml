@@ -54,16 +54,24 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
-      <dependency>
-          <groupId>io.crysknife.ui</groupId>
-          <artifactId>crysknife-ui-core</artifactId>
-      </dependency>
+    <dependency>
+      <groupId>io.crysknife.ui</groupId>
+      <artifactId>crysknife-ui-core</artifactId>
+    </dependency>
 
   </dependencies>
 
   <build>
     <resources>
       <!-- Include module descriptors from src/main/resources in order not to break the Intellij GWT plug-in -->
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.html</include>
+          <include>**/*.css</include>
+          <include>**/*.less</include>
+        </includes>
+      </resource>
       <resource>
         <directory>src/main/resources</directory>
       </resource>

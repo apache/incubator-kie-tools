@@ -60,54 +60,35 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-backend-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-          <artifactId>uberfire-all</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
-      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-          <artifactId>uberfire-all</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
 
@@ -115,7 +96,6 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>lienzo-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- SW. -->
@@ -138,30 +118,28 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Core UberFire dependencies -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
-      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
-      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
-      <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-processors</artifactId>
@@ -172,33 +150,28 @@
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Generic ui components -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- GWT and extensions -->
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!--  Appformer Kogito -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>appformer-client-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>appformer-kogito-bridge</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -209,6 +182,24 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
       <artifactId>stylesheets</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui</groupId>
+      <artifactId>crysknife-ui-core</artifactId>
+      <version>${version.io.crysknife}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife</groupId>
+      <artifactId>crysknife-processor</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui</groupId>
+      <artifactId>crysknife-ui-generator</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->

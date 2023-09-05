@@ -27,13 +27,16 @@ import elemental2.dom.HTMLLIElement;
 import io.crysknife.client.IsElement;
 import io.crysknife.ui.templates.client.annotation.DataField;
 import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
 import io.crysknife.ui.templates.client.annotation.Templated;
 import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.uberfire.mvp.Command;
 
 @Templated
+@Dependent
 public class ZoomLevelSelectorItem implements IsElement {
 
     static final String ITEM_CLASS_NAME = "zoom-selector-item";
@@ -73,7 +76,7 @@ public class ZoomLevelSelectorItem implements IsElement {
     }
 
     @EventHandler("levelItemAnchor")
-    void onLevelItemClick(Event event) {
+    void onLevelItemClick(@ForEvent("click") Event event) {
         onClick.execute();
     }
 
