@@ -25,8 +25,13 @@ import {
 } from "../../src/api";
 import { getDefaultExpressionDefinitionByLogicType } from "./defaultExpression";
 import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditorWrapper } from "../boxedExpressionWrapper";
+import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditorProps } from "../../src/expressions";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Masthead, MastheadContent } from "@patternfly/react-core/dist/js/components/Masthead";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { Button, Flex, FlexItem, Text, Tooltip } from "@patternfly/react-core/dist/js";
 
 /**
  * Constants copied from tests to fix debugger
@@ -109,19 +114,40 @@ function App(args: BoxedExpressionEditorProps) {
   }, [expressionDefinition]);
 
   return (
-    <div className="dev-webapp">
-      <h2> DEVE WEB APP</h2>
-      <h3 style={{ position: "absolute", right: 0 }}>updates count: {version}&nbsp;&nbsp;</h3>
-      <div className="boxed-expression">
-        {BoxedExpressionEditorWrapper({
-          decisionNodeId: "_00000000-0000-0000-0000-000000000000",
-          dataTypes: args.dataTypes,
-          beeGwtService: args.beeGwtService,
-          pmmlParams: args.pmmlParams,
-          expressionDefinition: expressionDefinition,
-          setExpressionDefinition: setExpressionDefinition,
-        })}
-      </div>
+    <div>
+      <Title headingLevel="h1">DEV WEB APP</Title>
+      <Flex direction={{ default: "column" }}>
+        <FlexItem>
+          <Flex style={{ width: "96vw" }}>
+            <FlexItem>
+              <Button>Empty</Button>
+            </FlexItem>
+            <FlexItem>
+              <Button>Can Drive?</Button>
+            </FlexItem>
+            <FlexItem>
+              <Button>Another</Button>
+            </FlexItem>
+            <FlexItem align={{ default: "alignRight" }}>
+              <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>
+                <Title headingLevel="h2">Updates count: {version}</Title>
+              </Tooltip>
+            </FlexItem>
+          </Flex>
+        </FlexItem>
+        <FlexItem>
+          <div>
+            {BoxedExpressionEditorWrapper({
+              decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+              dataTypes: args.dataTypes,
+              beeGwtService: args.beeGwtService,
+              pmmlParams: args.pmmlParams,
+              expressionDefinition: expressionDefinition,
+              setExpressionDefinition: setExpressionDefinition,
+            })}
+          </div>
+        </FlexItem>
+      </Flex>
     </div>
   );
 }

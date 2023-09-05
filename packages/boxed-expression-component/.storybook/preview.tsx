@@ -16,8 +16,9 @@ const preview: Preview = {
         order: [
           "_dev",
           "Boxed Expressions",
-          ["Overview", "*"],
+          ["Overview", "*", ["Overview", "*", ["Overview", "*"]]],
           "Features",
+          ["*", ["Overview", "*", ["Overview", "*"]]],
           "Use cases",
           ["*", ["Overview", "*", ["Overview", "*"]]],
         ],

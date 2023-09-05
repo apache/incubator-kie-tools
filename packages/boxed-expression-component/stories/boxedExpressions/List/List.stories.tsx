@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper } from "../../boxedExpressionWrapper";
+import { BoxedExpressionEditorWrapper } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
 import { CONTEXT_ENTRY_INFO_MIN_WIDTH } from "../../../src/resizing/WidthConstants";

@@ -1,0 +1,143 @@
+import { Meta, Story, Canvas, Source } from "@storybook/blocks";
+import * as Selection from "./Selection.stories";
+
+<Meta title="Features/Selection/Overview" />
+
+# Selection
+
+The boxed expression component header and all cells have the access to the Selection context.
+It gives the option to "Copy", "Cut", "Paste" and "Reset" a boxed expression. A feature that
+comes with it is the possibility to select multiple cells using the mouse or the keyboard.
+The selection customizes the cell navigation, and filter on which cell will performed an action.
+
+## Copy
+
+Copying the expression, cell, or selection will have a different behavior.
+
+### Expression
+
+It's possible to copy the entire expresion by using the boxed expression header.
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Selection.CanDrive} />
+  <small>
+    <br />
+    <br />
+    In this example, by right clicking on the "FEEL Literal" header, it will open the Selection context. Right clicking
+    on the "Copy" option will save the Boxed Literal on your clipboard.
+  </small>
+</div>
+
+The following text will be copied to your clipboard:
+
+<Source
+  code={`
+{
+  "id":"_D334D2A9-4312-479F-8F45-A3D4AF2C4AFC",
+  "name":"Can Drive?",
+  "dataType":"boolean",
+  "logicType":"Literal",
+  "content":"Age >= 18 then true else false",
+  "width":320
+}
+`}
+/>
+
+**Important**: The id not be the same, and it will come as a plain text, not indented.
+
+### Cells
+
+It's possible to copy specific values in a cell or in a selection of multiple cells.
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Selection.People} />
+  <small>
+    <br />
+    <br />
+    In this example, select a cell by right clicking on it. To perform the copy operation, left click in one of the
+    selected cells, will open the "Selection" context menu, choose the "Copy" option. Alternatively, it's possible to
+    copy by pressing the copy command of your computer "ctrl/cmd + c".
+  </small>
+</div>
+
+Selecting the entire first row and copying its content will save the following value in your clipboard:
+
+<Source
+  code={`
+"Luiz"	30	"Brazil"
+`}
+/>
+
+The selection and copy operation is not limited to input cells. It's also possible to copy
+headers and indexes columns.
+
+## Paste
+
+### Expression
+
+It's possible to paste entire expressions by using the boxed expression header, or using the
+Select expression menu.
+
+<Source
+  code={`
+{
+  "id":"_7DB3143D-565D-4F81-AFE4-EF7C9580941D",
+  "name":"Expression Name",
+  "dataType":"<Undefined>",
+  "logicType":"List",
+  "items":[
+    {
+      "id":"_DC29FBB3-A12B-42F9-AE3B-5C7DDFE78105",
+      "logicType":"<Undefined>",
+      "dataType":"<Undefined>"
+    }
+  ]
+}
+`}
+/>
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Selection.EmptyExpression} />
+  <small>
+    <br />
+    <br />
+    In this example, by right clicking on the "Select expression" the expression options will open and the last option
+    will be the "Paste" option. Copy the above expression, and use the Paste option, a Boxed List will be set.
+  </small>
+</div>
+
+### Inputs
+
+It's also possible to paste individually values in input cells. Copy the following data set, and use
+it in the next example:
+
+<Source
+  code={`
+"New Client"	0.15
+"Promo"	0.25
+"Student"	0.30
+"Default"	0
+`}
+/>
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Selection.Discount} />
+  <small>
+    <br />
+    <br />
+    In this example, select the first input cell by right clicking on it. To perform the paste operation, left click on
+    the selected cell and in the "Selection" context menu choose the "Paste" option. Alternatively, it's possible to
+    paste by pressing the paste command of your computer "ctrl/cmd + v".
+  </small>
+</div>
+
+## Cut
+
+The cut operation operates the same way as the "Copy" command, with the difference that it will
+also reset the expression or the cell current value. Therefore, it's not possible to perform
+cut operations on headers and index cells.
+
+## Reset
+
+The reset operation resets the expression or the cell current value. Therefore, it's not possible to perform
+reset operations on headers and index cells.

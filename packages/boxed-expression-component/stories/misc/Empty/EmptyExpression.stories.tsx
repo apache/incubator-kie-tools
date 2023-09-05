@@ -1,7 +1,12 @@
 import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper, beeGwtService, dataTypes, pmmlParams } from "../../boxedExpressionWrapper";
+import {
+  BoxedExpressionEditorWrapper,
+  beeGwtService,
+  dataTypes,
+  pmmlParams,
+} from "../../boxedExpressionStoriesWrapper";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, generateUuid } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

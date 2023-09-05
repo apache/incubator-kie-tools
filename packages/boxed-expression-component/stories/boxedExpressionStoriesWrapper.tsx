@@ -264,13 +264,18 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
   const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
   const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(args.expressionDefinition);
 
+  const setExpression = React.useMemo(
+    () => (props?.setExpressionDefinition ? props.setExpressionDefinition : setExpressionDefinition),
+    [props?.setExpressionDefinition]
+  );
+
   useEffect(() => {
-    setExpressionDefinition(args.expressionDefinition);
-  }, [args]);
+    setExpression(args.expressionDefinition);
+  }, [args, setExpression]);
 
   const setExpressionCallback: React.Dispatch<React.SetStateAction<ExpressionDefinition>> = useCallback(
     (newExpression) => {
-      setExpressionDefinition((prev) => {
+      setExpression((prev) => {
         if (typeof newExpression === "function") {
           const expression = newExpression(prev);
           updateArgs({ ...args, expressionDefinition: expression });
@@ -280,7 +285,7 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
         return newExpression;
       });
     },
-    [args, updateArgs]
+    [args, updateArgs, setExpression]
   );
 
   return (
@@ -288,7 +293,7 @@ export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEdit
       <BoxedExpressionEditor
         decisionNodeId={props?.decisionNodeId ?? args.decisionNodeId}
         expressionDefinition={props?.expressionDefinition ?? expressionDefinition}
-        setExpressionDefinition={props?.setExpressionDefinition ?? setExpressionCallback}
+        setExpressionDefinition={setExpressionCallback}
         dataTypes={props?.dataTypes ?? args.dataTypes}
         scrollableParentRef={props?.scrollableParentRef ?? emptyRef}
         beeGwtService={props?.beeGwtService ?? args.beeGwtService}

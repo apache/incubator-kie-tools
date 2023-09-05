@@ -1,4 +1,4 @@
-import { dataTypes } from "../../boxedExpressionWrapper";
+import { dataTypes } from "../../boxedExpressionStoriesWrapper";
 
 export const loanOriginationsDataTypes = [
   ...dataTypes,
