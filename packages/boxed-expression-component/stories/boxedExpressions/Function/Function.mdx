@@ -5,9 +5,11 @@ import * as FunctionExpression from "./Function.stories";
 
 # Boxed Function
 
-The Boxed Invocation expression is used to invoke any function (e.g., business knowledge model,
-FEEL built-in function, boxed function expressions). It invokes a function by its name and passes its parameters
-in order. The parameters can be any type of expression [1].
+The Boxed Function expression creates a parameterized boxed expression which can be
+invoked by the Boxed Invocation or directly by the textual syntax. The function has
+a **Kind**, which can be FEEL, JAVA or PMML, a parameter list, and a body.
+All Business Knowledge Model (BKM) nodes are defined as Boxed Functions, and it's
+not possible to create Boxed Function on the root of a decision [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
   <Story of={FunctionExpression.InstallmentCalculation} />
@@ -15,45 +17,58 @@ in order. The parameters can be any type of expression [1].
     <br />
     <br />
     <br />
-    This is an example of an "Monthly Installment" decision with the number type. It has a Boxed Invocation expression, invoking
-    a "Installment Calculation" function, and passing the "Rate", "Term" and "Amount" paramenters which are Boxed Literal
-    expressions, and those expression return numbers.
+    This is an example of an "Installment Calculation" Bussiness Knowledge Model with the return "number" type. It is a FEEL
+    **Kind** Boxed Function, with the "Rate", "Term" and "Amount" parameters and a FEEL expression on its body.
   </small>
 </div>
 
-The Boxed Invocation expression is mapped to the textual syntax, the above example can be translated to:
+This Boxed Function expression can be invoked with the textual syntax as follow by
+a Boxed Literal as follow:
 
 <Source code={`Installment Calculation(Rate, Term, Amount)`} />
 
-It's important to notice this expression requires at least one parameter to be used,
-making it not possible to invoke a parameterless function, and to do so the textual syntax should be directly used [1]:
+## Kind
 
-<Source code={`function_name()`} />
+The Boxed Functions expression has **Kind**, which is one of the three: FEEL, JAVA, or PMML.
+A Boxed Function without a **Kind** is of the FEEL **Kind** [1]. By right clicking in the
+**Kind** cell, which is the top left corner cell, it's possible to tweak the Boxed Function **Kind**.
+
+### FEEL (F)
+
+By default, the FEEL function starts with a Boxed Literal expression on the body function.
+This expression can be changed for any other boxed epxression.
+Also, it's possible to have any number o parameters.
+
+### JAVA (J)
+
+This Kind of Boxed Function is used to call externelly defined functions, and its body is
+a Boxed Context. It's possible to have any number o parameters.
+
+### PMML (P)
+
+This Kind of Boxed Function is used to call externelly defined functions, and its body is
+a Boxed Context. It's possible to have any number o parameters.
 
 ## Header
 
-If the Boxed Invocation is the root expression of a decision node, the header row will be split into two rows.
-The first will represents the decision name and type, and the second will represents the function name to be invoked.
-Now, if the Boxed Invocation is a nested expression, it will have only one row, which will be the function name
-to be invoked.
+If the Boxed Function is the root expression of a Business Knowledge Model (BKM) node, the header row will be split into two rows.
+The first will represents the BKM name and type, and the second is the function parameters.
+Now, if the Boxed Function is a nested expression, it will have only one row, which will be the function parameters.
 
-> #### Decision header
+> #### BKM header
 >
 > This row will be a single cell which has the decision name and its type,
 > and by right clicking on it a context menu will open enabling to edit its values.
 >
-> #### Function name header
+> #### Function parameters
 >
-> This row has a cell for the function name to be invoked, and by right clicking on it
-> its possible to edit its name.
+> This row has a cell for the function parameters, and by right clicking on it
+> its possible to add, edit or delete parameters name and types.
 
-## Paramters
+## Body
 
-The paramers rows can't be less then one and doesn't have a maximum number. Each parameter has a name, type and has
-a boxed expression associated with it. Right cliking on the parameter name opens a context menu, enabling to edit its
-name and type.
-
-**Important**: It's not possible to have a parameterless function.
+The function Body depends of the function Kind, but the Body is responsible to return
+the value for who invoked the function.
 
 ## Controls
 
@@ -74,7 +89,7 @@ depend of the mouse position. Right clicking on it will add a new parameter abov
     <small>
       <br />
       <br />
-      An empty Boxed Invocation expression.
+      An empty Boxed Function expression.
     </small>
   </div>
 
