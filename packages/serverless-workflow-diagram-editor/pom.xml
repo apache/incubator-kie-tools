@@ -7,15 +7,15 @@
   ~ to you under the Apache License, Version 2.0 (the
   ~ "License"); you may not use this file except in compliance
   ~ with the License.  You may obtain a copy of the License at
-  ~ 
+  ~
   ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~ 
+  ~
   ~ Unless required by applicable law or agreed to in writing,
   ~ software distributed under the License is distributed on an
   ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
   ~ KIND, either express or implied.  See the License for the
   ~ specific language governing permissions and limitations
-  ~ under the License.      
+  ~ under the License.
 -->
 <project
   xmlns="http://maven.apache.org/POM/4.0.0"
@@ -79,19 +79,6 @@
   </repositories>
 
   <modules>
-    <!-- ERRAI -->
-    <module>errai-bom</module>
-    <module>errai-common</module>
-    <module>errai-javax-enterprise</module>
-    <module>errai-ioc</module>
-    <module>errai-codegen</module>
-    <module>errai-cdi</module>
-    <module>errai-ui</module>
-    <module>errai-reflections</module>
-    <module>errai-config</module>
-    <module>errai-codegen-gwt</module>
-    <module>errai-api</module>
-
     <!-- APPFORMER -->
     <module>appformer-bom</module>
     <module>appformer-client-api</module>
@@ -109,12 +96,10 @@
     <!-- LIENZO -->
     <module>lienzo-core</module>
     <module>lienzo-tests</module>
-    <module>lienzo-webapp</module>
 
     <!-- SW-EDITOR -->
     <module>sw-editor</module>
     <module>third_party</module>
-      <module>third_party/gwtproject</module>
 
   </modules>
 
@@ -267,7 +252,8 @@
     <!-- Third party Libraries -->
     <version.ch.qos.logback>1.2.11</version.ch.qos.logback>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <version.com.google.guava>32.0.1-jre</version.com.google.guava>
+    <version.jsinterop.annotations>2.0.0</version.jsinterop.annotations>
+    <version.com.google.guava>30.1-jre</version.com.google.guava>
     <version.gwt.nio>1.1</version.gwt.nio>
     <version.org.gwtproject>2.10.0</version.org.gwtproject>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
@@ -300,6 +286,11 @@
     <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
     <version.org.uberfire.patternfly>7.74.1.Final</version.org.uberfire.patternfly>
 
+    <version.io.crysknife>0.5.2-SNAPSHOT</version.io.crysknife>
+    <version.org.gwt3.processors>0.6</version.org.gwt3.processors>
+    <version.j2cl>0.11.0-9336533b6</version.j2cl>
+    <version.j2cl.maven.plugin>0.21.0</version.j2cl.maven.plugin>
+
     <!-- Test Libraries -->
     <version.io.github.bonigarcia>5.5.3</version.io.github.bonigarcia>
     <version.junit>4.13.2</version.junit>
@@ -323,15 +314,6 @@
         <groupId>org.jboss.arquillian.selenium</groupId>
         <artifactId>selenium-bom</artifactId>
         <version>${version.org.jboss.arquillian.selenium}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- All errai's modules and third-party versions are defined in this POM -->
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>errai-bom</artifactId>
-        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -416,6 +398,12 @@
       </dependency>
 
       <dependency>
+        <groupId>com.google.jsinterop</groupId>
+        <artifactId>jsinterop-annotations</artifactId>
+        <version>${version.jsinterop.annotations}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
         <version>${version.com.google.guava}</version>
@@ -433,21 +421,46 @@
         <version>${version.gwt.nio}</version>
       </dependency>
 
+      <dependency>
+        <groupId>io.crysknife</groupId>
+        <artifactId>crysknife-core</artifactId>
+        <version>${version.io.crysknife}</version>
+      </dependency>
 
       <dependency>
-        <groupId>org.gwtproject</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.org.gwtproject}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>io.crysknife</groupId>
+        <artifactId>crysknife-processor</artifactId>
+        <version>${version.io.crysknife}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.crysknife.ui</groupId>
+        <artifactId>crysknife-ui-core</artifactId>
+        <version>${version.io.crysknife}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.crysknife.ui</groupId>
+        <artifactId>crysknife-ui-generator</artifactId>
+        <version>${version.io.crysknife}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${version.org.gwt3.processors}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>common</artifactId>
+        <version>${version.org.gwt3.processors}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>processors</artifactId>
+        <version>${version.org.gwt3.processors}</version>
       </dependency>
 
       <dependency>
@@ -514,12 +527,6 @@
         <groupId>com.thoughtworks.xstream</groupId>
         <artifactId>xstream</artifactId>
         <version>${version.com.thoughtworks.xstream}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.annotation</groupId>
-        <artifactId>javax.annotation-api</artifactId>
-        <version>${version.javax.annotation-api}</version>
       </dependency>
 
       <dependency>
@@ -643,6 +650,12 @@
       <dependency>
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
+        <version>${version.powermock.api.mockito2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
         <version>${version.powermock.api.mockito2}</version>
       </dependency>
 
@@ -938,6 +951,10 @@
                 <goal>check</goal>
               </goals>
               <configuration>
+                <sourceDirectories>
+                  <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+                  <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+                </sourceDirectories>
                 <checkstyleRules>
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
@@ -1177,6 +1194,9 @@
                       <ignoreClass>javax.validation.*</ignoreClass>
                       <ignoreClass>javax.servlet.*</ignoreClass>
                       <ignoreClass>jakarta.json.*</ignoreClass>
+                      <ignoreClass>jsinterop.*</ignoreClass>
+                      <ignoreClass>elemental2.*</ignoreClass>
+                      <ignoreClass>org.treblereel.*</ignoreClass>
 
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->
                       <ignoreClass>org.gwtproject.uibinder.rebind.UiBinderWriter</ignoreClass>
@@ -1234,6 +1254,16 @@
                           <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
                           <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
                           <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.treblereel.j2cl.processors</groupId>
+                        <artifactId>processors</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>org.apache.commons.text.*</ignoreClass>
+                          <ignoreClass>org.apache.commons.lang3.*</ignoreClass>
+                          <ignoreClass>javax.annotation.*</ignoreClass>
                         </ignoreClasses>
                       </dependency>
                     </dependencies>

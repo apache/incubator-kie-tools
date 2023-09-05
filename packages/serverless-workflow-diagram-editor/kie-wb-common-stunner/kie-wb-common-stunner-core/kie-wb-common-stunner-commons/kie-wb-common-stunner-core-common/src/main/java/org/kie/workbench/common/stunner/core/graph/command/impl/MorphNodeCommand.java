@@ -6,23 +6,21 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -39,7 +37,6 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 /**
  * A Command to morph a node.
  */
-@Portable
 public final class MorphNodeCommand extends AbstractGraphCommand {
 
     private final String uuid;
@@ -48,9 +45,9 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     private transient String oldMorphTarget;
     private transient Node<Definition, Edge> candidate;
 
-    public MorphNodeCommand(final @MapsTo("uuid") String uuid,
-                            final @MapsTo("morphDefinition") MorphDefinition morphDefinition,
-                            final @MapsTo("morphTarget") String morphTarget) {
+    public MorphNodeCommand(final String uuid,
+                            final MorphDefinition morphDefinition,
+                            final String morphTarget) {
         this.uuid = checkNotNull("uuid", uuid);
         this.morphDefinition = checkNotNull("morphDefinition", morphDefinition);
         this.morphTarget = checkNotNull("morphTarget", morphTarget);

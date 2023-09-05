@@ -26,10 +26,10 @@ import elemental2.core.JsMap;
 import elemental2.core.Reflect;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import io.crysknife.client.SyncBeanDef;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.client.mvp.EditorActivity;
 import org.uberfire.workbench.model.bridge.Notification;
 

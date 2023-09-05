@@ -6,33 +6,30 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
 package org.kie.workbench.common.stunner.client.lienzo;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import com.google.gwt.core.client.ScriptInjector;
-import com.google.gwt.dom.client.StyleInjector;
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import io.crysknife.ui.common.client.injectors.ScriptInjector;
+import io.crysknife.ui.common.client.injectors.StyleInjector;
+import io.crysknife.ui.translation.client.annotation.Bundle;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.patternfly.PatternFlyBundle;
 
 @ApplicationScoped
-@EntryPoint
 @Bundle("resources/i18n/StunnerLienzoConstants.properties")
 public class StunnerLienzoCore {
 
@@ -47,38 +44,40 @@ public class StunnerLienzoCore {
     @PostConstruct
     public void init() {
 
-        StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.bootstrapcss().getText());
+        //StyleInjector.fromString(PatternFlyBundle.INSTANCE.bootstrapcss().getText());
 
-        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.jquery().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
+        //ScriptInjector.fromString(PatternFlyBundle.INSTANCE.jquery().getText())
+        //        .setWindow(ScriptInjector.TOP_WINDOW)
+        //        .inject();
 
         ScriptInjector.fromString(PatternFlyBundle.INSTANCE.bootstrapjs().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
 
-        StyleInjector.injectStylesheet(
+        StyleInjector.fromString(
                 PatternFlyBundle.INSTANCE.bootstrapselect().getText());
 
-        StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.animate().getText());
+        //StyleInjector.fromString(
+        //        PatternFlyBundle.INSTANCE.animate().getText());
 
         ScriptInjector.fromString(PatternFlyBundle.INSTANCE.gwtbootstrap3().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
 
-        StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.patternflycss().getText());
+        StyleInjector.fromString(
+                PatternFlyBundle.INSTANCE.fontawesome().getText());
 
-        StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.patternflyadditions().getText());
+        //StyleInjector.fromString(
+        //        PatternFlyBundle.INSTANCE.patternflycss().getText());
+
+        //StyleInjector.fromString(
+        //        PatternFlyBundle.INSTANCE.patternflyadditions().getText());
 
         ScriptInjector.fromString(PatternFlyBundle.INSTANCE.patternflyjs().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
 
-        StyleInjector.injectStylesheet(
+        StyleInjector.fromString(
                 PatternFlyBundle.INSTANCE.uberfirepatternfly().getText());
 
         StyleInjector.injectStylesheet(

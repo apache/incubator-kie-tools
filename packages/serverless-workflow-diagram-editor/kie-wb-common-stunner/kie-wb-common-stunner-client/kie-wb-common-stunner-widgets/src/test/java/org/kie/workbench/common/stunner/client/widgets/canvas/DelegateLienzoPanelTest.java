@@ -23,6 +23,7 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

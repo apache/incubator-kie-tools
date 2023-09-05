@@ -6,7 +6,7 @@ import java.util.Map;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import io.crysknife.client.IsElement;
 
 public class FlowPanel implements IsElement {
 

@@ -22,12 +22,10 @@ package org.kie.workbench.common.stunner.client.widgets.components.glyph;
 
 import java.util.function.BiFunction;
 
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLDivElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.client.local.api.IsElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +35,7 @@ import org.kie.workbench.common.stunner.core.client.shape.ImageStripGlyph;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStripRegistry;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.treblereel.j2cl.processors.common.resources.ImageResource;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
@@ -67,8 +66,6 @@ public class ImageStripDOMGlyphRendererTest {
     @Mock
     private ImageResource imageResource;
 
-    @Mock
-    private CssResource cssResource;
 
     private ImageStripDOMGlyphRenderer tested;
     private ImageStripTestType strip;
@@ -76,7 +73,7 @@ public class ImageStripDOMGlyphRendererTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-        strip = new ImageStripTestType(imageResource, cssResource);
+        strip = new ImageStripTestType(imageResource, "testClass");
         when(stripRegistry.get(any(Class.class))).thenReturn(strip);
         viewInstances = spy(new ManagedInstanceStub<>(view));
         tested = new ImageStripDOMGlyphRenderer(stripRegistry,
@@ -100,7 +97,7 @@ public class ImageStripDOMGlyphRendererTest {
         IsElement rendered = tested.render(GLYPH,
                                            SIZE,
                                            SIZE);
-        verify(cssResource, times(1)).ensureInjected();
+        //verify(cssResource, times(1)).ensureInjected();
         ArgumentCaptor<Integer[]> clipCaptor = ArgumentCaptor.forClass(Integer[].class);
         verify(panelBuilder, times(1)).apply(eq("testClass"),
                                              clipCaptor.capture());
@@ -119,10 +116,10 @@ public class ImageStripDOMGlyphRendererTest {
     private static class ImageStripTestType implements ImageStrip {
 
         private final ImageResource imageResource;
-        private final CssResource cssResource;
+        private final String cssResource;
 
         private ImageStripTestType(ImageResource imageResource,
-                                   CssResource cssResource) {
+                                   String cssResource) {
             this.imageResource = imageResource;
             this.cssResource = cssResource;
         }
@@ -136,7 +133,7 @@ public class ImageStripDOMGlyphRendererTest {
         public StripCssResource getCss() {
             return new StripCssResource() {
                 @Override
-                public CssResource getCssResource() {
+                public String getCssResource() {
                     return cssResource;
                 }
 

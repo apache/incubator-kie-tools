@@ -20,13 +20,12 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
-import javax.annotation.PostConstruct;
-
-import com.google.gwt.dom.client.Style;
+import com.ait.lienzo.client.core.style.Style;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import jakarta.annotation.PostConstruct;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;

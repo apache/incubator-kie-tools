@@ -20,8 +20,10 @@ package org.gwtbootstrap3.client;
  * #L%
  */
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.ScriptInjector;
+import io.crysknife.ui.common.client.injectors.ScriptInjector;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Startup;
+import jakarta.enterprise.context.ApplicationScoped;
 import jsinterop.annotations.JsMethod;
 
 /**
@@ -30,7 +32,9 @@ import jsinterop.annotations.JsMethod;
  * @author Sven Jacobs
  * @author Steven Jardine
  */
-public class GwtBootstrap3EntryPoint implements EntryPoint {
+@Startup
+@ApplicationScoped
+public class GwtBootstrap3EntryPoint {
 
     /**
      * Check to see if Bootstrap is loaded already.
@@ -49,13 +53,13 @@ public class GwtBootstrap3EntryPoint implements EntryPoint {
     private static native boolean isjQueryLoaded();
 
     /** {@inheritDoc} */
-    @Override
+    @PostConstruct
     public void onModuleLoad() {
         ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.gwtBootstrap3().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
         if (!isjQueryLoaded()) {
-            ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.jQuery().getText())
+            ScriptInjector.fromUrl("https://code.jquery.com/jquery-1.12.4.min.js")
                     .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
         }

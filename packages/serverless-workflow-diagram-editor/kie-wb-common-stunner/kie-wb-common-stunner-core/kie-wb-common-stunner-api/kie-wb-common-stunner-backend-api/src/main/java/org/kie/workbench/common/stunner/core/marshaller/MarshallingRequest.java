@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -22,8 +22,6 @@ package org.kie.workbench.common.stunner.core.marshaller;
 
 import java.util.Objects;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
@@ -34,7 +32,6 @@ import org.kie.workbench.common.stunner.core.util.HashUtil;
  * @param <I> represents the input type
  * @param <M> represents the metadata type
  */
-@Portable
 public class MarshallingRequest<I, M extends Metadata> {
 
     /**
@@ -61,7 +58,7 @@ public class MarshallingRequest<I, M extends Metadata> {
     private final M metadata;
     private final Mode mode;
 
-    public MarshallingRequest(@MapsTo("input") I input, @MapsTo("metadata") M metadata, @MapsTo("mode") Mode mode) {
+    public MarshallingRequest(I input, M metadata, Mode mode) {
         this.input = input;
         this.metadata = metadata;
         this.mode = mode;

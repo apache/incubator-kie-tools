@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -25,18 +25,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import javax.enterprise.context.Dependent;
-
-import com.google.gwt.core.client.GWT;
 import elemental2.core.JsObject;
 import elemental2.promise.Promise;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import jakarta.enterprise.context.Dependent;
 
 @Dependent
 public class Promises {
@@ -106,39 +100,6 @@ public class Promises {
                 .apply(this::resolve).get();
     }
 
-    // Callers
-
-    /**
-     * Promisifies a {@link Caller} remote call. If an exception is thrown inside the call function, the
-     * resulting Promise is rejected with a {@link org.uberfire.client.promise.Promises.Error} instance.
-     */
-    public <T, S> Promise<S> promisify(final Caller<T> caller,
-                                       final Function<T, S> call) {
-
-        return create((resolve, reject) -> call.apply(caller.call(
-                (RemoteCallback<S>) resolve::onInvoke,
-                defaultRpcErrorCallback(reject))));
-    }
-
-    /**
-     * Promisifies a {@link Caller} remote call. If an exception is thrown inside the call function, the
-     * resulting Promise is rejected with a {@link org.uberfire.client.promise.Promises.Error} instance.
-     */
-    public <T, S> Promise<S> promisify(final Caller<T> caller,
-                                       final Consumer<T> call) {
-
-        return create((resolve, reject) -> call.accept(caller.call(
-                (RemoteCallback<S>) resolve::onInvoke,
-                defaultRpcErrorCallback(reject))));
-    }
-
-    private <M> ErrorCallback<M> defaultRpcErrorCallback(final Promise.PromiseExecutorCallbackFn.RejectCallbackFn reject) {
-        return (final M o, final Throwable throwable) -> {
-            reject.onInvoke(new Promises.Error<>(o, throwable));
-            return false;
-        };
-    }
-
     /**
      * To be used inside {@link Promise#catch_} blocks. Decides whether to process a RuntimeException that
      * caused a prior Promise rejection or to process an expected object rejected by a prior Promise. To proceed
@@ -174,7 +135,9 @@ public class Promises {
     private <T> Promise<T> handleCatchBlockExceptions(final Object rejectedObject) {
 
         if (rejectedObject instanceof Throwable) {
-            GWT.getUncaughtExceptionHandler().onUncaughtException((Throwable) rejectedObject);
+            //TODO
+
+            //GWT.getUncaughtExceptionHandler().onUncaughtException((Throwable) rejectedObject);
             return resolve();
         }
 

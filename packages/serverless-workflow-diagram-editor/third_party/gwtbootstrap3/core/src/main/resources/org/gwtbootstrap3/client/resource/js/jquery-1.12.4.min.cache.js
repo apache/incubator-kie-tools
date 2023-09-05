@@ -1,4 +1,4 @@
-/*! jQuery v1.12.4 | (c) jQuery Foundation | jquery.org/license */
+/*! jQuery v1.12.1 | (c) jQuery Foundation | jquery.org/license */
 !(function (a, b) {
   "object" == typeof module && "object" == typeof module.exports
     ? (module.exports = a.document
@@ -19,7 +19,7 @@
     j = i.toString,
     k = i.hasOwnProperty,
     l = {},
-    m = "1.12.4",
+    m = "1.12.1",
     n = function (a, b) {
       return new n.fn.init(a, b);
     },
@@ -1035,7 +1035,7 @@
           if (k) return b ? 0 : k.slice(0);
           (h = a), (i = []), (j = d.preFilter);
           while (h) {
-            (c && !(e = R.exec(h))) || (e && (h = h.slice(e[0].length) || h), i.push((f = []))),
+            (!c || (e = R.exec(h))) && (e && (h = h.slice(e[0].length) || h), i.push((f = []))),
               (c = !1),
               (e = S.exec(h)) &&
                 ((c = e.shift()), f.push({ value: c, type: e[0].replace(Q, " ") }), (h = h.slice(c.length)));
@@ -1094,7 +1094,7 @@
     }
     function ua(a, b, c, d, e) {
       for (var f, g = [], h = 0, i = a.length, j = null != b; i > h; h++)
-        (f = a[h]) && ((c && !c(f, d, e)) || (g.push(f), j && b.push(h)));
+        (f = a[h]) && (!c || c(f, d, e)) && (g.push(f), j && b.push(h));
       return g;
     }
     function va(a, b, c, d, e, f) {
@@ -1814,7 +1814,7 @@
         return (
           k || (k = i ? (a[h] = c.pop() || n.guid++) : h),
           j[k] || (j[k] = i ? {} : { toJSON: n.noop }),
-          ("object" != typeof b && "function" != typeof b) ||
+          ("object" == typeof b || "function" == typeof b) &&
             (e ? (j[k] = n.extend(j[k], b)) : (j[k].data = n.extend(j[k].data, b))),
           (g = j[k]),
           e || (g.data || (g.data = {}), (g = g.data)),
@@ -2376,7 +2376,7 @@
         while ((f = h[b++]) && !a.isPropagationStopped()) {
           (a.currentTarget = f.elem), (c = 0);
           while ((g = f.handlers[c++]) && !a.isImmediatePropagationStopped())
-            (a.rnamespace && !a.rnamespace.test(g.namespace)) ||
+            (!a.rnamespace || a.rnamespace.test(g.namespace)) &&
               ((a.handleObj = g),
               (a.data = g.data),
               (d = ((n.event.special[g.origType] || {}).handle || g.handler).apply(f.elem, i)),
@@ -2557,7 +2557,7 @@
               e = a.relatedTarget,
               f = a.handleObj;
             return (
-              (e && (e === d || n.contains(d, e))) ||
+              (!e || (e !== d && !n.contains(d, e))) &&
                 ((a.type = f.origType), (c = f.handler.apply(this, arguments)), (a.type = b)),
               c
             );
@@ -2593,7 +2593,7 @@
       (n.event.special.change = {
         setup: function () {
           return ka.test(this.nodeName)
-            ? (("checkbox" !== this.type && "radio" !== this.type) ||
+            ? (("checkbox" === this.type || "radio" === this.type) &&
                 (n.event.add(this, "propertychange._change", function (a) {
                   "checked" === a.originalEvent.propertyName && (this._justChanged = !0);
                 }),
@@ -2659,7 +2659,7 @@
           return this;
         }
         return (
-          (b !== !1 && "function" != typeof b) || ((c = b), (b = void 0)),
+          (b === !1 || "function" == typeof b) && ((c = b), (b = void 0)),
           c === !1 && (c = qa),
           this.each(function () {
             n.event.remove(this, a, c, b);
@@ -2729,7 +2729,7 @@
         ? ((b.defaultChecked = b.checked = a.checked), b.value !== a.value && (b.value = a.value))
         : "option" === c
         ? (b.defaultSelected = b.selected = a.defaultSelected)
-        : ("input" !== c && "textarea" !== c) || (b.defaultValue = a.defaultValue);
+        : ("input" === c || "textarea" === c) && (b.defaultValue = a.defaultValue);
     }
   }
   function Ha(a, b, c, d) {
@@ -3039,7 +3039,6 @@
           f &&
             ((j.style.display = ""),
             (j.innerHTML = "<table><tr><td></td><td>t</td></tr></table>"),
-            (j.childNodes[0].style.borderCollapse = "separate"),
             (k = j.getElementsByTagName("td")),
             (k[0].style.cssText = "margin:0;border:0;padding:0;display:none"),
             (f = 0 === k[0].offsetHeight),
@@ -3159,16 +3158,22 @@
             "padding" !== c && (g += n.css(a, "border" + V[f] + "Width", !0, e)));
     return g;
   }
-  function fb(a, b, c) {
-    var d = !0,
-      e = "width" === b ? a.offsetWidth : a.offsetHeight,
-      f = Ra(a),
-      g = l.boxSizing && "border-box" === n.css(a, "boxSizing", !1, f);
-    if (0 >= e || null == e) {
-      if (((e = Sa(a, b, f)), (0 > e || null == e) && (e = a.style[b]), Oa.test(e))) return e;
-      (d = g && (l.boxSizingReliable() || e === a.style[b])), (e = parseFloat(e) || 0);
+  function fb(b, c, e) {
+    var f = !0,
+      g = "width" === c ? b.offsetWidth : b.offsetHeight,
+      h = Ra(b),
+      i = l.boxSizing && "border-box" === n.css(b, "boxSizing", !1, h);
+    if (
+      (d.msFullscreenElement &&
+        a.top !== a &&
+        b.getClientRects().length &&
+        (g = Math.round(100 * b.getBoundingClientRect()[c])),
+      0 >= g || null == g)
+    ) {
+      if (((g = Sa(b, c, h)), (0 > g || null == g) && (g = b.style[c]), Oa.test(g))) return g;
+      (f = i && (l.boxSizingReliable() || g === b.style[c])), (g = parseFloat(g) || 0);
     }
-    return e + eb(a, b, c || (g ? "border" : "content"), d, f) + "px";
+    return g + eb(b, c, e || (i ? "border" : "content"), f, h) + "px";
   }
   n.extend({
     cssHooks: {
@@ -3282,15 +3287,9 @@
         ? (parseFloat(Sa(a, "marginLeft")) ||
             (n.contains(a.ownerDocument, a)
               ? a.getBoundingClientRect().left -
-                Pa(
-                  a,
-                  {
-                    marginLeft: 0,
-                  },
-                  function () {
-                    return a.getBoundingClientRect().left;
-                  }
-                )
+                Pa(a, { marginLeft: 0 }, function () {
+                  return a.getBoundingClientRect().left;
+                })
               : 0)) + "px"
         : void 0;
     })),
@@ -3607,7 +3606,7 @@
           : d.duration in n.fx.speeds
           ? n.fx.speeds[d.duration]
           : n.fx.speeds._default),
-        (null != d.queue && d.queue !== !0) || (d.queue = "fx"),
+        (null == d.queue || d.queue === !0) && (d.queue = "fx"),
         (d.old = d.complete),
         (d.complete = function () {
           n.isFunction(d.old) && d.old.call(this), d.queue && n.dequeue(this, d.queue);
@@ -3645,7 +3644,7 @@
             else for (e in g) g[e] && g[e].stop && kb.test(e) && d(g[e]);
             for (e = f.length; e--; )
               f[e].elem !== this || (null != a && f[e].queue !== a) || (f[e].anim.stop(c), (b = !1), f.splice(e, 1));
-            (!b && c) || n.dequeue(this, a);
+            (b || !c) && n.dequeue(this, a);
           })
         );
       },
@@ -3748,8 +3747,7 @@
         b.setAttribute("type", "radio"),
         (l.radioValue = "t" === b.value);
     })();
-  var rb = /\r/g,
-    sb = /[\x20\t\r\n\f]+/g;
+  var rb = /\r/g;
   n.fn.extend({
     val: function (a) {
       var b,
@@ -3791,7 +3789,7 @@
         option: {
           get: function (a) {
             var b = n.find.attr(a, "value");
-            return null != b ? b : n.trim(n.text(a)).replace(sb, " ");
+            return null != b ? b : n.trim(n.text(a));
           },
         },
         select: {
@@ -3826,7 +3824,7 @@
               f = n.makeArray(b),
               g = e.length;
             while (g--)
-              if (((d = e[g]), n.inArray(n.valHooks.option.get(d), f) > -1))
+              if (((d = e[g]), n.inArray(n.valHooks.option.get(d), f) >= 0))
                 try {
                   d.selected = c = !0;
                 } catch (h) {
@@ -3849,12 +3847,12 @@
             return null === a.getAttribute("value") ? "on" : a.value;
           });
     });
-  var tb,
-    ub,
-    vb = n.expr.attrHandle,
-    wb = /^(?:checked|selected)$/i,
-    xb = l.getSetAttribute,
-    yb = l.input;
+  var sb,
+    tb,
+    ub = n.expr.attrHandle,
+    vb = /^(?:checked|selected)$/i,
+    wb = l.getSetAttribute,
+    xb = l.input;
   n.fn.extend({
     attr: function (a, b) {
       return Y(this, n.attr, a, b, arguments.length > 1);
@@ -3874,7 +3872,7 @@
           return "undefined" == typeof a.getAttribute
             ? n.prop(a, b, c)
             : ((1 === f && n.isXMLDoc(a)) ||
-                ((b = b.toLowerCase()), (e = n.attrHooks[b] || (n.expr.match.bool.test(b) ? ub : tb))),
+                ((b = b.toLowerCase()), (e = n.attrHooks[b] || (n.expr.match.bool.test(b) ? tb : sb))),
               void 0 !== c
                 ? null === c
                   ? void n.removeAttr(a, b)
@@ -3904,44 +3902,44 @@
           while ((c = f[e++]))
             (d = n.propFix[c] || c),
               n.expr.match.bool.test(c)
-                ? (yb && xb) || !wb.test(c)
+                ? (xb && wb) || !vb.test(c)
                   ? (a[d] = !1)
                   : (a[n.camelCase("default-" + c)] = a[d] = !1)
                 : n.attr(a, c, ""),
-              a.removeAttribute(xb ? c : d);
+              a.removeAttribute(wb ? c : d);
       },
     }),
-    (ub = {
+    (tb = {
       set: function (a, b, c) {
         return (
           b === !1
             ? n.removeAttr(a, c)
-            : (yb && xb) || !wb.test(c)
-            ? a.setAttribute((!xb && n.propFix[c]) || c, c)
+            : (xb && wb) || !vb.test(c)
+            ? a.setAttribute((!wb && n.propFix[c]) || c, c)
             : (a[n.camelCase("default-" + c)] = a[c] = !0),
           c
         );
       },
     }),
     n.each(n.expr.match.bool.source.match(/\w+/g), function (a, b) {
-      var c = vb[b] || n.find.attr;
-      (yb && xb) || !wb.test(b)
-        ? (vb[b] = function (a, b, d) {
+      var c = ub[b] || n.find.attr;
+      (xb && wb) || !vb.test(b)
+        ? (ub[b] = function (a, b, d) {
             var e, f;
-            return d || ((f = vb[b]), (vb[b] = e), (e = null != c(a, b, d) ? b.toLowerCase() : null), (vb[b] = f)), e;
+            return d || ((f = ub[b]), (ub[b] = e), (e = null != c(a, b, d) ? b.toLowerCase() : null), (ub[b] = f)), e;
           })
-        : (vb[b] = function (a, b, c) {
+        : (ub[b] = function (a, b, c) {
             return c ? void 0 : a[n.camelCase("default-" + b)] ? b.toLowerCase() : null;
           });
     }),
-    (yb && xb) ||
+    (xb && wb) ||
       (n.attrHooks.value = {
         set: function (a, b, c) {
-          return n.nodeName(a, "input") ? void (a.defaultValue = b) : tb && tb.set(a, b, c);
+          return n.nodeName(a, "input") ? void (a.defaultValue = b) : sb && sb.set(a, b, c);
         },
       }),
-    xb ||
-      ((tb = {
+    wb ||
+      ((sb = {
         set: function (a, b, c) {
           var d = a.getAttributeNode(c);
           return (
@@ -3951,9 +3949,9 @@
           );
         },
       }),
-      (vb.id =
-        vb.name =
-        vb.coords =
+      (ub.id =
+        ub.name =
+        ub.coords =
           function (a, b, c) {
             var d;
             return c ? void 0 : (d = a.getAttributeNode(b)) && "" !== d.value ? d.value : null;
@@ -3963,11 +3961,11 @@
           var c = a.getAttributeNode(b);
           return c && c.specified ? c.value : void 0;
         },
-        set: tb.set,
+        set: sb.set,
       }),
       (n.attrHooks.contenteditable = {
         set: function (a, b, c) {
-          tb.set(a, "" === b ? !1 : b, c);
+          sb.set(a, "" === b ? !1 : b, c);
         },
       }),
       n.each(["width", "height"], function (a, b) {
@@ -3986,8 +3984,8 @@
           return (a.style.cssText = b + "");
         },
       });
-  var zb = /^(?:input|select|textarea|button|object)$/i,
-    Ab = /^(?:a|area)$/i;
+  var yb = /^(?:input|select|textarea|button|object)$/i,
+    zb = /^(?:a|area)$/i;
   n.fn.extend({
     prop: function (a, b) {
       return Y(this, n.prop, a, b, arguments.length > 1);
@@ -4024,7 +4022,7 @@
         tabIndex: {
           get: function (a) {
             var b = n.find.attr(a, "tabindex");
-            return b ? parseInt(b, 10) : zb.test(a.nodeName) || (Ab.test(a.nodeName) && a.href) ? 0 : -1;
+            return b ? parseInt(b, 10) : yb.test(a.nodeName) || (zb.test(a.nodeName) && a.href) ? 0 : -1;
           },
         },
       },
@@ -4043,10 +4041,6 @@
         get: function (a) {
           var b = a.parentNode;
           return b && (b.selectedIndex, b.parentNode && b.parentNode.selectedIndex), null;
-        },
-        set: function (a) {
-          var b = a.parentNode;
-          b && (b.selectedIndex, b.parentNode && b.parentNode.selectedIndex);
         },
       }),
     n.each(
@@ -4067,8 +4061,8 @@
       }
     ),
     l.enctype || (n.propFix.enctype = "encoding");
-  var Bb = /[\t\r\n\f]/g;
-  function Cb(a) {
+  var Ab = /[\t\r\n\f]/g;
+  function Bb(a) {
     return n.attr(a, "class") || "";
   }
   n.fn.extend({
@@ -4083,12 +4077,12 @@
         i = 0;
       if (n.isFunction(a))
         return this.each(function (b) {
-          n(this).addClass(a.call(this, b, Cb(this)));
+          n(this).addClass(a.call(this, b, Bb(this)));
         });
       if ("string" == typeof a && a) {
         b = a.match(G) || [];
         while ((c = this[i++]))
-          if (((e = Cb(c)), (d = 1 === c.nodeType && (" " + e + " ").replace(Bb, " ")))) {
+          if (((e = Bb(c)), (d = 1 === c.nodeType && (" " + e + " ").replace(Ab, " ")))) {
             g = 0;
             while ((f = b[g++])) d.indexOf(" " + f + " ") < 0 && (d += f + " ");
             (h = n.trim(d)), e !== h && n.attr(c, "class", h);
@@ -4107,13 +4101,13 @@
         i = 0;
       if (n.isFunction(a))
         return this.each(function (b) {
-          n(this).removeClass(a.call(this, b, Cb(this)));
+          n(this).removeClass(a.call(this, b, Bb(this)));
         });
       if (!arguments.length) return this.attr("class", "");
       if ("string" == typeof a && a) {
         b = a.match(G) || [];
         while ((c = this[i++]))
-          if (((e = Cb(c)), (d = 1 === c.nodeType && (" " + e + " ").replace(Bb, " ")))) {
+          if (((e = Bb(c)), (d = 1 === c.nodeType && (" " + e + " ").replace(Ab, " ")))) {
             g = 0;
             while ((f = b[g++])) while (d.indexOf(" " + f + " ") > -1) d = d.replace(" " + f + " ", " ");
             (h = n.trim(d)), e !== h && n.attr(c, "class", h);
@@ -4129,14 +4123,14 @@
           : this.removeClass(a)
         : n.isFunction(a)
         ? this.each(function (c) {
-            n(this).toggleClass(a.call(this, c, Cb(this), b), b);
+            n(this).toggleClass(a.call(this, c, Bb(this), b), b);
           })
         : this.each(function () {
             var b, d, e, f;
             if ("string" === c) {
               (d = 0), (e = n(this)), (f = a.match(G) || []);
               while ((b = f[d++])) e.hasClass(b) ? e.removeClass(b) : e.addClass(b);
-            } else (void 0 !== a && "boolean" !== c) || ((b = Cb(this)), b && n._data(this, "__className__", b), n.attr(this, "class", b || a === !1 ? "" : n._data(this, "__className__") || ""));
+            } else (void 0 === a || "boolean" === c) && ((b = Bb(this)), b && n._data(this, "__className__", b), n.attr(this, "class", b || a === !1 ? "" : n._data(this, "__className__") || ""));
           });
     },
     hasClass: function (a) {
@@ -4144,7 +4138,7 @@
         c,
         d = 0;
       b = " " + a + " ";
-      while ((c = this[d++])) if (1 === c.nodeType && (" " + Cb(c) + " ").replace(Bb, " ").indexOf(b) > -1) return !0;
+      while ((c = this[d++])) if (1 === c.nodeType && (" " + Bb(c) + " ").replace(Ab, " ").indexOf(b) > -1) return !0;
       return !1;
     },
   }),
@@ -4163,10 +4157,10 @@
         return this.mouseenter(a).mouseleave(b || a);
       },
     });
-  var Db = a.location,
-    Eb = n.now(),
-    Fb = /\?/,
-    Gb =
+  var Cb = a.location,
+    Db = n.now(),
+    Eb = /\?/,
+    Fb =
       /(,)|(\[|{)|(}|])|"(?:[^"\\\r\n]|\\["\\\/bfnrt]|\\u[\da-fA-F]{4})*"\s*:?|true|false|null|-?(?!0\d)\d+(?:\.\d+|)(?:[eE][+-]?\d+|)/g;
   (n.parseJSON = function (b) {
     if (a.JSON && a.JSON.parse) return a.JSON.parse(b + "");
@@ -4175,7 +4169,7 @@
       e = n.trim(b + "");
     return e &&
       !n.trim(
-        e.replace(Gb, function (a, b, e, f) {
+        e.replace(Fb, function (a, b, e, f) {
           return c && b && (d = 0), 0 === d ? a : ((c = e || b), (d += !f - !e), "");
         })
       )
@@ -4196,19 +4190,19 @@
         (c && c.documentElement && !c.getElementsByTagName("parsererror").length) || n.error("Invalid XML: " + b), c
       );
     });
-  var Hb = /#.*$/,
-    Ib = /([?&])_=[^&]*/,
-    Jb = /^(.*?):[ \t]*([^\r\n]*)\r?$/gm,
-    Kb = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
-    Lb = /^(?:GET|HEAD)$/,
-    Mb = /^\/\//,
-    Nb = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
+  var Gb = /#.*$/,
+    Hb = /([?&])_=[^&]*/,
+    Ib = /^(.*?):[ \t]*([^\r\n]*)\r?$/gm,
+    Jb = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
+    Kb = /^(?:GET|HEAD)$/,
+    Lb = /^\/\//,
+    Mb = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
+    Nb = {},
     Ob = {},
-    Pb = {},
-    Qb = "*/".concat("*"),
-    Rb = Db.href,
-    Sb = Nb.exec(Rb.toLowerCase()) || [];
-  function Tb(a) {
+    Pb = "*/".concat("*"),
+    Qb = Cb.href,
+    Rb = Mb.exec(Qb.toLowerCase()) || [];
+  function Sb(a) {
     return function (b, c) {
       "string" != typeof b && ((c = b), (b = "*"));
       var d,
@@ -4219,9 +4213,9 @@
           "+" === d.charAt(0) ? ((d = d.slice(1) || "*"), (a[d] = a[d] || []).unshift(c)) : (a[d] = a[d] || []).push(c);
     };
   }
-  function Ub(a, b, c, d) {
+  function Tb(a, b, c, d) {
     var e = {},
-      f = a === Pb;
+      f = a === Ob;
     function g(h) {
       var i;
       return (
@@ -4235,14 +4229,14 @@
     }
     return g(b.dataTypes[0]) || (!e["*"] && g("*"));
   }
-  function Vb(a, b) {
+  function Ub(a, b) {
     var c,
       d,
       e = n.ajaxSettings.flatOptions || {};
     for (d in b) void 0 !== b[d] && ((e[d] ? a : c || (c = {}))[d] = b[d]);
     return c && n.extend(!0, a, c), a;
   }
-  function Wb(a, b, c) {
+  function Vb(a, b, c) {
     var d,
       e,
       f,
@@ -4269,7 +4263,7 @@
     }
     return f ? (f !== i[0] && i.unshift(f), c[f]) : void 0;
   }
-  function Xb(a, b, c, d) {
+  function Wb(a, b, c, d) {
     var e,
       f,
       g,
@@ -4310,15 +4304,15 @@
     lastModified: {},
     etag: {},
     ajaxSettings: {
-      url: Rb,
+      url: Qb,
       type: "GET",
-      isLocal: Kb.test(Sb[1]),
+      isLocal: Jb.test(Rb[1]),
       global: !0,
       processData: !0,
       async: !0,
       contentType: "application/x-www-form-urlencoded; charset=UTF-8",
       accepts: {
-        "*": Qb,
+        "*": Pb,
         text: "text/plain",
         html: "text/html",
         xml: "application/xml, text/xml",
@@ -4330,10 +4324,10 @@
       flatOptions: { url: !0, context: !0 },
     },
     ajaxSetup: function (a, b) {
-      return b ? Vb(Vb(a, n.ajaxSettings), b) : Vb(n.ajaxSettings, a);
+      return b ? Ub(Ub(a, n.ajaxSettings), b) : Ub(n.ajaxSettings, a);
     },
-    ajaxPrefilter: Tb(Ob),
-    ajaxTransport: Tb(Pb),
+    ajaxPrefilter: Sb(Nb),
+    ajaxTransport: Sb(Ob),
     ajax: function (b, c) {
       "object" == typeof b && ((c = b), (b = void 0)), (c = c || {});
       var d,
@@ -4361,7 +4355,7 @@
             if (2 === u) {
               if (!k) {
                 k = {};
-                while ((b = Jb.exec(g))) k[b[1].toLowerCase()] = b[2];
+                while ((b = Ib.exec(g))) k[b[1].toLowerCase()] = b[2];
               }
               b = k[a.toLowerCase()];
             }
@@ -4393,34 +4387,34 @@
         ((p.promise(w).complete = q.add),
         (w.success = w.done),
         (w.error = w.fail),
-        (l.url = ((b || l.url || Rb) + "").replace(Hb, "").replace(Mb, Sb[1] + "//")),
+        (l.url = ((b || l.url || Qb) + "").replace(Gb, "").replace(Lb, Rb[1] + "//")),
         (l.type = c.method || c.type || l.method || l.type),
         (l.dataTypes = n
           .trim(l.dataType || "*")
           .toLowerCase()
           .match(G) || [""]),
         null == l.crossDomain &&
-          ((d = Nb.exec(l.url.toLowerCase())),
+          ((d = Mb.exec(l.url.toLowerCase())),
           (l.crossDomain = !(
             !d ||
-            (d[1] === Sb[1] &&
-              d[2] === Sb[2] &&
-              (d[3] || ("http:" === d[1] ? "80" : "443")) === (Sb[3] || ("http:" === Sb[1] ? "80" : "443")))
+            (d[1] === Rb[1] &&
+              d[2] === Rb[2] &&
+              (d[3] || ("http:" === d[1] ? "80" : "443")) === (Rb[3] || ("http:" === Rb[1] ? "80" : "443")))
           ))),
         l.data && l.processData && "string" != typeof l.data && (l.data = n.param(l.data, l.traditional)),
-        Ub(Ob, l, c, w),
+        Tb(Nb, l, c, w),
         2 === u)
       )
         return w;
       (i = n.event && l.global),
         i && 0 === n.active++ && n.event.trigger("ajaxStart"),
         (l.type = l.type.toUpperCase()),
-        (l.hasContent = !Lb.test(l.type)),
+        (l.hasContent = !Kb.test(l.type)),
         (f = l.url),
         l.hasContent ||
-          (l.data && ((f = l.url += (Fb.test(f) ? "&" : "?") + l.data), delete l.data),
+          (l.data && ((f = l.url += (Eb.test(f) ? "&" : "?") + l.data), delete l.data),
           l.cache === !1 &&
-            (l.url = Ib.test(f) ? f.replace(Ib, "$1_=" + Eb++) : f + (Fb.test(f) ? "&" : "?") + "_=" + Eb++)),
+            (l.url = Hb.test(f) ? f.replace(Hb, "$1_=" + Db++) : f + (Eb.test(f) ? "&" : "?") + "_=" + Db++)),
         l.ifModified &&
           (n.lastModified[f] && w.setRequestHeader("If-Modified-Since", n.lastModified[f]),
           n.etag[f] && w.setRequestHeader("If-None-Match", n.etag[f])),
@@ -4429,14 +4423,14 @@
         w.setRequestHeader(
           "Accept",
           l.dataTypes[0] && l.accepts[l.dataTypes[0]]
-            ? l.accepts[l.dataTypes[0]] + ("*" !== l.dataTypes[0] ? ", " + Qb + "; q=0.01" : "")
+            ? l.accepts[l.dataTypes[0]] + ("*" !== l.dataTypes[0] ? ", " + Pb + "; q=0.01" : "")
             : l.accepts["*"]
         );
       for (e in l.headers) w.setRequestHeader(e, l.headers[e]);
       if (l.beforeSend && (l.beforeSend.call(m, w, l) === !1 || 2 === u)) return w.abort();
       v = "abort";
       for (e in { success: 1, error: 1, complete: 1 }) w[e](l[e]);
-      if ((j = Ub(Pb, l, c, w))) {
+      if ((j = Tb(Ob, l, c, w))) {
         if (((w.readyState = 1), i && o.trigger("ajaxSend", [w, l]), 2 === u)) return w;
         l.async &&
           l.timeout > 0 &&
@@ -4464,8 +4458,8 @@
           (g = e || ""),
           (w.readyState = b > 0 ? 4 : 0),
           (k = (b >= 200 && 300 > b) || 304 === b),
-          d && (v = Wb(l, w, d)),
-          (v = Xb(l, v, w, k)),
+          d && (v = Vb(l, w, d)),
+          (v = Wb(l, v, w, k)),
           k
             ? (l.ifModified &&
                 ((x = w.getResponseHeader("Last-Modified")),
@@ -4477,7 +4471,7 @@
                 : 304 === b
                 ? (y = "notmodified")
                 : ((y = v.state), (s = v.data), (t = v.error), (k = !t)))
-            : ((t = y), (!b && y) || ((y = "error"), 0 > b && (b = 0))),
+            : ((t = y), (b || !y) && ((y = "error"), 0 > b && (b = 0))),
           (w.status = b),
           (w.statusText = (c || y) + ""),
           k ? p.resolveWith(m, [s, y, w]) : p.rejectWith(m, [w, y, t]),
@@ -4551,36 +4545,35 @@
           .end();
       },
     });
-  function Yb(a) {
+  function Xb(a) {
     return (a.style && a.style.display) || n.css(a, "display");
   }
-  function Zb(a) {
-    if (!n.contains(a.ownerDocument || d, a)) return !0;
+  function Yb(a) {
     while (a && 1 === a.nodeType) {
-      if ("none" === Yb(a) || "hidden" === a.type) return !0;
+      if ("none" === Xb(a) || "hidden" === a.type) return !0;
       a = a.parentNode;
     }
     return !1;
   }
   (n.expr.filters.hidden = function (a) {
-    return l.reliableHiddenOffsets() ? a.offsetWidth <= 0 && a.offsetHeight <= 0 && !a.getClientRects().length : Zb(a);
+    return l.reliableHiddenOffsets() ? a.offsetWidth <= 0 && a.offsetHeight <= 0 && !a.getClientRects().length : Yb(a);
   }),
     (n.expr.filters.visible = function (a) {
       return !n.expr.filters.hidden(a);
     });
-  var $b = /%20/g,
-    _b = /\[\]$/,
-    ac = /\r?\n/g,
-    bc = /^(?:submit|button|image|reset|file)$/i,
-    cc = /^(?:input|select|textarea|keygen)/i;
-  function dc(a, b, c, d) {
+  var Zb = /%20/g,
+    $b = /\[\]$/,
+    _b = /\r?\n/g,
+    ac = /^(?:submit|button|image|reset|file)$/i,
+    bc = /^(?:input|select|textarea|keygen)/i;
+  function cc(a, b, c, d) {
     var e;
     if (n.isArray(b))
       n.each(b, function (b, e) {
-        c || _b.test(a) ? d(a, e) : dc(a + "[" + ("object" == typeof e && null != e ? b : "") + "]", e, c, d);
+        c || $b.test(a) ? d(a, e) : cc(a + "[" + ("object" == typeof e && null != e ? b : "") + "]", e, c, d);
       });
     else if (c || "object" !== n.type(b)) d(a, b);
-    else for (e in b) dc(a + "[" + e + "]", b[e], c, d);
+    else for (e in b) cc(a + "[" + e + "]", b[e], c, d);
   }
   (n.param = function (a, b) {
     var c,
@@ -4596,8 +4589,8 @@
       n.each(a, function () {
         e(this.name, this.value);
       });
-    else for (c in a) dc(c, a[c], b, e);
-    return d.join("&").replace($b, "+");
+    else for (c in a) cc(c, a[c], b, e);
+    return d.join("&").replace(Zb, "+");
   }),
     n.fn.extend({
       serialize: function () {
@@ -4613,8 +4606,8 @@
             return (
               this.name &&
               !n(this).is(":disabled") &&
-              cc.test(this.nodeName) &&
-              !bc.test(a) &&
+              bc.test(this.nodeName) &&
+              !ac.test(a) &&
               (this.checked || !Z.test(a))
             );
           })
@@ -4624,9 +4617,9 @@
               ? null
               : n.isArray(c)
               ? n.map(c, function (a) {
-                  return { name: b.name, value: a.replace(ac, "\r\n") };
+                  return { name: b.name, value: a.replace(_b, "\r\n") };
                 })
-              : { name: b.name, value: c.replace(ac, "\r\n") };
+              : { name: b.name, value: c.replace(_b, "\r\n") };
           })
           .get();
       },
@@ -4635,22 +4628,22 @@
       void 0 !== a.ActiveXObject
         ? function () {
             return this.isLocal
-              ? ic()
-              : d.documentMode > 8
               ? hc()
-              : (/^(get|post|head|put|delete|options)$/i.test(this.type) && hc()) || ic();
+              : d.documentMode > 8
+              ? gc()
+              : (/^(get|post|head|put|delete|options)$/i.test(this.type) && gc()) || hc();
           }
-        : hc);
-  var ec = 0,
-    fc = {},
-    gc = n.ajaxSettings.xhr();
+        : gc);
+  var dc = 0,
+    ec = {},
+    fc = n.ajaxSettings.xhr();
   a.attachEvent &&
     a.attachEvent("onunload", function () {
-      for (var a in fc) fc[a](void 0, !0);
+      for (var a in ec) ec[a](void 0, !0);
     }),
-    (l.cors = !!gc && "withCredentials" in gc),
-    (gc = l.ajax = !!gc),
-    gc &&
+    (l.cors = !!fc && "withCredentials" in fc),
+    (fc = l.ajax = !!fc),
+    fc &&
       n.ajaxTransport(function (b) {
         if (!b.crossDomain || l.cors) {
           var c;
@@ -4658,7 +4651,7 @@
             send: function (d, e) {
               var f,
                 g = b.xhr(),
-                h = ++ec;
+                h = ++dc;
               if ((g.open(b.type, b.url, b.async, b.username, b.password), b.xhrFields))
                 for (f in b.xhrFields) g[f] = b.xhrFields[f];
               b.mimeType && g.overrideMimeType && g.overrideMimeType(b.mimeType),
@@ -4668,7 +4661,7 @@
                 (c = function (a, d) {
                   var f, i, j;
                   if (c && (d || 4 === g.readyState))
-                    if ((delete fc[h], (c = void 0), (g.onreadystatechange = n.noop), d))
+                    if ((delete ec[h], (c = void 0), (g.onreadystatechange = n.noop), d))
                       4 !== g.readyState && g.abort();
                     else {
                       (j = {}), (f = g.status), "string" == typeof g.responseText && (j.text = g.responseText);
@@ -4681,7 +4674,7 @@
                     }
                   j && e(f, i, j, g.getAllResponseHeaders());
                 }),
-                b.async ? (4 === g.readyState ? a.setTimeout(c) : (g.onreadystatechange = fc[h] = c)) : c();
+                b.async ? (4 === g.readyState ? a.setTimeout(c) : (g.onreadystatechange = ec[h] = c)) : c();
             },
             abort: function () {
               c && c(void 0, !0);
@@ -4689,25 +4682,28 @@
           };
         }
       });
-  function hc() {
+  function gc() {
     try {
       return new a.XMLHttpRequest();
     } catch (b) {}
   }
-  function ic() {
+  function hc() {
     try {
       return new a.ActiveXObject("Microsoft.XMLHTTP");
     } catch (b) {}
   }
-  n.ajaxSetup({
-    accepts: { script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript" },
-    contents: { script: /\b(?:java|ecma)script\b/ },
-    converters: {
-      "text script": function (a) {
-        return n.globalEval(a), a;
-      },
-    },
+  n.ajaxPrefilter(function (a) {
+    a.crossDomain && (a.contents.script = !1);
   }),
+    n.ajaxSetup({
+      accepts: { script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript" },
+      contents: { script: /\b(?:java|ecma)script\b/ },
+      converters: {
+        "text script": function (a) {
+          return n.globalEval(a), a;
+        },
+      },
+    }),
     n.ajaxPrefilter("script", function (a) {
       void 0 === a.cache && (a.cache = !1), a.crossDomain && ((a.type = "GET"), (a.global = !1));
     }),
@@ -4737,12 +4733,12 @@
         };
       }
     });
-  var jc = [],
-    kc = /(=)\?(?=&|$)|\?\?/;
+  var ic = [],
+    jc = /(=)\?(?=&|$)|\?\?/;
   n.ajaxSetup({
     jsonp: "callback",
     jsonpCallback: function () {
-      var a = jc.pop() || n.expando + "_" + Eb++;
+      var a = ic.pop() || n.expando + "_" + Db++;
       return (this[a] = !0), a;
     },
   }),
@@ -4752,17 +4748,17 @@
         g,
         h =
           b.jsonp !== !1 &&
-          (kc.test(b.url)
+          (jc.test(b.url)
             ? "url"
             : "string" == typeof b.data &&
               0 === (b.contentType || "").indexOf("application/x-www-form-urlencoded") &&
-              kc.test(b.data) &&
+              jc.test(b.data) &&
               "data");
       return h || "jsonp" === b.dataTypes[0]
         ? ((e = b.jsonpCallback = n.isFunction(b.jsonpCallback) ? b.jsonpCallback() : b.jsonpCallback),
           h
-            ? (b[h] = b[h].replace(kc, "$1" + e))
-            : b.jsonp !== !1 && (b.url += (Fb.test(b.url) ? "&" : "?") + b.jsonp + "=" + e),
+            ? (b[h] = b[h].replace(jc, "$1" + e))
+            : b.jsonp !== !1 && (b.url += (Eb.test(b.url) ? "&" : "?") + b.jsonp + "=" + e),
           (b.converters["script json"] = function () {
             return g || n.error(e + " was not called"), g[0];
           }),
@@ -4773,25 +4769,31 @@
           }),
           d.always(function () {
             void 0 === f ? n(a).removeProp(e) : (a[e] = f),
-              b[e] && ((b.jsonpCallback = c.jsonpCallback), jc.push(e)),
+              b[e] && ((b.jsonpCallback = c.jsonpCallback), ic.push(e)),
               g && n.isFunction(f) && f(g[0]),
               (g = f = void 0);
           }),
           "script")
         : void 0;
     }),
+    (l.createHTMLDocument = (function () {
+      if (!d.implementation.createHTMLDocument) return !1;
+      var a = d.implementation.createHTMLDocument("");
+      return (a.body.innerHTML = "<form></form><form></form>"), 2 === a.body.childNodes.length;
+    })()),
     (n.parseHTML = function (a, b, c) {
       if (!a || "string" != typeof a) return null;
-      "boolean" == typeof b && ((c = b), (b = !1)), (b = b || d);
+      "boolean" == typeof b && ((c = b), (b = !1)),
+        (b = b || (l.createHTMLDocument ? d.implementation.createHTMLDocument("") : d));
       var e = x.exec(a),
         f = !c && [];
       return e
         ? [b.createElement(e[1])]
         : ((e = ja([a], b, f)), f && f.length && n(f).remove(), n.merge([], e.childNodes));
     });
-  var lc = n.fn.load;
+  var kc = n.fn.load;
   (n.fn.load = function (a, b, c) {
-    if ("string" != typeof a && lc) return lc.apply(this, arguments);
+    if ("string" != typeof a && kc) return kc.apply(this, arguments);
     var d,
       e,
       f,
@@ -4810,7 +4812,7 @@
             c &&
               function (a, b) {
                 g.each(function () {
-                  c.apply(this, f || [a.responseText, b, a]);
+                  c.apply(g, f || [a.responseText, b, a]);
                 });
               }
           ),
@@ -4827,7 +4829,7 @@
         return a === b.elem;
       }).length;
     });
-  function mc(a) {
+  function lc(a) {
     return n.isWindow(a) ? a : 9 === a.nodeType ? a.defaultView || a.parentWindow : !1;
   }
   (n.offset = {
@@ -4872,7 +4874,7 @@
             (b = f.documentElement),
             n.contains(b, e)
               ? ("undefined" != typeof e.getBoundingClientRect && (d = e.getBoundingClientRect()),
-                (c = mc(f)),
+                (c = lc(f)),
                 {
                   top: d.top + (c.pageYOffset || b.scrollTop) - (b.clientTop || 0),
                   left: d.left + (c.pageXOffset || b.scrollLeft) - (b.clientLeft || 0),
@@ -4912,7 +4914,7 @@
         return Y(
           this,
           function (a, d, e) {
-            var f = mc(a);
+            var f = lc(a);
             return void 0 === e
               ? f
                 ? b in f
@@ -4934,43 +4936,36 @@
       });
     }),
     n.each({ Height: "height", Width: "width" }, function (a, b) {
-      n.each(
-        {
-          padding: "inner" + a,
-          content: b,
-          "": "outer" + a,
-        },
-        function (c, d) {
-          n.fn[d] = function (d, e) {
-            var f = arguments.length && (c || "boolean" != typeof d),
-              g = c || (d === !0 || e === !0 ? "margin" : "border");
-            return Y(
-              this,
-              function (b, c, d) {
-                var e;
-                return n.isWindow(b)
-                  ? b.document.documentElement["client" + a]
-                  : 9 === b.nodeType
-                  ? ((e = b.documentElement),
-                    Math.max(
-                      b.body["scroll" + a],
-                      e["scroll" + a],
-                      b.body["offset" + a],
-                      e["offset" + a],
-                      e["client" + a]
-                    ))
-                  : void 0 === d
-                  ? n.css(b, c, g)
-                  : n.style(b, c, d, g);
-              },
-              b,
-              f ? d : void 0,
-              f,
-              null
-            );
-          };
-        }
-      );
+      n.each({ padding: "inner" + a, content: b, "": "outer" + a }, function (c, d) {
+        n.fn[d] = function (d, e) {
+          var f = arguments.length && (c || "boolean" != typeof d),
+            g = c || (d === !0 || e === !0 ? "margin" : "border");
+          return Y(
+            this,
+            function (b, c, d) {
+              var e;
+              return n.isWindow(b)
+                ? b.document.documentElement["client" + a]
+                : 9 === b.nodeType
+                ? ((e = b.documentElement),
+                  Math.max(
+                    b.body["scroll" + a],
+                    e["scroll" + a],
+                    b.body["offset" + a],
+                    e["offset" + a],
+                    e["client" + a]
+                  ))
+                : void 0 === d
+                ? n.css(b, c, g)
+                : n.style(b, c, d, g);
+            },
+            b,
+            f ? d : void 0,
+            f,
+            null
+          );
+        };
+      });
     }),
     n.fn.extend({
       bind: function (a, b, c) {
@@ -4995,11 +4990,11 @@
       define("jquery", [], function () {
         return n;
       });
-  var nc = a.jQuery,
-    oc = a.$;
+  var mc = a.jQuery,
+    nc = a.$;
   return (
     (n.noConflict = function (b) {
-      return a.$ === n && (a.$ = oc), b && a.jQuery === n && (a.jQuery = nc), n;
+      return a.$ === n && (a.$ = nc), b && a.jQuery === n && (a.jQuery = mc), n;
     }),
     b || (a.jQuery = a.$ = n),
     n

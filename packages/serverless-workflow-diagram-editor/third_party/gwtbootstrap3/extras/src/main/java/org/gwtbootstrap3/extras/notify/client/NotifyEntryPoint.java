@@ -9,9 +9,9 @@ package org.gwtbootstrap3.extras.notify.client;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,12 +20,18 @@ package org.gwtbootstrap3.extras.notify.client;
  * #L%
  */
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.ScriptInjector;
+import elemental2.core.Reflect;
+import elemental2.dom.DomGlobal;
+import io.crysknife.ui.common.client.injectors.ScriptInjector;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Startup;
+import jakarta.enterprise.context.ApplicationScoped;
 
-public class NotifyEntryPoint implements EntryPoint {
+@Startup
+@ApplicationScoped
+public class NotifyEntryPoint {
 
-    @Override
+    @PostConstruct
     public void onModuleLoad() {
         if (!isNotifyLoaded()) {
             ScriptInjector.fromString(NotifyClientBundle.INSTANCE.notifyJS().getText()).setWindow(ScriptInjector.TOP_WINDOW).inject();
@@ -37,11 +43,7 @@ public class NotifyEntryPoint implements EntryPoint {
      *
      * @return <code>true</code> if notify is loaded, <code>false</code> otherwise
      */
-    private native boolean isNotifyLoaded() /*-{
-        if ($wnd.jQuery && $wnd.jQuery.notify) {
-            return true;
-        } else {
-            return false;
-        }
-    }-*/;
+    private boolean isNotifyLoaded() {
+        return Reflect.has(DomGlobal.window, "jQuery") && Reflect.has(Reflect.get(DomGlobal.window, "jQuery"), "notify");
+    }
 }

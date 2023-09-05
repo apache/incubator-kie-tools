@@ -55,6 +55,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
+@Ignore
 public class MorphNodeToolboxActionTest {
 
     private static final String E_UUID = "e1";

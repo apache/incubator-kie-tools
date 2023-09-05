@@ -23,18 +23,16 @@ package org.kie.workbench.common.stunner.client.widgets.editor;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.core.client.JavaScriptException;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
+import io.crysknife.client.ManagedInstance;
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import jsinterop.base.Js;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
@@ -232,7 +230,7 @@ public class StunnerEditor {
         if (throwable instanceof DiagramParsingException) {
             final DiagramParsingException diagramParsingException = (DiagramParsingException) throwable;
             parsingExceptionProcessor.accept(diagramParsingException);
-            JavaScriptException javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
+            Exception javaScriptException = Js.uncheckedCast(diagramParsingException.getCause());
             if (javaScriptException != null) {
                 message = error.getMessage() + "\r\n";
                 message += javaScriptException.getLocalizedMessage();
