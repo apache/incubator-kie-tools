@@ -5,17 +5,17 @@ import * as List from "./List.stories";
 
 # Boxed List
 
-A Boxed List expression enables to create a vertical list of boxed expressions.
-Each row starts with the row index and has an boxed expression item associated with it.
-It's possible to create any type of boxed expresison for each item, even nested lists [1].
+A Boxed List expression enables to creation of a vertical list of boxed expressions.
+Each row starts with the row index and has a boxed expression item associated with it.
+It's possible to create any type of boxed expression for each item, even nested lists [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
   <Story of={List.AgeGroups} />
   <small>
     <br />
     <br />
-    This is a example of a Boxed List expression for an Age group decision which has the "number" type. In this Boxed
-    List each row is a Boxed Literal and on each one of these Boxed Literal we have four different number ranges.
+    This is an example of a Boxed List expression for an Age group decision that has the "number" type. In this Boxed
+    List each row is a Boxed Literal and on each one of these Boxed Literal, we have four different number ranges.
   </small>
 </div>
 
@@ -24,19 +24,19 @@ It's possible to create any type of boxed expresison for each item, even nested 
 ### Header
 
 The header of the Boxed List expression will only exist if it's the root expression
-of a decision node, and the header will represets the decision name and type.
-Right clicking on it a context menu will open enabling to edit its values.
+of a decision node, and the header will represent the decision name and type.
+Right-clicking on it, a context menu will open enabling you to edit its values.
 
 ### Items
 
-The items can be any type of boxed expression, even other Boxed List. By default a Boxed Literal expression will be placed
+The items can be any type of boxed expression, even other Boxed List. By default, a Boxed Literal expression will be placed
 on the first item, and it's possible to reset the expression by Left clicking on it, and clicking on "Reset".
 
 ## Index column
 
 ### Header
 
-The header row has a "#" symbol which is a placeholder and has any purposes.
+The header row has a "#" symbol, which is a placeholder without any functionalities.
 
 ### Rows
 
@@ -46,12 +46,12 @@ Each item has a row number associated with it starting with the number 1.
 
 ### Items
 
-Left clicking on the index column cells or in the header cell (if applicable) will open the "Rows" context menu.
-It's possible to insert above, insert below, insert multiples and delete the row.
+Left-clicking on the index column cells or in the header cell (if applicable) will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, and delete the row.
 
 Another way to add rows is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
-or on the bottom (insert below) of the cell, the position of the plus sign will depend of the mouse position.
-Right clicking on it will add a new row above or below of the actual row.
+or on the bottom (insert below) of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new row above or below the actual row.
 
 **Important**: It's not possible to perform the above process in the header row index ("#").
 
@@ -72,8 +72,8 @@ Right clicking on it will add a new row above or below of the actual row.
     <small>
       <br/>
       <br/>
-      A Boxed List with thee rows, the first row is a Boxed Literal, the second row is
-      a Boxed List, and the third is a Boxed Context.
+      A Boxed List with three rows. The first row is a Boxed Literal. The second row is
+      a Boxed List. The third is a Boxed Context.
     </small>
   </div>
 </div>

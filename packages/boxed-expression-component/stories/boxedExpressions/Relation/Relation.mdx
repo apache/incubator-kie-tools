@@ -8,7 +8,7 @@ import * as Relation from "./Relation.stories";
 A Relation is a form of boxed expression that shows a relational table.
 Each column has a variable associated with it, and each row starts with the row index
 and has one cell related to each column. Those cells store values for each variable.
-This expression doesn't have results, and its purpose is storing information [1].
+This expression doesn't have results, and its purpose is to store information [1].
 
 **Important**: Only literal expressions are supported on the Relations cells.
 
@@ -18,34 +18,34 @@ This expression doesn't have results, and its purpose is storing information [1]
     <br />
     <br />
     <br />
-    This is a example of a Relation expression for a People decision which has the tPeople type. The columns Name, Age and
-    Country are variables from the tPeople type, and we have two data sets: - Row 1: "Luiz", "30", "Brazil" - Row 2: "Tiago",
+    This is an example of a Relation expression for a People decision which has the tPeople type. The columns Name, Age and
+    Country are variables from the "tPeople" type, and we have two data sets: - Row 1: "Luiz", "30", "Brazil" - Row 2: "Tiago",
     "29", "USA"
   </small>
 </div>
 
 ## Variable columns
 
-The variable columns can't be less then 1 and doesn't have a maximum number.
+The variable columns can't be less than 1 and don't have a maximum number.
 
 ### Headers
 
 If the Relation is the root expression of a decision node, the header row will be split into two rows.
-The first will represents the decision name and type, and the second will represents the variables name and type.
-Now, if the Relation is a nested expression, it will have only one row, which will be the variables name and type.
+The first will represent the decision name and type, and the second will represent the variable's name and type.
+Now, if the Relation is a nested expression, it will have only one row, which will be the variable's name and type.
 
 > #### Decision header
 >
-> This row will be a single cell which has the decision name and its type,
-> and by right clicking on it a context menu will open enabling to edit its values.
+> This row will be a single cell that has the decision name and its type,
+> and by right-clicking on it a context menu will open enabling you to edit its values.
 >
 > #### Variable header
 >
-> This row has a cell for each variable name and type, and by right clicking on it a context menu will open enabling to edit its values.
+> This row has a cell for each variable name and type, and by right-clicking on it a context menu will open enabling you to edit its values.
 
 ### Values
 
-The value cells are literal expressions which can be filled with static data.
+The value cells are literal expressions that can be filled with static data.
 
 ## Index column
 
@@ -55,29 +55,29 @@ The header row has a "#" symbol which is a placeholder and has any purposes.
 
 ### Values
 
-The first and any other additional rows has the row index.
+The first and any other additional rows have the row index.
 
 ## Controls
 
 ### Rows
 
-Left clicking on the index column cells or in the value cells will open the "Rows" context menu.
+Left-clicking on the index column cells or in the value cells will open the "Rows" context menu.
 It's possible to insert above, insert below, insert multiples, delete, and duplicate the row.
 
 Another way to add rows is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
-or on the bottom (insert below) of the cell, the position of the plus sign will depend of the mouse position.
-Right clicking on it will add a new row above or below of the actual row.
+or on the bottom (insert below) of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new row above or below the actual row.
 
 **Important**: It's not possible to perform the above process in the header row index ("#").
 
 ### Variables
 
-Left clicking on the header cells or in the value cells will open the "Columns" context menu.
-It's possible to insert left, insert right, insert multiples and delete the column.
+Left-clicking on the header cells or in the value cells will open the "Columns" context menu.
+It's possible to insert left, insert right, insert multiples, and delete the column.
 
-Anoter way to add columns is by hovering the mouse on a variable cell will make appear a plus sign on the right (insert right)
-or left (insert left) side of the cell, the position of the plus sign will depend of the mouse position.
-Right clicking on it will add a new column on the right or left side of the actual column.
+Another way to add columns is by hovering the mouse on a variable cell will make appear a plus sign on the right (insert right)
+or left (insert left) side of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new column on the right or left side of the actual column.
 
 ## Examples
 

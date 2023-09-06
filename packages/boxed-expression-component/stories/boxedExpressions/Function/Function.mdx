@@ -7,9 +7,9 @@ import * as FunctionExpression from "./Function.stories";
 
 The Boxed Function expression creates a parameterized boxed expression which can be
 invoked by the Boxed Invocation or directly by the textual syntax. The function has
-a **Kind**, which can be FEEL, JAVA or PMML, a parameter list, and a body.
-All Business Knowledge Model (BKM) nodes are defined as Boxed Functions, and it's
-not possible to create Boxed Function on the root of a decision [1].
+a **Kind**, which can be FEEL, JAVA, or PMML, a parameter list, and a body.
+All Business Knowledge Model (BKM) nodes are defined as Boxed Functions, and their
+not possible to create a Boxed Function on the root of a decision [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
   <Story of={FunctionExpression.InstallmentCalculation} />
@@ -22,64 +22,62 @@ not possible to create Boxed Function on the root of a decision [1].
   </small>
 </div>
 
-This Boxed Function expression can be invoked with the textual syntax as follow by
-a Boxed Literal as follow:
+This Boxed Function expression can be invoked with the textual syntax by
+a Boxed Literal as follows:
 
 <Source code={`Installment Calculation(Rate, Term, Amount)`} />
 
 ## Kind
 
 The Boxed Functions expression has **Kind**, which is one of the three: FEEL, JAVA, or PMML.
-A Boxed Function without a **Kind** is of the FEEL **Kind** [1]. By right clicking in the
+A Boxed Function without a **Kind** is of the FEEL **Kind** [1]. By right-clicking in the
 **Kind** cell, which is the top left corner cell, it's possible to tweak the Boxed Function **Kind**.
 
 ### FEEL (F)
 
 By default, the FEEL function starts with a Boxed Literal expression on the body function.
-This expression can be changed for any other boxed epxression.
-Also, it's possible to have any number o parameters.
+This expression can be changed for any other boxed expression.
+Also, it's possible to have any number of parameters.
 
 ### JAVA (J)
 
-This Kind of Boxed Function is used to call externelly defined functions, and its body is
-a Boxed Context. It's possible to have any number o parameters.
+This Kind of Boxed Function is used to call externally defined functions, and its body is
+a Boxed Context. It's possible to have any number of parameters.
 
 ### PMML (P)
 
-This Kind of Boxed Function is used to call externelly defined functions, and its body is
-a Boxed Context. It's possible to have any number o parameters.
+This Kind of Boxed Function is used to call externally defined functions, and its body is
+a Boxed Context. It's possible to have any number of parameters.
 
 ## Header
 
 If the Boxed Function is the root expression of a Business Knowledge Model (BKM) node, the header row will be split into two rows.
-The first will represents the BKM name and type, and the second is the function parameters.
+The first will represent the BKM name and type, and the second is the function parameters.
 Now, if the Boxed Function is a nested expression, it will have only one row, which will be the function parameters.
 
 > #### BKM header
 >
-> This row will be a single cell which has the decision name and its type,
-> and by right clicking on it a context menu will open enabling to edit its values.
+> This row will be a single cell that has the decision name and its type, and by right-clicking on it a context menu will open enabling you to edit its values.
 >
 > #### Function parameters
 >
-> This row has a cell for the function parameters, and by right clicking on it
-> its possible to add, edit or delete parameters name and types.
+> This row has a cell for the function parameters, and by right-clicking on it, it's possible to add, edit, or delete parameter names and types.
 
 ## Body
 
-The function Body depends of the function Kind, but the Body is responsible to return
+The function Body depends on the function Kind, but the Body is responsible for to return
 the value for who invoked the function.
 
 ## Controls
 
 ### Parameters
 
-Left clicking on a parameter cell will open the "Rows" context menu.
-It's possible to insert above, insert below, insert multiples, delete and reset the parameter.
+Left-clicking on a parameter cell will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and reset the parameter.
 
 Another way to add rows is by hovering the mouse on a parameter cell, which will make appear a plus sign
 on the top (insert above) or on the bottom (insert below) of the cell, the position of the plus sign will
-depend of the mouse position. Right clicking on it will add a new parameter above or below of the actual parameter.
+depend on the mouse position. Right-clicking on it will add a new parameter above or below the actual parameter.
 
 ## Examples
 

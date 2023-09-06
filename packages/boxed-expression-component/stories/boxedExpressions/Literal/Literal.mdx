@@ -3,17 +3,15 @@ import * as Literal from "./Literal.stories";
 
 <Meta title="MDX/Literal" of={Literal} />
 
-# Boxed FEEL expression
-
-The Boxed Literal expression was implemented as a boxed FEEL expression and it's defined by the FEEL grammar
-and has access to the scope context derived from the DRD [1].
+The Boxed Literal expression was implemented as a boxed FEEL expression, which is defined by the FEEL grammar.
+This expression has access to the scope context derived from the DRD [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
   <Story of={Literal.CanDrive} />
   <small>
-    This is a example of a Boxed Literal expression for a "Can Drive?" decision which has the boolean type. The "Age"
+    This is an example of a Boxed Literal expression for a "Can Drive?" decision which has the boolean type. The "Age"
     derives from the DRD, and it comes from another decision or input. The expression uses the FEEL grammar to return a
-    "true" value when the "Age" is above or equal 18 and on the opposite side, it returns "false" when "Age" is below
+    "true" value when the "Age" is above or equal to 18 and on the opposite side, it returns "false" when "Age" is below
     18.
   </small>
 </div>
@@ -21,11 +19,11 @@ and has access to the scope context derived from the DRD [1].
 ## Header
 
 The header of the boxed FEEL expression will only exist if it's the root expression of a decision node,
-and the header will represets the decision name and type. Right clicking on it a context menu will open enabling to edit its values.
+and the header will represent the decision name and type. Right-clicking on it a context menu will open enabling you to edit its values.
 
 ## Value
 
-The FEEL expression that has the DRD scope.
+The FEEL expression has the DRD scope.
 
 ## Examples
 

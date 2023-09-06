@@ -5,8 +5,8 @@ import * as Context from "./Context.stories";
 
 # Boxed Context
 
-A Boxed Context is a set of names-value pairs, each one of this pairs is called context entry. The Boxed Context has an optional result value,
-and if the intent is to return the context entries the result should be left empty. The Boxed Context values and result can be any type of boxed
+A Boxed Context is a set of name-value pairs. Each one of these pairs is called a context entry. The Boxed Context has an optional result value
+and if the intent is to return the context entries the result should be left empty. The Boxed Context values and the result can be any type of boxed
 expression, even nested Boxed Contexts [1].
 
 <div style={{ display: "flex", flexDirection: "row" }}>
@@ -17,7 +17,7 @@ expression, even nested Boxed Contexts [1].
     This is an example of an "Installment calculation" decision with the "number" type. It has a Boxed Context
     expression with two context entries "Fee" with a Boxed Literal containing the value "25", and "Repayments" with
     Boxed Literal containing a FEEL expression using values from the decision context, such as "Amount", "Rate" and
-    "Term". This Boxed Context has a result which is the sum of both context entries.
+    "Term". This Boxed Context has a result, which is the sum of both context entries.
   </small>
 </div>
 
@@ -26,8 +26,8 @@ expression, even nested Boxed Contexts [1].
   <small>
     <br />
     <br />
-    This is an example of an "Customer" decision with the "tCustomer" type. It has a Boxed Context expression with two
-    context entries "Name" with a Boxed Literal containg the value "Luiz", and "Age", with another Boxed Literal
+    This is an example of a "Customer" decision with the "tCustomer" type. It has a Boxed Context expression with two
+    context entries "Name" with a Boxed Literal containing the value "Luiz", and "Age", with another Boxed Literal
     containing the value "30". This Boxed Context doesn't have a result, therefore it will return a context with two
     properties: "Name" and "Age".
   </small>
@@ -36,19 +36,19 @@ expression, even nested Boxed Contexts [1].
 ## Header
 
 If the Boxed Context is the root expression of a decision node, the Boxed Context will have one
-header row, which represets the decision name and type.
-Right clicking on it a context menu will open enabling to edit its values.
+header row, which represents the decision name and type.
+Right-clicking on it a context menu will open enabling you to edit its values.
 
 ## Context Entries
 
-The context entries rows can't be less then one and doesn't have a maximum number. Each context entry has a name, type and has
-a boxed expression associated with it. Right cliking on the parameter name opens a context menu, enabling to edit its
+The context entries rows can't be less than one and don't have a maximum number. Each context entry has a name, and type and has
+a boxed expression associated with it. Right-clicking on the parameter name opens a context menu, enabling to edit its
 name and type.
 
 ## Result
 
-The result can't be less then one and doesn't have a maximum number. Each parameter has a name and type and has
-a boxed expression associated with it. Right cliking on the parameter name opens a context menu, enabling to edit its
+The result can't be less than one and doesn't have a maximum number. Each parameter has a name and type and has
+a boxed expression associated with it. Right-clicking on the parameter name opens a context menu, enabling to edit its
 name and type.
 
 **Important**: It's not possible to have a parameterless function.
@@ -57,13 +57,13 @@ name and type.
 
 ### Context Entries
 
-Left clicking on a context entry cell will open the "Rows" context menu.
-It's possible to insert above, insert below, insert multiples, delete and reset the context entry.
+Left-clicking on a context entry cell will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and reset the context entry.
 
 Another way to add context entries is by hovering the mouse on a context entry cell, which will
 make appear a plus sign on the top (insert above) or on the bottom (insert below) of the cell,
-the position of the plus sign will depend of the mouse position. Right clicking on it will add
-a new context entry above or below of the actual context entry.
+the position of the plus sign will depend of the mouse position. Right-clicking on it will add
+a new context entry above or below the actual context entry.
 
 ## Examples
 
