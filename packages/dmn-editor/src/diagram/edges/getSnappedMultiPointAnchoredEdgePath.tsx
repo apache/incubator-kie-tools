@@ -100,7 +100,10 @@ export function getSnappedHandlePosition(
   const hh = snappedNode.height ?? 0;
 
   return switchExpression(position, {
-    [TargetHandleId.TargetCenter]: getNodeIntersection(snappedNode, snappedSecondWaypoint),
+    [TargetHandleId.TargetCenter]: getNodeIntersection(snappedSecondWaypoint, {
+      position: snappedNode.positionAbsolute,
+      dimensions: snappedNode,
+    }),
     [TargetHandleId.TargetTop]: { "@_x": xx + ww / 2, "@_y": yy },
     [TargetHandleId.TargetRight]: { "@_x": xx + ww, "@_y": yy + hh / 2 },
     [TargetHandleId.TargetBottom]: { "@_x": xx + ww / 2, "@_y": yy + hh },

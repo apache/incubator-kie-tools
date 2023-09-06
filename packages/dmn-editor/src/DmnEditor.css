@@ -529,9 +529,11 @@ the cursor is inside it. By making it adimensional, that never happens.
 /**/
 
 .react-flow__edgeupdater-target {
+  /* opacity: 0.2; */
   fill: red;
 }
 
 .react-flow__edgeupdater-source {
-  fill: lightcoral;
+  /* opacity: 0.2; */
+  fill: lightpink;
 }

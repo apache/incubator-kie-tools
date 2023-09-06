@@ -18,6 +18,8 @@ import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
 import { useDmnEditorStore } from "../../store/Store";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
+  // FIXME: Tiago --> Use waypoints of existing edge if updating it, as they're kept when updating the edges.
+
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
   const diagram = useDmnEditorStore((s) => s.diagram);
 

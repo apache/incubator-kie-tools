@@ -69,16 +69,22 @@ export function getHandlePosition({
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and `point`
-export function getNodeIntersection(intersectionNode: RF.Node, point: DC__Point | undefined): DC__Point {
+export function getNodeIntersection(
+  point: DC__Point | undefined,
+  node: {
+    position: RF.XYPosition | undefined;
+    dimensions: Pick<RF.Node, "width" | "height">;
+  }
+): DC__Point {
   // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
 
-  const { width: nodeW, height: nodeH, positionAbsolute: node } = intersectionNode;
+  const { width: nodeW, height: nodeH } = node.dimensions;
 
   const w = (nodeW ?? 0) / 2;
   const h = (nodeH ?? 0) / 2;
 
-  const x2 = (node?.x ?? 0) + w;
-  const y2 = (node?.y ?? 0) + h;
+  const x2 = (node.position?.x ?? 0) + w;
+  const y2 = (node.position?.y ?? 0) + h;
   const x1 = point?.["@_x"] ?? 0;
   const y1 = point?.["@_y"] ?? 0;
 

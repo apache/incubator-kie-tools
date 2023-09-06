@@ -88,9 +88,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
   const onConnect = useCallback<RF.OnConnect>(
-    (args) => {
-      const sourceNode = nodesById.get(args.source!);
-      const targetNode = nodesById.get(args.target!);
+    (connection) => {
+      console.debug("DMN DIAGRAM: `onConnect`: ", connection);
+
+      const sourceNode = nodesById.get(connection.source!);
+      const targetNode = nodesById.get(connection.target!);
       if (!sourceNode || !targetNode) {
         throw new Error("Cannot create connection without target and source nodes!");
       }
@@ -106,7 +108,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       dmnEditorStoreApi.setState((state) => {
         addEdge({
           definitions: state.dmn.model.definitions,
-          edge: { type: args.sourceHandle as EdgeType, handle: args.targetHandle as TargetHandleId },
+          edge: { type: connection.sourceHandle as EdgeType, handle: connection.targetHandle as TargetHandleId },
           sourceNode: {
             type: sourceNode.type as NodeType,
             id: sourceNode.id,
@@ -120,6 +122,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             index: targetNode.data.index,
             shapeId: targetNode.data.shape["@_id"],
           },
+          keepWaypointsIfSameTarget: false,
         });
       });
     },
@@ -211,9 +214,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   );
 
   const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
-  const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => setConnection(b), []);
+
+  const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => {
+    console.debug("DMN DIAGRAM: `onConnectStart`");
+    setConnection(b);
+  }, []);
+
   const onConnectEnd = useCallback(
     (e: MouseEvent) => {
+      console.debug("DMN DIAGRAM: `onConnectEnd`");
       setConnection(undefined);
 
       const targetIsPane = (e.target as Element | null)?.classList?.contains("react-flow__pane");
@@ -252,7 +261,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
       const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
       if (!edge) {
-        throw new Error(`Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
+        throw new Error(`DMN DIAGRAM: Invalid structure: ${sourceNodeType} --(any)--> ${newNodeType}`);
       }
 
       // --------- This is where we draw the line between the diagram and the model.
@@ -437,6 +446,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
     (e, node) => {
+      console.debug("DMN DIAGRAM: `onNodeDragStop`");
       const nodeBeingDragged = nodeBeingDraggedRef.current!;
       if (!nodeBeingDragged) {
         return;
@@ -537,17 +547,63 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [diagram.snapGrid.isEnabled, diagram.snapGrid.x, diagram.snapGrid.y]
   );
 
-  const onEdgesUpdate = useCallback<RF.OnEdgeUpdateFunc>((oldEdge, newConnection) => {
-    console.info("EDGE UPDATED!", oldEdge, newConnection); // FIXME: Tiago --> Actually update the edge.
-  }, []);
+  const onEdgesUpdate = useCallback<RF.OnEdgeUpdateFunc>(
+    (oldEdge, newConnection) => {
+      console.debug("DMN DIAGRAM: `onEdgesUpdate`", oldEdge, newConnection);
+
+      const sourceNode = nodesById.get(newConnection.source!);
+      const targetNode = nodesById.get(newConnection.target!);
+      if (!sourceNode || !targetNode) {
+        throw new Error("Cannot create connection without target and source nodes!");
+      }
+
+      const sourceBounds = sourceNode.data.shape["dc:Bounds"];
+      const targetBounds = targetNode.data.shape["dc:Bounds"];
+      if (!sourceBounds || !targetBounds) {
+        throw new Error("Cannot create connection without target bounds!");
+      }
+
+      // --------- This is where we draw the line between the diagram and the model.
+
+      dmnEditorStoreApi.setState((state) => {
+        const { newDmnEdge } = addEdge({
+          definitions: state.dmn.model.definitions,
+          edge: { type: newConnection.sourceHandle as EdgeType, handle: newConnection.targetHandle as TargetHandleId },
+          sourceNode: {
+            type: sourceNode.type as NodeType,
+            id: sourceNode.id,
+            bounds: sourceBounds,
+            shapeId: sourceNode.data.shape["@_id"],
+          },
+          targetNode: {
+            type: targetNode.type as NodeType,
+            id: targetNode.id,
+            bounds: targetBounds,
+            index: targetNode.data.index,
+            shapeId: targetNode.data.shape["@_id"],
+          },
+          keepWaypointsIfSameTarget: true,
+        });
+
+        if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
+          deleteEdge({
+            definitions: state.dmn.model.definitions,
+            edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
+          });
+        }
+      });
+    },
+    [dmnEditorStoreApi, nodesById]
+  );
 
   const onEdgeUpdateStart = useCallback(() => {
     console.debug(
-      "DMN DIAGRAM: Doing nothing on `onEdgeUpdateStart` as `onConnectStart` will handle setting the connection already."
+      "DMN DIAGRAM: `onEdgeUpdateStart`: Doing nothing as `onConnectStart` will handle setting the connection already."
     );
   }, []);
 
   const onEdgeUpdateEnd = useCallback((e: MouseEvent | TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
+    console.debug("DMN DIAGRAM: `onEdgeUpdateEnd`");
     setConnection(undefined);
   }, []);
 

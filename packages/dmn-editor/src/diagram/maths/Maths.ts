@@ -63,6 +63,25 @@ export function getCenter(
   };
 }
 
+export function scaleFromCenter(
+  amount: number,
+  node: {
+    position: RF.XYPosition | undefined;
+    dimensions: Pick<RF.Node, "width" | "height">;
+  }
+) {
+  return {
+    position: {
+      x: (node.position?.x ?? 0) - amount,
+      y: (node.position?.y ?? 0) - amount,
+    },
+    dimensions: {
+      width: (node.dimensions.width ?? 0) + amount * 2,
+      height: (node.dimensions.height ?? 0) + amount * 2,
+    },
+  };
+}
+
 function getHandleCoordsByPosition(node: Shape, handlePosition: RF.Position) {
   let handleX = 0;
   let handleY = 0;

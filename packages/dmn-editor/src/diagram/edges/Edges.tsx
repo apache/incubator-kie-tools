@@ -133,7 +133,9 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
+  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>
@@ -176,7 +178,9 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
+  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>
@@ -219,7 +223,9 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
+  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>
@@ -267,7 +273,9 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, waypoints);
+  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
+  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>

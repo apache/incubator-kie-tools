@@ -7,6 +7,7 @@ import {
   DMN15__tDefinitions,
   DMN15__tInformationRequirement,
   DMN15__tKnowledgeRequirement,
+  DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
@@ -15,20 +16,23 @@ import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { getBoundsCenterPoint, getPointForHandle } from "../diagram/maths/DmnMaths";
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { Unpacked } from "../store/useDiagramData";
 
 export function addEdge({
   definitions,
   sourceNode,
   targetNode,
   edge,
+  keepWaypointsIfSameTarget,
 }: {
   definitions: DMN15__tDefinitions;
   sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
   targetNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined; index: number };
   edge: { type: EdgeType; handle: TargetHandleId };
+  keepWaypointsIfSameTarget: boolean;
 }) {
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
-    throw new Error(`Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
+    throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
   }
 
   const newEdgeId = generateUuid();
@@ -110,23 +114,36 @@ export function addEdge({
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
   // Remove existing
-  const removedDmnEdge = removeFirstMatchIfPresent(
+  const removedDmnEdge: DMNDI15__DMNEdge | undefined = removeFirstMatchIfPresent(
     diagramElements,
     (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
   );
 
-  // Replace with the new one.
-  diagramElements.push({
+  const newWaypoints = keepWaypointsIfSameTarget
+    ? [
+        ...(
+          removedDmnEdge?.["di:waypoint"] ?? [
+            getBoundsCenterPoint(sourceNode.bounds),
+            getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle }),
+          ]
+        ).slice(0, -1),
+        getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle }),
+      ]
+    : [getBoundsCenterPoint(sourceNode.bounds), getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle })];
+
+  const newDmnEdge: Unpacked<typeof diagramElements> = {
     __$$element: "dmndi:DMNEdge",
     "@_id": removedDmnEdge?.["@_id"] ?? generateUuid(),
     "@_dmnElementRef": existingEdgeId ?? newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": targetNode.shapeId,
-    "di:waypoint": [
-      getBoundsCenterPoint(sourceNode.bounds),
-      getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle }),
-    ],
-  });
+    "di:waypoint": newWaypoints,
+  };
+
+  // Replace with the new one.
+  diagramElements.push(newDmnEdge);
+
+  return { newDmnEdge };
 }
 
 function doesInformationRequirementsPointTo(a: DMN15__tInformationRequirement, drgElementId: string) {
