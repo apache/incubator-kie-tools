@@ -22,8 +22,8 @@ require("./serverless-workflow-editor-extension-smoke.test");
 import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
-import { Key, TextEditor } from "vscode-extension-tester";
-import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
+import { Key } from "vscode-extension-tester";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - functions tests", () => {
@@ -77,14 +77,14 @@ describe("Serverless workflow editor - functions tests", () => {
     ]);
 
     // add asyncapi function from yaml specification
-    await selectFromContentAssist(textEditor, "specs»asyncapi.yaml#publishYamlOperation");
+    await textEditor.selectFromContentAssist("specs»asyncapi.yaml#publishYamlOperation");
 
     await textEditor.moveCursor(18, 6);
     await textEditor.typeText("," + Key.ENTER);
 
     // add openapi function from json specification
     await textEditor.typeText("s");
-    await selectFromContentAssist(textEditor, "specs»openapi.json#testPutJsonFunc");
+    await textEditor.selectFromContentAssist("specs»openapi.json#testPutJsonFunc");
 
     await textEditor.moveCursor(23, 6);
     await textEditor.typeText("," + Key.ENTER);
@@ -102,7 +102,7 @@ describe("Serverless workflow editor - functions tests", () => {
     ]);
 
     // add camel function from json specification
-    await selectFromContentAssist(textEditor, "routes»camel.json#camel:direct:routeJson");
+    await textEditor.selectFromContentAssist("routes»camel.json#camel:direct:routeJson");
 
     // check the final editor content is the same as expected result
     const editorContent = await textEditor.getText();
@@ -137,14 +137,14 @@ describe("Serverless workflow editor - functions tests", () => {
     ]);
 
     // add asyncapi function from json specification
-    await selectFromContentAssist(textEditor, "specs»asyncapi.json#subscribeJsonOperation");
+    await textEditor.selectFromContentAssist("specs»asyncapi.json#subscribeJsonOperation");
 
     await textEditor.moveCursor(12, 19);
     await textEditor.typeText(Key.ENTER + Key.BACK_SPACE + "- ");
 
     // add openapi function from yaml specification
     await textEditor.typeText("s");
-    await selectFromContentAssist(textEditor, "specs»openapi.yaml#testGetYamlFunc");
+    await textEditor.selectFromContentAssist("specs»openapi.yaml#testGetYamlFunc");
 
     await textEditor.moveCursor(15, 15);
     await textEditor.typeText(Key.ENTER + Key.BACK_SPACE + "- ");
@@ -162,19 +162,11 @@ describe("Serverless workflow editor - functions tests", () => {
     ]);
 
     // add camel function from yaml specification
-    await selectFromContentAssist(textEditor, "routes»camel.yaml#camel:direct:fromYaml");
+    await textEditor.selectFromContentAssist("routes»camel.yaml#camel:direct:fromYaml");
 
     // check the final editor content is the same as expected result
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.yaml.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
   });
-
-  async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
-    const contentAssist = await textEditor.toggleContentAssist(true);
-    const item = await contentAssist?.getItem(value);
-    await sleep(500);
-    expect(await item?.getLabel()).contain(value);
-    await item?.click();
-  }
 });
