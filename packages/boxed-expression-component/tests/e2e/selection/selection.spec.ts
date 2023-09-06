@@ -11,7 +11,7 @@ test.describe("Cell selection", () => {
     await expressions.createRelationExpression();
   });
 
-  test("should select multiple cells and write on cells", async ({ page }) => {
+  test("should select multiple cells and write on them", async ({ page }) => {
     for (let i = 0; i < 9; i++) {
       await expect(page.getByRole("cell", { name: `test${i}` }).first()).toContainText(`test${i}`);
     }

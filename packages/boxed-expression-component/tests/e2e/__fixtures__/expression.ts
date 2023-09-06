@@ -26,6 +26,7 @@ export class Expressions {
     await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-relation--base")}` ?? "");
   }
 
+  // TODO: REMOVE
   public async createRelationExpression() {
     // create 3x3 relation
     await this.page.getByTestId("monaco-container").click({ button: "right" });
@@ -42,8 +43,6 @@ export class Expressions {
       await this.page.keyboard.type(`"test${i}"`);
       await this.page.keyboard.press("Space");
       await this.page.keyboard.press("Tab");
-      // required
-      await this.page.waitForTimeout(50);
     }
   }
 

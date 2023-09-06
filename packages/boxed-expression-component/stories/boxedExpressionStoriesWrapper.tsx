@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/expressions";
 import {
@@ -260,40 +260,39 @@ export const beeGwtService: BeeGwtService = {
 };
 
 export function BoxedExpressionEditorWrapper(props?: Partial<BoxedExpressionEditorProps>) {
-  const emptyRef = React.useRef<HTMLDivElement>(null);
+  const emptyRef = useRef<HTMLDivElement>(null);
   const [args, updateArgs] = useArgs<BoxedExpressionEditorProps>();
+  const argsCopy = useRef(args);
   const [expressionDefinition, setExpressionDefinition] = useState<ExpressionDefinition>(args.expressionDefinition);
 
-  const setExpression = React.useMemo(
+  const expression = useMemo(
+    () => props?.expressionDefinition ?? expressionDefinition,
+    [expressionDefinition, props?.expressionDefinition]
+  );
+
+  const setExpression = useMemo(
     () => (props?.setExpressionDefinition ? props.setExpressionDefinition : setExpressionDefinition),
     [props?.setExpressionDefinition]
   );
 
   useEffect(() => {
-    setExpression(args.expressionDefinition);
-  }, [args, setExpression]);
+    updateArgs({ ...argsCopy.current, expressionDefinition: expression });
+  }, [updateArgs, expression]);
 
-  const setExpressionCallback: React.Dispatch<React.SetStateAction<ExpressionDefinition>> = useCallback(
-    (newExpression) => {
-      setExpression((prev) => {
-        if (typeof newExpression === "function") {
-          const expression = newExpression(prev);
-          updateArgs({ ...args, expressionDefinition: expression });
-          return expression;
-        }
-        updateArgs({ ...args, expressionDefinition: newExpression });
-        return newExpression;
-      });
-    },
-    [args, updateArgs, setExpression]
-  );
+  useEffect(() => {
+    if (args === argsCopy.current) {
+      return;
+    }
+    setExpression(args.expressionDefinition);
+    argsCopy.current = args;
+  }, [args, setExpression]);
 
   return (
     <div ref={emptyRef}>
       <BoxedExpressionEditor
         decisionNodeId={props?.decisionNodeId ?? args.decisionNodeId}
-        expressionDefinition={props?.expressionDefinition ?? expressionDefinition}
-        setExpressionDefinition={setExpressionCallback}
+        expressionDefinition={expression}
+        setExpressionDefinition={setExpression}
         dataTypes={props?.dataTypes ?? args.dataTypes}
         scrollableParentRef={props?.scrollableParentRef ?? emptyRef}
         beeGwtService={props?.beeGwtService ?? args.beeGwtService}
