@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   BeeGwtService,
   DmnBuiltInDataType,
@@ -28,10 +28,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditorProps } from "../../src/expressions";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Masthead, MastheadContent } from "@patternfly/react-core/dist/js/components/Masthead";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Button, Flex, FlexItem, Text, Tooltip } from "@patternfly/react-core/dist/js";
+import { emptyExpressionDefinition } from "../misc/Empty/EmptyExpression.stories";
+import { canDriveExpressionDefinition } from "../useCases/CanDrive/CanDrive";
+import { findEmployeesByKnowledgeExpression } from "../useCases/FindEmployees/FindEmployees";
+import { postBureauAffordability } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability";
 
 /**
  * Constants copied from tests to fix debugger
@@ -113,6 +114,10 @@ function App(args: BoxedExpressionEditorProps) {
     setVersion((prev) => prev + 1);
   }, [expressionDefinition]);
 
+  const setSample = useCallback((sample: ExpressionDefinition) => {
+    setExpressionDefinition(sample);
+  }, []);
+
   return (
     <div>
       <Title headingLevel="h1">DEV WEB APP</Title>
@@ -120,13 +125,16 @@ function App(args: BoxedExpressionEditorProps) {
         <FlexItem>
           <Flex style={{ width: "96vw" }}>
             <FlexItem>
-              <Button>Empty</Button>
+              <Button onClick={() => setSample(emptyExpressionDefinition)}>Empty</Button>
             </FlexItem>
             <FlexItem>
-              <Button>Can Drive?</Button>
+              <Button onClick={() => setSample(canDriveExpressionDefinition)}>Can Drive?</Button>
             </FlexItem>
             <FlexItem>
-              <Button>Another</Button>
+              <Button onClick={() => setSample(findEmployeesByKnowledgeExpression)}>Find Employees by Knowledge</Button>
+            </FlexItem>
+            <FlexItem>
+              <Button onClick={() => setSample(postBureauAffordability)}>Affordability</Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>

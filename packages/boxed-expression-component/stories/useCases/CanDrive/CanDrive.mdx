@@ -1,8 +1,29 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
-import * as CanDrive from "./CanDrive.stories";
+import { CanDrive } from "./CanDrive.tsx";
 
-<Meta title="MDX/Use cases/Can Drive" of={CanDrive} />
+<Meta title="Use cases/Can drive?" />
 
-<Canvas>
-  <Story of={CanDrive.Base} />
+## Can drive?
+
+**Can drive?** is a simple example of a decision that checks if the person can drive in specific country
+or not. It uses a "Person" input and a "Can drive?" decision.
+
+<p>
+  <img src={"/can-drive-dmn.png"} alt="Can Drive DMN" title="Can Drive DMN" />
+</p>
+
+The following data types were used to enhance the DRG:
+
+<p>
+  <img src={"/can-drive-data-types.png"} alt="Can Drive Data Types" title="Can Drive Data Types" />
+</p>
+
+## Boxed Expression
+
+The **Can drive?** decision uses a [Decision Table](/docs/boxed-expressions-decision-table--overview) expression with all possible values, and therefore a Unique
+Hit Policy. It checks the combination of the Person Age and Country to dictate if the Person can drive or
+not on its Country.
+
+<Canvas style={{ border: "unset", boxShadow: "unset" }}>
+  <CanDrive />
 </Canvas>

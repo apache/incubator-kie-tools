@@ -2,7 +2,6 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
-import * as Relation from "../../boxedExpressions/Relation/Relation.stories";
 import * as Context from "../../boxedExpressions/Context/Context.stories";
 import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
