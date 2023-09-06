@@ -1,4 +1,4 @@
-import { test, expect } from "../fixtures/boxedExpression";
+import { test, expect } from "../__fixtures__/boxedExpression";
 
 test.describe("Expression context menu", () => {
   test.beforeEach(async ({ boxedExpressionEditor, browserName }) => {

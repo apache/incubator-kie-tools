@@ -14,7 +14,12 @@ on the Business Knowledge Model node.
   <img src={"/find-employees-dmn.png"} alt="Find Employees DMN" title="Find Employees DMN" />
 </p>
 
-The following data types were used to enhance the DRG:
+It was created some data types for this DMN model. The "tEmployee" data type which contains
+all relevant information about the employee, such as "Id", "Knowledges", "Dept" and "Name".
+The "Knowledges" is of the type "tKnowledges", which is a list of "tKnowledge". It can have
+the values "Git", "Java", "Scrum", "TypeScript".
+The "Dept" is from the type "tDept", which is a enumeration with the "Sales", "Engineering"
+and "Management" values.
 
 <p>
   <img src={"/find-employees-data-types.png"} alt="Find Employees Data Types" title="Find Employees Data Types" />
@@ -30,8 +35,8 @@ The decision logic of the DRG were divided as follow:
 
 This decision node contains all Employees information. For this, it's used the
 [Relation](/docs/boxed-expressions-relation--overview) expression, which enables
-to create a column for each Employee property. The Employee contains Id, Name, Dept (Department) and the employee Knowledges.
-The Knowledges is a List of Knowledge.
+to create a column for each Employee property. The Employee contains Id, Name, Dept
+(Department) and the employee Knowledges. The Knowledges is a List of Knowledge.
 
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <Employees />

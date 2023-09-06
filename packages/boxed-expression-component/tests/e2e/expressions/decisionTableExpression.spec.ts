@@ -1,5 +1,5 @@
 import { beforeEach, describe } from "node:test";
-import { test, expect } from "../fixtures/boxedExpression";
+import { test, expect } from "../__fixtures__/boxedExpression";
 
 test.describe("Decision table expression", () => {
   test.beforeEach(async ({ expressions }) => {
