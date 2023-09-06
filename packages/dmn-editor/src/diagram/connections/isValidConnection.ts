@@ -21,10 +21,15 @@ export function _checkIsValidConnection(
     return false;
   }
 
-  return (
-    graphStructure
+  const ret =
+    (graphStructure
       .get(sourceNode.type as NodeType)
       ?.get(edgeType as EdgeType)
-      ?.has(targetNode.type as NodeType) ?? false
-  );
+      ?.has(targetNode.type as NodeType) ??
+      false) ||
+    edgeType.startsWith("source-");
+
+  console.info(`${ret}: ${sourceNode.type} --${edgeType}--> ${targetNode.type}`);
+
+  return ret;
 }

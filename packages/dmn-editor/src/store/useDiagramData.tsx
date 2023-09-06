@@ -69,10 +69,11 @@ export function useDiagramData() {
     [dmnEdgesByDmnRefId, dmnShapesByDmnRefId]
   );
 
-  const { nodes, edges, nodesById } = useMemo(() => {
+  const { nodes, edges, nodesById, edgesById } = useMemo(() => {
     // console.time("nodes");
 
     const nodesById = new Map<string, RF.Node<DmnDiagramNodeData<any>>>();
+    const edgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
     const parentIdsById = new Map<
       string,
       Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
@@ -98,7 +99,7 @@ export function useDiagramData() {
       source: string;
       target: string;
     }): RF.Edge<DmnDiagramEdgeData> {
-      return {
+      const edge: RF.Edge<DmnDiagramEdgeData> = {
         data: getEdgeData({ id, source, target, dmnObject }),
         id,
         type,
@@ -107,6 +108,8 @@ export function useDiagramData() {
         sourceHandle: type, // We have one source handle for each edge type. This is what makes the edge updaters work.
         selected: selectedEdges.has(id),
       };
+      edgesById.set(edge.id, edge);
+      return edge;
     }
 
     // console.time("edges");
@@ -292,6 +295,7 @@ export function useDiagramData() {
     return {
       nodes,
       edges: sortedEdges,
+      edgesById,
       nodesById,
     };
   }, [
@@ -307,7 +311,7 @@ export function useDiagramData() {
     dmnShapesByDmnRefId,
   ]);
 
-  return { dmnShapesByDmnRefId, dmnEdgesByDmnRefId, nodesById, nodes, edges };
+  return { dmnShapesByDmnRefId, dmnEdgesByDmnRefId, nodesById, edgesById, nodes, edges };
 }
 
 export function assignClassesToHighlightedHierarchyNodes(

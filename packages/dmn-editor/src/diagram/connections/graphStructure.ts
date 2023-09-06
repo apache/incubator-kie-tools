@@ -90,16 +90,6 @@ export const outgoingStructure = {
 
 export const containment = new Map<NodeType, Set<NodeType>>([
   [NODE_TYPES.decisionService, new Set([NODE_TYPES.decision])],
-  [
-    NODE_TYPES.group,
-    new Set([
-      NODE_TYPES.inputData,
-      NODE_TYPES.bkm,
-      NODE_TYPES.decision,
-      NODE_TYPES.knowledgeSource,
-      NODE_TYPES.textAnnotation,
-    ]),
-  ],
 ]);
 
 function outgoingNodes(srcNodeType: NodeType): NodeType[] {

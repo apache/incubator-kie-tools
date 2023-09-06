@@ -188,6 +188,5 @@ function tryKeepingEdgeId(existingEdgeId: string | undefined, newEdgeId: string)
 }
 function withoutDiscreteAutoPosinitioningMarker(edgeId: string) {
   const marker = getDiscreteAutoPositioningEdgeIdMarker(edgeId);
-  console.info(marker);
   return marker ? edgeId.replace(`${marker}`, "") : edgeId;
 }

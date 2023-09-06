@@ -82,8 +82,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { dmnShapesByDmnRefId, nodesById, nodes, edges, isDropTargetNodeValidForSelection, selectedNodeTypes } =
-    useDmnEditorDerivedStore();
+  const {
+    dmnShapesByDmnRefId,
+    nodesById,
+    edgesById,
+    nodes,
+    edges,
+    isDropTargetNodeValidForSelection,
+    selectedNodeTypes,
+  } = useDmnEditorDerivedStore();
 
   const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
 
@@ -215,9 +222,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
 
-  const onConnectStart = useCallback<RF.OnConnectStart>((a, b) => {
+  const onConnectStart = useCallback<RF.OnConnectStart>((e, newConnection) => {
     console.debug("DMN DIAGRAM: `onConnectStart`");
-    setConnection(b);
+    setConnection(newConnection);
   }, []);
 
   const onConnectEnd = useCallback(
@@ -422,7 +429,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [reactFlowInstance, diagram.snapGrid, dmnEditorStoreApi, nodesById, edges]
+    [reactFlowInstance, dmnEditorStoreApi, nodesById, edges, diagram.snapGrid]
   );
 
   const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
@@ -524,7 +531,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: change.selected });
               break;
             case "remove":
-              const edge = edges.find(({ id }) => change.id === id);
+              const edge = edgesById.get(change.id);
               if (edge?.data) {
                 deleteEdge({
                   definitions: state.dmn.model.definitions,
@@ -534,12 +541,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               break;
             case "add":
             case "reset":
-              console.log("CHANGED EDGE ??? -->", change);
+              console.log(`DMN DIAGRAM: Ignoring edge added or reset --> '${change.item.id}'`);
           }
         }
       });
     },
-    [dmnEditorStoreApi, edges]
+    [dmnEditorStoreApi, edgesById]
   );
 
   const rfSnapGrid = useMemo<[number, number]>(

@@ -79,7 +79,7 @@ export const InputDataNode = React.memo(
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -144,7 +144,7 @@ export const DecisionNode = React.memo(
           <DecisionNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -210,7 +210,7 @@ export const BkmNode = React.memo(
           <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -276,7 +276,7 @@ export const KnowledgeSourceNode = React.memo(
           <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -340,7 +340,7 @@ export const TextAnnotationNode = React.memo(
           <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -411,7 +411,7 @@ export const DecisionServiceNode = React.memo(
           />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} />
+        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -548,36 +548,53 @@ function useHoveredNodeAlwaysOnTop(
   }, [dragging, isHovered, ref, selected, layer, isEditing]);
 }
 
-export function useConnectionTargetStatus(id: string, isHovered: boolean) {
+export function useConnection(nodeId: string) {
   const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
+  const connectionHandleType = RF.useStore(useCallback((state) => state.connectionHandleType, []));
+  const edgeIdBeingUpdated = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
+  const { edgesById } = useDmnEditorDerivedStore();
+
+  const edge = edgeIdBeingUpdated ? edgesById.get(edgeIdBeingUpdated) : null;
+  const source = connectionNodeId;
+  const target = nodeId;
+  const sourceHandle = connectionHandleId ?? edge?.type ?? null;
+
+  const connection = {
+    source: connectionHandleType === "source" ? source : target,
+    target: connectionHandleType === "source" ? target : source,
+    sourceHandle,
+    targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
+  };
+
+  return connection;
+}
+
+export function useConnectionTargetStatus(nodeId: string, isHovered: boolean) {
+  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
-  const isTargeted = !!connectionNodeId && connectionNodeId !== id && isHovered;
+  const connection = useConnection(nodeId);
 
-  const isValidConnectionTarget =
-    isValidConnection?.({
-      source: connectionNodeId,
-      target: id,
-      sourceHandle: connectionHandleId,
-      targetHandle: null, // We don't use targetHandles, as target handles are only different in position, not in semantic.
-    }) ?? false;
-
-  return { isTargeted, isValidConnectionTarget, isConnecting: !!connectionNodeId };
+  return {
+    isTargeted: !!connectionNodeId && connectionNodeId !== nodeId && isHovered,
+    isValidConnectionTarget: isValidConnection?.(connection) ?? false,
+    isConnecting: !!connectionNodeId,
+  };
 }
 
 export function useNodeClassName(
   dropTargetNode: DropTargetNode,
   isConnecting: boolean,
   isValidConnectionTarget: boolean,
-  id: string
+  nodeId: string
 ) {
   const { isDropTargetNodeValidForSelection } = useDmnEditorDerivedStore();
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
   const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connectionHandleId);
-  const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connectionHandleId);
+  const connection = useConnection(nodeId);
+  const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connection.sourceHandle);
+  const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connection.sourceHandle);
 
-  if (isNodeConnection && isConnecting && connectionNodeId !== id) {
+  if (isNodeConnection && isConnecting && connectionNodeId !== nodeId) {
     return "dimmed";
   }
 
@@ -585,7 +602,7 @@ export function useNodeClassName(
     return "dimmed";
   }
 
-  if (dropTargetNode?.id === id && containment.get(dropTargetNode.type)) {
+  if (dropTargetNode?.id === nodeId && containment.get(dropTargetNode.type)) {
     return isDropTargetNodeValidForSelection ? "drop-target" : "drop-target-invalid";
   }
 

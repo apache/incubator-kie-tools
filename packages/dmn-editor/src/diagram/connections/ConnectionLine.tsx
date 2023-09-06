@@ -5,7 +5,6 @@ import { EDGE_TYPES } from "../edges/EdgeTypes";
 import {
   AssociationPath,
   AuthorityRequirementPath,
-  DmnDiagramEdgeData,
   InformationRequirementPath,
   KnowledgeRequirementPath,
 } from "../edges/Edges";
@@ -18,29 +17,46 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
 import { useDmnEditorStore } from "../../store/Store";
 import { useKieEdgePath } from "../edges/useKieEdgePath";
+import { TargetHandleId } from "./PositionalTargetNodeHandles";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
   const diagram = useDmnEditorStore((s) => s.diagram);
 
   const edgeId = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
-  const edge: RF.Edge<DmnDiagramEdgeData> | undefined = RF.useStore((s) => s.edges.find(({ id }) => id === edgeId));
+  const { edgesById } = useDmnEditorDerivedStore();
+  const edge = edgeId ? edgesById.get(edgeId) : undefined;
   const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
+
+  // This works because nodes are configured with:
+  // - Source handles with ids matching EDGE_TYPES or NODE_TYPES
+  // - Target handles with ids matching TargetHandleId
+  //
+  // When editing an existing edge from its first waypoint (i.e., source handle) the edge is rendered
+  // in reverse. So the connection line's "from" properties are actually "to" properties.
+  const isUpdatingFromSourceHandle = Object.keys(TargetHandleId).some(
+    (k) => (TargetHandleId as any)[k] === fromHandle?.id
+  );
 
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
 
   const connectionLinePath =
     edge && kieEdgePath.points
-      ? pointsToPath([...kieEdgePath.points.slice(0, -1), { "@_x": toX, "@_y": toY }]) // FIXME: Tiago --> Only works when updating the target.
+      ? isUpdatingFromSourceHandle
+        ? pointsToPath([{ "@_x": toX, "@_y": toY }, ...kieEdgePath.points.slice(1)]) // First point is being dragged
+        : pointsToPath([...kieEdgePath.points.slice(0, -1), { "@_x": toX, "@_y": toY }]) // Last point is being dragged
       : `M${fromX},${fromY} L${toX},${toY}`;
 
+  const handleId = isUpdatingFromSourceHandle ? edge?.type : fromHandle?.id;
+
   // Edges
-  if (fromHandle?.id === EDGE_TYPES.informationRequirement) {
+  if (handleId === EDGE_TYPES.informationRequirement) {
     return <InformationRequirementPath d={connectionLinePath} />;
-  } else if (fromHandle?.id === EDGE_TYPES.knowledgeRequirement) {
+  } else if (handleId === EDGE_TYPES.knowledgeRequirement) {
     return <KnowledgeRequirementPath d={connectionLinePath} />;
-  } else if (fromHandle?.id === EDGE_TYPES.authorityRequirement) {
+  } else if (handleId === EDGE_TYPES.authorityRequirement) {
     return <AuthorityRequirementPath d={connectionLinePath} centerToConnectionPoint={true} />;
-  } else if (fromHandle?.id === EDGE_TYPES.association) {
+  } else if (handleId === EDGE_TYPES.association) {
     return <AssociationPath d={connectionLinePath} />;
   }
   // Nodes
@@ -53,9 +69,9 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       { x: fromX, y: fromY, width: 1, height: 1 }
     );
 
-    const edge = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, fromHandle?.id as NodeType);
+    const edge = getDefaultEdgeTypeBetween(fromNode?.type as NodeType, handleId as NodeType);
     if (!edge) {
-      throw new Error(`Invalid structure: ${fromNode?.type} --(any)--> ${fromHandle?.id}`);
+      throw new Error(`Invalid structure: ${fromNode?.type} --(any)--> ${handleId}`);
     }
 
     const path = `M${fromX},${fromY} L${toXauto},${toYauto}`;
@@ -67,7 +83,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       [EDGE_TYPES.association]: <AssociationPath d={path} />,
     });
 
-    if (fromHandle?.id === NODE_TYPES.decision) {
+    if (handleId === NODE_TYPES.decision) {
       return (
         <g>
           {edgeSvg}
@@ -79,7 +95,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           />
         </g>
       );
-    } else if (fromHandle?.id === NODE_TYPES.bkm) {
+    } else if (handleId === NODE_TYPES.bkm) {
       return (
         <g className={"pulse"}>
           {edgeSvg}
@@ -91,7 +107,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           />
         </g>
       );
-    } else if (fromHandle?.id === NODE_TYPES.knowledgeSource) {
+    } else if (handleId === NODE_TYPES.knowledgeSource) {
       return (
         <g>
           {edgeSvg}
@@ -103,7 +119,7 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
           />
         </g>
       );
-    } else if (fromHandle?.id === NODE_TYPES.textAnnotation) {
+    } else if (handleId === NODE_TYPES.textAnnotation) {
       return (
         <g>
           {edgeSvg}
@@ -118,5 +134,5 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     }
   }
 
-  throw new Error(`Unknown source of ConnectionLine '${fromHandle?.id}'.`);
+  throw new Error(`Unknown source of ConnectionLine '${handleId}'.`);
 }
