@@ -8,6 +8,7 @@ import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],
+  isEdgeSelected: boolean | undefined,
   edgeId: string,
   edgeIndex: number | undefined,
   interactionPathRef: React.RefObject<SVGPathElement>
@@ -20,6 +21,8 @@ export function usePotentialWaypointControls(
     useState<ReturnType<typeof approximateClosestPoint> | undefined>(undefined);
 
   const { container } = useDmnEditorDiagramContainer();
+
+  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
 
   const isExistingWaypoint = useCallback(
     (point: DC__Point) => waypoints.find((w) => w["@_x"] === point["@_x"] && w["@_y"] === point["@_y"]),
@@ -85,7 +88,11 @@ export function usePotentialWaypointControls(
   const isDraggingWaypoint = !!diagram.draggingWaypoints.find((e) => e === edgeId);
 
   const shouldReturnPotentialWaypoint =
-    !isDraggingWaypoint && snappedPotentialWaypoint && !isExistingWaypoint(snappedPotentialWaypoint);
+    isEdgeSelected &&
+    !isDraggingWaypoint &&
+    snappedPotentialWaypoint &&
+    !isExistingWaypoint(snappedPotentialWaypoint) &&
+    !isConnecting;
 
   return {
     isDraggingWaypoint,

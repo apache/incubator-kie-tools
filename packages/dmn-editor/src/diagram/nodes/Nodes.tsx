@@ -36,7 +36,7 @@ import { useIsHovered } from "../useIsHovered";
 import { getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 
-export type DmnEditorDiagramNodeData<T> = {
+export type DmnDiagramNodeData<T> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
   index: number;
@@ -49,7 +49,7 @@ export const InputDataNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tInputData>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
@@ -115,7 +115,7 @@ export const DecisionNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tDecision>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
@@ -181,7 +181,7 @@ export const BkmNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
@@ -247,7 +247,7 @@ export const KnowledgeSourceNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tKnowledgeSource>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
@@ -311,7 +311,7 @@ export const TextAnnotationNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tTextAnnotation>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
@@ -376,7 +376,7 @@ export const DecisionServiceNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tDecisionService>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
@@ -448,7 +448,7 @@ export const GroupNode = React.memo(
     dragging,
     zIndex,
     id,
-  }: RF.NodeProps<DmnEditorDiagramNodeData<DMN15__tGroup>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
     const isHovered = (useIsHovered(ref) || isResizing) && !dragging;

@@ -42,6 +42,7 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
+    edgeIdBeingUpdated: string | undefined;
     dropTargetNode: DropTargetNode;
     propertiesPanel: {
       isOpen: boolean;
@@ -147,6 +148,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         tab: DmnEditorTab.EDITOR,
       },
       diagram: {
+        edgeIdBeingUpdated: undefined,
         dropTargetNode: undefined,
         propertiesPanel: {
           isOpen: false,

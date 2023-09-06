@@ -15,7 +15,7 @@ import { useEdgeUpdatersAtEdgeTips } from "./useEdgeUpdatersAtEdgeTips";
 
 const DEFAULT_EDGE_INTRACTION_WIDTH = 40;
 
-export type DmnEditorDiagramEdgeData = {
+export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
   dmnObject: {
     id: string;
@@ -117,7 +117,7 @@ const interactionStrokeProps: Partial<React.SVGAttributes<SVGPathElement>> = {
   strokeLinecap: "round",
 };
 
-export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
+export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -125,6 +125,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
+    props.selected,
     props.id,
     props.data?.dmnEdge?.index,
     interactionPathRef
@@ -162,7 +163,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdi
   );
 });
 
-export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
+export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -170,6 +171,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
+    props.selected,
     props.id,
     props.data?.dmnEdge?.index,
     interactionPathRef
@@ -207,7 +209,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
   );
 });
 
-export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
+export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -215,6 +217,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
+    props.selected,
     props.id,
     props.data?.dmnEdge?.index,
     interactionPathRef
@@ -257,7 +260,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnEdito
   );
 });
 
-export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramEdgeData>) => {
+export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeData>) => {
   const { path, points: waypoints } = useKieEdgePath(props.source, props.target, props.data);
 
   const interactionPathRef = React.useRef<SVGPathElement>(null);
@@ -265,6 +268,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnEditorDiagramE
 
   const { onMouseMove, onDoubleClick, potentialWaypoint, isDraggingWaypoint } = usePotentialWaypointControls(
     waypoints,
+    props.selected,
     props.id,
     props.data?.dmnEdge?.index,
     interactionPathRef

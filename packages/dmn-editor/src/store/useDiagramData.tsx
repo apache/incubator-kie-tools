@@ -10,9 +10,9 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { EdgeType } from "../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
-import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
+import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { DmnEditorDiagramNodeData } from "../diagram/nodes/Nodes";
+import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { idFromHref } from "../diagram/maths/DmnMaths";
 
 export const diagramColors = {
@@ -54,11 +54,11 @@ export function useDiagramData() {
       target,
       dmnObject,
     }: {
-      dmnObject: DmnEditorDiagramEdgeData["dmnObject"];
+      dmnObject: DmnDiagramEdgeData["dmnObject"];
       id: string;
       source: string;
       target: string;
-    }): DmnEditorDiagramEdgeData => {
+    }): DmnDiagramEdgeData => {
       return {
         dmnObject,
         dmnEdge: id ? dmnEdgesByDmnRefId.get(id) : undefined,
@@ -72,7 +72,7 @@ export function useDiagramData() {
   const { nodes, edges, nodesById } = useMemo(() => {
     // console.time("nodes");
 
-    const nodesById = new Map<string, RF.Node<DmnEditorDiagramNodeData<any>>>();
+    const nodesById = new Map<string, RF.Node<DmnDiagramNodeData<any>>>();
     const parentIdsById = new Map<
       string,
       Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
@@ -93,11 +93,11 @@ export function useDiagramData() {
       target,
     }: {
       id: string;
-      dmnObject: DmnEditorDiagramEdgeData["dmnObject"];
+      dmnObject: DmnDiagramEdgeData["dmnObject"];
       type: EdgeType;
       source: string;
       target: string;
-    }): RF.Edge<DmnEditorDiagramEdgeData> {
+    }): RF.Edge<DmnDiagramEdgeData> {
       return {
         data: getEdgeData({ id, source, target, dmnObject }),
         id,
@@ -111,9 +111,9 @@ export function useDiagramData() {
 
     // console.time("edges");
 
-    const edges: RF.Edge<DmnEditorDiagramEdgeData>[] = [
+    const edges: RF.Edge<DmnDiagramEdgeData>[] = [
       // information requirements
-      ...(dmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnEditorDiagramEdgeData>[]>((acc, dmnObject) => {
+      ...(dmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnDiagramEdgeData>[]>((acc, dmnObject) => {
         if (dmnObject.__$$element === "decision") {
           acc.push(
             ...(dmnObject.informationRequirement ?? []).map((ir) =>
@@ -219,7 +219,7 @@ export function useDiagramData() {
 
       const id = dmnObject["@_id"]!;
       const shape = dmnShapesByDmnRefId.get(id)!;
-      const newNode: RF.Node<DmnEditorDiagramNodeData<any>> = {
+      const newNode: RF.Node<DmnDiagramNodeData<any>> = {
         id,
         type,
         selected: selectedNodes.has(id),
@@ -251,7 +251,7 @@ export function useDiagramData() {
       return newNode;
     }
 
-    const nodes: RF.Node<DmnEditorDiagramNodeData<any>>[] = [
+    const nodes: RF.Node<DmnDiagramNodeData<any>>[] = [
       ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
         const newNode = ackNode(dmnObject, index);
         return newNode ? [newNode] : [];

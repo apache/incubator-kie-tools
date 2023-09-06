@@ -13,7 +13,11 @@ import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandl
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { _checkIsValidConnection } from "../diagram/connections/isValidConnection";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
-import { getBoundsCenterPoint, getPointForHandle } from "../diagram/maths/DmnMaths";
+import {
+  getBoundsCenterPoint,
+  getDiscreteAutoPositioningEdgeIdMarker,
+  getPointForHandle,
+} from "../diagram/maths/DmnMaths";
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { Unpacked } from "../store/useDiagramData";
@@ -61,7 +65,7 @@ export function addEdge({
     definitions.artifact?.push({
       __$$element: "association",
       ...newAssociation,
-      "@_id": removed?.["@_id"] ?? newEdgeId /* Keep the same ID */,
+      "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
     });
   }
   // Requirements
@@ -77,7 +81,7 @@ export function addEdge({
       drgElement.informationRequirement?.push(
         ...requirements.informationRequirement.map((s) => ({
           ...s,
-          "@_id": existingEdgeId ?? newEdgeId /* Keep the same ID */,
+          "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
         }))
       );
     }
@@ -91,7 +95,7 @@ export function addEdge({
       drgElement.knowledgeRequirement?.push(
         ...requirements.knowledgeRequirement.map((s) => ({
           ...s,
-          "@_id": existingEdgeId ?? newEdgeId /* Keep the same ID */,
+          "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
         }))
       );
     }
@@ -105,7 +109,7 @@ export function addEdge({
       drgElement.authorityRequirement?.push(
         ...requirements.authorityRequirement.map((s) => ({
           ...s,
-          "@_id": existingEdgeId ?? newEdgeId /* Keep the same ID */,
+          "@_id": tryKeepingEdgeId(existingEdgeId, newEdgeId),
         }))
       );
     }
@@ -133,7 +137,7 @@ export function addEdge({
 
   const newDmnEdge: Unpacked<typeof diagramElements> = {
     __$$element: "dmndi:DMNEdge",
-    "@_id": removedDmnEdge?.["@_id"] ?? generateUuid(),
+    "@_id": withoutDiscreteAutoPosinitioningMarker(removedDmnEdge?.["@_id"] ?? generateUuid()),
     "@_dmnElementRef": existingEdgeId ?? newEdgeId,
     "@_sourceElement": sourceNode.shapeId,
     "@_targetElement": targetNode.shapeId,
@@ -177,4 +181,13 @@ function removeFirstMatchIfPresent<T>(arr: T[], predicate: Parameters<Array<T>["
   const removed = arr[index] ?? undefined;
   arr.splice(index, index >= 0 ? 1 : 0);
   return removed;
+}
+
+function tryKeepingEdgeId(existingEdgeId: string | undefined, newEdgeId: string) {
+  return existingEdgeId ?? newEdgeId;
+}
+function withoutDiscreteAutoPosinitioningMarker(edgeId: string) {
+  const marker = getDiscreteAutoPositioningEdgeIdMarker(edgeId);
+  console.info(marker);
+  return marker ? edgeId.replace(`${marker}`, "") : edgeId;
 }

@@ -1,6 +1,6 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeType } from "../diagram/connections/graphStructure";
-import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
+import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { deleteEdge } from "./deleteEdge";
@@ -12,7 +12,7 @@ export function deleteNode({
 }: {
   definitions: DMN15__tDefinitions;
   node: { type: NodeType; id: string };
-  targetEdges: { id: string; data: DmnEditorDiagramEdgeData }[];
+  targetEdges: { id: string; data: DmnDiagramEdgeData }[];
 }) {
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 

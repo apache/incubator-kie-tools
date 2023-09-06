@@ -1,14 +1,14 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DMN15__tDecision, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
-import { DmnEditorDiagramEdgeData } from "../diagram/edges/Edges";
+import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 
 export function deleteEdge({
   definitions,
   edge,
 }: {
   definitions: DMN15__tDefinitions;
-  edge: { id: string; dmnObject: DmnEditorDiagramEdgeData["dmnObject"] };
+  edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
 }) {
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 

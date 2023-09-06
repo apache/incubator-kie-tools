@@ -5,33 +5,43 @@ import { EDGE_TYPES } from "../edges/EdgeTypes";
 import {
   AssociationPath,
   AuthorityRequirementPath,
+  DmnDiagramEdgeData,
   InformationRequirementPath,
   KnowledgeRequirementPath,
 } from "../edges/Edges";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { getPositionalHandlePosition } from "../maths/Maths";
 import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNodeSvg } from "../nodes/NodeSvgs";
-import { getNodeCenterPoint } from "../maths/DmnMaths";
+import { getNodeCenterPoint, pointsToPath } from "../maths/DmnMaths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
 import { useDmnEditorStore } from "../../store/Store";
+import { useKieEdgePath } from "../edges/useKieEdgePath";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
-  // FIXME: Tiago --> Use waypoints of existing edge if updating it, as they're kept when updating the edges.
+  const diagram = useDmnEditorStore((s) => s.diagram);
+
+  const edgeId = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
+  const edge: RF.Edge<DmnDiagramEdgeData> | undefined = RF.useStore((s) => s.edges.find(({ id }) => id === edgeId));
+  const kieEdgePath = useKieEdgePath(edge?.source, edge?.target, edge?.data);
 
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);
-  const diagram = useDmnEditorStore((s) => s.diagram);
+
+  const connectionLinePath =
+    edge && kieEdgePath.points
+      ? pointsToPath([...kieEdgePath.points.slice(0, -1), { "@_x": toX, "@_y": toY }]) // FIXME: Tiago --> Only works when updating the target.
+      : `M${fromX},${fromY} L${toX},${toY}`;
 
   // Edges
   if (fromHandle?.id === EDGE_TYPES.informationRequirement) {
-    return <InformationRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
+    return <InformationRequirementPath d={connectionLinePath} />;
   } else if (fromHandle?.id === EDGE_TYPES.knowledgeRequirement) {
-    return <KnowledgeRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
+    return <KnowledgeRequirementPath d={connectionLinePath} />;
   } else if (fromHandle?.id === EDGE_TYPES.authorityRequirement) {
-    return <AuthorityRequirementPath d={`M${fromX},${fromY} L${toX},${toY}`} centerToConnectionPoint={true} />;
+    return <AuthorityRequirementPath d={connectionLinePath} centerToConnectionPoint={true} />;
   } else if (fromHandle?.id === EDGE_TYPES.association) {
-    return <AssociationPath d={`M${fromX},${fromY} L${toX},${toY}`} />;
+    return <AssociationPath d={connectionLinePath} />;
   }
   // Nodes
   else {

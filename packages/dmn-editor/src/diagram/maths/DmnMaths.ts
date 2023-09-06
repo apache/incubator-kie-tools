@@ -2,6 +2,7 @@ import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshal
 import * as RF from "reactflow";
 import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
 import { getCenter } from "./Maths";
+import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 
 export function getDistance(a: DC__Point, b: DC__Point) {
   return Math.sqrt(Math.pow(a["@_x"] - b["@_x"], 2) + Math.pow(a["@_y"] - b["@_y"], 2));
@@ -39,7 +40,7 @@ export function getHandlePosition({
 }: {
   shapeBounds: DC__Bounds | undefined;
   waypoint: DC__Point;
-}) {
+}): TargetHandleId {
   const x = shapeBounds?.["@_x"] ?? 0;
   const y = shapeBounds?.["@_y"] ?? 0;
   const w = shapeBounds?.["@_width"] ?? 0;
@@ -149,4 +150,19 @@ export function getDecisionServiceDividerLineLocalY(shape: DMNDI15__DMNShape) {
 
 export function idFromHref(href: string | undefined) {
   return href?.substring(1) ?? "";
+}
+
+export const DISCRETE_AUTO_POSITIONING_DMN_EDGE_ID_MARKER = [
+  AutoPositionedEdgeMarker.BOTH, // This needs to be the first element.
+  AutoPositionedEdgeMarker.SOURCE,
+  AutoPositionedEdgeMarker.TARGET,
+];
+export function getDiscreteAutoPositioningEdgeIdMarker(edgeId: string): AutoPositionedEdgeMarker | undefined {
+  for (const marker of DISCRETE_AUTO_POSITIONING_DMN_EDGE_ID_MARKER) {
+    if (edgeId.endsWith(marker)) {
+      return marker;
+    }
+  }
+
+  return undefined;
 }

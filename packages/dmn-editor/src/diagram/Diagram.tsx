@@ -591,21 +591,34 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
           });
         }
+
+        // Keep the updated edge selected
+        state.diagram.selectedEdges = [newDmnEdge["@_dmnElementRef"]!];
       });
     },
     [dmnEditorStoreApi, nodesById]
   );
 
-  const onEdgeUpdateStart = useCallback(() => {
-    console.debug(
-      "DMN DIAGRAM: `onEdgeUpdateStart`: Doing nothing as `onConnectStart` will handle setting the connection already."
-    );
-  }, []);
+  const onEdgeUpdateStart = useCallback(
+    (e: React.MouseEvent | React.TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
+      console.debug("DMN DIAGRAM: `onEdgeUpdateStart`");
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.edgeIdBeingUpdated = edge.id;
+      });
+    },
+    [dmnEditorStoreApi]
+  );
 
-  const onEdgeUpdateEnd = useCallback((e: MouseEvent | TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
-    console.debug("DMN DIAGRAM: `onEdgeUpdateEnd`");
-    setConnection(undefined);
-  }, []);
+  const onEdgeUpdateEnd = useCallback(
+    (e: MouseEvent | TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
+      console.debug("DMN DIAGRAM: `onEdgeUpdateEnd`");
+      setConnection(undefined);
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.edgeIdBeingUpdated = undefined;
+      });
+    },
+    [dmnEditorStoreApi]
+  );
 
   return (
     <>

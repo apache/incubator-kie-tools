@@ -526,14 +526,22 @@ the cursor is inside it. By making it adimensional, that never happens.
   z-index: 10000;
 }
 
-/**/
+/* edge updaters */
 
-.react-flow__edgeupdater-target {
-  /* opacity: 0.2; */
-  fill: red;
+.react-flow__edgeupdater {
+  z-index: 9000;
+  fill: black;
+  stroke: white;
+  stroke-width: 2px;
+  r: 5; /* circle radius */
+  cursor: grab;
+}
+.react-flow__edgeupdater:hover {
+  r: 10; /* circle radius */
 }
 
-.react-flow__edgeupdater-source {
-  /* opacity: 0.2; */
-  fill: lightpink;
+.react-flow__edge:not(.selected) .react-flow__edgeupdater,
+.react-flow__edgeupdater.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
