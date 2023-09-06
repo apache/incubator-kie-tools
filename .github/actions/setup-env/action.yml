@@ -75,18 +75,6 @@ runs:
         brew untap homebrew/core homebrew/cask
         brew update
         brew install docker docker-compose
-        cat >entitlements.xml <<EOF
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-            <key>com.apple.security.hypervisor</key>
-            <true/>
-        </dict>
-        </plist>
-        EOF
-
-        codesign --sign - --entitlements entitlements.xml --force /usr/local/bin/qemu-system-$(uname -m | sed -e s/arm64/aarch64/)
         mkdir -p ~/.docker/cli-plugins
         ln -sfn $(brew --prefix)/opt/docker-compose/bin/docker-compose ~/.docker/cli-plugins/docker-compose
         brew install docker-Buildx
