@@ -33,7 +33,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-import { TestScenarioEditorDock } from "../editor/TestScenarioEditor";
+import { TestScenarioEditorDock } from "../TestScenarioEditor";
 
 export function SettingPanel() {
   return (
