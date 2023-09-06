@@ -598,7 +598,7 @@ export function useNodeClassName(
     return "dimmed";
   }
 
-  if (isEdgeConnection && isConnecting && !isValidConnectionTarget) {
+  if (isEdgeConnection && isConnecting && (!isValidConnectionTarget || connectionNodeId === nodeId)) {
     return "dimmed";
   }
 
