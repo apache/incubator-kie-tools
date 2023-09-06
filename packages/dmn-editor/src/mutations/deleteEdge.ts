@@ -1,5 +1,9 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { DMN15__tDecision, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tDecision,
+  DMN15__tDefinitions,
+  DMNDI15__DMNEdge,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 
@@ -39,8 +43,12 @@ export function deleteEdge({
   }
 
   // Deleting the DMNEdge's
+  let dmnEdge: DMNDI15__DMNEdge | undefined;
   const dmnEdgeIndex = (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === edge.id);
   if (dmnEdgeIndex >= 0) {
+    dmnEdge = diagramElements[dmnEdgeIndex];
     diagramElements?.splice(dmnEdgeIndex, 1);
   }
+
+  return { dmnEdge };
 }

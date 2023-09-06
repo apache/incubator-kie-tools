@@ -585,11 +585,26 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           keepWaypointsIfSameTarget: true,
         });
 
+        // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints!
+        // FIXME: What about other DMNEdge properties? Style etc. Should we keep those too?
         if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
-          deleteEdge({
+          const { dmnEdge: deletedDmnEdge } = deleteEdge({
             definitions: state.dmn.model.definitions,
             edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
           });
+
+          const deletedWaypoints = deletedDmnEdge?.["di:waypoint"];
+
+          if (oldEdge.source !== newConnection.source && deletedWaypoints) {
+            newDmnEdge["di:waypoint"] = [newDmnEdge["di:waypoint"]![0], ...deletedWaypoints.slice(1)];
+          }
+
+          if (oldEdge.target !== newConnection.target && deletedWaypoints) {
+            newDmnEdge["di:waypoint"] = [
+              ...deletedWaypoints.slice(0, deletedWaypoints.length - 1),
+              newDmnEdge["di:waypoint"]![newDmnEdge["di:waypoint"]!.length - 1],
+            ];
+          }
         }
 
         // Keep the updated edge selected
