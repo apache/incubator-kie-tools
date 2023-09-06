@@ -100,7 +100,7 @@ function TestScenarioCreationPanel({
   const assetsOption = [
     { value: "", label: "Select a type", disabled: true },
     { value: TestScenarioType[TestScenarioType.DMN], label: "Decision (DMN)", disabled: false },
-    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: true },
+    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: false },
   ];
 
   const [assetType, setAssetType] = React.useState("");
@@ -128,7 +128,7 @@ function TestScenarioCreationPanel({
             ))}
           </FormSelect>
         </FormGroup>
-        {assetType == TestScenarioType[TestScenarioType.DMN] && (
+        {assetType === TestScenarioType[TestScenarioType.DMN] && (
           <FormGroup label="Select DMN" isRequired>
             <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
               <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
@@ -191,7 +191,13 @@ function TestScenarioDocksPanel({
   );
 }
 
-function TestScenarioMainPanel() {
+function TestScenarioMainPanel({
+  fileName,
+  scesimModel,
+}: {
+  fileName: string;
+  scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
+}) {
   const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
 
   const onTabChanged = useCallback((_event, tab) => {
@@ -234,7 +240,14 @@ function TestScenarioMainPanel() {
             {tab === TestScenarioEditorTab.EDITOR && (
               <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
                 <DrawerContent
-                  panelContent={<TestToolsPanel selectedDock={dockPanel.selected} onClose={closeDockPanel} />}
+                  panelContent={
+                    <TestToolsPanel
+                      assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!}
+                      fileName={fileName}
+                      selectedDock={dockPanel.selected}
+                      onClose={closeDockPanel}
+                    />
+                  }
                 >
                   <DrawerContentBody>
                     <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
@@ -394,7 +407,7 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel />;
+            return <TestScenarioMainPanel fileName={scesimFile.path} scesimModel={scesimModel} />;
         }
       })()}
     </>

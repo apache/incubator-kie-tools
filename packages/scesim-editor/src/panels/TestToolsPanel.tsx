@@ -33,33 +33,50 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-import { TestScenarioEditorDock } from "../TestScenarioEditor";
+import { TestScenarioEditorDock, TestScenarioType } from "../TestScenarioEditor";
 
-export function SettingPanel() {
+export function SettingPanel({ fileName, assetType }: { fileName: string; assetType: string }) {
   return (
     <>
       <Title headingLevel={"h6"}>Name</Title>
-      <TextInput value={"test.scesim"} type="text" isDisabled />
+      <TextInput value={fileName} type="text" isDisabled />
       <Title headingLevel={"h6"}>Type</Title>
-      <TextInput value={"DMN"} type="text" isDisabled />
-      <Title headingLevel={"h6"}>DMN Model</Title>
-      <FormSelect value={"1"} aria-label="FormSelect Input" ouiaId="BasicFormSelect">
-        <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
-        <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
-      </FormSelect>
-      <Title headingLevel={"h6"}>DMN Namespace</Title>
-      <TextInput value={"Not available"} type="text" isDisabled />
-      <Title headingLevel={"h6"}>DMN Name</Title>
-      <TextInput value={"MockedDMN"} type="text" isDisabled />
+      <TextInput value={assetType} type="text" isDisabled />
+      {assetType === TestScenarioType[TestScenarioType.DMN] ? (
+        <>
+          <Title headingLevel={"h6"}>DMN Model</Title>
+          <FormSelect value={"1"} aria-label="FormSelect Input" ouiaId="BasicFormSelect">
+            <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
+            <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
+          </FormSelect>
+          <Title headingLevel={"h6"}>DMN Namespace</Title>
+          <TextInput value={"Not available"} type="text" isDisabled />
+          <Title headingLevel={"h6"}>DMN Name</Title>
+          <TextInput value={"MockedDMN"} type="text" isDisabled />
+        </>
+      ) : (
+        <>
+          <Title headingLevel={"h6"}>Kie Session</Title>
+          <TextInput value={""} type="text" />
+          <Title headingLevel={"h6"}>RuleFlowGroup/AgendaGroup</Title>
+          <TextInput value={""} type="text" />
+          <Checkbox id="stateless-session" label="Stateless Session" />
+        </>
+      )}
+
       <Checkbox id="skip-test" label="Skip this test scenario during the test" />
     </>
   );
 }
 
 export function TestToolsPanel({
+  assetType,
+  fileName,
   selectedDock,
   onClose,
 }: {
+  assetType: string;
+  fileName: string;
   selectedDock: TestScenarioEditorDock;
   onClose: () => void;
 }) {
@@ -104,7 +121,7 @@ export function TestToolsPanel({
                     </>
                   );
                 case TestScenarioEditorDock.SETTINGS:
-                  return <SettingPanel />;
+                  return <SettingPanel fileName={fileName} assetType={assetType} />;
                 default:
                   throw new Error("");
               }
