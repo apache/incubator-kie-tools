@@ -27,6 +27,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/scesim-marshaller": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
