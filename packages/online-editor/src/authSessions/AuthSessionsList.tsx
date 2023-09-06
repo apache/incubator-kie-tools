@@ -49,6 +49,7 @@ import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-f
 import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
 import { KieSandboxDeployedModel } from "../devDeployments/services/types";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { useDevDeploymentsServices } from "../devDeployments/DevDeploymentsServicesContextProvider";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions } = useAuthSessions();

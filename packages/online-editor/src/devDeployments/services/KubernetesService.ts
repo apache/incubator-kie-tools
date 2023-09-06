@@ -25,9 +25,9 @@ import {
   interpolateK8sResourceYamls,
   TokenMap,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { getNamespaceApiPath } from "./resources/kubernetes/Namespace";
-import { createSelfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReview";
 import { DeploymentState } from "./common";
+import { ResourceArgs } from "./types";
+import { DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -93,12 +93,15 @@ export class KubernetesService {
   }
 
   public kubernetesFetch(path: string, init?: RequestInit): Promise<Response> {
-    return fetch(`${this.baseUrl}/${path}`, init);
+    return fetch(`${this.baseUrl}/${path}`, {
+      headers: { Authorization: `Bearer ${this.args.connection.token}`, ...init?.headers },
+      ...init,
+    });
   }
 
-  public composeDeploymentUrlFromIngress(ingress: any): string {
-    return `${new URL(this.args.connection.host).origin}/${ingress.metadata.name}`;
-  }
+  // public composeDeploymentUrlFromIngress(ingress: any): string {
+  //   return `${new URL(this.args.connection.host).origin}/${ingress.metadata.name}`;
+  // }
 
   public extractDeploymentState(args: { deployment?: any }): DeploymentState {
     if (!args.deployment || !args.deployment.status) {
@@ -128,60 +131,6 @@ export class KubernetesService {
     return DeploymentState.UP;
   }
 
-  public async getNamespace() {
-    return this.kubernetesFetch(`/api/v1/namespaces/${this.args.connection.namespace}`);
-  }
-
-  public async isConnectionEstablished(
-    connection: KubernetesConnection,
-    requiredResources: string[] = ["deployments", "services", "ingresses"],
-    skipNamespaceCheck = false
-  ): Promise<KubernetesConnectionStatus> {
-    if (!skipNamespaceCheck) {
-      try {
-        try {
-          await this.kubernetesFetch(getNamespaceApiPath(this.args.connection.namespace), { method: "GET" });
-        } catch (e) {
-          if (e.cause.status === 404) {
-            return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
-          }
-          throw e;
-        }
-        const permissionsResultMap = await callK8sApiServer({
-          k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
-          k8sResourceYamls: parseK8sResourceYaml(
-            requiredResources.map((resource) =>
-              interpolateK8sResourceYamls(createSelfSubjectAccessReviewYaml, {
-                namespace: this.args.connection.namespace,
-                resource,
-              })
-            )
-          ),
-          k8sApiServerUrl: KubernetesService.getBaseUrl({ ...this.args, connection }),
-          k8sNamespace: connection.namespace,
-          k8sServiceAccountToken: connection.token,
-        }).then((results) =>
-          results.map((result) => ({
-            resource: result.spec.resourceAttributes.resource,
-            allowed: result.status.allowed,
-          }))
-        );
-
-        console.log(permissionsResultMap);
-
-        if (permissionsResultMap.some((permissionResult) => !permissionResult.allowed)) {
-          return KubernetesConnectionStatus.MISSING_PERMISSIONS;
-        }
-
-        return KubernetesConnectionStatus.CONNECTED;
-      } catch (error) {
-        console.error(error);
-        return KubernetesConnectionStatus.ERROR;
-      }
-    }
-    return KubernetesConnectionStatus.CONNECTED;
-  }
-
   public async applyResourceYamls(k8sResourceYamls: string[], tokens?: TokenMap) {
     const interpolatedYamls = tokens
       ? k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYamls(yamlContent, tokens))
@@ -193,6 +142,43 @@ export class KubernetesService {
       k8sNamespace: this.args.connection.namespace,
       k8sServiceAccountToken: this.args.connection.token,
     });
+  }
+
+  public async uploadAssets(args: {
+    resourceArgs: ResourceArgs;
+    deployment: DeploymentDescriptor;
+    workspaceZipBlob: Blob;
+    baseUrl: string;
+  }) {
+    // return new Promise<void>((resolve, reject) => {
+    //   let deploymentState = this.service.extractDeploymentState({ deployment: args.deployment });
+    //   const interval = setInterval(async () => {
+    //     if (deploymentState !== DeploymentState.UP) {
+    //       const deployment = await this.service.withFetch((fetcher: ResourceFetcher) =>
+    //         fetcher.execute<DeploymentDescriptor>({
+    //           target: new GetDeployment(args.resourceArgs),
+    //         })
+    //       );
+    //       deploymentState = this.service.extractDeploymentState({ deployment });
+    //     } else {
+    //       try {
+    //         const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
+    //         if (uploadStatus === "NOT_READY") {
+    //           return;
+    //         }
+    //         clearInterval(interval);
+    //         if (uploadStatus === "WAITING") {
+    //           await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob });
+    //           resolve();
+    //         }
+    //       } catch (e) {
+    //         console.error(e);
+    //         reject(e);
+    //         clearInterval(interval);
+    //       }
+    //     }
+    //   }, CHECK_UPLOAD_STATUS_POLLING_TIME);
+    // });
   }
 
   public newResourceName(prefix: string): string {

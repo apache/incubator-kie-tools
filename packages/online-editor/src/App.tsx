@@ -40,6 +40,7 @@ import { AuthSessionsContextProvider } from "./authSessions/AuthSessionsContext"
 import { AccountsContextProvider } from "./accounts/AccountsContext";
 import { GlobalAlertsContextProvider } from "./alerts";
 import { WorkspacesContextProviderWithCustomCommitMessagesModal } from "./workspace/components/WorkspacesContextProviderWithCustomCommitMessagesModal";
+import { DevDeploymentsServicesContextProvider } from "./devDeployments/DevDeploymentsServicesContextProvider";
 
 export function App() {
   return (
@@ -55,6 +56,7 @@ export function App() {
         [GlobalAlertsContextProvider, []],
         [WorkspacesContextProviderWithCustomCommitMessagesModal, {}],
         [DmnRunnerPersistenceDispatchContextProvider, {}],
+        [DevDeploymentsServicesContextProvider, {}],
         [DevDeploymentsContextProvider, {}],
         [NavigationContextProvider, {}],
         [PreviewSvgsContextProvider, {}],

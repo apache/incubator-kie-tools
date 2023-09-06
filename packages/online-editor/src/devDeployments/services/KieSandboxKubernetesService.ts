@@ -50,32 +50,85 @@ import {
   buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
   interpolateK8sResourceYamls,
+  K8sApiServerEndpointByResourceKind,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 import { createDeploymentYaml, getDeploymentListApiPath } from "./resources/kubernetes/Deployment";
 import { createServiceYaml } from "./resources/kubernetes/Service";
 import { createIngressYaml } from "./resources/kubernetes/Ingress";
+import { getNamespaceApiPath } from "./resources/kubernetes/Namespace";
+import { createSelfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReview";
+import { v4 as uuid } from "uuid";
+import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
 export class KieSandboxKubernetesService implements KieSandboxDeploymentService {
-  service: KubernetesService;
-  constructor(readonly args: KubernetesServiceArgs) {
-    this.service = new KubernetesService(args);
+  id: string;
+  type = CloudAuthSessionType.Kubernetes;
+
+  constructor(readonly args: KubernetesServiceArgs, id?: string) {
+    this.id = id ?? uuid();
+  }
+
+  get kubernetesService() {
+    return new KubernetesService(this.args);
   }
 
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
-    return this.service.isConnectionEstablished(this.args.connection);
+    try {
+      try {
+        await this.kubernetesService.kubernetesFetch(getNamespaceApiPath(this.args.connection.namespace), {
+          method: "GET",
+        });
+      } catch (e) {
+        if (e.cause.status === 404) {
+          return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+        }
+        throw e;
+      }
+
+      const requiredResources = ["deployments", "services", "ingresses"];
+
+      const permissionsResultMap = await callK8sApiServer({
+        k8sApiServerEndpointsByResourceKind: this.args.k8sApiServerEndpointsByResourceKind,
+        k8sResourceYamls: parseK8sResourceYaml(
+          requiredResources.map((resource) =>
+            interpolateK8sResourceYamls(createSelfSubjectAccessReviewYaml, {
+              namespace: this.args.connection.namespace,
+              resource,
+            })
+          )
+        ),
+        k8sApiServerUrl: KubernetesService.getBaseUrl(this.args),
+        k8sNamespace: this.args.connection.namespace,
+        k8sServiceAccountToken: this.args.connection.token,
+      }).then((results) =>
+        results.map((result) => ({
+          resource: result.spec.resourceAttributes.resource,
+          allowed: result.status.allowed,
+        }))
+      );
+
+      if (permissionsResultMap.some((permissionResult) => !permissionResult.allowed)) {
+        return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+      }
+
+      return KubernetesConnectionStatus.CONNECTED;
+    } catch (error) {
+      console.error(error);
+      return KubernetesConnectionStatus.ERROR;
+    }
   }
 
   public newResourceName(): string {
-    return this.service.newResourceName(RESOURCE_PREFIX);
+    return this.kubernetesService.newResourceName(RESOURCE_PREFIX);
   }
 
   public async listDeployments(): Promise<DeploymentDescriptor[]> {
-    const deployments = await this.service.kubernetesFetch(
+    const deployments = await this.kubernetesService.kubernetesFetch(
       getDeploymentListApiPath(this.args.connection.namespace, defaultLabelTokens.createdBy)
     );
 
@@ -241,7 +294,10 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
 
   public async deploy(args: DeployArgs): Promise<void> {
     console.log(
-      await this.service.applyResourceYamls([createDeploymentYaml, createServiceYaml, createIngressYaml], args.tokenMap)
+      await this.kubernetesService.applyResourceYamls(
+        [createDeploymentYaml, createServiceYaml, createIngressYaml],
+        args.tokenMap
+      )
     );
     // this.uploadAssets({ resourceArgs, deployment, workspaceZipBlob: args.workspaceZipBlob, baseUrl: ingressUrl });
   }
@@ -277,7 +333,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     deployment: DeploymentDescriptor,
     uploadStatus: UploadStatus
   ): DeploymentState {
-    const state = this.service.extractDeploymentState({ deployment });
+    const state = this.kubernetesService.extractDeploymentState({ deployment });
 
     if (state !== DeploymentState.UP) {
       return state;
@@ -295,7 +351,8 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
   }
 
   getIngressUrl(resource: IngressDescriptor): string {
-    return this.service.composeDeploymentUrlFromIngress(resource);
+    // return this.kubernetesService.composeDeploymentUrlFromIngress(resource);
+    return "";
   }
 
   // async createIngress(

@@ -32,69 +32,80 @@ import {
 import { KieSandboxKubernetesService, RESOURCE_OWNER } from "./KieSandboxKubernetesService";
 import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
 import { getUploadStatus } from "../DmnDevDeploymentQuarkusAppApi";
-import { KubernetesConnectionStatus, KubernetesServiceArgs } from "./KubernetesService";
+import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
+import { getProjectApiPath } from "./resources/openshift/Project";
+import { v4 as uuid } from "uuid";
+import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 
 export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
-  kieSandboxKubernetesService: KieSandboxKubernetesService;
+  id: string;
+  type = CloudAuthSessionType.OpenShift;
 
-  constructor(readonly args: KubernetesServiceArgs) {
-    this.kieSandboxKubernetesService = new KieSandboxKubernetesService(args);
+  constructor(readonly args: KubernetesServiceArgs, id?: string) {
+    this.id = id ?? uuid();
   }
+
+  get kubernetesService() {
+    return new KubernetesService(this.args);
+  }
+
   uploadAssets(args: {
     resourceArgs: ResourceArgs;
     deployment: DeploymentDescriptor;
     workspaceZipBlob: Blob;
     baseUrl: string;
   }): Promise<void> {
-    return this.kieSandboxKubernetesService.uploadAssets(args);
+    return this.kubernetesService.uploadAssets(args);
   }
 
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
-    return this.kieSandboxKubernetesService.service.isConnectionEstablished(
-      this.args.connection,
-      ["deployment", "services", "routes"],
-      true
-    );
+    try {
+      await this.kubernetesService.kubernetesFetch(getProjectApiPath(this.args.connection.namespace));
+      return KubernetesConnectionStatus.CONNECTED;
+    } catch (_e) {
+      return KubernetesConnectionStatus.ERROR;
+    }
   }
 
   public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {
-    const deployments = await this.kieSandboxKubernetesService.listDeployments();
+    // const deployments = await this.kieSandboxKubernetesService.listDeployments();
 
-    if (!deployments.length) {
-      return [];
-    }
+    // if (!deployments.length) {
+    //   return [];
+    // }
 
-    const routes = await this.listRoutes();
+    // const routes = await this.listRoutes();
 
-    const uploadStatuses = await Promise.all(
-      routes
-        .map((route) => this.getRouteUrl(route))
-        .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
-    );
+    // const uploadStatuses = await Promise.all(
+    //   routes
+    //     .map((route) => this.getRouteUrl(route))
+    //     .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
+    // );
 
-    return deployments
-      .filter(
-        (deployment) =>
-          deployment.status &&
-          deployment.metadata.name &&
-          deployment.metadata.annotations &&
-          deployment.metadata.labels &&
-          deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
-          routes.some((route) => route.metadata.name === deployment.metadata.name)
-      )
-      .map((deployment) => {
-        const route = routes.find((route) => route.metadata.name === deployment.metadata.name)!;
-        const baseUrl = this.getRouteUrl(route);
-        const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
-        return {
-          resourceName: deployment.metadata.name!,
-          uri: deployment.metadata.annotations![ResourceLabelNames.URI],
-          routeUrl: baseUrl,
-          creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
-          state: this.kieSandboxKubernetesService.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
-          workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
-        };
-      });
+    // return deployments
+    //   .filter(
+    //     (deployment) =>
+    //       deployment.status &&
+    //       deployment.metadata.name &&
+    //       deployment.metadata.annotations &&
+    //       deployment.metadata.labels &&
+    //       deployment.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER &&
+    //       routes.some((route) => route.metadata.name === deployment.metadata.name)
+    //   )
+    //   .map((deployment) => {
+    //     const route = routes.find((route) => route.metadata.name === deployment.metadata.name)!;
+    //     const baseUrl = this.getRouteUrl(route);
+    //     const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
+    //     return {
+    //       resourceName: deployment.metadata.name!,
+    //       uri: deployment.metadata.annotations![ResourceLabelNames.URI],
+    //       routeUrl: baseUrl,
+    //       creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
+    //       state: this.kieSandboxKubernetesService.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
+    //       workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
+    //     };
+    //   });
+    return [];
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
@@ -129,9 +140,9 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
   }
 
   public async deleteDevDeployment(resourceName: string): Promise<void> {
-    this.kieSandboxKubernetesService.deleteDeployment(resourceName);
-    this.kieSandboxKubernetesService.deleteService(resourceName);
-    this.deleteRoute(resourceName);
+    // this.kieSandboxKubernetesService.deleteDeployment(resourceName);
+    // this.kieSandboxKubernetesService.deleteService(resourceName);
+    // this.deleteRoute(resourceName);
   }
 
   getRouteUrl(resource: RouteDescriptor): string {

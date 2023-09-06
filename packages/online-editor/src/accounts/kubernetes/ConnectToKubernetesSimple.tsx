@@ -29,7 +29,7 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
-import { KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
+import { CloudAuthSessionType, KubernetesAuthSession } from "../../authSessions/AuthSessionApi";
 import { KieSandboxKubernetesService } from "../../devDeployments/services/KieSandboxKubernetesService";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import {
@@ -78,7 +78,7 @@ export function ConnectToKubernetesSimple(props: {
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: KubernetesAuthSession = {
-        type: "kubernetes",
+        type: CloudAuthSessionType.Kubernetes,
         id: uuid(),
         ...props.connection,
         authProviderId: "kubernetes",

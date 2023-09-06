@@ -38,8 +38,13 @@ export type GitAuthSession = {
   createdAtDateISO: string;
 };
 
+export enum CloudAuthSessionType {
+  OpenShift = "openshift",
+  Kubernetes = "kubernetes",
+}
+
 export type OpenShiftAuthSession = {
-  type: "openshift";
+  type: CloudAuthSessionType.OpenShift;
   id: string;
   authProviderId: string;
   createdAtDateISO: string;
@@ -50,7 +55,7 @@ export type OpenShiftAuthSession = {
 };
 
 export type KubernetesAuthSession = {
-  type: "kubernetes";
+  type: CloudAuthSessionType.Kubernetes;
   id: string;
   authProviderId: string;
   createdAtDateISO: string;

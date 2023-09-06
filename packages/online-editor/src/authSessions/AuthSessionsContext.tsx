@@ -41,6 +41,7 @@ import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { KubernetesService } from "../devDeployments/services/KubernetesService";
+import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -176,41 +177,43 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 return [authSession.id, AuthSessionStatus.VALID];
               }
             } else if (authSession.type === "openshift") {
-              try {
-                if (
-                  (await new KieSandboxOpenShiftService({
-                    connection: authSession,
-                    proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-                    k8sApiServerEndpointsByResourceKind: await KubernetesService.getK8sApiServerEndpointsMap({
-                      connection: authSession,
-                      proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-                    }),
-                  }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
-                ) {
-                  return [authSession.id, AuthSessionStatus.VALID];
-                } else {
-                  return [authSession.id, AuthSessionStatus.INVALID];
-                }
-              } catch (e) {
-                return [authSession.id, AuthSessionStatus.INVALID];
-              }
+              // try {
+              //   if (
+              //     (await new KieSandboxOpenShiftService({
+              //       connection: authSession,
+              //       proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+              //       k8sApiServerEndpointsByResourceKind: await KubernetesService.getK8sApiServerEndpointsMap({
+              //         connection: authSession,
+              //         proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+              //       }),
+              //     }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+              //   ) {
+              //     return [authSession.id, AuthSessionStatus.VALID];
+              //   } else {
+              //     return [authSession.id, AuthSessionStatus.INVALID];
+              //   }
+              // } catch (e) {
+              //   return [authSession.id, AuthSessionStatus.INVALID];
+              // }
+              return [authSession.id, AuthSessionStatus.VALID];
             } else if (authSession.type === "kubernetes") {
-              try {
-                if (
-                  (await new KieSandboxOpenShiftService({
-                    connection: authSession,
-                    k8sApiServerEndpointsByResourceKind: await KubernetesService.getK8sApiServerEndpointsMap({
-                      connection: authSession,
-                    }),
-                  }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
-                ) {
-                  return [authSession.id, AuthSessionStatus.VALID];
-                } else {
-                  return [authSession.id, AuthSessionStatus.INVALID];
-                }
-              } catch (e) {
-                return [authSession.id, AuthSessionStatus.INVALID];
-              }
+              // try {
+              //   if (
+              //     (await new KieSandboxKubernetesService({
+              //       connection: authSession,
+              //       k8sApiServerEndpointsByResourceKind: await KubernetesService.getK8sApiServerEndpointsMap({
+              //         connection: authSession,
+              //       }),
+              //     }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+              //   ) {
+              //     return [authSession.id, AuthSessionStatus.VALID];
+              //   } else {
+              //     return [authSession.id, AuthSessionStatus.INVALID];
+              //   }
+              // } catch (e) {
+              //   return [authSession.id, AuthSessionStatus.INVALID];
+              // }
+              return [authSession.id, AuthSessionStatus.VALID];
             } else {
               return [authSession.id, AuthSessionStatus.VALID];
             }

@@ -20,6 +20,8 @@
 import { TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeployedModel, DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { KubernetesServiceArgs } from "./KubernetesService";
+import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 
 export type KieSandboxDeployedModel = DeployedModel & {
   uri: string;
@@ -37,7 +39,13 @@ export type ResourceArgs = {
   createdBy: string;
 };
 
-export type KieSandboxDeploymentService = {
+export type KieSandboxDeploymentServiceProps = {
+  id: string;
+  type: CloudAuthSessionType;
+  args: KubernetesServiceArgs;
+};
+
+export type KieSandboxDeploymentService = KieSandboxDeploymentServiceProps & {
   isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
   loadDeployedModels(): Promise<KieSandboxDeployedModel[]>;
   deploy(args: DeployArgs): Promise<void>;

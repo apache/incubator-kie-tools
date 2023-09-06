@@ -36,7 +36,7 @@ import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesS
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
-import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import { CloudAuthSessionType, OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
   KubernetesConnectionStatus,
@@ -81,7 +81,7 @@ export function ConnecToOpenShiftSimple(props: {
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
       const newAuthSession: OpenShiftAuthSession = {
-        type: "openshift",
+        type: CloudAuthSessionType.OpenShift,
         id: uuid(),
         ...props.connection,
         authProviderId: "openshift",
