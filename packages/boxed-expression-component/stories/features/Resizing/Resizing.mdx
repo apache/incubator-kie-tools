@@ -9,34 +9,34 @@ The boxed expression component gives the possibility to resize almost every cell
 The resize operation recursively affects all nested expressions in the same column
 keeping the resize operation consistent.
 
-To perform a resize operation, the column should have a entry or a expression on it. It's not possible
+The column should have an entry or an expression on it so the resize operation can be performed. It's not possible
 to resize index cells, or a column with only empty expressions.
 
 To perform the resize operation hover the mouse on a cell of the desired column.
-A resize handle on the right side of the cell will appear. Right clicking on it and draging
-will resize the cell. The minimum depends of the expression or column, and it does not have a maxium width.
+A resize handle on the right side of the cell will appear. Right-clicking on it and dragging
+will resize the cell. The minimum depends on the expression or column. It does not have a maximum width.
 
 <div style={{ display: "flex", flexDirection: "row" }}>
   <Story of={Resizing.CanDrive} />
   <small>
     <br />
     <br />
-    This example brings a Boxed Literal expression with the 500px width.
+    This example brings a Boxed Literal expression with a 500px width.
   </small>
 </div>
 
-On nested expressions the default minimal size of a column will be changed accordlying to the
+On nested expressions, the default minimal size of a column will be changed according to the
 minimal size of the expression. e.g. a nested decision table can't have a minor size than
 the sum of the minimal size of its columns.
 
 <div style={{ display: "flex", flexDirection: "column" }}>
   <Story of={Resizing.Nested} />
-  <small>This example brings a Boxed Context expression with nested expressions with different sizes.</small>
+  <small>This example brings a Boxed Context expression with nested expressions of different sizes.</small>
 </div>
 
 # Reset
 
 To reset the size of a column hover the mouse on a cell of the column.
-The resize handle on the right side of the cell will appear. Double right clicking on it will
+The resize handle on the right side of the cell will appear. Double right-clicking on it will
 reset the column size to the default value. It's important to notice that the default size
-can vary depending of nested expressions.
+can vary depending on nested expressions.
