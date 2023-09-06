@@ -3,6 +3,16 @@ import { PreBureauAffordability } from "./PreBureauAffordability.tsx";
 
 <Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Affordability" />
 
+The **Pre-bureau affordability** decision is a
+[Boxed Invocation](/docs/boxed-expressions-invocation--overview) expression.
+It invokes the [Afforadability calculation](/docs/use-cases-loan-originations-functions-affordability-calculation--overview)
+function passing the five required parameters. All five parameters are
+[Boxed Literal](/docs/boxed-expressions-literal--overview) expressions. The first three have the purpose
+of saving the applicant's data. The last two passes down the results of the
+[Pre-bureau risk category](/docs/use-cases-loan-originations-routing-decision-service-pre-bureau-risk-category--overview)
+and [Required monthly installment](/docs/use-cases-loan-originations-required-monthly-installment--overview)
+decisions.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <PreBureauAffordability />
 </Canvas>

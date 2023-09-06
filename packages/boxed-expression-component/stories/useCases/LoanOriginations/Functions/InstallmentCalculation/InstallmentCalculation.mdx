@@ -3,6 +3,18 @@ import { InstallmentCalculation } from "./InstallmentCalculation.tsx";
 
 <Meta title="Use cases/Loan Originations/Functions/Installment Calculation" />
 
+The **Installment calculation** Business Knowledge Model is a
+[Boxed Function](/docs/boxed-expressions-function--overview) expression.
+It has four parameters, Product Type, Rate, Term, and Amount. The function contains a
+[Boxed Context](/docs/boxed-expressions-context--overview) on its body with two
+entries. The "Monthly Fee" entry is a [Boxed Literal](/docs/boxed-expressions-literal--overview)
+and calculates the Fee based on the "Product Type".
+The "Monthly Repayments" entry also is a [Boxed Literal](/docs/boxed-expressions-literal--overview),
+and it calculates the monthly value to be paid. The
+result of the [Boxed Context](/docs/boxed-expressions-context--overview),
+which is the return of the [Boxed Function](/docs/boxed-expressions-function--overview)
+is a [Boxed Literal](/docs/boxed-expressions-literal--overview) and returns the sum of both context entries.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <InstallmentCalculation />
 </Canvas>

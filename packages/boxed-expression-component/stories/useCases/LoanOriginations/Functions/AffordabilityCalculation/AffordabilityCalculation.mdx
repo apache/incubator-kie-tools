@@ -3,6 +3,21 @@ import { AffordabilityCalculation } from "./AffordabilityCalculation.tsx";
 
 <Meta title="Use cases/Loan Originations/Functions/Affordability Calculation" />
 
+The **Affordability Calculation** Business Knowledge Model is a
+[Boxed Function](/docs/boxed-expressions-function--overview) expression.
+It has five parameters," Monthly Income", "Monthly Repayments", "Monthly Expenses",
+"Risk Category", and "Required Monthly Installment". The function contains a
+[Boxed Context](/docs/boxed-expressions-context--overview) on
+its body with two entries. The "Disposable Income" entry is a [Boxed Literal](/docs/boxed-expressions-literal--overview)
+which makes a calculation based on the monthly "Income", "Repayments"
+and "Expenses". The "Credit Contingency Factor" entry has a
+[Decision Table](/docs/boxed-expressions-decision-table--overview), which returns
+the "Credit Contingency Factor" value based on the "Risk Category".
+The result of the [Boxed Context](/docs/boxed-expressions-context--overview),
+which is the return of the [Boxed Function](/docs/boxed-expressions-function--overview),
+returns a boolean value based on the "Disposable Income", "Credit Contingency Factor"
+and "Required Monthly Installment".
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <AffordabilityCalculation />
 </Canvas>

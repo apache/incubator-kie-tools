@@ -3,6 +3,14 @@ import { Eligibility } from "./Eligibility.tsx";
 
 <Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Eligibility" />
 
+The **Eligibility** decision is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
+_First_ Hit Policy. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
+creates rules based on the applicant's "Age" and the results of the
+"[Pre-bureau affordability](/docs/use-cases-loan-originations-bureau-strategy-decision-service-pre-bureau-affordability--overview)"
+and "[Pre-bureau risk category](/docs/use-cases-loan-originations-bureau-strategy-decision-service-pre-bureau-risk-category--overview)" decisions.
+The result is if the applicant is "Ineligible" or "Eligible" for the requested loan.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <Eligibility />
 </Canvas>

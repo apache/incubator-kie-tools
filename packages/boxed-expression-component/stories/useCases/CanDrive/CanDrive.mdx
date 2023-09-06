@@ -5,15 +5,15 @@ import { CanDrive } from "./CanDrive.tsx";
 
 ## Can drive?
 
-**Can drive?** is a simple example of a decision that checks if the person can drive in specific country
-or not. It uses a "Person" input and a "Can drive?" decision.
+**Can drive?** is a simple example of a decision that checks if a person can drive in a specific country.
+It uses a "Person" input and a "Can drive?" decision.
 
 <p>
   <img src={"/can-drive-dmn.png"} alt="Can Drive DMN" title="Can Drive DMN" />
 </p>
 
-It was created a "tPerson" data type which is a structure with "Country" and "Age" values. The country is a enumeration
-with three possible values: "Brazil", "US", "England".
+For this DMN, a "tPerson" data type was created. It is a structure with "Country" and "Age" values. The country is an enumeration
+with three possible values: "Brazil", "US", and "England".
 
 <p>
   <img src={"/can-drive-data-types.png"} alt="Can Drive Data Types" title="Can Drive Data Types" />
@@ -21,9 +21,10 @@ with three possible values: "Brazil", "US", "England".
 
 ## Boxed Expression
 
-The **Can drive?** decision uses a [Decision Table](/docs/boxed-expressions-decision-table--overview) expression with all possible values, and therefore a Unique
-Hit Policy. It checks the combination of the Person Age and Country to dictate if the Person can drive or
-not on its Country.
+The **Can drive?** decision uses a [Decision Table](/docs/boxed-expressions-decision-table--overview)
+expression with all possible values, and therefore a **Unique**
+Hit Policy. It checks the combination of the Person's Age and Country to dictate if the Person can drive or
+not in its Country.
 
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <CanDrive />

@@ -12,7 +12,7 @@ const loanOriginationsDataTypes = [
   { typeRef: "t.BureauRiskCategory", name: "t.BureauRiskCategory", isCustom: true },
   { typeRef: "t.Eligibility", name: "t.Eligibility", isCustom: true },
   { typeRef: "t.EmploymentStatus", name: "t.EmploymentStatus", isCustom: true },
-  { typeRef: "t.MaritialStatus", name: "t.MaritialStatus", isCustom: true },
+  { typeRef: "t.MaritalStatus", name: "t.MaritalStatus", isCustom: true },
   { typeRef: "t.ProductType", name: "t.ProductType", isCustom: true },
   { typeRef: "t.RequestedProduc", name: "t.RequestedProduc", isCustom: true },
   { typeRef: "t.Routing", name: "t.Routing", isCustom: true },

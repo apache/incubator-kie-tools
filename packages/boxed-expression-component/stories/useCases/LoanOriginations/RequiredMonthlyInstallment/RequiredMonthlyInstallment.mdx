@@ -3,6 +3,13 @@ import { RequiredMonthlyInstallment } from "./RequiredMonthlyInstallment.tsx";
 
 <Meta title="Use cases/Loan Originations/Required Monthly Installment" />
 
+The **Required monthly installment** decision is a
+[Boxed Invocation](/docs/boxed-expressions-invocation--overview) expression.
+It invokes the [Installment calculation](/docs/use-cases-loan-originations-functions-installment-calculation--overview)
+function passing the four required parameters. All four parameters are
+[Boxed Literal](/docs/boxed-expressions-literal--overview) expressions with the purpose of
+saving the desired properties of the requested product.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <RequiredMonthlyInstallment />
 </Canvas>

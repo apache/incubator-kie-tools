@@ -3,6 +3,20 @@ import { Routing } from "./Routing.tsx";
 
 <Meta title="Use cases/Loan Originations/Routing Decision Service/Routing" />
 
+The **Routing** decision is a
+[Boxed Context](/docs/boxed-expressions-context--overview) expression.
+It has two context entries with [Boxed Literal](/docs/boxed-expressions-literal--overview)
+expressions. The first entry, "Bankrupt", saves if the applicant is bankrupted.
+The second entry, "Credit Score", saves the credit score value that comes from the bureau office.
+The result expression is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) with
+the _Priority_ Hit Policy, which uses the "Bankrupt", "Credit Score",
+"[Post-bureau affordability](/docs/use-cases-loan-originations-application-risk-score--overview)", and
+"[Post-bureau risk category](/docs/use-cases-loan-originations-application-risk-score--overview)"
+to create rules. The [Decision Table](/docs/boxed-expressions-decision-table--overview) result determines
+if the applicant loan will be declined ("Decline"), accepted ("Accept"), or manually revised ("Refer").
+The priority is set, in order, to "Decline", "Refer", and "Accept".
+
 <Canvas style={{ border: "unset", boxShadow: "unset", width: "fit-content" }}>
   <Routing />
 </Canvas>

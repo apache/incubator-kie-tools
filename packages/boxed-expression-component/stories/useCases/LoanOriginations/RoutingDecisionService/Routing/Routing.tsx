@@ -52,7 +52,7 @@ export function Routing() {
           name: "Result Expression",
           dataType: DmnBuiltInDataType.Undefined,
           logicType: ExpressionDefinitionLogicType.DecisionTable,
-          hitPolicy: DecisionTableExpressionDefinitionHitPolicy.First,
+          hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Priority,
           aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
           annotations: [{ name: "annotation-1", width: 104 }],
           input: [

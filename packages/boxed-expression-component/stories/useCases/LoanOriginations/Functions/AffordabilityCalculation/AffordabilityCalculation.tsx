@@ -58,104 +58,80 @@ export const affordabilityCalculationExpression: FunctionExpressionDefinition = 
           dataType: DmnBuiltInDataType.Number,
         },
         entryExpression: {
-          id: "_B2B24D48-8D43-493B-B3DC-D02AA5E6FA30",
-          name: "Credit Contigency Factor",
-          dataType: DmnBuiltInDataType.Number,
-          logicType: ExpressionDefinitionLogicType.Context,
-          contextEntries: [
+          id: "_AC320F29-8043-4A9E-9A5A-7E07C873084F",
+          name: "Result Expression",
+          dataType: DmnBuiltInDataType.Undefined,
+          logicType: ExpressionDefinitionLogicType.DecisionTable,
+          hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
+          aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
+          annotations: [{ name: "annotation-1", width: 126 }],
+          input: [
             {
-              entryInfo: {
-                id: "_CA4ADB45-F815-46D7-84C5-7A41CCB5DDC2",
-                name: "Risk Category",
-                dataType: "t.BureauRiskCategory" as DmnBuiltInDataType,
-              },
-              entryExpression: {
-                id: "_2A63B4FA-F6F1-4A68-8280-50C8F42AFEA5",
-                name: "Risk Category",
-                dataType: "t.BureauRiskCategory" as DmnBuiltInDataType,
-                logicType: ExpressionDefinitionLogicType.Literal,
-                content: "Risk Category",
-                width: 514,
-              },
+              id: "_7283628F-FDB6-4DEC-95D4-B7678B86DCAA",
+              name: "Risk Category",
+              dataType: "t.BureauRiskCategory" as DmnBuiltInDataType,
+              width: 194,
+              idLiteralExpression: "_0BDDD624-2B0C-4E90-8B90-5C43DA87E5F8",
             },
           ],
-          result: {
-            id: "_AC320F29-8043-4A9E-9A5A-7E07C873084F",
-            name: "Result Expression",
-            dataType: DmnBuiltInDataType.Undefined,
-            logicType: ExpressionDefinitionLogicType.DecisionTable,
-            hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Unique,
-            aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
-            annotations: [{ name: "annotation-1", width: 126 }],
-            input: [
-              {
-                id: "_7283628F-FDB6-4DEC-95D4-B7678B86DCAA",
-                name: "Risk Category",
-                dataType: "t.BureauRiskCategory" as DmnBuiltInDataType,
-                width: 194,
-                idLiteralExpression: "_0BDDD624-2B0C-4E90-8B90-5C43DA87E5F8",
-              },
-            ],
-            output: [
-              {
-                id: "_58BFBB2D-C78F-4D6A-AA3E-26D1A2ABA7EA",
-                name: "Result Expression",
-                dataType: DmnBuiltInDataType.Undefined,
-                width: 154,
-              },
-            ],
-            rules: [
-              {
-                id: "_52890D5C-85F5-422B-B771-54CD0FAD4A40",
-                inputEntries: [
-                  {
-                    id: "_53A9B5E0-6856-4D6F-BD72-59C3466D361B",
-                    content: '"High", "Decline"',
-                  },
-                ],
-                outputEntries: [
-                  {
-                    id: "_0F5156D3-8A67-49DD-95FC-EEECE54075C5",
-                    content: "0.6",
-                  },
-                ],
-                annotationEntries: [""],
-              },
-              {
-                id: "_64813FBD-87E7-4A67-AF78-DAAC2086C3DF",
-                inputEntries: [
-                  {
-                    id: "_2FBB1F6F-0DBA-4F5D-B0B2-983D72C624EE",
-                    content: '"Medium"',
-                  },
-                ],
-                outputEntries: [
-                  {
-                    id: "_EB8648E9-C865-4048-BF9A-944571BD8D37",
-                    content: "0.7",
-                  },
-                ],
-                annotationEntries: [""],
-              },
-              {
-                id: "_AEF602C0-ABC0-4553-A792-5C2140E6F07E",
-                inputEntries: [
-                  {
-                    id: "_DA84E1D2-B550-4C6A-A4E4-49B832F378BF",
-                    content: '"Low", "Very Low"',
-                  },
-                ],
-                outputEntries: [
-                  {
-                    id: "_59478925-F88C-4DC5-81E6-70D70815C949",
-                    content: "0.8",
-                  },
-                ],
-                annotationEntries: [""],
-              },
-            ],
-          },
-          entryInfoWidth: 120,
+          output: [
+            {
+              id: "_58BFBB2D-C78F-4D6A-AA3E-26D1A2ABA7EA",
+              name: "Result Expression",
+              dataType: DmnBuiltInDataType.Undefined,
+              width: 154,
+            },
+          ],
+          rules: [
+            {
+              id: "_52890D5C-85F5-422B-B771-54CD0FAD4A40",
+              inputEntries: [
+                {
+                  id: "_53A9B5E0-6856-4D6F-BD72-59C3466D361B",
+                  content: '"High", "Decline"',
+                },
+              ],
+              outputEntries: [
+                {
+                  id: "_0F5156D3-8A67-49DD-95FC-EEECE54075C5",
+                  content: "0.6",
+                },
+              ],
+              annotationEntries: [""],
+            },
+            {
+              id: "_64813FBD-87E7-4A67-AF78-DAAC2086C3DF",
+              inputEntries: [
+                {
+                  id: "_2FBB1F6F-0DBA-4F5D-B0B2-983D72C624EE",
+                  content: '"Medium"',
+                },
+              ],
+              outputEntries: [
+                {
+                  id: "_EB8648E9-C865-4048-BF9A-944571BD8D37",
+                  content: "0.7",
+                },
+              ],
+              annotationEntries: [""],
+            },
+            {
+              id: "_AEF602C0-ABC0-4553-A792-5C2140E6F07E",
+              inputEntries: [
+                {
+                  id: "_DA84E1D2-B550-4C6A-A4E4-49B832F378BF",
+                  content: '"Low", "Very Low"',
+                },
+              ],
+              outputEntries: [
+                {
+                  id: "_59478925-F88C-4DC5-81E6-70D70815C949",
+                  content: "0.8",
+                },
+              ],
+              annotationEntries: [""],
+            },
+          ],
         },
       },
     ],

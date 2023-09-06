@@ -3,6 +3,16 @@ import { ApplicationRiskScore } from "./ApplicationRiskScore.tsx";
 
 <Meta title="Use cases/Loan Originations/Application Risk Score" />
 
+The **Application risk score** decision is a
+[Boxed Context](/docs/boxed-expressions-context--overview) expression.
+It has three context entries with [Boxed Literal](/docs/boxed-expressions-literal--overview)
+expressions, with the purpose of saving the desired
+properties to be used on the result expression. Those values are the applicant's
+"Age", "Marital Status" and "Employment Status". The result expression is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) with
+the _Collect_ Hit Policy and the _Sum_ aggregation,
+meaning that all matched rules will be summed and returned.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <ApplicationRiskScore />
 </Canvas>

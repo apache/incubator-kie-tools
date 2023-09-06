@@ -5,20 +5,20 @@ import { Employees, FindByEmployees, FindEmployeesByKnowledge } from "./FindEmpl
 
 ## Find Employees
 
-This examples brings a employee finder by knowledge and department. The following DRD brings two input nodes "Knowledge"
-and "Dept" (Department) that will be used for the search. It also contains two decision nodes, one with the employees
-information, called "Employees", and "Find by Employees" responsible to invoke the function "Find employee by knowledge"
+This example brings an employee finder by knowledge and department. The following DRD brings two input nodes "Knowledge"
+and "Dept" (Department) that will be used for the search. It also contains two decision nodes, one with the employee's
+information, called "Employees", and one "Find by Employees" responsible for invoking the function "Find an employee by knowledge"
 on the Business Knowledge Model node.
 
 <p>
   <img src={"/find-employees-dmn.png"} alt="Find Employees DMN" title="Find Employees DMN" />
 </p>
 
-It was created some data types for this DMN model. The "tEmployee" data type which contains
+It was created some data types for this DMN model. The "tEmployee" data type contains
 all relevant information about the employee, such as "Id", "Knowledges", "Dept" and "Name".
 The "Knowledges" is of the type "tKnowledges", which is a list of "tKnowledge". It can have
-the values "Git", "Java", "Scrum", "TypeScript".
-The "Dept" is from the type "tDept", which is a enumeration with the "Sales", "Engineering"
+the values "Git", "Java", "Scrum", and "TypeScript".
+The "Dept" is from the type "tDept", which is an enumeration with the "Sales", "Engineering"
 and "Management" values.
 
 <p>
@@ -27,16 +27,16 @@ and "Management" values.
 
 ## Boxed expressions
 
-The decision logic of the DRG were divided as follow:
+The decision logic of the DRG was divided as follow:
 
 ### Employees
 
 ---
 
-This decision node contains all Employees information. For this, it's used the
+This decision node contains all Employee's information. For this, it's used the
 [Relation](/docs/boxed-expressions-relation--overview) expression, which enables
-to create a column for each Employee property. The Employee contains Id, Name, Dept
-(Department) and the employee Knowledges. The Knowledges is a List of Knowledge.
+to creation of a column for each Employee property. The Employee contains "Id", "Name", "Dept"
+(Department) and the employee's "Knowledges". The " Knowledges" is a List of Knowledge.
 
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <Employees />
@@ -46,15 +46,17 @@ to create a column for each Employee property. The Employee contains Id, Name, D
 
 ---
 
-The Business Knowledge Model **Find emplyees by knowledge** contains a
+The Business Knowledge Model **Find employees by knowledge** contains a
 [Boxed Function](/docs/boxed-expressions-function--overview) expression. This function has
-receive three parameters: "employees", "knowledge" and "dept" and returns a list of employees that met the knowledge
-and dept requirements.
-The [Boxed Function](/docs/boxed-expressions-function--overview) has a nested
-[Boxed Context](/docs/boxed-expressions-context--overview). The first context entry is responsible to filter the Employees list
-by department and save the value as **Employees by**. The second context entry **Employees with Knowledge** checks
-each employee if it has the required knowledge, for the ones that has the knowledge, they are returned, otherwise
-is returned null. Finally, the Employees with Knowledge is filtered removing all null values.
+received three parameters: "employees", "knowledge" and "dept" and returns a list of employees that met the knowledge
+and department requirements. The [Boxed Function](/docs/boxed-expressions-function--overview) has a
+[Boxed Context](/docs/boxed-expressions-context--overview) on its body. The first context entry has a
+[Boxed Literal](/docs/boxed-expressions-literal--overview), and is responsible
+for filtering the Employees list by department and saving the value as **Employees by**.
+The second context entry **Employees with Knowledge** also has a
+[Boxed Literal](/docs/boxed-expressions-literal--overview) and checks the required knowledge on all employees,
+the ones that know are returned, otherwise returns null. Finally, on the context results, we have a
+a [Boxed Literal](/docs/boxed-expressions-literal--overview) which filters the null values from **Employees with Knowledge**
 
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <FindEmployeesByKnowledge />
@@ -64,9 +66,9 @@ is returned null. Finally, the Employees with Knowledge is filtered removing all
 
 ---
 
-The **Find by Employees** decision invokes the **Find emplyees by knowledge** function using a
+The **Find by Employees** decision invokes the **Find employees by knowledge** function using a
 [Boxed Invocation](/docs/boxed-expressions-invocation--overview).
-The "Knowledge" and "Dept" comes from input nodes, and "Employees" comes from the **Employees** decision node.
+The "Knowledge" and "Dept" come from input nodes, and "Employees" comes from the **Employees** decision node.
 
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <FindByEmployees />

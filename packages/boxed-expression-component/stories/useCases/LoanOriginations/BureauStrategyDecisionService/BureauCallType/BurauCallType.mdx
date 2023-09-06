@@ -3,6 +3,14 @@ import { BureauCallType } from "./BureauCallType.tsx";
 
 <Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Bureau Call Type" />
 
+The **Bureau call type** decision is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
+_Unique_ Hit Policy. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
+creates rules with the result of the
+"[Pre-bureau risk category](/docs/use-cases-loan-originations-bureau-strategy-decision-service-pre-bureau-risk-category--overview)" decision.
+The result is how much data should be requested from the credit bureau for this application. It can be "Full", meaning all information
+available. It can be "Mini", meaning a minimal amount of data. Finally, "None" if no data is needed.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <BureauCallType />
 </Canvas>

@@ -3,6 +3,15 @@ import { Strategy } from "./Strategy.tsx";
 
 <Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Strategy" />
 
+The **Strategy** decision is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
+_Unique_ Hit Policy. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
+creates rules with the results of the
+"[Bureau call type](/docs/use-cases-loan-originations-bureau-strategy-decision-service-bureau-call-type--overview)"
+and "[Eligibility](/docs/use-cases-loan-originations-bureau-strategy-decision-service-eligibility--overview)" decisions.
+The result is which strategy the office should follow for the applicant. The office can "Decline" the loan, pass "Through"
+the next steps, or collect more data from the "Bureau" office.
+
 <Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <Strategy />
 </Canvas>

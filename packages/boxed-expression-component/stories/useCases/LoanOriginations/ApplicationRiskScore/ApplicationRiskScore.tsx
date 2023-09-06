@@ -28,15 +28,15 @@ export const applicationRiskScoreExpression: ContextExpressionDefinition = {
     {
       entryInfo: {
         id: "_A3E35C5D-A643-40AA-A490-772105D00738",
-        name: "Maritial Status",
+        name: "Marital Status",
         dataType: "t.MaritalStatus" as DmnBuiltInDataType,
       },
       entryExpression: {
         id: "_F3354465-FA19-4664-A0A1-355511122FBE",
-        name: "Maritial Status",
+        name: "Marital Status",
         dataType: "t.MaritalStatus" as DmnBuiltInDataType,
         logicType: ExpressionDefinitionLogicType.Literal,
-        content: "Applicant data.MaritialStatus",
+        content: "Applicant data.MaritalStatus",
         width: 739,
       },
     },
@@ -81,7 +81,7 @@ export const applicationRiskScoreExpression: ContextExpressionDefinition = {
       },
       {
         id: "_34A3B4B2-988F-49CF-9729-50B97B11B3AB",
-        name: "Maritial Status",
+        name: "Marital Status",
         dataType: "t.MaritalStatus" as DmnBuiltInDataType,
         width: 144,
         idLiteralExpression: "_4A1DB037-D38D-45D1-A8E8-CB17896811B2",
