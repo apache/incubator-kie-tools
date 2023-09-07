@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Cell selection", () => {
   test.beforeEach(async ({ expressions, browserName }) => {

@@ -8,7 +8,7 @@ test.describe("Expression context menu", () => {
     );
 
     await boxedExpressionEditor.goto();
-    await boxedExpressionEditor.selectLiteralExpression();
+    await boxedExpressionEditor.selectBoxedLiteral();
   });
 
   test("should reset expression", async ({ page }) => {

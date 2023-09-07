@@ -19,14 +19,39 @@ class BoxedExpressionEditor {
     await from.getByText("Select expression").click();
   }
 
-  public async selectLiteralExpression(from: Page | Locator = this.page) {
+  public async selectBoxedLiteral(from: Page | Locator = this.page) {
     this.select(from);
     await from.getByRole("menuitem", { name: "Literal" }).click();
   }
 
-  public async selectContextExpression(from: Page | Locator = this.page) {
+  public async selectBoxedContext(from: Page | Locator = this.page) {
     this.select(from);
     await from.getByRole("menuitem", { name: "Context" }).click();
+  }
+
+  public async selectDecisionTable(from: Page | Locator = this.page) {
+    this.select(from);
+    await from.getByRole("menuitem", { name: "Decision" }).click();
+  }
+
+  public async selectRelation(from: Page | Locator = this.page) {
+    this.select(from);
+    await from.getByRole("menuitem", { name: "Relation" }).click();
+  }
+
+  public async selectBoxedInvocation(from: Page | Locator = this.page) {
+    this.select(from);
+    await from.getByRole("menuitem", { name: "Invocation" }).click();
+  }
+
+  public async selectBoxedList(from: Page | Locator = this.page) {
+    this.select(from);
+    await from.getByRole("menuitem", { name: "List" }).click();
+  }
+
+  public async selectBoxedFunction(from: Page | Locator = this.page) {
+    this.select(from);
+    await from.getByRole("menuitem", { name: "Function" }).click();
   }
 
   public async goto() {

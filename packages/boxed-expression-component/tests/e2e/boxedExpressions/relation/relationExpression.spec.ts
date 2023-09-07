@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Relation expression", () => {
   test("should render expression correctly", async ({ boxedExpressionEditor, expressions, page }) => {

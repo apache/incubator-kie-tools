@@ -1,5 +1,5 @@
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {

@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/boxedExpression";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Cell context menu", () => {
