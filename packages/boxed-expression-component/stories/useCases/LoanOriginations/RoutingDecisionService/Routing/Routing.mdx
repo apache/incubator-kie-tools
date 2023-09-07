@@ -1,7 +1,7 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { Routing } from "./Routing.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as Routing from "./Routing.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Routing Decision Service/Routing" />
+<Meta title="Use cases/Loan Originations/Routing Decision Service/Routing" of={Routing} />
 
 The **Routing** decision is a
 [Boxed Context](/docs/boxed-expressions-context--overview) expression.
@@ -17,6 +17,4 @@ to create rules. The [Decision Table](/docs/boxed-expressions-decision-table--ov
 if the applicant loan will be declined ("Decline"), accepted ("Accept"), or manually revised ("Refer").
 The priority is set, in order, to "Decline", "Refer", and "Accept".
 
-<Canvas style={{ border: "unset", boxShadow: "unset", width: "fit-content" }}>
-  <Routing />
-</Canvas>
+<Story of={Routing.Expression} />

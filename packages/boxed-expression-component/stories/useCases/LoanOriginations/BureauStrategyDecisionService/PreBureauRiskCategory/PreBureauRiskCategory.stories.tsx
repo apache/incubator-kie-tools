@@ -1,5 +1,4 @@
 import * as React from "react";
-import { BoxedExpressionEditorBase } from "../../boxedExpressionEditorBase";
 import {
   ContextExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
@@ -7,6 +6,19 @@ import {
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
 } from "../../../../../src/api";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
+import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Risk Category",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const preBureauRiskCategoryExpression: ContextExpressionDefinition = {
   id: "_21BA0CB9-F15E-482F-BCBB-F6694EF9B1FC",
@@ -159,6 +171,15 @@ export const preBureauRiskCategoryExpression: ContextExpressionDefinition = {
   entryInfoWidth: 154,
 };
 
-export function PreBureauRiskCategory() {
-  return <BoxedExpressionEditorBase expressionDefinition={preBureauRiskCategoryExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: preBureauRiskCategoryExpression,
+    dataTypes: loanOriginationsDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

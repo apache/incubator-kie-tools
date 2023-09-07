@@ -3,7 +3,7 @@ import { ExpressionDefinition } from "../../../src/api";
 import { BoxedExpressionComponentWrapper } from "../../boxedExpressionComponentWrapper";
 import { dataTypes } from "../../boxedExpressionStoriesWrapper";
 
-const loanOriginationsDataTypes = [
+export const loanOriginationsDataTypes = [
   ...dataTypes,
   { typeRef: "t.Adjudication", name: "t.Adjudication", isCustom: true },
   { typeRef: "t.ApplicantData", name: "t.ApplicantData", isCustom: true },

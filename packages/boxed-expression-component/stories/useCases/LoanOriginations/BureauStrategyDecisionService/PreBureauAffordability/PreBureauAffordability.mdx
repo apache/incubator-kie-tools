@@ -1,7 +1,10 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { PreBureauAffordability } from "./PreBureauAffordability.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as PreBureauAffordability from "./PreBureauAffordability.stories";
 
-<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Affordability" />
+<Meta
+  title="Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Affordability"
+  of={PreBureauAffordability}
+/>
 
 The **Pre-bureau affordability** decision is a
 [Boxed Invocation](/docs/boxed-expressions-invocation--overview) expression.
@@ -13,6 +16,4 @@ of saving the applicant's data. The last two passes down the results of the
 and [Required monthly installment](/docs/use-cases-loan-originations-required-monthly-installment--overview)
 decisions.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <PreBureauAffordability />
-</Canvas>
+<Story of={PreBureauAffordability.Expression} />

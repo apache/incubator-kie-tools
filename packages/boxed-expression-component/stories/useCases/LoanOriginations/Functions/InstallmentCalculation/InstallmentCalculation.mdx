@@ -1,7 +1,7 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { InstallmentCalculation } from "./InstallmentCalculation.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as InstallmentCalculation from "./InstallmentCalculation.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Functions/Installment Calculation" />
+<Meta title="Use cases/Loan Originations/Functions/Installment Calculation" of={InstallmentCalculation} />
 
 The **Installment calculation** Business Knowledge Model is a
 [Boxed Function](/docs/boxed-expressions-function--overview) expression.
@@ -15,6 +15,4 @@ result of the [Boxed Context](/docs/boxed-expressions-context--overview),
 which is the return of the [Boxed Function](/docs/boxed-expressions-function--overview)
 is a [Boxed Literal](/docs/boxed-expressions-literal--overview) and returns the sum of both context entries.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <InstallmentCalculation />
-</Canvas>
+<Story of={InstallmentCalculation.Expression} />

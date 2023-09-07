@@ -2,7 +2,7 @@ import { test, expect } from "../__fixtures__/boxedExpression";
 
 test.describe("Context menu popover", () => {
   test("should open context menu and change name and type", async ({ expressions, page }) => {
-    await expressions.openLiteralExpression();
+    await expressions.openBoxedLiteral();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await expect(page.getByTestId("expression-container")).toBeAttached();
@@ -21,7 +21,7 @@ test.describe("Context menu popover", () => {
   });
 
   test("should open context menu and cancel value change of name and type", async ({ expressions, page }) => {
-    await expressions.openLiteralExpression();
+    await expressions.openBoxedLiteral();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await expect(page.getByTestId("expression-container")).toBeAttached();

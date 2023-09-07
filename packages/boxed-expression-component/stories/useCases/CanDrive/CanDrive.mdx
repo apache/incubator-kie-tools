@@ -1,7 +1,7 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
-import { CanDrive } from "./CanDrive.tsx";
+import * as CanDrive from "./CanDrive.stories";
 
-<Meta title="Use cases/Can drive?" />
+<Meta title="MDX/Use cases/Can drive?" of={CanDrive} />
 
 ## Can drive?
 
@@ -26,6 +26,4 @@ expression with all possible values, and therefore a **Unique**
 Hit Policy. It checks the combination of the Person's Age and Country to dictate if the Person can drive or
 not in its Country.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <CanDrive />
-</Canvas>
+<Story of={CanDrive.Expression} />

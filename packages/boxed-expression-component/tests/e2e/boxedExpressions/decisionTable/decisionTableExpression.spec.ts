@@ -1,8 +1,8 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
-test.describe("Decision table expression", () => {
+test.describe("Create Decision table", () => {
   test.beforeEach(async ({ expressions }) => {
-    await expressions.openDecisionTableExpression();
+    await expressions.openDecisionTable();
   });
 
   test("should render expression correctly", async ({ boxedExpressionEditor, page }) => {

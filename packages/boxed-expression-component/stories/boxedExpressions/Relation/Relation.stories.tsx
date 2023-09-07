@@ -121,6 +121,111 @@ export const People: Story = {
   },
 };
 
+export const Bigger: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlParams"] },
+  args: {
+    ...Base.args,
+    expressionDefinition: {
+      id: generateUuid(),
+      name: "Expression Name",
+      dataType: DmnBuiltInDataType.Undefined,
+      logicType: ExpressionDefinitionLogicType.Relation,
+      columns: [
+        {
+          id: generateUuid(),
+          name: "column-1",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: 100,
+        },
+        {
+          id: generateUuid(),
+          name: "column-2",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: 100,
+        },
+        {
+          id: generateUuid(),
+          name: "column-3",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: 100,
+        },
+        {
+          id: generateUuid(),
+          name: "column-4",
+          dataType: DmnBuiltInDataType.Undefined,
+          width: 100,
+        },
+      ],
+      rows: [
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+          ],
+        },
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+          ],
+        },
+        {
+          id: generateUuid(),
+          cells: [
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+            {
+              id: generateUuid(),
+              content: "",
+            },
+          ],
+        },
+      ],
+    },
+  },
+};
+
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Nested: Story = {
   render: (args) => BoxedExpressionEditorWrapper(),

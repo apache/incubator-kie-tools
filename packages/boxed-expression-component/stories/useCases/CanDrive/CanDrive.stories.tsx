@@ -1,30 +1,30 @@
 import * as React from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   DecisionTableExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
   DmnBuiltInDataType,
-  ExpressionDefinition,
   ExpressionDefinitionLogicType,
 } from "../../../src/api";
-import { dataTypes } from "../../boxedExpressionStoriesWrapper";
-import { BoxedExpressionComponentWrapper } from "../../boxedExpressionComponentWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+import {
+  BoxedExpressionEditorWrapper,
+  beeGwtService,
+  dataTypes,
+  pmmlParams,
+} from "../../boxedExpressionStoriesWrapper";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Can drive?",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const findEmployeesDataTypes = [...dataTypes, { typeRef: "tPerson", name: "tPerson", isCustom: true }];
-
-export function BoxedExpressionEditorBase(props: { expressionDefinition: ExpressionDefinition }) {
-  const emptyRef = React.useRef<HTMLDivElement>(null);
-
-  return (
-    <div ref={emptyRef}>
-      <BoxedExpressionComponentWrapper
-        expressionDefinition={props.expressionDefinition}
-        dataTypes={findEmployeesDataTypes}
-        isResetSupportedOnRootExpression={false}
-      />
-    </div>
-  );
-}
 
 export const canDriveExpressionDefinition: DecisionTableExpressionDefinition = {
   id: "_21608B6A-1D9E-426D-86CF-B0CA7AB20D31",
@@ -116,6 +116,15 @@ export const canDriveExpressionDefinition: DecisionTableExpressionDefinition = {
   ],
 };
 
-export function CanDrive() {
-  return <BoxedExpressionEditorBase expressionDefinition={canDriveExpressionDefinition} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: canDriveExpressionDefinition,
+    dataTypes: findEmployeesDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

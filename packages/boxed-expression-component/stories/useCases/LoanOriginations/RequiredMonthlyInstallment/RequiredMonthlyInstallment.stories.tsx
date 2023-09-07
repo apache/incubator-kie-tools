@@ -1,6 +1,18 @@
 import * as React from "react";
-import { BoxedExpressionEditorBase } from "../boxedExpressionEditorBase";
 import { DmnBuiltInDataType, ExpressionDefinitionLogicType, InvocationExpressionDefinition } from "../../../../src/api";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../src/expressions";
+import { loanOriginationsDataTypes } from "../boxedExpressionEditorBase";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Loan Originations/Required monthly installment",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const requiredMonthlyInstallmentExpression: InvocationExpressionDefinition = {
   id: "_EF51A747-D5E1-414E-9DD5-964362FB2AEC",
@@ -61,6 +73,15 @@ export const requiredMonthlyInstallmentExpression: InvocationExpressionDefinitio
   entryInfoWidth: 120,
 };
 
-export function RequiredMonthlyInstallment() {
-  return <BoxedExpressionEditorBase expressionDefinition={requiredMonthlyInstallmentExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: requiredMonthlyInstallmentExpression,
+    dataTypes: loanOriginationsDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

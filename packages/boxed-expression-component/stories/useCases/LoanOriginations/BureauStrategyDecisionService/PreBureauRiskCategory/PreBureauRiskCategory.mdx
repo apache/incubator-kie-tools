@@ -1,7 +1,10 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { PreBureauRiskCategory } from "./PreBureauRiskCategory.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as PreBureauRiskCategory from "./PreBureauRiskCategory.stories";
 
-<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Risk Category" />
+<Meta
+  title="Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Risk Category"
+  of={PreBureauRiskCategory}
+/>
 
 The **Pre-bureau risk category** decision is a
 [Boxed Context](/docs/boxed-expressions-context--overview) expression.
@@ -14,6 +17,4 @@ the _Unique_ Hit Policy, which uses the "Existing Customer", and
 to create rules. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
 is a complete table with all possible combinations.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <PreBureauRiskCategory />
-</Canvas>
+<Story of={PreBureauRiskCategory.Expression} />

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { BoxedExpressionEditorBase } from "../../boxedExpressionEditorBase";
 import {
   ContextExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
@@ -7,6 +6,19 @@ import {
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
 } from "../../../../../src/api";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
+import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Loan Originations/Routing Decision Service/Post Bureau Risk Category",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const postBureauRiskCategoryExpression: ContextExpressionDefinition = {
   id: "_55A050DB-250D-473E-A7DF-43C49CE87694",
@@ -246,6 +258,15 @@ export const postBureauRiskCategoryExpression: ContextExpressionDefinition = {
   entryInfoWidth: 154,
 };
 
-export function PostBureauRiskCategory() {
-  return <BoxedExpressionEditorBase expressionDefinition={postBureauRiskCategoryExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: postBureauRiskCategoryExpression,
+    dataTypes: loanOriginationsDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

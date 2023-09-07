@@ -1,7 +1,7 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { BureauCallType } from "./BureauCallType.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as BureauCallType from "./BureauCallType.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Bureau Call Type" />
+<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Bureau Call Type" of={BureauCallType} />
 
 The **Bureau call type** decision is a
 [Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
@@ -11,6 +11,4 @@ creates rules with the result of the
 The result is how much data should be requested from the credit bureau for this application. It can be "Full", meaning all information
 available. It can be "Mini", meaning a minimal amount of data. Finally, "None" if no data is needed.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <BureauCallType />
-</Canvas>
+<Story of={BureauCallType.Expression} />

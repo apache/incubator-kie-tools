@@ -1,7 +1,7 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { Strategy } from "./Strategy.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as Strategy from "./Strategy.stories";
 
-<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Strategy" />
+<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Strategy" of={Strategy} />
 
 The **Strategy** decision is a
 [Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
@@ -12,6 +12,4 @@ and "[Eligibility](/docs/use-cases-loan-originations-bureau-strategy-decision-se
 The result is which strategy the office should follow for the applicant. The office can "Decline" the loan, pass "Through"
 the next steps, or collect more data from the "Bureau" office.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <Strategy />
-</Canvas>
+<Story of={Strategy.Expression} />

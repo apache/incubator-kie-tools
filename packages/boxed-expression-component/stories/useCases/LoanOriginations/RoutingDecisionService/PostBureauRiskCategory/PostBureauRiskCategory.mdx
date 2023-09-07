@@ -1,7 +1,10 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { PostBureauRiskCategory } from "./PostBureauRiskCategory.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as PostBureauRiskCategory from "./PostBureauRiskCategory.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Routing Decision Service/Post Bureau Risk Category" />
+<Meta
+  title="Use cases/Loan Originations/Routing Decision Service/Post Bureau Risk Category"
+  of={PostBureauRiskCategory}
+/>
 
 The **Post-bureau risk category** decision is a
 [Boxed Context](/docs/boxed-expressions-context--overview) expression.
@@ -15,6 +18,4 @@ the _Unique_ Hit Policy, which uses the "Existing Customer", "Credit Score", and
 to create rules. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
 is a complete table with all possible combinations.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <PostBureauRiskCategory />
-</Canvas>
+<Story of={PostBureauRiskCategory.Expression} />

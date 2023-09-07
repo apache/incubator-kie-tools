@@ -1,7 +1,7 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { Eligibility } from "./Eligibility.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as Eligibility from "./Eligibility.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Eligibility" />
+<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Eligibility" of={Eligibility} />
 
 The **Eligibility** decision is a
 [Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
@@ -11,6 +11,4 @@ creates rules based on the applicant's "Age" and the results of the
 and "[Pre-bureau risk category](/docs/use-cases-loan-originations-bureau-strategy-decision-service-pre-bureau-risk-category--overview)" decisions.
 The result is if the applicant is "Ineligible" or "Eligible" for the requested loan.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <Eligibility />
-</Canvas>
+<Story of={Eligibility.Expression} />

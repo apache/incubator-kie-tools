@@ -1,5 +1,4 @@
 import * as React from "react";
-import { BoxedExpressionEditorBase } from "../../boxedExpressionEditorBase";
 import {
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
@@ -8,6 +7,19 @@ import {
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
 } from "../../../../../src/api";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
+import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Loan Originations/Functions/Affordability Calculation",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const affordabilityCalculationExpression: FunctionExpressionDefinition = {
   id: "_72FC1D95-7AB8-4459-9815-D2EC186DD40A",
@@ -147,6 +159,15 @@ export const affordabilityCalculationExpression: FunctionExpressionDefinition = 
   },
 };
 
-export function AffordabilityCalculation() {
-  return <BoxedExpressionEditorBase expressionDefinition={affordabilityCalculationExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: affordabilityCalculationExpression,
+    dataTypes: loanOriginationsDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

@@ -1,7 +1,7 @@
-import { Meta, Canvas } from "@storybook/blocks";
-import { Employees, FindByEmployees, FindEmployeesByKnowledge } from "./FindEmployees.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as FindEmployees from "./FindEmployees.stories";
 
-<Meta title="Use cases/Find Employees" />
+<Meta title="MDX/Use cases/Find Employees" of={FindEmployees} />
 
 ## Find Employees
 
@@ -38,9 +38,7 @@ This decision node contains all Employee's information. For this, it's used the
 to creation of a column for each Employee property. The Employee contains "Id", "Name", "Dept"
 (Department) and the employee's "Knowledges". The " Knowledges" is a List of Knowledge.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <Employees />
-</Canvas>
+<Story of={FindEmployees.Employees} />
 
 ### Find employee by knowledge
 
@@ -52,15 +50,13 @@ received three parameters: "employees", "knowledge" and "dept" and returns a lis
 and department requirements. The [Boxed Function](/docs/boxed-expressions-function--overview) has a
 [Boxed Context](/docs/boxed-expressions-context--overview) on its body. The first context entry has a
 [Boxed Literal](/docs/boxed-expressions-literal--overview), and is responsible
-for filtering the Employees list by department and saving the value as **Employees by**.
+for filtering the Employees list by department and saving the value as **Employees by Dept**.
 The second context entry **Employees with Knowledge** also has a
 [Boxed Literal](/docs/boxed-expressions-literal--overview) and checks the required knowledge on all employees,
 the ones that know are returned, otherwise returns null. Finally, on the context results, we have a
 a [Boxed Literal](/docs/boxed-expressions-literal--overview) which filters the null values from **Employees with Knowledge**
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <FindEmployeesByKnowledge />
-</Canvas>
+<Story of={FindEmployees.FindEmployeesByKnowledge} />
 
 ### Find by Employees
 
@@ -70,6 +66,4 @@ The **Find by Employees** decision invokes the **Find employees by knowledge** f
 [Boxed Invocation](/docs/boxed-expressions-invocation--overview).
 The "Knowledge" and "Dept" come from input nodes, and "Employees" comes from the **Employees** decision node.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <FindByEmployees />
-</Canvas>
+<Story of={FindEmployees.FindByEmployees} />

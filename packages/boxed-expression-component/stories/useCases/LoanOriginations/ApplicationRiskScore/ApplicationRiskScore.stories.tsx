@@ -1,5 +1,5 @@
 import * as React from "react";
-import { BoxedExpressionEditorBase } from "../boxedExpressionEditorBase";
+import { loanOriginationsDataTypes } from "../boxedExpressionEditorBase";
 import {
   ContextExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
@@ -7,6 +7,18 @@ import {
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
 } from "../../../../src/api";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../src/expressions";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Loan Originations/Application Risk Score",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const applicationRiskScoreExpression: ContextExpressionDefinition = {
   id: "_36398C55-5ED1-41C6-B643-98DBDD52D143",
@@ -223,6 +235,15 @@ export const applicationRiskScoreExpression: ContextExpressionDefinition = {
   entryInfoWidth: 176,
 };
 
-export function ApplicationRiskScore() {
-  return <BoxedExpressionEditorBase expressionDefinition={applicationRiskScoreExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: applicationRiskScoreExpression,
+    dataTypes: loanOriginationsDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

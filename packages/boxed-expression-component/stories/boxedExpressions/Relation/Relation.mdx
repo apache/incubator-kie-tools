@@ -81,23 +81,30 @@ Right-clicking on it will add a new column on the right or left side of the actu
 
 ## Examples
 
-<div style={{ display: "flex", flexDirection: "column"}}>
-  <div style={{ display: "flex", flexDirection: "row"}}>
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
     <Story of={Relation.Base} />
     <small>
-      <br/>
-      <br/>
-      <br/>
+      <br />
+      <br />
+      <br />
       The smallest Relation expression with one variable and one row.
     </small>
   </div>
-
-  <div style={{ display: "flex", flexDirection: "row"}}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Relation.Bigger} />
+    <small>
+      <br />
+      <br />
+      <br />A Relation expression with size 4x3.
+    </small>
+  </div>
+  <div style={{ display: "flex", flexDirection: "row" }}>
     <Story of={Relation.Nested} />
     <small>
-      <br/>
-      <br/>
-      <br/>
+      <br />
+      <br />
+      <br />
       The smallest Relation expression nested in a Boxed Context.
     </small>
   </div>

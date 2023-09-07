@@ -4,7 +4,7 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 test.describe("Cell context menu", () => {
   test.describe("Rows control", () => {
     test.beforeEach(async ({ expressions, page }) => {
-      await expressions.openRelationExpression();
+      await expressions.openRelation();
       await page.getByTestId("monaco-container").click();
       await page.keyboard.type('"test"');
       await page.keyboard.press("Enter");
@@ -70,7 +70,7 @@ test.describe("Cell context menu", () => {
 
   test.describe("Columns controls", () => {
     test.beforeEach(async ({ expressions, page }) => {
-      await expressions.openRelationExpression();
+      await expressions.openRelation();
       await page.getByTestId("monaco-container").click();
       await page.keyboard.type('"test"');
       await page.keyboard.press("Enter");
@@ -142,7 +142,7 @@ test.describe("Cell context menu", () => {
       description: "https://github.com/kiegroup/kie-issues/issues/421",
     });
 
-    await expressions.openRelationExpression();
+    await expressions.openRelation();
     await page.getByTestId("monaco-container").click();
     await page.keyboard.type('"test"');
     await page.keyboard.press("Enter");
@@ -155,7 +155,7 @@ test.describe("Cell context menu", () => {
 
   test.describe("Add rows/columns by hovering", () => {
     test.beforeEach(async ({ expressions, page }) => {
-      await expressions.openRelationExpression();
+      await expressions.openRelation();
       await page.getByTestId("monaco-container").click();
       await page.keyboard.type('"test"');
       await page.keyboard.press("Enter");

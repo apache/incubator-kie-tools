@@ -1,5 +1,7 @@
 import { Page } from "@playwright/test";
 
+type BoxedExpressionTypes = "base" | "nested";
+
 export class Expressions {
   constructor(public page: Page, public baseURL?: string) {
     this.page = page;
@@ -10,51 +12,31 @@ export class Expressions {
     return `iframe.html?id=${iframeId}&viewMode=story`;
   }
 
-  public async openLiteralExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-literal--base")}` ?? "");
+  public async openBoxedContext(type: BoxedExpressionTypes | "installment-calculation" | "customer" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-context--${type}`)}` ?? "");
   }
 
-  public async openContextExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-context--base")}` ?? "");
+  public async openDecisionTable(type: BoxedExpressionTypes | "discount" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-decision-table--${type}`)}` ?? "");
   }
 
-  public async openDecisionTableExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-decision-table--base")}` ?? "");
+  public async openBoxedFunction(type: BoxedExpressionTypes | "installment-calculation" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-function--${type}`)}` ?? "");
   }
 
-  public async openRelationExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-relation--base")}` ?? "");
+  public async openBoxedInvocation(type: BoxedExpressionTypes | "monthly-installment" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-invocation--${type}`)}` ?? "");
   }
 
-  // TODO: REMOVE
-  public async createRelationExpression() {
-    // create 3x3 relation
-    await this.page.getByTestId("monaco-container").click({ button: "right" });
-    await this.page.getByRole("menuitem", { name: "Insert", exact: true }).nth(0).click();
-    await this.page.getByRole("button", { name: "Insert" }).click();
-    await this.page.getByTestId("monaco-container").nth(0).click({ button: "right" });
-    await this.page.getByRole("menuitem", { name: "Insert", exact: true }).nth(1).click();
-    await this.page.getByLabel("Below").click();
-    await this.page.getByRole("button", { name: "Insert" }).click();
-
-    // populate
-    await this.page.getByTestId("monaco-container").nth(0).dragTo(this.page.getByTestId("monaco-container").nth(8));
-    for (let i = 0; i < 9; i++) {
-      await this.page.keyboard.type(`"test${i}"`);
-      await this.page.keyboard.press("Space");
-      await this.page.keyboard.press("Tab");
-    }
+  public async openBoxedList(type: BoxedExpressionTypes | "age-groups" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-list--${type}`)}` ?? "");
   }
 
-  public async openInvocationExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-invocation--base")}` ?? "");
+  public async openBoxedLiteral(type: BoxedExpressionTypes | "can-drive" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-literal--${type}`)}` ?? "");
   }
 
-  public async openListExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-list--base")}` ?? "");
-  }
-
-  public async openFunctionExpression() {
-    await this.page.goto(`${this.baseURL}/${this.getIframeURL("boxed-expressions-function--base")}` ?? "");
+  public async openRelation(type: BoxedExpressionTypes | "bigger" | "people" = "base") {
+    await this.page.goto(`${this.baseURL}/${this.getIframeURL(`boxed-expressions-relation--${type}`)}` ?? "");
   }
 }

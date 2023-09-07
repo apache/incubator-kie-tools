@@ -1,10 +1,22 @@
 import * as React from "react";
-import { BoxedExpressionEditorBase } from "../../boxedExpressionEditorBase";
 import {
   DmnBuiltInDataType,
   ExpressionDefinitionLogicType,
   InvocationExpressionDefinition,
 } from "../../../../../src/api";
+import type { Meta, StoryObj } from "@storybook/react";
+import { BoxedExpressionEditorWrapper, beeGwtService, pmmlParams } from "../../../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../../../src/expressions";
+import { loanOriginationsDataTypes } from "../../boxedExpressionEditorBase";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Loan Originations/Bureau Strategy Decision Service/Pre Bureau Affordability",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const preBureauAffordabilityExpression: InvocationExpressionDefinition = {
   id: "_1E880009-77B2-4309-AE2A-8964E05636B1",
@@ -92,6 +104,15 @@ export const preBureauAffordabilityExpression: InvocationExpressionDefinition = 
   entryInfoWidth: 180,
 };
 
-export function PreBureauAffordability() {
-  return <BoxedExpressionEditorBase expressionDefinition={preBureauAffordabilityExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Expression: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: preBureauAffordabilityExpression,
+    dataTypes: loanOriginationsDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

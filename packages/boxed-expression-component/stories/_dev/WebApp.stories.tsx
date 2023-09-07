@@ -28,11 +28,11 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditorWrapper } from "../boxedExpressionStoriesWrapper";
 import { BoxedExpressionEditorProps } from "../../src/expressions";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Button, Flex, FlexItem, Text, Tooltip } from "@patternfly/react-core/dist/js";
+import { Button, Flex, FlexItem, Tooltip } from "@patternfly/react-core/dist/js";
 import { emptyExpressionDefinition } from "../misc/Empty/EmptyExpression.stories";
-import { canDriveExpressionDefinition } from "../useCases/CanDrive/CanDrive";
-import { findEmployeesByKnowledgeExpression } from "../useCases/FindEmployees/FindEmployees";
-import { postBureauAffordability } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability";
+import { canDriveExpressionDefinition } from "../useCases/CanDrive/CanDrive.stories";
+import { findEmployeesByKnowledgeExpression } from "../useCases/FindEmployees/FindEmployees.stories";
+import { postBureauAffordabilityExpression } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability.stories";
 
 /**
  * Constants copied from tests to fix debugger
@@ -120,7 +120,6 @@ function App(args: BoxedExpressionEditorProps) {
 
   return (
     <div>
-      <Title headingLevel="h1">DEV WEB APP</Title>
       <Flex direction={{ default: "column" }}>
         <FlexItem>
           <Flex style={{ width: "96vw" }}>
@@ -134,7 +133,7 @@ function App(args: BoxedExpressionEditorProps) {
               <Button onClick={() => setSample(findEmployeesByKnowledgeExpression)}>Find Employees by Knowledge</Button>
             </FlexItem>
             <FlexItem>
-              <Button onClick={() => setSample(postBureauAffordability)}>Affordability</Button>
+              <Button onClick={() => setSample(postBureauAffordabilityExpression)}>Affordability</Button>
             </FlexItem>
             <FlexItem align={{ default: "alignRight" }}>
               <Tooltip content={"This number updates everytime the expressionDefinition object is updated"}>

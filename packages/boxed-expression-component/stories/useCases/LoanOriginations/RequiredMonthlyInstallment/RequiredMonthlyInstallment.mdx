@@ -1,7 +1,7 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { RequiredMonthlyInstallment } from "./RequiredMonthlyInstallment.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as RequiredMonthlyInstallment from "./RequiredMonthlyInstallment.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Required Monthly Installment" />
+<Meta title="Use cases/Loan Originations/Required Monthly Installment" of={RequiredMonthlyInstallment} />
 
 The **Required monthly installment** decision is a
 [Boxed Invocation](/docs/boxed-expressions-invocation--overview) expression.
@@ -10,6 +10,4 @@ function passing the four required parameters. All four parameters are
 [Boxed Literal](/docs/boxed-expressions-literal--overview) expressions with the purpose of
 saving the desired properties of the requested product.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <RequiredMonthlyInstallment />
-</Canvas>
+<Story of={RequiredMonthlyInstallment.Expression} />

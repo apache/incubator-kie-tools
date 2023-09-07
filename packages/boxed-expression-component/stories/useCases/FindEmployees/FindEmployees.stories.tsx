@@ -1,19 +1,29 @@
 import * as React from "react";
-import { Canvas } from "@storybook/blocks";
-import type { Meta, StoryObj } from "@storybook/react";
-import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
-import { BoxedExpressionEditorWrapper, dataTypes } from "../../boxedExpressionStoriesWrapper";
-import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
 import {
   DmnBuiltInDataType,
-  ExpressionDefinition,
   ExpressionDefinitionLogicType,
   FunctionExpressionDefinition,
   FunctionExpressionDefinitionKind,
   InvocationExpressionDefinition,
   RelationExpressionDefinition,
 } from "../../../src/api";
-import { BoxedExpressionComponentWrapper } from "../../boxedExpressionComponentWrapper";
+import type { Meta, StoryObj } from "@storybook/react";
+import {
+  BoxedExpressionEditorWrapper,
+  beeGwtService,
+  dataTypes,
+  pmmlParams,
+} from "../../boxedExpressionStoriesWrapper";
+import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/expressions";
+
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+const meta: Meta<BoxedExpressionEditorProps> = {
+  title: "Use cases/Find Employees",
+  component: BoxedExpressionEditor,
+  includeStories: /^[A-Z]/,
+};
+export default meta;
+type Story = StoryObj<BoxedExpressionEditorProps>;
 
 export const findEmployeesDataTypes = [
   ...dataTypes,
@@ -23,20 +33,6 @@ export const findEmployeesDataTypes = [
   { typeRef: "tKnowledge", name: "tKnowledge", isCustom: true },
   { typeRef: "tKnowledges", name: "tKnowledges", isCustom: true },
 ];
-
-export function BoxedExpressionEditorBase(props: { expressionDefinition: ExpressionDefinition }) {
-  const emptyRef = React.useRef<HTMLDivElement>(null);
-
-  return (
-    <div ref={emptyRef}>
-      <BoxedExpressionComponentWrapper
-        expressionDefinition={props.expressionDefinition}
-        dataTypes={findEmployeesDataTypes}
-        isResetSupportedOnRootExpression={false}
-      />
-    </div>
-  );
-}
 
 export const employeesExpression: RelationExpressionDefinition = {
   id: "_03E4FDF0-AF4A-4C82-A589-2F9BED02921B",
@@ -135,16 +131,16 @@ export const findEmployeesByKnowledgeExpression: FunctionExpressionDefinition = 
       {
         entryInfo: {
           id: "_A762CB8E-56C3-45AE-B59F-731E4A0CA73F",
-          name: "Employees by",
+          name: "Employees by Dept",
           dataType: "tEmployees" as DmnBuiltInDataType,
         },
         entryExpression: {
           id: "_BC626016-B599-47A1-ABD6-67A2C7F761CE",
-          name: "Employees by",
+          name: "Employees by Dept",
           dataType: "tEmployees" as DmnBuiltInDataType,
           logicType: ExpressionDefinitionLogicType.Literal,
           content: "employees[item.Dept = dept]",
-          width: 281,
+          width: 400,
         },
       },
       {
@@ -158,8 +154,9 @@ export const findEmployeesByKnowledgeExpression: FunctionExpressionDefinition = 
           name: "Employees with Knowledge",
           dataType: "tEmployees" as DmnBuiltInDataType,
           logicType: ExpressionDefinitionLogicType.Literal,
-          content: "for e in Employees by return \nif (list contains(e.Knowledges, knowledge))\nthen e\nelse null",
-          width: 281,
+          content:
+            "for e in Employees by Dept return \n\tif (list contains(e.Knowledges, knowledge))\n\t\tthen e\n\t\telse null",
+          width: 400,
         },
       },
     ],
@@ -169,7 +166,7 @@ export const findEmployeesByKnowledgeExpression: FunctionExpressionDefinition = 
       dataType: DmnBuiltInDataType.Undefined,
       logicType: ExpressionDefinitionLogicType.Literal,
       content: "Employees with Knowledge[item != null]",
-      width: 281,
+      width: 400,
     },
     entryInfoWidth: 204,
   },
@@ -231,14 +228,39 @@ export const findEmployeesExpression: InvocationExpressionDefinition = {
   entryInfoWidth: 120,
 };
 
-export function Employees() {
-  return <BoxedExpressionEditorBase expressionDefinition={employeesExpression} />;
-}
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const Employees: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: employeesExpression,
+    dataTypes: findEmployeesDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};
 
-export function FindEmployeesByKnowledge() {
-  return <BoxedExpressionEditorBase expressionDefinition={findEmployeesByKnowledgeExpression} />;
-}
+export const FindEmployeesByKnowledge: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: findEmployeesByKnowledgeExpression,
+    dataTypes: findEmployeesDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};
 
-export function FindByEmployees() {
-  return <BoxedExpressionEditorBase expressionDefinition={findEmployeesExpression} />;
-}
+export const FindByEmployees: Story = {
+  render: (args) => BoxedExpressionEditorWrapper(),
+  args: {
+    decisionNodeId: "_00000000-0000-0000-0000-000000000000",
+    expressionDefinition: findEmployeesExpression,
+    dataTypes: findEmployeesDataTypes,
+    beeGwtService,
+    pmmlParams,
+    isResetSupportedOnRootExpression: false,
+  },
+};

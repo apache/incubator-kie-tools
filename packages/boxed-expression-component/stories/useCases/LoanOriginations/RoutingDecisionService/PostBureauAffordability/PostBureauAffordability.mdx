@@ -1,7 +1,10 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
-import { PostBureauAffordability } from "./PostBureauAffordability.tsx";
+import { Meta, Story } from "@storybook/blocks";
+import * as PostBureauAffordability from "./PostBureauAffordability.stories.tsx";
 
-<Meta title="Use cases/Loan Originations/Routing Decision Service/Post Bureau Affordability" />
+<Meta
+  title="Use cases/Loan Originations/Routing Decision Service/Post Bureau Affordability"
+  of={PostBureauAffordability}
+/>
 
 The **Post-bureau affordability** decision is a
 [Boxed Invocation](/docs/boxed-expressions-invocation--overview) expression.
@@ -13,6 +16,4 @@ of saving the applicant's data. The last two passes down the results of the
 and [Required monthly installment](/docs/use-cases-loan-originations-required-monthly-installment--overview)
 decisions.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <PostBureauAffordability />
-</Canvas>
+<Story of={PostBureauAffordability.Expression} />
