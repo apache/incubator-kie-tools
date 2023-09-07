@@ -114,6 +114,7 @@
     <!-- SW-EDITOR -->
     <module>sw-editor</module>
     <module>third_party</module>
+      <module>third_party/gwtproject</module>
 
   </modules>
 
@@ -611,7 +612,7 @@
             <groupId>javax.annotation</groupId>
             <artifactId>javax.annotation-api</artifactId>
           </exclusion>
-          <!-- Excluding old com.google.gwt 2.8.0 gwt-user and gwt-dev assets 
+          <!-- Excluding old com.google.gwt 2.8.0 gwt-user and gwt-dev assets
                that collides with newer org.gwtproject assets in gwt 2.10+ versions -->
           <exclusion>
             <groupId>com.google.gwt</groupId>

@@ -20,10 +20,10 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views.session;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 
-public interface ScreenErrorView extends IsWidget {
+public interface ScreenErrorView extends IsElement {
 
     ScreenErrorView showError(final ClientRuntimeError error);
 
