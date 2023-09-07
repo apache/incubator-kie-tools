@@ -35,7 +35,21 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 import { TestScenarioEditorDock, TestScenarioType } from "../TestScenarioEditor";
 
-export function SettingPanel({ fileName, assetType }: { fileName: string; assetType: string }) {
+export function SettingPanel({
+  assetType,
+  agendaGroupRule,
+  fileName,
+  isStatelessSessionRule,
+  isTestSkipped,
+  kieSessionRule,
+}: {
+  assetType: string;
+  agendaGroupRule?: string;
+  fileName: string;
+  isTestSkipped: boolean;
+  isStatelessSessionRule?: boolean;
+  kieSessionRule?: string;
+}) {
   return (
     <>
       <Title headingLevel={"h6"}>Name</Title>
@@ -56,15 +70,22 @@ export function SettingPanel({ fileName, assetType }: { fileName: string; assetT
         </>
       ) : (
         <>
-          <Title headingLevel={"h6"}>Kie Session</Title>
-          <TextInput value={""} type="text" />
+          <Title headingLevel={"h6"}>KIE Session</Title>
+          <TextInput
+            placeholder={"(Optional) Enter the KieSession for the test scenario."}
+            type="text"
+            value={kieSessionRule}
+          />
           <Title headingLevel={"h6"}>RuleFlowGroup/AgendaGroup</Title>
-          <TextInput value={""} type="text" />
-          <Checkbox id="stateless-session" label="Stateless Session" />
+          <TextInput
+            placeholder={"(Optional) Enter the RuleFlowGroup or AgendaGroup for the test scenario."}
+            type="text"
+            value={agendaGroupRule}
+          />
+          <Checkbox id="stateless-session" isChecked={isStatelessSessionRule} label="Stateless Session" />
         </>
       )}
-
-      <Checkbox id="skip-test" label="Skip this test scenario during the test" />
+      <Checkbox id="skip-test" isChecked={isTestSkipped} label="Skip this test scenario during the test" />
     </>
   );
 }
@@ -72,13 +93,15 @@ export function SettingPanel({ fileName, assetType }: { fileName: string; assetT
 export function TestToolsPanel({
   assetType,
   fileName,
-  selectedDock,
+  isTestSkipped,
   onClose,
+  selectedDock,
 }: {
   assetType: string;
   fileName: string;
-  selectedDock: TestScenarioEditorDock;
+  isTestSkipped: boolean;
   onClose: () => void;
+  selectedDock: TestScenarioEditorDock;
 }) {
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
@@ -121,7 +144,7 @@ export function TestToolsPanel({
                     </>
                   );
                 case TestScenarioEditorDock.SETTINGS:
-                  return <SettingPanel fileName={fileName} assetType={assetType} />;
+                  return <SettingPanel fileName={fileName} assetType={assetType} isTestSkipped={isTestSkipped} />;
                 default:
                   throw new Error("");
               }
