@@ -2,7 +2,7 @@ import * as React from "react";
 import { useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ResizerStopBehavior } from "../../../src/resizing/ResizingWidthsContext";
-import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps } from "../../../src/api";
+import { DmnBuiltInDataType, BeeTableHeaderVisibility, BeeTableProps, generateUuid } from "../../../src/api";
 import { StandaloneBeeTable } from "../../../src/table/BeeTable";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -24,7 +24,7 @@ function StandaloneBeeTableWrapper(props: BeeTableProps<object>) {
   );
 }
 
-const defaultProps: BeeTableProps<object> = {
+const baseTableProps: BeeTableProps<object> = {
   columns: [
     {
       accessor: "x",
@@ -49,6 +49,81 @@ const defaultProps: BeeTableProps<object> = {
 export const Base: Story = {
   render: (args) => StandaloneBeeTableWrapper(args),
   args: {
-    ...defaultProps,
+    ...baseTableProps,
+  },
+};
+
+const peopleTableProps: BeeTableProps<object> = {
+  columns: [
+    {
+      accessor: "people",
+      label: "People",
+      isRowIndexColumn: false,
+      dataType: "tPeople",
+      columns: [
+        {
+          label: "Name",
+          accessor: "name",
+          dataType: "string",
+          isRowIndexColumn: false,
+          width: 200,
+          minWidth: 200,
+        },
+        {
+          label: "Age",
+          accessor: "age",
+          dataType: "number",
+          isRowIndexColumn: false,
+          width: 100,
+          minWidth: 100,
+        },
+        {
+          label: "Country",
+          accessor: "country",
+          dataType: "string",
+          isRowIndexColumn: false,
+          width: 100,
+          minWidth: 100,
+        },
+      ],
+    },
+    {
+      accessor: "row index",
+      label: "Row index",
+      isRowIndexColumn: true,
+      dataType: "undefined",
+    },
+  ] as any,
+  rows: [
+    {
+      ["name"]: { id: generateUuid(), content: `"Joao Ninguem"` },
+      ["age"]: { id: generateUuid(), content: "30" },
+      ["country"]: { id: generateUuid(), content: `"Brazil"` },
+    },
+    {
+      ["name"]: { id: generateUuid(), content: `"John Doe"` },
+      ["age"]: { id: generateUuid(), content: "37" },
+      ["country"]: { id: generateUuid(), content: `"US"` },
+    },
+    {
+      ["name"]: { id: generateUuid(), content: `"Jane Doe"` },
+      ["age"]: { id: generateUuid(), content: "32" },
+      ["country"]: { id: generateUuid(), content: `"Canada"` },
+    },
+  ],
+  allowedOperations: () => [],
+  resizerStopBehavior: ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER,
+  shouldShowRowsInlineControls: false,
+  shouldShowColumnsInlineControls: false,
+  shouldRenderRowIndexColumn: true,
+  headerVisibility: BeeTableHeaderVisibility.AllLevels,
+  operationConfig: [],
+};
+
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+export const People: Story = {
+  render: (args) => StandaloneBeeTableWrapper(args),
+  args: {
+    ...peopleTableProps,
   },
 };

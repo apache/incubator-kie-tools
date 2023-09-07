@@ -5,6 +5,24 @@ import * as EmptyExpression from "./EmptyExpression.stories";
 
 # Empty Expression
 
-<Canvas>
-  <Story of={EmptyExpression.Base} />
+An Empty Boxed expression is the first step for a decision node. It is also what is shown in expressions
+that uses nested expressions, such as the Boxed Context, Boxed Function, Boxed Invocation, and Boxed List.
+
+The Empty Boxed expression gives the option to create a new Boxed expression by right-clicking on it. If we're
+creating a new decision logic for a decision node, it will show as follows:
+
+- Literal ([Boxed Literal](/docs/boxed-expressions-literal--overview))
+- Context ([Boxed Context](/docs/boxed-expressions-context--overview))
+- [Decision table](/docs/boxed-expressions-decision-table--overview)
+- [Relation](/docs/boxed-expressions-relation--overview)
+- Invocation ([Boxed Invocation](/docs/boxed-expressions-invocation--overview))
+- List ([Boxed List](/docs/boxed-expressions-list--overview))
+- Paste ([Selection context](/docs/features-selection--overview))
+
+**Important**: The option for creating a [Boxed Function](/docs/boxed-expressions-function--overview) will only appear on a nested expression.
+
+<Canvas style={{ border: "unset", boxShadow: "unset" }}>
+  <div style={{ height: "500px" }}>
+    <Story of={EmptyExpression.Base} />
+  </div>
 </Canvas>

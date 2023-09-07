@@ -1,13 +1,22 @@
 import { Meta, Story, Canvas } from "@storybook/blocks";
 import * as StandaloneTable from "./StandaloneTable.stories";
 
-<Meta title="MDX/Post Bureau Risk Category" of={StandaloneTable} />
+<Meta title="MDX/Standalone Table" of={StandaloneTable} />
 
-# Standalone Table
+# Standalone table
 
-With `MDX` we can include a story for `Checkbox` right in the middle of our
-markdown documentation.
+Another way to use the boxed expression component is by using the Standalone table. This component
+makes it possible to create your own customizable table with many tweak options and helper functions.
 
-<Canvas>
+The following example is a customizable table with one row and one column.
+
+<Canvas style={{ border: "unset", boxShadow: "unset" }}>
   <Story of={StandaloneTable.Base} />
+</Canvas>
+
+The following example is a customizable table with one "People" column with three sub columns
+"Name", "Age" and "Country", and an aditional index column.
+
+<Canvas style={{ border: "unset", boxShadow: "unset" }}>
+  <Story of={StandaloneTable.People} />
 </Canvas>
