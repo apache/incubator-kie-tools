@@ -13,14 +13,14 @@ test.describe("Function expression", () => {
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(3);
     await expect(page.getByRole("cell")).toHaveCount(2);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("feel-function-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-feel-function.png");
   });
 
   test("should render Java function expression correctly", async ({ boxedExpressionEditor, page }) => {
     await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "Java" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("java-function-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-java-function.png");
 
     await expect(page.getByRole("columnheader", { name: "J", exact: true })).toBeAttached();
     // the "onmouseenter" events triggers if the mouse was outside of the element before it appears on screen.
@@ -39,7 +39,7 @@ test.describe("Function expression", () => {
     await expect(page.getByText("Expression Name (Function)")).toBeAttached();
     await page.getByRole("columnheader", { name: "F", exact: true }).click();
     await page.getByRole("menuitem", { name: "PMML" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("pmml-function-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-pmml-function.png");
 
     await expect(page.getByRole("columnheader", { name: "P", exact: true })).toBeAttached();
     await expect(page.getByText("Document(string)")).toBeAttached();

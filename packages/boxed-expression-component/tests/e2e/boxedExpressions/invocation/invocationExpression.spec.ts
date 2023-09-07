@@ -10,6 +10,6 @@ test.describe("Invocation expression", () => {
     await expect(page.getByText("Select expression")).toHaveCount(1);
     await expect(page.getByRole("columnheader")).toHaveCount(2);
     await expect(page.getByRole("cell")).toHaveCount(2);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("invocation-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-invocation.png");
   });
 });

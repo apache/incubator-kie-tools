@@ -13,7 +13,7 @@ test.describe("Decision table expression", () => {
     await expect(page.getByRole("columnheader", { name: "U", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader")).toHaveCount(4);
     await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("decision-table-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("decision-table.png");
   });
 
   test.describe("Hit policy", () => {

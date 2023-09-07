@@ -3,7 +3,7 @@ import { devices, defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   outputDir: "dist-e2e-tests/output",
-  snapshotPathTemplate: "{testDir}/__screenshots__/{testFileDir}/{projectName}/{arg}{ext}",
+  snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{testFileDir}/{arg}{ext}",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

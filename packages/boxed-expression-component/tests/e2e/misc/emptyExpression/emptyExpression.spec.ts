@@ -5,6 +5,6 @@ test.describe("Empty Expression", () => {
     await boxedExpressionEditor.goto();
     await expect(page.getByText("Expression Name (<Undefined>)")).toBeAttached();
     await expect(page.getByText("Select expression")).toHaveCount(1);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("root-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("empty-boxed-expression.png");
   });
 });

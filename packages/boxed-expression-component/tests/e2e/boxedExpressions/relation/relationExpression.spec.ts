@@ -9,6 +9,6 @@ test.describe("Relation expression", () => {
     await expect(page.getByRole("columnheader", { name: "#", exact: true })).toBeAttached();
     await expect(page.getByRole("columnheader")).toHaveCount(3);
     await expect(page.getByRole("cell")).toHaveCount(2);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation.png");
   });
 });

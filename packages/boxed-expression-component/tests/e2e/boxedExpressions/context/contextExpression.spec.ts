@@ -10,6 +10,6 @@ test.describe("Context expression", () => {
     await expect(page.getByText("Select expression")).toHaveCount(2);
     await expect(page.getByRole("columnheader")).toHaveCount(1);
     await expect(page.getByRole("cell")).toHaveCount(4);
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("context-expression.png");
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-context.png");
   });
 });
