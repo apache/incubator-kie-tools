@@ -16,26 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import * as React from "react";
-
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import {
-  DrawerActions,
-  DrawerCloseButton,
-  DrawerHead,
-  DrawerPanelBody,
-  DrawerPanelContent,
-} from "@patternfly/react-core/dist/js/components/Drawer";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-import { TestScenarioEditorDock, TestScenarioType } from "../TestScenarioEditor";
+import { TestScenarioType } from "../TestScenarioEditor";
 
-export function SettingPanel({
+import "./TestScenarioDrawerSettingsPanel.css";
+
+function TestScenarioDrawerSettingsPanel({
   assetType,
   agendaGroupRule,
   fileName,
@@ -82,76 +72,22 @@ export function SettingPanel({
             type="text"
             value={agendaGroupRule}
           />
-          <Checkbox id="stateless-session" isChecked={isStatelessSessionRule} label="Stateless Session" />
+          <Checkbox
+            className={"kie-scesim-editor-drawer-settings--checkbox"}
+            id="stateless-session"
+            isChecked={isStatelessSessionRule}
+            label="Stateless Session"
+          />
         </>
       )}
-      <Checkbox id="skip-test" isChecked={isTestSkipped} label="Skip this test scenario during the test" />
+      <Checkbox
+        className={"kie-scesim-editor-drawer-settings--checkbox"}
+        id="skip-test"
+        isChecked={isTestSkipped}
+        label="Skip this test scenario during the test"
+      />
     </>
   );
 }
 
-export function TestToolsPanel({
-  assetType,
-  fileName,
-  isTestSkipped,
-  onClose,
-  selectedDock,
-}: {
-  assetType: string;
-  fileName: string;
-  isTestSkipped: boolean;
-  onClose: () => void;
-  selectedDock: TestScenarioEditorDock;
-}) {
-  return (
-    <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
-      <DrawerHead>
-        <DrawerActions>
-          <DrawerCloseButton onClose={onClose} />
-        </DrawerActions>
-        <TextContent>
-          <Text component={TextVariants.h2}>
-            {(() => {
-              switch (selectedDock) {
-                case TestScenarioEditorDock.CHEATSHEET:
-                  return "Scenario Cheatsheet";
-                case TestScenarioEditorDock.DATA_OBJECT:
-                  return "Data Objects tool";
-                case TestScenarioEditorDock.SETTINGS:
-                  return "Settings";
-                default:
-                  throw new Error("");
-              }
-            })()}
-          </Text>
-        </TextContent>
-        <Divider />
-      </DrawerHead>
-      <DrawerPanelBody>
-        {/* The following is a temporary text content. Specific panel for all Docks will be managed */}
-        <TextContent>
-          <Text>
-            {(() => {
-              switch (selectedDock) {
-                case TestScenarioEditorDock.CHEATSHEET:
-                  return <>Scenario Cheatsheet</>;
-                case TestScenarioEditorDock.DATA_OBJECT:
-                  return (
-                    <>
-                      {
-                        'To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.'
-                      }
-                    </>
-                  );
-                case TestScenarioEditorDock.SETTINGS:
-                  return <SettingPanel fileName={fileName} assetType={assetType} isTestSkipped={isTestSkipped} />;
-                default:
-                  throw new Error("");
-              }
-            })()}
-          </Text>
-        </TextContent>
-      </DrawerPanelBody>
-    </DrawerPanelContent>
-  );
-}
+export default TestScenarioDrawerSettingsPanel;

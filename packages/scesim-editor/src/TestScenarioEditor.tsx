@@ -32,7 +32,6 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
-
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -48,7 +47,7 @@ import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
 import { ErrorBoundary } from "./reactExt/ErrorBoundary";
-import { TestToolsPanel } from "./panels/TestToolsPanel";
+import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
@@ -283,7 +282,7 @@ function TestScenarioMainPanel({
               <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
                 <DrawerContent
                   panelContent={
-                    <TestToolsPanel
+                    <TestScenarioDrawerPanel
                       assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!}
                       fileName={fileName}
                       isTestSkipped={scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false}
