@@ -45,8 +45,8 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { KieSandboxDeployedModel } from "./services/types";
 import { isCloudAuthSession } from "../authSessions/AuthSessionApi";
+import { KieSandboxDeployment } from "./services/KieSandboxDeploymentService";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 
@@ -79,7 +79,7 @@ export function DevDeploymentsDropdown() {
     });
   }, [authSessions, suggestedAuthSessionForDeployment]);
 
-  const [deployments, refresh] = useLivePromiseState<KieSandboxDeployedModel[]>(
+  const [deployments, refresh] = useLivePromiseState<KieSandboxDeployment[]>(
     useMemo(() => {
       if (!authSession || (authSession.type !== "openshift" && authSession.type !== "kubernetes")) {
         return { error: "Can't load Dev deployments with this AuthSession." };
@@ -87,7 +87,7 @@ export function DevDeploymentsDropdown() {
 
       return () => {
         setRefreshCountdownInSeconds(REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS);
-        return devDeployments.loadDeployments({ authSession });
+        return devDeployments.loadDevDeployments({ authSession });
       };
     }, [authSession, devDeployments])
   );

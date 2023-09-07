@@ -38,19 +38,14 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
-import {
-  DeployArgs,
-  KieSandboxDeployedModel,
-  KieSandboxDeploymentService,
-  ResourceArgs,
-  defaultLabelTokens,
-} from "./types";
+import { defaultLabelTokens } from "./types";
 import {
   parseK8sResourceYaml,
   buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
   interpolateK8sResourceYamls,
   K8sApiServerEndpointByResourceKind,
+  K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 import { createDeploymentYaml, getDeploymentListApiPath } from "./resources/kubernetes/Deployment";
@@ -60,23 +55,18 @@ import { getNamespaceApiPath } from "./resources/kubernetes/Namespace";
 import { createSelfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReview";
 import { v4 as uuid } from "uuid";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
+import {
+  DeployArgs,
+  KieSandboxDeployment,
+  KieSandboxDeploymentService,
+  ResourceArgs,
+} from "./KieSandboxDeploymentService";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
-export class KieSandboxKubernetesService implements KieSandboxDeploymentService {
-  id: string;
-  type = CloudAuthSessionType.Kubernetes;
-
-  constructor(readonly args: KubernetesServiceArgs, id?: string) {
-    this.id = id ?? uuid();
-  }
-
-  get kubernetesService() {
-    return new KubernetesService(this.args);
-  }
-
+export class KieSandboxKubernetesService extends KieSandboxDeploymentService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
       try {
@@ -139,7 +129,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     return [];
   }
 
-  public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {
+  public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
     // const deployments = await this.listDeployments();
 
     // if (!deployments.length) {
@@ -333,7 +323,7 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     deployment: DeploymentDescriptor,
     uploadStatus: UploadStatus
   ): DeploymentState {
-    const state = this.kubernetesService.extractDeploymentState({ deployment });
+    const state = this.extractDevDeploymentState({ deployment });
 
     if (state !== DeploymentState.UP) {
       return state;
@@ -350,9 +340,12 @@ export class KieSandboxKubernetesService implements KieSandboxDeploymentService 
     return DeploymentState.UP;
   }
 
-  getIngressUrl(resource: IngressDescriptor): string {
-    // return this.kubernetesService.composeDeploymentUrlFromIngress(resource);
-    return "";
+  // public composeDeploymentUrlFromIngress(ingress: any): string {
+  //   ;
+  // }
+
+  getIngressUrl(resource: K8sResourceYaml): string {
+    return `${new URL(this.args.connection.host).origin}/${resource.metadata?.name}`;
   }
 
   // async createIngress(

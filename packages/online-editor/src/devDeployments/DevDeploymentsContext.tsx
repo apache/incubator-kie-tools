@@ -20,8 +20,8 @@
 import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
-import { KieSandboxDeployedModel, KieSandboxDeploymentService } from "./services/types";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
+import { KieSandboxDeployment } from "./services/KieSandboxDeploymentService";
 
 export interface DeploymentFile {
   path: string;
@@ -62,7 +62,7 @@ export interface DevDeploymentsContextType {
 
   // Actions
   deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
-  loadDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployedModel[]>;
+  loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
   deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
   deleteDeployments: (args: { authSession: CloudAuthSession; resourceNames: string[] }) => Promise<boolean>;
 }

@@ -26,8 +26,8 @@ import {
   TokenMap,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeploymentState } from "./common";
-import { ResourceArgs } from "./types";
 import { DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
+import { ResourceArgs } from "./KieSandboxDeploymentService";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -99,38 +99,6 @@ export class KubernetesService {
     });
   }
 
-  // public composeDeploymentUrlFromIngress(ingress: any): string {
-  //   return `${new URL(this.args.connection.host).origin}/${ingress.metadata.name}`;
-  // }
-
-  public extractDeploymentState(args: { deployment?: any }): DeploymentState {
-    if (!args.deployment || !args.deployment.status) {
-      // Deployment still being created
-      return DeploymentState.IN_PROGRESS;
-    }
-
-    if (!args.deployment.status.replicas) {
-      // Deployment with no replicas is down
-      return DeploymentState.DOWN;
-    }
-
-    const progressingCondition = args.deployment.status.conditions?.find(
-      (condition: any) => condition.type === "Progressing"
-    );
-
-    if (!progressingCondition || progressingCondition.status !== "True") {
-      // Without `Progressing` condition, the deployment will never be up
-      return DeploymentState.DOWN;
-    }
-
-    if (!args.deployment.status.readyReplicas) {
-      // Deployment is progressing but no replicas are ready yet
-      return DeploymentState.IN_PROGRESS;
-    }
-
-    return DeploymentState.UP;
-  }
-
   public async applyResourceYamls(k8sResourceYamls: string[], tokens?: TokenMap) {
     const interpolatedYamls = tokens
       ? k8sResourceYamls.map((yamlContent) => interpolateK8sResourceYamls(yamlContent, tokens))
@@ -142,43 +110,6 @@ export class KubernetesService {
       k8sNamespace: this.args.connection.namespace,
       k8sServiceAccountToken: this.args.connection.token,
     });
-  }
-
-  public async uploadAssets(args: {
-    resourceArgs: ResourceArgs;
-    deployment: DeploymentDescriptor;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-  }) {
-    // return new Promise<void>((resolve, reject) => {
-    //   let deploymentState = this.service.extractDeploymentState({ deployment: args.deployment });
-    //   const interval = setInterval(async () => {
-    //     if (deploymentState !== DeploymentState.UP) {
-    //       const deployment = await this.service.withFetch((fetcher: ResourceFetcher) =>
-    //         fetcher.execute<DeploymentDescriptor>({
-    //           target: new GetDeployment(args.resourceArgs),
-    //         })
-    //       );
-    //       deploymentState = this.service.extractDeploymentState({ deployment });
-    //     } else {
-    //       try {
-    //         const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
-    //         if (uploadStatus === "NOT_READY") {
-    //           return;
-    //         }
-    //         clearInterval(interval);
-    //         if (uploadStatus === "WAITING") {
-    //           await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob });
-    //           resolve();
-    //         }
-    //       } catch (e) {
-    //         console.error(e);
-    //         reject(e);
-    //         clearInterval(interval);
-    //       }
-    //     }
-    //   }, CHECK_UPLOAD_STATUS_POLLING_TIME);
-    // });
   }
 
   public newResourceName(prefix: string): string {

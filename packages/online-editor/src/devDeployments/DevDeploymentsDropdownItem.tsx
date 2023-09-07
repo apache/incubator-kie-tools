@@ -32,12 +32,12 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
-import { KieSandboxDeployedModel } from "./services/types";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources/common";
+import { KieSandboxDeployment } from "./services/KieSandboxDeploymentService";
 
 interface Props {
   id: number;
-  deployment: KieSandboxDeployedModel;
+  deployment: KieSandboxDeployment;
   cloudAuthSession: AuthSession;
 }
 
@@ -46,23 +46,24 @@ export function DevDeploymentsDropdownItem(props: Props) {
   const devDeployments = useDevDeployments();
 
   const deploymentName = useMemo(() => {
-    const maxSize = 30;
+    return "bla";
+    // const maxSize = 30;
 
-    let name = props.deployment.workspaceName;
-    let extension = "";
+    // let name = props.deployment.workspaceName;
+    // let extension = "";
 
-    if (!name) {
-      const originalFilename = basename(props.deployment.uri);
-      extension = ` ${originalFilename.substring(originalFilename.lastIndexOf("."))}`;
-      name = originalFilename.replace(extension, "");
-    }
+    // if (!name) {
+    //   const originalFilename = basename(props.deployment.uri);
+    //   extension = ` ${originalFilename.substring(originalFilename.lastIndexOf("."))}`;
+    //   name = originalFilename.replace(extension, "");
+    // }
 
-    if (name.length < maxSize) {
-      return name;
-    }
+    // if (name.length < maxSize) {
+    //   return name;
+    // }
 
-    return `${name.substring(0, maxSize)}...${extension}`;
-  }, [props.deployment.uri, props.deployment.workspaceName]);
+    // return `${name.substring(0, maxSize)}...${extension}`;
+  }, []);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeploymentState.UP) {
@@ -127,9 +128,9 @@ export function DevDeploymentsDropdownItem(props: Props) {
     );
   }, [i18n, props.deployment.state, props.id]);
 
-  const onItemClicked = useCallback(() => {
-    window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
-  }, [props.deployment.routeUrl, props.deployment.uri]);
+  // const onItemClicked = useCallback(() => {
+  //   window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
+  // }, [props.deployment.routeUrl, props.deployment.uri]);
 
   const onDelete = useCallback(() => {
     devDeployments.setConfirmDeleteModalState({
@@ -145,7 +146,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
         <DropdownItem
           id="dev-deployments-deployment-item-button"
           key={`dev-deployments-dropdown-item-${props.id}`}
-          onClick={onItemClicked}
+          // onClick={onItemClicked}
           description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
           icon={stateIcon}
         >

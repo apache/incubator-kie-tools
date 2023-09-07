@@ -18,10 +18,9 @@
  */
 
 import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
-import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import { v4 as uuid } from "uuid";
+import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
+import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 
 export enum DeploymentState {
   UP = "UP",
@@ -70,6 +69,7 @@ export type KieSandboxDeploymentServiceType = KieSandboxDeploymentServiceProps &
     workspaceZipBlob: Blob;
     baseUrl: string;
   }): Promise<void>;
+  extractDevDeploymentState(args: { deployment?: any }): DeploymentState;
 };
 
 export abstract class KieSandboxDeploymentService implements KieSandboxDeploymentServiceType {
@@ -79,10 +79,39 @@ export abstract class KieSandboxDeploymentService implements KieSandboxDeploymen
 
   constructor(readonly args: KubernetesServiceArgs, id?: string, deployments?: KieSandboxDeployment[]) {
     this.id = id ?? uuid();
+    console.log(this.args.k8sApiServerEndpointsByResourceKind);
   }
 
   get kubernetesService() {
     return new KubernetesService(this.args);
+  }
+
+  public extractDevDeploymentState(args: { deployment?: any }): DeploymentState {
+    if (!args.deployment || !args.deployment.status) {
+      // Deployment still being created
+      return DeploymentState.IN_PROGRESS;
+    }
+
+    if (!args.deployment.status.replicas) {
+      // Deployment with no replicas is down
+      return DeploymentState.DOWN;
+    }
+
+    const progressingCondition = args.deployment.status.conditions?.find(
+      (condition: any) => condition.type === "Progressing"
+    );
+
+    if (!progressingCondition || progressingCondition.status !== "True") {
+      // Without `Progressing` condition, the deployment will never be up
+      return DeploymentState.DOWN;
+    }
+
+    if (!args.deployment.status.readyReplicas) {
+      // Deployment is progressing but no replicas are ready yet
+      return DeploymentState.IN_PROGRESS;
+    }
+
+    return DeploymentState.UP;
   }
 
   abstract isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
@@ -100,55 +129,3 @@ export abstract class KieSandboxDeploymentService implements KieSandboxDeploymen
     baseUrl: string;
   }): Promise<void>;
 }
-
-export type DevDeploymentTokens = {
-  uniqueId: string;
-  name: string;
-  defaultContainerImageUrl: string;
-};
-
-export type WorkspaceTokens = {
-  id: string;
-  name: string;
-  resourceName: string;
-};
-
-export type KubernetesTokens = {
-  namespace: string;
-};
-
-export type UploadServiceTokens = {
-  apiKey: string;
-};
-
-export type LabelTokens = {
-  createdBy: string;
-};
-
-export type AnnotationTokens = {
-  uri: string;
-  workspaceId: string;
-};
-
-export const defaultLabelTokens: LabelTokens = {
-  createdBy: "tools.kie.org/created-by",
-} as const;
-
-export const defaultAnnotationTokens: AnnotationTokens = {
-  uri: "tools.kie.org/uri",
-  workspaceId: "tools.kie.org/workspace-id",
-} as const;
-
-export const CREATED_BY_KIE_TOOLS = "kie-tools";
-
-export const TOKENS_PREFIX = "devDeployment";
-
-export type Tokens = DevDeploymentTokens & {
-  workspace: WorkspaceTokens;
-  kubernetes: KubernetesTokens;
-  uploadService: UploadServiceTokens;
-  labels: LabelTokens;
-  annotations: AnnotationTokens;
-};
-
-export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;

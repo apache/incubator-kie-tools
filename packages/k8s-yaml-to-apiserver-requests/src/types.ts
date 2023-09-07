@@ -1,4 +1,5 @@
 export type K8sResourceYamlMetadata = {
+  name?: string;
   namespace?: string;
 };
 

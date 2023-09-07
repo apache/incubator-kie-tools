@@ -23,27 +23,15 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
-import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import {
-  AuthenticatedUserResponse,
-  fetchAuthenticatedBitbucketUser,
-  fetchAuthenticatedGitHubUser,
-} from "../accounts/git/ConnectToGitSection";
-import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
-import {
-  GitAuthProvider,
-  SupportedGitAuthProviders,
-  isGitAuthProvider,
-  isSupportedGitAuthProviderType,
-} from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { KubernetesService, KubernetesServiceArgs } from "../devDeployments/services/KubernetesService";
-import { KieSandboxDeploymentService, KieSandboxDeploymentServiceProps } from "./services/types";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { CloudAuthSession, CloudAuthSessionType, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
+import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
+import { KieSandboxDeploymentService, KieSandboxDeploymentServiceProps } from "./services/KieSandboxDeploymentService";
 
 export type DevDeploymentsServicesContextType = {
   devDeploymentsServices: Map<string, KieSandboxDeploymentService>;

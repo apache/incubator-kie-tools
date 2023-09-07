@@ -28,7 +28,7 @@ import { AuthSession, CloudAuthSession, isCloudAuthSession } from "../authSessio
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
-import { KieSandboxDeploymentService, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
+import { defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { KubernetesService } from "./services/KubernetesService";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useDevDeploymentService, useDevDeploymentsServices } from "./DevDeploymentsServicesContextProvider";
@@ -78,12 +78,12 @@ export function DevDeploymentsContextProvider(props: Props) {
     [deleteDeployment]
   );
 
-  const loadDeployments = useCallback(
+  const loadDevDeployments = useCallback(
     async (args: { authSession: CloudAuthSession }) => {
       return (
         devDeploymentsServices
           .get(args.authSession.id)
-          ?.loadDeployedModels()
+          ?.loadDevDeployments()
           .catch((e) => {
             console.error(e);
             throw e;
@@ -198,7 +198,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       deploy,
       deleteDeployment,
       deleteDeployments,
-      loadDeployments,
+      loadDevDeployments,
     }),
     [
       isDeployDropdownOpen,
@@ -208,7 +208,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       deploy,
       deleteDeployment,
       deleteDeployments,
-      loadDeployments,
+      loadDevDeployments,
     ]
   );
 

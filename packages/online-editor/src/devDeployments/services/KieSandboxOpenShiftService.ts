@@ -30,32 +30,26 @@ import {
   DeploymentDescriptor,
 } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { KieSandboxKubernetesService, RESOURCE_OWNER } from "./KieSandboxKubernetesService";
-import { DeployArgs, KieSandboxDeployedModel, KieSandboxDeploymentService, ResourceArgs } from "./types";
 import { getUploadStatus } from "../DmnDevDeploymentQuarkusAppApi";
 import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 import { getProjectApiPath } from "./resources/openshift/Project";
 import { v4 as uuid } from "uuid";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
+import {
+  DeployArgs,
+  KieSandboxDeployment,
+  KieSandboxDeploymentService,
+  ResourceArgs,
+} from "./KieSandboxDeploymentService";
 
-export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
-  id: string;
-  type = CloudAuthSessionType.OpenShift;
-
-  constructor(readonly args: KubernetesServiceArgs, id?: string) {
-    this.id = id ?? uuid();
-  }
-
-  get kubernetesService() {
-    return new KubernetesService(this.args);
-  }
-
+export class KieSandboxOpenShiftService extends KieSandboxDeploymentService {
   uploadAssets(args: {
     resourceArgs: ResourceArgs;
     deployment: DeploymentDescriptor;
     workspaceZipBlob: Blob;
     baseUrl: string;
   }): Promise<void> {
-    return this.kubernetesService.uploadAssets(args);
+    return this.uploadAssets(args);
   }
 
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
@@ -67,7 +61,7 @@ export class KieSandboxOpenShiftService implements KieSandboxDeploymentService {
     }
   }
 
-  public async loadDeployedModels(): Promise<KieSandboxDeployedModel[]> {
+  public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
     // const deployments = await this.kieSandboxKubernetesService.listDeployments();
 
     // if (!deployments.length) {
