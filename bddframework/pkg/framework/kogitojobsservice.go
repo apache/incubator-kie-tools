@@ -21,11 +21,23 @@ import (
 
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
+)
+
+const (
+	// DefaultJobsServiceImageName is the default image name for the Jobs Service image
+	DefaultJobsServiceImageName = "kogito-jobs-service-ephemeral"
+	// JobsServiceInfinispanImageName is the image name for the Jobs Service Service with Infinispan
+	JobsServiceInfinispanImageName = "kogito-jobs-service-infinispan"
+	// JobsServiceMongoDBImageName is the image name for the Jobs Service Service with MongoDB
+	JobsServiceMongoDBImageName = "kogito-jobs-service-mongodb"
+	// JobsServicePostgresqlImageName is the image name for the Jobs Service Service with PostgreSQL
+	JobsServicePostgresqlImageName = "kogito-jobs-service-postgresql"
+	// DefaultJobsServiceName is the default name for the Jobs Services instance service
+	DefaultJobsServiceName = "jobs-service"
 )
 
 // InstallKogitoJobsService install the Kogito Jobs Service component
@@ -68,7 +80,7 @@ func WaitForKogitoJobsServiceLogContainsTextWithinMinutes(namespace, logText str
 }
 
 func getJobsServiceName() string {
-	return kogitosupportingservice.DefaultJobsServiceName
+	return DefaultJobsServiceName
 }
 
 // GetKogitoJobsServiceResourceStub Get basic KogitoJobsService stub with all needed fields initialized
@@ -77,7 +89,7 @@ func GetKogitoJobsServiceResourceStub(namespace string, replicas int) *v1beta1.K
 		ObjectMeta: NewObjectMetadata(namespace, getJobsServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType:       api.JobsService,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.JobServiceImageType, config.EphemeralPersistenceType), kogitosupportingservice.DefaultJobsServiceImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.JobServiceImageType, config.EphemeralPersistenceType), DefaultJobsServiceImageName),
 		},
 	}
 }

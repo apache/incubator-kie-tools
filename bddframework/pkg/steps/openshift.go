@@ -35,12 +35,10 @@ func registerOpenShiftSteps(ctx *godog.ScenarioContext, data *Data) {
 	// Build steps
 	ctx.Step(`^Start build with name "([^"]*)" from local example service path "([^"]*)"$`, data.startBuildFromExampleServicePath)
 	ctx.Step(`^Start build with name "([^"]*)" from local example service file "([^"]*)"$`, data.startBuildFromExampleServiceFile)
-	ctx.Step(`^Build "([^"]*)" is complete after (\d+) minutes$`, data.buildIsCompleteAfterMinutes)
 
 	// BuildConfig steps
 	ctx.Step(`^BuildConfig "([^"]*)" is created after (\d+) minutes$`, data.buildConfigIsCreatedAfterMinutes)
 	ctx.Step(`^BuildConfig "([^"]*)" is created with build resources within (\d+) minutes:$`, data.buildConfigHasResourcesWithinMinutes)
-	ctx.Step(`^BuildConfig "([^"]*)" is created with webhooks within (\d+) minutes$`, data.buildConfigHasWebhooksWithinMinutes)
 }
 
 // Build steps
@@ -62,10 +60,6 @@ func (data *Data) startBuildFromExampleServiceFile(buildName, localExampleFilePa
 		})
 }
 
-func (data *Data) buildIsCompleteAfterMinutes(buildName string, timeoutInMin int) error {
-	return framework.WaitForBuildComplete(data.Namespace, buildName, timeoutInMin)
-}
-
 func (data *Data) buildConfigIsCreatedAfterMinutes(buildConfigName string, timeoutInMin int) error {
 	return framework.WaitForBuildConfigCreated(data.Namespace, buildConfigName, timeoutInMin)
 }
@@ -79,14 +73,4 @@ func (data *Data) buildConfigHasResourcesWithinMinutes(buildConfigName string, t
 	}
 
 	return framework.WaitForBuildConfigToHaveResources(data.Namespace, buildConfigName, *build, timeoutInMin)
-}
-
-func (data *Data) buildConfigHasWebhooksWithinMinutes(buildConfigName string, timeoutInMin int) error {
-	kogitoBuild, err := framework.GetKogitoBuild(data.Namespace, buildConfigName)
-
-	if err != nil {
-		return err
-	}
-
-	return framework.WaitForBuildConfigCreatedWithWebhooks(data.Namespace, buildConfigName, kogitoBuild.GetSpec().GetWebHooks(), timeoutInMin)
 }

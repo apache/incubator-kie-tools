@@ -17,6 +17,7 @@ package executor
 import (
 	"context"
 	"fmt"
+	"github.com/kiegroup/kogito-serverless-operator/testbdd/installers"
 	"github.com/kiegroup/kogito-serverless-operator/testbdd/steps"
 	"io"
 	"os"
@@ -29,7 +30,7 @@ import (
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/gherkin"
-	"github.com/kiegroup/kogito-operator/test/pkg/installers"
+	frameworkInstallers "github.com/kiegroup/kogito-operator/test/pkg/installers"
 	kogitoSteps "github.com/kiegroup/kogito-operator/test/pkg/steps"
 	imgv1 "github.com/openshift/api/image/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
@@ -176,7 +177,7 @@ func initializeTestSuite(ctx *godog.TestSuiteContext) {
 			}
 
 			// Delete all operators created by test suite
-			if success := installers.UninstallServicesFromCluster(); !success {
+			if success := frameworkInstallers.UninstallServicesFromCluster(); !success {
 				framework.GetMainLogger().Warn("Some services weren't uninstalled propertly from cluster, see error logs above")
 			}
 		}
@@ -238,7 +239,7 @@ func initializeScenario(ctx *godog.ScenarioContext) {
 
 		// Namespace should be deleted after all other operations have been done
 		if !config.IsKeepNamespace() {
-			if success := installers.UninstallServicesFromNamespace(data.Namespace); !success {
+			if success := frameworkInstallers.UninstallServicesFromNamespace(data.Namespace); !success {
 				framework.GetMainLogger().Warn("Some services weren't uninstalled propertly from namespace, see error logs above", "namespace", data.Namespace)
 			}
 
@@ -345,7 +346,7 @@ func deleteKogitoOperatorCatalogSource() {
 func retrieveProfilingData() {
 	framework.GetMainLogger().Info("Retrieve Profiling Data")
 
-	if err := framework.RemoveKogitoOperatorDeployment(installers.KogitoNamespace); err != nil {
+	if err := framework.RemoveKogitoOperatorDeployment(installers.SonataFlowNamespace); err != nil {
 		framework.GetMainLogger().Error(err, "Unable to delete Kogito Operator Deployment")
 		return
 	}
@@ -357,14 +358,14 @@ func retrieveProfilingData() {
 	}
 
 	// Wait for dataaccess pod
-	if err := framework.WaitForPodsWithLabel(installers.KogitoNamespace, "name", "profiling-data-access", 1, 2); err != nil {
+	if err := framework.WaitForPodsWithLabel(installers.SonataFlowNamespace, "name", "profiling-data-access", 1, 2); err != nil {
 		framework.GetMainLogger().Error(err, "Error while waiting for profiling data access pod")
 		return
 	}
 
 	// Copy coverage data
 	dataFileInContainer := fmt.Sprintf("%s:/data/cover.out", "kogito-operator-profiling-data-access")
-	if _, err := framework.CreateCommand("oc", "cp", dataFileInContainer, config.GetOperatorProfilingOutputFileURI(), "-n", installers.KogitoNamespace).Execute(); err != nil {
+	if _, err := framework.CreateCommand("oc", "cp", dataFileInContainer, config.GetOperatorProfilingOutputFileURI(), "-n", installers.SonataFlowNamespace).Execute(); err != nil {
 		framework.GetMainLogger().Error(err, "Error while installing Kogito operator from YAML file")
 		return
 	}

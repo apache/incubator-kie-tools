@@ -638,8 +638,6 @@ github.com/kiegroup/kogito-operator v0.0.0-20230602083230-edf6764bcf18 h1:N3gyLx
 github.com/kiegroup/kogito-operator v0.0.0-20230602083230-edf6764bcf18/go.mod h1:LxtNrFmxUTincnENtGuqgWnPRtvrklij6zfPzTjHFwg=
 github.com/kiegroup/kogito-operator/apis v0.0.0-20230602083230-edf6764bcf18 h1:qOdR7Nb0dJdgpu+Yipp16a1gYUBwRZC7aRSjTnITZ3s=
 github.com/kiegroup/kogito-operator/apis v0.0.0-20230602083230-edf6764bcf18/go.mod h1:sRYeZP9WLcV9/AfZSDLZe8I0+Xn479sJ59feWSAQ/4I=
-github.com/kiegroup/kogito-operator/test v0.0.0-20230602083230-edf6764bcf18 h1:ztOVxeRZIGfE7119q095Jx08wviUjbYaJcbvQOW9qc4=
-github.com/kiegroup/kogito-operator/test v0.0.0-20230602083230-edf6764bcf18/go.mod h1:A82/hhqIbaGXLTEuXZVvrGIUi6AlYf6LpWIog3F62EI=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/errcheck v1.2.0/go.mod h1:/BMXB+zMLi60iA8Vv6Ksmxu/1UDYcXs4uQLJ+jE2L00=
 github.com/kisielk/errcheck v1.5.0/go.mod h1:pFxgyoBC7bSaBwPgfKdkLd5X25qrDl4LWUI2bnpBCr8=
@@ -881,8 +879,9 @@ github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 h1:Dz0HrI1AtNSG
 github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46/go.mod h1:is8FVkzSi7PYLWEXT5MgWhglFsyyiW8ffxAoJqfuFZo=
 github.com/sergi/go-diff v1.0.0/go.mod h1:0CfEIISq7TuYL3j771MWULgwwjU+GofnZX9QAmXWZgo=
 github.com/sergi/go-diff v1.1.0 h1:we8PVUC3FE2uYfodKH/nBHMSetSfHDR6scGdBi+erh0=
-github.com/serverlessworkflow/sdk-go/v2 v2.2.3 h1:s5+8GegK4vIMKAg2ETdO9OovSROGwVPPvrGz74G17oQ=
-github.com/serverlessworkflow/sdk-go/v2 v2.2.3/go.mod h1:YmKuDaZ81zLyIfYZtgkcUpOzGN8xWMWeZGGaO5pW0Us=
+github.com/sergi/go-diff v1.1.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNXdaHfM=
+github.com/serverlessworkflow/sdk-go/v2 v2.2.4 h1:uAYaezqiw6Q3RR3UBRQOd5YCZtmYtLZAYC74iW253dU=
+github.com/serverlessworkflow/sdk-go/v2 v2.2.4/go.mod h1:YmKuDaZ81zLyIfYZtgkcUpOzGN8xWMWeZGGaO5pW0Us=
 github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24/go.mod h1:M+9NzErvs504Cn4c5DxATwIqPbtswREoFCre64PpcG4=
 github.com/shurcooL/sanitized_anchor_name v1.0.0/go.mod h1:1NzhyTcUVG4SuEtjjoZeVRXNmyL/1OwPU0+IJeTBvfc=
 github.com/sirupsen/logrus v1.0.4-0.20170822132746-89742aefa4b2/go.mod h1:pMByvHTf9Beacp5x1UXfOR9xyW/9antXMhjMPG0dEzc=

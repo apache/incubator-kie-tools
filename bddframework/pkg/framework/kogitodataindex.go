@@ -17,10 +17,21 @@ package framework
 import (
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
-	framework2 "github.com/kiegroup/kogito-operator/core/framework"
-	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
+)
+
+const (
+	// DataIndexInfinispanImageName is the image name for the Data Index Service with Infinispan
+	DataIndexInfinispanImageName = "kogito-data-index-infinispan"
+	// DataIndexMongoDBImageName is the image name for the Data Index Service with MongoDB
+	DataIndexMongoDBImageName = "kogito-data-index-mongodb"
+	// DataIndexPostgresqlImageName is the image name for the Data Index Service with PostgreSQL
+	DataIndexPostgresqlImageName = "kogito-data-index-postgresql"
+	// DefaultDataIndexImageName is just the image name for the Data Index Service
+	DefaultDataIndexImageName = DataIndexInfinispanImageName
+	// DefaultDataIndexName is the default name for the Data Index instance service
+	DefaultDataIndexName = "data-index"
 )
 
 // InstallKogitoDataIndexService install the Kogito Data Index service
@@ -37,11 +48,11 @@ func WaitForKogitoDataIndexService(namespace string, replicas int, timeoutInMin 
 
 	// Data Index can be restarted after the deployment of KogitoRuntime, so 2 pods can run in parallel for a while.
 	// We need to wait for only one (wait until the old one is deleted)
-	return WaitForPodsWithLabel(namespace, framework2.LabelAppKey, getDataIndexServiceName(), replicas, timeoutInMin)
+	return WaitForPodsWithLabel(namespace, LabelAppKey, getDataIndexServiceName(), replicas, timeoutInMin)
 }
 
 func getDataIndexServiceName() string {
-	return kogitosupportingservice.DefaultDataIndexName
+	return DefaultDataIndexName
 }
 
 // GetKogitoDataIndexResourceStub Get basic KogitoDataIndex stub with all needed fields initialized
@@ -51,7 +62,7 @@ func GetKogitoDataIndexResourceStub(namespace string, replicas int) *v1beta1.Kog
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType: api.DataIndex,
 			// This should be changed to `ephemeral` once inmemory data-index is available
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.DataIndexImageType, config.InfinispanPersistenceType), kogitosupportingservice.DefaultDataIndexImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.DataIndexImageType, config.InfinispanPersistenceType), DefaultDataIndexImageName),
 		},
 	}
 }

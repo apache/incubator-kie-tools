@@ -16,10 +16,6 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/core/kogitobuild"
-	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/internal/app"
-	"github.com/kiegroup/kogito-operator/test/pkg/meta"
 	"time"
 
 	api "github.com/kiegroup/kogito-operator/apis"
@@ -27,48 +23,19 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	ocapps "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	imagev1 "github.com/openshift/api/image/v1"
 	routev1 "github.com/openshift/api/route/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
-	"github.com/kiegroup/kogito-operator/core/logger"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
 )
 
 const (
 	dockerImageKind = "DockerImage"
 )
-
-// WaitForBuildComplete waits for a build to be completed
-func WaitForBuildComplete(namespace, buildName string, timeoutInMin int) error {
-	return WaitForOnOpenshift(namespace, fmt.Sprintf("Build %s complete", buildName), timeoutInMin,
-		func() (bool, error) {
-			context := operator.Context{
-				Client: kubeClient,
-				Scheme: meta.GetRegisteredSchema(),
-				Log: logger.GetLogger("test"),
-			}
-			buildHandler := app.NewKogitoBuildHandler(context)
-			bc := buildv1.BuildConfig{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      buildName,
-					Namespace: namespace,
-				},
-			}
-			builds, err := kogitobuild.NewBuildHandler(context, buildHandler).GetBuildsStatus(&bc, fmt.Sprintf("%s=%s", kogitobuild.BuildConfigLabelSelector, buildName))
-
-			if err != nil {
-				return false, fmt.Errorf("Error while fetching buildconfig %s: %v", buildName, err)
-			} else if builds == nil || len(builds.GetComplete()) < 1 {
-				return false, nil
-			}
-
-			return true, nil
-		})
-}
 
 // WaitForBuildConfigCreated waits for a build config to be created
 func WaitForBuildConfigCreated(namespace, buildConfigName string, timeoutInMin int) error {

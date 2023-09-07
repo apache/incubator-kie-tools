@@ -17,9 +17,15 @@ package framework
 import (
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
-	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
+)
+
+const (
+	// DefaultMgmtConsoleName ...
+	DefaultMgmtConsoleName = "management-console"
+	// DefaultMgmtConsoleImageName ...
+	DefaultMgmtConsoleImageName = "kogito-management-console"
 )
 
 // InstallKogitoManagementConsole install the Kogito Management Console component
@@ -33,7 +39,7 @@ func WaitForKogitoManagementConsoleService(namespace string, replicas int, timeo
 }
 
 func getManagementConsoleServiceName() string {
-	return kogitosupportingservice.DefaultMgmtConsoleName
+	return DefaultMgmtConsoleName
 }
 
 // GetKogitoManagementConsoleResourceStub Get basic KogitoManagementConsole stub with all needed fields initialized
@@ -42,7 +48,7 @@ func GetKogitoManagementConsoleResourceStub(namespace string, replicas int) *v1b
 		ObjectMeta: NewObjectMetadata(namespace, getManagementConsoleServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType:       api.MgmtConsole,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.ManagementConsoleImageType, config.EphemeralPersistenceType), kogitosupportingservice.DefaultMgmtConsoleImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.ManagementConsoleImageType, config.EphemeralPersistenceType), DefaultMgmtConsoleImageName),
 		},
 	}
 }

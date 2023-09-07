@@ -15,6 +15,7 @@
 package steps
 
 import (
+	"fmt"
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-serverless-operator/testbdd/installers"
 
@@ -34,7 +35,7 @@ func registerOperatorSteps(ctx *godog.ScenarioContext, data *Data) {
 func (data *Data) sonataFlowOperatorIsDeployed() (err error) {
 	var installer kogitoInstallers.ServiceInstaller
 	if config.UseProductOperator() {
-		installer, err = kogitoInstallers.GetRhpamKogitoInstaller()
+		installer, err = &kogitoInstallers.YamlClusterWideServiceInstaller{}, fmt.Errorf("OLM is not supported by the steps yet")
 	} else {
 		installer, err = installers.GetSonataFlowInstaller()
 	}

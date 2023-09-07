@@ -17,7 +17,6 @@ package steps
 import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/steps/mappers"
@@ -54,10 +53,10 @@ func (data *Data) installKogitoDataIndexServiceWithReplicasWithConfiguration(rep
 	}
 	if dataIndex.DatabaseType == infrastructure.MongoDBKind {
 		framework.GetMainLogger().Debug("Setting Data Index MongoDB image")
-		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.DataIndexImageType, config.MongoDBPersistenceType), kogitosupportingservice.DataIndexMongoDBImageName))
+		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.DataIndexImageType, config.MongoDBPersistenceType), framework.DataIndexMongoDBImageName))
 	} else if dataIndex.DatabaseType == "PostgreSQL" {
 		framework.GetMainLogger().Debug("Setting Data Index PostgreSQL image")
-		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.DataIndexImageType, config.PosgresqlPersistenceType), kogitosupportingservice.DataIndexPostgresqlImageName))
+		dataIndex.KogitoService.GetSpec().SetImage(framework.NewImageOrDefault(config.GetServiceImageTag(config.DataIndexImageType, config.PosgresqlPersistenceType), framework.DataIndexPostgresqlImageName))
 	}
 
 	return framework.InstallKogitoDataIndexService(data.Namespace, framework.GetDefaultInstallerType(), dataIndex)

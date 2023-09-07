@@ -23,14 +23,12 @@ import (
 	"os"
 	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/core/logger"
-
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"io/ioutil"
 	"k8s.io/api/events/v1beta1"
 )
@@ -57,9 +55,10 @@ func GetMainLogger() Logger {
 func GetLogger(namespace string) Logger {
 	opts, err := getOrCreateLoggerOpts(namespace)
 	if err != nil {
-		logger.GetLogger(namespace).Error(err, "Error getting logger", "namespace", namespace)
+		fallbackLog := log.Log.WithName(namespace)
+		fallbackLog.Error(err, "Error getting logger", "namespace", namespace)
 		return Logger{
-			Logger: logger.GetLogger(namespace).Logger,
+			Logger: fallbackLog,
 		}
 	}
 	return getLoggerWithOptions(namespace, opts)
@@ -111,7 +110,7 @@ func getOrCreateLoggerOpts(logName string) (*Opts, error) {
 
 		opts = &Opts{
 			Output:  io.MultiWriter(os.Stdout, fileWriter),
-			Verbose: util.GetBoolOSEnv("DEBUG"),
+			Verbose: GetBoolOSEnv("DEBUG"),
 		}
 		loggerOpts.Store(logName, opts)
 	}

@@ -43,6 +43,11 @@ var (
 	mux        = &sync.Mutex{}
 )
 
+const (
+	// LabelAppKey is the default label key to bind resources together in "Application Group"
+	LabelAppKey = "app"
+)
+
 // podErrorReasons contains all the reasons to state a pod in error.
 var podErrorReasons = []string{"InvalidImageName"}
 

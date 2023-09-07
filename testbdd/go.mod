@@ -4,6 +4,7 @@ go 1.19
 
 replace (
 	github.com/kiegroup/kogito-operator/apis => github.com/kiegroup/kogito-operator/apis v0.0.0-20230602083230-edf6764bcf18
+	github.com/kiegroup/kogito-operator/test => ../bddframework
 	github.com/kiegroup/kogito-serverless-operator => ../
 	github.com/kiegroup/kogito-serverless-operator/api => ../api
 	github.com/kiegroup/kogito-serverless-operator/container-builder => ../container-builder
@@ -15,7 +16,7 @@ require (
 	github.com/cucumber/godog v0.12.5
 	github.com/cucumber/messages-go/v16 v16.0.1
 	github.com/kiegroup/kogito-operator v0.0.0-20230602083230-edf6764bcf18
-	github.com/kiegroup/kogito-operator/test v0.0.0-20230602083230-edf6764bcf18
+	github.com/kiegroup/kogito-operator/test v0.0.0-00010101000000-000000000000
 	github.com/kiegroup/kogito-serverless-operator v0.0.0-00010101000000-000000000000
 	github.com/kiegroup/kogito-serverless-operator/api v0.0.0
 	github.com/openshift/api v0.0.0-20230522130544-0eef84f63102
@@ -100,7 +101,7 @@ require (
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
-	github.com/serverlessworkflow/sdk-go/v2 v2.2.3 // indirect
+	github.com/serverlessworkflow/sdk-go/v2 v2.2.4 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/src-d/gcfg v1.4.0 // indirect
 	github.com/stretchr/testify v1.8.2 // indirect

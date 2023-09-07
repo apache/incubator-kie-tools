@@ -21,9 +21,7 @@ import (
 
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/mappers"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -126,7 +124,7 @@ func NewImageOrDefault(fullImage string, defaultImageName string) string {
 	}
 	AppendImageDefaultValues(image)
 
-	return framework.ConvertImageToImageTag(*image)
+	return ConvertImageToImageTag(*image)
 }
 
 func crInstall(serviceHolder *bddtypes.KogitoServiceHolder) error {
@@ -137,11 +135,7 @@ func crInstall(serviceHolder *bddtypes.KogitoServiceHolder) error {
 }
 
 func cliInstall(serviceHolder *bddtypes.KogitoServiceHolder, cliDeployCommand, cliDeploymentName string) error {
-	cmd := []string{cliDeployCommand, cliDeploymentName}
-	cmd = append(cmd, mappers.GetServiceCLIFlags(serviceHolder)...)
-
-	_, err := ExecuteCliCommandInNamespace(serviceHolder.GetNamespace(), cmd...)
-	return err
+	return fmt.Errorf("not supported")
 }
 
 // OnKogitoServiceDeployed is called when a service deployed.

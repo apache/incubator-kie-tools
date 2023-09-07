@@ -17,9 +17,15 @@ package framework
 import (
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
-	"github.com/kiegroup/kogito-operator/core/kogitosupportingservice"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
+)
+
+const (
+	// DefaultTaskConsoleName ...
+	DefaultTaskConsoleName = "task-console"
+	// DefaultTaskConsoleImageName ...
+	DefaultTaskConsoleImageName = "kogito-task-console"
 )
 
 // InstallKogitoTaskConsole install the Kogito Task Console component
@@ -33,7 +39,7 @@ func WaitForKogitoTaskConsoleService(namespace string, replicas int, timeoutInMi
 }
 
 func getTaskConsoleServiceName() string {
-	return kogitosupportingservice.DefaultTaskConsoleName
+	return DefaultTaskConsoleName
 }
 
 // GetKogitoTaskConsoleResourceStub Get basic KogitoTaskConsole stub with all needed fields initialized
@@ -42,7 +48,7 @@ func GetKogitoTaskConsoleResourceStub(namespace string, replicas int) *v1beta1.K
 		ObjectMeta: NewObjectMetadata(namespace, getTaskConsoleServiceName()),
 		Spec: v1beta1.KogitoSupportingServiceSpec{
 			ServiceType:       api.TaskConsole,
-			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.TaskConsoleImageType, config.EphemeralPersistenceType), kogitosupportingservice.DefaultTaskConsoleImageName),
+			KogitoServiceSpec: NewKogitoServiceSpec(int32(replicas), config.GetServiceImageTag(config.TaskConsoleImageType, config.EphemeralPersistenceType), DefaultTaskConsoleImageName),
 		},
 	}
 }

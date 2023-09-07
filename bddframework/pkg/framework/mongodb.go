@@ -21,7 +21,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/logger"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/meta"
+	"github.com/kiegroup/kogito-operator/test/pkg/meta"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
@@ -91,7 +91,7 @@ func GetMongoDBStub(openshift bool, namespace, name string, users []MongoDBUserC
 				SpecWrapper: mongodb.StatefulSetSpecWrapper{
 					Spec: v1.StatefulSetSpec{
 						ServiceName: "example-openshift-mongodb-svc",
-						Selector: &metav1.LabelSelector{},
+						Selector:    &metav1.LabelSelector{},
 					},
 				},
 			},

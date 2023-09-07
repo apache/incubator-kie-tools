@@ -16,34 +16,44 @@ package framework
 
 import (
 	"fmt"
+	"github.com/google/uuid"
+	"github.com/kiegroup/kogito-serverless-operator/version"
 	"io"
 	"io/ioutil"
+	"k8s.io/apimachinery/pkg/types"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
 	api "github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/kogitobuild"
-	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/version/app"
-
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 )
 
 const (
-	fileFlags      = os.O_CREATE | os.O_WRONLY | os.O_APPEND
-	permissionMode = 0666
+	fileFlags                 = os.O_CREATE | os.O_WRONLY | os.O_APPEND
+	permissionMode            = 0666
+	customKogitoImagePrefix   = "custom-"
+	labelKeyVersion           = "version"
+	kogitoBuilderImageEnvVar  = "BUILDER_IMAGE"
+	kogitoRuntimeJVMEnvVar    = "RUNTIME_IMAGE"
+	kogitoRuntimeNativeEnvVar = "RUNTIME_NATIVE_IMAGE"
+	// defaultBuilderImage Builder Image for Kogito
+	defaultBuilderImage = "kogito-s2i-builder"
+	// defaultRuntimeJVM Runtime Image for Kogito with  JRE
+	defaultRuntimeJVM = "kogito-runtime-jvm"
+	//defaultRuntimeNative Runtime Image for Kogito for Native Quarkus Application
+	defaultRuntimeNative = "kogito-runtime-native"
 )
 
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
 func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
-	ns := fmt.Sprintf("%s-%s", prefix, test.GenerateShortUID(4))
+	ns := fmt.Sprintf("%s-%s", prefix, GenerateShortUID(4))
 	if config.IsLocalTests() {
 		username := getEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
@@ -234,7 +244,7 @@ func GetKogitoBuildS2IImage() string {
 		return config.GetBuildBuilderImageStreamTag()
 	}
 
-	return ConstructDefaultImageFullTag(kogitobuild.GetDefaultBuilderImage())
+	return ConstructDefaultImageFullTag(GetDefaultBuilderImage())
 }
 
 // GetKogitoBuildRuntimeImage returns the Runtime image tag
@@ -244,12 +254,12 @@ func GetKogitoBuildRuntimeImage(native bool) string {
 		if len(config.GetBuildRuntimeNativeImageStreamTag()) > 0 {
 			return config.GetBuildRuntimeNativeImageStreamTag()
 		}
-		imageName = kogitobuild.GetDefaultRuntimeNativeImage()
+		imageName = GetDefaultRuntimeNativeImage()
 	} else {
 		if len(config.GetBuildRuntimeJVMImageStreamTag()) > 0 {
 			return config.GetBuildRuntimeJVMImageStreamTag()
 		}
-		imageName = kogitobuild.GetDefaultRuntimeJVMImage()
+		imageName = GetDefaultRuntimeJVMImage()
 	}
 
 	return ConstructDefaultImageFullTag(imageName)
@@ -262,7 +272,7 @@ func ConstructDefaultImageFullTag(imageName string) string {
 	}
 	AppendImageDefaultValues(image)
 
-	return framework.ConvertImageToImageTag(*image)
+	return ConvertImageToImageTag(*image)
 }
 
 // AppendImageDefaultValues appends the image default values if none existing
@@ -272,7 +282,7 @@ func AppendImageDefaultValues(image *api.Image) {
 	}
 
 	if len(image.Tag) == 0 {
-		image.Tag = infrastructure.GetKogitoImageVersion(app.Version)
+		image.Tag = infrastructure.GetKogitoImageVersion(version.OperatorVersion)
 	}
 }
 
@@ -288,4 +298,89 @@ func AddLineToFile(line, filename string) error {
 	}
 
 	return nil
+}
+
+func getEnvUsername() string {
+	return GetOSEnv("USERNAME", "nouser")
+}
+
+// GetOSEnv gets a env variable
+func GetOSEnv(key, fallback string) string {
+	value, exists := os.LookupEnv(key)
+	if !exists {
+		value = fallback
+	}
+	return value
+}
+
+// GetBoolOSEnv gets a env variable as a boolean
+func GetBoolOSEnv(key string) bool {
+	val := GetOSEnv(key, "false")
+	ret, err := strconv.ParseBool(val)
+	if err != nil {
+		return false
+	}
+	return ret
+}
+
+// GetDefaultRuntimeNativeImage ...
+func GetDefaultRuntimeNativeImage() string {
+	runtimeImage := os.Getenv(kogitoRuntimeNativeEnvVar)
+	if len(runtimeImage) == 0 {
+		runtimeImage = defaultRuntimeNative
+	}
+	return runtimeImage
+}
+
+// GetDefaultRuntimeJVMImage ...
+func GetDefaultRuntimeJVMImage() string {
+	runtimeImage := os.Getenv(kogitoRuntimeJVMEnvVar)
+	if len(runtimeImage) == 0 {
+		runtimeImage = defaultRuntimeJVM
+	}
+	return runtimeImage
+}
+
+// GetDefaultBuilderImage ...
+func GetDefaultBuilderImage() string {
+	builderImage := os.Getenv(kogitoBuilderImageEnvVar)
+	if len(builderImage) == 0 {
+		builderImage = defaultBuilderImage
+	}
+	return builderImage
+}
+
+// GenerateUID generates a Unique ID to be used across test cases
+func GenerateUID() types.UID {
+	uid, err := uuid.NewRandom()
+	if err != nil {
+		panic(err)
+	}
+	return types.UID(uid.String())
+}
+
+// GenerateShortUID same as GenerateUID, but returns a fraction of the generated UID instead.
+// If count > than UID total length, returns the entire sequence.
+func GenerateShortUID(count int) string {
+	if count == 0 {
+		return ""
+	}
+	uid := GenerateUID()
+	if count > len(uid) {
+		count = len(uid)
+	}
+	return string(uid)[:count]
+}
+
+// ConvertImageToImageTag converts an Image into a plain string (domain/namespace/name:tag).
+func ConvertImageToImageTag(image api.Image) string {
+	imageTag := ""
+	if len(image.Domain) > 0 {
+		imageTag += image.Domain + "/"
+	}
+	imageTag += image.Name
+	if len(image.Tag) > 0 {
+		imageTag += ":" + image.Tag
+	}
+	return imageTag
 }

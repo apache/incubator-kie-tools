@@ -17,7 +17,6 @@ package framework
 import (
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
-	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
@@ -66,7 +65,7 @@ func getLoggerWithOptions(name string, options *Opts) Logger {
 
 func getDefaultOpts() *Opts {
 	return &Opts{
-		Verbose: util.GetBoolOSEnv("DEBUG"),
+		Verbose: GetBoolOSEnv("DEBUG"),
 		Output:  defaultOutput,
 	}
 }

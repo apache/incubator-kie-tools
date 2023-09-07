@@ -20,7 +20,6 @@ import (
 	"regexp"
 
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	framework1 "github.com/kiegroup/kogito-operator/core/framework"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	keycloak "github.com/kiegroup/kogito-operator/core/infrastructure/keycloak/v1alpha1"
@@ -48,7 +47,7 @@ func DeployKeycloakInstance(namespace string) error {
 		return fmt.Errorf("Error while creating Keycloak: %v ", err)
 	}
 
-	return WaitForPodsWithLabel(namespace, framework1.LabelAppKey, keycloakKey, 2, 10)
+	return WaitForPodsWithLabel(namespace, LabelAppKey, keycloakKey, 2, 10)
 }
 
 // DeployKeycloakRealm deploys a realm configuration of Keycloak

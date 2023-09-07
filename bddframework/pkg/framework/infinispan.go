@@ -20,8 +20,8 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/logger"
 	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
+	"github.com/kiegroup/kogito-operator/test/pkg/meta"
 
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/api/errors"

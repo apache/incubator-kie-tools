@@ -15,8 +15,6 @@
 package meta
 
 import (
-	kogito "github.com/kiegroup/kogito-operator/apis/app/v1beta1"
-	rhpamkogito "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
 	grafana "github.com/kiegroup/kogito-operator/core/infrastructure/grafana/v1alpha1"
 	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
 	kafka "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
@@ -54,8 +52,6 @@ func GetRegisteredSchema() *runtime.Scheme {
 		panic(err)
 	}
 
-	// After upgrading to Operator SDK 0.11.0 we need to add CreateOptions to our own schema. See: https://issues.jboss.org/browse/KOGITO-493
-	metav1.AddToGroupVersion(s, kogito.GroupVersion)
 	// https://issues.jboss.org/browse/KOGITO-617
 	metav1.AddToGroupVersion(s, apiextensionsv1.SchemeGroupVersion)
 	metav1.AddToGroupVersion(s, appsv1.GroupVersion)
@@ -77,8 +73,6 @@ func GetRegisteredSchema() *runtime.Scheme {
 // getRegisteredSchemeBuilder gets the SchemeBuilder with all the desired APIs registered
 func getRegisteredSchemeBuilder() runtime.SchemeBuilder {
 	return runtime.NewSchemeBuilder(
-		kogito.SchemeBuilder.AddToScheme,
-		rhpamkogito.SchemeBuilder.AddToScheme,
 		clientgoscheme.AddToScheme,
 		corev1.AddToScheme,
 		coreappsv1.AddToScheme,
