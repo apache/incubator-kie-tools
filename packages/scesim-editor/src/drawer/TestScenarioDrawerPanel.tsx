@@ -27,8 +27,8 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
+import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
 
 function TestScenarioDrawerPanel({
   fileName,

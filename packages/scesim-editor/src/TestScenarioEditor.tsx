@@ -46,7 +46,7 @@ import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-ico
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-import { ErrorBoundary } from "./reactExt/ErrorBoundary";
+import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
