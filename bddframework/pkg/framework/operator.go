@@ -16,17 +16,17 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure"
-	"github.com/kiegroup/kogito-operator/test/pkg/meta"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
 
 	olmapiv1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"

@@ -16,8 +16,8 @@ package framework
 
 import (
 	"fmt"
-	kogitoFramework "github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
+	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
 	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
 )
@@ -32,7 +32,7 @@ const (
 
 // WaitForSonataFlowOperatorRunning waits for Kogito operator running
 func WaitForSonataFlowOperatorRunning(namespace string) error {
-	return kogitoFramework.WaitForOnOpenshift(namespace, "SonataFlow operator running", sonataFlowOperatorTimeoutInMin,
+	return framework.WaitForOnOpenshift(namespace, "SonataFlow operator running", sonataFlowOperatorTimeoutInMin,
 		func() (bool, error) {
 			running, err := IsSonataFlowOperatorRunning(namespace)
 			if err != nil {
@@ -42,19 +42,19 @@ func WaitForSonataFlowOperatorRunning(namespace string) error {
 			// If not running, make sure the image pull secret is present in pod
 			// If not present, delete the pod to allow its reconstruction with correct pull secret
 			// Note that this is specific to Openshift
-			if !running && kogitoFramework.IsOpenshift() {
-				podList, err := kogitoFramework.GetPodsWithLabels(namespace, map[string]string{"name": sonataFlowOperatorName})
+			if !running && framework.IsOpenshift() {
+				podList, err := framework.GetPodsWithLabels(namespace, map[string]string{"name": sonataFlowOperatorName})
 				if err != nil {
-					kogitoFramework.GetLogger(namespace).Error(err, "Error while trying to retrieve Kogito Operator pods")
+					framework.GetLogger(namespace).Error(err, "Error while trying to retrieve Kogito Operator pods")
 					return false, nil
 				}
 				for _, pod := range podList.Items {
-					if !kogitoFramework.CheckPodHasImagePullSecretWithPrefix(&pod, sonataFlowOperatorPullImageSecretPrefix) {
+					if !framework.CheckPodHasImagePullSecretWithPrefix(&pod, sonataFlowOperatorPullImageSecretPrefix) {
 						// Delete pod as it has been misconfigured (missing pull secret)
-						kogitoFramework.GetLogger(namespace).Info("Kogito Operator pod does not have the image pull secret needed. Deleting it to renew it.")
-						err := kogitoFramework.DeleteObject(&pod)
+						framework.GetLogger(namespace).Info("Kogito Operator pod does not have the image pull secret needed. Deleting it to renew it.")
+						err := framework.DeleteObject(&pod)
 						if err != nil {
-							kogitoFramework.GetLogger(namespace).Error(err, "Error while trying to delete Kogito Operator pod")
+							framework.GetLogger(namespace).Error(err, "Error while trying to delete Kogito Operator pod")
 							return false, nil
 						}
 					}
@@ -79,11 +79,11 @@ func IsSonataFlowOperatorRunning(namespace string) (bool, error) {
 
 // SonataFlowOperatorExists returns whether SonataFlow operator exists and is running. If it is existing but not running, it returns true and an error
 func SonataFlowOperatorExists(namespace string) (bool, error) {
-	kogitoFramework.GetLogger(namespace).Debug("Checking Operator", "Deployment", sonataFlowOperatorDeploymentName, "Namespace", namespace)
+	framework.GetLogger(namespace).Debug("Checking Operator", "Deployment", sonataFlowOperatorDeploymentName, "Namespace", namespace)
 
 	operatorDeployment := &v1.Deployment{}
 	namespacedName := types.NamespacedName{Namespace: namespace, Name: sonataFlowOperatorDeploymentName} // done to reuse the framework function
-	if exists, err := kogitoFramework.GetObjectWithKey(namespacedName, operatorDeployment); err != nil {
+	if exists, err := framework.GetObjectWithKey(namespacedName, operatorDeployment); err != nil {
 		return false, fmt.Errorf("Error while trying to look for Deploment %s: %v ", sonataFlowOperatorDeploymentName, err)
 	} else if !exists {
 		return false, nil

@@ -19,7 +19,7 @@ import (
 	v1beta1 "k8s.io/api/events/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 )
 
 // EventInterface has functions that interacts with pod object in the Kubernetes cluster

@@ -19,8 +19,8 @@ import (
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-serverless-operator/testbdd/installers"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	kogitoInstallers "github.com/kiegroup/kogito-operator/test/pkg/installers"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	kogitoInstallers "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
 )
 
 func registerOperatorSteps(ctx *godog.ScenarioContext, data *Data) {
@@ -46,14 +46,14 @@ func (data *Data) sonataFlowOperatorIsDeployed() (err error) {
 }
 
 //func (data *Data) sonataFlowOperatorHasPodsRunning(numberOfPods int, name, phase string) error {
-//	return kogitoFramework.WaitForPodsWithLabel(data.Namespace, "control-plane", "controller-manager", numberOfPods, 1)
+//	return framework.WaitForPodsWithLabel(data.Namespace, "control-plane", "controller-manager", numberOfPods, 1)
 //}
-
+//
 //func (data *Data) kogitoOperatorShouldBeInstalled() error {
-//	return kogitoFramework.WaitForKogitoOperatorRunning(data.Namespace)
+//	return framework.WaitForKogitoOperatorRunning(data.Namespace)
 //}
-
+//
 //func (data *Data) cliInstallKogitoOperator() error {
-//	_, err := kogitoFramework.ExecuteCliCommandInNamespace(data.Namespace, "install", "operator")
+//	_, err := framework.ExecuteCliCommandInNamespace(data.Namespace, "install", "operator")
 //	return err
 //}

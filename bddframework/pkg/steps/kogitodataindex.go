@@ -16,11 +16,11 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure"
-	"github.com/kiegroup/kogito-operator/test/pkg/steps/mappers"
-	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps/mappers"
+	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
 )
 
 /*

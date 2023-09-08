@@ -16,12 +16,12 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/test/pkg/api/app/v1beta1"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/app/v1beta1"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/api"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
-	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 )

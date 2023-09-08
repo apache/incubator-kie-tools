@@ -15,11 +15,11 @@
 package infrastructure
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/kafka/v1beta2"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
-	"github.com/kiegroup/kogito-operator/test/pkg/meta"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"

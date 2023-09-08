@@ -17,7 +17,7 @@ package logger
 import (
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/env"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/env"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"

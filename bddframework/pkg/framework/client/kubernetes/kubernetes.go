@@ -15,8 +15,8 @@
 package kubernetes
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
-	frameworklogger "github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	frameworklogger "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	logger "sigs.k8s.io/controller-runtime/pkg/log"
 )
 

@@ -17,7 +17,7 @@ package steps
 import (
 	"fmt"
 	"github.com/cucumber/godog"
-	kogitoFramework "github.com/kiegroup/kogito-operator/test/pkg/framework"
+	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 	"github.com/kiegroup/kogito-serverless-operator/test/utils"
 	"path/filepath"
@@ -40,10 +40,10 @@ func (data *Data) sonataFlowPlatformIsDeployed() error {
 	projectDir = strings.Replace(projectDir, "/testbdd", "", -1)
 
 	// TODO or kubectl
-	out, err := kogitoFramework.CreateCommand("oc", "apply", "-f", filepath.Join(projectDir, getSonataFlowPlatformFilename()), "-n", data.Namespace).Execute()
+	out, err := framework.CreateCommand("oc", "apply", "-f", filepath.Join(projectDir, getSonataFlowPlatformFilename()), "-n", data.Namespace).Execute()
 
 	if err != nil {
-		kogitoFramework.GetLogger(data.Namespace).Error(err, fmt.Sprintf("Applying SonataFlowPlatform failed, output: %s", out))
+		framework.GetLogger(data.Namespace).Error(err, fmt.Sprintf("Applying SonataFlowPlatform failed, output: %s", out))
 	}
 
 	return err

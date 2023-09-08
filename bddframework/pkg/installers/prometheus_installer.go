@@ -15,7 +15,7 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	monv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

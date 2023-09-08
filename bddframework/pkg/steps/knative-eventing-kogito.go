@@ -17,8 +17,8 @@ package steps
 import (
 	"fmt"
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/test/pkg/installers"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
 )
 
 func registerKnativeEventingKogitoSteps(ctx *godog.ScenarioContext, data *Data) {

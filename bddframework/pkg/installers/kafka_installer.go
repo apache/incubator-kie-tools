@@ -15,8 +15,8 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/kafka/v1beta2"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

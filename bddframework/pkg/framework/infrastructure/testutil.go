@@ -15,8 +15,8 @@
 package infrastructure
 
 import (
-	kogitocli "github.com/kiegroup/kogito-operator/test/pkg/framework/client"
-	"github.com/kiegroup/kogito-operator/test/pkg/meta"
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 	buildfake "github.com/openshift/client-go/build/clientset/versioned/fake"
 	v1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

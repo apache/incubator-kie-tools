@@ -23,8 +23,8 @@ import (
 	"github.com/cucumber/messages-go/v16"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

@@ -15,12 +15,12 @@
 package steps
 
 import (
-	infinispan "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/infinispan/v1"
+	infinispan "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
 
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/test/pkg/installers"
-	"github.com/kiegroup/kogito-operator/test/pkg/steps/mappers"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps/mappers"
 )
 
 /*

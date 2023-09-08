@@ -20,7 +20,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 var (

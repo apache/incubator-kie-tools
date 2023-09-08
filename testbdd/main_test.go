@@ -17,14 +17,14 @@ package main
 import (
 	"testing"
 
-	kogitoFramework "github.com/kiegroup/kogito-operator/test/pkg/framework"
+	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/testbdd/executor"
 	"github.com/kiegroup/kogito-serverless-operator/testbdd/meta"
 )
 
 func TestMain(m *testing.M) {
 	// Create kube client
-	if err := kogitoFramework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
+	if err := framework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
 		panic(err)
 	}
 

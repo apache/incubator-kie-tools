@@ -16,7 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 func registerKubernetesSteps(ctx *godog.ScenarioContext, data *Data) {

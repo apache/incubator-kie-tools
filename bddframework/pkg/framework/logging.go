@@ -19,8 +19,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/env"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/env"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	"io"
 	"os"
 	"reflect"
@@ -30,7 +30,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	"io/ioutil"
 	"k8s.io/api/events/v1beta1"
 )

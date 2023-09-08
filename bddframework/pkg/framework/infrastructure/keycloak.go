@@ -15,8 +15,8 @@
 package infrastructure
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/keycloak/v1alpha1"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/keycloak/v1alpha1"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
 )
 
 const (

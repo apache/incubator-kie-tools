@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	ispn "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/infinispan/v1"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	ispn "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
 	coreapps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbac "k8s.io/api/rbac/v1"

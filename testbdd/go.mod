@@ -3,9 +3,9 @@ module github.com/kiegroup/kogito-serverless-operator/testbdd
 go 1.19
 
 replace (
-	github.com/kiegroup/kogito-operator/test => ../bddframework
 	github.com/kiegroup/kogito-serverless-operator => ../
 	github.com/kiegroup/kogito-serverless-operator/api => ../api
+	github.com/kiegroup/kogito-serverless-operator/bddframework => ../bddframework
 	github.com/kiegroup/kogito-serverless-operator/container-builder => ../container-builder
 	github.com/kiegroup/kogito-serverless-operator/workflowproj => ../workflowproj
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring => github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.50.0
@@ -14,9 +14,9 @@ replace (
 require (
 	github.com/cucumber/godog v0.12.5
 	github.com/cucumber/messages-go/v16 v16.0.1
-	github.com/kiegroup/kogito-operator/test v0.0.0-00010101000000-000000000000
 	github.com/kiegroup/kogito-serverless-operator v1.43.1
 	github.com/kiegroup/kogito-serverless-operator/api v0.0.0
+	github.com/kiegroup/kogito-serverless-operator/bddframework v0.0.0-00010101000000-000000000000
 	github.com/openshift/api v0.0.0-20230522130544-0eef84f63102
 	github.com/operator-framework/operator-lifecycle-manager v0.0.0-20200321030439-57b580e57e88
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1

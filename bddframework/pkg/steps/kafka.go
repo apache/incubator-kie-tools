@@ -16,11 +16,11 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/kafka/v1beta2"
-	"github.com/kiegroup/kogito-operator/test/pkg/installers"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

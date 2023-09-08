@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/env"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/env"
 	"io"
 	"io/ioutil"
 	"k8s.io/apimachinery/pkg/types"
@@ -28,8 +28,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/api"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/kiegroup/kogito-serverless-operator/version"
 )
 

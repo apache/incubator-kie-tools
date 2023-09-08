@@ -20,7 +20,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	frameworklogger "github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	frameworklogger "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	rbac "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	controllerruntime "sigs.k8s.io/controller-runtime"

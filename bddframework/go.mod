@@ -1,4 +1,4 @@
-module github.com/kiegroup/kogito-operator/test
+module github.com/kiegroup/kogito-serverless-operator/bddframework
 
 go 1.19
 

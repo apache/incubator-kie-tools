@@ -15,10 +15,10 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/api"
-	"github.com/kiegroup/kogito-operator/test/pkg/api/app/v1beta1"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/app/v1beta1"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
 )
 
 const (

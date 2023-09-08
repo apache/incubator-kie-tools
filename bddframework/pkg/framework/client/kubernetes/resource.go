@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	kogitocli "github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"

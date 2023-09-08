@@ -16,8 +16,8 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	kogitoSteps "github.com/kiegroup/kogito-operator/test/pkg/steps"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	kogitoSteps "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps"
 	"strconv"
 	"time"
 )

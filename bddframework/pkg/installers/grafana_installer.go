@@ -15,8 +15,8 @@
 package installers
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	grafanav1 "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/grafana/v1alpha1"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	grafanav1 "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/grafana/v1alpha1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 

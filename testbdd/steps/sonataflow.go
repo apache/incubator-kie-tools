@@ -17,9 +17,9 @@ package steps
 import (
 	"fmt"
 	"github.com/cucumber/godog"
-	kogitoFramework "github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/api"
 	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 	"github.com/kiegroup/kogito-serverless-operator/test/utils"
 	v1 "k8s.io/api/core/v1"
@@ -41,17 +41,17 @@ func (data *Data) sonataFlowOrderProcessingExampleIsDeployed() error {
 	projectDir = strings.Replace(projectDir, "/testbdd", "", -1)
 
 	// TODO or kubectl
-	out, err := kogitoFramework.CreateCommand("oc", "apply", "-f", filepath.Join(projectDir,
+	out, err := framework.CreateCommand("oc", "apply", "-f", filepath.Join(projectDir,
 		test.GetSonataFlowE2eOrderProcessingFolder()), "-n", data.Namespace).Execute()
 
 	if err != nil {
-		kogitoFramework.GetLogger(data.Namespace).Error(err, fmt.Sprintf("Applying SonataFlow failed, output: %s", out))
+		framework.GetLogger(data.Namespace).Error(err, fmt.Sprintf("Applying SonataFlow failed, output: %s", out))
 	}
 	return err
 }
 
 func (data *Data) sonataFlowHasTheConditionSetToWithinMinutes(name, conditionType, conditionStatus string, timeoutInMin int) error {
-	return kogitoFramework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("SonataFlow %s has the condition %s with status %s", name, conditionType, conditionStatus), timeoutInMin,
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("SonataFlow %s has the condition %s with status %s", name, conditionType, conditionStatus), timeoutInMin,
 		func() (bool, error) {
 			if sonataFlow, err := getSonataFlow(data.Namespace, name); err != nil {
 				return false, err
@@ -65,7 +65,7 @@ func (data *Data) sonataFlowHasTheConditionSetToWithinMinutes(name, conditionTyp
 }
 
 func (data *Data) sonataFlowIsAddressableWithinMinutes(name string, timeoutInMin int) error {
-	return kogitoFramework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("SonataFlow %s is addressable", name), timeoutInMin,
+	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("SonataFlow %s is addressable", name), timeoutInMin,
 		func() (bool, error) {
 			sonataFlow, err := getSonataFlow(data.Namespace, name)
 			if err != nil {
@@ -88,7 +88,7 @@ func (data *Data) sonataFlowIsAddressableWithinMinutes(name string, timeoutInMin
 
 func getSonataFlow(namespace, name string) (*v1alpha08.SonataFlow, error) {
 	sonataFlow := &v1alpha08.SonataFlow{}
-	if exists, err := kogitoFramework.GetObjectWithKey(types.NamespacedName{Namespace: namespace, Name: name}, sonataFlow); err != nil {
+	if exists, err := framework.GetObjectWithKey(types.NamespacedName{Namespace: namespace, Name: name}, sonataFlow); err != nil {
 		return nil, fmt.Errorf("Error while trying to look for SonataFlow %s: %w ", name, err)
 	} else if !exists {
 		return nil, nil
@@ -99,7 +99,7 @@ func getSonataFlow(namespace, name string) (*v1alpha08.SonataFlow, error) {
 func (data *Data) httpPostRequestAsCloudEventOnSonataFlowIsSuccessfulWithinMinutesWithPathHeadersAndBody(name string, timeoutInMin int, path, headersContent string, body *godog.DocString) error {
 	path = data.ResolveWithScenarioContext(path)
 	bodyContent := data.ResolveWithScenarioContext(body.Content)
-	kogitoFramework.GetLogger(data.Namespace).Debug("httpPostRequestAsCloudEventOnSonataFlowIsSuccessfulWithinMinutesWithPathHeadersAndBody", "sonataflow", name, "path", path, "bodyMediaType", body.MediaType, "bodyContent", bodyContent, "timeout", timeoutInMin)
+	framework.GetLogger(data.Namespace).Debug("httpPostRequestAsCloudEventOnSonataFlowIsSuccessfulWithinMinutesWithPathHeadersAndBody", "sonataflow", name, "path", path, "bodyMediaType", body.MediaType, "bodyContent", bodyContent, "timeout", timeoutInMin)
 	sonataFlow, err := getSonataFlow(data.Namespace, name)
 	if err != nil {
 		return err
@@ -113,8 +113,8 @@ func (data *Data) httpPostRequestAsCloudEventOnSonataFlowIsSuccessfulWithinMinut
 		return err
 	}
 
-	requestInfo := kogitoFramework.NewPOSTHTTPRequestInfoWithHeaders(uri, path, headers, body.MediaType, bodyContent)
-	return kogitoFramework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
+	requestInfo := framework.NewPOSTHTTPRequestInfoWithHeaders(uri, path, headers, body.MediaType, bodyContent)
+	return framework.WaitForSuccessfulHTTPRequest(data.Namespace, requestInfo, timeoutInMin)
 }
 
 func parseHeaders(headersContent string) (map[string]string, error) {

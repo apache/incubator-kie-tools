@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 )
 

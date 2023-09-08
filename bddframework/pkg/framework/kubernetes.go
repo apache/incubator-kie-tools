@@ -24,9 +24,9 @@ import (
 
 	rbac "k8s.io/api/rbac/v1"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	kogitocli "github.com/kiegroup/kogito-operator/test/pkg/framework/client"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8sv1beta1 "k8s.io/api/extensions/v1beta1"

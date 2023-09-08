@@ -16,17 +16,17 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/test/pkg/config"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
-	"github.com/kiegroup/kogito-operator/test/pkg/meta"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 
 	"gopkg.in/yaml.v2"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
-	infinispan "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/infinispan/v1"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	infinispan "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

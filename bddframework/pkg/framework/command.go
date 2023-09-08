@@ -15,7 +15,7 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	"os/exec"
 	"sync"
 	"time"

@@ -15,8 +15,8 @@
 package operator
 
 import (
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 

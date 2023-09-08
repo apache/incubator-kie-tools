@@ -17,7 +17,7 @@ package kubernetes
 import (
 	"testing"
 
-	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
