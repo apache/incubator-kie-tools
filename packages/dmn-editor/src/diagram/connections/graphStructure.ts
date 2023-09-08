@@ -58,7 +58,13 @@ export const graphStructure: Map<NodeType, Map<EdgeType, Set<NodeType>>> = new M
       ],
     ]),
   ],
-  [NODE_TYPES.group, new Map<EdgeType, Set<NodeType>>()],
+  [
+    NODE_TYPES.group,
+    new Map<EdgeType, Set<NodeType>>([
+      //
+      [EDGE_TYPES.association, new Set([NODE_TYPES.textAnnotation])],
+    ]),
+  ],
 ]);
 
 export const outgoingStructure = {
@@ -81,6 +87,10 @@ export const outgoingStructure = {
   [NODE_TYPES.knowledgeSource]: {
     nodes: outgoingNodes(NODE_TYPES.knowledgeSource),
     edges: outgoingEdges(NODE_TYPES.knowledgeSource),
+  },
+  [NODE_TYPES.group]: {
+    nodes: outgoingNodes(NODE_TYPES.group),
+    edges: outgoingEdges(NODE_TYPES.group),
   },
   [NODE_TYPES.textAnnotation]: {
     nodes: [],

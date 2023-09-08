@@ -10,7 +10,7 @@ export function EditableNodeLabel({
   onChange,
   position,
 }: {
-  position?: "center-center" | "top-center";
+  position?: "center-center" | "top-center" | "center-left" | "top-left";
   isEditing: boolean;
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;

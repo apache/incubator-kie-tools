@@ -29,7 +29,5 @@ export function _checkIsValidConnection(
       false) ||
     edgeType.startsWith("source-");
 
-  console.info(`${ret}: ${sourceNode.type} --${edgeType}--> ${targetNode.type}`);
-
   return ret;
 }

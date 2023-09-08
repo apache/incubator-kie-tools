@@ -138,7 +138,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const getFirstNodeUnderneath = useCallback(
     (nodeIdToIgnore: string, point: DC__Point) =>
-      nodes.find(
+      nodes.reverse().find(
         ({ id, data: { shape } }) =>
           id !== nodeIdToIgnore && // don't ever use the node being dragged
           point["@_x"] > (shape["dc:Bounds"]?.["@_x"] ?? 0) &&
@@ -316,9 +316,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         for (const change of changes) {
           switch (change.type) {
             case "add":
+              console.debug(`DMN DIAGRAM: 'onNodesChange' --> add '${change.item.id}'`);
               state.dispatch.diagram.setNodeStatus(state, change.item.id, { selected: true });
               break;
             case "dimensions":
+              console.debug(`DMN DIAGRAM: 'onNodesChange' --> dimensions '${change.id}'`);
               state.dispatch.diagram.setNodeStatus(state, change.id, { resizing: change.resizing });
               if (change.dimensions) {
                 const node = nodesById.get(change.id)!;
@@ -342,6 +344,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               }
               break;
             case "position":
+              console.debug(`DMN DIAGRAM: 'onNodesChange' --> position '${change.id}'`);
               state.dispatch.diagram.setNodeStatus(state, change.id, { dragging: change.dragging });
               if (change.positionAbsolute) {
                 const node = nodesById.get(change.id)!;
@@ -381,7 +384,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                       edgeIndexesAlreadyUpdated,
                       change: {
                         nodeType: nestedNode.type as NodeType,
-                        selectedEdges: state.diagram.selectedEdges,
+                        selectedEdges: edges.map((e) => e.id),
                         shapeIndex: nestedNode.data.shape.index,
                         sourceEdgeIndexes: edges.flatMap((e) =>
                           e.source === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
@@ -398,7 +401,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               }
               break;
             case "remove":
+              console.debug(`DMN DIAGRAM: 'onNodesChange' --> remove '${change.id}'`);
               const node = nodesById.get(change.id)!;
+              if (node.parentNode && changes.find((s) => s.type === "remove" && s.id === node.parentNode)) {
+                continue;
+              }
               deleteNode({
                 definitions: state.dmn.model.definitions,
                 node: {
@@ -528,20 +535,23 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         for (const change of changes) {
           switch (change.type) {
             case "select":
+              console.debug(`DMN DIAGRAM: 'onEdgesChange' --> select '${change.id}'`);
               state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: change.selected });
               break;
             case "remove":
+              console.debug(`DMN DIAGRAM: 'onEdgesChange' --> remove '${change.id}'`);
               const edge = edgesById.get(change.id);
               if (edge?.data) {
                 deleteEdge({
                   definitions: state.dmn.model.definitions,
                   edge: { id: change.id, dmnObject: edge.data.dmnObject },
                 });
+                state.dispatch.diagram.setEdgeStatus(state, change.id, { selected: false, draggingWaypoint: false });
               }
               break;
             case "add":
             case "reset":
-              console.log(`DMN DIAGRAM: Ignoring edge added or reset --> '${change.item.id}'`);
+              console.debug(`DMN DIAGRAM: 'onEdgesChange' --> add/reset '${change.item.id}'. Ignoring`);
           }
         }
       });

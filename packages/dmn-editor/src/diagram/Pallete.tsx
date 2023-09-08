@@ -79,7 +79,11 @@ export function Pallete() {
         </aside>
         <br />
         <aside className={"kie-dmn-editor--pallete"}>
-          <button className={"kie-dmn-editor--pallete-button dndnode text-annotation"}>
+          <button
+            className={"kie-dmn-editor--pallete-button dndnode group"}
+            onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
+            draggable={true}
+          >
             <RoundSvg>
               <GroupNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} strokeDasharray={"28,28"} />
             </RoundSvg>

@@ -135,7 +135,7 @@ export function DecisionServiceNodeSvg(
         y={y}
         width={width}
         height={height}
-        fill={DEFAULT_NODE_FILL}
+        fill={"transparent"}
         stroke={DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}
@@ -197,7 +197,7 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
 
 export function GroupNodeSvg(_props: NodeSvgProps & { strokeDasharray?: string }) {
   const { strokeWidth, x, y, width, height, props } = normalize(_props);
-  const strokeDasharray = props.strokeDasharray ?? "5,5";
+  const strokeDasharray = props.strokeDasharray ?? "14,10,3,10";
   const cornerRadius = 40;
   return (
     <g>
@@ -207,7 +207,7 @@ export function GroupNodeSvg(_props: NodeSvgProps & { strokeDasharray?: string }
         y={y}
         width={width}
         height={height}
-        fill={DEFAULT_NODE_FILL}
+        fill={"transparent"}
         stroke={DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}

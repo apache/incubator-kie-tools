@@ -11,7 +11,7 @@ import {
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import * as RF from "reactflow";
-import { renameDrgElement, updateTextAnnotation } from "../../mutations/renameNode";
+import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
 import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { PositionalTargetNodeHandles } from "../connections/PositionalTargetNodeHandles";
@@ -52,13 +52,14 @@ export const InputDataNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
@@ -118,13 +119,14 @@ export const DecisionNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
@@ -184,13 +186,14 @@ export const BkmNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
@@ -250,13 +253,14 @@ export const KnowledgeSourceNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
@@ -292,6 +296,7 @@ export const KnowledgeSourceNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
           />
           <EditableNodeLabel
+            position={"center-left"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
@@ -314,13 +319,14 @@ export const TextAnnotationNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
@@ -356,9 +362,9 @@ export const TextAnnotationNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
           />
           <EditableNodeLabel
+            position={"top-left"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
-            position={"top-center"}
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
           />
@@ -379,12 +385,13 @@ export const DecisionServiceNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     useHoveredNodeAlwaysOnTop(ref, zIndex, isHovered, dragging, selected, isEditingLabel);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
@@ -451,21 +458,51 @@ export const GroupNode = React.memo(
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
-    const isHovered = (useIsHovered(ref) || isResizing) && !dragging;
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const diagram = useDmnEditorStore((s) => s.diagram);
 
+    const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const setName = useCallback(
+      (newName: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          renameGroupNode({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
+    );
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <GroupNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <div className={`kie-dmn-editor--node kie-dmn-editor--group-node`}>
-          {group["@_label"] ?? group["@_name"] ?? <EmptyLabel />}
+
+        <div
+          ref={ref}
+          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className}`}
+          tabIndex={-1}
+          onDoubleClick={triggerEditing}
+          onKeyDown={triggerEditingIfEnter}
+        >
+          <OutgoingStuffNodePanel
+            isVisible={!isConnecting && !isTargeted && isHovered}
+            nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
+            edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
+          />
+          <EditableNodeLabel
+            position={"top-left"}
+            isEditing={isEditingLabel}
+            setEditing={setEditingLabel}
+            value={group["@_label"] ?? group["@_name"]}
+            onChange={setName}
+          />
+          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
       </>
     );

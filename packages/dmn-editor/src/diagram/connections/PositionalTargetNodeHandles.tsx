@@ -26,15 +26,6 @@ export function PositionalTargetNodeHandles(props: { isTargeted: boolean; nodeId
     [areSourcesConnectable]
   );
 
-  // const updateNodeInternals = RF.useUpdateNodeInternals();
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     console.info("updating node internals");
-  //     updateNodeInternals(props.nodeId);
-  //   }, 1000);
-  // }, [updateNodeInternals, areSourcesConnectable, props.nodeId]);
-
   return (
     <>
       <>

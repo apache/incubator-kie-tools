@@ -242,12 +242,7 @@ export function useDiagramData() {
         const containedDecisions = [...(dmnObject.outputDecision ?? []), ...(dmnObject.encapsulatedDecision ?? [])];
         for (let i = 0; i < containedDecisions.length; i++) {
           parentIdsById.set(idFromHref(containedDecisions[i]["@_href"]), dmnObject);
-          newNode.zIndex = NODE_LAYERS.PARENT_NODES;
         }
-      }
-
-      if (dmnObject.__$$element === "group") {
-        // FIXME: Tiago --> Need to find which nodes are encapsulated by a group.
       }
 
       nodesById.set(newNode.id, newNode);
@@ -288,12 +283,25 @@ export function useDiagramData() {
           })
         );
       }
+
+      if (nodes[i].type === NODE_TYPES.group) {
+        nodes[i].zIndex = NODE_LAYERS.PARENT_NODES;
+      }
+
+      if (nodes[i].type === NODE_TYPES.decisionService) {
+        nodes[i].zIndex = NODE_LAYERS.PARENT_NODES;
+      }
     }
+
+    // Groups are always at the back. Decision Services after groups, then everything else.
+    const sortedNodes = nodes;
+    // .sort((a, b) => Number(b.type === NODE_TYPES.decisionService) - Number(a.type === NODE_TYPES.decisionService))
+    // .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
 
     // console.timeEnd("nodes");
 
     return {
-      nodes,
+      nodes: sortedNodes,
       edges: sortedEdges,
       edgesById,
       nodesById,

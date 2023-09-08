@@ -44,9 +44,24 @@
   pointer-events: none;
 }
 
-.react-flow__node-node_decisionService .kie-dmn-editor--node-shape rect {
-  fill: rgba(255, 255, 255, 0.25);
+.react-flow__node-node_inputData {
+  border-radius: 9999px; /* Same as the node SVGs */
 }
+
+/* .react-flow__node-node_group *, */
+.react-flow__node-node_group,
+/* .react-flow__node-node_decisionService *, */
+.react-flow__node-node_decisionService {
+  background: transparent;
+  /* backdrop-filter: blur(0px); */
+  /* pointer-events: none !important; */
+  border-radius: 40px; /* Same as the node SVGs */
+}
+
+/* .react-flow__node.react-flow__node-node_decisionService.selected {
+  background: #ffffff9e;
+  backdrop-filter: blur(5px);
+} */
 
 /* decision service */
 
@@ -149,7 +164,7 @@
   left: calc(100% - 10px); /* - 1px to make sure it is directly connected to the node */
   top: 0;
   padding-left: 15px;
-  height: 100%;
+  height: max(40%, 80px);
   align-content: flex-start;
 }
 .kie-dmn-editor--outgoing-stuff-node-panel > div {
@@ -296,9 +311,10 @@ the cursor is inside it. By making it adimensional, that never happens.
 /* info button on all nodes */
 .kie-dmn-editor--info-node-panel {
   position: absolute;
+  top: 0;
   right: calc(100% + 4px - 21px);
   padding-right: 21px;
-  height: 100%;
+  height: max(25%, 40px);
 }
 .kie-dmn-editor--info-label {
   padding: 4px 5px;
@@ -427,7 +443,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 /* nodes selection / hover */
 
 .react-flow__node:not(.selected):hover > .kie-dmn-editor--node-shape.normal {
-  filter: drop-shadow(4px 4px 2px rgb(127, 127, 127));
+  filter: drop-shadow(2px 2px 2px rgb(127, 127, 127));
 }
 
 .react-flow__node.selected {
@@ -444,7 +460,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target,
 .react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
   border-color: #006ba4 !important;
-  filter: drop-shadow(4px 4px 2px #006ba477);
+  filter: drop-shadow(2px 2px 2px #006ba477);
 }
 
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target > g *,
@@ -458,7 +474,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 .react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape {
   border-color: #0083a4 !important;
-  /* filter: drop-shadow(4px 4px 2px #0083a477); */
+  /* filter: drop-shadow(2px 2px 2px #0083a477); */
 }
 .react-flow__edge.hierarchy.up > path,
 .react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape > g * {
@@ -471,7 +487,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 .react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape {
   border-color: #003fa4 !important;
-  /* filter: drop-shadow(4px 4px 2px #003fa477); */
+  /* filter: drop-shadow(2px 2px 2px #003fa477); */
 }
 .react-flow__edge.hierarchy.down > path,
 .react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape > g * {
