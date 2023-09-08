@@ -19,4 +19,4 @@ metadata:
 data:
   application.properties: |
     quarkus.log.level = INFO
-    mp.messaging.outgoing.kogito_outgoing_stream.url = kubernetes:services.v1/event-listener
+    mp.messaging.outgoing.kogito_outgoing_stream.url = ${kubernetes:services.v1/event-listener}

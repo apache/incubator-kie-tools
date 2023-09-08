@@ -256,6 +256,9 @@ func ensureWorkflowPropertiesConfigMapMutator(workflow *operatorapi.SonataFlow, 
 				originalProps := properties.MustLoadString(original.(*corev1.ConfigMap).Data[workflowproj.ApplicationPropertiesFileName])
 				// we overwrite with the defaults
 				props.Merge(originalProps)
+				// Disable expansions since it's not our responsibility
+				// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
+				props.DisableExpansion = true
 				cm.Data[workflowproj.ApplicationPropertiesFileName] = props.String()
 			}
 
