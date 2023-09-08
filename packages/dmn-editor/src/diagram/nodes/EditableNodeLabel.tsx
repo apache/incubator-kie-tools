@@ -110,8 +110,7 @@ export function EditableNodeLabel({
           onChange={(e) => setInternalValue(e.target.value)}
           value={internalValue}
         />
-      )) ||
-        (value ?? <EmptyLabel />)}
+      )) || <span>{value ?? <EmptyLabel />}</span>}
     </div>
   );
 }

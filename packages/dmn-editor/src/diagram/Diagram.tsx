@@ -44,7 +44,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
-import { idFromHref } from "./maths/DmnMaths";
+import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds, idFromHref } from "./maths/DmnMaths";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { addNodeToGroup } from "../mutations/addNodeToGroup";
@@ -450,11 +450,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
-      nodeBeingDraggedRef.current = node.dragging ? node : null;
-      const nodeBeingDragged = nodeBeingDraggedRef.current!;
-      if (!nodeBeingDragged) {
-        return;
-      }
+      nodeBeingDraggedRef.current = node;
 
       dmnEditorStoreApi.setState((state) => {
         state.diagram.dropTargetNode = getFirstNodeFittingBounds(node.id, {
@@ -473,6 +469,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     (e, node) => {
       console.debug("DMN DIAGRAM: `onNodeDragStop`");
       const nodeBeingDragged = nodeBeingDraggedRef.current!;
+      nodeBeingDraggedRef.current = null;
       if (!nodeBeingDragged) {
         return;
       }
@@ -682,7 +679,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           selectionOnDrag={true}
           panOnDrag={PAN_ON_DRAG}
           panActivationKeyCode={"Alt"}
-          selectionMode={RF.SelectionMode.Partial}
+          selectionMode={RF.SelectionMode.Full} // For selections happening inside Groups/DecisionServices it's better to leave it as "Full"
           isValidConnection={isValidConnection}
           connectionLineComponent={ConnectionLine}
           onConnect={onConnect}
@@ -840,6 +837,7 @@ export function KeyboardShortcuts() {
   const rfStoreApi = RF.useStoreApi();
   const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
   const diagram = useDmnEditorStore((s) => s.diagram);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const esc = RF.useKeyPress(["Escape"]);
   useEffect(() => {
@@ -878,6 +876,32 @@ export function KeyboardShortcuts() {
       return prev;
     });
   }, [rfStoreApi, selectAll]);
+
+  const g = RF.useKeyPress(["g"]);
+  useEffect(() => {
+    if (!g) {
+      return;
+    }
+
+    dmnEditorStoreApi.setState((state) => {
+      if (state.diagram.selectedNodes.length <= 0) {
+        return;
+      }
+
+      const newNodeId = addStandaloneNode({
+        definitions: state.dmn.model.definitions,
+        newNode: {
+          type: NODE_TYPES.group,
+          bounds: getBounds({
+            nodes: rfStoreApi.getState().getNodes(),
+            padding: CONTAINER_NODES_DESIRABLE_PADDING,
+          }),
+        },
+      });
+
+      state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
+    });
+  }, [dmnEditorStoreApi, g, rfStoreApi]);
 
   return <></>;
 }

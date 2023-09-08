@@ -61,17 +61,26 @@
 .kie-dmn-editor--node-containerNodeInteractionRect,
 .kie-dmn-editor--node-decisionService-interactionDividerLine {
   pointer-events: stroke !important;
-  stroke: purple;
-  opacity: 0.2;
+  opacity: 0;
+  /* ⬇ Uncomment for debugging purposes:*/
+  /* stroke: purple;
+  opacity: 0.2; */
 }
 
 .react-flow__node-node_group,
 .react-flow__node-node_decisionService {
   pointer-events: none !important;
   background: transparent;
+  box-shadow: none !important;
+}
+.react-flow__node-node_group:not(.selected) .kie-dmn-editor--node-shape,
+.react-flow__node-node_decisionService:not(.selected) .kie-dmn-editor--node-shape {
+  filter: none !important;
 }
 .react-flow__node-node_decisionService .kie-dmn-editor--outgoing-stuff-node-panel,
 .react-flow__node-node_group .kie-dmn-editor--outgoing-stuff-node-panel,
+.react-flow__node-node_decisionService .kie-dmn-editor--editable-node-name-input span,
+.react-flow__node-node_group .kie-dmn-editor--editable-node-name-input span,
 .react-flow__node-node_decisionService .kie-dmn-editor--info-node-panel,
 .react-flow__node-node_group .kie-dmn-editor--info-node-panel,
 .react-flow__node-node_decisionService .react-flow__resize-control div,

@@ -233,6 +233,7 @@ export function useDiagramData() {
           dmnObject,
           shape,
           index,
+          hasParent: false,
         },
         zIndex: NODE_LAYERS.NODES,
         style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
@@ -269,6 +270,7 @@ export function useDiagramData() {
       const parent = parentIdsById.get(nodes[i].id);
       if (parent) {
         nodes[i].parentNode = parent["@_id"]!;
+        nodes[i].data.hasParent = true;
         nodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
         nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
 

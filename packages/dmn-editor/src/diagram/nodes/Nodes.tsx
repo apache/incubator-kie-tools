@@ -39,6 +39,7 @@ import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 export type DmnDiagramNodeData<T> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
+  hasParent: boolean;
   index: number;
 };
 
@@ -111,9 +112,10 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { dmnObject: decision, shape, index },
+    data: { dmnObject: decision, shape, index, hasParent },
     selected,
     dragging,
+
     zIndex,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision>>) => {
@@ -143,7 +145,7 @@ export const DecisionNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
-          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} />
+          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={hasParent ? 3 : undefined} />
         </svg>
 
         <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
@@ -414,6 +416,7 @@ export const DecisionServiceNode = React.memo(
             {...nodeDimensions}
             x={0}
             y={0}
+            strokeWidth={3}
             showSectionLabels={diagram.dropTargetNode?.id === id}
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
@@ -486,7 +489,7 @@ export const GroupNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
-          <GroupNodeSvg ref={ref} {...nodeDimensions} x={0} y={0} />
+          <GroupNodeSvg ref={ref} {...nodeDimensions} x={0} y={0} strokeWidth={3} />
         </svg>
 
         <div

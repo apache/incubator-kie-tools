@@ -5,6 +5,7 @@ import { getCenter } from "./Maths";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
+export const CONTAINER_NODES_DESIRABLE_PADDING = 60;
 
 export function getDistance(a: DC__Point, b: DC__Point) {
   return Math.sqrt(Math.pow(a["@_x"] - b["@_x"], 2) + Math.pow(a["@_y"] - b["@_y"], 2));
@@ -167,4 +168,28 @@ export function getDiscreteAutoPositioningEdgeIdMarker(edgeId: string): AutoPosi
   }
 
   return undefined;
+}
+
+export function getBounds({ nodes, padding }: { nodes: RF.Node[]; padding: number }): DC__Bounds {
+  let maxX = 0,
+    maxY = 0,
+    minX = Infinity,
+    minY = Infinity;
+
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i];
+    if (node.selected) {
+      maxX = Math.max(maxX, node.position.x + (node.width ?? 0));
+      minX = Math.min(minX, node.position.x);
+      maxY = Math.max(maxY, node.position.y + (node.height ?? 0));
+      minY = Math.min(minY, node.position.y);
+    }
+  }
+
+  return {
+    "@_x": minX - padding,
+    "@_y": minY - padding,
+    "@_width": maxX - minX + 2 * padding,
+    "@_height": maxY - minY + 2 * padding,
+  };
 }

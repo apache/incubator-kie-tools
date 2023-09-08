@@ -12,6 +12,9 @@ import {
   KnowledgeSourceNodeSvg,
   TextAnnotationNodeSvg,
 } from "./nodes/NodeSvgs";
+import { useDmnEditorStoreApi } from "../store/Store";
+import { addStandaloneNode } from "../mutations/addStandaloneNode";
+import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
 
 const radius = 34;
 const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -26,6 +29,30 @@ export function Pallete() {
     event.dataTransfer.setData(DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE, nodeType);
     event.dataTransfer.effectAllowed = "move";
   }, []);
+
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const rfStoreApi = RF.useStoreApi();
+
+  const groupNodes = useCallback(() => {
+    dmnEditorStoreApi.setState((state) => {
+      if (state.diagram.selectedNodes.length <= 0) {
+        return;
+      }
+
+      const newNodeId = addStandaloneNode({
+        definitions: state.dmn.model.definitions,
+        newNode: {
+          type: NODE_TYPES.group,
+          bounds: getBounds({
+            nodes: rfStoreApi.getState().getNodes(),
+            padding: CONTAINER_NODES_DESIRABLE_PADDING,
+          }),
+        },
+      });
+
+      state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
+    });
+  }, [dmnEditorStoreApi, rfStoreApi]);
 
   return (
     <>
@@ -83,6 +110,7 @@ export function Pallete() {
             className={"kie-dmn-editor--pallete-button dndnode group"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
             draggable={true}
+            onClick={groupNodes}
           >
             <RoundSvg>
               <GroupNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} strokeDasharray={"28,28"} />
