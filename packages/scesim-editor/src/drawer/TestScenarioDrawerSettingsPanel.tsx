@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import * as React from "react";
+
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -72,7 +74,7 @@ function TestScenarioDrawerSettingsPanel({
             value={testScenarioSettings.kieSessionRule}
           />
           <Title headingLevel={"h6"}>
-            AgendaGroup/RuleFlowGroup{" "}
+            AgendaGroup/RuleFlowGroup
             <Tooltip content="Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.">
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
                 <InfoCircleIcon />

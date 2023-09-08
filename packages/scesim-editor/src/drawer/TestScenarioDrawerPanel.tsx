@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import * as React from "react";
+
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   DrawerActions,
