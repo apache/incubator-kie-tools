@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools/dashbuilder-component-assembler",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "description": "",
   "license": "Apache-2.0",
   "homepage": "https://github.com/kiegroup/kie-tools",

@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools-scripts/check-junit-report-results",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "keywords": [],
   "scripts": {
     "install": "jest --silent --verbose --passWithNoTests"

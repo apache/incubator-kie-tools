@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools-examples/uniforms-patternfly",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "license": "Apache-2.0",
   "scripts": {
     "build": "rimraf dist && webpack",

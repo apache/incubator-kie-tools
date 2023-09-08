@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-kogito-bundle",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "description": "Edit BPMN, DMN and Test Scenario files",
   "license": "Apache-2.0",
   "publisher": "kie-group",

@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/vscode-extension-common-test-helpers",
-  "version": "0.30.3",
+  "version": "0.30.4",
   "description": "VSCode test helpers for kie editors",
   "license": "Apache-2.0",
   "publisher": "kie-group",
