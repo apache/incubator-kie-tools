@@ -1,13 +1,13 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jakarta.json.GwtIncompatible;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeDeserializer;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlTypeSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.MetadataJsonSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.MetadataYamlSerializer;
+import org.treblereel.gwt.utils.GwtIncompatible;
+import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
+import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
 
 @JsType
 @JsonbTypeSerializer(MetadataJsonSerializer.class)

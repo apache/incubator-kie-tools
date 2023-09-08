@@ -21,7 +21,7 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import jsinterop.annotations.JsType;
-import org.kie.workbench.common.stunner.client.yaml.mapper.api.annotation.YamlPropertyOrder;
+import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
 
 @JsType
 @YamlPropertyOrder({"eventDataFilter", "eventRef", "actions"})

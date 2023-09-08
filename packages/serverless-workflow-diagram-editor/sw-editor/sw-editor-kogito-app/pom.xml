@@ -104,13 +104,11 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>sw-editor-api</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>sw-editor-client</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire Commons Editor -->
@@ -176,12 +174,13 @@
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-      <artifactId>stdlib</artifactId>
+      <artifactId>stylesheets</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-      <artifactId>stylesheets</artifactId>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>processors</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -282,7 +281,23 @@
           </archive>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>com.vertispan.j2cl</groupId>
+        <artifactId>j2cl-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-js</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
+          <compilationLevel>BUNDLE_JAR</compilationLevel>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>

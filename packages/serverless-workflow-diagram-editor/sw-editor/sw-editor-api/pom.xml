@@ -76,28 +76,40 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-      <artifactId>stdlib</artifactId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>lienzo-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.gwt.json.mapper</groupId>
       <artifactId>common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
+      <groupId>org.treblereel.gwt.json.mapper</groupId>
       <artifactId>processor</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
+      <groupId>org.treblereel.gwt.yaml.mapper</groupId>
       <artifactId>common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
+      <groupId>org.treblereel.gwt.yaml.mapper</groupId>
       <artifactId>processor</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Testing -->
@@ -147,15 +159,6 @@
       <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>lienzo-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-client-common</artifactId>
     </dependency>
 
     <dependency>
@@ -210,6 +213,10 @@
       <groupId>net.javacrumbs.json-unit</groupId>
       <artifactId>json-unit-assertj</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>lienzo-core</artifactId>
     </dependency>
 
   </dependencies>

@@ -110,7 +110,7 @@ public class DomainInitializerTest {
 
         BeanManager beanManager = mock(BeanManager.class);
         BootstrapAdapterFactory bootstrapAdapterFactory = spy(new BootstrapAdapterFactory());
-        AdapterManagerImpl adapterManager = spy(new AdapterManagerImpl(registryFactory, bootstrapAdapterFactory));
+        AdapterManagerImpl adapterManager = spy(new AdapterManagerImpl(bootstrapAdapterFactory));
         registryFactory.setAdapterManager(adapterManager);
         registry = spy(registryFactory.newDefinitionSetRegistry());
         ClientDefinitionManager definitionManager = spy(new ClientDefinitionManager(beanManager, registryFactory, adapterManager, cloneManager));

@@ -211,12 +211,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory
-              >${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory
-                  >${project.build.directory}/filesaver/META-INF/resources/webjars/filesaver/${version.org.webjars.bower.filesaver}/</directory>
+                  <directory>${project.build.directory}/filesaver/META-INF/resources/webjars/filesaver/${version.org.webjars.bower.filesaver}/</directory>
                   <includes>
                     <include>FileSaver.min.js</include>
                   </includes>
@@ -232,12 +230,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory
-              >${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory
-                  >${project.build.directory}/jspdf/META-INF/resources/webjars/jspdf/${version.org.webjars.bower.jspdf}/dist/</directory>
+                  <directory>${project.build.directory}/jspdf/META-INF/resources/webjars/jspdf/${version.org.webjars.bower.jspdf}/dist/</directory>
                   <includes>
                     <include>jspdf.min.js</include>
                   </includes>
@@ -253,8 +249,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory
-              >${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}/org/uberfire/ext/editor/commons/client/file/exports/js</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.build.directory}/canvas2svg/META-INF/resources/webjars/canvas2svg/</directory>

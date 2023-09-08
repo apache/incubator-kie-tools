@@ -20,8 +20,11 @@ package org.gwtbootstrap3.client;
  * #L%
  */
 
+import elemental2.core.Reflect;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLScriptElement;
 import io.crysknife.ui.common.client.injectors.ScriptInjector;
-import jsinterop.annotations.JsMethod;
+import jsinterop.base.Js;
 
 /**
  * Provides script injection for jQuery and boostrap if they aren't already loaded.
@@ -36,32 +39,41 @@ public class GwtBootstrap3EntryPoint {
      *
      * @return true is Bootstrap loaded, false otherwise.
      */
-    @JsMethod
-    private static native boolean isBootstrapLoaded();
+    private boolean isBootstrapLoaded() {
+        return Reflect.get(Reflect.get(Reflect.get(DomGlobal.window,"jQuery"),"fn"),"emulateTransitionEnd") != Js.undefined();
+    }
 
     /**
      * Check to see if jQuery is loaded already
      *
      * @return true is jQuery is loaded, false otherwise
      */
-    @JsMethod
-    private static native boolean isjQueryLoaded();
+    private boolean isjQueryLoaded() {
+        return Reflect.get(DomGlobal.window, "jQuery") != Js.undefined();
+    }
 
     /** {@inheritDoc} */
     public void onModuleLoad() {
-        ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.gwtBootstrap3().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
+
+        DomGlobal.console.log("??? 1: " + Reflect.get(DomGlobal.window, "jQuery"));
+        DomGlobal.console.log("??? 2: " + Reflect.get(DomGlobal.window, "jQuery") == Js.undefined());
+
+        DomGlobal.console.log("GwtBootstrap3EntryPoint.onModuleLoad 1: " + isjQueryLoaded());
+
         if (!isjQueryLoaded()) {
-            ScriptInjector.fromUrl("https://code.jquery.com/jquery-1.12.4.min.js")
-                    .setWindow(ScriptInjector.TOP_WINDOW)
-                    .inject();
+            HTMLScriptElement script = (HTMLScriptElement) DomGlobal.document.createElement("script");
+            script.type = "text/javascript";
+            script.src = "https://code.jquery.com/jquery-1.12.4.min.js";
+            DomGlobal.document.head.appendChild(script);
         }
 
-        if (!isBootstrapLoaded()) {
-            ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.bootstrap().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
+        if(isBootstrapLoaded()){
+            ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.bootstrap().getText(), new ScriptInjector.Callback() {
+                @Override
+                public void accept(HTMLScriptElement script) {
+                    DomGlobal.console.log("ZZZz");
+                }
+            }).setWindow(ScriptInjector.TOP_WINDOW).inject();
         }
     }
 

@@ -40,7 +40,6 @@
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-core</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>

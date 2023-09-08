@@ -31,7 +31,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasExportSe
 import org.kie.workbench.common.stunner.core.client.canvas.export.CanvasURLExportSettings;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.ImageDataUriContent;
+import org.uberfire.ext.editor.commons.client.file.exports.ImageFileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.PdfDocument;
+import org.uberfire.ext.editor.commons.client.file.exports.PdfFileExport;
 import org.uberfire.ext.editor.commons.client.file.exports.svg.SvgFileExport;
 import org.uberfire.ext.editor.commons.file.exports.FileExportsPreferences;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
@@ -66,8 +68,8 @@ public class CanvasFileExport {
 
     @Inject
     public CanvasFileExport(final CanvasExport<AbstractCanvasHandler> canvasExport,
-                            final FileExport<ImageDataUriContent> imageFileExport,
-                            final FileExport<PdfDocument> pdfFileExport,
+                            final ImageFileExport imageFileExport,
+                            final PdfFileExport pdfFileExport,
                             final FileExportsPreferences preferences,
                             final SvgFileExport svgFileExport) {
         this.canvasExport = canvasExport;

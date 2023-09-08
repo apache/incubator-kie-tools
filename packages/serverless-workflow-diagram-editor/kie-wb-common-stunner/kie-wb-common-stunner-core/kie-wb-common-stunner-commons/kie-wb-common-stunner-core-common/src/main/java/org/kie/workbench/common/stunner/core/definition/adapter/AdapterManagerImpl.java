@@ -20,20 +20,24 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import io.crysknife.annotation.CircularDependency;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.definition.adapter.bootstrap.BootstrapAdapterFactory;
-import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
+import org.kie.workbench.common.stunner.core.registry.impl.AdapterRegistryImpl;
 
 @ApplicationScoped
+@CircularDependency
 public class AdapterManagerImpl implements AdapterManager {
 
-    private final AdapterRegistry registry;
-    private final DefinitionSetAdapter<Object> definitionSetAdapter;
-    private final DefinitionSetRuleAdapter<Object> definitionSetRuleAdapter;
-    private final DefinitionAdapter<Object> definitionAdapter;
-    private final PropertyAdapter<Object, Object> propertyAdapter;
+    private AdapterRegistry registry;
+    private DefinitionSetAdapter<Object> definitionSetAdapter;
+    private DefinitionSetRuleAdapter<Object> definitionSetRuleAdapter;
+    private DefinitionAdapter<Object> definitionAdapter;
+    private PropertyAdapter<Object, Object> propertyAdapter;
+
+    private BootstrapAdapterFactory bootstrapAdapterFactory;
 
     protected AdapterManagerImpl() {
         this.registry = null;
@@ -44,10 +48,9 @@ public class AdapterManagerImpl implements AdapterManager {
     }
 
     @Inject
-    public AdapterManagerImpl(final RegistryFactory registryFactory,
-                              final BootstrapAdapterFactory bootstrapAdapterFactory) {
-        this(registryFactory.newAdapterRegistry(),
-             bootstrapAdapterFactory);
+    public AdapterManagerImpl(final BootstrapAdapterFactory bootstrapAdapterFactory) {
+        this.registry = new AdapterRegistryImpl();
+        this.bootstrapAdapterFactory = bootstrapAdapterFactory;
     }
 
     AdapterManagerImpl(final AdapterRegistry registry,

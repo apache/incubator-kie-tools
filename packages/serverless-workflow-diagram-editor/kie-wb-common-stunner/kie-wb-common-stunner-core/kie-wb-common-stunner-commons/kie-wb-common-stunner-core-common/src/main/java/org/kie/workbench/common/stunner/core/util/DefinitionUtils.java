@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.crysknife.annotation.CircularDependency;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
 @ApplicationScoped
+@CircularDependency
 public class DefinitionUtils {
 
     private final DefinitionManager definitionManager;

@@ -70,13 +70,12 @@ public class FileExportScriptInjector {
     }
 
     private String getJsPdfSource() {
-        throw new UnsupportedOperationException("Not implemented yet");
-        //final String jsPdfScript = FileExportResources.INSTANCE.jsPdf().getText();
-        //final String jsPdfNsObject = buildNamespaceObject(NS + "JsPdf");
-        //return jsPdfNsObject + " = function(settings) {" + "\n" +
-        //        jsPdfScript + "\n" +
-        //        "var saveAs = " + NS + "JsFileSaver.saveAs; " +
-        //        "return new jsPDF(settings);};";
+        final String jsPdfScript = FileExportResources.INSTANCE.jsPdf().getText();
+        final String jsPdfNsObject = buildNamespaceObject(NS + "JsPdf");
+        return jsPdfNsObject + " = function(settings) {" + "\n" +
+                jsPdfScript + "\n" +
+                "var saveAs = " + NS + "JsFileSaver.saveAs; " +
+                "return new jsPDF(settings);};";
     }
 
     private String getC2SSource() {

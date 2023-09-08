@@ -20,11 +20,10 @@
 
 package org.uberfire.ext.editor.commons.client.resources;
 
-import org.treblereel.j2cl.processors.annotations.GWT3Resource;
 import org.treblereel.j2cl.processors.common.resources.ClientBundle;
 import org.treblereel.j2cl.processors.common.resources.ImageResource;
 
-@GWT3Resource
+//@GWT3Resource
 public interface CommonImages
         extends
         ClientBundle {

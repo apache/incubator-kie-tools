@@ -29,6 +29,6 @@ public interface NotifyClientBundle extends ClientBundle {
 
     static final NotifyClientBundle INSTANCE = NotifyClientBundleImpl.INSTANCE;
 
-    @Source("resource/js/bootstrap-notify-3.1.3.min.cache.js")
+    @Source("resource/js/bootstrap-notify-3.1.3.min.cache")
     TextResource notifyJS();
 }

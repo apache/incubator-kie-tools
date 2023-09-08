@@ -22,6 +22,7 @@ package org.kie.workbench.common.stunner.core.client.api;
 
 import java.util.Collection;
 
+import io.crysknife.annotation.CircularDependency;
 import io.crysknife.client.BeanManager;
 import io.crysknife.client.SyncBeanDef;
 import jakarta.annotation.PostConstruct;
@@ -38,6 +39,7 @@ import org.kie.workbench.common.stunner.core.definition.clone.CloneManager;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 
 @ApplicationScoped
+@CircularDependency
 public class ClientDefinitionManager extends AbstractDefinitionManager {
 
     private final BeanManager beanManager;

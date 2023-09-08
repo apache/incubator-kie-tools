@@ -47,16 +47,16 @@ public interface PatternFlyBundle extends ClientBundle {
     //@Source("patternfly-additions.min.css")
     //TextResource patternflyadditions();
 
-    @Source("bootstrap-3.4.1.min.cache.js")
+    @Source("bootstrap-3.4.1.min.cache.js.back")
     TextResource bootstrapjs();
 
-    @Source("gwtbootstrap3.js")
+    @Source("gwtbootstrap3.js.back")
     TextResource gwtbootstrap3();
 
     //@Source("jquery-1.12.4.min.cache.js")
     //TextResource jquery();
 
-    @Source("patternfly.min.js")
+    @Source("patternfly.min.js.back")
     TextResource patternflyjs();
 
     @Source("font-awesome-4.7.0.min.cache.css")

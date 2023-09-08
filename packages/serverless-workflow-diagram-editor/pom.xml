@@ -248,6 +248,7 @@
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
     <version.war.plugin>3.2.2</version.war.plugin>
     <version.zanata.plugin>2.3.0</version.zanata.plugin>
+    <version.j2cl.plugin>0.21.0</version.j2cl.plugin>
 
     <!-- Third party Libraries -->
     <version.ch.qos.logback>1.2.11</version.ch.qos.logback>
@@ -290,6 +291,9 @@
     <version.org.gwt3.processors>0.6</version.org.gwt3.processors>
     <version.j2cl>0.11.0-9336533b6</version.j2cl>
     <version.j2cl.maven.plugin>0.21.0</version.j2cl.maven.plugin>
+
+    <version.org.treblereel.gwt.yaml.mapper>0.4</version.org.treblereel.gwt.yaml.mapper>
+    <version.org.treblereel.gwt.json.mapper>0.4.1</version.org.treblereel.gwt.json.mapper>
 
     <!-- Test Libraries -->
     <version.io.github.bonigarcia>5.5.3</version.io.github.bonigarcia>
@@ -461,6 +465,33 @@
         <groupId>org.treblereel.j2cl.processors</groupId>
         <artifactId>processors</artifactId>
         <version>${version.org.gwt3.processors}</version>
+      </dependency>
+
+
+      <!-- Marshalling -->
+
+      <dependency>
+        <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+        <artifactId>common</artifactId>
+        <version>${version.org.treblereel.gwt.yaml.mapper}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+        <artifactId>processor</artifactId>
+        <version>${version.org.treblereel.gwt.yaml.mapper}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.json.mapper</groupId>
+        <artifactId>common</artifactId>
+        <version>${version.org.treblereel.gwt.yaml.mapper}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.json.mapper</groupId>
+        <artifactId>processor</artifactId>
+        <version>${version.org.treblereel.gwt.json.mapper}</version>
       </dependency>
 
       <dependency>
@@ -747,7 +778,13 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
-
+      <plugin>
+        <groupId>com.vertispan.j2cl</groupId>
+        <artifactId>j2cl-maven-plugin</artifactId>
+        <configuration>
+          <webappDirectory>${project.build.directory}/j2cl-watch</webappDirectory>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -901,6 +938,11 @@
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>com.vertispan.j2cl</groupId>
+          <artifactId>j2cl-maven-plugin</artifactId>
+          <version>${version.j2cl.plugin}</version>
+        </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>

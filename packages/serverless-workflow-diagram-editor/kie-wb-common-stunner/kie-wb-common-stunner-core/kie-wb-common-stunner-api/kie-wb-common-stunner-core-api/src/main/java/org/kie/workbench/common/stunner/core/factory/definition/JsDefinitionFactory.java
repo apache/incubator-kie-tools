@@ -20,6 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.factory.definition;
 
+import elemental2.core.Global;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -30,9 +31,9 @@ public class JsDefinitionFactory implements DefinitionFactory<Object> {
         return true;
     }
 
-    private native Object createInstanceForType(String typeName) /*-{
-        return $wnd.eval('new ' + typeName + '()');
-    }-*/;
+    private Object createInstanceForType(String typeName) {
+        return Global.eval("new " + typeName + "()");
+    }
 
     @Override
     public Object build(String identifier) {
