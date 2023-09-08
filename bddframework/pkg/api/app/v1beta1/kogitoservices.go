@@ -15,7 +15,7 @@
 package v1beta1
 
 import (
-	api "github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/test/pkg/api"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"

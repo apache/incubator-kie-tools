@@ -15,8 +15,8 @@
 package framework
 
 import (
-	api "github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-operator/test/pkg/api"
+	"github.com/kiegroup/kogito-operator/test/pkg/api/app/v1beta1"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
 )

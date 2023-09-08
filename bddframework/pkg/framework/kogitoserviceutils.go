@@ -16,9 +16,9 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-operator/test/pkg/api/app/v1beta1"
 
-	api "github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/test/pkg/api"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
@@ -178,8 +178,6 @@ func patchKogitoProbes(serviceHolder *bddtypes.KogitoServiceHolder) error {
 // Return new empty KogitoService based on same type as parameter
 func newKogitoService(s api.KogitoService) (api.KogitoService, error) {
 	switch v := s.GetSpec().(type) {
-	case *v1beta1.KogitoRuntimeSpec:
-		return &v1beta1.KogitoRuntime{}, nil
 	case *v1beta1.KogitoSupportingServiceSpec:
 		return &v1beta1.KogitoSupportingService{}, nil
 	default:

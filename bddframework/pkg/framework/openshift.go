@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	api "github.com/kiegroup/kogito-operator/apis"
+	"github.com/kiegroup/kogito-operator/test/pkg/api"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
