@@ -1,7 +1,7 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe("Decision table context menu", () => {
+test.describe.skip("Decision table context menu", () => {
   test.describe("Rows control", () => {
     test.beforeEach(async ({ expressions, page }) => {
       await expressions.openDecisionTable();

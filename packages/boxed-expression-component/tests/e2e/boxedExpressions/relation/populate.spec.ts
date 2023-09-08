@@ -1,25 +1,60 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Relation", () => {
-  test("should correctly populate relation", async ({ expressions, boxedExpressionEditor, page }) => {
-    await expressions.openRelation("bigger");
+  test("should correctly create a people relation", async ({ expressions, page, boxedExpressionEditor, resizing }) => {
+    await expressions.openRelation();
 
-    // Populate Relation with test(n) values
-    let test = 0;
-    for (let i = 0; i < 3; i++) {
-      await page.getByTestId("monaco-container").nth(test).click();
-      for (let j = 0; j < 4; j++) {
-        await page.keyboard.type(`"test${test}"`);
-        await page.keyboard.press("Tab");
-        test++;
-      }
-    }
+    await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Name");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "string" }).click();
+    await page.keyboard.press("Enter");
+    await resizing.resizeCell(
+      page.getByRole("columnheader", { name: "Name (string)" }),
+      { x: 0, y: 0 },
+      { x: 40, y: 0 }
+    );
+    await page.getByRole("columnheader", { name: "Name (string)" }).hover();
+    await page.getByRole("row", { name: "Name (string)" }).locator("svg").click();
 
-    // Check if Relation has test(n) values on each cell
-    for (let i = 0; i < 11; i++) {
-      await expect(page.getByRole("cell", { name: `"test${i}"` })).toBeAttached();
-    }
+    await page.getByRole("columnheader", { name: "column-2 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Age");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+    await page.getByRole("columnheader", { name: "Age (number)" }).hover();
+    await page.getByRole("row", { name: "Age (number)" }).locator("svg").click();
 
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-populated.png");
+    await page.getByRole("columnheader", { name: "column-3 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Country");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "string" }).click();
+    await page.keyboard.press("Enter");
+    await page.getByRole("columnheader", { name: "Country (string)" }).hover();
+    await page.getByRole("row", { name: "Country (string)" }).locator("svg").click();
+
+    await page.getByRole("columnheader", { name: "column-4 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Married");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "boolean" }).click();
+    await page.keyboard.press("Enter");
+    // ISSUE
+    await page.getByRole("columnheader", { name: "Married (boolean)" }).hover();
+
+    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("People");
+    await page.keyboard.press("Enter");
+
+    await page.getByRole("cell", { name: "1" }).hover();
+    await page.getByRole("cell", { name: "1" }).locator("svg").click();
+    await page.getByRole("cell", { name: "1" }).locator("svg").click();
+
+    await boxedExpressionEditor.fillRelation(0, [
+      [`"John Doe"`, "30", `"US"`, `"S"`],
+      [`"Richard roe"`, "54", `"Canada"`, `"M"`],
+      [`"Jane Doe"`, "23", `"England"`, `"M"`],
+    ]);
+
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-people.png");
   });
 });

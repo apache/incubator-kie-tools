@@ -1,11 +1,72 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Context", () => {
-  test("should correctly populate boxed context", async ({ expressions, page }) => {
+  test("should correctly create pre-bureau risk category boxed context", async ({
+    expressions,
+    page,
+    boxedExpressionEditor,
+    resizing,
+    monaco,
+  }) => {
     await expressions.openBoxedContext();
-    await page.getByTestId("monaco-container").nth(0).click();
-    await page.keyboard.type(`"test0"`);
+
+    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Pre-bureau risk category calculation");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("cell", { name: `"test0"` })).toBeAttached();
+
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "ContextEntry-1" }));
+    await page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Existing Customer");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "boolean" }).click();
+    await page.keyboard.press("Enter");
+    await monaco.fill(page.getByTestId("monaco-container"), "Applicant data.ExistingCustomer");
+
+    await boxedExpressionEditor.selectDecisionTable(page.getByRole("row", { name: "result" }));
+    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
+    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).hover();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+    await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
+
+    await page.getByRole("columnheader", { name: "input-2 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Existing customer");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "boolean" }).click();
+    await page.keyboard.press("Enter");
+    await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Application risk score");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+
+    const decisionTableData = [
+      [false, "<100", `"High"`],
+      [false, "[100..120)", `"Medium"`],
+      [false, "[120..130]", `"Low"`],
+      [false, ">130", `"Very Low"`],
+      [true, "<80", `"Decline"`],
+      [true, "[80..90)", `"High"`],
+      [true, "[90..110]", `"Medium"`],
+      [true, ">110", `"Low"`],
+    ];
+    await boxedExpressionEditor.fillDecisionTable(1, decisionTableData);
+
+    await resizing.reset(page.getByRole("columnheader", { name: "Existing customer (boolean)" }));
+    await resizing.reset(page.getByRole("columnheader", { name: "Application risk score (number)" }));
+
+    // https://github.com/kiegroup/kie-issues/issues/536
+    // await resizing.reset(
+    //   page.getByRole("columnheader", { name: "Pre-bureau risk category calculation (number)" }).nth(1)
+    // );
+
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-context-pre-bureau-risk-category.png");
   });
 });

@@ -89,7 +89,7 @@ export const Discount: Story = {
       name: "Discount",
       dataType: DmnBuiltInDataType.Number,
       logicType: ExpressionDefinitionLogicType.DecisionTable,
-      hitPolicy: DecisionTableExpressionDefinitionHitPolicy.First,
+      hitPolicy: DecisionTableExpressionDefinitionHitPolicy.Priority,
       aggregation: DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
       input: [
         {

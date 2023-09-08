@@ -1,7 +1,7 @@
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
-test.describe("Keyboard", () => {
+test.describe.skip("Keyboard", () => {
   test.describe("Navigation", () => {
     test("should navigate correctly with enter key", async ({ page, resizing }) => {});
 

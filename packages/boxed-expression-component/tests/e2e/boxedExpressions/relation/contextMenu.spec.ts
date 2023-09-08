@@ -3,11 +3,9 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Relation context menu", () => {
   test.describe("Rows control", () => {
-    test.beforeEach(async ({ expressions, page }) => {
+    test.beforeEach(async ({ expressions, page, monaco }) => {
       await expressions.openRelation();
-      await page.getByTestId("monaco-container").click();
-      await page.keyboard.type('"test"');
-      await page.keyboard.press("Enter");
+      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
     });
 
@@ -153,7 +151,7 @@ test.describe("Relation context menu", () => {
     await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
   });
 
-  test.describe("Add rows/columns by hovering", () => {
+  test.describe("Hovering", () => {
     test.beforeEach(async ({ expressions, page }) => {
       await expressions.openRelation();
       await page.getByTestId("monaco-container").click();
@@ -161,33 +159,37 @@ test.describe("Relation context menu", () => {
       await page.keyboard.press("Enter");
     });
 
-    test("should add row above by positioning mouse on the index cell upper section", async ({ page }) => {
-      await page.getByRole("cell", { name: "1" }).hover({ position: { x: 0, y: 0 } });
-      await page.getByRole("cell", { name: "1" }).locator("svg").click();
-      await expect(page.getByRole("row", { name: "2" })).toContainText("test");
+    test.describe("Add rows", () => {
+      test("should add row above by positioning mouse on the index cell upper section", async ({ page }) => {
+        await page.getByRole("cell", { name: "1" }).hover({ position: { x: 0, y: 0 } });
+        await page.getByRole("cell", { name: "1" }).locator("svg").click();
+        await expect(page.getByRole("row", { name: "2" })).toContainText("test");
+      });
+
+      test("should add row below by positioning mouse on the index cell lower section", async ({ page }) => {
+        await page.getByRole("cell", { name: "1" }).hover();
+        await page.getByRole("cell", { name: "1" }).locator("svg").click();
+        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+        await expect(page.getByRole("row", { name: "2" })).toBeAttached();
+      });
     });
 
-    test("should add row below by positioning mouse on the index cell lower section", async ({ page }) => {
-      await page.getByRole("cell", { name: "1" }).hover();
-      await page.getByRole("cell", { name: "1" }).locator("svg").click();
-      await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
-      await expect(page.getByRole("row", { name: "2" })).toBeAttached();
-    });
+    test.describe("Add columns", () => {
+      test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
+        await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
+        await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
+        await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(2)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(3);
+      });
 
-    test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
-      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
-      await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
-      await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
-      await expect(page.getByRole("cell").nth(2)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(3);
-    });
-
-    test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
-      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover();
-      await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
-      await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
-      await expect(page.getByRole("cell").nth(1)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(3);
+      test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
+        await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover();
+        await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
+        await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(1)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(3);
+      });
     });
   });
 });

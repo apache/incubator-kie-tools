@@ -3,6 +3,7 @@ import { Clipboard } from "./clipboard";
 import { Expressions } from "./expression";
 import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
+import { Monaco } from "./monaco";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
@@ -10,10 +11,11 @@ type BoxedExpressionFixtures = {
   clipboard: Clipboard;
   resizing: Resizing;
   useCases: UseCases;
+  monaco: Monaco;
 };
 
 class BoxedExpressionEditor {
-  constructor(public page: Page, public baseURL?: string) {
+  constructor(public page: Page, private monaco: Monaco, public baseURL?: string) {
     this.page = page;
   }
 
@@ -23,37 +25,62 @@ class BoxedExpressionEditor {
 
   public async selectBoxedLiteral(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "Literal" }).click();
+    await this.page.getByRole("menuitem", { name: "Literal" }).click();
   }
 
   public async selectBoxedContext(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "Context" }).click();
+    await this.page.getByRole("menuitem", { name: "Context" }).click();
   }
 
   public async selectDecisionTable(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "Decision" }).click();
+    await this.page.getByRole("menuitem", { name: "Decision" }).click();
+  }
+
+  public async fillDecisionTable(startingCell: number, tableData: any[][]) {
+    let cellNumber = startingCell;
+    for (const row of tableData) {
+      for (const cellData of row) {
+        if (cellData === "-") {
+          cellNumber++;
+          continue;
+        }
+        await this.monaco.fill(this.page.getByTestId("monaco-container").nth(cellNumber), `${cellData}`);
+        cellNumber++;
+      }
+      cellNumber++;
+    }
   }
 
   public async selectRelation(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "Relation" }).click();
+    await this.page.getByRole("menuitem", { name: "Relation" }).click();
+  }
+
+  public async fillRelation(startingCell: number, relationData: any[][]) {
+    let cellNumber = startingCell;
+    for (const row of relationData) {
+      for (const cellData of row) {
+        await this.monaco.fill(this.page.getByTestId("monaco-container").nth(cellNumber), `${cellData}`);
+        cellNumber++;
+      }
+    }
   }
 
   public async selectBoxedInvocation(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "Invocation" }).click();
+    await this.page.getByRole("menuitem", { name: "Invocation" }).click();
   }
 
   public async selectBoxedList(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "List" }).click();
+    await this.page.getByRole("menuitem", { name: "List" }).click();
   }
 
   public async selectBoxedFunction(from: Page | Locator = this.page) {
     this.select(from);
-    await from.getByRole("menuitem", { name: "Function" }).click();
+    await this.page.getByRole("menuitem", { name: "Function" }).click();
   }
 
   public async goto() {
@@ -66,8 +93,11 @@ class BoxedExpressionEditor {
 }
 
 export const test = base.extend<BoxedExpressionFixtures>({
-  boxedExpressionEditor: async ({ page, baseURL }, use) => {
-    await use(new BoxedExpressionEditor(page, baseURL));
+  monaco: async ({ page }, use) => {
+    await use(new Monaco(page));
+  },
+  boxedExpressionEditor: async ({ page, baseURL, monaco }, use) => {
+    await use(new BoxedExpressionEditor(page, monaco, baseURL));
   },
   expressions: async ({ page, baseURL }, use) => {
     await use(new Expressions(page, baseURL));

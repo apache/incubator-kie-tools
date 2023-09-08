@@ -20,7 +20,7 @@ test.describe("Logic type selector", () => {
   test("should select decision table expression", async ({ page, boxedExpressionEditor }) => {
     await page.getByText("Select expression").click();
     await page.getByRole("menuitem", { name: "Decision Table" }).click();
-    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["decision-table", "decision-table.png"]);
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(["decisionTable", "decision-table.png"]);
   });
 
   test("should select relation expression", async ({ page, boxedExpressionEditor }) => {

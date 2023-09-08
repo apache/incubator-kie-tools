@@ -1,11 +1,82 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Invocation", () => {
-  test("should correctly populate boxed invocation", async ({ expressions, page }) => {
+  test("should correctly create pre-bureau-affordability boxed invocation", async ({
+    expressions,
+    page,
+    boxedExpressionEditor,
+    resizing,
+    monaco,
+  }) => {
     await expressions.openBoxedInvocation();
-    await page.getByTestId("monaco-container").nth(0).click();
-    await page.keyboard.type(`"test0"`);
+
+    await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Installment calculation");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
-    await expect(page.getByRole("cell", { name: `"test0"` })).toBeAttached();
+
+    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).hover();
+    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
+    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
+    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
+    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).locator("svg").click();
+
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-1" }));
+    await page.getByRole("cell", { name: "p-1 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Monthly income");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-5" }));
+    await page.getByRole("cell", { name: "p-5 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Monthly repayments");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-4" }));
+    await page.getByRole("cell", { name: "p-4 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Monthly expenses");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-3" }));
+    await page.getByRole("cell", { name: "p-3 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Risk category");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+
+    await boxedExpressionEditor.selectBoxedLiteral(page.getByRole("row", { name: "p-2" }));
+    await page.getByRole("cell", { name: "p-2 (<Undefined>)" }).click();
+    await page.getByPlaceholder("Expression Name").fill("Required monthly installment");
+    await page.getByLabel("<Undefined>").click();
+    await page.getByRole("option", { name: "number" }).click();
+    await page.keyboard.press("Enter");
+
+    await resizing.reset(page.getByRole("cell", { name: "Required monthly installment" }));
+
+    await page.getByText("FUNCTION").click();
+    await page.keyboard.type(`Affordability calculation`);
+    await page.keyboard.press("Enter");
+
+    await monaco.fill(page.getByTestId("monaco-container").nth(0), "Aplicant data.Monthly.Income");
+    await monaco.fill(page.getByTestId("monaco-container").nth(1), "Aplicant data.Monthly.Repayments");
+    await monaco.fill(page.getByTestId("monaco-container").nth(2), "Aplicant data.Monthly.Expenses");
+    await monaco.fill(page.getByTestId("monaco-container").nth(3), "Pre-bureau risk category");
+    await monaco.fill(page.getByTestId("monaco-container").nth(4), "Required monthly installment");
+
+    await resizing.resizeCell(
+      page.getByRole("cell", { name: "= Aplicant data.Monthly.Income Aplicant data.Monthly.Income" }),
+      { x: 0, y: 0 },
+      { x: 100, y: 0 }
+    );
+
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot(
+      "boxed-invocation-affordability-calculation.png"
+    );
   });
 });
