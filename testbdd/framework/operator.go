@@ -16,8 +16,8 @@ package framework
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/core/operator"
 	kogitoFramework "github.com/kiegroup/kogito-operator/test/pkg/framework"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
 	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
 )

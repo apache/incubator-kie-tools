@@ -17,7 +17,7 @@ package installers
 import (
 	"errors"
 	"fmt"
-	"github.com/kiegroup/kogito-operator/version/app"
+	"github.com/kiegroup/kogito-serverless-operator/version"
 	"regexp"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -95,7 +95,7 @@ func installSonataFlowUsingYaml() error {
 		return err
 	}
 
-	regexp, err := regexp.Compile("quay.io/kiegroup/kogito-serverless-operator-nightly.*" + ":" + app.Version) // TODO use version/version.go from this repository
+	regexp, err := regexp.Compile("quay.io/kiegroup/kogito-serverless-operator-nightly.*" + ":" + version.OperatorVersion) // TODO use version/version.go from this repository
 	if err != nil {
 		return err
 	}
