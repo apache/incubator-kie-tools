@@ -233,7 +233,7 @@ export function useDiagramData() {
           dmnObject,
           shape,
           index,
-          hasParent: false,
+          parentRfNode: undefined,
         },
         zIndex: NODE_LAYERS.NODES,
         style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
@@ -265,25 +265,27 @@ export function useDiagramData() {
       assignClassesToHighlightedHierarchyNodes([...selectedNodes], nodesById, edges);
     }
 
-    // Assign parents & classNames to NODES
+    // Assign parents & z-index to NODES
     for (let i = 0; i < nodes.length; i++) {
       const parent = parentIdsById.get(nodes[i].id);
       if (parent) {
-        nodes[i].parentNode = parent["@_id"]!;
-        nodes[i].data.hasParent = true;
+        nodes[i].data.parentRfNode = nodesById.get(parent["@_id"]!);
         nodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
         nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
 
+        // ⬇ This code is if we want to use Reactflow's parenting mechanism.
+        //
+        // nodes[i].parentNode = parent["@_id"]!;
         // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
-        const parentShape = dmnShapesByDmnRefId.get(parent["@_id"]!)!;
+        // const parentShape = dmnShapesByDmnRefId.get(parent["@_id"]!)!;
 
-        nodes[i].position = snapShapePosition(
-          diagram.snapGrid,
-          offsetShapePosition(nodes[i].data.shape, {
-            x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
-            y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
-          })
-        );
+        // nodes[i].position = snapShapePosition(
+        //   diagram.snapGrid,
+        //   offsetShapePosition(nodes[i].data.shape, {
+        //     x: -(parentShape["dc:Bounds"]?.["@_x"] ?? 0),
+        //     y: -(parentShape["dc:Bounds"]?.["@_y"] ?? 0),
+        //   })
+        // );
       }
 
       if (nodes[i].type === NODE_TYPES.group) {

@@ -408,9 +408,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             case "remove":
               console.debug(`DMN DIAGRAM: 'onNodesChange' --> remove '${change.id}'`);
               const node = nodesById.get(change.id)!;
-              if (node.parentNode && changes.find((s) => s.type === "remove" && s.id === node.parentNode)) {
-                continue;
-              }
               deleteNode({
                 definitions: state.dmn.model.definitions,
                 node: {
@@ -444,7 +441,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [reactFlowInstance, dmnEditorStoreApi, nodesById, edges, diagram.snapGrid]
   );
 
-  const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
+  const nodeBeingDraggedRef = useRef<RF.Node<DmnDiagramNodeData<any>> | null>(null);
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
       nodeBeingDraggedRef.current = node;
@@ -463,7 +460,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   );
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
-    (e, node) => {
+    (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
       console.debug("DMN DIAGRAM: `onNodeDragStop`");
       const nodeBeingDragged = nodeBeingDraggedRef.current!;
       nodeBeingDraggedRef.current = null;
@@ -476,17 +473,17 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         state.diagram.dropTargetNode = undefined;
 
         // Un-parent
-        if (nodeBeingDragged.parentNode) {
-          const parentNode = nodesById.get(nodeBeingDragged.parentNode);
-          if (parentNode?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
+        if (nodeBeingDragged.data.parentRfNode) {
+          const p = nodesById.get(nodeBeingDragged.data.parentRfNode.id);
+          if (p?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
             for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
               deleteDecisionFromDecisionService({
                 definitions: state.dmn.model.definitions,
                 decisionId: state.diagram.selectedNodes[i],
-                decisionServiceId: parentNode.id,
+                decisionServiceId: p.id,
               });
             }
-          } else if (parentNode?.type === NODE_TYPES.group) {
+          } else if (p?.type === NODE_TYPES.group) {
             for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
               deleteNodeFromGroup({
                 definitions: state.dmn.model.definitions,

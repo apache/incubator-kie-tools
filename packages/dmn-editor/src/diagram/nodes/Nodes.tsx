@@ -40,8 +40,13 @@ import { DmnDiagramEdgeData } from "../edges/Edges";
 export type DmnDiagramNodeData<T> = {
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
-  hasParent: boolean;
   index: number;
+  /**
+   * We don't use Reactflow's parenting mechanism because it is
+   * too opinionated on how it deletes nodes/edges that are
+   * inside/connected to nodes with parents
+   * */
+  parentRfNode: RF.Node<DmnDiagramNodeData<any>> | undefined;
 };
 
 export const InputDataNode = React.memo(
@@ -113,7 +118,7 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { dmnObject: decision, shape, index, hasParent },
+    data: { dmnObject: decision, shape, index, parentRfNode },
     selected,
     dragging,
 
@@ -146,7 +151,7 @@ export const DecisionNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
-          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={hasParent ? 3 : undefined} />
+          <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={parentRfNode ? 3 : undefined} />
         </svg>
 
         <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
