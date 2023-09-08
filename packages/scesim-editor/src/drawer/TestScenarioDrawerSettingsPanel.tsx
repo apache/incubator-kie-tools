@@ -24,6 +24,9 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioDrawerSettingsPanel.css";
+import { Icon } from "@patternfly/react-core/dist/esm/components/Icon/Icon";
+import { InfoCircleIcon } from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
+import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
 
 function TestScenarioDrawerSettingsPanel({
   fileName,
@@ -54,36 +57,66 @@ function TestScenarioDrawerSettingsPanel({
         </>
       ) : (
         <>
-          <Title headingLevel={"h6"}>KIE Session</Title>
+          <Title headingLevel={"h6"}>
+            KIE Session
+            <Tooltip content="Optional value. If not specified, the default session will be used.">
+              <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
+                <InfoCircleIcon />
+              </Icon>
+            </Tooltip>
+          </Title>
           <TextInput
             onChange={(value) => onUpdateSettingField("dmoSession", value)}
-            placeholder={"(Optional) Enter the KieSession for the test scenario."}
+            placeholder={"(Optional) KieSession"}
             type="text"
             value={testScenarioSettings.kieSessionRule}
           />
-          <Title headingLevel={"h6"}>RuleFlowGroup/AgendaGroup</Title>
+          <Title headingLevel={"h6"}>
+            AgendaGroup/RuleFlowGroup{" "}
+            <Tooltip content="Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.">
+              <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
+                <InfoCircleIcon />
+              </Icon>
+            </Tooltip>
+          </Title>
           <TextInput
             onChange={(value) => onUpdateSettingField("ruleFlowGroup", value)}
-            placeholder={"(Optional) Enter the RuleFlowGroup or AgendaGroup for the test scenario."}
+            placeholder={"(Optional) AgendaGroup or RuleFlowGroup."}
             type="text"
             value={testScenarioSettings.ruleFlowGroup}
           />
-          <Checkbox
-            className={"kie-scesim-editor-drawer-settings--checkbox"}
-            id="stateless-session"
-            isChecked={testScenarioSettings.isStatelessSessionRule}
-            label="Stateless Session"
-            onChange={(value) => onUpdateSettingField("stateless", value)}
-          />
+          <div className={"kie-scesim-editor-drawer-settings--checkbox-group"}>
+            <div className={"kie-scesim-editor-drawer-settings--checkbox"}>
+              <Checkbox
+                id="stateless-session"
+                isChecked={testScenarioSettings.isStatelessSessionRule}
+                label="Stateless Session"
+                onChange={(value) => onUpdateSettingField("stateless", value)}
+              />
+            </div>
+            <Tooltip content="Select or clear this check box to specify if the KIE Session is stateless or not. If the current KieSession is stateless and the check box is not selected, the tests will fail.">
+              <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
+                <InfoCircleIcon />
+              </Icon>
+            </Tooltip>
+          </div>
         </>
       )}
-      <Checkbox
-        className={"kie-scesim-editor-drawer-settings--checkbox"}
-        id="skip-test"
-        isChecked={testScenarioSettings.isTestSkipped}
-        label="Skip this test scenario during the test"
-        onChange={(value) => onUpdateSettingField("skipFromBuild", value)}
-      />
+      <div className={"kie-scesim-editor-drawer-settings--checkbox-group"}>
+        <div className={"kie-scesim-editor-drawer-settings--checkbox"}>
+          <Checkbox
+            id="skip-test"
+            isChecked={testScenarioSettings.isTestSkipped}
+            label="Skip this test scenario during the test"
+            onChange={(value) => onUpdateSettingField("skipFromBuild", value)}
+          />
+        </div>
+        <Tooltip content="If enabled, all defined Scenarios in this file will be skipped during test execution.">
+          <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
+            <InfoCircleIcon />
+          </Icon>
+        </Tooltip>
+      </div>
     </>
   );
 }

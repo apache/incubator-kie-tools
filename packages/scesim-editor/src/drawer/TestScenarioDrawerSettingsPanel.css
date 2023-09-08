@@ -18,5 +18,15 @@
  */
 
 .kie-scesim-editor-drawer-settings--checkbox {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.kie-scesim-editor-drawer-settings--checkbox-group {
   margin-top: 30px;
+}
+
+.kie-scesim-editor-drawer-settings--info-icon {
+  display: inline-block;
+  vertical-align: top;
 }
