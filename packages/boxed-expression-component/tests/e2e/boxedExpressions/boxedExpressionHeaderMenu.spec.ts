@@ -1,7 +1,6 @@
 import { test, expect } from "../__fixtures__/boxedExpression";
 
-//TODO: CHANGE NAME
-test.describe("Context menu popover", () => {
+test.describe("Boxed expression header menu popover", () => {
   test("should open context menu and change name and type", async ({ expressions, page }) => {
     await expressions.openBoxedLiteral();
 
