@@ -16,7 +16,6 @@ package steps
 
 import (
 	"fmt"
-
 	"github.com/cucumber/godog"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/installers"

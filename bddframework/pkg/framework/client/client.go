@@ -20,10 +20,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/kiegroup/kogito-operator/core/logger"
+	frameworklogger "github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
 	rbac "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	controllerruntime "sigs.k8s.io/controller-runtime"
+	logger "sigs.k8s.io/controller-runtime/pkg/log"
 
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -42,7 +43,7 @@ import (
 )
 
 var (
-	log = logger.GetLogger("client_api")
+	log = frameworklogger.Logger{Logger: logger.Log.WithName("client_api")}
 )
 
 const (

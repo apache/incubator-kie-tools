@@ -18,14 +18,18 @@ import (
 	"fmt"
 	"strings"
 
-	kogitocli "github.com/kiegroup/kogito-operator/core/client"
+	kogitocli "github.com/kiegroup/kogito-operator/test/pkg/framework/client"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	"github.com/kiegroup/kogito-operator/core/operator"
 	"k8s.io/apimachinery/pkg/util/yaml"
+)
+
+const (
+	// Name is the name of the Kogito Operator deployed in a namespace
+	KogitoOperatorName = "kogito-operator"
 )
 
 // ResourceInterface has functions that interacts with any resource object in the Kubernetes cluster
@@ -106,7 +110,7 @@ func (r *resource) CreateFromYamlContent(yamlFileContent, namespace string, reso
 			resourceRef.SetNamespace(namespace)
 		}
 		resourceRef.SetResourceVersion("")
-		resourceRef.SetLabels(map[string]string{"app": operator.Name})
+		resourceRef.SetLabels(map[string]string{"app": KogitoOperatorName})
 
 		log.Debug("Will create a new resource", "kind", resourceRef.GetObjectKind().GroupVersionKind().Kind, "name", resourceRef.GetName(), "namespace", resourceRef.GetNamespace())
 		if beforeCreate != nil {

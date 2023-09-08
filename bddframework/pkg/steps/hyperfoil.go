@@ -17,7 +17,6 @@ package steps
 import (
 	"errors"
 	"fmt"
-
 	"github.com/cucumber/godog"
 	hyperfoilv1alpha2 "github.com/kiegroup/kogito-operator/test/pkg/api/hyperfoil/v1alpha2"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"

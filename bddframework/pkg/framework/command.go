@@ -15,6 +15,7 @@
 package framework
 
 import (
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
 	"os/exec"
 	"sync"
 	"time"
@@ -121,8 +122,8 @@ func (cmd *commandStruct) executeCommand() (string, error) {
 
 	return string(out[:]), err
 }
-func (cmd *commandStruct) getLogger() Logger {
-	var logger Logger
+func (cmd *commandStruct) getLogger() logger.Logger {
+	var logger logger.Logger
 	if len(cmd.loggerContext) > 0 {
 		logger = GetLogger(cmd.loggerContext)
 	} else {

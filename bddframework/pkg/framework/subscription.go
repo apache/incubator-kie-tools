@@ -15,8 +15,8 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 )
 

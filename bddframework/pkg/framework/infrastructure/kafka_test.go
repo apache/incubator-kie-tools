@@ -15,14 +15,15 @@
 package infrastructure
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
-	"github.com/kiegroup/kogito-operator/core/operator"
-	"github.com/kiegroup/kogito-operator/core/test"
-	"github.com/kiegroup/kogito-operator/meta"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/kafka/v1beta2"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
+	"github.com/kiegroup/kogito-operator/test/pkg/meta"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
+	"sigs.k8s.io/controller-runtime/pkg/log"
 	"testing"
 )
 
@@ -56,7 +57,7 @@ func Test_getKafkaInstanceWithName(t *testing.T) {
 		},
 	}
 
-	cli := test.NewFakeClientBuilder().AddK8sObjects(kafka).Build()
+	cli := NewFakeClientBuilder().AddK8sObjects(kafka).Build()
 
 	type args struct {
 		name      string
@@ -92,7 +93,7 @@ func Test_getKafkaInstanceWithName(t *testing.T) {
 	}
 	context := operator.Context{
 		Client: cli,
-		Log:    test.TestLogger,
+		Log:    logger.Logger{Logger: log.Log.WithName("test")},
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	kafkaHandler := NewKafkaHandler(context)
@@ -150,10 +151,10 @@ func Test_resolveKafkaServerURI(t *testing.T) {
 			"kafka:9092",
 		},
 	}
-	cli := test.NewFakeClientBuilder().Build()
+	cli := NewFakeClientBuilder().Build()
 	context := operator.Context{
 		Client: cli,
-		Log:    test.TestLogger,
+		Log:    logger.Logger{Logger: log.Log.WithName("test")},
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	kafkaHandler := NewKafkaHandler(context)

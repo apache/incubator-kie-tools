@@ -15,8 +15,8 @@
 package operator
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/core/logger"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 

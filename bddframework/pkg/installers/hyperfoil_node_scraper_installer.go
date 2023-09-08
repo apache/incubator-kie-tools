@@ -16,7 +16,6 @@ package installers
 
 import (
 	"fmt"
-
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"

@@ -16,7 +16,6 @@ package installers
 
 import (
 	"fmt"
-
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )

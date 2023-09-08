@@ -16,12 +16,11 @@ package framework
 
 import (
 	"fmt"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	grafanav1 "github.com/kiegroup/kogito-operator/core/infrastructure/grafana/v1alpha1"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
+	grafanav1 "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/grafana/v1alpha1"
 )
 
 const (

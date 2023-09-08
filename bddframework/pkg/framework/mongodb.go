@@ -18,13 +18,12 @@ import (
 	"fmt"
 	v1 "k8s.io/api/apps/v1"
 
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/logger"
-	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
 	"github.com/kiegroup/kogito-operator/test/pkg/meta"
 
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
+	mongodb "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/mongodb/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -138,7 +137,7 @@ func GetMongoDBStub(openshift bool, namespace, name string, users []MongoDBUserC
 func IsMongoDBAvailable(namespace string) bool {
 	context := operator.Context{
 		Client: kubeClient,
-		Log:    logger.GetLogger(namespace),
+		Log:    GetLogger(namespace),
 		Scheme: meta.GetRegisteredSchema(),
 	}
 	return infrastructure.NewMongoDBHandler(context).IsMongoDBAvailable()

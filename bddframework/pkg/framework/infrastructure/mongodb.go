@@ -15,9 +15,9 @@
 package infrastructure
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
-	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
+	mongodb "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/mongodb/v1"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
 	v1 "k8s.io/api/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"

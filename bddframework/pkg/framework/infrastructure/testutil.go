@@ -12,15 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package test
+package infrastructure
 
 import (
-	kogitocli "github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/meta"
+	kogitocli "github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	"github.com/kiegroup/kogito-operator/test/pkg/meta"
+	buildfake "github.com/openshift/client-go/build/clientset/versioned/fake"
+	v1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/discovery"
 	discfake "k8s.io/client-go/discovery/fake"
+	"k8s.io/client-go/rest"
 	clienttesting "k8s.io/client-go/testing"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
@@ -156,4 +159,26 @@ func ToRuntimeObjects(resources ...client.Object) []runtime.Object {
 		k8sObject = append(k8sObject, resource)
 	}
 	return k8sObject
+}
+
+func newBuildFake(objects ...runtime.Object) v1.BuildV1Interface {
+	return &buildFakeWithMockREST{
+		innerClient: buildfake.NewSimpleClientset(objects...).BuildV1(),
+	}
+}
+
+type buildFakeWithMockREST struct {
+	innerClient v1.BuildV1Interface
+}
+
+func (b *buildFakeWithMockREST) Builds(namespace string) v1.BuildInterface {
+	return b.innerClient.Builds(namespace)
+}
+
+func (b *buildFakeWithMockREST) BuildConfigs(namespace string) v1.BuildConfigInterface {
+	return b.innerClient.BuildConfigs(namespace)
+}
+
+func (b *buildFakeWithMockREST) RESTClient() rest.Interface {
+	return &rest.RESTClient{}
 }

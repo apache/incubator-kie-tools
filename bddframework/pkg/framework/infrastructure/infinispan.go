@@ -16,9 +16,9 @@ package infrastructure
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	ispn "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
-	"github.com/kiegroup/kogito-operator/core/operator"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
+	ispn "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/infinispan/v1"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/operator"
 	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

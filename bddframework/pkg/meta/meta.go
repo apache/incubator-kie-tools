@@ -15,12 +15,12 @@
 package meta
 
 import (
-	grafana "github.com/kiegroup/kogito-operator/core/infrastructure/grafana/v1alpha1"
-	infinispan "github.com/kiegroup/kogito-operator/core/infrastructure/infinispan/v1"
-	kafka "github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
-	keycloak "github.com/kiegroup/kogito-operator/core/infrastructure/keycloak/v1alpha1"
-	mongodb "github.com/kiegroup/kogito-operator/core/infrastructure/mongodb/v1"
 	hyperfoil "github.com/kiegroup/kogito-operator/test/pkg/api/hyperfoil/v1alpha2"
+	grafana "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/grafana/v1alpha1"
+	infinispan "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/infinispan/v1"
+	kafka "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/kafka/v1beta2"
+	keycloak "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/keycloak/v1alpha1"
+	mongodb "github.com/kiegroup/kogito-operator/test/pkg/framework/infrastructure/mongodb/v1"
 	appsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"

@@ -15,11 +15,12 @@
 package kubernetes
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client"
-	"github.com/kiegroup/kogito-operator/core/logger"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client"
+	frameworklogger "github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
+	logger "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
-var log = logger.GetLogger("kubernetes_client")
+var log = frameworklogger.Logger{Logger: logger.Log.WithName("kubernetes_client")}
 
 // Namespace will fetch the inner Kubernetes API with a default client
 func Namespace() NamespaceInterface {

@@ -19,6 +19,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/env"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/logger"
 	"io"
 	"os"
 	"reflect"
@@ -28,7 +30,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/client/kubernetes"
 	"io/ioutil"
 	"k8s.io/api/events/v1beta1"
 )
@@ -47,21 +49,21 @@ var (
 )
 
 // GetMainLogger returns the main logger
-func GetMainLogger() Logger {
+func GetMainLogger() logger.Logger {
 	return GetLogger("main")
 }
 
 // GetLogger retrieves the logger for a namespace
-func GetLogger(namespace string) Logger {
+func GetLogger(namespace string) logger.Logger {
 	opts, err := getOrCreateLoggerOpts(namespace)
 	if err != nil {
 		fallbackLog := log.Log.WithName(namespace)
 		fallbackLog.Error(err, "Error getting logger", "namespace", namespace)
-		return Logger{
+		return logger.Logger{
 			Logger: fallbackLog,
 		}
 	}
-	return getLoggerWithOptions(namespace, opts)
+	return logger.GetLoggerWithOptions(namespace, opts)
 }
 
 // FlushLogger flushes a specific logger
@@ -88,15 +90,15 @@ func FlushAllRemainingLoggers() {
 	})
 }
 
-func getLoggerOpts(logName string) (*Opts, bool) {
+func getLoggerOpts(logName string) (*logger.Opts, bool) {
 	opts, exists := loggerOpts.Load(logName)
 	if exists {
-		return opts.(*Opts), exists
+		return opts.(*logger.Opts), exists
 	}
 	return nil, exists
 }
 
-func getOrCreateLoggerOpts(logName string) (*Opts, error) {
+func getOrCreateLoggerOpts(logName string) (*logger.Opts, error) {
 	opts, exists := getLoggerOpts(logName)
 	if !exists {
 		if err := createPrefixedLogFolder(logName); err != nil {
@@ -108,9 +110,9 @@ func getOrCreateLoggerOpts(logName string) (*Opts, error) {
 			return nil, fmt.Errorf("Error while creating filewriter: %v", err)
 		}
 
-		opts = &Opts{
+		opts = &logger.Opts{
 			Output:  io.MultiWriter(os.Stdout, fileWriter),
-			Verbose: GetBoolOSEnv("DEBUG"),
+			Verbose: env.GetBoolOSEnv("DEBUG"),
 		}
 		loggerOpts.Store(logName, opts)
 	}

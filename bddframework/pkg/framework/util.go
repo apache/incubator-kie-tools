@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/kiegroup/kogito-serverless-operator/version"
+	"github.com/kiegroup/kogito-operator/test/pkg/framework/env"
 	"io"
 	"io/ioutil"
 	"k8s.io/apimachinery/pkg/types"
@@ -25,13 +25,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
 	api "github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/version"
 )
 
 const (
@@ -48,6 +47,10 @@ const (
 	defaultRuntimeJVM = "kogito-runtime-jvm"
 	//defaultRuntimeNative Runtime Image for Kogito for Native Quarkus Application
 	defaultRuntimeNative = "kogito-runtime-native"
+	// imageRegistryEnvVar ...
+	imageRegistryEnvVar = "IMAGE_REGISTRY"
+	// defaultImageRegistry the default services image repository
+	defaultImageRegistry = "quay.io/kiegroup"
 )
 
 // GenerateNamespaceName generates a namespace name, taking configuration into account (local or not)
@@ -55,7 +58,7 @@ func GenerateNamespaceName(prefix string) string {
 	rand.Seed(time.Now().UnixNano())
 	ns := fmt.Sprintf("%s-%s", prefix, GenerateShortUID(4))
 	if config.IsLocalTests() {
-		username := getEnvUsername()
+		username := env.GetEnvUsername()
 		ns = fmt.Sprintf("%s-local-%s", username, ns)
 	} else if len(config.GetCiName()) > 0 {
 		ns = fmt.Sprintf("%s-%s", config.GetCiName(), ns)
@@ -278,11 +281,11 @@ func ConstructDefaultImageFullTag(imageName string) string {
 // AppendImageDefaultValues appends the image default values if none existing
 func AppendImageDefaultValues(image *api.Image) {
 	if len(image.Domain) == 0 {
-		image.Domain = infrastructure.GetDefaultImageRegistry()
+		image.Domain = GetDefaultImageRegistry()
 	}
 
 	if len(image.Tag) == 0 {
-		image.Tag = infrastructure.GetKogitoImageVersion(version.OperatorVersion)
+		image.Tag = GetKogitoImageVersion(version.OperatorVersion)
 	}
 }
 
@@ -298,29 +301,6 @@ func AddLineToFile(line, filename string) error {
 	}
 
 	return nil
-}
-
-func getEnvUsername() string {
-	return GetOSEnv("USERNAME", "nouser")
-}
-
-// GetOSEnv gets a env variable
-func GetOSEnv(key, fallback string) string {
-	value, exists := os.LookupEnv(key)
-	if !exists {
-		value = fallback
-	}
-	return value
-}
-
-// GetBoolOSEnv gets a env variable as a boolean
-func GetBoolOSEnv(key string) bool {
-	val := GetOSEnv(key, "false")
-	ret, err := strconv.ParseBool(val)
-	if err != nil {
-		return false
-	}
-	return ret
 }
 
 // GetDefaultRuntimeNativeImage ...
@@ -383,4 +363,35 @@ func ConvertImageToImageTag(image api.Image) string {
 		imageTag += ":" + image.Tag
 	}
 	return imageTag
+}
+
+// GetDefaultImageRegistry ...
+func GetDefaultImageRegistry() string {
+	registry := os.Getenv(imageRegistryEnvVar)
+	if len(registry) == 0 {
+		registry = defaultImageRegistry
+	}
+	return registry
+}
+
+// GetKogitoImageVersion gets the Kogito Runtime latest micro version based on the given version
+// E.g. Operator version is 0.9.0, the latest image version is 0.9.x-latest
+// unit test friendly unexported function
+// in this case we are considering only micro updates, that's 0.9.0 -> 0.9, thus for 1.0.0 => 1.0
+// in the future this should be managed with carefully if we desire a behavior like 1.0.0 => 1, that's minor upgrades
+func GetKogitoImageVersion(v string) string {
+	if len(v) == 0 {
+		return "latest"
+	}
+
+	versionPrefix := strings.Split(v, ".")
+	length := len(versionPrefix)
+	if length > 0 {
+		lastIndex := 2   // micro updates
+		if length <= 2 { // guard against unusual cases
+			lastIndex = length
+		}
+		return strings.Join(versionPrefix[:lastIndex], ".")
+	}
+	return "latest"
 }
