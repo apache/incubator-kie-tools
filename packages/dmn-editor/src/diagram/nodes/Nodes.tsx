@@ -33,8 +33,9 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { useIsHovered } from "../useIsHovered";
-import { getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
+import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { DmnDiagramEdgeData } from "../edges/Edges";
 
 export type DmnDiagramNodeData<T> = {
   dmnObject: T;
@@ -472,6 +473,7 @@ export const GroupNode = React.memo(
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
+    const reactFlow = RF.useReactFlow<DmnDiagramNodeData<any>, DmnDiagramEdgeData>();
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
@@ -485,6 +487,28 @@ export const GroupNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
+
+    // Select nodes that are visually entirely inside the group.
+    useEffect(() => {
+      const onDoubleClick = () => {
+        dmnEditorStoreApi.setState((state) => {
+          state.diagram.selectedNodes = reactFlow
+            .getNodes()
+            .flatMap((n) =>
+              getContainmentRelationship({ bounds: n.data.shape["dc:Bounds"]!, container: shape["dc:Bounds"]! })
+                .isInside
+                ? [n.id]
+                : []
+            );
+        });
+      };
+
+      const r = ref.current;
+      r?.addEventListener("dblclick", onDoubleClick);
+      return () => {
+        r?.removeEventListener("dblclick", onDoubleClick);
+      };
+    }, [dmnEditorStoreApi, reactFlow, shape]);
 
     return (
       <>

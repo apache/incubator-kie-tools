@@ -23,6 +23,7 @@ import { EDGE_TYPES } from "./edges/EdgeTypes";
 import {
   AssociationEdge,
   AuthorityRequirementEdge,
+  DmnDiagramEdgeData,
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
@@ -44,7 +45,7 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
-import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds, idFromHref } from "./maths/DmnMaths";
+import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds, getContainmentRelationship, idFromHref } from "./maths/DmnMaths";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { addNodeToGroup } from "../mutations/addNodeToGroup";
@@ -93,7 +94,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     selectedNodeTypes,
   } = useDmnEditorDerivedStore();
 
-  const [reactFlowInstance, setReactFlowInstance] = useState<RF.ReactFlowInstance | undefined>(undefined);
+  const [reactFlowInstance, setReactFlowInstance] =
+    useState<RF.ReactFlowInstance<DmnDiagramNodeData<any>, DmnDiagramEdgeData> | undefined>(undefined);
 
   const onConnect = useCallback<RF.OnConnect>(
     (connection) => {
@@ -141,16 +143,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     (nodeIdToIgnore: string, bounds: DC__Bounds) =>
       reactFlowInstance
         ?.getNodes()
-        .reverse()
+        .reverse() // Respect the nodes z-index.
         .find(
-          ({ id, type, data: { shape: candidate } }) =>
-            id !== nodeIdToIgnore && // don't ever use the node being dragged
-            bounds["@_x"] >= (candidate["dc:Bounds"]?.["@_x"] ?? 0) &&
-            bounds["@_y"] >= (candidate["dc:Bounds"]?.["@_y"] ?? 0) &&
-            bounds["@_x"] + bounds["@_width"] <=
-              (candidate["dc:Bounds"]?.["@_x"] ?? 0) + (candidate["dc:Bounds"]?.["@_width"] ?? 0) &&
-            bounds["@_y"] + bounds["@_height"] <=
-              (candidate["dc:Bounds"]?.["@_y"] ?? 0) + (candidate["dc:Bounds"]?.["@_height"] ?? 0)
+          (node) =>
+            node.id !== nodeIdToIgnore && // don't ever use the node being dragged
+            getContainmentRelationship({ bounds: bounds!, container: node.data.shape["dc:Bounds"]! }).isInside
         ),
     [reactFlowInstance]
   );
@@ -422,7 +419,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 },
                 targetEdges: edges
                   .flatMap((e) => (e.target === node.id ? [{ id: e.id, data: e.data! }] : []))
-                  .reverse(),
+                  .reverse(), // To not mess with indexes when removing more than one.
               });
               state.dispatch.diagram.setNodeStatus(state, node.id, {
                 selected: false,

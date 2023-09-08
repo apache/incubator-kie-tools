@@ -116,16 +116,16 @@ export function getContainmentRelationship({
 }: {
   bounds: DC__Bounds;
   container: DC__Bounds;
-  divingLineLocalY: number;
+  divingLineLocalY?: number;
 }): { isInside: true; section: "upper" | "lower" } | { isInside: false } {
   const center = getBoundsCenterPoint(bounds);
   const isInside =
-    center["@_x"] > container["@_x"] &&
-    center["@_x"] < container["@_x"] + container["@_width"] &&
-    center["@_y"] > container["@_y"] &&
-    center["@_y"] < container["@_y"] + container["@_height"];
+    bounds["@_x"] >= container["@_x"] &&
+    bounds["@_y"] >= container["@_y"] &&
+    bounds["@_x"] + bounds["@_width"] <= (container["@_x"] ?? 0) + (container["@_width"] ?? 0) &&
+    bounds["@_y"] + bounds["@_height"] <= (container["@_y"] ?? 0) + (container["@_height"] ?? 0);
   if (isInside) {
-    return { isInside: true, section: center["@_y"] > container["@_y"] + divingLineLocalY ? "lower" : "upper" };
+    return { isInside: true, section: center["@_y"] > container["@_y"] + (divingLineLocalY ?? 0) ? "lower" : "upper" };
   } else {
     return { isInside: false };
   }

@@ -5,6 +5,8 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { useDmnEditorDiagramContainer } from "../DiagramContainerContext";
 import { snapPoint } from "../SnapGrid";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DmnDiagramNodeData } from "../nodes/Nodes";
+import { DmnDiagramEdgeData } from "./Edges";
 
 export function usePotentialWaypointControls(
   waypoints: DC__Point[],
@@ -15,7 +17,7 @@ export function usePotentialWaypointControls(
 ) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const reactFlowInstance = RF.useReactFlow();
+  const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData<any>, DmnDiagramEdgeData>();
 
   const [potentialWaypoint, setPotentialWaypoint] =
     useState<ReturnType<typeof approximateClosestPoint> | undefined>(undefined);
@@ -138,13 +140,13 @@ function approximateClosestPoint(
       continue;
     }
 
-    const afterLength = bestLength + precision;
-    const after = pathNode.getPointAtLength(afterLength);
-    const afterDistance = distanceComponentsSquared(point, after);
-    if (afterLength <= pathLength && afterDistance < bestDistance) {
-      best = after;
-      bestLength = afterLength;
-      bestDistance = afterDistance;
+    const aLength = bestLength + precision;
+    const a = pathNode.getPointAtLength(aLength);
+    const aDistance = distanceComponentsSquared(point, a);
+    if (aLength <= pathLength && aDistance < bestDistance) {
+      best = a;
+      bestLength = aLength;
+      bestDistance = aDistance;
       continue;
     }
 
