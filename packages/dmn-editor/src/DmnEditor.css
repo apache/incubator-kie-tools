@@ -562,4 +562,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   opacity: 0;
   pointer-events: none;
 }
+.react-flow__pane.selection {
+  cursor: crosshair;
+}
 /* ⬆ (end) react-flow theming ⬆ */
