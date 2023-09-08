@@ -4,7 +4,7 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openLiteralExpression();
+      await expressions.openBoxedLiteral();
     });
 
     test("should resize the header and reset to default width", async ({ page, resizing }) => {
@@ -19,7 +19,7 @@ test.describe("Resizing", () => {
 
   test.describe("Context expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openContextExpression();
+      await expressions.openBoxedContext();
     });
 
     test("should resize header column", async ({ page, resizing }) => {
@@ -124,7 +124,7 @@ test.describe("Resizing", () => {
 
   test.describe("Decision Table expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openDecisionTableExpression();
+      await expressions.openDecisionTable();
     });
 
     test("should resize input column and add new columns", async ({ page, resizing }) => {
@@ -182,7 +182,7 @@ test.describe("Resizing", () => {
 
   test.describe("Relation expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openRelationExpression();
+      await expressions.openRelation();
     });
 
     test("should resize column and add new columns", async ({ page, resizing }) => {
@@ -207,7 +207,7 @@ test.describe("Resizing", () => {
 
   test.describe("Function expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openFunctionExpression();
+      await expressions.openBoxedFunction();
     });
 
     test("should resize header column", async ({ page, resizing }) => {
@@ -252,7 +252,7 @@ test.describe("Resizing", () => {
 
   test.describe("Invocation expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openInvocationExpression();
+      await expressions.openBoxedInvocation();
     });
 
     test("should resize header column", async ({ page, resizing }) => {
@@ -318,7 +318,7 @@ test.describe("Resizing", () => {
 
   test.describe("List expression", () => {
     test.beforeEach(async ({ expressions }) => {
-      await expressions.openListExpression();
+      await expressions.openBoxedList();
     });
 
     test("should resize header column", async ({ page, resizing }) => {

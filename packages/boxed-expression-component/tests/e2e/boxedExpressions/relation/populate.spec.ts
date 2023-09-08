@@ -1,32 +1,25 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Relation", () => {
-  test("should correctly populate relation", async ({ boxedExpressionEditor, expressions, page }) => {
+  test("should correctly populate relation", async ({ expressions, boxedExpressionEditor, page }) => {
     await expressions.openRelation("bigger");
-    await page.getByTestId("monaco-container").nth(5).click();
 
-    for (let i = 0; i < 4; i++) {
-      await page.keyboard.type(`"test${i}"`);
-      await page.keyboard.press("Space");
-      await page.keyboard.press("Tab");
+    // Populate Relation with test(n) values
+    let test = 0;
+    for (let i = 0; i < 3; i++) {
+      await page.getByTestId("monaco-container").nth(test).click();
+      for (let j = 0; j < 4; j++) {
+        await page.keyboard.type(`"test${test}"`);
+        await page.keyboard.press("Tab");
+        test++;
+      }
     }
 
-    // await expect(
-    //   page
-    //     .getByRole("row", { name: `${i}`, exact: true })
-    //     .getByRole("cell")
-    //     .nth(j)
-    // ).toContainText(`test${i+j-2}`);
-    // }
-    // for (let i = 1; i < 2; i++) {
-    //   for (let j = 1; j < 2; j++) {
-    //     await expect(
-    //       page
-    //         .getByRole("row", { name: `${i}`, exact: true })
-    //         .getByRole("cell")
-    //         .nth(j)
-    //     ).toContainText(`test${i+j-2}`);
-    //   }
-    // }
+    // Check if Relation has test(n) values on each cell
+    for (let i = 0; i < 11; i++) {
+      await expect(page.getByRole("cell", { name: `"test${i}"` })).toBeAttached();
+    }
+
+    await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-populated.png");
   });
 });

@@ -1,7 +1,7 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe("Cell context menu", () => {
+test.describe("Relation context menu", () => {
   test.describe("Rows control", () => {
     test.beforeEach(async ({ expressions, page }) => {
       await expressions.openRelation();

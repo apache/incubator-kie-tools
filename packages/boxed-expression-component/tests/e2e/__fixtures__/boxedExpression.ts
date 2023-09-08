@@ -2,12 +2,14 @@ import { Locator, Page, test as base } from "@playwright/test";
 import { Clipboard } from "./clipboard";
 import { Expressions } from "./expression";
 import { Resizing } from "./resizing";
+import { UseCases } from "./useCases";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
   expressions: Expressions;
   clipboard: Clipboard;
   resizing: Resizing;
+  useCases: UseCases;
 };
 
 class BoxedExpressionEditor {
@@ -77,6 +79,9 @@ export const test = base.extend<BoxedExpressionFixtures>({
   },
   resizing: async ({ page }, use) => {
     await use(new Resizing(page));
+  },
+  useCases: async ({ page, baseURL }, use) => {
+    await use(new UseCases(page, baseURL));
   },
 });
 
