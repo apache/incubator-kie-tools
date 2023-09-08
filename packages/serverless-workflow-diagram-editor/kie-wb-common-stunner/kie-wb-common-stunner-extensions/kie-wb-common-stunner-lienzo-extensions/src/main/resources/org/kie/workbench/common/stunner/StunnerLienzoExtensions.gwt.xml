@@ -23,6 +23,7 @@
 
   <inherits name='com.google.gwt.user.User' />
   <inherits name="com.ait.lienzo.Lienzo" />
+  <inherits name="org.gwtproject.GWTProject" />
 
   <source path="lienzo" />
 

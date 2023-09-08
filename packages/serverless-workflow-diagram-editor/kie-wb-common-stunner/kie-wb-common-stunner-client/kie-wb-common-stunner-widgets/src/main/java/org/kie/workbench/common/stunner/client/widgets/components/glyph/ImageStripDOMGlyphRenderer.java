@@ -26,8 +26,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import jsinterop.base.Js;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
@@ -41,7 +41,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
 
     private final ImageStripRegistry stripRegistry;
     private final ManagedInstance<WidgetElementRendererView> views;
-    private final BiFunction<String, Integer[], FlowPanel> panelBuilder;
+    private final BiFunction<String, Integer[], HTMLDivElement> panelBuilder;
 
     @Inject
     public ImageStripDOMGlyphRenderer(final ImageStripRegistry stripRegistry,
@@ -55,7 +55,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
 
     ImageStripDOMGlyphRenderer(final ImageStripRegistry stripRegistry,
                                final ManagedInstance<WidgetElementRendererView> views,
-                               final BiFunction<String, Integer[], FlowPanel> panelBuilder) {
+                               final BiFunction<String, Integer[], HTMLDivElement> panelBuilder) {
         this.stripRegistry = stripRegistry;
         this.views = views;
         this.panelBuilder = panelBuilder;
@@ -77,8 +77,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         final int clipY = !isHorizontal ? (strip.getHigh() + strip.getPadding()) * index : 0;
         final WidgetElementRendererView view = views.get();
         strip.getCss().getCssResource().ensureInjected();
-        view.setWidget(Js.cast(panelBuilder.apply(strip.getCss().getClassName(),
-                                          new Integer[]{clipX, clipY * -1}).asWidget().getElement()));
+        view.setWidget(panelBuilder.apply(strip.getCss().getClassName(), new Integer[]{clipX, clipY * -1}));
         return view;
     }
 
@@ -87,13 +86,13 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         views.destroyAll();
     }
 
-    private static FlowPanel buildPanel(final String className,
+    private static HTMLDivElement buildPanel(final String className,
                                         final int clipX,
                                         final int clipY) {
-        final FlowPanel panel = new FlowPanel();
-        panel.addStyleName(className);
-        panel.getElement().setAttribute("style", backGroundPosition(clipX, clipY));
-        return panel;
+        HTMLDivElement root = (HTMLDivElement) DomGlobal.document.createElement("div");
+        root.className = className;
+        root.style.setProperty("background-position", clipX + "px " + clipY + "px !important");
+        return root;
     }
 
     protected static String backGroundPosition(int clipX, int clipY) {

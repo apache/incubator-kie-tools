@@ -113,9 +113,6 @@ public class ZoomLevelSelectorPresenterTest {
     private Element selectorElement;
 
     @Mock
-    private com.google.gwt.user.client.Element gwtElement;
-
-    @Mock
     private HTMLElement widget;
 
     @Mock

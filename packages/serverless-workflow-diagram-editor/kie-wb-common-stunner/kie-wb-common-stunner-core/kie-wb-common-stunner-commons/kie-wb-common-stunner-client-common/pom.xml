@@ -132,6 +132,11 @@
       <artifactId>appformer-client-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+      <artifactId>gwtproject</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
     <dependency>
       <groupId>org.assertj</groupId>

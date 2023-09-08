@@ -40,7 +40,7 @@ public class CanvasInlineTextEditorControl
     private final TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;
 
     @Inject
-    public CanvasInlineTextEditorControl(final FloatingView<IsElement> floatingView,
+    public CanvasInlineTextEditorControl(final FloatingWidgetView floatingView,
                                          final @InlineTextEditorBox TextEditorBox<AbstractCanvasHandler, Element> textEditorBox) {
         this.floatingView = floatingView;
         this.textEditorBox = textEditorBox;

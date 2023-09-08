@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -23,13 +23,12 @@ package org.kie.workbench.common.stunner.lienzo.primitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.tools.client.event.EventType;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
-import jsinterop.base.Js;
+import org.gwtproject.timer.client.Timer;
 
 public abstract class AbstractDragProxy<T> {
 
@@ -98,8 +97,7 @@ public abstract class AbstractDragProxy<T> {
                              initialY);
         }
 
-        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
-        final HTMLElement rootPanel = Js.uncheckedCast(RootPanel.get().getElement());
+        final HTMLElement rootPanel = DomGlobal.document.body;
 
         eventListeners[0] = mouseMoveEvent -> onMouseMove(mouseMoveEvent, initialX, initialY, timeout, callback);
         eventListeners[1] = mouseDownEvent -> {
@@ -203,8 +201,7 @@ public abstract class AbstractDragProxy<T> {
     }
 
     private void removeHandlers() {
-        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
-        final HTMLElement rootPanel = Js.uncheckedCast(RootPanel.get().getElement());
+        final HTMLElement rootPanel = DomGlobal.document.body;
 
         rootPanel.removeEventListener(EventType.MOUSE_MOVE.getType(), eventListeners[0]);
         rootPanel.removeEventListener(EventType.MOUSE_DOWN.getType(), eventListeners[1]);
