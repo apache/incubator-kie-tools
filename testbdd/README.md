@@ -3,7 +3,7 @@
 Tests in this module are a rewrite and enhancement of the end-to-end tests available in the `/test` directory.
 They use [Godog](https://github.com/cucumber/godog) framework which is the official [Cucumber](https://cucumber.io/) BDD framework for Go and use [Gherkin](https://cucumber.io/docs/gherkin/) for writing test scenarios.
 
-Tests also make use of the [kogito-operator](https://github.com/kiegroup/kogito-operator/tree/main/test) framework for Kubernetes which simplifies communication with a Kubernetes cluster.
+Tests also make use of the [BDD Framework](https://github.com/kiegroup/kogito-serverless-operator/tree/main/bddframework) for Kubernetes which simplifies communication with a Kubernetes cluster. This framework is an extract of the original framework available at [github.com/kiegroup/kogito-operator](https://github.com/kiegroup/kogito-operator/tree/main/test).
 
 ## Run tests
 
