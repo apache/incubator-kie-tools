@@ -27,27 +27,27 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import { TestScenarioEditorDock } from "../TestScenarioEditor";
+import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 
 function TestScenarioDrawerPanel({
-  assetType,
   fileName,
-  isTestSkipped,
-  onClose,
+  onDrawerClose,
+  onUpdateSettingField,
   selectedDock,
+  testScenarioSettings,
 }: {
-  assetType: string;
   fileName: string;
-  isTestSkipped: boolean;
-  onClose: () => void;
+  onDrawerClose: () => void;
+  onUpdateSettingField: (field: string, value: boolean | string) => void;
   selectedDock: TestScenarioEditorDock;
+  testScenarioSettings: TestScenarioSettings;
 }) {
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
       <DrawerHead>
         <DrawerActions>
-          <DrawerCloseButton onClose={onClose} />
+          <DrawerCloseButton onClose={onDrawerClose} />
         </DrawerActions>
         <TextContent>
           <Text component={TextVariants.h2}>
@@ -87,8 +87,8 @@ function TestScenarioDrawerPanel({
                   return (
                     <TestScenarioDrawerSettingsPanel
                       fileName={fileName}
-                      assetType={assetType}
-                      isTestSkipped={isTestSkipped}
+                      onUpdateSettingField={onUpdateSettingField}
+                      testScenarioSettings={testScenarioSettings}
                     />
                   );
                 default:

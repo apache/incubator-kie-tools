@@ -21,70 +21,68 @@ import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/co
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-import { TestScenarioType } from "../TestScenarioEditor";
+import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
 
 import "./TestScenarioDrawerSettingsPanel.css";
 
 function TestScenarioDrawerSettingsPanel({
-  assetType,
-  agendaGroupRule,
   fileName,
-  isStatelessSessionRule,
-  isTestSkipped,
-  kieSessionRule,
+  onUpdateSettingField,
+  testScenarioSettings,
 }: {
-  assetType: string;
-  agendaGroupRule?: string;
   fileName: string;
-  isTestSkipped: boolean;
-  isStatelessSessionRule?: boolean;
-  kieSessionRule?: string;
+  onUpdateSettingField: (field: string, value: boolean | string) => void;
+  testScenarioSettings: TestScenarioSettings;
 }) {
   return (
     <>
       <Title headingLevel={"h6"}>Name</Title>
       <TextInput value={fileName} type="text" isDisabled />
       <Title headingLevel={"h6"}>Type</Title>
-      <TextInput value={assetType} type="text" isDisabled />
-      {assetType === TestScenarioType[TestScenarioType.DMN] ? (
+      <TextInput value={testScenarioSettings.assetType} type="text" isDisabled />
+      {testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN] ? (
         <>
           <Title headingLevel={"h6"}>DMN Model</Title>
           <FormSelect value={"1"} aria-label="FormSelect Input" ouiaId="BasicFormSelect">
             <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
             <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
           </FormSelect>
-          <Title headingLevel={"h6"}>DMN Namespace</Title>
-          <TextInput value={"Not available"} type="text" isDisabled />
           <Title headingLevel={"h6"}>DMN Name</Title>
-          <TextInput value={"MockedDMN"} type="text" isDisabled />
+          <TextInput value={testScenarioSettings.dmnName} type="text" isDisabled />
+          <Title headingLevel={"h6"}>DMN Namespace</Title>
+          <TextInput value={testScenarioSettings.dmnNamespace} type="text" isDisabled />
         </>
       ) : (
         <>
           <Title headingLevel={"h6"}>KIE Session</Title>
           <TextInput
+            onChange={(value) => onUpdateSettingField("dmoSession", value)}
             placeholder={"(Optional) Enter the KieSession for the test scenario."}
             type="text"
-            value={kieSessionRule}
+            value={testScenarioSettings.kieSessionRule}
           />
           <Title headingLevel={"h6"}>RuleFlowGroup/AgendaGroup</Title>
           <TextInput
+            onChange={(value) => onUpdateSettingField("ruleFlowGroup", value)}
             placeholder={"(Optional) Enter the RuleFlowGroup or AgendaGroup for the test scenario."}
             type="text"
-            value={agendaGroupRule}
+            value={testScenarioSettings.ruleFlowGroup}
           />
           <Checkbox
             className={"kie-scesim-editor-drawer-settings--checkbox"}
             id="stateless-session"
-            isChecked={isStatelessSessionRule}
+            isChecked={testScenarioSettings.isStatelessSessionRule}
             label="Stateless Session"
+            onChange={(value) => onUpdateSettingField("stateless", value)}
           />
         </>
       )}
       <Checkbox
         className={"kie-scesim-editor-drawer-settings--checkbox"}
         id="skip-test"
-        isChecked={isTestSkipped}
+        isChecked={testScenarioSettings.isTestSkipped}
         label="Skip this test scenario during the test"
+        onChange={(value) => onUpdateSettingField("skipFromBuild", value)}
       />
     </>
   );

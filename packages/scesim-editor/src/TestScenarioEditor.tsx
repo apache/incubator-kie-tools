@@ -91,6 +91,17 @@ export type TestScenarioEditorRef = {
   setContent(path: string, content: string): void;
 };
 
+export type TestScenarioSettings = {
+  assetType: string;
+  dmnFilePath?: string;
+  dmnName?: string;
+  dmnNamespace?: string;
+  isStatelessSessionRule?: boolean;
+  isTestSkipped: boolean;
+  kieSessionRule?: string;
+  ruleFlowGroup?: string;
+};
+
 /* Sub-Components */
 
 function TestScenarioCreationPanel({
@@ -235,9 +246,11 @@ function TestScenarioDocksPanel({
 function TestScenarioMainPanel({
   fileName,
   scesimModel,
+  updateSettingField,
 }: {
   fileName: string;
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
+  updateSettingField: (field: string, value: string) => void;
 }) {
   const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
 
@@ -283,11 +296,19 @@ function TestScenarioMainPanel({
                 <DrawerContent
                   panelContent={
                     <TestScenarioDrawerPanel
-                      assetType={scesimModel.ScenarioSimulationModel["settings"]!["type"]!}
                       fileName={fileName}
-                      isTestSkipped={scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false}
-                      onClose={closeDockPanel}
+                      onDrawerClose={closeDockPanel}
+                      onUpdateSettingField={updateSettingField}
                       selectedDock={dockPanel.selected}
+                      testScenarioSettings={{
+                        assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!,
+                        dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"],
+                        dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"],
+                        isStatelessSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["stateless"] ?? false,
+                        isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false,
+                        kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"],
+                        ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"],
+                      }}
                     />
                   }
                 >
@@ -421,6 +442,20 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
     [setScesimModel]
   );
 
+  const updateSettingsField = useCallback(
+    (fieldName: string, value: string) =>
+      setScesimModel((prevState) => ({
+        ScenarioSimulationModel: {
+          ...prevState.ScenarioSimulationModel,
+          ["settings"]: {
+            ...prevState.ScenarioSimulationModel["settings"],
+            [fieldName]: value,
+          },
+        },
+      })),
+    [setScesimModel]
+  );
+
   return (
     <>
       {(() => {
@@ -460,7 +495,13 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel fileName={scesimFile.path} scesimModel={scesimModel} />;
+            return (
+              <TestScenarioMainPanel
+                fileName={scesimFile.path}
+                scesimModel={scesimModel}
+                updateSettingField={updateSettingsField}
+              />
+            );
         }
       })()}
     </>
