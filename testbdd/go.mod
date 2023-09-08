@@ -3,7 +3,6 @@ module github.com/kiegroup/kogito-serverless-operator/testbdd
 go 1.19
 
 replace (
-	github.com/kiegroup/kogito-operator/apis => github.com/kiegroup/kogito-operator/apis v0.0.0-20230602083230-edf6764bcf18
 	github.com/kiegroup/kogito-operator/test => ../bddframework
 	github.com/kiegroup/kogito-serverless-operator => ../
 	github.com/kiegroup/kogito-serverless-operator/api => ../api
@@ -15,9 +14,8 @@ replace (
 require (
 	github.com/cucumber/godog v0.12.5
 	github.com/cucumber/messages-go/v16 v16.0.1
-	github.com/kiegroup/kogito-operator v0.0.0-20230602083230-edf6764bcf18
 	github.com/kiegroup/kogito-operator/test v0.0.0-00010101000000-000000000000
-	github.com/kiegroup/kogito-serverless-operator v0.0.0-00010101000000-000000000000
+	github.com/kiegroup/kogito-serverless-operator v1.43.1
 	github.com/kiegroup/kogito-serverless-operator/api v0.0.0
 	github.com/openshift/api v0.0.0-20230522130544-0eef84f63102
 	github.com/operator-framework/operator-lifecycle-manager v0.0.0-20200321030439-57b580e57e88
@@ -78,7 +76,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
-	github.com/kiegroup/kogito-operator/apis v0.0.0-00010101000000-000000000000 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -139,5 +136,4 @@ require (
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
-	software.sslmate.com/src/go-pkcs12 v0.0.0-20210415151418-c5206de65a78 // indirect
 )
