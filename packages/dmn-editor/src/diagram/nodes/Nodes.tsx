@@ -383,7 +383,7 @@ export const DecisionServiceNode = React.memo(
     zIndex,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService>>) => {
-    const ref = useRef<HTMLDivElement>(null);
+    const ref = useRef<SVGRectElement>(null);
     const isResizing = useNodeResizing(id);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
@@ -410,6 +410,7 @@ export const DecisionServiceNode = React.memo(
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionServiceNodeSvg
+            ref={ref}
             {...nodeDimensions}
             x={0}
             y={0}
@@ -421,16 +422,19 @@ export const DecisionServiceNode = React.memo(
         <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
-          ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
-          <InfoNodePanel isVisible={!isTargeted && isHovered} />
-          <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decisionService.variable} shape={shape} />
+          <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
+          <DataTypeNodePanel
+            isVisible={!isTargeted && selected && !dragging}
+            variable={decisionService.variable}
+            shape={shape}
+          />
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
+            isVisible={!isConnecting && !isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
           />
@@ -441,7 +445,9 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {selected && !dragging && (
+            <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
+          )}
         </div>
       </>
     );
@@ -456,7 +462,7 @@ export const GroupNode = React.memo(
     zIndex,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup>>) => {
-    const ref = useRef<HTMLDivElement>(null);
+    const ref = useRef<SVGRectElement>(null);
     const isResizing = useNodeResizing(id);
 
     const diagram = useDmnEditorStore((s) => s.diagram);
@@ -480,18 +486,17 @@ export const GroupNode = React.memo(
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
-          <GroupNodeSvg {...nodeDimensions} x={0} y={0} />
+          <GroupNodeSvg ref={ref} {...nodeDimensions} x={0} y={0} />
         </svg>
 
         <div
-          ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
           <OutgoingStuffNodePanel
-            isVisible={!isConnecting && !isTargeted && isHovered}
+            isVisible={!isConnecting && !isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.group].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
           />
@@ -502,7 +507,9 @@ export const GroupNode = React.memo(
             value={group["@_label"] ?? group["@_name"]}
             onChange={setName}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {selected && !dragging && (
+            <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
+          )}
         </div>
       </>
     );
@@ -566,7 +573,7 @@ function useNodeDimensions(snapGrid: SnapGrid, id: string, shape: DMNDI15__DMNSh
 }
 
 function useHoveredNodeAlwaysOnTop(
-  ref: React.RefObject<HTMLDivElement>,
+  ref: React.RefObject<HTMLDivElement | SVGElement>,
   layer: number,
   isHovered: boolean,
   dragging: boolean,

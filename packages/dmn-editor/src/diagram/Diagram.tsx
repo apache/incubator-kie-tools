@@ -32,18 +32,19 @@ import {
   BkmNode,
   DecisionNode,
   DecisionServiceNode,
+  DmnDiagramNodeData,
   GroupNode,
   InputDataNode,
   KnowledgeSourceNode,
   TextAnnotationNode,
 } from "./nodes/Nodes";
 import { deleteNode } from "../mutations/deleteNode";
-import { DC__Point, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Bounds, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
-import { getNodeCenterPoint, idFromHref } from "./maths/DmnMaths";
+import { idFromHref } from "./maths/DmnMaths";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { addNodeToGroup } from "../mutations/addNodeToGroup";
@@ -136,17 +137,22 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi, nodesById]
   );
 
-  const getFirstNodeUnderneath = useCallback(
-    (nodeIdToIgnore: string, point: DC__Point) =>
-      nodes.reverse().find(
-        ({ id, data: { shape } }) =>
-          id !== nodeIdToIgnore && // don't ever use the node being dragged
-          point["@_x"] > (shape["dc:Bounds"]?.["@_x"] ?? 0) &&
-          point["@_x"] < (shape["dc:Bounds"]?.["@_x"] ?? 0) + (shape["dc:Bounds"]?.["@_width"] ?? 0) &&
-          point["@_y"] > (shape["dc:Bounds"]?.["@_y"] ?? 0) &&
-          point["@_y"] < (shape["dc:Bounds"]?.["@_y"] ?? 0) + (shape["dc:Bounds"]?.["@_height"] ?? 0)
-      ),
-    [nodes]
+  const getFirstNodeFittingBounds = useCallback(
+    (nodeIdToIgnore: string, bounds: DC__Bounds) =>
+      reactFlowInstance
+        ?.getNodes()
+        .reverse()
+        .find(
+          ({ id, type, data: { shape: candidate } }) =>
+            id !== nodeIdToIgnore && // don't ever use the node being dragged
+            bounds["@_x"] >= (candidate["dc:Bounds"]?.["@_x"] ?? 0) &&
+            bounds["@_y"] >= (candidate["dc:Bounds"]?.["@_y"] ?? 0) &&
+            bounds["@_x"] + bounds["@_width"] <=
+              (candidate["dc:Bounds"]?.["@_x"] ?? 0) + (candidate["dc:Bounds"]?.["@_width"] ?? 0) &&
+            bounds["@_y"] + bounds["@_height"] <=
+              (candidate["dc:Bounds"]?.["@_y"] ?? 0) + (candidate["dc:Bounds"]?.["@_height"] ?? 0)
+        ),
+    [reactFlowInstance]
   );
   const onDragOver = useCallback(
     (e: React.DragEvent) => {
@@ -168,13 +174,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       });
 
       dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNode = getFirstNodeUnderneath("", {
+        state.diagram.dropTargetNode = getFirstNodeFittingBounds("", {
           "@_x": dropPoint.x,
           "@_y": dropPoint.y,
+          "@_width": 0,
+          "@_height": 0,
         }) as typeof state.diagram.dropTargetNode;
       });
     },
-    [container, dmnEditorStoreApi, getFirstNodeUnderneath, reactFlowInstance]
+    [container, dmnEditorStoreApi, getFirstNodeFittingBounds, reactFlowInstance]
   );
 
   const onDrop = useCallback(
@@ -441,7 +449,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const nodeBeingDraggedRef = useRef<RF.Node | null>(null);
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
-    (e, node) => {
+    (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
       nodeBeingDraggedRef.current = node.dragging ? node : null;
       const nodeBeingDragged = nodeBeingDraggedRef.current!;
       if (!nodeBeingDragged) {
@@ -449,13 +457,16 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
 
       dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNode = getFirstNodeUnderneath(
-          node.id,
-          getNodeCenterPoint(node)
-        ) as typeof state.diagram.dropTargetNode;
+        state.diagram.dropTargetNode = getFirstNodeFittingBounds(node.id, {
+          // We can't use node.data.dmnObject because it hasn't been updated at this point yet.
+          "@_x": node.positionAbsolute?.x ?? 0,
+          "@_y": node.positionAbsolute?.y ?? 0,
+          "@_width": node.width ?? 0,
+          "@_height": node.height ?? 0,
+        }) as typeof state.diagram.dropTargetNode;
       });
     },
-    [dmnEditorStoreApi, getFirstNodeUnderneath]
+    [dmnEditorStoreApi, getFirstNodeFittingBounds]
   );
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(

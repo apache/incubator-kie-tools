@@ -1,19 +1,15 @@
+/* (begin) global */
 .kie-dmn-editor--diagram-container {
   height: 100%;
   position: relative;
 }
 
 .kie-dmn-editor--bee-container {
-  /* height: 100%; */
   position: relative;
 }
+/* (end) global */
 
-.kie-dmn-editor--bee-container .kie-dmn-editor--properties-panel-toggle {
-  position: absolute;
-  right: 15px;
-  top: 15px;
-}
-
+/* (begin) nodes */
 .kie-dmn-editor--node {
   height: 100%;
   width: 100%;
@@ -32,46 +28,65 @@
   top: 0;
   left: 0;
   overflow: visible;
-  /* opacity: 0.5; */
 }
 .kie-dmn-editor--node:focus {
   outline: none;
 }
-
 .kie-dmn-editor--node.dimmed,
 .kie-dmn-editor--node-shape.dimmed {
   opacity: 0.3;
   pointer-events: none;
 }
+.kie-dmn-editor--node-shape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.kie-dmn-editor--text-annotation-node {
+  text-align: left;
+  display: block;
+}
+/* (end) nodes */
 
-.react-flow__node-node_inputData {
-  border-radius: 9999px; /* Same as the node SVGs */
+/* (begin) decisionService and group nodes */
+/* DECISION SERVICES AND GROUPS HAVE A SPECIFIC SELECTION MECHANISM TO ALLOW EDITING EDGES INSIDE THEM */
+.kie-dmn-editor--node-decisionService-visibleRect {
+  pointer-events: none;
 }
 
-/* .react-flow__node-node_group *, */
+.kie-dmn-editor--node-containerNodeInteractionRect,
+.kie-dmn-editor--node-decisionService-interactionDividerLine {
+  pointer-events: stroke !important;
+  stroke: purple;
+  opacity: 0.2;
+}
+
 .react-flow__node-node_group,
-/* .react-flow__node-node_decisionService *, */
 .react-flow__node-node_decisionService {
+  pointer-events: none !important;
   background: transparent;
-  /* backdrop-filter: blur(0px); */
-  /* pointer-events: none !important; */
-  border-radius: 40px; /* Same as the node SVGs */
 }
-
-/* .react-flow__node.react-flow__node-node_decisionService.selected {
-  background: #ffffff9e;
-  backdrop-filter: blur(5px);
-} */
-
-/* decision service */
-
+.react-flow__node-node_decisionService .kie-dmn-editor--outgoing-stuff-node-panel,
+.react-flow__node-node_group .kie-dmn-editor--outgoing-stuff-node-panel,
+.react-flow__node-node_decisionService .kie-dmn-editor--info-node-panel,
+.react-flow__node-node_group .kie-dmn-editor--info-node-panel,
+.react-flow__node-node_decisionService .react-flow__resize-control div,
+.react-flow__node-node_group .react-flow__resize-control div {
+  pointer-events: all !important;
+}
 .react-flow__node-node_decisionService .kie-dmn-editor--node-shape text {
   font-family: system-ui;
   font-size: 0.6em;
   letter-spacing: 8px;
   fill: #a9a9a9;
 }
+/* (end) decisionService and group nodes */
 
+/* (begin) pallete */
 .kie-dmn-editor--pallete {
   width: 42px;
   background: #fff;
@@ -98,9 +113,15 @@
 .kie-dmn-editor--pallete-button:active {
   filter: brightness(90%);
 }
+/* (end) pallete */
 
-/* Properties panel toggle */
+/* (begin) properties panel toggle */
 
+.kie-dmn-editor--bee-container .kie-dmn-editor--properties-panel-toggle {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
 .kie-dmn-editor--properties-panel-toggle {
   width: 42px;
   background: #fff;
@@ -125,8 +146,9 @@
 .kie-dmn-editor--properties-panel-toggle-button:active {
   filter: brightness(90%);
 }
+/* (end) properties panel toggle */
 
-/* Overlays panel toggle */
+/* (begin) overlays panel toggle */
 .kie-dmn-editor--overlays-panel-toggle {
   margin-right: 16px;
   width: 42px;
@@ -158,7 +180,9 @@
   min-width: 60px;
   width: 60px;
 }
+/* (end) overlays panel toggle */
 
+/* nodes */
 .kie-dmn-editor--outgoing-stuff-node-panel {
   position: absolute;
   left: calc(100% - 10px); /* - 1px to make sure it is directly connected to the node */
@@ -198,12 +222,11 @@
   filter: brightness(90%);
 }
 
-/* 
-To make sure connection lines are steadly glued to the 
+/* (begin) node handles */
+/*  To make sure connection lines are steadly glued to the 
 handles, we make their indicators be ::before elements. The handle 
 itself is a 0px by 0px div, as connection lines can move freely when
-the cursor is inside it. By making it adimensional, that never happens.
- */
+the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--node-handle.connecting::before {
   content: "";
   position: absolute;
@@ -257,7 +280,11 @@ the cursor is inside it. By making it adimensional, that never happens.
   top: 50%;
   left: 50%;
 }
-/* data type selector on inputData, decision, bkm, and decisionService nodes */
+/* (end) node handles */
+
+/* (begin) node panels */
+/*                     */
+/*    data type selector on inputData, decision, bkm, and decisionService nodes */
 .kie-dmn-editor--data-type-node-panel {
   position: absolute;
   max-width: 100%;
@@ -280,8 +307,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 .kie-dmn-editor--data-type-node-panel:active {
   filter: brightness(90%);
 }
-
-/* edit button on decision and bkm nodes */
+/*    edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
   position: absolute;
   padding: 4px 8px;
@@ -302,12 +328,10 @@ the cursor is inside it. By making it adimensional, that never happens.
 .kie-dmn-editor--edit-expression-node-panel:active {
   filter: brightness(90%);
 }
-
 .kie-dmn-editor--tabs ~ section {
   overflow: auto;
   height: calc(100% - 40px);
 }
-
 /* info button on all nodes */
 .kie-dmn-editor--info-node-panel {
   position: absolute;
@@ -334,6 +358,7 @@ the cursor is inside it. By making it adimensional, that never happens.
 .kie-dmn-editor--info-label:active {
   filter: brightness(90%);
 }
+/* (end) node panels */
 
 /* back button on boxed expression */
 .kie-dmn-editor--boxed-expression-back {
@@ -352,81 +377,59 @@ the cursor is inside it. By making it adimensional, that never happens.
   filter: brightness(90%);
 }
 
-.kie-dmn-editor--node-shape {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* connection lines */
-/* TODO */
-
-/* node types */
-
-.kie-dmn-editor--text-annotation-node {
-  text-align: left;
-  display: block;
-}
-
-.kie-dmn-editor--round-svg-container {
-  pointer-events: none;
-  width: 100%;
-  height: 100%;
-}
-
-/* edges */
-
+/* (begin) edges with waypoints */
 .kie-dmn-editor--edge.dimmed {
   opacity: 0.3;
   pointer-events: none;
 }
-
 .kie-dmn-editor--diagram-edge-waypoints circle {
   fill: black;
   stroke-width: 8;
   stroke: #006ba4;
 }
-
 .kie-dmn-editor--diagram-edge-waypoints circle:active,
 .kie-dmn-editor--diagram-edge-waypoints circle:hover {
   stroke-width: 16;
   cursor: grab;
 }
-
 .react-flow__edge.selected .kie-dmn-editor--edge-waypoint-potential,
 .react-flow__edge:not(.selected) .kie-dmn-editor--edge-waypoint-potential {
   fill: #4d809b96;
 }
-
 .kie-dmn-editor--edge-waypoint-potential {
   pointer-events: none;
 }
+/* (end) edges with waypoints */
 
-/* *********************** */
-/* ⬇ react flow theming ⬇ */
-/* *********************** */
+/* (begin) misc */
+.kie-dmn-editor--round-svg-container {
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+/* (end) misc */
+
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ⬇ (begin) react-flow theming ⬇ */
+/* ******************************* */
 
 /* edge selection / hover */
-
 .react-flow__edge > .kie-dmn-editor--edge {
   pointer-events: none;
 }
-
 .react-flow__edge.selected > .kie-dmn-editor--edge {
   fill: #006ba4 !important;
   stroke: #006ba4 !important;
   stroke-width: 3px !important;
   filter: drop-shadow(2px 2px 2px #006ba477);
 }
-
 .react-flow__edge.selected .react-flow__edge-interaction.normal {
   cursor: crosshair;
 }
-
 .react-flow__edge.selected .react-flow__edge-interaction.dragging-waypoint,
 .react-flow__edge.selected
   .react-flow__edge-interaction.dragging-waypoint
@@ -434,35 +437,29 @@ the cursor is inside it. By making it adimensional, that never happens.
   circle {
   cursor: grabbing;
 }
-
 .react-flow__edge:not(.selected) .kie-dmn-editor--edge:hover,
 .react-flow__edge:not(.selected) .react-flow__edge-interaction:hover + .kie-dmn-editor--edge {
   stroke-width: 2px !important;
 }
 
 /* nodes selection / hover */
-
 .react-flow__node:not(.selected):hover > .kie-dmn-editor--node-shape.normal {
   filter: drop-shadow(2px 2px 2px rgb(127, 127, 127));
 }
-
 .react-flow__node.selected {
   color: #006ba4 !important;
 }
-
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid {
   border-color: red !important;
 }
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid > g * {
   stroke: red !important;
 }
-
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target,
 .react-flow__node.selected > .kie-dmn-editor--node-shape.normal {
   border-color: #006ba4 !important;
   filter: drop-shadow(2px 2px 2px #006ba477);
 }
-
 .react-flow__node > .kie-dmn-editor--node-shape.drop-target > g *,
 .react-flow__node.selected > .kie-dmn-editor--node-shape > g * {
   stroke: #006ba4 !important;
@@ -474,7 +471,6 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 .react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape {
   border-color: #0083a4 !important;
-  /* filter: drop-shadow(2px 2px 2px #0083a477); */
 }
 .react-flow__edge.hierarchy.up > path,
 .react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape > g * {
@@ -487,21 +483,19 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 .react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape {
   border-color: #003fa4 !important;
-  /* filter: drop-shadow(2px 2px 2px #003fa477); */
 }
 .react-flow__edge.hierarchy.down > path,
 .react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape > g * {
   stroke: #003fa4 !important;
   stroke-width: 3px !important;
 }
-/* selection rect */
 
+/* selection rect */
 .react-flow__nodesselection-rect {
   display: none;
 }
 
 /* controls */
-
 .react-flow__controls {
   border-radius: 20px;
   border: 1px solid black;
@@ -543,7 +537,6 @@ the cursor is inside it. By making it adimensional, that never happens.
 }
 
 /* edge updaters */
-
 .react-flow__edgeupdater {
   z-index: 9000;
   fill: black;
@@ -555,9 +548,9 @@ the cursor is inside it. By making it adimensional, that never happens.
 .react-flow__edgeupdater:hover {
   r: 10; /* circle radius */
 }
-
 .react-flow__edge:not(.selected) .react-flow__edgeupdater,
 .react-flow__edgeupdater.hidden {
   opacity: 0;
   pointer-events: none;
 }
+/* ⬆ (end) react-flow theming ⬆ */

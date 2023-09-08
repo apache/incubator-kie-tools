@@ -12,8 +12,7 @@ import { useKieEdgePath } from "./useKieEdgePath";
 import { useIsHovered } from "../useIsHovered";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
 import { useEdgeUpdatersAtEdgeTips } from "./useEdgeUpdatersAtEdgeTips";
-
-const DEFAULT_EDGE_INTRACTION_WIDTH = 40;
+import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 
 export type DmnDiagramEdgeData = {
   dmnEdge: (DMNDI15__DMNEdge & { index: number }) | undefined;
@@ -145,7 +144,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
         d={path}
         {...interactionStrokeProps}
         className={`${interactionStrokeProps.className} ${className}`}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
       />
@@ -191,7 +190,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         d={path}
         {...interactionStrokeProps}
         className={`${interactionStrokeProps.className} ${className}`}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
       />
@@ -238,7 +237,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
         centerToConnectionPoint={false}
         {...interactionStrokeProps}
         className={`${interactionStrokeProps.className} ${className}`}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
       />
@@ -288,7 +287,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
         d={path}
         {...interactionStrokeProps}
         className={`${interactionStrokeProps.className} ${className}`}
-        strokeWidth={props.interactionWidth ?? DEFAULT_EDGE_INTRACTION_WIDTH}
+        strokeWidth={props.interactionWidth ?? DEFAULT_INTRACTION_WIDTH}
         onMouseMove={onMouseMove}
         onDoubleClick={onDoubleClick}
       />

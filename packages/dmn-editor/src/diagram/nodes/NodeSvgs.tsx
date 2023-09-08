@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as RF from "reactflow";
+import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 
 export type NodeSvgProps = RF.Dimensions & RF.XYPosition & { strokeWidth?: number };
 
@@ -116,13 +117,16 @@ export function KnowledgeSourceNodeSvg(_props: NodeSvgProps) {
   );
 }
 
-export function DecisionServiceNodeSvg(
-  __props: NodeSvgProps & { dividerLineLocalY?: number; showSectionLabels: boolean }
-) {
+export const containerNodeInteractionRectCssClassName = "kie-dmn-editor--node-containerNodeInteractionRect";
+
+export const DecisionServiceNodeSvg = React.forwardRef<
+  SVGRectElement,
+  NodeSvgProps & { dividerLineLocalY?: number; showSectionLabels: boolean }
+>((__props, ref) => {
   const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
+  const interactionRect = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
   const { dividerLineLocalY, showSectionLabels, ...props } = _props;
-  const cornerRadius = 40;
-  const dividerLineCoors = {
+  const dividerLineCoords = {
     x: x + strokeWidth / 2,
     y: y + (dividerLineLocalY ? dividerLineLocalY : height / 2),
   };
@@ -135,41 +139,59 @@ export function DecisionServiceNodeSvg(
         y={y}
         width={width}
         height={height}
+        strokeWidth={strokeWidth}
         fill={"transparent"}
         stroke={DEFAULT_NODE_STROKE_COLOR}
         strokeLinejoin={"round"}
-        strokeWidth={strokeWidth}
-        rx={cornerRadius}
-        ry={cornerRadius}
+        rx={"40"}
+        ry={"40"}
+        className={"kie-dmn-editor--node-decisionService-visibleRect"}
+      />
+      <rect
+        ref={ref}
+        {...interactionRect}
+        fill={"transparent"}
+        stroke={"transparent"}
+        strokeLinejoin={"round"}
+        rx={"30"}
+        ry={"30"}
+        className={containerNodeInteractionRectCssClassName}
       />
       {showSectionLabels && (
         <>
           <text
             textAnchor={"middle"}
             dominantBaseline={"auto"}
-            transform={`translate(${dividerLineCoors.x + width / 2},${dividerLineCoors.y - 6})`}
+            transform={`translate(${dividerLineCoords.x + width / 2},${dividerLineCoords.y - 6})`}
           >
             OUTPUT
           </text>
           <text
             textAnchor={"middle"}
             dominantBaseline={"hanging"}
-            transform={`translate(${dividerLineCoors.x + width / 2},${dividerLineCoors.y + 6})`}
+            transform={`translate(${dividerLineCoords.x + width / 2},${dividerLineCoords.y + 6})`}
           >
             ENCAPSULATED
           </text>
         </>
       )}
       <path
+        className={"kie-dmn-editor--node-decisionService-interactionDividerLine"}
+        d={`M0,0 L${width},0`}
+        strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
+        style={{ stroke: "transparent !important" }}
+        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
+      />
+      <path
         d={`M0,0 L${width},0`}
         strokeLinejoin={"round"}
         strokeWidth={strokeWidth}
         stroke={DEFAULT_NODE_STROKE_COLOR}
-        transform={`translate(${dividerLineCoors.x},${dividerLineCoors.y})`}
+        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
       />
     </g>
   );
-}
+});
 
 export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?: boolean }) {
   const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
@@ -195,26 +217,37 @@ export function TextAnnotationNodeSvg(__props: NodeSvgProps & { showPlaceholder?
   );
 }
 
-export function GroupNodeSvg(_props: NodeSvgProps & { strokeDasharray?: string }) {
-  const { strokeWidth, x, y, width, height, props } = normalize(_props);
-  const strokeDasharray = props.strokeDasharray ?? "14,10,3,10";
-  const cornerRadius = 40;
-  return (
-    <g>
-      <rect
-        {...props}
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fill={"transparent"}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
-        strokeLinejoin={"round"}
-        strokeWidth={strokeWidth}
-        strokeDasharray={strokeDasharray}
-        rx={cornerRadius}
-        ry={cornerRadius}
-      />
-    </g>
-  );
-}
+export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { strokeDasharray?: string }>(
+  (__props, ref) => {
+    const { strokeWidth, x, y, width, height, props } = normalize(__props);
+    const interactionRect = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
+    const strokeDasharray = props.strokeDasharray ?? "14,10,3,10";
+    return (
+      <g>
+        <rect
+          {...props}
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fill={"transparent"}
+          stroke={DEFAULT_NODE_STROKE_COLOR}
+          strokeLinejoin={"round"}
+          strokeWidth={strokeWidth}
+          strokeDasharray={strokeDasharray}
+          rx={40}
+          ry={40}
+        />
+        <rect
+          ref={ref}
+          {...interactionRect}
+          fill={"transparent"}
+          stroke={"transparent"}
+          rx={"30"}
+          ry={"30"}
+          className={containerNodeInteractionRectCssClassName}
+        />
+      </g>
+    );
+  }
+);

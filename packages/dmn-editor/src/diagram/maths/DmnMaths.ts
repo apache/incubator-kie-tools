@@ -4,6 +4,8 @@ import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
 import { getCenter } from "./Maths";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 
+export const DEFAULT_INTRACTION_WIDTH = 40;
+
 export function getDistance(a: DC__Point, b: DC__Point) {
   return Math.sqrt(Math.pow(a["@_x"] - b["@_x"], 2) + Math.pow(a["@_y"] - b["@_y"], 2));
 }

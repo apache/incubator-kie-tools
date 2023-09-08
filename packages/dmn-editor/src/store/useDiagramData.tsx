@@ -285,11 +285,11 @@ export function useDiagramData() {
       }
 
       if (nodes[i].type === NODE_TYPES.group) {
-        nodes[i].zIndex = NODE_LAYERS.PARENT_NODES;
+        nodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
       }
 
       if (nodes[i].type === NODE_TYPES.decisionService) {
-        nodes[i].zIndex = NODE_LAYERS.PARENT_NODES;
+        nodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
       }
     }
 
