@@ -1,8 +1,8 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Create Boxed Function", () => {
-  test.beforeEach(async ({ expressions }) => {
-    await expressions.openBoxedFunction();
+  test.beforeEach(async ({ stories }) => {
+    await stories.openBoxedFunction();
   });
 
   test("should render FEEL function expression correctly", async ({ boxedExpressionEditor, page }) => {

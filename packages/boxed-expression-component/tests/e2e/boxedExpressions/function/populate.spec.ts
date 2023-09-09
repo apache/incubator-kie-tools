@@ -2,13 +2,13 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Function", () => {
   test("should correctly populate boxed function", async ({
-    expressions,
+    stories,
     page,
     boxedExpressionEditor,
     resizing,
     monaco,
   }) => {
-    await expressions.openBoxedFunction();
+    await stories.openBoxedFunction();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Affordability calculation");
@@ -81,10 +81,10 @@ test.describe("Populate Boxed Function", () => {
       page.getByRole("cell", { name: "Select expression", exact: true }).nth(0)
     );
 
-    await monaco.fill(
-      page.getByRole("cell", { name: "=" }).nth(1).getByTestId("monaco-container"),
-      "Monthly Income - (Monthly Repayments + Monthly Expenses)"
-    );
+    await monaco.fill({
+      monacoParentLocator: page.getByRole("cell", { name: "=" }).nth(1),
+      content: "Monthly Income - (Monthly Repayments + Monthly Expenses)",
+    });
 
     await page.getByRole("cell", { name: "1", exact: true }).nth(1).hover();
     await page.getByRole("cell", { name: "1", exact: true }).locator("svg").click();
@@ -94,19 +94,21 @@ test.describe("Populate Boxed Function", () => {
     await page.getByPlaceholder("Expression Name").fill("Risk category");
     await page.keyboard.press("Enter");
 
-    const decisionTableData = [
-      [`"High", "Decline"`, "0.6"],
-      [`"Medium"`, "0.7"],
-      [`"Low", "Very Low"`, "0.8"],
-    ];
-    await boxedExpressionEditor.fillDecisionTable(1, decisionTableData);
+    await boxedExpressionEditor.fillDecisionTable({
+      startAtCell: 1,
+      tableData: [
+        [`"High", "Decline"`, "0.6"],
+        [`"Medium"`, "0.7"],
+        [`"Low", "Very Low"`, "0.8"],
+      ],
+    });
 
-    await monaco.fill(
-      page.getByRole("cell", { name: "=" }).nth(2).getByTestId("monaco-container"),
-      `if Disposable Income * Credit Contigency Factor > Required Monthly Installment
+    await monaco.fill({
+      monacoParentLocator: page.getByRole("cell", { name: "=" }).nth(2),
+      content: `if Disposable Income * Credit Contigency Factor > Required Monthly Installment
 then true
-else false`
-    );
+else false`,
+    });
 
     await resizing.resizeCell(
       page.getByRole("columnheader", { name: "Affordability calculation (boolean)" }),
@@ -114,7 +116,7 @@ else false`
       { x: 320, y: 0 }
     );
 
-    // https://github.com/kiegroup/kie-issues/issues/536
+    // TEMPORARY WORKAROUND https://github.com/kiegroup/kie-issues/issues/536
     // await resizing.reset(
     //   page.getByRole("columnheader", { name: "Credit contingency factor (number)" }).nth(1)
     // );

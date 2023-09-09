@@ -3,9 +3,9 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Decision table context menu", () => {
   test.describe("Decision rules control", () => {
-    test.beforeEach(async ({ expressions, page, monaco }) => {
-      await expressions.openDecisionTable();
-      await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+    test.beforeEach(async ({ stories, page, monaco }) => {
+      await stories.openDecisionTable();
+      await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 0 });
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
     });
 
@@ -70,9 +70,9 @@ test.describe("Decision table context menu", () => {
 
   test.describe("Columns controls", () => {
     test.describe("Input columns", () => {
-      test.beforeEach(async ({ expressions, page, monaco }) => {
-        await expressions.openDecisionTable();
-        await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+      test.beforeEach(async ({ stories, page, monaco }) => {
+        await stories.openDecisionTable();
+        await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 0 });
         await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click({
           button: "right",
         });
@@ -151,9 +151,9 @@ test.describe("Decision table context menu", () => {
     });
 
     test.describe("Output columns", () => {
-      test.beforeEach(async ({ expressions, page, monaco }) => {
-        await expressions.openDecisionTable();
-        await monaco.fill(page.getByTestId("monaco-container").nth(1), '"test"');
+      test.beforeEach(async ({ stories, page, monaco }) => {
+        await stories.openDecisionTable();
+        await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 1 });
         await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click({
           button: "right",
         });
@@ -238,9 +238,9 @@ test.describe("Decision table context menu", () => {
     });
 
     test.describe("Rule annotation columns", () => {
-      test.beforeEach(async ({ expressions, page, monaco }) => {
-        await expressions.openDecisionTable();
-        await monaco.fill(page.getByTestId("monaco-container").nth(2), '"test"');
+      test.beforeEach(async ({ stories, page, monaco }) => {
+        await stories.openDecisionTable();
+        await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 2 });
         await page.getByRole("columnheader", { name: "annotation-1" }).click({
           button: "right",
         });
@@ -320,7 +320,7 @@ test.describe("Decision table context menu", () => {
   });
 
   test("should reset insert multiples menu when opening another cell context menu", async ({
-    expressions,
+    stories,
     page,
     monaco,
   }) => {
@@ -330,8 +330,8 @@ test.describe("Decision table context menu", () => {
       description: "https://github.com/kiegroup/kie-issues/issues/421",
     });
 
-    await expressions.openDecisionTable();
-    await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    await stories.openDecisionTable();
+    await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     await page.getByTestId("monaco-container").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
     await page.getByRole("cell", { name: "1" }).click({ button: "right" });
@@ -340,13 +340,13 @@ test.describe("Decision table context menu", () => {
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openDecisionTable();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openDecisionTable();
     });
 
     test.describe("Add decision rules", () => {
       test.beforeEach(async ({ page, monaco }) => {
-        await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+        await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 0 });
       });
 
       test("should add row above by positioning mouse on the index cell upper section", async ({ page }) => {
@@ -366,7 +366,7 @@ test.describe("Decision table context menu", () => {
     test.describe("Add columns", () => {
       test.describe("Input columns", () => {
         test.beforeEach(async ({ page, monaco }) => {
-          await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+          await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 0 });
         });
 
         test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
@@ -390,7 +390,7 @@ test.describe("Decision table context menu", () => {
 
       test.describe("Output columns", () => {
         test.beforeEach(async ({ page, monaco }) => {
-          await monaco.fill(page.getByTestId("monaco-container").nth(1), '"test"');
+          await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 1 });
         });
 
         test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
@@ -418,7 +418,7 @@ test.describe("Decision table context menu", () => {
 
       test.describe("Rule annotation columns", () => {
         test.beforeEach(async ({ page, monaco }) => {
-          await monaco.fill(page.getByTestId("monaco-container").nth(2), '"test"');
+          await monaco.fill({ monacoParentLocator: page, content: '"test"', nth: 2 });
         });
 
         test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {

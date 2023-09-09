@@ -3,20 +3,20 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Selection", () => {
   describe("Cell navigation", () => {
-    test("should navigate correctly on selected cells with keys", async ({ expressions, page }) => {
-      // enter, tab, shift enter, shift tab, esc
+    test("should correctly navigate", async () => {
+      // enter, shift+enter, tab, shift+tab, escape
     });
   });
 
   describe("Expression navigation", () => {
-    test("should navigate correctly on cells with nested expressions with keys", async ({ expressions, page }) => {
-      // enter, tab, shift enter, shift tab, esc
+    test("should correctly navigatee", async () => {
+      // enter, shift+enter, tab, shift+tab, escape
     });
   });
 
   describe("Cell selection", () => {
-    test("should select multiple cells and write on them", async ({ expressions, page }) => {
-      await expressions.openRelation("bigger");
+    test("should select multiple cells and write on them", async ({ stories, page }) => {
+      await stories.openRelation("bigger");
       await page.getByTestId("monaco-container").nth(5).dragTo(page.getByTestId("monaco-container").nth(10));
 
       // Write on cells
@@ -32,8 +32,8 @@ test.describe("Selection", () => {
       await expect(page.getByRole("cell", { name: "test3" })).toBeAttached();
     });
 
-    test("should select multiple cells and write on more of them", async ({ expressions, page }) => {
-      await expressions.openRelation("bigger");
+    test("should select multiple cells and write on more of them", async ({ stories, page }) => {
+      await stories.openRelation("bigger");
       await page.getByTestId("monaco-container").nth(5).dragTo(page.getByTestId("monaco-container").nth(10));
 
       // Write on cells
@@ -49,13 +49,13 @@ test.describe("Selection", () => {
       await expect(page.getByRole("cell", { name: "test7" })).toBeAttached();
     });
 
-    test("should select multiple cells and copy/paste", async ({ expressions, page, clipboard, browserName }) => {
+    test("should select multiple cells and copy/paste", async ({ stories, page, clipboard, browserName }) => {
       test.skip(
         browserName !== "chromium",
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
       );
 
-      await expressions.openRelation("people");
+      await stories.openRelation("people");
       await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(5));
       await clipboard.copy();
       await page.keyboard.press("Delete");
@@ -65,7 +65,7 @@ test.describe("Selection", () => {
         await expect(page.getByRole("row", { name: `${i}`, exact: true })).toContainText("");
       }
 
-      await expressions.openRelation("bigger");
+      await stories.openRelation("bigger");
       await page.getByTestId("monaco-container").nth(5).click();
       await clipboard.paste();
       await expect(page.getByRole("cell", { name: "Luiz" })).toBeAttached();
@@ -77,7 +77,7 @@ test.describe("Selection", () => {
     });
 
     test("should select multiple cells, cut and paste on another expression", async ({
-      expressions,
+      stories,
       page,
       clipboard,
       browserName,
@@ -87,7 +87,7 @@ test.describe("Selection", () => {
         "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
       );
 
-      await expressions.openRelation("people");
+      await stories.openRelation("people");
       await page.getByTestId("monaco-container").nth(0).dragTo(page.getByTestId("monaco-container").nth(5));
       await clipboard.cut();
 
@@ -96,7 +96,7 @@ test.describe("Selection", () => {
         await expect(page.getByRole("row", { name: `${i}`, exact: true })).toContainText("");
       }
 
-      await expressions.openRelation("bigger");
+      await stories.openRelation("bigger");
       await page.getByTestId("monaco-container").nth(5).click();
       await clipboard.paste();
       await expect(page.getByRole("cell", { name: "Luiz" })).toBeAttached();

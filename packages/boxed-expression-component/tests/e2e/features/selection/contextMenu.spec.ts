@@ -3,9 +3,9 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Selection", () => {
   test.describe("Context menu", () => {
-    test.beforeEach(async ({ expressions, page, monaco }) => {
-      await expressions.openRelation();
-      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    test.beforeEach(async ({ stories, page, monaco }) => {
+      await stories.openRelation();
+      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
     test.describe(() => {

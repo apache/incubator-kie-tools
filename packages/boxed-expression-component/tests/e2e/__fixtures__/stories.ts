@@ -2,7 +2,7 @@ import { Page } from "@playwright/test";
 
 type BoxedExpressionTypes = "base" | "nested";
 
-export class Expressions {
+export class Stories {
   constructor(public page: Page, public baseURL?: string) {
     this.page = page;
     this.baseURL = baseURL;

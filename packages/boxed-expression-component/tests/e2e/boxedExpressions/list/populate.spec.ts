@@ -1,13 +1,8 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed List", () => {
-  test("should correctly create an age group boxed list", async ({
-    expressions,
-    boxedExpressionEditor,
-    page,
-    monaco,
-  }) => {
-    await expressions.openBoxedList();
+  test("should correctly create an age group boxed list", async ({ stories, boxedExpressionEditor, page, monaco }) => {
+    await stories.openBoxedList();
     await page.getByRole("cell", { name: "1" }).hover();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
@@ -26,11 +21,11 @@ test.describe("Populate Boxed List", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    await monaco.fill(page.getByTestId("monaco-container").nth(0), "<18");
-    await monaco.fill(page.getByTestId("monaco-container").nth(1), "[18..30)");
-    await monaco.fill(page.getByTestId("monaco-container").nth(2), "[30..50)");
-    await monaco.fill(page.getByTestId("monaco-container").nth(3), "[50..70)");
-    await monaco.fill(page.getByTestId("monaco-container").nth(4), ">=70");
+    await monaco.fill({ monacoParentLocator: page, nth: 0, content: "<18" });
+    await monaco.fill({ monacoParentLocator: page, nth: 1, content: "[18..30)" });
+    await monaco.fill({ monacoParentLocator: page, nth: 2, content: "[30..50)" });
+    await monaco.fill({ monacoParentLocator: page, nth: 3, content: "[50..70)" });
+    await monaco.fill({ monacoParentLocator: page, nth: 4, content: ">=70" });
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("boxed-list-age-group.png");
   });

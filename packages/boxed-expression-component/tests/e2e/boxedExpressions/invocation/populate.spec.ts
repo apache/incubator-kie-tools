@@ -2,13 +2,13 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Invocation", () => {
   test("should correctly create pre-bureau-affordability boxed invocation", async ({
-    expressions,
+    stories,
     page,
     boxedExpressionEditor,
     resizing,
     monaco,
   }) => {
-    await expressions.openBoxedInvocation();
+    await stories.openBoxedInvocation();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Installment calculation");
@@ -63,11 +63,11 @@ test.describe("Populate Boxed Invocation", () => {
     await page.keyboard.type(`Affordability calculation`);
     await page.keyboard.press("Enter");
 
-    await monaco.fill(page.getByTestId("monaco-container").nth(0), "Aplicant data.Monthly.Income");
-    await monaco.fill(page.getByTestId("monaco-container").nth(1), "Aplicant data.Monthly.Repayments");
-    await monaco.fill(page.getByTestId("monaco-container").nth(2), "Aplicant data.Monthly.Expenses");
-    await monaco.fill(page.getByTestId("monaco-container").nth(3), "Pre-bureau risk category");
-    await monaco.fill(page.getByTestId("monaco-container").nth(4), "Required monthly installment");
+    await monaco.fill({ monacoParentLocator: page, nth: 0, content: "Aplicant data.Monthly.Income" });
+    await monaco.fill({ monacoParentLocator: page, nth: 1, content: "Aplicant data.Monthly.Repayments" });
+    await monaco.fill({ monacoParentLocator: page, nth: 2, content: "Aplicant data.Monthly.Expenses" });
+    await monaco.fill({ monacoParentLocator: page, nth: 3, content: "Pre-bureau risk category" });
+    await monaco.fill({ monacoParentLocator: page, nth: 4, content: "Required monthly installment" });
 
     await resizing.resizeCell(
       page.getByRole("cell", { name: "= Aplicant data.Monthly.Income Aplicant data.Monthly.Income" }),

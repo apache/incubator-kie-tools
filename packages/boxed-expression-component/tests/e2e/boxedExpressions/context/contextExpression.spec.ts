@@ -1,8 +1,8 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Create Boxed Context", () => {
-  test("should render expression correctly", async ({ boxedExpressionEditor, expressions, page }) => {
-    await expressions.openBoxedContext();
+  test("should render expression correctly", async ({ boxedExpressionEditor, stories, page }) => {
+    await stories.openBoxedContext();
     await expect(page.getByText("Expression Name (Context)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("cell", { name: "ContextEntry-1 (<Undefined>)" })).toBeAttached();

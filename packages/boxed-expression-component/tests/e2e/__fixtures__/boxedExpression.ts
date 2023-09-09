@@ -1,13 +1,13 @@
 import { Locator, Page, test as base } from "@playwright/test";
 import { Clipboard } from "./clipboard";
-import { Expressions } from "./expression";
+import { Stories } from "./stories";
 import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
 import { Monaco } from "./monaco";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
-  expressions: Expressions;
+  stories: Stories;
   clipboard: Clipboard;
   resizing: Resizing;
   useCases: UseCases;
@@ -38,15 +38,15 @@ class BoxedExpressionEditor {
     await this.page.getByRole("menuitem", { name: "Decision" }).click();
   }
 
-  public async fillDecisionTable(startingCell: number, tableData: any[][]) {
-    let cellNumber = startingCell;
-    for (const row of tableData) {
+  public async fillDecisionTable(args: { startAtCell: number; tableData: any[][] }) {
+    let cellNumber = args.startAtCell;
+    for (const row of args.tableData) {
       for (const cellData of row) {
         if (cellData === "-") {
           cellNumber++;
           continue;
         }
-        await this.monaco.fill(this.page.getByTestId("monaco-container").nth(cellNumber), `${cellData}`);
+        await this.monaco.fill({ monacoParentLocator: this.page, content: cellData, nth: cellNumber });
         cellNumber++;
       }
       cellNumber++;
@@ -58,11 +58,11 @@ class BoxedExpressionEditor {
     await this.page.getByRole("menuitem", { name: "Relation" }).click();
   }
 
-  public async fillRelation(startingCell: number, relationData: any[][]) {
-    let cellNumber = startingCell;
-    for (const row of relationData) {
+  public async fillRelation(args: { startAtCell: number; relationData: any[][] }) {
+    let cellNumber = args.startAtCell;
+    for (const row of args.relationData) {
       for (const cellData of row) {
-        await this.monaco.fill(this.page.getByTestId("monaco-container").nth(cellNumber), `${cellData}`);
+        await this.monaco.fill({ monacoParentLocator: this.page, content: cellData, nth: cellNumber });
         cellNumber++;
       }
     }
@@ -99,8 +99,8 @@ export const test = base.extend<BoxedExpressionFixtures>({
   boxedExpressionEditor: async ({ page, baseURL, monaco }, use) => {
     await use(new BoxedExpressionEditor(page, monaco, baseURL));
   },
-  expressions: async ({ page, baseURL }, use) => {
-    await use(new Expressions(page, baseURL));
+  stories: async ({ page, baseURL }, use) => {
+    await use(new Stories(page, baseURL));
   },
   clipboard: async ({ browserName, context, page }, use) => {
     const clipboard = new Clipboard(page);

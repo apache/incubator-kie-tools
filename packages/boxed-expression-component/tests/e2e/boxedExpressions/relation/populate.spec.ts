@@ -1,8 +1,8 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Relation", () => {
-  test("should correctly create a people relation", async ({ expressions, page, boxedExpressionEditor, resizing }) => {
-    await expressions.openRelation();
+  test("should correctly create a people relation", async ({ stories, page, boxedExpressionEditor, resizing }) => {
+    await stories.openRelation();
 
     await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Name");
@@ -38,7 +38,10 @@ test.describe("Populate Relation", () => {
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "boolean" }).click();
     await page.keyboard.press("Enter");
-    // ISSUE
+    // WORKAROUND ISSUE
+    await page.getByRole("columnheader", { name: "Name (string)" }).hover();
+    await page.getByRole("columnheader", { name: "Age (number)" }).hover();
+    await page.getByRole("columnheader", { name: "Country (string)" }).hover();
     await page.getByRole("columnheader", { name: "Married (boolean)" }).hover();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
@@ -49,11 +52,14 @@ test.describe("Populate Relation", () => {
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
 
-    await boxedExpressionEditor.fillRelation(0, [
-      [`"John Doe"`, "30", `"US"`, `"S"`],
-      [`"Richard roe"`, "54", `"Canada"`, `"M"`],
-      [`"Jane Doe"`, "23", `"England"`, `"M"`],
-    ]);
+    await boxedExpressionEditor.fillRelation({
+      startAtCell: 0,
+      relationData: [
+        [`"John Doe"`, "30", `"US"`, `"S"`],
+        [`"Richard roe"`, "54", `"Canada"`, `"M"`],
+        [`"Jane Doe"`, "23", `"England"`, `"M"`],
+      ],
+    });
 
     await expect(boxedExpressionEditor.getContainer()).toHaveScreenshot("relation-people.png");
   });

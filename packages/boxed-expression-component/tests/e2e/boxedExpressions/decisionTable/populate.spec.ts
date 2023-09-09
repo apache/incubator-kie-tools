@@ -2,12 +2,12 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Decision table", () => {
   test("should correctly create a routing decision table", async ({
-    expressions,
+    stories,
     page,
     boxedExpressionEditor,
     resizing,
   }) => {
-    await expressions.openDecisionTable();
+    await stories.openDecisionTable();
 
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Post-bureau risk category");
@@ -51,7 +51,7 @@ test.describe("Populate Decision table", () => {
     await page.getByRole("option", { name: "string" }).click();
     await page.keyboard.press("Enter");
 
-    // ISSUE
+    // TEMPORARY WORKAROUND CRIAR ISSUE
     await page.getByRole("columnheader", { name: "Bankrupt (boolean)" }).hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "Routing (string)" }).hover({ position: { x: 0, y: 0 } });
 
@@ -61,13 +61,16 @@ test.describe("Populate Decision table", () => {
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
     await page.getByRole("cell", { name: "1" }).locator("svg").click();
 
-    await boxedExpressionEditor.fillDecisionTable(0, [
-      [true, "-", "-", "-", `"Decline"`],
-      ["-", "<580", "-", "-", `"Refer"`],
-      ["-", "-", "false", "-", `"Decline"`],
-      ["-", "-", "-", `"High"`, `"Refer"`],
-      ["-", "-", "-", "-", `"Accept"`],
-    ]);
+    await boxedExpressionEditor.fillDecisionTable({
+      startAtCell: 0,
+      tableData: [
+        ["true", "-", "-", "-", `"Decline"`],
+        ["-", "<580", "-", "-", `"Refer"`],
+        ["-", "-", "false", "-", `"Decline"`],
+        ["-", "-", "-", `"High"`, `"Refer"`],
+        ["-", "-", "-", "-", `"Accept"`],
+      ],
+    });
 
     await page.getByText("U", { exact: true }).click();
     await page.getByRole("menuitem", { name: "PRIORITY" }).click();

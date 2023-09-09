@@ -2,13 +2,13 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Context", () => {
   test("should correctly create pre-bureau risk category boxed context", async ({
-    expressions,
     page,
+    stories,
     boxedExpressionEditor,
     resizing,
     monaco,
   }) => {
-    await expressions.openBoxedContext();
+    await stories.openBoxedContext();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
     await page.getByPlaceholder("Expression Name").fill("Pre-bureau risk category calculation");
@@ -22,7 +22,7 @@ test.describe("Populate Boxed Context", () => {
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "boolean" }).click();
     await page.keyboard.press("Enter");
-    await monaco.fill(page.getByTestId("monaco-container"), "Applicant data.ExistingCustomer");
+    await monaco.fill({ monacoParentLocator: page, content: "Applicant data.ExistingCustomer" });
 
     await boxedExpressionEditor.selectDecisionTable(page.getByRole("row", { name: "result" }));
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
@@ -47,22 +47,24 @@ test.describe("Populate Boxed Context", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.keyboard.press("Enter");
 
-    const decisionTableData = [
-      [false, "<100", `"High"`],
-      [false, "[100..120)", `"Medium"`],
-      [false, "[120..130]", `"Low"`],
-      [false, ">130", `"Very Low"`],
-      [true, "<80", `"Decline"`],
-      [true, "[80..90)", `"High"`],
-      [true, "[90..110]", `"Medium"`],
-      [true, ">110", `"Low"`],
-    ];
-    await boxedExpressionEditor.fillDecisionTable(1, decisionTableData);
+    await boxedExpressionEditor.fillDecisionTable({
+      startAtCell: 1,
+      tableData: [
+        ["false", "<100", `"High"`],
+        ["false", "[100..120)", `"Medium"`],
+        ["false", "[120..130]", `"Low"`],
+        ["false", ">130", `"Very Low"`],
+        ["true", "<80", `"Decline"`],
+        ["true", "[80..90)", `"High"`],
+        ["true", "[90..110]", `"Medium"`],
+        ["true", ">110", `"Low"`],
+      ],
+    });
 
     await resizing.reset(page.getByRole("columnheader", { name: "Existing customer (boolean)" }));
     await resizing.reset(page.getByRole("columnheader", { name: "Application risk score (number)" }));
 
-    // https://github.com/kiegroup/kie-issues/issues/536
+    // TEMPORARY WORKAROUND https://github.com/kiegroup/kie-issues/issues/536
     // await resizing.reset(
     //   page.getByRole("columnheader", { name: "Pre-bureau risk category calculation (number)" }).nth(1)
     // );

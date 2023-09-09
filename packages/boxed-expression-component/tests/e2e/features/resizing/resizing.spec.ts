@@ -3,8 +3,8 @@ import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Resizing", () => {
   test.describe("Literal expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openBoxedLiteral();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openBoxedLiteral();
     });
 
     test("should resize the header and reset to default width", async ({ page, resizing }) => {
@@ -40,8 +40,8 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Context expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openBoxedContext();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openBoxedContext();
     });
 
     test("should resize header column", async ({ page, resizing }) => {
@@ -192,7 +192,7 @@ test.describe("Resizing", () => {
       expect(await literal.boundingBox()).toHaveProperty("width", 212);
     });
 
-    test("check resize on nested expressions", async ({ page, resizing, browserName }) => {
+    test("check resize on nested stories", async ({ page, resizing, browserName }) => {
       test.skip(browserName === "webkit", "https://github.com/kiegroup/kie-issues/issues/438");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
@@ -222,8 +222,8 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Decision Table expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openDecisionTable();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openDecisionTable();
     });
 
     test("should resize input column and add new columns", async ({ page, resizing }) => {
@@ -440,8 +440,8 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Relation expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openRelation();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openRelation();
     });
 
     test("should resize column and add new columns", async ({ page, resizing }) => {
@@ -522,8 +522,8 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Function expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openBoxedFunction();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openBoxedFunction();
     });
 
     test("should resize header column", async ({ page, resizing }) => {
@@ -628,8 +628,8 @@ test.describe("Resizing", () => {
   });
 
   test.describe("Invocation expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openBoxedInvocation();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openBoxedInvocation();
     });
 
     test("should resize header column", async ({ page, resizing }) => {
@@ -792,8 +792,8 @@ test.describe("Resizing", () => {
   });
 
   test.describe("List expression", () => {
-    test.beforeEach(async ({ expressions }) => {
-      await expressions.openBoxedList();
+    test.beforeEach(async ({ stories }) => {
+      await stories.openBoxedList();
     });
 
     test("should resize header column", async ({ page, resizing }) => {

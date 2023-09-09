@@ -3,10 +3,10 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Boxed Invocation context menu", () => {
   test.describe("Parameters control", () => {
-    test.beforeEach(async ({ expressions, page, monaco, boxedExpressionEditor }) => {
-      await expressions.openBoxedInvocation();
+    test.beforeEach(async ({ stories, page, monaco, boxedExpressionEditor }) => {
+      await stories.openBoxedInvocation();
       await boxedExpressionEditor.selectBoxedLiteral();
-      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
     test("should't render selection context menu", async ({ page }) => {
@@ -80,7 +80,7 @@ test.describe("Boxed Invocation context menu", () => {
   });
 
   test("should reset insert multiples menu when opening another cell context menu", async ({
-    expressions,
+    stories,
     page,
     monaco,
   }) => {
@@ -90,8 +90,8 @@ test.describe("Boxed Invocation context menu", () => {
       description: "https://github.com/kiegroup/kie-issues/issues/421",
     });
 
-    await expressions.openRelation();
-    await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    await stories.openRelation();
+    await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     await page.getByTestId("monaco-container").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
     await page.getByRole("cell", { name: "p-1" }).click({ button: "right" });
@@ -100,10 +100,10 @@ test.describe("Boxed Invocation context menu", () => {
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ expressions, page, boxedExpressionEditor, monaco }) => {
-      await expressions.openBoxedInvocation();
+    test.beforeEach(async ({ stories, page, boxedExpressionEditor, monaco }) => {
+      await stories.openBoxedInvocation();
       await boxedExpressionEditor.selectBoxedLiteral();
-      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
     test.describe("Add parameters", () => {

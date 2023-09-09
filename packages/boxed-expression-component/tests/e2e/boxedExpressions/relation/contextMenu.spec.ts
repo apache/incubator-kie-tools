@@ -3,9 +3,9 @@ import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Relation context menu", () => {
   test.describe("Rows control", () => {
-    test.beforeEach(async ({ expressions, page, monaco }) => {
-      await expressions.openRelation();
-      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    test.beforeEach(async ({ stories, page, monaco }) => {
+      await stories.openRelation();
+      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
     });
 
@@ -67,9 +67,9 @@ test.describe("Relation context menu", () => {
   });
 
   test.describe("Columns controls", () => {
-    test.beforeEach(async ({ expressions, page, monaco }) => {
-      await expressions.openRelation();
-      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    test.beforeEach(async ({ stories, page, monaco }) => {
+      await stories.openRelation();
+      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
       await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click({
         button: "right",
       });
@@ -132,7 +132,7 @@ test.describe("Relation context menu", () => {
   });
 
   test("should reset insert multiples menu when opening another cell context menu", async ({
-    expressions,
+    stories,
     page,
     monaco,
   }) => {
@@ -142,8 +142,8 @@ test.describe("Relation context menu", () => {
       description: "https://github.com/kiegroup/kie-issues/issues/421",
     });
 
-    await expressions.openRelation();
-    await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    await stories.openRelation();
+    await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     await page.getByTestId("monaco-container").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
     await page.getByRole("cell", { name: "1" }).click({ button: "right" });
@@ -152,9 +152,9 @@ test.describe("Relation context menu", () => {
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ expressions, page, monaco }) => {
-      await expressions.openRelation();
-      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
+    test.beforeEach(async ({ stories, page, monaco }) => {
+      await stories.openRelation();
+      await monaco.fill({ monacoParentLocator: page, content: '"test"' });
     });
 
     test.describe("Add rows", () => {

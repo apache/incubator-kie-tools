@@ -1,8 +1,8 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Create Relation", () => {
-  test("should render expression correctly", async ({ boxedExpressionEditor, expressions, page }) => {
-    await expressions.openRelation();
+  test("should render expression correctly", async ({ boxedExpressionEditor, stories, page }) => {
+    await stories.openRelation();
     await expect(page.getByText("Expression Name (Relation)")).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
     await expect(page.getByRole("columnheader", { name: "column-1 (<Undefined>)" })).toBeAttached();
