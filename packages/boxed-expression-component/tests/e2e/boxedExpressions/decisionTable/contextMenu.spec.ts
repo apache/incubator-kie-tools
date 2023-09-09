@@ -1,40 +1,40 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe.skip("Decision table context menu", () => {
-  test.describe("Rows control", () => {
-    test.beforeEach(async ({ expressions, page }) => {
+test.describe("Decision table context menu", () => {
+  test.describe("Decision rules control", () => {
+    test.beforeEach(async ({ expressions, page, monaco }) => {
       await expressions.openDecisionTable();
-      await page.getByTestId("monaco-container").click();
-      await page.keyboard.type('"test"');
-      await page.keyboard.press("Enter");
+      await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
     });
 
-    test("shouldn't render column context menu", async ({ page }) => {
+    test("shouldn't render columns context menu", async ({ page }) => {
       test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
         description: "https://github.com/kiegroup/kie-issues/issues/420",
       });
 
-      await expect(page.getByRole("heading", { name: "ROWS" })).toBeAttached();
+      await expect(page.getByRole("heading", { name: "DECISION RULES" })).toBeAttached();
       await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
-      await expect(page.getByRole("heading", { name: "COLUMNS" })).not.toBeAttached();
+      await expect(page.getByRole("heading", { name: "INPUT COLUMNS" })).not.toBeAttached();
+      await expect(page.getByRole("heading", { name: "OUTPUT COLUMNS" })).not.toBeAttached();
+      await expect(page.getByRole("heading", { name: "RULE ANNOTATION" })).not.toBeAttached();
     });
 
-    test("should open row context menu and insert row above", async ({ page }) => {
+    test("should open decision rules context menu and insert row above", async ({ page }) => {
       await page.getByRole("menuitem", { name: "Insert above" }).click();
       await expect(page.getByRole("row", { name: "2" })).toContainText("test");
     });
 
-    test("should open row context menu and insert row below", async ({ page }) => {
+    test("should open decision rules context menu and insert row below", async ({ page }) => {
       await page.getByRole("menuitem", { name: "Insert below" }).click();
       await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
       await expect(page.getByRole("row", { name: "2" })).toBeAttached();
     });
 
-    test("should open row context menu and insert multiples rows above", async ({ page }) => {
+    test("should open decision rules context menu and insert multiples rows above", async ({ page }) => {
       test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
@@ -43,7 +43,7 @@ test.describe.skip("Decision table context menu", () => {
       await expect(page.getByRole("row", { name: "4" })).toContainText("test");
     });
 
-    test("should open row context menu and insert multiples rows below", async ({ page }) => {
+    test("should open decision rules context menu and insert multiples rows below", async ({ page }) => {
       test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
 
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
@@ -53,7 +53,7 @@ test.describe.skip("Decision table context menu", () => {
       await expect(page.getByRole("row", { name: "2" })).toBeAttached();
     });
 
-    test("should open row context menu and delete row", async ({ page }) => {
+    test("should open decision rules context menu and delete row", async ({ page }) => {
       await page.getByRole("menuitem", { name: "Insert above" }).click();
       await expect(page.getByRole("row", { name: "2" })).toContainText("test");
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
@@ -61,7 +61,7 @@ test.describe.skip("Decision table context menu", () => {
       await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
     });
 
-    test("should open row context menu and duplicate row", async ({ page }) => {
+    test("should open decision rules context menu and duplicate row", async ({ page }) => {
       await page.getByRole("menuitem", { name: "Duplicate" }).click();
       await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
       await expect(page.getByRole("row", { name: "2" })).toContainText("test");
@@ -69,73 +69,261 @@ test.describe.skip("Decision table context menu", () => {
   });
 
   test.describe("Columns controls", () => {
-    test.beforeEach(async ({ expressions, page }) => {
-      await expressions.openDecisionTable();
-      await page.getByTestId("monaco-container").click();
-      await page.keyboard.type('"test"');
-      await page.keyboard.press("Enter");
-      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click({
-        button: "right",
+    test.describe("Input columns", () => {
+      test.beforeEach(async ({ expressions, page, monaco }) => {
+        await expressions.openDecisionTable();
+        await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+        await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click({
+          button: "right",
+        });
+      });
+
+      test("shouldn't render decision rules context menu", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/kiegroup/kie-issues/issues/420",
+        });
+
+        await expect(page.getByRole("heading", { name: "DECISION RULES" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
+        await expect(page.getByRole("heading", { name: "INPUT COLUMNS" })).toBeAttached();
+        await expect(page.getByRole("heading", { name: "OUTPUT COLUMNS" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "RULE ANNOTATION" })).not.toBeAttached();
+      });
+
+      test("should open input column context menu and insert column right", async ({ page }) => {
+        await page.getByRole("menuitem", { name: "Insert right" }).click();
+        await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(1)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open input column context menu and insert column left", async ({ page }) => {
+        await page.getByRole("menuitem", { name: "Insert left" }).click();
+        await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(2)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open input column context menu and insert multiples columns on right", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
+        await page.getByRole("button", { name: "plus" }).click();
+        await page.getByRole("button", { name: "Insert" }).click();
+        await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-3 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-4 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(7);
+      });
+
+      test("should open input column context menu and insert multiples columns on left", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
+        await page.getByRole("button", { name: "minus" }).click();
+        await page.getByLabel("Left").click();
+        await page.getByRole("button", { name: "Insert" }).click();
+        await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open input column context menu and delete column", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert left" }).click();
+        await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(2)).toContainText("test");
+        await page.getByTestId("expression-container").getByText("input-1").click({
+          button: "right",
+        });
+        await page.getByRole("menuitem", { name: "Delete" }).click();
+        await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).not.toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).not.toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(5);
       });
     });
 
-    test("shouldn't render row context menu", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/kiegroup/kie-issues/issues/420",
+    test.describe("Output columns", () => {
+      test.beforeEach(async ({ expressions, page, monaco }) => {
+        await expressions.openDecisionTable();
+        await monaco.fill(page.getByTestId("monaco-container").nth(1), '"test"');
+        await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click({
+          button: "right",
+        });
       });
 
-      await expect(page.getByRole("heading", { name: "COLUMNS" })).toBeAttached();
-      await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
-      await expect(page.getByRole("heading", { name: "ROWS" })).not.toBeAttached();
-    });
+      test("shouldn't render decision rules context menu", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/kiegroup/kie-issues/issues/420",
+        });
 
-    test("should open column context menu and insert column right", async ({ page }) => {
-      await page.getByRole("menuitem", { name: "Insert right" }).click();
-      await expect(page.getByRole("cell").nth(1)).toContainText("test");
-    });
-
-    test("should open column context menu and insert column left", async ({ page }) => {
-      await page.getByRole("menuitem", { name: "Insert left" }).click();
-      await expect(page.getByRole("cell").nth(2)).toContainText("test");
-    });
-
-    test("should open column context menu and insert multiples columns on right", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
-
-      await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
-      await page.getByRole("button", { name: "plus" }).click();
-      await page.getByRole("button", { name: "Insert" }).click();
-      await expect(page.getByRole("cell").nth(1)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(5);
-    });
-
-    test("should open column context menu and insert multiples columns on left", async ({ page }) => {
-      test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
-
-      await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
-      await page.getByRole("button", { name: "minus" }).click();
-      await page.getByLabel("Left").click();
-      await page.getByRole("button", { name: "Insert" }).click();
-      await expect(page.getByRole("cell").nth(2)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(3);
-    });
-
-    test("should open column context menu and delete column", async ({ page }) => {
-      await page.getByRole("menuitem", { name: "Insert left" }).click();
-      await expect(page.getByRole("cell").nth(2)).toContainText("test");
-
-      await page.getByTestId("expression-container").getByText("column-2").click({
-        button: "right",
+        await expect(page.getByRole("heading", { name: "DECISION RULES" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
+        await expect(page.getByRole("heading", { name: "INPUT COLUMNS" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "OUTPUT COLUMNS" })).toBeAttached();
+        await expect(page.getByRole("heading", { name: "RULE ANNOTATION" })).not.toBeAttached();
       });
-      await page.getByRole("menuitem", { name: "Delete" }).click();
-      await expect(page.getByRole("cell").nth(1)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(2);
+
+      test("should open output column context menu and insert column right", async ({ page }) => {
+        await page.getByRole("menuitem", { name: "Insert right" }).click();
+        await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(2)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open output column context menu and insert column left", async ({ page }) => {
+        await page.getByRole("menuitem", { name: "Insert left" }).click();
+        await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(3)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open output column context menu and insert multiples columns on right", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
+        await page.getByRole("button", { name: "plus" }).click();
+        await page.getByRole("button", { name: "Insert" }).click();
+        await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-3 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-4 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(7);
+      });
+
+      test("should open output column context menu and insert multiples columns on left", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
+        await page.getByRole("button", { name: "minus" }).click();
+        await page.getByLabel("Left").click();
+        await page.getByRole("button", { name: "Insert" }).click();
+        await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open output column context menu and delete column", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert left" }).click();
+        await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(3)).toContainText("test");
+        await page.getByTestId("expression-container").getByText("output-1").click({
+          button: "right",
+        });
+        await page.getByRole("menuitem", { name: "Delete" }).click();
+        await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).not.toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).not.toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+    });
+
+    test.describe("Rule annotation columns", () => {
+      test.beforeEach(async ({ expressions, page, monaco }) => {
+        await expressions.openDecisionTable();
+        await monaco.fill(page.getByTestId("monaco-container").nth(2), '"test"');
+        await page.getByRole("columnheader", { name: "annotation-1" }).click({
+          button: "right",
+        });
+      });
+
+      test("shouldn't render decision rules context menu", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/kiegroup/kie-issues/issues/420",
+        });
+
+        await expect(page.getByRole("heading", { name: "DECISION RULES" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
+        await expect(page.getByRole("heading", { name: "INPUT COLUMNS" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "OUTPUT COLUMNS" })).not.toBeAttached();
+        await expect(page.getByRole("heading", { name: "RULE ANNOTATION" })).toBeAttached();
+      });
+
+      test("should open annotation column context menu and insert column right", async ({ page }) => {
+        await page.getByRole("menuitem", { name: "Insert right" }).click();
+        await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(3)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open annotation column context menu and insert column left", async ({ page }) => {
+        await page.getByRole("menuitem", { name: "Insert left" }).click();
+        await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(4)).toContainText("test");
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open annotation column context menu and insert multiples columns on right", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
+        await page.getByRole("button", { name: "plus" }).click();
+        await page.getByRole("button", { name: "Insert" }).click();
+        await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-3" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-4" })).toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(7);
+      });
+
+      test("should open annotation column context menu and insert multiples columns on left", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
+        await page.getByRole("button", { name: "minus" }).click();
+        await page.getByLabel("Left").click();
+        await page.getByRole("button", { name: "Insert" }).click();
+        await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
+
+      test("should open annotation column context menu and delete column", async ({ page }) => {
+        test.skip(true, "https://github.com/kiegroup/kie-issues/issues/420");
+
+        await page.getByRole("menuitem", { name: "Insert left" }).click();
+        await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+        await expect(page.getByRole("cell").nth(4)).toContainText("test");
+        await page.getByTestId("expression-container").getByText("annotation-1").click({
+          button: "right",
+        });
+        await page.getByRole("menuitem", { name: "Delete" }).click();
+        await expect(page.getByRole("columnheader", { name: "annotation-1" })).not.toBeAttached();
+        await expect(page.getByRole("columnheader", { name: "annotation-2" })).not.toBeAttached();
+        await expect(page.getByRole("cell")).toHaveCount(5);
+      });
     });
   });
 
-  test("should reset insert multiples menu when opening another cell context menu", async ({ expressions, page }) => {
+  test("should reset insert multiples menu when opening another cell context menu", async ({
+    expressions,
+    page,
+    monaco,
+  }) => {
     test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
@@ -143,51 +331,114 @@ test.describe.skip("Decision table context menu", () => {
     });
 
     await expressions.openDecisionTable();
-    await page.getByTestId("monaco-container").click();
-    await page.keyboard.type('"test"');
-    await page.keyboard.press("Enter");
+    await monaco.fill(page.getByTestId("monaco-container"), '"test"');
     await page.getByTestId("monaco-container").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
     await page.getByRole("cell", { name: "1" }).click({ button: "right" });
-    await expect(page.getByRole("heading", { name: "ROWS" })).toBeAttached();
+    await expect(page.getByRole("heading", { name: "DECISION RULES" })).toBeAttached();
     await expect(page.getByRole("heading", { name: "SELECTION" })).toBeAttached();
   });
 
-  test.describe("Add rows/columns by hovering", () => {
-    test.beforeEach(async ({ expressions, page }) => {
+  test.describe("Hovering", () => {
+    test.beforeEach(async ({ expressions }) => {
       await expressions.openDecisionTable();
-      await page.getByTestId("monaco-container").click();
-      await page.keyboard.type('"test"');
-      await page.keyboard.press("Enter");
     });
 
-    test("should add row above by positioning mouse on the index cell upper section", async ({ page }) => {
-      await page.getByRole("cell", { name: "1" }).hover({ position: { x: 0, y: 0 } });
-      await page.getByRole("cell", { name: "1" }).locator("svg").click();
-      await expect(page.getByRole("row", { name: "2" })).toContainText("test");
+    test.describe("Add decision rules", () => {
+      test.beforeEach(async ({ page, monaco }) => {
+        await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+      });
+
+      test("should add row above by positioning mouse on the index cell upper section", async ({ page }) => {
+        await page.getByRole("cell", { name: "1" }).hover({ position: { x: 0, y: 0 } });
+        await page.getByRole("cell", { name: "1" }).locator("svg").click();
+        await expect(page.getByRole("row", { name: "2" })).toContainText("test");
+      });
+
+      test("should add row below by positioning mouse on the index cell lower section", async ({ page }) => {
+        await page.getByRole("cell", { name: "1" }).hover();
+        await page.getByRole("cell", { name: "1" }).locator("svg").click();
+        await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
+        await expect(page.getByRole("row", { name: "2" })).toBeAttached();
+      });
     });
 
-    test("should add row below by positioning mouse on the index cell lower section", async ({ page }) => {
-      await page.getByRole("cell", { name: "1" }).hover();
-      await page.getByRole("cell", { name: "1" }).locator("svg").click();
-      await expect(page.getByRole("row", { name: "1" }).nth(1)).toContainText("test");
-      await expect(page.getByRole("row", { name: "2" })).toBeAttached();
-    });
+    test.describe("Add columns", () => {
+      test.describe("Input columns", () => {
+        test.beforeEach(async ({ page, monaco }) => {
+          await monaco.fill(page.getByTestId("monaco-container").nth(0), '"test"');
+        });
 
-    test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
-      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
-      await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
-      await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
-      await expect(page.getByRole("cell").nth(2)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(3);
-    });
+        test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
+          await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover({ position: { x: 0, y: 0 } });
+          await page.getByRole("row", { name: "input-1 (<Undefined>)" }).locator("svg").click();
+          await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("cell").nth(2)).toContainText("test");
+          await expect(page.getByRole("cell")).toHaveCount(5);
+        });
 
-    test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
-      await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).hover();
-      await page.getByRole("row", { name: "column-1 (<Undefined>)" }).locator("svg").click();
-      await expect(page.getByRole("columnheader", { name: "column-2 (<Undefined>)" })).toBeAttached();
-      await expect(page.getByRole("cell").nth(1)).toContainText("test");
-      await expect(page.getByRole("cell")).toHaveCount(3);
+        test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
+          await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).hover();
+          await page.getByRole("row", { name: "input-1 (<Undefined>)" }).locator("svg").click();
+          await expect(page.getByRole("columnheader", { name: "input-1 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "input-2 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("cell").nth(1)).toContainText("test");
+          await expect(page.getByRole("cell")).toHaveCount(5);
+        });
+      });
+
+      test.describe("Output columns", () => {
+        test.beforeEach(async ({ page, monaco }) => {
+          await monaco.fill(page.getByTestId("monaco-container").nth(1), '"test"');
+        });
+
+        test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
+          await page
+            .getByRole("columnheader", { name: "Expression Name (<Undefined>)" })
+            .hover({ position: { x: 0, y: 0 } });
+          await page.getByRole("row", { name: "Expression Name (<Undefined>)" }).locator("svg").click();
+          await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("cell").nth(3)).toContainText("test");
+          await expect(page.getByRole("cell")).toHaveCount(5);
+        });
+
+        test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
+          await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).hover();
+          await page.getByRole("row", { name: "Expression Name (<Undefined>)" }).locator("svg").click();
+          await expect(page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "output-1 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "output-2 (<Undefined>)" })).toBeAttached();
+          await expect(page.getByRole("cell").nth(2)).toContainText("test");
+          await expect(page.getByRole("cell")).toHaveCount(5);
+        });
+      });
+
+      test.describe("Rule annotation columns", () => {
+        test.beforeEach(async ({ page, monaco }) => {
+          await monaco.fill(page.getByTestId("monaco-container").nth(2), '"test"');
+        });
+
+        test("should add column left by positioning mouse on the header cell left section", async ({ page }) => {
+          await page.getByRole("columnheader", { name: "annotation-1" }).hover({ position: { x: 0, y: 0 } });
+          await page.getByRole("row", { name: "annotation-1" }).locator("svg").click();
+          await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+          await expect(page.getByRole("cell").nth(4)).toContainText("test");
+          await expect(page.getByRole("cell")).toHaveCount(5);
+        });
+
+        test("should add column right by positioning mouse on the header cell right section", async ({ page }) => {
+          await page.getByRole("columnheader", { name: "annotation-1" }).hover();
+          await page.getByRole("row", { name: "annotation-1" }).locator("svg").click();
+          await expect(page.getByRole("columnheader", { name: "annotation-1" })).toBeAttached();
+          await expect(page.getByRole("columnheader", { name: "annotation-2" })).toBeAttached();
+          await expect(page.getByRole("cell").nth(3)).toContainText("test");
+          await expect(page.getByRole("cell")).toHaveCount(5);
+        });
+      });
     });
   });
 });

@@ -67,11 +67,9 @@ test.describe("Relation context menu", () => {
   });
 
   test.describe("Columns controls", () => {
-    test.beforeEach(async ({ expressions, page }) => {
+    test.beforeEach(async ({ expressions, page, monaco }) => {
       await expressions.openRelation();
-      await page.getByTestId("monaco-container").click();
-      await page.keyboard.type('"test"');
-      await page.keyboard.press("Enter");
+      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
       await page.getByRole("columnheader", { name: "column-1 (<Undefined>)" }).click({
         button: "right",
       });
@@ -133,7 +131,11 @@ test.describe("Relation context menu", () => {
     });
   });
 
-  test("should reset insert multiples menu when opening another cell context menu", async ({ expressions, page }) => {
+  test("should reset insert multiples menu when opening another cell context menu", async ({
+    expressions,
+    page,
+    monaco,
+  }) => {
     test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
@@ -141,9 +143,7 @@ test.describe("Relation context menu", () => {
     });
 
     await expressions.openRelation();
-    await page.getByTestId("monaco-container").click();
-    await page.keyboard.type('"test"');
-    await page.keyboard.press("Enter");
+    await monaco.fill(page.getByTestId("monaco-container"), '"test"');
     await page.getByTestId("monaco-container").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
     await page.getByRole("cell", { name: "1" }).click({ button: "right" });
@@ -152,11 +152,9 @@ test.describe("Relation context menu", () => {
   });
 
   test.describe("Hovering", () => {
-    test.beforeEach(async ({ expressions, page }) => {
+    test.beforeEach(async ({ expressions, page, monaco }) => {
       await expressions.openRelation();
-      await page.getByTestId("monaco-container").click();
-      await page.keyboard.type('"test"');
-      await page.keyboard.press("Enter");
+      await monaco.fill(page.getByTestId("monaco-container"), '"test"');
     });
 
     test.describe("Add rows", () => {

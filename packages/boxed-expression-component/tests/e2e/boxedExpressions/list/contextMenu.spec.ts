@@ -1,13 +1,12 @@
 import { test, expect } from "../../__fixtures__/boxedExpression";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
-test.describe("List context menu", () => {
+test.describe("Bixed List context menu", () => {
   test.describe("Rows control", () => {
     test.beforeEach(async ({ expressions, page, monaco, boxedExpressionEditor }) => {
       await expressions.openBoxedList();
       await boxedExpressionEditor.selectBoxedLiteral();
       await monaco.fill(page.getByTestId("monaco-container"), '"test"');
-      await page.getByRole("cell", { name: "1" }).click({ button: "right" });
     });
 
     test("shouldn't render column context menu", async ({ page }) => {
@@ -33,17 +32,20 @@ test.describe("List context menu", () => {
     });
 
     test("should open row context menu and insert row above", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Insert above" }).click();
       await expect(page.getByRole("row", { name: "2" })).toContainText("test");
     });
 
     test("should open row context menu and insert row below", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Insert below" }).click();
       await expect(page.getByRole("row", { name: "1" }).nth(0)).toContainText("test");
       await expect(page.getByRole("row", { name: "2" })).toBeAttached();
     });
 
     test("should open row context menu and insert multiples rows above", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
       await page.getByRole("button", { name: "plus" }).click();
       await page.getByRole("button", { name: "Insert" }).click();
@@ -51,6 +53,7 @@ test.describe("List context menu", () => {
     });
 
     test("should open row context menu and insert multiples rows below", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Insert", exact: true }).click();
       await page.getByRole("button", { name: "minus" }).click();
       await page.getByLabel("Below").click();
@@ -59,6 +62,7 @@ test.describe("List context menu", () => {
     });
 
     test("should open row context menu and delete row", async ({ page }) => {
+      await page.getByRole("cell", { name: "1" }).click({ button: "right" });
       await page.getByRole("menuitem", { name: "Insert above" }).click();
       await expect(page.getByRole("row", { name: "2" })).toContainText("test");
       await page.getByRole("cell", { name: "1" }).click({ button: "right" });
@@ -67,7 +71,11 @@ test.describe("List context menu", () => {
     });
   });
 
-  test("should reset insert multiples menu when opening another cell context menu", async ({ expressions, page }) => {
+  test("should reset insert multiples menu when opening another cell context menu", async ({
+    expressions,
+    page,
+    monaco,
+  }) => {
     test.skip(true, "https://github.com/kiegroup/kie-issues/issues/421");
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
@@ -75,9 +83,7 @@ test.describe("List context menu", () => {
     });
 
     await expressions.openRelation();
-    await page.getByTestId("monaco-container").click();
-    await page.keyboard.type('"test"');
-    await page.keyboard.press("Enter");
+    await monaco.fill(page.getByTestId("monaco-container"), '"test"');
     await page.getByTestId("monaco-container").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Insert", exact: true }).first().click();
     await page.getByRole("cell", { name: "1" }).click({ button: "right" });
