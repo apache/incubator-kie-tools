@@ -1,3 +1,4 @@
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Context", () => {
@@ -64,7 +65,11 @@ test.describe("Populate Boxed Context", () => {
     await resizing.reset(page.getByRole("columnheader", { name: "Existing customer (boolean)" }));
     await resizing.reset(page.getByRole("columnheader", { name: "Application risk score (number)" }));
 
-    // TEMPORARY WORKAROUND https://github.com/kiegroup/kie-issues/issues/536
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND,
+      description: "https://github.com/kiegroup/kie-issues/issues/536",
+    });
+    // Can't resize this column as it's named as "Expression Name"
     // await resizing.reset(
     //   page.getByRole("columnheader", { name: "Pre-bureau risk category calculation (number)" }).nth(1)
     // );

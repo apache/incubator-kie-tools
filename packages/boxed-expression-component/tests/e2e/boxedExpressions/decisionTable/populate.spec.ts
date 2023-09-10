@@ -1,3 +1,4 @@
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Decision table", () => {
@@ -51,7 +52,11 @@ test.describe("Populate Decision table", () => {
     await page.getByRole("option", { name: "string" }).click();
     await page.keyboard.press("Enter");
 
-    // TEMPORARY WORKAROUND CRIAR ISSUE
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND,
+      description: "",
+    });
+    // Plus sign triggers flaky tests.
     await page.getByRole("columnheader", { name: "Bankrupt (boolean)" }).hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "Routing (string)" }).hover({ position: { x: 0, y: 0 } });
 

@@ -1,3 +1,4 @@
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/boxedExpression";
 
 test.describe("Populate Boxed Function", () => {
@@ -116,7 +117,11 @@ else false`,
       { x: 320, y: 0 }
     );
 
-    // TEMPORARY WORKAROUND https://github.com/kiegroup/kie-issues/issues/536
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND,
+      description: "https://github.com/kiegroup/kie-issues/issues/536",
+    });
+    // Can't resize this column as it's named as "Expression Name"
     // await resizing.reset(
     //   page.getByRole("columnheader", { name: "Credit contingency factor (number)" }).nth(1)
     // );
