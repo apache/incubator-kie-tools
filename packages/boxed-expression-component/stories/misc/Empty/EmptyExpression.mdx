@@ -1,4 +1,4 @@
-import { Meta, Story, Canvas } from "@storybook/blocks";
+import { Meta, Story } from "@storybook/blocks";
 import * as EmptyExpression from "./EmptyExpression.stories";
 
 <Meta title="MDX/Empty Expression" of={EmptyExpression} />
@@ -21,8 +21,6 @@ creating a new decision logic for a decision node, it will show as follows:
 
 **Important**: The option for creating a [Boxed Function](/docs/boxed-expressions-function--overview) will only appear on a nested expression.
 
-<Canvas style={{ border: "unset", boxShadow: "unset" }}>
-  <div style={{ height: "500px" }}>
-    <Story of={EmptyExpression.Base} />
-  </div>
-</Canvas>
+<div style={{ height: "500px" }}>
+  <Story of={EmptyExpression.Base} />
+</div>
