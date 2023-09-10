@@ -7,7 +7,7 @@
 **/dist-dev/
 **/dist-tests/
 **/dist-e2e-tests/
-**/dist-e2e-tests/
+**/dist-storybook/
 **/e2e-tests-tmp/
 **/coverage/
 **/target/

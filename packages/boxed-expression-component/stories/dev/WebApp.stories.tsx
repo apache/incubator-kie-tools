@@ -160,7 +160,7 @@ function App(args: BoxedExpressionEditorProps) {
 }
 
 const meta: Meta<typeof App> = {
-  title: "_dev/Web App",
+  title: "Dev/Web App",
   component: App,
 };
 
