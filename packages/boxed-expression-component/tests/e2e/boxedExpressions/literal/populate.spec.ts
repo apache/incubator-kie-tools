@@ -1,4 +1,4 @@
-import { test, expect } from "../../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/setup";
 
 test.describe("Populate Boxed Literal", () => {
   test("should correctly create a can drive boxed literal", async ({

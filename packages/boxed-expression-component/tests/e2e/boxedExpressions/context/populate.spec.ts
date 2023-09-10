@@ -1,5 +1,5 @@
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
-import { test, expect } from "../../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/setup";
 
 test.describe("Populate Boxed Context", () => {
   test("should correctly create pre-bureau risk category boxed context", async ({

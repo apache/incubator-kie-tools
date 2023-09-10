@@ -1,4 +1,4 @@
-import { test, expect } from "../../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/setup";
 
 test.describe("Populate Boxed Invocation", () => {
   test("should correctly create pre-bureau-affordability boxed invocation", async ({

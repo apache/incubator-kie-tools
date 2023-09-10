@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../__fixtures__/setup";
 
 test.describe("Logic type selector", () => {
   test.beforeEach(async ({ boxedExpressionEditor }) => {

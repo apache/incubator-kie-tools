@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../__fixtures__/setup";
 
 test.describe("Check find employees use case", () => {
   test("should render employees expression correctly", async ({ useCases, boxedExpressionEditor }) => {

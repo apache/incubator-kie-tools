@@ -1,5 +1,4 @@
-import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
-import { test, expect } from "../../__fixtures__/boxedExpression";
+import { test } from "../../__fixtures__/setup";
 
 test.describe.skip("Keyboard", () => {
   test.describe("Navigation", () => {

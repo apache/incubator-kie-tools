@@ -1,20 +1,19 @@
-import { describe } from "node:test";
-import { test, expect } from "../../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/setup";
 
 test.describe("Selection", () => {
-  describe("Cell navigation", () => {
+  test.describe("Cell navigation", () => {
     test("should correctly navigate", async () => {
       // enter, shift+enter, tab, shift+tab, escape
     });
   });
 
-  describe("Expression navigation", () => {
+  test.describe("Expression navigation", () => {
     test("should correctly navigatee", async () => {
       // enter, shift+enter, tab, shift+tab, escape
     });
   });
 
-  describe("Cell selection", () => {
+  test.describe("Cell selection", () => {
     test("should select multiple cells and write on them", async ({ stories, page }) => {
       await stories.openRelation("bigger");
       await page.getByTestId("monaco-container").nth(5).dragTo(page.getByTestId("monaco-container").nth(10));

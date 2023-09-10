@@ -1,5 +1,4 @@
-import { describe } from "node:test";
-import { test, expect } from "../../__fixtures__/boxedExpression";
+import { test, expect } from "../../__fixtures__/setup";
 
 test.describe("Selection", () => {
   test.describe("Context menu", () => {

@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/boxedExpression";
+import { test, expect } from "../__fixtures__/setup";
 
 test.describe("Boxed expression header", () => {
   test.beforeEach(async ({ boxedExpressionEditor, browserName }) => {
