@@ -66,7 +66,7 @@ test.describe("Populate Boxed Context", () => {
     await resizing.reset(page.getByRole("columnheader", { name: "Application risk score (number)" }));
 
     test.info().annotations.push({
-      type: TestAnnotations.WORKAROUND,
+      type: TestAnnotations.WORKAROUND_DUE_TO,
       description: "https://github.com/kiegroup/kie-issues/issues/536",
     });
     // Can't resize this column as it's named as "Expression Name"

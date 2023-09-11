@@ -53,7 +53,7 @@ test.describe("Populate Decision table", () => {
     await page.keyboard.press("Enter");
 
     test.info().annotations.push({
-      type: TestAnnotations.WORKAROUND,
+      type: TestAnnotations.WORKAROUND_DUE_TO,
       description: "",
     });
     // Plus sign triggers flaky tests.
