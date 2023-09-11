@@ -196,6 +196,27 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
+    keywords: [
+      "and",
+      "between",
+      "else",
+      "every",
+      "external",
+      "false",
+      "for",
+      "function",
+      "if",
+      "in",
+      "instance of",
+      "not",
+      "null",
+      "or",
+      "return",
+      "then",
+      "satisfies",
+      "some",
+      "true",
+    ],
     snippet: [
       ["if", "if $1 then\n\t$0\nelse\n\t"],
       ["instance of", "instance of $0"],
@@ -1496,9 +1517,16 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
     ],
   };
 
-  for (const suggestion of suggestionTypes.snippet) {
+  for (const suggestion of suggestionTypes.keywords) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Keyword,
+      label: suggestion[0],
+    } as Monaco.languages.CompletionItem);
+  }
+
+  for (const suggestion of suggestionTypes.snippet) {
+    suggestions.push({
+      kind: Monaco.languages.CompletionItemKind.Snippet,
       insertTextRules: Monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       label: suggestion[0],
       insertText: suggestion[1],
