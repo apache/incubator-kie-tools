@@ -13,7 +13,6 @@ import { BoxedExpression } from "./boxedExpressions/BoxedExpression";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
-import { Documentation } from "./documentation/Documentation";
 import { IncludedModels } from "./includedModels/IncludedModels";
 import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
 import {
@@ -179,20 +178,6 @@ export const DmnEditorInternal = ({
           }
         >
           {navigation.tab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
-        </Tab>
-
-        <Tab
-          eventKey={DmnEditorTab.DOCUMENTATION}
-          title={
-            <>
-              <TabTitleIcon>
-                <CatalogIcon />
-              </TabTitleIcon>
-              <TabTitleText>Documentation</TabTitleText>
-            </>
-          }
-        >
-          {navigation.tab === DmnEditorTab.DOCUMENTATION && <Documentation />}
         </Tab>
       </Tabs>
     </>

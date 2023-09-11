@@ -99,7 +99,6 @@ export enum DmnEditorTab {
   EDITOR,
   DATA_TYPES,
   INCLUDED_MODELS,
-  DOCUMENTATION,
 }
 
 export const NODE_LAYERS = {
