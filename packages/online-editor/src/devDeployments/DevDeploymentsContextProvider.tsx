@@ -31,7 +31,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { KubernetesService } from "./services/KubernetesService";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
-import { useDevDeploymentService, useDevDeploymentsServices } from "./DevDeploymentsServicesContextProvider";
+import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 
 interface Props {
   children: React.ReactNode;
@@ -39,6 +39,7 @@ interface Props {
 
 export function DevDeploymentsContextProvider(props: Props) {
   const workspaces = useWorkspaces();
+  const { authSessions } = useAuthSessions();
   const { env } = useEnv();
 
   // Dropdowns
@@ -50,7 +51,43 @@ export function DevDeploymentsContextProvider(props: Props) {
   const [confirmDeleteModalState, setConfirmDeleteModalState] = useState<DeleteDeployModalState>({ isOpen: false });
 
   // Services
-  const { devDeploymentsServices } = useDevDeploymentsServices();
+  const [devDeploymentsServices, setDevDeploymentsServices] = useState<Map<string, KieSandboxDevDeploymentsService>>(
+    new Map()
+  );
+
+  const getService = useCallback(
+    (authSession: CloudAuthSession) => {
+      if (authSession.type === "openshift") {
+        return new KieSandboxOpenShiftService({
+          connection: authSession,
+          proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+          k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
+        });
+      } else if (authSession.type === "kubernetes") {
+        return new KieSandboxKubernetesService({
+          connection: authSession,
+          k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
+        });
+      }
+      throw new Error("Invalid AuthSession type.");
+    },
+    [env.KIE_SANDBOX_CORS_PROXY_URL]
+  );
+
+  useEffect(() => {
+    const newDevDeploymentsServices = new Map<string, KieSandboxDevDeploymentsService>();
+    authSessions.forEach(async (authSession) => {
+      if (!authSession || !isCloudAuthSession(authSession)) {
+        return;
+      }
+      try {
+        newDevDeploymentsServices.set(authSession.id, getService(authSession));
+      } catch (e) {
+        console.error(`Failed to create service for authSession: ${authSession.id}`);
+      }
+    });
+    setDevDeploymentsServices(newDevDeploymentsServices);
+  }, [authSessions, getService]);
 
   // Deployments
   const deleteDeployment = useCallback(
@@ -199,6 +236,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       deleteDeployment,
       deleteDeployments,
       loadDevDeployments,
+      devDeploymentsServices,
     }),
     [
       isDeployDropdownOpen,
@@ -209,6 +247,7 @@ export function DevDeploymentsContextProvider(props: Props) {
       deleteDeployment,
       deleteDeployments,
       loadDevDeployments,
+      devDeploymentsServices,
     ]
   );
 

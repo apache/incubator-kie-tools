@@ -33,7 +33,7 @@ import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources/common";
-import { KieSandboxDeployment } from "./services/KieSandboxDeploymentService";
+import { KieSandboxDeployment } from "./services/KieSandboxDevDeploymentsService";
 
 interface Props {
   id: number;

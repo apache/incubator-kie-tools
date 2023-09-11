@@ -38,11 +38,11 @@ import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeployArgs,
   KieSandboxDeployment,
-  KieSandboxDeploymentService,
+  KieSandboxDevDeploymentsService,
   ResourceArgs,
-} from "./KieSandboxDeploymentService";
+} from "./KieSandboxDevDeploymentsService";
 
-export class KieSandboxOpenShiftService extends KieSandboxDeploymentService {
+export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService {
   uploadAssets(args: {
     resourceArgs: ResourceArgs;
     deployment: DeploymentDescriptor;

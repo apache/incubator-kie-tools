@@ -177,43 +177,36 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                 return [authSession.id, AuthSessionStatus.VALID];
               }
             } else if (authSession.type === "openshift") {
-              // try {
-              //   if (
-              //     (await new KieSandboxOpenShiftService({
-              //       connection: authSession,
-              //       proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-              //       k8sApiServerEndpointsByResourceKind: await KubernetesService.getK8sApiServerEndpointsMap({
-              //         connection: authSession,
-              //         proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-              //       }),
-              //     }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
-              //   ) {
-              //     return [authSession.id, AuthSessionStatus.VALID];
-              //   } else {
-              //     return [authSession.id, AuthSessionStatus.INVALID];
-              //   }
-              // } catch (e) {
-              //   return [authSession.id, AuthSessionStatus.INVALID];
-              // }
-              return [authSession.id, AuthSessionStatus.VALID];
+              try {
+                if (
+                  (await new KieSandboxOpenShiftService({
+                    connection: authSession,
+                    k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
+                    proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+                  }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+                ) {
+                  return [authSession.id, AuthSessionStatus.VALID];
+                } else {
+                  return [authSession.id, AuthSessionStatus.INVALID];
+                }
+              } catch (e) {
+                return [authSession.id, AuthSessionStatus.INVALID];
+              }
             } else if (authSession.type === "kubernetes") {
-              // try {
-              //   if (
-              //     (await new KieSandboxKubernetesService({
-              //       connection: authSession,
-              //       k8sApiServerEndpointsByResourceKind: await KubernetesService.getK8sApiServerEndpointsMap({
-              //         connection: authSession,
-              //       }),
-              //     }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
-              //   ) {
-              //     return [authSession.id, AuthSessionStatus.VALID];
-              //   } else {
-              //     return [authSession.id, AuthSessionStatus.INVALID];
-              //   }
-              // } catch (e) {
-              //   return [authSession.id, AuthSessionStatus.INVALID];
-              // }
-              return [authSession.id, AuthSessionStatus.VALID];
+              try {
+                if (
+                  (await new KieSandboxKubernetesService({
+                    connection: authSession,
+                    k8sApiServerEndpointsByResourceKind: authSession.k8sApiServerEndpointsByResourceKind,
+                  }).isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+                ) {
+                  return [authSession.id, AuthSessionStatus.VALID];
+                } else {
+                  return [authSession.id, AuthSessionStatus.INVALID];
+                }
+              } catch (e) {
+                return [authSession.id, AuthSessionStatus.INVALID];
+              }
             } else {
               return [authSession.id, AuthSessionStatus.VALID];
             }

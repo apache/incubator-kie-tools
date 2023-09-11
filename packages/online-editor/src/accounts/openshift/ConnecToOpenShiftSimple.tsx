@@ -51,7 +51,7 @@ enum FormValiationOptions {
 }
 
 export function ConnecToOpenShiftSimple(props: {
-  getKieSandboxOpenshiftService: () => Promise<KieSandboxOpenShiftService | undefined>;
+  kieSandboxOpenShiftService: KieSandboxOpenShiftService | undefined;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
@@ -76,16 +76,17 @@ export function ConnecToOpenShiftSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await (await props.getKieSandboxOpenshiftService())?.isConnectionEstablished();
+    const isConnectionEstablished = await props.kieSandboxOpenShiftService?.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxOpenShiftService) {
       const newAuthSession: OpenShiftAuthSession = {
         type: CloudAuthSessionType.OpenShift,
         id: uuid(),
         ...props.connection,
         authProviderId: "openshift",
         createdAtDateISO: new Date().toISOString(),
+        k8sApiServerEndpointsByResourceKind: props.kieSandboxOpenShiftService.args.k8sApiServerEndpointsByResourceKind,
       };
       props.setStatus(OpenShiftInstanceStatus.CONNECTED);
       authSessionsDispatch.add(newAuthSession);

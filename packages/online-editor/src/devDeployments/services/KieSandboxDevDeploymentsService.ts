@@ -51,14 +51,13 @@ export type ResourceArgs = {
   createdBy: string;
 };
 
-export type KieSandboxDeploymentServiceProps = {
+export type KieSandboxDevDeploymentsServiceProps = {
   id: string;
   type: CloudAuthSessionType;
   args: KubernetesServiceArgs;
-  deployments: KieSandboxDeployment[];
 };
 
-export type KieSandboxDeploymentServiceType = KieSandboxDeploymentServiceProps & {
+export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServiceProps & {
   isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
   loadDevDeployments(): Promise<KieSandboxDeployment[]>;
   deploy(args: DeployArgs): Promise<void>;
@@ -72,15 +71,11 @@ export type KieSandboxDeploymentServiceType = KieSandboxDeploymentServiceProps &
   extractDevDeploymentState(args: { deployment?: any }): DeploymentState;
 };
 
-export abstract class KieSandboxDeploymentService implements KieSandboxDeploymentServiceType {
+export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDeploymentsServiceType {
   id: string;
-  type = CloudAuthSessionType.OpenShift;
-  deployments = [];
+  type: CloudAuthSessionType.None;
 
-  constructor(readonly args: KubernetesServiceArgs, id?: string, deployments?: KieSandboxDeployment[]) {
-    this.id = id ?? uuid();
-    console.log(this.args.k8sApiServerEndpointsByResourceKind);
-  }
+  constructor(readonly args: KubernetesServiceArgs) {}
 
   get kubernetesService() {
     return new KubernetesService(this.args);

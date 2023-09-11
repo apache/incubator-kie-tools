@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { K8sApiServerEndpointByResourceKind } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+
 export const AUTH_SESSION_NONE = {
   id: "none",
   name: "Unauthenticated",
@@ -41,6 +43,7 @@ export type GitAuthSession = {
 export enum CloudAuthSessionType {
   OpenShift = "openshift",
   Kubernetes = "kubernetes",
+  None = "none",
 }
 
 export type OpenShiftAuthSession = {
@@ -52,6 +55,7 @@ export type OpenShiftAuthSession = {
   namespace: string;
   host: string;
   insecurelyDisableTlsCertificateValidation: boolean;
+  k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
 };
 
 export type KubernetesAuthSession = {
@@ -63,6 +67,7 @@ export type KubernetesAuthSession = {
   namespace: string;
   host: string;
   insecurelyDisableTlsCertificateValidation: boolean;
+  k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
 };
 
 export type CloudAuthSession = OpenShiftAuthSession | KubernetesAuthSession;

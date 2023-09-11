@@ -55,7 +55,7 @@ enum WizardStepIds {
 }
 
 export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
-  getKieSandboxOpenshiftService: () => Promise<KieSandboxOpenShiftService | undefined>;
+  kieSandboxOpenShiftService: KieSandboxOpenShiftService | undefined;
   setMode: React.Dispatch<React.SetStateAction<OpenShiftSettingsTabMode>>;
   connection: KubernetesConnection;
   setConnection: React.Dispatch<React.SetStateAction<KubernetesConnection>>;
@@ -136,8 +136,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(
-          (await (await props.getKieSandboxOpenshiftService())?.isConnectionEstablished()) ===
-            KubernetesConnectionStatus.CONNECTED
+          (await props.kieSandboxOpenShiftService?.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
         );
         setConnectLoading(false);
       }
@@ -155,16 +154,17 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await (await props.getKieSandboxOpenshiftService())?.isConnectionEstablished();
+    const isConnectionEstablished = await props.kieSandboxOpenShiftService?.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxOpenShiftService) {
       const newAuthSession: OpenShiftAuthSession = {
         type: CloudAuthSessionType.OpenShift,
         id: uuid(),
         ...props.connection,
         authProviderId: "openshift",
         createdAtDateISO: new Date().toISOString(),
+        k8sApiServerEndpointsByResourceKind: props.kieSandboxOpenShiftService.args.k8sApiServerEndpointsByResourceKind,
       };
       setConnectionValidated(true);
       props.setStatus(OpenShiftInstanceStatus.CONNECTED);

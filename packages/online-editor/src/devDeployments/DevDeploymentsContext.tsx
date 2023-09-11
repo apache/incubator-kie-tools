@@ -21,7 +21,7 @@ import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
-import { KieSandboxDeployment } from "./services/KieSandboxDeploymentService";
+import { KieSandboxDeployment, KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 
 export interface DeploymentFile {
   path: string;
@@ -65,13 +65,16 @@ export interface DevDeploymentsContextType {
   loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
   deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
   deleteDeployments: (args: { authSession: CloudAuthSession; resourceNames: string[] }) => Promise<boolean>;
+
+  // Services
+  devDeploymentsServices: Map<string, KieSandboxDevDeploymentsService>;
 }
 
 export const DevDeploymentsContext = React.createContext<DevDeploymentsContextType>({
-  deployments: [],
   isDropdownOpen: false,
   isDeploymentsDropdownOpen: false,
   isConfirmDeployModalOpen: false,
+  devDeploymentsServices: new Map<string, KieSandboxDevDeploymentsService>(),
 } as any);
 
 export function useDevDeployments() {

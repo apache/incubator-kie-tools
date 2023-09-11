@@ -57,18 +57,21 @@ export function ConnectToOpenShiftSection() {
   );
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
 
-  const getKieSandboxOpenshiftService = useCallback(async () => {
-    if (isKubernetesConnectionValid(connection)) {
-      const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
-        connection,
-        proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-      });
-      return new KieSandboxOpenShiftService({
-        connection,
-        proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-        k8sApiServerEndpointsByResourceKind,
-      });
-    }
+  const [kieSandboxOpenShiftService, setKieSandboxOpenShiftService] = useState<KieSandboxOpenShiftService>();
+
+  useEffect(() => {
+    (async () => {
+      if (isKubernetesConnectionValid(connection)) {
+        const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({ connection });
+        setKieSandboxOpenShiftService(
+          new KieSandboxOpenShiftService({
+            connection,
+            k8sApiServerEndpointsByResourceKind,
+            proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+          })
+        );
+      }
+    })();
   }, [connection, env.KIE_SANDBOX_CORS_PROXY_URL]);
 
   const successPrimaryAction = useMemo(() => {
@@ -148,7 +151,7 @@ export function ConnectToOpenShiftSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              getKieSandboxOpenshiftService={getKieSandboxOpenshiftService}
+              kieSandboxOpenShiftService={kieSandboxOpenShiftService}
             />
           )}
           {mode === OpenShiftSettingsTabMode.WIZARD && (
@@ -159,7 +162,7 @@ export function ConnectToOpenShiftSection() {
               status={status}
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
-              getKieSandboxOpenshiftService={getKieSandboxOpenshiftService}
+              kieSandboxOpenShiftService={kieSandboxOpenShiftService}
             />
           )}
         </>

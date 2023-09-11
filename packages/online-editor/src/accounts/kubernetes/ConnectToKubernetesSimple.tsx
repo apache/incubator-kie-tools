@@ -76,13 +76,14 @@ export function ConnectToKubernetesSimple(props: {
     const isConnectionEstablished = await props.kieSandboxKubernetesService?.isConnectionEstablished();
     setConnecting(false);
 
-    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED) {
+    if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
         id: uuid(),
         ...props.connection,
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
+        k8sApiServerEndpointsByResourceKind: props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind,
       };
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
       authSessionsDispatch.add(newAuthSession);

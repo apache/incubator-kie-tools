@@ -58,15 +58,15 @@ import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeployArgs,
   KieSandboxDeployment,
-  KieSandboxDeploymentService,
+  KieSandboxDevDeploymentsService,
   ResourceArgs,
-} from "./KieSandboxDeploymentService";
+} from "./KieSandboxDevDeploymentsService";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
-export class KieSandboxKubernetesService extends KieSandboxDeploymentService {
+export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
       try {
