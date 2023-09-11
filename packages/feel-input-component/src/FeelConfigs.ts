@@ -1520,7 +1520,8 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   for (const suggestion of suggestionTypes.keywords) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Keyword,
-      label: suggestion[0],
+      label: suggestion,
+      insertText: suggestion,
     } as Monaco.languages.CompletionItem);
   }
 
