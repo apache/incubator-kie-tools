@@ -20,6 +20,12 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface TestScenarioEditorDictionary extends ReferenceDictionary {}
+interface TestScenarioEditorDictionary extends ReferenceDictionary {
+  test: {
+    delete: "Delete";
+    insertLeft: "Insert left";
+    insertRight: "Insert right";
+  };
+}
 
 export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n {}

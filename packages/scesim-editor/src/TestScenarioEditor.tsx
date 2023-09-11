@@ -24,7 +24,12 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "
 
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
-import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
+import {
+  testScenarioEditorDictionaries,
+  TestScenarioEditorI18nContext,
+  testScenarioEditorI18nDefaults,
+  useTestScenarioEditorI18n,
+} from "./i18n";
 
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
@@ -287,6 +292,8 @@ function TestScenarioParserErrorPanel({
 }
 
 const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
+  const { i18n } = useTestScenarioEditorI18n();
+
   /** Test Scenario File, Model and Marshaller Management  */
 
   const [scesimFile, setScesimFile] = useState({ content: "", path: "" });

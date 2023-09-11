@@ -22,4 +22,9 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 
 export const en: TestScenarioEditorI18n = {
   ...en_common,
+  test: {
+    delete: "Delete",
+    insertLeft: "Insert left",
+    insertRight: "Insert right",
+  },
 };
