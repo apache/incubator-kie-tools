@@ -32,8 +32,14 @@ public interface GwtBootstrap3ClientBundle extends ClientBundle {
 
     GwtBootstrap3ClientBundle INSTANCE = GwtBootstrap3ClientBundleImpl.INSTANCE;
 
+    @Source("resource/css/bootstrap-3.4.1.min.cache.css")
+    TextResource bootstrap_css();
+
     @Source("resource/js/gwtbootstrap3.js.back")
     TextResource gwtBootstrap3();
+
+    @Source("resource/js/jquery-1.12.4.min.cache.js.back")
+    TextResource jQuery();
 
     @Source("resource/js/bootstrap-3.4.1.min.cache.js.back")
     TextResource bootstrap();

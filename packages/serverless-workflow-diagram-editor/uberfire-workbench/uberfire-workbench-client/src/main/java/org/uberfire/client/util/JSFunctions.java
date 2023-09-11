@@ -19,19 +19,15 @@
 
 package org.uberfire.client.util;
 
-import java.util.List;
-
 import elemental2.core.Function;
 import elemental2.core.JsMap;
 import elemental2.core.Reflect;
 import elemental2.dom.DomGlobal;
-import elemental2.promise.Promise;
 import io.crysknife.client.SyncBeanDef;
 import jsinterop.annotations.JsFunction;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.uberfire.client.mvp.EditorActivity;
-import org.uberfire.workbench.model.bridge.Notification;
 
 public class JSFunctions {
 
@@ -39,8 +35,6 @@ public class JSFunctions {
         // Empty
     }
     public static void nativeRegisterGwtEditorProvider(){
-        DomGlobal.console.log("registerGWTEditorProvider");
-
         Reflect.set(DomGlobal.window, "gwtEditorBeans",  new JsMap<String, SyncBeanDef<?>>());
 
         Reflect.set(DomGlobal.window, "resolveEditor", (ResolveEditorFunction) id -> {
@@ -62,60 +56,6 @@ public class JSFunctions {
             return new GWTEditor(bean.newInstance());
         }
 
-    }
-
-    @JsType
-    public static class GWTEditor {
-
-        private final EditorActivity instance;
-
-        public GWTEditor(EditorActivity instance) {
-            this.instance = instance;
-        }
-
-        public final void onOpen() {
-            instance.onOpen();
-        }
-
-        public final Promise<Void> setContent(String path, String value) {
-            return instance.setContent(path, value);
-        }
-
-        public final Promise<Void> selectStateByName(String name) {
-            return instance.selectStateByName(name);
-        }
-
-        public final Promise<String> getContent() {
-            return instance.getContent();
-        }
-
-        public final Promise<String> getContentYAML() {
-            return instance.getContentYAML();
-        }
-
-        public final Promise<String> getContentJSON() {
-            return instance.getContentJSON();
-        }
-
-        public final Promise<String>  getPreview() {
-            return instance.getPreview();
-        }
-
-        public final Promise<List<Notification>> validate() {
-            return instance.validate();
-        }
-
-        public final Promise<Void> undo() {
-            return instance.undo();
-        }
-
-        public final Promise<Void> redo() {
-            return instance.redo();
-        }
-
-        public final Promise<Void> searchDomainObject(String uuid) {
-            return instance.searchDomainObject(uuid);
-        }
     }
 
     public static void nativeRegisterGwtClientBean(final String id, final SyncBeanDef<EditorActivity> bean) {

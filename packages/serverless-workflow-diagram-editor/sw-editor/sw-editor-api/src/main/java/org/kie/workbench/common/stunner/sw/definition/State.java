@@ -24,8 +24,10 @@ import jsinterop.annotations.JsType;
 import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
 import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
 import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
+@GWT3Export
 @JSONMapper
 @YAMLMapper
 @YamlPropertyOrder({"name", "type", "end", "onErrors", "eventTimeout", "compensatedBy", "stateDataFilter", "transition", "timeouts"})

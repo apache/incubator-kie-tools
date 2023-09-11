@@ -20,11 +20,19 @@
 
 package org.kie.workbench.common.stunner.core.factory.definition;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import elemental2.core.Global;
+import elemental2.dom.DomGlobal;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class JsDefinitionFactory implements DefinitionFactory<Object> {
+
+    private final Map<String, Supplier<?>> definitions = new HashMap<>();
+
 
     @Override
     public boolean accepts(String identifier) {
@@ -32,7 +40,18 @@ public class JsDefinitionFactory implements DefinitionFactory<Object> {
     }
 
     private Object createInstanceForType(String typeName) {
+        DomGlobal.console.log("createInstanceForType: " + typeName);
+        
         return Global.eval("new " + typeName + "()");
+
+        //if(definitions.containsKey(typeName)) {
+        //    return definitions.get(typeName).get();
+        //}
+        //throw new Error("No definition found for type " + typeName);
+    }
+
+    public <T> void register(Class<T> typeName, Supplier<T> constructor) {
+        definitions.put(typeName.getCanonicalName(), constructor);
     }
 
     @Override

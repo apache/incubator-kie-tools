@@ -34,11 +34,13 @@ import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
 import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "actions", "usedForCompensation", "transition", "end", "onErrors", "compensatedBy", "stateDataFilter", "timeouts", "eventTimeout", "actionMode", "metadata"})
+@GWT3Export
 public class OperationState extends State<OperationState> {
 
     public static final String TYPE_OPERATION = "operation";

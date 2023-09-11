@@ -20,7 +20,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
+import elemental2.dom.DomGlobal;
 import io.crysknife.annotation.CircularDependency;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.definition.adapter.bootstrap.BootstrapAdapterFactory;
@@ -53,9 +55,9 @@ public class AdapterManagerImpl implements AdapterManager {
         this.bootstrapAdapterFactory = bootstrapAdapterFactory;
     }
 
-    AdapterManagerImpl(final AdapterRegistry registry,
-                       final BootstrapAdapterFactory bootstrapAdapterFactory) {
-        this.registry = registry;
+    @PostConstruct
+    public void init() {
+        DomGlobal.console.log("AdapterManagerImpl init " + this.getClass().getCanonicalName() + " " + this.hashCode());
         this.definitionSetAdapter = bootstrapAdapterFactory.newDefinitionSetAdapter(registry);
         this.definitionSetRuleAdapter = bootstrapAdapterFactory.newDefinitionSetRuleAdapter(registry);
         this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter(registry);
@@ -64,6 +66,9 @@ public class AdapterManagerImpl implements AdapterManager {
 
     @Override
     public DefinitionSetAdapter<Object> forDefinitionSet() {
+
+        DomGlobal.console.log("forDefinitionSet " + definitionSetAdapter);
+
         return definitionSetAdapter;
     }
 

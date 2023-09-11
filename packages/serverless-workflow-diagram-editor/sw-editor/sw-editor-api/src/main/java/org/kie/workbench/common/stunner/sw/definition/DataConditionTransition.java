@@ -29,8 +29,10 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.StateEndDefinitionYamlT
 import org.kie.workbench.common.stunner.sw.marshall.yaml.StateTransitionDefinitionYamlTypeSerializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
+@GWT3Export
 public class DataConditionTransition {
 
     public String name;

@@ -30,9 +30,11 @@ import org.kie.workbench.common.stunner.sw.marshall.yaml.SubFlowRefYamlSerialize
 import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
 @YamlPropertyOrder({"name", "id", "functionRef", "eventRef", "subFlowRef", "retryRef", "sleep", "retryableErrors", "nonRetryableErrors", "actionDataFilter", "condition"})
+@GWT3Export
 public class ActionNode {
 
     public String id;

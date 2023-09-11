@@ -20,26 +20,26 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
+import org.treblereel.j2cl.processors.annotations.GWT3Resource;
 import org.treblereel.j2cl.processors.common.resources.ClientBundle;
 import org.treblereel.j2cl.processors.common.resources.TextResource;
 
 /**
  * Static resources related to the file export.
  */
-//@GWT3Resource
-//TODO
+@GWT3Resource
 public interface FileExportResources extends ClientBundle {
 
     FileExportResources INSTANCE = FileExportResourcesImpl.INSTANCE;
 
     // The File Saver js.
-    @Source("js/FileSaver.min.js")
+    @Source("js/FileSaver.min.js.back")
     TextResource fileSaver();
 
     // The jsPDF js.
-    //@Source("js/jspdf.min.js")
-    //TextResource jsPdf();
+    @Source("js/jspdf.min.js.back")
+    TextResource jsPdf();
 
-    @Source("js/canvas2svg.js")
+    @Source("js/canvas2svg.js.back")
     TextResource canvas2svg();
 }

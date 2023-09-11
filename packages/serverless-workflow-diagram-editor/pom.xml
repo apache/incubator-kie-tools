@@ -288,7 +288,7 @@
     <version.org.uberfire.patternfly>7.74.1.Final</version.org.uberfire.patternfly>
 
     <version.io.crysknife>0.5.2-SNAPSHOT</version.io.crysknife>
-    <version.org.gwt3.processors>0.6</version.org.gwt3.processors>
+    <version.org.gwt3.processors>0.6.1</version.org.gwt3.processors>
     <version.j2cl>0.11.0-9336533b6</version.j2cl>
     <version.j2cl.maven.plugin>0.21.0</version.j2cl.maven.plugin>
 
@@ -774,16 +774,16 @@
 
     <plugins>
       <plugin>
-        <!-- Entry needed to provide parsed version properties -->
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>com.vertispan.j2cl</groupId>
         <artifactId>j2cl-maven-plugin</artifactId>
         <configuration>
           <webappDirectory>${project.build.directory}/j2cl-watch</webappDirectory>
         </configuration>
+      </plugin>
+      <plugin>
+        <!-- Entry needed to provide parsed version properties -->
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -942,6 +942,9 @@
           <groupId>com.vertispan.j2cl</groupId>
           <artifactId>j2cl-maven-plugin</artifactId>
           <version>${version.j2cl.plugin}</version>
+          <configuration>
+            <webappDirectory>${project.build.directory}/j2cl-watch</webappDirectory>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

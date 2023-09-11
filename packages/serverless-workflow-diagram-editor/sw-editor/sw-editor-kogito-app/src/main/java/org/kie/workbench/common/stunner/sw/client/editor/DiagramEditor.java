@@ -35,6 +35,7 @@ import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
@@ -74,6 +75,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.bridge.Notification;
 
 @ApplicationScoped
+@JsType
 public class DiagramEditor {
 
     public static final String EDITOR_ID = "SWDiagramEditor";
@@ -160,6 +162,7 @@ public class DiagramEditor {
 
     private Promise<Void> setContent(final String path, final String value, final DocType docType) {
         this.currentDocType = docType;
+        DomGlobal.console.log("TogglePreviewEvent check");
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
         Promise<Void> setContentPromise;
@@ -180,6 +183,8 @@ public class DiagramEditor {
     }
 
     public Promise<Void> setNewContent(final String path, final String value, final DocType docType) {
+        DomGlobal.console.log("setNewContent");
+
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
@@ -188,6 +193,8 @@ public class DiagramEditor {
                                      new ServiceCallback<ParseResult>() {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
+                                             DomGlobal.console.log("setNewContent.onSuccess");
+
                                              stunnerEditor
                                                      .close()
                                                      .open(parseResult.getDiagram(),
@@ -221,6 +228,7 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onError(final ClientRuntimeError error) {
+                                             DomGlobal.console.log("setNewContent.onError");
                                              handleParseErrors(error, stunnerEditor);
                                              DomGlobal.console.error(error);
                                              failure.onInvoke(error);

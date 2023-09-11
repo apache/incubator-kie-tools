@@ -20,6 +20,7 @@
 
 package org.kie.workbench.common.stunner.sw.client.editor;
 
+import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -57,6 +58,9 @@ public class DiagramEditorActivity extends AbstractActivity implements EditorAct
 
     @Override
     public Promise<Void> setContent(String path, String value) {
+
+        DomGlobal.console.log("DiagramEditorActivity.setContent " + path + " " + value);
+
         return realPresenter.setContent(path, value);
     }
 

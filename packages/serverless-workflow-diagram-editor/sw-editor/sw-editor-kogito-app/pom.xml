@@ -268,10 +268,7 @@
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
-
     <plugins>
-
-
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
@@ -295,7 +292,7 @@
         </executions>
         <configuration>
           <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
-          <compilationLevel>BUNDLE_JAR</compilationLevel>
+          <compilationLevel>ADVANCED</compilationLevel>
         </configuration>
       </plugin>
       <plugin>

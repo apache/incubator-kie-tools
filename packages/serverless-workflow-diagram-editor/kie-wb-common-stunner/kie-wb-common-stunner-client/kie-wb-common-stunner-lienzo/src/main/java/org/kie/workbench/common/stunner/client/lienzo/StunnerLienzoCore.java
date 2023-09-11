@@ -25,11 +25,8 @@ import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import io.crysknife.ui.common.client.injectors.ScriptInjector;
 import io.crysknife.ui.common.client.injectors.StyleInjector;
 import io.crysknife.ui.translation.client.annotation.Bundle;
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.patternfly.PatternFlyBundle;
 
-@ApplicationScoped
 @Bundle("resources/i18n/StunnerLienzoConstants.properties")
 public class StunnerLienzoCore {
 
@@ -41,44 +38,47 @@ public class StunnerLienzoCore {
      * Also it's being used due to huge differences on the resulting performance when
      * rendering the images into the contexts.
      */
-    @PostConstruct
     public void init() {
 
-        //StyleInjector.fromString(PatternFlyBundle.INSTANCE.bootstrapcss().getText());
+        StyleInjector.fromString(
+                PatternFlyBundle.INSTANCE.bootstrapcss().getText()).inject();
 
-        //ScriptInjector.fromString(PatternFlyBundle.INSTANCE.jquery().getText())
-        //        .setWindow(ScriptInjector.TOP_WINDOW)
-        //        .inject();
+        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.jquery().getText())
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .inject();
 
         ScriptInjector.fromString(PatternFlyBundle.INSTANCE.bootstrapjs().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
 
         StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.bootstrapselect().getText());
+                PatternFlyBundle.INSTANCE.bootstrapselect().getText()).inject();
 
-        //StyleInjector.fromString(
-        //        PatternFlyBundle.INSTANCE.animate().getText());
+        StyleInjector.fromString(
+                PatternFlyBundle.INSTANCE.animate().getText()).inject();
 
         ScriptInjector.fromString(PatternFlyBundle.INSTANCE.gwtbootstrap3().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
 
         StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.fontawesome().getText());
+                PatternFlyBundle.INSTANCE.patternflycss().getText()).inject();
 
-        //StyleInjector.fromString(
-        //        PatternFlyBundle.INSTANCE.patternflycss().getText());
-
-        //StyleInjector.fromString(
-        //        PatternFlyBundle.INSTANCE.patternflyadditions().getText());
+        StyleInjector.fromString(
+                PatternFlyBundle.INSTANCE.patternflyadditions().getText()).inject();
 
         ScriptInjector.fromString(PatternFlyBundle.INSTANCE.patternflyjs().getText())
                 .setWindow(ScriptInjector.TOP_WINDOW)
                 .inject();
 
         StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.uberfirepatternfly().getText());
+                PatternFlyBundle.INSTANCE.uberfirepatternfly().getText()).inject();
+
+        StyleInjector.fromString(
+                PatternFlyBundle.INSTANCE.fontawesome().getText()).inject();
+
+        StyleInjector.fromString(
+                PatternFlyBundle.INSTANCE.fonts().getText()).inject();
 
         StyleInjector.injectStylesheet(
                 PatternFlyBundle.INSTANCE.fontawesome().getText());

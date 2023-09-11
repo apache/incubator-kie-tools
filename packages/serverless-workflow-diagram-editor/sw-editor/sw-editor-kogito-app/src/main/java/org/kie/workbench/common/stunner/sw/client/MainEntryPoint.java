@@ -25,6 +25,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.gwtbootstrap3.client.GwtBootstrap3EntryPoint;
 import org.gwtbootstrap3.extras.notify.client.NotifyEntryPoint;
+import org.kie.workbench.common.stunner.client.lienzo.StunnerLienzoCore;
 import org.kie.workbench.common.stunner.sw.client.editor.DiagramEditorActivity;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 import org.uberfire.client.workbench.WorkbenchEntryPoint;
@@ -50,6 +51,7 @@ public class MainEntryPoint {
 
     @PostConstruct
     public void initialize() {
+        new StunnerLienzoCore().init();
         new GwtBootstrap3EntryPoint().onModuleLoad();
         new NotifyEntryPoint().onModuleLoad();
 

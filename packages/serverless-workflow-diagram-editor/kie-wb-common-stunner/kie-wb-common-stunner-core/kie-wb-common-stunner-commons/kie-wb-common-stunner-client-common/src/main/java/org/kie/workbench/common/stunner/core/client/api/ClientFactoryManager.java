@@ -21,6 +21,7 @@
 package org.kie.workbench.common.stunner.core.client.api;
 
 import io.crysknife.client.ManagedInstance;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.AbstractFactoryManager;
@@ -61,8 +62,6 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
                                 final ManagedInstance<NodeFactory> nodeFactoryInstances,
                                 final ManagedInstance<EdgeFactory> edgeFactoryInstances) {
         super(registryFactory,
-        //super(null,
-             // definitionManager);
                 definitionManager);
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.diagramFactoryInstances = diagramFactoryInstances;
@@ -71,7 +70,7 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
         this.edgeFactoryInstances = edgeFactoryInstances;
     }
 
-    //@PostConstruct
+    @PostConstruct
     @SuppressWarnings("unchecked")
     public void init() {
         // Client definition factories.

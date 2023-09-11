@@ -36,10 +36,12 @@ import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
 import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
 @JsType
+@GWT3Export
 @YamlPropertyOrder({"name", "type", "actions", "inputCollection", "outputCollection", "iterationParam", "transition", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
 public class ForEachState extends State<ForEachState> {
 

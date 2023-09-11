@@ -29,14 +29,14 @@ public interface PatternFlyBundle extends ClientBundle {
 
     PatternFlyBundle INSTANCE =  PatternFlyBundleImpl.INSTANCE;
 
-    //@Source("patternfly.min.css")
-    //TextResource patternflycss();
+    @Source("patternfly.min.css")
+    TextResource patternflycss();
 
-    //@Source("animate-3.5.2.min.cache.css")
-    //TextResource animate();
+    @Source("animate-3.5.2.min.cache.css")
+    TextResource animate();
 
-    //@Source("bootstrap-3.4.1.min.cache.css")
-    //TextResource bootstrapcss();
+    @Source("bootstrap-3.4.1.min.cache.css")
+    TextResource bootstrapcss();
 
     @Source("bootstrap-select.min.css")
     TextResource bootstrapselect();
@@ -44,8 +44,8 @@ public interface PatternFlyBundle extends ClientBundle {
     @Source("uberfire-patternfly.css")
     TextResource uberfirepatternfly();
 
-    //@Source("patternfly-additions.min.css")
-    //TextResource patternflyadditions();
+    @Source("patternfly-additions.min.css")
+    TextResource patternflyadditions();
 
     @Source("bootstrap-3.4.1.min.cache.js.back")
     TextResource bootstrapjs();
@@ -53,14 +53,17 @@ public interface PatternFlyBundle extends ClientBundle {
     @Source("gwtbootstrap3.js.back")
     TextResource gwtbootstrap3();
 
-    //@Source("jquery-1.12.4.min.cache.js")
-    //TextResource jquery();
+    @Source("jquery-1.12.4.min.cache.js.back")
+    TextResource jquery();
 
     @Source("patternfly.min.js.back")
     TextResource patternflyjs();
 
     @Source("font-awesome-4.7.0.min.cache.css")
     TextResource fontawesome();
+
+    @Source("fonts.css")
+    TextResource fonts();
 
     @Source("fonts.css")
     TextResource fonts();

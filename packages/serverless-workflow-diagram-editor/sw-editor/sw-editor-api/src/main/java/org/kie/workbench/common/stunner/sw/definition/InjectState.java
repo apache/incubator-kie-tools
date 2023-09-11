@@ -34,11 +34,13 @@ import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
 import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "usedForCompensation", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "data", "metadata"})
+@GWT3Export
 public class InjectState extends State<InjectState> {
 
     public static final String TYPE_INJECT = "inject";

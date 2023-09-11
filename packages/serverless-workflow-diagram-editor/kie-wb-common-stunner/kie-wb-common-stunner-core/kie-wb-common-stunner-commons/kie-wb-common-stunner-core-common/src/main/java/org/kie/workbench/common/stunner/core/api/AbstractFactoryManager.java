@@ -6,20 +6,21 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
 package org.kie.workbench.common.stunner.core.api;
 
+import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
@@ -54,6 +55,9 @@ public abstract class AbstractFactoryManager {
     @SuppressWarnings("unchecked")
     public <T> T newDefinition(final String id) {
         final DefinitionFactory<T> factory = factoryRegistry.getDefinitionFactory(id);
+
+        DomGlobal.console.log("AbstractFactoryManager newDefinition " + id + " " + factory.getClass().getCanonicalName());
+
         return factory.build(id);
     }
 

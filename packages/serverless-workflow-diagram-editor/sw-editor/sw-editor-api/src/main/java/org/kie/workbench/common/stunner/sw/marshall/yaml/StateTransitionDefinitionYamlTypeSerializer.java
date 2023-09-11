@@ -1,5 +1,6 @@
 package org.kie.workbench.common.stunner.sw.marshall.yaml;
 
+import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.StateTransition_YamlMapperImpl;
 import org.treblereel.gwt.yaml.api.YAMLDeserializer;
@@ -33,6 +34,9 @@ public class StateTransitionDefinitionYamlTypeSerializer implements YAMLDeserial
 
     @Override
     public Object deserialize(YamlNode node, YAMLDeserializationContext ctx) {
+        DomGlobal.console.log("deserialize: " + node.type());
+
+
         if (node == null) {
             return null;
         }

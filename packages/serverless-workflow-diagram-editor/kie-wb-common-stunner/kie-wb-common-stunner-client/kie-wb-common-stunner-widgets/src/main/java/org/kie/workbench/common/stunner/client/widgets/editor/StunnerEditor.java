@@ -65,10 +65,10 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 @Dependent
 public class StunnerEditor {
 
-    ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
-    ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
-    ClientTranslationService translationService;
-    ErrorPage errorPage;
+    private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
+    private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
+    private final ClientTranslationService translationService;
+    private final ErrorPage errorPage;
     private boolean hasErrors;
 
     private SessionDiagramPresenter diagramPresenter;
@@ -76,8 +76,6 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private AlertsControl<AbstractCanvas> alertsControl;
-
-    private HTMLDivElement rootContainer;
 
     // CDI proxy.
     public StunnerEditor() {
@@ -98,13 +96,6 @@ public class StunnerEditor {
         };
         this.exceptionProcessor = e -> {
         };
-    }
-
-    HTMLDivElement getRootContainer() {
-        if (null == rootContainer) {
-            rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
-        }
-        return rootContainer;
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -165,29 +156,29 @@ public class StunnerEditor {
                 callback.onError(error);
             }
         });
-        removeAllChildren(getRootContainer());
 
-        getRootContainer().appendChild(diagramPresenter.getView().getElement());
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
 
-        addResizeListener();
+        DomGlobal.console.log("rootContainer 1: " + rootContainer);
+        DomGlobal.console.log("rootContainer 2: " + rootContainer.innerHTML);
 
-        resize();
-    }
+        removeAllChildren(rootContainer);
 
-    void addResizeListener() {
+        rootContainer.appendChild(diagramPresenter.getView().getElement());
         DomGlobal.window.addEventListener("resize", evt -> {
-            resizeTo(DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
+            resizeTo(rootContainer, DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
         });
+        resize(rootContainer);
     }
 
-    void resize() {
-        resizeTo(DomGlobal.document.body.clientWidth,
-                 DomGlobal.document.body.clientHeight);
+    private void resize(HTMLDivElement rootContainer) {
+        resizeTo(rootContainer, DomGlobal.document.body.clientWidth,
+                DomGlobal.document.body.clientHeight);
     }
 
-    private void resizeTo(int width,
+    private void resizeTo(HTMLDivElement rootContainer, int width,
                           int height) {
-        CSSStyleDeclaration style = getRootContainer().style;
+        CSSStyleDeclaration style = rootContainer.style;
         style.width = WidthUnionType.of(width + "px");
         style.height = HeightUnionType.of(height + "px");
     }
@@ -225,6 +216,7 @@ public class StunnerEditor {
     }
 
     public void handleError(final ClientRuntimeError error) {
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
         final Throwable throwable = error.getThrowable();
         String message;
         if (throwable instanceof DiagramParsingException) {
@@ -254,8 +246,8 @@ public class StunnerEditor {
                 (diagramPresenter.getView() != null)) {
             addError(message);
         } else {
-            removeAllChildren(getRootContainer());
-            getRootContainer().appendChild(Js.uncheckedCast(errorPage.getElement()));
+            removeAllChildren(rootContainer);
+            rootContainer.appendChild(Js.uncheckedCast(errorPage.getElement()));
         }
     }
 

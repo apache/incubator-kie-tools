@@ -181,6 +181,10 @@ public abstract class DOMUtil {
      * @return True iff any children were detached by this call.
      */
     public static boolean removeAllChildren(final Node node) {
+        if (node == null || node.lastChild == null) {
+            return false;
+        }
+
         final boolean hadChildren = node.lastChild != null;
         while (node.lastChild != null) {
             node.removeChild(node.lastChild);

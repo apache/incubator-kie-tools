@@ -22,6 +22,7 @@ package org.kie.workbench.common.stunner.sw.client.services;
 
 import java.util.Objects;
 
+import elemental2.dom.DomGlobal;
 import elemental2.promise.IThenable;
 import elemental2.promise.Promise;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -122,6 +123,9 @@ public class ClientDiagramService {
                        final String raw,
                        final DocType docType,
                        ServiceCallback<ParseResult> serviceCallback) {
+
+        DomGlobal.console.log("ClientDiagramService.parse " + fileName + " " + raw + " " + docType);
+
         final Metadata metadata = createMetadata();
         final Promise<ParseResult> promise = unmarshall(metadata, raw, docType);
         promise.then(new IThenable.ThenOnFulfilledCallbackFn<ParseResult, Object>() {

@@ -42,12 +42,14 @@ import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
 import org.treblereel.gwt.yaml.api.annotation.YamlPropertyOrder;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
 import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
 @JsType
 @YamlPropertyOrder({"id", "version", "specVersion", "name", "description", "start", "states"})
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
+@GWT3Export
 public class Workflow {
 
     public String id;

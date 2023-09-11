@@ -101,13 +101,24 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <plugins>
       <!-- WebJars Dependencies -->
-      <plugin>
+ <!--     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
-          <!-- File Saver -->
+          &lt;!&ndash; File Saver &ndash;&gt;
           <execution>
             <id>unpack-filesaver</id>
             <phase>process-resources</phase>
@@ -129,7 +140,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-          <!-- JsPDF -->
+          &lt;!&ndash; JsPDF &ndash;&gt;
           <execution>
             <id>unpack-jspdf</id>
             <phase>process-resources</phase>
@@ -151,7 +162,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-          <!-- Canvas2svg -->
+          &lt;!&ndash; Canvas2svg &ndash;&gt;
           <execution>
             <id>unpack-canvas2svg</id>
             <phase>process-resources</phase>
@@ -173,7 +184,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-          <!-- MustacheJS -->
+          &lt;!&ndash; MustacheJS &ndash;&gt;
           <execution>
             <id>unpack-mustachejs</id>
             <phase>process-resources</phase>
@@ -198,12 +209,12 @@
         </executions>
       </plugin>
 
-      <!-- Copy JS from WebJars to resources Path, where it should be injected on the application with JsInterop -->
+      &lt;!&ndash; Copy JS from WebJars to resources Path, where it should be injected on the application with JsInterop &ndash;&gt;
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
-          <!-- File Saver -->
+          &lt;!&ndash; File Saver &ndash;&gt;
           <execution>
             <id>copy-filesaver-resources</id>
             <phase>process-resources</phase>
@@ -222,7 +233,7 @@
               </resources>
             </configuration>
           </execution>
-          <!-- JsPDF -->
+          &lt;!&ndash; JsPDF &ndash;&gt;
           <execution>
             <id>copy-jspdf-resources</id>
             <phase>process-resources</phase>
@@ -241,7 +252,7 @@
               </resources>
             </configuration>
           </execution>
-          <!-- Canvas2svg -->
+          &lt;!&ndash; Canvas2svg &ndash;&gt;
           <execution>
             <id>copy-canvas2svg-resources</id>
             <phase>process-resources</phase>
@@ -260,7 +271,7 @@
               </resources>
             </configuration>
           </execution>
-          <!-- MustacheJS -->
+          &lt;!&ndash; MustacheJS &ndash;&gt;
           <execution>
             <id>copy-mustachejs-resources</id>
             <phase>process-resources</phase>
@@ -284,7 +295,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin>-->
     </plugins>
   </build>
 

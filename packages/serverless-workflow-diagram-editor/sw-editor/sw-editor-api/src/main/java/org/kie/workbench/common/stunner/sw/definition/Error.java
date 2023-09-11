@@ -23,10 +23,12 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jsinterop.annotations.JsType;
 import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
 import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
+import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
 @JsType
+@GWT3Export
 public class Error {
 
     public String name;
