@@ -5814,6 +5814,9 @@ importers:
       "@types/lodash":
         specifier: ^4.14.168
         version: 4.14.169
+      "@types/react-dom":
+        specifier: ^17.0.5
+        version: 17.0.8
       "@types/react-redux":
         specifier: ^7.1.16
         version: 7.1.16
@@ -17004,7 +17007,6 @@ packages:
       { integrity: sha512-0ohAiJAx1DAUEcY9UopnfwCE9sSMDGnY/oXjWMax6g3RpzmTt2GMyMVAXcbn0mo8XAff0SbQJl2/SBU+hjSZ1A== }
     dependencies:
       "@types/react": 17.0.21
-    dev: true
 
   /@types/react-redux@7.1.16:
     resolution:

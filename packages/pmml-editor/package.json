@@ -42,6 +42,7 @@
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@types/lodash": "^4.14.168",
+    "@types/react-dom": "^17.0.5",
     "@types/react-redux": "^7.1.16",
     "@types/react-transition-group": "^4.4.1",
     "@types/uuid": "^8.3.0",
