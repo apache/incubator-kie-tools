@@ -17,35 +17,20 @@
  * under the License.
  */
 
-import {
-  CreateRoute,
-  DeleteRoute,
-  ListRoutes,
-  RouteDescriptor,
-  RouteGroupDescriptor,
-  ResourceLabelNames,
-  DeleteService,
-  CreateService,
-  ResourceDataSource,
-  DeploymentDescriptor,
-} from "@kie-tools-core/kubernetes-bridge/dist/resources";
-import { KieSandboxKubernetesService, RESOURCE_OWNER } from "./KieSandboxKubernetesService";
-import { getUploadStatus } from "../DmnDevDeploymentQuarkusAppApi";
-import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
+import { KubernetesConnectionStatus } from "./KubernetesService";
 import { getProjectApiPath } from "./resources/openshift/Project";
-import { v4 as uuid } from "uuid";
-import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeployArgs,
   KieSandboxDeployment,
   KieSandboxDevDeploymentsService,
   ResourceArgs,
 } from "./KieSandboxDevDeploymentsService";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
 export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService {
   uploadAssets(args: {
     resourceArgs: ResourceArgs;
-    deployment: DeploymentDescriptor;
+    deployment: K8sResourceYaml;
     workspaceZipBlob: Blob;
     baseUrl: string;
   }): Promise<void> {
@@ -139,7 +124,7 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
     // this.deleteRoute(resourceName);
   }
 
-  getRouteUrl(resource: RouteDescriptor): string {
+  getRouteUrl(resource: K8sResourceYaml): string {
     // return this.kieSandboxKubernetesService.composeDeploymentUrlFromRoute(resource);
     return "";
   }
@@ -154,7 +139,7 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   //   // return route;
   // }
 
-  async listRoutes(): Promise<RouteDescriptor[]> {
+  async listRoutes(): Promise<K8sResourceYaml[]> {
     // const routes = (
     //   await this.openshiftService.withFetch((fetcher: ResourceFetcher) =>
     //     fetcher.execute<RouteGroupDescriptor>({

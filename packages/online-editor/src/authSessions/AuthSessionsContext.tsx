@@ -24,23 +24,13 @@ import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoder
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageFile, LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import {
-  AuthenticatedUserResponse,
-  fetchAuthenticatedBitbucketUser,
-  fetchAuthenticatedGitHubUser,
-} from "../accounts/git/ConnectToGitSection";
+import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/KieSandboxOpenShiftService";
-import {
-  GitAuthProvider,
-  SupportedGitAuthProviders,
-  isGitAuthProvider,
-  isSupportedGitAuthProviderType,
-} from "../authProviders/AuthProvidersApi";
+import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
 import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import { KubernetesService } from "../devDeployments/services/KubernetesService";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
 
 export type AuthSessionsContextType = {
@@ -72,6 +62,25 @@ const broadcastChannel = new BroadcastChannel("auth_sessions");
 const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
 const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 
+function mapSerializer(_: string, value: any) {
+  if (value instanceof Map) {
+    return {
+      dataType: "Map",
+      value: Array.from(value.entries()),
+    };
+  }
+  return value;
+}
+
+function mapDeSerializer(_: string, value: any) {
+  if (typeof value === "object" && value) {
+    if (value.dataType === "Map") {
+      return new Map(value.value);
+    }
+  }
+  return value;
+}
+
 export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const authProviders = useAuthProviders();
   const { env } = useEnv();
@@ -81,7 +90,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const refresh = useCallback(async () => {
     const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
     const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
-    setAuthSessions(new Map(JSON.parse(decoder.decode(content))));
+    setAuthSessions(JSON.parse(decoder.decode(content), mapDeSerializer));
   }, []);
 
   const persistAuthSessions = useCallback(
@@ -91,7 +100,7 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
         fs,
         new LfsStorageFile({
           path: AUTH_SESSIONS_FILE_PATH,
-          getFileContents: async () => encoder.encode(JSON.stringify([...map.entries()])),
+          getFileContents: async () => encoder.encode(JSON.stringify(map, mapSerializer)),
         })
       );
 

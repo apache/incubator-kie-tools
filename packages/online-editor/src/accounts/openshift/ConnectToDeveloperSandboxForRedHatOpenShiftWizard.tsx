@@ -62,6 +62,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
+  isLoadingService: boolean;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(false);
@@ -136,7 +137,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(
-          (await props.kieSandboxOpenShiftService?.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+          (props.kieSandboxOpenShiftService && (await props.kieSandboxOpenShiftService.isConnectionEstablished())) ===
+            KubernetesConnectionStatus.CONNECTED
         );
         setConnectLoading(false);
       }
@@ -154,7 +156,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kieSandboxOpenShiftService?.isConnectionEstablished();
+    const isConnectionEstablished =
+      props.kieSandboxOpenShiftService && (await props.kieSandboxOpenShiftService.isConnectionEstablished());
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxOpenShiftService) {
@@ -491,7 +494,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                   onClick={onSave}
                   isDisabled={!isConnectionValidated}
                   variant={ButtonVariant.primary}
-                  isLoading={isConnecting}
+                  isLoading={isConnecting || props.isLoadingService}
                   spinnerAriaValueText={isConnecting ? "Loading" : undefined}
                 >
                   {isConnecting ? i18n.devDeployments.common.saving : i18n.terms.save}

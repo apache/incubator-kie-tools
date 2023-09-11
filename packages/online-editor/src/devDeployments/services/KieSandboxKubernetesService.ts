@@ -17,50 +17,27 @@
  * under the License.
  */
 
-import {
-  CreateDeployment,
-  DeleteDeployment,
-  DeploymentDescriptor,
-  DeploymentGroupDescriptor,
-  GetDeployment,
-  ListDeployments,
-  CreateService,
-  DeleteService,
-  DeploymentState,
-  ResourceLabelNames,
-  DeleteIngress,
-  IngressDescriptor,
-  CreateIngress,
-  ListIngresses,
-  IngressGroupDescriptor,
-  ResourceDataSource,
-  CreateDeploymentTemplateArgs,
-} from "@kie-tools-core/kubernetes-bridge/dist/resources";
-import { ResourceFetcher, ResourceFetch } from "@kie-tools-core/kubernetes-bridge/dist/fetch";
 import { UploadStatus, getUploadStatus, postUpload } from "../DmnDevDeploymentQuarkusAppApi";
 import { defaultLabelTokens } from "./types";
 import {
   parseK8sResourceYaml,
-  buildK8sApiServerEndpointsByResourceKind,
   callK8sApiServer,
   interpolateK8sResourceYamls,
-  K8sApiServerEndpointByResourceKind,
   K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
+import { KubernetesConnectionStatus, KubernetesService } from "./KubernetesService";
 import { createDeploymentYaml, getDeploymentListApiPath } from "./resources/kubernetes/Deployment";
 import { createServiceYaml } from "./resources/kubernetes/Service";
 import { createIngressYaml } from "./resources/kubernetes/Ingress";
 import { getNamespaceApiPath } from "./resources/kubernetes/Namespace";
 import { createSelfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReview";
-import { v4 as uuid } from "uuid";
-import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import {
   DeployArgs,
   KieSandboxDeployment,
   KieSandboxDevDeploymentsService,
   ResourceArgs,
 } from "./KieSandboxDevDeploymentsService";
+import { DeploymentState } from "./common";
 
 export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
@@ -117,7 +94,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     return this.kubernetesService.newResourceName(RESOURCE_PREFIX);
   }
 
-  public async listDeployments(): Promise<DeploymentDescriptor[]> {
+  public async listDeployments(): Promise<K8sResourceYaml[]> {
     const deployments = await this.kubernetesService.kubernetesFetch(
       getDeploymentListApiPath(this.args.connection.namespace, defaultLabelTokens.createdBy)
     );
@@ -214,7 +191,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
 
   public async uploadAssets(args: {
     resourceArgs: ResourceArgs;
-    deployment: DeploymentDescriptor;
+    deployment: K8sResourceYaml;
     workspaceZipBlob: Blob;
     baseUrl: string;
   }) {
@@ -320,7 +297,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public extractDeploymentStateWithUploadStatus(
-    deployment: DeploymentDescriptor,
+    deployment: K8sResourceYaml,
     uploadStatus: UploadStatus
   ): DeploymentState {
     const state = this.extractDevDeploymentState({ deployment });

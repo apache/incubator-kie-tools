@@ -18,22 +18,16 @@
  */
 
 import React, { useMemo, useState, useEffect, useCallback } from "react";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
-import { DependentFeature, useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
 import { ConnecToOpenShiftSimple } from "./ConnecToOpenShiftSimple";
 import { ConnectToDeveloperSandboxForRedHatOpenShiftWizard } from "./ConnectToDeveloperSandboxForRedHatOpenShiftWizard";
 import { EMPTY_KUBERNETES_CONNECTION } from "@kie-tools-core/kubernetes-bridge/dist/service/KubernetesConnection";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert";
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import PficonSatelliteIcon from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { KubernetesService, isKubernetesConnectionValid } from "../../devDeployments/services/KubernetesService";
 
@@ -44,32 +38,38 @@ export enum OpenShiftSettingsTabMode {
 
 export function ConnectToOpenShiftSection() {
   const { env } = useEnv();
-  const extendedServices = useExtendedServices();
   const accounts = useAccounts();
   const accountsDispatch = useAccountsDispatch();
 
   const [mode, setMode] = useState(OpenShiftSettingsTabMode.SIMPLE);
   const [newAuthSession, setNewAuthSession] = useState<OpenShiftAuthSession>();
-  const [status, setStatus] = useState(
-    extendedServices.status === ExtendedServicesStatus.RUNNING
-      ? OpenShiftInstanceStatus.DISCONNECTED
-      : OpenShiftInstanceStatus.UNAVAILABLE
-  );
+  const [status, setStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
 
   const [kieSandboxOpenShiftService, setKieSandboxOpenShiftService] = useState<KieSandboxOpenShiftService>();
+  const [isLoadingService, setIsLoadingService] = useState(false);
 
   useEffect(() => {
     (async () => {
       if (isKubernetesConnectionValid(connection)) {
-        const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({ connection });
-        setKieSandboxOpenShiftService(
-          new KieSandboxOpenShiftService({
+        setIsLoadingService(true);
+        try {
+          const k8sApiServerEndpointsByResourceKind = await KubernetesService.getK8sApiServerEndpointsMap({
             connection,
-            k8sApiServerEndpointsByResourceKind,
-            proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
-          })
-        );
+          });
+          setKieSandboxOpenShiftService(
+            new KieSandboxOpenShiftService({
+              connection,
+              k8sApiServerEndpointsByResourceKind,
+              proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
+            })
+          );
+        } catch (e) {
+          console.error(e);
+          setKieSandboxOpenShiftService(undefined);
+          setStatus(OpenShiftInstanceStatus.DISCONNECTED);
+        }
+        setIsLoadingService(false);
       }
     })();
   }, [connection, env.KIE_SANDBOX_CORS_PROXY_URL]);
@@ -94,39 +94,6 @@ export function ConnectToOpenShiftSection() {
 
   return (
     <>
-      {status === OpenShiftInstanceStatus.UNAVAILABLE && (
-        <>
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={PficonSatelliteIcon} />
-              <Title
-                headingLevel="h4"
-                size="md"
-                style={{
-                  width: "300px",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "break-spaces",
-                }}
-              >
-                {`Please setup Extended Services to be able to connect to OpenShift.`}
-              </Title>
-              <br />
-              <Button
-                onClick={() => {
-                  setTimeout(() => {
-                    extendedServices.setInstallTriggeredBy(DependentFeature.DEV_DEPLOYMENTS);
-                    extendedServices.setModalOpen(true);
-                    accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
-                  });
-                }}
-              >
-                Setup
-              </Button>
-            </EmptyState>
-          </Bullseye>
-        </>
-      )}
-
       {status === OpenShiftInstanceStatus.CONNECTED && newAuthSession && (
         <>
           <Alert isPlain={true} isInline={true} variant={AlertVariant.success} title={`Successfully connected`}></Alert>
@@ -152,6 +119,7 @@ export function ConnectToOpenShiftSection() {
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
               kieSandboxOpenShiftService={kieSandboxOpenShiftService}
+              isLoadingService={isLoadingService}
             />
           )}
           {mode === OpenShiftSettingsTabMode.WIZARD && (
@@ -163,6 +131,7 @@ export function ConnectToOpenShiftSection() {
               setStatus={setStatus}
               setNewAuthSession={setNewAuthSession}
               kieSandboxOpenShiftService={kieSandboxOpenShiftService}
+              isLoadingService={isLoadingService}
             />
           )}
         </>

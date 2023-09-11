@@ -56,6 +56,7 @@ export function ConnectToKubernetesSimple(props: {
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
+  isLoadingService: boolean;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
@@ -73,7 +74,8 @@ export function ConnectToKubernetesSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kieSandboxKubernetesService?.isConnectionEstablished();
+    const isConnectionEstablished =
+      props.kieSandboxKubernetesService && (await props.kieSandboxKubernetesService.isConnectionEstablished());
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
@@ -356,8 +358,8 @@ export function ConnectToKubernetesSimple(props: {
             variant="primary"
             onClick={onConnect}
             data-testid="save-config-button"
-            isLoading={isConnecting}
-            isDisabled={isConnecting}
+            isLoading={isConnecting || props.isLoadingService}
+            isDisabled={isConnecting || props.isLoadingService}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}

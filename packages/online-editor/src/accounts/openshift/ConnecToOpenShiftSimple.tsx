@@ -31,8 +31,6 @@ import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
-import { useExtendedServices } from "../../extendedServices/ExtendedServicesContext";
-import { ExtendedServicesStatus } from "../../extendedServices/ExtendedServicesStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
@@ -58,9 +56,9 @@ export function ConnecToOpenShiftSimple(props: {
   status: OpenShiftInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
+  isLoadingService: boolean;
 }) {
   const { i18n } = useOnlineI18n();
-  const extendedServices = useExtendedServices();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const authSessionsDispatch = useAuthSessionsDispatch();
@@ -76,7 +74,8 @@ export function ConnecToOpenShiftSimple(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kieSandboxOpenShiftService?.isConnectionEstablished();
+    const isConnectionEstablished =
+      props.kieSandboxOpenShiftService && (await props.kieSandboxOpenShiftService.isConnectionEstablished());
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxOpenShiftService) {
@@ -131,19 +130,6 @@ export function ConnecToOpenShiftSimple(props: {
 
   return (
     <>
-      {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
-        <>
-          <FormAlert>
-            <Alert
-              variant="danger"
-              title={"Connect to Extended Services before configuring your OpenShift instance"}
-              aria-live="polite"
-              isInline
-            />
-          </FormAlert>
-          <br />
-        </>
-      )}
       {isConnectionValidated === FormValiationOptions.INVALID && (
         <>
           <FormAlert>
@@ -180,7 +166,6 @@ export function ConnecToOpenShiftSimple(props: {
         key="use-wizard"
         className="pf-u-p-0"
         variant="link"
-        isDisabled={extendedServices.status !== ExtendedServicesStatus.RUNNING}
         onClick={() => props.setMode(OpenShiftSettingsTabMode.WIZARD)}
         data-testid="use-wizard-button"
         isLoading={isConnecting}
@@ -336,8 +321,8 @@ export function ConnecToOpenShiftSimple(props: {
             variant="primary"
             onClick={onConnect}
             data-testid="save-config-button"
-            isLoading={isConnecting}
-            isDisabled={isConnecting}
+            isLoading={isConnecting || props.isLoadingService}
+            isDisabled={isConnecting || props.isLoadingService}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}

@@ -1,5 +1,4 @@
 import * as jsYaml from "js-yaml";
-import * as reactRouter from "react-router";
 import { K8sApiServerEndpointByResourceKind, K8sResourceYaml } from "./types";
 
 export async function callK8sApiServer(args: {

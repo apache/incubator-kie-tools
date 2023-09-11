@@ -112,6 +112,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   status: KubernetesInstanceStatus;
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
+  isLoadingService: boolean;
 }) {
   const { i18n } = useOnlineI18n();
   const routes = useRoutes();
@@ -225,7 +226,8 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       if (id === WizardStepIds.CONNECT) {
         setConnectLoading(true);
         setConnectionValidated(
-          (await props.kieSandboxKubernetesService?.isConnectionEstablished()) === KubernetesConnectionStatus.CONNECTED
+          (props.kieSandboxKubernetesService && (await props.kieSandboxKubernetesService.isConnectionEstablished())) ===
+            KubernetesConnectionStatus.CONNECTED
         );
         setConnectLoading(false);
       }
@@ -243,10 +245,16 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     }
 
     setConnecting(true);
-    const isConnectionEstablished = await props.kieSandboxKubernetesService?.isConnectionEstablished();
+    const isConnectionEstablished =
+      props.kieSandboxKubernetesService && (await props.kieSandboxKubernetesService.isConnectionEstablished());
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
+      console.log(
+        props.kieSandboxKubernetesService,
+        props.kieSandboxKubernetesService.args,
+        props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind
+      );
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
         id: uuid(),
