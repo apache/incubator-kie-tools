@@ -1,17 +1,20 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
@@ -40,23 +43,25 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
 export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
   return {
     keywords: [
-      "for",
-      "in",
-      "instance of",
-      "return",
-      "if",
-      "then",
-      "else",
-      "some",
-      "every",
-      "satisfies",
-      "function",
-      "external",
-      "or",
       "and",
       "between",
+      "else",
+      "every",
+      "external",
+      "false",
+      "for",
+      "function",
+      "if",
+      "in",
+      "instance of",
       "not",
       "null",
+      "or",
+      "return",
+      "then",
+      "satisfies",
+      "some",
+      "true",
     ],
     functions: [
       "abs",
@@ -191,6 +196,27 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
+    keywords: [
+      "and",
+      "between",
+      "else",
+      "every",
+      "external",
+      "false",
+      "for",
+      "function",
+      "if",
+      "in",
+      "instance of",
+      "not",
+      "null",
+      "or",
+      "return",
+      "then",
+      "satisfies",
+      "some",
+      "true",
+    ],
     snippet: [
       ["if", "if $1 then\n\t$0\nelse\n\t"],
       ["instance of", "instance of $0"],
@@ -1491,9 +1517,17 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
     ],
   };
 
-  for (const suggestion of suggestionTypes.snippet) {
+  for (const suggestion of suggestionTypes.keywords) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Keyword,
+      label: suggestion,
+      insertText: suggestion,
+    } as Monaco.languages.CompletionItem);
+  }
+
+  for (const suggestion of suggestionTypes.snippet) {
+    suggestions.push({
+      kind: Monaco.languages.CompletionItemKind.Snippet,
       insertTextRules: Monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       label: suggestion[0],
       insertText: suggestion[1],

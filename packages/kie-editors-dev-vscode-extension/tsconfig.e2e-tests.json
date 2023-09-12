@@ -3,7 +3,10 @@
   "compilerOptions": {
     "declaration": false,
     "declarationMap": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
+    "target": "es6",
     "outDir": "out"
   },
   "include": ["e2e-tests"],

@@ -1,18 +1,22 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
+
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.collaborationEditor.popup.editor;
 
@@ -40,8 +44,10 @@ import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.Correlation;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 import static com.google.gwt.dom.client.Style.Display.NONE;
 import static com.google.gwt.dom.client.Style.Display.TABLE;
@@ -85,6 +91,9 @@ public class CorrelationsEditorWidgetViewImpl extends Composite implements Corre
     private Presenter presenter;
 
     private boolean showErrors;
+
+    @Inject
+    protected ClientTranslationService translationService;
 
     @Override
     public void init(final CorrelationsEditorWidgetViewImpl.Presenter presenter) {
@@ -147,9 +156,9 @@ public class CorrelationsEditorWidgetViewImpl extends Composite implements Corre
         }
 
         if (showErrors) {
-            toggleErrorsAnchor.setInnerText("Hide Errors");
+            toggleErrorsAnchor.setInnerText(translationService.getValue(StunnerBPMNConstants.CORRELATION_HIDE_ERRORS));
         } else {
-            toggleErrorsAnchor.setInnerText("Show Errors");
+            toggleErrorsAnchor.setInnerText(translationService.getValue(StunnerBPMNConstants.CORRELATION_SHOW_ERRORS));
         }
 
         int itemsCount = correlationListItems.getComponentCount();

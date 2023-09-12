@@ -1,0 +1,4 @@
+<module rename-to='gwtproject'>
+    <inherits name="elemental2.dom.Dom" />
+    <source path="" />
+</module>

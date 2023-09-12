@@ -1,17 +1,20 @@
 /*
- * Copyright 2023 Red Hat, Inc. and/or its affiliates.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
  */
 
 require("./serverless-workflow-editor-extension-smoke.test");
@@ -19,8 +22,8 @@ require("./serverless-workflow-editor-extension-smoke.test");
 import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
-import { Key, TextEditor } from "vscode-extension-tester";
-import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
+import { Key } from "vscode-extension-tester";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - events tests", () => {
@@ -70,7 +73,7 @@ describe("Serverless workflow editor - events tests", () => {
     ]);
 
     // add asyncapi event from yaml specification
-    await selectFromContentAssist(textEditor, "specs»asyncapi.yaml#publishYamlOperation");
+    await textEditor.selectFromContentAssist("specs»asyncapi.yaml#publishYamlOperation");
 
     // check the final editor content is the same as expected result
     const editorContent = await textEditor.getText();
@@ -101,19 +104,11 @@ describe("Serverless workflow editor - events tests", () => {
     ]);
 
     // add asyncapi event from json specification
-    await selectFromContentAssist(textEditor, "specs»asyncapi.json#subscribeJsonOperation");
+    await textEditor.selectFromContentAssist("specs»asyncapi.json#subscribeJsonOperation");
 
     // check the final editor content is the same as expected result
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "event.sw.yaml.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
   });
-
-  async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
-    const contentAssist = await textEditor.toggleContentAssist(true);
-    const item = await contentAssist?.getItem(value);
-    await sleep(500);
-    expect(await item?.getLabel()).contain(value);
-    await item?.click();
-  }
 });
