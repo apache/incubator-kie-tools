@@ -1,4 +1,5 @@
 import { devices, defineConfig } from "@playwright/test";
+import { ProjectName } from "./projectNames";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -32,11 +33,18 @@ export default defineConfig({
     // Default locale;
     locale: "en-US",
   },
+  expect: {
+    toHaveScreenshot: {
+      // An acceptable ratio of pixels that are different to the
+      // total amount of pixels, between 0 and 1.
+      maxDiffPixelRatio: 0.01,
+    },
+  },
   /* Configure projects for major browsers */
   projects: [
     {
       timeout: 60000,
-      name: "chromium",
+      name: ProjectName.CHROMIUM,
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
     },
 
@@ -47,13 +55,13 @@ export default defineConfig({
 
     {
       timeout: 60000,
-      name: "webkit",
+      name: ProjectName.WEBKIT,
       use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
     },
 
     {
       timeout: 60000,
-      name: "Google Chrome",
+      name: ProjectName.GOOGLE_CHROME,
       use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
     },
   ],

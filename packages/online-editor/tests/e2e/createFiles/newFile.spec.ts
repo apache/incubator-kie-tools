@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("New file", () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeEach(async () => {
     test.slow();
   });
 
@@ -49,5 +49,9 @@ test.describe("New file", () => {
       await expect(kieSandbox.getEditor().getByRole("button", { name: "Set Data Dictionary" })).toBeAttached();
       await expect(page).toHaveScreenshot("new-file-pmml.png");
     });
+  });
+
+  test.describe("Editor", () => {
+    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/546");
   });
 });

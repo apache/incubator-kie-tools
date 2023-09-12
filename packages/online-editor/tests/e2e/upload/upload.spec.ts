@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("Upload", () => {
   test.beforeEach(async ({ page }) => {
@@ -46,5 +46,9 @@ test.describe("Upload", () => {
       await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toBeAttached();
       await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toContainText("testScoreCard");
     });
+  });
+
+  test.describe("Editor", () => {
+    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/549");
   });
 });

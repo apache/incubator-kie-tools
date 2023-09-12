@@ -1,4 +1,4 @@
-import { Locator, Page, test as base } from "@playwright/test";
+import { Page, test as base } from "@playwright/test";
 import { Upload } from "./upload";
 
 type BaseFixtures = {

@@ -14,29 +14,15 @@
  * limitations under the License.
  */
 
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("DMN runner", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/");
-    // open dmn file;
-    test.slow();
-  });
-
-  // check node creation;
-  // check type change;
-  // check node deletion;
-  // check download/import inputs;
-
+  test.skip(true, "https://github.com/kiegroup/kie-issues/issues/545");
   test.describe("Form", () => {
-    test("", async ({ page, upload, kieSandbox }) => {});
+    test("", async () => {});
   });
 
   test.describe("Table", () => {
-    test("", async ({ page, upload, kieSandbox }) => {});
+    test("", async () => {});
   });
-
-  // check change between form/table view
-
-  // open another file with form/table opened
 });

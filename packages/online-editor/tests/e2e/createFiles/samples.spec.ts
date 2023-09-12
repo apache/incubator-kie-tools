@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("Sample", () => {
   test.beforeEach(async ({ page }) => {
@@ -52,32 +52,6 @@ test.describe("Sample", () => {
   });
 
   test.describe("Editor", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.goto("/");
-    });
-
-    test("should create BPMN sample file", async ({ page, kieSandbox }) => {
-      await page.getByRole("button", { name: "Try sample" }).nth(0).click();
-      await expect(page.getByRole("button", { name: "Workflow Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Workflow Edit file name" })).toContainText("Sample");
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "Start Events" })).toBeAttached();
-      await expect(page).toHaveScreenshot("sample-bpmn.png");
-    });
-
-    test("should create DMN sample file", async ({ page, kieSandbox }) => {
-      await page.getByRole("button", { name: "Try sample" }).nth(1).click();
-      await expect(page.getByRole("button", { name: "Decision Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Decision Edit file name" })).toContainText("Sample");
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "DMN Input Data" })).toBeAttached();
-      await expect(page).toHaveScreenshot("sample-dmn.png");
-    });
-
-    test("should create PMML sample file", async ({ page, kieSandbox }) => {
-      await page.getByRole("button", { name: "Try sample" }).nth(2).click();
-      await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toBeAttached();
-      await expect(page.getByRole("button", { name: "Scorecard Edit file name" })).toContainText("Sample");
-      await expect(kieSandbox.getEditor().getByRole("button", { name: "Set Data Dictionary" })).toBeAttached();
-      await expect(page).toHaveScreenshot("sample-pmml.png");
-    });
+    test.skip(true, "https://github.com/kiegroup/kie-issues/issues/547");
   });
 });

@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-import { test, expect } from "../fixtures/base";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("Import from URL", () => {
-  test.beforeEach(async ({ page }) => {
-    await test.slow();
-  });
-
+  test.skip(true, "https://github.com/kiegroup/kie-issues/issues/548");
   test.describe("Home", () => {
-    test.beforeEach(async ({ page }) => {
-      await page.goto("/");
-    });
-
     test.describe("GitHub", () => {
       test.describe("Unauthenticated", () => {
         test("should open a repository from GitHub on default branch", async ({ page, kieSandbox }) => {});
