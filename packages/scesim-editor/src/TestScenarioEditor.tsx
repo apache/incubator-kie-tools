@@ -43,6 +43,7 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
@@ -54,8 +55,8 @@ import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-ico
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
-import { ErrorBoundary } from "./reactExt/ErrorBoundary";
-import { TestToolsPanel } from "./panels/TestToolsPanel";
+import ErrorBoundary from "./reactExt/ErrorBoundary";
+import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
@@ -99,21 +100,41 @@ export type TestScenarioEditorRef = {
   setContent(path: string, content: string): void;
 };
 
+export type TestScenarioSettings = {
+  assetType: string;
+  dmnFilePath?: string;
+  dmnName?: string;
+  dmnNamespace?: string;
+  isStatelessSessionRule?: boolean;
+  isTestSkipped: boolean;
+  kieSessionRule?: string;
+  ruleFlowGroup?: string;
+};
+
 /* Sub-Components */
 
 function TestScenarioCreationPanel({
   onCreateScesimButtonClicked,
 }: {
-  onCreateScesimButtonClicked: (assetType: string, skipFile: boolean) => void;
+  onCreateScesimButtonClicked: (
+    assetType: string,
+    isStatelessSessionRule: boolean,
+    isTestSkipped: boolean,
+    kieSessionRule: string,
+    ruleFlowGroup: string
+  ) => void;
 }) {
   const assetsOption = [
     { value: "", label: "Select a type", disabled: true },
     { value: TestScenarioType[TestScenarioType.DMN], label: "Decision (DMN)", disabled: false },
-    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: true },
+    { value: TestScenarioType[TestScenarioType.RULE], label: "Rule (DRL)", disabled: false },
   ];
 
   const [assetType, setAssetType] = React.useState("");
-  const [skipFile, setSkipFile] = React.useState(false);
+  const [kieSessionRule, setKieSessionRule] = React.useState("");
+  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
+  const [isTestSkipped, setTestSkipped] = React.useState(false);
+  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
 
   return (
     <EmptyState>
@@ -137,21 +158,50 @@ function TestScenarioCreationPanel({
             ))}
           </FormSelect>
         </FormGroup>
-        {assetType == TestScenarioType[TestScenarioType.DMN] && (
+        {assetType === TestScenarioType[TestScenarioType.DMN] && (
           <FormGroup label="Select DMN" isRequired>
             <FormSelect id="dmn-select" name="dmn-select" value={"select one"} isDisabled>
               <FormSelectOption isDisabled={true} key={0} value={"select one"} label={"Select a DMN file"} />
             </FormSelect>
           </FormGroup>
         )}
+        {assetType === TestScenarioType[TestScenarioType.RULE] && (
+          <>
+            <FormGroup label={"KIE Session"}>
+              <TextInput
+                placeholder={"<Optional>"}
+                onChange={(value) => setKieSessionRule(value)}
+                type="text"
+                value={kieSessionRule}
+              />
+            </FormGroup>
+            <FormGroup label={"Group"}>
+              <TextInput
+                placeholder={"<Optional>"}
+                onChange={(value) => setRuleFlowGroup(value)}
+                type="text"
+                value={ruleFlowGroup}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Checkbox
+                id="stateless-session-checkbox"
+                isChecked={isStatelessSessionRule}
+                label="Stateless Session"
+                onChange={(value) => {
+                  setStatelessSessionRule(value);
+                }}
+              />
+            </FormGroup>
+          </>
+        )}
         <FormGroup>
           <Checkbox
-            id="skip-scesim-checkbox"
-            isChecked={skipFile}
+            id="test-skipped-checkbox"
+            isChecked={isTestSkipped}
             label="Skip this file during the test"
-            name="skip-scesim-checkbox"
             onChange={(value: boolean) => {
-              setSkipFile(value);
+              setTestSkipped(value);
             }}
           />
         </FormGroup>
@@ -160,7 +210,9 @@ function TestScenarioCreationPanel({
         variant="primary"
         icon={<AddIcon />}
         isDisabled={assetType == ""}
-        onClick={() => onCreateScesimButtonClicked(assetType, skipFile)}
+        onClick={() =>
+          onCreateScesimButtonClicked(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
+        }
       >
         Create
       </Button>
@@ -200,7 +252,15 @@ function TestScenarioDocksPanel({
   );
 }
 
-function TestScenarioMainPanel() {
+function TestScenarioMainPanel({
+  fileName,
+  scesimModel,
+  updateSettingField,
+}: {
+  fileName: string;
+  scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
+  updateSettingField: (field: string, value: string) => void;
+}) {
   const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
 
   const onTabChanged = useCallback((_event, tab) => {
@@ -243,7 +303,23 @@ function TestScenarioMainPanel() {
             {tab === TestScenarioEditorTab.EDITOR && (
               <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
                 <DrawerContent
-                  panelContent={<TestToolsPanel selectedDock={dockPanel.selected} onClose={closeDockPanel} />}
+                  panelContent={
+                    <TestScenarioDrawerPanel
+                      fileName={fileName}
+                      onDrawerClose={closeDockPanel}
+                      onUpdateSettingField={updateSettingField}
+                      selectedDock={dockPanel.selected}
+                      testScenarioSettings={{
+                        assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!,
+                        dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"],
+                        dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"],
+                        isStatelessSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["stateless"] ?? false,
+                        isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false,
+                        kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"],
+                        ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"],
+                      }}
+                    />
+                  }
                 >
                   <DrawerContentBody>
                     <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
@@ -352,14 +428,39 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
   /** scesim model update functions */
 
   const setInitialSettings = useCallback(
-    (assetType: string, skipFile: boolean) =>
+    (
+      assetType: string,
+      isStatelessSessionRule: boolean,
+      isTestSkipped: boolean,
+      kieSessionRule: string,
+      ruleFlowGroup: string
+    ) =>
       setScesimModel((prevState) => ({
         ScenarioSimulationModel: {
           ...prevState.ScenarioSimulationModel,
           ["settings"]: {
             ...prevState.ScenarioSimulationModel["settings"],
+            ["dmoSession"]:
+              assetType === TestScenarioType[TestScenarioType.RULE] && kieSessionRule ? kieSessionRule : undefined,
+            ["ruleFlowGroup"]:
+              assetType === TestScenarioType[TestScenarioType.RULE] && ruleFlowGroup ? ruleFlowGroup : undefined,
+            ["skipFromBuild"]: isTestSkipped,
+            ["stateless"]: assetType === TestScenarioType[TestScenarioType.RULE] ? isStatelessSessionRule : undefined,
             ["type"]: assetType,
-            ["skipFromBuild"]: skipFile,
+          },
+        },
+      })),
+    [setScesimModel]
+  );
+
+  const updateSettingsField = useCallback(
+    (fieldName: string, value: string) =>
+      setScesimModel((prevState) => ({
+        ScenarioSimulationModel: {
+          ...prevState.ScenarioSimulationModel,
+          ["settings"]: {
+            ...prevState.ScenarioSimulationModel["settings"],
+            [fieldName]: value,
           },
         },
       })),
@@ -405,7 +506,13 @@ const TestScenarioEditorInternal = ({ forwardRef }: { forwardRef?: React.Ref<Tes
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel />;
+            return (
+              <TestScenarioMainPanel
+                fileName={scesimFile.path}
+                scesimModel={scesimModel}
+                updateSettingField={updateSettingsField}
+              />
+            );
         }
       })()}
     </>
