@@ -1,4 +1,4 @@
-import { test, expect } from "../../__fixtures__/setup";
+import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 
 test.describe("Relation context menu", () => {

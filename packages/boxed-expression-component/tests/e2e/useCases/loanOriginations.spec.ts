@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/setup";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("Check loan originations use case", () => {
   test("should render application risk score expression correctly", async ({ useCases, boxedExpressionEditor }) => {

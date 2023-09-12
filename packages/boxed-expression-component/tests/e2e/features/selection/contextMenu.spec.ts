@@ -1,4 +1,4 @@
-import { test, expect } from "../../__fixtures__/setup";
+import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Selection", () => {
   test.describe("Context menu", () => {

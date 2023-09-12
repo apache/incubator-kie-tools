@@ -1,4 +1,5 @@
-import { test, expect } from "../../__fixtures__/setup";
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Relation", () => {
   test("should correctly create a people relation", async ({ stories, page, boxedExpressionEditor, resizing }) => {
@@ -38,7 +39,12 @@ test.describe("Populate Relation", () => {
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "boolean" }).click();
     await page.keyboard.press("Enter");
-    // WORKAROUND ISSUE
+
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND_DUE_TO,
+      description: "https://github.com/kiegroup/kie-issues/issues/541",
+    });
+    // Plus sign triggers flaky tests.
     await page.getByRole("columnheader", { name: "Name (string)" }).hover();
     await page.getByRole("columnheader", { name: "Age (number)" }).hover();
     await page.getByRole("columnheader", { name: "Country (string)" }).hover();

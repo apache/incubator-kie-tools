@@ -1,4 +1,4 @@
-import { test, expect } from "../../__fixtures__/setup";
+import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Boxed List", () => {
   test("should correctly create an age group boxed list", async ({ stories, boxedExpressionEditor, page, monaco }) => {

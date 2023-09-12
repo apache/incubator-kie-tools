@@ -1,4 +1,4 @@
-import { test, expect } from "../../__fixtures__/setup";
+import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Create Boxed List", () => {
   test("should render expression correctly", async ({ boxedExpressionEditor, stories, page }) => {

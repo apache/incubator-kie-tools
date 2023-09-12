@@ -1,5 +1,5 @@
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
-import { test, expect } from "../../__fixtures__/setup";
+import { test, expect } from "../../__fixtures__/base";
 
 test.describe("Populate Decision table", () => {
   test("should correctly create a routing decision table", async ({
@@ -54,9 +54,16 @@ test.describe("Populate Decision table", () => {
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,
-      description: "",
+      description: "https://github.com/kiegroup/kie-issues/issues/541",
     });
     // Plus sign triggers flaky tests.
+    await page.getByRole("columnheader", { name: "Credit Score (number)" }).hover({ position: { x: 0, y: 0 } });
+    await page
+      .getByRole("columnheader", { name: "Post-bureau affordability (boolean)" })
+      .hover({ position: { x: 0, y: 0 } });
+    await page
+      .getByRole("columnheader", { name: "Post-bureau risk category (string)" })
+      .hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "Bankrupt (boolean)" }).hover({ position: { x: 0, y: 0 } });
     await page.getByRole("columnheader", { name: "Routing (string)" }).hover({ position: { x: 0, y: 0 } });
 

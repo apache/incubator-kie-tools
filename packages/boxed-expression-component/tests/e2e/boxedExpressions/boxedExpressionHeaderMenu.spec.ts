@@ -1,4 +1,4 @@
-import { test, expect } from "../__fixtures__/setup";
+import { test, expect } from "../__fixtures__/base";
 
 test.describe("Boxed expression header menu popover", () => {
   test("should open context menu and change name and type", async ({ stories, page }) => {

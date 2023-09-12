@@ -5,6 +5,7 @@ import { Stories } from "./stories";
 import { Resizing } from "./resizing";
 import { UseCases } from "./useCases";
 import { Monaco } from "./monaco";
+import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 
 type BoxedExpressionFixtures = {
   boxedExpressionEditor: BoxedExpressionEditor;
@@ -16,8 +17,8 @@ type BoxedExpressionFixtures = {
 };
 
 export const test = base.extend<BoxedExpressionFixtures>({
-  monaco: async ({ page }, use) => {
-    await use(new Monaco(page));
+  monaco: async ({ page }, use, testInfo) => {
+    await use(new Monaco(page, testInfo.project.name as ProjectName));
   },
   boxedExpressionEditor: async ({ page, baseURL, monaco }, use) => {
     await use(new BoxedExpressionEditor(page, monaco, baseURL));
