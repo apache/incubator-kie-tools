@@ -8,14 +8,11 @@ test.describe("Selection", () => {
     });
 
     test.describe(() => {
-      test.beforeAll(({ browserName }) => {
+      test.beforeEach(async ({ clipboard, context, browserName }) => {
         test.skip(
           browserName !== "chromium",
           "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
         );
-      });
-
-      test.beforeEach(async ({ clipboard, context, browserName }) => {
         clipboard.setup(context, browserName);
       });
 
@@ -53,7 +50,6 @@ test.describe("Selection", () => {
       });
 
       test("should use cut and paste from selection context menu", async ({ page, context }) => {
-        await context.grantPermissions(["clipboard-read", "clipboard-write"]);
         await page.getByTestId("monaco-container").click({ button: "right" });
         await page.getByRole("menuitem", { name: "Cut" }).click();
         await expect(page.getByRole("row", { name: "1" }).nth(1)).not.toContainText("test");
