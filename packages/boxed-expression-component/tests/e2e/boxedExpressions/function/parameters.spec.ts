@@ -9,12 +9,10 @@ test.describe("Boxed Function parameters", () => {
     await page.getByRole("button", { name: "Add parameter" }).click();
     await page.getByPlaceholder("Parameter Name").fill("name");
 
-    test
-      .info()
-      .annotations.push({
-        type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "https://github.com/kiegroup/kie-issues/issues/540",
-      });
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND_DUE_TO,
+      description: "https://github.com/kiegroup/kie-issues/issues/540",
+    });
     await page.keyboard.press("Tab");
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "string" }).click();
@@ -30,17 +28,18 @@ test.describe("Boxed Function parameters", () => {
     await page.getByRole("button", { name: "Add parameter" }).click();
     await page.getByRole("button", { name: "Add parameter" }).click();
     await page.getByRole("button", { name: "Add parameter" }).click();
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND_DUE_TO,
+      description: "https://github.com/kiegroup/kie-issues/issues/540",
+    });
+    // WORKAROUD: TAB EVENT
     await page.getByPlaceholder("Parameter Name").nth(0).fill("name");
-    await page.getByPlaceholder("Parameter Name").nth(1).fill("age");
-    await page.getByPlaceholder("Parameter Name").nth(2).fill("maried");
-
-    test
-      .info()
-      .annotations.push({
-        type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "https://github.com/kiegroup/kie-issues/issues/540",
-      });
     await page.keyboard.press("Tab");
+    await page.getByPlaceholder("Parameter Name").nth(1).fill("age");
+    await page.keyboard.press("Tab");
+    await page.getByPlaceholder("Parameter Name").nth(2).fill("maried");
+    await page.keyboard.press("Tab");
+
     await page.getByRole("button", { name: "options menu" }).nth(0).click();
     await page.getByRole("option", { name: "string" }).click();
     await page.getByRole("button", { name: "options menu" }).nth(1).click();
@@ -62,15 +61,15 @@ test.describe("Boxed Function parameters", () => {
     await page.getByRole("button", { name: "Add parameter" }).click();
     await page.getByRole("button", { name: "Add parameter" }).click();
     await page.getByPlaceholder("Parameter Name").nth(0).fill("name");
+    test.info().annotations.push({
+      type: TestAnnotations.WORKAROUND_DUE_TO,
+      description: "https://github.com/kiegroup/kie-issues/issues/540",
+    });
+    // WORKAROUD: TAB EVENT
+    await page.keyboard.press("Tab");
     await page.getByPlaceholder("Parameter Name").nth(1).fill("age");
+    await page.keyboard.press("Tab");
     await page.getByPlaceholder("Parameter Name").nth(2).fill("maried");
-
-    test
-      .info()
-      .annotations.push({
-        type: TestAnnotations.WORKAROUND_DUE_TO,
-        description: "https://github.com/kiegroup/kie-issues/issues/540",
-      });
     await page.keyboard.press("Tab");
     await page.getByRole("button", { name: "options menu" }).nth(0).click();
     await page.getByRole("option", { name: "string" }).click();
@@ -78,7 +77,7 @@ test.describe("Boxed Function parameters", () => {
     await page.getByRole("option", { name: "number" }).click();
     await page.getByRole("button", { name: "options menu" }).nth(2).click();
     await page.getByRole("option", { name: "boolean" }).click();
-    await page.getByRole("button", { name: "", exact: true }).nth(0);
+    await page.getByRole("button", { name: "", exact: true }).nth(0).click();
     await page.keyboard.press("Escape");
 
     await expect(page.getByRole("columnheader", { name: "(age: (number), maried: (boolean))" })).toBeAttached();
