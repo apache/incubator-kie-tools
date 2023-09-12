@@ -23,7 +23,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { WorkflowDefinition, WorkflowFormDriver } from "../../api";
+import { WorkflowDefinition, WorkflowFormDriver } from "../../apis";
 import { WorkflowForm, CustomWorkflowForm, FormNotification, Notification } from "../../components";
 import { useOpenApi } from "../../context/OpenApiContext";
 import { BasePage } from "../BasePage";

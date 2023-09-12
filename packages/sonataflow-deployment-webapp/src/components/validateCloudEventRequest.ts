@@ -17,7 +17,7 @@
  * under the License.
  */
 import isPlainObject from "lodash/isPlainObject";
-import { CloudEventRequest } from "../api";
+import { CloudEventRequest } from "../apis";
 
 export interface FormValidations {
   isValid(): boolean;

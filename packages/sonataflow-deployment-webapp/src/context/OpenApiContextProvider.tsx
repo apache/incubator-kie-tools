@@ -19,7 +19,7 @@
 
 import { OpenAPI } from "openapi-types";
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
-import { WorkflowFormGatewayApi } from "../api";
+import { WorkflowFormGatewayApi } from "../apis";
 import { useOpenApiPromise } from "../hooks/useOpenApiPromise";
 import { WorkflowFormGatewayApiImpl } from "../impl/WorkflowFormGatewayApiImpl";
 import { OpenApiContext } from "./OpenApiContext";

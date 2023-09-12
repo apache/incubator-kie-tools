@@ -26,7 +26,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon";
 import React, { useCallback, useState } from "react";
-import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest } from "../api";
+import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest } from "../apis";
 import CloudEventFieldLabelIcon from "./CloudEventFieldLabelIcon";
 import { FormValidations, validateCloudEventRequest } from "./validateCloudEventRequest";
 

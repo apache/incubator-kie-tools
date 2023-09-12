@@ -30,7 +30,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useCallback, useState } from "react";
-import { WorkflowDefinition, WorkflowFormDriver } from "../api";
+import { WorkflowDefinition, WorkflowFormDriver } from "../apis";
 import { ErrorPage } from "../pages/ErrorPage";
 import { validateWorkflowData } from "./validateWorkflowData";
 

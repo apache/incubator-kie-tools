@@ -25,7 +25,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { CloudEventFormDriver, CloudEventRequest } from "../../api";
+import { CloudEventFormDriver, CloudEventRequest } from "../../apis";
 import { FormNotification, Notification } from "../../components";
 import { CloudEventForm, CloudEventFormDefaultValues } from "../../components/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";

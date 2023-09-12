@@ -18,7 +18,7 @@
  */
 import React, { useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { WorkflowDefinition, WorkflowFormDriver } from "../api";
+import { WorkflowDefinition, WorkflowFormDriver } from "../apis";
 import { FormRendererApi } from "../types/types";
 import { ActionType, FormAction } from "./utils";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";

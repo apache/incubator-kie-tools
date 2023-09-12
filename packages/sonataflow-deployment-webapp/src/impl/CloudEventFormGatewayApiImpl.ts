@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CloudEventRequest, triggerStartCloudEvent } from "../api";
+import { CloudEventRequest, triggerStartCloudEvent } from "../apis";
 
 export interface CloudEventFormGatewayApi {
   triggerStartCloudEvent(event: CloudEventRequest): Promise<string>;

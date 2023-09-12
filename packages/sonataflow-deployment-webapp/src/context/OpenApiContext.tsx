@@ -19,7 +19,7 @@
 
 import { createContext, useContext } from "react";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { WorkflowFormGatewayApi } from "../api";
+import { WorkflowFormGatewayApi } from "../apis";
 import { OpenAPI } from "openapi-types";
 
 export interface OpenApiContextType {
