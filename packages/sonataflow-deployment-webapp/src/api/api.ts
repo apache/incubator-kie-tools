@@ -18,7 +18,9 @@
  */
 
 import axios from "axios";
+import { v4 as uuid } from "uuid";
 import { OpenAPI } from "openapi-types";
+import { CloudEventRequest, SONATAFLOW_BUSINESS_KEY } from "./CloudEvent";
 
 export const getCustomWorkflowSchema = async (
   api: OpenAPI.Document,
@@ -58,5 +60,40 @@ export const startWorkflowRest = (
         resolve(response.data.id);
       })
       .catch((err) => reject(err));
+  });
+};
+
+const doTriggerCloudEvent = (event: CloudEventRequest, devUIUrl: string): Promise<any> => {
+  const cloudEvent = {
+    ...event.headers.extensions,
+    specversion: "1.0",
+    id: uuid(),
+    source: event.headers.source ?? "",
+    type: event.headers.type,
+    data: event.data ? JSON.parse(event.data) : {},
+  };
+
+  if (devUIUrl.endsWith("/")) {
+    devUIUrl = devUIUrl.slice(0, devUIUrl.length - 1);
+  }
+
+  const url = `${devUIUrl}${event.endpoint.startsWith("/") ? "" : "/"}${event.endpoint}`;
+
+  return axios.request({
+    url,
+    method: event.method,
+    data: cloudEvent,
+  });
+};
+
+export const triggerStartCloudEvent = (event: CloudEventRequest, devUIUrl: string): Promise<string> => {
+  if (!event.headers.extensions[SONATAFLOW_BUSINESS_KEY]) {
+    event.headers.extensions[SONATAFLOW_BUSINESS_KEY] = String(Math.floor(Math.random() * 100000));
+  }
+
+  return new Promise((resolve, reject) => {
+    doTriggerCloudEvent(event, devUIUrl)
+      .then(() => resolve(event.headers.extensions[SONATAFLOW_BUSINESS_KEY]))
+      .catch((error) => reject(error));
   });
 };

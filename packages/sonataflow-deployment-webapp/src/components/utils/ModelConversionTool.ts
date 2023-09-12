@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/* TODO: ModelConversionTool: remove unused stuff */
 export class ModelConversionTool {
   public static convertDateToString = (model: any, schema: Record<string, any>): any => {
     return doConvert(model, schema, (value) => value.toISOString());

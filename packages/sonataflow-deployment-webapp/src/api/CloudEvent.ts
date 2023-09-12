@@ -16,29 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import _ from "lodash";
-import { ActionList, ActionListItem } from "@patternfly/react-core/dist/js/components/ActionList";
-import { convertActionsToButton, FormAction } from "./utils";
+export const SONATAFLOW_BUSINESS_KEY = "kogitobusinesskey";
 
-interface IOwnProps {
-  actions?: FormAction[];
-  enabled?: boolean;
-  onSubmitForm?: () => void;
+export enum CloudEventMethod {
+  POST = "POST",
+  PUT = "PUT",
 }
 
-export function FormFooter({ actions, enabled = true, onSubmitForm }: IOwnProps) {
-  if (_.isEmpty(actions)) {
-    return null;
-  }
+export interface CloudEventRequest {
+  endpoint: string;
+  method: CloudEventMethod;
 
-  const actionItems = convertActionsToButton(actions || [], enabled, onSubmitForm)?.map((button, index) => {
-    return <ActionListItem key={`form-action-${index}`}>{button}</ActionListItem>;
-  });
+  headers: CloudEventHeaders;
+  data: string;
+}
 
-  return (
-    <div className="sonataflow-deployment-common__form-footer-padding-top">
-      <ActionList>{actionItems}</ActionList>
-    </div>
-  );
+export interface CloudEventHeaders {
+  type: string; // Type of the cloud event
+  source: string; // Source of the cloud event
+
+  extensions: Record<string, string>;
+}
+
+/**
+ * Interface that defines a Driver for CloudEventForm views.
+ */
+export interface CloudEventFormDriver {
+  triggerCloudEvent(event: CloudEventRequest): Promise<void>;
 }

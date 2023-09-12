@@ -35,7 +35,9 @@ export function BasePageNav() {
           key={"Workflows-nav"}
           isActive={
             location.pathname === routes.workflows.home.path({}) ||
-            matchPath(location.pathname, { path: routes.workflows.form.path({ workflowId: ":workflowId" }) })?.isExact
+            matchPath(location.pathname, { path: routes.workflows.form.path({ workflowId: ":workflowId" }) })
+              ?.isExact ||
+            location.pathname === routes.workflows.cloudEvent.path({})
           }
           ouiaId="workflows-nav"
         >

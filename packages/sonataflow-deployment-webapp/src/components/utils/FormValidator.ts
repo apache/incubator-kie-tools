@@ -18,7 +18,6 @@
  */
 import Ajv, { ValidateFunction } from "ajv";
 import { SCHEMA_VERSION } from "../../types/types";
-/* TODO: remove unused stuff */
 /**
  * Defines a basic Form Validator
  *
@@ -40,7 +39,6 @@ export function lookupValidator(schema: any): FormValidator {
   }
 
   if (schema.$schema === SCHEMA_VERSION.DRAFT_2019_09) {
-    // TODO: upgrade AJV version to get the DRAFT_2019_09 validator
     return new Draft2019_09Validator();
   }
 
@@ -55,7 +53,7 @@ export function lookupValidator(schema: any): FormValidator {
 /**
  * Implementation of a validator using AJV for DRAFT_7
  */
-export class Draft7FormValidator implements FormValidator {
+class Draft7FormValidator implements FormValidator {
   readonly schema: any;
   readonly validator: ValidateFunction;
 
@@ -74,8 +72,6 @@ export class Draft7FormValidator implements FormValidator {
   }
 }
 
-export class Draft2019_09Validator implements FormValidator {
-  validate(model: any): any {
-    // TODO: upgrade AJV version to get the DRAFT_2019_09 validator
-  }
+class Draft2019_09Validator implements FormValidator {
+  validate(model: any): any {}
 }

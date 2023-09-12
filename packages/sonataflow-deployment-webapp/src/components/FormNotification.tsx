@@ -36,7 +36,7 @@ interface IOwnProps {
   notification: Notification;
 }
 
-export const FormNotification: React.FC<IOwnProps> = ({ notification }) => {
+export function FormNotification({ notification }: IOwnProps) {
   const variant = notification.type === "error" ? "danger" : "success";
 
   const [showDetails, setShowDetails] = useState<boolean>(false);
@@ -66,4 +66,4 @@ export const FormNotification: React.FC<IOwnProps> = ({ notification }) => {
       {showDetails && notification.details && <p>{notification.details}</p>}
     </Alert>
   );
-};
+}

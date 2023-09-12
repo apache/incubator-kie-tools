@@ -56,7 +56,9 @@ export function Workflows() {
         <Toolbar>
           <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>
             <ToolbarItem alignment={{ default: "alignLeft" }}>
-              <Button>Trigger Cloud Event</Button>
+              <Link to={routes.workflows.cloudEvent.path({})}>
+                <Button>Trigger Cloud Event</Button>
+              </Link>
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>

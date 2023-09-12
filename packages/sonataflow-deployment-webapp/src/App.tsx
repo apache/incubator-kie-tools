@@ -26,6 +26,7 @@ import { Workflows } from "./pages/Workflows/";
 import { NoMatchPage } from "./pages/NoMatchPage";
 import { routes } from "./routes";
 import { WorkflowFormPage } from "./pages/Workflows/WorkflowFormPage";
+import { CloudEventFormPage } from "./pages/Workflows/CloudEventFormPage";
 
 export function App() {
   return (
@@ -35,6 +36,9 @@ export function App() {
           <Switch>
             <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })}>
               {({ match }) => <WorkflowFormPage workflowId={match!.params.workflowId!} />}
+            </Route>
+            <Route path={routes.workflows.cloudEvent.path({})}>
+              <CloudEventFormPage />
             </Route>
             <Route path={routes.workflows.home.path({})}>
               <Workflows />

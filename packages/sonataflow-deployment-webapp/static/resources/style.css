@@ -64,3 +64,7 @@
 .sonataflow-deployment-common__form-footer-padding-top {
   padding-top: 20px;
 }
+
+.pf-u-success-color-100 {
+  color: var(--pf-global--success-color--100) !important;
+}

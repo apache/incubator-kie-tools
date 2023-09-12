@@ -79,14 +79,16 @@ export interface QueryParamsImpl<Q extends string> {
   toString(): string;
 }
 
+const WORKFLOWS_ROUTE = "/workflows";
 export const routes = {
   home: new Route<{}>(() => "/"),
 
   workflows: {
-    home: new Route<{}>(() => "/workflows"),
+    home: new Route<{}>(() => WORKFLOWS_ROUTE),
     form: new Route<{
       pathParams: PathParams.WORKFLOW_ID;
-    }>(({ workflowId }) => `/workflows/${workflowId}`),
+    }>(({ workflowId }) => `${WORKFLOWS_ROUTE}/${workflowId}`),
+    cloudEvent: new Route<{}>(() => `/triggerCloudEvent`),
   },
 
   dataJson: new Route<{}>(() => "/sonataflow-deploy-webapp-data.json"),

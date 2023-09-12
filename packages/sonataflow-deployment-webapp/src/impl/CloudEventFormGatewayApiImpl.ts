@@ -16,29 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import _ from "lodash";
-import { ActionList, ActionListItem } from "@patternfly/react-core/dist/js/components/ActionList";
-import { convertActionsToButton, FormAction } from "./utils";
 
-interface IOwnProps {
-  actions?: FormAction[];
-  enabled?: boolean;
-  onSubmitForm?: () => void;
+import { CloudEventRequest, triggerStartCloudEvent } from "../api";
+
+export interface CloudEventFormGatewayApi {
+  triggerStartCloudEvent(event: CloudEventRequest): Promise<string>;
 }
 
-export function FormFooter({ actions, enabled = true, onSubmitForm }: IOwnProps) {
-  if (_.isEmpty(actions)) {
-    return null;
+export class CloudEventFormGatewayApiImpl implements CloudEventFormGatewayApi {
+  constructor(private readonly baseUrl: string) {}
+
+  async triggerStartCloudEvent(event: CloudEventRequest): Promise<string> {
+    const response = await triggerStartCloudEvent(event, this.baseUrl);
+    return response;
   }
-
-  const actionItems = convertActionsToButton(actions || [], enabled, onSubmitForm)?.map((button, index) => {
-    return <ActionListItem key={`form-action-${index}`}>{button}</ActionListItem>;
-  });
-
-  return (
-    <div className="sonataflow-deployment-common__form-footer-padding-top">
-      <ActionList>{actionItems}</ActionList>
-    </div>
-  );
 }

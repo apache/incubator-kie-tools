@@ -20,7 +20,6 @@ import React from "react";
 import _ from "lodash";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
-/* TODO: remove unused stuff */
 export enum ActionType {
   SUBMIT = "submit",
   BUTTON = "button",
