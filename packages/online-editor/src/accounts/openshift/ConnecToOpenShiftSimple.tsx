@@ -34,7 +34,7 @@ import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/KieSandboxOpenShiftService";
 import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
-import { CloudAuthSessionType, OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
+import { AUTH_SESSION_VERSION, CloudAuthSessionType, OpenShiftAuthSession } from "../../authSessions/AuthSessionApi";
 import {
   KubernetesConnection,
   KubernetesConnectionStatus,
@@ -81,6 +81,7 @@ export function ConnecToOpenShiftSimple(props: {
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxOpenShiftService) {
       const newAuthSession: OpenShiftAuthSession = {
         type: CloudAuthSessionType.OpenShift,
+        version: AUTH_SESSION_VERSION,
         id: uuid(),
         ...props.connection,
         authProviderId: "openshift",

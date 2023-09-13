@@ -19,18 +19,26 @@
 
 import { K8sApiServerEndpointByResourceKind } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
+export const AUTH_SESSION_VERSION = 1;
+
 export const AUTH_SESSION_NONE = {
   id: "none",
   name: "Unauthenticated",
   type: "none",
   login: "Unauthenticated",
+  version: AUTH_SESSION_VERSION,
 } as const;
 
 export type NoneAuthSession = typeof AUTH_SESSION_NONE;
 
-export type GitAuthSession = {
-  type: "git";
+export type BaseAuthSession = {
+  type: string;
   id: string;
+  version: number;
+};
+
+export type GitAuthSession = BaseAuthSession & {
+  type: "git";
   token: string;
   login: string;
   uuid?: string;
@@ -46,9 +54,8 @@ export enum CloudAuthSessionType {
   None = "none",
 }
 
-export type OpenShiftAuthSession = {
+export type OpenShiftAuthSession = BaseAuthSession & {
   type: CloudAuthSessionType.OpenShift;
-  id: string;
   authProviderId: string;
   createdAtDateISO: string;
   token: string;
@@ -58,9 +65,8 @@ export type OpenShiftAuthSession = {
   k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
 };
 
-export type KubernetesAuthSession = {
+export type KubernetesAuthSession = BaseAuthSession & {
   type: CloudAuthSessionType.Kubernetes;
-  id: string;
   authProviderId: string;
   createdAtDateISO: string;
   token: string;

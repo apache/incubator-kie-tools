@@ -32,6 +32,7 @@ import { switchExpression } from "../switchExpression/switchExpression";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { KieSandboxKubernetesService } from "../devDeployments/services/KieSandboxKubernetesService";
+import { applyAuthSessionMigrations } from "./AuthSessionMigrations";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -65,7 +66,7 @@ const AUTH_SESSIONS_FS_NAME = "auth_sessions";
 function mapSerializer(_: string, value: any) {
   if (value instanceof Map) {
     return {
-      dataType: "Map",
+      __$$jsClassName: "Map",
       value: Array.from(value.entries()),
     };
   }
@@ -74,7 +75,7 @@ function mapSerializer(_: string, value: any) {
 
 function mapDeSerializer(_: string, value: any) {
   if (typeof value === "object" && value) {
-    if (value.dataType === "Map") {
+    if (value.__$$jsClassName === "Map") {
       return new Map(value.value);
     }
   }
@@ -87,11 +88,16 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const [authSessions, setAuthSessions] = useState<Map<string, AuthSession>>();
   const [authSessionStatus, setAuthSessionStatus] = useState<Map<string, AuthSessionStatus>>();
 
-  const refresh = useCallback(async () => {
+  const getAuthSessionsFromFile = useCallback(async () => {
     const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);
     const content = await (await fsService.getFile(fs, AUTH_SESSIONS_FILE_PATH))?.getFileContents();
-    setAuthSessions(JSON.parse(decoder.decode(content), mapDeSerializer));
+    const parsedAuthSessions = JSON.parse(decoder.decode(content), mapDeSerializer);
+    return parsedAuthSessions;
   }, []);
+
+  const refresh = useCallback(async () => {
+    setAuthSessions(await getAuthSessionsFromFile());
+  }, [getAuthSessionsFromFile]);
 
   const persistAuthSessions = useCallback(
     async (map: Map<string, AuthSession>) => {
@@ -143,12 +149,20 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
       if (!(await fsService.exists(fs, AUTH_SESSIONS_FILE_PATH))) {
         await persistAuthSessions(new Map());
       } else {
-        refresh();
+        const parsedAuthSessions = await getAuthSessionsFromFile();
+        const migratedAuthSessions = new Map<string, AuthSession>();
+        if (parsedAuthSessions instanceof Map || parsedAuthSessions instanceof Array) {
+          for (const [key, authSession] of parsedAuthSessions) {
+            const migratedAuthSession = await applyAuthSessionMigrations(authSession);
+            migratedAuthSessions.set(key, migratedAuthSession);
+          }
+        }
+        await persistAuthSessions(migratedAuthSessions);
       }
     }
 
     run();
-  }, [persistAuthSessions, refresh]);
+  }, [persistAuthSessions, refresh, getAuthSessionsFromFile]);
 
   const recalculateAuthSessionStatus = useCallback(
     (args?: { canceled: Holder<boolean> }) => {
