@@ -31,6 +31,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
+import { useTestScenarioEditorI18n } from "../i18n";
 
 function TestScenarioDrawerPanel({
   fileName,
@@ -45,6 +46,8 @@ function TestScenarioDrawerPanel({
   selectedDock: TestScenarioEditorDock;
   testScenarioSettings: TestScenarioSettings;
 }) {
+  const { i18n } = useTestScenarioEditorI18n();
+
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
       <DrawerHead>
@@ -56,13 +59,13 @@ function TestScenarioDrawerPanel({
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
-                  return "Scenario Cheatsheet";
+                  return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return "Data Objects tool";
+                  return i18n.drawer.dataObject.title;
                 case TestScenarioEditorDock.SETTINGS:
-                  return "Settings";
+                  return i18n.drawer.settings.title;
                 default:
-                  throw new Error("");
+                  throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
               }
             })()}
           </Text>
@@ -70,21 +73,14 @@ function TestScenarioDrawerPanel({
         <Divider />
       </DrawerHead>
       <DrawerPanelBody>
-        {/* The following is a temporary text content. Specific panel for all Docks will be managed */}
         <TextContent>
           <Text>
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
-                  return <>Scenario Cheatsheet</>;
+                  return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return (
-                    <>
-                      {
-                        'To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.'
-                      }
-                    </>
-                  );
+                  return i18n.drawer.dataObject.description;
                 case TestScenarioEditorDock.SETTINGS:
                   return (
                     <TestScenarioDrawerSettingsPanel
@@ -94,7 +90,7 @@ function TestScenarioDrawerPanel({
                     />
                   );
                 default:
-                  throw new Error("");
+                  throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
               }
             })()}
           </Text>

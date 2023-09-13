@@ -21,10 +21,32 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
-  test: {
-    delete: "Delete";
-    insertLeft: "Insert left";
-    insertRight: "Insert right";
+  drawer: {
+    dataObject: {
+      description: string;
+      title: string;
+    };
+    cheatSheet: {
+      title: string;
+    };
+    settings: {
+      assetType: string;
+      dmnModel: string;
+      dmnName: string;
+      dmnNameSpace: string;
+      fileName: string;
+      kieSessionRule: string;
+      kieSessionRulePlaceholder: string;
+      kieSessionRuleTooltip: string;
+      ruleFlowGroup: string;
+      ruleFlowGroupPlaceholder: string;
+      ruleFlowGroupTooltip: string;
+      statelessSessionRule: string;
+      statelessSessionRuleTooltip: string;
+      testSkipped: string;
+      testSkippedTooltip: string;
+      title: string;
+    };
   };
 }
 

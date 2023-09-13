@@ -22,9 +22,34 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 
 export const en: TestScenarioEditorI18n = {
   ...en_common,
-  test: {
-    delete: "Delete",
-    insertLeft: "Insert left",
-    insertRight: "Insert right",
+  drawer: {
+    dataObject: {
+      description:
+        'To create a test scenario, define the "Given" and "Expect" columns by using the data object editor below.',
+      title: "Data Objects tool",
+    },
+    cheatSheet: {
+      title: "Scenario Cheatsheet",
+    },
+    settings: {
+      assetType: "Type",
+      dmnModel: "DMN Model",
+      dmnName: "DMN Name",
+      dmnNameSpace: "DMN Namespace",
+      fileName: "Name",
+      kieSessionRule: "KIE Session",
+      kieSessionRulePlaceholder: "(Optional) KieSession",
+      kieSessionRuleTooltip: "Optional value. If not specified, the default session will be used.",
+      ruleFlowGroup: "AgendaGroup/RuleFlowGroup",
+      ruleFlowGroupPlaceholder: "(Optional) AgendaGroup or RuleFlowGroup.",
+      ruleFlowGroupTooltip:
+        "Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.",
+      statelessSessionRule: "Stateless Session",
+      statelessSessionRuleTooltip:
+        "Select or clear this check box to specify if the KIE Session is stateless or not. If the current KieSession is stateless and the check box is not selected, the tests will fail.",
+      testSkipped: "Skip this test scenario during the test",
+      testSkippedTooltip: "If enabled, all defined Scenarios in this file will be skipped during test execution.",
+      title: "Settings",
+    },
   },
 };
