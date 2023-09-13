@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import isPlainObject from "lodash/isPlainObject";
+import { isPlainObject } from "lodash";
 import { CloudEventRequest } from "../apis";
 
 export interface FormValidations {

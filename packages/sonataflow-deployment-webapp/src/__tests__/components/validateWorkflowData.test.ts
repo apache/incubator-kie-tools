@@ -16,3 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { validateWorkflowData } from "../../components/validateWorkflowData";
+
+describe("validateWorkflowData tests", function () {
+  it("Validate data", () => {
+    expect(validateWorkflowData("this should fail")).toBeFalsy();
+    expect(validateWorkflowData('""')).toBeFalsy();
+    expect(
+      validateWorkflowData(
+        JSON.stringify({
+          name: "Donatello",
+          hobby: "Eat Pizza",
+          age: 15,
+        })
+      )
+    );
+  });
+});
