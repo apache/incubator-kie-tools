@@ -16,7 +16,7 @@ import { DMN_EDITOR_PALLETE_ELEMENT_MIME_TYPE, Pallete } from "./Pallete";
 import { offsetShapePosition, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/PositionalTargetNodeHandles";
-import { EdgeType, NodeType, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
+import { EdgeType, NodeType, containment, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeMarkers } from "./edges/EdgeMarkers";
 import { EDGE_TYPES } from "./edges/EdgeTypes";
@@ -461,10 +461,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     });
   }, [dmnEditorStoreApi, dmnModelBeforeEditingRef]);
 
-  const nodeBeingDraggedRef = useRef<RF.Node<DmnDiagramNodeData<any>> | null>(null);
+  const nodeIdBeingDraggedRef = useRef<string | null>(null);
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
-      nodeBeingDraggedRef.current = node;
+      nodeIdBeingDraggedRef.current = node.id;
 
       dmnEditorStoreApi.setState((state) => {
         state.diagram.dropTargetNode = getFirstNodeFittingBounds(node.id, {
@@ -482,17 +482,18 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
       console.debug("DMN DIAGRAM: `onNodeDragStop`");
-      const nodeBeingDragged = nodeBeingDraggedRef.current!;
-      nodeBeingDraggedRef.current = null;
+      const nodeBeingDragged = nodesById.get(nodeIdBeingDraggedRef.current!);
+      nodeIdBeingDraggedRef.current = null;
       if (!nodeBeingDragged) {
         return;
       }
 
       // Validate
-      if (dmnEditorStoreApi.getState().diagram.dropTargetNode && !isDropTargetNodeValidForSelection) {
+      const dropTargetNode = dmnEditorStoreApi.getState().diagram.dropTargetNode;
+      if (dropTargetNode && containment.has(dropTargetNode.type) && !isDropTargetNodeValidForSelection) {
         console.debug(
           `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
-            dmnEditorStoreApi.getState().diagram.dropTargetNode?.type
+            dropTargetNode.type
           }'. Ignoring nodes dropped.`
         );
         resetToBeforeEditingBegan();
@@ -501,7 +502,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
       try {
         dmnEditorStoreApi.setState((state) => {
-          const dropTargetNode = state.diagram.dropTargetNode;
           state.diagram.dropTargetNode = undefined;
 
           // Un-parent

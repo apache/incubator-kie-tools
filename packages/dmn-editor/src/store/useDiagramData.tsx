@@ -298,9 +298,9 @@ export function useDiagramData() {
     }
 
     // Groups are always at the back. Decision Services after groups, then everything else.
-    const sortedNodes = nodes;
-    // .sort((a, b) => Number(b.type === NODE_TYPES.decisionService) - Number(a.type === NODE_TYPES.decisionService))
-    // .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
+    const sortedNodes = nodes
+      .sort((a, b) => Number(b.type === NODE_TYPES.decisionService) - Number(a.type === NODE_TYPES.decisionService))
+      .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
 
     // console.timeEnd("nodes");
 
