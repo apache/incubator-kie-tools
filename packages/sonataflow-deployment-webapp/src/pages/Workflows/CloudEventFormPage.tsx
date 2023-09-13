@@ -41,6 +41,8 @@ export function CloudEventFormPage() {
   const openApi = useOpenApi();
   const history = useHistory();
 
+  const gatewayApi = useMemo(() => new CloudEventFormGatewayApiImpl(window.location.href.split("/#")[0]), []);
+
   const goToWorkflowList = useCallback(() => {
     history.push(routes.workflows.home.path({}));
   }, [history]);
@@ -82,8 +84,6 @@ export function CloudEventFormPage() {
     },
     [showNotification]
   );
-
-  const gatewayApi = useMemo(() => new CloudEventFormGatewayApiImpl(window.location.href.split("/#")[0]), []);
 
   const triggerStartCloudEvent = useCallback(
     async (event: CloudEventRequest) => {

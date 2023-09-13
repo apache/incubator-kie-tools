@@ -31,12 +31,20 @@ import { ErrorPage } from "../ErrorPage";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { routes } from "../../routes";
 import { useHistory } from "react-router";
+import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
 
 export function WorkflowFormPage(props: { workflowId: string }) {
   const [notification, setNotification] = useState<Notification>();
   const openApi = useOpenApi();
   const [customFormSchema, setCustomFormSchema] = useState<Record<string, any>>();
   const history = useHistory();
+  const gatewayApi = useMemo(
+    () =>
+      openApi.openApiPromise.status === PromiseStateStatus.RESOLVED && openApi.openApiData
+        ? new WorkflowFormGatewayApiImpl(openApi.openApiData)
+        : null,
+    [openApi]
+  );
   const workflowDefinition = useMemo<WorkflowDefinition>(
     () => ({
       workflowName: props.workflowId,
@@ -90,11 +98,11 @@ export function WorkflowFormPage(props: { workflowId: string }) {
   const driver: WorkflowFormDriver = useMemo(
     () => ({
       async getCustomWorkflowSchema(): Promise<Record<string, any>> {
-        return openApi.gatewayApi?.getCustomWorkflowSchema(workflowDefinition.workflowName) ?? {};
+        return gatewayApi?.getCustomWorkflowSchema(workflowDefinition.workflowName) ?? {};
       },
       async resetBusinessKey() {},
       async startWorkflow(endpoint: string, data: Record<string, any>): Promise<void> {
-        return openApi.gatewayApi
+        return gatewayApi
           ?.startWorkflow(endpoint, data)
           .then((id: string) => {
             onSubmitSuccess(`A workflow with id ${id} was triggered successfully.`);
@@ -108,18 +116,18 @@ export function WorkflowFormPage(props: { workflowId: string }) {
           });
       },
     }),
-    [openApi, workflowDefinition, onSubmitError, onSubmitSuccess]
+    [gatewayApi, workflowDefinition, onSubmitError, onSubmitSuccess]
   );
 
   useEffect(() => {
-    if (openApi.gatewayApi) {
-      openApi.gatewayApi.getCustomWorkflowSchema(props.workflowId).then((data) => {
+    if (gatewayApi) {
+      gatewayApi.getCustomWorkflowSchema(props.workflowId).then((data) => {
         if (data) {
           setCustomFormSchema(data);
         }
       });
     }
-  }, [openApi.gatewayApi, props.workflowId]);
+  }, [gatewayApi, props.workflowId]);
 
   if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
     return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;

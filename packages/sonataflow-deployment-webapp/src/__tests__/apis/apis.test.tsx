@@ -17,7 +17,6 @@
  * under the License.
  */
 import axios from "axios";
-import { OpenAPI } from "openapi-types";
 import {
   CloudEventMethod,
   getCustomWorkflowSchema,
@@ -58,8 +57,7 @@ describe("swf custom form tests", () => {
       },
     };
 
-    //@ts-ignore
-    const api: OpenAPI.Document = {
+    const api: any = {
       paths: {
         ["/expression"]: {
           post: {
@@ -77,8 +75,7 @@ describe("swf custom form tests", () => {
     expect(result.properties.numbers.type).toEqual("array");
   });
   it("get custom custom workflow schema - success - no workflowdata", async () => {
-    //@ts-ignore
-    const api: OpenAPI.Document = {
+    const api: any = {
       components: {
         schemas: {
           // no data
@@ -99,9 +96,8 @@ describe("swf custom form tests", () => {
       },
     };
     const workflowName = "expression";
-    const api: OpenAPI.Document = {
+    const api: any = {
       components: {
-        //@ts-ignore
         schemas: {
           [workflowName + "_input"]: { ...schema },
         },

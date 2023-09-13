@@ -18,7 +18,6 @@
  */
 
 export * from "./WorkflowDefinition";
-export * from "./WorkflowFormGatewayApi";
 export * from "./WorkflowFormDriver";
 export * from "./CloudEvent";
 export * from "./apis";

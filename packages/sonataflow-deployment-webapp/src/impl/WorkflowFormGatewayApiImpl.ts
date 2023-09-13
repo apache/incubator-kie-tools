@@ -17,7 +17,14 @@
  * under the License.
  */
 import { OpenAPI } from "openapi-types";
-import { WorkflowFormGatewayApi, getCustomWorkflowSchema, startWorkflowRest } from "../apis";
+import { getCustomWorkflowSchema, startWorkflowRest } from "../apis";
+
+export interface WorkflowFormGatewayApi {
+  setBusinessKey(bk: string): void;
+  getBusinessKey(): string;
+  getCustomWorkflowSchema(workflowName: string): Promise<Record<string, any>>;
+  startWorkflow(endpoint: string, data: Record<string, any>): Promise<string>;
+}
 
 export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
   private businessKey: string;

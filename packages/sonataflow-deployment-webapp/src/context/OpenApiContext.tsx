@@ -19,13 +19,11 @@
 
 import { createContext, useContext } from "react";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { WorkflowFormGatewayApi } from "../apis";
 import { OpenAPI } from "openapi-types";
 
 export interface OpenApiContextType {
   openApiData: OpenAPI.Document | undefined;
   openApiPromise: PromiseState<OpenAPI.Document>;
-  gatewayApi: WorkflowFormGatewayApi | undefined;
 }
 
 export const OpenApiContext = createContext<OpenApiContextType>({} as any);
