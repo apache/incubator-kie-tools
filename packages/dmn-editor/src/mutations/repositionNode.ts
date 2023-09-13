@@ -19,11 +19,19 @@ export function repositionNode({
   change: {
     nodeType: NodeType;
     shapeIndex: number;
-    position: { x: number; y: number };
     sourceEdgeIndexes: number[];
     targetEdgeIndexes: number[];
     selectedEdges: string[];
-  };
+  } & (
+    | {
+        type: "absolute";
+        position: { x: number; y: number };
+      }
+    | {
+        type: "offset";
+        offset: { deltaX: number; deltaY: number };
+      }
+  );
 }) {
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
 
@@ -33,11 +41,21 @@ export function repositionNode({
     throw new Error("Cannot reposition non-existent shape bounds");
   }
 
-  const deltaX = change.position.x - (shapeBounds?.["@_x"] ?? 0);
-  const deltaY = change.position.y - (shapeBounds?.["@_y"] ?? 0);
-
-  shapeBounds["@_x"] = change.position.x;
-  shapeBounds["@_y"] = change.position.y;
+  let deltaX: number;
+  let deltaY: number;
+  if (change.type === "absolute") {
+    deltaX = change.position.x - (shapeBounds?.["@_x"] ?? 0);
+    deltaY = change.position.y - (shapeBounds?.["@_y"] ?? 0);
+    shapeBounds["@_x"] = change.position.x;
+    shapeBounds["@_y"] = change.position.y;
+  } else if (change.type === "offset") {
+    deltaX = change.offset.deltaX;
+    deltaY = change.offset.deltaY;
+    shapeBounds["@_x"] += change.offset.deltaX;
+    shapeBounds["@_y"] += change.offset.deltaY;
+  } else {
+    throw new Error(`Unknown type of node position change '${(change as any).type}'.`);
+  }
 
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
@@ -88,6 +106,10 @@ export function repositionNode({
     delta: {
       x: deltaX,
       y: deltaY,
+    },
+    newPosition: {
+      x: shapeBounds["@_x"],
+      y: shapeBounds["@_y"],
     },
   };
 }

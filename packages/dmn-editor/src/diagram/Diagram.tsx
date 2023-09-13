@@ -51,6 +51,7 @@ import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFr
 import { addNodeToGroup } from "../mutations/addNodeToGroup";
 import { deleteNodeFromGroup } from "../mutations/deleteNodeFromGroup";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditor } from "../DmnEditorContext";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -91,6 +92,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     nodes,
     edges,
     isDropTargetNodeValidForSelection,
+    isDiagramEditingInProgress,
     selectedNodeTypes,
   } = useDmnEditorDerivedStore();
 
@@ -331,9 +333,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 const node = nodesById.get(change.id)!;
                 resizeNode({
                   definitions: state.dmn.model.definitions,
+                  dmnShapesByDmnRefId,
                   change: {
                     nodeType: node.type as NodeType,
-                    shapeIndex: nodesById.get(change.id)!.data.shape.index,
+                    index: node.data.index,
+                    shapeIndex: node.data.shape.index,
                     sourceEdgeIndexes: edges.flatMap((e) =>
                       e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
                     ),
@@ -357,6 +361,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   definitions: state.dmn.model.definitions,
                   edgeIndexesAlreadyUpdated,
                   change: {
+                    type: "absolute",
                     nodeType: node.type as NodeType,
                     selectedEdges: state.diagram.selectedEdges,
                     shapeIndex: node.data.shape.index,
@@ -370,6 +375,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   },
                 });
 
+                // FIXME: Tiago --> This should be inside `repositionNode` I guess...
                 // Update nested
                 if (node.type === NODE_TYPES.decisionService) {
                   const decisionService = node.data.dmnObject as DMN15__tDecisionService;
@@ -388,6 +394,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                       definitions: state.dmn.model.definitions,
                       edgeIndexesAlreadyUpdated,
                       change: {
+                        type: "absolute",
                         nodeType: nestedNode.type as NodeType,
                         selectedEdges: edges.map((e) => e.id),
                         shapeIndex: nestedNode.data.shape.index,
@@ -438,8 +445,21 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
       });
     },
-    [reactFlowInstance, dmnEditorStoreApi, nodesById, edges, diagram.snapGrid]
+    [reactFlowInstance, dmnEditorStoreApi, nodesById, edges, dmnShapesByDmnRefId, diagram.snapGrid]
   );
+
+  const { dmnModelBeforeEditingRef } = useDmnEditor();
+
+  const resetToBeforeEditingBegan = useCallback(() => {
+    dmnEditorStoreApi.setState((state) => {
+      state.dmn.model = dmnModelBeforeEditingRef.current!;
+      state.diagram.draggingNodes = [];
+      state.diagram.draggingWaypoints = [];
+      state.diagram.resizingNodes = [];
+      state.diagram.dropTargetNode = undefined;
+      state.diagram.edgeIdBeingUpdated = undefined;
+    });
+  }, [dmnEditorStoreApi, dmnModelBeforeEditingRef]);
 
   const nodeBeingDraggedRef = useRef<RF.Node<DmnDiagramNodeData<any>> | null>(null);
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
@@ -468,67 +488,75 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         return;
       }
 
-      dmnEditorStoreApi.setState((state) => {
-        const dropTargetNode = state.diagram.dropTargetNode;
-        state.diagram.dropTargetNode = undefined;
+      // Validate
+      if (dmnEditorStoreApi.getState().diagram.dropTargetNode && !isDropTargetNodeValidForSelection) {
+        console.debug(
+          `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
+            dmnEditorStoreApi.getState().diagram.dropTargetNode?.type
+          }'. Ignoring nodes dropped.`
+        );
+        resetToBeforeEditingBegan();
+        return;
+      }
 
-        // Un-parent
-        if (nodeBeingDragged.data.parentRfNode) {
-          const p = nodesById.get(nodeBeingDragged.data.parentRfNode.id);
-          if (p?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
+      try {
+        dmnEditorStoreApi.setState((state) => {
+          const dropTargetNode = state.diagram.dropTargetNode;
+          state.diagram.dropTargetNode = undefined;
+
+          // Un-parent
+          if (nodeBeingDragged.data.parentRfNode) {
+            const p = nodesById.get(nodeBeingDragged.data.parentRfNode.id);
+            if (p?.type === NODE_TYPES.decisionService && nodeBeingDragged.type === NODE_TYPES.decision) {
+              for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
+                deleteDecisionFromDecisionService({
+                  definitions: state.dmn.model.definitions,
+                  decisionId: state.diagram.selectedNodes[i],
+                  decisionServiceId: p.id,
+                });
+              }
+            } else if (p?.type === NODE_TYPES.group) {
+              for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
+                deleteNodeFromGroup({
+                  definitions: state.dmn.model.definitions,
+                  nodeId: state.diagram.selectedNodes[i],
+                });
+              }
+            } else {
+              console.debug(
+                `DMN DIAGRAM: Ignoring '${nodeBeingDragged.type}' with parent '${dropTargetNode?.type}' dropping somewhere..`
+              );
+            }
+          }
+
+          // Parent
+          if (dropTargetNode?.type === NODE_TYPES.decisionService) {
             for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
-              deleteDecisionFromDecisionService({
+              addDecisionToDecisionService({
                 definitions: state.dmn.model.definitions,
-                decisionId: state.diagram.selectedNodes[i],
-                decisionServiceId: p.id,
+                decisionId: state.diagram.selectedNodes[i], // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                decisionServiceId: dropTargetNode.id,
               });
             }
-          } else if (p?.type === NODE_TYPES.group) {
+          } else if (dropTargetNode?.type === NODE_TYPES.group) {
             for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
-              deleteNodeFromGroup({
+              addNodeToGroup({
                 definitions: state.dmn.model.definitions,
                 nodeId: state.diagram.selectedNodes[i],
               });
             }
           } else {
             console.debug(
-              `DMN DIAGRAM: Ignoring '${nodeBeingDragged.type}' with parent '${dropTargetNode?.type}' dropping somewhere..`
+              `DMN DIAGRAM: Ignoring '${nodeBeingDragged.type}' dropped on top of '${dropTargetNode?.type}'`
             );
           }
-        }
-
-        // Validate
-        if (!isDropTargetNodeValidForSelection) {
-          console.debug(
-            `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
-              dropTargetNode?.type
-            }'. Ignoring nodes dropped.`
-          );
-          return;
-        }
-
-        // Parent
-        if (dropTargetNode?.type === NODE_TYPES.decisionService) {
-          for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
-            addDecisionToDecisionService({
-              definitions: state.dmn.model.definitions,
-              decisionId: state.diagram.selectedNodes[i], // We can assume that all selected nodes are Decisions because the contaiment was validated above.
-              decisionServiceId: dropTargetNode.id,
-            });
-          }
-        } else if (dropTargetNode?.type === NODE_TYPES.group) {
-          for (let i = 0; i < state.diagram.selectedNodes.length; i++) {
-            addNodeToGroup({
-              definitions: state.dmn.model.definitions,
-              nodeId: state.diagram.selectedNodes[i],
-            });
-          }
-        } else {
-          console.debug(`DMN DIAGRAM: Ignoring '${nodeBeingDragged.type}' dropped on top of '${dropTargetNode?.type}'`);
-        }
-      });
+        });
+      } catch (e) {
+        console.error(e);
+        resetToBeforeEditingBegan();
+      }
     },
-    [dmnEditorStoreApi, isDropTargetNodeValidForSelection, nodesById, selectedNodeTypes]
+    [dmnEditorStoreApi, isDropTargetNodeValidForSelection, nodesById, resetToBeforeEditingBegan, selectedNodeTypes]
   );
 
   const onEdgesChange = useCallback<RF.OnEdgesChange>(
@@ -654,11 +682,29 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi]
   );
 
+  // Override Reactflow's behavior by intercepting the keydown event using its `capture` variant.
+  const handleRfKeyDownCapture = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (isDiagramEditingInProgress && dmnModelBeforeEditingRef.current && e.key === "Escape") {
+        console.debug(
+          "DMN DIAGRAM: Intercepting Escape pressed and preventing propagation. Reverting DMN model to what it was before editing began."
+        );
+
+        e.stopPropagation();
+        e.preventDefault();
+
+        resetToBeforeEditingBegan();
+      }
+    },
+    [dmnModelBeforeEditingRef, isDiagramEditingInProgress, resetToBeforeEditingBegan]
+  );
+
   return (
     <>
       <DiagramContainerContextProvider container={container}>
         <EdgeMarkers />
         <RF.ReactFlow
+          onKeyDownCapture={handleRfKeyDownCapture} // Override Reactflow's keyboard listeners.
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
@@ -706,7 +752,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           <Pallete />
           <TopRightCornerPanels />
           <PanWhenAltPressed />
-          <KeyboardShortcuts />
+          <KeyboardShortcuts setConnection={setConnection} />
           {/** FIXME: Tiago --> The background is making the Diagram VERY slow on Firefox. Render this conditionally. */}
           <RF.Background />
           <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
@@ -735,6 +781,10 @@ export function TopRightCornerPanels() {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
+  const togglePropertiesPanel = useCallback(() => {
+    dmnEditorStoreApi.setState((state) => dispatch.diagram.togglePropertiesPanel(state));
+  }, [dispatch.diagram, dmnEditorStoreApi]);
+
   const toggleOverlaysPanel = useCallback(() => {
     dmnEditorStoreApi.setState((state) => dispatch.diagram.toggleOverlaysPanel(state));
   }, [dispatch.diagram, dmnEditorStoreApi]);
@@ -758,9 +808,9 @@ export function TopRightCornerPanels() {
       <RF.Panel position={"top-right"} style={{ display: "flex" }}>
         <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
           <Popover
-            key={`${diagram.propertiesPanel.isOpen}`}
-            aria-label="Advanced popover usages example"
-            position={"left-start"}
+            key={`${diagram.overlaysPanel.isOpen}`}
+            aria-label="Overlays Panel"
+            position={"bottom-end"}
             hideOnOutsideClick={false}
             isVisible={diagram.overlaysPanel.isOpen}
             enableFlip={true}
@@ -774,10 +824,7 @@ export function TopRightCornerPanels() {
         </aside>
         {!diagram.propertiesPanel.isOpen && (
           <aside className={"kie-dmn-editor--properties-panel-toggle"}>
-            <button
-              className={"kie-dmn-editor--properties-panel-toggle-button"}
-              onClick={dispatch.diagram.propertiesPanel.toggle}
-            >
+            <button className={"kie-dmn-editor--properties-panel-toggle-button"} onClick={togglePropertiesPanel}>
               <InfoIcon size={"sm"} />
             </button>
           </aside>
@@ -827,9 +874,13 @@ export function SelectionStatus() {
   );
 }
 
-export function KeyboardShortcuts() {
+export function KeyboardShortcuts({
+  setConnection,
+}: {
+  setConnection: React.Dispatch<React.SetStateAction<RF.OnConnectStartParams | undefined>>;
+}) {
   const rfStoreApi = RF.useStoreApi();
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((state) => state.connectionNodeId);
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -841,7 +892,9 @@ export function KeyboardShortcuts() {
 
     rfStoreApi.setState((prev) => {
       if (isConnecting) {
+        console.info("DMN DIAGRAM: Esc pressed. Cancelling connection.");
         prev.cancelConnection();
+        setConnection(undefined);
       } else {
         if (diagram.selectedNodes.length > 0) {
           prev.resetSelectedElements();
@@ -851,7 +904,7 @@ export function KeyboardShortcuts() {
 
       return prev;
     });
-  }, [diagram.selectedNodes.length, esc, isConnecting, rfStoreApi]);
+  }, [diagram.selectedNodes.length, esc, isConnecting, rfStoreApi, setConnection]);
 
   const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {

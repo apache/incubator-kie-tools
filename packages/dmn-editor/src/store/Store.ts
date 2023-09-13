@@ -24,13 +24,11 @@ export interface SnapGrid {
 
 export type DropTargetNode = undefined | { id: string; type: NodeType };
 
+export type DmnModel = XmlParserTsRootElementBaseType & { definitions: DMN15__tDefinitions };
+
 export interface State {
   dispatch: Dispatch;
-  dmn: {
-    model: {
-      definitions: DMN15__tDefinitions;
-    } & XmlParserTsRootElementBaseType;
-  };
+  dmn: { model: DmnModel };
   boxedExpressionEditor: {
     openExpressionId: string | undefined;
     selectedObjectId: string | undefined;
@@ -49,6 +47,9 @@ export interface State {
       elementId: string | undefined;
     };
     overlaysPanel: {
+      isOpen: boolean;
+    };
+    externalNodesPanel: {
       isOpen: boolean;
     };
     overlays: {
@@ -86,9 +87,10 @@ export type Dispatch = {
     propertiesPanel: {
       open: () => void;
       close: () => void;
-      toggle: () => void;
     };
+    togglePropertiesPanel: (state: State) => void;
     toggleOverlaysPanel: (state: State) => void;
+    toggleExternalNodesPanel: (state: State) => void;
     setSnapGrid: (state: State, snap: SnapGrid) => void;
     setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
     setEdgeStatus: (state: State, edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
@@ -155,6 +157,9 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           elementId: undefined,
         },
         overlaysPanel: {
+          isOpen: false,
+        },
+        externalNodesPanel: {
           isOpen: false,
         },
         overlays: {
@@ -237,14 +242,15 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
                 state.diagram.propertiesPanel.isOpen = false;
               });
             },
-            toggle: () => {
-              set((state) => {
-                state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
-              });
-            },
+          },
+          togglePropertiesPanel: (prev) => {
+            prev.diagram.propertiesPanel.isOpen = !prev.diagram.propertiesPanel.isOpen;
           },
           toggleOverlaysPanel: (prev) => {
             prev.diagram.overlaysPanel.isOpen = !prev.diagram.overlaysPanel.isOpen;
+          },
+          toggleExternalNodesPanel: (prev) => {
+            prev.diagram.externalNodesPanel.isOpen = !prev.diagram.externalNodesPanel.isOpen;
           },
           setSnapGrid: (prev, snapGrid) => {
             prev.diagram.snapGrid = snapGrid;

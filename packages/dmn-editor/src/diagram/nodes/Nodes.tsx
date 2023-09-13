@@ -585,7 +585,7 @@ export function NodeResizerHandle(props: { snapGrid: SnapGrid; nodeId: string; n
 }
 
 function useNodeResizing(id: string): boolean {
-  const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
+  const node = RF.useStore((s) => s.nodeInternals.get(id));
   if (!node) {
     throw new Error("Can't use nodeInternals of non-existent node " + id);
   }
@@ -593,7 +593,7 @@ function useNodeResizing(id: string): boolean {
   return node.resizing ?? false;
 }
 function useNodeDimensions(snapGrid: SnapGrid, id: string, shape: DMNDI15__DMNShape): RF.Dimensions {
-  const node = RF.useStore(useCallback((state) => state.nodeInternals.get(id), [id]));
+  const node = RF.useStore((s) => s.nodeInternals.get(id));
   if (!node) {
     throw new Error("Can't use nodeInternals of non-existent node " + id);
   }
@@ -625,9 +625,9 @@ function useHoveredNodeAlwaysOnTop(
 }
 
 export function useConnection(nodeId: string) {
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const connectionHandleId = RF.useStore(useCallback((state) => state.connectionHandleId, []));
-  const connectionHandleType = RF.useStore(useCallback((state) => state.connectionHandleType, []));
+  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
+  const connectionHandleId = RF.useStore((s) => s.connectionHandleId);
+  const connectionHandleType = RF.useStore((s) => s.connectionHandleType);
   const edgeIdBeingUpdated = useDmnEditorStore((s) => s.diagram.edgeIdBeingUpdated);
   const { edgesById } = useDmnEditorDerivedStore();
 
@@ -647,8 +647,8 @@ export function useConnection(nodeId: string) {
 }
 
 export function useConnectionTargetStatus(nodeId: string, isHovered: boolean) {
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
-  const isValidConnection = RF.useStore(useCallback((state) => state.isValidConnection, []));
+  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
+  const isValidConnection = RF.useStore((s) => s.isValidConnection);
   const connection = useConnection(nodeId);
 
   return {
@@ -665,7 +665,7 @@ export function useNodeClassName(
   nodeId: string
 ) {
   const { isDropTargetNodeValidForSelection } = useDmnEditorDerivedStore();
-  const connectionNodeId = RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const connectionNodeId = RF.useStore((s) => s.connectionNodeId);
   const connection = useConnection(nodeId);
   const isEdgeConnection = !!Object.values(EDGE_TYPES).find((s) => s === connection.sourceHandle);
   const isNodeConnection = !!Object.values(NODE_TYPES).find((s) => s === connection.sourceHandle);

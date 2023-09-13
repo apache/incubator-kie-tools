@@ -12,9 +12,12 @@ import {
   KnowledgeSourceNodeSvg,
   TextAnnotationNodeSvg,
 } from "./nodes/NodeSvgs";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { ExternalNodesPanel } from "../externalNodes/ExternalNodesPanel";
+import { MigrationIcon } from "@patternfly/react-icons/dist/js/icons/migration-icon";
 
 const radius = 34;
 const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -31,6 +34,7 @@ export function Pallete() {
   }, []);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const rfStoreApi = RF.useStoreApi();
 
   const groupNodes = useCallback(() => {
@@ -53,6 +57,10 @@ export function Pallete() {
       state.dispatch.diagram.setNodeStatus(state, newNodeId, { selected: true });
     });
   }, [dmnEditorStoreApi, rfStoreApi]);
+
+  const toggleExternalNodesPanel = useCallback(() => {
+    dmnEditorStoreApi.setState((state) => state.dispatch.diagram.toggleExternalNodesPanel(state));
+  }, [dmnEditorStoreApi]);
 
   return (
     <>
@@ -125,6 +133,23 @@ export function Pallete() {
               <TextAnnotationNodeSvg {...nodeSvgProps} showPlaceholder={true} />
             </RoundSvg>
           </button>
+        </aside>
+        <br />
+        <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
+          <Popover
+            key={`${diagram.externalNodesPanel.isOpen}`}
+            aria-label="ExternalNodes Panel"
+            position={"top-end"}
+            hideOnOutsideClick={false}
+            isVisible={diagram.externalNodesPanel.isOpen}
+            enableFlip={true}
+            headerContent={<div>External nodes</div>}
+            bodyContent={<ExternalNodesPanel />}
+          >
+            <button className={"kie-dmn-editor--external-nodes-panel-toggle-button"} onClick={toggleExternalNodesPanel}>
+              <MigrationIcon size={"sm"} />
+            </button>
+          </Popover>
         </aside>
       </RF.Panel>
     </>

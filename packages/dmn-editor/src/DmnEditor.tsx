@@ -2,10 +2,9 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
-import { CatalogIcon } from "@patternfly/react-icons/dist/js/icons/catalog-icon";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
@@ -27,9 +26,10 @@ import {
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
-import { DmnEditorDerivedStoreContextProvider } from "./store/DerivedStore";
+import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -50,6 +50,8 @@ export const DmnEditorInternal = ({
   const { boxedExpressionEditor, dmn, navigation, dispatch, diagram } = useDmnEditorStore((s) => s);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { isDiagramEditingInProgress } = useDmnEditorDerivedStore();
+
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
     forwardRef,
@@ -66,14 +68,12 @@ export const DmnEditorInternal = ({
     });
   }, [dmnEditorStoreApi, dispatch.dmn, model]);
 
-  const isDiagramMidEditing = useMemo(
-    () => diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0 || diagram.draggingWaypoints.length > 0,
-    [diagram.draggingNodes.length, diagram.draggingWaypoints.length, diagram.resizingNodes.length]
-  );
+  const { dmnModelBeforeEditingRef } = useDmnEditor();
+  useStateAsItWasBeforeConditionBecameTrue(dmn.model, isDiagramEditingInProgress, dmnModelBeforeEditingRef);
 
   // Only notify changes when dragging/resizing operations are not happening.
   useEffectAfterFirstRender(() => {
-    if (isDiagramMidEditing) {
+    if (isDiagramEditingInProgress) {
       return;
     }
 
@@ -85,7 +85,7 @@ export const DmnEditorInternal = ({
     return () => {
       clearTimeout(timeout);
     };
-  }, [isDiagramMidEditing, onModelChange, dmn.model]);
+  }, [isDiagramEditingInProgress, onModelChange, dmn.model]);
 
   const onTabChanged = useCallback(
     (e, tab) => {
@@ -190,8 +190,46 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   return (
     <DmnEditorStoreApiContext.Provider value={storeRef.current}>
       <DmnEditorDerivedStoreContextProvider>
-        <DmnEditorInternal forwardRef={ref} {...props} />
+        <DmnEditorContextProvider>
+          <DmnEditorInternal forwardRef={ref} {...props} />
+        </DmnEditorContextProvider>
       </DmnEditorDerivedStoreContextProvider>
     </DmnEditorStoreApiContext.Provider>
   );
 });
+
+export function usePrevious<T>(value: T) {
+  const [current, setCurrent] = React.useState<T>(value);
+  const [previous, setPrevious] = React.useState<T>(value);
+
+  if (value !== current) {
+    setPrevious(current);
+    setCurrent(value);
+  }
+
+  return previous;
+}
+
+/**
+ *
+ * @param state The state to save when condition is true
+ * @param condition Boolean that, when becomes true, sets the ref with the previous value of the first parameter -- `state`.
+ * @param ref The ref that stores the value
+ * @returns The ref that was given as the 3rd parameter.
+ */
+export function useStateAsItWasBeforeConditionBecameTrue<T>(
+  state: T,
+  condition: boolean,
+  ref: React.MutableRefObject<T | null>
+) {
+  const previous = usePrevious(state);
+
+  useEffect(() => {
+    if (condition) {
+      console.log("useStateBeforeCondition: ASSIGN");
+      ref.current = previous;
+    }
+    // !!!! EXCEPTIONAL CASE: Ignore "previous" changes on purpose, as we only want to save the last state before `condition` became true.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [condition, ref]);
+}

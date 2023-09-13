@@ -24,7 +24,7 @@ export function usePotentialWaypointControls(
 
   const { container } = useDmnEditorDiagramContainer();
 
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
 
   const isExistingWaypoint = useCallback(
     (point: DC__Point) => waypoints.find((w) => w["@_x"] === point["@_x"] && w["@_y"] === point["@_y"]),

@@ -12,7 +12,7 @@ export function useEdgeUpdatersAtEdgeTips(
   targetNode: RF.Node,
   waypoints: DC__Point[]
 ) {
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
 
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;

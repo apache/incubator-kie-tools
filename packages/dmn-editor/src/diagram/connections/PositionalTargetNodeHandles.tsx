@@ -11,7 +11,7 @@ export enum TargetHandleId {
 }
 
 export function PositionalTargetNodeHandles(props: { isTargeted: boolean; nodeId: string }) {
-  const connectionHandleType = RF.useStore(useCallback((state) => state.connectionHandleType, []));
+  const connectionHandleType = RF.useStore((state) => state.connectionHandleType);
 
   const areTargetsConnectable = props.isTargeted && connectionHandleType !== "target";
   const areSourcesConnectable = props.isTargeted && connectionHandleType === "target";

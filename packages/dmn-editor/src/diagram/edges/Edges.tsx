@@ -130,11 +130,11 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
-  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
+  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
   useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
@@ -176,11 +176,11 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
-  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
+  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
   useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
@@ -222,11 +222,11 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
-  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
+  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
   useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
@@ -273,11 +273,11 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
     interactionPathRef
   );
 
-  const isConnecting = !!RF.useStore(useCallback((state) => state.connectionNodeId, []));
+  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
   const className = useEdgeClassName(isConnecting, isDraggingWaypoint);
 
-  const sourceNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.source)!, [props.source]));
-  const targetNode = RF.useStore(useCallback((store) => store.nodeInternals.get(props.target)!, [props.target]));
+  const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
+  const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
   useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (

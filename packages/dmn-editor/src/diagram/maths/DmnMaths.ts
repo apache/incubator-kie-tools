@@ -170,7 +170,18 @@ export function getDiscreteAutoPositioningEdgeIdMarker(edgeId: string): AutoPosi
   return undefined;
 }
 
-export function getBounds({ nodes, padding }: { nodes: RF.Node[]; padding: number }): DC__Bounds {
+export function getBounds({
+  nodes,
+  padding,
+}: {
+  nodes: Array<{
+    width?: number | null;
+    height?: number | null;
+    position: { x: number; y: number };
+    selected?: boolean;
+  }>;
+  padding: number;
+}): DC__Bounds {
   let maxX = 0,
     maxY = 0,
     minX = Infinity,

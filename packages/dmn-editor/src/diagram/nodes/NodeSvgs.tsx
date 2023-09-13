@@ -133,6 +133,21 @@ export const DecisionServiceNodeSvg = React.forwardRef<
 
   return (
     <g>
+      <path
+        className={"kie-dmn-editor--node-decisionService-interactionDividerLine"}
+        d={`M0,0 L${width},0`}
+        strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
+        style={{ stroke: "transparent !important" }}
+        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
+      />
+      <path
+        d={`M0,0 L${width},0`}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        stroke={DEFAULT_NODE_STROKE_COLOR}
+        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
+      />
+      {/* The border Rect of the Decision Service takes precedence over the Divider Line, therefore it comes after */}
       <rect
         {...props}
         x={x}
@@ -175,20 +190,6 @@ export const DecisionServiceNodeSvg = React.forwardRef<
           </text>
         </>
       )}
-      <path
-        className={"kie-dmn-editor--node-decisionService-interactionDividerLine"}
-        d={`M0,0 L${width},0`}
-        strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
-        style={{ stroke: "transparent !important" }}
-        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
-      />
-      <path
-        d={`M0,0 L${width},0`}
-        strokeLinejoin={"round"}
-        strokeWidth={strokeWidth}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
-        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
-      />
     </g>
   );
 });

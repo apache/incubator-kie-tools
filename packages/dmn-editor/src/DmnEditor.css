@@ -95,6 +95,23 @@
 }
 /* (end) decisionService and group nodes */
 
+/* (begin) textAnnotation node */
+.react-flow__node-node_textAnnotation.selected:before {
+  content: "";
+  display: block;
+  position: absolute;
+  pointer-events: none;
+  border-radius: 6px;
+  top: -10px;
+  left: -10px;
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  border: 1px dashed #006ba4;
+  backdrop-filter: blur(8px);
+  background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
+}
+/* (end) textAnnotation node */
+
 /* (begin) pallete */
 .kie-dmn-editor--pallete {
   width: 42px;
@@ -190,6 +207,38 @@
   width: 60px;
 }
 /* (end) overlays panel toggle */
+
+/* (begin) external nodes panel toggle */
+.kie-dmn-editor--external-nodes-panel-toggle {
+  margin-right: 16px;
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-dmn-editor--external-nodes-panel-toggle:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button svg {
+  transform: scale(1, -1); /* Flip the 'migration icon' vertically, to point to the Diagram */
+}
+
+.kie-dmn-editor--external-nodes-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-dmn-editor--external-nodes-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) external nodes panel toggle */
 
 /* nodes */
 .kie-dmn-editor--outgoing-stuff-node-panel {
@@ -292,7 +341,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 /* (end) node handles */
 
 /* (begin) node panels */
-/*                     */
+
 /*    data type selector on inputData, decision, bkm, and decisionService nodes */
 .kie-dmn-editor--data-type-node-panel {
   position: absolute;

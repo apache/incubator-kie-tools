@@ -12,6 +12,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
   isDropTargetNodeValidForSelection: boolean;
+  isDiagramEditingInProgress: boolean;
   nodes: RF.Node[];
   edges: RF.Edge[];
   nodesById: Map<string, RF.Node<DmnDiagramNodeData<any>>>;
@@ -43,10 +44,14 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     !!diagram.dropTargetNode &&
     _isValidContainment({ nodeTypes: selectedNodeTypes, inside: diagram.dropTargetNode.type as NodeType });
 
+  const isDiagramEditingInProgress =
+    diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0 || diagram.draggingWaypoints.length > 0;
+
   const value = useMemo(
     () => ({
       selectedNodeTypes,
       isDropTargetNodeValidForSelection,
+      isDiagramEditingInProgress,
       nodes,
       edges,
       nodesById,
@@ -55,13 +60,14 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       dmnShapesByDmnRefId,
     }),
     [
-      edges,
-      dmnEdgesByDmnRefId,
+      selectedNodeTypes,
       isDropTargetNodeValidForSelection,
+      isDiagramEditingInProgress,
       nodes,
+      edges,
       nodesById,
       edgesById,
-      selectedNodeTypes,
+      dmnEdgesByDmnRefId,
       dmnShapesByDmnRefId,
     ]
   );
