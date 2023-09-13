@@ -22,7 +22,7 @@ require("./serverless-workflow-editor-extension-smoke.test");
 import * as path from "path";
 import { expect } from "chai";
 import { By, WebDriver, WebElement } from "vscode-extension-tester";
-import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
+import { VSCodeTestHelper, isWorkflowJSONFile } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - syntax highlighting test", () => {
@@ -52,26 +52,34 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
 
   it("Checks syntax highlighting of *.sw.json files in serverless workflow editor", async function () {
     this.timeout(30000);
+    await testSyntaxHighlighting("syntax-highlight-hello-world.sw.json");
+  });
 
-    const editorWebviews = await testHelper.openFileFromSidebar("syntax-highlight-hello-world.sw.json");
+  it("Checks syntax highlighting of *.sw.yaml files in serverless workflow editor", async function () {
+    this.timeout(30000);
+    await testSyntaxHighlighting("syntax-highlight-hello-world.sw.yaml");
+  });
+
+  async function testSyntaxHighlighting(workflowName: string): Promise<void> {
+    const editorWebviews = await testHelper.openFileFromSidebar(workflowName);
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
     const textEditor = await swfTextEditor.getSwfTextEditor();
 
     driver = textEditor.getDriver();
 
-    // get color codes of json properties
+    // get color codes of workflow properties
     const property1WebElement = await getWebElementByDisplayedText("specVersion");
     const property2WebElement = await getWebElementByDisplayedText("states");
     const property1Color = await resolveWebElementColor(property1WebElement);
     const property2Color = await resolveWebElementColor(property2WebElement);
 
-    // get color codes of json string values
+    // get color codes of workflow string values
     const stringValue1WebElement = await getWebElementByDisplayedText("helloworld");
     const stringValue2WebElement = await getWebElementByDisplayedText("HelloWorldWorkflow");
     const stringValue1Color = await resolveWebElementColor(stringValue1WebElement);
     const stringValue2Color = await resolveWebElementColor(stringValue2WebElement);
 
-    // get color code of json boolean value
+    // get color code of workflow boolean value
     const booleanValueWebElement = await getWebElementByDisplayedText("true");
     const booleanValueColor = await resolveWebElementColor(booleanValueWebElement);
 
@@ -81,16 +89,25 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
     // check that string values have the same color
     expect(stringValue1Color, "All string values should be the same color").equal(stringValue2Color);
 
-    // check that properties, string values and boolean have different color
-    const allTypesColors = [property1Color, stringValue1Color, booleanValueColor];
+    // check elements types color differences
+    // YAML unique types
+    const allTypesColors = [property1Color, stringValue1Color];
+    let assertionMessage = "Colors of properties and string values should differ";
+
+    if (isWorkflowJSONFile(workflowName)) {
+      // JSON unique types
+      allTypesColors.push(booleanValueColor);
+      assertionMessage = "Colors of properties, string values and boolean values should differ";
+    }
     const uniqueColors = Array.from(new Set(allTypesColors));
-    expect(allTypesColors.length, "Colors of properties, string values and boolean values should differ").equal(
-      uniqueColors.length
-    );
-  });
+
+    expect(allTypesColors.length, assertionMessage).equal(uniqueColors.length);
+  }
 
   async function getWebElementByDisplayedText(displayedText: string): Promise<WebElement> {
-    return await driver.findElement(By.xpath("//*[text()[contains(.,'" + displayedText + "')]]"));
+    return await driver.findElement(
+      By.xpath("//div[@class='editor-container']//*[text()[contains(.,'" + displayedText + "')]]")
+    );
   }
 
   async function resolveWebElementColor(webElement: WebElement): Promise<string> {

@@ -107,24 +107,84 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     expect((await swfEditor.getAllNodeIds()).length).equal(7);
   });
 
-  //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
-  it.skip("Renames *.sw.json file while editor is open", async function () {
-    this.timeout(30000);
+  it("Opens, edits and saves the *.sw.yaml file", async function () {
+    this.timeout(50000);
 
-    const WORKFLOW_NAME = "hello-world.sw.json";
-    const RENAMED_WORKFLOW_NAME = "hello-world-renamed.sw.json";
+    const WORKFLOW_NAME = "greet.sw.yaml";
 
     let editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
     let swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
     let swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
 
+    expect((await swfEditor.getAllNodeIds()).length).equal(6);
+
     let textEditor = await swfTextEditor.getSwfTextEditor();
-    const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, WORKFLOW_NAME), "utf-8");
+
+    const greetInGermanStateString =
+      "- name: GreetInGerman\n" +
+      "  type: inject\n" +
+      "  data:\n" +
+      "    greeting: 'Hallo vom JSON-Workflow, '\n" +
+      "  transition: GreetPerson";
+
+    const germanConditionString = '  - condition: ${ .language == "German" }\n' + "    transition: GreetInGerman";
+
+    await textEditor.typeTextAt(30, 26, "\n");
+    await textEditor.setTextAtLine(31, greetInGermanStateString);
+    await textEditor.typeTextAt(18, 31, "\n");
+    await textEditor.setTextAtLine(19, germanConditionString);
+
+    expect((await swfEditor.getAllNodeIds()).length).equal(7);
+
+    if (await textEditor.isDirty()) {
+      await textEditor.save();
+      console.log("Saving the changes.");
+    } else {
+      console.log("The editor doesn't have unsaved changes.");
+    }
+
+    await testHelper.closeAllEditors();
+
+    editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
+    swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
+    swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
+
+    textEditor = await swfTextEditor.getSwfTextEditor();
+
+    const editorText = await textEditor.getText();
+
+    expect(editorText).to.have.string(greetInGermanStateString);
+    expect(editorText).to.have.string(germanConditionString);
+
+    expect((await swfEditor.getAllNodeIds()).length).equal(7);
+  });
+
+  //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
+  it.skip("Renames *.sw.json file while editor is open", async function () {
+    this.timeout(30000);
+    await testRenameSWFile("hello-world.sw.json");
+  });
+
+  //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
+  it.skip("Renames *.sw.yaml file while editor is open", async function () {
+    this.timeout(30000);
+    await testRenameSWFile("hello-world.sw.yaml");
+  });
+
+  async function testRenameSWFile(workflowName: string): Promise<void> {
+    const RENAMED_WORKFLOW_NAME = "renamed-" + workflowName;
+
+    let editorWebViews = await testHelper.openFileFromSidebar(workflowName);
+    let swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
+    let swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
+
+    let textEditor = await swfTextEditor.getSwfTextEditor();
+    const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, workflowName), "utf-8");
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
 
-    await testHelper.renameFile(WORKFLOW_NAME, RENAMED_WORKFLOW_NAME);
+    await testHelper.renameFile(workflowName, RENAMED_WORKFLOW_NAME);
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
@@ -139,5 +199,5 @@ describe("Serverless workflow editor - Basic operations tests", () => {
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
-  });
+  }
 });
