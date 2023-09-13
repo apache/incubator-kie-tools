@@ -23,9 +23,7 @@ package org.kie.workbench.common.stunner.client.widgets.views.session;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -38,7 +36,7 @@ public class ScreenErrorViewImpl implements ScreenErrorView,
 
     @Inject
     @DataField
-    private Label message;
+    private HTMLElement message;
 
     @Override
     public ScreenErrorView showError(final ClientRuntimeError error) {
@@ -47,13 +45,8 @@ public class ScreenErrorViewImpl implements ScreenErrorView,
 
     @Override
     public ScreenErrorView showMessage(final String message) {
-        this.message.setTitle(message);
-        this.message.setText(message);
+        this.message.textContent = message;
         return this;
     }
 
-    @Override
-    public Widget asWidget() {
-        return ElementWrapperWidget.getWidget(this.getElement());
-    }
 }

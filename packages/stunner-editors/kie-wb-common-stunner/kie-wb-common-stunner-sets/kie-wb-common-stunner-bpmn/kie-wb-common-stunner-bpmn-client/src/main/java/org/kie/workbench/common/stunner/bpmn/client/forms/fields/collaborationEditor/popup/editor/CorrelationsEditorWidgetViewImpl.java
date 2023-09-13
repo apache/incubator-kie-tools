@@ -44,8 +44,10 @@ import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerBPMNConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.Correlation;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 
 import static com.google.gwt.dom.client.Style.Display.NONE;
 import static com.google.gwt.dom.client.Style.Display.TABLE;
@@ -89,6 +91,9 @@ public class CorrelationsEditorWidgetViewImpl extends Composite implements Corre
     private Presenter presenter;
 
     private boolean showErrors;
+
+    @Inject
+    protected ClientTranslationService translationService;
 
     @Override
     public void init(final CorrelationsEditorWidgetViewImpl.Presenter presenter) {
@@ -151,9 +156,9 @@ public class CorrelationsEditorWidgetViewImpl extends Composite implements Corre
         }
 
         if (showErrors) {
-            toggleErrorsAnchor.setInnerText("Hide Errors");
+            toggleErrorsAnchor.setInnerText(translationService.getValue(StunnerBPMNConstants.CORRELATION_HIDE_ERRORS));
         } else {
-            toggleErrorsAnchor.setInnerText("Show Errors");
+            toggleErrorsAnchor.setInnerText(translationService.getValue(StunnerBPMNConstants.CORRELATION_SHOW_ERRORS));
         }
 
         int itemsCount = correlationListItems.getComponentCount();

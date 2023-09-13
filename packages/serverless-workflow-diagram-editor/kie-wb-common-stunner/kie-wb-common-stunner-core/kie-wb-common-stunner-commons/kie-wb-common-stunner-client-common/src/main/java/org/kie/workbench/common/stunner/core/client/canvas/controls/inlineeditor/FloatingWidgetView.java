@@ -23,11 +23,12 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineedito
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Typed;
 
-import com.google.gwt.user.client.Timer;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.DomGlobal;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.gwtproject.timer.client.Timer;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
 import org.uberfire.mvp.Command;
 
@@ -35,6 +36,7 @@ import org.uberfire.mvp.Command;
  * Floating view implementation for generic J2CL Widgets.
  */
 @Dependent
+@Typed(FloatingWidgetView.class)
 public class FloatingWidgetView implements FloatingView<IsElement> {
 
     private double ox;

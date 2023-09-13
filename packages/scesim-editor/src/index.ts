@@ -17,4 +17,4 @@
  * under the License.
  */
 
-export * from "./editor";
+export * from "./TestScenarioEditor";

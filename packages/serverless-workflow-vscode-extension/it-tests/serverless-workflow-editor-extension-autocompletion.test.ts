@@ -22,8 +22,8 @@ require("./serverless-workflow-editor-extension-smoke.test");
 import * as path from "path";
 import * as fs from "fs";
 import { expect } from "chai";
-import { Key, TextEditor } from "vscode-extension-tester";
-import { VSCodeTestHelper, sleep } from "@kie-tools/vscode-extension-common-test-helpers";
+import { Key } from "vscode-extension-tester";
+import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helpers";
 import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
@@ -81,16 +81,16 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       await textEditor.toggleContentAssist(false);
 
       // add function from specs directory
-      await selectFromContentAssist(textEditor, "functions");
+      await textEditor.selectFromContentAssist("functions");
       await textEditor.typeText(": ");
-      await selectFromContentAssist(textEditor, "[]");
-      await selectFromContentAssist(textEditor, "specs»api.yaml#testFuncId");
+      await textEditor.selectFromContentAssist("[]");
+      await textEditor.selectFromContentAssist("specs»api.yaml#testFuncId");
 
       // add test state
       await textEditor.moveCursor(17, 38);
       await textEditor.typeText(Key.ENTER);
-      await selectFromContentAssist(textEditor, "states");
-      await selectFromContentAssist(textEditor, "{}");
+      await textEditor.selectFromContentAssist("states");
+      await textEditor.selectFromContentAssist("{}");
       await textEditor.typeText(Key.ENTER);
       await textEditor.typeText(
         '"name": "testState",\n' + '"type": "operation",\n' + '"actions": [{"functionRef": }],\n' + '"end": true'
@@ -98,10 +98,10 @@ describe("Serverless workflow editor - autocompletion tests", () => {
 
       // complete the state with refName
       await textEditor.moveCursor(21, 33);
-      await selectFromContentAssist(textEditor, "{}");
+      await textEditor.selectFromContentAssist("{}");
       await textEditor.typeText(Key.ENTER);
-      await selectFromContentAssist(textEditor, "refName");
-      await selectFromContentAssist(textEditor, '"testFuncId"');
+      await textEditor.selectFromContentAssist("refName");
+      await textEditor.selectFromContentAssist('"testFuncId"');
 
       // check there are 2 nodes: testState, end
       const nodeIds = await swfEditor.getAllNodeIds();
@@ -124,7 +124,7 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       const textEditor = await swfTextEditor.getSwfTextEditor();
 
       // select the autocompletion
-      await selectFromContentAssist(textEditor, "Serverless Workflow Example");
+      await textEditor.selectFromContentAssist("Serverless Workflow Example");
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
@@ -165,14 +165,14 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       await textEditor.toggleContentAssist(false);
 
       // add function from specs directory
-      await selectFromContentAssist(textEditor, "functions");
+      await textEditor.selectFromContentAssist("functions");
       await textEditor.typeText(":\n  - ");
-      await selectFromContentAssist(textEditor, "specs»api.yaml#testFuncId");
+      await textEditor.selectFromContentAssist("specs»api.yaml#testFuncId");
 
       // add test state
       await textEditor.moveCursor(19, 19);
       await textEditor.typeText(Key.ENTER);
-      await selectFromContentAssist(textEditor, "states");
+      await textEditor.selectFromContentAssist("states");
       await textEditor.typeText(`name: testState
   type: operation
 actions:
@@ -183,8 +183,8 @@ actions:
       await textEditor.typeText(Key.ENTER);
       await textEditor.typeText(Key.TAB);
       await textEditor.typeText(Key.TAB);
-      await selectFromContentAssist(textEditor, "refName");
-      await selectFromContentAssist(textEditor, "testFuncId");
+      await textEditor.selectFromContentAssist("refName");
+      await textEditor.selectFromContentAssist("testFuncId");
       await textEditor.typeText(Key.ENTER);
       await textEditor.typeText(Key.BACK_SPACE);
       await textEditor.typeText(Key.BACK_SPACE);
@@ -212,7 +212,7 @@ actions:
       const textEditor = await swfTextEditor.getSwfTextEditor();
 
       // select the autocompletion
-      await selectFromContentAssist(textEditor, "Serverless Workflow Example");
+      await textEditor.selectFromContentAssist("Serverless Workflow Example");
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
@@ -230,7 +230,7 @@ actions:
       const textEditor = await swfTextEditor.getSwfTextEditor();
 
       // select the autocompletion
-      await selectFromContentAssist(textEditor, "Empty Serverless Workflow");
+      await textEditor.selectFromContentAssist("Empty Serverless Workflow");
 
       // check the final editor content is the same as expected result
       const editorContent = await textEditor.getText();
@@ -241,18 +241,4 @@ actions:
       expect(editorContent).equal(expectedContent);
     });
   });
-
-  async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
-    const contentAssist = await textEditor.toggleContentAssist(true);
-    try {
-      const item = await contentAssist?.getItem(value);
-      await sleep(1000);
-      expect(await item?.getLabel()).contain(value);
-      await item?.click();
-    } catch (e) {
-      throw new Error(
-        `The ContentAssist menu is not available or it was not possible to select the element '${value}'!`
-      );
-    }
-  }
 });

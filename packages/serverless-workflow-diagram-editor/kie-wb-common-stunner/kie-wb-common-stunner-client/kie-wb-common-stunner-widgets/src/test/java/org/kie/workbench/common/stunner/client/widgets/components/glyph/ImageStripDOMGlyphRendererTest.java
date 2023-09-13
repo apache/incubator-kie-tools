@@ -24,8 +24,8 @@ import java.util.function.BiFunction;
 
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.junit.Before;
@@ -63,7 +63,7 @@ public class ImageStripDOMGlyphRendererTest {
     private ManagedInstance<WidgetElementRendererView> viewInstances;
 
     @Mock
-    private BiFunction<String, Integer[], FlowPanel> panelBuilder;
+    private BiFunction<String, Integer[], HTMLDivElement> panelBuilder;
 
     @Mock
     private ImageResource imageResource;

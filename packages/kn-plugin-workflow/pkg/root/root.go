@@ -6,21 +6,22 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package root
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
@@ -36,9 +37,10 @@ type RootCmdConfig struct {
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   cfg.Name,
-		Short: "SonataFlow",
-		Long:  "Manage SonataFlow projects",
+		Use:     cfg.Name,
+		Short:   "SonataFlow",
+		Long:    "Manage SonataFlow projects",
+		Aliases: []string{"kn-workflow"},
 	}
 
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
