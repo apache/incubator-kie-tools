@@ -84,6 +84,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
+  const dmn = useDmnEditorStore((s) => s.dmn);
 
   const {
     dmnShapesByDmnRefId,
@@ -462,10 +463,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   }, [dmnEditorStoreApi, dmnModelBeforeEditingRef]);
 
   const nodeIdBeingDraggedRef = useRef<string | null>(null);
+
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData<any>>) => {
       nodeIdBeingDraggedRef.current = node.id;
-
       dmnEditorStoreApi.setState((state) => {
         state.diagram.dropTargetNode = getFirstNodeFittingBounds(node.id, {
           // We can't use node.data.dmnObject because it hasn't been updated at this point yet.
@@ -477,6 +478,14 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       });
     },
     [dmnEditorStoreApi, getFirstNodeFittingBounds]
+  );
+
+  const onNodeDragStart = useCallback<RF.NodeDragHandler>(
+    (e, node: RF.Node<DmnDiagramNodeData<any>>, nodes) => {
+      dmnModelBeforeEditingRef.current = dmn.model;
+      onNodeDrag(e, node, nodes);
+    },
+    [dmn.model, dmnModelBeforeEditingRef, onNodeDrag]
   );
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
@@ -503,6 +512,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       try {
         dmnEditorStoreApi.setState((state) => {
           state.diagram.dropTargetNode = undefined;
+
+          if (!node.dragging) {
+            return;
+          }
 
           // Un-parent
           if (nodeBeingDragged.data.parentRfNode) {
@@ -729,7 +742,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           // 'Starting to drag' and 'dragging' should have the same behavior. Otherwise,
           // clicking a node and letting it go, without moving, won't work properly, and
           // Decisions will be removed from Decision Services.
-          onNodeDragStart={onNodeDrag}
+          onNodeDragStart={onNodeDragStart}
           onNodeDrag={onNodeDrag}
           // (end)
           onNodeDragStop={onNodeDragStop}

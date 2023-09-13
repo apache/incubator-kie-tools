@@ -6,6 +6,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function deleteEdge({
   definitions,
@@ -48,6 +49,14 @@ export function deleteEdge({
   if (dmnEdgeIndex >= 0) {
     dmnEdge = diagramElements[dmnEdgeIndex];
     diagramElements?.splice(dmnEdgeIndex, 1);
+  }
+
+  // FIXME: Tiago --> How to make this reactively?
+  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
+    const drgElement = definitions.drgElement![i];
+    if (drgElement.__$$element === "decisionService") {
+      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
+    }
   }
 
   return { dmnEdge };

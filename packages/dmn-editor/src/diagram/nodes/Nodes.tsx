@@ -33,7 +33,7 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { useIsHovered } from "../useIsHovered";
-import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
+import { getContainmentRelationship, getDecisionServiceDividerLineLocalY, idFromHref } from "../maths/DmnMaths";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 
@@ -413,6 +413,25 @@ export const DecisionServiceNode = React.memo(
       },
       [dmnEditorStoreApi, index]
     );
+
+    // Select nodes representing output and encapsulated decisions contained by the Decision Service
+    useEffect(() => {
+      const onDoubleClick = () => {
+        dmnEditorStoreApi.setState((state) => {
+          state.diagram.selectedNodes = [
+            id, // Include the Decision Service itself.
+            ...(decisionService.outputDecision ?? []).map((od) => idFromHref(od["@_href"])),
+            ...(decisionService.encapsulatedDecision ?? []).map((ed) => idFromHref(ed["@_href"])),
+          ];
+        });
+      };
+
+      const r = ref.current;
+      r?.addEventListener("dblclick", onDoubleClick);
+      return () => {
+        r?.removeEventListener("dblclick", onDoubleClick);
+      };
+    }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
 
     return (
       <>

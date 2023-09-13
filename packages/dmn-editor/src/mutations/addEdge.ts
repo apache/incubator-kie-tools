@@ -21,6 +21,7 @@ import {
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { Unpacked } from "../store/useDiagramData";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function addEdge({
   definitions,
@@ -146,6 +147,14 @@ export function addEdge({
 
   // Replace with the new one.
   diagramElements.push(newDmnEdge);
+
+  // FIXME: Tiago --> How to make this reactively?
+  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
+    const drgElement = definitions.drgElement![i];
+    if (drgElement.__$$element === "decisionService") {
+      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
+    }
+  }
 
   return { newDmnEdge };
 }

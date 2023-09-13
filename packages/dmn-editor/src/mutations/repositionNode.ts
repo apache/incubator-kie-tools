@@ -1,13 +1,13 @@
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
   DMN15__tDefinitions,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { NodeType } from "../diagram/connections/graphStructure";
-import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 
 export function repositionNode({
   definitions,

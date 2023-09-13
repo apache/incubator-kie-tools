@@ -1,10 +1,7 @@
-import {
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { getContainmentRelationship, getDecisionServiceDividerLineLocalY, idFromHref } from "../diagram/maths/DmnMaths";
+import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function addDecisionToDecisionService({
   definitions,
@@ -76,56 +73,4 @@ export function getSectionForDecisionInsideDecisionService({
   }
 
   return contaimentRelationship.section === "upper" ? "output" : "encapsulated";
-}
-
-export function repopulateInputDataAndDecisionsOnDecisionService({
-  definitions,
-  decisionService,
-}: {
-  definitions: DMN15__tDefinitions;
-  decisionService: DMN15__tDecisionService;
-}) {
-  decisionService.inputData = [];
-  decisionService.inputDecision = [];
-
-  const hrefsToDecisionsInsideDecisionService = new Set([
-    ...(decisionService.outputDecision ?? []).map((s) => s["@_href"]),
-    ...(decisionService.encapsulatedDecision ?? []).map((s) => s["@_href"]),
-  ]);
-
-  const requirements = new Set<{ id: string; type: "decision" | "inputData" }>(); // Using Set for uniqueness
-  for (let i = 0; i < definitions.drgElement!.length; i++) {
-    const drgElement = definitions.drgElement![i];
-    if (!hrefsToDecisionsInsideDecisionService.has(`#${drgElement["@_id"]}`) || drgElement.__$$element !== "decision") {
-      continue;
-    }
-
-    (drgElement.informationRequirement ?? []).flatMap((s) => {
-      if (s.requiredDecision) {
-        requirements.add({ id: idFromHref(s.requiredDecision["@_href"]), type: "decision" });
-      } else if (s.requiredInput) {
-        requirements.add({ id: idFromHref(s.requiredInput["@_href"]), type: "inputData" });
-      }
-    });
-  }
-
-  const inputDatas = new Set<string>(); // Using Set for uniqueness
-  const inputDecisions = new Set<string>(); // Using Set for uniqueness
-
-  const requirementsArray = [...requirements];
-  for (let i = 0; i < requirementsArray.length; i++) {
-    const r = requirementsArray[i];
-    if (r.type === "inputData") {
-      inputDatas.add(r.id);
-    } else if (r.type === "decision") {
-      inputDecisions.add(r.id);
-    } else {
-      throw new Error(`Invalid type of element to be referenced by DecisionService: '${r.type}'`);
-    }
-  }
-
-  decisionService.inputData = [...inputDatas].map((i) => ({ "@_href": `#${i}` }));
-  decisionService.inputDecision = [...inputDecisions].flatMap(
-    (d) => (hrefsToDecisionsInsideDecisionService.has(`#${d}`) ? [] : { "@_href": `#${d}` }) // Makes sure output and encapsulated Decisions are not listed as inputDecisions
-  );
 }

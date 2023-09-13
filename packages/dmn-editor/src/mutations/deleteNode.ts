@@ -4,6 +4,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { deleteEdge } from "./deleteEdge";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function deleteNode({
   definitions,
@@ -49,5 +50,13 @@ export function deleteNode({
     );
   } else {
     throw new Error(`Unknown node nature '${nodeNatures[node.type]}'.`);
+  }
+
+  // FIXME: Tiago --> How to make this reactively?
+  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
+    const drgElement = definitions.drgElement![i];
+    if (drgElement.__$$element === "decisionService") {
+      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
+    }
   }
 }

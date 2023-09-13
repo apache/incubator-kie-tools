@@ -1,5 +1,5 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "./addDecisionToDecisionService";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 
 export function deleteDecisionFromDecisionService({
   definitions,

@@ -1,24 +1,17 @@
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
-  DMN15__tDMNElementReference,
   DMN15__tDecisionService,
   DMN15__tDefinitions,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
-import {
-  getBounds,
-  getContainmentRelationship,
-  getDecisionServiceDividerLineLocalY,
-  getHandlePosition,
-  idFromHref,
-} from "../diagram/maths/DmnMaths";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { NodeType } from "../diagram/connections/graphStructure";
+import { getDecisionServiceDividerLineLocalY, getHandlePosition, idFromHref } from "../diagram/maths/DmnMaths";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { repositionNode } from "./repositionNode";
+import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 
 export function resizeNode({
   definitions,
