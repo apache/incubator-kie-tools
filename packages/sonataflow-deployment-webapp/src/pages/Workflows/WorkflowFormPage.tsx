@@ -113,7 +113,7 @@ export function WorkflowFormPage(props: { workflowId: string }) {
           })
           .catch((error) => {
             const message =
-              error?.response?.data?.message + " " + error?.response?.data?.cause ||
+              (error?.response?.data?.message && error?.response?.data?.message + " " + error?.response?.data?.cause) ||
               error?.message ||
               "Unknown error. More details in the developer tools console.";
             onSubmitError(message);
@@ -137,7 +137,10 @@ export function WorkflowFormPage(props: { workflowId: string }) {
     return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;
   }
 
-  if (!openApi.openApiData?.tags?.find((t) => t.name === workflowDefinition.workflowName)) {
+  if (
+    openApi.openApiPromise.status === PromiseStateStatus.RESOLVED &&
+    !openApi.openApiData?.tags?.find((t) => t.name === workflowDefinition.workflowName)
+  ) {
     return <ErrorPage kind="Workflow" workflowId={workflowDefinition.workflowName} errors={["Workflow not found"]} />;
   }
 
