@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 )
 

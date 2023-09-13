@@ -15,10 +15,12 @@
 package v1beta1
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"testing"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 )
 
 func TestGetItems(t *testing.T) {

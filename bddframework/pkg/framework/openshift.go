@@ -23,14 +23,15 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	ocapps "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	imagev1 "github.com/openshift/api/image/v1"
 	routev1 "github.com/openshift/api/route/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 )
 
 const (

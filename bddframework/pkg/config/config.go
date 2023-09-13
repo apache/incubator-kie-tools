@@ -97,7 +97,7 @@ type TestConfig struct {
 }
 
 const (
-	defaultOperatorYamlURI      = "../kogito-operator.yaml"
+	defaultOperatorYamlURI      = "../operator.yaml"
 	defaultRhpamOperatorYamlURI = "../rhpam-operator.yaml"
 	defaultCliPath              = "../build/_output/bin/kogito"
 

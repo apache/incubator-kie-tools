@@ -18,8 +18,9 @@ import (
 	"context"
 	"io/ioutil"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	corev1 "k8s.io/api/core/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 )
 
 // PodInterface has functions that interacts with pod object in the Kubernetes cluster

@@ -15,13 +15,6 @@
 package meta
 
 import (
-	sonata "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	hyperfoil "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/hyperfoil/v1alpha2"
-	grafana "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/grafana/v1alpha1"
-	infinispan "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
-	kafka "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
-	keycloak "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/keycloak/v1alpha1"
-	mongodb "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/mongodb/v1"
 	appsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
@@ -31,6 +24,14 @@ import (
 	rbac "k8s.io/api/rbac/v1"
 	eventing "knative.dev/eventing/pkg/apis/eventing/v1"
 	sources "knative.dev/eventing/pkg/apis/sources/v1"
+
+	sonata "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	hyperfoil "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/hyperfoil/v1alpha2"
+	grafana "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/grafana/v1alpha1"
+	infinispan "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
+	kafka "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
+	keycloak "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/keycloak/v1alpha1"
+	mongodb "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/mongodb/v1"
 
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apiextensionsv1beta1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1beta1"

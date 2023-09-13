@@ -16,8 +16,10 @@ package installers
 
 import (
 	"fmt"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 var (

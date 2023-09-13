@@ -18,11 +18,12 @@ import (
 	"fmt"
 	"strings"
 
-	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
+
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 
 	"k8s.io/apimachinery/pkg/util/yaml"
 )

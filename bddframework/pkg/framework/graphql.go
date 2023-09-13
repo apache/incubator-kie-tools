@@ -22,8 +22,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/machinebox/graphql"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 )
 
 const graphQLNoAuthToken = ""

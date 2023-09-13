@@ -16,15 +16,17 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/app/v1beta1"
+
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 // InstallService install the Kogito Service component

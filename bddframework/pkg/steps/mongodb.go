@@ -16,6 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps/mappers"

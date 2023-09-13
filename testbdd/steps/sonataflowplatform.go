@@ -16,12 +16,15 @@ package steps
 
 import (
 	"fmt"
+	"path/filepath"
+	"strings"
+
 	"github.com/cucumber/godog"
+
 	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 	"github.com/kiegroup/kogito-serverless-operator/test/utils"
-	"path/filepath"
-	"strings"
+
 	//"github.com/kiegroup/kogito-serverless-operator/test"
 	"os"
 )

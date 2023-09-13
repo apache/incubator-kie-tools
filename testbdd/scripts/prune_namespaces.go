@@ -1,4 +1,4 @@
-// Copyright 2020 Red Hat, Inc. and/or its affiliates
+// Copyright 2023 Red Hat, Inc. and/or its affiliates
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,24 +16,10 @@ package main
 
 import (
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 )
 
 func main() {
-	// Create kube client
-	if err := framework.InitKubeClient(meta.GetRegisteredSchema()); err != nil {
+	if err := framework.PruneNamespaces(); err != nil {
 		panic(err)
 	}
-
-	namespaces := framework.GetNamespacesInHistory()
-	for _, namespace := range namespaces {
-		if len(namespace) > 0 {
-			err := framework.DeleteNamespace(namespace)
-			if err != nil {
-				framework.GetMainLogger().Error(err, "Error in deleting namespace")
-			}
-		}
-	}
-
-	framework.ClearNamespaceHistory()
 }

@@ -20,11 +20,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	frameworklogger "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	rbac "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	logger "sigs.k8s.io/controller-runtime/pkg/log"
+
+	frameworklogger "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
 	corev1 "k8s.io/api/core/v1"

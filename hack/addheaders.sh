@@ -18,4 +18,4 @@ if ! hash addlicense 2>/dev/null; then
 fi
 
 # shellcheck disable=SC2035
-addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml Dockerfile hack api controllers utils test testbdd container-builder workflowproj
+addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache -ignore=test/samples/*.yaml -ignore=container-builder/examples/**/*.yaml Dockerfile hack api bddframework controllers utils test testbdd container-builder workflowproj

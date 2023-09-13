@@ -16,10 +16,11 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	git "gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 // registerGitSteps register all existing GIT steps

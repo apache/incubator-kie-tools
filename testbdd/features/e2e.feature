@@ -1,12 +1,12 @@
 Feature: Deploy SonataFlow Operator
 
   @devMode
-  Scenario: order-processing E2E test
+  Scenario: order-processing DevMode E2E test
     Given Namespace is created
     When SonataFlow Operator is deployed
     When SonataFlowPlatform is deployed
     When SonataFlow orderprocessing example is deployed
-    Then SonataFlow "orderprocessing" has the condition "Running" set to "True" within 1 minutes
+    Then SonataFlow "orderprocessing" has the condition "Running" set to "True" within 2 minutes
     Then SonataFlow "orderprocessing" is addressable within 1 minute
     Then HTTP POST request as Cloud Event on SonataFlow "orderprocessing" is successful within 1 minute with path "", headers "content-type= application/json,ce-specversion= 1.0,ce-source= /from/localhost,ce-type= orderEvent,ce-id= f0643c68-609c-48aa-a820-5df423fa4fe0" and body:
     """json

@@ -15,9 +15,10 @@
 package kubernetes
 
 import (
+	logger "sigs.k8s.io/controller-runtime/pkg/log"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	frameworklogger "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
-	logger "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 var log = frameworklogger.Logger{Logger: logger.Log.WithName("kubernetes_client")}

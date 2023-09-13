@@ -15,9 +15,10 @@
 package installers
 
 import (
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	hyperfoil "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/hyperfoil/v1alpha2"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var (

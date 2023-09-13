@@ -16,14 +16,14 @@ package framework
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 )
 
 const (
@@ -89,7 +89,7 @@ func OperateOnNamespaceIfExists(namespace string, operate func(namespace string)
 
 // GetNamespacesInHistory retrieves all the namespaces in the history.
 func GetNamespacesInHistory() []string {
-	input, err := ioutil.ReadFile(namespaceLogFile)
+	input, err := os.ReadFile(namespaceLogFile)
 	if err != nil {
 		// file does not exist
 		return []string{}
@@ -131,5 +131,5 @@ func removeNamespaceFromHistory(namespace string) error {
 	}
 
 	output := strings.Join(newNamespaces, "\n")
-	return ioutil.WriteFile(namespaceLogFile, []byte(output), permissionMode)
+	return os.WriteFile(namespaceLogFile, []byte(output), permissionMode)
 }

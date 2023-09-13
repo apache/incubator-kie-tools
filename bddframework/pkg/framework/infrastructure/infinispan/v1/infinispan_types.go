@@ -19,10 +19,11 @@ package v1
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/RHsyseng/operator-utils/pkg/olm"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"strings"
 )
 
 // InfinispanSecurity info for the user application connection

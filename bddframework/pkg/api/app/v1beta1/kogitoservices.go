@@ -15,11 +15,12 @@
 package v1beta1
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 )
 
 // KogitoServiceStatus is the basic structure for any Kogito Service status.

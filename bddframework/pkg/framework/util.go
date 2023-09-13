@@ -16,17 +16,19 @@ package framework
 
 import (
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/env"
 	"io"
 	"io/ioutil"
-	"k8s.io/apimachinery/pkg/types"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
+	"k8s.io/apimachinery/pkg/types"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/env"
 
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"

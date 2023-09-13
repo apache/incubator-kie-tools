@@ -19,8 +19,9 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 
 	keycloak "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/keycloak/v1alpha1"
 )

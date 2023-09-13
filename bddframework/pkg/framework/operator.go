@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 

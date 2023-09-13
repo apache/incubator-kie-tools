@@ -16,9 +16,10 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	v1 "k8s.io/api/core/v1"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps/mappers"
-	v1 "k8s.io/api/core/v1"
 )
 
 /*

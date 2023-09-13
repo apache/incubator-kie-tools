@@ -15,11 +15,13 @@
 package steps
 
 import (
-	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	kogitoSteps "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps"
 	"strconv"
 	"time"
+
+	"github.com/cucumber/godog"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	kogitoSteps "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps"
 )
 
 // Data contains all data needed by Gherkin steps to run

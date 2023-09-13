@@ -16,6 +16,7 @@ package client
 
 import (
 	"fmt"
+
 	"k8s.io/apimachinery/pkg/runtime"
 
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"

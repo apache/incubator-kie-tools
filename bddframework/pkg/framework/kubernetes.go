@@ -24,9 +24,6 @@ import (
 
 	rbac "k8s.io/api/rbac/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	apps "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	k8sv1beta1 "k8s.io/api/extensions/v1beta1"
@@ -36,6 +33,11 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 )
 
 var (
@@ -648,4 +650,25 @@ func IsConfigMapExist(key types.NamespacedName) (bool, error) {
 		return false, fmt.Errorf("Error fetching ConfigMap %s in namespace %s: %v", key.Name, key.Namespace, err)
 	}
 	return exists, nil
+}
+
+// PruneNamespaces prunes namespaces stored in the "logs/namespace_history.log" file
+func PruneNamespaces() error {
+	// Create kube client
+	if err := InitKubeClient(meta.GetRegisteredSchema()); err != nil {
+		return err
+	}
+
+	namespaces := GetNamespacesInHistory()
+	for _, namespace := range namespaces {
+		if len(namespace) > 0 {
+			err := DeleteNamespace(namespace)
+			if err != nil {
+				GetMainLogger().Error(err, "Error in deleting namespace")
+			}
+		}
+	}
+
+	ClearNamespaceHistory()
+	return nil
 }

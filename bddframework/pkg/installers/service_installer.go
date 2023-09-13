@@ -16,9 +16,10 @@ package installers
 
 import (
 	"fmt"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sync"
 	"time"
+
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 )

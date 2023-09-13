@@ -16,13 +16,15 @@ package kubernetes
 
 import (
 	"context"
+	"reflect"
+
 	"github.com/RHsyseng/operator-utils/pkg/resource/read"
-	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 )
 
 // ResourceReader interface to read kubernetes object

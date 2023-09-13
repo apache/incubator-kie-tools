@@ -17,11 +17,12 @@ package kubernetes
 import (
 	"context"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 )
 
 // NamespaceInterface has functions that interacts with namespace object in the Kubernetes cluster

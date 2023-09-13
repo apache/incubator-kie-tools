@@ -7,7 +7,6 @@ replace (
 	github.com/kiegroup/kogito-serverless-operator/api => ../api
 	github.com/kiegroup/kogito-serverless-operator/bddframework => ../bddframework
 	github.com/kiegroup/kogito-serverless-operator/container-builder => ../container-builder
-	github.com/kiegroup/kogito-serverless-operator/workflowproj => ../workflowproj
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring => github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.50.0
 )
 
@@ -46,6 +45,7 @@ require (
 	github.com/evanphx/json-patch v5.6.0+incompatible // indirect
 	github.com/evanphx/json-patch/v5 v5.6.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
@@ -76,6 +76,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
+	github.com/kiegroup/kogito-serverless-operator/container-builder v0.0.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

@@ -16,10 +16,12 @@ package framework
 
 import (
 	"fmt"
-	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
+
 	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/types"
+
+	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
 )
 
 const (

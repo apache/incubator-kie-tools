@@ -15,16 +15,18 @@
 package infrastructure
 
 import (
+	"reflect"
+	"testing"
+
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/log"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
-	"reflect"
-	"sigs.k8s.io/controller-runtime/pkg/log"
-	"testing"
 )
 
 func Test_getKafkaInstanceWithName(t *testing.T) {

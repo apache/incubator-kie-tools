@@ -25,6 +25,7 @@ const (
 	nightlySuffix               = "nightly"
 	defaultWorkflowDevModeImage = "quay.io/kiegroup/kogito-swf-devmode"
 	defaultWorkflowBuilderImage = "quay.io/kiegroup/kogito-swf-builder"
+	defaultOperatorImage        = "quay.io/kiegroup/kogito-serverless-operator"
 )
 
 // GetWorkflowAppImageNameTag retrieve the tag for the image based on the Workflow based annotation, <workflowid>:latest otherwise
@@ -42,6 +43,10 @@ func GetDefaultWorkflowDevModeImageTag() string {
 
 func GetDefaultWorkflowBuilderImageTag() string {
 	return GetDefaultImageTag(defaultWorkflowBuilderImage)
+}
+
+func GetDefaultOperatorImageTag() string {
+	return GetDefaultImageTag(defaultOperatorImage)
 }
 
 func GetDefaultImageTag(imgTag string) string {

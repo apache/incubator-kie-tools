@@ -16,12 +16,13 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
 )
 
 func registerKnativeSteps(ctx *godog.ScenarioContext, data *Data) {

@@ -16,16 +16,18 @@ package framework
 
 import (
 	"fmt"
+
 	v1 "k8s.io/api/apps/v1"
 
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
-	mongodb "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/mongodb/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	mongodb "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/mongodb/v1"
 )
 
 const (

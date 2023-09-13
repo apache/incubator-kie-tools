@@ -16,6 +16,7 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
@@ -25,9 +26,10 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	infinispan "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // DeployInfinispanInstance deploys an instance of Infinispan

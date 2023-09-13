@@ -17,13 +17,15 @@ package steps
 import (
 	"errors"
 	"fmt"
+
 	"github.com/cucumber/godog"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+
 	hyperfoilv1alpha2 "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/hyperfoil/v1alpha2"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 const (

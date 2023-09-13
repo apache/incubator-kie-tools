@@ -15,8 +15,9 @@
 package v1beta1
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 )
 
 // KogitoSupportingServiceSpec defines the desired state of KogitoSupportingService.

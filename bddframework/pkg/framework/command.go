@@ -15,10 +15,11 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 	"os/exec"
 	"sync"
 	"time"
+
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
 )
 
 var (

@@ -74,7 +74,7 @@ function usage(){
   printf "\n-h | --help\n\tPrint the usage of this script."
   
   # tests configuration
-  printf "\n--test_main_dir {TEST_MAIN_DIR}\n\tWhere to find the `main_test.go` file. Default to `{kogito_operator}/test/`."
+  printf "\n--test_main_dir {TEST_MAIN_DIR}\n\tWhere to find the `main_test.go` file. Default to `testbdd/`."
   printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
   printf "\n--tags {TAGS}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
@@ -91,7 +91,8 @@ function usage(){
   printf "\n--load_factor {INT_VALUE}\n\tSet the tests load factor. Useful for the tests to take into account that the cluster can be overloaded, for example for the calculation of timeouts. Default value is 1."
   printf "\n--ci {CI_NAME}\n\tSpecify whether you run test with ci, give also the name of the CI."
   printf "\n--cr_deployment_only\n\tUse this option if you have no CLI to test against. It will use only direct CR deployments."
-  printf "\n--load_default_config\n\tTo be used if you want to directly use the default test config contained into ${SCRIPT_DIR}/../test/.default_config"
+  printf "\n--load_default_config\n\tTo be used if you want to directly use the default test config contained into ${SCRIPT_DIR}/../testbdd/.default_config"
+  printf "\n--format\n\tFormat to use for Godog output, possible values are 'pretty' or 'junit' (default)"
   printf "\n--container_engine\n\tTo be used if you want to specify engine to interact with images and containers. Default is docker."
   printf "\n--domain_suffix\n\tTo be used if you want to set a domain suffix for exposed services. Ignored when running tests on Openshift."
   printf "\n--image_cache_mode\n\tUse this option to specify whether you want to use image cache for runtime images. Available options are 'always', 'never' or 'if-available'(default)."
@@ -214,7 +215,7 @@ TIMEOUT=240
 DEBUG=false
 KEEP_NAMESPACE=false
 LOAD_DEFAULT_CONFIG=false
-TEST_MAIN_DIR=${SCRIPT_DIR}/../test
+TEST_MAIN_DIR=${SCRIPT_DIR}/../testbdd
 ENABLE_CLEAN_CLUSTER=false
 
 while (( $# ))
@@ -287,6 +288,10 @@ case $1 in
       LOAD_DEFAULT_CONFIG=true
     fi
   ;;
+  --format)
+      shift
+      if addParamKeyValueIfAccepted "--godog.format" ${1}; then shift; fi
+    ;;
 
   # dev options
   --dry_run)
@@ -362,13 +367,13 @@ done
 # load test default config options if not set already
 if [ "${LOAD_DEFAULT_CONFIG}" = "true" ]; then
   echo "Load default test config"
-  cat "${SCRIPT_DIR}/../test/.default_config"
+  cat "${SCRIPT_DIR}/../testbdd/.default_config"
   while IFS="=" read -r key value
   do
     if [[ $PARAMS != *"${key}"* ]]; then
       addParam "--${key}=${value}"
     fi
-  done < "${SCRIPT_DIR}/../test/.default_config"
+  done < "${SCRIPT_DIR}/../testbdd/.default_config"
 fi
 
 ## Clean cluster before executing the tests
@@ -387,13 +392,13 @@ echo "Tests finished with code ${exit_code}"
 
 if [ "${KEEP_NAMESPACE}" = "false" ]; then
   echo "-------- Pruning namespaces"
-  cd ${SCRIPT_DIR}/../test
+  cd ${SCRIPT_DIR}/../testbdd
   go run scripts/prune_namespaces.go
   echo "Pruning namespaces done."
-  cd -
+  cd - >/dev/null
 fi
 
-echo "-------- Delete stucked namespaces"
+echo "-------- Delete stuck namespaces"
 ${SCRIPT_DIR}/clean-stuck-namespaces.sh
 
 if [ "${KEEP_NAMESPACE}" = "false" ] && [ "${ENABLE_CLEAN_CLUSTER}" = "true" ]; then

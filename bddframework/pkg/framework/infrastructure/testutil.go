@@ -15,8 +15,6 @@
 package infrastructure
 
 import (
-	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 	buildfake "github.com/openshift/client-go/build/clientset/versioned/fake"
 	v1 "github.com/openshift/client-go/build/clientset/versioned/typed/build/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -27,6 +25,9 @@ import (
 	clienttesting "k8s.io/client-go/testing"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
 
 	imgfake "github.com/openshift/client-go/image/clientset/versioned/fake"
 )

@@ -17,13 +17,14 @@ package installers
 import (
 	"errors"
 	"fmt"
-	"github.com/kiegroup/kogito-serverless-operator/version"
 	"regexp"
+
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
+	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
 	srvframework "github.com/kiegroup/kogito-serverless-operator/testbdd/framework"
 )
 
@@ -95,7 +96,7 @@ func installSonataFlowUsingYaml() error {
 		return err
 	}
 
-	regexp, err := regexp.Compile("quay.io/kiegroup/kogito-serverless-operator-nightly.*" + ":" + version.OperatorVersion) // TODO use version/version.go from this repository
+	regexp, err := regexp.Compile(workflowdef.GetDefaultOperatorImageTag())
 	if err != nil {
 		return err
 	}

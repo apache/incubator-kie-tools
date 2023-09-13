@@ -16,14 +16,16 @@ package framework
 
 import (
 	"fmt"
+
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/app/v1beta1"
+
+	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 const (

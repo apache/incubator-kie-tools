@@ -16,9 +16,11 @@ package kubernetes
 
 import (
 	"context"
+
 	"github.com/RHsyseng/operator-utils/pkg/resource/write"
-	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
 )
 
 // ResourceWriter interface to write kubernetes object

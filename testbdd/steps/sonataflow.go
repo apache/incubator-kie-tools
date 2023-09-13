@@ -16,17 +16,19 @@ package steps
 
 import (
 	"fmt"
+	"net/url"
+	"path/filepath"
+	"strings"
+
 	"github.com/cucumber/godog"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
+
 	"github.com/kiegroup/kogito-serverless-operator/api"
 	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 	"github.com/kiegroup/kogito-serverless-operator/test/utils"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/types"
-	"net/url"
-	"path/filepath"
-	"strings"
 )
 
 func registerSonataFlowSteps(ctx *godog.ScenarioContext, data *Data) {
