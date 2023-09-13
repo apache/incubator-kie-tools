@@ -22,7 +22,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
 /**
  * A canvas shape/element registration control.
- * It can implement <code>IsWidget</code> if the control have to include views outside the canvas.
  */
 public interface CanvasRegistrationControl<C, E> extends CanvasControl<C> {
 

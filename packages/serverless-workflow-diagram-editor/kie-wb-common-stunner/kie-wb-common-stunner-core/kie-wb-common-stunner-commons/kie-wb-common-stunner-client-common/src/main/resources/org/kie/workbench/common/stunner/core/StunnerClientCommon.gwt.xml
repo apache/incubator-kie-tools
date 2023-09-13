@@ -27,6 +27,7 @@
   <inherits name="org.kie.workbench.common.stunner.core.StunnerBackendApi" />
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon" />
   <inherits name="org.appformer.AppformerClientAPI" />
+  <inherits name="org.gwtproject.GWTProject" />
 
   <source path="client" />
   <source path="" includes="StunnerCoreEntryPoint.java" />

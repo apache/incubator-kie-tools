@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -29,13 +29,9 @@ import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.EventListener;
-import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import elemental2.dom.HTMLElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.event.mouse.CanvasMouseDownEvent;
@@ -77,8 +73,8 @@ public class StunnerLienzoBoundsPanel
     }
 
     @Override
-    public Widget asWidget() {
-        return ElementWrapperWidget.getWidget(view.getElement());
+    public HTMLElement getElement() {
+        return view.getElement();
     }
 
     @Override
@@ -89,12 +85,8 @@ public class StunnerLienzoBoundsPanel
         return this;
     }
 
-    private void broadcastBlurEvent() {
-        final NativeEvent blur = Document.get().createBlurEvent();
-        for (int i = 0; i < RootPanel.get().getWidgetCount(); i++) {
-            final Widget w = RootPanel.get().getWidget(i);
-            DomEvent.fireNativeEvent(blur, w);
-        }
+    protected void broadcastBlurEvent() {
+        DomGlobal.document.body.blur();
     }
 
     private void initHandlers() {

@@ -29,31 +29,38 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
-import { TestScenarioEditorDock } from "../editor/TestScenarioEditor";
+import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
+import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
 
-export function TestToolsPanel({
+function TestScenarioDrawerPanel({
+  fileName,
+  onDrawerClose,
+  onUpdateSettingField,
   selectedDock,
-  onClose,
+  testScenarioSettings,
 }: {
+  fileName: string;
+  onDrawerClose: () => void;
+  onUpdateSettingField: (field: string, value: boolean | string) => void;
   selectedDock: TestScenarioEditorDock;
-  onClose: () => void;
+  testScenarioSettings: TestScenarioSettings;
 }) {
   return (
     <DrawerPanelContent isResizable={true} minSize={"400px"} defaultSize={"500px"}>
       <DrawerHead>
         <DrawerActions>
-          <DrawerCloseButton onClose={onClose} />
+          <DrawerCloseButton onClose={onDrawerClose} />
         </DrawerActions>
         <TextContent>
-          <Text component={TextVariants.h4}>
+          <Text component={TextVariants.h2}>
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
-                  return <>Scenario Cheatsheet</>;
+                  return "Scenario Cheatsheet";
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return <>Data Objects tool</>;
+                  return "Data Objects tool";
                 case TestScenarioEditorDock.SETTINGS:
-                  return <>Settings</>;
+                  return "Settings";
                 default:
                   throw new Error("");
               }
@@ -65,7 +72,7 @@ export function TestToolsPanel({
       <DrawerPanelBody>
         {/* The following is a temporary text content. Specific panel for all Docks will be managed */}
         <TextContent>
-          <Text component={TextVariants.small}>
+          <Text>
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
@@ -79,7 +86,13 @@ export function TestToolsPanel({
                     </>
                   );
                 case TestScenarioEditorDock.SETTINGS:
-                  return <>Settings</>;
+                  return (
+                    <TestScenarioDrawerSettingsPanel
+                      fileName={fileName}
+                      onUpdateSettingField={onUpdateSettingField}
+                      testScenarioSettings={testScenarioSettings}
+                    />
+                  );
                 default:
                   throw new Error("");
               }
@@ -90,3 +103,5 @@ export function TestToolsPanel({
     </DrawerPanelContent>
   );
 }
+
+export default TestScenarioDrawerPanel;
