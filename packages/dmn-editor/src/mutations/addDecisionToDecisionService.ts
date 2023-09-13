@@ -88,15 +88,15 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   decisionService.inputData = [];
   decisionService.inputDecision = [];
 
-  const decisionsInsideDecisionService = new Set([
+  const hrefsToDecisionsInsideDecisionService = new Set([
     ...(decisionService.outputDecision ?? []).map((s) => s["@_href"]),
     ...(decisionService.encapsulatedDecision ?? []).map((s) => s["@_href"]),
   ]);
 
-  const requirements = new Set<{ id: string; type: "decision" | "inputData" }>();
+  const requirements = new Set<{ id: string; type: "decision" | "inputData" }>(); // Using Set for uniqueness
   for (let i = 0; i < definitions.drgElement!.length; i++) {
     const drgElement = definitions.drgElement![i];
-    if (!decisionsInsideDecisionService.has(`#${drgElement["@_id"]}`) || drgElement.__$$element !== "decision") {
+    if (!hrefsToDecisionsInsideDecisionService.has(`#${drgElement["@_id"]}`) || drgElement.__$$element !== "decision") {
       continue;
     }
 
@@ -109,17 +109,23 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
     });
   }
 
+  const inputDatas = new Set<string>(); // Using Set for uniqueness
+  const inputDecisions = new Set<string>(); // Using Set for uniqueness
+
   const requirementsArray = [...requirements];
   for (let i = 0; i < requirementsArray.length; i++) {
     const r = requirementsArray[i];
     if (r.type === "inputData") {
-      decisionService.inputData ??= [];
-      decisionService.inputData.push({ "@_href": `#${r.id}` });
+      inputDatas.add(r.id);
     } else if (r.type === "decision") {
-      decisionService.inputDecision ??= [];
-      decisionService.inputDecision.push({ "@_href": `#${r.id}` });
+      inputDecisions.add(r.id);
     } else {
       throw new Error(`Invalid type of element to be referenced by DecisionService: '${r.type}'`);
     }
   }
+
+  decisionService.inputData = [...inputDatas].map((i) => ({ "@_href": `#${i}` }));
+  decisionService.inputDecision = [...inputDecisions].flatMap(
+    (d) => (hrefsToDecisionsInsideDecisionService.has(`#${d}`) ? [] : { "@_href": `#${d}` }) // Makes sure output and encapsulated Decisions are not listed as inputDecisions
+  );
 }
