@@ -7985,6 +7985,9 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
+      react-json-view:
+        specifier: ^1.21.3
+        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
       react-router:
         specifier: ^5.2.1
         version: 5.2.1(react@17.0.2)
@@ -10479,7 +10482,7 @@ packages:
       "@babel/traverse": 7.21.5
       "@babel/types": 7.21.5
       convert-source-map: 1.7.0
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.1
       semver: 6.3.0
@@ -10696,7 +10699,7 @@ packages:
       "@babel/core": 7.18.10
       "@babel/helper-compilation-targets": 7.21.5(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.21.5
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       lodash.debounce: 4.0.8
       resolve: 1.22.1
       semver: 6.3.0
@@ -13806,7 +13809,7 @@ packages:
       "@babel/helper-split-export-declaration": 7.18.6
       "@babel/parser": 7.21.8
       "@babel/types": 7.21.5
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -19012,7 +19015,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9(debug@4.3.1)
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -21548,7 +21551,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
 
   /debug@4.3.2:
     resolution:
@@ -21575,19 +21577,6 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 8.1.1
-    dev: true
-
-  /debug@4.3.4:
-    resolution:
-      { integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ== }
-    engines: { node: ">=6.0" }
-    peerDependencies:
-      supports-color: "*"
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.1.2
     dev: true
 
   /debug@4.3.4(supports-color@8.1.1):
@@ -22984,7 +22973,6 @@ packages:
       esbuild-windows-64: 0.15.5
       esbuild-windows-arm64: 0.15.5
     dev: true
-    optional: true
 
   /escalade@3.1.1:
     resolution:
@@ -23986,16 +23974,6 @@ packages:
     dependencies:
       tabbable: 5.3.3
 
-  /follow-redirects@1.14.9:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-
   /follow-redirects@1.14.9(debug@4.3.1):
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -24007,7 +23985,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
-    dev: true
 
   /for-each@0.3.3:
     resolution:
@@ -25154,7 +25131,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9(debug@4.3.1)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -26093,7 +26070,7 @@ packages:
       { integrity: sha512-c16LpFRkR8vQXyHZ5nLpY35JZtzj1PQY1iZmesUbf1FZHbIupcWfjgOXBY9YHkLEQ6puz1u4Dgj6qmU/DisrZg== }
     engines: { node: ">=8" }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -33184,7 +33161,7 @@ packages:
     resolution:
       { integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw== }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -33199,7 +33176,7 @@ packages:
       { integrity: sha512-r46gZQZQV+Kl9oItvl1JZZqJKGr+oEkB08A6BzkiR7593/7IbtuncXHd2YoYeTsG4157ZssMu9KYvUHLcjcDoA== }
     engines: { node: ">=6.0.0" }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0
@@ -33861,6 +33838,32 @@ packages:
       supports-hyperlinks: 2.1.0
     dev: true
 
+  /terser-webpack-plugin@5.3.0(esbuild@0.15.5)(webpack@5.76.1):
+    resolution:
+      { integrity: sha512-LPIisi3Ol4chwAaPP8toUJ3L4qCM1G0wao7L3qNv57Drezxj6+VEyySpPw4B1HSO2Eg/hDY/MNF5XihCAoqnsQ== }
+    engines: { node: ">= 10.13.0" }
+    peerDependencies:
+      "@swc/core": "*"
+      esbuild: "*"
+      uglify-js: "*"
+      webpack: ^5.1.0
+    peerDependenciesMeta:
+      "@swc/core":
+        optional: true
+      esbuild:
+        optional: true
+      uglify-js:
+        optional: true
+    dependencies:
+      esbuild: 0.15.5
+      jest-worker: 27.4.6
+      schema-utils: 3.1.1
+      serialize-javascript: 6.0.0
+      source-map: 0.6.1
+      terser: 5.14.2
+      webpack: 5.76.1(webpack-cli@4.10.0)
+    dev: true
+
   /terser-webpack-plugin@5.3.0(webpack@5.70.0):
     resolution:
       { integrity: sha512-LPIisi3Ol4chwAaPP8toUJ3L4qCM1G0wao7L3qNv57Drezxj6+VEyySpPw4B1HSO2Eg/hDY/MNF5XihCAoqnsQ== }
@@ -33884,31 +33887,6 @@ packages:
       source-map: 0.6.1
       terser: 5.14.2
       webpack: 5.70.0(webpack-cli@4.10.0)
-    dev: true
-
-  /terser-webpack-plugin@5.3.0(webpack@5.76.1):
-    resolution:
-      { integrity: sha512-LPIisi3Ol4chwAaPP8toUJ3L4qCM1G0wao7L3qNv57Drezxj6+VEyySpPw4B1HSO2Eg/hDY/MNF5XihCAoqnsQ== }
-    engines: { node: ">= 10.13.0" }
-    peerDependencies:
-      "@swc/core": "*"
-      esbuild: "*"
-      uglify-js: "*"
-      webpack: ^5.1.0
-    peerDependenciesMeta:
-      "@swc/core":
-        optional: true
-      esbuild:
-        optional: true
-      uglify-js:
-        optional: true
-    dependencies:
-      jest-worker: 27.4.6
-      schema-utils: 3.1.1
-      serialize-javascript: 6.0.0
-      source-map: 0.6.1
-      terser: 5.14.2
-      webpack: 5.76.1(webpack-cli@4.10.0)
     dev: true
 
   /terser@4.8.0:
@@ -35778,7 +35756,7 @@ packages:
       neo-async: 2.6.2
       schema-utils: 3.1.1
       tapable: 2.2.0
-      terser-webpack-plugin: 5.3.0(webpack@5.76.1)
+      terser-webpack-plugin: 5.3.0(esbuild@0.15.5)(webpack@5.76.1)
       watchpack: 2.4.0
       webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
       webpack-sources: 3.2.3

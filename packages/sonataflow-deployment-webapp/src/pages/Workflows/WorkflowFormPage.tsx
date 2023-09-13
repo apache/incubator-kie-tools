@@ -32,9 +32,12 @@ import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { routes } from "../../routes";
 import { useHistory } from "react-router";
 import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
+import { WorkflowResponse } from "../../apis/WorkflowResponse";
+import { WorkflowResult } from "../../components/WorkflowResult";
 
 export function WorkflowFormPage(props: { workflowId: string }) {
   const [notification, setNotification] = useState<Notification>();
+  const [workflowResponse, setWorkflowResponse] = useState<WorkflowResponse>();
   const openApi = useOpenApi();
   const [customFormSchema, setCustomFormSchema] = useState<Record<string, any>>();
   const history = useHistory();
@@ -104,8 +107,9 @@ export function WorkflowFormPage(props: { workflowId: string }) {
       async startWorkflow(endpoint: string, data: Record<string, any>): Promise<void> {
         return gatewayApi
           ?.startWorkflow(endpoint, data)
-          .then((id: string) => {
-            onSubmitSuccess(`A workflow with id ${id} was triggered successfully.`);
+          .then((response: WorkflowResponse) => {
+            onSubmitSuccess(`A workflow with id ${response.id} was triggered successfully.`);
+            setWorkflowResponse(response);
           })
           .catch((error) => {
             const message =
@@ -160,6 +164,8 @@ export function WorkflowFormPage(props: { workflowId: string }) {
                   Loading...
                 </Title>
               </EmptyState>
+            ) : workflowResponse ? (
+              <WorkflowResult response={workflowResponse} />
             ) : customFormSchema ? (
               <CustomWorkflowForm
                 workflowDefinition={workflowDefinition}

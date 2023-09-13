@@ -111,10 +111,14 @@ describe("swf custom form tests", () => {
     mockedAxios.post.mockResolvedValue({
       data: {
         id: "1234",
+        workflowdata: {},
       },
     });
     const result = await startWorkflowRest({ name: "John" }, "http://localhost:8080/test", "1234");
-    expect(result).toEqual("1234");
+    expect(result).toEqual({
+      id: "1234",
+      workflowdata: {},
+    });
   });
 
   it("start workflow test - failure", async () => {

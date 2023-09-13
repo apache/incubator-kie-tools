@@ -21,6 +21,7 @@ import axios from "axios";
 import { v4 as uuid } from "uuid";
 import { OpenAPI } from "openapi-types";
 import { CloudEventRequest, SONATAFLOW_BUSINESS_KEY } from "./CloudEvent";
+import { WorkflowResponse } from "./WorkflowResponse";
 
 export const getCustomWorkflowSchema = async (
   api: OpenAPI.Document,
@@ -51,13 +52,13 @@ export const startWorkflowRest = (
   data: Record<string, any>,
   endpoint: string,
   businessKey: string
-): Promise<string> => {
+): Promise<WorkflowResponse> => {
   const requestURL = `${endpoint}${businessKey.length > 0 ? `?businessKey=${businessKey}` : ""}`;
   return new Promise((resolve, reject) => {
     axios
       .post(requestURL, { workflowdata: data })
       .then((response: any) => {
-        resolve(response.data.id);
+        resolve(response.data);
       })
       .catch((err) => reject(err));
   });

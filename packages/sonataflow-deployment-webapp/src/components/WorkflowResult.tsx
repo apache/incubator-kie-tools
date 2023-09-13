@@ -16,13 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React, { useMemo } from "react";
+import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import ReactJson from "react-json-view";
+import { WorkflowResponse } from "../apis/WorkflowResponse";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-export type JsonType = { [key: string]: string | number | boolean };
-
-export enum SCHEMA_VERSION {
-  DRAFT_7 = "http://json-schema.org/draft-07/schema#",
-  DRAFT_2019_09 = "https://json-schema.org/draft/2019-09/schema",
+export interface WorkflowResultProps {
+  response: WorkflowResponse;
 }
-export interface FormRendererApi {
-  doReset: () => void;
+
+export function WorkflowResult(props: WorkflowResultProps) {
+  const filteredResponse = useMemo(() => ({ workflowdata: props.response.workflowdata }), [props.response]);
+
+  return (
+    <>
+      <TextContent>
+        <Title headingLevel="h3">Workflow result</Title>
+      </TextContent>
+      <br />
+      <TextContent>
+        <div>
+          <ReactJson src={filteredResponse} name={false} />
+        </div>
+      </TextContent>
+    </>
+  );
 }
