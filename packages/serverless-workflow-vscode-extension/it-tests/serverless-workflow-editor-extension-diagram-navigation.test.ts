@@ -100,7 +100,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     let columnNumber = (await textEditor.getCoordinates())[1];
 
     expect(lineNumber).equal(11);
-    expect(columnNumber).equal(3);
+    expect(columnNumber).equal(5);
 
     // Select StartApplication node
     await swfEditor.selectNode(nodeIds[2]);
@@ -109,6 +109,6 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     columnNumber = (await textEditor.getCoordinates())[1];
 
     expect(lineNumber).equal(20);
-    expect(columnNumber).equal(3);
+    expect(columnNumber).equal(5);
   });
 });

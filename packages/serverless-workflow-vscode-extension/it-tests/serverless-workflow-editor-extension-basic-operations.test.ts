@@ -121,17 +121,18 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     let textEditor = await swfTextEditor.getSwfTextEditor();
 
     const greetInGermanStateString =
-      "- name: GreetInGerman\n" +
-      "  type: inject\n" +
-      "  data:\n" +
-      "    greeting: 'Hallo vom JSON-Workflow, '\n" +
-      "  transition: GreetPerson";
+      "  - name: GreetInGerman\n" +
+      "    type: inject\n" +
+      "    data:\n" +
+      "      greeting: 'Hallo vom JSON-Workflow, '\n" +
+      "    transition: GreetPerson";
 
-    const germanConditionString = '  - condition: ${ .language == "German" }\n' + "    transition: GreetInGerman";
+    const germanConditionString =
+      '      - condition: ${ .language == "German" }\n' + "        transition: GreetInGerman";
 
-    await textEditor.typeTextAt(30, 26, "\n");
+    await textEditor.typeTextAt(30, 28, "\n");
     await textEditor.setTextAtLine(31, greetInGermanStateString);
-    await textEditor.typeTextAt(18, 31, "\n");
+    await textEditor.typeTextAt(18, 35, "\n");
     await textEditor.setTextAtLine(19, germanConditionString);
 
     expect((await swfEditor.getAllNodeIds()).length).equal(7);
@@ -172,7 +173,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
   });
 
   async function testRenameSWFile(workflowName: string): Promise<void> {
-    const RENAMED_WORKFLOW_NAME = "renamed-" + workflowName;
+    const renamedWorkflowName = "renamed-" + workflowName;
 
     let editorWebViews = await testHelper.openFileFromSidebar(workflowName);
     let swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
@@ -184,14 +185,14 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
 
-    await testHelper.renameFile(workflowName, RENAMED_WORKFLOW_NAME);
+    await testHelper.renameFile(workflowName, renamedWorkflowName);
 
     expect(await textEditor.getText()).equal(expectedContent);
     expect((await swfEditor.getAllNodeIds()).length).equal(3);
 
     await testHelper.closeAllEditors();
 
-    editorWebViews = await testHelper.openFileFromSidebar(RENAMED_WORKFLOW_NAME);
+    editorWebViews = await testHelper.openFileFromSidebar(renamedWorkflowName);
     swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
     swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
 
