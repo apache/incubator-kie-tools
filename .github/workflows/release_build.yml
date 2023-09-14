@@ -900,12 +900,12 @@ jobs:
           cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn/
           cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn/
           cp ${{ github.workspace }}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js $STANDALONE_EDITORS_DIR/swf/
-          rm -rf ./standalone/bpmn/index.js
-          rm -rf ./standalone/dmn/index.js
-          rm -rf ./standalone/swf/index.js
-          ln -s $STANDALONE_EDITORS_DIR/bpmn/index.js ./standalone/bpmn/index.js
-          ln -s $STANDALONE_EDITORS_DIR/dmn/index.js ./standalone/dmn/index.js
-          ln -s $STANDALONE_EDITORS_DIR/swf/index.js ./standalone/swf/index.js
+          rm -f ./standalone/bpmn/index.js
+          rm -f ./standalone/dmn/index.js
+          rm -f ./standalone/swf/index.js
+          ln -s ../${{ inputs.tag }}/bpmn/index.js ./standalone/bpmn/index.js
+          ln -s ../${{ inputs.tag }}/dmn/index.js ./standalone/dmn/index.js
+          ln -s ../${{ inputs.tag }}/swf/index.js ./standalone/swf/index.js
 
           echo "Commit changes and push"
           git add .
