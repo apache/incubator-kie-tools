@@ -48,7 +48,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  it("Select states", async function () {
+  it("Select states using JSON serverless workflow files", async function () {
     this.timeout(50000);
 
     const WORKFLOW_NAME = "applicant-request-decision.sw.json";
@@ -78,5 +78,37 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
 
     expect(lineNumber).equal(33);
     expect(columnNumber).equal(7);
+  });
+
+  it("Select states using YAML serverless workflow files", async function () {
+    this.timeout(50000);
+
+    const WORKFLOW_NAME = "applicant-request-decision.sw.yaml";
+
+    const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
+    const swfTextEditor = new SwfTextEditorTestHelper(editorWebViews[0]);
+    const swfEditor = new SwfEditorTestHelper(editorWebViews[1]);
+
+    const nodeIds = await swfEditor.getAllNodeIds();
+    expect(nodeIds.length).equal(6);
+
+    // Select CheckApplication node
+    await swfEditor.selectNode(nodeIds[1]);
+
+    const textEditor = await swfTextEditor.getSwfTextEditor();
+    let lineNumber = (await textEditor.getCoordinates())[0];
+    let columnNumber = (await textEditor.getCoordinates())[1];
+
+    expect(lineNumber).equal(11);
+    expect(columnNumber).equal(5);
+
+    // Select StartApplication node
+    await swfEditor.selectNode(nodeIds[2]);
+
+    lineNumber = (await textEditor.getCoordinates())[0];
+    columnNumber = (await textEditor.getCoordinates())[1];
+
+    expect(lineNumber).equal(20);
+    expect(columnNumber).equal(5);
   });
 });
