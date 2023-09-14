@@ -4,6 +4,7 @@ import { EmptyLabel } from "./Nodes";
 import "./EditableNodeLabel.css";
 
 export function EditableNodeLabel({
+  isExternal,
   isEditing,
   setEditing,
   value,
@@ -11,6 +12,7 @@ export function EditableNodeLabel({
   position,
 }: {
   position?: "center-center" | "top-center" | "center-left" | "top-left";
+  isExternal: boolean;
   isEditing: boolean;
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
@@ -110,6 +112,7 @@ export function EditableNodeLabel({
           onChange={(e) => setInternalValue(e.target.value)}
           value={internalValue}
         />
+        // FIXME: Tiago --> Add import name as a prefix here... like abc.MyNode
       )) || <span>{value ?? <EmptyLabel />}</span>}
     </div>
   );

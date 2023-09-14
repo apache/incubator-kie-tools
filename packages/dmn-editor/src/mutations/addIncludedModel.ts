@@ -1,7 +1,10 @@
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-export function addIncludedModel(args: {
+export function addIncludedModel({
+  definitions,
+  includedModel,
+}: {
   definitions: DMN15__tDefinitions;
   includedModel: {
     alias: string;
@@ -11,13 +14,16 @@ export function addIncludedModel(args: {
 }) {
   const newImport = {
     "@_id": generateUuid(),
-    "@_name": args.includedModel.alias,
-    "@_importType": args.includedModel.xmlns,
-    "@_namespace": args.includedModel.namespace,
+    "@_name": includedModel.alias,
+    "@_importType": includedModel.xmlns,
+    "@_namespace": includedModel.namespace,
   };
 
-  args.definitions.import ??= [];
-  args.definitions.import.push(newImport);
+  definitions.import ??= [];
+  definitions.import.push(newImport);
+
+  // FIXME: Tiago --> Maybe using a random name would be better? We need to check for collisions! Can't override one existing.
+  definitions[`@_xmlns:included${definitions.import.length - 1}`] = includedModel.namespace;
 
   return newImport;
 }

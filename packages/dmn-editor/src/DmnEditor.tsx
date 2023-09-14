@@ -17,7 +17,7 @@ import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel
 import {
   DmnEditorStoreApiContext,
   DmnEditorTab,
-  State,
+  DmnModel,
   StoreApiType,
   createDmnEditorStore,
   useDmnEditorStore,
@@ -27,19 +27,37 @@ import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
+import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
+import { DmnEditorDependenciesContextProvider } from "./includedModels/DmnEditorDependenciesContext";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
 export type DmnEditorRef = {
-  reset: (mode: State["dmn"]["model"]) => void;
+  reset: (mode: DmnModel) => void;
+};
+
+export type DependenciesByNamespace = Record<string, DmnDependency | undefined>;
+export type EvaluationResults = Record<string, any>;
+export type ValidationMessages = Record<string, any>;
+export type OnRequestModelsAvailableToInclude = () => Promise<string[]>;
+export type OnRequestModelByPath = (path: string) => Promise<DmnModel | null>;
+export type OnDmnModelChange = (model: DmnModel) => void;
+export type DmnDependency = {
+  model: DmnModel;
+  path: string;
+  svg: string;
 };
 
 export type DmnEditorProps = {
-  model: State["dmn"]["model"];
-  onModelChange?: (model: State["dmn"]["model"]) => void;
+  model: DmnModel;
+  onModelChange?: OnDmnModelChange;
+  onRequestModelByPath?: OnRequestModelByPath;
+  onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
+  dependenciesByNamespace: DependenciesByNamespace;
+  evaluationResults: EvaluationResults;
+  validationMessages: ValidationMessages;
 };
 
 export const DmnEditorInternal = ({
@@ -188,13 +206,15 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.model));
 
   return (
-    <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-      <DmnEditorDerivedStoreContextProvider>
-        <DmnEditorContextProvider>
-          <DmnEditorInternal forwardRef={ref} {...props} />
-        </DmnEditorContextProvider>
-      </DmnEditorDerivedStoreContextProvider>
-    </DmnEditorStoreApiContext.Provider>
+    <DmnEditorContextProvider>
+      <DmnEditorDependenciesContextProvider {...props}>
+        <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+          <DmnEditorDerivedStoreContextProvider>
+            <DmnEditorInternal forwardRef={ref} {...props} />
+          </DmnEditorDerivedStoreContextProvider>
+        </DmnEditorStoreApiContext.Provider>
+      </DmnEditorDependenciesContextProvider>
+    </DmnEditorContextProvider>
   );
 });
 

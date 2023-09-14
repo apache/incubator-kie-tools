@@ -1,8 +1,16 @@
-import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DC__Bounds,
+  DC__Point,
+  DMN15__tDefinitions,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
 import { getCenter } from "./Maths";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { Unpacked } from "../../store/useDiagramData";
+import { NODE_TYPES } from "../nodes/NodeTypes";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
 export const CONTAINER_NODES_DESIRABLE_PADDING = 60;
@@ -151,10 +159,6 @@ export function getDecisionServiceDividerLineLocalY(shape: DMNDI15__DMNShape) {
   );
 }
 
-export function idFromHref(href: string | undefined) {
-  return href?.substring(1) ?? "";
-}
-
 export const DISCRETE_AUTO_POSITIONING_DMN_EDGE_ID_MARKER = [
   AutoPositionedEdgeMarker.BOTH, // This needs to be the first element.
   AutoPositionedEdgeMarker.SOURCE,
@@ -203,4 +207,26 @@ export function getBounds({
     "@_width": maxX - minX + 2 * padding,
     "@_height": maxY - minY + 2 * padding,
   };
+}
+
+export function getNodeTypeFromDmnObject(
+  dmnObject: Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
+) {
+  const type = switchExpression(dmnObject.__$$element, {
+    inputData: NODE_TYPES.inputData,
+    decision: NODE_TYPES.decision,
+    businessKnowledgeModel: NODE_TYPES.bkm,
+    knowledgeSource: NODE_TYPES.knowledgeSource,
+    decisionService: NODE_TYPES.decisionService,
+    association: undefined,
+    group: NODE_TYPES.group,
+    textAnnotation: NODE_TYPES.textAnnotation,
+    default: undefined,
+  });
+
+  if (!type) {
+    throw new Error(`Unknown node type for __$$element '${dmnObject.__$$element}'.`);
+  }
+
+  return type;
 }

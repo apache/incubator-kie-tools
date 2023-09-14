@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 
 import "@patternfly/react-core/dist/styles/base.css";
 
@@ -7,12 +7,13 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
-import { DmnEditor, DmnEditorProps, DmnEditorRef } from "../../src/DmnEditor";
+import * as DmnEditor from "../../src/DmnEditor";
 import { DmnDefinitions, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { SPEC } from "../../src/Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { avaiableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 
 const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN);
 
@@ -50,7 +51,7 @@ export function DevWebApp() {
     e.preventDefault(); // Necessary to disable the browser's default 'onDrop' handling.
   }, []);
 
-  const ref = useRef<DmnEditorRef>(null);
+  const ref = useRef<DmnEditor.DmnEditorRef>(null);
 
   const reset = useCallback(() => {
     const marshaller = getMarshaller(EMPTY_DMN_15());
@@ -91,7 +92,7 @@ export function DevWebApp() {
     setState((prev) => ({ ...prev, pointer: Math.min(prev.stack.length - 1, prev.pointer + 1) }));
   }, []);
 
-  const onModelChange: DmnEditorProps["onModelChange"] = useCallback((model) => {
+  const onModelChange = useCallback<DmnEditor.OnDmnModelChange>((model) => {
     setState((prev) => {
       const newStack = prev.stack.slice(0, prev.pointer + 1);
       return {
@@ -100,6 +101,29 @@ export function DevWebApp() {
         pointer: newStack.length,
       };
     });
+  }, []);
+
+  const dependenciesByNamespace = useMemo<DmnEditor.DependenciesByNamespace>(() => {
+    return (currentModel.definitions.import ?? []).reduce((acc, i) => {
+      acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
+      return acc;
+    }, {} as DmnEditor.DependenciesByNamespace);
+  }, [currentModel.definitions.import]);
+
+  const onRequestModelByPath = useCallback<DmnEditor.OnRequestModelByPath>(async (path) => {
+    return avaiableModelsByPath[path] ?? null;
+  }, []);
+
+  const onRequestModelsAvailableToInclude = useCallback<DmnEditor.OnRequestModelsAvailableToInclude>(async () => {
+    return Object.keys(avaiableModelsByPath);
+  }, []);
+
+  const evaluationResults = useMemo<DmnEditor.EvaluationResults>(() => {
+    return {};
+  }, []);
+
+  const validationMessages = useMemo<DmnEditor.ValidationMessages>(() => {
+    return {};
   }, []);
 
   return (
@@ -129,7 +153,16 @@ export function DevWebApp() {
         </PageSection>
         <hr />
         <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
-          <DmnEditor ref={ref} model={currentModel} onModelChange={onModelChange} />
+          <DmnEditor.DmnEditor
+            ref={ref}
+            model={currentModel}
+            onModelChange={onModelChange}
+            onRequestModelByPath={onRequestModelByPath}
+            onRequestModelsAvailableToInclude={onRequestModelsAvailableToInclude}
+            dependenciesByNamespace={dependenciesByNamespace}
+            validationMessages={validationMessages}
+            evaluationResults={evaluationResults}
+          />
         </PageSection>
       </Page>
     </>

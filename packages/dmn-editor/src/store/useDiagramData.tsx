@@ -6,14 +6,16 @@ import {
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
 import { NODE_LAYERS, useDmnEditorStore } from "./Store";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { EdgeType } from "../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import { idFromHref } from "../diagram/maths/DmnMaths";
+import { DmnDiagramNodeData, DmnDiagramNodeDataExternalInfo } from "../diagram/nodes/Nodes";
+import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
+import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
+import { XmlQName, parseXmlQName, buildXmlQName } from "../xml/qNames";
+import { buildXmlHref, idFromHref } from "../xml/href";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -25,14 +27,37 @@ export function useDiagramData() {
   const dmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { dmnEdgesByDmnRefId, dmnShapesByDmnRefId } = useMemo(
+  const { dmnEdgesByDmnRefId, dmnShapesByDmnRefId, dmnShapesForExternalNodesByDmnRefId } = useMemo(
     () =>
       (dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
         .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
         .reduce(
           (acc, e, index) => {
             if (e.__$$element === "dmndi:DMNShape") {
-              acc.dmnShapesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
+              // @_dmnElementRef is a xsd:QName, meaning it can be namespaced.
+              // If we find the namespace as a namespace declaration on the `definitions` object, then this shape represents a node from an included model.
+              // Therefore, we need to add it to `dmnShapesForExternalNodesByDmnRefId`, so we can draw these nodes.
+              // Do not skip adding it to the regular `dmnShapesByDmnRefId`, as nodes will query this.
+              const dmnElementRefQName = parseXmlQName(e["@_dmnElementRef"]);
+              if (dmnElementRefQName.prefix && dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`]) {
+                const href = buildXmlHref({
+                  namespace: dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`]!,
+                  id: dmnElementRefQName.localPart,
+                });
+                acc.dmnShapesForExternalNodesByDmnRefId.set(e["@_dmnElementRef"], {
+                  ...e,
+                  index,
+                  dmnElementRefQName: {
+                    localPart: dmnElementRefQName.localPart,
+                    prefix: dmnElementRefQName.prefix,
+                  },
+                  href,
+                });
+
+                acc.dmnShapesByDmnRefId.set(href, { ...e, index });
+              } else {
+                acc.dmnShapesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
+              }
             } else if (e.__$$element === "dmndi:DMNEdge") {
               acc.dmnEdgesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
             }
@@ -42,6 +67,10 @@ export function useDiagramData() {
           {
             dmnEdgesByDmnRefId: new Map<string, DMNDI15__DMNEdge & { index: number }>(),
             dmnShapesByDmnRefId: new Map<string, DMNDI15__DMNShape & { index: number }>(),
+            dmnShapesForExternalNodesByDmnRefId: new Map<
+              string,
+              DMNDI15__DMNShape & { index: number; dmnElementRefQName: XmlQName; href: string }
+            >(),
           }
         ),
     [dmn.model.definitions]
@@ -68,6 +97,8 @@ export function useDiagramData() {
     },
     [dmnEdgesByDmnRefId, dmnShapesByDmnRefId]
   );
+
+  const { dependenciesByNamespace } = useDmnEditorDependencies();
 
   const { nodes, edges, nodesById, edgesById } = useMemo(() => {
     // console.time("nodes");
@@ -203,25 +234,18 @@ export function useDiagramData() {
 
     function ackNode(
       dmnObject: Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>,
-      index: number
+      index: number,
+      externalInfo: DmnDiagramNodeDataExternalInfo
     ) {
-      const type = switchExpression(dmnObject.__$$element, {
-        inputData: NODE_TYPES.inputData,
-        decision: NODE_TYPES.decision,
-        businessKnowledgeModel: NODE_TYPES.bkm,
-        knowledgeSource: NODE_TYPES.knowledgeSource,
-        decisionService: NODE_TYPES.decisionService,
-        association: undefined,
-        group: NODE_TYPES.group,
-        textAnnotation: NODE_TYPES.textAnnotation,
-      });
-
+      const type = getNodeTypeFromDmnObject(dmnObject);
       if (!type) {
         return undefined;
       }
 
-      const id = dmnObject["@_id"]!;
-      const shape = dmnShapesByDmnRefId.get(id)!;
+      const { id, shape } = externalInfo.isExternal
+        ? { id: externalInfo.href, shape: dmnShapesForExternalNodesByDmnRefId.get(buildXmlQName(externalInfo.qName))! }
+        : { id: dmnObject["@_id"]!, shape: dmnShapesByDmnRefId.get(dmnObject["@_id"]!)! };
+
       const newNode: RF.Node<DmnDiagramNodeData<any>> = {
         id,
         type,
@@ -230,6 +254,7 @@ export function useDiagramData() {
         resizing: resizingNodes.has(id),
         position: snapShapePosition(diagram.snapGrid, shape),
         data: {
+          ...externalInfo,
           dmnObject,
           shape,
           index,
@@ -250,13 +275,13 @@ export function useDiagramData() {
       return newNode;
     }
 
-    const nodes: RF.Node<DmnDiagramNodeData<any>>[] = [
+    const localNodes: RF.Node<DmnDiagramNodeData<any>>[] = [
       ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode(dmnObject, index);
+        const newNode = ackNode(dmnObject, index, { isExternal: false });
         return newNode ? [newNode] : [];
       }),
       ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode(dmnObject, index);
+        const newNode = ackNode(dmnObject, index, { isExternal: false });
         return newNode ? [newNode] : [];
       }),
     ];
@@ -266,12 +291,12 @@ export function useDiagramData() {
     }
 
     // Assign parents & z-index to NODES
-    for (let i = 0; i < nodes.length; i++) {
-      const parent = parentIdsById.get(nodes[i].id);
+    for (let i = 0; i < localNodes.length; i++) {
+      const parent = parentIdsById.get(localNodes[i].id);
       if (parent) {
-        nodes[i].data.parentRfNode = nodesById.get(parent["@_id"]!);
-        nodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
-        nodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
+        localNodes[i].data.parentRfNode = nodesById.get(parent["@_id"]!);
+        localNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
+        localNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
 
         // ⬇ This code is if we want to use Reactflow's parenting mechanism.
         //
@@ -288,17 +313,37 @@ export function useDiagramData() {
         // );
       }
 
-      if (nodes[i].type === NODE_TYPES.group) {
-        nodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
+      if (localNodes[i].type === NODE_TYPES.group) {
+        localNodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
       }
 
-      if (nodes[i].type === NODE_TYPES.decisionService) {
-        nodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
+      if (localNodes[i].type === NODE_TYPES.decisionService) {
+        localNodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
       }
     }
 
+    const externalNodes = [...dmnShapesForExternalNodesByDmnRefId.values()].flatMap((shape) => {
+      const namespace = dmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
+      if (!namespace) {
+        throw new Error(`Can't find namespace for alias '${shape.dmnElementRefQName.prefix}'.`);
+      }
+
+      const externalDrgElements = dependenciesByNamespace[namespace]?.model.definitions.drgElement ?? [];
+      const index = externalDrgElements.findIndex((s) => s["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
+      if (index < 0) {
+        throw new Error("Can't find drgElement for shape with dmnElementRef " + shape["@_dmnElementRef"]);
+      }
+
+      const newNode = ackNode(externalDrgElements[index], index, {
+        isExternal: true,
+        qName: shape.dmnElementRefQName,
+        href: shape.href,
+      });
+      return newNode ? [newNode] : [];
+    });
+
     // Groups are always at the back. Decision Services after groups, then everything else.
-    const sortedNodes = nodes
+    const sortedNodes = [...localNodes, ...externalNodes]
       .sort((a, b) => Number(b.type === NODE_TYPES.decisionService) - Number(a.type === NODE_TYPES.decisionService))
       .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
 
@@ -317,10 +362,11 @@ export function useDiagramData() {
     diagram.selectedEdges,
     diagram.overlays.enableNodeHierarchyHighlight,
     diagram.snapGrid,
-    dmn.model.definitions.drgElement,
-    dmn.model.definitions.artifact,
+    dmnShapesForExternalNodesByDmnRefId,
     getEdgeData,
     dmnShapesByDmnRefId,
+    dmn.model.definitions,
+    dependenciesByNamespace,
   ]);
 
   return { dmnShapesByDmnRefId, dmnEdgesByDmnRefId, nodesById, edgesById, nodes, edges };

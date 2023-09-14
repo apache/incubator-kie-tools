@@ -24,7 +24,7 @@ export interface SnapGrid {
 
 export type DropTargetNode = undefined | { id: string; type: NodeType };
 
-export type DmnModel = XmlParserTsRootElementBaseType & { definitions: DMN15__tDefinitions };
+export type DmnModel = { definitions: DMN15__tDefinitions & XmlParserTsRootElementBaseType };
 
 export interface State {
   dispatch: Dispatch;

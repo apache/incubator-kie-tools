@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -7,7 +7,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { DmnModel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
@@ -18,58 +18,43 @@ import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gal
 import { addIncludedModel } from "../mutations/addIncludedModel";
 import { deleteIncludedModel } from "../mutations/deleteIncludedModel";
 import { SPEC } from "../Spec";
-
-export type ExternalModel = {
-  label: string;
-  path: string;
-  model: {
-    "@_namespace": string;
-    "@_xmlns": string;
-  };
-};
+import { useDmnEditorDependencies } from "./DmnEditorDependenciesContext";
+import { dirname, basename } from "path";
+import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DmnDependency } from "../DmnEditor";
 
 export function IncludedModels() {
-  const models = useMemo<{ dmn: ExternalModel[]; pmml: ExternalModel[] }>(() => {
-    return {
-      dmn: [
-        {
-          model: {
-            "@_xmlns": "https://www.omg.org/spec/DMN/20211108/MODEL/",
-            "@_namespace": "https://kie.org/dmn/_42458D20-6E53-4071-A60D-544A06CEBC9F",
-          },
-          label: "Other DMN",
-          path: "src/main/resources/other.dmn",
-        },
-        {
-          model: {
-            "@_xmlns": "https://www.omg.org/spec/DMN/20211108/MODEL/",
-            "@_namespace": "https://kie.org/dmn/_4B5EA01B-236F-490B-BB33-57569043B73B",
-          },
-          label: "Anther DMN",
-          path: "src/main/resources/another.dmn",
-        },
-      ],
-      pmml: [
-        {
-          model: {
-            "@_xmlns": "http://www.dmg.org/PMML-4_4",
-            "@_namespace": "https://kie.org/pmml/_8A20E3CC-B6E1-40E1-AF0F-AF9A748337A6",
-          },
-          label: "Some PMML",
-          path: "src/main/resources/some.pmml",
-        },
-      ],
-    };
-  }, []);
-
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-
   const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+  const importsByNamespace = useMemo(
+    () => imports.reduce((acc, i) => acc.set(i["@_namespace"], i), new Map<string, DMN15__tImport>()),
+    [imports]
+  );
+
+  const { dependenciesByNamespace, onRequestModelsAvailableToInclude, onRequestModelByPath } =
+    useDmnEditorDependencies();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModelSelectOpen, setModelSelectOpen] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
+  const [selectedPath, setSelectedPath] = useState<string | undefined>(undefined);
   const [modelAlias, setModelAlias] = useState("");
+
+  const [selectedModel, setSelectedModel] = useState<DmnModel | undefined>(undefined);
+  // FIXME: Tiago --> Use `useCancellableEffect`
+  useEffect(() => {
+    if (!selectedPath) {
+      return;
+    }
+
+    // FIXME: Tiago --> Handle `onRequestModelByPath` not being available.
+    onRequestModelByPath?.(selectedPath).then((m) => {
+      if (m) {
+        setSelectedModel(m);
+      } else {
+        // FIXME: Tiago --> Handle error.
+      }
+    });
+  }, [onRequestModelByPath, selectedPath]);
 
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -78,7 +63,7 @@ export function IncludedModels() {
   const cancel = useCallback(() => {
     setModalOpen(false);
     setModelSelectOpen(false);
-    setSelectedModel(undefined);
+    setSelectedPath(undefined);
     setModelAlias("");
   }, []);
 
@@ -102,8 +87,8 @@ export function IncludedModels() {
       addIncludedModel({
         definitions: state.dmn.model.definitions,
         includedModel: {
-          xmlns: selectedModel.model["@_xmlns"],
-          namespace: selectedModel.model["@_namespace"],
+          xmlns: selectedModel.definitions["@_xmlns"]!,
+          namespace: selectedModel.definitions["@_namespace"]!,
           alias: modelAlias,
         },
       });
@@ -111,6 +96,32 @@ export function IncludedModels() {
 
     cancel();
   }, [cancel, dmnEditorStoreApi, selectedModel, modelAlias]);
+
+  // FIXME: Tiago --> Use `useCancellableEffect`
+  const [modelPaths, setModelPaths] = useState<string[]>([]);
+  useEffect(() => {
+    // FIXME: Tiago --> Handle `onRequestModelsAvailableToInclude` not being available.
+    onRequestModelsAvailableToInclude?.().then((m) => {
+      setModelPaths(m);
+    });
+  }, [isModelSelectOpen, onRequestModelsAvailableToInclude]);
+
+  const dependenciesByPath = useMemo(
+    () =>
+      Object.values(dependenciesByNamespace).reduce((acc, d) => acc.set(d!.path, d!), new Map<string, DmnDependency>()),
+    [dependenciesByNamespace]
+  );
+
+  const modelPathsNotYetIncluded = useMemo(
+    () =>
+      modelPaths.filter((path) => {
+        // If dependency does not exist, or there's no existing import with this
+        // namespace, it can be listed as available for including.
+        const dependency = dependenciesByPath.get(path);
+        return !dependency || !importsByNamespace.get(dependency.model.definitions["@_namespace"]);
+      }),
+    [dependenciesByPath, importsByNamespace, modelPaths]
+  );
 
   return (
     <>
@@ -129,7 +140,9 @@ export function IncludedModels() {
         ]}
       >
         <br />
-        {`All models (DMN and PMML) from 'Untitled folder' can be included.`}
+        {
+          `All models (DMN and PMML) from 'Untitled folder' can be included.` /* FIXME: Tiago --> This text is important for people to understand where the included models come from, but needs to be well parameterized */
+        }
         <br />
         <br />
         <Form>
@@ -140,31 +153,28 @@ export function IncludedModels() {
               typeAheadAriaLabel={"Select a model to include..."}
               placeholderText={"Select a model to include..."}
               onToggle={setModelSelectOpen}
-              onClear={() => setSelectedModel(undefined)}
+              onClear={() => setSelectedPath(undefined)}
               onSelect={(e, v) => {
-                setSelectedModel(v as any);
+                if (typeof v !== "string") {
+                  throw new Error(`Invalid path for an included model ${JSON.stringify(v)}`);
+                }
+
+                setSelectedPath(v);
                 setModelSelectOpen(false);
               }}
-              selections={selectedModel}
+              selections={selectedPath}
               isOpen={isModelSelectOpen}
               aria-labelledby={"Included model selector"}
               isGrouped={true}
             >
-              <SelectGroup label="DMN" key="DMN">
-                {models.dmn.map((m) => (
-                  <SelectOption key={m.path} description={m.path} value={m}>
-                    {m.label}
+              <SelectGroup label={"DMN"} key={"DMN"}>
+                {modelPathsNotYetIncluded.map((path) => (
+                  <SelectOption key={path} description={dirname(path)} value={path}>
+                    {basename(path)}
                   </SelectOption>
                 ))}
               </SelectGroup>
               <Divider key="divider" />
-              <SelectGroup label="PMML" key="PMML">
-                {models.pmml.map((m) => (
-                  <SelectOption key={m.path} description={m.path} value={m}>
-                    {m.label}
-                  </SelectOption>
-                ))}
-              </SelectGroup>
             </Select>
           </FormGroup>
           <FormGroup label={"Alias"} isRequired={true}>
@@ -198,24 +208,27 @@ export function IncludedModels() {
           <Divider inset={{ default: "insetMd" }} />
           <br />
           <Gallery hasGutter={true}>
-            {imports.map((i, index) => (
-              <GalleryItem key={i["@_name"]}>
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{i["@_name"]}</CardTitle>
-                  </CardHeader>
-                  <CardBody>{i["@_namespace"]}</CardBody>
-                  <CardFooter>
-                    {`/some/resolved/path`}
-                    <br />
-                    <br />
-                    <Button variant={ButtonVariant.link} onClick={() => remove(index)} style={{ padding: 0 }}>
-                      Remove
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </GalleryItem>
-            ))}
+            {imports.map((i, index) => {
+              const dependency = dependenciesByNamespace[i["@_namespace"]];
+              return (
+                <GalleryItem key={i["@_name"]}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{i["@_name"]}</CardTitle>
+                    </CardHeader>
+                    <CardBody>{i["@_namespace"]}</CardBody>
+                    <CardFooter>
+                      {dependency?.path ?? "WARNING: Path couldn't be determined."}
+                      <br />
+                      <br />
+                      <Button variant={ButtonVariant.link} onClick={() => remove(index)} style={{ padding: 0 }}>
+                        Remove
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </GalleryItem>
+              );
+            })}
           </Gallery>
         </PageSection>
       )}

@@ -73,8 +73,6 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                             return <>Text annotation</>;
                           // case "group":
                           //   return <>Group</>;
-                          // case "association":
-                          //   return <>Association</>;
                           default:
                             throw new Error(`Unknown type of node ${node?.__$$element}`);
                         }
@@ -103,8 +101,6 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                 return <TextAnnotationProperties textAnnotation={node} index={index} />;
               // case "group":
               //   return <>Group</>;
-              // case "association":
-              //   return <>Association</>;
               default:
                 throw new Error("");
             }
