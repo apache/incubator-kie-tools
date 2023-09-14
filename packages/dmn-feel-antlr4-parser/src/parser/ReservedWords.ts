@@ -19,23 +19,25 @@
 
 export class ReservedWords {
   public static readonly FeelKeywords: ReadonlySet<string> = new Set<string>([
-    "for",
-    "in",
-    "instance of",
-    "return",
-    "if",
-    "then",
-    "else",
-    "some",
-    "every",
-    "satisfies",
-    "function",
-    "external",
-    "or",
     "and",
     "between",
+    "else",
+    "every",
+    "external",
+    "false",
+    "for",
+    "function",
+    "if",
+    "in",
+    "instance of",
     "not",
     "null",
+    "or",
+    "return",
+    "then",
+    "satisfies",
+    "some",
+    "true",
   ]);
 
   public static readonly FeelFunctions: ReadonlySet<string> = new Set<string>([
