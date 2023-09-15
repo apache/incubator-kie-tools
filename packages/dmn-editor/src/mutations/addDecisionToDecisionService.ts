@@ -16,12 +16,12 @@ export function addDecisionToDecisionService({
 
   const decision = definitions.drgElement?.find((s) => s["@_id"] === decisionId);
   if (decision?.__$$element !== "decision") {
-    throw new Error(`DRG Element with id '${decision}' either is not a decision or doesn't exist.`);
+    throw new Error(`DRG Element with id '${decisionId}' either is not a Decision or doesn't exist.`);
   }
 
   const decisionService = definitions.drgElement?.find((s) => s["@_id"] === decisionServiceId);
   if (decisionService?.__$$element !== "decisionService") {
-    throw new Error(`DRG Element with id '${decision}' either is not a decision or doesn't exist.`);
+    throw new Error(`DRG Element with id '${decisionServiceId}' either is not a Decision Service or doesn't exist.`);
   }
 
   const diagram = addOrGetDefaultDiagram({ definitions });

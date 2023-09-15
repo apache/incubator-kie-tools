@@ -5,7 +5,11 @@ import { isValidContainment as _isValidContainment } from "../diagram/connection
 import { NodeType } from "../diagram/connections/graphStructure";
 import { useDmnEditorStore } from "./Store";
 import { useDiagramData } from "./useDiagramData";
-import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DMN15__tImport,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 
@@ -15,10 +19,11 @@ export type DerivedStore = {
   isDiagramEditingInProgress: boolean;
   nodes: RF.Node[];
   edges: RF.Edge[];
-  nodesById: Map<string, RF.Node<DmnDiagramNodeData<any>>>;
+  nodesById: Map<string, RF.Node<DmnDiagramNodeData>>;
   edgesById: Map<string, RF.Edge<DmnDiagramEdgeData>>;
-  dmnEdgesByDmnRefId: Map<string, DMNDI15__DMNEdge & { index: number }>;
-  dmnShapesByDmnRefId: Map<string, DMNDI15__DMNShape & { index: number }>;
+  importsByNamespace: Map<string, DMN15__tImport>;
+  dmnEdgesByDmnElementRef: Map<string, DMNDI15__DMNEdge & { index: number }>;
+  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
 };
 
 const DmnEditorDerivedStoreContext = React.createContext<DerivedStore>({} as any);
@@ -29,8 +34,17 @@ export function useDmnEditorDerivedStore() {
 
 export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChildren<{}>) {
   const diagram = useDmnEditorStore((s) => s.diagram);
+  const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
 
-  const { nodes, edges, nodesById, edgesById, dmnEdgesByDmnRefId, dmnShapesByDmnRefId } = useDiagramData();
+  const importsByNamespace = useMemo(() => {
+    const ret = new Map<string, DMN15__tImport>();
+    for (let i = 0; i < imports.length; i++) {
+      ret.set(imports[i]["@_namespace"], imports[i]);
+    }
+    return ret;
+  }, [imports]);
+
+  const { nodes, edges, nodesById, edgesById, dmnEdgesByDmnElementRef, dmnShapesByHref } = useDiagramData();
 
   const selectedNodeTypes = useMemo(() => {
     const ret = new Set<NodeType>();
@@ -56,8 +70,9 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       edges,
       nodesById,
       edgesById,
-      dmnEdgesByDmnRefId,
-      dmnShapesByDmnRefId,
+      importsByNamespace,
+      dmnEdgesByDmnElementRef,
+      dmnShapesByHref,
     }),
     [
       selectedNodeTypes,
@@ -67,8 +82,9 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       edges,
       nodesById,
       edgesById,
-      dmnEdgesByDmnRefId,
-      dmnShapesByDmnRefId,
+      importsByNamespace,
+      dmnEdgesByDmnElementRef,
+      dmnShapesByHref,
     ]
   );
 

@@ -2,7 +2,6 @@ import {
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { idFromHref } from "../xml/href";
 
 export function repopulateInputDataAndDecisionsOnDecisionService({
   definitions,
@@ -28,9 +27,9 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
 
     (drgElement.informationRequirement ?? []).flatMap((ir) => {
       if (ir.requiredDecision) {
-        requirements.push({ id: idFromHref(ir.requiredDecision["@_href"]), type: "decisionIr" });
+        requirements.push({ id: ir.requiredDecision["@_href"], type: "decisionIr" });
       } else if (ir.requiredInput) {
-        requirements.push({ id: idFromHref(ir.requiredInput["@_href"]), type: "inputDataIr" });
+        requirements.push({ id: ir.requiredInput["@_href"], type: "inputDataIr" });
       }
     });
   }

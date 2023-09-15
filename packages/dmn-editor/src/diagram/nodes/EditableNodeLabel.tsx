@@ -1,23 +1,49 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { EmptyLabel } from "./Nodes";
+import { EmptyLabel, NodeDmnObjects } from "./Nodes";
 import "./EditableNodeLabel.css";
+import { XmlQName } from "../../xml/qNames";
+import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { buildFeelName } from "../../feel/buildFeelName";
+import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function EditableNodeLabel({
-  isExternal,
-  isEditing,
-  setEditing,
+  namedElement,
+  namedElementQName,
+  isEditing: _isEditing,
+  setEditing: _setEditing,
   value,
   onChange,
   position,
 }: {
+  namedElement?: DMN15__tNamedElement;
+  namedElementQName?: XmlQName;
   position?: "center-center" | "top-center" | "center-left" | "top-left";
-  isExternal: boolean;
   isEditing: boolean;
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: (value: string | undefined) => void;
 }) {
+  const dmn = useDmnEditorStore((s) => s.dmn);
+  const { importsByNamespace } = useDmnEditorDerivedStore();
+
+  const isEditing = useMemo(() => {
+    return !namedElementQName?.prefix && _isEditing;
+  }, [_isEditing, namedElementQName?.prefix]);
+
+  const setEditing = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+    (args) => {
+      // Can't ever change the names of external nodes
+      if (namedElementQName?.prefix) {
+        return;
+      }
+
+      _setEditing(args);
+    },
+    [_setEditing, namedElementQName?.prefix]
+  );
+
   const [internalValue, setInternalValue] = useState(value);
   useEffect(() => {
     // Give `value` priority over `internalValue`, if it changes externally, we take that as the new `internalValue`.
@@ -100,6 +126,25 @@ export function EditableNodeLabel({
 
   const positionClass = position ?? "center-center";
 
+  const displayValue = useMemo(() => {
+    if (!value) {
+      return <EmptyLabel />;
+    }
+
+    if (!namedElement || !namedElementQName) {
+      return value;
+    }
+
+    const feelName = buildFeelName({
+      namedElement,
+      importsByNamespace,
+      model: dmn.model.definitions,
+      namedElementQName,
+    });
+
+    return feelName.full;
+  }, [dmn.model.definitions, importsByNamespace, namedElement, namedElementQName, value]);
+
   return (
     <div className={`kie-dmn-editor--editable-node-name-input ${positionClass}`}>
       {(isEditing && (
@@ -112,8 +157,7 @@ export function EditableNodeLabel({
           onChange={(e) => setInternalValue(e.target.value)}
           value={internalValue}
         />
-        // FIXME: Tiago --> Add import name as a prefix here... like abc.MyNode
-      )) || <span>{value ?? <EmptyLabel />}</span>}
+      )) || <span>{displayValue}</span>}
     </div>
   );
 }

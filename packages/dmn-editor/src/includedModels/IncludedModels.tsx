@@ -22,15 +22,12 @@ import { useDmnEditorDependencies } from "./DmnEditorDependenciesContext";
 import { dirname, basename } from "path";
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDependency } from "../DmnEditor";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
-  const importsByNamespace = useMemo(
-    () => imports.reduce((acc, i) => acc.set(i["@_namespace"], i), new Map<string, DMN15__tImport>()),
-    [imports]
-  );
-
+  const { importsByNamespace } = useDmnEditorDerivedStore();
   const { dependenciesByNamespace, onRequestModelsAvailableToInclude, onRequestModelByPath } =
     useDmnEditorDependencies();
 

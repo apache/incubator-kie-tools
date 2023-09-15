@@ -224,9 +224,5 @@ export function getNodeTypeFromDmnObject(
     default: undefined,
   });
 
-  if (!type) {
-    throw new Error(`Unknown node type for __$$element '${dmnObject.__$$element}'.`);
-  }
-
   return type;
 }

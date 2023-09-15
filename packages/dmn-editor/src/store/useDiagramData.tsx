@@ -11,11 +11,11 @@ import { EdgeType } from "../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { DmnDiagramNodeData, DmnDiagramNodeDataExternalInfo } from "../diagram/nodes/Nodes";
+import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
-import { XmlQName, parseXmlQName, buildXmlQName } from "../xml/qNames";
-import { buildXmlHref, idFromHref } from "../xml/href";
+import { XmlQName, parseXmlQName } from "../xml/qNames";
+import { buildXmlHref } from "../xml/href";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -27,88 +27,63 @@ export function useDiagramData() {
   const dmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
 
-  const { dmnEdgesByDmnRefId, dmnShapesByDmnRefId, dmnShapesForExternalNodesByDmnRefId } = useMemo(
-    () =>
-      (dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [])
-        .flatMap((diagram) => diagram["dmndi:DMNDiagramElement"] ?? [])
-        .reduce(
-          (acc, e, index) => {
-            if (e.__$$element === "dmndi:DMNShape") {
-              // @_dmnElementRef is a xsd:QName, meaning it can be namespaced.
-              // If we find the namespace as a namespace declaration on the `definitions` object, then this shape represents a node from an included model.
-              // Therefore, we need to add it to `dmnShapesForExternalNodesByDmnRefId`, so we can draw these nodes.
-              // Do not skip adding it to the regular `dmnShapesByDmnRefId`, as nodes will query this.
-              const dmnElementRefQName = parseXmlQName(e["@_dmnElementRef"]);
-              if (dmnElementRefQName.prefix && dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`]) {
-                const href = buildXmlHref({
-                  namespace: dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`]!,
-                  id: dmnElementRefQName.localPart,
-                });
-                acc.dmnShapesForExternalNodesByDmnRefId.set(e["@_dmnElementRef"], {
-                  ...e,
-                  index,
-                  dmnElementRefQName: {
-                    localPart: dmnElementRefQName.localPart,
-                    prefix: dmnElementRefQName.prefix,
-                  },
-                  href,
-                });
+  const { dmnEdgesByDmnElementRef, dmnShapesByHref, dmnElementRefsForForShapesPointingToExternalDmnObjects } =
+    useMemo(() => {
+      const dmnEdgesByDmnElementRef = new Map<string, DMNDI15__DMNEdge & { index: number }>();
+      const dmnShapesByHref = new Map<string, DMNDI15__DMNShape & { index: number; dmnElementRefQName: XmlQName }>();
+      const dmnElementRefsForForShapesPointingToExternalDmnObjects: string[] = [];
 
-                acc.dmnShapesByDmnRefId.set(href, { ...e, index });
-              } else {
-                acc.dmnShapesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
-              }
-            } else if (e.__$$element === "dmndi:DMNEdge") {
-              acc.dmnEdgesByDmnRefId.set(e["@_dmnElementRef"], { ...e, index });
+      const diagramElements =
+        dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["dmndi:DMNDiagramElement"] ?? [];
+      for (let i = 0; i < diagramElements.length; i++) {
+        const e = diagramElements[i];
+        // DMNEdge
+        if (e.__$$element === "dmndi:DMNEdge") {
+          dmnEdgesByDmnElementRef.set(e["@_dmnElementRef"], { ...e, index: i });
+        }
+
+        // DMNShape
+        else if (e.__$$element === "dmndi:DMNShape") {
+          let href: string;
+          // @_dmnElementRef is a xsd:QName, meaning it can be prefixed with a namespace name.
+          // If we find the namespace as a namespace declaration on the `definitions` object, then this shape represents a node from an included model.
+          // Therefore, we need to add it to `dmnShapesForExternalNodesByDmnRefId`, so we can draw these nodes.
+          // Do not skip adding it to the regular `dmnShapesByHref`, as nodes will query this.
+          const dmnElementRefQName = parseXmlQName(e["@_dmnElementRef"]);
+          if (dmnElementRefQName.prefix) {
+            const namespace = dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`];
+            if (!namespace) {
+              throw new Error(
+                `Can't find namespace declaration for namespace with name '${dmnElementRefQName.prefix}'.`
+              );
             }
 
-            return acc;
-          },
-          {
-            dmnEdgesByDmnRefId: new Map<string, DMNDI15__DMNEdge & { index: number }>(),
-            dmnShapesByDmnRefId: new Map<string, DMNDI15__DMNShape & { index: number }>(),
-            dmnShapesForExternalNodesByDmnRefId: new Map<
-              string,
-              DMNDI15__DMNShape & { index: number; dmnElementRefQName: XmlQName; href: string }
-            >(),
+            href = buildXmlHref({ namespace, id: dmnElementRefQName.localPart });
+            dmnElementRefsForForShapesPointingToExternalDmnObjects.push(href);
+          } else {
+            href = buildXmlHref({ id: dmnElementRefQName.localPart });
           }
-        ),
-    [dmn.model.definitions]
-  );
 
-  const getEdgeData = useCallback(
-    ({
-      id,
-      source,
-      target,
-      dmnObject,
-    }: {
-      dmnObject: DmnDiagramEdgeData["dmnObject"];
-      id: string;
-      source: string;
-      target: string;
-    }): DmnDiagramEdgeData => {
+          dmnShapesByHref.set(href, { ...e, index: i, dmnElementRefQName });
+        } else {
+          // Ignore anything that is unknown.
+        }
+      }
       return {
-        dmnObject,
-        dmnEdge: id ? dmnEdgesByDmnRefId.get(id) : undefined,
-        dmnShapeSource: dmnShapesByDmnRefId.get(source),
-        dmnShapeTarget: dmnShapesByDmnRefId.get(target),
+        dmnEdgesByDmnElementRef,
+        dmnShapesByHref,
+        dmnElementRefsForForShapesPointingToExternalDmnObjects,
       };
-    },
-    [dmnEdgesByDmnRefId, dmnShapesByDmnRefId]
-  );
+    }, [diagram.drdIndex, dmn.model.definitions]);
 
   const { dependenciesByNamespace } = useDmnEditorDependencies();
 
   const { nodes, edges, nodesById, edgesById } = useMemo(() => {
     // console.time("nodes");
 
-    const nodesById = new Map<string, RF.Node<DmnDiagramNodeData<any>>>();
+    const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
     const edgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
-    const parentIdsById = new Map<
-      string,
-      Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
-    >();
+    const parentIdsById = new Map<string, DmnDiagramNodeData>();
 
     const { selectedNodes, draggingNodes, resizingNodes, selectedEdges } = {
       selectedNodes: new Set(diagram.selectedNodes),
@@ -116,6 +91,25 @@ export function useDiagramData() {
       resizingNodes: new Set(diagram.resizingNodes),
       selectedEdges: new Set(diagram.selectedEdges),
     };
+
+    function getEdgeData({
+      id,
+      sourceId,
+      targetId,
+      dmnObject,
+    }: {
+      dmnObject: DmnDiagramEdgeData["dmnObject"];
+      id: string;
+      sourceId: string;
+      targetId: string;
+    }): DmnDiagramEdgeData {
+      return {
+        dmnObject,
+        dmnEdge: id ? dmnEdgesByDmnElementRef.get(id) : undefined,
+        dmnShapeSource: dmnShapesByHref.get(sourceId),
+        dmnShapeTarget: dmnShapesByHref.get(targetId),
+      };
+    }
 
     function newEdge({
       id,
@@ -131,7 +125,7 @@ export function useDiagramData() {
       target: string;
     }): RF.Edge<DmnDiagramEdgeData> {
       const edge: RF.Edge<DmnDiagramEdgeData> = {
-        data: getEdgeData({ id, source, target, dmnObject }),
+        data: getEdgeData({ id, sourceId: source, targetId: target, dmnObject }),
         id,
         type,
         source,
@@ -159,8 +153,8 @@ export function useDiagramData() {
                   requirementType: "informationRequirement",
                 },
                 type: EDGE_TYPES.informationRequirement,
-                source: idFromHref((ir.requiredDecision ?? ir.requiredInput)?.["@_href"]),
-                target: dmnObject["@_id"]!,
+                source: (ir.requiredDecision ?? ir.requiredInput)!["@_href"],
+                target: buildXmlHref({ id: dmnObject["@_id"]! }),
               })
             )
           );
@@ -177,8 +171,8 @@ export function useDiagramData() {
                   requirementType: "knowledgeRequirement",
                 },
                 type: EDGE_TYPES.knowledgeRequirement,
-                source: idFromHref(kr.requiredKnowledge?.["@_href"]),
-                target: dmnObject["@_id"]!,
+                source: kr.requiredKnowledge["@_href"],
+                target: buildXmlHref({ id: dmnObject["@_id"]! }),
               })
             )
           );
@@ -199,8 +193,8 @@ export function useDiagramData() {
                   requirementType: "authorityRequirement",
                 },
                 type: EDGE_TYPES.authorityRequirement,
-                source: idFromHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)?.["@_href"]),
-                target: dmnObject["@_id"]!,
+                source: (ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"],
+                target: buildXmlHref({ id: dmnObject["@_id"]! }),
               })
             )
           );
@@ -219,8 +213,8 @@ export function useDiagramData() {
                   requirementType: "association",
                 },
                 type: EDGE_TYPES.association,
-                source: idFromHref(dmnObject.sourceRef?.["@_href"]),
-                target: idFromHref(dmnObject.targetRef?.["@_href"]),
+                source: dmnObject.sourceRef?.["@_href"],
+                target: dmnObject.targetRef?.["@_href"],
               }),
             ]
           : []
@@ -233,33 +227,35 @@ export function useDiagramData() {
     // console.timeEnd("edges");
 
     function ackNode(
+      dmnObjectQName: XmlQName,
       dmnObject: Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>,
-      index: number,
-      externalInfo: DmnDiagramNodeDataExternalInfo
+      index: number
     ) {
       const type = getNodeTypeFromDmnObject(dmnObject);
       if (!type) {
         return undefined;
       }
 
-      const { id, shape } = externalInfo.isExternal
-        ? { id: externalInfo.href, shape: dmnShapesForExternalNodesByDmnRefId.get(buildXmlQName(externalInfo.qName))! }
-        : { id: dmnObject["@_id"]!, shape: dmnShapesByDmnRefId.get(dmnObject["@_id"]!)! };
+      const dmnObjectNamespace = dmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`]!;
+      const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
+      const shape = dmnShapesByHref.get(id)!;
+      const data: DmnDiagramNodeData = {
+        dmnObjectNamespace,
+        dmnObjectQName,
+        dmnObject,
+        shape,
+        index,
+        parentRfNode: undefined,
+      };
 
-      const newNode: RF.Node<DmnDiagramNodeData<any>> = {
+      const newNode: RF.Node<DmnDiagramNodeData> = {
         id,
         type,
         selected: selectedNodes.has(id),
         dragging: draggingNodes.has(id),
         resizing: resizingNodes.has(id),
         position: snapShapePosition(diagram.snapGrid, shape),
-        data: {
-          ...externalInfo,
-          dmnObject,
-          shape,
-          index,
-          parentRfNode: undefined,
-        },
+        data,
         zIndex: NODE_LAYERS.NODES,
         style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
       };
@@ -267,7 +263,7 @@ export function useDiagramData() {
       if (dmnObject.__$$element === "decisionService") {
         const containedDecisions = [...(dmnObject.outputDecision ?? []), ...(dmnObject.encapsulatedDecision ?? [])];
         for (let i = 0; i < containedDecisions.length; i++) {
-          parentIdsById.set(idFromHref(containedDecisions[i]["@_href"]), dmnObject);
+          parentIdsById.set(containedDecisions[i]["@_href"], data);
         }
       }
 
@@ -275,13 +271,13 @@ export function useDiagramData() {
       return newNode;
     }
 
-    const localNodes: RF.Node<DmnDiagramNodeData<any>>[] = [
+    const localNodes: RF.Node<DmnDiagramNodeData>[] = [
       ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode(dmnObject, index, { isExternal: false });
+        const newNode = ackNode({ localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),
       ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode(dmnObject, index, { isExternal: false });
+        const newNode = ackNode({ localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),
     ];
@@ -294,7 +290,9 @@ export function useDiagramData() {
     for (let i = 0; i < localNodes.length; i++) {
       const parent = parentIdsById.get(localNodes[i].id);
       if (parent) {
-        localNodes[i].data.parentRfNode = nodesById.get(parent["@_id"]!);
+        localNodes[i].data.parentRfNode = nodesById.get(
+          buildXmlHref({ namespace: parent.dmnObjectNamespace, id: parent.dmnObjectQName.localPart })
+        );
         localNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
         localNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
 
@@ -302,7 +300,7 @@ export function useDiagramData() {
         //
         // nodes[i].parentNode = parent["@_id"]!;
         // We need to "recalculate" the node position here from scratch, as to avoid double-snapping.
-        // const parentShape = dmnShapesByDmnRefId.get(parent["@_id"]!)!;
+        // const parentShape = dmnShapesByHref.get(parent["@_id"]!)!;
 
         // nodes[i].position = snapShapePosition(
         //   diagram.snapGrid,
@@ -322,23 +320,22 @@ export function useDiagramData() {
       }
     }
 
-    const externalNodes = [...dmnShapesForExternalNodesByDmnRefId.values()].flatMap((shape) => {
+    const externalNodes = dmnElementRefsForForShapesPointingToExternalDmnObjects.flatMap((href) => {
+      const shape = dmnShapesByHref.get(href)!;
       const namespace = dmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
       if (!namespace) {
-        throw new Error(`Can't find namespace for alias '${shape.dmnElementRefQName.prefix}'.`);
+        throw new Error(
+          `Can't find namespace declaration for namespace with name '${shape.dmnElementRefQName.prefix}'.`
+        );
       }
 
       const externalDrgElements = dependenciesByNamespace[namespace]?.model.definitions.drgElement ?? [];
-      const index = externalDrgElements.findIndex((s) => s["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
+      const index = externalDrgElements.findIndex((e) => e["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
       if (index < 0) {
         throw new Error("Can't find drgElement for shape with dmnElementRef " + shape["@_dmnElementRef"]);
       }
 
-      const newNode = ackNode(externalDrgElements[index], index, {
-        isExternal: true,
-        qName: shape.dmnElementRefQName,
-        href: shape.href,
-      });
+      const newNode = ackNode(shape.dmnElementRefQName, externalDrgElements[index], index);
       return newNode ? [newNode] : [];
     });
 
@@ -362,14 +359,21 @@ export function useDiagramData() {
     diagram.selectedEdges,
     diagram.overlays.enableNodeHierarchyHighlight,
     diagram.snapGrid,
-    dmnShapesForExternalNodesByDmnRefId,
-    getEdgeData,
-    dmnShapesByDmnRefId,
     dmn.model.definitions,
+    dmnElementRefsForForShapesPointingToExternalDmnObjects,
+    dmnEdgesByDmnElementRef,
+    dmnShapesByHref,
     dependenciesByNamespace,
   ]);
 
-  return { dmnShapesByDmnRefId, dmnEdgesByDmnRefId, nodesById, edgesById, nodes, edges };
+  return {
+    dmnShapesByHref,
+    dmnEdgesByDmnElementRef,
+    nodesById,
+    edgesById,
+    nodes,
+    edges,
+  };
 }
 
 export function assignClassesToHighlightedHierarchyNodes(

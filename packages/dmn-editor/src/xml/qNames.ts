@@ -1,15 +1,15 @@
 // Reference: https://www.w3.org/TR/REC-xml-names/#NT-QName
 
 export type XmlQName = {
-  prefix: string;
+  prefix?: string;
   localPart: string;
 };
 
-export function parseXmlQName(qName: string): { localPart: string; prefix: string | undefined } {
+export function parseXmlQName(qName: string): XmlQName {
   const split = qName.split(":");
 
   if (split.length <= 1) {
-    return { prefix: undefined, localPart: qName };
+    return { localPart: qName };
   }
 
   if (split.length > 2) {
@@ -19,6 +19,6 @@ export function parseXmlQName(qName: string): { localPart: string; prefix: strin
   return { prefix: split[0], localPart: split[1] };
 }
 
-export function buildXmlQName({ prefix, localPart }: { prefix: string; localPart: string }) {
-  return `${prefix}:${localPart}`;
+export function buildXmlQName({ prefix, localPart }: XmlQName) {
+  return prefix ? `${prefix}:${localPart}` : localPart;
 }

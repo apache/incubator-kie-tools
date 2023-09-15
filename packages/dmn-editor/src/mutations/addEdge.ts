@@ -22,6 +22,7 @@ import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { Unpacked } from "../store/useDiagramData";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 
 export function addEdge({
   definitions,
@@ -31,8 +32,15 @@ export function addEdge({
   keepWaypointsIfSameTarget,
 }: {
   definitions: DMN15__tDefinitions;
-  sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
-  targetNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined; index: number };
+  sourceNode: { type: NodeType; data: DmnDiagramNodeData; id: string; bounds: DC__Bounds; shapeId: string | undefined };
+  targetNode: {
+    type: NodeType;
+    data: DmnDiagramNodeData;
+    id: string;
+    bounds: DC__Bounds;
+    shapeId: string | undefined;
+    index: number;
+  };
   edge: { type: EdgeType; handle: TargetHandleId };
   keepWaypointsIfSameTarget: boolean;
 }) {
@@ -51,8 +59,8 @@ export function addEdge({
     const newAssociation: DMN15__tAssociation = {
       "@_id": newEdgeId,
       "@_associationDirection": "Both",
-      sourceRef: { "@_href": `#${sourceNode.id}` },
-      targetRef: { "@_href": `#${targetNode.id}` },
+      sourceRef: { "@_href": `${sourceNode.id}` },
+      targetRef: { "@_href": `${targetNode.id}` },
     };
 
     // Remove previously existing association
@@ -159,22 +167,22 @@ export function addEdge({
   return { newDmnEdge };
 }
 
-function doesInformationRequirementsPointTo(a: DMN15__tInformationRequirement, drgElementId: string) {
+function doesInformationRequirementsPointTo(a: DMN15__tInformationRequirement, nodeId: string) {
   return (
-    a.requiredInput?.["@_href"] === `#${drgElementId}` || //
-    a.requiredDecision?.["@_href"] === `#${drgElementId}`
+    a.requiredInput?.["@_href"] === `${nodeId}` || //
+    a.requiredDecision?.["@_href"] === `${nodeId}`
   );
 }
 
-function doesKnowledgeRequirementsPointTo(a: DMN15__tKnowledgeRequirement, drgElementId: string) {
-  return a.requiredKnowledge?.["@_href"] === `#${drgElementId}`;
+function doesKnowledgeRequirementsPointTo(a: DMN15__tKnowledgeRequirement, nodeId: string) {
+  return a.requiredKnowledge?.["@_href"] === `${nodeId}`;
 }
 
-function doesAuthorityRequirementsPointTo(a: DMN15__tAuthorityRequirement, drgElementId: string) {
+function doesAuthorityRequirementsPointTo(a: DMN15__tAuthorityRequirement, nodeId: string) {
   return (
-    a.requiredInput?.["@_href"] === `#${drgElementId}` ||
-    a.requiredDecision?.["@_href"] === `#${drgElementId}` ||
-    a.requiredAuthority?.["@_href"] === `#${drgElementId}`
+    a.requiredInput?.["@_href"] === `${nodeId}` ||
+    a.requiredDecision?.["@_href"] === `${nodeId}` ||
+    a.requiredAuthority?.["@_href"] === `${nodeId}`
   );
 }
 

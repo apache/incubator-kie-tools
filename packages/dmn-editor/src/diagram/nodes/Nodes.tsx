@@ -2,6 +2,7 @@ import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
   DMN15__tDecisionService,
+  DMN15__tDefinitions,
   DMN15__tGroup,
   DMN15__tInputData,
   DMN15__tKnowledgeSource,
@@ -37,9 +38,20 @@ import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from 
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "../../xml/qNames";
-import { idFromHref } from "../../xml/href";
+import { Unpacked } from "../../store/useDiagramData";
 
-export type DmnDiagramNodeData<T> = DmnDiagramNodeDataExternalInfo & {
+export type NodeDmnObjects =
+  | DMN15__tInputData
+  | DMN15__tDecision
+  | DMN15__tBusinessKnowledgeModel
+  | DMN15__tKnowledgeSource
+  | DMN15__tDecisionService
+  | DMN15__tGroup
+  | DMN15__tTextAnnotation;
+
+export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
+  dmnObjectNamespace: string;
+  dmnObjectQName: XmlQName;
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };
   index: number;
@@ -48,16 +60,12 @@ export type DmnDiagramNodeData<T> = DmnDiagramNodeDataExternalInfo & {
    * too opinionated on how it deletes nodes/edges that are
    * inside/connected to nodes with parents
    * */
-  parentRfNode: RF.Node<DmnDiagramNodeData<any>> | undefined;
+  parentRfNode: RF.Node<DmnDiagramNodeData> | undefined;
 };
-
-export type DmnDiagramNodeDataExternalInfo =
-  | { isExternal: false }
-  | { isExternal: true; qName: XmlQName; href: string };
 
 export const InputDataNode = React.memo(
   ({
-    data: { dmnObject: inputData, shape, index, isExternal },
+    data: { dmnObject: inputData, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -89,7 +97,7 @@ export const InputDataNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
@@ -98,7 +106,7 @@ export const InputDataNode = React.memo(
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
-            isExternal ? "external" : ""
+            dmnObjectQName.prefix ? "external" : ""
           }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
@@ -112,7 +120,8 @@ export const InputDataNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={inputData}
+            namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={inputData["@_label"] ?? inputData["@_name"]}
@@ -127,7 +136,7 @@ export const InputDataNode = React.memo(
 
 export const DecisionNode = React.memo(
   ({
-    data: { parentRfNode, dmnObject: decision, shape, index, isExternal },
+    data: { parentRfNode, dmnObject: decision, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -158,7 +167,7 @@ export const DecisionNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={parentRfNode ? 3 : undefined} />
         </svg>
 
@@ -166,7 +175,9 @@ export const DecisionNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${isExternal ? "external" : ""}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${
+            dmnObjectQName.prefix ? "external" : ""
+          }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -180,7 +191,8 @@ export const DecisionNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={decision}
+            namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={decision["@_label"] ?? decision["@_name"]}
@@ -195,7 +207,7 @@ export const DecisionNode = React.memo(
 
 export const BkmNode = React.memo(
   ({
-    data: { dmnObject: bkm, shape, index, isExternal },
+    data: { dmnObject: bkm, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -226,7 +238,7 @@ export const BkmNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
@@ -234,7 +246,9 @@ export const BkmNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className} ${isExternal ? "external" : ""}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--bkm-node ${className} ${
+            dmnObjectQName.prefix ? "external" : ""
+          }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -248,7 +262,8 @@ export const BkmNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={bkm}
+            namedElementQName={dmnObjectQName}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={bkm["@_label"] ?? bkm["@_name"]}
@@ -263,7 +278,7 @@ export const BkmNode = React.memo(
 
 export const KnowledgeSourceNode = React.memo(
   ({
-    data: { dmnObject: knowledgeSource, shape, index, isExternal },
+    data: { dmnObject: knowledgeSource, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -294,7 +309,7 @@ export const KnowledgeSourceNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
@@ -303,7 +318,7 @@ export const KnowledgeSourceNode = React.memo(
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--knowledge-source-node ${className} ${
-            isExternal ? "external" : ""
+            dmnObjectQName.prefix ? "external" : ""
           }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
@@ -316,7 +331,8 @@ export const KnowledgeSourceNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={knowledgeSource}
+            namedElementQName={dmnObjectQName}
             position={"center-left"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
@@ -332,7 +348,7 @@ export const KnowledgeSourceNode = React.memo(
 
 export const TextAnnotationNode = React.memo(
   ({
-    data: { dmnObject: textAnnotation, shape, index, isExternal },
+    data: { dmnObject: textAnnotation, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -363,7 +379,7 @@ export const TextAnnotationNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
@@ -372,7 +388,7 @@ export const TextAnnotationNode = React.memo(
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--text-annotation-node ${className} ${
-            isExternal ? "external" : ""
+            dmnObjectQName.prefix ? "external" : ""
           }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
@@ -385,7 +401,8 @@ export const TextAnnotationNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={undefined}
+            namedElementQName={undefined}
             position={"top-left"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
@@ -401,7 +418,7 @@ export const TextAnnotationNode = React.memo(
 
 export const DecisionServiceNode = React.memo(
   ({
-    data: { dmnObject: decisionService, shape, index, isExternal },
+    data: { dmnObject: decisionService, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -436,8 +453,8 @@ export const DecisionServiceNode = React.memo(
         dmnEditorStoreApi.setState((state) => {
           state.diagram.selectedNodes = [
             id, // Include the Decision Service itself.
-            ...(decisionService.outputDecision ?? []).map((od) => idFromHref(od["@_href"])),
-            ...(decisionService.encapsulatedDecision ?? []).map((ed) => idFromHref(ed["@_href"])),
+            ...(decisionService.outputDecision ?? []).map((od) => od["@_href"]),
+            ...(decisionService.encapsulatedDecision ?? []).map((ed) => ed["@_href"]),
           ];
         });
       };
@@ -451,7 +468,7 @@ export const DecisionServiceNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <DecisionServiceNodeSvg
             ref={ref}
             {...nodeDimensions}
@@ -467,7 +484,7 @@ export const DecisionServiceNode = React.memo(
 
         <div
           className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className} ${
-            isExternal ? "external" : ""
+            dmnObjectQName.prefix ? "external" : ""
           }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
@@ -485,7 +502,8 @@ export const DecisionServiceNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.decisionService].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={decisionService}
+            namedElementQName={dmnObjectQName}
             position={"top-center"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
@@ -503,7 +521,7 @@ export const DecisionServiceNode = React.memo(
 
 export const GroupNode = React.memo(
   ({
-    data: { dmnObject: group, shape, index, isExternal },
+    data: { dmnObject: group, shape, index, dmnObjectQName },
     selected,
     dragging,
     zIndex,
@@ -516,7 +534,7 @@ export const GroupNode = React.memo(
     const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const reactFlow = RF.useReactFlow<DmnDiagramNodeData<any>, DmnDiagramEdgeData>();
+    const reactFlow = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
@@ -555,12 +573,14 @@ export const GroupNode = React.memo(
 
     return (
       <>
-        <svg className={`kie-dmn-editor--node-shape ${className} ${isExternal ? "external" : ""}`}>
+        <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <GroupNodeSvg ref={ref} {...nodeDimensions} x={0} y={0} strokeWidth={3} />
         </svg>
 
         <div
-          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className} ${isExternal ? "external" : ""}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--group-node ${className} ${
+            dmnObjectQName.prefix ? "external" : ""
+          }`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
@@ -571,7 +591,8 @@ export const GroupNode = React.memo(
             edgeTypes={outgoingStructure[NODE_TYPES.group].edges}
           />
           <EditableNodeLabel
-            isExternal={isExternal}
+            namedElement={undefined}
+            namedElementQName={undefined}
             position={"top-left"}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}

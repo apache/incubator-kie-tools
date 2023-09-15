@@ -12,15 +12,14 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { repositionNode } from "./repositionNode";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
-import { idFromHref } from "../xml/href";
 
 export function resizeNode({
   definitions,
-  dmnShapesByDmnRefId,
+  dmnShapesByHref,
   change,
 }: {
   definitions: DMN15__tDefinitions;
-  dmnShapesByDmnRefId: Map<string, DMNDI15__DMNShape & { index: number }>;
+  dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
   change: {
     nodeType: NodeType;
     isExternal: boolean;
@@ -109,7 +108,7 @@ export function resizeNode({
             type: "offset",
             offset: { deltaX: 0, deltaY: Math.round(encapsulatedDecisionsOffset) },
             selectedEdges: [], // FIXME: Tiago --> Waypoints are not being moved. We need to get the intenral sub-graph of the Encapsulated Decisions on the Decision Service and move those edges too.
-            shapeIndex: dmnShapesByDmnRefId.get(idFromHref(ed["@_href"]))!.index,
+            shapeIndex: dmnShapesByHref.get(ed["@_href"])!.index,
             sourceEdgeIndexes: [], // FIXME: Tiago --> This is wrong, as edge tips won't be updated, causing connections to fallback to automatic continous positioning
             targetEdgeIndexes: [], // FIXME: Tiago --> This is wrong, as edge tips won't be updated, causing connections to fallback to automatic continous positioning
           },
@@ -118,7 +117,7 @@ export function resizeNode({
 
       // if (outputDecisionsOffset < 0) {
       //   ds.outputDecision?.forEach((od) => {
-      //     const shape = dmnShapesByDmnRefId.get(idFromHref(od["@_href"]));
+      //     const shape = dmnShapesByHref.get(od["@_href"]);
       //     const potentialNewY = shape!["dc:Bounds"]!["@_y"]! + outputDecisionsOffset;
       //     repositionNode({
       //       definitions,
@@ -143,7 +142,7 @@ export function resizeNode({
       //   getBounds({
       //     padding: 0,
       //     nodes: refs.map((ref) => {
-      //       const bounds = dmnShapesByDmnRefId.get(idFromHref(ref["@_href"]))!["dc:Bounds"]!;
+      //       const bounds = dmnShapesByHref.get(ref["@_href"])!["dc:Bounds"]!;
       //       return {
       //         width: bounds["@_width"],
       //         height: bounds["@_height"],

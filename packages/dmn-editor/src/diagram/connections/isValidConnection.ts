@@ -1,7 +1,11 @@
-import { Connection, Edge, Node } from "reactflow";
+import * as RF from "reactflow";
 import { EdgeType, NodeType, graphStructure } from "./graphStructure";
+import { DmnDiagramNodeData } from "../nodes/Nodes";
 
-export function checkIsValidConnection(nodesById: Map<string, Node>, edgeOrConnection: Edge | Connection) {
+export function checkIsValidConnection(
+  nodesById: Map<string, RF.Node<DmnDiagramNodeData>>,
+  edgeOrConnection: RF.Edge | RF.Connection
+) {
   if (!edgeOrConnection.source || !edgeOrConnection.target) {
     return false;
   }
@@ -13,11 +17,16 @@ export function checkIsValidConnection(nodesById: Map<string, Node>, edgeOrConne
 }
 
 export function _checkIsValidConnection(
-  sourceNode: { type?: string } | undefined,
-  targetNode: { type?: string } | undefined,
+  sourceNode: { type?: string; data: DmnDiagramNodeData } | undefined,
+  targetNode: { type?: string; data: DmnDiagramNodeData } | undefined,
   edgeType: string | null | undefined
 ) {
   if (!sourceNode?.type || !targetNode?.type || !edgeType) {
+    return false;
+  }
+
+  // External nodes cannot be targeted
+  if (targetNode.data.dmnObjectQName.prefix) {
     return false;
   }
 

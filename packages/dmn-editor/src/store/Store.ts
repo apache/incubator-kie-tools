@@ -40,6 +40,7 @@ export interface State {
     tab: DmnEditorTab;
   };
   diagram: {
+    drdIndex: number;
     edgeIdBeingUpdated: string | undefined;
     dropTargetNode: DropTargetNode;
     propertiesPanel: {
@@ -150,6 +151,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         tab: DmnEditorTab.EDITOR,
       },
       diagram: {
+        drdIndex: 0,
         edgeIdBeingUpdated: undefined,
         dropTargetNode: undefined,
         propertiesPanel: {

@@ -17,7 +17,7 @@ export function usePotentialWaypointControls(
 ) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData<any>, DmnDiagramEdgeData>();
+  const reactFlowInstance = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
 
   const [potentialWaypoint, setPotentialWaypoint] =
     useState<ReturnType<typeof approximateClosestPoint> | undefined>(undefined);

@@ -5,14 +5,17 @@ import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { deleteEdge } from "./deleteEdge";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { XmlQName, buildXmlQName } from "../xml/qNames";
 
 export function deleteNode({
   definitions,
-  node,
+  dmnObject,
+  dmnObjectQName,
   targetEdges,
 }: {
   definitions: DMN15__tDefinitions;
-  node: { type: NodeType; id: string };
+  dmnObject: { type: NodeType; id: string };
+  dmnObjectQName: XmlQName;
   targetEdges: { id: string; data: DmnDiagramEdgeData }[];
 }) {
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
@@ -32,24 +35,28 @@ export function deleteNode({
   // FIXME: Tiago --> Delete extension elements when deleting nodes that contain expressions. What else needs to be clened up?
 
   // delete the DMNShape
+  const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
   diagramElements?.splice(
-    (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === node.id),
+    (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === shapeDmnElementRef),
     1
   );
 
-  // delete the dmnObject itself
-  if (nodeNatures[node.type] === NodeNature.ARTIFACT) {
-    definitions.artifact?.splice(
-      (definitions.artifact ?? []).findIndex((a) => a["@_id"] === node.id),
-      1
-    );
-  } else if (nodeNatures[node.type] === NodeNature.DRG_ELEMENT) {
-    definitions.drgElement?.splice(
-      (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === node.id),
-      1
-    );
-  } else {
-    throw new Error(`Unknown node nature '${nodeNatures[node.type]}'.`);
+  // External nodes don't have a dmnObject associated with it, just the shape..
+  if (!dmnObjectQName.prefix) {
+    // delete the dmnObject itself
+    if (nodeNatures[dmnObject.type] === NodeNature.ARTIFACT) {
+      definitions.artifact?.splice(
+        (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObject.id),
+        1
+      );
+    } else if (nodeNatures[dmnObject.type] === NodeNature.DRG_ELEMENT) {
+      definitions.drgElement?.splice(
+        (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObject.id),
+        1
+      );
+    } else {
+      throw new Error(`Unknown node nature '${nodeNatures[dmnObject.type]}'.`);
+    }
   }
 
   // FIXME: Tiago --> How to make this reactively?

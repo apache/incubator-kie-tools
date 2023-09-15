@@ -4,7 +4,6 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
-import { useCallback } from "react";
 import * as RF from "reactflow";
 import { Unpacked } from "../../store/useDiagramData";
 import { PotentialWaypoint, Waypoints } from "./Waypoints";

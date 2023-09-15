@@ -1,5 +1,5 @@
-export function buildXmlHref({ namespace, id }: { namespace: string; id: string }) {
-  return `${namespace}#${id}`;
+export function buildXmlHref({ namespace, id }: { namespace?: string; id: string }) {
+  return `${namespace ?? ""}#${id}`;
 }
 
 export function idFromHref(href: string | undefined) {

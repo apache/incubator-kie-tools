@@ -22,27 +22,28 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useDmnEditorStore } from "../store/Store";
 import { GlobalDiagramProperties } from "./GlobalDiagramProperties";
 import "./DiagramPropertiesPanel.css";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import {
+  DMN15__tBusinessKnowledgeModel,
+  DMN15__tDecision,
+  DMN15__tDecisionService,
+  DMN15__tInputData,
+  DMN15__tKnowledgeSource,
+  DMN15__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const dmn = useDmnEditorStore((s) => s.dmn);
+  const { nodesById } = useDmnEditorDerivedStore();
 
-  const { node, index } = useMemo(() => {
-    for (let i = 0; i < (dmn.model.definitions.drgElement ?? []).length; i++) {
-      const element = (dmn.model.definitions.drgElement ?? [])[i];
-      if (element["@_id"] === nodeId) {
-        return { node: element, index: i };
-      }
-    }
+  const node = useMemo(() => {
+    return nodesById.get(nodeId);
+  }, [nodeId, nodesById]);
 
-    for (let i = 0; i < (dmn.model.definitions.artifact ?? []).length; i++) {
-      const element = (dmn.model.definitions.artifact ?? [])[i];
-      if (element["@_id"] === nodeId) {
-        return { node: element, index: i };
-      }
-    }
-
-    return { node: undefined, index: -1 };
-  }, [dmn.model.definitions.artifact, dmn.model.definitions.drgElement, nodeId]);
+  if (!node) {
+    return <>Node not found: {nodeId}</>;
+  }
 
   return (
     <>
@@ -58,23 +59,23 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                       <PficonTemplateIcon />
                       &nbsp;&nbsp;
                       {(() => {
-                        switch (node?.__$$element) {
-                          case "inputData":
+                        switch (node.type) {
+                          case NODE_TYPES.inputData:
                             return <>Input</>;
-                          case "decision":
+                          case NODE_TYPES.decision:
                             return <>Decision</>;
-                          case "businessKnowledgeModel":
+                          case NODE_TYPES.bkm:
                             return <>Business Knowledge Model</>;
-                          case "decisionService":
+                          case NODE_TYPES.decisionService:
                             return <>Decision service</>;
-                          case "knowledgeSource":
+                          case NODE_TYPES.knowledgeSource:
                             return <>Knowledge source</>;
-                          case "textAnnotation":
+                          case NODE_TYPES.textAnnotation:
                             return <>Text annotation</>;
-                          // case "group":
-                          //   return <>Group</>;
+                          case NODE_TYPES.group:
+                            return <>Group</>;
                           default:
-                            throw new Error(`Unknown type of node ${node?.__$$element}`);
+                            throw new Error(`Unknown type of node ${node.type}`);
                         }
                       })()}
                     </Text>
@@ -86,23 +87,44 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           }
         >
           {(() => {
-            switch (node?.__$$element) {
-              case "inputData":
-                return <InputDataProperties inputData={node} index={index} />;
-              case "decision":
-                return <DecisionProperties decision={node} index={index} />;
-              case "businessKnowledgeModel":
-                return <BkmProperties bkm={node} index={index} />;
-              case "decisionService":
-                return <DecisionServiceProperties decisionService={node} index={index} />;
-              case "knowledgeSource":
-                return <KnowledgeSourceProperties knowledgeSource={node} index={index} />;
-              case "textAnnotation":
-                return <TextAnnotationProperties textAnnotation={node} index={index} />;
-              // case "group":
-              //   return <>Group</>;
+            switch (node.type) {
+              case NODE_TYPES.inputData:
+                return (
+                  <InputDataProperties inputData={node.data!.dmnObject as DMN15__tInputData} index={node.data.index} />
+                );
+              case NODE_TYPES.decision:
+                return (
+                  <DecisionProperties decision={node.data!.dmnObject as DMN15__tDecision} index={node.data.index} />
+                );
+              case NODE_TYPES.bkm:
+                return (
+                  <BkmProperties bkm={node.data!.dmnObject as DMN15__tBusinessKnowledgeModel} index={node.data.index} />
+                );
+              case NODE_TYPES.decisionService:
+                return (
+                  <DecisionServiceProperties
+                    decisionService={node.data!.dmnObject as DMN15__tDecisionService}
+                    index={node.data.index}
+                  />
+                );
+              case NODE_TYPES.knowledgeSource:
+                return (
+                  <KnowledgeSourceProperties
+                    knowledgeSource={node.data!.dmnObject as DMN15__tKnowledgeSource}
+                    index={node.data.index}
+                  />
+                );
+              case NODE_TYPES.textAnnotation:
+                return (
+                  <TextAnnotationProperties
+                    textAnnotation={node.data!.dmnObject as DMN15__tTextAnnotation}
+                    index={node.data.index}
+                  />
+                );
+              case NODE_TYPES.group:
+                return <>Group</>;
               default:
-                throw new Error("");
+                throw new Error(`Unknown type of node ${(node as any)?.__$$element}`);
             }
           })()}
         </FormFieldGroupExpandable>

@@ -17,6 +17,7 @@ import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { buildXmlHref } from "../xml/href";
 
 export function addConnectedNode({
   definitions,
@@ -109,8 +110,8 @@ export function addConnectedNode({
             "@_id": newEdgeId,
             __$$element: "association" as const,
             "@_associationDirection": "Both" as const,
-            sourceRef: { "@_href": `#${sourceNode.id}` },
-            targetRef: { "@_href": `#${newNodeId}` },
+            sourceRef: { "@_href": `${sourceNode.id}` },
+            targetRef: { "@_href": `${newNodeId}` },
           },
         ],
         [NODE_TYPES.group]: [
@@ -159,7 +160,7 @@ export function addConnectedNode({
     }
   }
 
-  return newNodeId;
+  return buildXmlHref({ id: newNodeId });
 }
 
 export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string }, newEdgeId: string, edge: EdgeType) {
@@ -167,16 +168,16 @@ export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string
     | undefined //
     | Required<Pick<DMN15__tInformationRequirement, "requiredInput" | "@_id">>
     | Required<Pick<DMN15__tInformationRequirement, "requiredDecision" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `#${sourceNode.id}` } },
-    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `#${sourceNode.id}` } },
+    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.id}` } },
     default: undefined,
   });
 
   const kr:
     | undefined //
     | Required<Pick<DMN15__tKnowledgeRequirement, "requiredKnowledge" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `#${sourceNode.id}` } },
-    [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `#${sourceNode.id}` } },
+    [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.id}` } },
     default: undefined,
   });
 
@@ -185,9 +186,9 @@ export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string
     | Required<Pick<DMN15__tAuthorityRequirement, "requiredInput" | "@_id">>
     | Required<Pick<DMN15__tAuthorityRequirement, "requiredDecision" | "@_id">>
     | Required<Pick<DMN15__tAuthorityRequirement, "requiredAuthority" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `#${sourceNode.id}` } },
-    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `#${sourceNode.id}` } },
-    [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `#${sourceNode.id}` } },
+    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `${sourceNode.id}` } },
     default: undefined,
   });
 
