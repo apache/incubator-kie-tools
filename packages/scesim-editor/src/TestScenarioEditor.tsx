@@ -36,18 +36,15 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
-import CogIcon from "@patternfly/react-icons/dist/esm/icons/cog-icon";
 import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
-import EditIcon from "@patternfly/react-icons/dist/esm/icons/edit-alt-icon";
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
-import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 
 import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
+import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
@@ -211,38 +208,6 @@ function TestScenarioCreationPanel({
   );
 }
 
-function TestScenarioDocksPanel({
-  onDockButtonClicked,
-}: {
-  onDockButtonClicked: (selected: TestScenarioEditorDock) => void;
-}) {
-  return (
-    <div className="kie-scesim-editor--right-sidebar">
-      <Tooltip content={<div>Data Objects tool: It provides a tool to add your Data Objects in Test Scenarios</div>}>
-        <Button
-          variant="plain"
-          onClick={() => onDockButtonClicked(TestScenarioEditorDock.DATA_OBJECT)}
-          icon={<EditIcon />}
-        />
-      </Tooltip>
-      <Tooltip content={<div>Settings</div>}>
-        <Button
-          variant="plain"
-          onClick={() => onDockButtonClicked(TestScenarioEditorDock.SETTINGS)}
-          icon={<CogIcon />}
-        />
-      </Tooltip>
-      <Tooltip content={<div>CheatSheet: In this panel you can found useful information for Test Scenario Usage</div>}>
-        <Button
-          variant="plain"
-          onClick={() => onDockButtonClicked(TestScenarioEditorDock.CHEATSHEET)}
-          icon={<InfoIcon />}
-        />
-      </Tooltip>
-    </div>
-  );
-}
-
 function TestScenarioMainPanel({
   fileName,
   scesimModel,
@@ -266,7 +231,7 @@ function TestScenarioMainPanel({
     });
   }, []);
 
-  const openDockPanel = useCallback((selected: TestScenarioEditorDock.DATA_OBJECT) => {
+  const openDockPanel = useCallback((selected: TestScenarioEditorDock) => {
     setDockPanel({ isOpen: true, selected: selected });
   }, []);
 
@@ -335,7 +300,7 @@ function TestScenarioMainPanel({
           </Tab>
         </Tabs>
       </div>
-      <TestScenarioDocksPanel onDockButtonClicked={openDockPanel} />
+      <TestScenarioSideBarMenu selectedSideBarMenuItem={dockPanel} onSideBarButtonClicked={openDockPanel} />
     </>
   );
 }

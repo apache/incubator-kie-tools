@@ -31,6 +31,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
+import TestScenarioDrawerCheatSheetPanel from "./TestScnearioDrawerCheatSheet";
 
 function TestScenarioDrawerPanel({
   fileName,
@@ -76,7 +77,7 @@ function TestScenarioDrawerPanel({
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
-                  return <>Scenario Cheatsheet</>;
+                  return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
                 case TestScenarioEditorDock.DATA_OBJECT:
                   return (
                     <>

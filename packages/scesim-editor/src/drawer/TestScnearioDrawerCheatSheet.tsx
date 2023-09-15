@@ -17,36 +17,19 @@
  * under the License.
  */
 
-.kie-scesim-editor--content {
-  margin-right: 50px;
-  height: 100%;
+import * as React from "react";
+
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+
+import { TestScenarioType } from "../TestScenarioEditor";
+
+function TestScenarioDrawerCheatSheetPanel({ assetType }: { assetType: string }) {
+  return (
+    <Text>
+      To start off, right-click a cell in the table and use the contextual menus to modify the generated table as
+      required.
+    </Text>
+  );
 }
 
-.kie-scesim-editor--creation-form {
-  margin-top: 50px;
-}
-
-.kie-scesim-editor--grid-container {
-  height: 100%;
-}
-
-.kie-scesim-editor--right-sidebar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 50px;
-  height: 100%;
-  border-left: 1px solid #d2d2d2;
-}
-
-.kie-scesim-editor--right-sidebar .pf-c-button {
-  margin-bottom: 10px;
-}
-
-.kie-scesim-editor--tabs ~ section {
-  border: 1px solid #d2d2d2;
-  border-top: 0;
-  height: calc(100% - 40px);
-  overflow: scroll;
-}
+export default TestScenarioDrawerCheatSheetPanel;
