@@ -58,14 +58,7 @@ module.exports = async (env) =>
     },
     resolve: {
       fallback: {
-        https: require.resolve("https-browserify"),
-        path: require.resolve("path-browserify"),
         http: require.resolve("stream-http"),
-        os: require.resolve("os-browserify/browser"),
-        fs: false,
-        child_process: false,
-        net: false,
-        buffer: require.resolve("buffer/"),
       },
     },
     ignoreWarnings: [/Failed to parse source map/],
