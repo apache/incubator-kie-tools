@@ -32,7 +32,6 @@ import io.crysknife.client.SyncBeanDef;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.treblereel.j2cl.processors.common.injectors.StyleInjector;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.EditorActivity;
 import org.uberfire.client.resources.WorkbenchResources;
@@ -50,7 +49,7 @@ public class WorkbenchEntryPoint {
     private final HTMLElement mainContainer = (HTMLElement) DomGlobal.document.createElement("div");
 
     public void afterInitialization() {
-        StyleInjector.injectStyleSheet(WorkbenchResources.INSTANCE.CSS().getText()).injectStyleSheet();
+        WorkbenchResources.INSTANCE.CSS().insureInjectedAsStyle();
         setupRootContainer();
         JSFunctions.notifyJSReady();
     }

@@ -173,11 +173,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-      <artifactId>stylesheets</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.treblereel.j2cl.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
@@ -268,6 +263,7 @@
   <build>
     <finalName>${project.artifactId}</finalName>
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
+
     <plugins>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
@@ -291,8 +287,12 @@
           </execution>
         </executions>
         <configuration>
+          <incrementalEnabled>true</incrementalEnabled>
+<!--
+          <incremental>true</incremental>
+-->
           <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
-          <compilationLevel>ADVANCED</compilationLevel>
+          <compilationLevel>BUNDLE_JAR</compilationLevel>
         </configuration>
       </plugin>
       <plugin>
@@ -318,20 +318,6 @@
           </filesets>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <systemPropertyVariables>
-            <org.kie.sw.editor.browser.headless
-            >${org.kie.sw.editor.browser.headless}</org.kie.sw.editor.browser.headless>
-            <org.kie.sw.editor.screenshots.dir
-            >${project.build.directory}/screenshots</org.kie.sw.editor.screenshots.dir>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-
     </plugins>
 
   </build>

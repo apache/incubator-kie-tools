@@ -37,7 +37,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @GWT3Export
 @YamlPropertyOrder({"name", "type", "dataConditions", "eventConditions", "transition", "end", "onErrors", "usedForCompensation", "compensatedBy", "dataConditions", "stateDataFilter", "timeouts", "eventTimeout", "metadata"})
-public class SwitchState extends State<SwitchState> {
+public class SwitchState extends State<SwitchState> implements HasErrors<SwitchState>, HasCompensatedBy<SwitchState> {
 
     public static final String TYPE_SWITCH = "switch";
 
@@ -118,10 +118,12 @@ public class SwitchState extends State<SwitchState> {
         return this;
     }
 
+    @Override
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
+    @Override
     public SwitchState setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
         return this;
@@ -135,10 +137,12 @@ public class SwitchState extends State<SwitchState> {
         this.timeouts = timeouts;
     }
 
+    @Override
     public String getCompensatedBy() {
         return compensatedBy;
     }
 
+    @Override
     public SwitchState setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;

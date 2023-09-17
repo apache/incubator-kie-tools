@@ -37,7 +37,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @YAMLMapper
 @JsType
 @GWT3Export
-public class SleepState extends State<SleepState> {
+public class SleepState extends State<SleepState> implements HasEnd<SleepState>, HasTransition<SleepState> {
 
     public static final String TYPE_SLEEP = "sleep";
 
@@ -64,19 +64,23 @@ public class SleepState extends State<SleepState> {
         this.type = TYPE_SLEEP;
     }
 
+    @Override
     public Object getTransition() {
         return transition;
     }
 
+    @Override
     public SleepState setTransition(Object transition) {
         this.transition = transition;
         return this;
     }
 
+    @Override
     public Object getEnd() {
         return end;
     }
 
+    @Override
     public SleepState setEnd(Object end) {
         this.end = end;
         return this;

@@ -37,7 +37,7 @@ import org.uberfire.mvp.Command;
 
 @Templated
 @Dependent
-public class ZoomLevelSelectorItem implements IsElement {
+public class ZoomLevelSelectorItem implements IsElement<HTMLLIElement> {
 
     static final String ITEM_CLASS_NAME = "zoom-selector-item";
     static final String ITEM_SELECTED = "selected";
@@ -83,5 +83,10 @@ public class ZoomLevelSelectorItem implements IsElement {
     @PreDestroy
     public void destroy() {
         onClick = null;
+    }
+
+    @Override
+    public HTMLLIElement getElement() {
+        return levelItem;
     }
 }

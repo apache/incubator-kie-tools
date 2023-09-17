@@ -20,6 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
@@ -146,6 +147,8 @@ public class ZoomLevelSelectorView
 
     @EventHandler("previewButton")
     void onPreview(@ForEvent("click") Event event) {
+
+        DomGlobal.console.log("previewButton");
         presenter.onPreview();
     }
 

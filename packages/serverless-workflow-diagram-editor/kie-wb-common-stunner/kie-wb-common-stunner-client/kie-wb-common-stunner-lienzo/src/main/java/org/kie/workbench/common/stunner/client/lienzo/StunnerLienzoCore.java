@@ -22,8 +22,6 @@ package org.kie.workbench.common.stunner.client.lienzo;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import io.crysknife.ui.common.client.injectors.ScriptInjector;
-import io.crysknife.ui.common.client.injectors.StyleInjector;
 import io.crysknife.ui.translation.client.annotation.Bundle;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.patternfly.PatternFlyBundle;
 
@@ -40,52 +38,17 @@ public class StunnerLienzoCore {
      */
     public void init() {
 
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.bootstrapcss().getText()).inject();
-
-        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.jquery().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
-
-        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.bootstrapjs().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.bootstrapselect().getText()).inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.animate().getText()).inject();
-
-        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.gwtbootstrap3().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.patternflycss().getText()).inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.patternflyadditions().getText()).inject();
-
-        ScriptInjector.fromString(PatternFlyBundle.INSTANCE.patternflyjs().getText())
-                .setWindow(ScriptInjector.TOP_WINDOW)
-                .inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.uberfirepatternfly().getText()).inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.fontawesome().getText()).inject();
-
-        StyleInjector.fromString(
-                PatternFlyBundle.INSTANCE.fonts().getText()).inject();
-
-        StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.fontawesome().getText());
-
-        StyleInjector.injectStylesheet(
-                PatternFlyBundle.INSTANCE.fonts().getText());
-
+        PatternFlyBundle.INSTANCE.bootstrapcss().insureInjectedAsStyle();;
+        PatternFlyBundle.INSTANCE.jquery().insureInjectedAsScript();
+        PatternFlyBundle.INSTANCE.bootstrapjs().insureInjectedAsScript();
+        PatternFlyBundle.INSTANCE.animate().insureInjectedAsStyle();
+        PatternFlyBundle.INSTANCE.gwtbootstrap3().insureInjectedAsScript();
+        PatternFlyBundle.INSTANCE.patternflyadditions().insureInjectedAsStyle();
+        PatternFlyBundle.INSTANCE.patternflycss().insureInjectedAsStyle();
+        PatternFlyBundle.INSTANCE.patternflyjs().insureInjectedAsScript();
+        PatternFlyBundle.INSTANCE.uberfirepatternfly().insureInjectedAsStyle();
+        PatternFlyBundle.INSTANCE.fontawesome().insureInjectedAsStyle();
+        PatternFlyBundle.INSTANCE.fonts().insureInjectedAsStyle();
         LienzoCore.get().setDefaultImageSelectionMode(ImageSelectionMode.SELECT_BOUNDS);
     }
 }

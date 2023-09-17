@@ -1,4 +1,4 @@
-package org.gwtbootstrap3.client;
+package org.gwtbootstrap3.extras.select.client;
 
 /*
  * #%L
@@ -25,22 +25,21 @@ import org.treblereel.j2cl.processors.common.resources.ClientBundle;
 import org.treblereel.j2cl.processors.common.resources.TextResource;
 
 /**
- * @author Sven Jacobs
+ * @author godi
  */
 @GWT3Resource
-public interface GwtBootstrap3ClientBundle extends ClientBundle {
+public interface SelectClientBundle extends ClientBundle {
 
-    GwtBootstrap3ClientBundle INSTANCE = GwtBootstrap3ClientBundleImpl.INSTANCE;
+    static final SelectClientBundle INSTANCE = SelectClientBundleImpl.INSTANCE;
 
-    @Source("resource/css/bootstrap-3.4.1.min.cache.css")
-    TextResource bootstrap_css();
+    static final String VERSION = "1.12.4";
+    static final String I18N_DIR = "resource/js/i18n.cache." + VERSION + "/";
 
-    @Source("resource/js/gwtbootstrap3.js.back")
-    TextResource gwtBootstrap3();
+    @Source("resource/js/bootstrap-select-" + VERSION + ".min.cache.js.back")
+    TextResource select();
 
-    @Source("resource/js/jquery-1.12.4.min.cache.js.back")
-    TextResource jQuery();
+    //@Source("resource/css/bootstrap-select-" + VERSION + ".min.cache.css")
+    //TextResource select_css();
 
-    @Source("resource/js/bootstrap-3.4.1.min.cache.js.back")
-    TextResource bootstrap();
+
 }

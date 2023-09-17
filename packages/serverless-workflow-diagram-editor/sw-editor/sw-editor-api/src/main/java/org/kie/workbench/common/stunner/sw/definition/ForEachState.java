@@ -43,7 +43,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @GWT3Export
 @YamlPropertyOrder({"name", "type", "actions", "inputCollection", "outputCollection", "iterationParam", "transition", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
-public class ForEachState extends State<ForEachState> {
+public class ForEachState extends State<ForEachState> implements HasErrors<ForEachState>, HasEnd<ForEachState>, HasTransition<ForEachState>, HasCompensatedBy<ForEachState> {
 
     public static final String TYPE_FOR_EACH = "foreach";
 
@@ -158,28 +158,34 @@ public class ForEachState extends State<ForEachState> {
         return this;
     }
 
+    @Override
     public Object getTransition() {
         return transition;
     }
 
+    @Override
     public ForEachState setTransition(Object transition) {
         this.transition = transition;
         return this;
     }
 
+    @Override
     public Object getEnd() {
         return end;
     }
 
+    @Override
     public ForEachState setEnd(Object end) {
         this.end = end;
         return this;
     }
 
+    @Override
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
+    @Override
     public ForEachState setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
         return this;
@@ -193,10 +199,12 @@ public class ForEachState extends State<ForEachState> {
         this.timeouts = timeouts;
     }
 
+    @Override
     public String getCompensatedBy() {
         return compensatedBy;
     }
 
+    @Override
     public ForEachState setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;

@@ -166,7 +166,9 @@ public class PreviewWindow {
         style.borderColor = "#808080";
     }
 
-    void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
+    public void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
+        DomGlobal.console.log("onTogglePreviewEvent");
+
         if (null != previewRoot && previewRoot.isVisible()) {
             switch (event.getEventType()) {
                 case TOGGLE:

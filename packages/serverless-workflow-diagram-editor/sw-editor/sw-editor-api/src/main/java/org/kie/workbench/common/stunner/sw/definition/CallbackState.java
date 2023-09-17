@@ -41,7 +41,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "action", "eventRef", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
 @GWT3Export
-public class CallbackState extends State<CallbackState> {
+public class CallbackState extends State<CallbackState> implements HasErrors<CallbackState>, HasEnd<CallbackState>, HasTransition<CallbackState>, HasCompensatedBy<CallbackState> {
 
     public static final String TYPE_CALLBACK = "callback";
 
@@ -122,28 +122,34 @@ public class CallbackState extends State<CallbackState> {
         return this;
     }
 
+    @Override
     public Object getTransition() {
         return transition;
     }
 
+    @Override
     public CallbackState setTransition(Object transition) {
         this.transition = transition;
         return this;
     }
 
+    @Override
     public Object getEnd() {
         return end;
     }
 
+    @Override
     public CallbackState setEnd(Object end) {
         this.end = end;
         return this;
     }
 
+    @Override
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
+    @Override
     public CallbackState setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
         return this;
@@ -157,10 +163,12 @@ public class CallbackState extends State<CallbackState> {
         this.timeouts = timeouts;
     }
 
+    @Override
     public String getCompensatedBy() {
         return compensatedBy;
     }
 
+    @Override
     public CallbackState setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;

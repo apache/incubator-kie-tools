@@ -41,7 +41,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @YamlPropertyOrder({"name", "type", "compensatedBy", "stateDataFilter", "timeouts", "end", "exclusive", "onEvents", "onErrors", "eventTimeout", "transition", "metadata"})
 @GWT3Export
-public class EventState extends State<EventState> {
+public class EventState extends State<EventState> implements HasErrors<EventState>, HasEnd<EventState>, HasTransition<EventState>, HasCompensatedBy<EventState> {
 
     public static final String TYPE_EVENT = "event";
 
@@ -113,28 +113,34 @@ public class EventState extends State<EventState> {
         return this;
     }
 
+    @Override
     public Object getTransition() {
         return transition;
     }
 
+    @Override
     public EventState setTransition(Object transition) {
         this.transition = transition;
         return this;
     }
 
+    @Override
     public Object getEnd() {
         return end;
     }
 
+    @Override
     public EventState setEnd(Object end) {
         this.end = end;
         return this;
     }
 
+    @Override
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
+    @Override
     public EventState setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
         return this;
@@ -148,10 +154,12 @@ public class EventState extends State<EventState> {
         this.timeouts = timeouts;
     }
 
+    @Override
     public String getCompensatedBy() {
         return compensatedBy;
     }
 
+    @Override
     public EventState setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;

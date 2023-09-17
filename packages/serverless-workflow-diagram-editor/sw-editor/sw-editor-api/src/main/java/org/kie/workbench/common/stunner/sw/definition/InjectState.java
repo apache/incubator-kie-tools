@@ -41,7 +41,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "usedForCompensation", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "data", "metadata"})
 @GWT3Export
-public class InjectState extends State<InjectState> {
+public class InjectState extends State<InjectState> implements HasEnd<InjectState>, HasTransition<InjectState>, HasCompensatedBy<InjectState> {
 
     public static final String TYPE_INJECT = "inject";
 
@@ -111,28 +111,34 @@ public class InjectState extends State<InjectState> {
         return this;
     }
 
+    @Override
     public Object getTransition() {
         return transition;
     }
 
+    @Override
     public InjectState setTransition(Object transition) {
         this.transition = transition;
         return this;
     }
 
+    @Override
     public Object getEnd() {
         return end;
     }
 
+    @Override
     public InjectState setEnd(Object end) {
         this.end = end;
         return this;
     }
 
+    @Override
     public String getCompensatedBy() {
         return compensatedBy;
     }
 
+    @Override
     public InjectState setCompensatedBy(String compensatedBy) {
         this.compensatedBy = compensatedBy;
         return this;
