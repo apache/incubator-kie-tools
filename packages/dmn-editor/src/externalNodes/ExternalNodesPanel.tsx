@@ -45,7 +45,9 @@ export function ExternalNodesPanel() {
               <div className={"kie-dmn-editor--external-nodes-section-title"}>
                 <b>{`${definitions["@_name"]} (${i["@_name"]})`}</b>
                 <div className={"pf-c-truncate"}>
-                  <small>{dependenciesByNamespace[i["@_namespace"]]?.path}</small>
+                  <small>
+                    <i>{dependenciesByNamespace[i["@_namespace"]]?.path}</i>
+                  </small>
                 </div>
               </div>
               {definitions.drgElement?.map((e) => {
