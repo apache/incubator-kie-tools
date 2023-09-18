@@ -1,10 +1,13 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { createContext, useContext } from "react";
+import * as RF from "reactflow";
 import { StoreApi, UseBoundStore, create } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
+import { XmlQName } from "../xml/xmlQNames";
+import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 
 export interface DmnEditorDiagramNodeStatus {
   selected: boolean;
@@ -22,7 +25,7 @@ export interface SnapGrid {
   y: number;
 }
 
-export type DropTargetNode = undefined | { id: string; type: NodeType };
+export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>;
 
 export type DmnModel = { definitions: DMN15__tDefinitions & XmlParserTsRootElementBaseType };
 

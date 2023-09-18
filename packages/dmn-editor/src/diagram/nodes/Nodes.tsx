@@ -16,7 +16,7 @@ import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../m
 import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { PositionalTargetNodeHandles } from "../connections/PositionalTargetNodeHandles";
-import { containment, outgoingStructure } from "../connections/graphStructure";
+import { NodeType, containment, outgoingStructure } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
@@ -738,7 +738,7 @@ export function useNodeClassName(
     return "dimmed";
   }
 
-  if (dropTargetNode?.id === nodeId && containment.get(dropTargetNode.type)) {
+  if (dropTargetNode?.id === nodeId && containment.get(dropTargetNode.type as NodeType)) {
     return isDropTargetNodeValidForSelection ? "drop-target" : "drop-target-invalid";
   }
 

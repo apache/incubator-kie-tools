@@ -200,7 +200,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           "@_y": dropPoint.y,
           "@_width": 0,
           "@_height": 0,
-        }) as typeof state.diagram.dropTargetNode;
+        });
       });
     },
     [container, dmnEditorStoreApi, getFirstNodeFittingBounds, reactFlowInstance]
@@ -552,7 +552,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           "@_y": node.positionAbsolute?.y ?? 0,
           "@_width": node.width ?? 0,
           "@_height": node.height ?? 0,
-        }) as typeof state.diagram.dropTargetNode;
+        });
       });
     },
     [dmnEditorStoreApi, getFirstNodeFittingBounds]
@@ -577,7 +577,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
       // Validate
       const dropTargetNode = dmnEditorStoreApi.getState().diagram.dropTargetNode;
-      if (dropTargetNode && containment.has(dropTargetNode.type) && !isDropTargetNodeValidForSelection) {
+      if (dropTargetNode && containment.has(dropTargetNode.type as NodeType) && !isDropTargetNodeValidForSelection) {
         console.debug(
           `DMN DIAGRAM: Invalid containment: '${[...selectedNodeTypes].join("', '")}' inside '${
             dropTargetNode.type

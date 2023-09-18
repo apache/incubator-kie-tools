@@ -56,7 +56,11 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
 
   const isDropTargetNodeValidForSelection =
     !!diagram.dropTargetNode &&
-    _isValidContainment({ nodeTypes: selectedNodeTypes, inside: diagram.dropTargetNode.type as NodeType });
+    _isValidContainment({
+      nodeTypes: selectedNodeTypes,
+      inside: diagram.dropTargetNode.type as NodeType,
+      dmnObjectQName: diagram.dropTargetNode.data.dmnObjectQName,
+    });
 
   const isDiagramEditingInProgress =
     diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0 || diagram.draggingWaypoints.length > 0;

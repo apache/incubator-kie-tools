@@ -65,6 +65,7 @@ export function ExternalNodesPanel() {
                     <Flex
                       alignItems={{ default: "alignItemsCenter" }}
                       justifyContent={{ default: "justifyContentFlexStart" }}
+                      spaceItems={{ default: "spaceItemsNone" }}
                     >
                       <div style={{ width: "40px", height: "40px", marginRight: 0 }}>
                         <Icon />
@@ -79,7 +80,7 @@ export function ExternalNodesPanel() {
                       </div>
                       {dmnShapesByHref.has(buildXmlHref({ namespace: i["@_namespace"], id: e["@_id"]! })) ? (
                         <small>
-                          <div>&nbsp;✓</div>
+                          <div>&nbsp;&nbsp;✓</div>
                         </small>
                       ) : (
                         <></>
