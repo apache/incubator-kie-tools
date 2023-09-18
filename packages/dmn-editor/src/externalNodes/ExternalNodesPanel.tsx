@@ -44,7 +44,7 @@ export function ExternalNodesPanel() {
             <div key={definitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
               <div className={"kie-dmn-editor--external-nodes-section-title"}>
                 <b>{`${definitions["@_name"]} (${i["@_name"]})`}</b>
-                <div className={"pf-c-truncate"}>
+                <div className={"pf-u-text-truncate"} style={{ direction: "rtl" }}>
                   <small>
                     <i>{dependenciesByNamespace[i["@_namespace"]]?.path}</i>
                   </small>

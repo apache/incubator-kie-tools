@@ -61,10 +61,6 @@ export function Pallete() {
     });
   }, [dmnEditorStoreApi, rfStoreApi]);
 
-  const toggleExternalNodesPanel = useCallback(() => {
-    dmnEditorStoreApi.setState((state) => state.dispatch.diagram.toggleExternalNodesPanel(state));
-  }, [dmnEditorStoreApi]);
-
   return (
     <>
       <RF.Panel position={"top-left"}>
@@ -128,14 +124,30 @@ export function Pallete() {
           <Popover
             key={`${diagram.externalNodesPanel.isOpen}`}
             aria-label="ExternalNodes Panel"
+            isVisible={diagram.externalNodesPanel.isOpen}
+            shouldOpen={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.externalNodesPanel.isOpen = true;
+              });
+            }}
+            shouldClose={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.externalNodesPanel.isOpen = false;
+              });
+            }}
+            enableFlip={true}
             position={"top-end"}
             hideOnOutsideClick={false}
-            showClose={true}
-            isVisible={diagram.externalNodesPanel.isOpen}
-            enableFlip={true}
             bodyContent={<ExternalNodesPanel />}
           >
-            <button className={"kie-dmn-editor--external-nodes-panel-toggle-button"} onClick={toggleExternalNodesPanel}>
+            <button
+              className={"kie-dmn-editor--external-nodes-panel-toggle-button"}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.dispatch.diagram.toggleExternalNodesPanel(state);
+                });
+              }}
+            >
               <MigrationIcon size={"sm"} />
             </button>
           </Popover>

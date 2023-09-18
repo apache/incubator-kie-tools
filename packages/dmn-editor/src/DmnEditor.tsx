@@ -278,7 +278,7 @@ export function useStateAsItWasBeforeConditionBecameTrue<T>(
 
   useEffect(() => {
     if (condition) {
-      console.log("useStateBeforeCondition: ASSIGN");
+      console.debug("HOOK: `useStateBeforeCondition` --> ASSIGN");
       ref.current = previous;
     }
     // !!!! EXCEPTIONAL CASE: Ignore "previous" changes on purpose, as we only want to save the last state before `condition` became true.
