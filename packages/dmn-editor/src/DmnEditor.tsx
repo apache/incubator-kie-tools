@@ -51,13 +51,45 @@ export type DmnDependency = {
 };
 
 export type DmnEditorProps = {
+  /**
+   * The DMN itself.
+   */
   model: DmnModel;
+  /**
+   * Called when a change occurs on `model`, so the controlled flow of the component can be done.
+   */
   onModelChange?: OnDmnModelChange;
+  /**
+   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
+   */
   onRequestModelByPath?: OnRequestModelByPath;
+  /**
+   * Called when the list of available models to be included is needed. Used by the "Included models" tab.
+   */
   onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
+  /**
+   * When the DMN represented by `model` contains `import`ed models, this prop needs to map their contents by namespace.
+   * The DMN model won't be correctly rendered if an included model is not found on this object.
+   */
   dependenciesByNamespace: DependenciesByNamespace;
+  /**
+   * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
+   */
   evaluationResults: EvaluationResults;
+  /**
+   * To show information about validation messages directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
+   */
   validationMessages: ValidationMessages;
+  /**
+   * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance is displaying a model from a project called "My project", you could use
+   * `includedModelsContextName={"My project"}`
+   */
+  includedModelsContextName: string;
+  /**
+   * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance is displaying a model from a project called "My project", you could use
+   * `includedModelsContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
+   */
+  includedModelsContextDescription: string;
 };
 
 export const DmnEditorInternal = ({
@@ -206,7 +238,7 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.model));
 
   return (
-    <DmnEditorContextProvider>
+    <DmnEditorContextProvider {...props}>
       <DmnEditorDependenciesContextProvider {...props}>
         <DmnEditorStoreApiContext.Provider value={storeRef.current}>
           <DmnEditorDerivedStoreContextProvider>

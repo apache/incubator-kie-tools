@@ -22,10 +22,13 @@ import { useDmnEditorDependencies } from "./DmnEditorDependenciesContext";
 import { dirname, basename } from "path";
 import { DmnDependency } from "../DmnEditor";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+
+  const { includedModelsContextDescription } = useDmnEditor();
   const { importsByNamespace } = useDmnEditorDerivedStore();
   const { dependenciesByNamespace, onRequestModelsAvailableToInclude, onRequestModelByPath } =
     useDmnEditorDependencies();
@@ -136,9 +139,7 @@ export function IncludedModels() {
         ]}
       >
         <br />
-        {
-          `All models (DMN and PMML) from 'Untitled folder' can be included.` /* FIXME: Tiago --> This text is important for people to understand where the included models come from, but needs to be well parameterized */
-        }
+        {includedModelsContextDescription}
         <br />
         <br />
         <Form>

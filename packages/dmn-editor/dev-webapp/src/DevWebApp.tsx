@@ -162,6 +162,8 @@ export function DevWebApp() {
             dependenciesByNamespace={dependenciesByNamespace}
             validationMessages={validationMessages}
             evaluationResults={evaluationResults}
+            includedModelsContextName={`Dev webapp`}
+            includedModelsContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
           />
         </PageSection>
       </Page>
