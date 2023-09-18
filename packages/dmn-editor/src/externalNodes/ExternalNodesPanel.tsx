@@ -2,6 +2,12 @@ import * as React from "react";
 import { useCallback } from "react";
 import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
 import { useDmnEditorStore } from "../store/Store";
+import { NodeIcon } from "../icons/Icons";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
+import { DataTypeLabel } from "../dataTypes/DataTypeLabel";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -14,6 +20,7 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
 export function ExternalNodesPanel() {
   const dmn = useDmnEditorStore((s) => s.dmn);
   const { dependenciesByNamespace } = useDmnEditorDependencies();
+  const { dmnShapesByHref } = useDmnEditorDerivedStore();
 
   const onDragStart = useCallback((event: React.DragEvent, externalNode: ExternalNode) => {
     event.dataTransfer.setData(
@@ -25,8 +32,6 @@ export function ExternalNodesPanel() {
 
   return (
     <>
-      <br />
-      <br />
       {(dmn.model.definitions.import ?? []).flatMap((i) => {
         const definitions = dependenciesByNamespace[i["@_namespace"]]?.model.definitions;
         if (!definitions) {
@@ -36,29 +41,53 @@ export function ExternalNodesPanel() {
           return [];
         } else {
           return (
-            <div key={definitions["@_id"]}>
-              <span>
+            <div key={definitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
+              <div className={"kie-dmn-editor--external-nodes-section-title"}>
                 <b>{`${definitions["@_name"]} (${i["@_name"]})`}</b>
-              </span>
-              {definitions.drgElement?.map((e) => (
-                <div
-                  draggable={true}
-                  onDragStart={(event) =>
-                    onDragStart(event, {
-                      externalDrgElementNamespace: i["@_namespace"],
-                      externalDrgElementId: e["@_id"]!,
-                    })
-                  }
-                  key={e["@_id"]}
-                  style={{
-                    border: "1px solid black",
-                    borderRadius: "8px",
-                    padding: "4px",
-                    marginBottom: "4px",
-                  }}
-                >{`${e.__$$element}: ${e["@_name"]}`}</div>
-              ))}
-              <br />
+                <div className={"pf-c-truncate"}>
+                  <small>{dependenciesByNamespace[i["@_namespace"]]?.path}</small>
+                </div>
+              </div>
+              {definitions.drgElement?.map((e) => {
+                const Icon = NodeIcon(getNodeTypeFromDmnObject(e));
+                return (
+                  <div
+                    key={e["@_id"]}
+                    className={"kie-dmn-editor--external-nodes-list-item"}
+                    draggable={true}
+                    onDragStart={(event) =>
+                      onDragStart(event, {
+                        externalDrgElementNamespace: i["@_namespace"],
+                        externalDrgElementId: e["@_id"]!,
+                      })
+                    }
+                  >
+                    <Flex
+                      alignItems={{ default: "alignItemsCenter" }}
+                      justifyContent={{ default: "justifyContentFlexStart" }}
+                    >
+                      <div style={{ width: "40px", height: "40px", marginRight: 0 }}>
+                        <Icon />
+                      </div>
+                      <div>{`${e["@_name"]}`}</div>
+                      <div>
+                        {e.__$$element !== "knowledgeSource" ? (
+                          <DataTypeLabel typeRef={e.variable?.["@_typeRef"]} namespace={i["@_namespace"]} />
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                      {dmnShapesByHref.has(buildXmlHref({ namespace: i["@_namespace"], id: e["@_id"]! })) ? (
+                        <small>
+                          <div>&nbsp;✓</div>
+                        </small>
+                      ) : (
+                        <></>
+                      )}
+                    </Flex>
+                  </div>
+                );
+              })}
             </div>
           );
         }

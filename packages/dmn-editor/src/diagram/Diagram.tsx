@@ -61,10 +61,10 @@ import {
 } from "../externalNodes/ExternalNodesPanel";
 import { addShape } from "../mutations/addShape";
 import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
-import { buildXmlQName } from "../xml/qNames";
+import { buildXmlQName } from "../xml/xmlQNames";
 import { original } from "immer";
-import { getXmlNamespaceName } from "../xml/namespaceDeclarations";
-import { buildXmlHref } from "../xml/href";
+import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -278,7 +278,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             definitions: state.dmn.model.definitions,
             nodeType: externalNodeType,
             shape: {
-              "@_dmnElementRef": buildXmlQName({ prefix: namespaceAlias, localPart: externalDrgElement["@_id"]! }),
+              "@_dmnElementRef": buildXmlQName({
+                type: "xml-qname",
+                prefix: namespaceAlias,
+                localPart: externalDrgElement["@_id"]!,
+              }),
               "@_isCollapsed": true,
               "dc:Bounds": {
                 "@_x": dropPoint.x,

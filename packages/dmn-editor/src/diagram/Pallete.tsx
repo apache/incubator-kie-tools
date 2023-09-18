@@ -18,12 +18,15 @@ import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { ExternalNodesPanel } from "../externalNodes/ExternalNodesPanel";
 import { MigrationIcon } from "@patternfly/react-icons/dist/js/icons/migration-icon";
-
-const radius = 34;
-const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
-
-const nodeSvgProps = { width: 200, height: 120, x: 16, y: 48, strokeWidth: 16 };
-const nodeSvgViewboxSize = nodeSvgProps.width + 2 * nodeSvgProps.strokeWidth;
+import {
+  BkmIcon,
+  DecisionIcon,
+  DecisionServiceIcon,
+  GroupIcon,
+  InputDataIcon,
+  KnowledgeSourceIcon,
+  TextAnnotationIcon,
+} from "../icons/Icons";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE = "application/kie-dmn-editor--new-node-from-pallete";
 
@@ -71,45 +74,35 @@ export function Pallete() {
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
           >
-            <RoundSvg>
-              <InputDataNodeSvg {...nodeSvgProps} />
-            </RoundSvg>
+            <InputDataIcon />
           </button>
           <button
             className={"kie-dmn-editor--pallete-button dndnode decision"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
             draggable={true}
           >
-            <RoundSvg>
-              <DecisionNodeSvg {...nodeSvgProps} />
-            </RoundSvg>
+            <DecisionIcon />
           </button>
           <button
             className={"kie-dmn-editor--pallete-button dndnode bkm"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
             draggable={true}
           >
-            <RoundSvg>
-              <BkmNodeSvg {...nodeSvgProps} />
-            </RoundSvg>
+            <BkmIcon />
           </button>
           <button
             className={"kie-dmn-editor--pallete-button dndnode knowledge-source"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
             draggable={true}
           >
-            <RoundSvg>
-              <KnowledgeSourceNodeSvg {...nodeSvgProps} />
-            </RoundSvg>
+            <KnowledgeSourceIcon />
           </button>
           <button
             className={"kie-dmn-editor--pallete-button dndnode decision-service"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
             draggable={true}
           >
-            <RoundSvg>
-              <DecisionServiceNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} showSectionLabels={false} />
-            </RoundSvg>
+            <DecisionServiceIcon />
           </button>
         </aside>
         <br />
@@ -120,18 +113,14 @@ export function Pallete() {
             draggable={true}
             onClick={groupNodes}
           >
-            <RoundSvg>
-              <GroupNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} strokeDasharray={"28,28"} />
-            </RoundSvg>
+            <GroupIcon />
           </button>
           <button
             className={"kie-dmn-editor--pallete-button dndnode text-annotation"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
             draggable={true}
           >
-            <RoundSvg>
-              <TextAnnotationNodeSvg {...nodeSvgProps} showPlaceholder={true} />
-            </RoundSvg>
+            <TextAnnotationIcon />
           </button>
         </aside>
         <br />
@@ -141,9 +130,9 @@ export function Pallete() {
             aria-label="ExternalNodes Panel"
             position={"top-end"}
             hideOnOutsideClick={false}
+            showClose={true}
             isVisible={diagram.externalNodesPanel.isOpen}
             enableFlip={true}
-            headerContent={<div>External nodes</div>}
             bodyContent={<ExternalNodesPanel />}
           >
             <button className={"kie-dmn-editor--external-nodes-panel-toggle-button"} onClick={toggleExternalNodesPanel}>
@@ -153,17 +142,5 @@ export function Pallete() {
         </aside>
       </RF.Panel>
     </>
-  );
-}
-
-function RoundSvg({ children }: React.PropsWithChildren<{}>) {
-  return (
-    <svg
-      className={"kie-dmn-editor--round-svg-container"}
-      viewBox={`0 0 ${nodeSvgViewboxSize} ${nodeSvgViewboxSize}`}
-      style={{ padding: `${svgViewboxPadding}px` }}
-    >
-      {children}
-    </svg>
   );
 }

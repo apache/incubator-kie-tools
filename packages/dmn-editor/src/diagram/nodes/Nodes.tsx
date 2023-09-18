@@ -37,7 +37,7 @@ import { useIsHovered } from "../useIsHovered";
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
-import { XmlQName } from "../../xml/qNames";
+import { XmlQName } from "../../xml/xmlQNames";
 import { Unpacked } from "../../store/useDiagramData";
 
 export type NodeDmnObjects =

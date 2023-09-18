@@ -2,10 +2,10 @@ import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { EmptyLabel, NodeDmnObjects } from "./Nodes";
 import "./EditableNodeLabel.css";
-import { XmlQName } from "../../xml/qNames";
+import { XmlQName } from "../../xml/xmlQNames";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { buildFeelName } from "../../feel/buildFeelName";
+import { buildFeelQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function EditableNodeLabel({
@@ -135,7 +135,7 @@ export function EditableNodeLabel({
       return value;
     }
 
-    const feelName = buildFeelName({
+    const feelName = buildFeelQName({
       namedElement,
       importsByNamespace,
       model: dmn.model.definitions,

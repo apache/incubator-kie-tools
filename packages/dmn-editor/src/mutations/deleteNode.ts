@@ -5,7 +5,7 @@ import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { deleteEdge } from "./deleteEdge";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { XmlQName, buildXmlQName } from "../xml/qNames";
+import { XmlQName, buildXmlQName } from "../xml/xmlQNames";
 
 export function deleteNode({
   definitions,

@@ -20,7 +20,6 @@ import { deleteIncludedModel } from "../mutations/deleteIncludedModel";
 import { SPEC } from "../Spec";
 import { useDmnEditorDependencies } from "./DmnEditorDependenciesContext";
 import { dirname, basename } from "path";
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDependency } from "../DmnEditor";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 

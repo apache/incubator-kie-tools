@@ -1,15 +1,15 @@
 import { DMN15__tImport, DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { XmlQName } from "../xml/qNames";
+import { XmlQName } from "../xml/xmlQNames";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
 
-export type FeelName = {
+export type FeelQNameBuild = {
   full: string;
   name: string;
   prefix: string | undefined;
   isExternal: boolean;
 };
 
-export function buildFeelName({
+export function buildFeelQName({
   namedElement,
   namedElementQName,
   importsByNamespace,
@@ -19,7 +19,7 @@ export function buildFeelName({
   namedElementQName: XmlQName;
   importsByNamespace: Map<string, DMN15__tImport>;
   model: XmlParserTsRootElementBaseType;
-}): FeelName {
+}): FeelQNameBuild {
   if (!namedElementQName.prefix) {
     return { full: namedElement["@_name"], prefix: undefined, name: namedElement["@_name"], isExternal: false };
   }

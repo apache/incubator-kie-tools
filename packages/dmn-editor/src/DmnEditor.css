@@ -141,9 +141,11 @@
 }
 .kie-dmn-editor--pallete-button:hover {
   filter: brightness(95%);
+  cursor: grab;
 }
 .kie-dmn-editor--pallete-button:active {
   filter: brightness(90%);
+  cursor: grabbing;
 }
 /* (end) pallete */
 
@@ -472,6 +474,37 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   height: 100%;
 }
 /* (end) misc */
+
+/* (begin) external nodes */
+.kie-dmn-editor--external-nodes-section:not(:last-child) {
+  margin-bottom: 24px;
+}
+.kie-dmn-editor--external-nodes-section-title {
+  margin-bottom: 6px;
+}
+.kie-dmn-editor--external-nodes-list-item {
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 4px;
+  background: white;
+}
+.kie-dmn-editor--external-nodes-list-item:hover {
+  filter: brightness(95%);
+  cursor: grab;
+}
+.kie-dmn-editor--external-nodes-list-item:active {
+  filter: brightness(90%);
+  cursor: grabbing;
+}
+/* (end) external nodes */
+
+/* (begin) data type label */
+.kie-dmn-editor--data-type-label {
+  font-style: italic;
+  font-size: smaller;
+  color: #1b515f;
+}
+/* (end) data type label */
 
 /* ******************************* */
 /* ******************************* */

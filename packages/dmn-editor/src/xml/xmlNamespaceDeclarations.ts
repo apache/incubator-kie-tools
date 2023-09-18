@@ -1,5 +1,5 @@
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
-import { parseXmlQName } from "./qNames";
+import { parseXmlQName } from "./xmlQNames";
 
 export function getXmlNamespaceName({
   model,

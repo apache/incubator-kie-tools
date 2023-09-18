@@ -14,8 +14,8 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
-import { XmlQName, parseXmlQName } from "../xml/qNames";
-import { buildXmlHref } from "../xml/href";
+import { XmlQName, parseXmlQName } from "../xml/xmlQNames";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -273,11 +273,11 @@ export function useDiagramData() {
 
     const localNodes: RF.Node<DmnDiagramNodeData>[] = [
       ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode({ localPart: dmnObject["@_id"]! }, dmnObject, index);
+        const newNode = ackNode({ type: "xml-qname", localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),
       ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
-        const newNode = ackNode({ localPart: dmnObject["@_id"]! }, dmnObject, index);
+        const newNode = ackNode({ type: "xml-qname", localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),
     ];

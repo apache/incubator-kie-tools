@@ -7,7 +7,7 @@ import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram as getDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { buildXmlHref } from "../xml/href";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 export function addStandaloneNode({
   definitions,
