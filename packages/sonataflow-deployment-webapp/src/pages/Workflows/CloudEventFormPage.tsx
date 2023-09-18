@@ -25,7 +25,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { CloudEventFormDriver, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../../apis";
+import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../../apis";
 import { FormNotification, Notification } from "../../components";
 import { CloudEventForm, CloudEventFormDefaultValues } from "../../components/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";
@@ -34,7 +34,14 @@ import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorPage } from "../ErrorPage";
 
-const defaultValues: CloudEventFormDefaultValues = { cloudEventSource: "" };
+const defaultValues: CloudEventFormDefaultValues = {
+  method: CloudEventMethod.POST,
+  endpoint: "/",
+  instanceId: "",
+  cloudEventType: "",
+  cloudEventSource: "",
+  cloudEventData: "",
+};
 
 export function CloudEventFormPage() {
   const [notification, setNotification] = useState<Notification>();

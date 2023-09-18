@@ -32,8 +32,12 @@ import CloudEventFieldLabelIcon from "./CloudEventFieldLabelIcon";
 import { FormValidations, validateCloudEventRequest } from "./validateCloudEventRequest";
 
 export type CloudEventFormDefaultValues = {
+  method: CloudEventMethod;
+  endpoint: string;
+  instanceId: string;
+  cloudEventType: string;
   cloudEventSource: string;
-  instanceId?: string;
+  cloudEventData: string;
 };
 
 export interface CloudEventFormProps {
@@ -48,20 +52,20 @@ export function CloudEventForm(props: CloudEventFormProps) {
   const customHeadersEditorApi = useRef<CloudEventCustomHeadersEditorApi>(null);
 
   const [isMethodOpen, setIsMethodOpen] = useState<boolean>(false);
-  const [method, setMethod] = useState<CloudEventMethod>(CloudEventMethod.POST);
-  const [endpoint, setEndpoint] = useState<string>("/");
-  const [instanceId, setInstanceId] = useState<string>("");
-  const [eventType, setEventType] = useState<string>("");
+  const [method, setMethod] = useState<CloudEventMethod>(defaultValues.method);
+  const [endpoint, setEndpoint] = useState<string>(defaultValues.endpoint);
+  const [instanceId, setInstanceId] = useState<string>(defaultValues.instanceId);
+  const [eventType, setEventType] = useState<string>(defaultValues.cloudEventType);
   const [eventSource, setEventSource] = useState<string>(defaultValues.cloudEventSource);
-  const [eventData, setEventData] = useState<string>("");
+  const [eventData, setEventData] = useState<string>(defaultValues.cloudEventData);
 
   const resetForm = useCallback(() => {
-    setMethod(CloudEventMethod.POST);
-    setEndpoint("/");
-    setEventType("");
+    setMethod(defaultValues.method);
+    setEndpoint(defaultValues.endpoint);
+    setEventType(defaultValues.cloudEventType);
     setEventSource(defaultValues.cloudEventSource);
-    setEventData("");
-    setInstanceId(defaultValues?.instanceId ?? "");
+    setEventData(defaultValues.cloudEventData);
+    setInstanceId(defaultValues?.instanceId);
     customHeadersEditorApi?.current?.reset();
   }, [defaultValues]);
 
