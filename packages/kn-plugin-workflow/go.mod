@@ -1,6 +1,6 @@
 module github.com/kiegroup/kie-tools/packages/kn-plugin-workflow
 
-go 1.20
+go 1.21
 
 require (
 	github.com/beevik/etree v1.2.0
