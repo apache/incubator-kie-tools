@@ -118,18 +118,18 @@
 }
 /* (end) textAnnotation node */
 
-/* (begin) pallete */
-.kie-dmn-editor--pallete {
+/* (begin) palette */
+.kie-dmn-editor--palette {
   width: 42px;
   background: #fff;
   border-radius: 40px;
   border: 1px solid black;
 }
-.kie-dmn-editor--pallete:hover {
+.kie-dmn-editor--palette:hover {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
 }
 
-.kie-dmn-editor--pallete-button {
+.kie-dmn-editor--palette-button {
   margin: 0;
   padding: 0;
   width: 40px;
@@ -139,15 +139,15 @@
   border: 0;
   background: white;
 }
-.kie-dmn-editor--pallete-button:hover {
+.kie-dmn-editor--palette-button:hover {
   filter: brightness(95%);
   cursor: grab;
 }
-.kie-dmn-editor--pallete-button:active {
+.kie-dmn-editor--palette-button:active {
   filter: brightness(90%);
   cursor: grabbing;
 }
-/* (end) pallete */
+/* (end) palette */
 
 /* (begin) properties panel toggle */
 

@@ -28,11 +28,11 @@ import {
   TextAnnotationIcon,
 } from "../icons/Icons";
 
-export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE = "application/kie-dmn-editor--new-node-from-pallete";
+export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
-export function Pallete() {
+export function Palette() {
   const onDragStart = useCallback((event: React.DragEvent, nodeType: NodeType) => {
-    event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE, nodeType);
+    event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, nodeType);
     event.dataTransfer.effectAllowed = "move";
   }, []);
 
@@ -64,37 +64,37 @@ export function Pallete() {
   return (
     <>
       <RF.Panel position={"top-left"}>
-        <aside className={"kie-dmn-editor--pallete"}>
+        <aside className={"kie-dmn-editor--palette"}>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode input-data"}
+            className={"kie-dmn-editor--palette-button dndnode input-data"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
           >
             <InputDataIcon />
           </button>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode decision"}
+            className={"kie-dmn-editor--palette-button dndnode decision"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
             draggable={true}
           >
             <DecisionIcon />
           </button>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode bkm"}
+            className={"kie-dmn-editor--palette-button dndnode bkm"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
             draggable={true}
           >
             <BkmIcon />
           </button>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode knowledge-source"}
+            className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
             draggable={true}
           >
             <KnowledgeSourceIcon />
           </button>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode decision-service"}
+            className={"kie-dmn-editor--palette-button dndnode decision-service"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
             draggable={true}
           >
@@ -102,9 +102,9 @@ export function Pallete() {
           </button>
         </aside>
         <br />
-        <aside className={"kie-dmn-editor--pallete"}>
+        <aside className={"kie-dmn-editor--palette"}>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode group"}
+            className={"kie-dmn-editor--palette-button dndnode group"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
             draggable={true}
             onClick={groupNodes}
@@ -112,7 +112,7 @@ export function Pallete() {
             <GroupIcon />
           </button>
           <button
-            className={"kie-dmn-editor--pallete-button dndnode text-annotation"}
+            className={"kie-dmn-editor--palette-button dndnode text-annotation"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
             draggable={true}
           >

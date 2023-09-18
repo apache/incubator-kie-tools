@@ -12,7 +12,7 @@ import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE, Pallete } from "./Pallete";
+import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
 import { offsetShapePosition, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/PositionalTargetNodeHandles";
@@ -174,7 +174,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       if (
         !e.dataTransfer.types.find(
           (t) =>
-            t === MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE ||
+            t === MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE ||
             t === MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS
         )
       ) {
@@ -223,9 +223,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         y: e.clientY - containerBounds.top,
       });
 
-      if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE)) {
-        const typeOfNewNodeFromPallete = e.dataTransfer.getData(
-          MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALLETE
+      if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE)) {
+        const typeOfNewNodeFromPalette = e.dataTransfer.getData(
+          MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE
         ) as NodeType;
         e.stopPropagation();
 
@@ -235,12 +235,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           const newNodeId = addStandaloneNode({
             definitions: state.dmn.model.definitions,
             newNode: {
-              type: typeOfNewNodeFromPallete,
+              type: typeOfNewNodeFromPalette,
               bounds: {
                 "@_x": dropPoint.x,
                 "@_y": dropPoint.y,
-                "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPallete](diagram.snapGrid)["@_width"],
-                "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPallete](diagram.snapGrid)["@_height"],
+                "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_width"],
+                "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_height"],
               },
             },
           });
@@ -845,13 +845,13 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           attributionPosition={"bottom-right"}
           onInit={setReactFlowInstance}
           // (begin)
-          // Used to make the Pallete work by dropping nodes on the Reactflow Canvas
+          // Used to make the Palette work by dropping nodes on the Reactflow Canvas
           onDrop={onDrop}
           onDragOver={onDragOver}
           // (end)
         >
           <SelectionStatus />
-          <Pallete />
+          <Palette />
           <TopRightCornerPanels />
           <PanWhenAltPressed />
           <KeyboardShortcuts setConnection={setConnection} />
