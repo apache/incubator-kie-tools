@@ -17,7 +17,7 @@
  * under the License.
  */
 import Ajv, { ValidateFunction } from "ajv";
-import { SCHEMA_VERSION } from "../../types/types";
+import { SCHEMA_VERSION } from "../../types";
 /**
  * Defines a basic Form Validator
  *
