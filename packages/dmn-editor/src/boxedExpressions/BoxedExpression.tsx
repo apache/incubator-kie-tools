@@ -176,7 +176,6 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
                 </Button>
               </EmptyStatePrimary>
             </EmptyState>
-            {/* TODO: Tiago --> Show `lastValidExpression`in Black & White, with opacity reduced, and the empty state on top of it. This is a nice effect. */}
           </>
         )}
         {expression && (

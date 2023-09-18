@@ -82,7 +82,7 @@ export function beeToDmn(
             inputExpression: {
               "@_id": s.idLiteralExpression,
               "@_typeRef": s.dataType,
-              text: s.name, // FIXME: Tiago --> This is really bad. Name is actually an expression!
+              text: s.name, // FIXME: Tiago --> This is really bad... `s.name` is actually an expression!
             },
           };
         }),

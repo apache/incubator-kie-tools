@@ -455,7 +455,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   },
                 });
 
-                // FIXME: Tiago --> This should be inside `repositionNode` I guess...
+                // FIXME: Tiago --> This should be inside `repositionNode` I guess?
                 // Update nested
                 // External Decision Services will have encapsulated and output decisions, but they aren't depicted in the graph.
                 if (node.type === NODE_TYPES.decisionService && !node.data.dmnObjectQName.prefix) {
@@ -712,7 +712,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         });
 
         // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints!
-        // FIXME: What about other DMNEdge properties? Style etc. Should we keep those too?
+        // FIXME: Tiago --> What about other DMNEdge properties? Style etc. Should we keep those too?
         if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
           const { dmnEdge: deletedDmnEdge } = deleteEdge({
             definitions: state.dmn.model.definitions,
