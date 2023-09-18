@@ -32,7 +32,7 @@ jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("swf custom form tests", () => {
-  it("get custom custom workflow schema from post schema- success ", async () => {
+  it("get custom custom workflow schema from post schema - success ", async () => {
     const schemaPost = {
       schema: {
         title: "Expression",
