@@ -98,3 +98,7 @@ export const triggerStartCloudEvent = (event: CloudEventRequest, devUIUrl: strin
       .catch((error) => reject(error));
   });
 };
+
+export const triggerCloudEvent = (event: CloudEventRequest, devUIUrl: string): Promise<any> => {
+  return doTriggerCloudEvent(event, devUIUrl);
+};

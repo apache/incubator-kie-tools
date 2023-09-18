@@ -25,8 +25,9 @@ import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon";
-import React, { useCallback, useState } from "react";
-import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest } from "../apis";
+import React, { useCallback, useRef, useState } from "react";
+import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../apis";
+import { CloudEventCustomHeadersEditor, CloudEventCustomHeadersEditorApi } from "./CloudEventCustomHeadersEditor";
 import CloudEventFieldLabelIcon from "./CloudEventFieldLabelIcon";
 import { FormValidations, validateCloudEventRequest } from "./validateCloudEventRequest";
 
@@ -44,9 +45,12 @@ export function CloudEventForm(props: CloudEventFormProps) {
   const { driver, defaultValues } = props;
   const [validationState, setValidationState] = useState<FormValidations>();
 
+  const customHeadersEditorApi = useRef<CloudEventCustomHeadersEditorApi>(null);
+
   const [isMethodOpen, setIsMethodOpen] = useState<boolean>(false);
   const [method, setMethod] = useState<CloudEventMethod>(CloudEventMethod.POST);
   const [endpoint, setEndpoint] = useState<string>("/");
+  const [instanceId, setInstanceId] = useState<string>("");
   const [eventType, setEventType] = useState<string>("");
   const [eventSource, setEventSource] = useState<string>(defaultValues.cloudEventSource);
   const [eventData, setEventData] = useState<string>("");
@@ -57,6 +61,8 @@ export function CloudEventForm(props: CloudEventFormProps) {
     setEventType("");
     setEventSource(defaultValues.cloudEventSource);
     setEventData("");
+    setInstanceId(defaultValues?.instanceId ?? "");
+    customHeadersEditorApi?.current?.reset();
   }, [defaultValues]);
 
   const getValidationMessage = useCallback(
@@ -74,7 +80,11 @@ export function CloudEventForm(props: CloudEventFormProps) {
   );
 
   const doTrigger = useCallback(() => {
-    const extensions: { [key: string]: string } = {};
+    const extensions: { [key: string]: string } = {
+      ...customHeadersEditorApi?.current?.getCustomHeaders(),
+    };
+
+    instanceId && (extensions[SONATAFLOW_PROCESS_REFERENCE_ID] = instanceId);
 
     const eventRequest: CloudEventRequest = {
       endpoint: endpoint,
@@ -98,7 +108,7 @@ export function CloudEventForm(props: CloudEventFormProps) {
     driver.triggerCloudEvent(eventRequest).then(() => {
       resetForm();
     });
-  }, [resetForm, driver, method, endpoint, eventType, eventSource, eventData]);
+  }, [resetForm, driver, method, endpoint, eventType, eventSource, eventData, instanceId]);
 
   return (
     <div>
@@ -165,6 +175,52 @@ export function CloudEventForm(props: CloudEventFormProps) {
             onChange={setEventType}
             validated={getValidatedOption("eventType")}
           />
+        </FormGroup>
+        <FormGroup
+          label="Event Source"
+          labelIcon={
+            <CloudEventFieldLabelIcon
+              fieldId={"eventSource"}
+              helpMessage={"Sets the source of the cloud event."}
+              cloudEventHeader={"source"}
+            />
+          }
+          fieldId="eventSource"
+        >
+          <TextInput value={eventSource} isRequired type="text" id="eventSource" onChange={setEventSource} />
+        </FormGroup>
+        <FormGroup
+          label="Instance Id"
+          fieldId="instanceId"
+          labelIcon={
+            <CloudEventFieldLabelIcon
+              fieldId={"instanceId"}
+              helpMessage={"Sets the Service Workflow instance Id the cloud event will interact with."}
+              cloudEventHeader={"kogitoprocrefid"}
+            />
+          }
+        >
+          <TextInput value={instanceId} isRequired type="text" id="instanceId" onChange={setInstanceId} />
+        </FormGroup>
+        <FormGroup
+          label="Event Custom Headers"
+          fieldId="customHeaders"
+          labelIcon={
+            <CloudEventFieldLabelIcon
+              fieldId={"customHeaders"}
+              helpMessage={
+                <div>
+                  <p>Sets the custom headers that will be added into the Cloud Event.</p>
+                  <p>
+                    Press the <span className="pf-u-link-color">Add Header</span> button to start adding new headers.
+                  </p>
+                  <p>Headers with empty Name won&apos;t be added into the Cloud Event.</p>
+                </div>
+              }
+            />
+          }
+        >
+          <CloudEventCustomHeadersEditor ref={customHeadersEditorApi} />
         </FormGroup>
         <FormGroup
           label="Event Data"

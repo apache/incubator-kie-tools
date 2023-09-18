@@ -17,6 +17,7 @@
  * under the License.
  */
 export const SONATAFLOW_BUSINESS_KEY = "kogitobusinesskey";
+export const SONATAFLOW_PROCESS_REFERENCE_ID = "kogitoprocrefid";
 
 export enum CloudEventMethod {
   POST = "POST",

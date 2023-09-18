@@ -25,7 +25,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { CloudEventFormDriver, CloudEventRequest } from "../../apis";
+import { CloudEventFormDriver, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../../apis";
 import { FormNotification, Notification } from "../../components";
 import { CloudEventForm, CloudEventFormDefaultValues } from "../../components/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";
@@ -34,7 +34,7 @@ import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorPage } from "../ErrorPage";
 
-const defaultValues: CloudEventFormDefaultValues = { cloudEventSource: "/from/form" };
+const defaultValues: CloudEventFormDefaultValues = { cloudEventSource: "" };
 
 export function CloudEventFormPage() {
   const [notification, setNotification] = useState<Notification>();
@@ -99,13 +99,30 @@ export function CloudEventFormPage() {
     [gatewayApi, onSubmitSuccess, onSubmitError]
   );
 
+  const triggerCloudEvent = useCallback(
+    async (event: CloudEventRequest) => {
+      return gatewayApi
+        .triggerCloudEvent(event)
+        .then((response) => {
+          console.log(response);
+          onSubmitSuccess("The CloudEvent has been successfully triggered.");
+        })
+        .catch((error) =>
+          onSubmitError(error?.message || "Unknown error. More details in the developer tools console.")
+        );
+    },
+    [gatewayApi, onSubmitSuccess, onSubmitError]
+  );
+
   const driver: CloudEventFormDriver = useMemo(
     () => ({
       triggerCloudEvent(event: CloudEventRequest): Promise<void> {
-        return triggerStartCloudEvent(event);
+        const isTriggerNewInstance = !event.headers.extensions[SONATAFLOW_PROCESS_REFERENCE_ID]?.length;
+        const doTrigger = isTriggerNewInstance ? triggerStartCloudEvent : triggerCloudEvent;
+        return doTrigger(event);
       },
     }),
-    [triggerStartCloudEvent]
+    [triggerStartCloudEvent, triggerCloudEvent]
   );
 
   if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {

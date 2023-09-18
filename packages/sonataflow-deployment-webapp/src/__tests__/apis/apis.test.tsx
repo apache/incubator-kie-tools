@@ -21,7 +21,9 @@ import {
   CloudEventMethod,
   getCustomWorkflowSchema,
   SONATAFLOW_BUSINESS_KEY,
+  SONATAFLOW_PROCESS_REFERENCE_ID,
   startWorkflowRest,
+  triggerCloudEvent,
   triggerStartCloudEvent,
 } from "../../apis";
 
@@ -189,5 +191,82 @@ describe("triiger cloud events serction", () => {
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
     expect(request.data).toHaveProperty(SONATAFLOW_BUSINESS_KEY, response);
+  });
+
+  it("trigger cloud event - with instanceId", async () => {
+    mockedAxios.request.mockResolvedValue("success");
+    const event = {
+      method: CloudEventMethod.POST,
+      endpoint: "/endpoint",
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: "eventType",
+        source: "eventSource",
+        extensions: {
+          kogitoprocrefid: "1234",
+        },
+      },
+    };
+    const response = await triggerCloudEvent(event, "http://localhost:8080/");
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe("http://localhost:8080/endpoint");
+    expect(request.method).toBe("POST");
+    expect(request.data).toHaveProperty(SONATAFLOW_PROCESS_REFERENCE_ID, "1234");
+    expect(request.data).not.toHaveProperty(SONATAFLOW_BUSINESS_KEY);
+  });
+
+  it("trigger cloud event - without instanceId", async () => {
+    mockedAxios.request.mockResolvedValue("success");
+    const event = {
+      method: CloudEventMethod.POST,
+      endpoint: "/endpoint",
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: "eventType",
+        source: "eventSource",
+        extensions: {},
+      },
+    };
+    const response = await triggerCloudEvent(event, "http://localhost:8080/");
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe("http://localhost:8080/endpoint");
+    expect(request.method).toBe("POST");
+    expect(request.data).not.toHaveProperty(SONATAFLOW_PROCESS_REFERENCE_ID);
+    expect(request.data).not.toHaveProperty(SONATAFLOW_BUSINESS_KEY);
+  });
+
+  it("trigger cloud event - using PUT", async () => {
+    mockedAxios.request.mockResolvedValue("success");
+    const event = {
+      method: CloudEventMethod.PUT,
+      endpoint: "/endpoint",
+      data: '{"name": "Jon Snow"}',
+      headers: {
+        type: "eventType",
+        source: "eventSource",
+        extensions: {
+          kogitoprocrefid: "1234",
+        },
+      },
+    };
+    const response = await triggerCloudEvent(event, "http://localhost:8080/");
+
+    expect(mockedAxios.request).toHaveBeenCalled();
+    expect(response).not.toBeUndefined();
+
+    const request = mockedAxios.request.mock.calls[0][0];
+
+    expect(request.url).toBe("http://localhost:8080/endpoint");
+    expect(request.method).toBe("PUT");
   });
 });
