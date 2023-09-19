@@ -6,7 +6,10 @@ commitDone = false
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && kie-mem16g && !built-in'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -14,17 +17,8 @@ pipeline {
         timestamps()
     }
 
-    tools {
-        go 'golang-1.19'
-    }
-
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        // Linked to node label
-        // Use docker due to multiplatform build
-        CONTAINER_ENGINE = 'docker'
-        CONTAINER_ENGINE_TLS_OPTIONS = ''
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
 
@@ -61,6 +55,8 @@ pipeline {
 
                     // Prepare for multiplatform build
                     String localRegistry = cloud.startLocalRegistry()
+
+                    // TODO docker buildx could be preinstalled onto the docker image
                     cloud.prepareForDockerMultiplatformBuild([localRegistry],[cloud.getDockerIOMirrorRegistryConfig()], false)
                     cloud.installSkopeo()
                 }
@@ -277,8 +273,8 @@ String getTempBuiltImageTag() {
     return "localhost:5000/kogito-serverless-operator:${getOperatorVersion()}"
 }
 
-def runPythonCommand(String cmd, boolean stdout = false) {
-    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+void runPythonCommand(String cmd, boolean stdout = false) {
+    return sh(returnStdout: stdout, script: cmd)
 }
 
 void pushFinalImage(String oldImageName, String newImageName) {

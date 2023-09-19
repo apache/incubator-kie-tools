@@ -6,7 +6,10 @@ helper = null
 
 pipeline {
     agent {
-        label 'kie-rhel8 && podman && !built-in'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -14,19 +17,10 @@ pipeline {
         timestamps()
     }
 
-    tools {
-        go 'golang-1.19'
-    }
-
     environment {
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        // Linked to node label
-        CONTAINER_ENGINE = 'podman'
-        CONTAINER_ENGINE_TLS_OPTIONS = '--tls-verify=false'
-
         PR_BRANCH_HASH = "${util.generateHash(10)}"
-        GITHUB_REPO = "${REPO_NAME}" // for github-release cli
     }
 
     stages {
@@ -167,7 +161,7 @@ void promoteImage(String oldImageName, String newImageName) {
 
 void updateInternalGoModuleWithTag(String moduleName, String tagName) {
     sh """
-        go get github.com/kiegroup/kogito-serverless-operator/${moduleName}@${githubscm.getTagCommitHash(tagName)}
+        go get github.com/apache/incubator-kie-kogito-serverless-operator/${moduleName}@${githubscm.getTagCommitHash(tagName)}
         go mod tidy
     """
 }

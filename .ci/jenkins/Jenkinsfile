@@ -8,10 +8,10 @@ testsFailed = false
 
 pipeline {
     agent {
-        label 'kogito-jenkins-node && !master'
-    }
-    tools {
-        go 'golang-1.19'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
     options {
         buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
@@ -19,8 +19,6 @@ pipeline {
     }
     environment {
         OPENSHIFT_INTERNAL_REGISTRY = 'image-registry.openshift-image-registry.svc:5000'
-
-        CONTAINER_ENGINE = 'podman'
     }
     stages {
         stage('Setup pipeline') {
@@ -39,7 +37,7 @@ pipeline {
                     sh ' git config --global user.email "jenkins@kie.com" '
                     sh ' git config --global user.name "kie user"'
 
-                    githubscm.checkoutIfExists('kogito-serverless-operator', changeAuthor, changeBranch, 'kiegroup', changeTarget, true, ['token' : 'GITHUB_TOKEN', 'usernamePassword' : 'user-kie-ci10'])
+                    githubscm.checkoutIfExists('incubator-kie-kogito-serverless-operator', changeAuthor, changeBranch, 'apache', changeTarget, true, ['token' : 'GITHUB_TOKEN', 'usernamePassword' : 'user-kie-ci10'])
                     
                     sh "set +x && oc login --token=\$(oc whoami -t) --server=${OPENSHIFT_API} --insecure-skip-tls-verify"
                 }

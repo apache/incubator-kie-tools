@@ -1,6 +1,6 @@
 minikubeVersion = env.MINIKUBE_VERSION ?: '1.30.1'
 minikubeKubernetesVersion = env.KUBERNETES_VERSION ?: '1.26.3'
-minikubeContainerEngine = env.CONTAINER_ENGINE ?: 'podman'
+minikubeContainerEngine = env.CONTAINER_ENGINE ?: 'docker'
 
 minikubeCpus = 'max'
 minikubeMemory = '4g'
