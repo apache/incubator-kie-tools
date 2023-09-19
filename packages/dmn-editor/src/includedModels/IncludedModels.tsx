@@ -208,24 +208,23 @@ export function IncludedModels() {
             {imports.map((i, index) => {
               const dependency = dependenciesByNamespace[i["@_namespace"]];
               return (
-                <GalleryItem key={i["@_name"]}>
-                  <Card isCompact={false}>
-                    <CardHeader>
-                      <CardTitle>{`${dependency?.model.definitions["@_name"]} (${i["@_name"]})`}</CardTitle>
-                    </CardHeader>
-                    {/* <CardBody>{i["@_namespace"]}</CardBody> */}
-                    <CardFooter>
-                      <small>
-                        <i>{dependency?.path ?? "WARNING: Path couldn't be determined."}</i>
-                      </small>
-                      <br />
-                      <br />
-                      <Button variant={ButtonVariant.link} onClick={() => remove(index)} style={{ padding: 0 }}>
-                        Remove
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </GalleryItem>
+                <Card key={i["@_name"]} isCompact={false}>
+                  <CardHeader>
+                    <CardTitle>{`${dependency?.model.definitions["@_name"]} (${i["@_name"]})`}</CardTitle>
+                  </CardHeader>
+                  <CardBody>
+                    <small>
+                      <i>{dependency?.path ?? "WARNING: Path couldn't be determined."}</i>
+                    </small>
+                  </CardBody>
+                  <CardFooter>
+                    <br />
+                    <br />
+                    <Button variant={ButtonVariant.link} onClick={() => remove(index)} style={{ padding: 0 }}>
+                      Remove
+                    </Button>
+                  </CardFooter>
+                </Card>
               );
             })}
           </Gallery>
