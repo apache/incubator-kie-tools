@@ -50,7 +50,7 @@ interface MonacoEditorWorkersHelper {
 declare global {
   interface Window {
     MonacoEditorWorkersHelper: MonacoEditorWorkersHelper;
-    MonacoEnvironment?: Environment | undefined;
+    MonacoEnvironment?: Environment;
   }
 }
 const initEnvelope = () => {
