@@ -10,13 +10,10 @@ TEST_FAILED_IMAGES = []
 
 pipeline {
     agent {
-        label 'rhel8 && !built-in'
-    }
-
-    // Needed for local build
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -421,7 +418,7 @@ String[] getImages() {
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+    return sh(returnStdout: stdout, script: cmd)
 }
 
 String getQuarkusPlatformVersion() {

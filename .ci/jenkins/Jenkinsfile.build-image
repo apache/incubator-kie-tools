@@ -4,18 +4,15 @@ QUAY_REGISTRY = 'quay.io'
 
 pipeline {
     agent {
-        label 'kie-rhel8 && docker && !built-in'
-    }
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
     options {
         timeout(time: 120, unit: 'MINUTES')
     }
     environment {
-        CI = true
-
         // Linked to node label
         // Use docker due to multiplatform build
         CONTAINER_ENGINE = 'docker'
@@ -48,11 +45,6 @@ pipeline {
                         githubscm.prepareCommitStatusInformation(getRepoName(), getSourceAuthor(), getSourceBranch(), getGitAuthorCredentialsId())
                     }
                     updateGithubCommitStatus('PENDING', 'Started')
-
-                    if (isProdCI()) {
-                        // Prod fix to be able to build the image as a community one
-                        sh "echo '' > content_sets.yaml"
-                    }
 
                     // Login to final registry if deploy is needed
                     if (shouldDeployImage()) {
@@ -253,7 +245,7 @@ String getBuiltImageTag(String imageTag = '') {
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+    return sh(returnStdout: stdout, script: cmd)
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -362,10 +354,6 @@ List getImageBuildPlatforms() {
 
 String getMavenArtifactRepository() {
     return params.MAVEN_ARTIFACTS_REPOSITORY
-}
-
-boolean isProdCI() {
-    return env.PROD_CI ? Boolean.parseBoolean(env.PROD_CI) : false
 }
 
 String getQuarkusPlatformURL() {

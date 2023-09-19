@@ -5,24 +5,21 @@ deployProperties = [:]
 
 pipeline {
     agent {
-        label 'rhel8 && podman && !built-in'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
         timeout(time: 120, unit: 'MINUTES')
     }
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
 
     environment {
-        // Static env is defined into ./dsl/jobs.groovy file
-
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        // Linked to node label
-        CONTAINER_ENGINE = 'podman'
-        CONTAINER_ENGINE_TLS_OPTIONS = '--tls-verify=false'
+        CONTAINER_ENGINE = 'docker'
+        CONTAINER_ENGINE_TLS_OPTIONS = ''
 
         OPENSHIFT_API = credentials('OPENSHIFT_API')
         OPENSHIFT_REGISTRY = credentials('OPENSHIFT_REGISTRY')
@@ -359,5 +356,5 @@ String[] getImages() {
 }
 
 void runPythonCommand(String cmd, boolean stdout = false) {
-    return util.runWithPythonVirtualEnv(cmd, 'cekit', stdout)
+    return sh(returnStdout: stdout, script: cmd)
 }

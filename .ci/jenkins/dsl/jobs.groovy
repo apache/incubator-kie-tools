@@ -2,10 +2,10 @@
 * This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
 * needed by the Kogito pipelines.
 *
-* The main part of Jenkins job generation is defined into the https://github.com/kiegroup/kogito-pipelines repository.
+* The main part of Jenkins job generation is defined into the https://github.com/apache/incubator-kie-kogito-pipelines repository.
 *
 * This file is making use of shared libraries defined in
-* https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+* https://github.com/apache/incubator-kie-kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
 */
 
 import org.kie.jenkins.jobdsl.model.JobType
@@ -17,7 +17,7 @@ import org.kie.jenkins.jobdsl.Utils
 jenkins_path = '.ci/jenkins'
 
 // PR checks
-setupPrJob()
+Utils.isMainBranch(this) && KogitoJobTemplate.createPullRequestMultibranchPipelineJob(this, "${jenkins_path}/Jenkinsfile")
 
 // Init branch
 createSetupBranchJob()
@@ -30,12 +30,6 @@ KogitoJobUtils.createEnvironmentIntegrationBranchNightlyJob(this, 'quarkus-lts')
 setupDeployJob(JobType.RELEASE)
 setupPromoteJob(JobType.RELEASE)
 
-if (Utils.isProductizedBranch(this)) {
-    setupPrJob(true) // Prod CI job
-    setupProdUpdateVersionJob()
-    setupQuarkusUpdateJob(true) // Prod CI job
-}
-
 // Update quarkus on community
 setupQuarkusUpdateJob()
 
@@ -43,11 +37,11 @@ setupQuarkusUpdateJob()
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupPrJob(boolean isProdCI = false) {
-    setupBuildImageJob(JobType.PULL_REQUEST, isProdCI)
+void setupPrJob() {
+    setupBuildImageJob(JobType.PULL_REQUEST)
 
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.PULL_REQUEST, "${jenkins_path}/Jenkinsfile", "Kogito Images${isProdCI ? ' Prod' : ''} PR check")
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.PULL_REQUEST, "${jenkins_path}/Jenkinsfile", "Kogito Images PR check")
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.pr.putAll([
         run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
@@ -55,13 +49,7 @@ void setupPrJob(boolean isProdCI = false) {
         commitContext: 'Retrieve and Launch Image Checks',
         contextShowtestResults: false,
     ])
-    if (isProdCI) {
-        jobParams.job.name += '.prod'
-        jobParams.pr.trigger_phrase = '.*[j|J]enkins,?.*(rerun|run) [prod|Prod|PROD].*'
-        jobParams.pr.trigger_phrase_only = true
-        jobParams.pr.commitContext = '(Prod) Retrieve and Launch Image Checks'
-        jobParams.env.put('PROD_CI', true)
-    } else if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
+    if (Utils.hasBindingValue(this, 'CLOUD_IMAGES')) {
         jobParams.env.put('IMAGES_LIST', Utils.getBindingValue(this, 'CLOUD_IMAGES'))
     }
     jobParams.env.putAll([
@@ -72,9 +60,8 @@ void setupPrJob(boolean isProdCI = false) {
 
 void createSetupBranchJob() {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images', JobType.SETUP_BRANCH, "${jenkins_path}/Jenkinsfile.setup-branch", 'Kogito Images Init Branch')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-images',
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -102,7 +89,7 @@ void setupDeployJob(JobType jobType) {
     setupBuildImageJob(jobType)
 
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-deploy', jobType, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
@@ -138,7 +125,7 @@ void setupDeployJob(JobType jobType) {
 
             // Deploy information
             booleanParam('IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
@@ -158,16 +145,15 @@ void setupDeployJob(JobType jobType) {
     }
 }
 
-void setupBuildImageJob(JobType jobType, boolean prodCI = false) {
+void setupBuildImageJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images.build-image', jobType, "${jenkins_path}/Jenkinsfile.build-image", 'Kogito Images Build single image')
     // Use jenkinsfile from the build branch
     jobParams.git.author = '${SOURCE_AUTHOR}'
     jobParams.git.branch = '${SOURCE_BRANCH}'
-    JobParamsUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         MAX_REGISTRY_RETRIES: 3,
         TARGET_AUTHOR: Utils.getGitAuthor(this), // In case of a PR to merge with target branch
-        PROD_CI: prodCI,
 
         AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         AUTHOR_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
@@ -199,7 +185,7 @@ void setupBuildImageJob(JobType jobType, boolean prodCI = false) {
             // Deploy information
             booleanParam('DEPLOY_IMAGE', false, 'Should we deploy image to given deploy registry ?')
             booleanParam('DEPLOY_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if image should be deployed in Openshift registry.In this case, IMAGE_REGISTRY_CREDENTIALS, IMAGE_REGISTRY and IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('DEPLOY_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
+            stringParam('DEPLOY_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials to use to deploy images. Will be ignored if no IMAGE_REGISTRY is given')
             stringParam('DEPLOY_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images')
             stringParam('DEPLOY_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Image namespace to use to deploy images')
             stringParam('DEPLOY_IMAGE_NAME_SUFFIX', '', 'Image name suffix to use to deploy images. In case you need to change the final image name, you can add a suffix to it.')
@@ -211,8 +197,8 @@ void setupBuildImageJob(JobType jobType, boolean prodCI = false) {
 
 void setupPromoteJob(JobType jobType) {
     def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote')
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
-        REPO_NAME: 'kogito-images',
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
         MAX_REGISTRY_RETRIES: 3,
@@ -241,7 +227,7 @@ void setupPromoteJob(JobType jobType) {
 
             // Base images information which can override `deployment.properties`
             booleanParam('BASE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Override `deployment.properties`. Set to true if base image should be retrieved from Openshift registry.In this case, BASE_IMAGE_REGISTRY_CREDENTIALS, BASE_IMAGE_REGISTRY and BASE_IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('BASE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Override `deployment.properties`. Base Image registry credentials to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
+            stringParam('BASE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Override `deployment.properties`. Base Image registry credentials to use to deploy images. Will be ignored if no BASE_IMAGE_REGISTRY is given')
             stringParam('BASE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Override `deployment.properties`. Base image registry')
             stringParam('BASE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Override `deployment.properties`. Base image namespace')
             stringParam('BASE_IMAGE_NAMES', '', 'Override `deployment.properties`. Comma separated list of images')
@@ -250,7 +236,7 @@ void setupPromoteJob(JobType jobType) {
 
             // Promote images information
             booleanParam('PROMOTE_IMAGE_USE_OPENSHIFT_REGISTRY', false, 'Set to true if base image should be deployed in Openshift registry.In this case, PROMOTE_IMAGE_REGISTRY_CREDENTIALS, PROMOTE_IMAGE_REGISTRY and PROMOTE_IMAGE_NAMESPACE parameters will be ignored')
-            stringParam('PROMOTE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
+            stringParam('PROMOTE_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Promote Image registry credentials to use to deploy images. Will be ignored if no PROMOTE_IMAGE_REGISTRY is given')
             stringParam('PROMOTE_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Promote image registry')
             stringParam('PROMOTE_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Promote image namespace')
             stringParam('PROMOTE_IMAGE_NAME_SUFFIX', '', 'Promote image name suffix')
@@ -268,27 +254,8 @@ void setupPromoteJob(JobType jobType) {
     }
 }
 
-void setupProdUpdateVersionJob() {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'kogito-images-update-prod-version', JobType.TOOLS, "${jenkins_path}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')
-    jobParams.env.putAll([
-        REPO_NAME: 'kogito-images',
-
-        BUILD_BRANCH_NAME: "${GIT_BRANCH}",
-        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
-        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
-    ])
-    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
-        parameters {
-            stringParam('JIRA_NUMBER', '', 'KIECLOUD-XXX or RHPAM-YYYY or else. This will be added to the commit and PR.')
-            stringParam('PROD_PROJECT_VERSION', '', 'Which version to set ?')
-        }
-    }
-}
-
-void setupQuarkusUpdateJob(boolean isProdCI = false) {
-    def prodFlag = isProdCI ? '--prod' : ''
+void setupQuarkusUpdateJob() {
     KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'kogito-images', [:], [:], [], [
-        "source ~/virtenvs/cekit/bin/activate && python3 scripts/update-repository.py --quarkus-platform-version %new_version% ${prodFlag}"
+        "source ~/virtenvs/cekit/bin/activate && python3 scripts/update-repository.py --quarkus-platform-version %new_version%"
     ])
 }

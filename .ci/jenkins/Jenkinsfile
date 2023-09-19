@@ -2,11 +2,7 @@
 
 pipeline {
     agent {
-        label 'rhel8 && !built-in'
-    }
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        label 'ubuntu'
     }
     options {
         timeout(time: 120, unit: 'MINUTES')
@@ -19,7 +15,7 @@ pipeline {
 
                     sh 'printenv'
                     
-                    githubscm.checkoutIfExists(getRepoName(), getChangeAuthor(), getChangeBranch(), 'kiegroup', getChangeTarget(), true)
+                    githubscm.checkoutIfExists(getRepoName(), getChangeAuthor(), getChangeBranch(), 'apache', getChangeTarget(), true)
                 }
             }
         }
@@ -56,7 +52,7 @@ pipeline {
         }
         unsuccessful {
             script {
-                pullrequest.postComment(util.getMarkdownTestSummary(isProdCI() ? 'Prod' : 'PR', '', "${BUILD_URL}", 'GITHUB'))
+                pullrequest.postComment(util.getMarkdownTestSummary('PR', "${BUILD_URL}", 'GITHUB'))
             }
         }
     }
@@ -77,7 +73,7 @@ Closure createBuildAndTestStageClosure(String image) {
             buildParams.add(string(name: 'TARGET_BRANCH', value: getChangeTarget()))
             buildParams.add(string(name: 'BUILD_KOGITO_APPS_REF', value: getChangeTarget()))
             
-            githubscm.prepareCommitStatusInformationForPullRequest(getRepoName(), getChangeAuthor(), getChangeBranch(), 'kiegroup', getGitAuthorCredentialsId())
+            githubscm.prepareCommitStatusInformationForPullRequest(getRepoName(), getChangeAuthor(), getChangeBranch(), 'apache', getGitAuthorCredentialsId())
             githubscm.updateGithubCommitStatus(image, 'PENDING', 'Queued', getRepoName())
             
             // Keep executing so we can cancel all if needed
@@ -97,15 +93,7 @@ String[] getImages() {
     if (env.IMAGES_LIST) {
         return env.IMAGES_LIST.split(',')
     }
-    String listCmd = 'make list'
-    if (isProdCI()) {
-        listCmd += ' arg=--prod'
-    }
-    return util.runWithPythonVirtualEnv("${listCmd} | tr '\\n' ','", 'cekit', true).trim().split(',')
-}
-
-boolean isProdCI() {
-    return env.PROD_CI ? env.PROD_CI.toBoolean() : false
+    return sh(returnStdout: true, script: "make list | tr '\\n' ','").trim().split(',')
 }
 
 String getChangeAuthor() {
