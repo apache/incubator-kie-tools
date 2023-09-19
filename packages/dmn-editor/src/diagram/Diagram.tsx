@@ -68,7 +68,7 @@ import { buildXmlHref } from "../xml/xmlHrefs";
 
 const PAN_ON_DRAG = [1, 2];
 
-const FIT_VIEW_OPTIONS = { maxZoom: 1, minZoom: 1, duration: 400 };
+const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
 
 const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
 
@@ -983,6 +983,34 @@ export function KeyboardShortcuts({
 }) {
   const rfStoreApi = RF.useStoreApi();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const rf = RF.useReactFlow();
+
+  const space = RF.useKeyPress(["Space"]);
+  useEffect(() => {
+    if (!space) {
+      return;
+    }
+
+    rf.setViewport(DEFAULT_VIEWPORT, { duration: 200 });
+  }, [rf, space]);
+
+  const b = RF.useKeyPress(["b"]);
+  useEffect(() => {
+    if (!b) {
+      return;
+    }
+    const bounds = getBounds({ nodes: rf.getNodes().filter((s) => s.selected), padding: 100 });
+    rf.fitBounds(
+      {
+        x: bounds["@_x"],
+        y: bounds["@_y"],
+        width: bounds["@_width"],
+        height: bounds["@_height"],
+      },
+      { duration: 200 }
+    );
+  }, [b, rf]);
 
   const esc = RF.useKeyPress(["Escape"]);
   useEffect(() => {
