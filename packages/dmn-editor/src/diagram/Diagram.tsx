@@ -138,13 +138,13 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           sourceNode: {
             type: sourceNode.type as NodeType,
             data: sourceNode.data,
-            id: sourceNode.id,
+            href: sourceNode.id,
             bounds: sourceBounds,
             shapeId: sourceNode.data.shape["@_id"],
           },
           targetNode: {
             type: targetNode.type as NodeType,
-            id: targetNode.id,
+            href: targetNode.id,
             data: targetNode.data,
             bounds: targetBounds,
             index: targetNode.data.index,
@@ -360,11 +360,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       // --------- This is where we draw the line between the diagram and the model.
 
       dmnEditorStoreApi.setState((state) => {
-        const newNodeId = addConnectedNode({
+        const newDmnObejctHref = addConnectedNode({
           definitions: state.dmn.model.definitions,
           edge,
           sourceNode: {
-            id: sourceNode.id,
+            href: sourceNode.id,
             type: sourceNodeType as NodeType,
             bounds: sourceNodeBounds,
             shapeId: sourceNode.data.shape["@_id"],
@@ -380,7 +380,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           },
         });
 
-        state.diagram.selectedNodes = [newNodeId];
+        state.diagram.selectedNodes = [newDmnObejctHref];
       });
     },
     [connection, container, diagram.snapGrid, dmnEditorStoreApi, nodesById, reactFlowInstance, dmnShapesByHref]
@@ -695,14 +695,14 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           edge: { type: newConnection.sourceHandle as EdgeType, handle: newConnection.targetHandle as TargetHandleId },
           sourceNode: {
             type: sourceNode.type as NodeType,
-            id: sourceNode.id,
+            href: sourceNode.id,
             data: sourceNode.data,
             bounds: sourceBounds,
             shapeId: sourceNode.data.shape["@_id"],
           },
           targetNode: {
             type: targetNode.type as NodeType,
-            id: targetNode.id,
+            href: targetNode.id,
             data: targetNode.data,
             bounds: targetBounds,
             index: targetNode.data.index,

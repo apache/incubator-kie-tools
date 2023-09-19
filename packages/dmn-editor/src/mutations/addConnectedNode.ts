@@ -26,11 +26,12 @@ export function addConnectedNode({
   edge,
 }: {
   definitions: DMN15__tDefinitions;
-  sourceNode: { type: NodeType; id: string; bounds: DC__Bounds; shapeId: string | undefined };
+  sourceNode: { type: NodeType; href: string; bounds: DC__Bounds; shapeId: string | undefined };
   newNode: { type: NodeType; bounds: DC__Bounds };
   edge: EdgeType;
 }) {
-  const newNodeId = generateUuid();
+  const newDmnObjectId = generateUuid();
+  const newDmnObjectHref = buildXmlHref({ id: newDmnObjectId });
   const newEdgeId = generateUuid();
   const nature = nodeNatures[newNode.type];
 
@@ -47,7 +48,7 @@ export function addConnectedNode({
         [NODE_TYPES.bkm]: {
           __$$element: "businessKnowledgeModel",
           "@_name": "New BKM",
-          "@_id": newNodeId,
+          "@_id": newDmnObjectId,
           ...requirements,
           variable: {
             ...variableBase,
@@ -57,7 +58,7 @@ export function addConnectedNode({
         [NODE_TYPES.decision]: {
           __$$element: "decision",
           "@_name": "New Decision",
-          "@_id": newNodeId,
+          "@_id": newDmnObjectId,
           ...requirements,
           variable: {
             ...variableBase,
@@ -67,7 +68,7 @@ export function addConnectedNode({
         [NODE_TYPES.decisionService]: {
           __$$element: "decisionService",
           "@_name": "New Decision Service",
-          "@_id": newNodeId,
+          "@_id": newDmnObjectId,
           ...requirements,
           variable: {
             ...variableBase,
@@ -77,7 +78,7 @@ export function addConnectedNode({
         [NODE_TYPES.inputData]: {
           __$$element: "inputData",
           "@_name": "New Input Data",
-          "@_id": newNodeId,
+          "@_id": newDmnObjectId,
           ...requirements,
           variable: {
             ...variableBase,
@@ -87,7 +88,7 @@ export function addConnectedNode({
         [NODE_TYPES.knowledgeSource]: {
           __$$element: "knowledgeSource",
           "@_name": "New Knowledge Source",
-          "@_id": newNodeId,
+          "@_id": newDmnObjectId,
           ...requirements,
           variable: {
             ...variableBase,
@@ -102,7 +103,7 @@ export function addConnectedNode({
       ...switchExpression(newNode.type as Extract<NodeType, "node_group" | "node_textAnnotation">, {
         [NODE_TYPES.textAnnotation]: [
           {
-            "@_id": newNodeId,
+            "@_id": newDmnObjectId,
             __$$element: "textAnnotation" as const,
             text: "New text annotation",
           },
@@ -110,13 +111,13 @@ export function addConnectedNode({
             "@_id": newEdgeId,
             __$$element: "association" as const,
             "@_associationDirection": "Both" as const,
-            sourceRef: { "@_href": `${sourceNode.id}` },
-            targetRef: { "@_href": `${newNodeId}` },
+            sourceRef: { "@_href": `${sourceNode.href}` },
+            targetRef: { "@_href": `${newDmnObjectHref}` },
           },
         ],
         [NODE_TYPES.group]: [
           {
-            "@_id": newNodeId,
+            "@_id": newDmnObjectId,
             __$$element: "group" as const,
             "@_name": "New group",
           },
@@ -133,7 +134,7 @@ export function addConnectedNode({
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",
     "@_id": newShapeId,
-    "@_dmnElementRef": newNodeId,
+    "@_dmnElementRef": newDmnObjectId,
     "@_isCollapsed": false,
     "@_isListedInputData": false,
     "dc:Bounds": newNode.bounds,
@@ -160,24 +161,28 @@ export function addConnectedNode({
     }
   }
 
-  return buildXmlHref({ id: newNodeId });
+  return newDmnObjectHref;
 }
 
-export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string }, newEdgeId: string, edge: EdgeType) {
+export function getRequirementsFromEdge(
+  sourceNode: { type: NodeType; href: string },
+  newEdgeId: string,
+  edge: EdgeType
+) {
   const ir:
     | undefined //
     | Required<Pick<DMN15__tInformationRequirement, "requiredInput" | "@_id">>
     | Required<Pick<DMN15__tInformationRequirement, "requiredDecision" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.id}` } },
-    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
+    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.href}` } },
     default: undefined,
   });
 
   const kr:
     | undefined //
     | Required<Pick<DMN15__tKnowledgeRequirement, "requiredKnowledge" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.id}` } },
-    [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.bkm]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
+    [NODE_TYPES.decisionService]: { "@_id": newEdgeId, requiredKnowledge: { "@_href": `${sourceNode.href}` } },
     default: undefined,
   });
 
@@ -186,9 +191,9 @@ export function getRequirementsFromEdge(sourceNode: { type: NodeType; id: string
     | Required<Pick<DMN15__tAuthorityRequirement, "requiredInput" | "@_id">>
     | Required<Pick<DMN15__tAuthorityRequirement, "requiredDecision" | "@_id">>
     | Required<Pick<DMN15__tAuthorityRequirement, "requiredAuthority" | "@_id">> = switchExpression(sourceNode.type, {
-    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.id}` } },
-    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.id}` } },
-    [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `${sourceNode.id}` } },
+    [NODE_TYPES.inputData]: { "@_id": newEdgeId, requiredInput: { "@_href": `${sourceNode.href}` } },
+    [NODE_TYPES.decision]: { "@_id": newEdgeId, requiredDecision: { "@_href": `${sourceNode.href}` } },
+    [NODE_TYPES.knowledgeSource]: { "@_id": newEdgeId, requiredAuthority: { "@_href": `${sourceNode.href}` } },
     default: undefined,
   });
 

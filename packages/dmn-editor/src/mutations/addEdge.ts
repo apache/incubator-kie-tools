@@ -32,11 +32,17 @@ export function addEdge({
   keepWaypointsIfSameTarget,
 }: {
   definitions: DMN15__tDefinitions;
-  sourceNode: { type: NodeType; data: DmnDiagramNodeData; id: string; bounds: DC__Bounds; shapeId: string | undefined };
+  sourceNode: {
+    type: NodeType;
+    data: DmnDiagramNodeData;
+    href: string;
+    bounds: DC__Bounds;
+    shapeId: string | undefined;
+  };
   targetNode: {
     type: NodeType;
     data: DmnDiagramNodeData;
-    id: string;
+    href: string;
     bounds: DC__Bounds;
     shapeId: string | undefined;
     index: number;
@@ -59,8 +65,8 @@ export function addEdge({
     const newAssociation: DMN15__tAssociation = {
       "@_id": newEdgeId,
       "@_associationDirection": "Both",
-      sourceRef: { "@_href": `${sourceNode.id}` },
-      targetRef: { "@_href": `${targetNode.id}` },
+      sourceRef: { "@_href": `${sourceNode.href}` },
+      targetRef: { "@_href": `${targetNode.href}` },
     };
 
     // Remove previously existing association
@@ -84,7 +90,7 @@ export function addEdge({
     if (requirements?.informationRequirement) {
       drgElement.informationRequirement ??= [];
       const removed = removeFirstMatchIfPresent(drgElement.informationRequirement, (ir) =>
-        doesInformationRequirementsPointTo(ir, sourceNode.id)
+        doesInformationRequirementsPointTo(ir, sourceNode.href)
       );
       existingEdgeId = removed?.["@_id"];
       drgElement.informationRequirement?.push(
@@ -98,7 +104,7 @@ export function addEdge({
     else if (requirements?.knowledgeRequirement) {
       drgElement.knowledgeRequirement ??= [];
       const removed = removeFirstMatchIfPresent(drgElement.knowledgeRequirement, (kr) =>
-        doesKnowledgeRequirementsPointTo(kr, sourceNode.id)
+        doesKnowledgeRequirementsPointTo(kr, sourceNode.href)
       );
       existingEdgeId = removed?.["@_id"];
       drgElement.knowledgeRequirement?.push(
@@ -112,7 +118,7 @@ export function addEdge({
     else if (requirements?.authorityRequirement) {
       drgElement.authorityRequirement ??= [];
       const removed = removeFirstMatchIfPresent(drgElement.authorityRequirement, (ar) =>
-        doesAuthorityRequirementsPointTo(ar, sourceNode.id)
+        doesAuthorityRequirementsPointTo(ar, sourceNode.href)
       );
       existingEdgeId = removed?.["@_id"];
       drgElement.authorityRequirement?.push(
