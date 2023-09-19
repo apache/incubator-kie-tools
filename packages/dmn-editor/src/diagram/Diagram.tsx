@@ -500,9 +500,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 definitions: state.dmn.model.definitions,
                 dmnObjectQName: node.data.dmnObjectQName,
                 dmnObject: { type: node.type as NodeType, id: node.data.dmnObject["@_id"]! },
-                targetEdges: edges
-                  .flatMap((e) => (e.target === node.id ? [{ id: e.id, data: e.data! }] : []))
-                  .reverse(), // To not mess with indexes when removing more than one.
               });
               state.dispatch.diagram.setNodeStatus(state, node.id, {
                 selected: false,
