@@ -64,6 +64,14 @@ export const sumDiffDs = `<definitions xmlns="https://www.omg.org/spec/DMN/20230
     <text>a - b</text>
   </literalExpression>
 </decision>
+<itemDefinition id="_842F4E16-C9A2-47D4-A221-081673B98C2D" name="SumDiffContext" isCollection="false">
+  <itemComponent id="_4882D4FB-2146-4198-8640-33B951B893A7" name="Sum" isCollection="false">
+    <typeRef>number</typeRef>
+  </itemComponent>
+  <itemComponent id="_3EF27B7D-3378-429E-B6DB-B856F5EB0AE7" name="Diff" isCollection="false">
+    <typeRef>number</typeRef>
+  </itemComponent>
+</itemDefinition>
 <dmndi:DMNDI>
   <dmndi:DMNDiagram>
     <dmndi:DMNShape id="_495CB0A7-017A-4A2F-A4D7-3133C82708E0" dmnElementRef="_721B7634-7227-42B4-AAA4-17DE60A7A967" isCollapsed="false" isListedInputData="false">

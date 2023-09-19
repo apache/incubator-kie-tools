@@ -258,7 +258,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           dependenciesByNamespace[externalNode.externalDrgElementNamespace]?.model.definitions.drgElement ?? []
         ).find((s) => s["@_id"] === externalNode.externalDrgElementId);
         if (!externalDrgElement) {
-          throw new Error("");
+          throw new Error(`Can't find DRG element with id '${externalNode.externalDrgElementId}'.`);
         }
 
         const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;

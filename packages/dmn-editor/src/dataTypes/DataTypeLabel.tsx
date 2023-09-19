@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { buildFeelQName } from "../feel/buildFeelQName";
+import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlQName, parseXmlQName } from "../xml/xmlQNames";
@@ -23,7 +23,7 @@ export function DataTypeLabel({ typeRef, namespace }: { typeRef: string | undefi
       return typeRef;
     }
 
-    return buildFeelQName({
+    return buildFeelQNameFromXmlQName({
       importsByNamespace,
       model: dmn.model.definitions,
       namedElement: { "@_name": typeRef },

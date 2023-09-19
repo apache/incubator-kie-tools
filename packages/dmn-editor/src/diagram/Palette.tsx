@@ -3,15 +3,6 @@ import * as React from "react";
 import { useCallback } from "react";
 import { NodeType } from "./connections/graphStructure";
 import { NODE_TYPES } from "./nodes/NodeTypes";
-import {
-  BkmNodeSvg,
-  DecisionNodeSvg,
-  DecisionServiceNodeSvg,
-  GroupNodeSvg,
-  InputDataNodeSvg,
-  KnowledgeSourceNodeSvg,
-  TextAnnotationNodeSvg,
-} from "./nodes/NodeSvgs";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { CONTAINER_NODES_DESIRABLE_PADDING, getBounds } from "./maths/DmnMaths";

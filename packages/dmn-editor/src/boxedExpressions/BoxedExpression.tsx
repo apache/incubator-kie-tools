@@ -106,7 +106,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const { all: dataTypes } = useDataTypes(dmn.model.definitions);
+  const { all: dataTypes } = useDataTypes();
 
   const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
 

@@ -5,7 +5,7 @@ import "./EditableNodeLabel.css";
 import { XmlQName } from "../../xml/xmlQNames";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { buildFeelQName } from "../../feel/buildFeelQName";
+import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function EditableNodeLabel({
@@ -135,7 +135,7 @@ export function EditableNodeLabel({
       return value;
     }
 
-    const feelName = buildFeelQName({
+    const feelName = buildFeelQNameFromXmlQName({
       namedElement,
       importsByNamespace,
       model: dmn.model.definitions,

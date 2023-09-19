@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStore } from "../store/Store";
 import { DmnBuiltInDataType, DmnDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDataTypes } from "./Hooks";
+import { DataTypeLabel } from "./DataTypeLabel";
 
 export function DataTypeSelector(props: {
   name: string | undefined;
@@ -15,23 +16,27 @@ export function DataTypeSelector(props: {
     setOpen(isOpen);
   }, []);
 
-  const dmn = useDmnEditorStore((s) => s.dmn);
-
-  const { builtInDataTypes, customDataTypes, importedDataTypes } = useDataTypes(dmn.model.definitions);
+  const { builtInDataTypes, customDataTypes, externalDataTypes } = useDataTypes();
 
   return (
     <Select
       variant={SelectVariant.typeahead}
       typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
       onToggle={onToggleDataTypeSelect}
-      onClear={() => props.onChange(DmnBuiltInDataType.Undefined)}
-      onSelect={(e, v) => props.onChange(v as DmnBuiltInDataType)}
+      onClear={() => {
+        setOpen(false);
+        return props.onChange(DmnBuiltInDataType.Undefined);
+      }}
+      onSelect={(e, v) => {
+        setOpen(false);
+        return props.onChange(v as DmnBuiltInDataType);
+      }}
       selections={props.name}
       isOpen={isOpen}
       aria-labelledby={"Data types selector"}
       placeholderText={DmnBuiltInDataType.Undefined}
       isGrouped={true}
-      isCreatable={true}
+      // isCreatable={true} // FIXME: Tiago --> Maybe this is a good idea?
     >
       <SelectGroup label="Built-in" key="builtin">
         {builtInDataTypes.map((dt) => (
@@ -46,22 +51,21 @@ export function DataTypeSelector(props: {
           {customDataTypes.map((dt) => (
             <SelectOption key={dt.name} value={dt.name}>
               {dt.name}
+              {dt.typeRef && <DataTypeLabel typeRef={dt.typeRef} namespace={dt.namespace} />}
             </SelectOption>
           ))}
         </SelectGroup>
       )) || <React.Fragment key={"empty-custom"}></React.Fragment>}
-      {(importedDataTypes.length > 0 && (
-        <React.Fragment key="imported">
-          <Divider key={"d2"} />
-          <SelectGroup label="Imported">
-            {importedDataTypes.map((dt) => (
-              <SelectOption key={dt.name} value={dt.name}>
-                {dt.name}
-              </SelectOption>
-            ))}
-          </SelectGroup>
-        </React.Fragment>
-      )) || <React.Fragment key={"empty-imported"}></React.Fragment>}
+      {(externalDataTypes.length > 0 && (
+        <SelectGroup label="External">
+          {externalDataTypes.map((dt) => (
+            <SelectOption key={dt.name} value={dt.name}>
+              {dt.name}
+              {dt.typeRef && <DataTypeLabel typeRef={dt.typeRef} namespace={dt.namespace} />}
+            </SelectOption>
+          ))}
+        </SelectGroup>
+      )) || <React.Fragment key={"empty-external"}></React.Fragment>}
     </Select>
   );
 }

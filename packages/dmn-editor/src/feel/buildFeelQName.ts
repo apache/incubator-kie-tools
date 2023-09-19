@@ -9,7 +9,7 @@ export type FeelQNameBuild = {
   isExternal: boolean;
 };
 
-export function buildFeelQName({
+export function buildFeelQNameFromXmlQName({
   namedElement,
   namedElementQName,
   importsByNamespace,
@@ -29,6 +29,18 @@ export function buildFeelQName({
     throw new Error(`Can't find namespace declaration for namespace with name '${namedElementQName.prefix}'.`);
   }
 
+  return buildFeelQNameFromNamespace({ namedElement, namespace, importsByNamespace });
+}
+
+export function buildFeelQNameFromNamespace({
+  namedElement,
+  namespace,
+  importsByNamespace,
+}: {
+  namedElement: DMN15__tNamedElement;
+  namespace: string;
+  importsByNamespace: Map<string, DMN15__tImport>;
+}): FeelQNameBuild {
   const _import = importsByNamespace.get(namespace);
   if (!_import) {
     throw new Error(`Can't find included model with namespace '${namespace}'.`);
