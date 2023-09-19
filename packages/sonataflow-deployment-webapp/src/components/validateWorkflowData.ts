@@ -16,3 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import isPlainObject from "lodash/isPlainObject";
+
+export function validateWorkflowData(data: string): boolean {
+  if (data) {
+    try {
+      const json = JSON.parse(data);
+      if (!isPlainObject(json)) {
+        return false;
+      }
+    } catch (err) {
+      return false;
+    }
+  }
+  return true;
+}

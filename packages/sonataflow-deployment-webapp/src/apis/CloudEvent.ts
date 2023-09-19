@@ -16,3 +16,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+export const SONATAFLOW_BUSINESS_KEY = "kogitobusinesskey";
+export const SONATAFLOW_PROCESS_REFERENCE_ID = "kogitoprocrefid";
+
+export enum CloudEventMethod {
+  POST = "POST",
+  PUT = "PUT",
+}
+
+export interface CloudEventRequest {
+  endpoint: string;
+  method: CloudEventMethod;
+
+  headers: CloudEventHeaders;
+  data: string;
+}
+
+export interface CloudEventHeaders {
+  type: string; // Type of the cloud event
+  source: string; // Source of the cloud event
+
+  extensions: Record<string, string>;
+}
+
+/**
+ * Interface that defines a Driver for CloudEventForm views.
+ */
+export interface CloudEventFormDriver {
+  triggerCloudEvent(event: CloudEventRequest): Promise<void>;
+}

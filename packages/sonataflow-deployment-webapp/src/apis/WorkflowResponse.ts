@@ -16,3 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { JsonType } from "../types";
+
+export interface WorkflowResponse {
+  id: string;
+  workflowdata: JsonType;
+}

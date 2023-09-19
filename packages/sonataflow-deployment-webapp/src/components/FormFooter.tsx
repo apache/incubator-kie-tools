@@ -16,3 +16,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from "react";
+import _ from "lodash";
+import { ActionList, ActionListItem } from "@patternfly/react-core/dist/js/components/ActionList";
+import { convertActionsToButton, FormAction } from "./utils";
+
+interface IOwnProps {
+  actions?: FormAction[];
+  enabled?: boolean;
+  onSubmitForm?: () => void;
+}
+
+export function FormFooter({ actions, enabled = true, onSubmitForm }: IOwnProps) {
+  if (_.isEmpty(actions)) {
+    return null;
+  }
+
+  const actionItems = convertActionsToButton(actions || [], enabled, onSubmitForm)?.map((button, index) => {
+    return <ActionListItem key={`form-action-${index}`}>{button}</ActionListItem>;
+  });
+
+  return (
+    <div className="sonataflow-deployment-common__form-footer-padding-top">
+      <ActionList>{actionItems}</ActionList>
+    </div>
+  );
+}

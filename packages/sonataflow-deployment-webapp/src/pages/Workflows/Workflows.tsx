@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { PromiseStateStatus, PromiseStateWrapper } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -30,12 +30,19 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CubesIcon, ExclamationCircleIcon, PlayIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Table } from "@patternfly/react-table/dist/js/components/Table";
 import { Tbody, Td, Th, Thead, Tr } from "@patternfly/react-table/dist/js/components/TableComposable";
-import { KUBESMARTS_URL } from "../AppConstants";
-import { useOpenApi } from "../context/OpenApiContext";
-import { BasePage } from "./BasePage";
+import { KUBESMARTS_URL } from "../../AppConstants";
+import { useOpenApi } from "../../context/OpenApiContext";
+import { BasePage } from "../BasePage";
+import { Link } from "react-router-dom";
+import { routes } from "../../routes";
+import { ErrorPage } from "../ErrorPage";
 
-export function HomePage() {
+export function Workflows() {
   const openApi = useOpenApi();
+
+  if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
+    return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;
+  }
 
   return (
     <BasePage>
@@ -49,7 +56,9 @@ export function HomePage() {
         <Toolbar>
           <ToolbarContent style={{ paddingLeft: "10px", paddingRight: "10px" }}>
             <ToolbarItem alignment={{ default: "alignLeft" }}>
-              <Button>Trigger Cloud Event</Button>
+              <Link to={routes.workflows.cloudEvent.path({})}>
+                <Button>Trigger Cloud Event</Button>
+              </Link>
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
@@ -103,7 +112,9 @@ export function HomePage() {
                         {window.location.origin}/{tag.name}
                       </Td>
                       <Td>
-                        <Button icon={<PlayIcon />} variant="link"></Button>
+                        <Link to={routes.workflows.form.path({ workflowId: tag.name })}>
+                          <PlayIcon />
+                        </Link>
                       </Td>
                     </Tr>
                   ))

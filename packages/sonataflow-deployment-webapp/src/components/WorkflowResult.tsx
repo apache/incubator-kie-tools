@@ -16,18 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React, { useMemo } from "react";
+import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import ReactJson from "react-json-view";
+import { WorkflowResponse } from "../apis/WorkflowResponse";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-import { createContext, useContext } from "react";
-import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
-import { OpenAPI } from "openapi-types";
-
-export interface OpenApiContextType {
-  openApiData: OpenAPI.Document | undefined;
-  openApiPromise: PromiseState<OpenAPI.Document>;
+export interface WorkflowResultProps {
+  response: WorkflowResponse;
 }
 
-export const OpenApiContext = createContext<OpenApiContextType>({} as any);
+export function WorkflowResult(props: WorkflowResultProps) {
+  const filteredResponse = useMemo(() => ({ workflowdata: props.response.workflowdata }), [props.response]);
 
-export function useOpenApi() {
-  return useContext(OpenApiContext);
+  return (
+    <>
+      <TextContent>
+        <Title headingLevel="h3">Workflow result</Title>
+      </TextContent>
+      <br />
+      <TextContent>
+        <div>
+          <ReactJson src={filteredResponse} name={false} />
+        </div>
+      </TextContent>
+    </>
+  );
 }

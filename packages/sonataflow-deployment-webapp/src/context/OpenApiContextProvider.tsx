@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { OpenApi } from "openapi-v3";
+import { OpenAPI } from "openapi-types";
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { useOpenApiPromise } from "../hooks/useOpenApiPromise";
 import { OpenApiContext } from "./OpenApiContext";
 
 export function OpenApiContextProvider(props: PropsWithChildren<{}>) {
   const openApiPromise = useOpenApiPromise();
-  const [openApiData, setOpenApiData] = useState<OpenApi>();
+  const [openApiData, setOpenApiData] = useState<OpenAPI.Document>();
 
   useEffect(() => {
     if (!openApiPromise.data) {

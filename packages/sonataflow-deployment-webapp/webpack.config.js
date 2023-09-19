@@ -19,8 +19,10 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
 const buildEnv = env;
@@ -38,6 +40,12 @@ module.exports = async (env) =>
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
       }),
+      new MonacoWebpackPlugin({
+        languages: ["json"],
+      }),
+      new NodePolyfillPlugin({
+        includeAliases: ["https", "process", "Buffer"],
+      }),
     ],
     module: {
       rules: [...patternflyBase.webpackModuleRules],
@@ -48,4 +56,10 @@ module.exports = async (env) =>
       compress: true,
       port: buildEnv.sonataFlowDeploymentWebapp.dev.port,
     },
+    resolve: {
+      fallback: {
+        http: require.resolve("stream-http"),
+      },
+    },
+    ignoreWarnings: [/Failed to parse source map/],
   });

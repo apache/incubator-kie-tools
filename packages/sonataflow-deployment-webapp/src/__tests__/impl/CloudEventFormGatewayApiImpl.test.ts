@@ -16,3 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { triggerStartCloudEvent } from "../../apis";
+import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";
+
+jest.mock("../../apis/apis", () => ({
+  triggerStartCloudEvent: jest.fn(),
+}));
+
+let gatewayApi: CloudEventFormGatewayApiImpl;
+
+describe("CloudEventFormGatewayApiImpl tests", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    gatewayApi = new CloudEventFormGatewayApiImpl("http://localhost:8080");
+  });
+
+  it("should trigger start cloud event", async () => {
+    const event = {} as any;
+
+    await gatewayApi.triggerStartCloudEvent(event);
+
+    expect(triggerStartCloudEvent).toHaveBeenCalledWith(event, "http://localhost:8080");
+  });
+});

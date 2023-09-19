@@ -21,7 +21,9 @@ const IS_HASH_ROUTER = true;
 
 export enum QueryParams {}
 
-export enum PathParams {}
+export enum PathParams {
+  WORKFLOW_ID = "workflowId",
+}
 
 export class Route<
   T extends {
@@ -77,31 +79,18 @@ export interface QueryParamsImpl<Q extends string> {
   toString(): string;
 }
 
-export function newQueryParamsImpl<Q extends string>(queryString: string): QueryParamsImpl<Q> {
-  return {
-    has: (name) => new URLSearchParams(queryString).has(name),
-    get: (name) => {
-      const val = new URLSearchParams(queryString).get(name);
-      return !val ? undefined : decodeURIComponent(val);
-    },
-    with: (name, value) => {
-      const urlSearchParams = new URLSearchParams(queryString);
-      urlSearchParams.set(name, value);
-      return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
-    },
-    without: (name) => {
-      const urlSearchParams = new URLSearchParams(queryString);
-      urlSearchParams.delete(name);
-      return newQueryParamsImpl(decodeURIComponent(urlSearchParams.toString()));
-    },
-    toString: () => {
-      return decodeURIComponent(new URLSearchParams(queryString).toString());
-    },
-  };
-}
-
+const WORKFLOWS_ROUTE = "/workflows";
 export const routes = {
   home: new Route<{}>(() => "/"),
+
+  workflows: {
+    home: new Route<{}>(() => WORKFLOWS_ROUTE),
+    form: new Route<{
+      pathParams: PathParams.WORKFLOW_ID;
+    }>(({ workflowId }) => `${WORKFLOWS_ROUTE}/${workflowId}`),
+    cloudEvent: new Route<{}>(() => `/triggerCloudEvent`),
+  },
+
   dataJson: new Route<{}>(() => "/sonataflow-deploy-webapp-data.json"),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
 };

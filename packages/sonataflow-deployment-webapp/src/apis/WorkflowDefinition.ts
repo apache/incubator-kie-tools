@@ -16,3 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+export interface WorkflowDefinition {
+  workflowName: string;
+  endpoint: string;
+}
