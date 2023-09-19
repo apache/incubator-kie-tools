@@ -413,7 +413,7 @@ export function build(args: {
     // array
     else if (Array.isArray(propValue)) {
       for (const item of propValue) {
-        const elementName = applyInstanceNs({ ns, instanceNs, propName: item["__$$element"] ?? propName });
+        const elementName = applyInstanceNs({ ns, instanceNs, propName: item?.["__$$element"] ?? propName });
         const { attrs, isEmpty } = buildAttrs(item);
         xml += `${indent}<${elementName}${attrs}`;
         if (isEmpty) {
