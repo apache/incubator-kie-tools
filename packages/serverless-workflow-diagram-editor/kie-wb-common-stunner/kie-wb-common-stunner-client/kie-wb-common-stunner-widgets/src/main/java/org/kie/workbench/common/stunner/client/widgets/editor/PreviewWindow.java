@@ -167,8 +167,6 @@ public class PreviewWindow {
     }
 
     public void onTogglePreviewEvent(@Observes TogglePreviewEvent event) {
-        DomGlobal.console.log("onTogglePreviewEvent");
-
         if (null != previewRoot && previewRoot.isVisible()) {
             switch (event.getEventType()) {
                 case TOGGLE:

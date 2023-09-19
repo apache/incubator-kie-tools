@@ -43,7 +43,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @GWT3Export
 @YamlPropertyOrder({"name", "type", "actions", "inputCollection", "outputCollection", "iterationParam", "transition", "stateDataFilter", "eventTimeout", "compensatedBy", "timeouts", "onErrors", "end", "metadata"})
-public class ForEachState extends State<ForEachState> implements HasErrors<ForEachState>, HasEnd<ForEachState>, HasTransition<ForEachState>, HasCompensatedBy<ForEachState> {
+public class ForEachState extends State<ForEachState> implements HasErrors<ForEachState>, HasEnd<ForEachState>, HasTransition<ForEachState>, HasCompensatedBy<ForEachState>, HasMetadata<ForEachState> {
 
     public static final String TYPE_FOR_EACH = "foreach";
 
@@ -149,10 +149,12 @@ public class ForEachState extends State<ForEachState> implements HasErrors<ForEa
         this.stateDataFilter = stateDataFilter;
     }
 
+    @Override
     public Metadata getMetadata() {
         return metadata;
     }
 
+    @Override
     public ForEachState setMetadata(Metadata metadata) {
         this.metadata = metadata;
         return this;

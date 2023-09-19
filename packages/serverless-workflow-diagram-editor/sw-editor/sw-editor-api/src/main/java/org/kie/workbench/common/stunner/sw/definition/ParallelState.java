@@ -43,7 +43,7 @@ import org.treblereel.j2cl.processors.annotations.GWT3Export;
 @JsType
 @YamlPropertyOrder({"name", "type", "transition", "stateDataFilter", "compensatedBy", "branches", "timeouts", "eventTimeout", "onErrors", "end", "metadata"})
 @GWT3Export
-public class ParallelState extends State<ParallelState> implements HasErrors<ParallelState>, HasEnd<ParallelState>, HasTransition<ParallelState>, HasCompensatedBy<ParallelState> {
+public class ParallelState extends State<ParallelState> implements HasErrors<ParallelState>, HasEnd<ParallelState>, HasTransition<ParallelState>, HasCompensatedBy<ParallelState>, HasMetadata<ParallelState> {
 
     public static final String TYPE_PARALLEL = "parallel";
 
@@ -119,10 +119,12 @@ public class ParallelState extends State<ParallelState> implements HasErrors<Par
         this.stateDataFilter = stateDataFilter;
     }
 
+    @Override
     public Metadata getMetadata() {
         return metadata;
     }
 
+    @Override
     public ParallelState setMetadata(Metadata metadata) {
         this.metadata = metadata;
         return this;

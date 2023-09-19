@@ -80,8 +80,6 @@ public class WorkbenchEntryPoint {
     }
 
     private <T extends Activity> SyncBeanDef<T> getBean(Class<T> type, final String name) {
-        DomGlobal.console.log("check this " + type.getName() + " " + name);
-
         final Optional<SyncBeanDef<T>> optionalActivity = iocManager.lookupBeans(type)
                 .stream()
                 .filter(bean -> (name == null || bean.getName().equals(name)))

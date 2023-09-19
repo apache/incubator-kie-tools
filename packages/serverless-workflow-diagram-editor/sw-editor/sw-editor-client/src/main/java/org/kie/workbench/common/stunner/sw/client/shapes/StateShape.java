@@ -24,8 +24,6 @@ import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.types.Transform;
 import io.crysknife.ui.translation.client.TranslationService;
-import jsinterop.base.Js;
-import jsinterop.base.JsPropertyMap;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
 import org.appformer.kogito.bridge.client.resource.interop.ResourceContentOptions;
 import org.kie.workbench.common.stunner.core.client.shape.HasShapeState;
@@ -34,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.sw.definition.HasMetadata;
 import org.kie.workbench.common.stunner.sw.definition.Metadata;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
@@ -94,13 +93,13 @@ public class StateShape extends ServerlessWorkflowShape<StateShapeView> implemen
 
         State state = element.getContent().getDefinition();
         getView().setTitle(state.getName());
-        JsPropertyMap<Object> map = Js.asPropertyMap(state);
-        if (!map.has("metadata")) {
+
+        if (!(state instanceof HasMetadata)) {
             shapeView.setSvgIcon(getIconColor(), getIconSvg());
             return;
         }
 
-        Metadata metadata = (Metadata) map.get("metadata");
+        Metadata metadata = ((HasMetadata<?>) state).getMetadata();
 
         if (metadata == null) {
             shapeView.setSvgIcon(getIconColor(), getIconSvg());

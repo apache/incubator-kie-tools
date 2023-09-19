@@ -21,7 +21,6 @@ package org.gwtbootstrap3.extras.select.client;
  */
 
 import io.crysknife.ui.common.client.injectors.ScriptInjector;
-import io.crysknife.ui.common.client.injectors.StyleInjector;
 
 /**
  * @author godi

@@ -158,10 +158,6 @@ public class StunnerEditor {
         });
 
         HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
-
-        DomGlobal.console.log("rootContainer 1: " + rootContainer);
-        DomGlobal.console.log("rootContainer 2: " + rootContainer.innerHTML);
-
         removeAllChildren(rootContainer);
 
         rootContainer.appendChild(diagramPresenter.getView().getElement());

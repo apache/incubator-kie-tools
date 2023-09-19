@@ -28,7 +28,6 @@ import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
 import com.ait.lienzo.tools.client.event.EventType;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
 import io.crysknife.client.IsElement;
@@ -250,8 +249,6 @@ public class ZoomLevelSelectorPresenter {
     }
 
     private void togglePreview() {
-        DomGlobal.console.log("togglePreview");
-
         final LienzoPanel panel = getPanel();
         TogglePreviewEvent event = TogglePreviewUtils.buildEvent(panel.getView(),
                                                                  TogglePreviewEvent.EventType.TOGGLE);
@@ -310,8 +307,6 @@ public class ZoomLevelSelectorPresenter {
             boolean isPreviewAvailable = TogglePreviewUtils.IsPreviewAvailable(scrollablePanel);
             selector.setPreviewEnabled(isPreviewAvailable);
             if (!isPreviewAvailable) {
-
-                DomGlobal.console.log("FIRE !!!");
                 TogglePreviewEvent event = TogglePreviewUtils.buildEvent(panel.getView(),
                                                                          TogglePreviewEvent.EventType.HIDE);
                 togglePreviewEvent.fire(event);

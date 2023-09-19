@@ -23,7 +23,6 @@ package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
-import elemental2.dom.HTMLElement;
 import elemental2.dom.HTMLLIElement;
 import elemental2.dom.HTMLUListElement;
 import elemental2.dom.KeyboardEvent;
@@ -152,7 +151,7 @@ public class ZoomLevelSelectorViewTest {
     @Test
     public void testAdd() {
         ZoomLevelSelectorItem item = mock(ZoomLevelSelectorItem.class);
-        HTMLElement itemElement = mock(HTMLElement.class);
+        HTMLLIElement itemElement = mock(HTMLLIElement.class);
         when(item.getElement()).thenReturn(itemElement);
         when(items.get()).thenReturn(item);
         Command c = mock(Command.class);

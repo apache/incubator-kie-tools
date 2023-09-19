@@ -20,7 +20,6 @@
 
 package org.kie.workbench.common.stunner.core.api;
 
-import elemental2.dom.DomGlobal;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.definition.DefinitionFactory;
@@ -55,9 +54,6 @@ public abstract class AbstractFactoryManager {
     @SuppressWarnings("unchecked")
     public <T> T newDefinition(final String id) {
         final DefinitionFactory<T> factory = factoryRegistry.getDefinitionFactory(id);
-
-        DomGlobal.console.log("AbstractFactoryManager newDefinition " + id + " " + factory.getClass().getCanonicalName());
-
         return factory.build(id);
     }
 

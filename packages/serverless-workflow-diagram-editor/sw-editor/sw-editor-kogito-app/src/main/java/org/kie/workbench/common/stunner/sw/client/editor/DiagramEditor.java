@@ -162,7 +162,6 @@ public class DiagramEditor {
 
     private Promise<Void> setContent(final String path, final String value, final DocType docType) {
         this.currentDocType = docType;
-        DomGlobal.console.log("TogglePreviewEvent check");
         TogglePreviewEvent event = new TogglePreviewEvent(TogglePreviewEvent.EventType.HIDE);
         togglePreviewEvent.fire(event);
         Promise<Void> setContentPromise;
@@ -183,8 +182,6 @@ public class DiagramEditor {
     }
 
     public Promise<Void> setNewContent(final String path, final String value, final DocType docType) {
-        DomGlobal.console.log("setNewContent");
-
         return promises.create((success, failure) -> {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
@@ -193,8 +190,6 @@ public class DiagramEditor {
                                      new ServiceCallback<ParseResult>() {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
-                                             DomGlobal.console.log("setNewContent.onSuccess");
-
                                              stunnerEditor
                                                      .close()
                                                      .open(parseResult.getDiagram(),
@@ -228,7 +223,6 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onError(final ClientRuntimeError error) {
-                                             DomGlobal.console.log("setNewContent.onError");
                                              handleParseErrors(error, stunnerEditor);
                                              DomGlobal.console.error(error);
                                              failure.onInvoke(error);

@@ -20,7 +20,6 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter;
 
-import elemental2.dom.DomGlobal;
 import io.crysknife.annotation.CircularDependency;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -57,7 +56,6 @@ public class AdapterManagerImpl implements AdapterManager {
 
     @PostConstruct
     public void init() {
-        DomGlobal.console.log("AdapterManagerImpl init " + this.getClass().getCanonicalName() + " " + this.hashCode());
         this.definitionSetAdapter = bootstrapAdapterFactory.newDefinitionSetAdapter(registry);
         this.definitionSetRuleAdapter = bootstrapAdapterFactory.newDefinitionSetRuleAdapter(registry);
         this.definitionAdapter = bootstrapAdapterFactory.newDefinitionAdapter(registry);
@@ -66,9 +64,6 @@ public class AdapterManagerImpl implements AdapterManager {
 
     @Override
     public DefinitionSetAdapter<Object> forDefinitionSet() {
-
-        DomGlobal.console.log("forDefinitionSet " + definitionSetAdapter);
-
         return definitionSetAdapter;
     }
 

@@ -38,10 +38,6 @@ public class JsDefinitionFactory implements DefinitionFactory<Object> {
     }
 
     private Object createInstanceForType(String typeName) {
-        //DomGlobal.console.log("createInstanceForType: " + typeName);
-//
-//        return Global.eval("new " + typeName + "()");
-
         if(definitions.containsKey(typeName)) {
             return definitions.get(typeName).get();
         }
