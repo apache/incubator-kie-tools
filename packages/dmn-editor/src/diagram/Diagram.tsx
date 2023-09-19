@@ -1000,7 +1000,13 @@ export function KeyboardShortcuts({
     if (!b) {
       return;
     }
-    const bounds = getBounds({ nodes: rf.getNodes().filter((s) => s.selected), padding: 100 });
+
+    const selectedNodes = rf.getNodes().filter((s) => s.selected);
+    if (selectedNodes.length <= 0) {
+      return;
+    }
+
+    const bounds = getBounds({ nodes: selectedNodes, padding: 100 });
     rf.fitBounds(
       {
         x: bounds["@_x"],
