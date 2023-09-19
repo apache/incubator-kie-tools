@@ -50,7 +50,9 @@ export function ExternalNodesPanel() {
             <Title size={"md"} headingLevel={"h4"}>
               No external nodes available
             </Title>
-            <EmptyStateBody>Maybe the included models have no exported nodes</EmptyStateBody>
+            <EmptyStateBody>
+              Maybe the included models have no exported nodes, or there are no included models.
+            </EmptyStateBody>
             <br />
             <EmptyStatePrimary>
               <Button
