@@ -16,10 +16,6 @@
     <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
 
     <modules>
-        <!--        <module>jakarta-spec</module>
-
-                <module>tooling</module>
-        -->
         <module>gwtbootstrap3</module>
         <module>stylesheets</module>
         <module>gwtproject</module>
