@@ -22,7 +22,6 @@ package org.kie.workbench.common.stunner.core.client.components.proxies;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
@@ -121,7 +120,6 @@ public class ElementProxyTest {
     }
 
     @Test
-    @Ignore("CCE")
     public void testShapeAcceptor() {
         tested.start(1, 2);
         view.getShapeAcceptor().accept(proxyShape);
