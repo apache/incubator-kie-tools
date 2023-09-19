@@ -531,7 +531,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const resetToBeforeEditingBegan = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
-      state.dmn.model = dmnModelBeforeEditingRef.current!;
+      state.dmn.model = dmnModelBeforeEditingRef.current;
       state.diagram.draggingNodes = [];
       state.diagram.draggingWaypoints = [];
       state.diagram.resizingNodes = [];

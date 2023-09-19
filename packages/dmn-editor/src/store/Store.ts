@@ -4,9 +4,7 @@ import * as RF from "reactflow";
 import { StoreApi, UseBoundStore, create } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
-import { NodeType } from "../diagram/connections/graphStructure";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
-import { XmlQName } from "../xml/xmlQNames";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 
 export interface DmnEditorDiagramNodeStatus {
@@ -137,49 +135,53 @@ export const DmnEditorStoreApiContext = createContext<StoreApiType>({} as any);
 
 export type StoreApiType = UseBoundStore<WithImmer<StoreApi<State>>>;
 
+export const defaultStaticState = () => ({
+  boxedExpressionEditor: {
+    openExpressionId: undefined,
+    selectedObjectId: undefined,
+    propertiesPanel: {
+      isOpen: false,
+    },
+  },
+  navigation: {
+    tab: DmnEditorTab.EDITOR,
+  },
+  diagram: {
+    drdIndex: 0,
+    edgeIdBeingUpdated: undefined,
+    dropTargetNode: undefined,
+    propertiesPanel: {
+      isOpen: false,
+      elementId: undefined,
+    },
+    overlaysPanel: {
+      isOpen: false,
+    },
+    externalNodesPanel: {
+      isOpen: false,
+    },
+    overlays: {
+      enableNodeHierarchyHighlight: false,
+      enableExecutionHitsHighlights: false,
+      enableCustomNodeStyles: false,
+      enableDataTypesOnNodes: false,
+    },
+    snapGrid: { isEnabled: true, x: 20, y: 20 },
+    selectedNodes: [],
+    draggingNodes: [],
+    resizingNodes: [],
+    selectedEdges: [],
+    draggingWaypoints: [],
+  },
+});
+
 export function createDmnEditorStore(model: State["dmn"]["model"]) {
   return create(
     immer<State>((set, get) => ({
       dmn: {
         model,
       },
-      boxedExpressionEditor: {
-        openExpressionId: undefined,
-        selectedObjectId: undefined,
-        propertiesPanel: {
-          isOpen: false,
-        },
-      },
-      navigation: {
-        tab: DmnEditorTab.EDITOR,
-      },
-      diagram: {
-        drdIndex: 0,
-        edgeIdBeingUpdated: undefined,
-        dropTargetNode: undefined,
-        propertiesPanel: {
-          isOpen: false,
-          elementId: undefined,
-        },
-        overlaysPanel: {
-          isOpen: false,
-        },
-        externalNodesPanel: {
-          isOpen: false,
-        },
-        overlays: {
-          enableNodeHierarchyHighlight: false,
-          enableExecutionHitsHighlights: false,
-          enableCustomNodeStyles: false,
-          enableDataTypesOnNodes: false,
-        },
-        snapGrid: { isEnabled: true, x: 20, y: 20 },
-        selectedNodes: [],
-        draggingNodes: [],
-        resizingNodes: [],
-        selectedEdges: [],
-        draggingWaypoints: [],
-      },
+      ...defaultStaticState(),
       dispatch: {
         dmn: {
           reset: (model) => {

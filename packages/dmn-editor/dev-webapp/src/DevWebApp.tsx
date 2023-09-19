@@ -164,6 +164,7 @@ export function DevWebApp() {
             evaluationResults={evaluationResults}
             includedModelsContextName={`Dev webapp`}
             includedModelsContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
+            issueTrackerHref={`https://github.com/kiegroup/kie-issues/issues/new`}
           />
         </PageSection>
       </Page>

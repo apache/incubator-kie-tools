@@ -5,11 +5,16 @@ import { DmnEditorProps } from "./DmnEditor";
 
 export type DmnEditorContextProviderProps = Pick<
   DmnEditorProps,
-  "includedModelsContextDescription" | "includedModelsContextName"
+  "includedModelsContextDescription" | "includedModelsContextName" | "issueTrackerHref" | "model"
 >;
 
-export type DmnEditorContextType = DmnEditorContextProviderProps & {
-  dmnModelBeforeEditingRef: React.MutableRefObject<DmnModel | undefined>;
+export type DmnModelBeforeEditing = DmnModel;
+
+export type DmnEditorContextType = Pick<
+  DmnEditorContextProviderProps,
+  "includedModelsContextDescription" | "includedModelsContextName" | "issueTrackerHref"
+> & {
+  dmnModelBeforeEditingRef: React.MutableRefObject<DmnModelBeforeEditing>;
 };
 
 const DmnEditorContext = React.createContext<DmnEditorContextType>({} as any);
@@ -19,14 +24,16 @@ export function useDmnEditor() {
 }
 
 export function DmnEditorContextProvider(props: React.PropsWithChildren<DmnEditorContextProviderProps>) {
-  const dmnModelBeforeEditingRef = useRef<DmnModel | undefined>(undefined);
+  const dmnModelBeforeEditingRef = useRef<DmnModelBeforeEditing>(props.model);
+
   const value = useMemo<DmnEditorContextType>(
     () => ({
       dmnModelBeforeEditingRef,
       includedModelsContextDescription: props.includedModelsContextDescription,
       includedModelsContextName: props.includedModelsContextName,
+      issueTrackerHref: props.issueTrackerHref,
     }),
-    [props.includedModelsContextDescription, props.includedModelsContextName]
+    [props.includedModelsContextDescription, props.includedModelsContextName, props.issueTrackerHref]
   );
   return <DmnEditorContext.Provider value={value}>{props.children}</DmnEditorContext.Provider>;
 }

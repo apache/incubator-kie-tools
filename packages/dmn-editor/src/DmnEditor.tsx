@@ -20,6 +20,7 @@ import {
   DmnModel,
   StoreApiType,
   createDmnEditorStore,
+  defaultStaticState,
   useDmnEditorStore,
   useDmnEditorStoreApi,
 } from "./store/Store";
@@ -29,6 +30,8 @@ import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorDependenciesContextProvider } from "./includedModels/DmnEditorDependenciesContext";
+import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
+import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
@@ -81,15 +84,21 @@ export type DmnEditorProps = {
    */
   validationMessages: ValidationMessages;
   /**
-   * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance is displaying a model from a project called "My project", you could use
-   * `includedModelsContextName={"My project"}`
+   * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
+   * is displaying a model from a project called "My project", you could use `includedModelsContextName={"My project"}`
    */
   includedModelsContextName: string;
   /**
-   * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance is displaying a model from a project called "My project", you could use
+   * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
+   * is displaying a model from a project called "My project", you could use
    * `includedModelsContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
    */
   includedModelsContextDescription: string;
+  /**
+   * A link that will take users to an issue tracker so they can report problems they find on the DMN Editor.
+   * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
+   */
+  issueTrackerHref?: string;
 };
 
 export const DmnEditorInternal = ({
@@ -119,7 +128,11 @@ export const DmnEditorInternal = ({
   }, [dmnEditorStoreApi, dispatch.dmn, model]);
 
   const { dmnModelBeforeEditingRef } = useDmnEditor();
-  useStateAsItWasBeforeConditionBecameTrue(dmn.model, isDiagramEditingInProgress, dmnModelBeforeEditingRef);
+  useStateAsItWasBeforeConditionBecameTrue(
+    dmn.model,
+    isDiagramEditingInProgress,
+    useCallback((prev) => (dmnModelBeforeEditingRef.current = prev), [dmnModelBeforeEditingRef])
+  );
 
   // Only notify changes when dragging/resizing operations are not happening.
   useEffectAfterFirstRender(() => {
@@ -237,15 +250,24 @@ export const DmnEditorInternal = ({
 export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref<DmnEditorRef>) => {
   const storeRef = React.useRef<StoreApiType>(createDmnEditorStore(props.model));
 
+  const resetState: ErrorBoundaryPropsWithFallback["onReset"] = useCallback(({ args }) => {
+    storeRef.current?.setState((state) => {
+      state.diagram = defaultStaticState().diagram;
+      state.dmn.model = args[0];
+    });
+  }, []);
+
   return (
     <DmnEditorContextProvider {...props}>
-      <DmnEditorDependenciesContextProvider {...props}>
-        <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-          <DmnEditorDerivedStoreContextProvider>
-            <DmnEditorInternal forwardRef={ref} {...props} />
-          </DmnEditorDerivedStoreContextProvider>
-        </DmnEditorStoreApiContext.Provider>
-      </DmnEditorDependenciesContextProvider>
+      <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
+        <DmnEditorDependenciesContextProvider {...props}>
+          <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+            <DmnEditorDerivedStoreContextProvider>
+              <DmnEditorInternal forwardRef={ref} {...props} />
+            </DmnEditorDerivedStoreContextProvider>
+          </DmnEditorStoreApiContext.Provider>
+        </DmnEditorDependenciesContextProvider>
+      </ErrorBoundary>
     </DmnEditorContextProvider>
   );
 });
@@ -269,19 +291,15 @@ export function usePrevious<T>(value: T) {
  * @param ref The ref that stores the value
  * @returns The ref that was given as the 3rd parameter.
  */
-export function useStateAsItWasBeforeConditionBecameTrue<T>(
-  state: T,
-  condition: boolean,
-  ref: React.MutableRefObject<T | null>
-) {
+export function useStateAsItWasBeforeConditionBecameTrue<T>(state: T, condition: boolean, set: (prev: T) => void) {
   const previous = usePrevious(state);
 
   useEffect(() => {
     if (condition) {
       console.debug("HOOK: `useStateBeforeCondition` --> ASSIGN");
-      ref.current = previous;
+      set(previous);
     }
     // !!!! EXCEPTIONAL CASE: Ignore "previous" changes on purpose, as we only want to save the last state before `condition` became true.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [condition, ref]);
+  }, [condition, set]);
 }
