@@ -8028,7 +8028,7 @@ importers:
         specifier: ^8.3.2
         version: 8.3.2
       webpack:
-        specifier: ^5.36.2
+        specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
@@ -8037,7 +8037,7 @@ importers:
         specifier: ^4.15.1
         version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
-        specifier: ^5.8.0
+        specifier: ^5.9.0
         version: 5.9.0
 
   packages/stunner-editors:
@@ -16934,7 +16934,7 @@ packages:
       { integrity: sha512-PB3ldyrcnAicT35TWPs5IcwKD8S333HMaa2VVv4+wdvebJkjWuW/xESoB8IwRcog8HYVYamb1g/R31Qv5Bx03g== }
     dependencies:
       "@types/eslint": 7.2.10
-      "@types/estree": 0.0.51
+      "@types/estree": 1.0.1
     dev: true
 
   /@types/eslint@7.2.10:
@@ -20787,7 +20787,7 @@ packages:
       globby: 13.1.2
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      serialize-javascript: 6.0.0
+      serialize-javascript: 6.0.1
       webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
