@@ -75,8 +75,7 @@
     "uuid": "^8.3.2",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.7.3",
+    "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.8.0"
-  },
-  "webjarDeploy": true
+  }
 }

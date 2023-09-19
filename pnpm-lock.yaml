@@ -8034,7 +8034,7 @@ importers:
         specifier: ^4.10.0
         version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.88.2)
       webpack-dev-server:
-        specifier: ^4.7.3
+        specifier: ^4.15.1
         version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
       webpack-merge:
         specifier: ^5.8.0
@@ -25656,6 +25656,7 @@ packages:
       { integrity: sha512-F+i2BKsFrH66iaUFc0woD8sLy8getkwTwtOBjvs56Cx4CgJDeKQeqfz8wAYiSb8JOprWhHH5p77PbmYCvvUuXQ== }
     engines: { node: ">=8" }
     hasBin: true
+    requiresBuild: true
     dev: true
 
   /is-extendable@0.1.1:
@@ -25921,6 +25922,7 @@ packages:
     resolution:
       { integrity: sha512-fKzAra0rGJUUBwGBgNkHZuToZcn+TtXHpeCgmkMJMMYx1sQDYaCSyjJBSCa2nH1DGm7s3n1oBnohoVTBaN7Lww== }
     engines: { node: ">=8" }
+    requiresBuild: true
     dependencies:
       is-docker: 2.2.1
     dev: true
