@@ -477,15 +477,15 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 
 /* (begin) external nodes */
 .kie-dmn-editor--external-nodes-section:not(:last-child) {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid lightgray;
 }
 .kie-dmn-editor--external-nodes-section-title {
   margin-bottom: 6px;
 }
 .kie-dmn-editor--external-nodes-list-item {
   border-radius: 999px;
-  padding: 4px;
-  margin-bottom: 4px;
   background: white;
 }
 .kie-dmn-editor--external-nodes-list-item:hover {

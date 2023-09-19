@@ -128,10 +128,12 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         });
       },
       openDataTypePage() {
-        dispatch.navigation.setTab(DmnEditorTab.DATA_TYPES);
+        dmnEditorStoreApi.setState((state) => {
+          state.navigation.tab = DmnEditorTab.DATA_TYPES;
+        });
       },
     };
-  }, [dispatch.navigation, dmnEditorStoreApi]);
+  }, [dmnEditorStoreApi]);
 
   ////
 

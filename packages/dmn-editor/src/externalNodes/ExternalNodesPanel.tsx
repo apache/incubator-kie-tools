@@ -1,13 +1,23 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
-import { useDmnEditorStore } from "../store/Store";
+import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { NodeIcon } from "../icons/Icons";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { DataTypeLabel } from "../dataTypes/DataTypeLabel";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStatePrimary,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -19,6 +29,7 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
 
 export function ExternalNodesPanel() {
   const dmn = useDmnEditorStore((s) => s.dmn);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { dependenciesByNamespace } = useDmnEditorDependencies();
   const { dmnShapesByHref } = useDmnEditorDerivedStore();
 
@@ -32,6 +43,30 @@ export function ExternalNodesPanel() {
 
   return (
     <>
+      {(dmn.model.definitions.import ?? []).length === 0 && (
+        <>
+          <EmptyState>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title size={"md"} headingLevel={"h4"}>
+              No external nodes available
+            </Title>
+            <EmptyStateBody>Maybe the included models have no exported nodes</EmptyStateBody>
+            <br />
+            <EmptyStatePrimary>
+              <Button
+                variant={ButtonVariant.link}
+                onClick={() =>
+                  dmnEditorStoreApi.setState((state) => {
+                    state.navigation.tab = DmnEditorTab.INCLUDED_MODELS;
+                  })
+                }
+              >
+                Add an included model...
+              </Button>
+            </EmptyStatePrimary>
+          </EmptyState>
+        </>
+      )}
       {(dmn.model.definitions.import ?? []).flatMap((i) => {
         const definitions = dependenciesByNamespace[i["@_namespace"]]?.model.definitions;
         if (!definitions) {
@@ -43,12 +78,12 @@ export function ExternalNodesPanel() {
           return (
             <div key={definitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
               <div className={"kie-dmn-editor--external-nodes-section-title"}>
-                <b>{`${definitions["@_name"]} (${i["@_name"]})`}</b>
-                <div className={"pf-u-text-truncate"} style={{ direction: "rtl" }}>
-                  <small>
-                    <i>{dependenciesByNamespace[i["@_namespace"]]?.path}</i>
-                  </small>
-                </div>
+                <b>{`${definitions["@_name"]}`}</b> {`(${i["@_name"]})`}
+                <small>
+                  <i>
+                    <Truncate content={dependenciesByNamespace[i["@_namespace"]]?.path ?? ""} />
+                  </i>
+                </small>
               </div>
               {definitions.drgElement?.map((e) => {
                 const Icon = NodeIcon(getNodeTypeFromDmnObject(e));

@@ -152,9 +152,11 @@ export const DmnEditorInternal = ({
 
   const onTabChanged = useCallback(
     (e, tab) => {
-      return dispatch.navigation.setTab(tab);
+      dmnEditorStoreApi.setState((state) => {
+        state.navigation.tab = tab;
+      });
     },
-    [dispatch.navigation]
+    [dmnEditorStoreApi]
   );
 
   const diagramContainerRef = useRef<HTMLDivElement>(null);

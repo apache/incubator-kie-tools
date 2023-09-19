@@ -82,9 +82,6 @@ export type Dispatch = {
       toggle: () => void;
     };
   };
-  navigation: {
-    setTab: (tab: DmnEditorTab) => void;
-  };
   diagram: {
     propertiesPanel: {
       open: () => void;
@@ -226,14 +223,6 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
               state.diagram.propertiesPanel.isOpen = state.boxedExpressionEditor.propertiesPanel.isOpen;
               state.boxedExpressionEditor.openExpressionId = undefined;
               state.boxedExpressionEditor.selectedObjectId = undefined;
-            });
-          },
-        },
-
-        navigation: {
-          setTab: (tab) => {
-            set((state) => {
-              state.navigation.tab = tab;
             });
           },
         },

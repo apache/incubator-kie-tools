@@ -113,8 +113,9 @@ export function Palette() {
         <br />
         <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>
           <Popover
+            className={"kie-dmn-editor--external-nodes-popover"}
             key={`${diagram.externalNodesPanel.isOpen}`}
-            aria-label="ExternalNodes Panel"
+            aria-label={"ExternalNodes Panel"}
             isVisible={diagram.externalNodesPanel.isOpen}
             shouldOpen={() => {
               dmnEditorStoreApi.setState((state) => {
