@@ -38,7 +38,6 @@ import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from 
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "../../xml/xmlQNames";
-import { Unpacked } from "../../store/useDiagramData";
 
 export type NodeDmnObjects =
   | DMN15__tInputData

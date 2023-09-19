@@ -485,7 +485,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                         targetEdgeIndexes: edges.flatMap((e) =>
                           e.target === nestedNode.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
                         ),
-
                         position: snappedNestedNodeShapeWithAppliedDelta,
                       },
                     });

@@ -23,6 +23,8 @@ export const diagramColors = {
   selected: "#006ba4",
 };
 
+export const UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";
+
 export function useDiagramData() {
   const dmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
@@ -51,13 +53,7 @@ export function useDiagramData() {
           // Do not skip adding it to the regular `dmnShapesByHref`, as nodes will query this.
           const dmnElementRefQName = parseXmlQName(e["@_dmnElementRef"]);
           if (dmnElementRefQName.prefix) {
-            const namespace = dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`];
-            if (!namespace) {
-              throw new Error(
-                `Can't find namespace declaration for namespace with name '${dmnElementRefQName.prefix}'.`
-              );
-            }
-
+            const namespace = dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`] ?? UNKNOWN_NAMESPACE;
             href = buildXmlHref({ namespace, id: dmnElementRefQName.localPart });
             dmnElementRefsForForShapesPointingToExternalDmnObjects.push(href);
           } else {
@@ -323,20 +319,23 @@ export function useDiagramData() {
     const externalNodes = dmnElementRefsForForShapesPointingToExternalDmnObjects.flatMap((href) => {
       const shape = dmnShapesByHref.get(href)!;
       const namespace = dmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
-      if (!namespace) {
-        throw new Error(
-          `Can't find namespace declaration for namespace with name '${shape.dmnElementRefQName.prefix}'.`
+      if (namespace) {
+        const externalDrgElements = dependenciesByNamespace[namespace]?.model.definitions.drgElement ?? [];
+        const index = externalDrgElements.findIndex((e) => e["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
+        if (index < 0) {
+          throw new Error("Can't find drgElement for shape with dmnElementRef " + shape["@_dmnElementRef"]);
+        }
+
+        const newNode = ackNode(shape.dmnElementRefQName, externalDrgElements[index], index);
+        return newNode ? [newNode] : [];
+      } else {
+        console.warn(
+          "DMN DIAGRAM: Shape could not be mapped to a node because it references an external model that is not present on the dependencies object",
+          shape
         );
+        // FIXME: Tiago --> Return an "unknown external node" so that it is represented on the Diagram.
+        return [];
       }
-
-      const externalDrgElements = dependenciesByNamespace[namespace]?.model.definitions.drgElement ?? [];
-      const index = externalDrgElements.findIndex((e) => e["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
-      if (index < 0) {
-        throw new Error("Can't find drgElement for shape with dmnElementRef " + shape["@_dmnElementRef"]);
-      }
-
-      const newNode = ackNode(shape.dmnElementRefQName, externalDrgElements[index], index);
-      return newNode ? [newNode] : [];
     });
 
     // Groups are always at the back. Decision Services after groups, then everything else.
