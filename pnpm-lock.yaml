@@ -6186,9 +6186,15 @@ importers:
 
   packages/scesim-editor:
     dependencies:
+      "@kie-tools-core/i18n":
+        specifier: workspace:*
+        version: link:../i18n
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/i18n-common-dictionary":
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
