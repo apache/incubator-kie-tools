@@ -6483,8 +6483,8 @@ importers:
         specifier: ^3.16.0
         version: 3.17.2
       yaml:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.3.2
+        version: 2.3.2
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -7782,8 +7782,8 @@ importers:
         specifier: ^3.16.0
         version: 3.16.0
       yaml:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.3.2
+        version: 2.3.2
     devDependencies:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
@@ -9668,8 +9668,8 @@ importers:
         specifier: ^3.16.0
         version: 3.17.2
       yaml:
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.3.2
+        version: 2.3.2
     devDependencies:
       "@kie-tools-core/webpack-base":
         specifier: workspace:*
@@ -35516,6 +35516,12 @@ packages:
     resolution:
       { integrity: sha512-1NpAYQ3wjzIlMs0mgdBmYzLkFgWBIWrzYVDYfrixhoFNNgJ444/jT2kUT2sicRbJES3oQYRZugjB6Ro8SjKeFg== }
     engines: { node: ">= 14" }
+
+  /yaml@2.3.2:
+    resolution:
+      { integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg== }
+    engines: { node: ">= 14" }
+    dev: false
 
   /yargs-parser@18.1.3:
     resolution:
