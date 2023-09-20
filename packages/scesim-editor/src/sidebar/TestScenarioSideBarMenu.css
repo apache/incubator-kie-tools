@@ -19,6 +19,7 @@
 
 .kie-scesim-editor-side-bar-menu--button {
   display: inline-block;
+  --pf-c-button--m-plain--Color: #06c;
   --pf-c-button--m-plain--hover--Color: #06c;
 }
 

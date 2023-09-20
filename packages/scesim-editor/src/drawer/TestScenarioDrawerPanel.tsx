@@ -31,7 +31,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
-import TestScenarioDrawerCheatSheetPanel from "./TestScnearioDrawerCheatSheet";
+import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 
 function TestScenarioDrawerPanel({
   fileName,
