@@ -3,7 +3,7 @@ import {
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import * as RF from "reactflow";
 import { NODE_LAYERS, useDmnEditorStore } from "./Store";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
@@ -16,6 +16,7 @@ import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
 import { XmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../diagram/nodes/NodeSvgs";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -26,6 +27,9 @@ export const diagramColors = {
 export const UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";
 
 export function useDiagramData() {
+  ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag =
+    !___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag;
+
   const dmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
 

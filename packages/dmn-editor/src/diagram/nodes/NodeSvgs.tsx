@@ -8,6 +8,8 @@ const DEFAULT_NODE_FILL = "white";
 const DEFAULT_NODE_STROKE_WIDTH = 1.5;
 const DEFAULT_NODE_STROKE_COLOR = "black";
 
+export const ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches = { flag: false };
+
 // This function makes sure that independent of strokeWidth, the size and position of the element is preserved. Much like `box-sizing: border-box`;
 export function normalize<T extends NodeSvgProps>(_props: T) {
   const { strokeWidth: _strokeWidth, x: _x, y: _y, width: _width, height: _height, ...props } = _props;
@@ -20,7 +22,14 @@ export function normalize<T extends NodeSvgProps>(_props: T) {
   const width = _width - strokeWidth;
   const height = _height - strokeWidth;
 
-  return { strokeWidth, x, y, width, height, props };
+  return {
+    strokeWidth,
+    x,
+    y,
+    width: width + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0.1 : 0),
+    height: height + (___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag ? 0 : 0.1),
+    props,
+  };
 }
 
 export function InputDataNodeSvg(_props: NodeSvgProps) {
