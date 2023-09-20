@@ -137,16 +137,16 @@ export const PopoverMenu = React.forwardRef(
       }
     }, [appendTo]);
 
+    const yPos = appendElement?.getBoundingClientRect().top ?? 0;
     const popupPosition = useMemo(() => {
       if (appendElement) {
-        const yPos = appendElement?.getBoundingClientRect().top ?? 0;
         const availableHeight = document.documentElement.clientHeight;
         if (POPUP_DEFAULT_HEIGHT + yPos + POPUP_DROP_DOWN_RESERVED_HEIGHT > availableHeight) {
           return PopoverPosition.right;
         }
       }
       return PopoverPosition.bottom;
-    }, [appendElement]);
+    }, [appendElement, yPos]);
 
     return (
       <Popover
