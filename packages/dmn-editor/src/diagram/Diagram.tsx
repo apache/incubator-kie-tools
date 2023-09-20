@@ -282,13 +282,13 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](diagram.snapGrid);
 
         dmnEditorStoreApi.setState((state) => {
-          const namespaceAlias = getXmlNamespaceName({
+          const namespaceName = getXmlNamespaceName({
             model: original(state.dmn.model.definitions),
             namespace: externalNode.externalDrgElementNamespace,
           });
 
-          if (!namespaceAlias) {
-            throw new Error(`Can't find namespace alias for '${externalNode.externalDrgElementNamespace}'.`);
+          if (!namespaceName) {
+            throw new Error(`Can't find namespace name for '${externalNode.externalDrgElementNamespace}'.`);
           }
 
           addShape({
@@ -297,7 +297,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             shape: {
               "@_dmnElementRef": buildXmlQName({
                 type: "xml-qname",
-                prefix: namespaceAlias,
+                prefix: namespaceName,
                 localPart: externalDrgElement["@_id"]!,
               }),
               "@_isCollapsed": true,
