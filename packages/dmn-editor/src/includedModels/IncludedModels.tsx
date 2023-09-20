@@ -205,16 +205,20 @@ export function IncludedModels() {
           <Divider inset={{ default: "insetMd" }} />
           <br />
           <Gallery hasGutter={true}>
-            {imports.map((i, index) => {
+            {imports.flatMap((i, index) => {
               const dependency = dependenciesByNamespace[i["@_namespace"]];
+              if (!dependency) {
+                return []; // Ignore
+              }
+
               return (
                 <Card key={i["@_name"]} isCompact={false}>
                   <CardHeader>
-                    <CardTitle>{`${dependency?.model.definitions["@_name"]} (${i["@_name"]})`}</CardTitle>
+                    <CardTitle>{`${dependency.model.definitions["@_name"]} (${i["@_name"]})`}</CardTitle>
                   </CardHeader>
                   <CardBody>
                     <small>
-                      <i>{dependency?.path ?? "WARNING: Path couldn't be determined."}</i>
+                      <i>{dependency.path ?? "WARNING: Path couldn't be determined."}</i>
                     </small>
                   </CardBody>
                   <CardFooter>

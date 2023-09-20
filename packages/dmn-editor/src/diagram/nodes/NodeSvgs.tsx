@@ -121,11 +121,11 @@ export const containerNodeInteractionRectCssClassName = "kie-dmn-editor--node-co
 
 export const DecisionServiceNodeSvg = React.forwardRef<
   SVGRectElement,
-  NodeSvgProps & { dividerLineLocalY?: number; showSectionLabels: boolean }
+  NodeSvgProps & { dividerLineLocalY?: number; showSectionLabels: boolean; isCollapsed?: boolean }
 >((__props, ref) => {
   const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
   const interactionRect = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
-  const { dividerLineLocalY, showSectionLabels, ...props } = _props;
+  const { dividerLineLocalY, showSectionLabels, isCollapsed, ...props } = _props;
   const dividerLineCoords = {
     x: x + strokeWidth / 2,
     y: y + (dividerLineLocalY ? dividerLineLocalY : height / 2),
@@ -133,20 +133,24 @@ export const DecisionServiceNodeSvg = React.forwardRef<
 
   return (
     <g>
-      <path
-        className={"kie-dmn-editor--node-decisionService-interactionDividerLine"}
-        d={`M0,0 L${width},0`}
-        strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
-        style={{ stroke: "transparent !important" }}
-        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
-      />
-      <path
-        d={`M0,0 L${width},0`}
-        strokeLinejoin={"round"}
-        strokeWidth={strokeWidth}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
-        transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
-      />
+      {!isCollapsed && (
+        <>
+          <path
+            className={"kie-dmn-editor--node-decisionService-interactionDividerLine"}
+            d={`M0,0 L${width},0`}
+            strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
+            style={{ stroke: "transparent !important" }}
+            transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
+          />
+          <path
+            d={`M0,0 L${width},0`}
+            strokeLinejoin={"round"}
+            strokeWidth={strokeWidth}
+            stroke={DEFAULT_NODE_STROKE_COLOR}
+            transform={`translate(${dividerLineCoords.x},${dividerLineCoords.y})`}
+          />
+        </>
+      )}
       {/* The border Rect of the Decision Service takes precedence over the Divider Line, therefore it comes after */}
       <rect
         {...props}
@@ -172,9 +176,10 @@ export const DecisionServiceNodeSvg = React.forwardRef<
         ry={"30"}
         className={containerNodeInteractionRectCssClassName}
       />
-      {showSectionLabels && (
+      {showSectionLabels && !isCollapsed && (
         <>
           <text
+            className={"kie-dmn-editor--decision-service-label"}
             textAnchor={"middle"}
             dominantBaseline={"auto"}
             transform={`translate(${dividerLineCoords.x + width / 2},${dividerLineCoords.y - 6})`}
@@ -182,6 +187,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
             OUTPUT
           </text>
           <text
+            className={"kie-dmn-editor--decision-service-label"}
             textAnchor={"middle"}
             dominantBaseline={"hanging"}
             transform={`translate(${dividerLineCoords.x + width / 2},${dividerLineCoords.y + 6})`}

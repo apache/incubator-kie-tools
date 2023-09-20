@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
 import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
 import { PositionalTargetNodeHandles } from "../connections/PositionalTargetNodeHandles";
 import { NodeType, containment, outgoingStructure } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
@@ -68,6 +68,7 @@ export const InputDataNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData>>) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -83,7 +84,7 @@ export const InputDataNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
 
     const setName = useCallback(
       (newName: string) => {
@@ -139,6 +140,7 @@ export const DecisionNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision>>) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -154,7 +156,7 @@ export const DecisionNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -210,6 +212,7 @@ export const BkmNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -225,7 +228,7 @@ export const BkmNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -281,6 +284,7 @@ export const KnowledgeSourceNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource>>) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -296,7 +300,7 @@ export const KnowledgeSourceNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -351,6 +355,7 @@ export const TextAnnotationNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation>>) => {
     const ref = useRef<HTMLDivElement>(null);
@@ -366,7 +371,7 @@ export const TextAnnotationNode = React.memo(
 
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
     const setText = useCallback(
       (newText: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -421,6 +426,7 @@ export const DecisionServiceNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService>>) => {
     const ref = useRef<SVGRectElement>(null);
@@ -436,7 +442,7 @@ export const DecisionServiceNode = React.memo(
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
 
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -474,6 +480,7 @@ export const DecisionServiceNode = React.memo(
             x={0}
             y={0}
             strokeWidth={3}
+            isCollapsed={shape["@_isCollapsed"]}
             showSectionLabels={diagram.dropTargetNode?.id === id}
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}
           />
@@ -509,9 +516,10 @@ export const DecisionServiceNode = React.memo(
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
           />
-          {selected && !dragging && (
+          {selected && !dragging && !shape["@_isCollapsed"] && (
             <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
           )}
+          {shape["@_isCollapsed"] && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
         </div>
       </>
     );
@@ -524,6 +532,7 @@ export const GroupNode = React.memo(
     selected,
     dragging,
     zIndex,
+    type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup>>) => {
     const ref = useRef<SVGRectElement>(null);
@@ -538,7 +547,7 @@ export const GroupNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
-    const nodeDimensions = useNodeDimensions(diagram.snapGrid, id, shape);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
     const setName = useCallback(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
@@ -651,10 +660,14 @@ function useNodeResizing(id: string): boolean {
 
   return node.resizing ?? false;
 }
-function useNodeDimensions(snapGrid: SnapGrid, id: string, shape: DMNDI15__DMNShape): RF.Dimensions {
+function useNodeDimensions(type: NodeType, snapGrid: SnapGrid, id: string, shape: DMNDI15__DMNShape): RF.Dimensions {
   const node = RF.useStore((s) => s.nodeInternals.get(id));
   if (!node) {
     throw new Error("Can't use nodeInternals of non-existent node " + id);
+  }
+
+  if (type === NODE_TYPES.decisionService && shape["@_isCollapsed"]) {
+    return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
   }
 
   return {

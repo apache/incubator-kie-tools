@@ -6,7 +6,7 @@ import {
 import { useCallback, useMemo } from "react";
 import * as RF from "reactflow";
 import { NODE_LAYERS, useDmnEditorStore } from "./Store";
-import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { EdgeType } from "../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
@@ -261,6 +261,12 @@ export function useDiagramData() {
         for (let i = 0; i < containedDecisions.length; i++) {
           parentIdsById.set(containedDecisions[i]["@_href"], data);
         }
+        if (shape["@_isCollapsed"]) {
+          newNode.style = {
+            ...newNode.style,
+            ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
+          };
+        }
       }
 
       nodesById.set(newNode.id, newNode);
@@ -309,9 +315,7 @@ export function useDiagramData() {
 
       if (localNodes[i].type === NODE_TYPES.group) {
         localNodes[i].zIndex = NODE_LAYERS.GROUP_NODE;
-      }
-
-      if (localNodes[i].type === NODE_TYPES.decisionService) {
+      } else if (localNodes[i].type === NODE_TYPES.decisionService) {
         localNodes[i].zIndex = NODE_LAYERS.DECISION_SERVICE_NODE;
       }
     }

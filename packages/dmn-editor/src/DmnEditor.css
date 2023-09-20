@@ -87,7 +87,26 @@
 .react-flow__node-node_group .react-flow__resize-control div {
   pointer-events: all !important;
 }
-.react-flow__node-node_decisionService .kie-dmn-editor--node-shape text {
+.kie-dmn-editor--decision-service-node {
+  position: relative;
+}
+.react-flow__node-node_decisionService.selected .kie-dmn-editor--decision-service-collapsed-button {
+  border-color: #006ba4 !important;
+}
+.kie-dmn-editor--decision-service-node .kie-dmn-editor--decision-service-collapsed-button {
+  border: 3px;
+  border-style: solid;
+  border-color: black;
+  font-weight: bold;
+  position: absolute;
+  width: 24px;
+  height: 25px;
+  font-size: 24px;
+  text-align: center;
+  bottom: 4px;
+  line-height: 21px;
+}
+.react-flow__node-node_decisionService .kie-dmn-editor--node-shape .kie-dmn-editor--decision-service-label {
   font-family: system-ui;
   font-size: 0.6em;
   letter-spacing: 8px;
@@ -546,7 +565,12 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .react-flow__node.selected {
   color: #006ba4 !important;
 }
-.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid ~ .kie-dmn-editor--node {
+.react-flow__node > .kie-dmn-editor--node-shape.drop-target-invalid ~ .kie-dmn-editor--node,
+.react-flow__node
+  > .kie-dmn-editor--node-shape.drop-target-invalid
+  ~ .kie-dmn-editor--node
+  .kie-dmn-editor--decision-service-collapsed-button {
+  border-color: red !important;
   color: red !important;
   opacity: 0.4;
 }
