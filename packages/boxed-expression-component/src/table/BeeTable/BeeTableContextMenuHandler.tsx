@@ -31,9 +31,9 @@ import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { BeeTableContextMenuAllowedOperationsConditions, BeeTableOperation, BeeTableOperationConfig } from "../../api";
-import { useCustomContextMenuHandler } from "../../contextMenu/Hooks";
+import { useCustomContextMenuHandler } from "../../contextMenu";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import "./BeeTableContextMenuHandler.css";
@@ -71,8 +71,6 @@ export enum InsertRowColumnsDirection {
   BelowOrLeft,
 }
 
-const ROOT_MENU_ID = "beeTableContextMenuRoot";
-
 /** The maximum numbers of rows or columns that can be inserted from the Insert menu. */
 const MAXIMUM_ROWS_COLUMNS_PER_INSERTION = 500;
 
@@ -96,34 +94,62 @@ export function BeeTableContextMenuHandler({
   const [menuDrilledIn, setMenuDrilledIn] = useState<string[]>([]);
   const [drillDownPath, setDrillDownPath] = useState<string[]>([]);
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
-  const [activeMenu, setActiveMenu] = useState(ROOT_MENU_ID);
+
   const [direction, setDirection] = useState(InsertRowColumnsDirection.AboveOrRight);
   const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number | "">(
     DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION
   );
 
+  const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
+
+  const menuId = "menu-" + activeCell?.columnIndex + "-" + activeCell?.rowIndex;
+  const [lastActiveMenu, setLastActiveMenu] = useState("");
+  const [lastRootMenuId, setLastRootMenuId] = useState(menuId);
+
+  const activeMenuId = useMemo(() => {
+    if (menuId !== lastRootMenuId) {
+      return menuId;
+    } else {
+      return lastActiveMenu;
+    }
+  }, [lastActiveMenu, lastRootMenuId, menuId]);
+
+  const rootMenuId = useMemo(() => {
+    if (menuId !== lastRootMenuId) {
+      return menuId;
+    }
+    return lastRootMenuId;
+  }, [lastRootMenuId, menuId]);
+
+  useEffect(() => {
+    // If menuId changes it means that user clicked in another cell, so we have to close the currently open
+    // context menu in order to force it to be reopened with the correct options for the new cell
+    setCurrentlyOpenContextMenu(undefined);
+  }, [menuId, setCurrentlyOpenContextMenu]);
+
   const drillIn = useCallback((_event, fromMenuId, toMenuId, pathId) => {
     setMenuDrilledIn((prev) => [...prev, fromMenuId]);
     setDrillDownPath((prev) => [...prev, pathId]);
-    setActiveMenu(toMenuId);
+    setLastActiveMenu(toMenuId);
   }, []);
 
   const drillOut = useCallback((_event, toMenuId) => {
     setMenuDrilledIn((prev) => prev.slice(0, prev.length - 1));
     setDrillDownPath((prev) => prev.slice(0, prev.length - 1));
-    setActiveMenu(toMenuId);
+    setLastActiveMenu(toMenuId);
   }, []);
 
-  const setMenuHeight = useCallback((menuId: string, height: number) => {
-    setMenuHeights((prev) => {
-      if (prev[menuId] === undefined || (menuId !== ROOT_MENU_ID && prev[menuId] !== height)) {
-        return { ...prev, [menuId]: height };
-      }
-      return prev;
-    });
-  }, []);
-
-  const { activeCell, selectionStart, selectionEnd } = useBeeTableSelection();
+  const setMenuHeight = useCallback(
+    (menuId: string, height: number) => {
+      setMenuHeights((prev) => {
+        if (prev[menuId] === undefined || (menuId !== rootMenuId && prev[menuId] !== height)) {
+          return { ...prev, [menuId]: height };
+        }
+        return prev;
+      });
+    },
+    [rootMenuId]
+  );
 
   const selection: BeeTableSelection = useMemo(() => {
     return {
@@ -184,7 +210,7 @@ export function BeeTableContextMenuHandler({
   }, [activeCell, column?.groupType, operationConfig]);
 
   const allOperations = useMemo(() => {
-    return operationGroups.flatMap(({ group, items }) => items);
+    return operationGroups.flatMap(({ items }) => items);
   }, [operationGroups]);
 
   const operationLabel = useCallback(
@@ -367,21 +393,21 @@ export function BeeTableContextMenuHandler({
     ]
   );
 
-  const onMinus = () => {
+  const onMinus = useCallback(() => {
     const newValue = (insertMultipleRowColumnsValue || 0) - 1;
     setInsertMultipleRowColumnsValue(newValue);
-  };
+  }, [insertMultipleRowColumnsValue]);
 
-  const onChange = (event: React.FormEvent<HTMLInputElement>) => {
+  const onChange = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const value = (event.target as HTMLInputElement).value;
     const intValue = Math.abs(parseInt(value));
     setInsertMultipleRowColumnsValue(intValue === 0 ? 1 : Math.min(intValue, MAXIMUM_ROWS_COLUMNS_PER_INSERTION));
-  };
+  }, []);
 
-  const onPlus = () => {
+  const onPlus = useCallback(() => {
     const newValue = (insertMultipleRowColumnsValue || 0) + 1;
     setInsertMultipleRowColumnsValue(newValue);
-  };
+  }, [insertMultipleRowColumnsValue]);
 
   const insertRowColumnsNumberInput = useMemo(() => {
     return (
@@ -406,19 +432,19 @@ export function BeeTableContextMenuHandler({
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
 
-  function resetDrillDownMenu() {
+  const resetDrillDownMenu = useCallback(() => {
     setMenuDrilledIn([]);
     setDrillDownPath([]);
     setMenuHeights({});
-    setActiveMenu(ROOT_MENU_ID);
+    setLastActiveMenu(rootMenuId);
     setInsertMultipleRowColumnsValue(DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION);
-  }
+  }, [rootMenuId]);
 
   useEffect(() => {
     if (!isOpen) {
       resetDrillDownMenu();
     }
-  }, [isOpen]);
+  }, [isOpen, resetDrillDownMenu]);
 
   const style = useMemo(() => {
     return {
@@ -430,7 +456,7 @@ export function BeeTableContextMenuHandler({
   useLayoutEffect(() => {
     if (contextMenuContainerDiv.current) {
       const bounds = contextMenuContainerDiv.current.getBoundingClientRect();
-      const contextMenuHeight = menuHeights[activeMenu];
+      const contextMenuHeight = menuHeights[activeMenuId];
       const availableHeight = document.documentElement.clientHeight;
       if (contextMenuHeight <= availableHeight && contextMenuHeight + yPos > availableHeight) {
         const offset = contextMenuHeight + yPos - availableHeight;
@@ -608,20 +634,20 @@ export function BeeTableContextMenuHandler({
           <Menu
             ouiaId="expression-table-context-menu"
             className="table-context-menu"
-            id={ROOT_MENU_ID}
+            id={rootMenuId}
             containsDrilldown={true}
             onDrillIn={drillIn}
             onDrillOut={drillOut}
-            activeMenu={activeMenu}
+            activeMenu={activeMenuId}
             onGetMenuHeight={setMenuHeight}
             drilldownItemPath={drillDownPath}
             drilledInMenus={menuDrilledIn}
           >
-            <MenuContent menuHeight={`${menuHeights[activeMenu]}px`}>
+            <MenuContent menuHeight={`${menuHeights[activeMenuId]}px`}>
               {hasAllowedOperations &&
                 operationGroups.map(({ group, items }) => (
                   <React.Fragment key={group}>
-                    {activeMenu === ROOT_MENU_ID
+                    {activeMenuId === rootMenuId
                       ? createMenuGroup(items, group, buildMenuList(items, group))
                       : buildMenuList(items, group)}
                   </React.Fragment>

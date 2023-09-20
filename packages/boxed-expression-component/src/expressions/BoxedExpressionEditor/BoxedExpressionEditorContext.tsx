@@ -22,7 +22,6 @@ import { useContext, useMemo } from "react";
 import { BeeGwtService, DmnDataType, ExpressionDefinition, PmmlParam } from "../../api";
 import { useRef, useState } from "react";
 import "./BoxedExpressionEditorContext.css";
-import * as _ from "lodash";
 import { BoxedExpressionEditorProps } from "./BoxedExpressionEditor";
 
 export interface BoxedExpressionEditorContextType {
