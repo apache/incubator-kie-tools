@@ -39,9 +39,6 @@ public class MainEntryPoint {
     @Inject
     private WorkbenchEntryPoint workbenchEntryPoint;
 
-    //@Inject
-    //private FileExportProducer fileExportProducer;
-
     @GWT3EntryPoint
     public void onModuleLoad() {
         DomGlobal.console.log("init SWDiagramEditor");

@@ -40,12 +40,6 @@
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
     <dependency>

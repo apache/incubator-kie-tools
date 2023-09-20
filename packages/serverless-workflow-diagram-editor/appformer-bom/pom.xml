@@ -241,12 +241,6 @@
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>uberfire-workbench-processors</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
       <!-- 3rd-party dependencies -->
       <dependency>
         <groupId>javax.enterprise</groupId>

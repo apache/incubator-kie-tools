@@ -138,12 +138,6 @@
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- UberFire Kogito dependencies -->
     <dependency>
       <groupId>com.google.elemental2</groupId>
@@ -288,10 +282,8 @@
         </executions>
         <configuration>
           <incrementalEnabled>true</incrementalEnabled>
-<!--
-          <incremental>true</incremental>
--->
-          <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
+          <webappDirectory>${project.build.directory}/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor</webappDirectory>
+          <initialScriptFilename>org.kie.workbench.common.stunner.sw.KogitoSWEditor.nocache.js</initialScriptFilename>
           <compilationLevel>BUNDLE_JAR</compilationLevel>
         </configuration>
       </plugin>
