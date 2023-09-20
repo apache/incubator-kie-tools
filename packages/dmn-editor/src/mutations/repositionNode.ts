@@ -11,11 +11,15 @@ import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServic
 
 export function repositionNode({
   definitions,
-  edgeIndexesAlreadyUpdated,
+  controlWaypointsByEdge,
   change,
 }: {
+  /**
+   * This will keep track of all waypoints that were updated, in the case where multiple nodes move together.
+   * This will make sure we only move edges once, even though they might be source/target edges for multiple nodes.
+   */
+  controlWaypointsByEdge: Map<number, Set<number>>;
   definitions: DMN15__tDefinitions;
-  edgeIndexesAlreadyUpdated: Set<number>;
   change: {
     nodeType: NodeType;
     shapeIndex: number;
@@ -59,12 +63,6 @@ export function repositionNode({
 
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
-      if (edgeIndexesAlreadyUpdated.has(edgeIndex)) {
-        continue;
-      }
-
-      edgeIndexesAlreadyUpdated.add(edgeIndex);
-
       const edge = diagramElements[edgeIndex] as DMNDI15__DMNEdge | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("Cannot reposition non-existent edge");
@@ -72,16 +70,25 @@ export function repositionNode({
 
       const isEdgeSelected = change.selectedEdges.indexOf(edge["@_dmnElementRef"]!) >= 0;
 
-      const waypoints = switchExpression(args.waypoint, {
+      const waypointIndexes = switchExpression(args.waypoint, {
         first: isEdgeSelected
-          ? [...edge["di:waypoint"]].slice(0, -1) // All except last element
-          : [edge["di:waypoint"][0]],
+          ? arrayRange(0, edge["di:waypoint"].length - 2) // All except last element
+          : [0],
         last: isEdgeSelected
-          ? [...edge["di:waypoint"]].slice(1, edge["di:waypoint"].length) // All except first element
-          : [edge["di:waypoint"][edge["di:waypoint"].length - 1]],
+          ? arrayRange(1, edge["di:waypoint"].length - 1) // All except first element
+          : [edge["di:waypoint"].length - 1],
       });
 
-      for (const w of waypoints) {
+      controlWaypointsByEdge.set(edgeIndex, controlWaypointsByEdge.get(edgeIndex) ?? new Set());
+      for (const wi of waypointIndexes) {
+        const waypointsControl = controlWaypointsByEdge.get(edgeIndex)!;
+        if (waypointsControl.has(wi)) {
+          continue;
+        } else {
+          waypointsControl.add(wi);
+        }
+
+        const w = edge["di:waypoint"][wi];
         w["@_x"] += deltaX;
         w["@_y"] += deltaY;
       }
@@ -112,4 +119,8 @@ export function repositionNode({
       y: shapeBounds["@_y"],
     },
   };
+}
+
+function arrayRange(start: number, stop: number, step = 1) {
+  return Array.from({ length: (stop - start) / step + 1 }, (_, index) => start + index * step);
 }

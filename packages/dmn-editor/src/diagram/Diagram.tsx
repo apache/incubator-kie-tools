@@ -413,7 +413,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
 
       dmnEditorStoreApi.setState((state) => {
-        const edgeIndexesAlreadyUpdated = new Set<number>();
+        const controlWaypointsByEdge = new Map<number, Set<number>>();
+
         for (const change of changes) {
           switch (change.type) {
             case "add":
@@ -454,7 +455,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 const node = nodesById.get(change.id)!;
                 const { delta } = repositionNode({
                   definitions: state.dmn.model.definitions,
-                  edgeIndexesAlreadyUpdated,
+                  controlWaypointsByEdge,
                   change: {
                     type: "absolute",
                     nodeType: node.type as NodeType,
@@ -488,7 +489,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                     );
                     repositionNode({
                       definitions: state.dmn.model.definitions,
-                      edgeIndexesAlreadyUpdated,
+                      controlWaypointsByEdge,
                       change: {
                         type: "absolute",
                         nodeType: nestedNode.type as NodeType,
