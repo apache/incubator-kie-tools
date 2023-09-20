@@ -104,6 +104,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                 return (
                   <DecisionServiceProperties
                     decisionService={node.data!.dmnObject as DMN15__tDecisionService}
+                    decisionServiceNamespace={node.data.dmnObjectNamespace}
                     index={node.data.index}
                   />
                 );

@@ -49,7 +49,7 @@ export type NodeDmnObjects =
   | DMN15__tTextAnnotation;
 
 export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
-  dmnObjectNamespace: string;
+  dmnObjectNamespace: string | undefined;
   dmnObjectQName: XmlQName;
   dmnObject: T;
   shape: DMNDI15__DMNShape & { index: number };

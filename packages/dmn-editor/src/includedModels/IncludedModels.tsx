@@ -18,9 +18,9 @@ import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gal
 import { addIncludedModel } from "../mutations/addIncludedModel";
 import { deleteIncludedModel } from "../mutations/deleteIncludedModel";
 import { SPEC } from "../Spec";
-import { useDmnEditorDependencies } from "./DmnEditorDependenciesContext";
+import { useOtherDmns } from "./DmnEditorDependenciesContext";
 import { dirname, basename } from "path";
-import { DmnDependency } from "../DmnEditor";
+import { OtherDmn } from "../DmnEditor";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DmnModel } from "@kie-tools/dmn-marshaller";
@@ -31,8 +31,7 @@ export function IncludedModels() {
 
   const { includedModelsContextDescription } = useDmnEditor();
   const { importsByNamespace } = useDmnEditorDerivedStore();
-  const { dependenciesByNamespace, onRequestModelsAvailableToInclude, onRequestModelByPath } =
-    useDmnEditorDependencies();
+  const { otherDmnsByNamespace, onRequestOtherDmnsAvailableToInclude, onRequestOtherDmnByPath } = useOtherDmns();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModelSelectOpen, setModelSelectOpen] = useState(false);
@@ -46,15 +45,15 @@ export function IncludedModels() {
       return;
     }
 
-    // FIXME: Tiago --> Handle `onRequestModelByPath` not being available.
-    onRequestModelByPath?.(selectedPath).then((m) => {
+    // FIXME: Tiago --> Handle `onRequestOtherDmnByPath` not being available.
+    onRequestOtherDmnByPath?.(selectedPath).then((m) => {
       if (m) {
         setSelectedModel(m);
       } else {
         // FIXME: Tiago --> Handle error.
       }
     });
-  }, [onRequestModelByPath, selectedPath]);
+  }, [onRequestOtherDmnByPath, selectedPath]);
 
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -100,27 +99,26 @@ export function IncludedModels() {
   // FIXME: Tiago --> Use `useCancellableEffect`
   const [modelPaths, setModelPaths] = useState<string[]>([]);
   useEffect(() => {
-    // FIXME: Tiago --> Handle `onRequestModelsAvailableToInclude` not being available.
-    onRequestModelsAvailableToInclude?.().then((m) => {
+    // FIXME: Tiago --> Handle `onRequestOtherDmnsAvailableToInclude` not being available.
+    onRequestOtherDmnsAvailableToInclude?.().then((m) => {
       setModelPaths(m);
     });
-  }, [isModelSelectOpen, onRequestModelsAvailableToInclude]);
+  }, [isModelSelectOpen, onRequestOtherDmnsAvailableToInclude]);
 
-  const dependenciesByPath = useMemo(
-    () =>
-      Object.values(dependenciesByNamespace).reduce((acc, d) => acc.set(d!.path, d!), new Map<string, DmnDependency>()),
-    [dependenciesByNamespace]
+  const otherDmnsByPath = useMemo(
+    () => Object.values(otherDmnsByNamespace).reduce((acc, d) => acc.set(d!.path, d!), new Map<string, OtherDmn>()),
+    [otherDmnsByNamespace]
   );
 
   const modelPathsNotYetIncluded = useMemo(
     () =>
       modelPaths.filter((path) => {
-        // If dependency does not exist, or there's no existing import with this
+        // If otherDmn does not exist, or there's no existing import with this
         // namespace, it can be listed as available for including.
-        const dependency = dependenciesByPath.get(path);
-        return !dependency || !importsByNamespace.get(dependency.model.definitions["@_namespace"]);
+        const otherDmn = otherDmnsByPath.get(path);
+        return !otherDmn || !importsByNamespace.get(otherDmn.model.definitions["@_namespace"]);
       }),
-    [dependenciesByPath, importsByNamespace, modelPaths]
+    [otherDmnsByPath, importsByNamespace, modelPaths]
   );
 
   return (
@@ -207,19 +205,19 @@ export function IncludedModels() {
           <br />
           <Gallery hasGutter={true}>
             {imports.flatMap((i, index) => {
-              const dependency = dependenciesByNamespace[i["@_namespace"]];
-              if (!dependency) {
+              const otherDmn = otherDmnsByNamespace[i["@_namespace"]];
+              if (!otherDmn) {
                 return []; // Ignore
               }
 
               return (
                 <Card key={i["@_name"]} isCompact={false}>
                   <CardHeader>
-                    <CardTitle>{`${dependency.model.definitions["@_name"]} (${i["@_name"]})`}</CardTitle>
+                    <CardTitle>{`${otherDmn.model.definitions["@_name"]} (${i["@_name"]})`}</CardTitle>
                   </CardHeader>
                   <CardBody>
                     <small>
-                      <i>{dependency.path ?? "WARNING: Path couldn't be determined."}</i>
+                      <i>{otherDmn.path ?? "WARNING: Path couldn't be determined."}</i>
                     </small>
                   </CardBody>
                   <CardFooter>

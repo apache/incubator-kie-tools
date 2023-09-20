@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
-import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
+import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { NodeIcon } from "../icons/Icons";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -18,6 +18,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
+import { DmnObjectListItem } from "./DmnObjectListItem";
 
 export type ExternalNode = {
   externalDrgElementNamespace: string;
@@ -28,9 +29,9 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
   "kie-dmn-editor--external-node-from-included-models";
 
 export function ExternalNodesPanel() {
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { dependenciesByNamespace } = useDmnEditorDependencies();
+  const { otherDmnsByNamespace } = useOtherDmns();
   const { dmnShapesByHref } = useDmnEditorDerivedStore();
 
   const onDragStart = useCallback((event: React.DragEvent, externalNode: ExternalNode) => {
@@ -43,7 +44,7 @@ export function ExternalNodesPanel() {
 
   return (
     <>
-      {(dmn.model.definitions.import ?? []).length === 0 && (
+      {(thisDmn.model.definitions.import ?? []).length === 0 && (
         <>
           <EmptyState>
             <EmptyStateIcon icon={CubesIcon} />
@@ -69,35 +70,34 @@ export function ExternalNodesPanel() {
           </EmptyState>
         </>
       )}
-      {(dmn.model.definitions.import ?? []).flatMap((i) => {
-        const definitions = dependenciesByNamespace[i["@_namespace"]]?.model.definitions;
-        if (!definitions) {
+      {(thisDmn.model.definitions.import ?? []).flatMap((i) => {
+        const otherDmnDefinitions = otherDmnsByNamespace[i["@_namespace"]]?.model.definitions;
+        if (!otherDmnDefinitions) {
           console.warn(
             `DMN DIAGRAM: Can't determine External Nodes for model with namespace '${i["@_namespace"]}' because it doesn't exist on the dependencies object'.`
           );
           return [];
         } else {
           return (
-            <div key={definitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
+            <div key={otherDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
               <div className={"kie-dmn-editor--external-nodes-section-title"}>
-                <b>{`${definitions["@_name"]}`}</b> {`(${i["@_name"]})`}
+                <b>{`${otherDmnDefinitions["@_name"]}`}</b> {`(${i["@_name"]})`}
                 <small>
                   <i>
-                    <Truncate content={dependenciesByNamespace[i["@_namespace"]]?.path ?? ""} />
+                    <Truncate content={otherDmnsByNamespace[i["@_namespace"]]?.path ?? ""} />
                   </i>
                 </small>
               </div>
-              {definitions.drgElement?.map((e) => {
-                const Icon = NodeIcon(getNodeTypeFromDmnObject(e));
+              {otherDmnDefinitions.drgElement?.map((dmnObject) => {
                 return (
                   <div
-                    key={e["@_id"]}
+                    key={dmnObject["@_id"]}
                     className={"kie-dmn-editor--external-nodes-list-item"}
                     draggable={true}
                     onDragStart={(event) =>
                       onDragStart(event, {
                         externalDrgElementNamespace: i["@_namespace"],
-                        externalDrgElementId: e["@_id"]!,
+                        externalDrgElementId: dmnObject["@_id"]!,
                       })
                     }
                   >
@@ -106,18 +106,13 @@ export function ExternalNodesPanel() {
                       justifyContent={{ default: "justifyContentFlexStart" }}
                       spaceItems={{ default: "spaceItemsNone" }}
                     >
-                      <div style={{ width: "40px", height: "40px", marginRight: 0 }}>
-                        <Icon />
-                      </div>
-                      <div>{`${e["@_name"]}`}</div>
-                      <div>
-                        {e.__$$element !== "knowledgeSource" ? (
-                          <DataTypeLabel typeRef={e.variable?.["@_typeRef"]} namespace={i["@_namespace"]} />
-                        ) : (
-                          <></>
-                        )}
-                      </div>
-                      {dmnShapesByHref.has(buildXmlHref({ namespace: i["@_namespace"], id: e["@_id"]! })) ? (
+                      <DmnObjectListItem
+                        dmnObjectHref={buildXmlHref({ namespace: i["@_namespace"], id: dmnObject["@_id"]! })}
+                        dmnObject={dmnObject}
+                        namespace={i["@_namespace"]}
+                        relativeToNamespace={i["@_namespace"]}
+                      />
+                      {dmnShapesByHref.has(buildXmlHref({ namespace: i["@_namespace"], id: dmnObject["@_id"]! })) ? (
                         <small>
                           <div>&nbsp;&nbsp;✓</div>
                         </small>

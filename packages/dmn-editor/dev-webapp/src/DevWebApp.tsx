@@ -103,18 +103,18 @@ export function DevWebApp() {
     });
   }, []);
 
-  const dependenciesByNamespace = useMemo<DmnEditor.DependenciesByNamespace>(() => {
+  const otherDmnsByNamespace = useMemo<DmnEditor.OtherDmnsByNamespace>(() => {
     return (currentModel.definitions.import ?? []).reduce((acc, i) => {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
       return acc;
-    }, {} as DmnEditor.DependenciesByNamespace);
+    }, {} as DmnEditor.OtherDmnsByNamespace);
   }, [currentModel.definitions.import]);
 
-  const onRequestModelByPath = useCallback<DmnEditor.OnRequestModelByPath>(async (path) => {
+  const onRequestOtherDmnByPath = useCallback<DmnEditor.onRequestOtherDmnByPath>(async (path) => {
     return avaiableModelsByPath[path] ?? null;
   }, []);
 
-  const onRequestModelsAvailableToInclude = useCallback<DmnEditor.OnRequestModelsAvailableToInclude>(async () => {
+  const onRequestOtherDmnsAvailableToInclude = useCallback<DmnEditor.onRequestOtherDmnsAvailableToInclude>(async () => {
     return Object.keys(avaiableModelsByPath);
   }, []);
 
@@ -158,9 +158,9 @@ export function DevWebApp() {
             marshaller={state.marshaller}
             model={currentModel}
             onModelChange={onModelChange}
-            onRequestModelByPath={onRequestModelByPath}
-            onRequestModelsAvailableToInclude={onRequestModelsAvailableToInclude}
-            dependenciesByNamespace={dependenciesByNamespace}
+            onRequestOtherDmnByPath={onRequestOtherDmnByPath}
+            onRequestOtherDmnsAvailableToInclude={onRequestOtherDmnsAvailableToInclude}
+            otherDmnsByNamespace={otherDmnsByNamespace}
             validationMessages={validationMessages}
             evaluationResults={evaluationResults}
             includedModelsContextName={`Dev webapp`}

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { DmnBuiltInDataType, DmnDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
-import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
+import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditorStore } from "../store/Store";
 
@@ -10,9 +10,9 @@ export type DmnEditorDataTypeReference = DmnDataType & {
 };
 
 export function useDataTypes() {
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
-  const { dependenciesByNamespace } = useDmnEditorDependencies();
+  const { otherDmnsByNamespace } = useOtherDmns();
 
   const builtInDataTypes = useMemo<DmnEditorDataTypeReference[]>(
     () =>
@@ -27,13 +27,13 @@ export function useDataTypes() {
 
   const customDataTypes = useMemo<DmnEditorDataTypeReference[]>(
     () =>
-      (dmn.model.definitions.itemDefinition ?? []).map((item) => ({
+      (thisDmn.model.definitions.itemDefinition ?? []).map((item) => ({
         isCustom: true,
         typeRef: item.typeRef!,
         name: item["@_name"],
-        namespace: dmn.model.definitions["@_namespace"],
+        namespace: thisDmn.model.definitions["@_namespace"],
       })),
-    [dmn.model.definitions]
+    [thisDmn.model.definitions]
   );
 
   // Data Types are not transitively imported, but there can be references to 2nd degree dependencies for external data types on
@@ -42,16 +42,16 @@ export function useDataTypes() {
   // dependencies by their namespace. If `dmn.model.definitions` imports such namespace, we can use the local namespace declaration
   // to refer to it.
   const externalDataTypes = useMemo<DmnEditorDataTypeReference[]>(() => {
-    return (dmn.model.definitions.import ?? []).flatMap((_import) => {
-      const dependency = dependenciesByNamespace[_import["@_namespace"]];
-      if (!dependency) {
+    return (thisDmn.model.definitions.import ?? []).flatMap((_import) => {
+      const otherDmn = otherDmnsByNamespace[_import["@_namespace"]];
+      if (!otherDmn) {
         console.warn(
           `DMN DIAGRAM: Can't determine External Data Types for model with namespace '${_import["@_namespace"]}' because it doesn't exist on the dependencies object'.`
         );
         return [];
       }
 
-      return (dependency.model.definitions.itemDefinition ?? []).map((item) => ({
+      return (otherDmn.model.definitions.itemDefinition ?? []).map((item) => ({
         isCustom: true,
         typeRef: item.itemComponent
           ? (undefined as any) //FIXME: Tiago --> The `DmnDataType` interface is very limited...
@@ -68,7 +68,7 @@ export function useDataTypes() {
         namespace: _import["@_namespace"],
       }));
     });
-  }, [dependenciesByNamespace, dmn.model.definitions.import, importsByNamespace]);
+  }, [otherDmnsByNamespace, thisDmn.model.definitions.import, importsByNamespace]);
 
   return useMemo(() => {
     return {

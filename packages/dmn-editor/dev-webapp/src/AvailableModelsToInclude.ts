@@ -13,4 +13,4 @@ export const avaiableModelsByPath: Record<string, DmnModel> = {
 export const modelsByNamespace = Object.entries(avaiableModelsByPath).reduce((acc, [k, v]) => {
   acc[v.definitions["@_namespace"]] = { model: v, svg: "", path: k };
   return acc;
-}, {} as DmnEditor.DependenciesByNamespace);
+}, {} as DmnEditor.OtherDmnsByNamespace);

@@ -13,5 +13,9 @@ export function getXmlNamespaceName({
     return undefined;
   }
 
+  if (xmlnsEntry[0] === "@_xmlns") {
+    return undefined;
+  }
+
   return parseXmlQName(xmlnsEntry[0]).localPart;
 }

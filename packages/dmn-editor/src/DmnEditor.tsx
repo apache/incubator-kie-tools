@@ -28,7 +28,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
-import { DmnEditorDependenciesContextProvider } from "./includedModels/DmnEditorDependenciesContext";
+import { DmnEditorOtherDmnsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 import { DmnMarshaller, DmnModel } from "@kie-tools/dmn-marshaller";
@@ -41,13 +41,13 @@ export type DmnEditorRef = {
   reset: (mode: DmnModel) => void;
 };
 
-export type DependenciesByNamespace = Record<string, DmnDependency | undefined>;
+export type OtherDmnsByNamespace = Record<string, OtherDmn | undefined>;
 export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
-export type OnRequestModelsAvailableToInclude = () => Promise<string[]>;
-export type OnRequestModelByPath = (path: string) => Promise<DmnModel | null>;
+export type onRequestOtherDmnsAvailableToInclude = () => Promise<string[]>;
+export type onRequestOtherDmnByPath = (path: string) => Promise<DmnModel | null>;
 export type OnDmnModelChange = (model: DmnModel) => void;
-export type DmnDependency = {
+export type OtherDmn = {
   model: DmnModel;
   path: string;
   svg: string;
@@ -69,16 +69,16 @@ export type DmnEditorProps = {
   /**
    * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
    */
-  onRequestModelByPath?: OnRequestModelByPath;
+  onRequestOtherDmnByPath?: onRequestOtherDmnByPath;
   /**
-   * Called when the list of available models to be included is needed. Used by the "Included models" tab.
+   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
    */
-  onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
+  onRequestOtherDmnsAvailableToInclude?: onRequestOtherDmnsAvailableToInclude;
   /**
-   * When the DMN represented by `model` contains `import`ed models, this prop needs to map their contents by namespace.
+   * When the DMN represented by `model` ("This DMN") contains `import`ed models, this prop needs to map their contents by namespace.
    * The DMN model won't be correctly rendered if an included model is not found on this object.
    */
-  dependenciesByNamespace: DependenciesByNamespace;
+  otherDmnsByNamespace: OtherDmnsByNamespace;
   /**
    * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
@@ -268,13 +268,13 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   return (
     <DmnEditorContextProvider {...props}>
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
-        <DmnEditorDependenciesContextProvider {...props}>
+        <DmnEditorOtherDmnsContextProvider {...props}>
           <DmnEditorStoreApiContext.Provider value={storeRef.current}>
             <DmnEditorDerivedStoreContextProvider>
               <DmnEditorInternal forwardRef={ref} {...props} />
             </DmnEditorDerivedStoreContextProvider>
           </DmnEditorStoreApiContext.Provider>
-        </DmnEditorDependenciesContextProvider>
+        </DmnEditorOtherDmnsContextProvider>
       </ErrorBoundary>
     </DmnEditorContextProvider>
   );

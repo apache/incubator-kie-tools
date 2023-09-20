@@ -18,7 +18,7 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
     ...(decisionService.encapsulatedDecision ?? []).map((s) => s["@_href"]),
   ]);
 
-  const requirements = new Array<{ id: string; type: "decisionIr" | "inputDataIr" }>();
+  const requirements = new Array<{ href: string; type: "decisionIr" | "inputDataIr" }>();
   for (let i = 0; i < definitions.drgElement!.length; i++) {
     const drgElement = definitions.drgElement![i];
     if (!hrefsToDecisionsInsideDecisionService.has(`#${drgElement["@_id"]}`) || drgElement.__$$element !== "decision") {
@@ -27,9 +27,9 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
 
     (drgElement.informationRequirement ?? []).flatMap((ir) => {
       if (ir.requiredDecision) {
-        requirements.push({ id: ir.requiredDecision["@_href"], type: "decisionIr" });
+        requirements.push({ href: ir.requiredDecision["@_href"], type: "decisionIr" });
       } else if (ir.requiredInput) {
-        requirements.push({ id: ir.requiredInput["@_href"], type: "inputDataIr" });
+        requirements.push({ href: ir.requiredInput["@_href"], type: "inputDataIr" });
       }
     });
   }
@@ -41,16 +41,16 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   for (let i = 0; i < requirementsArray.length; i++) {
     const r = requirementsArray[i];
     if (r.type === "inputDataIr") {
-      inputDatas.add(r.id);
+      inputDatas.add(r.href);
     } else if (r.type === "decisionIr") {
-      inputDecisions.add(r.id);
+      inputDecisions.add(r.href);
     } else {
       throw new Error(`Invalid type of element to be referenced by DecisionService: '${r.type}'`);
     }
   }
 
-  decisionService.inputData = [...inputDatas].map((i) => ({ "@_href": `#${i}` }));
+  decisionService.inputData = [...inputDatas].map((iHref) => ({ "@_href": iHref }));
   decisionService.inputDecision = [...inputDecisions].flatMap(
-    (d) => (hrefsToDecisionsInsideDecisionService.has(`#${d}`) ? [] : { "@_href": `#${d}` }) // Makes sure output and encapsulated Decisions are not listed as inputDecisions
+    (dHref) => (hrefsToDecisionsInsideDecisionService.has(dHref) ? [] : { "@_href": dHref }) // Makes sure output and encapsulated Decisions are not listed as inputDecisions
   );
 }

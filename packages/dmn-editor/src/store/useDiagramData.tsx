@@ -13,7 +13,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
-import { useDmnEditorDependencies } from "../includedModels/DmnEditorDependenciesContext";
+import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { XmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../diagram/nodes/NodeSvgs";
@@ -76,7 +76,7 @@ export function useDiagramData() {
       };
     }, [diagram.drdIndex, dmn.model.definitions]);
 
-  const { dependenciesByNamespace } = useDmnEditorDependencies();
+  const { otherDmnsByNamespace } = useOtherDmns();
 
   const { nodes, edges, nodesById, edgesById } = useMemo(() => {
     // console.time("nodes");
@@ -236,7 +236,7 @@ export function useDiagramData() {
         return undefined;
       }
 
-      const dmnObjectNamespace = dmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`]!;
+      const dmnObjectNamespace = dmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`];
       const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
       const shape = dmnShapesByHref.get(id)!;
       const data: DmnDiagramNodeData = {
@@ -328,7 +328,7 @@ export function useDiagramData() {
       const shape = dmnShapesByHref.get(href)!;
       const namespace = dmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
       if (namespace) {
-        const externalDrgElements = dependenciesByNamespace[namespace]?.model.definitions.drgElement ?? [];
+        const externalDrgElements = otherDmnsByNamespace[namespace]?.model.definitions.drgElement ?? [];
         const index = externalDrgElements.findIndex((e) => e["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
         if (index < 0) {
           throw new Error("Can't find drgElement for shape with dmnElementRef " + shape["@_dmnElementRef"]);
@@ -370,7 +370,7 @@ export function useDiagramData() {
     dmnElementRefsForForShapesPointingToExternalDmnObjects,
     dmnEdgesByDmnElementRef,
     dmnShapesByHref,
-    dependenciesByNamespace,
+    otherDmnsByNamespace,
   ]);
 
   return {

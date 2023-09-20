@@ -34,7 +34,7 @@ export function DataTypeLabel({ typeRef, namespace }: { typeRef: string | undefi
           localPart: typeRef,
         })
       ),
-    });
+    }).full;
   }, [dmn.model.definitions, importsByNamespace, namespace, typeRef]);
 
   return (
