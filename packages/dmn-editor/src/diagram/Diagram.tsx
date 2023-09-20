@@ -72,32 +72,33 @@ const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration
 
 const DEFAULT_VIEWPORT = { x: 100, y: 0, zoom: 1 };
 
-export function Diagram({ container }: { container: React.RefObject<HTMLElement> }) {
-  const nodeTypes: Record<NodeType, any> = useMemo(
-    () => ({
-      [NODE_TYPES.decisionService]: DecisionServiceNode,
-      [NODE_TYPES.group]: GroupNode,
-      [NODE_TYPES.inputData]: InputDataNode,
-      [NODE_TYPES.decision]: DecisionNode,
-      [NODE_TYPES.bkm]: BkmNode,
-      [NODE_TYPES.knowledgeSource]: KnowledgeSourceNode,
-      [NODE_TYPES.textAnnotation]: TextAnnotationNode,
-    }),
-    []
-  );
+const nodeTypes: Record<NodeType, any> = {
+  [NODE_TYPES.decisionService]: DecisionServiceNode,
+  [NODE_TYPES.group]: GroupNode,
+  [NODE_TYPES.inputData]: InputDataNode,
+  [NODE_TYPES.decision]: DecisionNode,
+  [NODE_TYPES.bkm]: BkmNode,
+  [NODE_TYPES.knowledgeSource]: KnowledgeSourceNode,
+  [NODE_TYPES.textAnnotation]: TextAnnotationNode,
+};
 
-  const edgeTypes: Record<EdgeType, any> = useMemo(() => {
-    return {
-      [EDGE_TYPES.informationRequirement]: InformationRequirementEdge,
-      [EDGE_TYPES.authorityRequirement]: AuthorityRequirementEdge,
-      [EDGE_TYPES.knowledgeRequirement]: KnowledgeRequirementEdge,
-      [EDGE_TYPES.association]: AssociationEdge,
-    };
-  }, []);
+const edgeTypes: Record<EdgeType, any> = {
+  [EDGE_TYPES.informationRequirement]: InformationRequirementEdge,
+  [EDGE_TYPES.authorityRequirement]: AuthorityRequirementEdge,
+  [EDGE_TYPES.knowledgeRequirement]: KnowledgeRequirementEdge,
+  [EDGE_TYPES.association]: AssociationEdge,
+};
+
+export function Diagram({ container }: { container: React.RefObject<HTMLElement> }) {
+  // Contexts
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmn = useDmnEditorStore((s) => s.dmn);
+
+  const { dmnModelBeforeEditingRef } = useDmnEditor();
+
+  const { dependenciesByNamespace } = useDmnEditorDependencies();
 
   const {
     dmnShapesByHref,
@@ -110,8 +111,25 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     selectedNodeTypes,
   } = useDmnEditorDerivedStore();
 
+  // State
+
   const [reactFlowInstance, setReactFlowInstance] =
     useState<RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined>(undefined);
+
+  const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
+
+  // Refs
+
+  const nodeIdBeingDraggedRef = useRef<string | null>(null);
+
+  // Memos
+
+  const rfSnapGrid = useMemo<[number, number]>(
+    () => (diagram.snapGrid.isEnabled ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
+    [diagram.snapGrid.isEnabled, diagram.snapGrid.x, diagram.snapGrid.y]
+  );
+
+  // Callbacks
 
   const onConnect = useCallback<RF.OnConnect>(
     (connection) => {
@@ -169,6 +187,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         ),
     [reactFlowInstance]
   );
+
   const onDragOver = useCallback(
     (e: React.DragEvent) => {
       if (
@@ -205,8 +224,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     },
     [container, dmnEditorStoreApi, getFirstNodeFittingBounds, reactFlowInstance]
   );
-
-  const { dependenciesByNamespace } = useDmnEditorDependencies();
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
@@ -305,8 +322,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     },
     [container, dependenciesByNamespace, diagram.snapGrid, dmnEditorStoreApi, reactFlowInstance]
   );
-
-  const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
 
   const onConnectStart = useCallback<RF.OnConnectStart>((e, newConnection) => {
     console.debug("DMN DIAGRAM: `onConnectStart`");
@@ -523,8 +538,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [reactFlowInstance, dmnEditorStoreApi, nodesById, edges, dmnShapesByHref, diagram.snapGrid]
   );
 
-  const { dmnModelBeforeEditingRef } = useDmnEditor();
-
   const resetToBeforeEditingBegan = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
       state.dmn.model = dmnModelBeforeEditingRef.current;
@@ -535,8 +548,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       state.diagram.edgeIdBeingUpdated = undefined;
     });
   }, [dmnEditorStoreApi, dmnModelBeforeEditingRef]);
-
-  const nodeIdBeingDraggedRef = useRef<string | null>(null);
 
   const onNodeDrag = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData>) => {
@@ -660,11 +671,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       });
     },
     [dmnEditorStoreApi, edgesById]
-  );
-
-  const rfSnapGrid = useMemo<[number, number]>(
-    () => (diagram.snapGrid.isEnabled ? [diagram.snapGrid.x, diagram.snapGrid.y] : [1, 1]),
-    [diagram.snapGrid.isEnabled, diagram.snapGrid.x, diagram.snapGrid.y]
   );
 
   const onEdgesUpdate = useCallback<RF.OnEdgeUpdateFunc>(
