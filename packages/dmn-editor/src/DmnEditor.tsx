@@ -2,7 +2,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
@@ -17,7 +17,6 @@ import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel
 import {
   DmnEditorStoreApiContext,
   DmnEditorTab,
-  DmnModel,
   StoreApiType,
   createDmnEditorStore,
   defaultStaticState,
@@ -32,6 +31,7 @@ import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorDependenciesContextProvider } from "./includedModels/DmnEditorDependenciesContext";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
+import { DmnMarshaller, DmnModel } from "@kie-tools/dmn-marshaller";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
@@ -54,6 +54,10 @@ export type DmnDependency = {
 };
 
 export type DmnEditorProps = {
+  /**
+   * The marshaller instance used to create `model` from the XML string
+   * */
+  marshaller: DmnMarshaller;
   /**
    * The DMN itself.
    */
@@ -102,6 +106,7 @@ export type DmnEditorProps = {
 };
 
 export const DmnEditorInternal = ({
+  marshaller,
   model,
   onModelChange,
   forwardRef,
@@ -189,7 +194,7 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={<DiagramPropertiesPanel />}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                        <DmnVersionLabel version={"1.5"} /> {/** FIXME: Tiago --> This version is wrong. */}
+                        <DmnVersionLabel version={marshaller.version} />
                         <Diagram container={diagramContainerRef} />
                       </div>
                     </DrawerContentBody>
@@ -256,6 +261,7 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
     storeRef.current?.setState((state) => {
       state.diagram = defaultStaticState().diagram;
       state.dmn.model = args[0];
+      React;
     });
   }, []);
 
@@ -275,8 +281,8 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
 });
 
 export function usePrevious<T>(value: T) {
-  const [current, setCurrent] = React.useState<T>(value);
-  const [previous, setPrevious] = React.useState<T>(value);
+  const [current, setCurrent] = useState<T>(value);
+  const [previous, setPrevious] = useState<T>(value);
 
   if (value !== current) {
     setPrevious(current);

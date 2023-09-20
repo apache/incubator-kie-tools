@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useContext, useMemo, useRef } from "react";
-import { DmnModel } from "./store/Store";
 import { DmnEditorProps } from "./DmnEditor";
+import { DmnModel } from "@kie-tools/dmn-marshaller";
 
 export type DmnEditorContextProviderProps = Pick<
   DmnEditorProps,

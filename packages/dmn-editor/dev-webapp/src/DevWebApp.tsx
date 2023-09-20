@@ -8,7 +8,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 
 import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
 import * as DmnEditor from "../../src/DmnEditor";
-import { DmnDefinitions, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DmnMarshaller, DmnModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { SPEC } from "../../src/Spec";
@@ -62,7 +62,7 @@ export function DevWebApp() {
     });
   }, []);
 
-  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnDefinitions[]; pointer: number }>({
+  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnModel[]; pointer: number }>({
     marshaller: initialDmnMarshaller,
     stack: [initialDmnMarshaller.parser.parse()],
     pointer: 0,
@@ -155,6 +155,7 @@ export function DevWebApp() {
         <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
           <DmnEditor.DmnEditor
             ref={ref}
+            marshaller={state.marshaller}
             model={currentModel}
             onModelChange={onModelChange}
             onRequestModelByPath={onRequestModelByPath}

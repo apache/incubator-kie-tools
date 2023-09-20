@@ -1,6 +1,5 @@
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DmnModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { sumBkm, sumDiffDs } from "./OtherDmns";
-import { DmnModel } from "../../src/store/Store";
 import * as DmnEditor from "../../src/DmnEditor";
 
 export const sumBkmModel = getMarshaller(sumBkm).parser.parse();

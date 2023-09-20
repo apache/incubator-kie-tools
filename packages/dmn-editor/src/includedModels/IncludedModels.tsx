@@ -7,7 +7,7 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { DmnModel, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
@@ -23,6 +23,7 @@ import { dirname, basename } from "path";
 import { DmnDependency } from "../DmnEditor";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditor } from "../DmnEditorContext";
+import { DmnModel } from "@kie-tools/dmn-marshaller";
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();

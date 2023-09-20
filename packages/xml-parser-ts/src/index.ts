@@ -18,7 +18,9 @@
  */
 
 export type XmlParserTs<T extends object> = {
-  parse: (args: { xml: string | Buffer; domdoc?: Document; instanceNs?: Map<string, string> }) => {
+  parse: (
+    args: { type: "xml"; xml: string | Buffer } | { type: "domdoc"; domdoc: Document; instanceNs: Map<string, string> }
+  ) => {
     json: T;
     instanceNs: Map<string, string>;
   };
@@ -105,9 +107,9 @@ export function getParser<T extends object>(args: {
   root: Root;
 }): XmlParserTs<T> {
   return {
-    parse: ({ xml, domdoc, instanceNs }) => {
-      domdoc = domdoc ?? domParser.getDomDocument(xml);
-      instanceNs = instanceNs ?? getInstanceNs(domdoc);
+    parse: (parseArgs) => {
+      const domdoc = parseArgs.type === "domdoc" ? parseArgs.domdoc : domParser.getDomDocument(parseArgs.xml);
+      const instanceNs = parseArgs.type === "domdoc" ? parseArgs.instanceNs : getInstanceNs(domdoc);
 
       // console.time("parsing overhead took");
       const rootType = { [args.root.element]: { type: args.root.type, isArray: false } };

@@ -93,7 +93,7 @@ async function parseDeep(
 ): Promise<[string, XsdSchema][]> {
   const { xsdString } = await fetchXsdString(baseLocation, relativeLocation);
 
-  const { json: schema } = __XSD_PARSER.parse({ xml: xsdString });
+  const { json: schema } = __XSD_PARSER.parse({ type: "xml", xml: xsdString });
 
   const includePromises = (schema["xsd:schema"]["xsd:include"] ?? []).map((i) =>
     parseDeep(__XSD_PARSER, baseLocation, i["@_schemaLocation"])

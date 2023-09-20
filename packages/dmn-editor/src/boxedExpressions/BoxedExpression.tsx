@@ -30,7 +30,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import "@kie-tools/dmn-marshaller"; // This is here because of the KIE Extension for DMN.
+import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const dmn = useDmnEditorStore((s) => s.dmn);
