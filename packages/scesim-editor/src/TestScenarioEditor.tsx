@@ -52,6 +52,7 @@ import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 
 /* Constants */
 
@@ -272,6 +273,7 @@ function TestScenarioMainPanel({
 
   return (
     <>
+      <Alert variant="warning" title="Warning alert title" />
       <div className="kie-scesim-editor--content">
         <Tabs
           isFilled={true}

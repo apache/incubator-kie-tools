@@ -29,6 +29,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
+import TestScenarioDrawerDataObjectsPanel from "./TestScenarioDrawerDataObjectsPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
 
@@ -78,13 +79,7 @@ function TestScenarioDrawerPanel({
                 case TestScenarioEditorDock.CHEATSHEET:
                   return <>Scenario Cheatsheet</>;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return (
-                    <>
-                      {
-                        'To create a test scenario, define the "Given" and "Expect" columns by using the expression editor below.'
-                      }
-                    </>
-                  );
+                  return <TestScenarioDrawerDataObjectsPanel />;
                 case TestScenarioEditorDock.SETTINGS:
                   return (
                     <TestScenarioDrawerSettingsPanel
