@@ -292,7 +292,7 @@
           <incremental>true</incremental>
 -->
           <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
-          <compilationLevel>ADVANCED</compilationLevel>
+          <compilationLevel>BUNDLE_JAR</compilationLevel>
         </configuration>
       </plugin>
       <plugin>

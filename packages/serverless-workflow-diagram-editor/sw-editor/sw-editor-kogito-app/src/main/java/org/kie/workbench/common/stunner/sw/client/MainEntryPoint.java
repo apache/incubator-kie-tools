@@ -23,8 +23,6 @@ import elemental2.dom.DomGlobal;
 import io.crysknife.annotation.Application;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import org.gwtbootstrap3.extras.notify.client.NotifyEntryPoint;
-import org.gwtbootstrap3.extras.select.client.SelectEntryPoint;
 import org.kie.workbench.common.stunner.client.lienzo.StunnerLienzoCore;
 import org.kie.workbench.common.stunner.sw.client.editor.DiagramEditorActivity;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
@@ -47,20 +45,14 @@ public class MainEntryPoint {
     @GWT3EntryPoint
     public void onModuleLoad() {
         DomGlobal.console.log("init SWDiagramEditor");
+        new StunnerLienzoCore().init();
+
         new MainEntryPointBootstrap(this).initialize();
     }
 
     @PostConstruct
     public void initialize() {
-        new StunnerLienzoCore().init();
-        new NotifyEntryPoint().onModuleLoad();
-        new SelectEntryPoint().onModuleLoad();
-
         diagramEditor.onStartup(new DefaultPlaceRequest());
-
-        //Reflect.set(DomGlobal.window, "setContent", (Serialize) (path, value) -> diagramEditor.setContent(path, value));
-        //Reflect.set(DomGlobal.window,"getContent", (Deserialize) (xml) -> diagramEditor.getContent());
-        //Reflect.set(DomGlobal.window,"getPreview", (Preview) () -> diagramEditor.getPreview());
         workbenchEntryPoint.afterInitialization();
     }
 

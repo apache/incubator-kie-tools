@@ -20,14 +20,13 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.patternfly;
 
-import org.treblereel.j2cl.processors.annotations.GWT3Resource;
 import org.treblereel.j2cl.processors.common.resources.ClientBundle;
 import org.treblereel.j2cl.processors.common.resources.TextResource;
 
-@GWT3Resource
+//@GWT3Resource
 public interface PatternFlyBundle extends ClientBundle {
 
-    PatternFlyBundle INSTANCE =  PatternFlyBundleImpl.INSTANCE;
+    //PatternFlyBundle INSTANCE =  PatternFlyBundleImpl.INSTANCE;
 
     @Source("patternfly.min.css")
     TextResource patternflycss();
@@ -35,8 +34,8 @@ public interface PatternFlyBundle extends ClientBundle {
     @Source("animate-3.5.2.min.cache.css")
     TextResource animate();
 
-    @Source("bootstrap-3.4.1.min.cache.css")
-    TextResource bootstrapcss();
+    //@Source("bootstrap-3.4.1.min.cache.css")
+    //TextResource bootstrapcss();
 
     @Source("bootstrap-select.min.css")
     TextResource bootstrapselect();
