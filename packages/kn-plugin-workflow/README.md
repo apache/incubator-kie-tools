@@ -12,7 +12,7 @@ All the commands in this section should be performed in the monorepo root.
 
 - Node `>= 18.14.0` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `8.7.0` _(To install, follow these instructions: https://pnpm.io/installation)_
-- Go `1.20.7` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.21.1` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 #### Prerequisites for running integration tests
 
