@@ -17,6 +17,7 @@ env:
   # https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.23.md
   # WARNING: kindest/node is not always existing with given version ...
   KUBERNETES_VERSION: v1.26.3
+  MINIKUBE_VERSION: v1.31.1
   DEBUG: true
 
 jobs:
@@ -48,16 +49,20 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Setup Minikube cluster
-        # Should be set back with correct version once https://github.com/radtriste/setup-minikube/tree/issue_49 is done
-        uses: medyagh/setup-minikube@v0.0.10
+      - name: Cache Minikube Download
+        id: cache-minikube-download
+        uses: actions/cache@v3
         with:
-          addons: registry,metrics-server
-          kubernetes-version: ${{ env.KUBERNETES_VERSION }}
-          # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-          cpus: max
-          memory: max
-          insecure-registry: localhost:5000,192.168.0.0/16
+          key: ${{ runner.os }}-minikube-${{ env.MINIKUBE_VERSION }}
+          path: |
+            ~/.minikube/download/
+
+      - name: Setup Minikube cluster
+        run: |
+          # Install minikube at $HOME/.local/bin
+          ./hack/ci/install-minikube.sh $HOME/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          minikube start --kubernetes-version ${{ env.KUBERNETES_VERSION }} --addons=registry --insecure-registry=localhost:5000,192.168.0.0/16 --cpus=max --memory=max
       
       - name: Wait for Minikube up and running
         run: |

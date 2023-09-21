@@ -47,10 +47,6 @@ jobs:
       - name: Run tests
         run: make test test-workflowproj
 
-      - uses: shogo82148/actions-goveralls@v1
-        with:
-          path-to-profile: cover.out
-
   check-headers:
     concurrency:
       group: sonataflow-operator-check-headers-${{ github.head_ref }}
