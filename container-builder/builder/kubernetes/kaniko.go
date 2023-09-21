@@ -124,7 +124,9 @@ func addKanikoTaskToPod(ctx context.Context, c client.Client, build *api.Contain
 		return err
 	}
 	if len(buildArgs) > 0 {
-		args = append(args, fmt.Sprintf("%s=%s", kanikoBuildArgs, strings.Join(buildArgs, ",")))
+		for _, buildArg := range buildArgs {
+			args = append(args, fmt.Sprintf("%s=%s", kanikoBuildArgs, buildArg))
+		}
 	}
 
 	container := corev1.Container{

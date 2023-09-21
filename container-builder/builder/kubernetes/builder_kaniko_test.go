@@ -137,6 +137,9 @@ func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
 		WithBuildArgs([]v1.EnvVar{{
 			Name:  "QUARKUS_EXTENSIONS",
 			Value: "extension1,extension2",
+		}, {
+			Name:  "MY_PROPERTY",
+			Value: "my_property_value",
 		}}).
 		WithEnvs([]v1.EnvVar{{
 			Name:  "MYENV",
@@ -159,5 +162,6 @@ func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
 	assert.NotNil(t, pod)
 
 	assert.Subset(t, pod.Spec.Containers[0].Args, []string{"--build-arg=QUARKUS_EXTENSIONS=extension1,extension2"})
+	assert.Subset(t, pod.Spec.Containers[0].Args, []string{"--build-arg=MY_PROPERTY=my_property_value"})
 	assert.Subset(t, pod.Spec.Containers[0].Env, []v1.EnvVar{{Name: "MYENV", Value: "value"}})
 }
