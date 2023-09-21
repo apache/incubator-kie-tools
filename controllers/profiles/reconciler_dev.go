@@ -48,8 +48,6 @@ import (
 )
 
 const (
-	configMapWorkflowDefVolumeName             = "workflow-definition"
-	configMapWorkflowDefMountPath              = "/home/kogito/serverless-workflow-project/src/main/resources/workflows"
 	configMapResourcesVolumeName               = "resources"
 	configMapExternalResourcesVolumeNamePrefix = configMapResourcesVolumeName + "-"
 
@@ -354,13 +352,13 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workf
 
 			volumes := make([]corev1.Volume, 0)
 			volumeMounts := []corev1.VolumeMount{
-				kubeutil.VolumeMount(configMapWorkflowDefVolumeName, true, configMapWorkflowDefMountPath),
 				kubeutil.VolumeMount(configMapResourcesVolumeName, true, quarkusDevConfigMountPath),
 			}
 
 			// defaultResourcesVolume holds every ConfigMap mount required on src/main/resources
 			defaultResourcesVolume := corev1.Volume{Name: configMapResourcesVolumeName, VolumeSource: corev1.VolumeSource{Projected: &corev1.ProjectedVolumeSource{}}}
 			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, propsCM.Name, corev1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName})
+			kubeutil.VolumeProjectionAddConfigMap(defaultResourcesVolume.Projected, flowDefCM.Name)
 
 			// resourceVolumes holds every resource that needs to be mounted on src/main/resources/<specific_dir>
 			resourceVolumes := make([]corev1.Volume, 0)
@@ -378,7 +376,7 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workf
 				resourceVolumes = kubeutil.VolumeAddVolumeProjectionConfigMap(resourceVolumes, workflowResCM.ConfigMap.Name, volumeMountName)
 			}
 
-			volumes = append(volumes, defaultResourcesVolume, kubeutil.VolumeConfigMap(configMapWorkflowDefVolumeName, flowDefCM.Name))
+			volumes = append(volumes, defaultResourcesVolume)
 			volumes = append(volumes, resourceVolumes...)
 
 			deployment.Spec.Template.Spec.Volumes = make([]corev1.Volume, 0)

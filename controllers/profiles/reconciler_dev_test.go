@@ -131,15 +131,14 @@ func Test_newDevProfile(t *testing.T) {
 
 	defCM := test.MustGetConfigMap(t, client, workflow)
 	assert.NotEmpty(t, defCM.Data[workflow.Name+workflowdef.KogitoWorkflowJSONFileExt])
-	assert.Equal(t, configMapWorkflowDefMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
-	assert.Equal(t, quarkusDevConfigMountPath+"/workflows", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
 
 	propCM := &v1.ConfigMap{}
 	_ = client.Get(context.TODO(), types.NamespacedName{Namespace: workflow.Namespace, Name: workflowproj.GetWorkflowPropertiesConfigMapName(workflow)}, propCM)
 	assert.NotEmpty(t, propCM.Data[workflowproj.ApplicationPropertiesFileName])
-	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].MountPath)
-	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
+	assert.Equal(t, quarkusDevConfigMountPath, deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].MountPath)
+	assert.Equal(t, "", deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0].SubPath) //https://kubernetes.io/docs/concepts/configuration/configmap/#mounted-configmaps-are-updated-automatically
 	assert.Contains(t, propCM.Data[workflowproj.ApplicationPropertiesFileName], "quarkus.http.port")
 
 	service := test.MustGetService(t, client, workflow)
@@ -298,16 +297,13 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
-	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
 
 	wd := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
-	props := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
-	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
-	assert.Equal(t, configMapWorkflowDefVolumeName, wd.Name)
-	assert.Equal(t, configMapWorkflowDefMountPath, wd.MountPath)
-	assert.Equal(t, configMapResourcesVolumeName, props.Name)
-	assert.Equal(t, quarkusDevConfigMountPath, props.MountPath)
+	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
+	assert.Equal(t, configMapResourcesVolumeName, wd.Name)
+	assert.Equal(t, quarkusDevConfigMountPath, wd.MountPath)
 	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamel.Name)
 	assert.Equal(t, extCamel.MountPath, quarkusDevConfigMountPath+"/routes")
 
@@ -326,10 +322,10 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 
 	//Now we expect 4 volumes mount wd, props  camelroute.xml and camelroute.yaml
 	deployment = test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
-	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
 
-	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[2]
+	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
 	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamelRouteOne.Name)
 	assert.Equal(t, quarkusDevConfigMountPath+"/routes", extCamelRouteOne.MountPath)
 
@@ -342,8 +338,8 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.NotNil(t, result)
 
 	deployment = test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
-	assert.Equal(t, 3, len(deployment.Spec.Template.Spec.Volumes))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
 
 	// remove the external configmaps without removing the labels
 	errDel := client.Delete(context.Background(), cmUser)
@@ -366,11 +362,11 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.NotNil(t, result)
 
 	deployment = test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
-	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	assert.Equal(t, 1, len(deployment.Spec.Template.Spec.Volumes))
+	assert.Equal(t, 1, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
 	wd = deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
-	assert.Equal(t, wd.Name, configMapWorkflowDefVolumeName)
-	assert.Equal(t, wd.MountPath, configMapWorkflowDefMountPath)
+	assert.Equal(t, wd.Name, configMapResourcesVolumeName)
+	assert.Equal(t, wd.MountPath, quarkusDevConfigMountPath)
 }
 
 func createConfigMapBase(namespace string, name string, cmData map[string]string) clientruntime.Object {

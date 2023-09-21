@@ -43,8 +43,13 @@ func CreateNewConfigMap(workflow *operatorapi.SonataFlow) (*corev1.ConfigMap, er
 			Name:      workflow.Name,
 			Namespace: workflow.Namespace,
 		},
-		Data: map[string]string{workflow.Name + KogitoWorkflowJSONFileExt: string(workflowDef)},
+		Data: map[string]string{GetWorkflowDefFileName(workflow): string(workflowDef)},
 	}, nil
+}
+
+// GetWorkflowDefFileName returns the default workflow file definition that should be injected/mounted to a workflow application given a SonataFlow CR.
+func GetWorkflowDefFileName(workflow *operatorapi.SonataFlow) string {
+	return workflow.Name + KogitoWorkflowJSONFileExt
 }
 
 // FetchExternalResourcesConfigMapsRef fetches the Resource ConfigMaps into a LocalObjectReference that a client can mount to the workflow application.
