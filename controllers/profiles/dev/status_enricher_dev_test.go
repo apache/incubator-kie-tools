@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package dev
 
 import (
 	"context"
@@ -23,6 +23,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"knative.dev/pkg/apis"
 
+	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
+
 	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
@@ -32,9 +34,9 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 
 		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
-		service, err := defaultServiceCreator(workflow)
+		service, err := common.ServiceCreator(workflow)
 		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
-		obj, err := defaultDevStatusEnricher(context.TODO(), client, workflow)
+		obj, err := statusEnricher(context.TODO(), client, workflow)
 
 		reflectWorkflow := obj.(*apiv08.SonataFlow)
 		assert.NoError(t, err)
@@ -48,9 +50,9 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 
 		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = t.Name()
-		service, err := defaultServiceCreator(workflow)
+		service, err := serviceCreator(workflow)
 		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
-		_, err = defaultDevStatusEnricher(context.TODO(), client, workflow)
+		_, err = statusEnricher(context.TODO(), client, workflow)
 		assert.Error(t, err)
 
 	})
@@ -60,13 +62,13 @@ func Test_enrichmentStatusOnOCP(t *testing.T) {
 	t.Run("verify that the service URL is returned with the default cluster name on default namespace", func(t *testing.T) {
 		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
-		service, err := defaultServiceCreator(workflow)
+		service, err := serviceCreator(workflow)
 		route := &openshiftv1.Route{}
 		route.Name = workflow.Name
 		route.Namespace = workflow.Namespace
 		route.Spec.Host = workflow.Name + "." + workflow.Namespace + ".apps-crc.testing"
 		client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, service, route).Build()
-		obj, err := devStatusEnricherForOpenShift(context.TODO(), client, workflow)
+		obj, err := statusEnricherOpenShift(context.TODO(), client, workflow)
 
 		reflectWorkflow := obj.(*apiv08.SonataFlow)
 		assert.NoError(t, err)

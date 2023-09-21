@@ -48,14 +48,6 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 
 	BeforeAll(func() {
 
-		// The namespace can be created when we run make install
-		// However, in this test we want to ensure that the solution
-		// can run in a ns labeled as restricted. Therefore, we are
-		// creating the namespace and labeling it.
-		By("creating manager namespace")
-		cmd := exec.Command("kubectl", "create", "ns", namespace)
-		_, _ = utils.Run(cmd)
-
 		// Now, let's ensure that all namespaces can raise a Warn when we apply the manifests
 		// and that the namespace where the Operator and Operand will run are enforced as
 		// restricted so that we can ensure that both can be admitted and run with the enforcement
@@ -86,13 +78,8 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 		operatorImageName, err := utils.GetOperatorImageName()
 		ExpectWithOffset(1, err).NotTo(HaveOccurred())
 
-		By("installing CRDs")
-		cmd = exec.Command("make", "install")
-		_, err = utils.Run(cmd)
-		ExpectWithOffset(1, err).NotTo(HaveOccurred())
-
 		By("deploying the controller-manager")
-		cmd = exec.Command("make", "deploy", fmt.Sprintf("IMG=%s", operatorImageName))
+		cmd := exec.Command("make", "deploy", fmt.Sprintf("IMG=%s", operatorImageName))
 
 		outputMake, err := utils.Run(cmd)
 		fmt.Println(string(outputMake))

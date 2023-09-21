@@ -36,7 +36,7 @@ func Test_openshiftBuilderManager_Reconcile(t *testing.T) {
 	ns := t.Name()
 	workflow := test.GetBaseSonataFlow(ns)
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	config := test.GetSonataFlowBuilderConfig("../../", ns)
+	config := test.GetSonataFlowBuilderConfig(ns)
 	namespacedName := types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}
 	client := test.NewKogitoClientBuilderWithOpenShift().WithRuntimeObjects(workflow, platform, config).Build()
 	buildClient := buildfake.NewSimpleClientset().BuildV1()
@@ -90,7 +90,7 @@ func Test_openshiftbuilder_externalCMs(t *testing.T) {
 	ns := t.Name()
 	workflow := test.GetBaseSonataFlow(ns)
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	config := test.GetSonataFlowBuilderConfig("../../", ns)
+	config := test.GetSonataFlowBuilderConfig(ns)
 	externalCm := &v1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "myopenapis",

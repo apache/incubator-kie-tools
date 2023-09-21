@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package common
 
 import (
 	"testing"
@@ -29,12 +29,12 @@ import (
 func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 	// can't be new
-	cm, _ := workflowPropsConfigMapCreator(workflow)
+	cm, _ := WorkflowPropsConfigMapCreator(workflow)
 	cm.SetUID("1")
 	cm.SetResourceVersion("1")
 	reflectCm := cm.(*v1.ConfigMap)
 
-	visitor := ensureWorkflowDevPropertiesConfigMapMutator(workflow)
+	visitor := WorkflowPropertiesMutateVisitor(workflow, DefaultApplicationProperties)
 	mutateFn := visitor(cm)
 
 	assert.NoError(t, mutateFn())
@@ -67,7 +67,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.
 			workflowproj.ApplicationPropertiesFileName: "mp.messaging.outgoing.kogito_outgoing_stream.url=${kubernetes:services.v1/event-listener}",
 		},
 	}
-	mutateVisitorFn := ensureWorkflowPropertiesConfigMapMutator(workflow, defaultProdApplicationProperties)
+	mutateVisitorFn := WorkflowPropertiesMutateVisitor(workflow, DefaultApplicationProperties)
 
 	err := mutateVisitorFn(existingCM)()
 	assert.NoError(t, err)

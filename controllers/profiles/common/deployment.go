@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package common
 
 import (
 	"context"
@@ -54,47 +54,47 @@ func (d deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *o
 	if err := d.c.Get(ctx, client.ObjectKeyFromObject(workflow), deployment); err != nil {
 		// we should have the deployment by this time, so even if the error above is not found, we should halt.
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Couldn't find the workflow deployment")
-		return ctrl.Result{RequeueAfter: requeueAfterFailure}, err
+		return ctrl.Result{RequeueAfter: RequeueAfterFailure}, err
 	}
 
 	// Deployment is available, we can return after setting Running = TRUE
 	if kubeutil.IsDeploymentAvailable(deployment) {
 		workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 		klog.V(log.I).InfoS("Workflow is in Running Condition")
-		return ctrl.Result{RequeueAfter: requeueAfterIsRunning}, nil
+		return ctrl.Result{RequeueAfter: RequeueAfterIsRunning}, nil
 	}
 
 	if kubeutil.IsDeploymentFailed(deployment) {
 		// Fallback to a general failure message if we can't determine if the deployment has minimum replicas available.
-		failedReason := getDeploymentUnavailabilityMessage(deployment)
+		failedReason := GetDeploymentUnavailabilityMessage(deployment)
 		workflow.Status.LastTimeRecoverAttempt = metav1.Now()
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, failedReason)
 		klog.V(log.I).InfoS("Workflow deployment failed", "Reason Message", failedReason)
-		return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil
+		return ctrl.Result{RequeueAfter: RequeueAfterFailure}, nil
 	}
 
 	// Deployment hasn't minimum replicas, let's find out why to give users a meaningful information
 	if kubeutil.IsDeploymentMinimumReplicasUnavailable(deployment) {
-		message, err := kubeutil.DeploymentTroubleshooter(d.c, deployment, defaultContainerName).ReasonMessage()
+		message, err := kubeutil.DeploymentTroubleshooter(d.c, deployment, DefaultContainerName).ReasonMessage()
 		if err != nil {
-			return ctrl.Result{RequeueAfter: requeueAfterFailure}, err
+			return ctrl.Result{RequeueAfter: RequeueAfterFailure}, err
 		}
 		if len(message) > 0 {
 			klog.V(log.I).InfoS("Workflow is not in Running condition duo to a deployment unavailability issue", "reason", message)
 			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, message)
-			return ctrl.Result{RequeueAfter: requeueAfterFailure}, nil
+			return ctrl.Result{RequeueAfter: RequeueAfterFailure}, nil
 		}
 	}
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 	klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
-	return ctrl.Result{RequeueAfter: requeueAfterFollowDeployment}, nil
+	return ctrl.Result{RequeueAfter: RequeueAfterFollowDeployment}, nil
 }
 
-// getDeploymentUnavailabilityMessage gets the replica failure reason.
+// GetDeploymentUnavailabilityMessage gets the replica failure reason.
 // MUST be called after checking that the Deployment is NOT available.
 // If there's no reason, the Deployment state has no apparent reason to be in failed state.
-func getDeploymentUnavailabilityMessage(deployment *appsv1.Deployment) string {
+func GetDeploymentUnavailabilityMessage(deployment *appsv1.Deployment) string {
 	failure := kubeutil.GetDeploymentUnavailabilityMessage(deployment)
 	if len(failure) == 0 {
 		failure = fmt.Sprintf("Workflow Deployment %s is unavailable", deployment.Name)

@@ -16,7 +16,7 @@ package v1alpha08
 
 import (
 	cncfmodel "github.com/serverlessworkflow/sdk-go/v2/model"
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/pkg/apis"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
@@ -102,7 +102,7 @@ type WorkflowResources struct {
 type ConfigMapWorkflowResource struct {
 	// ConfigMap the given configMap name in the same workflow context to find the resource
 	// +kubebuilder:validation:Required
-	ConfigMap v1.LocalObjectReference `json:"configMap"`
+	ConfigMap corev1.LocalObjectReference `json:"configMap"`
 	// WorkflowPath path relative to the workflow application root file system within the pod (/<application path>/src/main/resources).
 	// Starting trailing slashes will be removed.
 	WorkflowPath string `json:"workflowPath,omitempty"`

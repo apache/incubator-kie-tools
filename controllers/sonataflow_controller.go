@@ -20,6 +20,8 @@ import (
 
 	"k8s.io/klog/v2"
 
+	profiles "github.com/kiegroup/kogito-serverless-operator/controllers/profiles/factory"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/rest"
@@ -34,8 +36,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
-
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
 
 	"github.com/kiegroup/kogito-serverless-operator/log"
 
@@ -90,7 +90,7 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return reconcile.Result{}, nil
 	}
 
-	return profiles.NewReconciler(r.Client, r.Config, workflow).Reconcile(ctx, workflow)
+	return profiles.NewReconciler(r.Client, workflow).Reconcile(ctx, workflow)
 }
 
 func platformEnqueueRequestsFromMapFunc(c client.Client, p *operatorapi.SonataFlowPlatform) []reconcile.Request {

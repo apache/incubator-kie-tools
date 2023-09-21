@@ -38,7 +38,7 @@ func TestSonataFlowBuildController(t *testing.T) {
 	cl := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(ksb, ksw).
 		WithRuntimeObjects(test.GetBasePlatformInReadyPhase(namespace)).
-		WithRuntimeObjects(test.GetSonataFlowBuilderConfig("../", namespace)).
+		WithRuntimeObjects(test.GetSonataFlowBuilderConfig(namespace)).
 		WithStatusSubresource(ksb, ksw).
 		Build()
 
@@ -80,7 +80,7 @@ func TestSonataFlowBuildController_WithArgsAndEnv(t *testing.T) {
 	cl := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(ksb, ksw).
 		WithRuntimeObjects(test.GetBasePlatformInReadyPhase(namespace)).
-		WithRuntimeObjects(test.GetSonataFlowBuilderConfig("../", namespace)).
+		WithRuntimeObjects(test.GetSonataFlowBuilderConfig(namespace)).
 		WithStatusSubresource(ksb, ksw).
 		Build()
 

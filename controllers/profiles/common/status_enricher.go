@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package common
 
 import (
 	"context"
@@ -28,28 +28,30 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
-// newStatusEnricher see defaultObjectEnsurer
-func newStatusEnricher(client client.Client, enricher statusEnricherFn) *statusEnricher {
-	return &statusEnricher{
-		client:   client,
-		enricher: enricher,
+// TODO: review the need for this
+
+// NewStatusEnricher ...
+func NewStatusEnricher(client client.Client, enricher StatusEnricherFn) *StatusEnricher {
+	return &StatusEnricher{
+		C:        client,
+		Enricher: enricher,
 	}
 }
 
-// statusEnricherFn is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.
+// StatusEnricherFn is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.
 // Can be used as a reference to keep the object immutable
-type statusEnricherFn func(ctx context.Context, client client.Client, workflow *operatorapi.SonataFlow) (client.Object, error)
+type StatusEnricherFn func(ctx context.Context, client client.Client, workflow *operatorapi.SonataFlow) (client.Object, error)
 
-// statusEnricher provides the engine for a ReconciliationState that needs to create or update a given Kubernetes object during the reconciliation cycle.
-type statusEnricher struct {
-	client   client.Client
-	config   *rest.Config
-	enricher statusEnricherFn
+// StatusEnricher ...
+type StatusEnricher struct {
+	C        client.Client
+	Config   *rest.Config
+	Enricher StatusEnricherFn
 }
 
-func (d *statusEnricher) Enrich(ctx context.Context, workflow *operatorapi.SonataFlow) (controllerutil.OperationResult, error) {
+func (d *StatusEnricher) Enrich(ctx context.Context, workflow *operatorapi.SonataFlow) (controllerutil.OperationResult, error) {
 	result := controllerutil.OperationResultNone
-	_, err := d.enricher(ctx, d.client, workflow)
+	_, err := d.Enricher(ctx, d.C, workflow)
 	if err != nil {
 		return result, err
 	}

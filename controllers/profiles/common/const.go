@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package common
 
-import (
-	"sigs.k8s.io/controller-runtime/pkg/client"
+import "time"
+
+const (
+	RequeueAfterFailure          = 3 * time.Minute
+	RequeueAfterFollowDeployment = 5 * time.Second
+	RequeueAfterIsRunning        = 1 * time.Minute
+	// RecoverDeploymentErrorRetries how many times the operator should try to recover from a failure before giving up
+	RecoverDeploymentErrorRetries = 3
+	// RequeueRecoverDeploymentErrorInterval interval between recovering from failures
+	RequeueRecoverDeploymentErrorInterval = RecoverDeploymentErrorInterval * time.Minute
+	RecoverDeploymentErrorInterval        = 10
 )
-
-func fakeReconcilerSupport(client client.Client) *stateSupport {
-	return &stateSupport{
-		client: client,
-	}
-}

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package dev
 
 import (
 	"testing"
@@ -27,7 +27,7 @@ func Test_ensureWorkflowDevServiceIsExposed(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 
 	//On Kubernetes we want the service exposed in Dev with NodePort
-	service, _ := devServiceCreator(workflow)
+	service, _ := serviceCreator(workflow)
 	service.SetUID("1")
 	service.SetResourceVersion("1")
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package prod
 
 import (
 	"context"
@@ -20,7 +20,8 @@ import (
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/rest"
+
+	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
 
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
@@ -38,8 +39,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
-	config := &rest.Config{}
-	result, err := NewReconciler(client, config, workflow).Reconcile(context.TODO(), workflow)
+	result, err := NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 
 	assert.NotNil(t, result.RequeueAfter)
@@ -47,7 +47,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.False(t, workflow.Status.IsReady())
 
 	// still building
-	result, err = NewReconciler(client, config, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
 	assert.True(t, workflow.Status.IsBuildRunningOrUnknown())
@@ -60,7 +60,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.NoError(t, client.Status().Update(context.TODO(), build))
 
 	// last reconciliation cycle waiting for build
-	result, err = NewReconciler(client, config, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.Equal(t, requeueWhileWaitForBuild, result.RequeueAfter)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
@@ -68,7 +68,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	assert.Equal(t, api.WaitingForBuildReason, workflow.Status.GetTopLevelCondition().Reason)
 
 	// now we create the objects
-	result, err = NewReconciler(client, config, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.False(t, workflow.Status.IsReady())
@@ -86,7 +86,7 @@ func Test_reconcilerProdBuildConditions(t *testing.T) {
 	err = client.Status().Update(context.TODO(), deployment)
 	assert.NoError(t, err)
 
-	result, err = NewReconciler(client, config, workflow).Reconcile(context.TODO(), workflow)
+	result, err = NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
 	assert.NoError(t, err)
 	assert.False(t, workflow.Status.IsBuildRunningOrUnknown())
 	assert.True(t, workflow.Status.IsReady())
@@ -100,9 +100,9 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 		WithRuntimeObjects(workflow, platform, build).
 		WithStatusSubresource(workflow, platform, build).
 		Build()
-	handler := &deployWorkflowReconciliationState{
-		stateSupport: fakeReconcilerSupport(client),
-		ensurers:     newProdObjectEnsurers(&stateSupport{client: client}),
+	handler := &deployWorkflowState{
+		StateSupport: fakeReconcilerSupport(client),
+		ensurers:     newObjectEnsurers(&common.StateSupport{C: client}),
 	}
 	result, objects, err := handler.Do(context.TODO(), workflow)
 	assert.Greater(t, result.RequeueAfter, int64(0))
@@ -147,9 +147,9 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
-	handler := &deployWorkflowReconciliationState{
-		stateSupport: fakeReconcilerSupport(client),
-		ensurers:     newProdObjectEnsurers(&stateSupport{client: client}),
+	handler := &deployWorkflowState{
+		StateSupport: fakeReconcilerSupport(client),
+		ensurers:     newObjectEnsurers(&common.StateSupport{C: client}),
 	}
 	result, objects, err := handler.Do(context.TODO(), workflow)
 	assert.Greater(t, result.RequeueAfter, int64(time.Second))
@@ -166,9 +166,9 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	err = client.Update(context.TODO(), workflowChanged)
 	assert.NoError(t, err)
 	// reconcile
-	handler = &deployWorkflowReconciliationState{
-		stateSupport: fakeReconcilerSupport(client),
-		ensurers:     newProdObjectEnsurers(&stateSupport{client: client}),
+	handler = &deployWorkflowState{
+		StateSupport: fakeReconcilerSupport(client),
+		ensurers:     newObjectEnsurers(&common.StateSupport{C: client}),
 	}
 	result, objects, err = handler.Do(context.TODO(), workflowChanged)
 	assert.NoError(t, err)
@@ -176,4 +176,10 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	assert.Equal(t, time.Duration(0), result.RequeueAfter)
 	assert.False(t, result.Requeue)
 	assert.Len(t, objects, 0)
+}
+
+func fakeReconcilerSupport(client clientruntime.Client) *common.StateSupport {
+	return &common.StateSupport{
+		C: client,
+	}
 }

@@ -12,27 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package profiles
+package dev
 
 import (
 	"context"
 	"fmt"
 
 	openshiftv1 "github.com/openshift/api/route/v1"
-	"knative.dev/pkg/apis"
-	duckv1 "knative.dev/pkg/apis/duck/v1"
-
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
-
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"knative.dev/pkg/apis"
+	duckv1 "knative.dev/pkg/apis/duck/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 )
 
-func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.SonataFlow) (client.Object, error) {
+func statusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.SonataFlow) (client.Object, error) {
 	//If the workflow Status hasn't got a NodePort Endpoint, we are ensuring it will be set
 	// If we aren't on OpenShift we will enrich the status with 2 info:
 	// - Address the service can be reached
@@ -83,7 +81,20 @@ func defaultDevStatusEnricher(ctx context.Context, c client.Client, workflow *op
 	return workflow, nil
 }
 
-func devStatusEnricherForOpenShift(ctx context.Context, client client.Client, workflow *operatorapi.SonataFlow) (client.Object, error) {
+// findNodePortFromPorts returns the first Port in an array of ServicePort
+func findNodePortFromPorts(ports []v1.ServicePort) int {
+	if ports != nil && len(ports) > 0 {
+		for _, p := range ports {
+			if p.NodePort != 0 {
+				return int(p.NodePort)
+			}
+		}
+	}
+	//If we are not able to find a NodePort let's return the zero value
+	return 0
+}
+
+func statusEnricherOpenShift(ctx context.Context, client client.Client, workflow *operatorapi.SonataFlow) (client.Object, error) {
 	// On OpenShift we need to retrieve the Route to have the URL the service is available to
 	route := &openshiftv1.Route{}
 	err := client.Get(ctx, types.NamespacedName{Namespace: workflow.Namespace, Name: workflow.Name}, route)
