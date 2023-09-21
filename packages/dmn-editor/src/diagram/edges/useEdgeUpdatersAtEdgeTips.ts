@@ -20,14 +20,25 @@ export function useEdgeUpdatersAtEdgeTips(
     const edgeUpdaterSource = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-source") as SVGCircleElement;
     const edgeUpdaterTarget = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-target") as SVGCircleElement;
 
-    if (isConnecting) {
-      edgeUpdaterSource.classList.add("hidden");
-      edgeUpdaterTarget.classList.add("hidden");
-    } else {
-      edgeUpdaterSource.classList.remove("hidden");
-      edgeUpdaterTarget.classList.remove("hidden");
+    function onEnter(e: MouseEvent) {
+      (e.target as any)?.setAttribute("r", "10");
     }
-  }, [interactionPathRef, isConnecting]);
+
+    function onLeave(e: MouseEvent) {
+      (e.target as any)?.setAttribute("r", "5");
+    }
+
+    edgeUpdaterSource?.addEventListener("mouseenter", onEnter);
+    edgeUpdaterSource?.addEventListener("mouseleave", onLeave);
+    edgeUpdaterTarget?.addEventListener("mouseenter", onEnter);
+    edgeUpdaterTarget?.addEventListener("mouseleave", onLeave);
+    return () => {
+      edgeUpdaterSource?.removeEventListener("mouseleave", onLeave);
+      edgeUpdaterSource?.removeEventListener("mouseenter", onEnter);
+      edgeUpdaterTarget?.removeEventListener("mouseleave", onLeave);
+      edgeUpdaterTarget?.removeEventListener("mouseenter", onEnter);
+    };
+  }, [interactionPathRef, sourceNode, targetNode, waypoints]);
 
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;
@@ -74,11 +85,13 @@ export function useEdgeUpdatersAtEdgeTips(
     const edgeUpdaterSource = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-source") as SVGCircleElement;
     edgeUpdaterSource.setAttribute("cx", "" + sourcePoint!.x);
     edgeUpdaterSource.setAttribute("cy", "" + sourcePoint!.y);
+    edgeUpdaterSource.setAttribute("r", "5");
 
     // target
     const targetPoint = interactionPathRef.current?.getPointAtLength(interactionPathRef.current?.getTotalLength() - 10);
     const edgeUpdaterTarget = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-target") as SVGCircleElement;
     edgeUpdaterTarget.setAttribute("cx", "" + targetPoint!.x);
     edgeUpdaterTarget.setAttribute("cy", "" + targetPoint!.y);
+    edgeUpdaterTarget.setAttribute("r", "5");
   }, [interactionPathRef, sourceNode, targetNode, waypoints]);
 }

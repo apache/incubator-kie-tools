@@ -467,13 +467,13 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   opacity: 0.3;
   pointer-events: none;
 }
-.kie-dmn-editor--diagram-edge-waypoints circle {
+circle.kie-dmn-editor--diagram-edge-waypoint {
   fill: black;
   stroke-width: 8;
   stroke: #006ba4;
 }
-.kie-dmn-editor--diagram-edge-waypoints circle:active,
-.kie-dmn-editor--diagram-edge-waypoints circle:hover {
+circle.kie-dmn-editor--diagram-edge-waypoint:active,
+circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   stroke-width: 16;
   cursor: grab;
 }
@@ -675,11 +675,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   fill: black;
   stroke: white;
   stroke-width: 2px;
-  r: 5; /* circle radius */
   cursor: grab;
-}
-.react-flow__edgeupdater:hover {
-  r: 10; /* circle radius */
 }
 .react-flow__edge:not(.selected) .react-flow__edgeupdater,
 .react-flow__edgeupdater.hidden {

@@ -323,6 +323,17 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [container, otherDmnsByNamespace, diagram.snapGrid, dmnEditorStoreApi, reactFlowInstance]
   );
 
+  useEffect(() => {
+    const edgeUpdaterSource = document.querySelectorAll(
+      ".react-flow__edgeupdater-source, .react-flow__edgeupdater-target"
+    );
+    if (connection) {
+      edgeUpdaterSource.forEach((e) => e.classList.add("hidden"));
+    } else {
+      edgeUpdaterSource.forEach((e) => e.classList.remove("hidden"));
+    }
+  }, [connection]);
+
   const onConnectStart = useCallback<RF.OnConnectStart>((e, newConnection) => {
     console.debug("DMN DIAGRAM: `onConnectStart`");
     setConnection(newConnection);

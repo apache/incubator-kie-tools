@@ -2,7 +2,6 @@ import * as React from "react";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { deleteEdgeWaypoint } from "../../mutations/deleteEdgeWaypoint";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { useIsHovered } from "../useIsHovered";
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import { useEffect } from "react";
@@ -20,7 +19,7 @@ export function Waypoints(props: {
   onDragStop: (e: React.MouseEvent) => void;
 }) {
   return (
-    <g className={"kie-dmn-editor--diagram-edge-waypoints"}>
+    <>
       {props.waypoints.slice(1, -1).map((p, i) => (
         <Waypoint
           onDragStop={props.onDragStop}
@@ -31,7 +30,7 @@ export function Waypoints(props: {
           index={i + 1 /* Plus one because we're removing the 1st element of the array before iterating */}
         />
       ))}
-    </g>
+    </>
   );
 }
 
@@ -87,6 +86,7 @@ export function Waypoint({
   return (
     <circle
       ref={circleRef}
+      className={"kie-dmn-editor--diagram-edge-waypoint"}
       cx={point["@_x"]}
       cy={point["@_y"]}
       r={1}

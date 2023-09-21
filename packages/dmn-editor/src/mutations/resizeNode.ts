@@ -98,10 +98,9 @@ export function resizeNode({
 
     // We ignore handling the contents of the Decision Service when it is external
     if (!change.isExternal) {
-      // Encapsulated Decisions should be moved together with the node, as they're in the lower portion of the Decision Service.
-
       const controlWaypointsByEdge = new Map<number, Set<number>>();
 
+      // Encapsulated Decisions should be moved together with the node, as they're in the lower portion of the Decision Service.
       ds.encapsulatedDecision?.forEach((ed) => {
         repositionNode({
           definitions,
