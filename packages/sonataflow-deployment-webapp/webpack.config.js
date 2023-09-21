@@ -20,6 +20,7 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
@@ -31,6 +32,19 @@ module.exports = async (env) =>
   merge(common(env), {
     entry: {
       index: "./src/index.tsx",
+    },
+    optimization: {
+      minimize: true, // This should already be there
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false,
+            },
+          },
+          extractComments: false,
+        }),
+      ],
     },
     plugins: [
       new CopyPlugin({
