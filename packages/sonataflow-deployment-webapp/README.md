@@ -79,7 +79,7 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 Add the webjar version to the properties section of your pom.xml
 
 ```xml
-<sonataFlowDeploymentWebapp.version>0.0.2</sonataFlowDeploymentWebapp.version>
+<sonataFlowDeploymentWebapp.version>0.32.0</sonataFlowDeploymentWebapp.version>
 ```
 
 Add the webjar as a dependency in the dependencies section
