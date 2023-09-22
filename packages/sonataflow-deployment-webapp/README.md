@@ -78,7 +78,7 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 Add the webjar version to the properties section of your pom.xml
 
 ```xml
-<slwtDeploymentWebapp.version>0.0.2</slwtDeploymentWebapp.version>
+<sonataFlowDeploymentWebapp.version>0.0.2</sonataFlowDeploymentWebapp.version>
 ```
 
 Add the webjar as a dependency in the dependencies section
@@ -88,7 +88,7 @@ Add the webjar as a dependency in the dependencies section
     <dependency>
         <groupId>org.webjars.npm</groupId>
         <artifactId>sonataflow-deployment-webapp</artifactId>
-        <version>${slwtDeploymentWebapp.version}</version>
+        <version>${sonataFlowDeploymentWebapp.version}</version>
     </dependency>
   </dependencies>
 ```
@@ -113,7 +113,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                           <artifactItem>
                               <groupId>org.webjars.npm</groupId>
                               <artifactId>sonataflow-deployment-webapp</artifactId>
-                              <version>${slwtDeploymentWebapp.version}</version>
+                              <version>${sonataFlowDeploymentWebapp.version}</version>
                               <outputDirectory>${project.build.directory}/sonataflow-deployment-webapp</outputDirectory>
                           </artifactItem>
                       </artifactItems>
@@ -138,7 +138,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                       <resources>
                           <resource>
                               <directory
-                >${project.build.directory}/sonataflow-deployment-webapp/META-INF/resources/webjars/sonataflow-deployment-webapp/${slwtDeploymentWebapp.version}/dist</directory>
+                >${project.build.directory}/sonataflow-deployment-webapp/META-INF/resources/webjars/sonataflow-deployment-webapp/${sonataFlowDeploymentWebapp.version}/dist</directory>
 
                                 <includes>**/*</includes>
                           </resource>
