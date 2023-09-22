@@ -6651,18 +6651,15 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
-      "@kie-tools/dashbuilder-swf-monitoring-dashboard":
-        specifier: workspace:*
-        version: link:../dashbuilder-swf-monitoring-dashboard
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
       "@kie-tools/serverless-logic-web-tools-swf-builder-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
-      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp":
+      "@kie-tools/sonataflow-deployment-webapp":
         specifier: workspace:*
-        version: link:../serverless-logic-web-tools-swf-deployment-webapp
+        version: link:../sonataflow-deployment-webapp
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
