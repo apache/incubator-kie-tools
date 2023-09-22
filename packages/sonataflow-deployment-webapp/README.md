@@ -74,9 +74,10 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ## Using the deployed webjar
 
-1.  Edit the `pom.xml` file and add the following plugin configuration:
+1.      Visit [webjars.org](https://www.webjars.org/) and search for the leatest available version of `sonataflow-deployment-webapp`
+2.  Edit the `pom.xml` file and add the following plugin configuration:
 
-Add the webjar version to the properties section of your pom.xml
+Add the `sonataflow-deployment-webapp` version from webjars.org to the properties section of your pom.xml
 
 ```xml
 <sonataFlowDeploymentWebapp.version>0.32.0</sonataFlowDeploymentWebapp.version>
