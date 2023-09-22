@@ -284,7 +284,7 @@
           <incrementalEnabled>true</incrementalEnabled>
           <webappDirectory>${project.build.directory}/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor</webappDirectory>
           <initialScriptFilename>org.kie.workbench.common.stunner.sw.KogitoSWEditor.nocache.js</initialScriptFilename>
-          <compilationLevel>BUNDLE_JAR</compilationLevel>
+          <compilationLevel>ADVANCED</compilationLevel>
         </configuration>
       </plugin>
       <plugin>

@@ -374,3 +374,10 @@ C2S.prototype.__root;
 
 /** @type {Object} */
 C2S.prototype.__currentElementsToStyle;
+
+/**
+ * @param {ImageData|number} width
+ * @param {number=} height
+ * @return {HTMLCanvasElement|ImageData}
+ */
+C2S.prototype.createImageData = function (width, height) {};

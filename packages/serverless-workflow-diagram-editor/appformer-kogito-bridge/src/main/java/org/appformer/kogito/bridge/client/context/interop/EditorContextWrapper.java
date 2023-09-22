@@ -32,15 +32,20 @@ import jsinterop.annotations.JsType;
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class EditorContextWrapper {
 
-    @JsProperty
-    public native String getChannel();
-
-    @JsProperty
-    public native String getOperatingSystem();
-
     @JsProperty(name = "editorContext")
-    public static native EditorContextWrapper get();
+    public static native EditorContext get();
 
-    @JsProperty
-    public native boolean isReadOnly();
+
+    @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "editorContext")
+    public static class EditorContext {
+
+        @JsProperty
+        public native String getChannel();
+
+        @JsProperty
+        public native String getOperatingSystem();
+
+        @JsProperty
+        public native boolean isReadOnly();
+    }
 }
