@@ -39,7 +39,7 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ### Using a local webjar
 
-1.  From this project run `mvn install`
+1.  From this project run `mvn install`, to make this project available in the `.m2` repository for use in the consumer app.
 2.  Edit the `pom.xml` file in your consumer app and add the following plugin configuration:
 
 ```xml
@@ -74,7 +74,7 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ## Using the deployed webjar
 
-1.      Visit [webjars.org](https://www.webjars.org/) and search for the leatest available version of `sonataflow-deployment-webapp`
+1.  Visit [webjars.org](https://www.webjars.org/) and search for the leatest available version of `sonataflow-deployment-webapp`
 2.  Edit the `pom.xml` file and add the following plugin configuration:
 
 Add the `sonataflow-deployment-webapp` version from webjars.org to the properties section of your pom.xml
