@@ -24,13 +24,13 @@ export const diagramColors = {
   selected: "#006ba4",
 };
 
-export const UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";
+export const UNKNOWN_DMN_NAMESPACE = "https://kie.org/dmn/unknown";
 
 export function useDiagramData() {
   ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag =
     !___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag;
 
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
 
   const { dmnEdgesByDmnElementRef, dmnShapesByHref, dmnElementRefsForForShapesPointingToExternalDmnObjects } =
@@ -40,7 +40,8 @@ export function useDiagramData() {
       const dmnElementRefsForForShapesPointingToExternalDmnObjects: string[] = [];
 
       const diagramElements =
-        dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["dmndi:DMNDiagramElement"] ?? [];
+        thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["dmndi:DMNDiagramElement"] ??
+        [];
       for (let i = 0; i < diagramElements.length; i++) {
         const e = diagramElements[i];
         // DMNEdge
@@ -57,7 +58,8 @@ export function useDiagramData() {
           // Do not skip adding it to the regular `dmnShapesByHref`, as nodes will query this.
           const dmnElementRefQName = parseXmlQName(e["@_dmnElementRef"]);
           if (dmnElementRefQName.prefix) {
-            const namespace = dmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`] ?? UNKNOWN_NAMESPACE;
+            const namespace =
+              thisDmn.model.definitions[`@_xmlns:${dmnElementRefQName.prefix}`] ?? UNKNOWN_DMN_NAMESPACE;
             href = buildXmlHref({ namespace, id: dmnElementRefQName.localPart });
             dmnElementRefsForForShapesPointingToExternalDmnObjects.push(href);
           } else {
@@ -74,7 +76,7 @@ export function useDiagramData() {
         dmnShapesByHref,
         dmnElementRefsForForShapesPointingToExternalDmnObjects,
       };
-    }, [diagram.drdIndex, dmn.model.definitions]);
+    }, [diagram.drdIndex, thisDmn.model.definitions]);
 
   const { otherDmnsByNamespace } = useOtherDmns();
 
@@ -141,7 +143,7 @@ export function useDiagramData() {
 
     const edges: RF.Edge<DmnDiagramEdgeData>[] = [
       // information requirements
-      ...(dmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnDiagramEdgeData>[]>((acc, dmnObject) => {
+      ...(thisDmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnDiagramEdgeData>[]>((acc, dmnObject) => {
         if (dmnObject.__$$element === "decision") {
           acc.push(
             ...(dmnObject.informationRequirement ?? []).map((ir) =>
@@ -202,7 +204,7 @@ export function useDiagramData() {
         return acc;
       }, []),
       // associations
-      ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject) =>
+      ...(thisDmn.model.definitions.artifact ?? []).flatMap((dmnObject) =>
         dmnObject.__$$element === "association"
           ? [
               newEdge({
@@ -236,7 +238,7 @@ export function useDiagramData() {
         return undefined;
       }
 
-      const dmnObjectNamespace = dmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`];
+      const dmnObjectNamespace = thisDmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`];
       const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
       const shape = dmnShapesByHref.get(id)!;
       const data: DmnDiagramNodeData = {
@@ -278,11 +280,11 @@ export function useDiagramData() {
     }
 
     const localNodes: RF.Node<DmnDiagramNodeData>[] = [
-      ...(dmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
+      ...(thisDmn.model.definitions.drgElement ?? []).flatMap((dmnObject, index) => {
         const newNode = ackNode({ type: "xml-qname", localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),
-      ...(dmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
+      ...(thisDmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) => {
         const newNode = ackNode({ type: "xml-qname", localPart: dmnObject["@_id"]! }, dmnObject, index);
         return newNode ? [newNode] : [];
       }),
@@ -326,7 +328,7 @@ export function useDiagramData() {
 
     const externalNodes = dmnElementRefsForForShapesPointingToExternalDmnObjects.flatMap((href) => {
       const shape = dmnShapesByHref.get(href)!;
-      const namespace = dmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
+      const namespace = thisDmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
       if (namespace) {
         const externalDrgElements = otherDmnsByNamespace[namespace]?.model.definitions.drgElement ?? [];
         const index = externalDrgElements.findIndex((e) => e["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
@@ -366,7 +368,7 @@ export function useDiagramData() {
     diagram.selectedEdges,
     diagram.overlays.enableNodeHierarchyHighlight,
     diagram.snapGrid,
-    dmn.model.definitions,
+    thisDmn.model.definitions,
     dmnElementRefsForForShapesPointingToExternalDmnObjects,
     dmnEdgesByDmnElementRef,
     dmnShapesByHref,

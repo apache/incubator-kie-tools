@@ -16,9 +16,9 @@ export function DataTypeNodePanel(props: {
   return (
     <>
       {props.isVisible && diagram.overlays.enableDataTypesOnNodes && (
-        <Label className={"kie-dmn-editor--data-type-node-panel"} isCompact={true}>{`🔹 ${
-          props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined
-        }`}</Label>
+        <Label className={"kie-dmn-editor--data-type-node-panel"} isCompact={true}>
+          {props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
+        </Label>
       )}
     </>
   );

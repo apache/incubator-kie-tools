@@ -522,8 +522,87 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   font-style: italic;
   font-size: smaller;
   color: #1b515f;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 /* (end) data type label */
+
+/* (begin) data types */
+.kie-dmn-editor--data-types-filter {
+  margin: 8px;
+  padding: 8px;
+}
+.kie-dmn-editor--data-types-filter input {
+  flex-grow: 1;
+}
+.kie-dmn-editor--data-types-nav-item {
+  display: flex;
+  align-items: baseline;
+  padding: 0 16px;
+  cursor: pointer;
+}
+.kie-dmn-editor--data-types-title div,
+.kie-dmn-editor--data-types-title div input {
+  width: 100%;
+}
+.kie-dmn-editor--data-types-nav-item.active {
+  color: #0067cc;
+  backdrop-filter: brightness(95%);
+}
+.kie-dmn-editor--data-types-nav-item:hover {
+  backdrop-filter: brightness(90%);
+}
+.kie-dmn-editor--data-types-nav-item:focus {
+  backdrop-filter: brightness(80%);
+}
+.kie-dmn-editor--data-type-parents button {
+  padding: 6px !important;
+  margin-right: 36px !important;
+}
+.kie-dmn-editor--data-type-parents button:last-child::after {
+  content: "↴";
+}
+.kie-dmn-editor--data-type-parents button::after {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  padding: 8px;
+  pointer-events: none;
+}
+.kie-dmn-editor--data-type-properties-table td,
+th {
+  padding: 12px;
+}
+.kie-dmn-editor--data-type-properties-table tr {
+  border-bottom: 1px solid lightgray;
+}
+/* Hover effect */
+.kie-dmn-editor--data-type-properties-table tbody tr:hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background: #0067cc;
+}
+/* Gradients for depth illusion */
+.kie-dmn-editor--data-type-properties-table .first-nested-at-level {
+  background: linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
+}
+.kie-dmn-editor--data-type-properties-table .last-nested-at-level {
+  background: linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
+}
+.kie-dmn-editor--data-type-properties-table .first-nested-at-level.last-nested-at-level {
+  background: linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%),
+    linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
+}
+.kie-dmn-editor--data-type-properties-table .pf-m-typeahead::before {
+  border: 0 !important; /* Remove borders from DataTypeSelector */
+}
+.kie-dmn-editor--data-type-properties-table .pf-m-typeahead {
+  background: rgb(255, 255, 255, 0.7); /* Let */
+}
+/* (end) data types */
 
 /* ******************************* */
 /* ******************************* */
@@ -686,3 +765,16 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   cursor: crosshair;
 }
 /* ⬆ (end) react-flow theming ⬆ */
+
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/*   ⬇ (begin) pf4 overrides ⬇    */
+/* ******************************* */
+.pf-c-truncate,
+.pf-c-truncate__start {
+  min-width: 0 !important;
+}
+/*   ⬆ (end) pf4 overrides ⬆      */

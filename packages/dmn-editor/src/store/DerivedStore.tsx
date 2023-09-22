@@ -34,15 +34,15 @@ export function useDmnEditorDerivedStore() {
 
 export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChildren<{}>) {
   const diagram = useDmnEditorStore((s) => s.diagram);
-  const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+  const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
 
   const importsByNamespace = useMemo(() => {
     const ret = new Map<string, DMN15__tImport>();
-    for (let i = 0; i < imports.length; i++) {
-      ret.set(imports[i]["@_namespace"], imports[i]);
+    for (let i = 0; i < thisDmnsImports.length; i++) {
+      ret.set(thisDmnsImports[i]["@_namespace"], thisDmnsImports[i]);
     }
     return ret;
-  }, [imports]);
+  }, [thisDmnsImports]);
 
   const { nodes, edges, nodesById, edgesById, dmnEdgesByDmnElementRef, dmnShapesByHref } = useDiagramData();
 

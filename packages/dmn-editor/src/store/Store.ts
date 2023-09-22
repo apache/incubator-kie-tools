@@ -34,6 +34,10 @@ export interface State {
       isOpen: boolean;
     };
   };
+  dataTypesEditor: {
+    activeItemId: string | undefined;
+    expandedItemComponentIds: string[];
+  };
   navigation: {
     tab: DmnEditorTab;
   };
@@ -138,7 +142,7 @@ export const defaultStaticState = () => ({
     },
   },
   navigation: {
-    tab: DmnEditorTab.EDITOR,
+    tab: DmnEditorTab.DATA_TYPES,
   },
   diagram: {
     drdIndex: 0,
@@ -174,6 +178,10 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
     immer<State>((set, get) => ({
       dmn: {
         model,
+      },
+      dataTypesEditor: {
+        activeItemId: model.definitions.itemDefinition?.[0]?.["@_id"],
+        expandedItemComponentIds: [],
       },
       ...defaultStaticState(),
       dispatch: {

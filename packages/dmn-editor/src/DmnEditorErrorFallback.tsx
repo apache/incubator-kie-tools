@@ -11,10 +11,9 @@ import {
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FallbackProps } from "react-error-boundary";
-import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components";
+import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   const { dmnModelBeforeEditingRef, issueTrackerHref } = useDmnEditor();
@@ -23,8 +22,12 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
     resetErrorBoundary(dmnModelBeforeEditingRef.current);
   }, [dmnModelBeforeEditingRef, resetErrorBoundary]);
 
+  useEffect(() => {
+    console.error(error);
+  }, [error]);
+
   return (
-    <div style={{ marginTop: "120px", display: "flex", justifyContent: "center" }}>
+    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
         <Title size={"lg"} headingLevel={"h4"}>
@@ -67,6 +70,6 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
           )}
         </EmptyStatePrimary>
       </EmptyState>
-    </div>
+    </Flex>
   );
 }

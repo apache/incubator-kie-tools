@@ -13,7 +13,7 @@ import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-sourc
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 
 export function GlobalDiagramProperties() {
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -43,7 +43,7 @@ export function GlobalDiagramProperties() {
             type={"text"}
             isDisabled={false}
             placeholder={"Enter a name..."}
-            value={dmn.model.definitions["@_name"]}
+            value={thisDmn.model.definitions["@_name"]}
             onChange={(newName) =>
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_name"] = newName;
@@ -59,7 +59,7 @@ export function GlobalDiagramProperties() {
             style={{ resize: "vertical", minHeight: "40px" }}
             rows={6}
             placeholder={"Enter a description..."}
-            value={dmn.model.definitions["description"]}
+            value={thisDmn.model.definitions["description"]}
             onChange={(newDescription) =>
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions.description = newDescription;
@@ -77,7 +77,7 @@ export function GlobalDiagramProperties() {
             type={"text"}
             isDisabled={false}
             placeholder={"Enter a namespace..."}
-            value={dmn.model.definitions["@_namespace"]}
+            value={thisDmn.model.definitions["@_namespace"]}
             onChange={(newNamespace) =>
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_namespace"] = newNamespace;
@@ -91,7 +91,7 @@ export function GlobalDiagramProperties() {
             type={"text"}
             isDisabled={false}
             placeholder={"Enter an expression language..."}
-            value={dmn.model.definitions["@_expressionLanguage"]}
+            value={thisDmn.model.definitions["@_expressionLanguage"]}
             onChange={(newExprLang) =>
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_expressionLanguage"] = newExprLang;
@@ -101,7 +101,7 @@ export function GlobalDiagramProperties() {
         </FormGroup>
         <FormGroup label="ID">
           <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
-            {dmn.model.definitions["@_id"]}
+            {thisDmn.model.definitions["@_id"]}
           </ClipboardCopy>
         </FormGroup>
       </FormFieldGroupExpandable>

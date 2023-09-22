@@ -65,6 +65,7 @@ import { buildXmlQName } from "../xml/xmlQNames";
 import { original } from "immer";
 import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import { VirtualMachineIcon } from "@patternfly/react-icons/dist/esm/icons/virtual-machine-icon";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -94,7 +95,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const diagram = useDmnEditorStore((s) => s.diagram);
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
 
   const { dmnModelBeforeEditingRef } = useDmnEditor();
 
@@ -579,10 +580,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const onNodeDragStart = useCallback<RF.NodeDragHandler>(
     (e, node: RF.Node<DmnDiagramNodeData>, nodes) => {
-      dmnModelBeforeEditingRef.current = dmn.model;
+      dmnModelBeforeEditingRef.current = thisDmn.model;
       onNodeDrag(e, node, nodes);
     },
-    [dmn.model, dmnModelBeforeEditingRef, onNodeDrag]
+    [thisDmn.model, dmnModelBeforeEditingRef, onNodeDrag]
   );
 
   const onNodeDragStop = useCallback<RF.NodeDragHandler>(
@@ -934,7 +935,7 @@ export function TopRightCornerPanels() {
             bodyContent={<OverlaysPanel />}
           >
             <button className={"kie-dmn-editor--overlays-panel-toggle-button"} onClick={toggleOverlaysPanel}>
-              <TenantIcon size={"sm"} />
+              <VirtualMachineIcon size={"sm"} />
             </button>
           </Popover>
         </aside>

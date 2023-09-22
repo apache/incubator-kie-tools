@@ -7,6 +7,7 @@ import { useDmnEditorStore } from "../store/Store";
 
 export type DmnEditorDataTypeReference = DmnDataType & {
   namespace: string;
+  isCollection: boolean | undefined;
 };
 
 export function useDataTypes() {
@@ -18,6 +19,7 @@ export function useDataTypes() {
     () =>
       Object.values(DmnBuiltInDataType).map((feelType) => ({
         isCustom: false,
+        isCollection: false,
         typeRef: feelType,
         name: feelType,
         namespace: "",
@@ -29,6 +31,7 @@ export function useDataTypes() {
     () =>
       (thisDmn.model.definitions.itemDefinition ?? []).map((item) => ({
         isCustom: true,
+        isCollection: item["@_isCollection"],
         typeRef: item.typeRef!,
         name: item["@_name"],
         namespace: thisDmn.model.definitions["@_namespace"],
@@ -53,6 +56,7 @@ export function useDataTypes() {
 
       return (otherDmn.model.definitions.itemDefinition ?? []).map((item) => ({
         isCustom: true,
+        isCollection: item["@_isCollection"],
         typeRef: item.itemComponent
           ? (undefined as any) //FIXME: Tiago --> The `DmnDataType` interface is very limited...
           : buildFeelQNameFromNamespace({

@@ -34,7 +34,6 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
-  const dmn = useDmnEditorStore((s) => s.dmn);
   const { nodesById } = useDmnEditorDerivedStore();
 
   const node = useMemo(() => {

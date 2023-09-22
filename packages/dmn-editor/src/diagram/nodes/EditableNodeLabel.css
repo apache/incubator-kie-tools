@@ -39,3 +39,10 @@
 .kie-dmn-editor--editable-node-name-input input:focus {
   outline: 0;
 }
+
+.kie-dmn-editor--editable-node-name-input.grow,
+.kie-dmn-editor--editable-node-name-input.grow input,
+.kie-dmn-editor--editable-node-name-input.grow span {
+  width: 100%;
+  flex-grow: 1;
+}

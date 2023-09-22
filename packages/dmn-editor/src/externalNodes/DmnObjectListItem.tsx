@@ -43,7 +43,7 @@ export function DmnObjectListItem({
       }`}</div>
       <div>
         {dmnObject.__$$element !== "knowledgeSource" ? (
-          <DataTypeLabel typeRef={dmnObject.variable?.["@_typeRef"]} namespace={namespace} />
+          <DataTypeLabel typeRef={dmnObject.variable?.["@_typeRef"]} namespace={namespace} isCollection={false} /> // FIXME: Tiago --> Actually say if it's collection of not.
         ) : (
           <></>
         )}

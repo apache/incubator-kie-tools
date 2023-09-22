@@ -7,6 +7,7 @@ import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
 export function EditableNodeLabel({
   namedElement,
@@ -16,7 +17,11 @@ export function EditableNodeLabel({
   value,
   onChange,
   position,
+  grow,
+  saveOnBlur,
 }: {
+  saveOnBlur?: boolean;
+  grow?: boolean;
   namedElement?: DMN15__tNamedElement;
   namedElementQName?: XmlQName;
   position?: "center-center" | "top-center" | "center-left" | "top-left";
@@ -25,7 +30,7 @@ export function EditableNodeLabel({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: (value: string | undefined) => void;
 }) {
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
 
   const isEditing = useMemo(() => {
@@ -71,7 +76,7 @@ export function EditableNodeLabel({
 
   const onBlur = useCallback(() => {
     setEditing(false);
-    setShouldCommit(false);
+    setShouldCommit(saveOnBlur ?? false);
     restoreFocus();
 
     if (valid && internalValue !== value && shouldCommit) {
@@ -80,7 +85,7 @@ export function EditableNodeLabel({
       console.debug(`Label change cancelled for node with label ${value}`);
       setInternalValue(value);
     }
-  }, [internalValue, onChange, restoreFocus, setEditing, shouldCommit, valid, value]);
+  }, [internalValue, onChange, restoreFocus, saveOnBlur, setEditing, shouldCommit, valid, value]);
 
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(
@@ -104,17 +109,20 @@ export function EditableNodeLabel({
 
   // Very important to restore the focus after editing is done.
   const previouslyFocusedElement = useRef<Element | undefined>();
+  useLayoutEffect(() => {
+    if (isEditing) {
+      previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element. Most likely the node itself.
+      ref.current?.focus();
+    }
+  }, [isEditing]);
 
   // Make sure the component is rendered with its text already selected.
   // `useLayoutEffect` is just like `useEffect`, but runs before the DOM mutates.
   useLayoutEffect(() => {
     if (isEditing) {
-      previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element. Most likely the node itself.
       ref.current?.setSelectionRange(0, 0);
-      ref.current?.focus();
     }
   }, [isEditing]);
-
   // It's important to do this in two steps, so the text is selected and shows always from the start, not from the end.
   useEffect(() => {
     if (isEditing) {
@@ -132,21 +140,21 @@ export function EditableNodeLabel({
     }
 
     if (!namedElement || !namedElementQName) {
-      return value;
+      return <Truncate content={value} tooltipPosition={"right-end"} />;
     }
 
     const feelName = buildFeelQNameFromXmlQName({
       namedElement,
       importsByNamespace,
-      model: dmn.model.definitions,
+      model: thisDmn.model.definitions,
       namedElementQName,
     });
 
-    return feelName.full;
-  }, [dmn.model.definitions, importsByNamespace, namedElement, namedElementQName, value]);
+    return <Truncate content={feelName.full} tooltipPosition={"right-end"} />;
+  }, [thisDmn.model.definitions, importsByNamespace, namedElement, namedElementQName, value]);
 
   return (
-    <div className={`kie-dmn-editor--editable-node-name-input ${positionClass}`}>
+    <div className={`kie-dmn-editor--editable-node-name-input ${positionClass} ${grow ? "grow" : ""}`}>
       {(isEditing && (
         <input
           onMouseDownCapture={(e) => e.stopPropagation()} // Make sure mouse events stay inside the node.
@@ -157,7 +165,8 @@ export function EditableNodeLabel({
           onChange={(e) => setInternalValue(e.target.value)}
           value={internalValue}
         />
-      )) || <span>{displayValue}</span>}
+      )) ||
+        displayValue}
     </div>
   );
 }

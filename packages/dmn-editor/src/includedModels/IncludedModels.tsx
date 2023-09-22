@@ -1,12 +1,10 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -14,7 +12,7 @@ import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/re
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CardTitle, Card, CardHeader, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
-import { Gallery, GalleryItem } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { addIncludedModel } from "../mutations/addIncludedModel";
 import { deleteIncludedModel } from "../mutations/deleteIncludedModel";
 import { SPEC } from "../Spec";
@@ -24,10 +22,12 @@ import { OtherDmn } from "../DmnEditor";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DmnModel } from "@kie-tools/dmn-marshaller";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const imports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
+  const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
 
   const { includedModelsContextDescription } = useDmnEditor();
   const { importsByNamespace } = useDmnEditorDerivedStore();
@@ -184,17 +184,7 @@ export function IncludedModels() {
           <br />
         </Form>
       </Modal>
-      <PageSection variant={"light"}>
-        <TextContent>
-          <Text component={TextVariants.p}>
-            Included models are externally defined models that have been added to this DMN file. Included DMN models
-            have their decision requirements diagram (DRD) or decision requirements graph (DRG) components available in
-            this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business
-            Knowledge Model nodes (BKMs).
-          </Text>
-        </TextContent>
-      </PageSection>
-      {imports.length > 0 && (
+      {thisDmnsImports.length > 0 && (
         <PageSection>
           <Button onClick={openModal} variant={ButtonVariant.primary}>
             Include model
@@ -204,7 +194,7 @@ export function IncludedModels() {
           <Divider inset={{ default: "insetMd" }} />
           <br />
           <Gallery hasGutter={true}>
-            {imports.flatMap((i, index) => {
+            {thisDmnsImports.flatMap((i, index) => {
               const otherDmn = otherDmnsByNamespace[i["@_namespace"]];
               if (!otherDmn) {
                 return []; // Ignore
@@ -233,19 +223,24 @@ export function IncludedModels() {
           </Gallery>
         </PageSection>
       )}
-      {imports.length <= 0 && (
-        <PageSection>
-          <EmptyState>
-            <EmptyStateIcon icon={PlusCircleIcon} />
-            <Title headingLevel="h4" size="lg">
+      {thisDmnsImports.length <= 0 && (
+        <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
+          <EmptyState style={{ maxWidth: "1280px" }}>
+            <EmptyStateIcon icon={CubesIcon} />
+            <Title size={"lg"} headingLevel={"h4"}>
               No external models have been included.
             </Title>
-            <EmptyStateBody>{`Select "Include model" to start.`}</EmptyStateBody>
+            <EmptyStateBody>
+              Included models are externally defined models that have been added to this DMN file. Included DMN models
+              have their decision requirements diagram (DRD) or decision requirements graph (DRG) components available
+              in this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business
+              Knowledge Model nodes (BKMs)
+            </EmptyStateBody>
             <Button onClick={openModal} variant={ButtonVariant.primary}>
               Include model
             </Button>
           </EmptyState>
-        </PageSection>
+        </Flex>
       )}
     </>
   );

@@ -33,7 +33,7 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
-  const dmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const dispatch = useDmnEditorStore((s) => s.dispatch);
   const boxedExpressionEditor = useDmnEditorStore((s) => s.boxedExpressionEditor);
 
@@ -41,7 +41,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   const widthsById = useMemo(() => {
     return (
-      dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.[
+      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.[
         "kie:ComponentsWidthsExtension"
       ]?.["kie:ComponentWidths"] ?? []
     ).reduce((acc, c) => {
@@ -51,21 +51,21 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         return acc.set(c["@_dmnElementRef"], c["kie:width"] ?? []);
       }
     }, new Map<string, number[]>());
-  }, [dmn.model.definitions]);
+  }, [thisDmn.model.definitions]);
 
   const expression = useMemo(() => {
     if (!boxedExpressionEditor.openExpressionId) {
       return undefined;
     }
 
-    const drgElementIndex = (dmn.model.definitions.drgElement ?? []).findIndex(
+    const drgElementIndex = (thisDmn.model.definitions.drgElement ?? []).findIndex(
       (e) => e["@_id"] === boxedExpressionEditor.openExpressionId
     );
     if (drgElementIndex < 0) {
       return undefined;
     }
 
-    const drgElement = dmn.model.definitions.drgElement![drgElementIndex];
+    const drgElement = thisDmn.model.definitions.drgElement![drgElementIndex];
     if (!(drgElement.__$$element === "decision" || drgElement.__$$element === "businessKnowledgeModel")) {
       return undefined;
     }
@@ -75,7 +75,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       drgElementIndex,
       drgElementType: drgElement.__$$element,
     };
-  }, [boxedExpressionEditor.openExpressionId, dmn.model.definitions.drgElement, widthsById]);
+  }, [boxedExpressionEditor.openExpressionId, thisDmn.model.definitions.drgElement, widthsById]);
 
   const [lastValidExpression, setLastValidExpression] = useState<typeof expression>(undefined);
   useEffect(() => {
