@@ -34,7 +34,6 @@ module.exports = async (env) =>
       index: "./src/index.tsx",
     },
     optimization: {
-      minimize: true, // This should already be there
       minimizer: [
         new TerserPlugin({
           terserOptions: {
