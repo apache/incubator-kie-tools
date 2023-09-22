@@ -39,7 +39,8 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ### Using a local webjar
 
-1.  Edit the `pom.xml` file and add the following plugin configuration:
+1.  From this project run `mvn install`
+2.  Edit the `pom.xml` file in your consumer app and add the following plugin configuration:
 
 ```xml
 <plugin>
@@ -57,8 +58,8 @@ To create a consumer app for local tests following the Quarkus Getting Started A
                 <artifactItems>
                     <artifactItem>
                         <groupId>org.webjars.npm</groupId>
-                        <artifactId>sonataflow-deployment-webapp</artifactId>
-                        <version>0.1.0</version>
+                        <artifactId>sonataflow-deployment-webapp-local</artifactId>
+                        <version>0.0.1</version>
                         <type>jar</type>
                         <overWrite>true</overWrite>
                         <outputDirectory>${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
