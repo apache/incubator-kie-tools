@@ -24,7 +24,7 @@
 >
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.webjars.npm</groupId>
-    <artifactId>sonataflow-deployment-webapp</artifactId>
+    <artifactId>sonataflow-deployment-webapp-local</artifactId>
     <version>0.0.1</version>
     <packaging>jar</packaging>
 
@@ -94,6 +94,7 @@
                                         <include>**/*.html</include>
                                         <include>**/*.css</include>
                                         <include>**/*.js</include>
+                                        <include>**/*.json</include>
                                         <include>**/*.svg</include>
                                         <include>**/*.png</include>
                                         <include>fonts/**/*</include>

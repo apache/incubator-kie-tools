@@ -39,7 +39,8 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ### Using a local webjar
 
-1.  Edit the `pom.xml` file and add the following plugin configuration:
+1.  From this project run `mvn install`, to make this project available in the `.m2` repository for use in the consumer app.
+2.  Edit the `pom.xml` file in your consumer app and add the following plugin configuration:
 
 ```xml
 <plugin>
@@ -57,8 +58,8 @@ To create a consumer app for local tests following the Quarkus Getting Started A
                 <artifactItems>
                     <artifactItem>
                         <groupId>org.webjars.npm</groupId>
-                        <artifactId>sonataflow-deployment-webapp</artifactId>
-                        <version>0.1.0</version>
+                        <artifactId>sonataflow-deployment-webapp-local</artifactId>
+                        <version>0.0.1</version>
                         <type>jar</type>
                         <overWrite>true</overWrite>
                         <outputDirectory>${project.basedir}/src/main/resources/META-INF/resources</outputDirectory>
@@ -73,12 +74,13 @@ To create a consumer app for local tests following the Quarkus Getting Started A
 
 ## Using the deployed webjar
 
-1.  Edit the `pom.xml` file and add the following plugin configuration:
+1.  Visit [webjars.org](https://www.webjars.org/) and search for the leatest available version of `sonataflow-deployment-webapp`
+2.  Edit the `pom.xml` file and add the following plugin configuration:
 
-Add the webjar version to the properties section of your pom.xml
+Add the `sonataflow-deployment-webapp` version from webjars.org to the properties section of your pom.xml
 
 ```xml
-<slwtDeploymentWebapp.version>0.0.2</slwtDeploymentWebapp.version>
+<sonataFlowDeploymentWebapp.version>0.32.0</sonataFlowDeploymentWebapp.version>
 ```
 
 Add the webjar as a dependency in the dependencies section
@@ -88,7 +90,7 @@ Add the webjar as a dependency in the dependencies section
     <dependency>
         <groupId>org.webjars.npm</groupId>
         <artifactId>sonataflow-deployment-webapp</artifactId>
-        <version>${slwtDeploymentWebapp.version}</version>
+        <version>${sonataFlowDeploymentWebapp.version}</version>
     </dependency>
   </dependencies>
 ```
@@ -113,7 +115,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                           <artifactItem>
                               <groupId>org.webjars.npm</groupId>
                               <artifactId>sonataflow-deployment-webapp</artifactId>
-                              <version>${slwtDeploymentWebapp.version}</version>
+                              <version>${sonataFlowDeploymentWebapp.version}</version>
                               <outputDirectory>${project.build.directory}/sonataflow-deployment-webapp</outputDirectory>
                           </artifactItem>
                       </artifactItems>
@@ -138,7 +140,7 @@ Add a plugin to unpack and copy the Webjar in the plugins section
                       <resources>
                           <resource>
                               <directory
-                >${project.build.directory}/sonataflow-deployment-webapp/META-INF/resources/webjars/sonataflow-deployment-webapp/${slwtDeploymentWebapp.version}/dist</directory>
+                >${project.build.directory}/sonataflow-deployment-webapp/META-INF/resources/webjars/sonataflow-deployment-webapp/${sonataFlowDeploymentWebapp.version}/dist</directory>
 
                                 <includes>**/*</includes>
                           </resource>
