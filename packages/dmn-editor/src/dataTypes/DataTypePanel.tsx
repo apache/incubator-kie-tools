@@ -159,6 +159,7 @@ export function DataTypePanel({
           <Title size={"md"} headingLevel="h4">
             Constraints
           </Title>
+          Work in progress 🔧
           <br />
         </>
       )}
