@@ -565,13 +565,22 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 }
 .kie-dmn-editor--data-type-parents button:last-child::after {
   content: "↴";
+  margin-top: 8px;
 }
 .kie-dmn-editor--data-type-parents button::after {
-  padding: 0;
+  content: ">";
   margin: 0;
-  position: relative;
+  font-size: 24px;
+  position: absolute;
   padding: 8px;
   pointer-events: none;
+  right: 0px;
+  width: calc(100% + 30px);
+  height: 100%;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 .kie-dmn-editor--data-type-properties-table td,
 th {
