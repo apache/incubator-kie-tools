@@ -573,8 +573,13 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 th {
   padding: 12px;
 }
+.kie-dmn-editor--data-type-properties-table {
+  position: relative;
+  overflow: hidden;
+}
 .kie-dmn-editor--data-type-properties-table tr {
   border-bottom: 1px solid lightgray;
+  position: relative;
 }
 /* Hover effect */
 .kie-dmn-editor--data-type-properties-table tbody tr:hover::after {
