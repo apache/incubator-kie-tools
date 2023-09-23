@@ -22,6 +22,7 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { DataType, EditItemDefinition, AddItemComponent, DataTypesById } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, reassignIds, getNewItemDefinition } from "./DataTypeSpec";
+import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -310,13 +311,12 @@ export function ItemComponentsTable({
                               icon={<PasteIcon />}
                               onClick={() => {
                                 navigator.clipboard.readText().then((t) => {
-                                  const pastedItemDefinition = JSON.parse(t);
+                                  const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
                                   // FIXME: Tiago --> Validate
-                                  addItemComponent(
-                                    dt.itemDefinition["@_id"]!,
-                                    "unshift",
-                                    reassignIds(pastedItemDefinition, "itemComponent")
-                                  );
+                                  addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
+                                    ...reassignIds(pastedItemDefinition, "itemComponent"),
+                                    typeRef: pastedItemDefinition.typeRef ?? undefined,
+                                  });
                                 });
                               }}
                             >

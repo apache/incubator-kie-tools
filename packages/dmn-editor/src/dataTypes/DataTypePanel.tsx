@@ -200,11 +200,10 @@ export function DataTypePanel({
                           navigator.clipboard.readText().then((t) => {
                             const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
                             // FIXME: Tiago --> Validate
-                            addItemComponent(
-                              dataType.itemDefinition["@_id"]!,
-                              "unshift",
-                              reassignIds(pastedItemDefinition, "itemComponent")
-                            );
+                            addItemComponent(dataType.itemDefinition["@_id"]!, "unshift", {
+                              ...reassignIds(pastedItemDefinition, "itemComponent"),
+                              typeRef: pastedItemDefinition.typeRef ?? undefined,
+                            });
                           });
                         }}
                       >
