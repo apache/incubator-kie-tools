@@ -541,6 +541,10 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   padding: 0 16px;
   cursor: pointer;
 }
+.kie-dmn-editor--data-types-title {
+  flex-grow: 1;
+  font-size: 2em;
+}
 .kie-dmn-editor--data-types-title div,
 .kie-dmn-editor--data-types-title div input {
   width: 100%;

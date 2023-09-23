@@ -65,7 +65,7 @@ import { buildXmlQName } from "../xml/xmlQNames";
 import { original } from "immer";
 import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
 import { buildXmlHref } from "../xml/xmlHrefs";
-import { VirtualMachineIcon } from "@patternfly/react-icons/dist/esm/icons/virtual-machine-icon";
+import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
 
 const PAN_ON_DRAG = [1, 2];
 

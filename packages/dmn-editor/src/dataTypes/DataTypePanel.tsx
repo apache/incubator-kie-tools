@@ -1,5 +1,4 @@
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -7,8 +6,6 @@ import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
-import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStoreApi } from "../store/Store";
@@ -17,7 +14,8 @@ import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist
 import { DataType, DataTypesById, EditItemDefinition, AddItemComponent } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
-import { getNewItemDefinition, isStruct, reassignIds } from "./DataTypeSpec";
+import { getNewItemDefinition, isStruct } from "./DataTypeSpec";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
 export function DataTypePanel({
   dataType,
@@ -97,6 +95,7 @@ export function DataTypePanel({
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const [dropdownOpenFor, setDropdownOpenFor] = useState<string | undefined>(undefined);
+  const [topLevelDropdownOpen, setTopLevelDropdownOpen] = useState<boolean>(false);
 
   return (
     <PageSection>
@@ -115,14 +114,48 @@ export function DataTypePanel({
           </Button>
         ))}
       </div>
-      <div style={{ fontSize: "2em" }} className={"kie-dmn-editor--data-types-title"}>
-        <DataTypeName
-          itemDefinition={dataType.itemDefinition}
-          editItemDefinition={editItemDefinition}
-          isActive={false}
-          editMode={"hover"}
-        />
-      </div>
+      <Flex>
+        <div className={"kie-dmn-editor--data-types-title"}>
+          <DataTypeName
+            itemDefinition={dataType.itemDefinition}
+            editItemDefinition={editItemDefinition}
+            isActive={false}
+            editMode={"hover"}
+          />
+        </div>
+        <FlexItem>
+          <Button variant={ButtonVariant.link}>Back</Button>
+          <Button variant={ButtonVariant.link}>Forward</Button>
+          <span>|</span>
+          <Button variant={ButtonVariant.link}>View usages</Button>
+          <Dropdown
+            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
+            onSelect={() => setTopLevelDropdownOpen(false)}
+            isOpen={topLevelDropdownOpen}
+            menuAppendTo={document.body}
+            isPlain={true}
+            position={"right"}
+            dropdownItems={[
+              <DropdownItem
+                key={"remove"}
+                style={{ minWidth: "240px" }}
+                icon={<TrashIcon />}
+                onClick={() => {
+                  editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
+                    items?.splice(dataType.index, 1);
+                  });
+                  dmnEditorStoreApi.setState((state) => {
+                    state.dataTypesEditor.activeItemId =
+                      dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+                  });
+                }}
+              >
+                Remove
+              </DropdownItem>,
+            ]}
+          />
+        </FlexItem>
+      </Flex>
       <br />
       <TextArea
         key={dataType.itemDefinition["@_id"]}
@@ -164,67 +197,14 @@ export function DataTypePanel({
         </>
       )}
       {isStruct(dataType.itemDefinition) && (
-        <>
-          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-            <FlexItem>
-              <Title size={"md"} headingLevel="h4">
-                {`Properties in '${dataType.itemDefinition["@_name"]}'`}
-                <Button
-                  variant={ButtonVariant.link}
-                  onClick={() => addItemComponent(dataType.itemDefinition["@_id"]!, "unshift")}
-                >
-                  <PlusCircleIcon />
-                </Button>
-              </Title>
-            </FlexItem>
-            <FlexItem>
-              <Dropdown
-                toggle={
-                  <KebabToggle
-                    id="toggle-kebab"
-                    onToggle={(isOpen) => setDropdownOpenFor(isOpen ? dataType.itemDefinition["@_id"] : undefined)}
-                  />
-                }
-                onSelect={() => setDropdownOpenFor(undefined)}
-                isOpen={dropdownOpenFor === dataType.itemDefinition["@_id"]}
-                menuAppendTo={document.body}
-                isPlain={true}
-                position={"right"}
-                dropdownItems={[
-                  <React.Fragment key={"copy-fragment"}>
-                    {isStruct(dataType.itemDefinition) && (
-                      <DropdownItem
-                        key={"paste"}
-                        style={{ minWidth: "240px" }}
-                        icon={<PasteIcon />}
-                        onClick={() => {
-                          navigator.clipboard.readText().then((t) => {
-                            const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
-                            // FIXME: Tiago --> Validate
-                            addItemComponent(dataType.itemDefinition["@_id"]!, "unshift", {
-                              ...reassignIds(pastedItemDefinition, "itemComponent"),
-                              typeRef: pastedItemDefinition.typeRef ?? undefined,
-                            });
-                          });
-                        }}
-                      >
-                        Paste
-                      </DropdownItem>
-                    )}
-                  </React.Fragment>,
-                ]}
-              />
-            </FlexItem>
-          </Flex>
-          <ItemComponentsTable
-            addItemComponent={addItemComponent}
-            dataTypesById={dataTypesById}
-            parent={dataType}
-            editItemDefinition={editItemDefinition}
-            dropdownOpenFor={dropdownOpenFor}
-            setDropdownOpenFor={setDropdownOpenFor}
-          />
-        </>
+        <ItemComponentsTable
+          addItemComponent={addItemComponent}
+          dataTypesById={dataTypesById}
+          parent={dataType}
+          editItemDefinition={editItemDefinition}
+          dropdownOpenFor={dropdownOpenFor}
+          setDropdownOpenFor={setDropdownOpenFor}
+        />
       )}
     </PageSection>
   );
