@@ -17,11 +17,13 @@ export function EditableNodeLabel({
   value,
   onChange,
   position,
+  truncate,
   grow,
   saveOnBlur,
 }: {
   saveOnBlur?: boolean;
   grow?: boolean;
+  truncate?: boolean;
   namedElement?: DMN15__tNamedElement;
   namedElementQName?: XmlQName;
   position?: "center-center" | "top-center" | "center-left" | "top-left";
@@ -140,7 +142,7 @@ export function EditableNodeLabel({
     }
 
     if (!namedElement || !namedElementQName) {
-      return <Truncate content={value} tooltipPosition={"right-end"} />;
+      return truncate ? <Truncate content={value} tooltipPosition={"right-end"} /> : value;
     }
 
     const feelName = buildFeelQNameFromXmlQName({
@@ -150,8 +152,8 @@ export function EditableNodeLabel({
       namedElementQName,
     });
 
-    return <Truncate content={feelName.full} tooltipPosition={"right-end"} />;
-  }, [thisDmn.model.definitions, importsByNamespace, namedElement, namedElementQName, value]);
+    return truncate ? <Truncate content={feelName.full} tooltipPosition={"right-end"} /> : feelName.full;
+  }, [value, namedElement, namedElementQName, importsByNamespace, thisDmn.model.definitions, truncate]);
 
   return (
     <div className={`kie-dmn-editor--editable-node-name-input ${positionClass} ${grow ? "grow" : ""}`}>

@@ -1096,6 +1096,17 @@ export function KeyboardShortcuts({
     });
   }, [dmnEditorStoreApi, g, rfStoreApi]);
 
+  const h = RF.useKeyPress(["h"]);
+  useEffect(() => {
+    if (!h) {
+      return;
+    }
+
+    dmnEditorStoreApi.setState((state) => {
+      state.diagram.overlays.enableNodeHierarchyHighlight = !state.diagram.overlays.enableNodeHierarchyHighlight;
+    });
+  }, [dmnEditorStoreApi, h]);
+
   return <></>;
 }
 

@@ -104,6 +104,7 @@ export function DataTypeName({
           onKeyDown={triggerEditingIfEnter}
         >
           <EditableNodeLabel
+            truncate={true}
             grow={true}
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
