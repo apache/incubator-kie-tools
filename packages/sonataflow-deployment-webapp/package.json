@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/sonataflow-deployment-webapp",
+  "name": "sonataflow-deployment-webapp",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
