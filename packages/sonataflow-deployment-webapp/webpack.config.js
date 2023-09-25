@@ -51,7 +51,7 @@ module.exports = async (env) =>
           { from: "./static/index.html", to: "./index.html" },
           { from: "./static/resources", to: "./resources" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
-          { from: "./static/sonataflow-deploy-webapp-data.json", to: "./sonataflow-deploy-webapp-data.json" },
+          { from: "./static/sonataflow-deployment-webapp-data.json", to: "./sonataflow-deployment-webapp-data.json" },
         ],
       }),
       new MonacoWebpackPlugin({

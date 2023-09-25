@@ -6651,24 +6651,21 @@ importers:
 
   packages/serverless-logic-web-tools-swf-builder-image:
     devDependencies:
-      "@kie-tools/dashbuilder-swf-monitoring-dashboard":
-        specifier: workspace:*
-        version: link:../dashbuilder-swf-monitoring-dashboard
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
       "@kie-tools/serverless-logic-web-tools-swf-builder-image-env":
         specifier: workspace:*
         version: link:../serverless-logic-web-tools-swf-builder-image-env
-      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp":
-        specifier: workspace:*
-        version: link:../serverless-logic-web-tools-swf-deployment-webapp
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+      sonataflow-deployment-webapp:
+        specifier: workspace:*
+        version: link:../sonataflow-deployment-webapp
 
   packages/serverless-logic-web-tools-swf-builder-image-env:
     devDependencies:
@@ -10470,7 +10467,7 @@ packages:
       "@babel/traverse": 7.21.5
       "@babel/types": 7.21.5
       convert-source-map: 1.7.0
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       gensync: 1.0.0-beta.2
       json5: 2.2.1
       semver: 6.3.0
@@ -10687,7 +10684,7 @@ packages:
       "@babel/core": 7.18.10
       "@babel/helper-compilation-targets": 7.21.5(@babel/core@7.18.10)
       "@babel/helper-plugin-utils": 7.21.5
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       lodash.debounce: 4.0.8
       resolve: 1.22.1
       semver: 6.3.0
@@ -13814,7 +13811,7 @@ packages:
       "@babel/helper-split-export-declaration": 7.18.6
       "@babel/parser": 7.21.8
       "@babel/types": 7.21.5
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -19138,7 +19135,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9(debug@4.3.1)
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -21607,7 +21604,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
 
   /debug@4.3.2:
     resolution:
@@ -21634,19 +21630,6 @@ packages:
     dependencies:
       ms: 2.1.2
       supports-color: 8.1.1
-    dev: true
-
-  /debug@4.3.4:
-    resolution:
-      { integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ== }
-    engines: { node: ">=6.0" }
-    peerDependencies:
-      supports-color: "*"
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.1.2
     dev: true
 
   /debug@4.3.4(supports-color@8.1.1):
@@ -23983,16 +23966,6 @@ packages:
     dependencies:
       tabbable: 5.3.3
 
-  /follow-redirects@1.14.9:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-
   /follow-redirects@1.14.9(debug@4.3.1):
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -24004,7 +23977,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
-    dev: true
 
   /for-each@0.3.3:
     resolution:
@@ -25110,7 +25082,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9(debug@4.3.1)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -26051,7 +26023,7 @@ packages:
       { integrity: sha512-c16LpFRkR8vQXyHZ5nLpY35JZtzj1PQY1iZmesUbf1FZHbIupcWfjgOXBY9YHkLEQ6puz1u4Dgj6qmU/DisrZg== }
     engines: { node: ">=8" }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       istanbul-lib-coverage: 3.2.0
       source-map: 0.6.1
     transitivePeerDependencies:
@@ -33049,7 +33021,7 @@ packages:
     resolution:
       { integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw== }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       detect-node: 2.1.0
       hpack.js: 2.1.6
       obuf: 1.1.2
@@ -33064,7 +33036,7 @@ packages:
       { integrity: sha512-r46gZQZQV+Kl9oItvl1JZZqJKGr+oEkB08A6BzkiR7593/7IbtuncXHd2YoYeTsG4157ZssMu9KYvUHLcjcDoA== }
     engines: { node: ">=6.0.0" }
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.4(supports-color@8.1.1)
       handle-thing: 2.0.1
       http-deceiver: 1.2.7
       select-hose: 2.0.0

@@ -91,6 +91,6 @@ export const routes = {
     cloudEvent: new Route<{}>(() => `/triggerCloudEvent`),
   },
 
-  dataJson: new Route<{}>(() => "/sonataflow-deploy-webapp-data.json"),
+  dataJson: new Route<{}>(() => "/sonataflow-deployment-webapp-data.json"),
   openApiJson: new Route<{}>(() => "/q/openapi.json"),
 };
