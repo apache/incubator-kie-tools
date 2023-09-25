@@ -106,7 +106,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const { all: dataTypes } = useDataTypes();
+  const { builtInDataTypes: dataTypes } = useDataTypes(); // FIXME: Tiago --> This is wrong!
 
   const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
 

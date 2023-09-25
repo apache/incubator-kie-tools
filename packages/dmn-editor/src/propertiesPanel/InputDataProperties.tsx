@@ -28,7 +28,6 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN15__tI
           placeholder={"Enter a name..."}
         />
       </FormGroup>
-
       <FormGroup label="Data type">
         <TypeRefSelector
           name={inputData.variable?.["@_typeRef"]}
@@ -39,7 +38,6 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN15__tI
           }}
         />
       </FormGroup>
-
       <FormGroup label="Description">
         <TextArea
           aria-label={"Description"}

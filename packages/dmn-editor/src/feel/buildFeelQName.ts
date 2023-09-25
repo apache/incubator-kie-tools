@@ -29,18 +29,34 @@ export function buildFeelQNameFromXmlQName({
     throw new Error(`Can't find namespace declaration for namespace with name '${namedElementQName.prefix}'.`);
   }
 
-  return buildFeelQNameFromNamespace({ namedElement, namespace, importsByNamespace });
+  return buildFeelQNameFromNamespace({
+    namedElement,
+    namespace,
+    importsByNamespace,
+    thisDmnsNamespace: model["@_xmlns"]!,
+  });
 }
 
 export function buildFeelQNameFromNamespace({
   namedElement,
   namespace,
   importsByNamespace,
+  thisDmnsNamespace,
 }: {
   namedElement: DMN15__tNamedElement;
   namespace: string;
   importsByNamespace: Map<string, DMN15__tImport>;
+  thisDmnsNamespace: string;
 }): FeelQNameBuild {
+  if (thisDmnsNamespace === namespace) {
+    return {
+      full: namedElement["@_name"],
+      prefix: undefined,
+      name: namedElement["@_name"],
+      isExternal: false,
+    };
+  }
+
   const _import = importsByNamespace.get(namespace);
   if (!_import) {
     throw new Error(`Can't find included model with namespace '${namespace}'.`);

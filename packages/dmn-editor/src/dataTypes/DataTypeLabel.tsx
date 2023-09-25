@@ -6,7 +6,7 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { useDmnEditorStore } from "../store/Store";
 import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
-import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
+import { parseFeelQName } from "../feel/parseFeelQName";
 
 const builtInDataTypes = new Set<string>(Object.values(DmnBuiltInDataType));
 
@@ -32,29 +32,47 @@ export function DataTypeLabel({
       return typeRef;
     }
 
-    return buildFeelQNameFromXmlQName({
+    const parsedFeelQName = parseFeelQName(typeRef);
+
+    const fullFeelQName = buildFeelQNameFromXmlQName({
       importsByNamespace,
       model: thisDmn.model.definitions,
-      namedElement: { "@_name": typeRef },
+      namedElement: { "@_name": parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef },
       namedElementQName: parseXmlQName(
         buildXmlQName({
           type: "xml-qname",
           prefix: getXmlNamespaceName({ model: thisDmn.model.definitions, namespace: namespace ?? "" }),
-          localPart: typeRef,
+          localPart: parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
         })
       ),
     }).full;
+
+    if (parsedFeelQName.importName) {
+      if (typeRef !== fullFeelQName) {
+        console.warn(
+          `DMN EDITOR: Data Type label was rendered with discrepancy between provided namespace and the FEEL QName. Going with the provided typeRef. (typeRef: '${typeRef}', feelQName: '${fullFeelQName}').`
+        );
+      }
+      return typeRef;
+    }
+
+    return fullFeelQName;
   }, [thisDmn.model.definitions, importsByNamespace, namespace, typeRef]);
 
   return (
     <span className={"kie-dmn-editor--data-type-label"}>
-      &nbsp;
       <i>
-        {typeRef && `(${feelName ?? DmnBuiltInDataType.Undefined})`}
-        {isCollection && (
+        {typeRef && (
           <>
-            &nbsp;&nbsp;
-            <ListIcon />
+            <span>{`(`}</span>
+            {`${feelName ?? DmnBuiltInDataType.Undefined}`}
+            {isCollection && (
+              <>
+                &nbsp;
+                {`[]`}
+              </>
+            )}
+            <span>{`)`}</span>
           </>
         )}
       </i>

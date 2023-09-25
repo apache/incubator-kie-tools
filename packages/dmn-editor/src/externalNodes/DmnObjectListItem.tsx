@@ -7,6 +7,8 @@ import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { useDmnEditorStore } from "../store/Store";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -19,7 +21,8 @@ export function DmnObjectListItem({
   namespace: string;
   relativeToNamespace: string;
 }) {
-  const { importsByNamespace } = useDmnEditorDerivedStore();
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const { importsByNamespace, dataTypesByFeelName } = useDmnEditorDerivedStore();
   if (!dmnObject) {
     return <>{dmnObjectHref}</>;
   }
@@ -38,12 +41,20 @@ export function DmnObjectListItem({
       </div>
       <div>{`${
         showFullFeelQName
-          ? buildFeelQNameFromNamespace({ namedElement: dmnObject, importsByNamespace, namespace }).full
+          ? buildFeelQNameFromNamespace({ namedElement: dmnObject, importsByNamespace, namespace, thisDmnsNamespace })
+              .full
           : dmnObject["@_name"]
       }`}</div>
       <div>
         {dmnObject.__$$element !== "knowledgeSource" ? (
-          <DataTypeLabel typeRef={dmnObject.variable?.["@_typeRef"]} namespace={namespace} isCollection={false} /> // FIXME: Tiago --> Actually say if it's collection of not.
+          <DataTypeLabel
+            typeRef={dmnObject.variable?.["@_typeRef"]}
+            namespace={namespace}
+            isCollection={
+              dataTypesByFeelName.get(dmnObject.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
+                ?.itemDefinition["@_isCollection"]
+            }
+          />
         ) : (
           <></>
         )}

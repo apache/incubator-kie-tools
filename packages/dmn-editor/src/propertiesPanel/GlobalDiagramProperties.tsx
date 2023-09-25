@@ -81,6 +81,7 @@ export function GlobalDiagramProperties() {
             onChange={(newNamespace) =>
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_namespace"] = newNamespace;
+                state.dmn.model.definitions["@_xmlns"] = newNamespace;
               })
             }
           />

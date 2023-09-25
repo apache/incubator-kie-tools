@@ -8,7 +8,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { TypeRefSelector } from "./TypeRefSelector";
 import {
   Dropdown,
@@ -21,18 +21,28 @@ import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
 import { getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 
 export function DataTypePanel({
+  isReadonly,
   dataType,
   dataTypesById,
   editItemDefinition,
 }: {
+  isReadonly: boolean;
   dataType: DataType;
   dataTypesById: DataTypesById;
   editItemDefinition: EditItemDefinition;
 }) {
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+
   const toggleStruct = useCallback(
     (isChecked: boolean) => {
+      if (isReadonly) {
+        return;
+      }
+
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         if (isChecked) {
           itemDefinition.typeRef = undefined;
@@ -43,34 +53,46 @@ export function DataTypePanel({
         }
       });
     },
-    [dataType.itemDefinition, editItemDefinition]
+    [dataType.itemDefinition, editItemDefinition, isReadonly]
   );
 
   const toggleCollection = useCallback(
     (isChecked: boolean) => {
+      if (isReadonly) {
+        return;
+      }
+
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition["@_isCollection"] = isChecked;
       });
     },
-    [dataType.itemDefinition, editItemDefinition]
+    [dataType.itemDefinition, editItemDefinition, isReadonly]
   );
 
   const changeTypeRef = useCallback(
     (typeRef: DmnBuiltInDataType) => {
+      if (isReadonly) {
+        return;
+      }
+
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition.typeRef = typeRef;
       });
     },
-    [dataType.itemDefinition, editItemDefinition]
+    [dataType.itemDefinition, editItemDefinition, isReadonly]
   );
 
   const changeDescription = useCallback(
     (newDescription: string) => {
+      if (isReadonly) {
+        return;
+      }
+
       editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
         itemDefinition.description = newDescription;
       });
     },
-    [dataType.itemDefinition, editItemDefinition]
+    [dataType.itemDefinition, editItemDefinition, isReadonly]
   );
 
   const parents = useMemo(() => {
@@ -88,13 +110,17 @@ export function DataTypePanel({
 
   const addItemComponent = useCallback<AddItemComponent>(
     (id, how, partial) => {
+      if (isReadonly) {
+        return;
+      }
+
       editItemDefinition(id, (itemDefinition) => {
         const newItemDefinition = getNewItemDefinition({ "@_name": "New property", ...partial });
         itemDefinition.itemComponent ??= [];
         itemDefinition.itemComponent[how](newItemDefinition);
       });
     },
-    [editItemDefinition]
+    [editItemDefinition, isReadonly]
   );
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -120,12 +146,13 @@ export function DataTypePanel({
         ))}
       </div>
       <Flex>
+        {dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}
         <div className={"kie-dmn-editor--data-types-title"}>
           <DataTypeName
             itemDefinition={dataType.itemDefinition}
-            editItemDefinition={editItemDefinition}
             isActive={false}
             editMode={"hover"}
+            isReadonly={dataType.namespace !== thisDmnsNamespace}
           />
         </div>
         <FlexItem>
@@ -149,27 +176,45 @@ export function DataTypePanel({
               </DropdownItem>,
               <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
               <DropdownItem
-                key={"remove"}
-                style={{ minWidth: "240px" }}
-                icon={<TrashIcon />}
+                key={"copy"}
+                icon={<CopyIcon />}
                 onClick={() => {
-                  editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
-                    items?.splice(dataType.index, 1);
-                  });
-                  dmnEditorStoreApi.setState((state) => {
-                    state.dataTypesEditor.activeItemDefinitionId =
-                      dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
-                  });
+                  navigator.clipboard.writeText(JSON.stringify(dataType.itemDefinition));
                 }}
               >
-                Remove
+                Copy
               </DropdownItem>,
+              <DropdownSeparator key="separator-2" />,
+              <React.Fragment key={"remove-fragment"}>
+                {!isReadonly && (
+                  <DropdownItem
+                    style={{ minWidth: "240px" }}
+                    icon={<TrashIcon />}
+                    onClick={() => {
+                      if (isReadonly) {
+                        return;
+                      }
+
+                      editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
+                        items?.splice(dataType.index, 1);
+                      });
+                      dmnEditorStoreApi.setState((state) => {
+                        state.dataTypesEditor.activeItemDefinitionId =
+                          dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+                      });
+                    }}
+                  >
+                    Remove
+                  </DropdownItem>
+                )}
+              </React.Fragment>,
             ]}
           />
         </FlexItem>
       </Flex>
       <br />
       <TextArea
+        isDisabled={isReadonly}
         key={dataType.itemDefinition["@_id"]}
         value={dataType.itemDefinition.description}
         onChange={changeDescription}
@@ -198,7 +243,7 @@ export function DataTypePanel({
           <Title size={"md"} headingLevel="h4">
             Type
           </Title>
-          <TypeRefSelector name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
+          <TypeRefSelector isDisabled={isReadonly} name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
           <br />
           <br />
           <Title size={"md"} headingLevel="h4">
@@ -210,6 +255,7 @@ export function DataTypePanel({
       )}
       {isStruct(dataType.itemDefinition) && (
         <ItemComponentsTable
+          isReadonly={isReadonly}
           addItemComponent={addItemComponent}
           dataTypesById={dataTypesById}
           parent={dataType}

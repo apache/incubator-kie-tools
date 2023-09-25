@@ -14,6 +14,8 @@ export function renameDrgElement({
   index: number;
 }) {
   definitions.drgElement![index]["@_name"] = newName;
+
+  // FIXME: Daniel --> Here we need to update all FEEL expression that were using this node's name as a variable.
 }
 
 export function renameGroupNode({

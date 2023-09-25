@@ -110,9 +110,9 @@ export function OverlaysPanel() {
             }
           />
         </FormGroup> */}
-        <FormGroup label={"Data types toolbar on nodes"}>
+        <FormGroup label={"Show data type toolbar on nodes"}>
           <Switch
-            aria-label={"Data types toolbar on nodes"}
+            aria-label={"Show data type toolbar on nodes"}
             isChecked={diagram.overlays.enableDataTypesToolbarOnNodes}
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {

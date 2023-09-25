@@ -37,6 +37,7 @@ const leftGutterForStructsInPxs =
 const rowPaddingRight = 16;
 
 export function ItemComponentsTable({
+  isReadonly,
   parent,
   editItemDefinition,
   addItemComponent,
@@ -44,6 +45,7 @@ export function ItemComponentsTable({
   dataTypesById,
   setDropdownOpenFor,
 }: {
+  isReadonly: boolean;
   parent: DataType;
   editItemDefinition: EditItemDefinition;
   addItemComponent: AddItemComponent;
@@ -52,7 +54,10 @@ export function ItemComponentsTable({
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+
   const { expandedItemComponentIds } = useDmnEditorStore((s) => s.dataTypesEditor);
+
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   const expandedItemComponentIdsSet = useMemo(() => {
     return new Set(expandedItemComponentIds);
@@ -93,12 +98,14 @@ export function ItemComponentsTable({
         <FlexItem>
           <Title size={"md"} headingLevel={"h4"}>
             {`Properties in '${parent.itemDefinition["@_name"]}'`}
-            <Button
-              variant={ButtonVariant.link}
-              onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "unshift")}
-            >
-              <PlusCircleIcon />
-            </Button>
+            {!isReadonly && (
+              <Button
+                variant={ButtonVariant.link}
+                onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "unshift")}
+              >
+                <PlusCircleIcon />
+              </Button>
+            )}
           </Title>
         </FlexItem>
         <FlexItem>
@@ -108,38 +115,40 @@ export function ItemComponentsTable({
           <Button variant={ButtonVariant.link} onClick={collapseAll}>
             Collapse all
           </Button>
-          <Dropdown
-            toggle={
-              <KebabToggle
-                id={"toggle-kebab-properties-table"}
-                onToggle={(isOpen) => setDropdownOpenFor(isOpen ? parent.itemDefinition["@_id"] : undefined)}
-              />
-            }
-            onSelect={() => setDropdownOpenFor(undefined)}
-            isOpen={dropdownOpenFor === parent.itemDefinition["@_id"]}
-            menuAppendTo={document.body}
-            isPlain={true}
-            position={"right"}
-            dropdownItems={[
-              <DropdownItem
-                key={"paste-property"}
-                style={{ minWidth: "240px" }}
-                icon={<PasteIcon />}
-                onClick={() => {
-                  navigator.clipboard.readText().then((t) => {
-                    const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
-                    // FIXME: Tiago --> Validate
-                    addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
-                      ...reassignIds(pastedItemDefinition, "itemComponent"),
-                      typeRef: pastedItemDefinition.typeRef ?? undefined,
+          {!isReadonly && (
+            <Dropdown
+              toggle={
+                <KebabToggle
+                  id={"toggle-kebab-properties-table"}
+                  onToggle={(isOpen) => setDropdownOpenFor(isOpen ? parent.itemDefinition["@_id"] : undefined)}
+                />
+              }
+              onSelect={() => setDropdownOpenFor(undefined)}
+              isOpen={dropdownOpenFor === parent.itemDefinition["@_id"]}
+              menuAppendTo={document.body}
+              isPlain={true}
+              position={"right"}
+              dropdownItems={[
+                <DropdownItem
+                  key={"paste-property"}
+                  style={{ minWidth: "240px" }}
+                  icon={<PasteIcon />}
+                  onClick={() => {
+                    navigator.clipboard.readText().then((t) => {
+                      const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
+                      // FIXME: Tiago --> Validate
+                      addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
+                        ...reassignIds(pastedItemDefinition, "itemComponent"),
+                        typeRef: pastedItemDefinition.typeRef ?? undefined,
+                      });
                     });
-                  });
-                }}
-              >
-                Paste property
-              </DropdownItem>,
-            ]}
-          />
+                  }}
+                >
+                  Paste property
+                </DropdownItem>,
+              ]}
+            />
+          )}
         </FlexItem>
       </Flex>
       <table className={"kie-dmn-editor--data-type-properties-table"}>
@@ -227,7 +236,7 @@ export function ItemComponentsTable({
                           )}
                         </div>
                         <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
-                          {isStruct(dt.itemDefinition) && (
+                          {!isReadonly && isStruct(dt.itemDefinition) && (
                             <Button
                               variant={ButtonVariant.link}
                               style={{ padding: "0 8px 0 0" }}
@@ -245,9 +254,9 @@ export function ItemComponentsTable({
                         <div style={{ flexGrow: 1 }}>
                           <DataTypeName
                             editMode={"hover"}
-                            editItemDefinition={editItemDefinition}
                             isActive={false}
                             itemDefinition={dt.itemDefinition}
+                            isReadonly={dt.namespace !== thisDmnsNamespace}
                           />
                         </div>
                       </div>
@@ -272,6 +281,7 @@ export function ItemComponentsTable({
                     <td>
                       {!isStruct(dt.itemDefinition) && (
                         <TypeRefSelector
+                          isDisabled={isReadonly}
                           name={dt.itemDefinition.typeRef}
                           onChange={(newDataType) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
@@ -353,9 +363,12 @@ export function ItemComponentsTable({
 
                                   itemDefinitions.unshift(newItemDefinition);
 
-                                  itemDefinition["@_id"] = generateUuid();
-                                  itemDefinition.typeRef = newItemDefinition["@_name"];
-                                  itemDefinition.itemComponent = undefined;
+                                  // Creating a new type is fine, but only update the current type if it is not readOnly
+                                  if (!isReadonly) {
+                                    itemDefinition["@_id"] = generateUuid();
+                                    itemDefinition.typeRef = newItemDefinition["@_name"];
+                                    itemDefinition.itemComponent = undefined;
+                                  }
                                 }
                               );
                             }}
@@ -372,23 +385,25 @@ export function ItemComponentsTable({
                           >
                             Copy
                           </DropdownItem>,
-                          <DropdownItem
-                            key={"cut"}
-                            icon={<CutIcon />}
-                            onClick={() => {
-                              navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
-                              editItemDefinition(dt.parentId!, (itemDefinition) => {
-                                itemDefinition.itemComponent?.splice(dt.index, 1);
-                              });
-                            }}
-                          >
-                            Cut
-                          </DropdownItem>,
-                          <DropdownSeparator key="separator-2" />,
-                          <React.Fragment key={"copy-fragment"}>
-                            {isStruct(dt.itemDefinition) && (
+                          <React.Fragment key={"cut-fragment"}>
+                            {!isReadonly && (
                               <DropdownItem
-                                key={"paste"}
+                                icon={<CutIcon />}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
+                                  editItemDefinition(dt.parentId!, (itemDefinition) => {
+                                    itemDefinition.itemComponent?.splice(dt.index, 1);
+                                  });
+                                }}
+                              >
+                                Cut
+                              </DropdownItem>
+                            )}
+                          </React.Fragment>,
+                          <DropdownSeparator key="separator-2" />,
+                          <React.Fragment key={"paste-fragment"}>
+                            {!isReadonly && isStruct(dt.itemDefinition) && (
+                              <DropdownItem
                                 icon={<PasteIcon />}
                                 onClick={() => {
                                   navigator.clipboard.readText().then((t) => {
@@ -414,20 +429,22 @@ export function ItemComponentsTable({
             );
           })}
         </tbody>
-        <tfoot>
-          <tr>
-            <td colSpan={5}>
-              <Button
-                variant={ButtonVariant.link}
-                onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "push")}
-                style={{ paddingLeft: 0 }}
-              >
-                <PlusCircleIcon />
-                &nbsp;&nbsp;{`Add property to '${parent.name}'`}
-              </Button>
-            </td>
-          </tr>
-        </tfoot>
+        {!isReadonly && (
+          <tfoot>
+            <tr>
+              <td colSpan={5}>
+                <Button
+                  variant={ButtonVariant.link}
+                  onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "push")}
+                  style={{ paddingLeft: 0 }}
+                >
+                  <PlusCircleIcon />
+                  &nbsp;&nbsp;{`Add property to '${parent.itemDefinition["@_name"]}'`}
+                </Button>
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </>
   );

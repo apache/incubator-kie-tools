@@ -83,6 +83,8 @@
 .react-flow__node-node_group .kie-dmn-editor--editable-node-name-input span,
 .react-flow__node-node_decisionService .kie-dmn-editor--info-node-panel,
 .react-flow__node-node_group .kie-dmn-editor--info-node-panel,
+.react-flow__node-node_decisionService .kie-dmn-editor--data-type-node-panel,
+.react-flow__node-node_group .kie-dmn-editor--data-type-node-panel,
 .react-flow__node-node_decisionService .react-flow__resize-control div,
 .react-flow__node-node_group .react-flow__resize-control div {
   pointer-events: all !important;
@@ -370,26 +372,33 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 /* (begin) node panels */
 
 /*    data type selector on inputData, decision, bkm, and decisionService nodes */
+
 .kie-dmn-editor--data-type-node-panel {
   position: absolute;
-  max-width: 100%;
-  padding: 4px 8px;
   bottom: 4px;
-  right: calc(100% + 4px);
-  font-size: 0.7em;
-  font-family: monospace;
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  right: calc(100% + 4px - 21px);
+  padding-right: 21px;
+  height: max(25%, 40px);
+  display: flex;
+  align-items: end;
+}
+.kie-dmn-editor--data-type-node-panel-label {
+  padding: 12px;
+  height: 19px;
+  font-size: 12px;
   cursor: pointer;
   background: white;
   color: black;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  zoom: 1.2;
 }
-.kie-dmn-editor--data-type-node-panel > .pf-c-label__content::before {
+.kie-dmn-editor--data-type-node-panel-label > .pf-c-label__content::before {
   border: 1px solid black;
 }
-.kie-dmn-editor--data-type-node-panel:hover {
+.kie-dmn-editor--data-type-node-panel-label:hover {
   filter: brightness(95%);
 }
-.kie-dmn-editor--data-type-node-panel:active {
+.kie-dmn-editor--data-type-node-panel-label:active {
   filter: brightness(90%);
 }
 /*    edit button on decision and bkm nodes */

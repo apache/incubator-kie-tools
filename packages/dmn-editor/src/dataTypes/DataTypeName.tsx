@@ -4,42 +4,48 @@ import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/d
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { DataTypeLabel } from "./DataTypeLabel";
-import { traverse } from "./DataTypeSpec";
-import { EditItemDefinition } from "./DataTypes";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { renameItemDefinition } from "../mutations/renameItemDefinition";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { parseFeelQName } from "../feel/parseFeelQName";
 
 export function DataTypeName({
+  isReadonly,
   itemDefinition,
   isActive,
-  editItemDefinition,
   editMode,
 }: {
+  isReadonly: boolean;
   editMode: "hover" | "double-click";
   itemDefinition: DMN15__tItemDefinition;
   isActive: boolean;
-  editItemDefinition: EditItemDefinition;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const { dataTypesById } = useDmnEditorDerivedStore();
+
   const onRenamed = useCallback(
     (newName: string | undefined) => {
+      if (isReadonly) {
+        return;
+      }
+
       if (!newName?.trim()) {
         return;
       }
 
-      editItemDefinition(itemDefinition["@_id"]!, (itemComponent, items, index, all) => {
-        // Only recursively rename if the itemDefinition being renamed is top-level.
-        if (all === items) {
-          traverse(all, (item) => {
-            if (item.typeRef === itemComponent["@_name"]) {
-              item.typeRef = newName?.trim();
-            }
-          });
-        }
-
-        itemComponent["@_name"] = newName.trim();
+      dmnEditorStoreApi.setState((state) => {
+        renameItemDefinition({
+          definitions: state.dmn.model.definitions,
+          newName,
+          itemDefinitionId: itemDefinition["@_id"]!,
+          dataTypesById,
+        });
       });
     },
-    [editItemDefinition, itemDefinition]
+    [dataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,6 +61,8 @@ export function DataTypeName({
     }, 0);
   }, []);
 
+  const feelName = dataTypesById.get(itemDefinition["@_id"]!)!.feelName;
+
   return (
     <>
       {editMode === "hover" && (
@@ -69,7 +77,8 @@ export function DataTypeName({
             background: "transparent",
             width: "100%",
           }}
-          defaultValue={itemDefinition["@_name"]}
+          disabled={isReadonly}
+          defaultValue={feelName}
           onFocus={(e) => {
             previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element.
           }}
@@ -114,7 +123,11 @@ export function DataTypeName({
             key={itemDefinition["@_id"]}
             position={"top-left"}
             namedElement={itemDefinition}
-            namedElementQName={{ type: "xml-qname", localPart: itemDefinition["@_name"] }}
+            namedElementQName={{
+              type: "xml-qname",
+              localPart: itemDefinition["@_name"],
+              prefix: parseFeelQName(feelName).importName,
+            }}
           />
           {!isEditingLabel && (
             <DataTypeLabel typeRef={itemDefinition.typeRef} isCollection={itemDefinition["@_isCollection"]} />

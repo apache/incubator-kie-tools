@@ -36,7 +36,7 @@ export function EditableNodeLabel({
   const { importsByNamespace } = useDmnEditorDerivedStore();
 
   const isEditing = useMemo(() => {
-    return !namedElementQName?.prefix && _isEditing;
+    return !namedElementQName?.prefix && _isEditing; // Can't ever change the names of external nodes
   }, [_isEditing, namedElementQName?.prefix]);
 
   const setEditing = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
@@ -167,8 +167,7 @@ export function EditableNodeLabel({
           onChange={(e) => setInternalValue(e.target.value)}
           value={internalValue}
         />
-      )) ||
-        displayValue}
+      )) || <span>{displayValue}</span>}
     </div>
   );
 }

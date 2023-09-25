@@ -9,20 +9,23 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import InfrastructureIcon from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
+import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { DataTypesEmptyState } from "./DataTypesEmptyState";
 import { DataTypePanel } from "./DataTypePanel";
 import { findDataTypeById, getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { DataTypeName } from "./DataTypeName";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 export type DataType = {
   itemDefinition: DMN15__tItemDefinition;
-  name: string;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
+  namespace: string;
+  feelName: string;
   children?: DataType[];
 };
 export type DataTypeTreeViewDataItem = {};
@@ -48,27 +51,18 @@ export function DataTypes() {
 
   const [filter, setFilter] = useState("");
 
-  const { tree, dataTypesById } = useMemo(() => {
-    const tree: DataType[] = [];
-    const dataTypesById: DataTypesById = new Map();
-    const items = thisDmn.model.definitions.itemDefinition ?? [];
+  const { dataTypesById, dataTypesTree } = useDmnEditorDerivedStore();
 
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      tree.push(buildTree(item, undefined, dataTypesById, i, new Set()));
-    }
-
-    return { tree, dataTypesById };
-  }, [thisDmn.model.definitions.itemDefinition]);
-
-  const active = useMemo(() => {
+  const activeDataType = useMemo(() => {
     return activeItemDefinitionId ? dataTypesById.get(activeItemDefinitionId) : undefined;
   }, [activeItemDefinitionId, dataTypesById]);
 
   const filteredTree = useMemo(
     () =>
-      tree.filter(({ itemDefinition: dataType }) => dataType["@_name"].toLowerCase().includes(filter.toLowerCase())),
-    [filter, tree]
+      dataTypesTree.filter(({ itemDefinition: dataType }) =>
+        dataType["@_name"].toLowerCase().includes(filter.toLowerCase())
+      ),
+    [filter, dataTypesTree]
   );
 
   const editItemDefinition = useCallback<EditItemDefinition>(
@@ -101,27 +95,28 @@ export function DataTypes() {
 
   const nav = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!active) {
+      if (!activeDataType) {
         return;
       }
       dmnEditorStoreApi.setState((state) => {
         if (e.key === "ArrowDown") {
           state.dataTypesEditor.activeItemDefinitionId =
-            tree[(active?.index + 1) % filteredTree.length].itemDefinition["@_id"];
+            dataTypesTree[(activeDataType?.index + 1) % filteredTree.length].itemDefinition["@_id"];
         } else if (e.key === "ArrowUp") {
           state.dataTypesEditor.activeItemDefinitionId =
-            tree[
-              (active?.index - 1 === -1 ? filteredTree.length - 1 : active?.index - 1) % filteredTree.length
+            dataTypesTree[
+              (activeDataType?.index - 1 === -1 ? filteredTree.length - 1 : activeDataType?.index - 1) %
+                filteredTree.length
             ].itemDefinition["@_id"];
         }
       });
     },
-    [active, dmnEditorStoreApi, filteredTree.length, tree]
+    [activeDataType, dmnEditorStoreApi, filteredTree.length, dataTypesTree]
   );
 
   return (
     <>
-      {(tree.length <= 0 && <DataTypesEmptyState onAdd={addTopLevelItemDefinition} />) || (
+      {(dataTypesTree.length <= 0 && <DataTypesEmptyState onAdd={addTopLevelItemDefinition} />) || (
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
             panelContent={
@@ -136,7 +131,7 @@ export function DataTypes() {
                   </Button>
                 </Flex>
                 <div className={`kie-dmn-editor--data-types-nav`} onKeyDown={nav}>
-                  {filteredTree.map(({ itemDefinition }) => (
+                  {filteredTree.map(({ namespace, itemDefinition, feelName }) => (
                     <Flex
                       key={itemDefinition["@_id"]}
                       flexWrap={{ default: "nowrap" }}
@@ -155,12 +150,21 @@ export function DataTypes() {
                       <InfrastructureIcon
                         style={{ display: "inline", opacity: isStruct(itemDefinition) ? 1 : 0, minWidth: "1em" }}
                       />
-                      <DataTypeName
-                        itemDefinition={itemDefinition}
-                        isActive={activeItemDefinitionId === itemDefinition["@_id"]}
-                        editItemDefinition={editItemDefinition}
-                        editMode={"double-click"}
-                      />
+                      {(namespace === thisDmn.model.definitions["@_namespace"] && (
+                        <DataTypeName
+                          isReadonly={namespace !== thisDmn.model.definitions["@_namespace"]}
+                          itemDefinition={itemDefinition}
+                          isActive={activeItemDefinitionId === itemDefinition["@_id"]}
+                          editMode={"double-click"}
+                        />
+                      )) || (
+                        <>
+                          <Label style={{ marginLeft: "8px" }}>External</Label>
+                          <div className={`kie-dmn-editor--editable-node-name-input top-left grow`}>
+                            {`${feelName}`}
+                          </div>
+                        </>
+                      )}
                     </Flex>
                   ))}
                 </div>
@@ -168,9 +172,10 @@ export function DataTypes() {
             }
           >
             <DrawerContentBody>
-              {active && (
+              {activeDataType && (
                 <DataTypePanel
-                  dataType={active}
+                  isReadonly={activeDataType.namespace !== thisDmn.model.definitions["@_namespace"]}
+                  dataType={activeDataType}
                   dataTypesById={dataTypesById}
                   editItemDefinition={editItemDefinition}
                 />
@@ -181,33 +186,4 @@ export function DataTypes() {
       )}
     </>
   );
-}
-
-function buildTree(
-  itemDefinition: DMN15__tItemDefinition,
-  parentId: string | undefined,
-  dataTypesById: DataTypesById,
-  index: number,
-  parents: Set<string>
-): DataType {
-  const dataType = {
-    itemDefinition,
-    name: itemDefinition["@_name"],
-    index,
-    parentId,
-    parents,
-    children: itemDefinition.itemComponent?.map((component, componentIndex) =>
-      buildTree(
-        component,
-        itemDefinition["@_id"],
-        dataTypesById,
-        componentIndex,
-        new Set([...parents, itemDefinition["@_id"]!])
-      )
-    ),
-  };
-
-  dataTypesById.set(itemDefinition["@_id"]!, dataType);
-
-  return dataType;
 }
