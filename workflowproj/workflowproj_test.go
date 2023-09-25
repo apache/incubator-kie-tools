@@ -18,6 +18,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"sort"
 	"strings"
 	"testing"
 
@@ -84,6 +85,13 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 	assert.NotNil(t, proj.Workflow)
 	assert.NotNil(t, proj.Properties)
 	assert.NotEmpty(t, proj.Resources)
+	sort.Slice(proj.Resources, func(i, j int) bool {
+		return proj.Resources[i].Name < proj.Resources[j].Name
+	})
+	sort.Slice(proj.Workflow.Spec.Resources.ConfigMaps, func(i, j int) bool {
+		return proj.Workflow.Spec.Resources.ConfigMaps[i].ConfigMap.Name < proj.Workflow.Spec.Resources.ConfigMaps[j].ConfigMap.Name
+	})
+
 	assert.Equal(t, "hello", proj.Workflow.Name)
 	assert.Equal(t, "hello-props", proj.Properties.Name)
 	assert.NotEmpty(t, proj.Properties.Data)
