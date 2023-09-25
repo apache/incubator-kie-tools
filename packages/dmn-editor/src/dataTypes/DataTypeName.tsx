@@ -104,7 +104,7 @@ export function DataTypeName({
             namedElement={itemDefinition}
             namedElementQName={{ type: "xml-qname", localPart: itemDefinition["@_name"] }}
           />
-          {!isStruct(itemDefinition) && !isEditingLabel && (
+          {!isEditingLabel && (
             <DataTypeLabel typeRef={itemDefinition.typeRef} isCollection={itemDefinition["@_isCollection"]} />
           )}
         </Flex>

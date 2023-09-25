@@ -51,9 +51,7 @@ export function DataTypeSelector(props: {
           {customDataTypes.map((dt) => (
             <SelectOption key={dt.name} value={dt.name}>
               {dt.name}
-              {dt.typeRef && (
-                <DataTypeLabel typeRef={dt.typeRef} namespace={dt.namespace} isCollection={dt.isCollection} />
-              )}
+              <DataTypeLabel typeRef={dt.typeRef} namespace={dt.namespace} isCollection={dt.isCollection} />
             </SelectOption>
           ))}
         </SelectGroup>
@@ -63,9 +61,7 @@ export function DataTypeSelector(props: {
           {externalDataTypes.map((dt) => (
             <SelectOption key={dt.name} value={dt.name}>
               {dt.name}
-              {dt.typeRef && (
-                <DataTypeLabel typeRef={dt.typeRef} namespace={dt.namespace} isCollection={dt.isCollection} />
-              )}
+              <DataTypeLabel typeRef={dt.typeRef} namespace={dt.namespace} isCollection={dt.isCollection} />
             </SelectOption>
           ))}
         </SelectGroup>

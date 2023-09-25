@@ -10,7 +10,12 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStoreApi } from "../store/Store";
 import { DataTypeSelector } from "./DataTypeSelector";
-import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownSeparator,
+  KebabToggle,
+} from "@patternfly/react-core/dist/js/components/Dropdown";
 import { DataType, DataTypesById, EditItemDefinition, AddItemComponent } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
@@ -136,6 +141,10 @@ export function DataTypePanel({
             isPlain={true}
             position={"right"}
             dropdownItems={[
+              <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
+                <div>ID: {dataType.itemDefinition["@_id"]}</div>
+              </DropdownItem>,
+              <DropdownSeparator key={"separator-1"} />,
               <DropdownItem
                 key={"remove"}
                 style={{ minWidth: "240px" }}

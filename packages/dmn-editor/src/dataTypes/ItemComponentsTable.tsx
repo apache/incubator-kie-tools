@@ -52,7 +52,7 @@ export function ItemComponentsTable({
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { expandedItemComponentIds, activeItemId } = useDmnEditorStore((s) => s.dataTypesEditor);
+  const { expandedItemComponentIds } = useDmnEditorStore((s) => s.dataTypesEditor);
 
   const expandedItemComponentIdsSet = useMemo(() => {
     return new Set(expandedItemComponentIds);
@@ -162,18 +162,29 @@ export function ItemComponentsTable({
             const nextDt = flatTree[Math.min(i + 1, flatTree.length - 1)];
             const lastDt = flatTree[Math.max(i - 1, 0)];
 
-            const { lastIsUpper, nextIsUpper } = getNestingRelationship({ nextDt, lastDt, currentDt: dt });
+            const nextIsUpper = nextDt.parents.size < dt.parents.size;
+            const lastIsUpper = lastDt.parents.size < dt.parents.size;
+
+            let areAllParentsExpanded = true;
+            for (const p of [...dt.parents].reverse()) {
+              if (p === parent.itemDefinition["@_id"]) {
+                break; // The top-level ItemDefinition open, so this is where we stop checking.
+              } else if (!expandedItemComponentIdsSet.has(p)) {
+                areAllParentsExpanded = false; // If one of the parents are not
+              }
+            }
 
             const shouldShowRow =
-              dt.parentId === activeItemId ||
-              (isStruct(dataTypesById.get(dt.parentId!)!.itemDefinition) &&
-                [...dt.parents].every((s) => expandedItemComponentIdsSet.has(s) || s === activeItemId));
+              dt.parentId === parent.itemDefinition["@_id"] ||
+              (isStruct(dataTypesById.get(dt.parentId!)!.itemDefinition) && areAllParentsExpanded);
 
             const level = dt.parents.size - parent.parents.size - 1;
 
             const brigthnessPercentage =
               STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
               level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
+
+            console.info(shouldShowRow, dt, parent, [...expandedItemComponentIdsSet]);
 
             return (
               <React.Fragment key={dt.itemDefinition["@_id"]}>
@@ -424,35 +435,4 @@ export function ItemComponentsTable({
       </table>
     </>
   );
-}
-
-function getNestingRelationship({
-  currentDt,
-  nextDt,
-  lastDt,
-}: {
-  nextDt: DataType;
-  currentDt: DataType;
-  lastDt: DataType;
-}): {
-  lastIsUpper: boolean;
-  nextIsUpper: boolean;
-} {
-  // FIXME: Tiago --> This is not really good, we shouldn't have to calculate the brightness level to know the relationship...
-  const brigthnessPercentage =
-    STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
-    currentDt.parents.size * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
-
-  const lastBrigthnessPercentage =
-    STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
-    lastDt.parents.size * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
-
-  const nextBrigthnessPercentage =
-    STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
-    nextDt.parents.size * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
-
-  const nextIsUpper = nextBrigthnessPercentage > brigthnessPercentage;
-  const lastIsUpper = lastBrigthnessPercentage > brigthnessPercentage;
-
-  return { nextIsUpper, lastIsUpper };
 }

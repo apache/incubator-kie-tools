@@ -6,6 +6,7 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { useDmnEditorStore } from "../store/Store";
 import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
+import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 
 const builtInDataTypes = new Set<string>(Object.values(DmnBuiltInDataType));
 
@@ -48,7 +49,15 @@ export function DataTypeLabel({
   return (
     <span className={"kie-dmn-editor--data-type-label"}>
       &nbsp;
-      <i>{`(${feelName ?? DmnBuiltInDataType.Undefined}${isCollection ? ` []` : ``})`}</i>
+      <i>
+        {typeRef && `(${feelName ?? DmnBuiltInDataType.Undefined})`}
+        {isCollection && (
+          <>
+            &nbsp;&nbsp;
+            <ListIcon />
+          </>
+        )}
+      </i>
     </span>
   );
 }
