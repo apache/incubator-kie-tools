@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { EmptyLabel, NodeDmnObjects } from "./Nodes";
+import { EmptyLabel } from "./Nodes";
 import "./EditableNodeLabel.css";
 import { XmlQName } from "../../xml/xmlQNames";
 import { useDmnEditorStore } from "../../store/Store";

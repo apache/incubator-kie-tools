@@ -1,22 +1,22 @@
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
-import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
-import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
-import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
-import LinkIcon from "@patternfly/react-icons/dist/js/icons/link-icon";
+import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
+import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { LinkIcon } from "@patternfly/react-icons/dist/js/icons/link-icon";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { DataTypeSelector } from "./DataTypeSelector";
+import { TypeRefSelector } from "./TypeRefSelector";
 import {
   Dropdown,
   DropdownItem,
   DropdownSeparator,
   KebabToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
+import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { DataType, EditItemDefinition, AddItemComponent, DataTypesById } from "./DataTypes";
@@ -62,17 +62,14 @@ export function ItemComponentsTable({
 
   const flatTree = useMemo(() => {
     const ret: DataType[] = [];
-    function traverse(d: DataType) {
-      ret.push(d);
-      for (let i = 0; i < (d.children?.length ?? 0); i++) {
-        traverse(d.children![i]);
+    function traverse(d: DataType[]) {
+      for (let i = 0; i < (d?.length ?? 0); i++) {
+        ret.push(d[i]);
+        traverse(d[i].children ?? []);
       }
     }
 
-    for (let i = 0; i < (dataTypes?.length ?? 0); i++) {
-      traverse(dataTypes![i]);
-    }
-
+    traverse(dataTypes ?? []);
     return ret;
   }, [dataTypes]);
 
@@ -184,8 +181,6 @@ export function ItemComponentsTable({
               STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
               level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
 
-            console.info(shouldShowRow, dt, parent, [...expandedItemComponentIdsSet]);
-
             return (
               <React.Fragment key={dt.itemDefinition["@_id"]}>
                 {shouldShowRow && (
@@ -276,7 +271,7 @@ export function ItemComponentsTable({
                     </td>
                     <td>
                       {!isStruct(dt.itemDefinition) && (
-                        <DataTypeSelector
+                        <TypeRefSelector
                           name={dt.itemDefinition.typeRef}
                           onChange={(newDataType) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
@@ -308,7 +303,7 @@ export function ItemComponentsTable({
                           }}
                         >
                           <LinkIcon />
-                          &nbsp;Constraints
+                          &nbsp;&nbsp;Constraints
                         </Button>
                       )}
                     </td>
@@ -340,7 +335,7 @@ export function ItemComponentsTable({
                         dropdownItems={[
                           <DropdownItem
                             key={"extract-to-top-level"}
-                            icon={<ArrowUpIcon />}
+                            icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
                             style={{ minWidth: "240px" }}
                             onClick={() => {
                               editItemDefinition(
@@ -389,6 +384,7 @@ export function ItemComponentsTable({
                           >
                             Cut
                           </DropdownItem>,
+                          <DropdownSeparator key="separator-2" />,
                           <React.Fragment key={"copy-fragment"}>
                             {isStruct(dt.itemDefinition) && (
                               <DropdownItem
@@ -405,7 +401,7 @@ export function ItemComponentsTable({
                                   });
                                 }}
                               >
-                                Paste
+                                Paste property
                               </DropdownItem>
                             )}
                           </React.Fragment>,

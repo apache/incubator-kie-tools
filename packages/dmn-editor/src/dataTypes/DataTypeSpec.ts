@@ -80,3 +80,10 @@ export function reassignIds<O extends { "@_id"?: string }, T extends keyof O>(ob
 
   return obj;
 }
+
+export function traverse(items: DMN15__tItemDefinition[], consumer: (itemDefinition: DMN15__tItemDefinition) => void) {
+  for (let i = 0; i < (items.length ?? 0); i++) {
+    consumer(items[i]);
+    traverse(items[i].itemComponent ?? [], consumer);
+  }
+}

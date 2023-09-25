@@ -4,10 +4,11 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditorStore } from "../store/Store";
+import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export type DmnEditorDataTypeReference = DmnDataType & {
   namespace: string;
-  isCollection: boolean | undefined;
+  itemDefinition: DMN15__tItemDefinition | undefined;
 };
 
 export function useDataTypes() {
@@ -19,9 +20,9 @@ export function useDataTypes() {
     () =>
       Object.values(DmnBuiltInDataType).map((feelType) => ({
         isCustom: false,
-        isCollection: false,
         typeRef: feelType,
         name: feelType,
+        itemDefinition: undefined,
         namespace: "",
       })),
     []
@@ -31,9 +32,9 @@ export function useDataTypes() {
     () =>
       (thisDmn.model.definitions.itemDefinition ?? []).map((item) => ({
         isCustom: true,
-        isCollection: item["@_isCollection"],
         typeRef: item.typeRef!,
         name: item["@_name"],
+        itemDefinition: item,
         namespace: thisDmn.model.definitions["@_namespace"],
       })),
     [thisDmn.model.definitions]
@@ -55,8 +56,8 @@ export function useDataTypes() {
       }
 
       return (otherDmn.model.definitions.itemDefinition ?? []).map((item) => ({
+        itemDefinition: item,
         isCustom: true,
-        isCollection: item["@_isCollection"],
         typeRef: item.itemComponent
           ? (undefined as any) //FIXME: Tiago --> The `DmnDataType` interface is very limited...
           : buildFeelQNameFromNamespace({

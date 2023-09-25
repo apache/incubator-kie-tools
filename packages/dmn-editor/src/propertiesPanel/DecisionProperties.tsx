@@ -5,7 +5,7 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
-import { DataTypeSelector } from "../dataTypes/DataTypeSelector";
+import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStoreApi } from "../store/Store";
 
 export function DecisionProperties({ decision, index }: { decision: DMN15__tDecision; index: number }) {
@@ -30,7 +30,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN15__tDeci
       </FormGroup>
 
       <FormGroup label="Data type">
-        <DataTypeSelector
+        <TypeRefSelector
           name={decision.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((dmn) => {

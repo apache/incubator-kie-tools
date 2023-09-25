@@ -74,7 +74,7 @@ export function getHandlePosition({
   } else if (getDistance(left, waypoint) <= 1) {
     return TargetHandleId.TargetLeft;
   } else {
-    console.warn("Can't find a match of NSWE/Center handles. Using Center as default.");
+    console.warn("DMN DIAGRAM: Can't find a match of NSWE/Center handles. Using Center as default.");
     return TargetHandleId.TargetCenter;
   }
 }

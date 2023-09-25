@@ -9,7 +9,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStoreApi } from "../store/Store";
-import { DataTypeSelector } from "./DataTypeSelector";
+import { TypeRefSelector } from "./TypeRefSelector";
 import {
   Dropdown,
   DropdownItem,
@@ -144,7 +144,7 @@ export function DataTypePanel({
               <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
                 <div>ID: {dataType.itemDefinition["@_id"]}</div>
               </DropdownItem>,
-              <DropdownSeparator key={"separator-1"} />,
+              <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
               <DropdownItem
                 key={"remove"}
                 style={{ minWidth: "240px" }}
@@ -195,7 +195,7 @@ export function DataTypePanel({
           <Title size={"md"} headingLevel="h4">
             Type
           </Title>
-          <DataTypeSelector name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
+          <TypeRefSelector name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
           <br />
           <br />
           <Title size={"md"} headingLevel="h4">

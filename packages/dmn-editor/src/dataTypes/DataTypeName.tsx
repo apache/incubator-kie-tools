@@ -4,7 +4,7 @@ import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/d
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { DataTypeLabel } from "./DataTypeLabel";
-import { isStruct } from "./DataTypeSpec";
+import { traverse } from "./DataTypeSpec";
 import { EditItemDefinition } from "./DataTypes";
 
 export function DataTypeName({
@@ -25,8 +25,18 @@ export function DataTypeName({
       if (!newName?.trim()) {
         return;
       }
-      editItemDefinition(itemDefinition["@_id"]!, (itemComponent) => {
-        itemComponent["@_name"] = newName;
+
+      editItemDefinition(itemDefinition["@_id"]!, (itemComponent, items, index, all) => {
+        // Only recursively rename if the itemDefinition being renamed is top-level.
+        if (all === items) {
+          traverse(all, (item) => {
+            if (item.typeRef === itemComponent["@_name"]) {
+              item.typeRef = newName?.trim();
+            }
+          });
+        }
+
+        itemComponent["@_name"] = newName.trim();
       });
     },
     [editItemDefinition, itemDefinition]
@@ -67,6 +77,7 @@ export function DataTypeName({
             if (e.key === "Enter") {
               e.stopPropagation();
               e.preventDefault();
+              e.currentTarget.value = e.currentTarget.value.trimStart();
               onRenamed(e.currentTarget.value);
             } else if (e.key === "Escape") {
               e.stopPropagation();

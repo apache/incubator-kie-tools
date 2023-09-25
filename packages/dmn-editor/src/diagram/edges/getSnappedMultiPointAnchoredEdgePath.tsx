@@ -47,11 +47,11 @@ export function getSnappedMultiPointAnchoredEdgePath({
   ///////
 
   if (!dmnEdge?.["di:waypoint"]) {
-    console.warn("No waypoints found. Creating a default straight line.");
+    console.warn("DMN DIAGRAM: No waypoints found. Creating a default straight line.");
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   } else if (dmnEdge?.["di:waypoint"].length < 2) {
-    console.warn("Invalid waypoints for edge. Creating a default straight line.");
+    console.warn("DMN DIAGRAM: Invalid waypoints for edge. Creating a default straight line.");
     points[0] = { "@_x": discreteAuto.sx, "@_y": discreteAuto.sy };
     points[points.length - 1] = { "@_x": discreteAuto.tx, "@_y": discreteAuto.ty };
   } else {
