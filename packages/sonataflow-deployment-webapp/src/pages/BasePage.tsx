@@ -22,14 +22,15 @@ import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import {
   Masthead,
   MastheadBrand,
+  MastheadContent,
   MastheadMain,
   MastheadToggle,
 } from "@patternfly/react-core/dist/js/components/Masthead";
-import { Page, PageHeaderToolsItem, PageToggleButton } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/components/Page";
 import { PageSidebar } from "@patternfly/react-core/dist/js/components/Page/PageSidebar";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from "react";
@@ -38,6 +39,7 @@ import { useHistory } from "react-router";
 import { useApp } from "../context/AppContext";
 import { routes } from "../routes";
 import { BasePageNav } from "./basePage/BasePageNav";
+import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
 export function BasePage(props: { children?: React.ReactNode }) {
   const history = useHistory();
@@ -45,30 +47,33 @@ export function BasePage(props: { children?: React.ReactNode }) {
 
   const masthead = useMemo(
     () => (
-      <Masthead aria-label={"Page header"} display={{ default: "stack" }} className="app--masthead">
-        <MastheadMain style={{ justifyContent: "space-between" }}>
-          <PageHeaderToolsItem className={"pf-l-flex"}>
-            <MastheadToggle>
-              <PageToggleButton variant="plain" aria-label="Global NAV">
-                <BarsIcon />
-              </PageToggleButton>
-            </MastheadToggle>
-            <MastheadBrand
-              onClick={() => history.push({ pathname: routes.home.path({}) })}
-              style={{ textDecoration: "none" }}
-            >
-              <Brand className="sonataflow-deployment-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
-              <TextContent className="brand-name">
-                <Text component={TextVariants.h1}>
-                  {app.appDataPromise.status === PromiseStateStatus.PENDING ? "" : app.data.appName}
-                </Text>
-              </TextContent>
-            </MastheadBrand>
-          </PageHeaderToolsItem>
-          {app.data.showDisclaimer && (
-            <Flex justifyContent={{ default: "justifyContentCenter" }}>
-              <FlexItem>
-                <PageHeaderToolsItem>
+      <Masthead aria-label={"Page header"} className="app--masthead">
+        <MastheadToggle>
+          <PageToggleButton variant="plain" aria-label="Global navigation">
+            <BarsIcon />
+          </PageToggleButton>
+        </MastheadToggle>
+        <MastheadMain>
+          <MastheadBrand
+            onClick={() => history.push({ pathname: routes.home.path({}) })}
+            style={{ textDecoration: "none" }}
+          >
+            <Brand className="sonataflow-deployment-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
+            <TextContent className="brand-name">
+              <Text component={TextVariants.h1}>
+                <Truncate
+                  content={app.appDataPromise.status === PromiseStateStatus.PENDING ? "" : app.data.appName}
+                  style={{ maxWidth: "70vw" }}
+                />
+              </Text>
+            </TextContent>
+          </MastheadBrand>
+        </MastheadMain>
+        <MastheadContent>
+          <Toolbar id="toolbar" isFullHeight isStatic>
+            <ToolbarContent>
+              {app.data.showDisclaimer && (
+                <ToolbarItem alignment={{ default: "alignRight" }}>
                   <Tooltip
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
@@ -87,11 +92,11 @@ export function BasePage(props: { children?: React.ReactNode }) {
                       </Text>
                     </TextContent>
                   </Tooltip>
-                </PageHeaderToolsItem>
-              </FlexItem>
-            </Flex>
-          )}
-        </MastheadMain>
+                </ToolbarItem>
+              )}
+            </ToolbarContent>
+          </Toolbar>
+        </MastheadContent>
       </Masthead>
     ),
     [app.data.appName, history, app.appDataPromise.status, app.data.showDisclaimer]
