@@ -35,7 +35,7 @@ export interface State {
     };
   };
   dataTypesEditor: {
-    activeItemId: string | undefined;
+    activeItemDefinitionId: string | undefined;
     expandedItemComponentIds: string[];
   };
   navigation: {
@@ -59,7 +59,7 @@ export interface State {
       enableNodeHierarchyHighlight: boolean;
       enableExecutionHitsHighlights: boolean;
       enableCustomNodeStyles: boolean;
-      enableDataTypesOnNodes: boolean;
+      enableDataTypesToolbarOnNodes: boolean;
     };
     snapGrid: SnapGrid;
     selectedNodes: Array<string>;
@@ -162,7 +162,7 @@ export const defaultStaticState = () => ({
       enableNodeHierarchyHighlight: false,
       enableExecutionHitsHighlights: false,
       enableCustomNodeStyles: false,
-      enableDataTypesOnNodes: false,
+      enableDataTypesToolbarOnNodes: true,
     },
     snapGrid: { isEnabled: true, x: 20, y: 20 },
     selectedNodes: [],
@@ -180,7 +180,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         model,
       },
       dataTypesEditor: {
-        activeItemId: model.definitions.itemDefinition?.[0]?.["@_id"],
+        activeItemDefinitionId: model.definitions.itemDefinition?.[0]?.["@_id"],
         expandedItemComponentIds: [],
       },
       ...defaultStaticState(),

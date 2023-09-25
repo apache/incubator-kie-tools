@@ -111,7 +111,7 @@ export function DataTypePanel({
             variant={ButtonVariant.link}
             onClick={() => {
               dmnEditorStoreApi.setState((state) => {
-                state.dataTypesEditor.activeItemId = p.itemDefinition["@_id"]!;
+                state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
               });
             }}
           >
@@ -142,7 +142,10 @@ export function DataTypePanel({
             position={"right"}
             dropdownItems={[
               <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
-                <div>ID: {dataType.itemDefinition["@_id"]}</div>
+                <div>
+                  <b>ID: </b>
+                  {dataType.itemDefinition["@_id"]}
+                </div>
               </DropdownItem>,
               <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
               <DropdownItem
@@ -154,7 +157,7 @@ export function DataTypePanel({
                     items?.splice(dataType.index, 1);
                   });
                   dmnEditorStoreApi.setState((state) => {
-                    state.dataTypesEditor.activeItemId =
+                    state.dataTypesEditor.activeItemDefinitionId =
                       dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
                   });
                 }}

@@ -77,7 +77,7 @@ export function OverlaysPanel() {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label={"Highlight execution hits"}>
+        {/* <FormGroup label={"Highlight execution hits"}>
           <Switch
             aria-label={"Highlight execution hits"}
             isChecked={diagram.overlays.enableExecutionHitsHighlights}
@@ -87,7 +87,7 @@ export function OverlaysPanel() {
               })
             }
           />
-        </FormGroup>
+        </FormGroup> */}
         <FormGroup label={"Highlight selected node(s) hierarchy"}>
           <Switch
             aria-label={"Highlight selected node(s) hierarchy"}
@@ -99,7 +99,7 @@ export function OverlaysPanel() {
             }
           />
         </FormGroup>
-        <FormGroup label={"Custom node styles"}>
+        {/* <FormGroup label={"Custom node styles"}>
           <Switch
             aria-label={"ustom node styles"}
             isChecked={diagram.overlays.enableCustomNodeStyles}
@@ -109,14 +109,14 @@ export function OverlaysPanel() {
               })
             }
           />
-        </FormGroup>
+        </FormGroup> */}
         <FormGroup label={"Data types toolbar on nodes"}>
           <Switch
             aria-label={"Data types toolbar on nodes"}
-            isChecked={diagram.overlays.enableDataTypesOnNodes}
+            isChecked={diagram.overlays.enableDataTypesToolbarOnNodes}
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableDataTypesOnNodes = newValue;
+                state.diagram.overlays.enableDataTypesToolbarOnNodes = newValue;
               })
             }
           />

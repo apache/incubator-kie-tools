@@ -614,9 +614,6 @@ th {
   background: linear-gradient(to bottom, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%),
     linear-gradient(to top, rgb(0, 0, 0, 0.07) 0, transparent 12px, transparent 100%);
 }
-.kie-dmn-editor--data-type-properties-table .pf-m-typeahead::before {
-  border: 0 !important; /* Remove borders from DataTypeSelector */
-}
 .kie-dmn-editor--data-type-properties-table .pf-m-typeahead {
   background: rgb(255, 255, 255, 0.7); /* Let */
 }
@@ -696,28 +693,28 @@ th {
 }
 
 /* hierarchy view */
-.react-flow__node.hierarchy.up {
-  color: #0083a4 !important;
+
+.react-flow__node.hierarchy.up::after,
+.react-flow__node.hierarchy.down::after {
+  content: "";
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  border-radius: 24px;
 }
-.react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape {
-  border-color: #0083a4 !important;
+.react-flow__node.hierarchy.up::after {
+  background-color: rgba(0, 131, 164, 0.15);
 }
-.react-flow__edge.hierarchy.up > path,
-.react-flow__node.hierarchy.up > .kie-dmn-editor--node-shape > g * {
-  stroke: #0083a4 !important;
-  stroke-width: 3px !important;
+.react-flow__node.hierarchy.down::after {
+  background-color: rgb(0 1 128 / 10%);
 }
-.react-flow__node.hierarchy.down {
-  font-weight: bold;
-  color: #003fa4 !important;
+.react-flow__edge.hierarchy.up .react-flow__edge-interaction {
+  stroke: rgba(0, 131, 164, 0.15);
 }
-.react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape {
-  border-color: #003fa4 !important;
-}
-.react-flow__edge.hierarchy.down > path,
-.react-flow__node.hierarchy.down > .kie-dmn-editor--node-shape > g * {
-  stroke: #003fa4 !important;
-  stroke-width: 3px !important;
+.react-flow__edge.hierarchy.down .react-flow__edge-interaction {
+  stroke: rgb(0 1 128 / 10%);
 }
 
 /* selection rect */

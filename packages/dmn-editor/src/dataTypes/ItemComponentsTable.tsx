@@ -298,7 +298,7 @@ export function ItemComponentsTable({
                           variant={ButtonVariant.link}
                           onClick={() => {
                             dmnEditorStoreApi.setState((state) => {
-                              state.dataTypesEditor.activeItemId = dt.itemDefinition["@_id"]!;
+                              state.dataTypesEditor.activeItemDefinitionId = dt.itemDefinition["@_id"]!;
                             });
                           }}
                         >

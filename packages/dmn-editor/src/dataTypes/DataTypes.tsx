@@ -44,7 +44,7 @@ export type EditItemDefinition = (
 export function DataTypes() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { activeItemId } = useDmnEditorStore((s) => s.dataTypesEditor);
+  const { activeItemDefinitionId } = useDmnEditorStore((s) => s.dataTypesEditor);
 
   const [filter, setFilter] = useState("");
 
@@ -62,8 +62,8 @@ export function DataTypes() {
   }, [thisDmn.model.definitions.itemDefinition]);
 
   const active = useMemo(() => {
-    return activeItemId ? dataTypesById.get(activeItemId) : undefined;
-  }, [activeItemId, dataTypesById]);
+    return activeItemDefinitionId ? dataTypesById.get(activeItemDefinitionId) : undefined;
+  }, [activeItemDefinitionId, dataTypesById]);
 
   const filteredTree = useMemo(
     () =>
@@ -93,7 +93,7 @@ export function DataTypes() {
         const newItemDefinition = getNewItemDefinition(partial);
         state.dmn.model.definitions.itemDefinition ??= [];
         state.dmn.model.definitions.itemDefinition?.unshift(newItemDefinition);
-        state.dataTypesEditor.activeItemId = newItemDefinition["@_id"];
+        state.dataTypesEditor.activeItemDefinitionId = newItemDefinition["@_id"];
       });
     },
     [dmnEditorStoreApi]
@@ -106,9 +106,10 @@ export function DataTypes() {
       }
       dmnEditorStoreApi.setState((state) => {
         if (e.key === "ArrowDown") {
-          state.dataTypesEditor.activeItemId = tree[(active?.index + 1) % filteredTree.length].itemDefinition["@_id"];
+          state.dataTypesEditor.activeItemDefinitionId =
+            tree[(active?.index + 1) % filteredTree.length].itemDefinition["@_id"];
         } else if (e.key === "ArrowUp") {
-          state.dataTypesEditor.activeItemId =
+          state.dataTypesEditor.activeItemDefinitionId =
             tree[
               (active?.index - 1 === -1 ? filteredTree.length - 1 : active?.index - 1) % filteredTree.length
             ].itemDefinition["@_id"];
@@ -142,13 +143,13 @@ export function DataTypes() {
                       spaceItems={{ default: "spaceItemsNone" }}
                       onClick={() =>
                         dmnEditorStoreApi.setState((state) => {
-                          state.dataTypesEditor.activeItemId = itemDefinition["@_id"]!;
+                          state.dataTypesEditor.activeItemDefinitionId = itemDefinition["@_id"]!;
                         })
                       }
                       justifyContent={{ default: "justifyContentFlexStart" }}
                       alignItems={{ default: "alignItemsCenter" }}
                       className={`kie-dmn-editor--data-types-nav-item ${
-                        activeItemId === itemDefinition["@_id"] ? "active" : ""
+                        activeItemDefinitionId === itemDefinition["@_id"] ? "active" : ""
                       }`}
                     >
                       <InfrastructureIcon
@@ -156,7 +157,7 @@ export function DataTypes() {
                       />
                       <DataTypeName
                         itemDefinition={itemDefinition}
-                        isActive={activeItemId === itemDefinition["@_id"]}
+                        isActive={activeItemDefinitionId === itemDefinition["@_id"]}
                         editItemDefinition={editItemDefinition}
                         editMode={"double-click"}
                       />
