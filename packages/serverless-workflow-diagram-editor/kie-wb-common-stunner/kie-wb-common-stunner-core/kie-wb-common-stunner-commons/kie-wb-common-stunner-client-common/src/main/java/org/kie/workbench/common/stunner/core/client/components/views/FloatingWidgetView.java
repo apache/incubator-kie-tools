@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -24,11 +24,10 @@ import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Timer;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import org.gwtproject.timer.client.Timer;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandlerRegistration;
@@ -147,11 +146,11 @@ public class FloatingWidgetView implements FloatingView<IsElement> {
     }
 
     protected void doShow() {
-        panel.style.display = Style.Display.INLINE.getCssName();
+        panel.style.display = "inline";
     }
 
     protected void doHide() {
-        panel.style.display = Style.Display.NONE.getCssName();
+        panel.style.display = "none";
         hideCallback.execute();
     }
 
@@ -160,7 +159,7 @@ public class FloatingWidgetView implements FloatingView<IsElement> {
             getRootPanel().appendChild(panel);
             //RootPanel.get().add(panel);
             registerHoverEventHandlers();
-            panel.style.position = Style.Position.FIXED.getCssName();
+            panel.style.position = "fixed";
             panel.style.zIndex = ZIndexUnionType.of(Integer.MAX_VALUE);
             doHide();
             attached = true;

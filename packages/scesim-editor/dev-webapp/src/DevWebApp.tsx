@@ -31,7 +31,7 @@ export function DevWebApp() {
   useEffect(() => {
     /* Simulating a call from "Foundation" code */
     setTimeout(() => {
-      ref.current?.setContent("", "");
+      ref.current?.setContent("Untitled.scesim", "");
     }, 1000);
   }, [ref]);
 
@@ -42,9 +42,10 @@ export function DevWebApp() {
       // Use DataTransferItemList interface to access the file(s)
       [...e.dataTransfer.items].forEach((item, i) => {
         if (item.kind === "file") {
+          const fileName = item.getAsFile()?.name;
           const reader = new FileReader();
           reader.addEventListener("load", ({ target }) =>
-            ref.current?.setContent(item.getAsFile()?.name ?? "", target?.result as string)
+            ref.current?.setContent(fileName ?? "", target?.result as string)
           );
           reader.readAsText(item.getAsFile() as any);
         }

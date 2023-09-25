@@ -20,7 +20,6 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters;
 
-import com.google.gwt.user.client.ui.Widget;
 import elemental2.dom.HTMLDivElement;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
@@ -46,8 +45,6 @@ public abstract class AbstractCanvasHandlerViewerTest {
     @Mock
     protected WiresCanvasView canvasView;
     @Mock
-    protected Widget canvasViewWidget;
-    @Mock
     protected AbstractCanvasHandler canvasHandler;
     @Mock
     protected Diagram diagram;
@@ -68,7 +65,6 @@ public abstract class AbstractCanvasHandlerViewerTest {
     public void init() throws Exception {
         this.canvasHandlerDiagram = null;
         when(canvas.getView()).thenReturn(canvasView);
-        when(getCanvasPanel().asWidget()).thenReturn(canvasViewWidget);
         when(canvasView.getElement()).thenReturn(canvasElement);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
