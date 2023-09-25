@@ -4924,6 +4924,10 @@ importers:
         version: 5.9.0
 
   packages/kie-editors-standalone:
+    dependencies:
+      "@kie-tools/kie-bc-editors":
+        specifier: workspace:*
+        version: link:../kie-bc-editors
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -4961,9 +4965,6 @@ importers:
       "@kie-tools/eslint":
         specifier: workspace:*
         version: link:../eslint
-      "@kie-tools/kie-bc-editors":
-        specifier: workspace:*
-        version: link:../kie-bc-editors
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
