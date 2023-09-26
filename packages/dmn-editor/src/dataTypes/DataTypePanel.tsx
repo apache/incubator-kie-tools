@@ -169,10 +169,10 @@ export function DataTypePanel({
             />
           </div>
           <FlexItem>
-            <Button variant={ButtonVariant.link}>Back</Button>
+            {/* <Button variant={ButtonVariant.link}>Back</Button>
             <Button variant={ButtonVariant.link}>Forward</Button>
             <span>|</span>
-            <Button variant={ButtonVariant.link}>View usages</Button>
+            <Button variant={ButtonVariant.link}>View usages</Button> */}
             <Dropdown
               toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
               onSelect={() => setTopLevelDropdownOpen(false)}
