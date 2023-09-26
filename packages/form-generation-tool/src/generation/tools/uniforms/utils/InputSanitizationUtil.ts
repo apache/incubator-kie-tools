@@ -17,42 +17,6 @@
  * under the License.
  */
 
-export interface FormSchema {
-  name: string;
-  schema: any;
-}
-
-export enum FormStyle {
-  PATTERNFLY = "patternfly",
-  BOOTSTRAP = "bootstrap",
-}
-
-export enum FormAssetType {
-  HTML = "html",
-  TSX = "tsx",
-}
-
-export interface FormResources {
-  styles: Record<string, string>;
-  scripts: Record<string, string>;
-}
-
-export interface FormConfig {
-  schema: string;
-  resources: FormResources;
-}
-
-export interface FormAsset {
-  id: string;
-  sanitizedId: string;
-  assetName: string;
-  sanitizedAssetName: string;
-  content: string;
-  type: FormAssetType | string;
-  config: FormConfig;
-}
-
-export interface FormGenerationTool {
-  type: string;
-  generate: (schema: FormSchema) => FormAsset;
-}
+export const inputSanitizationUtil = (unsanitizedString: string) => {
+  return unsanitizedString.replace("#", "_");
+};
