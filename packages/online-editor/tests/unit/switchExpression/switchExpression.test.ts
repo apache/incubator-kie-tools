@@ -28,7 +28,7 @@ enum SomeKind {
   THREE = "three",
 }
 const someKindSubsetValues = [SomeKind.ONE, SomeKind.THREE] as const;
-type SomeKindSubset = typeof someKindSubsetValues[number];
+type SomeKindSubset = (typeof someKindSubsetValues)[number];
 type UnionMixed3Values = 1 | "two" | SomeKind.THREE;
 
 describe("switchExpression tests", () => {
