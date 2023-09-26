@@ -17,7 +17,4 @@
  * under the License.
  */
 
-export * from "./VSCodeTestHelper";
-export * from "./CommonAsserts";
-export * from "./EditorTestHelper";
-export * from "./KieFileExtensions";
+export { en } from "./en";

@@ -65,7 +65,7 @@
     <version.org.jboss.resteasy>3.15.1.Final</version.org.jboss.resteasy>
     <version.org.jboss.errai>4.15.0.Final</version.org.jboss.errai>
     <version.commons-io>2.7</version.commons-io>
-    <version.commons-codec>1.11</version.commons-codec>
+    <version.commons-codec>1.16.0</version.commons-codec>
     <version.com.google.gwt>2.9.0</version.com.google.gwt>
     <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
     <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
