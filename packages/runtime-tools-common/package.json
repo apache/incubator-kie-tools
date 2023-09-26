@@ -43,7 +43,7 @@
     "copyfiles": "^2.4.1",
     "jsonpath": "^1.1.1",
     "lodash": "^4.17.21",
-    "monaco-editor": "^0.33.0",
+    "monaco-editor": "^0.39.0",
     "react": "^17.0.2",
     "react-datetime-picker": "^3.5.0",
     "react-dom": "^17.0.2",
