@@ -9,9 +9,9 @@ import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { useDataTypes as useBuiltinDataTypes } from "./Hooks";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
+import { builtInDataTypes } from "./BuiltInDataTypes";
 
 export function TypeRefSelector(props: {
   isDisabled?: boolean;
@@ -22,8 +22,6 @@ export function TypeRefSelector(props: {
   const onToggleDataTypeSelect = useCallback((isOpen: boolean) => {
     setOpen(isOpen);
   }, []);
-
-  const { builtInDataTypes } = useBuiltinDataTypes();
 
   const { dataTypesByFeelName } = useDmnEditorDerivedStore();
 

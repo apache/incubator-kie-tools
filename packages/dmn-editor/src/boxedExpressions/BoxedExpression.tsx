@@ -1,6 +1,7 @@
 import {
   BeeGwtService,
   DmnBuiltInDataType,
+  DmnDataType,
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   PmmlParam,
@@ -15,7 +16,6 @@ import { updateExpression } from "../mutations/updateExpression";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { dmnToBee, getUndefinedExpressionDefinition } from "./dmnToBee";
 import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressionDefinitionByLogicType";
-import { useDataTypes } from "../dataTypes/Hooks";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
@@ -31,6 +31,8 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
+import { builtInDataTypes } from "../dataTypes/BuiltInDataTypes";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -106,7 +108,17 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const { builtInDataTypes: dataTypes } = useDataTypes(); // FIXME: Tiago --> This is wrong!
+  const { dataTypesTree } = useDmnEditorDerivedStore();
+
+  const dataTypes = useMemo<DmnDataType[]>(() => {
+    const customDataTypes = dataTypesTree.map((d) => ({
+      isCustom: true,
+      typeRef: d.itemDefinition.typeRef!,
+      name: d.feelName,
+    }));
+
+    return [...builtInDataTypes, ...customDataTypes];
+  }, [dataTypesTree]);
 
   const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
 

@@ -32,6 +32,8 @@ import {
   DMN15__tKnowledgeSource,
   DMN15__tTextAnnotation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
+import { NodeIcon } from "../icons/Icons";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const { nodesById } = useDmnEditorDerivedStore();
@@ -44,6 +46,8 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
     return <>Node not found: {nodeId}</>;
   }
 
+  const Icon = NodeIcon(getNodeTypeFromDmnObject(node!.data!.dmnObject!));
+
   return (
     <>
       <Form>
@@ -51,32 +55,37 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
           isExpanded={true}
           header={
             <FormFieldGroupHeader
+              style={{ paddingTop: "8px" }}
               titleText={{
                 text: (
                   <TextContent>
                     <Text component={TextVariants.h4}>
-                      <PficonTemplateIcon />
-                      &nbsp;&nbsp;
-                      {(() => {
-                        switch (node.type) {
-                          case NODE_TYPES.inputData:
-                            return <>Input</>;
-                          case NODE_TYPES.decision:
-                            return <>Decision</>;
-                          case NODE_TYPES.bkm:
-                            return <>Business Knowledge Model</>;
-                          case NODE_TYPES.decisionService:
-                            return <>Decision service</>;
-                          case NODE_TYPES.knowledgeSource:
-                            return <>Knowledge source</>;
-                          case NODE_TYPES.textAnnotation:
-                            return <>Text annotation</>;
-                          case NODE_TYPES.group:
-                            return <>Group</>;
-                          default:
-                            throw new Error(`Unknown type of node ${node.type}`);
-                        }
-                      })()}
+                      <Flex alignItems={{ default: "alignItemsCenter" }}>
+                        <div style={{ width: "40px", height: "40px", marginRight: 0 }}>
+                          <Icon />
+                        </div>
+                        &nbsp;&nbsp;
+                        {(() => {
+                          switch (node.type) {
+                            case NODE_TYPES.inputData:
+                              return <>Input</>;
+                            case NODE_TYPES.decision:
+                              return <>Decision</>;
+                            case NODE_TYPES.bkm:
+                              return <>Business Knowledge Model</>;
+                            case NODE_TYPES.decisionService:
+                              return <>Decision service</>;
+                            case NODE_TYPES.knowledgeSource:
+                              return <>Knowledge source</>;
+                            case NODE_TYPES.textAnnotation:
+                              return <>Text annotation</>;
+                            case NODE_TYPES.group:
+                              return <>Group</>;
+                            default:
+                              throw new Error(`Unknown type of node ${node.type}`);
+                          }
+                        })()}
+                      </Flex>
                     </Text>
                   </TextContent>
                 ),

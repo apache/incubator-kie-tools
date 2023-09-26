@@ -133,149 +133,152 @@ export function DataTypePanel({
   const { importsByNamespace } = useDmnEditorDerivedStore();
 
   return (
-    <PageSection>
-      <div className={"kie-dmn-editor--data-type-parents"}>
-        {parents.map((p) => (
-          <Button
-            key={p.itemDefinition["@_id"]!}
-            variant={ButtonVariant.link}
-            onClick={() => {
-              dmnEditorStoreApi.setState((state) => {
-                state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
-              });
-            }}
-          >
-            {
-              buildFeelQNameFromNamespace({
-                namedElement: p.itemDefinition,
-                importsByNamespace,
-                namespace: p!.namespace,
-                relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
-              }).full
-            }
-          </Button>
-        ))}
-      </div>
-      <Flex>
-        {dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}
-        <div className={"kie-dmn-editor--data-types-title"}>
-          <DataTypeName
-            relativeToNamespace={!dataType.parentId ? thisDmnsNamespace : dataType.namespace}
-            itemDefinition={dataType.itemDefinition}
-            isActive={false}
-            editMode={"hover"}
-            isReadonly={dataType.namespace !== thisDmnsNamespace}
-          />
+    <>
+      <div className={"sticky-top-glass"} style={{ padding: "16px" }}>
+        <div className={"kie-dmn-editor--data-type-parents"}>
+          {parents.map((p) => (
+            <Button
+              key={p.itemDefinition["@_id"]!}
+              variant={ButtonVariant.link}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.dataTypesEditor.activeItemDefinitionId = p.itemDefinition["@_id"]!;
+                });
+              }}
+            >
+              {
+                buildFeelQNameFromNamespace({
+                  namedElement: p.itemDefinition,
+                  importsByNamespace,
+                  namespace: p!.namespace,
+                  relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
+                }).full
+              }
+            </Button>
+          ))}
         </div>
-        <FlexItem>
-          <Button variant={ButtonVariant.link}>Back</Button>
-          <Button variant={ButtonVariant.link}>Forward</Button>
-          <span>|</span>
-          <Button variant={ButtonVariant.link}>View usages</Button>
-          <Dropdown
-            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
-            onSelect={() => setTopLevelDropdownOpen(false)}
-            isOpen={topLevelDropdownOpen}
-            menuAppendTo={document.body}
-            isPlain={true}
-            position={"right"}
-            dropdownItems={[
-              <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
-                <div>
-                  <b>ID: </b>
-                  {dataType.itemDefinition["@_id"]}
-                </div>
-              </DropdownItem>,
-              <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
-              <DropdownItem
-                key={"copy"}
-                icon={<CopyIcon />}
-                onClick={() => {
-                  navigator.clipboard.writeText(JSON.stringify(dataType.itemDefinition));
-                }}
-              >
-                Copy
-              </DropdownItem>,
-              <DropdownSeparator key="separator-2" />,
-              <React.Fragment key={"remove-fragment"}>
-                {!isReadonly && (
-                  <DropdownItem
-                    style={{ minWidth: "240px" }}
-                    icon={<TrashIcon />}
-                    onClick={() => {
-                      if (isReadonly) {
-                        return;
-                      }
+        <Flex>
+          {dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}
+          <div className={"kie-dmn-editor--data-types-title"}>
+            <DataTypeName
+              relativeToNamespace={!dataType.parentId ? thisDmnsNamespace : dataType.namespace}
+              itemDefinition={dataType.itemDefinition}
+              isActive={false}
+              editMode={"hover"}
+              isReadonly={dataType.namespace !== thisDmnsNamespace}
+            />
+          </div>
+          <FlexItem>
+            <Button variant={ButtonVariant.link}>Back</Button>
+            <Button variant={ButtonVariant.link}>Forward</Button>
+            <span>|</span>
+            <Button variant={ButtonVariant.link}>View usages</Button>
+            <Dropdown
+              toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
+              onSelect={() => setTopLevelDropdownOpen(false)}
+              isOpen={topLevelDropdownOpen}
+              menuAppendTo={document.body}
+              isPlain={true}
+              position={"right"}
+              dropdownItems={[
+                <DropdownItem key={"id"} isDisabled={true} icon={<></>}>
+                  <div>
+                    <b>ID: </b>
+                    {dataType.itemDefinition["@_id"]}
+                  </div>
+                </DropdownItem>,
+                <DropdownSeparator key={"separator-1"} style={{ marginBottom: "8px" }} />,
+                <DropdownItem
+                  key={"copy"}
+                  icon={<CopyIcon />}
+                  onClick={() => {
+                    navigator.clipboard.writeText(JSON.stringify(dataType.itemDefinition));
+                  }}
+                >
+                  Copy
+                </DropdownItem>,
+                <DropdownSeparator key="separator-2" />,
+                <React.Fragment key={"remove-fragment"}>
+                  {!isReadonly && (
+                    <DropdownItem
+                      style={{ minWidth: "240px" }}
+                      icon={<TrashIcon />}
+                      onClick={() => {
+                        if (isReadonly) {
+                          return;
+                        }
 
-                      editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
-                        items?.splice(dataType.index, 1);
-                      });
-                      dmnEditorStoreApi.setState((state) => {
-                        state.dataTypesEditor.activeItemDefinitionId =
-                          dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
-                      });
-                    }}
-                  >
-                    Remove
-                  </DropdownItem>
-                )}
-              </React.Fragment>,
-            ]}
-          />
-        </FlexItem>
-      </Flex>
-      <br />
-      <TextArea
-        isDisabled={isReadonly}
-        key={dataType.itemDefinition["@_id"]}
-        value={dataType.itemDefinition.description}
-        onChange={changeDescription}
-        placeholder={"Enter a description..."}
-        resizeOrientation={"vertical"}
-        aria-label={"Data type description"}
-      />
-      <br />
-      <br />
-      <Divider inset={{ default: "insetMd" }} />
-      <br />
-      <Switch
-        label={"Is collection?"}
-        isChecked={!!dataType.itemDefinition["@_isCollection"]}
-        onChange={toggleCollection}
-      />
-      <br />
-      <br />
-      <Switch label={"Is struct?"} isChecked={isStruct(dataType.itemDefinition)} onChange={toggleStruct}></Switch>
-      <br />
-      <br />
-      <Divider inset={{ default: "insetMd" }} />
-      <br />
-      {!isStruct(dataType.itemDefinition) && (
-        <>
-          <Title size={"md"} headingLevel="h4">
-            Type
-          </Title>
-          <TypeRefSelector isDisabled={isReadonly} name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
-          <br />
-          <br />
-          <Title size={"md"} headingLevel="h4">
-            Constraints
-          </Title>
-          Work in progress 🔧
-          <br />
-        </>
-      )}
-      {isStruct(dataType.itemDefinition) && (
-        <ItemComponentsTable
-          isReadonly={isReadonly}
-          addItemComponent={addItemComponent}
-          dataTypesById={dataTypesById}
-          parent={dataType}
-          editItemDefinition={editItemDefinition}
-          dropdownOpenFor={dropdownOpenFor}
-          setDropdownOpenFor={setDropdownOpenFor}
+                        editItemDefinition(dataType.itemDefinition["@_id"]!, (_, items) => {
+                          items?.splice(dataType.index, 1);
+                        });
+                        dmnEditorStoreApi.setState((state) => {
+                          state.dataTypesEditor.activeItemDefinitionId =
+                            dataType.parentId ?? state.dmn.model.definitions.itemDefinition?.[0]?.["@_id"];
+                        });
+                      }}
+                    >
+                      Remove
+                    </DropdownItem>
+                  )}
+                </React.Fragment>,
+              ]}
+            />
+          </FlexItem>
+        </Flex>
+      </div>
+      <PageSection>
+        <TextArea
+          isDisabled={isReadonly}
+          key={dataType.itemDefinition["@_id"]}
+          value={dataType.itemDefinition.description}
+          onChange={changeDescription}
+          placeholder={"Enter a description..."}
+          resizeOrientation={"vertical"}
+          aria-label={"Data type description"}
         />
-      )}
-    </PageSection>
+        <br />
+        <br />
+        <Divider inset={{ default: "insetMd" }} />
+        <br />
+        <Switch
+          label={"Is collection?"}
+          isChecked={!!dataType.itemDefinition["@_isCollection"]}
+          onChange={toggleCollection}
+        />
+        <br />
+        <br />
+        <Switch label={"Is struct?"} isChecked={isStruct(dataType.itemDefinition)} onChange={toggleStruct}></Switch>
+        <br />
+        <br />
+        <Divider inset={{ default: "insetMd" }} />
+        <br />
+        {!isStruct(dataType.itemDefinition) && (
+          <>
+            <Title size={"md"} headingLevel="h4">
+              Type
+            </Title>
+            <TypeRefSelector isDisabled={isReadonly} name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
+            <br />
+            <br />
+            <Title size={"md"} headingLevel="h4">
+              Constraints
+            </Title>
+            Work in progress 🔧
+            <br />
+          </>
+        )}
+        {isStruct(dataType.itemDefinition) && (
+          <ItemComponentsTable
+            isReadonly={isReadonly}
+            addItemComponent={addItemComponent}
+            dataTypesById={dataTypesById}
+            parent={dataType}
+            editItemDefinition={editItemDefinition}
+            dropdownOpenFor={dropdownOpenFor}
+            setDropdownOpenFor={setDropdownOpenFor}
+          />
+        )}
+      </PageSection>
+    </>
   );
 }

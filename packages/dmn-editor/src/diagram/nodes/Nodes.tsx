@@ -38,15 +38,9 @@ import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from 
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "../../xml/xmlQNames";
+import { Unpacked } from "../../store/useDiagramData";
 
-export type NodeDmnObjects =
-  | DMN15__tInputData
-  | DMN15__tDecision
-  | DMN15__tBusinessKnowledgeModel
-  | DMN15__tKnowledgeSource
-  | DMN15__tDecisionService
-  | DMN15__tGroup
-  | DMN15__tTextAnnotation;
+export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>;
 
 export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObjectNamespace: string | undefined;
@@ -70,7 +64,7 @@ export const InputDataNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tInputData & { __$$element: "inputData" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
 
@@ -142,7 +136,7 @@ export const DecisionNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecision & { __$$element: "decision" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
 
@@ -214,7 +208,7 @@ export const BkmNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
 
@@ -286,7 +280,7 @@ export const KnowledgeSourceNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tKnowledgeSource & { __$$element: "knowledgeSource" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
 
@@ -357,7 +351,7 @@ export const TextAnnotationNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tTextAnnotation & { __$$element: "textAnnotation" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isResizing = useNodeResizing(id);
 
@@ -428,7 +422,7 @@ export const DecisionServiceNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tDecisionService & { __$$element: "decisionService" }>>) => {
     const ref = useRef<SVGRectElement>(null);
     const isResizing = useNodeResizing(id);
 
@@ -534,7 +528,7 @@ export const GroupNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<DMN15__tGroup & { __$$element: "group" }>>) => {
     const ref = useRef<SVGRectElement>(null);
     const isResizing = useNodeResizing(id);
 

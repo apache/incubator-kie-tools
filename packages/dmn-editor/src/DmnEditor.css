@@ -537,9 +537,16 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 /* (end) data type label */
 
 /* (begin) data types */
+.sticky-top-glass {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgb(255, 255, 255, 60%);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid lightgray;
+}
 .kie-dmn-editor--data-types-filter {
-  margin: 8px;
-  padding: 8px;
+  padding: 16px;
 }
 .kie-dmn-editor--data-types-filter input {
   flex-grow: 1;
