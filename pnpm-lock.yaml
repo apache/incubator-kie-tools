@@ -6665,7 +6665,7 @@ importers:
         version: 3.0.5
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.39.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -8029,7 +8029,7 @@ importers:
         version: 4.17.21
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.33.0)(monaco-yaml@4.0.0)(webpack@5.88.2)
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.88.2)
@@ -15171,7 +15171,7 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       react-dropzone: 11.7.1(react@17.0.2)
-      react-monaco-editor: 0.51.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2)
+      react-monaco-editor: 0.51.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2)
       tslib: 2.5.0
     dev: true
 
@@ -28559,19 +28559,6 @@ packages:
       webpack: 5.88.2(webpack-cli@4.10.0)
     dev: true
 
-  /monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(webpack@5.88.2):
-    resolution:
-      { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
-    peerDependencies:
-      monaco-editor: ">= 0.31.0"
-      monaco-yaml: "*"
-      webpack: ^4.5.0 || 5.x
-    dependencies:
-      loader-utils: 2.0.2
-      monaco-editor: 0.39.0
-      webpack: 5.88.2(webpack-cli@4.10.0)
-    dev: true
-
   /monaco-editor@0.39.0:
     resolution:
       { integrity: sha512-zhbZ2Nx93tLR8aJmL2zI1mhJpsl87HMebNBM6R8z4pLfs8pj604pIVIVwyF1TivcfNtIPpMXL+nb3DsBmE/x6Q== }
@@ -31364,7 +31351,7 @@ packages:
       react: 17.0.2
     dev: false
 
-  /react-monaco-editor@0.51.0(@types/react@17.0.21)(monaco-editor@0.33.0)(react@17.0.2):
+  /react-monaco-editor@0.51.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2):
     resolution:
       { integrity: sha512-6jx1V8p6gHVKJHFaTvicOtmlhFjOJhekobeNd92ZAo7F5UvAin1cF7bxWLCKgtxClYZ7CB3Ar284Kpbhj22FpQ== }
     peerDependencies:
@@ -31373,7 +31360,7 @@ packages:
       react: ">=17 <= 18"
     dependencies:
       "@types/react": 17.0.21
-      monaco-editor: 0.33.0
+      monaco-editor: 0.39.0
       prop-types: 15.8.1
       react: 17.0.2
     dev: true
