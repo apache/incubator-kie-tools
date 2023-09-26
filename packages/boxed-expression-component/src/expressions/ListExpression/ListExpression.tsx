@@ -21,6 +21,7 @@ import * as React from "react";
 import * as ReactTable from "react-table";
 import { useCallback, useMemo } from "react";
 import {
+  BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
@@ -49,10 +50,15 @@ import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 
 export type ROWTYPE = ContextExpressionDefinitionEntry;
 
-export function ListExpression(listExpression: ListExpressionDefinition & { isNested: boolean }) {
+export function ListExpression(
+  listExpression: ListExpressionDefinition & {
+    isNested: boolean;
+    parentElementId: string;
+  }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -119,7 +125,7 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
         width: undefined,
       },
     ],
-    [listExpression.dataType, listExpression.name]
+    [decisionNodeId, listExpression.dataType, listExpression.name]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
@@ -127,10 +133,10 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
   }, []);
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
-    () => ({
-      [decisionNodeId]: ListItemCell,
+    (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
+      [decisionNodeId]: (props) => <ListItemCell parentElementId={listExpression.parentElementId} {...props} />,
     }),
-    []
+    [decisionNodeId, listExpression.parentElementId]
   );
 
   const getDefaultListItem = useCallback((dataType: DmnBuiltInDataType): ExpressionDefinition => {
@@ -145,11 +151,16 @@ export function ListExpression(listExpression: ListExpressionDefinition & { isNe
     (args: { beforeIndex: number }) => {
       setExpression((prev: ListExpressionDefinition) => {
         const newItems = [...prev.items];
-        newItems.splice(args.beforeIndex, 0, getDefaultListItem(prev.dataType));
+
+        const newItem = getDefaultListItem(prev.dataType);
+
+        variables?.repository.addVariableToContext(newItem.id, newItem.id, listExpression.parentElementId);
+
+        newItems.splice(args.beforeIndex, 0, newItem);
         return { ...prev, items: newItems };
       });
     },
-    [getDefaultListItem, setExpression]
+    [getDefaultListItem, listExpression.parentElementId, setExpression, variables?.repository]
   );
 
   const onRowDeleted = useCallback(

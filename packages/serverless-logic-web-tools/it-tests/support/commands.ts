@@ -48,6 +48,12 @@ declare namespace Cypress {
      * @param locator component id according to OUIA specification
      */
     goToSidebarLink(locator: { ouiaId: string }): void;
+
+    /**
+     * Type into a DOM element using '{ force: true }' option.
+     * @param text Text to be typed.
+     */
+    forceType(text: string): Chainable<any>;
   }
 }
 
@@ -74,7 +80,7 @@ Cypress.Commands.add("moveToPosition", { prevSubject: true }, (subject, row, col
   }
 
   // move to the beginning of the textarea and move to the destination
-  return cy.wrap(subject).type("{ctrl}{home}").type(path);
+  return cy.wrap(subject).forceType("{ctrl}{home}").forceType(path);
 });
 
 Cypress.Commands.add("ouia", { prevSubject: "optional" }, (subject, locator, options = {}) => {
@@ -103,4 +109,8 @@ Cypress.Commands.add("goToSidebarLink", { prevSubject: false }, (locator) => {
     cy.ouia({ ouiaId: locator.ouiaId }).click();
     cy.get("#nav-toggle").click();
   });
+});
+
+Cypress.Commands.add("forceType", { prevSubject: "element" }, (subject, text) => {
+  return cy.wrap(subject).type(text, { force: true });
 });
