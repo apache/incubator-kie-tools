@@ -25,7 +25,7 @@
     "filemanager-webpack-plugin": "^7.0.0",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.8.8",
     "pretty-quick": "^3.1.0"
   },
   "resolutions": {

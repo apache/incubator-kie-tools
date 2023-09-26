@@ -38,7 +38,7 @@ importers:
         version: link:scripts/update-version
       "@nice-move/prettier-plugin-package-json":
         specifier: ^0.6.1
-        version: 0.6.1(prettier@2.3.0)
+        version: 0.6.1(prettier@2.8.8)
       "@prettier/plugin-xml":
         specifier: ^2
         version: 2.2.0
@@ -55,11 +55,11 @@ importers:
         specifier: ^2.1.0
         version: 2.1.0
       prettier:
-        specifier: ^2.2.1
-        version: 2.3.0
+        specifier: ^2.8.8
+        version: 2.8.8
       pretty-quick:
         specifier: ^3.1.0
-        version: 3.1.0(prettier@2.3.0)
+        version: 3.1.0(prettier@2.8.8)
 
   examples/base64png-editor:
     dependencies:
@@ -8157,8 +8157,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       prettier:
-        specifier: ^2.2.1
-        version: 2.3.0
+        specifier: ^2.8.8
+        version: 2.8.8
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -8209,8 +8209,8 @@ importers:
         specifier: ^4.14.168
         version: 4.14.169
       "@types/prettier":
-        specifier: ^2.2.1
-        version: 2.2.3
+        specifier: ^2.7.3
+        version: 2.7.3
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -8378,8 +8378,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       prettier:
-        specifier: ^2.2.1
-        version: 2.3.0
+        specifier: ^2.8.8
+        version: 2.8.8
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -8427,8 +8427,8 @@ importers:
         specifier: ^4.14.168
         version: 4.14.169
       "@types/prettier":
-        specifier: ^2.2.1
-        version: 2.2.3
+        specifier: ^2.7.3
+        version: 2.7.3
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -9849,8 +9849,8 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
       prettier:
-        specifier: ^2.2.1
-        version: 2.3.0
+        specifier: ^2.8.8
+        version: 2.8.8
 
   scripts/build-env:
     devDependencies:
@@ -10225,8 +10225,8 @@ packages:
       tslib: 2.5.0
     dev: false
 
-  ? /@angular/platform-browser-dynamic@14.3.0(@angular/common@14.3.0)(@angular/compiler@14.3.0)(@angular/core@14.3.0)(@angular/platform-browser@14.3.0)
-  : resolution:
+  /@angular/platform-browser-dynamic@14.3.0(@angular/common@14.3.0)(@angular/compiler@14.3.0)(@angular/core@14.3.0)(@angular/platform-browser@14.3.0):
+    resolution:
       { integrity: sha512-rneZiMrIiYRhrkQvdL40E2ErKRn4Zdo6EtjBM9pAmWeyoM8oMnOZb9gz5vhrkNWg06kVMVg0yKqluP5How7j3A== }
     engines: { node: ^14.15.0 || >=16.10.0 }
     peerDependencies:
@@ -10538,9 +10538,9 @@ packages:
     dependencies:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.22.9
-      "@babel/helper-validator-option": 7.21.0
+      "@babel/helper-validator-option": 7.22.5
       browserslist: 4.21.5
-      semver: 6.3.0
+      semver: 6.3.1
     dev: true
 
   /@babel/helper-compilation-targets@7.22.15:
@@ -11923,7 +11923,7 @@ packages:
       "@babel/helper-compilation-targets": 7.22.9(@babel/core@7.22.9)
       "@babel/helper-plugin-utils": 7.21.5
       "@babel/plugin-syntax-object-rest-spread": 7.8.3(@babel/core@7.22.9)
-      "@babel/plugin-transform-parameters": 7.22.5(@babel/core@7.22.9)
+      "@babel/plugin-transform-parameters": 7.21.3(@babel/core@7.22.9)
     dev: true
 
   /@babel/plugin-proposal-object-rest-spread@7.20.7(@babel/core@7.16.12):
@@ -12148,7 +12148,7 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.22.9
-      "@babel/helper-annotate-as-pure": 7.18.6
+      "@babel/helper-annotate-as-pure": 7.22.5
       "@babel/helper-create-class-features-plugin": 7.22.9(@babel/core@7.22.9)
       "@babel/helper-plugin-utils": 7.21.5
       "@babel/plugin-syntax-private-property-in-object": 7.14.5(@babel/core@7.22.9)
@@ -13836,11 +13836,9 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.22.9
-      "@babel/helper-module-transforms": 7.21.5
+      "@babel/helper-module-transforms": 7.22.9(@babel/core@7.22.9)
       "@babel/helper-plugin-utils": 7.21.5
       babel-plugin-dynamic-import-node: 2.3.3
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@babel/plugin-transform-modules-amd@7.22.5(@babel/core@7.16.12):
@@ -14055,10 +14053,8 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.22.9
-      "@babel/helper-module-transforms": 7.21.5
+      "@babel/helper-module-transforms": 7.22.9(@babel/core@7.22.9)
       "@babel/helper-plugin-utils": 7.21.5
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@babel/plugin-transform-modules-umd@7.22.5(@babel/core@7.16.12):
@@ -14393,6 +14389,17 @@ packages:
       "@babel/helper-plugin-utils": 7.21.5
     dev: true
 
+  /@babel/plugin-transform-parameters@7.21.3(@babel/core@7.22.9):
+    resolution:
+      { integrity: sha512-Wxc+TvppQG9xWFYatvCGPvZ6+SIUxQ2ZdiBP+PHYMIjnPXD+uThCshaz4NZOnODAtBjjcVQQ/3OKs9LW28purQ== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.22.9
+      "@babel/helper-plugin-utils": 7.21.5
+    dev: true
+
   /@babel/plugin-transform-parameters@7.22.15(@babel/core@7.22.9):
     resolution:
       { integrity: sha512-hjk7qKIqhyzhhUvRT683TYQOFa/4cQKwQy7ALvTpODswN40MljzNDa0YldevS6tGbxwaEKVn502JmY0dP7qEtQ== }
@@ -14423,17 +14430,6 @@ packages:
       "@babel/core": ^7.0.0-0
     dependencies:
       "@babel/core": 7.18.10
-      "@babel/helper-plugin-utils": 7.22.5
-    dev: true
-
-  /@babel/plugin-transform-parameters@7.22.5(@babel/core@7.22.9):
-    resolution:
-      { integrity: sha512-AVkFUBurORBREOmHRKo06FjHYgjrabpdqRSwq6+C7R5iTCZOsM4QbcB27St0a4U6fffyAOqh3s/qEfybAhfivg== }
-    engines: { node: ">=6.9.0" }
-    peerDependencies:
-      "@babel/core": ^7.0.0-0
-    dependencies:
-      "@babel/core": 7.22.9
       "@babel/helper-plugin-utils": 7.22.5
     dev: true
 
@@ -17429,14 +17425,14 @@ packages:
       webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
-  /@nice-move/prettier-plugin-package-json@0.6.1(prettier@2.3.0):
+  /@nice-move/prettier-plugin-package-json@0.6.1(prettier@2.8.8):
     resolution:
       { integrity: sha512-EtDkha5voRj/0lzBLSxxs/6qjTopiVR3GSmTKu1oaWzQJ31V9S5/4f28zL4qXID67KJRb9aN6jUpKzZ7AnaYzw== }
     engines: { node: ^16.13.0 || >=18.0.0 }
     peerDependencies:
       prettier: ^2.5.0
     dependencies:
-      prettier: 2.3.0
+      prettier: 2.8.8
     dev: true
 
   /@nodelib/fs.scandir@2.1.5:
@@ -19009,7 +19005,7 @@ packages:
       { integrity: sha512-UWRmygBsyj4bVXvDiqSccwT1kmsorcwQwaIy30yVh8T+Gspx4OlC0shX1y+ZuwXZvgnafmpRYKks0bAu9urJew== }
     dependencies:
       "@xml-tools/parser": 1.0.11
-      prettier: 3.0.0
+      prettier: 2.8.8
     dev: true
 
   /@radix-ui/number@1.0.1:
@@ -19118,8 +19114,8 @@ packages:
       react: 17.0.2
     dev: true
 
-  ? /@radix-ui/react-dismissable-layer@1.0.4(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
-  : resolution:
+  /@radix-ui/react-dismissable-layer@1.0.4(@types/react-dom@17.0.8)(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2):
+    resolution:
       { integrity: sha512-7UpBa/RKMoHJYjie1gkF1DlK8l1fdU/VKDpoS3rCCo8YBJR294GwcEHyxHw72yvphJ7ld0AXEcSLAzY2F/WyCg== }
     peerDependencies:
       "@types/react": ^17.0.6
@@ -19992,8 +19988,8 @@ packages:
       - supports-color
     dev: true
 
-  ? /@storybook/builder-webpack5@7.3.2(@types/react-dom@17.0.8)(@types/react@17.0.21)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)(webpack-cli@4.10.0)
-  : resolution:
+  /@storybook/builder-webpack5@7.3.2(@types/react-dom@17.0.8)(@types/react@17.0.21)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)(webpack-cli@4.10.0):
+    resolution:
       { integrity: sha512-ywl3fKGmhB3UM+fV0Gsp++gtI8xNa6JqTYj3stJDfWe0sfMOQDSc/uW/Q4lx/oQyV5Lp8X4A/9OFccQ74ZUhXg== }
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -20467,8 +20463,8 @@ packages:
       { integrity: sha512-23/QUseeVaYjqexq4O1f1g/Fxq+pNGD+/wbXLPkdwNydutGwMZ3XAD8jcm+zeOmkbUPN8jQzKUXqO2OE/GgvHg== }
     dev: true
 
-  ? /@storybook/preset-react-webpack@7.3.2(@babel/core@7.16.12)(@swc/core@1.3.71)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)(webpack-cli@4.10.0)(webpack-dev-server@4.15.1)
-  : resolution:
+  /@storybook/preset-react-webpack@7.3.2(@babel/core@7.16.12)(@swc/core@1.3.71)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)(webpack-cli@4.10.0)(webpack-dev-server@4.15.1):
+    resolution:
       { integrity: sha512-MflWRKQwOGI1f0x7O/FhdJuXBbaoujHk9juBcX7KHZAx7pAeSia0sJMNTEamVQGGpsWHSx2dG7ZfKzBOvIvb6g== }
     engines: { node: ">=16.0.0" }
     peerDependencies:
@@ -20517,8 +20513,8 @@ packages:
       - webpack-plugin-serve
     dev: true
 
-  ? /@storybook/preset-react-webpack@7.3.2(@babel/core@7.22.9)(@swc/core@1.3.71)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)
-  : resolution:
+  /@storybook/preset-react-webpack@7.3.2(@babel/core@7.22.9)(@swc/core@1.3.71)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4):
+    resolution:
       { integrity: sha512-MflWRKQwOGI1f0x7O/FhdJuXBbaoujHk9juBcX7KHZAx7pAeSia0sJMNTEamVQGGpsWHSx2dG7ZfKzBOvIvb6g== }
     engines: { node: ">=16.0.0" }
     peerDependencies:
@@ -20663,8 +20659,8 @@ packages:
       react-dom: 17.0.2(react@17.0.2)
     dev: true
 
-  ? /@storybook/react-webpack5@7.3.2(@babel/core@7.16.12)(@swc/core@1.3.71)(@types/react-dom@17.0.8)(@types/react@17.0.21)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)(webpack-cli@4.10.0)(webpack-dev-server@4.15.1)
-  : resolution:
+  /@storybook/react-webpack5@7.3.2(@babel/core@7.16.12)(@swc/core@1.3.71)(@types/react-dom@17.0.8)(@types/react@17.0.21)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)(webpack-cli@4.10.0)(webpack-dev-server@4.15.1):
+    resolution:
       { integrity: sha512-Ps+OQ7GnK37cFWpFjD9y2SvMxh29qP5q4V0HYS6u/T0cALsgLGeg3T54llGUkXGH1/WVIfxm7PQPh7+ISMhOJQ== }
     engines: { node: ">=16.0.0" }
     peerDependencies:
@@ -20704,8 +20700,8 @@ packages:
       - webpack-plugin-serve
     dev: true
 
-  ? /@storybook/react-webpack5@7.3.2(@babel/core@7.22.9)(@swc/core@1.3.71)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4)
-  : resolution:
+  /@storybook/react-webpack5@7.3.2(@babel/core@7.22.9)(@swc/core@1.3.71)(esbuild@0.18.17)(react-dom@17.0.2)(react@17.0.2)(typescript@4.8.4):
+    resolution:
       { integrity: sha512-Ps+OQ7GnK37cFWpFjD9y2SvMxh29qP5q4V0HYS6u/T0cALsgLGeg3T54llGUkXGH1/WVIfxm7PQPh7+ISMhOJQ== }
     engines: { node: ">=16.0.0" }
     peerDependencies:
@@ -21935,9 +21931,9 @@ packages:
       { integrity: sha512-XMCcyhSvxcch8b7rZAtFAaierBYdeHXVvg2iYnxOV0MCQHmPuRRmGZPFDRzPayxcGiiSL1Te9UIO+f3cuj0tfw== }
     dev: true
 
-  /@types/prettier@2.2.3:
+  /@types/prettier@2.7.3:
     resolution:
-      { integrity: sha512-PijRCG/K3s3w1We6ynUKdxEc5AcuuH3NBmMDP8uvKVp6X43UY7NQlTzczakXP3DJR0F4dfNQIGjU2cUeRYs2AA== }
+      { integrity: sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA== }
     dev: true
 
   /@types/pretty-hrtime@1.0.1:
@@ -24040,7 +24036,7 @@ packages:
       "@babel/compat-data": 7.21.7
       "@babel/core": 7.22.9
       "@babel/helper-define-polyfill-provider": 0.3.3(@babel/core@7.22.9)
-      semver: 6.3.0
+      semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -31816,7 +31812,7 @@ packages:
       "@babel/types": 7.22.5
       "@jest/types": 26.6.2
       "@types/babel__traverse": 7.11.1
-      "@types/prettier": 2.2.3
+      "@types/prettier": 2.7.3
       chalk: 4.1.2
       expect: 26.6.2
       graceful-fs: 4.2.11
@@ -33846,7 +33842,7 @@ packages:
       monaco-marker-data-provider: 1.1.0(monaco-editor@0.33.0)
       monaco-worker-manager: 2.0.1(monaco-editor@0.33.0)
       path-browserify: 1.0.1
-      prettier: 2.3.0
+      prettier: 2.8.8
       vscode-languageserver-textdocument: 1.0.7
       vscode-languageserver-types: 3.17.2
       vscode-uri: 3.0.6
@@ -35992,25 +35988,11 @@ packages:
     dev: true
     optional: true
 
-  /prettier@2.3.0:
-    resolution:
-      { integrity: sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-
   /prettier@2.8.8:
     resolution:
       { integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q== }
     engines: { node: ">=10.13.0" }
     hasBin: true
-    dev: true
-
-  /prettier@3.0.0:
-    resolution:
-      { integrity: sha512-zBf5eHpwHOGPC47h0zrPyNn+eAEIdEzfywMoYn2XPi0P44Zp0tSq64rq0xAREh4auw2cJZHo9QUob+NqCQky4g== }
-    engines: { node: ">=14" }
-    hasBin: true
-    dev: true
 
   /pretty-bytes@5.6.0:
     resolution:
@@ -36090,7 +36072,7 @@ packages:
       parse-ms: 2.1.0
     dev: true
 
-  /pretty-quick@3.1.0(prettier@2.3.0):
+  /pretty-quick@3.1.0(prettier@2.8.8):
     resolution:
       { integrity: sha512-DtxIxksaUWCgPFN7E1ZZk4+Aav3CCuRdhrDSFZENb404sYMtuo9Zka823F+Mgeyt8Zt3bUiCjFzzWYE9LYqkmQ== }
     engines: { node: ">=10.13" }
@@ -36104,7 +36086,7 @@ packages:
       ignore: 5.2.0
       mri: 1.1.6
       multimatch: 4.0.0
-      prettier: 2.3.0
+      prettier: 2.8.8
     dev: true
 
   /printable-characters@1.0.42:

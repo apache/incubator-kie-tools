@@ -89,7 +89,12 @@ export const Base: Story = {
         {
           id: generateUuid(),
           inputEntries: [{ id: generateUuid(), content: DECISION_TABLE_INPUT_DEFAULT_VALUE }],
-          outputEntries: [{ id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE }],
+          outputEntries: [
+            {
+              id: generateUuid(),
+              content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+            },
+          ],
           annotationEntries: ["// Your annotations here"],
         },
       ],
@@ -220,8 +225,18 @@ export const Nested: Story = {
             rules: [
               {
                 id: generateUuid(),
-                inputEntries: [{ id: generateUuid(), content: DECISION_TABLE_INPUT_DEFAULT_VALUE }],
-                outputEntries: [{ id: generateUuid(), content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE }],
+                inputEntries: [
+                  {
+                    id: generateUuid(),
+                    content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
+                  },
+                ],
+                outputEntries: [
+                  {
+                    id: generateUuid(),
+                    content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+                  },
+                ],
                 annotationEntries: ["// Your annotations here"],
               },
             ],
