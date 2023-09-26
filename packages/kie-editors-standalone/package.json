@@ -15,7 +15,8 @@
   "files": [
     "dist/bpmn",
     "dist/common",
-    "dist/dmn"
+    "dist/dmn",
+    "dist/jsdiagram"
   ],
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
@@ -36,6 +37,9 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
   },
+  "dependencies": {
+    "@kie-tools/kie-bc-editors": "workspace:*"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
@@ -49,7 +53,6 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
