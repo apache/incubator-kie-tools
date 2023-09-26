@@ -290,10 +290,6 @@ export function useDiagramData() {
       }),
     ];
 
-    if (diagram.overlays.enableNodeHierarchyHighlight) {
-      assignClassesToHighlightedHierarchyNodes([...selectedNodes], nodesById, edges);
-    }
-
     // Assign parents & z-index to NODES
     for (let i = 0; i < localNodes.length; i++) {
       const parent = parentIdsById.get(localNodes[i].id);
@@ -354,6 +350,10 @@ export function useDiagramData() {
       .sort((a, b) => Number(b.type === NODE_TYPES.group) - Number(a.type === NODE_TYPES.group));
 
     // console.timeEnd("nodes");
+
+    if (diagram.overlays.enableNodeHierarchyHighlight) {
+      assignClassesToHighlightedHierarchyNodes([...selectedNodes], nodesById, edges);
+    }
 
     return {
       nodes: sortedNodes,
