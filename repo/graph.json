@@ -47,13 +47,13 @@
       { "id": "@kie-tools/playwright-base" },
       { "id": "@kie-tools/storybook-base" },
       { "id": "@kie-tools-core/monaco-editor" },
+      { "id": "@kie-tools/dmn-language-service" },
       { "id": "@kie-tools/i18n-common-dictionary" },
       { "id": "@kie-tools/bpmn-marshaller" },
       { "id": "@kie-tools/xml-parser-ts-codegen" },
       { "id": "@kie-tools/xml-parser-ts" },
       { "id": "bpmn-vscode-extension" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
-      { "id": "@kie-tools/dmn-language-service" },
       { "id": "@kie-tools/pmml-editor-marshaller" },
       { "id": "@kie-tools/maven-config-setup-helper" },
       { "id": "@kie-tools/stunner-editors-dmn-loader" },
@@ -97,6 +97,7 @@
       { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
       { "id": "@kie-tools/form-dmn" },
       { "id": "@kie-tools/form" },
+      { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-runner" },
       { "id": "@kie-tools/extended-services-api" },
@@ -130,7 +131,7 @@
       { "id": "@kie-tools/yard-language-service" },
       { "id": "@kie-tools/serverless-logic-web-tools-base-builder-image" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-builder-image" },
-      { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp" },
+      { "id": "sonataflow-deployment-webapp" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app" },
       { "id": "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image" },
       { "id": "@kie-tools/serverless-workflow-diagram-editor" },
@@ -295,6 +296,7 @@
       { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
+      { "source": "@kie-tools/feel-input-component", "target": "@kie-tools/dmn-language-service", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/playwright-base", "target": "@kie-tools/root-env", "weight": 1 },
@@ -303,6 +305,7 @@
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/tsconfig", "weight": 1 },
+      { "source": "@kie-tools/dmn-language-service", "target": "@kie-tools/dmn-feel-antlr4-parser", "weight": 1 },
       { "source": "@kie-tools/i18n-common-dictionary", "target": "@kie-tools-core/i18n", "weight": 1 },
       { "source": "@kie-tools/bpmn-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
       { "source": "@kie-tools/xml-parser-ts-codegen", "target": "@kie-tools/xml-parser-ts", "weight": 1 },
@@ -327,9 +330,6 @@
         "target": "@kie-tools/root-env",
         "weight": 1
       },
-      { "source": "@kie-tools/dmn-language-service", "target": "@kie-tools/eslint", "weight": 1 },
-      { "source": "@kie-tools/dmn-language-service", "target": "@kie-tools/root-env", "weight": 1 },
-      { "source": "@kie-tools/dmn-language-service", "target": "@kie-tools/tsconfig", "weight": 1 },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/tsconfig", "weight": 1 },
@@ -621,6 +621,7 @@
       { "source": "@kie-tools/form", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/dmn-feel-antlr4-parser", "target": "@kie-tools/dmn-marshaller", "weight": 1 },
       { "source": "@kie-tools/dmn-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools-core/react-hooks", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools/extended-services-api", "weight": 1 },
@@ -772,34 +773,17 @@
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
-        "target": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
         "target": "@kie-tools/serverless-logic-web-tools-swf-builder-image-env",
         "weight": 1
       },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
-        "target": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
+        "target": "sonataflow-deployment-webapp",
         "weight": 1
       },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
+      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
+      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
+      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "target": "@kie-tools/maven-config-setup-helper",
@@ -930,6 +914,7 @@
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],
     ["@kie-tools/dmn-dev-deployment-quarkus-app", "packages/dmn-dev-deployment-quarkus-app"],
+    ["@kie-tools/dmn-feel-antlr4-parser", "packages/dmn-feel-antlr4-parser"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
     ["@kie-tools/dmn-marshaller", "packages/dmn-marshaller"],
     ["@kie-tools/dmn-runner", "packages/dmn-runner"],
@@ -996,10 +981,6 @@
       "packages/serverless-logic-web-tools-swf-deployment-quarkus-app"
     ],
     [
-      "@kie-tools/serverless-logic-web-tools-swf-deployment-webapp",
-      "packages/serverless-logic-web-tools-swf-deployment-webapp"
-    ],
-    [
       "@kie-tools/serverless-logic-web-tools-swf-dev-mode-image",
       "packages/serverless-logic-web-tools-swf-dev-mode-image"
     ],
@@ -1017,6 +998,7 @@
     ["@kie-tools/serverless-workflow-standalone-editor", "packages/serverless-workflow-standalone-editor"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
     ["swf-vscode-extension", "packages/serverless-workflow-vscode-extension"],
+    ["sonataflow-deployment-webapp", "packages/sonataflow-deployment-webapp"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],

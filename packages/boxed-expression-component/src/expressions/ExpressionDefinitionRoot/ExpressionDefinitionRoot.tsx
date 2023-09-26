@@ -49,6 +49,7 @@ export function ExpressionDefinitionRoot({
           isNested={false}
           rowIndex={0}
           columnIndex={0}
+          parentElementId={decisionNodeId}
         />
       </div>
     </ResizingWidthsContextProvider>

@@ -24,6 +24,9 @@ export function ContextResultExpressionCell(props: {
     [setExpression]
   );
 
+  // It is not possible to have a ContextExpression without any entry (props.contextExpression.contextEntries.length === 0)
+  const lastEntry = props.contextExpression.contextEntries[props.contextExpression.contextEntries.length - 1];
+
   return (
     <NestedExpressionDispatchContextProvider onSetExpression={onSetExpression}>
       <ExpressionContainer
@@ -32,6 +35,7 @@ export function ContextResultExpressionCell(props: {
         isNested={true}
         rowIndex={props.rowIndex}
         columnIndex={props.columnIndex}
+        parentElementId={lastEntry.entryInfo.id}
       />
     </NestedExpressionDispatchContextProvider>
   );

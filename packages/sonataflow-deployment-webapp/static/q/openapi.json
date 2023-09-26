@@ -1,0 +1,1248 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "serverless-logic-web-tools-swf-deployment-quarkus-app API",
+    "version": "0.0.0"
+  },
+  "tags": [
+    {
+      "name": "service"
+    }
+  ],
+  "paths": {
+    "/callback": {
+      "get": {
+        "tags": ["Callback Resource Test"],
+        "operationId": "getCallbackTest",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Callback Resource Test"],
+        "operationId": "postCallbackTest",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customDashboard/count": {
+      "get": {
+        "tags": ["Custom Dashboard Service"],
+        "operationId": "getCustomDashboardFilesCount",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/customDashboard/list": {
+      "get": {
+        "tags": ["Custom Dashboard Service"],
+        "operationId": "getCustomDashboardFiles",
+        "parameters": [
+          {
+            "name": "names",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/CustomDashboardFilter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/customDashboard/{name}": {
+      "get": {
+        "tags": ["Custom Dashboard Service"],
+        "operationId": "getCustomDashboardFileContent",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "\\S+",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/graphql": {
+      "get": {
+        "operationId": "reactiveGraphQLHandlerGet",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "post": {
+        "operationId": "reactiveGraphQLHandlerPost",
+        "responses": {
+          "201": {
+            "description": "Created"
+          }
+        }
+      }
+    },
+    "/jobs": {
+      "post": {
+        "tags": ["Job Resource"],
+        "operationId": "createJob",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduledJob"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{id}": {
+      "get": {
+        "tags": ["Job Resource"],
+        "operationId": "getJob",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduledJob"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Job Resource"],
+        "operationId": "deleteJob",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduledJob"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Job Resource"],
+        "operationId": "patchJob",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Job"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduledJob"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/jobs/{processId}/instances/{processInstanceId}/timers/{timerId}": {
+      "post": {
+        "tags": ["Callback Jobs Service Resource"],
+        "operationId": "triggerTimer",
+        "parameters": [
+          {
+            "name": "processId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "processInstanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "format": "int32",
+              "default": "0",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/management/processes/sources": {
+      "get": {
+        "tags": ["Source Files Resource"],
+        "operationId": "getSourceFileByUri",
+        "parameters": [
+          {
+            "name": "uri",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/management/processes/{processId}/source": {
+      "get": {
+        "tags": ["Source Files Resource"],
+        "operationId": "getSourceFileByProcessId",
+        "parameters": [
+          {
+            "name": "processId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/management/processes/{processId}/sources": {
+      "get": {
+        "tags": ["Source Files Resource"],
+        "operationId": "getSourceFilesByProcessId",
+        "parameters": [
+          {
+            "name": "processId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SourceFile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/shutdown": {
+      "post": {
+        "tags": ["Job Service Management Resource"],
+        "operationId": "shutdownHook",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/messaging/topics": {
+      "get": {
+        "tags": ["Quarkus Topics Information Resource"],
+        "operationId": "getTopics",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/service": {
+      "get": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "getResources_service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JsonNodeModelOutput"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "createResource_service",
+        "parameters": [
+          {
+            "name": "businessKey",
+            "in": "query",
+            "schema": {
+              "default": "",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "service_input",
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/service/schema": {
+      "get": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "getResourceSchema_service",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/service/{id}": {
+      "get": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "getResource_service",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonNodeModelOutput"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "updateModel_service",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "service_input",
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonNodeModelOutput"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "deleteResource_service",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonNodeModelOutput"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "updateModelPartial_service",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "service_input",
+                "required": ["name"],
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JsonNodeModelOutput"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/service/{id}/tasks": {
+      "get": {
+        "tags": ["service"],
+        "summary": "service",
+        "description": "",
+        "operationId": "getTasks_service",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "tags": ["Hot Reload Resource"],
+        "operationId": "handleUpload",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/v2/jobs": {
+      "post": {
+        "tags": ["Job Resource V 2"],
+        "operationId": "createJobV2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobV2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v2/jobs/{id}": {
+      "get": {
+        "tags": ["Job Resource V 2"],
+        "operationId": "getJobV2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobV2"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Job Resource V 2"],
+        "operationId": "deleteJobV2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobV2"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CronSchedule": {
+        "description": "Cron schedules establishes that a job must be executed with a periodicity based on a unix like crontab expression.",
+        "required": ["expression"],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Schedule"
+          }
+        ],
+        "properties": {
+          "expression": {
+            "description": "Cron expression for the job execution, for more information <a href=\"https://en.wikipedia.org/wiki/Cron#Overview\" target=\"_blank\">see</a>.",
+            "type": "string"
+          },
+          "timeZone": {
+            "description": "Time zone for the cron programming, for example \"Europe/Madrid\". For more information <a href=\"https://en.wikipedia.org/wiki/List_of_tz_database_time_zones\" target=\"_blank\">see</a>.",
+            "type": "string"
+          }
+        }
+      },
+      "CustomDashboardFilter": {
+        "type": "object",
+        "properties": {
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "HttpRecipient": {
+        "description": "Recipient definition that executes a http request on a given url and sends the configured \"payload\" as the body.",
+        "required": ["url", "method"],
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Recipient"
+          }
+        ],
+        "properties": {
+          "url": {
+            "description": "Url of the recipient that will receive the request.",
+            "type": "string"
+          },
+          "method": {
+            "description": "Http method to use for the request.",
+            "default": "POST",
+            "enum": ["POST", "GET", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"],
+            "type": "string"
+          },
+          "headers": {
+            "description": "Http headers to send with the request.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "queryParams": {
+            "description": "Http query parameters to send with the request.",
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "payload": {
+            "$ref": "#/components/schemas/HttpRecipientPayloadData"
+          }
+        }
+      },
+      "HttpRecipientBinaryPayloadData": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/HttpRecipientPayloadData"
+          }
+        ],
+        "properties": {
+          "data": {
+            "format": "binary",
+            "type": "string"
+          }
+        }
+      },
+      "HttpRecipientJsonPayloadData": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/HttpRecipientPayloadData"
+          }
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/JsonNode"
+          }
+        }
+      },
+      "HttpRecipientPayloadData": {
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "binary": "#/components/schemas/HttpRecipientBinaryPayloadData",
+            "string": "#/components/schemas/HttpRecipientStringPayloadData",
+            "json": "#/components/schemas/HttpRecipientJsonPayloadData"
+          }
+        }
+      },
+      "HttpRecipientStringPayloadData": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/HttpRecipientPayloadData"
+          }
+        ],
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expirationTime": {
+            "$ref": "#/components/schemas/ZonedDateTime"
+          },
+          "priority": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "callbackEndpoint": {
+            "type": "string"
+          },
+          "processInstanceId": {
+            "type": "string"
+          },
+          "rootProcessInstanceId": {
+            "type": "string"
+          },
+          "processId": {
+            "type": "string"
+          },
+          "rootProcessId": {
+            "type": "string"
+          },
+          "nodeInstanceId": {
+            "type": "string"
+          },
+          "repeatInterval": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "repeatLimit": {
+            "format": "int32",
+            "type": "integer"
+          }
+        }
+      },
+      "JobExecutionResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "timestamp": {
+            "$ref": "#/components/schemas/ZonedDateTime"
+          },
+          "jobId": {
+            "type": "string"
+          }
+        }
+      },
+      "JobStatus": {
+        "enum": ["ERROR", "EXECUTED", "SCHEDULED", "RETRY", "CANCELED"],
+        "type": "string"
+      },
+      "JobV2": {
+        "description": "Defines a job that can be managed by the jobs service.",
+        "required": ["schedule", "retry", "recipient"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The unique identifier of the job in the system, this value is set by the jobs service.",
+            "type": "string"
+          },
+          "correlationId": {
+            "description": "Logical user provided identifier of the job in the system.",
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/State"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/Schedule"
+          },
+          "retry": {
+            "$ref": "#/components/schemas/Retry"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/Recipient"
+          },
+          "executionTimeout": {
+            "format": "int64",
+            "description": "Optional configuration that establishes the time limit for the current Job execution attempt to finish. When this timeout is exceeded the execution attempt is considered as failed, and depending on the Job retry  configuration, the execution can be retried or the Job will be marked as ERROR. Every Recipient type has a default timeout configuration that will apply automatically if this value is not set, and a maximum timeout configuration that can not be exceeded by current value.",
+            "type": "integer"
+          },
+          "executionTimeoutUnit": {
+            "description": "The unit for the executionTimeout. If the executionTimeout is set and the unit is left empty MILLISECONDS are assumed. If the unit is set and the executionTimeout is left empty this value is ignored.",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TemporalUnit"
+              }
+            ]
+          }
+        }
+      },
+      "JsonNode": {
+        "type": "object"
+      },
+      "JsonNodeModelInput": {
+        "type": "object",
+        "properties": {
+          "workflowdata": {
+            "type": "object"
+          }
+        }
+      },
+      "JsonNodeModelOutput": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "workflowdata": {
+            "type": "object"
+          }
+        }
+      },
+      "OffsetDateTime": {
+        "format": "date-time",
+        "type": "string",
+        "example": "2022-03-10T12:15:50-04:00"
+      },
+      "Recipient": {
+        "description": "Generic definition for a Recipient, users must provide instances of subclasses of this schema to create a job.",
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "http": "#/components/schemas/HttpRecipient",
+            "sink": "#/components/schemas/SinkRecipient"
+          }
+        }
+      },
+      "Retry": {
+        "description": "The retry configuration establishes the number of times a failing job execution must be retried before it’s considered as FAILED.",
+        "type": "object",
+        "properties": {
+          "maxRetries": {
+            "format": "int32",
+            "description": "Number of retries to execute in case of failures.",
+            "default": 3,
+            "type": "integer"
+          },
+          "delay": {
+            "format": "int64",
+            "description": "Time delay between the retries.",
+            "default": 0,
+            "type": "integer"
+          },
+          "delayUnit": {
+            "$ref": "#/components/schemas/TemporalUnit"
+          },
+          "maxDuration": {
+            "format": "int64",
+            "description": "Maximum amount of time to continue retrying if no successful execution was produced.",
+            "default": 180000,
+            "type": "integer"
+          },
+          "durationUnit": {
+            "$ref": "#/components/schemas/TemporalUnit"
+          }
+        }
+      },
+      "Schedule": {
+        "description": "Generic definition for a Schedule, users must provide instances of subclasses of this schema.",
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "cron": "#/components/schemas/CronSchedule",
+            "timer": "#/components/schemas/TimerSchedule"
+          }
+        }
+      },
+      "ScheduledJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expirationTime": {
+            "$ref": "#/components/schemas/ZonedDateTime"
+          },
+          "priority": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "callbackEndpoint": {
+            "type": "string"
+          },
+          "processInstanceId": {
+            "type": "string"
+          },
+          "rootProcessInstanceId": {
+            "type": "string"
+          },
+          "processId": {
+            "type": "string"
+          },
+          "rootProcessId": {
+            "type": "string"
+          },
+          "nodeInstanceId": {
+            "type": "string"
+          },
+          "repeatInterval": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "repeatLimit": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "scheduledId": {
+            "type": "string"
+          },
+          "retries": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "lastUpdate": {
+            "$ref": "#/components/schemas/ZonedDateTime"
+          },
+          "executionCounter": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "executionResponse": {
+            "$ref": "#/components/schemas/JobExecutionResponse"
+          }
+        }
+      },
+      "SourceFile": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string"
+          }
+        }
+      },
+      "State": {
+        "description": "Available states for a Job.",
+        "enum": ["SCHEDULED", "RETRY", "EXECUTED", "ERROR", "CANCELED"],
+        "type": "string"
+      },
+      "TaskModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "state": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "phaseStatus": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "results": {
+            "type": "object"
+          }
+        }
+      },
+      "TemporalUnit": {
+        "enum": ["MILLIS", "SECONDS", "MINUTES", "HOURS", "DAYS"],
+        "type": "string"
+      },
+      "TimerSchedule": {
+        "description": "Timer schedules establishes that a job must be executed at a given date time and can be repeated a configurable number of times.",
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Schedule"
+          }
+        ],
+        "properties": {
+          "startTime": {
+            "description": "Initial fire time for the job in the ISO-8601 standard.",
+            "type": "string",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OffsetDateTime"
+              }
+            ],
+            "example": "2023-01-30T12:01:15+01:00"
+          },
+          "repeatCount": {
+            "format": "int32",
+            "description": "Number of times that the job execution must be repeated.",
+            "default": 0,
+            "type": "integer"
+          },
+          "delay": {
+            "format": "int64",
+            "description": "Time delay between executions.",
+            "default": 0,
+            "type": "integer"
+          },
+          "delayUnit": {
+            "$ref": "#/components/schemas/TemporalUnit"
+          }
+        }
+      },
+      "ZonedDateTime": {
+        "format": "date-time",
+        "type": "string",
+        "example": "2022-03-10T12:15:50-04:00"
+      },
+      "service_input": {
+        "title": "service_input",
+        "required": ["name"],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

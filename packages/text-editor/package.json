@@ -33,8 +33,8 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
-    "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^4.0.0",
+    "monaco-editor": "^0.39.0",
+    "monaco-yaml": "^4.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

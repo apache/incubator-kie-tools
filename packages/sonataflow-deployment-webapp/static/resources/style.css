@@ -1,0 +1,70 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+:root {
+  --masthead-bg: var(--pf-global--palette--blue-500);
+  --sidebar-bg: #002f5e;
+  --sidebar-bg-selected: #1f4e7d;
+  --sidebar-bg-hover: #1c4671;
+}
+
+.sonataflow-deployment-common--brand {
+  vertical-align: top;
+  height: 28.6px;
+}
+
+.brand-name {
+  color: #fff;
+  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
+}
+
+.app--masthead,
+#toolbar {
+  background-color: var(--masthead-bg);
+}
+
+.app--masterhead__disclaimer {
+  --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
+  --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+}
+
+.app--masterhead__disclaimer-icon {
+  margin-left: 8px;
+}
+
+#page-sidebar {
+  --pf-c-page__sidebar--BackgroundColor: var(--sidebar-bg);
+}
+
+#page-sidebar .pf-m-current {
+  --pf-c-nav__link--m-current--BackgroundColor: var(--sidebar-bg-selected);
+}
+#page-sidebar .pf-c-nav__link:hover,
+#page-sidebar .pf-c-nav__link:active,
+#page-sidebar .pf-c-nav__link:focus {
+  background-color: var(--sidebar-bg-hover);
+}
+
+.sonataflow-deployment-common__form-footer-padding-top {
+  padding-top: 20px;
+}
+
+.pf-u-success-color-100 {
+  color: var(--pf-global--success-color--100) !important;
+}

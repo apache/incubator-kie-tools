@@ -40,7 +40,7 @@ describe("Serverless Logic Web Tools - Expression test", () => {
       cy.getEditor().within(() => {
         cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
           // move to value of actions -> actionDataFilter -> fromStateData and invoke content assist
-          cy.get(".monaco-editor textarea").moveToPosition(rowLocation, columnLocation).type("{ctrl} ");
+          cy.get(".monaco-editor textarea").moveToPosition(rowLocation, columnLocation).forceType("{ctrl} ");
 
           // check jq functions are listed in content assist
           cy.get(".monaco-list-row .label-name").should(($jqFunctions) => {
@@ -52,7 +52,7 @@ describe("Serverless Logic Web Tools - Expression test", () => {
           });
 
           // close content assist and invoke new one after '.'
-          cy.get(".monaco-editor textarea").type("{esc}").type(".").type("{ctrl} ");
+          cy.get(".monaco-editor textarea").forceType("{esc}").forceType(".").forceType("{ctrl} ");
 
           // check properties from dataInputSchema and callBackFunc are listed in content assist
           cy.get(".monaco-list-row .label-name").should(($properties) => {
@@ -65,7 +65,7 @@ describe("Serverless Logic Web Tools - Expression test", () => {
           });
 
           // delete '.' and invoke content assist for 'fn:'
-          cy.get(".monaco-editor textarea").type("{backspace}").type("fn:").type("{ctrl} ");
+          cy.get(".monaco-editor textarea").forceType("{backspace}").forceType("fn:").forceType("{ctrl} ");
 
           // check function is listed in content assist
           cy.get(".monaco-list-row .label-name").should(($functions) => {
