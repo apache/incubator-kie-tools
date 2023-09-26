@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { useDmnEditorStore } from "../store/Store";
-import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
+import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { parseFeelQName } from "../feel/parseFeelQName";
 
 const builtInDataTypes = new Set<string>(Object.values(DmnBuiltInDataType));
@@ -36,12 +36,13 @@ export function DataTypeLabel({
 
     const fullFeelQName = buildFeelQNameFromXmlQName({
       importsByNamespace,
+      relativeToNamespace: thisDmn.model.definitions["@_namespace"],
       model: thisDmn.model.definitions,
       namedElement: { "@_name": parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef },
       namedElementQName: parseXmlQName(
         buildXmlQName({
           type: "xml-qname",
-          prefix: getXmlNamespaceName({ model: thisDmn.model.definitions, namespace: namespace ?? "" }),
+          prefix: getXmlNamespaceDeclarationName({ model: thisDmn.model.definitions, namespace: namespace ?? "" }),
           localPart: parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
         })
       ),

@@ -13,12 +13,14 @@ export function buildFeelQNameFromXmlQName({
   namedElement,
   namedElementQName,
   importsByNamespace,
+  relativeToNamespace,
   model,
 }: {
   namedElement: DMN15__tNamedElement;
   namedElementQName: XmlQName;
   importsByNamespace: Map<string, DMN15__tImport>;
   model: XmlParserTsRootElementBaseType;
+  relativeToNamespace: string;
 }): FeelQNameBuild {
   if (!namedElementQName.prefix) {
     return { full: namedElement["@_name"], prefix: undefined, name: namedElement["@_name"], isExternal: false };
@@ -33,7 +35,7 @@ export function buildFeelQNameFromXmlQName({
     namedElement,
     namespace,
     importsByNamespace,
-    relativeToNamespace: model["@_xmlns"]!,
+    relativeToNamespace,
   });
 }
 

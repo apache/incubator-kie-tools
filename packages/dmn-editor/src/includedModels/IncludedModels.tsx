@@ -86,7 +86,7 @@ export function IncludedModels() {
       addIncludedModel({
         definitions: state.dmn.model.definitions,
         includedModel: {
-          xmlns: selectedModel.definitions["@_xmlns"]!,
+          xmlns: selectedModel.definitions["@_xmlns"]!, // FIXME: Tiago --> This is not always true, we can have a DMN file that doesn't even have a "xmlns" property... We should be able to figure it out based on the type of file.
           namespace: selectedModel.definitions["@_namespace"]!,
           alias: modelAlias,
         },

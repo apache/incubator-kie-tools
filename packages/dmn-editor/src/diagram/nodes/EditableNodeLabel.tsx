@@ -150,6 +150,7 @@ export function EditableNodeLabel({
       importsByNamespace,
       model: thisDmn.model.definitions,
       namedElementQName,
+      relativeToNamespace: thisDmn.model.definitions["@_namespace"],
     });
 
     return truncate ? <Truncate content={feelName.full} tooltipPosition={"right-end"} /> : feelName.full;

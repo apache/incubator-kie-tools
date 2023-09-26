@@ -63,7 +63,7 @@ import { addShape } from "../mutations/addShape";
 import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { buildXmlQName } from "../xml/xmlQNames";
 import { original } from "immer";
-import { getXmlNamespaceName } from "../xml/xmlNamespaceDeclarations";
+import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
 
@@ -283,7 +283,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](diagram.snapGrid);
 
         dmnEditorStoreApi.setState((state) => {
-          const namespaceName = getXmlNamespaceName({
+          const namespaceName = getXmlNamespaceDeclarationName({
             model: original(state.dmn.model.definitions),
             namespace: externalNode.externalDrgElementNamespace,
           });
