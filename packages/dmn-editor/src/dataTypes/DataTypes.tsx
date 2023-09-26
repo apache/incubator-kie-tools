@@ -126,7 +126,7 @@ export function DataTypes() {
                   className={"kie-dmn-editor--data-types-filter sticky-top-glass"}
                 >
                   <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={"Filter..."} />
-                  <Button onClick={() => addTopLevelItemDefinition()} variant={ButtonVariant.plain}>
+                  <Button onClick={() => addTopLevelItemDefinition()} variant={ButtonVariant.link}>
                     <PlusCircleIcon />
                   </Button>
                 </Flex>
