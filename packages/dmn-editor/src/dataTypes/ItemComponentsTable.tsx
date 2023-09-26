@@ -319,16 +319,18 @@ export function ItemComponentsTable({
                       )}
                     </td>
                     <td>
-                      <Button
-                        variant={ButtonVariant.link}
-                        onClick={() => {
-                          editItemDefinition(dt.parentId!, (itemDefinition) => {
-                            itemDefinition.itemComponent?.splice(dt.index, 1);
-                          });
-                        }}
-                      >
-                        Remove
-                      </Button>
+                      {!isReadonly && (
+                        <Button
+                          variant={ButtonVariant.link}
+                          onClick={() => {
+                            editItemDefinition(dt.parentId!, (itemDefinition) => {
+                              itemDefinition.itemComponent?.splice(dt.index, 1);
+                            });
+                          }}
+                        >
+                          Remove
+                        </Button>
+                      )}
                     </td>
                     <td>
                       <Dropdown

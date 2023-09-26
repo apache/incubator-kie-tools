@@ -23,6 +23,8 @@ import { getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 
 export function DataTypePanel({
   isReadonly,
@@ -128,6 +130,8 @@ export function DataTypePanel({
   const [dropdownOpenFor, setDropdownOpenFor] = useState<string | undefined>(undefined);
   const [topLevelDropdownOpen, setTopLevelDropdownOpen] = useState<boolean>(false);
 
+  const { importsByNamespace } = useDmnEditorDerivedStore();
+
   return (
     <PageSection>
       <div className={"kie-dmn-editor--data-type-parents"}>
@@ -141,7 +145,14 @@ export function DataTypePanel({
               });
             }}
           >
-            {p.itemDefinition["@_name"]}
+            {
+              buildFeelQNameFromNamespace({
+                namedElement: p.itemDefinition,
+                importsByNamespace,
+                namespace: p!.namespace,
+                relativeToNamespace: !p.parentId ? thisDmnsNamespace : p.namespace,
+              }).full
+            }
           </Button>
         ))}
       </div>
@@ -149,7 +160,7 @@ export function DataTypePanel({
         {dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}
         <div className={"kie-dmn-editor--data-types-title"}>
           <DataTypeName
-            relativeToNamespace={thisDmnsNamespace}
+            relativeToNamespace={!dataType.parentId ? thisDmnsNamespace : dataType.namespace}
             itemDefinition={dataType.itemDefinition}
             isActive={false}
             editMode={"hover"}
