@@ -25,7 +25,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { CloudEventFormChannelApi, CloudEventFormDefaultValues, CloudEventFormInitArgs } from "../api";
 import CloudEventForm from "./components/CloudEventForm/CloudEventForm";
 import { CloudEventFormEnvelopeViewDriver } from "./CloudEventFormEnvelopeViewDriver";
-import { Card, CardBody } from "@patternfly/react-core";
+import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 
 export interface CloudEventFormEnvelopeViewApi {
   initialize: (args: CloudEventFormInitArgs) => void;

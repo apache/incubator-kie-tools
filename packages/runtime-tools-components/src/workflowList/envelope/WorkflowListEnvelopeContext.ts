@@ -21,4 +21,5 @@
  * This is a convenience class that the Envelope view can use.
  */
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface WorkflowListEnvelopeContext {}

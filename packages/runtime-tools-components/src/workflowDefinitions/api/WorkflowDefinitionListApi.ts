@@ -17,6 +17,5 @@
  * under the License.
  */
 
-export interface WorkflowDefinitionListApi {
-  // Workflow definition list api
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface WorkflowDefinitionListApi {}
