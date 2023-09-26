@@ -3,7 +3,7 @@ import { useCallback, useRef } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
-import { DataTypeLabel } from "./DataTypeLabel";
+import { TypeRefLabel } from "./TypeRefLabel";
 import { useDmnEditorStoreApi } from "../store/Store";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
@@ -120,6 +120,7 @@ export function DataTypeName({
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
         >
+          {/* Using this component here is not ideal, as we're not dealing with Node names, but it works well enough */}
           <EditableNodeLabel
             truncate={true}
             grow={true}
@@ -138,7 +139,11 @@ export function DataTypeName({
             }}
           />
           {!isEditingLabel && (
-            <DataTypeLabel typeRef={itemDefinition.typeRef} isCollection={itemDefinition["@_isCollection"]} />
+            <TypeRefLabel
+              typeRef={itemDefinition.typeRef}
+              isCollection={itemDefinition["@_isCollection"]}
+              relativeToNamespace={relativeToNamespace}
+            />
           )}
         </Flex>
       )}

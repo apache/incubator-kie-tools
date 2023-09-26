@@ -8,7 +8,9 @@ export function getXmlNamespaceDeclarationName({
   model: XmlParserTsRootElementBaseType | undefined;
   namespace: string;
 }) {
-  const xmlnsEntry = Object.entries(model ?? {}).find(([k, v]) => v === namespace);
+  const xmlnsEntry = Object.entries(model ?? {}).find(
+    ([k, v]) => v === namespace && (k === "@_xmlns" || k.startsWith("@_xmlns:"))
+  );
   if (!xmlnsEntry) {
     return undefined;
   }

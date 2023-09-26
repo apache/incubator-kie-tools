@@ -1,13 +1,12 @@
 import * as React from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Unpacked } from "../store/useDiagramData";
-import { DataTypeLabel } from "../dataTypes/DataTypeLabel";
+import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
 import { NodeIcon } from "../icons/Icons";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { useDmnEditorStore } from "../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function DmnObjectListItem({
@@ -46,9 +45,9 @@ export function DmnObjectListItem({
       }`}</div>
       <div>
         {dmnObject.__$$element !== "knowledgeSource" ? (
-          <DataTypeLabel
+          <TypeRefLabel
             typeRef={dmnObject.variable?.["@_typeRef"]}
-            namespace={namespace}
+            relativeToNamespace={namespace}
             isCollection={
               dataTypesByFeelName.get(dmnObject.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
                 ?.itemDefinition["@_isCollection"]

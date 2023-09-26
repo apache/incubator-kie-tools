@@ -2,10 +2,7 @@ import * as React from "react";
 import { useCallback } from "react";
 import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { NodeIcon } from "../icons/Icons";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
-import { DataTypeLabel } from "../dataTypes/DataTypeLabel";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import {

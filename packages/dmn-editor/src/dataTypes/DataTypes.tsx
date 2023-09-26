@@ -70,7 +70,7 @@ export function DataTypes() {
       dmnEditorStoreApi.setState((state) => {
         const { itemDefinition, items, index } = findDataTypeById({
           definitions: state.dmn.model.definitions,
-          dataTypeId: id,
+          itemDefinitionId: id,
           dataTypesById,
         });
 

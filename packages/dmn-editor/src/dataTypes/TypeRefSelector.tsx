@@ -3,7 +3,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { DataTypeLabel } from "./DataTypeLabel";
+import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -11,7 +11,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
-import { builtInDataTypes } from "./BuiltInDataTypes";
+import { builtInFeelTypes } from "./BuiltInFeelTypes";
 
 export function TypeRefSelector(props: {
   isDisabled?: boolean;
@@ -91,7 +91,7 @@ export function TypeRefSelector(props: {
         // isCreatable={true} // FIXME: Tiago --> Maybe this is a good idea?
       >
         <SelectGroup label="Built-in" key="builtin">
-          {builtInDataTypes.map((dt) => (
+          {builtInFeelTypes.map((dt) => (
             <SelectOption key={dt.name} value={dt.name}>
               {dt.name}
             </SelectOption>
@@ -103,9 +103,9 @@ export function TypeRefSelector(props: {
             {customDataTypes.map((dt) => (
               <SelectOption key={dt.feelName} value={dt.feelName}>
                 {dt.feelName}
-                <DataTypeLabel
+                <TypeRefLabel
                   typeRef={dt.itemDefinition.typeRef}
-                  namespace={dt.namespace}
+                  relativeToNamespace={dt.namespace}
                   isCollection={dt.itemDefinition?.["@_isCollection"]}
                 />
               </SelectOption>
@@ -117,9 +117,9 @@ export function TypeRefSelector(props: {
             {externalDataTypes.map((dt) => (
               <SelectOption key={dt.feelName} value={dt.feelName}>
                 {dt.feelName}
-                <DataTypeLabel
+                <TypeRefLabel
                   typeRef={dt.itemDefinition.typeRef}
-                  namespace={dt.namespace}
+                  relativeToNamespace={dt.namespace}
                   isCollection={dt.itemDefinition?.["@_isCollection"]}
                 />
               </SelectOption>

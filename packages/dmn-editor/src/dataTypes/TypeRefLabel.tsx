@@ -8,16 +8,16 @@ import { useDmnEditorStore } from "../store/Store";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { parseFeelQName } from "../feel/parseFeelQName";
 
-const builtInDataTypes = new Set<string>(Object.values(DmnBuiltInDataType));
+const builtInFeelTypes = new Set<string>(Object.values(DmnBuiltInDataType));
 
-export function DataTypeLabel({
+export function TypeRefLabel({
   typeRef,
-  namespace,
+  relativeToNamespace,
   isCollection,
 }: {
   isCollection: boolean | undefined;
   typeRef: string | undefined;
-  namespace?: string;
+  relativeToNamespace?: string;
 }) {
   const { importsByNamespace } = useDmnEditorDerivedStore();
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -28,24 +28,30 @@ export function DataTypeLabel({
     }
 
     // Built-in FEEL types are never namespaced
-    if (builtInDataTypes.has(typeRef)) {
+    if (builtInFeelTypes.has(typeRef)) {
       return typeRef;
     }
 
     const parsedFeelQName = parseFeelQName(typeRef);
+
+    const xmlNamespaceName = getXmlNamespaceDeclarationName({
+      model: thisDmn.model.definitions,
+      namespace: relativeToNamespace ?? "",
+    });
+
+    // DMN typeRefs are *NOT* XML QNames, but we use them to make it easier to build the FEEL QName.
+    const xmlQName = buildXmlQName({
+      type: "xml-qname",
+      prefix: xmlNamespaceName,
+      localPart: parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
+    });
 
     const fullFeelQName = buildFeelQNameFromXmlQName({
       importsByNamespace,
       relativeToNamespace: thisDmn.model.definitions["@_namespace"],
       model: thisDmn.model.definitions,
       namedElement: { "@_name": parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef },
-      namedElementQName: parseXmlQName(
-        buildXmlQName({
-          type: "xml-qname",
-          prefix: getXmlNamespaceDeclarationName({ model: thisDmn.model.definitions, namespace: namespace ?? "" }),
-          localPart: parsedFeelQName.importName ? parsedFeelQName.localPart : typeRef,
-        })
-      ),
+      namedElementQName: parseXmlQName(xmlQName),
     }).full;
 
     if (parsedFeelQName.importName) {
@@ -58,7 +64,7 @@ export function DataTypeLabel({
     }
 
     return fullFeelQName;
-  }, [thisDmn.model.definitions, importsByNamespace, namespace, typeRef]);
+  }, [thisDmn.model.definitions, importsByNamespace, relativeToNamespace, typeRef]);
 
   return (
     <span className={"kie-dmn-editor--data-type-label"}>

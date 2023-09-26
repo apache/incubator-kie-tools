@@ -7,7 +7,7 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { DataTypeLabel } from "../../dataTypes/DataTypeLabel";
+import { TypeRefLabel } from "../../dataTypes/TypeRefLabel";
 
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
@@ -34,8 +34,8 @@ export function DataTypeNodePanel(props: {
               });
             }}
           >
-            <DataTypeLabel
-              namespace={dataType?.namespace}
+            <TypeRefLabel
+              relativeToNamespace={dataType?.namespace}
               typeRef={props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
               isCollection={dataType?.itemDefinition["@_isCollection"]}
             />
