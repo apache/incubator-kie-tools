@@ -100,7 +100,7 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
     const completion = initCompletion(commands, editorEnvelopeCtx.channelApi);
-    const codeLenses = initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
+    const codeLenses = initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi, isReadOnly);
 
     return () => {
       controller.dispose();

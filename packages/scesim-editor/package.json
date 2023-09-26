@@ -13,7 +13,9 @@
     "test:e2e": "echo 'No IT Tests to run at this moment.'"
   },
   "dependencies": {
+    "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-styles": "^4.92.6",

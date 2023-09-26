@@ -26,10 +26,6 @@
   <source path='tab' />
   <source path='mock' />
   <source path='listbar' />
-  <public path='js' />
-  
-  <script src='jquery-1.12.4.min.js' />
-  <script src='bootstrap-3.4.1.min.js' />
   
   <add-linker name='xs' />
   

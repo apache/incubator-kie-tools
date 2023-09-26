@@ -209,6 +209,8 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/bootstrap-select</outputDirectory>
+                  <excludes
+                  >META-INF/resources/webjars/bootstrap-select/${version.org.webjars.bower.bootstrap-select}/docs/</excludes>
                 </artifactItem>
               </artifactItems>
               <overWriteReleases>false</overWriteReleases>
