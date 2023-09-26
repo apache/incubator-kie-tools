@@ -65,7 +65,7 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
-    "html-webpack-plugin": "^5.3.2",
+    "html-webpack-plugin": "^5.5.3",
     "jest": "^26.6.3",
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
