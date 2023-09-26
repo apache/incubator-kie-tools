@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
+import { Nav, NavExpandable, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Link, matchPath } from "react-router-dom";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons";
 import { routes } from "../../navigation/Routes";
@@ -60,7 +60,34 @@ export function HomePageNav(props: { pathname: string }) {
             <Link to={routes.sampleCatalog.path({})}>Sample Catalog</Link>
           </NavItem>
 
-          <NavItem itemId={3} key={"Documentation-nav"} className="chr-c-navigation__additional-links">
+          <NavExpandable title="Runtime Tools" groupId="runtime-tools-nav-group">
+            <NavItem
+              itemId={3}
+              key={"RuntimeToolsWorkflowDefinitions-nav"}
+              isActive={props.pathname === routes.runtimeToolsWorkflowDefinitions.path({})}
+              ouiaId="runtime-tools-workflow-definitions-nav"
+            >
+              <Link to={routes.runtimeToolsWorkflowDefinitions.path({})}>Workflow Definitions</Link>
+            </NavItem>
+            <NavItem
+              itemId={4}
+              key={"RuntimeToolsWorkflowInstances-nav"}
+              isActive={props.pathname === routes.runtimeToolsWorkflowInstances.path({})}
+              ouiaId="runtime-tools-workflow-instances-nav"
+            >
+              <Link to={routes.runtimeToolsWorkflowInstances.path({})}>Workflow Instances</Link>
+            </NavItem>
+            <NavItem
+              itemId={5}
+              key={"RuntimeToolsTriggerCloudEvent-nav"}
+              isActive={props.pathname === routes.runtimeToolsTriggerCloudEvent.path({})}
+              ouiaId="runtime-tools-trigger-cloud-event-nav"
+            >
+              <Link to={routes.runtimeToolsTriggerCloudEvent.path({})}>Trigger Cloud Event</Link>
+            </NavItem>
+          </NavExpandable>
+
+          <NavItem itemId={6} key={"Documentation-nav"} className="chr-c-navigation__additional-links">
             <a href={SERVERLESS_LOGIC_WEBTOOLS_DOCUMENTATION_URL} target="_blank" rel="noopener noreferrer">
               Documentation
               <ExternalLinkAltIcon />
