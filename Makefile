@@ -121,6 +121,19 @@ test: manifests generate envtest vet fmt test-api ## Run tests.
 test-api:
 	cd api && make test
 
+######
+# Test proxy commands
+
+TEST_DIR=testbdd
+
+.PHONY: run-tests
+run-tests:
+	@(cd $(TEST_DIR) && $(MAKE) $@)
+
+.PHONY: run-smoke-tests
+run-smoke-tests:
+	@(cd $(TEST_DIR) && $(MAKE) $@)
+
 .PHONY: test-container-builder
 test-container-builder:
 	cd container-builder && make test
