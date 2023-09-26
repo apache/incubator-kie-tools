@@ -149,6 +149,7 @@ export function DataTypePanel({
         {dataType.namespace !== thisDmnsNamespace && <Label>External</Label>}
         <div className={"kie-dmn-editor--data-types-title"}>
           <DataTypeName
+            relativeToNamespace={thisDmnsNamespace}
             itemDefinition={dataType.itemDefinition}
             isActive={false}
             editMode={"hover"}

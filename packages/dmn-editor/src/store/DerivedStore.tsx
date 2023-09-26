@@ -162,7 +162,7 @@ function buildDataTypesTree(
   parentId: string | undefined,
   parents: Set<string>,
   namespace: string,
-  thisDmnsNamespace: string
+  relativeToNamespace: string
 ) {
   const dataTypesTree: DataType[] = [];
 
@@ -173,7 +173,7 @@ function buildDataTypesTree(
       importsByNamespace,
       namedElement: itemDefinition,
       namespace,
-      thisDmnsNamespace,
+      relativeToNamespace,
     }).full;
 
     const dataType: DataType = {
@@ -191,7 +191,7 @@ function buildDataTypesTree(
         itemDefinition["@_id"],
         new Set([...parents, itemDefinition["@_id"]!]),
         namespace,
-        thisDmnsNamespace
+        relativeToNamespace
       ),
     };
 

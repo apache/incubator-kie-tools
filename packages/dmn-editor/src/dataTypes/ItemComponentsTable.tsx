@@ -253,6 +253,7 @@ export function ItemComponentsTable({
                         </div>
                         <div style={{ flexGrow: 1 }}>
                           <DataTypeName
+                            relativeToNamespace={dt.namespace}
                             editMode={"hover"}
                             isActive={false}
                             itemDefinition={dt.itemDefinition}

@@ -1107,6 +1107,17 @@ export function KeyboardShortcuts({
     });
   }, [dmnEditorStoreApi, h]);
 
+  const i = RF.useKeyPress(["i"]);
+  useEffect(() => {
+    if (!i) {
+      return;
+    }
+
+    dmnEditorStoreApi.setState((state) => {
+      state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
+    });
+  }, [dmnEditorStoreApi, i]);
+
   return <></>;
 }
 

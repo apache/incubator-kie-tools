@@ -45,7 +45,7 @@ export type EditItemDefinition = (
 ) => void;
 
 export function DataTypes() {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { activeItemDefinitionId } = useDmnEditorStore((s) => s.dataTypesEditor);
 
@@ -150,9 +150,10 @@ export function DataTypes() {
                       <InfrastructureIcon
                         style={{ display: "inline", opacity: isStruct(itemDefinition) ? 1 : 0, minWidth: "1em" }}
                       />
-                      {(namespace === thisDmn.model.definitions["@_namespace"] && (
+                      {(namespace === thisDmnsNamespace && (
                         <DataTypeName
-                          isReadonly={namespace !== thisDmn.model.definitions["@_namespace"]}
+                          relativeToNamespace={thisDmnsNamespace}
+                          isReadonly={namespace !== thisDmnsNamespace}
                           itemDefinition={itemDefinition}
                           isActive={activeItemDefinitionId === itemDefinition["@_id"]}
                           editMode={"double-click"}
@@ -174,7 +175,7 @@ export function DataTypes() {
             <DrawerContentBody>
               {activeDataType && (
                 <DataTypePanel
-                  isReadonly={activeDataType.namespace !== thisDmn.model.definitions["@_namespace"]}
+                  isReadonly={activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
                   dataTypesById={dataTypesById}
                   editItemDefinition={editItemDefinition}

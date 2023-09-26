@@ -21,13 +21,10 @@ export function DmnObjectListItem({
   namespace: string;
   relativeToNamespace: string;
 }) {
-  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const { importsByNamespace, dataTypesByFeelName } = useDmnEditorDerivedStore();
   if (!dmnObject) {
     return <>{dmnObjectHref}</>;
   }
-
-  const showFullFeelQName = relativeToNamespace !== namespace;
 
   const Icon = NodeIcon(getNodeTypeFromDmnObject(dmnObject));
   return (
@@ -40,10 +37,12 @@ export function DmnObjectListItem({
         <Icon />
       </div>
       <div>{`${
-        showFullFeelQName
-          ? buildFeelQNameFromNamespace({ namedElement: dmnObject, importsByNamespace, namespace, thisDmnsNamespace })
-              .full
-          : dmnObject["@_name"]
+        buildFeelQNameFromNamespace({
+          namedElement: dmnObject,
+          importsByNamespace,
+          namespace,
+          relativeToNamespace,
+        }).full
       }`}</div>
       <div>
         {dmnObject.__$$element !== "knowledgeSource" ? (

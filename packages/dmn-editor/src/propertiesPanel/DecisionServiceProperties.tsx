@@ -35,7 +35,7 @@ export function DecisionServiceProperties({
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { otherDmnsByNamespace } = useOtherDmns();
 
-  const alldrgElementsByHref = useMemo(() => {
+  const allDrgElementsByHref = useMemo(() => {
     const ret: AllKnownDrgElementsByHref = new Map();
 
     const allOtherDmns = [{ model: thisDmn.model }, ...Object.values(otherDmnsByNamespace)];
@@ -114,28 +114,28 @@ export function DecisionServiceProperties({
         <DecisionServiceElementList
           decisionServiceNamespace={decisionServiceNamespace}
           elements={decisionService.outputDecision}
-          alldrgElementsByHref={alldrgElementsByHref}
+          allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
       <FormGroup label="Encapsulated decisions">
         <DecisionServiceElementList
           decisionServiceNamespace={decisionServiceNamespace}
           elements={decisionService.encapsulatedDecision}
-          alldrgElementsByHref={alldrgElementsByHref}
+          allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
       <FormGroup label="Input decisions">
         <DecisionServiceElementList
           decisionServiceNamespace={decisionServiceNamespace}
           elements={decisionService.inputDecision}
-          alldrgElementsByHref={alldrgElementsByHref}
+          allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
       <FormGroup label="Input data">
         <DecisionServiceElementList
           decisionServiceNamespace={decisionServiceNamespace}
           elements={decisionService.inputData}
-          alldrgElementsByHref={alldrgElementsByHref}
+          allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
 
@@ -149,13 +149,13 @@ export function DecisionServiceProperties({
 export function DecisionServiceElementList({
   decisionServiceNamespace,
   elements,
-  alldrgElementsByHref,
+  allDrgElementsByHref,
 }: {
   decisionServiceNamespace: string | undefined;
   elements: DMN15__tDecisionService["outputDecision"];
-  alldrgElementsByHref: AllKnownDrgElementsByHref;
+  allDrgElementsByHref: AllKnownDrgElementsByHref;
 }) {
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
 
   return (
     <ul>
@@ -175,8 +175,7 @@ export function DecisionServiceElementList({
         // we can resolve it, otherwise, the dmnObject referenced by localHref won't be present on `dmnObjectsByHref`, and we'll only show the href.
         // Now, if the localHref doesn't have a namespace, then it is local to the model where the Decision Service is declared, so we use `decisionServiceNamespace`.
         // If none of that is true, then it means that the Decision Service is local to "This DMN", so the namespace is simply "".
-        const resolvedNamespace =
-          localHref.namespace ?? decisionServiceNamespace ?? thisDmn.model.definitions["@_namespace"];
+        const resolvedNamespace = localHref.namespace ?? decisionServiceNamespace ?? thisDmnsNamespace;
 
         const potentialExternalHref = buildXmlHref({
           namespace: resolvedNamespace,
@@ -187,8 +186,8 @@ export function DecisionServiceElementList({
           <li key={potentialExternalHref}>
             <DmnObjectListItem
               dmnObjectHref={potentialExternalHref}
-              dmnObject={alldrgElementsByHref.get(potentialExternalHref)}
-              relativeToNamespace={thisDmn.model.definitions["@_namespace"]}
+              dmnObject={allDrgElementsByHref.get(potentialExternalHref)}
+              relativeToNamespace={thisDmnsNamespace}
               namespace={resolvedNamespace}
             />
           </li>

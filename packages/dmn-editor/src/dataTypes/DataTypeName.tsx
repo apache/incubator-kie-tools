@@ -4,27 +4,28 @@ import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/d
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { DataTypeLabel } from "./DataTypeLabel";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStoreApi } from "../store/Store";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { parseFeelQName } from "../feel/parseFeelQName";
+import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 
 export function DataTypeName({
   isReadonly,
   itemDefinition,
   isActive,
   editMode,
+  relativeToNamespace,
 }: {
   isReadonly: boolean;
   editMode: "hover" | "double-click";
   itemDefinition: DMN15__tItemDefinition;
   isActive: boolean;
+  relativeToNamespace: string;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const { dataTypesById } = useDmnEditorDerivedStore();
+  const { dataTypesById, importsByNamespace } = useDmnEditorDerivedStore();
 
   const onRenamed = useCallback(
     (newName: string | undefined) => {
@@ -61,7 +62,14 @@ export function DataTypeName({
     }, 0);
   }, []);
 
-  const feelName = dataTypesById.get(itemDefinition["@_id"]!)!.feelName;
+  const dataType = dataTypesById.get(itemDefinition["@_id"]!);
+
+  const displayName = buildFeelQNameFromNamespace({
+    namedElement: itemDefinition,
+    importsByNamespace,
+    namespace: dataType!.namespace,
+    relativeToNamespace,
+  });
 
   return (
     <>
@@ -78,7 +86,7 @@ export function DataTypeName({
             width: "100%",
           }}
           disabled={isReadonly}
-          defaultValue={feelName}
+          defaultValue={displayName.full}
           onFocus={(e) => {
             previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element.
           }}
@@ -126,7 +134,7 @@ export function DataTypeName({
             namedElementQName={{
               type: "xml-qname",
               localPart: itemDefinition["@_name"],
-              prefix: parseFeelQName(feelName).importName,
+              prefix: displayName.prefix,
             }}
           />
           {!isEditingLabel && (
