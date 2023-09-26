@@ -48,6 +48,11 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       title: string;
     };
   };
+  sidebar: {
+    cheatSheetTooltip: string;
+    dataObjectsTooltip: string;
+    settingsTooltip: string;
+  };
 }
 
 export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n {}

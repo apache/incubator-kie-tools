@@ -28,6 +28,7 @@ import EditIcon from "@patternfly/react-icons/dist/esm/icons/edit-alt-icon";
 import InfoIcon from "@patternfly/react-icons/dist/esm/icons/info-icon";
 
 import { TestScenarioEditorDock } from "../TestScenarioEditor";
+import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioSideBarMenu.css";
 
@@ -38,6 +39,8 @@ function TestScenarioSideBarMenu({
   onSideBarButtonClicked: (selected: TestScenarioEditorDock) => void;
   selectedSideBarMenuItem: { isOpen: boolean; selected: TestScenarioEditorDock };
 }) {
+  const { i18n } = useTestScenarioEditorI18n();
+
   const isSelectedMenuItem = useCallback(
     (item: TestScenarioEditorDock) => {
       return selectedSideBarMenuItem.isOpen && selectedSideBarMenuItem.selected === item;
@@ -47,7 +50,7 @@ function TestScenarioSideBarMenu({
 
   return (
     <div className="kie-scesim-editor--right-sidebar">
-      <Tooltip content={<div>Data Objects tool: It provides a tool to add your Data Objects in Test Scenarios</div>}>
+      <Tooltip content={i18n.sidebar.dataObjectsTooltip}>
         <Button
           className={
             isSelectedMenuItem(TestScenarioEditorDock.DATA_OBJECT)
@@ -59,19 +62,7 @@ function TestScenarioSideBarMenu({
           icon={<EditIcon />}
         />
       </Tooltip>
-      <Tooltip content={<div>Settings</div>}>
-        <Button
-          className={
-            isSelectedMenuItem(TestScenarioEditorDock.SETTINGS)
-              ? "kie-scesim-editor-side-bar-menu--button-selected"
-              : "kie-scesim-editor-side-bar-menu--button"
-          }
-          icon={<CogIcon />}
-          onClick={() => onSideBarButtonClicked(TestScenarioEditorDock.SETTINGS)}
-          variant="plain"
-        />
-      </Tooltip>
-      <Tooltip content={<div>CheatSheet: In this panel you can found useful information for Test Scenario Usage</div>}>
+      <Tooltip content={i18n.sidebar.cheatSheetTooltip}>
         <Button
           className={
             isSelectedMenuItem(TestScenarioEditorDock.CHEATSHEET)
@@ -80,6 +71,18 @@ function TestScenarioSideBarMenu({
           }
           icon={<InfoIcon />}
           onClick={() => onSideBarButtonClicked(TestScenarioEditorDock.CHEATSHEET)}
+          variant="plain"
+        />
+      </Tooltip>
+      <Tooltip content={<div>{i18n.sidebar.settingsTooltip}</div>}>
+        <Button
+          className={
+            isSelectedMenuItem(TestScenarioEditorDock.SETTINGS)
+              ? "kie-scesim-editor-side-bar-menu--button-selected"
+              : "kie-scesim-editor-side-bar-menu--button"
+          }
+          icon={<CogIcon />}
+          onClick={() => onSideBarButtonClicked(TestScenarioEditorDock.SETTINGS)}
           variant="plain"
         />
       </Tooltip>

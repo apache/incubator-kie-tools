@@ -52,4 +52,9 @@ export const en: TestScenarioEditorI18n = {
       title: "Settings",
     },
   },
+  sidebar: {
+    cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
+    dataObjectsTooltip: "Data Objects: It provides a tool to edit your Scenarios",
+    settingsTooltip: "Setting: Properties of this Test Scenario asset",
+  },
 };

@@ -26,10 +26,11 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
-import "./TestScenarioDrawerSettingsPanel.css";
 import { Icon } from "@patternfly/react-core/dist/esm/components/Icon/Icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
 import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
+
+import "./TestScenarioDrawerSettingsPanel.css";
 
 function TestScenarioDrawerSettingsPanel({
   fileName,
