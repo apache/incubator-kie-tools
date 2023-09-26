@@ -668,8 +668,8 @@ importers:
         specifier: ^0.27.2
         version: 0.27.2
       fast-xml-parser:
-        specifier: ^4.2.4
-        version: 4.2.4
+        specifier: ^4.3.1
+        version: 4.3.1
       portfinder:
         specifier: ^1.0.32
         version: 1.0.32
@@ -9804,8 +9804,8 @@ importers:
   scripts/check-junit-report-results:
     dependencies:
       fast-xml-parser:
-        specifier: ^4.2.4
-        version: 4.2.4
+        specifier: ^4.3.1
+        version: 4.3.1
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -23129,9 +23129,9 @@ packages:
       { integrity: sha512-dtm4QZH9nZtcDt8qJiOH9fcQd1NAgi+K1O2DbE6GG1PPCK/BWfOH3idCTRQ4ImXRUOyopDEgDEnVEE7Y/2Wrig== }
     dev: false
 
-  /fast-xml-parser@4.2.4:
+  /fast-xml-parser@4.3.1:
     resolution:
-      { integrity: sha512-fbfMDvgBNIdDJLdLOwacjFAPYt67tr31H9ZhWSm45CDAxvd0I6WTlSOUo7K2P/K5sA5JgMKG64PI3DMcaFdWpQ== }
+      { integrity: sha512-viVv3xb8D+SiS1W4cv4tva3bni08kAkx0gQnWrykMM8nXPc1FxqZPU00dCEVjkiCg4HoXd2jC4x29Nzg/l2DAA== }
     hasBin: true
     dependencies:
       strnum: 1.0.5
