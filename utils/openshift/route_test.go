@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//      http://www.apache.org/licenses/LICENSE-2.0
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,30 +15,33 @@
 package openshift
 
 import (
-	v1 "github.com/openshift/api/route/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"testing"
 
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+	v1 "github.com/openshift/api/route/v1"
+	"github.com/stretchr/testify/assert"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 )
 
-func RouteForWorkflow(workflow *operatorapi.SonataFlow) (*v1.Route, error) {
-	route := &v1.Route{
+const (
+	WorkflowName      = "helloworld"
+	WorkflowNamespace = "usecase1"
+)
+
+func TestRouteForWorkflow(t *testing.T) {
+	workflow := &operatorapi.SonataFlow{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      workflow.Name,
-			Namespace: workflow.Namespace,
-		},
-		Spec: v1.RouteSpec{
-			To: v1.RouteTargetReference{
-				Kind: "Service",
-				Name: workflow.Name,
-			},
-			TLS: &v1.TLSConfig{
-				Termination: v1.TLSTerminationEdge,
-			},
+			Name:      WorkflowName,
+			Namespace: WorkflowNamespace,
 		},
 	}
-	workflowproj.SetDefaultLabels(workflow, route)
-	return route, nil
+	route, err := RouteForWorkflow(workflow)
+	assert.NotNil(t, route)
+	assert.Nil(t, err)
+	assert.Equal(t, WorkflowName, route.ObjectMeta.Name)
+	assert.Equal(t, WorkflowNamespace, route.ObjectMeta.Namespace)
+	assert.Equal(t, "Service", route.Spec.To.Kind)
+	assert.Equal(t, WorkflowName, route.Spec.To.Name)
+	assert.Equal(t, v1.TLSTerminationEdge, route.Spec.TLS.Termination)
 }
