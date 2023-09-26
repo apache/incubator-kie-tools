@@ -26,19 +26,34 @@ const buildEnv: any = env;
 
 const customConfig = defineConfig({
   expect: {
-    timeout: 15 * 1000,
+    timeout: 30000,
   },
   use: {
     viewport: { width: 1600, height: 1200 },
-    baseURL: `https://localhost:${buildEnv.onlineEditor.dev.port}`,
+    baseURL: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
     ignoreHTTPSErrors: true,
   },
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "pnpm start",
-    url: `https://localhost:${buildEnv.onlineEditor.dev.port}`,
-    reuseExistingServer: !process.env.CI || true,
-  },
+  webServer: [
+    {
+      command: "pnpm test:e2e:start:cors-proxy",
+      url: `http://localhost:${buildEnv.corsProxy.dev.port}/ping`,
+      reuseExistingServer: !process.env.CI || true,
+      stdout: "pipe",
+    },
+    {
+      command: "pnpm test:e2e:start:extended-services",
+      url: `http://localhost:${buildEnv.extendedServices.port}/ping`,
+      reuseExistingServer: !process.env.CI || true,
+      stdout: "pipe",
+    },
+    {
+      command: "pnpm start",
+      url: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
+      reuseExistingServer: !process.env.CI || true,
+      ignoreHTTPSErrors: true,
+    },
+  ],
 });
 
 export default defineConfig(merge(playwirghtBaseConfig, customConfig));

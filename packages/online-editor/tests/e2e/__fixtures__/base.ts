@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Page, test as base } from "@playwright/test";
+import { Page, test as base, expect } from "@playwright/test";
 import { Upload } from "./upload";
 
 type BaseFixtures = {
@@ -32,6 +32,11 @@ class KieSandbox {
 
   public getEditor() {
     return this.page.frameLocator("#kogito-iframe");
+  }
+
+  public async isEditorLoaded() {
+    await expect(this.getEditor().getByRole("heading", { name: "Loading..." })).toBeAttached();
+    await expect(this.getEditor().getByRole("heading", { name: "Loading..." })).not.toBeAttached();
   }
 }
 
