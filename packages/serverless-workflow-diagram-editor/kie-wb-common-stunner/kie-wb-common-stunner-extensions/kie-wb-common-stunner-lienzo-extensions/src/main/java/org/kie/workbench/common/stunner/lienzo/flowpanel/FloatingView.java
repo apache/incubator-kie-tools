@@ -18,32 +18,31 @@
  */
 
 
-package org.gwtbootstrap3.client.ui.constants;
+package org.kie.workbench.common.stunner.lienzo.flowpanel;
 
-import org.gwtbootstrap3.client.ui.base.helper.EnumHelper;
-import org.gwtproject.dom.client.Style;
+public interface FloatingView<V> {
 
-/**
- * @author Joshua Godi
- */
-public enum Alignment implements Style.HasCssName {
-    DEFAULT(""),
-    LEFT("text-left"),
-    CENTER("text-center"),
-    RIGHT("text-right");
+    void add(final V item);
 
-    private final String cssClass;
+    FloatingView<V> setOffsetX(final double ox);
 
-    private Alignment(final String cssClass) {
-        this.cssClass = cssClass;
-    }
+    FloatingView<V> setOffsetY(final double oy);
 
-    @Override
-    public String getCssName() {
-        return cssClass;
-    }
+    FloatingView<V> setX(final double x);
 
-    public static Alignment fromStyleName(final String styleName) {
-        return EnumHelper.fromStyleName(styleName, Alignment.class, DEFAULT);
-    }
+    FloatingView<V> setY(final double y);
+
+    FloatingView<V> show();
+
+    FloatingView<V> hide();
+
+    FloatingView<V> setTimeOut(final int timeOut);
+
+    FloatingView<V> clearTimeOut();
+
+    FloatingView<V> setHideCallback(final Runnable hideCallback);
+
+    void clear();
+
+    void destroy();
 }

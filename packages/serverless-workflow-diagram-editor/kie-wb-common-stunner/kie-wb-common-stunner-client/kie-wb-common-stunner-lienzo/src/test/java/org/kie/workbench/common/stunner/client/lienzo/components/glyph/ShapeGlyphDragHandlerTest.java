@@ -23,10 +23,10 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -69,9 +69,6 @@ public class ShapeGlyphDragHandlerTest {
     private ShapeGlyphDragHandler.Item glyphDragItem;
 
     @Mock
-    private AbsolutePanel rootPanel;
-
-    @Mock
     private HTMLDivElement proxyElement;
 
     @Mock
@@ -85,6 +82,9 @@ public class ShapeGlyphDragHandlerTest {
 
     @Mock
     private NativeHandler keyHandlerReg;
+
+    @Mock
+    private HTMLElement body;
 
     private ShapeGlyphDragHandler tested;
     private NativeHandlerRegistration handlerRegistrations;
@@ -104,7 +104,7 @@ public class ShapeGlyphDragHandlerTest {
         when(glyphDragItem.getShape()).thenReturn(glyph);
         tested = spy(new ShapeGlyphDragHandler(glyphLienzoGlyphRenderer,
                                                handlerRegistrations,
-                                               () -> rootPanel,
+                                               () -> body,
                                                item -> proxyPanel,
                                                (task, timeout) -> task.execute()));
         doNothing().when(tested).attachHandlers(any(Callback.class));

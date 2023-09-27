@@ -17,33 +17,17 @@
  * under the License.
  */
 
+package org.gwtproject.timer.client;
 
-package org.gwtbootstrap3.client.ui.constants;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.gwtbootstrap3.client.ui.base.helper.EnumHelper;
-import org.gwtproject.dom.client.Style;
-
-/**
- * @author Joshua Godi
- */
-public enum Alignment implements Style.HasCssName {
-    DEFAULT(""),
-    LEFT("text-left"),
-    CENTER("text-center"),
-    RIGHT("text-right");
-
-    private final String cssClass;
-
-    private Alignment(final String cssClass) {
-        this.cssClass = cssClass;
-    }
-
-    @Override
-    public String getCssName() {
-        return cssClass;
-    }
-
-    public static Alignment fromStyleName(final String styleName) {
-        return EnumHelper.fromStyleName(styleName, Alignment.class, DEFAULT);
-    }
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Documented
+public @interface GwtIncompatible {
+    String value() default "";
 }
