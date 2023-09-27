@@ -124,8 +124,6 @@ module.exports = (env) => {
         net: false,
         buffer: require.resolve("buffer/"),
         querystring: require.resolve("querystring-es3"),
-        https: require.resolve("https-browserify"),
-        http: require.resolve("stream-http"),
       },
       extensions: [".tsx", ".ts", ".js", ".jsx"],
       modules: ["node_modules"],
