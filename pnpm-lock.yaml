@@ -9685,9 +9685,6 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
-      https-browserify:
-        specifier: ^1.0.0
-        version: 1.0.0
       os-browserify:
         specifier: ^0.3.0
         version: 0.3.0
@@ -9700,9 +9697,6 @@ importers:
       source-map-loader:
         specifier: ^2.0.2
         version: 2.0.2(webpack@5.88.2)
-      stream-http:
-        specifier: ^3.2.0
-        version: 3.2.0
       ts-loader:
         specifier: ^9.4.2
         version: 9.4.2(typescript@4.8.4)(webpack@5.88.2)
@@ -19590,7 +19584,7 @@ packages:
       tar: 6.1.11
       tinylogic: 2.0.0
       treeify: 1.1.0
-      tslib: 2.5.0
+      tslib: 2.6.2
       tunnel: 0.0.6
     transitivePeerDependencies:
       - typanion
@@ -19620,7 +19614,7 @@ packages:
       { integrity: sha512-aSd6n7TXY/PfXz8LKWv+eGyPQWtIGAXs8DqTTWLC+GAkZucaRf3QVaYyJOmenC+W0N4P9cKYvgcBwhY2xHvieQ== }
     engines: { node: ">=18.12.0" }
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.2
     dev: true
 
   /@yarnpkg/json-proxy@2.1.1:
@@ -19650,7 +19644,7 @@ packages:
     dependencies:
       "@types/emscripten": 1.39.6
       "@yarnpkg/fslib": 3.0.0-rc.50
-      tslib: 2.5.0
+      tslib: 2.6.2
     dev: true
 
   /@yarnpkg/lockfile@1.1.0:
@@ -19684,7 +19678,7 @@ packages:
     engines: { node: ">=18.12.0" }
     dependencies:
       js-yaml: 3.14.1
-      tslib: 2.5.0
+      tslib: 2.6.2
     dev: true
 
   /@yarnpkg/pnp@2.3.2:
@@ -19757,7 +19751,7 @@ packages:
       cross-spawn: 7.0.3
       fast-glob: 3.2.11
       micromatch: 4.0.5
-      tslib: 2.5.0
+      tslib: 2.6.2
     transitivePeerDependencies:
       - typanion
     dev: true
