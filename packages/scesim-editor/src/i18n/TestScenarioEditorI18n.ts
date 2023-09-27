@@ -27,10 +27,32 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       title: string;
     };
     cheatSheet: {
+      expression1DMN: string;
+      expression1Rule: string;
+      expression2DMN: string;
+      expression2Rule: string;
+      expression3DMN: string;
+      expression3Rule: string;
+      expression4DMN: string;
+      expression4Rule: string;
+      expression5DMN: string;
+      expression5Rule: string;
+      expression6DMN: string;
+      expression6Rule: string;
+      expression7DMN: string;
+      expression7Rule: string;
+      expression8DMN: string;
+      expression8Rule: string;
+      expression9DMN: string;
+      expression9Rule: string;
+      expression10DMN: string;
       paragraph1: string;
-      paragraph2a: string;
-      paragraph2b: string;
-      paragraph3: string;
+      paragraph2: (testScenarioTab: string) => string;
+      paragraph3: (backgroundTab: string, testScenarioTab: string) => string;
+      paragraph4: string;
+      paragraph5DMN: string;
+      paragraph6DMN: string;
+      paragraph6Rule: string;
       title: string;
     };
     settings: {

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextList, TextListItem } from "@patternfly/react-core/dist/js/components/Text";
 
 import { TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
@@ -29,30 +29,66 @@ function TestScenarioDrawerCheatSheetPanel({ assetType }: { assetType: string })
 
   return (
     <TextContent>
-      <Text component={TextVariants.p}>{i18n.drawer.cheatSheet.paragraph1}</Text>
+      <Text>{i18n.drawer.cheatSheet.paragraph1}</Text>
+      <Text>{i18n.drawer.cheatSheet.paragraph2(i18n.drawer.dataObject.title)}</Text>
+      <Text>{i18n.drawer.cheatSheet.paragraph3(i18n.tab.backgroundTabTitle, i18n.tab.scenarioTabTitle)}</Text>
+      <Text>{i18n.drawer.cheatSheet.paragraph4}</Text>
+      {assetType === TestScenarioType[TestScenarioType.DMN] && <Text>{i18n.drawer.cheatSheet.paragraph5DMN}</Text>}
       <Text>
-        {i18n.drawer.cheatSheet.paragraph2a}
-        <strong>{i18n.drawer.dataObject.title}</strong>
-        {i18n.drawer.cheatSheet.paragraph2b}
+        {assetType === TestScenarioType[TestScenarioType.DMN]
+          ? i18n.drawer.cheatSheet.paragraph6DMN
+          : i18n.drawer.cheatSheet.paragraph6Rule}
       </Text>
-      <Text>
-        {i18n.drawer.cheatSheet.paragraph3a}
-        <strong>{i18n.tab.backgroundTabTitle}</strong>
-        {i18n.drawer.cheatSheet.paragraph3b}
-        <strong>{i18n.tab.scenarioTabTitle}</strong>
-        {i18n.drawer.cheatSheet.paragraph3c}
-      </Text>
-      <Text>
-        If the same GIVEN data is shared with the multiple test scenarios, you can use the Background tab to define them
-        only once. The way to create a column in the Background tab is the same as of the Model tab.
-      </Text>
-      <Text>Now, define the test scenarios. Each cell of the table must contain a valid expression.</Text>
-      <Text>
-        Values in the GIVEN part of the table are evaluated as literal expressions, whereas values in the EXPECT section
-        are evaluated as unary expressions. The correctness of these unary tests is verified using the results from a
-        DMN evaluation.
-      </Text>
-      <Text>DMN-based scenarios use the FEEL expression language. Supported data types are:</Text>
+      <TextList>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression1DMN
+            : i18n.drawer.cheatSheet.expression1Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression2DMN
+            : i18n.drawer.cheatSheet.expression2Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression3DMN
+            : i18n.drawer.cheatSheet.expression3Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression4DMN
+            : i18n.drawer.cheatSheet.expression4Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression5DMN
+            : i18n.drawer.cheatSheet.expression5Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression6DMN
+            : i18n.drawer.cheatSheet.expression6Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression7DMN
+            : i18n.drawer.cheatSheet.expression7Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression8DMN
+            : i18n.drawer.cheatSheet.expression8Rule}
+        </TextListItem>
+        <TextListItem>
+          {assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.cheatSheet.expression9DMN
+            : i18n.drawer.cheatSheet.expression9Rule}
+        </TextListItem>
+        {assetType === TestScenarioType[TestScenarioType.DMN] && (
+          <TextListItem>{i18n.drawer.cheatSheet.expression10DMN}</TextListItem>
+        )}
+      </TextList>
     </TextContent>
   );
 }
