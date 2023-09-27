@@ -283,7 +283,7 @@ export function ItemComponentsTable({
                       {!isStruct(dt.itemDefinition) && (
                         <TypeRefSelector
                           isDisabled={isReadonly}
-                          name={dt.itemDefinition.typeRef}
+                          typeRef={dt.itemDefinition.typeRef}
                           onChange={(newDataType) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition.typeRef = newDataType;

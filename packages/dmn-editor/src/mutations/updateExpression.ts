@@ -9,26 +9,26 @@ import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 export function updateExpression({
   definitions,
   expression,
-  index,
+  drgElementIndex,
 }: {
   definitions: DMN15__tDefinitions;
   expression: ExpressionDefinition;
-  index: number;
+  drgElementIndex: number;
 }) {
   const updatedWidthsMap = new Map<string, number[]>();
   const updatedExpression = beeToDmn(expression, updatedWidthsMap);
 
-  const drgElement = definitions.drgElement?.[index];
+  const drgElement = definitions.drgElement?.[drgElementIndex];
   if (drgElement?.__$$element === "decision") {
     drgElement.expression = updatedExpression;
-    drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"];
+    drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"] ?? drgElement.variable!["@_typeRef"];
   } else if (drgElement?.__$$element === "businessKnowledgeModel") {
     if (expression.logicType !== ExpressionDefinitionLogicType.Function) {
       throw new Error("Can't have an expression on a BKM that is not a Function.");
     }
 
     drgElement.encapsulatedLogic = updatedExpression as DMN15__tFunctionDefinition;
-    drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"];
+    drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"] ?? drgElement.variable!["@_typeRef"];
   } else {
     throw new Error("Can't update expression for drgElement that is not a Decision or a BKM.");
   }

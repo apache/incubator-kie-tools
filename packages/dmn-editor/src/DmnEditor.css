@@ -372,34 +372,50 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 /* (begin) node panels */
 
 /*    data type selector on inputData, decision, bkm, and decisionService nodes */
-
 .kie-dmn-editor--data-type-node-panel {
   position: absolute;
-  bottom: 4px;
-  right: calc(100% + 4px - 21px);
-  padding-right: 21px;
-  height: max(25%, 40px);
+  top: -46px;
+  padding-bottom: 10px;
   display: flex;
   align-items: end;
+  zoom: 0.8;
 }
-.kie-dmn-editor--data-type-node-panel-label {
-  padding: 12px;
-  height: 19px;
-  font-size: 12px;
-  cursor: pointer;
-  background: white;
-  color: black;
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
-  zoom: 1.2;
+/* Customizing some patternfly components is hard... */
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > button,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type,
+.kie-dmn-editor--data-type-node-panel > div {
+  border-radius: 99999px;
+  outline: none;
 }
-.kie-dmn-editor--data-type-node-panel-label > .pf-c-label__content::before {
+.kie-dmn-editor--data-type-node-panel > div {
+  padding-left: 12px;
   border: 1px solid black;
+  background: white;
+  box-shadow: 5px 5px 2px 0px rgb(127 127 127);
 }
-.kie-dmn-editor--data-type-node-panel-label:hover {
-  filter: brightness(95%);
+.kie-dmn-editor--data-type-node-panel .pf-c-select__menu.pf-m-static {
+  text-align: left;
+  z-index: 999999;
 }
-.kie-dmn-editor--data-type-node-panel-label:active {
-  filter: brightness(90%);
+.kie-dmn-editor--data-type-node-panel span {
+  height: 19px;
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-c-select__toggle-button.pf-m-plain {
+  margin-left: 24px;
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-button.pf-m-control::after,
+.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead::before {
+  border: 0;
+}
+.kie-dmn-editor--data-type-node-panel > div:hover {
+  backdrop-filter: brightness(95%);
+}
+.kie-dmn-editor--data-type-node-panel > div:active {
+  backdrop-filter: brightness(90%);
 }
 /*    edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
@@ -411,7 +427,6 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   cursor: pointer;
   background: white;
   color: black;
-  font-weight: bold;
 }
 .kie-dmn-editor--edit-expression-node-panel > .pf-c-label__content::before {
   border: 1px solid black;
@@ -766,7 +781,7 @@ th {
   border-radius: 1000px;
 }
 .react-flow__resize-control {
-  z-index: 100;
+  z-index: 0;
 }
 
 /* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */

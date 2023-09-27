@@ -1,3 +1,4 @@
+import * as RF from "reactflow";
 import {
   BeeGwtService,
   DmnBuiltInDataType,
@@ -19,6 +20,7 @@ import { getDefaultExpressionDefinitionByLogicType } from "./getDefaultExpressio
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
+  DMN15__tItemDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import {
   EmptyState,
@@ -33,6 +35,12 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
+import { parseXmlQName } from "../xml/xmlQNames";
+import { buildXmlHref } from "../xml/xmlHrefs";
+import { isStruct, traverseItemDefinition } from "../dataTypes/DataTypeSpec";
+import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
+import { DataType, DataTypesById } from "../dataTypes/DataTypes";
+import { getTextWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -75,6 +83,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     return {
       beeExpression: drgElementToBoxedExpression(widthsById, drgElement),
       drgElementIndex,
+      drgElement,
       drgElementType: drgElement.__$$element,
     };
   }, [boxedExpressionEditor.openExpressionId, thisDmn.model.definitions.drgElement, widthsById]);
@@ -89,13 +98,15 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   const setExpression: React.Dispatch<React.SetStateAction<ExpressionDefinition>> = useCallback(
     (expressionAction) => {
       dmnEditorStoreApi.setState((state) => {
+        const newExpression =
+          typeof expressionAction === "function"
+            ? expressionAction(expression?.beeExpression ?? getUndefinedExpressionDefinition())
+            : expressionAction;
+
         updateExpression({
           definitions: state.dmn.model.definitions,
-          expression:
-            typeof expressionAction === "function"
-              ? expressionAction(expression?.beeExpression ?? getUndefinedExpressionDefinition())
-              : expressionAction,
-          index: expression?.drgElementIndex ?? 0,
+          expression: newExpression,
+          drgElementIndex: expression?.drgElementIndex ?? 0,
         });
       });
     },
@@ -108,7 +119,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const { dataTypesTree } = useDmnEditorDerivedStore();
+  const { dataTypesTree, dataTypesByFeelName, nodesById } = useDmnEditorDerivedStore();
 
   const dataTypes = useMemo<DmnDataType[]>(() => {
     const customDataTypes = dataTypesTree.map((d) => ({
@@ -124,15 +135,36 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   const beeGwtService = useMemo<BeeGwtService>(() => {
     return {
-      getDefaultExpressionDefinition(logicType: string, dataType: string): ExpressionDefinition {
-        return getDefaultExpressionDefinitionByLogicType(
-          logicType as ExpressionDefinitionLogicType,
-          {
-            id: generateUuid(),
-            dataType: (dataType as DmnBuiltInDataType) || DmnBuiltInDataType.Undefined,
+      getDefaultExpressionDefinition(
+        logicType: string,
+        typeRef: string | undefined,
+        isRoot?: boolean
+      ): ExpressionDefinition {
+        return getDefaultExpressionDefinitionByLogicType({
+          logicType: logicType as ExpressionDefinitionLogicType,
+          typeRef: typeRef ?? DmnBuiltInDataType.Undefined,
+          dataTypesByFeelName,
+          getInputs: () => {
+            if (!isRoot || expression?.drgElement.__$$element !== "decision") {
+              return undefined;
+            } else {
+              return determineInputsForDecision(expression?.drgElement, dataTypesByFeelName, nodesById);
+            }
           },
-          0
-        );
+          getDefaultColumnWidth: ({ name, typeRef }) => {
+            return (
+              8 * 2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
+              2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
+              Math.max(
+                getTextWidth(name, "700 11.2px Menlo, monospace"), // FIXME: Tiago --> These values were obtained by looking at the values calculated by BEE columns.
+                getTextWidth(
+                  `(${typeRef ?? ""})`,
+                  "700 11.6667px RedHatText, Overpass, overpass, helvetica, arial, sans-serif"
+                ) // FIXME: Tiago --> These values were obtained by looking at the values calculated by BEE columns.
+              )
+            );
+          },
+        });
       },
       selectObject(uuid) {
         dmnEditorStoreApi.setState((state) => {
@@ -145,7 +177,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         });
       },
     };
-  }, [dmnEditorStoreApi]);
+  }, [dataTypesByFeelName, dmnEditorStoreApi, expression?.drgElement, nodesById]);
 
   ////
 
@@ -213,32 +245,89 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
 function drgElementToBoxedExpression(
   widthsById: Map<string, number[]>,
-  drgElement:
+  expressionHolder:
     | (DMN15__tDecision & { __$$element: "decision" })
     | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" })
 ): ExpressionDefinition {
-  if (drgElement.__$$element === "businessKnowledgeModel") {
+  if (expressionHolder.__$$element === "businessKnowledgeModel") {
     return {
       ...dmnToBee(widthsById, {
         expression: {
           __$$element: "functionDefinition",
-          ...drgElement.encapsulatedLogic,
+          ...expressionHolder.encapsulatedLogic,
         },
       }),
-      dataType: (drgElement.variable?.["@_typeRef"] ??
-        drgElement.encapsulatedLogic?.["@_typeRef"] ??
+      dataType: (expressionHolder.variable?.["@_typeRef"] ??
+        expressionHolder.encapsulatedLogic?.["@_typeRef"] ??
         DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
-      name: drgElement["@_name"],
+      name: expressionHolder["@_name"],
     };
-  } else if (drgElement.__$$element === "decision") {
+  } else if (expressionHolder.__$$element === "decision") {
     return {
-      ...dmnToBee(widthsById, drgElement),
-      dataType: (drgElement.variable?.["@_typeRef"] ??
-        drgElement.expression?.["@_typeRef"] ??
+      ...dmnToBee(widthsById, expressionHolder),
+      dataType: (expressionHolder.variable?.["@_typeRef"] ??
+        expressionHolder.expression?.["@_typeRef"] ??
         DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
-      name: drgElement["@_name"],
+      name: expressionHolder["@_name"],
     };
   } else {
-    throw new Error(`Unknown __$$element of drgElement that has an expression '${(drgElement as any).__$$element}'.`);
+    throw new Error(
+      `Unknown __$$element of expressionHolder that has an expression '${(expressionHolder as any).__$$element}'.`
+    );
   }
+}
+
+function determineInputsForDecision(
+  decision: DMN15__tDecision,
+  dataTypesByFeelName: DataTypesById,
+  nodesById: Map<string, RF.Node<DmnDiagramNodeData>>
+) {
+  try {
+    const ret = (decision.informationRequirement ?? []).flatMap((s) => {
+      const dmnObject = nodesById.get((s.requiredDecision?.["@_href"] ?? s.requiredInput?.["@_href"])!)!.data.dmnObject;
+      if (!(dmnObject.__$$element === "inputData" || dmnObject.__$$element === "decision")) {
+        throw new Error(
+          "DMN EDITOR: Information requirement can't ever point to anything other than an InputData or a Decision"
+        );
+      }
+
+      const dataType = dataTypesByFeelName.get(dmnObject.variable!["@_typeRef"]!)!;
+      return !isStruct(dataType.itemDefinition)
+        ? [
+            {
+              name: dmnObject.variable!["@_name"]!,
+              typeRef: dmnObject.variable?.["@_typeRef"],
+            },
+          ]
+        : (dataType.itemDefinition.itemComponent ?? []).flatMap((ic) =>
+            flattenComponents(ic, dmnObject.variable!["@_name"])
+          );
+    });
+
+    if (ret.length === 0) {
+      return undefined;
+    }
+
+    return ret;
+  } catch (e) {
+    console.error(`DMN EDITOR: Error suggesting imports for root expression on '${decision["@_name"]}'.`, e);
+    return undefined;
+  }
+}
+function flattenComponents(
+  itemDefinition: DMN15__tItemDefinition,
+  acc: string
+): { name: string; typeRef: string | undefined }[] {
+  if (!isStruct(itemDefinition)) {
+    return [
+      {
+        name: `${acc}.${itemDefinition["@_name"]!}`,
+        typeRef: itemDefinition.typeRef,
+      },
+    ];
+  }
+
+  return (itemDefinition.itemComponent ?? []).flatMap((ic) => {
+    return flattenComponents(ic, `${acc}.${itemDefinition["@_name"]!}`);
+  });
 }

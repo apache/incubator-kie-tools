@@ -20,7 +20,7 @@ import { NodeType, containment, outgoingStructure } from "../connections/graphSt
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
-import { EditableNodeLabel, useEditableNodeLabel } from "./EditableNodeLabel";
+import { EditableNodeLabel, OnEditableNodeLabelChange, useEditableNodeLabel } from "./EditableNodeLabel";
 import { InfoNodePanel } from "./InfoNodePanel";
 import {
   BkmNodeSvg,
@@ -39,6 +39,7 @@ import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "../../xml/xmlQNames";
 import { Unpacked } from "../../store/useDiagramData";
+import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 
 export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>;
 
@@ -80,10 +81,19 @@ export const InputDataNode = React.memo(
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
 
-    const setName = useCallback(
+    const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
           renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
+    );
+
+    const onTypeRefChange = useCallback<OnTypeRefChange>(
+      (newTypeRef) => {
+        dmnEditorStoreApi.setState((state) => {
+          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
         });
       },
       [dmnEditorStoreApi, index]
@@ -107,7 +117,7 @@ export const InputDataNode = React.memo(
           onKeyDown={triggerEditingIfEnter}
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
-          <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={inputData.variable} shape={shape} />
+
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
@@ -122,6 +132,12 @@ export const InputDataNode = React.memo(
             onChange={setName}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          <DataTypeNodePanel
+            isVisible={!isTargeted && isHovered}
+            variable={inputData.variable}
+            shape={shape}
+            onChange={onTypeRefChange}
+          />
         </div>
       </>
     );
@@ -151,10 +167,19 @@ export const DecisionNode = React.memo(
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
-    const setName = useCallback(
+    const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
           renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
+    );
+
+    const onTypeRefChange = useCallback<OnTypeRefChange>(
+      (newTypeRef) => {
+        dmnEditorStoreApi.setState((state) => {
+          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
         });
       },
       [dmnEditorStoreApi, index]
@@ -178,7 +203,7 @@ export const DecisionNode = React.memo(
           onKeyDown={triggerEditingIfEnter}
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
-          <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={decision.variable} shape={shape} />
+
           <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
@@ -194,6 +219,12 @@ export const DecisionNode = React.memo(
             onChange={setName}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          <DataTypeNodePanel
+            isVisible={!isTargeted && isHovered}
+            variable={decision.variable}
+            shape={shape}
+            onChange={onTypeRefChange}
+          />
         </div>
       </>
     );
@@ -223,10 +254,19 @@ export const BkmNode = React.memo(
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
-    const setName = useCallback(
+    const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
           renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
+        });
+      },
+      [dmnEditorStoreApi, index]
+    );
+
+    const onTypeRefChange = useCallback<OnTypeRefChange>(
+      (newTypeRef) => {
+        dmnEditorStoreApi.setState((state) => {
+          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
         });
       },
       [dmnEditorStoreApi, index]
@@ -250,7 +290,7 @@ export const BkmNode = React.memo(
           onKeyDown={triggerEditingIfEnter}
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
-          <DataTypeNodePanel isVisible={!isTargeted && isHovered} variable={bkm.variable} shape={shape} />
+
           <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
@@ -266,6 +306,12 @@ export const BkmNode = React.memo(
             onChange={setName}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          <DataTypeNodePanel
+            isVisible={!isTargeted && isHovered}
+            variable={bkm.variable}
+            shape={shape}
+            onChange={onTypeRefChange}
+          />
         </div>
       </>
     );
@@ -295,7 +341,7 @@ export const KnowledgeSourceNode = React.memo(
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
-    const setName = useCallback(
+    const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
           renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
@@ -437,7 +483,7 @@ export const DecisionServiceNode = React.memo(
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
 
     const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
-    const setName = useCallback(
+    const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
           renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
@@ -465,6 +511,15 @@ export const DecisionServiceNode = React.memo(
       };
     }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
 
+    const onTypeRefChange = useCallback<OnTypeRefChange>(
+      (newTypeRef) => {
+        dmnEditorStoreApi.setState((state) => {
+          (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
+        });
+      },
+      [dmnEditorStoreApi, index]
+    );
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -491,11 +546,7 @@ export const DecisionServiceNode = React.memo(
           onKeyDown={triggerEditingIfEnter}
         >
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
-          <DataTypeNodePanel
-            isVisible={!isTargeted && selected && !dragging}
-            variable={decisionService.variable}
-            shape={shape}
-          />
+
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && selected && !dragging}
             nodeTypes={outgoingStructure[NODE_TYPES.decisionService].nodes}
@@ -514,6 +565,12 @@ export const DecisionServiceNode = React.memo(
             <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
           )}
           {shape["@_isCollapsed"] && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
+          <DataTypeNodePanel
+            isVisible={!isTargeted && selected && !dragging}
+            variable={decisionService.variable}
+            shape={shape}
+            onChange={onTypeRefChange}
+          />
         </div>
       </>
     );
@@ -542,7 +599,7 @@ export const GroupNode = React.memo(
     const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
     const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
-    const setName = useCallback(
+    const setName = useCallback<OnEditableNodeLabelChange>(
       (newName: string) => {
         dmnEditorStoreApi.setState((state) => {
           renameGroupNode({ definitions: state.dmn.model.definitions, newName, index });

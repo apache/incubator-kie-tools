@@ -142,7 +142,7 @@ export const defaultStaticState = () => ({
     },
   },
   navigation: {
-    tab: DmnEditorTab.DATA_TYPES,
+    tab: DmnEditorTab.EDITOR,
   },
   diagram: {
     drdIndex: 0,

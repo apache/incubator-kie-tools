@@ -19,10 +19,10 @@ export function BkmProperties({ bkm, index }: { bkm: DMN15__tBusinessKnowledgeMo
           type={"text"}
           isDisabled={false}
           onChange={(newName) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable!["@_name"] =
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable!["@_name"] =
                 newName;
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel)["@_name"] = newName;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel)["@_name"] = newName;
             });
           }}
           value={bkm["@_name"]}
@@ -32,11 +32,12 @@ export function BkmProperties({ bkm, index }: { bkm: DMN15__tBusinessKnowledgeMo
 
       <FormGroup label="Data type">
         <TypeRefSelector
-          name={bkm.variable?.["@_typeRef"]}
+          typeRef={bkm.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable!["@_typeRef"] =
-                newTypeRef;
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable![
+                "@_typeRef"
+              ] = newTypeRef;
             });
           }}
         />
@@ -49,8 +50,8 @@ export function BkmProperties({ bkm, index }: { bkm: DMN15__tBusinessKnowledgeMo
           isDisabled={false}
           value={bkm.description}
           onChange={(newDescription) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).description =
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).description =
                 newDescription;
             });
           }}

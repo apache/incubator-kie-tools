@@ -31,7 +31,7 @@ export function DecisionProperties({ decision, index }: { decision: DMN15__tDeci
 
       <FormGroup label="Data type">
         <TypeRefSelector
-          name={decision.variable?.["@_typeRef"]}
+          typeRef={decision.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
             setState((dmn) => {
               (dmn.dmn.model.definitions.drgElement![index] as DMN15__tDecision).variable!["@_typeRef"] = newTypeRef;

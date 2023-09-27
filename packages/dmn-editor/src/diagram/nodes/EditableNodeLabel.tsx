@@ -9,6 +9,8 @@ import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
+export type OnEditableNodeLabelChange = (value: string | undefined) => void;
+
 export function EditableNodeLabel({
   namedElement,
   namedElementQName,
@@ -30,7 +32,7 @@ export function EditableNodeLabel({
   isEditing: boolean;
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  onChange: (value: string | undefined) => void;
+  onChange: OnEditableNodeLabelChange;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();

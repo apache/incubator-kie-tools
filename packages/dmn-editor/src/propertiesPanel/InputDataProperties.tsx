@@ -19,9 +19,9 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN15__tI
           type={"text"}
           isDisabled={false}
           onChange={(newName) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_name"] = newName;
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData)["@_name"] = newName;
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_name"] = newName;
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData)["@_name"] = newName;
             });
           }}
           value={inputData["@_name"]}
@@ -30,10 +30,10 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN15__tI
       </FormGroup>
       <FormGroup label="Data type">
         <TypeRefSelector
-          name={inputData.variable?.["@_typeRef"]}
+          typeRef={inputData.variable?.["@_typeRef"]}
           onChange={(newTypeRef) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_typeRef"] = newTypeRef;
             });
           }}
         />
@@ -45,8 +45,8 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN15__tI
           isDisabled={false}
           value={inputData.description}
           onChange={(newDescription) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tInputData).description = newDescription;
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}

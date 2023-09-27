@@ -10,21 +10,21 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DMN15__tContext,
-  DMN15__tDecision,
-  DMN15__tFunctionDefinition,
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SPEC } from "../Spec";
+import { AllExpressions } from "../dataTypes/DataTypeSpec";
 
 /** Converts a DMN JSON to an ExpressionDefinition. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
  *  created prior to the DMN Editor, needing to declare its own model. */
 export function dmnToBee(
   widthsById: Map<string, number[]>,
-  expressionHolder: DMN15__tDecision | DMN15__tFunctionDefinition | undefined
+  expressionHolder: { expression?: AllExpressions } | undefined,
+  typeRef?: string
 ): ExpressionDefinition {
   if (!expressionHolder?.expression) {
-    return getUndefinedExpressionDefinition();
+    return { ...getUndefinedExpressionDefinition(), ...(typeRef ? { dataType: typeRef as DmnBuiltInDataType } : {}) };
   }
 
   const expr = expressionHolder.expression;
@@ -102,7 +102,7 @@ export function dmnToBee(
     const { contextEntries, result } = (expr.contextEntry ?? []).reduce(
       (acc, e) => {
         if (!e.variable) {
-          acc.result = dmnToBee(widthsById, e);
+          acc.result = dmnToBee(widthsById, e, expr["@_typeRef"]);
         } else {
           acc.contextEntries.push({
             entryInfo: {
@@ -110,7 +110,11 @@ export function dmnToBee(
               name: e.variable?.["@_label"] ?? e.variable?.["@_name"] ?? e["@_label"]!,
               dataType: (e.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
             },
-            entryExpression: dmnToBee(widthsById, e),
+            entryExpression: dmnToBee(
+              widthsById,
+              e,
+              (e.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType
+            ),
           });
         }
 
@@ -156,7 +160,11 @@ export function dmnToBee(
           name: b.parameter["@_name"],
           dataType: (b.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         },
-        entryExpression: dmnToBee(widthsById, b),
+        entryExpression: dmnToBee(
+          widthsById,
+          b,
+          (b.parameter["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType
+        ),
       })),
     };
   } else if (expr.__$$element === "functionDefinition") {
@@ -237,7 +245,7 @@ export function dmnToBee(
       name: expr["@_label"],
       dataType: (expr["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
       logicType: ExpressionDefinitionLogicType.List as const,
-      items: (expr.expression ?? []).map((e) => dmnToBee(widthsById, { expression: e })),
+      items: (expr.expression ?? []).map((e) => dmnToBee(widthsById, { expression: e }, expr["@_typeRef"])),
     };
   } else {
     return getUndefinedExpressionDefinition();

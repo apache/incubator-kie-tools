@@ -257,7 +257,11 @@ export function DataTypePanel({
             <Title size={"md"} headingLevel="h4">
               Type
             </Title>
-            <TypeRefSelector isDisabled={isReadonly} name={dataType.itemDefinition.typeRef} onChange={changeTypeRef} />
+            <TypeRefSelector
+              isDisabled={isReadonly}
+              typeRef={dataType.itemDefinition.typeRef}
+              onChange={changeTypeRef}
+            />
             <br />
             <br />
             <Title size={"md"} headingLevel="h4">

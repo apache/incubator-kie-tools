@@ -8,15 +8,18 @@ import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
 import { builtInFeelTypes } from "./BuiltInFeelTypes";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+
+export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
 
 export function TypeRefSelector(props: {
   isDisabled?: boolean;
-  name: string | undefined;
-  onChange: (newDataType: DmnBuiltInDataType) => void;
+  typeRef: string | undefined;
+  onChange: OnTypeRefChange;
+  menuAppendTo?: "parent";
 }) {
   const [isOpen, setOpen] = useState(false);
   const onToggleDataTypeSelect = useCallback((isOpen: boolean) => {
@@ -26,8 +29,8 @@ export function TypeRefSelector(props: {
   const { dataTypesByFeelName } = useDmnEditorDerivedStore();
 
   const selectedDt = useMemo(() => {
-    return props.name ? dataTypesByFeelName.get(props.name) : undefined;
-  }, [dataTypesByFeelName, props.name]);
+    return props.typeRef ? dataTypesByFeelName.get(props.typeRef) : undefined;
+  }, [dataTypesByFeelName, props.typeRef]);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -52,7 +55,11 @@ export function TypeRefSelector(props: {
   }, [dataTypesByFeelName, thisDmnsNamespace]);
 
   return (
-    <InputGroup>
+    <Flex
+      justifyContent={{ default: "justifyContentFlexStart" }}
+      flexWrap={{ default: "nowrap" }}
+      spaceItems={{ default: "spaceItemsNone" }}
+    >
       {selectedDt?.itemDefinition && (
         <Tooltip content="Jump to definition">
           <Button
@@ -69,24 +76,21 @@ export function TypeRefSelector(props: {
         </Tooltip>
       )}
       <Select
+        style={{ flexGrow: 1 }}
         isDisabled={props.isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
         onToggle={onToggleDataTypeSelect}
-        onClear={() => {
-          setOpen(false);
-          props.onChange(DmnBuiltInDataType.Undefined);
-        }}
         onSelect={(e, v) => {
           setOpen(false);
           props.onChange(v as DmnBuiltInDataType);
         }}
-        selections={props.name}
+        selections={props.typeRef}
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}
         isGrouped={true}
-        menuAppendTo={document.body}
+        menuAppendTo={props.menuAppendTo}
 
         // isCreatable={true} // FIXME: Tiago --> Maybe this is a good idea?
       >
@@ -127,6 +131,6 @@ export function TypeRefSelector(props: {
           </SelectGroup>
         )) || <React.Fragment key={"empty-external"}></React.Fragment>}
       </Select>
-    </InputGroup>
+    </Flex>
   );
 }

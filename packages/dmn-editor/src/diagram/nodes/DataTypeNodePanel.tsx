@@ -3,43 +3,41 @@ import {
   DMN15__tInformationItem,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { TypeRefLabel } from "../../dataTypes/TypeRefLabel";
+import { useDmnEditorStore } from "../../store/Store";
+import { OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+
+function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
+  e.stopPropagation();
+}
 
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
   variable: DMN15__tInformationItem | undefined;
   shape: DMNDI15__DMNShape | undefined;
+  onChange: OnTypeRefChange;
 }) {
   const diagram = useDmnEditorStore((s) => s.diagram);
-  const { dataTypesByFeelName } = useDmnEditorDerivedStore();
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const dataType = dataTypesByFeelName.get(props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined);
 
   return (
     <>
       {props.isVisible && diagram.overlays.enableDataTypesToolbarOnNodes && (
-        <div className={"kie-dmn-editor--data-type-node-panel"}>
-          <Label
-            className={"kie-dmn-editor--data-type-node-panel-label"}
-            onClick={() => {
-              dmnEditorStoreApi.setState((state) => {
-                if (dataType) {
-                  state.navigation.tab = DmnEditorTab.DATA_TYPES;
-                  state.dataTypesEditor.activeItemDefinitionId = dataType.itemDefinition["@_id"];
-                }
-              });
-            }}
-          >
-            <TypeRefLabel
-              relativeToNamespace={dataType?.namespace}
+        <div
+          className={"kie-dmn-editor--data-type-node-panel"}
+          // Do not allow any events to go to the node itself...
+          onMouseDownCapture={stopPropagation}
+          onKeyDown={stopPropagation}
+          onClick={stopPropagation}
+          onDoubleClick={stopPropagation}
+          onMouseLeave={stopPropagation}
+        >
+          <div>
+            <TypeRefSelector
               typeRef={props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined}
-              isCollection={dataType?.itemDefinition["@_isCollection"]}
+              onChange={props.onChange}
+              menuAppendTo={"parent"}
             />
-          </Label>
+          </div>
         </div>
       )}
     </>
