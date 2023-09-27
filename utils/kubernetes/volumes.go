@@ -92,3 +92,42 @@ func VolumeMountAdd(volumeMount []corev1.VolumeMount, name, mountPath string) []
 	}
 	return append(volumeMount, corev1.VolumeMount{Name: name, MountPath: mountPath})
 }
+
+// AddOrReplaceVolume adds or removes the given volumes to the PodSpec.
+// If there's already a volume with the same name, it's replaced.
+func AddOrReplaceVolume(podSpec *corev1.PodSpec, volumes ...corev1.Volume) {
+	// indexing the volumes to add to the podSpec we avoid O(n) operation when searching for a volume to replace
+	volumesToAdd := make(map[string]corev1.Volume, len(volumes))
+	for _, volume := range volumes {
+		volumesToAdd[volume.Name] = volume
+	}
+	// replace
+	for i := range podSpec.Volumes {
+		if vol, ok := volumesToAdd[podSpec.Volumes[i].Name]; ok {
+			podSpec.Volumes[i] = vol
+			delete(volumesToAdd, vol.Name)
+		}
+	}
+	// append what's left
+	for _, volume := range volumesToAdd {
+		podSpec.Volumes = append(podSpec.Volumes, volume)
+	}
+}
+
+// AddOrReplaceVolumeMount same as AddOrReplaceVolume, but with VolumeMounts in a specific container
+func AddOrReplaceVolumeMount(containerIndex int, podSpec *corev1.PodSpec, mounts ...corev1.VolumeMount) {
+	mountsToAdd := make(map[string]corev1.VolumeMount, len(mounts))
+	for _, mount := range mounts {
+		mountsToAdd[mount.Name] = mount
+	}
+	for i := range podSpec.Containers[containerIndex].VolumeMounts {
+		if mount, ok := mountsToAdd[podSpec.Containers[containerIndex].VolumeMounts[i].Name]; ok {
+			podSpec.Containers[containerIndex].VolumeMounts[i] = mount
+			delete(mountsToAdd, mount.Name)
+		}
+	}
+	// append what's left
+	for _, mount := range mountsToAdd {
+		podSpec.Containers[containerIndex].VolumeMounts = append(podSpec.Containers[containerIndex].VolumeMounts, mount)
+	}
+}

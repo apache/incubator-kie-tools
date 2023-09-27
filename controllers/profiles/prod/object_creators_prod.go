@@ -22,6 +22,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
+	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
@@ -29,14 +31,20 @@ import (
 
 const (
 	imageOpenShiftTriggers            = "image.openshift.io/triggers"
-	imageOpenShiftTriggersValueFormat = "[{\"from\":{\"kind\":\"ImageStreamTag\",\"name\":\"%s\"},\"fieldPath\":\"spec.template.spec.containers[?(@.name==\\\"" + common.DefaultContainerName + "\\\")].image\"}]"
+	imageOpenShiftTriggersValueFormat = "[{\"from\":{\"kind\":\"ImageStreamTag\",\"name\":\"%s\"},\"fieldPath\":\"spec.template.spec.containers[?(@.name==\\\"" + v1alpha08.DefaultContainerName + "\\\")].image\"}]"
 )
 
 // addOpenShiftImageTriggerDeploymentMutateVisitor adds the ImageStream trigger annotation to the Deployment
 //
 // See: https://docs.openshift.com/container-platform/4.13/openshift_images/triggering-updates-on-imagestream-changes.html
-func addOpenShiftImageTriggerDeploymentMutateVisitor(image string) common.MutateVisitor {
+func addOpenShiftImageTriggerDeploymentMutateVisitor(workflow *v1alpha08.SonataFlow, image string) common.MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
+		if workflow.HasFlowContainerImage() {
+			// noop since we don't need to build anything
+			return func() error {
+				return nil
+			}
+		}
 		return func() error {
 			annotations := make(map[string]string, len(object.(*appsv1.Deployment).Annotations)+1)
 			for k, v := range object.(*appsv1.Deployment).Annotations {
@@ -54,17 +62,19 @@ func mountProdConfigMapsMutateVisitor(propsCM *v1.ConfigMap) common.MutateVisito
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
-			volumes := make([]v1.Volume, 0)
-			volumeMounts := make([]v1.VolumeMount, 0)
+			_, idx := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
 
-			volumes = append(volumes, kubeutil.VolumeConfigMap(common.ConfigMapWorkflowPropsVolumeName, propsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}))
+			if len(deployment.Spec.Template.Spec.Volumes) == 0 {
+				deployment.Spec.Template.Spec.Volumes = make([]v1.Volume, 0, 1)
+			}
+			if len(deployment.Spec.Template.Spec.Containers[idx].VolumeMounts) == 0 {
+				deployment.Spec.Template.Spec.Containers[idx].VolumeMounts = make([]v1.VolumeMount, 0, 1)
+			}
 
-			volumeMounts = append(volumeMounts, kubeutil.VolumeMount(common.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
-
-			deployment.Spec.Template.Spec.Volumes = make([]v1.Volume, 0)
-			deployment.Spec.Template.Spec.Volumes = volumes
-			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = make([]v1.VolumeMount, 0)
-			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = volumeMounts
+			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec,
+				kubeutil.VolumeConfigMap(common.ConfigMapWorkflowPropsVolumeName, propsCM.Name, v1.KeyToPath{Key: workflowproj.ApplicationPropertiesFileName, Path: workflowproj.ApplicationPropertiesFileName}))
+			kubeutil.AddOrReplaceVolumeMount(idx, &deployment.Spec.Template.Spec,
+				kubeutil.VolumeMount(common.ConfigMapWorkflowPropsVolumeName, true, quarkusProdConfigMountPath))
 
 			return nil
 		}

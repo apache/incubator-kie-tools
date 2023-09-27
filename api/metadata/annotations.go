@@ -36,6 +36,10 @@ const (
 
 type ProfileType string
 
+func (p ProfileType) String() string {
+	return string(p)
+}
+
 const (
 	DevProfile  ProfileType = "dev"
 	ProdProfile ProfileType = "prod"

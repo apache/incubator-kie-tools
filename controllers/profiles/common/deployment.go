@@ -75,7 +75,7 @@ func (d deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *o
 
 	// Deployment hasn't minimum replicas, let's find out why to give users a meaningful information
 	if kubeutil.IsDeploymentMinimumReplicasUnavailable(deployment) {
-		message, err := kubeutil.DeploymentTroubleshooter(d.c, deployment, DefaultContainerName).ReasonMessage()
+		message, err := kubeutil.DeploymentTroubleshooter(d.c, deployment, operatorapi.DefaultContainerName).ReasonMessage()
 		if err != nil {
 			return ctrl.Result{RequeueAfter: RequeueAfterFailure}, err
 		}

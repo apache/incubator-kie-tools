@@ -19,9 +19,13 @@ import (
 
 	"github.com/magiconair/properties"
 	"github.com/stretchr/testify/assert"
-	v1 "k8s.io/api/core/v1"
+	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+
+	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
 	"github.com/kiegroup/kogito-serverless-operator/test"
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 )
@@ -32,7 +36,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 	cm, _ := WorkflowPropsConfigMapCreator(workflow)
 	cm.SetUID("1")
 	cm.SetResourceVersion("1")
-	reflectCm := cm.(*v1.ConfigMap)
+	reflectCm := cm.(*corev1.ConfigMap)
 
 	visitor := WorkflowPropertiesMutateVisitor(workflow, DefaultApplicationProperties)
 	mutateFn := visitor(cm)
@@ -57,7 +61,7 @@ func Test_ensureWorkflowPropertiesConfigMapMutator(t *testing.T) {
 
 func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
-	existingCM := &v1.ConfigMap{
+	existingCM := &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      workflow.Name,
 			Namespace: workflow.Namespace,
@@ -72,4 +76,89 @@ func Test_ensureWorkflowPropertiesConfigMapMutator_DollarReplacement(t *testing.
 	err := mutateVisitorFn(existingCM)()
 	assert.NoError(t, err)
 	assert.Contains(t, existingCM.Data[workflowproj.ApplicationPropertiesFileName], "${kubernetes:services.v1/event-listener}")
+}
+
+func TestMergePodSpec(t *testing.T) {
+	workflow := test.GetBaseSonataFlow(t.Name())
+	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
+		Container: v1alpha08.FlowContainer{
+			// this one we can override
+			Image: "quay.io/example/my-workflow:1.0.0",
+			Ports: []corev1.ContainerPort{
+				// let's override a immutable attribute
+				{Name: DefaultHTTPWorkflowPortName, ContainerPort: 9090},
+			},
+			Env: []corev1.EnvVar{
+				// We should be able to override this too
+				{Name: "ENV1", Value: "VALUE_CUSTOM"},
+			},
+			VolumeMounts: []corev1.VolumeMount{
+				{Name: "myvolume", ReadOnly: true, MountPath: "/tmp/any/path"},
+			},
+		},
+		PodSpec: v1alpha08.FlowPodSpec{
+			ServiceAccountName: "superuser",
+			Containers: []corev1.Container{
+				{
+					Name: "sidecar",
+				},
+			},
+			Volumes: []corev1.Volume{
+				{
+					Name: "myvolume",
+					VolumeSource: corev1.VolumeSource{
+						ConfigMap: &corev1.ConfigMapVolumeSource{
+							LocalObjectReference: corev1.LocalObjectReference{Name: "customproperties"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	object, err := DeploymentCreator(workflow)
+	assert.NoError(t, err)
+
+	deployment := object.(*appsv1.Deployment)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers, 2)
+	assert.Equal(t, "superuser", deployment.Spec.Template.Spec.ServiceAccountName)
+	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
+	flowContainer, _ := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
+	assert.Equal(t, "quay.io/example/my-workflow:1.0.0", flowContainer.Image)
+	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
+	assert.Equal(t, "VALUE_CUSTOM", flowContainer.Env[0].Value)
+	assert.Len(t, flowContainer.VolumeMounts, 1)
+}
+
+func TestMergePodSpec_OverrideContainers(t *testing.T) {
+	workflow := test.GetBaseSonataFlow(t.Name())
+	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
+		PodSpec: v1alpha08.FlowPodSpec{
+			// Try to override the workflow container via the podspec
+			Containers: []corev1.Container{
+				{
+					Name:  v1alpha08.DefaultContainerName,
+					Image: "quay.io/example/my-workflow:1.0.0",
+					Ports: []corev1.ContainerPort{
+						{Name: DefaultHTTPWorkflowPortName, ContainerPort: 9090},
+					},
+					Env: []corev1.EnvVar{
+						{Name: "ENV1", Value: "VALUE_CUSTOM"},
+					},
+				},
+			},
+		},
+	}
+
+	object, err := DeploymentCreator(workflow)
+	assert.NoError(t, err)
+
+	deployment := object.(*appsv1.Deployment)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
+	flowContainer, _ := kubeutil.GetContainerByName(v1alpha08.DefaultContainerName, &deployment.Spec.Template.Spec)
+	assert.NotEqual(t, "quay.io/example/my-workflow:1.0.0", flowContainer.Image)
+	assert.Equal(t, int32(8080), flowContainer.Ports[0].ContainerPort)
+	assert.Empty(t, flowContainer.Env)
 }

@@ -40,6 +40,7 @@ const (
 	sonataFlowOrderProcessingFolder           = "order-processing"
 	sonataFlowSampleYamlCR                    = "sonataflow.org_v1alpha08_sonataflow.yaml"
 	SonataFlowGreetingsWithDataInputSchemaCR  = "sonataflow.org_v1alpha08_sonataflow_greetings_datainput.yaml"
+	SonataFlowSimpleOpsYamlCR                 = "sonataflow.org_v1alpha08_sonataflow-simpleops.yaml"
 	SonataFlowGreetingsDataInputSchemaConfig  = "v1_configmap_greetings_datainput.yaml"
 	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
 	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
@@ -160,6 +161,11 @@ func GetBaseSonataFlowWithDevProfile(namespace string) *operatorapi.SonataFlow {
 func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow {
 	workflow := GetBaseSonataFlow(namespace)
 	workflow.Annotations["sonataflow.org/profile"] = "prod"
+	return workflow
+}
+
+func GetBaseSonataFlowWithProdOpsProfile(namespace string) *operatorapi.SonataFlow {
+	workflow := getSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
 	return workflow
 }
 

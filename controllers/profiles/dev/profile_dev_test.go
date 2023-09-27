@@ -16,6 +16,7 @@ package dev
 
 import (
 	"context"
+	"sort"
 	"testing"
 
 	corev1 "k8s.io/api/core/v1"
@@ -122,6 +123,7 @@ func Test_newDevProfile(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
+	sortVolumeMounts(&deployment.Spec.Template.Spec.Containers[0])
 	assert.Equal(t, workflowdef.GetDefaultWorkflowDevModeImageTag(), deployment.Spec.Template.Spec.Containers[0].Image)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].LivenessProbe)
 	assert.NotNil(t, deployment.Spec.Template.Spec.Containers[0].ReadinessProbe)
@@ -292,11 +294,13 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	deployment := test.MustGetDeployment(t, client, workflow)
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
+	sortVolumeMounts(&deployment.Spec.Template.Spec.Containers[0])
 
 	wd := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
 	assert.Equal(t, configMapResourcesVolumeName, wd.Name)
 	assert.Equal(t, quarkusDevConfigMountPath, wd.MountPath)
+
 	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamel.Name)
 	assert.Equal(t, extCamel.MountPath, quarkusDevConfigMountPath+"/routes")
 
@@ -317,6 +321,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	deployment = test.MustGetDeployment(t, client, workflow)
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
+	sortVolumeMounts(&deployment.Spec.Template.Spec.Containers[0])
 
 	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
 	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamelRouteOne.Name)
@@ -357,9 +362,16 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	deployment = test.MustGetDeployment(t, client, workflow)
 	assert.Equal(t, 1, len(deployment.Spec.Template.Spec.Volumes))
 	assert.Equal(t, 1, len(deployment.Spec.Template.Spec.Containers[0].VolumeMounts))
+	sortVolumeMounts(&deployment.Spec.Template.Spec.Containers[0])
 	wd = deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	assert.Equal(t, wd.Name, configMapResourcesVolumeName)
 	assert.Equal(t, wd.MountPath, quarkusDevConfigMountPath)
+}
+
+func sortVolumeMounts(container *v1.Container) {
+	sort.SliceStable(container.VolumeMounts, func(i, j int) bool {
+		return container.VolumeMounts[i].Name < container.VolumeMounts[j].Name
+	})
 }
 
 func createConfigMapBase(namespace string, name string, cmData map[string]string) clientruntime.Object {

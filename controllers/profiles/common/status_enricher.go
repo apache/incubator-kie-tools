@@ -28,8 +28,6 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/log"
 )
 
-// TODO: review the need for this
-
 // NewStatusEnricher ...
 func NewStatusEnricher(client client.Client, enricher StatusEnricherFn) *StatusEnricher {
 	return &StatusEnricher{

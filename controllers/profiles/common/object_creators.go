@@ -15,6 +15,7 @@
 package common
 
 import (
+	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -32,10 +33,9 @@ import (
 type ObjectCreator func(workflow *operatorapi.SonataFlow) (client.Object, error)
 
 const (
-	DefaultHTTPWorkflowPortInt = 8080
-	DefaultContainerName       = "workflow"
-
-	defaultHTTPServicePort = 80
+	DefaultHTTPWorkflowPortInt  = 8080
+	DefaultHTTPWorkflowPortName = "http"
+	defaultHTTPServicePort      = 80
 
 	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
 
@@ -70,7 +70,7 @@ var DefaultApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflowPor
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
 func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
 	lbl := workflowproj.GetDefaultLabels(workflow)
-	size := int32(1)
+
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      workflow.Name,
@@ -78,7 +78,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 			Labels:    lbl,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: &size,
+			Replicas: workflow.Spec.PodTemplate.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: lbl,
 			},
@@ -86,53 +86,88 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: lbl,
 				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{{
-						Name: DefaultContainerName,
-						Ports: []corev1.ContainerPort{{
-							ContainerPort: DefaultHTTPWorkflowPortInt,
-							Name:          "http",
-							Protocol:      corev1.ProtocolTCP,
-						}},
-						TerminationMessagePolicy: corev1.TerminationMessageFallbackToLogsOnError,
-						LivenessProbe: &corev1.Probe{
-							ProbeHandler: corev1.ProbeHandler{
-								HTTPGet: &corev1.HTTPGetAction{
-									Path: quarkusHealthPathLive,
-									Port: defaultHTTPWorkflowPortIntStr,
-								},
-							},
-							TimeoutSeconds: healthTimeoutSeconds,
-						},
-						ReadinessProbe: &corev1.Probe{
-							ProbeHandler: corev1.ProbeHandler{
-								HTTPGet: &corev1.HTTPGetAction{
-									Path: quarkusHealthPathReady,
-									Port: defaultHTTPWorkflowPortIntStr,
-								},
-							},
-							TimeoutSeconds: healthTimeoutSeconds,
-						},
-						StartupProbe: &corev1.Probe{
-							ProbeHandler: corev1.ProbeHandler{
-								HTTPGet: &corev1.HTTPGetAction{
-									Path: quarkusHealthPathStarted,
-									Port: defaultHTTPWorkflowPortIntStr,
-								},
-							},
-							InitialDelaySeconds: healthStartedInitialDelaySeconds,
-							TimeoutSeconds:      healthTimeoutSeconds,
-							FailureThreshold:    healthStartedFailureThreshold,
-							PeriodSeconds:       healthStartedPeriodSeconds,
-						},
-						ImagePullPolicy: corev1.PullAlways,
-						SecurityContext: kubeutil.SecurityDefaults(),
-					}},
-				},
+				Spec: corev1.PodSpec{},
 			},
 		},
 	}
+
+	if err := mergo.Merge(&deployment.Spec.Template.Spec, workflow.Spec.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride); err != nil {
+		return nil, err
+	}
+
+	flowContainer, err := defaultContainer(workflow)
+	if err != nil {
+		return nil, err
+	}
+	kubeutil.AddOrReplaceContainer(operatorapi.DefaultContainerName, *flowContainer, &deployment.Spec.Template.Spec)
+
 	return deployment, nil
+}
+
+func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, error) {
+	defaultContainerPort := corev1.ContainerPort{
+		ContainerPort: DefaultHTTPWorkflowPortInt,
+		Name:          DefaultHTTPWorkflowPortName,
+		Protocol:      corev1.ProtocolTCP,
+	}
+	defaultFlowContainer := corev1.Container{
+		Name:                     operatorapi.DefaultContainerName,
+		Ports:                    []corev1.ContainerPort{defaultContainerPort},
+		TerminationMessagePolicy: corev1.TerminationMessageFallbackToLogsOnError,
+		LivenessProbe: &corev1.Probe{
+			ProbeHandler: corev1.ProbeHandler{
+				HTTPGet: &corev1.HTTPGetAction{
+					Path: quarkusHealthPathLive,
+					Port: defaultHTTPWorkflowPortIntStr,
+				},
+			},
+			TimeoutSeconds: healthTimeoutSeconds,
+		},
+		ReadinessProbe: &corev1.Probe{
+			ProbeHandler: corev1.ProbeHandler{
+				HTTPGet: &corev1.HTTPGetAction{
+					Path: quarkusHealthPathReady,
+					Port: defaultHTTPWorkflowPortIntStr,
+				},
+			},
+			TimeoutSeconds: healthTimeoutSeconds,
+		},
+		StartupProbe: &corev1.Probe{
+			ProbeHandler: corev1.ProbeHandler{
+				HTTPGet: &corev1.HTTPGetAction{
+					Path: quarkusHealthPathStarted,
+					Port: defaultHTTPWorkflowPortIntStr,
+				},
+			},
+			InitialDelaySeconds: healthStartedInitialDelaySeconds,
+			TimeoutSeconds:      healthTimeoutSeconds,
+			FailureThreshold:    healthStartedFailureThreshold,
+			PeriodSeconds:       healthStartedPeriodSeconds,
+		},
+		ImagePullPolicy: corev1.PullAlways,
+		SecurityContext: kubeutil.SecurityDefaults(),
+	}
+	// Merge with flowContainer
+	if err := mergo.Merge(&defaultFlowContainer, workflow.Spec.PodTemplate.Container.ToContainer(), mergo.WithOverride); err != nil {
+		return nil, err
+	}
+	// immutable
+	defaultFlowContainer.Name = operatorapi.DefaultContainerName
+	portIdx := -1
+	for i := range defaultFlowContainer.Ports {
+		if defaultFlowContainer.Ports[i].Name == DefaultHTTPWorkflowPortName ||
+			defaultFlowContainer.Ports[i].ContainerPort == DefaultHTTPWorkflowPortInt {
+			portIdx = i
+			break
+		}
+	}
+	if portIdx < 0 {
+		defaultFlowContainer.Ports = append(defaultFlowContainer.Ports, defaultContainerPort)
+	} else {
+		defaultFlowContainer.Ports[portIdx] = defaultContainerPort
+	}
+
+	return &defaultFlowContainer, nil
 }
 
 // ServiceCreator is an objectCreator for a basic Service aiming a vanilla Kubernetes Deployment.

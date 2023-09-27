@@ -79,15 +79,15 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	}
 
 	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
-	pl, errPl := platform.GetActivePlatform(ctx, e.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(ctx, e.C, workflow.Namespace)
 	// check if the Platform available
-	if errPl == nil && len(pl.Spec.DevMode.BaseImage) > 0 {
+	if err == nil && len(pl.Spec.DevMode.BaseImage) > 0 {
 		devBaseContainerImage = pl.Spec.DevMode.BaseImage
 	}
 
 	deployment, _, err := e.ensurers.deployment.Ensure(ctx, workflow,
 		deploymentMutateVisitor(workflow),
-		common.ImageDeploymentMutateVisitor(devBaseContainerImage),
+		common.ImageDeploymentMutateVisitor(workflow, devBaseContainerImage),
 		mountDevConfigMapsMutateVisitor(flowDefCM.(*corev1.ConfigMap), propsCM.(*corev1.ConfigMap), externalCM))
 	if err != nil {
 		return ctrl.Result{RequeueAfter: common.RequeueAfterFailure}, objs, err

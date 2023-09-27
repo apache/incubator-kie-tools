@@ -17,13 +17,10 @@ package prod
 import (
 	"context"
 
-	appsv1 "k8s.io/api/apps/v1"
-	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
@@ -31,7 +28,6 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
 	"github.com/kiegroup/kogito-serverless-operator/log"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 )
 
@@ -121,18 +117,18 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 	return ctrl.Result{RequeueAfter: requeueWhileWaitForBuild}, nil, nil
 }
 
-type deployWorkflowState struct {
+type deployWithBuildWorkflowState struct {
 	*common.StateSupport
 	ensurers           *objectEnsurers
 	deploymentVisitors []common.MutateVisitor
 }
 
-func (h *deployWorkflowState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
+func (h *deployWithBuildWorkflowState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 	// If we have a built ready, we should deploy the object
 	return workflow.Status.GetCondition(api.BuiltConditionType).IsTrue()
 }
 
-func (h *deployWorkflowState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
+func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
 	// Guard to avoid errors while getting a new builder manager.
 	// Maybe we can do typed errors in the buildManager and
 	// have something like sonataerr.IsPlatformNotFound(err) instead.
@@ -161,100 +157,11 @@ func (h *deployWorkflowState) Do(ctx context.Context, workflow *operatorapi.Sona
 	}
 
 	// didn't change, business as usual
-	return h.handleObjects(ctx, workflow, build.Status.ImageTag)
-}
-
-func (h *deployWorkflowState) handleObjects(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
-	propsCM, _, err := h.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow, common.DefaultApplicationProperties))
-	if err != nil {
-		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the properties config map")
-		_, err = h.PerformStatusUpdate(ctx, workflow)
-		return ctrl.Result{}, nil, err
-	}
-
-	// Check if this Deployment already exists
-	// TODO: we should NOT do this. The ensurers are there to do exactly this fetch. Review once we refactor this reconciliation algorithm. See https://issues.redhat.com/browse/KOGITO-8524
-	existingDeployment := &appsv1.Deployment{}
-	requeue := false
-	if err := h.C.Get(ctx, client.ObjectKeyFromObject(workflow), existingDeployment); err != nil {
-		if !errors.IsNotFound(err) {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to verify if deployment is available due to ", err)
-			_, err = h.PerformStatusUpdate(ctx, workflow)
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-		deployment, _, err :=
-			h.ensurers.deployment.Ensure(
-				ctx,
-				workflow,
-				h.getDeploymentMutateVisitors(workflow, image, propsCM.(*v1.ConfigMap))...,
-			)
-		if err != nil {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "Unable to perform the deploy due to ", err)
-			_, err = h.PerformStatusUpdate(ctx, workflow)
-			return reconcile.Result{}, nil, err
-		}
-		existingDeployment, _ = deployment.(*appsv1.Deployment)
-		requeue = true
-	}
-	// TODO: verify if deployment is ready. See https://issues.redhat.com/browse/KOGITO-8524
-
-	existingService := &v1.Service{}
-	if err := h.C.Get(ctx, client.ObjectKeyFromObject(workflow), existingService); err != nil {
-		if !errors.IsNotFound(err) {
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-		service, _, err := h.ensurers.service.Ensure(ctx, workflow, common.ServiceMutateVisitor(workflow))
-		if err != nil {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to make the service available due to ", err)
-			_, err = h.PerformStatusUpdate(ctx, workflow)
-			return reconcile.Result{}, nil, err
-		}
-		existingService, _ = service.(*v1.Service)
-		requeue = true
-	}
-	// TODO: verify if service is ready. See https://issues.redhat.com/browse/KOGITO-8524
-
-	objs := []client.Object{existingDeployment, existingService, propsCM}
-
-	if !requeue {
-		klog.V(log.I).InfoS("Skip reconcile: Deployment and service already exists",
-			"Deployment.Namespace", existingDeployment.Namespace, "Deployment.Name", existingDeployment.Name)
-		result, err := common.DeploymentHandler(h.C).SyncDeploymentStatus(ctx, workflow)
-		if err != nil {
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-
-		if _, err := h.PerformStatusUpdate(ctx, workflow); err != nil {
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-		return result, objs, nil
-	}
-
-	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
-	if _, err := h.PerformStatusUpdate(ctx, workflow); err != nil {
-		return reconcile.Result{Requeue: false}, nil, err
-	}
-	return reconcile.Result{RequeueAfter: common.RequeueAfterFollowDeployment}, objs, nil
-}
-
-// getDeploymentMutateVisitors gets the deployment mutate visitors based on the current plat
-func (h *deployWorkflowState) getDeploymentMutateVisitors(
-	workflow *operatorapi.SonataFlow,
-	image string,
-	configMap *v1.ConfigMap) []common.MutateVisitor {
-	if utils.IsOpenShift() {
-		return []common.MutateVisitor{common.DeploymentMutateVisitor(workflow),
-			mountProdConfigMapsMutateVisitor(configMap),
-			addOpenShiftImageTriggerDeploymentMutateVisitor(image),
-			common.ImageDeploymentMutateVisitor(image)}
-	}
-	return []common.MutateVisitor{common.DeploymentMutateVisitor(workflow),
-		common.ImageDeploymentMutateVisitor(image),
-		mountProdConfigMapsMutateVisitor(configMap)}
+	return newDeploymentHandler(h.StateSupport, h.ensurers).handleWithImage(ctx, workflow, build.Status.ImageTag)
 }
 
 // isWorkflowChanged marks the workflow status as unknown to require a new build reconciliation
-func (h *deployWorkflowState) isWorkflowChanged(workflow *operatorapi.SonataFlow) bool {
+func (h *deployWithBuildWorkflowState) isWorkflowChanged(workflow *operatorapi.SonataFlow) bool {
 	generation := kubeutil.GetLastGeneration(workflow.Namespace, workflow.Name, h.C, context.TODO())
 	if generation > workflow.Status.ObservedGeneration {
 		return true

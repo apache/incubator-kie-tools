@@ -26,11 +26,20 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 )
 
-// ImageDeploymentMutateVisitor creates a visitor that mutates a vanilla Kubernetes Deployment to apply the given image in the first container
-func ImageDeploymentMutateVisitor(image string) MutateVisitor {
+// ImageDeploymentMutateVisitor creates a visitor that mutates a vanilla Kubernetes Deployment to apply the given image in the DefaultContainerName container
+// Only overrides the image if .spec.podTemplate.container.Image is empty.
+func ImageDeploymentMutateVisitor(workflow *operatorapi.SonataFlow, image string) MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
+		// noop since we already have an image in the flow container defined by the user.
+		if workflow.HasFlowContainerImage() {
+			return func() error {
+				return nil
+			}
+		}
 		return func() error {
-			object.(*appsv1.Deployment).Spec.Template.Spec.Containers[0].Image = image
+			deployment := object.(*appsv1.Deployment)
+			_, idx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
+			deployment.Spec.Template.Spec.Containers[idx].Image = image
 			return nil
 		}
 	}
@@ -59,17 +68,7 @@ func EnsureDeployment(original *appsv1.Deployment, object *appsv1.Deployment) {
 	object.Spec.Selector = original.Spec.Selector
 	object.Labels = original.GetLabels()
 
-	workflowContainer := kubeutil.GetContainerByName(DefaultContainerName, object)
-	if workflowContainer == nil {
-		object.Spec.Template.Spec.Containers = make([]corev1.Container, 0)
-		object.Spec.Template.Spec.Containers = original.Spec.Template.Spec.Containers
-	} else {
-		originalContainer := original.Spec.Template.Spec.Containers[0]
-		workflowContainer.SecurityContext = originalContainer.SecurityContext
-		workflowContainer.Ports = originalContainer.Ports
-		object.Spec.Template.Spec.Containers = make([]corev1.Container, 0)
-		object.Spec.Template.Spec.Containers = append(object.Spec.Template.Spec.Containers, *workflowContainer)
-	}
+	object.Spec.Template.Spec = original.Spec.Template.Spec
 }
 
 func ServiceMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {

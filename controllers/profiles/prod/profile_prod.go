@@ -55,6 +55,8 @@ func newObjectEnsurers(support *common.StateSupport) *objectEnsurers {
 	}
 }
 
+// NewProfileReconciler the default profile builder which includes a build state to run an internal build process
+// to have an immutable workflow image deployed
 func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 	support := &common.StateSupport{
 		C: client,
@@ -63,7 +65,25 @@ func NewProfileReconciler(client client.Client) profiles.ProfileReconciler {
 	stateMachine := common.NewReconciliationStateMachine(
 		&newBuilderState{StateSupport: support},
 		&followBuildStatusState{StateSupport: support},
-		&deployWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
+		&deployWithBuildWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
+	)
+	reconciler := &prodProfile{
+		BaseReconciler: common.NewBaseProfileReconciler(support, stateMachine),
+	}
+
+	return reconciler
+}
+
+// NewProfileForOpsReconciler creates an alternative prod profile that won't require to build the workflow image in order to deploy
+// the workflow application. It assumes that the image has been built somewhere else.
+func NewProfileForOpsReconciler(client client.Client) profiles.ProfileReconciler {
+	support := &common.StateSupport{
+		C: client,
+	}
+	// the reconciliation state machine
+	stateMachine := common.NewReconciliationStateMachine(
+		&ensureBuildSkipped{StateSupport: support},
+		&followDeployWorkflowState{StateSupport: support, ensurers: newObjectEnsurers(support)},
 	)
 	reconciler := &prodProfile{
 		BaseReconciler: common.NewBaseProfileReconciler(support, stateMachine),

@@ -26,6 +26,8 @@ import (
 
 const (
 	defaultProfile = metadata.ProdProfile
+	// internal profile
+	opsProfile metadata.ProfileType = "prod_for_ops"
 )
 
 type reconcilerBuilder func(client client.Client) profiles.ProfileReconciler
@@ -33,12 +35,16 @@ type reconcilerBuilder func(client client.Client) profiles.ProfileReconciler
 var profileBuilders = map[metadata.ProfileType]reconcilerBuilder{
 	metadata.ProdProfile: prod.NewProfileReconciler,
 	metadata.DevProfile:  dev.NewProfileReconciler,
+	opsProfile:           prod.NewProfileForOpsReconciler,
 }
 
 func profileBuilder(workflow *operatorapi.SonataFlow) reconcilerBuilder {
 	profile := workflow.Annotations[metadata.Profile]
 	if len(profile) == 0 {
-		return profileBuilders[defaultProfile]
+		profile = defaultProfile.String()
+	}
+	if profile == metadata.ProdProfile.String() && workflow.HasFlowContainerImage() {
+		return profileBuilders[opsProfile]
 	}
 	if _, ok := profileBuilders[metadata.ProfileType(profile)]; !ok {
 		return profileBuilders[defaultProfile]

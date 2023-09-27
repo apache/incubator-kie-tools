@@ -98,14 +98,25 @@ func MarkDeploymentToRollout(deployment *appsv1.Deployment) error {
 
 // GetContainerByName returns a pointer to the Container within the given Deployment.
 // If none found, returns nil.
-func GetContainerByName(name string, deployment *appsv1.Deployment) *v1.Container {
-	if deployment == nil {
-		return nil
+// It also returns the position where the container was found, -1 if none
+func GetContainerByName(name string, podSpec *v1.PodSpec) (*v1.Container, int) {
+	if podSpec == nil {
+		return nil, -1
 	}
-	for _, container := range deployment.Spec.Template.Spec.Containers {
+	for i, container := range podSpec.Containers {
 		if container.Name == name {
-			return &container
+			return &container, i
 		}
 	}
-	return nil
+	return nil, -1
+}
+
+// AddOrReplaceContainer replace the existing container or add if it doesn't exist in the .spec.containers attribute
+func AddOrReplaceContainer(containerName string, container v1.Container, podSpec *v1.PodSpec) {
+	_, idx := GetContainerByName(containerName, podSpec)
+	if idx < 0 {
+		podSpec.Containers = append(podSpec.Containers, container)
+	} else {
+		podSpec.Containers[idx] = container
+	}
 }

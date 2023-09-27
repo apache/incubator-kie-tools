@@ -35,6 +35,7 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1
+	github.com/imdario/mergo v0.3.13
 	k8s.io/klog/v2 v2.100.1
 )
 
@@ -63,7 +64,6 @@ require (
 	github.com/google/pprof v0.0.0-20210720184732-4bb14d4b1be1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
-	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect

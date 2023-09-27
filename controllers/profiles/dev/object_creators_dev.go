@@ -56,9 +56,16 @@ func deploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 		return nil, err
 	}
 	deployment := obj.(*appsv1.Deployment)
-	deployment.Spec.Template.Spec.Containers[0].StartupProbe.FailureThreshold = healthFailureThresholdDevMode
-	deployment.Spec.Template.Spec.Containers[0].LivenessProbe.FailureThreshold = healthFailureThresholdDevMode
-	deployment.Spec.Template.Spec.Containers[0].ReadinessProbe.FailureThreshold = healthFailureThresholdDevMode
+	_, idx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
+	if workflow.Spec.PodTemplate.Container.StartupProbe == nil {
+		deployment.Spec.Template.Spec.Containers[idx].StartupProbe.FailureThreshold = healthFailureThresholdDevMode
+	}
+	if workflow.Spec.PodTemplate.Container.LivenessProbe == nil {
+		deployment.Spec.Template.Spec.Containers[idx].LivenessProbe.FailureThreshold = healthFailureThresholdDevMode
+	}
+	if workflow.Spec.PodTemplate.Container.ReadinessProbe == nil {
+		deployment.Spec.Template.Spec.Containers[idx].ReadinessProbe.FailureThreshold = healthFailureThresholdDevMode
+	}
 	return deployment, nil
 }
 
@@ -116,7 +123,6 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workf
 		return func() error {
 			deployment := object.(*appsv1.Deployment)
 
-			volumes := make([]corev1.Volume, 0)
 			volumeMounts := []corev1.VolumeMount{
 				kubeutil.VolumeMount(configMapResourcesVolumeName, true, quarkusDevConfigMountPath),
 			}
@@ -142,13 +148,17 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workf
 				resourceVolumes = kubeutil.VolumeAddVolumeProjectionConfigMap(resourceVolumes, workflowResCM.ConfigMap.Name, volumeMountName)
 			}
 
-			volumes = append(volumes, defaultResourcesVolume)
-			volumes = append(volumes, resourceVolumes...)
+			if len(deployment.Spec.Template.Spec.Volumes) == 0 {
+				deployment.Spec.Template.Spec.Volumes = make([]corev1.Volume, 0, len(resourceVolumes)+2)
+			}
+			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec, defaultResourcesVolume)
+			kubeutil.AddOrReplaceVolume(&deployment.Spec.Template.Spec, resourceVolumes...)
 
-			deployment.Spec.Template.Spec.Volumes = make([]corev1.Volume, 0)
-			deployment.Spec.Template.Spec.Volumes = volumes
-			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = make([]corev1.VolumeMount, 0)
-			deployment.Spec.Template.Spec.Containers[0].VolumeMounts = volumeMounts
+			_, flowContainerIdx := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
+			if len(deployment.Spec.Template.Spec.Containers[flowContainerIdx].VolumeMounts) == 0 {
+				deployment.Spec.Template.Spec.Containers[flowContainerIdx].VolumeMounts = make([]corev1.VolumeMount, 0, len(volumeMounts))
+			}
+			kubeutil.AddOrReplaceVolumeMount(flowContainerIdx, &deployment.Spec.Template.Spec, volumeMounts...)
 
 			return nil
 		}

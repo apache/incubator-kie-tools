@@ -32,6 +32,35 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/test"
 )
 
+func Test_Reconciler_ProdOps(t *testing.T) {
+	workflow := test.GetBaseSonataFlowWithProdOpsProfile(t.Name())
+	client := test.NewKogitoClientBuilder().
+		WithRuntimeObjects(workflow).
+		WithStatusSubresource(workflow, &operatorapi.SonataFlowBuild{}).Build()
+	result, err := NewProfileForOpsReconciler(client).Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+
+	assert.NotNil(t, result.RequeueAfter)
+	assert.True(t, workflow.Status.GetCondition(api.BuiltConditionType).IsFalse())
+	assert.Equal(t, api.BuildSkipped, workflow.Status.GetCondition(api.BuiltConditionType).Reason)
+	// We need the deployment controller to tell us that the workflow is ready
+	// Since we don't have it in a mocked env, the result must be ready == false
+	assert.False(t, workflow.Status.IsReady())
+
+	// Reconcile again to run the ddeployment handler
+	result, err = NewProfileForOpsReconciler(client).Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+
+	// Let's check for the right creation of the workflow (one CM volume, one container with a custom image)
+	deployment := &appsv1.Deployment{}
+	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
+	assert.NoError(t, err)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
+}
+
 func Test_reconcilerProdBuildConditions(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
@@ -100,7 +129,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 		WithRuntimeObjects(workflow, platform, build).
 		WithStatusSubresource(workflow, platform, build).
 		Build()
-	handler := &deployWorkflowState{
+	handler := &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     newObjectEnsurers(&common.StateSupport{C: client}),
 	}
@@ -147,7 +176,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
-	handler := &deployWorkflowState{
+	handler := &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     newObjectEnsurers(&common.StateSupport{C: client}),
 	}
@@ -166,7 +195,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	err = client.Update(context.TODO(), workflowChanged)
 	assert.NoError(t, err)
 	// reconcile
-	handler = &deployWorkflowState{
+	handler = &deployWithBuildWorkflowState{
 		StateSupport: fakeReconcilerSupport(client),
 		ensurers:     newObjectEnsurers(&common.StateSupport{C: client}),
 	}
