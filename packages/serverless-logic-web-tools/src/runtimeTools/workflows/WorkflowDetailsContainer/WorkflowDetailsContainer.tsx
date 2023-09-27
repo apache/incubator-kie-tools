@@ -23,6 +23,7 @@ import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-componen
 import { EmbeddedWorkflowDetails } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/embedded";
 import { WorkflowDetailsGatewayApi, useWorkflowDetailsGatewayApi } from "../WorkflowDetails";
 import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { routes } from "../../../navigation/Routes";
 
 interface WorkflowListContainerProps {
   workflowInstance: WorkflowInstance;
@@ -40,7 +41,7 @@ const WorkflowDetailsContainer: React.FC<WorkflowListContainerProps & OUIAProps>
     const unSubscribeHandler = gatewayApi.onOpenWorkflowInstanceDetailsListener({
       onOpen(id: string) {
         history.push(`/`);
-        history.push(`/runtime-tools/workflow-details/${id}`);
+        history.push(routes.runtimeToolsWorkflowDetails.path({ workflowId: id }));
       },
     });
     return () => {

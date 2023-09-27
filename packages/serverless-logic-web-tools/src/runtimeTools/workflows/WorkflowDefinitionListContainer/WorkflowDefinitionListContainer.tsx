@@ -23,6 +23,7 @@ import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-componen
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { useWorkflowDefinitionListGatewayApi, WorkflowDefinitionListGatewayApi } from "../WorkflowDefinitionList";
 import { EmbeddedWorkflowDefinitionList } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDefinitions";
+import { routes } from "../../../navigation/Routes";
 
 const WorkflowDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const history = useHistory();
@@ -32,7 +33,7 @@ const WorkflowDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe
     const onOpenDefinitionUnsubscriber = gatewayApi.onOpenWorkflowFormListen({
       onOpen(workflowDefinition: WorkflowDefinition) {
         history.push({
-          pathname: `/runtime-tools/workflow-definition/${workflowDefinition.workflowName}`,
+          pathname: routes.runtimeToolsWorkflowForm.path({ workflowName: workflowDefinition.workflowName }),
           state: {
             workflowDefinition: {
               workflowName: workflowDefinition.workflowName,

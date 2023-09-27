@@ -25,6 +25,7 @@ import { EmbeddedWorkflowForm } from "@kie-tools/runtime-tools-enveloped-compone
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useHistory } from "react-router";
+import { routes } from "../../../navigation/Routes";
 
 interface WorkflowFormContainerProps {
   workflowDefinitionData: WorkflowDefinition;
@@ -42,7 +43,7 @@ const WorkflowFormContainer: React.FC<WorkflowFormContainerProps & OUIAProps> = 
   const openWorkflowInstance = useCallback(
     (id: string) => {
       history.push({
-        pathname: `/runtime-tools/workflow-details/${id}`,
+        pathname: routes.runtimeToolsWorkflowDetails.path({ workflowId: id }),
       });
     },
     [history]

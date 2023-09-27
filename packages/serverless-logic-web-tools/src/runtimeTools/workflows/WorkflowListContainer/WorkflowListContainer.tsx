@@ -24,6 +24,7 @@ import { EmbeddedWorkflowList } from "@kie-tools/runtime-tools-enveloped-compone
 import { WorkflowListGatewayApi, useWorkflowListGatewayApi } from "../WorkflowList";
 import { WorkflowInstance, WorkflowListState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { CloudEventPageSource } from "../CloudEventForm/CloudEventForm";
+import { routes } from "../../../navigation/Routes";
 
 interface WorkflowListContainerProps {
   initialState: WorkflowListState;
@@ -41,15 +42,24 @@ const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAProps> = 
     const onOpenInstanceUnsubscriber = gatewayApi.onOpenWorkflowListen({
       onOpen(workflow: WorkflowInstance) {
         history.push({
-          pathname: `/runtime-tools/workflow-details/${workflow.id}`,
+          pathname: routes.runtimeToolsWorkflowDetails.path({ workflowId: workflow.id }),
           state: gatewayApi.workflowListState,
         });
       },
     });
     const onTriggerCloudEventUnsubscriber = gatewayApi.onOpenTriggerCloudEventListen({
       onOpen(workflowInstance?: WorkflowInstance) {
+        if (workflowInstance) {
+          history.push({
+            pathname: routes.runtimeToolsTriggerCloudEventForWorkflow.path({ workflowId: workflowInstance.id }),
+            state: {
+              source: CloudEventPageSource.INSTANCES,
+            },
+          });
+        }
+
         history.push({
-          pathname: `/runtime-tools/trigger-cloud-event/${workflowInstance?.id ?? ""}`,
+          pathname: routes.runtimeToolsTriggerCloudEvent.path({}),
           state: {
             source: CloudEventPageSource.INSTANCES,
           },
