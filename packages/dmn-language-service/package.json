@@ -24,6 +24,11 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
+  "dependencies": {
+    "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
+    "@kie-tools/dmn-marshaller": "workspace:*",
+    "antlr4": "^4.13.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",

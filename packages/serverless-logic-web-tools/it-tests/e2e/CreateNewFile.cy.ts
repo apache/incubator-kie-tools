@@ -123,9 +123,9 @@ describe("Serverless Logic Web Tools - Create and edit test", () => {
     // insert text and check dashbuilder editor and diagram
     cy.getEditor().within(() => {
       cy.get(".monaco-editor textarea")
-        .type("pages:\n")
-        .type("- components:\n")
-        .type('    - html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!')
+        .forceType("pages:\n")
+        .forceType("- components:\n")
+        .forceType('    - html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!')
         .should("contain.value", "pages:")
         .should("contain.value", "- components")
         .should("contain.value", '- html: <b data-ouia-component-id="hello-text">Hello</b> Dashbuilder!');

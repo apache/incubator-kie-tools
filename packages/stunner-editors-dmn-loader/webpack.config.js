@@ -35,6 +35,7 @@ module.exports = (env) => {
 
     output: {
       path: path.resolve(__dirname, outputPath),
+      publicPath: "",
       filename: `dmn-loader.js`,
       library: {
         type: "umd",

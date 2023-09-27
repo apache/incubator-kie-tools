@@ -44,7 +44,7 @@ type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
 
   const getValue = useCallback(() => {
     return literalExpression.content ?? "";
@@ -175,7 +175,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
         ],
       },
     ];
-  }, []);
+  }, [i18n.terms.copy, i18n.terms.cut, i18n.terms.paste, i18n.terms.reset, i18n.terms.selection]);
 
   const allowedOperations = useCallback((conditions: BeeTableContextMenuAllowedOperationsConditions) => {
     if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd) {
@@ -209,6 +209,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
+          variables={variables}
         ></BeeTable>
       </div>
     </div>

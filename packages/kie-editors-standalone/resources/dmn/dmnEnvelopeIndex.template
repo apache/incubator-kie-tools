@@ -62,7 +62,11 @@
             print(', ');
           }
         });
-        print('; ' + fontResource.additionalStyle + ' }');
+        if (fontResource.additionalStyle) {
+          print('; ' + fontResource.additionalStyle + ' }');
+        } else {
+          print(' }');
+        }
       });
       print('\n</style>\n');
     %>

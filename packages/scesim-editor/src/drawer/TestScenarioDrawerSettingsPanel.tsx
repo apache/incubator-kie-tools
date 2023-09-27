@@ -24,6 +24,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 import { TestScenarioSettings, TestScenarioType } from "../TestScenarioEditor";
+import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioDrawerSettingsPanel.css";
 import { Icon } from "@patternfly/react-core/dist/esm/components/Icon/Icon";
@@ -39,29 +40,32 @@ function TestScenarioDrawerSettingsPanel({
   onUpdateSettingField: (field: string, value: boolean | string) => void;
   testScenarioSettings: TestScenarioSettings;
 }) {
+  const { i18n } = useTestScenarioEditorI18n();
+
   return (
     <>
-      <Title headingLevel={"h6"}>Name</Title>
+      <Title headingLevel={"h6"}>{i18n.drawer.settings.fileName}</Title>
       <TextInput value={fileName} type="text" isDisabled />
-      <Title headingLevel={"h6"}>Type</Title>
+      <Title headingLevel={"h6"}>{i18n.drawer.settings.assetType}</Title>
       <TextInput value={testScenarioSettings.assetType} type="text" isDisabled />
       {testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN] ? (
         <>
-          <Title headingLevel={"h6"}>DMN Model</Title>
+          <Title headingLevel={"h6"}>{i18n.drawer.settings.dmnModel}</Title>
+          {/* Temporary Mocked */}
           <FormSelect value={"1"} aria-label="FormSelect Input" ouiaId="BasicFormSelect">
             <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
             <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
           </FormSelect>
-          <Title headingLevel={"h6"}>DMN Name</Title>
+          <Title headingLevel={"h6"}>{i18n.drawer.settings.dmnName}</Title>
           <TextInput value={testScenarioSettings.dmnName} type="text" isDisabled />
-          <Title headingLevel={"h6"}>DMN Namespace</Title>
+          <Title headingLevel={"h6"}>{i18n.drawer.settings.dmnNameSpace}</Title>
           <TextInput value={testScenarioSettings.dmnNamespace} type="text" isDisabled />
         </>
       ) : (
         <>
           <Title headingLevel={"h6"}>
-            KIE Session
-            <Tooltip content="Optional value. If not specified, the default session will be used.">
+            {i18n.drawer.settings.kieSessionRule}
+            <Tooltip content={i18n.drawer.settings.kieSessionRuleTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
                 <InfoCircleIcon />
               </Icon>
@@ -69,13 +73,13 @@ function TestScenarioDrawerSettingsPanel({
           </Title>
           <TextInput
             onChange={(value) => onUpdateSettingField("dmoSession", value)}
-            placeholder={"(Optional) KieSession"}
+            placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
             value={testScenarioSettings.kieSessionRule}
           />
           <Title headingLevel={"h6"}>
-            AgendaGroup/RuleFlowGroup
-            <Tooltip content="Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.">
+            {i18n.drawer.settings.ruleFlowGroup}
+            <Tooltip content={i18n.drawer.settings.ruleFlowGroupTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
                 <InfoCircleIcon />
               </Icon>
@@ -83,7 +87,7 @@ function TestScenarioDrawerSettingsPanel({
           </Title>
           <TextInput
             onChange={(value) => onUpdateSettingField("ruleFlowGroup", value)}
-            placeholder={"(Optional) AgendaGroup or RuleFlowGroup."}
+            placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
             type="text"
             value={testScenarioSettings.ruleFlowGroup}
           />
@@ -92,11 +96,11 @@ function TestScenarioDrawerSettingsPanel({
               <Checkbox
                 id="stateless-session"
                 isChecked={testScenarioSettings.isStatelessSessionRule}
-                label="Stateless Session"
+                label={i18n.drawer.settings.statelessSessionRule}
                 onChange={(value) => onUpdateSettingField("stateless", value)}
               />
             </div>
-            <Tooltip content="Select or clear this check box to specify if the KIE Session is stateless or not. If the current KieSession is stateless and the check box is not selected, the tests will fail.">
+            <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
                 <InfoCircleIcon />
               </Icon>
@@ -109,11 +113,11 @@ function TestScenarioDrawerSettingsPanel({
           <Checkbox
             id="skip-test"
             isChecked={testScenarioSettings.isTestSkipped}
-            label="Skip this test scenario during the test"
+            label={i18n.drawer.settings.testSkipped}
             onChange={(value) => onUpdateSettingField("skipFromBuild", value)}
           />
         </div>
-        <Tooltip content="If enabled, all defined Scenarios in this file will be skipped during test execution.">
+        <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
           <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
             <InfoCircleIcon />
           </Icon>

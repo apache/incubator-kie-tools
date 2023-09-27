@@ -44,7 +44,9 @@ import { PmmlFunctionExpression } from "./PmmlFunctionExpression";
 
 export const DEFAULT_FIRST_PARAM_NAME = "p-1";
 
-export function FunctionExpression(functionExpression: FunctionExpressionDefinition & { isNested: boolean }) {
+export function FunctionExpression(
+  functionExpression: FunctionExpressionDefinition & { isNested: boolean; parentElementId: string }
+) {
   const functionKind = functionExpression.functionKind;
   switch (functionKind) {
     case FunctionExpressionDefinitionKind.Feel:

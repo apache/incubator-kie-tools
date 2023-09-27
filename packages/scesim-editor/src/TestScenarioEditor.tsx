@@ -22,6 +22,10 @@ import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
 
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+
+import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
+
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
@@ -514,18 +518,25 @@ export const TestScenarioEditor = React.forwardRef((props: {}, ref: React.Ref<Te
   const [scesimFileParsingError, setScesimFileParsingError] = useState<Error | null>(null);
 
   return (
-    <ErrorBoundary
-      error={
-        <TestScenarioParserErrorPanel
-          parserErrorTitle={"File parsing error"}
-          parserErrorMessage={
-            "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
-          }
-        />
-      }
-      setError={setScesimFileParsingError}
+    <I18nDictionariesProvider
+      defaults={testScenarioEditorI18nDefaults}
+      dictionaries={testScenarioEditorDictionaries}
+      initialLocale={navigator.language}
+      ctx={TestScenarioEditorI18nContext}
     >
-      <TestScenarioEditorInternal forwardRef={ref} {...props} />
-    </ErrorBoundary>
+      <ErrorBoundary
+        error={
+          <TestScenarioParserErrorPanel
+            parserErrorTitle={"File parsing error"}
+            parserErrorMessage={
+              "Impossibile to correctly parse the provided scesim file. Cause: " + scesimFileParsingError?.message
+            }
+          />
+        }
+        setError={setScesimFileParsingError}
+      >
+        <TestScenarioEditorInternal forwardRef={ref} {...props} />
+      </ErrorBoundary>
+    </I18nDictionariesProvider>
   );
 });

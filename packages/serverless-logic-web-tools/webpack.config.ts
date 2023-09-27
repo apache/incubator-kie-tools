@@ -197,6 +197,9 @@ export default async (env: any, argv: any) => {
         static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
         compress: true,
         port: buildEnv.serverlessLogicWebTools.dev.port,
+        client: {
+          overlay: false,
+        },
       },
     },
   ];
