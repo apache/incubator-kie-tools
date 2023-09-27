@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { componentOuiaProps, OUIAProps } from "../../../../../ouiaTools";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { CloudEventFormDefaultValues, CloudEventFormDriver } from "../../../api";
 import { ActionListGroup } from "@patternfly/react-core/dist/js/components/ActionList";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
@@ -33,9 +33,12 @@ import CloudEventCustomHeadersEditor, {
   CloudEventCustomHeadersEditorApi,
 } from "../CloudEventCustomHeadersEditor/CloudEventCustomHeadersEditor";
 import CloudEventFieldLabelIcon from "../CloudEventFieldLabelIcon/CloudEventFieldLabelIcon";
-import { RequestDataEditor, RequestDataEditorApi } from "../../../../RequestDataEditor";
+import {
+  RequestDataEditor,
+  RequestDataEditorApi,
+} from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { KogitoSpinner } from "../../../../KogitoSpinner";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import {
   CloudEventMethod,
   KOGITO_BUSINESS_KEY,

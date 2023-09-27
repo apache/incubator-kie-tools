@@ -19,8 +19,8 @@
 
 import React, { useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { componentOuiaProps, OUIAProps } from "../../../ouiaTools";
-import { KogitoSpinner } from "../../KogitoSpinner";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { CloudEventFormChannelApi, CloudEventFormDefaultValues, CloudEventFormInitArgs } from "../api";
 import CloudEventForm from "./components/CloudEventForm/CloudEventForm";

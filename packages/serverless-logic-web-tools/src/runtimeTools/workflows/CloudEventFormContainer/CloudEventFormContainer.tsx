@@ -20,7 +20,7 @@
 import React, { useCallback } from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useCloudEventFormGatewayApi } from "../CloudEventForm";
-import { EmbeddedCloudEventForm } from "@kie-tools/runtime-tools-components/dist/components/CloudEventForm";
+import { EmbeddedCloudEventForm } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm";
 import { useParams } from "react-router";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
