@@ -18,12 +18,12 @@
  */
 
 import React, { useCallback } from "react";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-common/dist/ouiaTools";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useCloudEventFormGatewayApi } from "../CloudEventForm";
 import {
   CloudEventRequest,
   EmbeddedCloudEventForm,
-} from "@kie-tools/runtime-tools-common/dist/components/CloudEventForm";
+} from "@kie-tools/runtime-tools-components/dist/components/CloudEventForm";
 import { useParams } from "react-router";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";

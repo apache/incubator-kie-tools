@@ -21,12 +21,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useHistory } from "react-router";
-import { ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-common/dist/ouiaTools";
+import { ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useWorkflowDetailsGatewayApi, WorkflowDetailsGatewayApi } from "./WorkflowDetails";
 import WorkflowDetailsContainer from "./WorkflowDetailsContainer/WorkflowDetailsContainer";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-common";
-import { ServerErrors } from "@kie-tools/runtime-tools-common/dist/components/ServerErrors";
-import { KogitoSpinner } from "@kie-tools/runtime-tools-common/dist/components/KogitoSpinner";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 

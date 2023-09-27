@@ -23,8 +23,8 @@ import {
   WorkflowInstance,
   WorkflowListSortBy,
   WorkflowInstanceFilter,
-} from "@kie-tools/runtime-tools-common";
-import { OperationType } from "@kie-tools/runtime-tools-common/dist/components/BulkList";
+} from "@kie-tools/runtime-tools-components";
+import { OperationType } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 import {
   handleWorkflowAbort,
   handleWorkflowMultipleAction,

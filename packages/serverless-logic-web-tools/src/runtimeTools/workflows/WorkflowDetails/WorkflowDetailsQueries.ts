@@ -26,7 +26,7 @@ import {
   NodeInstance,
   SvgSuccessResponse,
   SvgErrorResponse,
-} from "@kie-tools/runtime-tools-common";
+} from "@kie-tools/runtime-tools-components";
 import {
   handleWorkflowAbort,
   handleWorkflowSkip,

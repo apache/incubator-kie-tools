@@ -25,7 +25,7 @@ import {
   SvgErrorResponse,
   TriggerableNode,
   NodeInstance,
-} from "@kie-tools/runtime-tools-common";
+} from "@kie-tools/runtime-tools-components";
 import { WorkflowDetailsQueries } from "./WorkflowDetailsQueries";
 
 export interface OnOpenWorkflowInstanceDetailsListener {

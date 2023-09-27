@@ -19,10 +19,10 @@
 
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-common/dist/ouiaTools";
-import { EmbeddedWorkflowDetails } from "@kie-tools/runtime-tools-components/dist/workflowDetails/embedded";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { EmbeddedWorkflowDetails } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/embedded";
 import { WorkflowDetailsGatewayApi, useWorkflowDetailsGatewayApi } from "../WorkflowDetails";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-common";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
 
 interface WorkflowListContainerProps {
   workflowInstance: WorkflowInstance;

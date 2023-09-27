@@ -20,8 +20,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { OUIAProps, ouiaPageTypeAndObjectId, componentOuiaProps } from "@kie-tools/runtime-tools-common/dist/ouiaTools";
-import { FormNotification, Notification } from "@kie-tools/runtime-tools-common/dist/components/FormNotification";
+import {
+  OUIAProps,
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps,
+} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { useHistory } from "react-router-dom";
 import CloudEventFormContainer from "../CloudEventFormContainer/CloudEventFormContainer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";

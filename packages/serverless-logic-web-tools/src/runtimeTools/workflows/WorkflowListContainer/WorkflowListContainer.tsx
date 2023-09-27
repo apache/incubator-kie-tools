@@ -19,10 +19,10 @@
 
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-common/dist/ouiaTools";
-import { EmbeddedWorkflowList } from "@kie-tools/runtime-tools-components/dist/workflowList/embedded";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { EmbeddedWorkflowList } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowList/embedded";
 import { WorkflowListGatewayApi, useWorkflowListGatewayApi } from "../WorkflowList";
-import { WorkflowInstance, WorkflowListState } from "@kie-tools/runtime-tools-common";
+import { WorkflowInstance, WorkflowListState } from "@kie-tools/runtime-tools-components";
 import { CloudEventPageSource } from "../CloudEventForm/CloudEventForm";
 
 interface WorkflowListContainerProps {

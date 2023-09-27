@@ -18,10 +18,10 @@
  */
 
 import React, { useCallback } from "react";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-common/dist/ouiaTools";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-common";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
 import { WorkflowFormGatewayApi, useWorkflowFormGatewayApi } from "../WorkflowForm";
-import { EmbeddedWorkflowForm } from "@kie-tools/runtime-tools-components/dist/workflowForm";
+import { EmbeddedWorkflowForm } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useHistory } from "react-router";

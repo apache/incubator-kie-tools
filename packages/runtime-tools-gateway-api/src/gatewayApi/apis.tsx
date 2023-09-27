@@ -30,11 +30,14 @@ import {
   Job,
   JobsSortBy,
   WorkflowDefinition,
-} from "@kie-tools/runtime-tools-common";
-import { OperationType } from "@kie-tools/runtime-tools-common/dist/components/BulkList";
+} from "@kie-tools/runtime-tools-components";
+import { OperationType } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
-import { CloudEventRequest, KOGITO_BUSINESS_KEY } from "@kie-tools/runtime-tools-common/dist/components/CloudEventForm";
+import {
+  CloudEventRequest,
+  KOGITO_BUSINESS_KEY,
+} from "@kie-tools/runtime-tools-components/dist/components/CloudEventForm";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import SwaggerParser from "@apidevtools/swagger-parser";
