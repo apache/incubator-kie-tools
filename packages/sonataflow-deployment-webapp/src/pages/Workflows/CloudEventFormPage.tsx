@@ -27,20 +27,17 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../../apis";
 import { FormNotification, Notification } from "../../components";
-import { CloudEventForm, CloudEventFormDefaultValues } from "../../components/CloudEventForm";
+import { CloudEventForm } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/envelope/components/CloudEventForm/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";
 import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";
 import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorPage } from "../ErrorPage";
+import { CloudEventFormDefaultValues } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm";
 
 const defaultValues: CloudEventFormDefaultValues = {
-  method: CloudEventMethod.POST,
-  endpoint: "/",
   instanceId: "",
-  cloudEventType: "",
   cloudEventSource: "",
-  cloudEventData: "",
 };
 
 export function CloudEventFormPage() {
