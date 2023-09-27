@@ -29,8 +29,17 @@ export const en: TestScenarioEditorI18n = {
       title: "Data Objects tool",
     },
     cheatSheet: {
+      paragraph1: "To start off, use contextual menus in the table to insert or edit or delete new columns and rows.",
+      paragraph2a:
+        "Before defining the individual test scenarios, verify the instance and field mappings for each column. If any changes are necessary, use the ",
+      paragraph2b: " to update the mapping",
+      paragraph3a: "If the same GIVEN data is shared with the multiple test scenarios, you can use the ",
+      paragraph3b: " tab to define them only once. The way to create a column in the ",
+      paragraph3c: " tab is the same as of the ",
+      paragraph3d: " tab.",
       title: "Scenario Cheatsheet",
     },
+    //(date: string) => `Created at ${date}`
     settings: {
       assetType: "Type",
       dmnModel: "DMN Model",
@@ -56,5 +65,9 @@ export const en: TestScenarioEditorI18n = {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
     dataObjectsTooltip: "Data Objects: It provides a tool to edit your Scenarios",
     settingsTooltip: "Setting: Properties of this Test Scenario asset",
+  },
+  tab: {
+    backgroundTabTitle: "Background",
+    scenarioTabTitle: "Test Scenario",
   },
 };

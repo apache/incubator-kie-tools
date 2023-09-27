@@ -22,21 +22,25 @@ import * as React from "react";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 import { TestScenarioType } from "../TestScenarioEditor";
+import { useTestScenarioEditorI18n } from "../i18n";
 
 function TestScenarioDrawerCheatSheetPanel({ assetType }: { assetType: string }) {
+  const { i18n } = useTestScenarioEditorI18n();
+
   return (
     <TextContent>
-      <Text component={TextVariants.p}>
-        To start off, right-click a cell in the table and use the contextual menus to modify the generated table as
-        required.
+      <Text component={TextVariants.p}>{i18n.drawer.cheatSheet.paragraph1}</Text>
+      <Text>
+        {i18n.drawer.cheatSheet.paragraph2a}
+        <strong>{i18n.drawer.dataObject.title}</strong>
+        {i18n.drawer.cheatSheet.paragraph2b}
       </Text>
       <Text>
-        Before defining the individual test scenarios, verify the instance and field mappings for each column. If any
-        changes are necessary, use the Test Editor tab to update the mapping.
-      </Text>
-      <Text>
-        Before defining the individual test scenarios, verify the instance and field mappings for each column. If any
-        changes are necessary, use the Test Editor tab to update the mapping.
+        {i18n.drawer.cheatSheet.paragraph3a}
+        <strong>{i18n.tab.backgroundTabTitle}</strong>
+        {i18n.drawer.cheatSheet.paragraph3b}
+        <strong>{i18n.tab.scenarioTabTitle}</strong>
+        {i18n.drawer.cheatSheet.paragraph3c}
       </Text>
       <Text>
         If the same GIVEN data is shared with the multiple test scenarios, you can use the Background tab to define them

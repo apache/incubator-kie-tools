@@ -27,6 +27,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       title: string;
     };
     cheatSheet: {
+      paragraph1: string;
+      paragraph2a: string;
+      paragraph2b: string;
+      paragraph3: string;
       title: string;
     };
     settings: {
@@ -52,6 +56,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     cheatSheetTooltip: string;
     dataObjectsTooltip: string;
     settingsTooltip: string;
+  };
+  tab: {
+    backgroundTabTitle: string;
+    scenarioTabTitle: string;
   };
 }
 
