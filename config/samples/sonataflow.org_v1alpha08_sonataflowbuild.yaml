@@ -1,0 +1,6 @@
+apiVersion: sonataflow.org/v1alpha08
+kind: SonataFlowBuild
+metadata:
+  name: greeting
+spec:
+  timeout: 360s

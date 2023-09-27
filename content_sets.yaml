@@ -19,3 +19,6 @@ ppc64le:
   - rhel-8-for-ppc64le-baseos-rpms
   - rhel-8-for-ppc64le-appstream-rpms
   - rhocp-4.7-for-rhel-8-ppc64le-rpms
+aarch64:
+  - rhel-8-for-aarch64-baseos-rpms
+  - rhel-8-for-aarch64-appstream-rpms

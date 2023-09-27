@@ -51,7 +51,8 @@ spec:
             description: SonataFlowPlatformSpec defines the desired state of SonataFlowPlatform
             properties:
               build:
-                description: Attributes for building workflows in the target platform
+                description: Build Attributes for building workflows in the target
+                  platform
                 properties:
                   config:
                     description: Describes the platform configuration for building
@@ -412,7 +413,7 @@ spec:
                     type: object
                 type: object
               devMode:
-                description: Attributes for running workflows in devmode (immutable,
+                description: DevMode Attributes for running workflows in devmode (immutable,
                   no build required)
                 properties:
                   baseImage:

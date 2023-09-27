@@ -45,41 +45,63 @@ const (
 	BuildPhaseError BuildPhase = "Error"
 )
 
+// BuildTemplate an abstraction over the actual build process performed by the platform.
+// +k8s:openapi-gen=true
 type BuildTemplate struct {
 	// Timeout defines the Build maximum execution duration.
 	// The Build deadline is set to the Build start time plus the Timeout duration.
 	// If the Build deadline is exceeded, the Build context is canceled,
 	// and its phase set to BuildPhaseFailed.
 	// +kubebuilder:validation:Format=duration
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Timeout"
 	Timeout metav1.Duration `json:"timeout,omitempty"`
 	// Resources optional compute resource requirements for the builder
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Resources"
 	Resources corev1.ResourceRequirements `json:"resources,omitempty"`
 	// Arguments lists the command line arguments to send to the internal builder command.
 	// Depending on the build method you might set this attribute instead of BuildArgs.
 	// For example: ".spec.arguments=verbose=3".
 	// Please see the SonataFlow guides.
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Arguments"
 	Arguments []string `json:"arguments,omitempty"`
 	// Optional build arguments that can be set to the internal build (e.g. Docker ARG)
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="BuildArgs"
 	BuildArgs []corev1.EnvVar `json:"buildArgs,omitempty"`
 	// Optional environment variables to add to the internal build
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Envs"
 	Envs []corev1.EnvVar `json:"envs,omitempty"`
 }
 
-// SonataFlowBuildSpec an abstraction over the actual build process performed by the platform.
+// SonataFlowBuildSpec define the desired state of th SonataFlowBuild.
+// +k8s:openapi-gen=true
 type SonataFlowBuildSpec struct {
 	BuildTemplate `json:",inline"`
 }
 
 // SonataFlowBuildStatus defines the observed state of SonataFlowBuild
+// +k8s:openapi-gen=true
 type SonataFlowBuildStatus struct {
-	// The final image tag produced by this build instance
+	// ImageTag The final image tag produced by this build instance
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="ImageTag"
 	ImageTag string `json:"imageTag,omitempty"`
-	// Current phase of the build
+	// BuildPhase Current phase of the build
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="BuildPhase"
 	BuildPhase BuildPhase `json:"buildPhase,omitempty"`
-	// Last error found during build
+	// Error Last error found during build
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="Error"
 	Error string `json:"error,omitempty"`
 	// InnerBuild is a reference to an internal build object, which can be anything known only to internal builders.
 	// +kubebuilder:pruning:PreserveUnknownFields
+	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="InnerBuild"
 	InnerBuild runtime.RawExtension `json:"innerBuild,omitempty" patchStrategy:"replace"`
 }
 
@@ -109,9 +131,11 @@ func (k *SonataFlowBuildStatus) GetInnerBuild(innerBuild interface{}) error {
 // +kubebuilder:object:root=true
 // +kubebuilder:object:generate=true
 // +kubebuilder:subresource:status
+// +k8s:openapi-gen=true
 // +kubebuilder:printcolumn:name="Image",type=string,JSONPath=`.status.imageTag`
 // +kubebuilder:printcolumn:name="Phase",type=string,JSONPath=`.status.buildPhase`
 // +kubebuilder:resource:shortName={"sfb", "sfbuild", "sfbuilds"}
+// +operator-sdk:csv:customresourcedefinitions:resources={{BuildConfig,build.openshift.io/v1,"An Openshift Build Config"}}
 type SonataFlowBuild struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

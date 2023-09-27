@@ -5,13 +5,14 @@ metadata:
     alm-examples: '[]'
     capabilities: Basic Install
     categories: Application Runtime
-    containerImage: quay.io/kiegroup/kogito-serverless-operator-nightly:latest
-    description: SonataFlow Kubernetes Operator for deploying workflow applications
-      based on the CNCF Serverless Workflow specification
+    description: OpenShift Serverless Logic Kubernetes Operator for deploying workflow
+      applications based on the CNCF Serverless Workflow specification
+    operators.openshift.io/valid-subscription: '["OpenShift Container Platform", "OpenShift
+      Platform Plus"]'
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'
     repository: https://github.com/kiegroup/kogito-serverless-operator
     support: Red Hat
-  name: sonataflow-operator.v0.0.0
+  name: logic-operator-rhel8.v0.0.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -160,7 +161,7 @@ spec:
         path: recoverFailureAttempts
       version: v1alpha08
   description: |-
-    SonataFlow Kubernetes Operator for deploying workflow applications
+    OpenShift Serverless Logic Kubernetes Operator for deploying workflow applications
     based on the [CNCF Serverless Workflow specification](https://serverlessworkflow.io/):
 
     * Deploy workflow applications using the [dev profile](https://sonataflow.org/serverlessworkflow/latest/cloud/operator/developing-workflows.html), suited for the your development cycle
@@ -194,4 +195,13 @@ spec:
   minKubeVersion: 1.23.0
   provider:
     name: Red Hat
+  relatedImages:
+  - image: registry.redhat.io/openshift-serverless-1-tech-preview/logic-operator-rhel8:1.30.0
+    name: IMAGE_LOGIC_SWF_OPERATOR
+  - image: registry.redhat.io/openshift-serverless-1-tech-preview/logic-swf-devmode-rhel8:1.30.0
+    name: IMAGE_LOGIC_SWF_DEVMODE
+  - image: registry.redhat.io/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8:1.30.0
+    name: IMAGE_LOGIC_SWF_BUILDER
+  - image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:4564ca3dc5bac80d6faddaf94c817fbbc270698a9399d8a21ee1005d85ceda56
+    name: IMAGE_KUBE_RBAC_PROXY
   version: 0.0.0

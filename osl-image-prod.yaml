@@ -1,6 +1,6 @@
 - schema_version: 1
   name: "operator-builder"
-  version: "1.29.0"
+  version: "1.30.0"
   from: "registry.access.redhat.com/ubi8/go-toolset:1.19.9"
   description: "Golang builder image for the Red Hat OpenShift Serverless Logic Operator"
 
@@ -23,9 +23,10 @@
           only:
             - x86_64
             - ppc64le
+            - aarch64
 
 - name: "openshift-serverless-1-tech-preview/logic-operator-rhel8"
-  version: "1.29.0"
+  version: "1.30.0"
   from: "registry.access.redhat.com/ubi8/ubi-micro:latest"
   description: "Runtime Image for the Red Hat OpenShift Serverless Logic Operator"
 
@@ -39,7 +40,7 @@
     - name: io.k8s.display-name
       value: Red Hat OpenShift Serverless Logic Operator
     - name: io.openshift.tags
-      value: osl,kogito,serverless,workflow,operator
+      value: osl,logic,sonataflow,serverless,workflow,operator
 
   artifacts:
     - path: /workspace/manager
@@ -54,7 +55,7 @@
     extra_dir: osbs-extra
     repository:
       name: containers/openshift-serverless-1-logic-operator
-      branch: openshift-serverless-1.29-rhel-8
+      branch: openshift-serverless-1.30-rhel-8
 
   run:
     user: "1001"

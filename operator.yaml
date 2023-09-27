@@ -51,8 +51,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: SonataFlowBuildSpec an abstraction over the actual build
-              process performed by the platform.
+            description: SonataFlowBuildSpec define the desired state of th SonataFlowBuild.
             properties:
               arguments:
                 description: 'Arguments lists the command line arguments to send to
@@ -343,13 +342,13 @@ spec:
             description: SonataFlowBuildStatus defines the observed state of SonataFlowBuild
             properties:
               buildPhase:
-                description: Current phase of the build
+                description: BuildPhase Current phase of the build
                 type: string
               error:
-                description: Last error found during build
+                description: Error Last error found during build
                 type: string
               imageTag:
-                description: The final image tag produced by this build instance
+                description: ImageTag The final image tag produced by this build instance
                 type: string
               innerBuild:
                 description: InnerBuild is a reference to an internal build object,
@@ -415,7 +414,8 @@ spec:
             description: SonataFlowPlatformSpec defines the desired state of SonataFlowPlatform
             properties:
               build:
-                description: Attributes for building workflows in the target platform
+                description: Build Attributes for building workflows in the target
+                  platform
                 properties:
                   config:
                     description: Describes the platform configuration for building
@@ -776,7 +776,7 @@ spec:
                     type: object
                 type: object
               devMode:
-                description: Attributes for running workflows in devmode (immutable,
+                description: DevMode Attributes for running workflows in devmode (immutable,
                   no build required)
                 properties:
                   baseImage:
@@ -901,16 +901,7 @@ spec:
             description: SonataFlowSpec defines the desired state of SonataFlow
             properties:
               flow:
-                description: "Flow describes the contents of the Workflow definition
-                  following the CNCF Serverless Workflow Specification. The attributes
-                  not part of the flow are defined by the Custom Resource metadata
-                  information, as follows: \n - Id, name, and key are replaced by
-                  the Custom Resource's name. Must follow the Kubernetes naming patterns
-                  (RFC1123). \n - Description can be added in the CR's annotation
-                  field sonataflow.org/description \n - Version is also defined in
-                  the CR's annotation, field sonataflow.org/version \n - SpecVersion
-                  is in the CR's apiVersion, for example v1alpha08 means that it follows
-                  the specification version 0.8."
+                description: Flow the workflow definition.
                 properties:
                   annotations:
                     description: Annotations List of helpful terms describing the
@@ -3620,7 +3611,5 @@ spec:
             - ALL
       securityContext:
         runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
       serviceAccountName: sonataflow-operator-controller-manager
       terminationGracePeriodSeconds: 10

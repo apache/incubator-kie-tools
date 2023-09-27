@@ -45,8 +45,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: SonataFlowBuildSpec an abstraction over the actual build
-              process performed by the platform.
+            description: SonataFlowBuildSpec define the desired state of th SonataFlowBuild.
             properties:
               arguments:
                 description: 'Arguments lists the command line arguments to send to
@@ -337,13 +336,13 @@ spec:
             description: SonataFlowBuildStatus defines the observed state of SonataFlowBuild
             properties:
               buildPhase:
-                description: Current phase of the build
+                description: BuildPhase Current phase of the build
                 type: string
               error:
-                description: Last error found during build
+                description: Error Last error found during build
                 type: string
               imageTag:
-                description: The final image tag produced by this build instance
+                description: ImageTag The final image tag produced by this build instance
                 type: string
               innerBuild:
                 description: InnerBuild is a reference to an internal build object,

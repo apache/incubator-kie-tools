@@ -57,16 +57,7 @@ spec:
             description: SonataFlowSpec defines the desired state of SonataFlow
             properties:
               flow:
-                description: "Flow describes the contents of the Workflow definition
-                  following the CNCF Serverless Workflow Specification. The attributes
-                  not part of the flow are defined by the Custom Resource metadata
-                  information, as follows: \n - Id, name, and key are replaced by
-                  the Custom Resource's name. Must follow the Kubernetes naming patterns
-                  (RFC1123). \n - Description can be added in the CR's annotation
-                  field sonataflow.org/description \n - Version is also defined in
-                  the CR's annotation, field sonataflow.org/version \n - SpecVersion
-                  is in the CR's apiVersion, for example v1alpha08 means that it follows
-                  the specification version 0.8."
+                description: Flow the workflow definition.
                 properties:
                   annotations:
                     description: Annotations List of helpful terms describing the

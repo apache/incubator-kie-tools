@@ -3,8 +3,7 @@
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
 # - use the VERSION as arg of the bundle target (e.g make bundle VERSION=0.0.2)
 # - use environment variables to overwrite this value (e.g export VERSION=0.0.2)
-VERSION ?= 2.0.0-snapshot
-REDUCED_VERSION ?= latest
+VERSION ?= 1.30.0
 
 # CHANNELS define the bundle channels used in the bundle.
 # Add a new line here if you would like to change its default config. (E.g CHANNELS = "candidate,fast,stable")
@@ -30,16 +29,14 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
 # kiegroup.org/kogito-serverless-operator-bundle:$VERSION and kiegroup.org/kogito-serverless-operator-catalog:$VERSION.
-IMAGE_TAG_BASE ?= quay.io/kiegroup/kogito-serverless-operator-nightly
+IMAGE_TAG_BASE ?= registry.redhat.io/openshift-serverless-1-tech-preview/logic-operator-rhel8
 
 # BUNDLE_IMG defines the image:tag used for the bundle.
 # You can use it as an arg. (E.g make bundle-build BUNDLE_IMG=<some-registry>/<project-name-bundle>:<tag>)
-BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(REDUCED_VERSION)
+BUNDLE_IMG ?= $(IMAGE_TAG_BASE)-bundle:v$(VERSION)
 
 # BUNDLE_GEN_FLAGS are the flags passed to the operator-sdk generate bundle command
-# TODO: review this flag once we upgrade https://github.com/operator-framework/operator-sdk/issues/4992 (https://issues.redhat.com/browse/KOGITO-9428)
-# TODO: It is preventing us from adding new annotations to bundle/metadata/annotations.yaml
-BUNDLE_GEN_FLAGS ?= -q --overwrite=false --version $(VERSION) $(BUNDLE_METADATA_OPTS)
+BUNDLE_GEN_FLAGS ?= -q --overwrite --version $(VERSION) $(BUNDLE_METADATA_OPTS)
 
 # Container runtime engine used for building the images
 BUILDER ?= podman
@@ -48,12 +45,15 @@ BUILDER ?= podman
 # You can enable this value if you would like to use SHA Based Digests
 # To enable set flag to true
 USE_IMAGE_DIGESTS ?= false
+IMG_TAG_SEP = :
+IMG_VERSION = $(VERSION)
 ifeq ($(USE_IMAGE_DIGESTS), true)
 	BUNDLE_GEN_FLAGS += --use-image-digests
+	IMG_TAG_SEP = @
+	IMG_VERSION = $(IMAGE_DIGEST)
 endif
 
-# Image URL to use all building/pushing image targets
-IMG ?= $(IMAGE_TAG_BASE):$(REDUCED_VERSION)
+IMG ?= $(IMAGE_TAG_BASE)$(IMG_TAG_SEP)$(IMG_VERSION)
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.24
 
@@ -95,7 +95,7 @@ help: ## Display this help.
 ##@ Development
 
 .PHONY: manifests
-manifests: generate ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
+manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
 	$(CONTROLLER_GEN) rbac:roleName=manager-role crd:allowDangerousTypes=true webhook paths="./api/..." paths="./controllers/..." output:crd:artifacts:config=config/crd/bases
 
 .PHONY: generate
@@ -105,7 +105,6 @@ generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and
 .PHONY: fmt
 fmt: ## Run go fmt against code.
 	./hack/goimports.sh
-	go work sync
 	go mod tidy
 	go fmt ./...
 
@@ -114,38 +113,26 @@ vet: ## Run go vet against code.
 	go vet ./...
 
 .PHONY: test
-test: manifests generate envtest vet fmt test-api ## Run tests.
+test: manifests generate fmt vet envtest ## Run tests.
 	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $(shell go list ./... | grep -v /test/) -coverprofile cover.out
-
-.PHONY: test-api
-test-api:
-	cd api && make test
-
-.PHONY: test-container-builder
-test-container-builder:
-	cd container-builder && make test
-
-.PHONY: test-workflowproj
-test-workflowproj:
-	cd workflowproj && make test
 
 ##@ Build
 
 .PHONY: build
-build: generate ## Build manager binary.
+build: generate fmt vet ## Build manager binary.
 	go build -o bin/manager main.go
 
 .PHONY: build-4-debug
-build-4-debug: generate ## Build manager binary with debug options.
+build-4-debug: generate fmt vet ## Build manager binary with debug options.
 	go build -gcflags="all=-N -l" -o bin/manager main.go
 
 .PHONY: run
-run: manifests generate ## Run a controller from your host.
+run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
 .PHONY: debug
 debug: build-4-debug ## Run a controller from your host from binary
-	./bin/manager -v=2
+	./bin/manager
 
 .PHONY: docker-build
 docker-build: test ## Build docker image with the manager.
@@ -159,8 +146,7 @@ podman-build: test ## Build container image with the manager.
 docker-push: ## Push docker image with the manager.
 	docker push ${IMG}
 
-# This is currently done directly into the CI
-# PLATFORMS defines the target platforms for the manager image be build to provide support to multiple
+# PLATFORMS defines the target platforms for  the manager image be build to provide support to multiple
 # architectures. (i.e. make docker-buildx IMG=myregistry/mypoperator:0.0.1). To use this option you need to:
 # - able to use docker buildx . More info: https://docs.docker.com/build/buildx/
 # - have enable BuildKit, More info: https://docs.docker.com/develop/develop-images/build_enhancements/
@@ -181,12 +167,15 @@ docker-buildx: test ## Build and push docker image for the manager for cross-pla
 podman-push: ## Push container image with the manager.
 	podman push ${PODMAN_PUSH_PARAMS} ${IMG}
 
+CEKIT_FLAGS = --assume-yes
+ifeq ($(RELEASE), true)
+	CEKIT_FLAGS += --release
+endif
+
+
 .PHONY: container-build
 container-build: test ## Build the container image
-	cekit -v --descriptor image.yaml build ${build_options} $(BUILDER)
-ifneq ($(ignore_tag),true)
-	$(BUILDER) tag kogito-serverless-operator ${IMG}
-endif
+	cekit --redhat -v --descriptor osl-image-prod.yaml build osbs $(CEKIT_FLAGS)
 
 .PHONY: container-push
 container-push: ## Push the container image
@@ -200,7 +189,7 @@ endif
 
 .PHONY: install
 install: manifests kustomize ## Install CRDs into the K8s cluster specified in ~/.kube/config.
-	$(KUSTOMIZE) build config/crd | kubectl create -f -
+	$(KUSTOMIZE) build config/crd | kubectl apply -f -
 
 .PHONY: uninstall
 uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
@@ -208,17 +197,16 @@ uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified 
 
 .PHONY: deploy
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default | kubectl create -f -
+	cd config/manager/osl && $(KUSTOMIZE) edit set image controller=${IMG}
+	$(KUSTOMIZE) build config/default/osl | kubectl apply -f -
 
 .PHONY: generate-deploy
 generate-deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && $(KUSTOMIZE) edit set image controller=${IMG}
-	$(KUSTOMIZE) build config/default > operator.yaml
+	cd config/manager/osl && $(KUSTOMIZE) edit set image controller=${IMG}
 
 .PHONY: undeploy
 undeploy: ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.
-	$(KUSTOMIZE) build config/default | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
+	$(KUSTOMIZE) build config/default/osl | kubectl delete --ignore-not-found=$(ignore-not-found) -f -
 
 ##@ Build Dependencies
 
@@ -254,14 +242,14 @@ $(ENVTEST): $(LOCALBIN)
 
 .PHONY: bundle
 bundle: manifests kustomize install-operator-sdk ## Generate bundle manifests and metadata, then validate generated files.
-	operator-sdk generate kustomize manifests -q
-	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
-	$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS)
-	operator-sdk bundle validate ./bundle
+	operator-sdk generate kustomize manifests --input-dir=./config/manifests/osl --output-dir=./config/manifests/osl --package=logic-operator-rhel8  -q
+	cd config/manager/osl && $(KUSTOMIZE) edit set image controller=$(IMG)
+	$(KUSTOMIZE) build config/manifests/osl | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS) --package=logic-operator-rhel8 --output-dir=bundle.osl
+	operator-sdk bundle validate ./bundle.osl
 
 .PHONY: bundle-build
 bundle-build: ## Build the bundle image.
-	$(BUILDER)  build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
+	cekit --redhat -vvvv --descriptor osl-bundle-prod.yaml build osbs $(CEKIT_FLAGS)
 
 .PHONY: bundle-push
 bundle-push: ## Push the bundle image.
@@ -321,19 +309,20 @@ bump-version:
 install-operator-sdk:
 	./hack/ci/install-operator-sdk.sh
 
-align-osl-config:
-	./hack/align-osl-config.sh
-
 .PHONY: addheaders
 addheaders:
 	./hack/addheaders.sh
 
 .PHONY: generate-all
-generate-all: generate generate-deploy bundle addheaders vet fmt
+generate-all: generate generate-deploy bundle
 
 .PHONY: test-e2e # You will need to have a Minikube/Kind cluster up in running to run this target, and run container-builder before the test
 test-e2e: install-operator-sdk
 	go test ./test/e2e/* -v -ginkgo.v
 
 .PHONY: before-pr
-before-pr: test generate-all
+before-pr: addheaders test generate-all
+
+.PHONY: scorecard-tests
+scorecard-tests:
+	operator-sdk scorecard bundle.osl -o text --selector='test in (basic-check-spec-test,olm-bundle-validation-test)'

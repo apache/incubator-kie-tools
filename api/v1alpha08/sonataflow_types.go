@@ -109,24 +109,33 @@ type ConfigMapWorkflowResource struct {
 }
 
 // SonataFlowSpec defines the desired state of SonataFlow
+// +k8s:openapi-gen=true
 type SonataFlowSpec struct {
+	// Flow the workflow definition.
 	// +kubebuilder:validation:Required
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="flow"
 	Flow Flow `json:"flow"`
 	// Resources workflow resources that are linked to this workflow definition.
 	// For example, a collection of OpenAPI specification files.
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="resources"
 	Resources WorkflowResources `json:"resources,omitempty"`
 }
 
 // SonataFlowStatus defines the observed state of SonataFlow
+// +k8s:openapi-gen=true
 type SonataFlowStatus struct {
 	api.Status `json:",inline"`
 	// Address is used as a part of Addressable interface (status.address.url) for knative
 	// +optional
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="address"
 	Address duckv1.Addressable `json:"address,omitempty"`
 	// keeps track of how many failure recovers a given workflow had so far
-	RecoverFailureAttempts int         `json:"recoverFailureAttempts,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="recoverFailureAttempts"
+	RecoverFailureAttempts int `json:"recoverFailureAttempts,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="lastTimeRecoverAttempt"
 	LastTimeRecoverAttempt metav1.Time `json:"lastTimeRecoverAttempt,omitempty"`
 	// Endpoint is an externally accessible URL of the workflow
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="endpoint"
 	Endpoint *apis.URL `json:"endpoint,omitempty"`
 }
 
@@ -190,6 +199,11 @@ func (s *SonataFlowStatus) IsBuildFailed() bool {
 // +kubebuilder:printcolumn:name="URL",type=string,JSONPath=`.status.endpoint`
 // +kubebuilder:printcolumn:name="Ready",type=string,JSONPath=`.status.conditions[?(@.type=='Running')].status`
 // +kubebuilder:printcolumn:name="Reason",type=string,JSONPath=`.status.conditions[?(@.type=='Running')].reason`
+// +operator-sdk:csv:customresourcedefinitions:resources={{SonataFlowBuild,sonataflow.org/v1alpha08,"A SonataFlow Build"}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{Deployment,apps/v1,"A Deployment for the Flow"}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{Service,v1,"A Service for the Flow"}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{Route,route.openshift.io/v1,"An OpenShift Route for the Flow"}}
+// +operator-sdk:csv:customresourcedefinitions:resources={{ConfigMap,v1,"The ConfigMaps with Flow definition and additional configuration files"}}
 type SonataFlow struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
