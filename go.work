@@ -3,8 +3,6 @@ go 1.19
 use (
 	.
 	./api
-	./bddframework
 	./container-builder
-	./testbdd
 	./workflowproj
 )
