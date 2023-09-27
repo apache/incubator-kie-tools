@@ -27,7 +27,7 @@
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "axios": "^0.27.2",
-    "fast-xml-parser": "^4.2.4",
+    "fast-xml-parser": "^4.3.1",
     "portfinder": "^1.0.32",
     "semver": "^7.5.4",
     "sinon": "^11.1.1"
