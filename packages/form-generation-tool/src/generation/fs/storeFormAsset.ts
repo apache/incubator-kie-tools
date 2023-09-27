@@ -33,7 +33,7 @@ export function getFormAssetPath(sourcePath: string, formAsset: string): string 
 }
 
 export function getFormConfigAssetPath(source: string, formAsset: FormAsset): string {
-  return getFormAssetPath(source, `${formAsset.id}${FORM_CONFIG_EXT}`);
+  return getFormAssetPath(source, `${formAsset.sanitizedId}${FORM_CONFIG_EXT}`);
 }
 
 export function storeFormAsset(formAsset: FormAsset, source: string, overwriteExisting: boolean) {
@@ -45,7 +45,7 @@ export function storeFormAsset(formAsset: FormAsset, source: string, overwriteEx
 
   const existingFormAssets = fs.readdirSync(storagePath).filter((file) => {
     const extension = path.extname(file);
-    return path.basename(file, extension) === formAsset.id;
+    return path.basename(file, extension) === formAsset.sanitizedId;
   });
 
   if (existingFormAssets.length > 0) {
@@ -53,12 +53,12 @@ export function storeFormAsset(formAsset: FormAsset, source: string, overwriteEx
       throw new Error(`Form already exists.`);
     }
 
-    console.log(`Form "${formAsset.id}" already exists. Proceeding to overwrite it.`);
+    console.log(`Form "${formAsset.sanitizedId}" already exists. Proceeding to overwrite it.`);
 
     existingFormAssets.forEach((file) => {
       fs.rmSync(getFormAssetPath(source, file));
     });
   }
-  fs.writeFileSync(getFormAssetPath(source, formAsset.assetName), formAsset.content);
+  fs.writeFileSync(getFormAssetPath(source, formAsset.sanitizedAssetName), formAsset.content);
   fs.writeFileSync(getFormConfigAssetPath(source, formAsset), JSON.stringify(formAsset.config, null, 4));
 }

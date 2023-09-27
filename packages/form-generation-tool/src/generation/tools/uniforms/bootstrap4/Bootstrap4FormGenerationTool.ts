@@ -23,6 +23,7 @@ import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, Fo
 import { renderForm } from "@kie-tools/uniforms-bootstrap4-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
+import { inputSanitizationUtil } from "../utils/InputSanitizationUtil";
 
 export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
 export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
@@ -55,13 +56,16 @@ export class Bootstrap4FormGenerationTool implements FormGenerationTool {
 
     const form = renderForm({
       id: inputSchema.name,
+      sanitizedId: inputSanitizationUtil(inputSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
       id: inputSchema.name,
+      sanitizedId: inputSanitizationUtil(inputSchema.name),
       assetName: `${inputSchema.name}.${FormAssetType.HTML}`,
+      sanitizedAssetName: `${inputSanitizationUtil(inputSchema.name)}.${FormAssetType.HTML}`,
       type: FormAssetType.HTML,
       content: unescape(form),
       config: new Bootstrap4FormConfig(inputSchema.schema),
