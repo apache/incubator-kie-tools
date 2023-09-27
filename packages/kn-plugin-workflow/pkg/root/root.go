@@ -53,6 +53,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.AddCommand(command.NewRunCommand())
 	cmd.AddCommand(command.NewDeployCommand())
 	cmd.AddCommand(command.NewUndeployCommand())
+	cmd.AddCommand(command.NewGenManifest())
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 
