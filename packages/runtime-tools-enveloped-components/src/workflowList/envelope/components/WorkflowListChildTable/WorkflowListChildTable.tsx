@@ -20,7 +20,7 @@
 import { WorkflowListDriver } from "../../../api";
 import { ICell, IRow, IRowCell, Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/components/Table";
 import React, { useEffect, useState } from "react";
-import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import _ from "lodash";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import {

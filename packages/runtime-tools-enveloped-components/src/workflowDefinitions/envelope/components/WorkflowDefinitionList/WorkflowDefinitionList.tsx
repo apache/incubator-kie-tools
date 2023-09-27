@@ -27,7 +27,7 @@ import { WorkflowDefinitionListDriver } from "../../../api/WorkflowDefinitionLis
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import WorkflowDefinitionListToolbar from "../WorkflowDefinitionListToolbar/WorkflowDefinitionListToolbar";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface WorkflowDefinitionListProps {
   isEnvelopeConnectedToChannel: boolean;

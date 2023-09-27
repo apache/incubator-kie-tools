@@ -18,7 +18,8 @@
  */
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { CloudEventRequest, CloudEventFormChannelApi, CloudEventFormDriver } from "../api";
+import { CloudEventFormChannelApi, CloudEventFormDriver } from "../api";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export class CloudEventFormEnvelopeViewDriver implements CloudEventFormDriver {
   constructor(private readonly channelApi: MessageBusClientApi<CloudEventFormChannelApi>) {}

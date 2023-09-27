@@ -21,11 +21,10 @@ import {
   WorkflowInstance,
   Job,
   JobCancel,
-  SvgSuccessResponse,
-  SvgErrorResponse,
   TriggerableNode,
   NodeInstance,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
+
 export interface WorkflowDetailsDriver {
   handleWorkflowAbort(workflowInstance: WorkflowInstance): Promise<void>;
   cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel>;

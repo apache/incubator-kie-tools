@@ -22,11 +22,9 @@ import {
   WorkflowInstance,
   Job,
   JobCancel,
-  SvgSuccessResponse,
-  SvgErrorResponse,
   TriggerableNode,
   NodeInstance,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export class WorkflowDetailsChannelApiImpl implements WorkflowDetailsChannelApi {
   constructor(private readonly driver: WorkflowDetailsDriver) {}

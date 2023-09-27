@@ -26,7 +26,7 @@ import {
   WorkflowInstanceFilter,
   WorkflowListSortBy,
   WorkflowListState,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import WorkflowListTable from "../WorkflowListTable/WorkflowListTable";
 import WorkflowListToolbar from "../WorkflowListToolbar/WorkflowListToolbar";
 import { LoadMore } from "@kie-tools/runtime-tools-components/dist/components/LoadMore";

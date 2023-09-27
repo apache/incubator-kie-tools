@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface WorkflowDetailsEnvelopeApi {
   workflowDetails__init(association: Association, initArgs: WorkflowDetailsInitArgs): Promise<void>;

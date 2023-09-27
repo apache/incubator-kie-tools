@@ -29,13 +29,6 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ItemDescriptor } from "../ItemDescriptor";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 
-export enum OperationType {
-  ABORT = "ABORT",
-  SKIP = "SKIP",
-  RETRY = "RETRY",
-  CANCEL = "CANCEL",
-}
-
 export enum BulkListType {
   PROCESS_INSTANCE = "process_instance",
   JOB = "job",

@@ -119,8 +119,8 @@
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
-      { "id": "@kie-tools/runtime-tools-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-enveloped-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -713,21 +713,24 @@
         "target": "@kie-tools/json-yaml-language-service",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/runtime-tools-components",
+        "target": "@kie-tools/runtime-tools-gateway-api",
+        "weight": 1
+      },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
       { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
       {
         "source": "@kie-tools/runtime-tools-enveloped-components",
-        "target": "@kie-tools/runtime-tools-gateway-api",
+        "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       {
         "source": "@kie-tools/runtime-tools-enveloped-components",
         "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-gateway-api",
-        "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/patternfly-base", "weight": 1 },

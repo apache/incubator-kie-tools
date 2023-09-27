@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { WorkflowListState } from "@kie-tools/runtime-tools-components";
+import { WorkflowListState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 export interface WorkflowListEnvelopeApi {
   workflowList__init(association: Association, initArgs: WorkflowListInitArgs): Promise<void>;
 }

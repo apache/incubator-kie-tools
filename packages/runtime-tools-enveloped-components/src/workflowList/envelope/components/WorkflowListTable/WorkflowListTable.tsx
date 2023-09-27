@@ -21,7 +21,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { ExpandableRowContent } from "@patternfly/react-table/dist/js/components/Table";
 import { TableComposable, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table/dist/js/components/TableComposable";
 import _ from "lodash";
-import { WorkflowInstance, TitleType, WorkflowInstanceState } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance, TitleType, WorkflowInstanceState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { WorkflowInfoModal } from "@kie-tools/runtime-tools-components/dist/components/WorkflowInfoModal";
 import WorkflowListChildTable from "../WorkflowListChildTable/WorkflowListChildTable";
@@ -42,6 +42,7 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import DisablePopup from "../DisablePopup/DisablePopup";
 import "../styles.css";
 import ErrorPopover from "../ErrorPopover/ErrorPopover";
+
 export interface WorkflowListTableProps {
   workflowInstances: WorkflowInstance[];
   isLoading: boolean;

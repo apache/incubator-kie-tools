@@ -20,7 +20,7 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { useWorkflowDefinitionListGatewayApi, WorkflowDefinitionListGatewayApi } from "../WorkflowDefinitionList";
 import { EmbeddedWorkflowDefinitionList } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDefinitions";
 

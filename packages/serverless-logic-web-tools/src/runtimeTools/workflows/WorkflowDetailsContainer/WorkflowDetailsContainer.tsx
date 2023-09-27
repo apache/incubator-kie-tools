@@ -22,7 +22,7 @@ import { useHistory } from "react-router-dom";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedWorkflowDetails } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowDetails/embedded";
 import { WorkflowDetailsGatewayApi, useWorkflowDetailsGatewayApi } from "../WorkflowDetails";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 interface WorkflowListContainerProps {
   workflowInstance: WorkflowInstance;

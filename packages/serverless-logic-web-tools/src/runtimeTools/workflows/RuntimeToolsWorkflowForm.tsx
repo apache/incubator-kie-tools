@@ -24,7 +24,7 @@ import { useHistory } from "react-router";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import WorkflowFormContainer from "./WorkflowFormContainer/WorkflowFormContainer";
 import { useWorkflowFormGatewayApi, WorkflowFormGatewayApi } from "./WorkflowForm";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { InlineEdit, InlineEditApi } from "@kie-tools/runtime-tools-components/dist/components/InlineEdit";
 

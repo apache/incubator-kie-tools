@@ -18,7 +18,7 @@
  */
 
 import Ajv, { ValidateFunction } from "ajv";
-import { SCHEMA_VERSION } from "../types";
+import { SCHEMA_VERSION } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 /**
  * Defines a basic Form Validator
  *

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { WorkflowInstanceFilter } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstanceFilter } from "../types";
 
 const formatSearchWords = (searchWords: string[]) => {
   const tempSearchWordsArray: any[] = [];

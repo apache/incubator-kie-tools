@@ -24,7 +24,7 @@ import { WorkflowListApi, WorkflowListChannelApi, WorkflowListEnvelopeApi, Workf
 import { WorkflowListChannelApiImpl } from "./WorkflowListChannelApiImpl";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import { WorkflowListState } from "@kie-tools/runtime-tools-components";
+import { WorkflowListState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface Props {
   targetOrigin: string;

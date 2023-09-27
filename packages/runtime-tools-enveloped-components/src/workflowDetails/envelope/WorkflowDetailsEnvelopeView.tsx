@@ -23,7 +23,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { WorkflowDetailsChannelApi, WorkflowDetailsInitArgs } from "../api";
 import WorkflowDetails from "./components/WorkflowDetails/WorkflowDetails";
 import WorkflowDetailsEnvelopeViewDriver from "./WorkflowDetailsEnvelopeViewDriver";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface WorkflowDetailsEnvelopeViewApi {
   initialize: (initArgs: WorkflowDetailsInitArgs) => void;

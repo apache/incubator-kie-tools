@@ -19,7 +19,7 @@
 
 import React, { useCallback } from "react";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { WorkflowFormGatewayApi, useWorkflowFormGatewayApi } from "../WorkflowForm";
 import { EmbeddedWorkflowForm } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm";
 import { useGlobalAlert } from "../../../alerts/GlobalAlertsContext";

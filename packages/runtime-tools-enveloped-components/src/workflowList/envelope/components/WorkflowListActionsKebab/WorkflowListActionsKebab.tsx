@@ -19,7 +19,7 @@
 
 import React, { useMemo, useState } from "react";
 import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { checkWorkflowInstanceState } from "../utils/WorkflowListUtils";
 

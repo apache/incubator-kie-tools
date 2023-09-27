@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CloudEventRequest } from "@kie-tools/runtime-tools-components/dist/components/CloudEventForm";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { triggerCloudEvent, triggerStartCloudEvent } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 export interface CloudEventFormGatewayApi {

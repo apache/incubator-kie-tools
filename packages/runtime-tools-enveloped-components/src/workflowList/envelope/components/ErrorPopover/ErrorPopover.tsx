@@ -21,7 +21,7 @@ import React from "react";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { WorkflowInstanceIconCreator } from "../utils/WorkflowListUtils";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 interface ErrorPopoverProps {

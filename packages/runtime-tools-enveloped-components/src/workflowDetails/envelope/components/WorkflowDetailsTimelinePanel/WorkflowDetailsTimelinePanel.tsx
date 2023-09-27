@@ -34,7 +34,7 @@ import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outline
 import React, { useCallback, useState } from "react";
 import "../styles.css";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { WorkflowInstance, Job, NodeInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance, Job, NodeInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { WorkflowInfoModal } from "@kie-tools/runtime-tools-components/dist/components/WorkflowInfoModal";
 import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";

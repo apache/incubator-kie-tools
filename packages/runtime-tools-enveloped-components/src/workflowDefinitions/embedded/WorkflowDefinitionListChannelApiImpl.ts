@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { WorkflowDefinitionListChannelApi, WorkflowDefinitionListDriver } from "../api";
 
 /**

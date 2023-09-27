@@ -26,7 +26,7 @@ import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Te
 import React from "react";
 import { LevelDownAltIcon } from "@patternfly/react-icons/dist/js/icons/level-down-alt-icon";
 import { LevelUpAltIcon } from "@patternfly/react-icons/dist/js/icons/level-up-alt-icon";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import {
   getWorkflowInstanceDescription,
   WorkflowInstanceIconCreator,

@@ -26,7 +26,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import React, { useState, useEffect } from "react";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { WorkflowInstance, TriggerableNode } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance, TriggerableNode } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import WorkflowDetailsErrorModal from "../WorkflowDetailsErrorModal/WorkflowDetailsErrorModal";

@@ -23,11 +23,9 @@ import {
   WorkflowInstance,
   Job,
   JobCancel,
-  SvgSuccessResponse,
-  SvgErrorResponse,
   TriggerableNode,
   NodeInstance,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export default class WorkflowDetailsEnvelopeViewDriver implements WorkflowDetailsDriver {
   constructor(private readonly channelApi: MessageBusClientApi<WorkflowDetailsChannelApi>) {}

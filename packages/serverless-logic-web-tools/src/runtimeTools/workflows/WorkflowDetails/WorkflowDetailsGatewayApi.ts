@@ -21,11 +21,9 @@ import {
   WorkflowInstance,
   Job,
   JobCancel,
-  SvgSuccessResponse,
-  SvgErrorResponse,
   TriggerableNode,
   NodeInstance,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { WorkflowDetailsQueries } from "./WorkflowDetailsQueries";
 
 export interface OnOpenWorkflowInstanceDetailsListener {

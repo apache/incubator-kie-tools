@@ -22,7 +22,7 @@ import { DataTableColumn } from "@kie-tools/runtime-tools-components/dist/compon
 import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 export const getColumn = (columnPath: string, columnLabel: string): DataTableColumn => {
   return {
     label: columnLabel,

@@ -21,11 +21,9 @@ import {
   WorkflowInstance,
   Job,
   JobCancel,
-  SvgSuccessResponse,
-  SvgErrorResponse,
   TriggerableNode,
   NodeInstance,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 export interface WorkflowDetailsChannelApi {
   workflowDetails__handleWorkflowAbort(workflowInstance: WorkflowInstance): Promise<void>;
   workflowDetails__cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel>;

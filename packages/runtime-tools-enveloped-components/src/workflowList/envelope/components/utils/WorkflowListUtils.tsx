@@ -23,7 +23,7 @@ import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { PausedIcon } from "@patternfly/react-icons/dist/js/icons/paused-icon";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
-import { WorkflowInstanceState, WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstanceState, WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { BulkListItem } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 
 export const WorkflowInstanceIconCreator = (state: WorkflowInstanceState): JSX.Element => {

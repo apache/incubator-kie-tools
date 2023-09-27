@@ -24,9 +24,7 @@ import {
   JobCancel,
   TriggerableNode,
   NodeInstance,
-  SvgSuccessResponse,
-  SvgErrorResponse,
-} from "@kie-tools/runtime-tools-components";
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import {
   handleWorkflowAbort,
   handleWorkflowSkip,

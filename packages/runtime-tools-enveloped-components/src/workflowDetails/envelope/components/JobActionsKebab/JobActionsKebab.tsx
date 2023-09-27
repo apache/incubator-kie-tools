@@ -20,7 +20,7 @@
 import React, { useState } from "react";
 import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Job } from "@kie-tools/runtime-tools-components";
+import { Job } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { JobsCancelModal } from "@kie-tools/runtime-tools-components/dist/components/JobsCancelModal";
 import { JobsDetailsModal } from "@kie-tools/runtime-tools-components/dist/components/JobsDetailsModal";
 import { JobsRescheduleModal } from "@kie-tools/runtime-tools-components/dist/components/JobsRescheduleModal";

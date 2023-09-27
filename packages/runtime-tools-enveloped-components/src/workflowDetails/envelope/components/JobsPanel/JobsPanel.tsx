@@ -32,7 +32,7 @@ import {
 import Moment from "react-moment";
 import JobActionsKebab from "../JobActionsKebab/JobActionsKebab";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { Job } from "@kie-tools/runtime-tools-components";
+import { Job } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { JobsIconCreator } from "../../../utils/Utils";
 import { WorkflowDetailsDriver } from "../../../api";
 

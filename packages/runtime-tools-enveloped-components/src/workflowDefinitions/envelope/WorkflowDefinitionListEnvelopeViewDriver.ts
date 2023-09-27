@@ -18,7 +18,7 @@
  */
 
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { WorkflowDefinition } from "@kie-tools/runtime-tools-components";
+import { WorkflowDefinition } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { WorkflowDefinitionListChannelApi, WorkflowDefinitionListDriver } from "../api";
 
 /**

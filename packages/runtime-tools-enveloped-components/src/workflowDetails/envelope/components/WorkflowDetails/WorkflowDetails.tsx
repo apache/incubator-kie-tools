@@ -36,7 +36,12 @@ import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circl
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
-import { Job, WorkflowInstance, WorkflowInstanceState, TitleType } from "@kie-tools/runtime-tools-components";
+import {
+  Job,
+  WorkflowInstance,
+  WorkflowInstanceState,
+  TitleType,
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { WorkflowInfoModal } from "@kie-tools/runtime-tools-components/dist/components/WorkflowInfoModal";
 import { WorkflowDetailsDriver } from "../../../api";

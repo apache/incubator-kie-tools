@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CloudEventRequest } from "./CloudEventFormChannelApi";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 /**
  * Interface that defines a Driver for CloudEventForm views.

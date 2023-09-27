@@ -19,13 +19,7 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { componentOuiaProps, OUIAProps } from "../../../../../ouiaTools";
-import {
-  CloudEventFormDefaultValues,
-  CloudEventFormDriver,
-  CloudEventMethod,
-  KOGITO_BUSINESS_KEY,
-  KOGITO_PROCESS_REFERENCE_ID,
-} from "../../../api";
+import { CloudEventFormDefaultValues, CloudEventFormDriver } from "../../../api";
 import { ActionListGroup } from "@patternfly/react-core/dist/js/components/ActionList";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -42,6 +36,11 @@ import CloudEventFieldLabelIcon from "../CloudEventFieldLabelIcon/CloudEventFiel
 import { RequestDataEditor, RequestDataEditorApi } from "../../../../RequestDataEditor";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { KogitoSpinner } from "../../../../KogitoSpinner";
+import {
+  CloudEventMethod,
+  KOGITO_BUSINESS_KEY,
+  KOGITO_PROCESS_REFERENCE_ID,
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;

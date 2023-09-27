@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { JobStatus, Job, WorkflowInstance, NodeInstance } from "@kie-tools/runtime-tools-components";
+import { JobStatus, Job, WorkflowInstance, NodeInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ClockIcon } from "@patternfly/react-icons/dist/js/icons/clock-icon";
 import { BanIcon } from "@patternfly/react-icons/dist/js/icons/ban-icon";

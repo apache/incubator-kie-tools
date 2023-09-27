@@ -19,7 +19,7 @@
 
 import React, { ReactElement } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 interface DisablePopupProps {

@@ -28,7 +28,7 @@ import {
   WorkflowDetailsEnvelopeApi,
   WorkflowDetailsDriver,
 } from "../api";
-import { WorkflowInstance } from "@kie-tools/runtime-tools-components";
+import { WorkflowInstance } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { WorkflowDetailsChannelApiImpl } from "./WorkflowDetailsChannelApiImpl";
 
 export interface Props {

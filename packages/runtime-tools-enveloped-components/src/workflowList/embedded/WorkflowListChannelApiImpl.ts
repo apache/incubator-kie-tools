@@ -23,8 +23,8 @@ import {
   WorkflowInstance,
   WorkflowInstanceFilter,
   WorkflowListSortBy,
-} from "@kie-tools/runtime-tools-components";
-import { OperationType } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
+  OperationType,
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export class WorkflowListChannelApiImpl implements WorkflowListChannelApi {
   constructor(private readonly driver: WorkflowListDriver) {}

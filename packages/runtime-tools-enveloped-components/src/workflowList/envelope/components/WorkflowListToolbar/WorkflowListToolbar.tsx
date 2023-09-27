@@ -48,7 +48,12 @@ import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import _ from "lodash";
-import { WorkflowInstance, WorkflowInstanceState, WorkflowInstanceFilter } from "@kie-tools/runtime-tools-components";
+import {
+  WorkflowInstance,
+  WorkflowInstanceState,
+  WorkflowInstanceFilter,
+  OperationType,
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import {
   BulkListType,
   IOperationResults,
@@ -60,7 +65,6 @@ import { WorkflowListDriver } from "../../../api";
 import "../styles.css";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { formatForBulkListWorkflowInstance } from "../utils/WorkflowListUtils";
-import { OperationType } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 
 enum Category {
   STATUS = "Status",
