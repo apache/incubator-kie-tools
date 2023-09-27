@@ -63,7 +63,7 @@ describe("formGenerationCommand tests", () => {
   it("Generate forms project with schemas", () => {
     const schemas: FormSchema[] = [
       {
-        name: "ApplyFor#Visa",
+        name: "Apply#For#Visa",
         schema: ApplyForVisaSchema,
       },
       {
@@ -84,11 +84,11 @@ describe("formGenerationCommand tests", () => {
     expect(storeFormAssetsMock).toBeCalledTimes(2);
 
     const applyForVisaAsset: FormAsset = storeFormAssetsMock.mock.calls[0][0];
-    expect(applyForVisaAsset.id).toEqual("ApplyFor#Visa");
-    expect(applyForVisaAsset.sanitizedId).toEqual("ApplyFor_Visa");
-    expect(applyForVisaAsset.assetName).toEqual("ApplyFor#Visa.tsx");
-    expect(applyForVisaAsset.sanitizedAssetName).toEqual("ApplyFor_Visa.tsx");
-    expect(applyForVisaAsset.content).toContain("const Form__ApplyFor_Visa");
+    expect(applyForVisaAsset.id).toEqual("Apply#For#Visa");
+    expect(applyForVisaAsset.sanitizedId).toEqual("Apply_For_Visa");
+    expect(applyForVisaAsset.assetName).toEqual("Apply#For#Visa.tsx");
+    expect(applyForVisaAsset.sanitizedAssetName).toEqual("Apply_For_Visa.tsx");
+    expect(applyForVisaAsset.content).toContain("const Form__Apply_For_Visa");
     expect(storeFormAssetsMock.mock.calls[0][1]).toEqual(sourcePath);
     expect(storeFormAssetsMock.mock.calls[0][2]).toBeTruthy();
 

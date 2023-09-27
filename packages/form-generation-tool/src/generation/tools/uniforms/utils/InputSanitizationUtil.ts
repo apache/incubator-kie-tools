@@ -18,5 +18,5 @@
  */
 
 export const inputSanitizationUtil = (unsanitizedString: string) => {
-  return unsanitizedString.replace("#", "_");
+  return unsanitizedString.replaceAll("#", "_");
 };
