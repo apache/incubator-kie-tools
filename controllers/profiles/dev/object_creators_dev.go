@@ -113,10 +113,6 @@ func ensureWorkflowDefConfigMapMutator(workflow *operatorapi.SonataFlow) common.
 	}
 }
 
-func ensureWorkflowDevPropertiesConfigMapMutator(workflow *operatorapi.SonataFlow) common.MutateVisitor {
-	return common.WorkflowPropertiesMutateVisitor(workflow, common.DefaultApplicationProperties)
-}
-
 // mountDevConfigMapsMutateVisitor mounts the required configMaps in the Workflow Dev Deployment
 func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workflowResCMs []operatorapi.ConfigMapWorkflowResource) common.MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {

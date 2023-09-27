@@ -49,7 +49,7 @@ func (d *deploymentHandler) handle(ctx context.Context, workflow *operatorapi.So
 }
 
 func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
-	propsCM, _, err := d.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow, common.DefaultApplicationProperties))
+	propsCM, _, err := d.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow))
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the properties config map")
 		_, err = d.PerformStatusUpdate(ctx, workflow)

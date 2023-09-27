@@ -37,8 +37,6 @@ const (
 	DefaultHTTPWorkflowPortName = "http"
 	defaultHTTPServicePort      = 80
 
-	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
-
 	// Quarkus Health Check Probe configuration.
 	// See: https://quarkus.io/guides/smallrye-health#running-the-health-check
 
@@ -56,15 +54,6 @@ const (
 )
 
 var defaultHTTPWorkflowPortIntStr = intstr.FromInt(DefaultHTTPWorkflowPortInt)
-
-// DefaultApplicationProperties default application properties added to every Workflow ConfigMap
-var DefaultApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflowPortIntStr.String() + "\n" +
-	"quarkus.http.host=0.0.0.0\n" +
-	// We disable the Knative health checks to not block the dev pod to run if Knative objects are not available
-	// See: https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/eventing/consume-produce-events-with-knative-eventing.html#ref-knative-eventing-add-on-source-configuration
-	"org.kie.kogito.addons.knative.eventing.health-enabled=false\n" +
-	"quarkus.devservices.enabled=false\n" +
-	"quarkus.kogito.devservices.enabled=false\n"
 
 // DeploymentCreator is an objectCreator for a base Kubernetes Deployments for profiles that need to deploy the workflow on a vanilla deployment.
 // It serves as a basis for a basic Quarkus Java application, expected to listen on http 8080.
@@ -204,5 +193,5 @@ func OpenShiftRouteCreator(workflow *operatorapi.SonataFlow) (client.Object, err
 
 // WorkflowPropsConfigMapCreator creates a ConfigMap to hold the external application properties
 func WorkflowPropsConfigMapCreator(workflow *operatorapi.SonataFlow) (client.Object, error) {
-	return workflowproj.CreateNewAppPropsConfigMap(workflow, DefaultApplicationProperties), nil
+	return workflowproj.CreateNewAppPropsConfigMap(workflow, ImmutableApplicationProperties(workflow)), nil
 }

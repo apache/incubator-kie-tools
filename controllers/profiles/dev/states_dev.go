@@ -63,7 +63,7 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	}
 	objs = append(objs, flowDefCM)
 
-	propsCM, _, err := e.ensurers.propertiesConfigMap.Ensure(ctx, workflow, ensureWorkflowDevPropertiesConfigMapMutator(workflow))
+	propsCM, _, err := e.ensurers.propertiesConfigMap.Ensure(ctx, workflow, common.WorkflowPropertiesMutateVisitor(workflow))
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}

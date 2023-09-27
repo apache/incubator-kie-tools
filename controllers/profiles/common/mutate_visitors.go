@@ -15,7 +15,6 @@
 package common
 
 import (
-	"github.com/magiconair/properties"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -88,38 +87,26 @@ func ServiceMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {
 	}
 }
 
-func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow, defaultProperties string) MutateVisitor {
+func WorkflowPropertiesMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {
 	return func(object client.Object) controllerutil.MutateFn {
 		return func() error {
 			if kubeutil.IsObjectNew(object) {
 				return nil
 			}
-			original, err := WorkflowPropsConfigMapCreator(workflow)
-			if err != nil {
-				return err
-			}
 			cm := object.(*corev1.ConfigMap)
-			cm.Labels = original.GetLabels()
-
+			cm.Labels = workflow.GetLabels()
 			_, hasKey := cm.Data[workflowproj.ApplicationPropertiesFileName]
 			if !hasKey {
 				cm.Data = make(map[string]string, 1)
-				cm.Data[workflowproj.ApplicationPropertiesFileName] = defaultProperties
-			} else {
-				props, propErr := properties.LoadString(cm.Data[workflowproj.ApplicationPropertiesFileName])
-				if propErr != nil {
-					// can't load user's properties, replace with default
-					cm.Data[workflowproj.ApplicationPropertiesFileName] = defaultProperties
-					return nil
-				}
-				originalProps := properties.MustLoadString(original.(*corev1.ConfigMap).Data[workflowproj.ApplicationPropertiesFileName])
-				// we overwrite with the defaults
-				props.Merge(originalProps)
-				// Disable expansions since it's not our responsibility
-				// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
-				props.DisableExpansion = true
-				cm.Data[workflowproj.ApplicationPropertiesFileName] = props.String()
+				cm.Data[workflowproj.ApplicationPropertiesFileName] = ImmutableApplicationProperties(workflow)
+				return nil
 			}
+
+			// In the future, if this needs change, instead we can receive an AppPropertyHandler in this mutator
+			cm.Data[workflowproj.ApplicationPropertiesFileName] =
+				NewAppPropertyHandler(workflow).
+					WithUserProperties(cm.Data[workflowproj.ApplicationPropertiesFileName]).
+					Build()
 
 			return nil
 		}
