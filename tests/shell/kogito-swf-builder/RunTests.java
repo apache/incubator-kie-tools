@@ -46,9 +46,9 @@ public class RunTests {
     private Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
 
     @Container
-    private GenericContainer builtImage = new GenericContainer(
+    private GenericContainer greetBuiltImage = new GenericContainer(
             new ImageFromDockerfile("dev.local/jbang-test/swf-test:" + Math.round(Math.random() * 1000000.00))
-                    .withDockerfile(Paths.get(getScriptDirPath(), "resources", "Dockerfile"))
+                    .withDockerfile(Paths.get(getScriptDirPath(), "resources/greet", "Dockerfile"))
                     .withBuildArg("BUILDER_IMAGE_TAG", getTestImage()))
             .withExposedPorts(8080)
             .waitingFor(Wait.forHttp("/jsongreet"))
@@ -56,9 +56,9 @@ public class RunTests {
 
     @Test
     public void testBuiltContainerAnswerCorrectly() throws URISyntaxException, IOException, InterruptedException {
-        builtImage.start();
+        greetBuiltImage.start();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI("http://" + builtImage.getHost() + ":" + builtImage.getFirstMappedPort() + "/jsongreet"))
+                .uri(new URI("http://" + greetBuiltImage.getHost() + ":" + greetBuiltImage.getFirstMappedPort() + "/jsongreet"))
                 .header("Content-Type", "application/json")
                 .header("Accept", "application/json")
                 .timeout(Duration.ofSeconds(10))
@@ -67,6 +67,32 @@ public class RunTests {
                 .build();
         HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
         assertEquals(201, response.statusCode());
+        greetBuiltImage.stop();
+    }
+
+    @Container
+    private GenericContainer greetWithInputSchemaBuiltImage = new GenericContainer(
+            new ImageFromDockerfile("dev.local/jbang-test/swf-test:" + Math.round(Math.random() * 1000000.00))
+                    .withDockerfile(Paths.get(getScriptDirPath(), "resources/greet-with-inputschema", "Dockerfile"))
+                    .withBuildArg("BUILDER_IMAGE_TAG", getTestImage()))
+            .withExposedPorts(8080)
+            .waitingFor(Wait.forHttp("/greeting"))
+            .withLogConsumer(logConsumer);
+
+    @Test
+    public void testBuiltContainerWithInputSchemaAnswerCorrectly() throws URISyntaxException, IOException, InterruptedException {
+        greetWithInputSchemaBuiltImage.start();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI("http://" + greetWithInputSchemaBuiltImage.getHost() + ":" + greetWithInputSchemaBuiltImage.getFirstMappedPort() + "/greeting"))
+                .header("Content-Type", "application/json")
+                .header("Accept", "application/json")
+                .timeout(Duration.ofSeconds(10))
+                .POST(HttpRequest.BodyPublishers
+                        .ofString("{\"name\": \"John\", \"language\": \"English\"}"))
+                .build();
+        HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+        greetWithInputSchemaBuiltImage.stop();
     }
 
     public static void main(String... args) throws Exception {

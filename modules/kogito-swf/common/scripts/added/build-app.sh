@@ -20,7 +20,7 @@ fi
 SUPPORTED_FILES=(".yaml" ".yml" ".json" ".properties" ".mvn/jvm.config")
 log_info "-> Copying files from ${resources_path}, if any..."
 if [ ! -z "${resources_path}" ]; then
-    find "${resources_path}" -regex '.*\.\(yaml\|yml\|json\|properties\)$' -exec cp -v {} src/main/resources/ \;
+    cd "${resources_path}" && find . -regex '.*\.\(yaml\|yml\|json\|properties\)$' | sed 's|^./||' | xargs cp -v --parents -t "${swf_home_dir}"/src/main/resources/ && cd -
     find "${resources_path}" -name 'jvm.config' -exec echo "--> found {}" \; -exec mkdir -p .mvn \; -exec cp -v {} .mvn/ \;
 else
     log_warning "-> Nothing to copy from ${resources_path}"
