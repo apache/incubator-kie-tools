@@ -70,7 +70,7 @@ describe("Serverless workflow editor - expression tests", () => {
     const contentAssist = await textEditor.toggleContentAssist(true);
 
     // check jq expression autocompletion
-    var contentAssistItems = await contentAssist?.getItems();
+    let contentAssistItems = await contentAssist?.getItems();
     const jqExpressionNames = await Promise.all(contentAssistItems?.map(async (i) => await i.getLabel()) ?? []);
     expect(jqExpressionNames).to.contain.members(["add", "all", "all(condition)", "all(generator; condition)", "any"]);
 

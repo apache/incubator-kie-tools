@@ -27,8 +27,8 @@ import { VSCodeTestHelper } from "@kie-tools/vscode-extension-common-test-helper
 import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - functions tests", () => {
-  const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "functions-events");
-  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-it-tests");
+  const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources", "functions-events");
+  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
 
   let testHelper: VSCodeTestHelper;
 
