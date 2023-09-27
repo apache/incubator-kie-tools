@@ -33,13 +33,13 @@ describe("Serverless Logic Web Tools - Recent model test", () => {
     // add some content
     cy.getEditor().within(() => {
       cy.iframe("#kogito-iframe[src='./serverless-workflow-text-editor-envelope.html']").within(() => {
-        cy.get(".monaco-editor textarea").type("//test");
+        cy.get(".monaco-editor textarea").forceType("//test");
       });
     });
 
     // rename file and save
     cy.wait(1000); // there must be a pause otherwise the file is not renamed
-    cy.ouia({ ouiaId: "file-name-input" }).type("{selectAll}testJsonFile{enter}");
+    cy.ouia({ ouiaId: "file-name-input" }).forceType("{selectAll}testJsonFile{enter}");
     cy.ouia({ ouiaId: "kebab-sm" }).click();
     cy.ouia({ ouiaId: "commit-button" }).click();
     cy.ouia({ ouiaId: "commit-created-alert" }).should("be.visible");

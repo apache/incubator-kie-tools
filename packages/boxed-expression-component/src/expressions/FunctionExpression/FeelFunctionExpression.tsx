@@ -57,7 +57,7 @@ export type FEEL_ROWTYPE = { functionExpression: FunctionExpressionDefinition };
 export function FeelFunctionExpression({
   functionExpression,
 }: {
-  functionExpression: FeelFunctionExpressionDefinition & { isNested: boolean };
+  functionExpression: FeelFunctionExpressionDefinition & { isNested: boolean; parentElementId: string };
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -120,10 +120,13 @@ export function FeelFunctionExpression({
 
   const controllerCell = useFunctionExpressionControllerCell(FunctionExpressionDefinitionKind.Feel);
 
-  const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
-    () => ({ parameters: (props) => <FeelFunctionImplementationCell {...props} /> }),
-    []
-  );
+  const cellComponentByColumnAccessor: BeeTableProps<FEEL_ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(() => {
+    return {
+      parameters: (props) => (
+        <FeelFunctionImplementationCell {...props} parentElementId={functionExpression.parentElementId} />
+      ),
+    };
+  }, [functionExpression.parentElementId]);
 
   const getRowKey = useCallback((r: ReactTable.Row<FEEL_ROWTYPE>) => {
     return r.original.functionExpression.id;
@@ -201,7 +204,12 @@ export function FeelFunctionExpression({
   );
 }
 
-export function FeelFunctionImplementationCell({ data, rowIndex, columnIndex }: BeeTableCellProps<FEEL_ROWTYPE>) {
+export function FeelFunctionImplementationCell({
+  data,
+  rowIndex,
+  columnIndex,
+  parentElementId,
+}: BeeTableCellProps<FEEL_ROWTYPE> & { parentElementId: string }) {
   const functionExpression = data[rowIndex].functionExpression as FeelFunctionExpressionDefinition;
 
   const { setExpression } = useBoxedExpressionEditorDispatch();
@@ -224,6 +232,7 @@ export function FeelFunctionImplementationCell({ data, rowIndex, columnIndex }: 
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
+        parentElementId={parentElementId}
       />
     </NestedExpressionDispatchContextProvider>
   );
