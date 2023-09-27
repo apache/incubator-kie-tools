@@ -107,7 +107,7 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 	}
 
 	//setup manifest path
-	manifestDir, err := generatedManifestsDir(cfg.ManifestPath)
+	manifestDir, err := resolveManifestDir(cfg.ManifestPath)
 	if err != nil {
 		return cfg, fmt.Errorf("❌ ERROR: failed to get manifest directory: %w", err)
 	}
@@ -116,7 +116,7 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 	return cfg, nil
 }
 
-func generatedManifestsDir(folderName string) (string, error) {
+func resolveManifestDir(folderName string) (string, error) {
 	if folderName == "" {
 		folderName = "manifests"
 	}
