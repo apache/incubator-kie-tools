@@ -17,7 +17,6 @@ script_dir_path=`dirname "${BASH_SOURCE[0]}"`
 source ${script_dir_path}/env.sh
 
 DIR=$(mktemp -d)
-LEAK_RESOURCES=( infinispan keycloakclients keycloakusers keycloakrealms kogitoruntimes kogitosupportingservices)
 
 oc get namespaces | grep "Terminating" | awk -F " " '{print $1}' > ${DIR}/projects
 

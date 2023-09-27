@@ -74,7 +74,7 @@ function usage(){
   printf "\n-h | --help\n\tPrint the usage of this script."
   
   # tests configuration
-  printf "\n--test_main_dir {TEST_MAIN_DIR}\n\tWhere to find the `main_test.go` file. Default to `testbdd/`."
+  printf "\n--test_main_dir {TEST_MAIN_DIR}\n\tWhere to find the 'main_test.go' file. Defaults to 'testbdd/'."
   printf "\n--feature {FEATURE_PATH}\n\tRun a specific feature file."
   printf "\n--tags {TAGS}\n\tFilter scenarios by tags."
     printf "\n\tExpressions can be:"
@@ -100,7 +100,7 @@ function usage(){
   printf "\n--olm_namespace \n\tSet the namespace which is used for cluster scope operators. Default is 'openshift-operators'."
 
   # operator information
-  printf "\n--operator_image_tag {IMAGE_TAG}\n\tOperator image name. Default is 'quay.io/kiegroup/kogito-operator' one."
+  printf "\n--operator_image_tag {IMAGE_TAG}\n\tOperator image name."
   printf "\n--operator_installation_source {TAG}\n\tDefines installation source for the Kogito operator. Options are 'olm' and 'yaml'. Default is yaml."
   printf "\n--operator_catalog_image {TAG}\n\tDefines image containing operator catalog. Needs to be specified only when operator_installation_source is 'olm'."
   printf "\n--use_product_operator {TAG}\n\tSet to true to deploy RHPAM Kogito operator, false for using Kogito operator. Default is false."

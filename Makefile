@@ -127,11 +127,11 @@ test-api:
 TEST_DIR=testbdd
 
 .PHONY: run-tests
-run-tests:
+run-tests: generate-all
 	@(cd $(TEST_DIR) && $(MAKE) $@)
 
 .PHONY: run-smoke-tests
-run-smoke-tests:
+run-smoke-tests: generate-all
 	@(cd $(TEST_DIR) && $(MAKE) $@)
 
 .PHONY: test-container-builder
