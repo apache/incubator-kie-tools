@@ -1,10 +1,14 @@
 {
   "extends": "@kie-tools/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "module": "CommonJS",
+    "target": "es6",
+    "moduleResolution": "node",
     "declaration": false,
     "declarationMap": false,
-    "resolveJsonModule": true,
-    "outDir": "out"
+    "outDir": "out",
+    "skipLibCheck": true,
+    "sourceMap": true
   },
   "include": ["e2e-tests"],
   "exclude": ["test-resources"]
