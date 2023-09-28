@@ -189,7 +189,7 @@ export const DmnEditorInternal = ({
         >
           {navigation.tab === DmnEditorTab.EDITOR && (
             <>
-              {!boxedExpressionEditor.openExpressionId && (
+              {!boxedExpressionEditor.activeDrgElementId && (
                 <Drawer isExpanded={diagram.propertiesPanel.isOpen} isInline={true} position={"right"}>
                   <DrawerContent panelContent={<DiagramPropertiesPanel />}>
                     <DrawerContentBody>
@@ -201,7 +201,7 @@ export const DmnEditorInternal = ({
                   </DrawerContent>
                 </Drawer>
               )}
-              {boxedExpressionEditor.openExpressionId && (
+              {boxedExpressionEditor.activeDrgElementId && (
                 <Drawer isExpanded={boxedExpressionEditor.propertiesPanel.isOpen} isInline={true} position={"right"}>
                   <DrawerContent panelContent={<BeePropertiesPanel />}>
                     <DrawerContentBody>

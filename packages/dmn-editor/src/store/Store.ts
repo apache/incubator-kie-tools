@@ -28,7 +28,7 @@ export interface State {
   dispatch: Dispatch;
   dmn: { model: DmnModel };
   boxedExpressionEditor: {
-    openExpressionId: string | undefined;
+    activeDrgElementId: string | undefined;
     selectedObjectId: string | undefined;
     propertiesPanel: {
       isOpen: boolean;
@@ -135,7 +135,7 @@ export type StoreApiType = UseBoundStore<WithImmer<StoreApi<State>>>;
 
 export const defaultStaticState = () => ({
   boxedExpressionEditor: {
-    openExpressionId: undefined,
+    activeDrgElementId: undefined,
     selectedObjectId: undefined,
     propertiesPanel: {
       isOpen: false,
@@ -192,7 +192,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
               state.diagram.draggingNodes = [];
               state.diagram.resizingNodes = [];
               state.navigation.tab = DmnEditorTab.EDITOR;
-              state.boxedExpressionEditor.openExpressionId = undefined;
+              state.boxedExpressionEditor.activeDrgElementId = undefined;
               state.boxedExpressionEditor.selectedObjectId = undefined;
             });
           },
@@ -218,7 +218,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           },
           open: (id) => {
             set((state) => {
-              state.boxedExpressionEditor.openExpressionId = id;
+              state.boxedExpressionEditor.activeDrgElementId = id;
               state.boxedExpressionEditor.selectedObjectId = undefined;
               state.boxedExpressionEditor.propertiesPanel.isOpen = state.diagram.propertiesPanel.isOpen;
             });
@@ -226,7 +226,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           close: () => {
             set((state) => {
               state.diagram.propertiesPanel.isOpen = state.boxedExpressionEditor.propertiesPanel.isOpen;
-              state.boxedExpressionEditor.openExpressionId = undefined;
+              state.boxedExpressionEditor.activeDrgElementId = undefined;
               state.boxedExpressionEditor.selectedObjectId = undefined;
             });
           },

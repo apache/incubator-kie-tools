@@ -22,13 +22,10 @@ export function TypeRefSelector(props: {
   menuAppendTo?: "parent";
 }) {
   const [isOpen, setOpen] = useState(false);
-  const onToggleDataTypeSelect = useCallback((isOpen: boolean) => {
-    setOpen(isOpen);
-  }, []);
 
   const { dataTypesByFeelName } = useDmnEditorDerivedStore();
 
-  const selectedDt = useMemo(() => {
+  const selectedDataType = useMemo(() => {
     return props.typeRef ? dataTypesByFeelName.get(props.typeRef) : undefined;
   }, [dataTypesByFeelName, props.typeRef]);
 
@@ -60,14 +57,14 @@ export function TypeRefSelector(props: {
       flexWrap={{ default: "nowrap" }}
       spaceItems={{ default: "spaceItemsNone" }}
     >
-      {selectedDt?.itemDefinition && (
+      {selectedDataType?.itemDefinition && (
         <Tooltip content="Jump to definition">
           <Button
             variant={ButtonVariant.control}
             onClick={(e) =>
               dmnEditorStoreApi.setState((state) => {
                 state.navigation.tab = DmnEditorTab.DATA_TYPES;
-                state.dataTypesEditor.activeItemDefinitionId = selectedDt?.itemDefinition?.["@_id"];
+                state.dataTypesEditor.activeItemDefinitionId = selectedDataType?.itemDefinition?.["@_id"];
               })
             }
           >
@@ -80,7 +77,7 @@ export function TypeRefSelector(props: {
         isDisabled={props.isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
-        onToggle={onToggleDataTypeSelect}
+        onToggle={setOpen}
         onSelect={(e, v) => {
           setOpen(false);
           props.onChange(v as DmnBuiltInDataType);

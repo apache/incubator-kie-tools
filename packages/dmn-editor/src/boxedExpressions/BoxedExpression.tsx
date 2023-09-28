@@ -41,6 +41,10 @@ import { isStruct, traverseItemDefinition } from "../dataTypes/DataTypeSpec";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DataType, DataTypesById } from "../dataTypes/DataTypes";
 import { getTextWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
+import { NodeIcon } from "../icons/Icons";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -64,12 +68,12 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   }, [thisDmn.model.definitions]);
 
   const expression = useMemo(() => {
-    if (!boxedExpressionEditor.openExpressionId) {
+    if (!boxedExpressionEditor.activeDrgElementId) {
       return undefined;
     }
 
     const drgElementIndex = (thisDmn.model.definitions.drgElement ?? []).findIndex(
-      (e) => e["@_id"] === boxedExpressionEditor.openExpressionId
+      (e) => e["@_id"] === boxedExpressionEditor.activeDrgElementId
     );
     if (drgElementIndex < 0) {
       return undefined;
@@ -86,7 +90,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
       drgElement,
       drgElementType: drgElement.__$$element,
     };
-  }, [boxedExpressionEditor.openExpressionId, thisDmn.model.definitions.drgElement, widthsById]);
+  }, [boxedExpressionEditor.activeDrgElementId, thisDmn.model.definitions.drgElement, widthsById]);
 
   const [lastValidExpression, setLastValidExpression] = useState<typeof expression>(undefined);
   useEffect(() => {
@@ -181,6 +185,8 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
+  const Icon = expression ? NodeIcon(getNodeTypeFromDmnObject(expression.drgElement)) : () => <></>;
+
   return (
     <>
       <>
@@ -194,24 +200,40 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
             </button>
           </aside>
         )}
-        <Label
-          isCompact={true}
-          className={"kie-dmn-editor--boxed-expression-back"}
-          onClick={dispatch.boxedExpressionEditor.close}
+        <Flex
+          flexWrap={{ default: "nowrap" }}
+          justifyContent={{ default: "justifyContentSpaceBetween" }}
+          alignItems={{ default: "alignItemsCenter" }}
         >
-          Back to Diagram
-        </Label>
+          <Label
+            isCompact={true}
+            className={"kie-dmn-editor--boxed-expression-back"}
+            onClick={dispatch.boxedExpressionEditor.close}
+          >
+            Back to Diagram
+          </Label>
+          <FlexItem>
+            <Flex justifyContent={{ default: "justifyContentFlexStart" }} alignItems={{ default: "alignItemsCenter" }}>
+              <div style={{ height: "40px", width: "40px", margin: "0 0 -23px 0" }}>
+                <Icon />
+              </div>
+              <TextContent style={{ marginBottom: "-20px" }}>
+                <Text component={TextVariants.h2}>{expression?.drgElement["@_name"]}</Text>
+              </TextContent>
+            </Flex>
+          </FlexItem>
+          <FlexItem style={{ width: "105px" }} />
+        </Flex>
         <Divider
           inset={{ default: "insetMd" }}
-          style={{ paddingRight: boxedExpressionEditor.propertiesPanel.isOpen ? "24px" : "56px" }}
+          style={{ marginBottom: "12px", paddingRight: boxedExpressionEditor.propertiesPanel.isOpen ? "24px" : "56px" }}
         />
-        <br />
         {!expression && (
           <>
             <EmptyState>
               <EmptyStateIcon icon={ErrorCircleOIcon} />
               <Title size="lg" headingLevel="h4">
-                {`Expression with ID '${boxedExpressionEditor.openExpressionId}' doesn't exist.`}
+                {`Expression with ID '${boxedExpressionEditor.activeDrgElementId}' doesn't exist.`}
               </Title>
               <EmptyStateBody>
                 This happens when the DMN file is modified externally while the expression was open here.
@@ -230,7 +252,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               beeGwtService={beeGwtService}
               pmmlParams={pmmlParams}
               isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
-              decisionNodeId={boxedExpressionEditor.openExpressionId!}
+              decisionNodeId={boxedExpressionEditor.activeDrgElementId!}
               expressionDefinition={expression.beeExpression}
               setExpressionDefinition={setExpression}
               dataTypes={dataTypes}

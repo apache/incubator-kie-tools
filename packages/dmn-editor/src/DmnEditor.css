@@ -473,7 +473,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--boxed-expression-back {
   cursor: pointer;
   background: white;
-  margin: 16px 0;
+  margin: 24px 0 8px 0;
 }
 .kie-dmn-editor--boxed-expression-back > .pf-c-label__content::before {
   border: 1px solid black;

@@ -8,15 +8,22 @@ import {
 import { SingleNodeProperties } from "./DiagramPropertiesPanel";
 import { useDmnEditorStore } from "../store/Store";
 import { useMemo } from "react";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { buildXmlHref } from "../xml/xmlHrefs";
 
 export function BeePropertiesPanel() {
   const dispatch = useDmnEditorStore((s) => s.dispatch);
-  const { selectedObjectId, openExpressionId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
+  const { nodesById } = useDmnEditorDerivedStore();
 
   const shouldDisplayDecisionOrBkmProps = useMemo(
-    () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === openExpressionId),
-    [openExpressionId, selectedObjectId]
+    () => selectedObjectId === undefined || (selectedObjectId && selectedObjectId === activeDrgElementId),
+    [activeDrgElementId, selectedObjectId]
   );
+
+  const node = useMemo(() => {
+    return activeDrgElementId ? nodesById.get(buildXmlHref({ id: activeDrgElementId })) : undefined;
+  }, [activeDrgElementId, nodesById]);
 
   return (
     <>
@@ -27,7 +34,7 @@ export function BeePropertiesPanel() {
         onKeyDown={(e) => e.stopPropagation()} // This prevents ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
       >
         <DrawerHead>
-          {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={openExpressionId!} />}
+          {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node!.id} />}
           {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
           {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
           <DrawerActions>
