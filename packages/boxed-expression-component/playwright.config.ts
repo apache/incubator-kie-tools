@@ -33,6 +33,7 @@ const customConfig = defineConfig({
     command: "pnpm start",
     url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
     reuseExistingServer: !process.env.CI || true,
+    stdout: "pipe",
   },
 });
 
