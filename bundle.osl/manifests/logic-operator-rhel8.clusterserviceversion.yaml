@@ -647,8 +647,8 @@ spec:
   provider:
     name: Red Hat
   relatedImages:
-    - image: registry.redhat.io/openshift-serverless-1-tech-preview/logic-operator-rhel8@sha256:24c2e62bff1f2f7e5579b990e44206ac019bd00f5ca546b069471fc1af34ed75
-      name: manager
     - image: registry.redhat.io/openshift4/ose-kube-rbac-proxy@sha256:4564ca3dc5bac80d6faddaf94c817fbbc270698a9399d8a21ee1005d85ceda56
       name: kube-rbac-proxy
+    - image: registry.redhat.io/openshift-serverless-1-tech-preview/logic-operator-rhel8@sha256:24c2e62bff1f2f7e5579b990e44206ac019bd00f5ca546b069471fc1af34ed75
+      name: manager
   version: 1.30.0
