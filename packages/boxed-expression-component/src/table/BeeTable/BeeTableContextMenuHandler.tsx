@@ -122,6 +122,10 @@ export function BeeTableContextMenuHandler({
   }, [lastRootMenuId, menuId]);
 
   useEffect(() => {
+    setLastRootMenuId(menuId);
+  }, [menuId]);
+
+  useEffect(() => {
     // If menuId changes it means that user clicked in another cell, so we have to close the currently open
     // context menu in order to force it to be reopened with the correct options for the new cell
     setCurrentlyOpenContextMenu(undefined);
