@@ -25,6 +25,11 @@
             <groupId>com.google.jsinterop</groupId>
             <artifactId>base</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
