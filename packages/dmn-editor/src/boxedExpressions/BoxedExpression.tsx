@@ -190,44 +190,45 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   return (
     <>
       <>
-        {!boxedExpressionEditor.propertiesPanel.isOpen && (
-          <aside className={"kie-dmn-editor--properties-panel-toggle"}>
-            <button
-              className={"kie-dmn-editor--properties-panel-toggle-button"}
-              onClick={dispatch.boxedExpressionEditor.propertiesPanel.toggle}
-            >
-              <InfoIcon size={"sm"} />
-            </button>
-          </aside>
-        )}
-        <Flex
-          flexWrap={{ default: "nowrap" }}
-          justifyContent={{ default: "justifyContentSpaceBetween" }}
-          alignItems={{ default: "alignItemsCenter" }}
-        >
-          <Label
-            isCompact={true}
-            className={"kie-dmn-editor--boxed-expression-back"}
-            onClick={dispatch.boxedExpressionEditor.close}
+        <div className={"sticky-top-glass"} style={{ paddingBottom: "18px" }}>
+          {!boxedExpressionEditor.propertiesPanel.isOpen && (
+            <aside className={"kie-dmn-editor--properties-panel-toggle"}>
+              <button
+                className={"kie-dmn-editor--properties-panel-toggle-button"}
+                onClick={dispatch.boxedExpressionEditor.propertiesPanel.toggle}
+              >
+                <InfoIcon size={"sm"} />
+              </button>
+            </aside>
+          )}
+          <Flex
+            flexWrap={{ default: "nowrap" }}
+            justifyContent={{ default: "justifyContentSpaceBetween" }}
+            alignItems={{ default: "alignItemsCenter" }}
           >
-            Back to Diagram
-          </Label>
-          <FlexItem>
-            <Flex justifyContent={{ default: "justifyContentFlexStart" }} alignItems={{ default: "alignItemsCenter" }}>
-              <div style={{ height: "40px", width: "40px", margin: "0 0 -23px 0" }}>
-                <Icon />
-              </div>
-              <TextContent style={{ marginBottom: "-20px" }}>
-                <Text component={TextVariants.h2}>{expression?.drgElement["@_name"]}</Text>
-              </TextContent>
-            </Flex>
-          </FlexItem>
-          <FlexItem style={{ width: "105px" }} />
-        </Flex>
-        <Divider
-          inset={{ default: "insetMd" }}
-          style={{ marginBottom: "12px", paddingRight: boxedExpressionEditor.propertiesPanel.isOpen ? "24px" : "56px" }}
-        />
+            <Label
+              isCompact={true}
+              className={"kie-dmn-editor--boxed-expression-back"}
+              onClick={dispatch.boxedExpressionEditor.close}
+            >
+              Back to Diagram
+            </Label>
+            <FlexItem>
+              <Flex
+                justifyContent={{ default: "justifyContentFlexStart" }}
+                alignItems={{ default: "alignItemsCenter" }}
+              >
+                <div style={{ height: "40px", width: "40px", margin: "0 0 -23px 0" }}>
+                  <Icon />
+                </div>
+                <TextContent style={{ marginBottom: "-20px" }}>
+                  <Text component={TextVariants.h2}>{expression?.drgElement["@_name"]}</Text>
+                </TextContent>
+              </Flex>
+            </FlexItem>
+            <FlexItem style={{ width: "105px" }} />
+          </Flex>
+        </div>
         {!expression && (
           <>
             <EmptyState>
@@ -247,7 +248,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
           </>
         )}
         {expression && (
-          <>
+          <div style={{ overflow: "scroll" }}>
             <BoxedExpressionEditor
               beeGwtService={beeGwtService}
               pmmlParams={pmmlParams}
@@ -258,7 +259,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               dataTypes={dataTypes}
               scrollableParentRef={container}
             />
-          </>
+          </div>
         )}
       </>
     </>

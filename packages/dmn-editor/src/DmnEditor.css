@@ -393,7 +393,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 }
 .kie-dmn-editor--data-type-node-panel > div {
   padding-left: 12px;
-  border: 1px solid black;
+  border: 1.25px solid black;
   background: white;
   box-shadow: 5px 5px 2px 0px rgb(127 127 127);
 }
