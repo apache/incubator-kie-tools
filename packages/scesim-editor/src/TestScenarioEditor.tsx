@@ -27,7 +27,10 @@ import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-compon
 import { testScenarioEditorDictionaries, TestScenarioEditorI18nContext, testScenarioEditorI18nDefaults } from "./i18n";
 
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
-import { SceSim__ScenarioSimulationModelType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+import {
+  SceSim__FactMappingType,
+  SceSim__ScenarioSimulationModelType,
+} from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -86,6 +89,13 @@ export enum TestScenarioType {
 }
 
 /* Types */
+
+export type TestScenarioDataObject = {
+  id: string;
+  name: string;
+  customBadgeContent?: string;
+  children?: TestScenarioDataObject[];
+};
 
 export type TestScenarioEditorRef = {
   /* TODO Convert these to Promises */
@@ -240,9 +250,75 @@ function TestScenarioMainPanel({
     setDockPanel({ isOpen: true, selected: selected });
   }, []);
 
+  const dataObjects = useMemo(() => {
+    /* To create the Data Object arrays we need an external source, in details: */
+    /* DMN Data: Retrieving DMN type from linked DMN file */
+    /* Java classes: Retrieving Java classes info from the user projects */
+    /* At this time, none of the above are not supported */
+    /* In that case, is to try to retrieve these info from the SCESIM file, if are present */
+
+    /* Retriving Data Object from the scesim file.       
+       That makes sense for previously created scesim files */
+
+    /* TODO check assumption: are these ALWAYS present? */
+    const facts: SceSim__FactMappingType[] =
+      scesimModel!.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"]!;
+    console.log(facts);
+    /* The first two FactMapping are related to the "Number" and "Description" columns. 
+       If the column only are present, no Data Objects can be detected in the scesim file */
+    /*if (facts.length <= 2) {
+      return [];
+    }*/
+
+    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!;
+    const data: TestScenarioDataObject[] = [];
+
+    for (let i = 2; i < facts.length; i++) {
+      const fi = data.find((x) => x.id === facts[i]["factAlias"]);
+      if (fi) {
+        fi.children!.push({
+          id: facts[i]["expressionAlias"]!,
+          name: facts[i]["expressionAlias"]!,
+          customBadgeContent: facts[i]["className"],
+        });
+      } else {
+        data.push({
+          id: facts[i]["factAlias"],
+          name: facts[i]["factAlias"],
+          customBadgeContent:
+            assetType === TestScenarioType[TestScenarioType.DMN]
+              ? "Structure"
+              : facts[i]["factIdentifier"]!["className"],
+          children: [
+            {
+              id: facts[i]["expressionAlias"]!,
+              name: facts[i]["expressionAlias"]!,
+              customBadgeContent: facts[i]["className"],
+            },
+          ],
+        });
+      }
+    }
+
+    //const retrievedDataObjects = new Map<string, [{name: string, type:string}]>();
+
+    /*    facts.slice(2).forEach((value) => {
+      if (retrievedDataObjects.get(value["factAlias"])) {
+        retrievedDataObjects.set(value["factAlias"], [...retrievedDataObjects.get(value["factAlias"])!, {name: value["expressionAlias"]!, type: value["className"]!}] );
+      }
+    });*/
+
+    //facts.slice(2).map((fact) => retrievedDataObjects.set(fact["factAlias"], [...retrievedDataObjects.get(fact["factAlias"]) || [], {name: fact["expressionAlias"], type:fact["expressionAlias"] }] //(retrievedDataObjects.get(fact["factAlias"])! || []).concat({name: fact["expressionAlias"]!, type:fact["expressionAlias"]! }))
+
+    //const result = new Map(facts.slice(2).map((fact) => [fact["factAlias"], fact["expressionAlias"]]));
+
+    console.log(data);
+    return data;
+  }, [scesimModel]);
+
   return (
     <>
-      <Alert variant="warning" title="Warning alert title" />
+      {/* <Alert variant="warning" title="Warning alert title" /> */}
       <div className="kie-scesim-editor--content">
         <Tabs
           isFilled={true}
@@ -267,6 +343,7 @@ function TestScenarioMainPanel({
                 <DrawerContent
                   panelContent={
                     <TestScenarioDrawerPanel
+                      dataObjects={dataObjects}
                       fileName={fileName}
                       onDrawerClose={closeDockPanel}
                       onUpdateSettingField={updateSettingField}

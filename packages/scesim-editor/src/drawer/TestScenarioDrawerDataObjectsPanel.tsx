@@ -19,26 +19,52 @@
 
 import * as React from "react";
 
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
+import { TreeView } from "@patternfly/react-core/dist/js/components/TreeView/TreeView";
+
 import { Icon } from "@patternfly/react-core/dist/esm/components/Icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
 
+import { TestScenarioDataObject, TestScenarioType } from "../TestScenarioEditor";
+import { useTestScenarioEditorI18n } from "../i18n";
+
 import "./TestScenarioDrawerDataObjectsPanel.css";
 
-function TestScenarioDataObjectsPanel() {
+function TestScenarioDataObjectsPanel({
+  assetType,
+  dataObjects,
+}: {
+  assetType: string;
+  dataObjects: TestScenarioDataObject[];
+}) {
+  const { i18n } = useTestScenarioEditorI18n();
+
   return (
     <>
-      <Text>To create a test scenario, define the Given and Expect columns by using the expression editor below.</Text>
-      <Title headingLevel={"h6"}>
-        Data Object Selector
-        <Tooltip content="Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.">
+      <Text>
+        {i18n.drawer.dataObjects.description}
+        <Tooltip
+          content={
+            assetType === TestScenarioType[TestScenarioType.DMN]
+              ? i18n.drawer.dataObjects.dataObjectsDescriptionDMN
+              : i18n.drawer.dataObjects.dataObjectsDescriptionRule
+          }
+        >
           <Icon className={"kie-scesim-editor-drawer-data-objects--info-icon"} size="sm" status="info">
             <InfoCircleIcon />
           </Icon>
         </Tooltip>
+      </Text>
+      <Title className={"kie-scesim-editor-drawer-data-objects--selector-title"} headingLevel={"h6"}>
+        {i18n.drawer.dataObjects.selectorTitle}
       </Title>
+      {dataObjects.length > 0 ? (
+        <TreeView className={"kie-scesim-editor-drawer-data-objects--selector"} data={dataObjects} hasBadges />
+      ) : (
+        <Text>OOOpps</Text>
+      )}
     </>
   );
 }

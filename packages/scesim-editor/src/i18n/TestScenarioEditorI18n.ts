@@ -22,10 +22,6 @@ import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
   drawer: {
-    dataObject: {
-      description: string;
-      title: string;
-    };
     cheatSheet: {
       expression1DMN: string;
       expression1Rule: string;
@@ -53,6 +49,13 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       paragraph5DMN: string;
       paragraph6DMN: string;
       paragraph6Rule: string;
+      title: string;
+    };
+    dataObjects: {
+      dataObjectsDescriptionDMN: string;
+      dataObjectsDescriptionRule: string;
+      description: string;
+      selectorTitle: string;
       title: string;
     };
     settings: {

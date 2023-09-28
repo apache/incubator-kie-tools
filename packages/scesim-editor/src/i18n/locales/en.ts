@@ -23,11 +23,6 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 export const en: TestScenarioEditorI18n = {
   ...en_common,
   drawer: {
-    dataObject: {
-      description:
-        'To create a test scenario, define the "Given" and "Expect" columns by using the data object editor below.',
-      title: "Data Objects tool",
-    },
     cheatSheet: {
       paragraph1: "To start off, use contextual menus in the table to insert or edit or delete new columns and rows.",
       paragraph2: (dataObjectsDrawer: string) =>
@@ -66,6 +61,14 @@ export const en: TestScenarioEditorI18n = {
         "To specify a MVEL expression (or invoke a Java method) just put # at the beginning of the expression. In GIVEN section, return type of the expression has to be the same one of type of the column. In EXPECT section the type could also just a boolean with the result of the assertion and you can use actualValue identifier to access value to check.",
       expression10DMN: "An empty cell is skipped from the evaluation.",
       title: "Cheatsheet",
+    },
+    dataObjects: {
+      dataObjectsDescriptionDMN: "Data objects are the DMN Types specified in the related DMN file.",
+      dataObjectsDescriptionRule: "Data objects are the Java objects specified in your project.",
+      description:
+        'To create a test scenario, define the "Given" and "Expect" columns by using the data object selector below.',
+      selectorTitle: "Selector",
+      title: "Data objects",
     },
     settings: {
       assetType: "Type",
