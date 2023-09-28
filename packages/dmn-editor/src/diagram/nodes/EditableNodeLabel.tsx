@@ -1,13 +1,15 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { EmptyLabel } from "./Nodes";
-import "./EditableNodeLabel.css";
 import { XmlQName } from "../../xml/xmlQNames";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
+import { SPEC } from "../../Spec";
+import "./EditableNodeLabel.css";
+import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -21,9 +23,10 @@ export function EditableNodeLabel({
   position,
   truncate,
   grow,
-  saveOnBlur,
+  shouldCommitOnBlur,
+  skipValidation,
 }: {
-  saveOnBlur?: boolean;
+  shouldCommitOnBlur?: boolean;
   grow?: boolean;
   truncate?: boolean;
   namedElement?: DMN15__tNamedElement;
@@ -33,6 +36,7 @@ export function EditableNodeLabel({
   value: string | undefined;
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: OnEditableNodeLabelChange;
+  skipValidation?: boolean;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
@@ -70,26 +74,27 @@ export function EditableNodeLabel({
     }, 0);
   }, []);
 
-  const valid = useMemo(() => {
-    if (!internalValue?.trim()) {
-      return false;
+  const isValid = useMemo(() => {
+    if (skipValidation) {
+      return true;
     }
 
-    return true;
-  }, [internalValue]);
+    const valid = true; // FIXME: Tiago --> Do additional checks here like unicity etc
+    return valid && SPEC.namedElement.isValidName(internalValue);
+  }, [internalValue, skipValidation]);
 
   const onBlur = useCallback(() => {
     setEditing(false);
-    setShouldCommit(saveOnBlur ?? false);
+    setShouldCommit(shouldCommitOnBlur ?? false);
     restoreFocus();
 
-    if (valid && internalValue !== value && shouldCommit) {
+    if (isValid && internalValue !== value && shouldCommit) {
       onChange(internalValue);
     } else {
       console.debug(`Label change cancelled for node with label ${value}`);
       setInternalValue(value);
     }
-  }, [internalValue, onChange, restoreFocus, saveOnBlur, setEditing, shouldCommit, valid, value]);
+  }, [internalValue, onChange, restoreFocus, shouldCommitOnBlur, setEditing, shouldCommit, isValid, value]);
 
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(
@@ -97,7 +102,7 @@ export function EditableNodeLabel({
       e.stopPropagation();
 
       if (e.key === "Enter") {
-        if (!valid) {
+        if (!isValid) {
           return; // Simply ignore and don't allow user to go outside the component using only the keyboard.
         } else {
           setShouldCommit(true);
@@ -108,7 +113,7 @@ export function EditableNodeLabel({
         restoreFocus(); // This will trigger `onBlur`, which will ignore  the change.
       }
     },
-    [restoreFocus, valid]
+    [restoreFocus, isValid]
   );
 
   // Very important to restore the focus after editing is done.
@@ -162,6 +167,10 @@ export function EditableNodeLabel({
     <div className={`kie-dmn-editor--editable-node-name-input ${positionClass} ${grow ? "grow" : ""}`}>
       {(isEditing && (
         <input
+          spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
+          style={{
+            ...(isValid ? {} : invalidInlineFeelNameStyle),
+          }}
           onMouseDownCapture={(e) => e.stopPropagation()} // Make sure mouse events stay inside the node.
           onKeyDown={onKeyDown}
           tabIndex={-1}
@@ -170,7 +179,16 @@ export function EditableNodeLabel({
           onChange={(e) => setInternalValue(e.target.value)}
           value={internalValue}
         />
-      )) || <span>{displayValue}</span>}
+      )) || (
+        <span
+          style={{
+            whiteSpace: "pre-wrap",
+            ...(isValid ? {} : invalidInlineFeelNameStyle),
+          }}
+        >
+          {displayValue}
+        </span>
+      )}
     </div>
   );
 }

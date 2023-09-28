@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
@@ -8,6 +8,7 @@ import { useDmnEditorStoreApi } from "../store/Store";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
+import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 
 export function DataTypeName({
   isReadonly,
@@ -15,25 +16,32 @@ export function DataTypeName({
   isActive,
   editMode,
   relativeToNamespace,
+  shouldCommitOnBlur,
 }: {
   isReadonly: boolean;
   editMode: "hover" | "double-click";
   itemDefinition: DMN15__tItemDefinition;
   isActive: boolean;
   relativeToNamespace: string;
+  shouldCommitOnBlur?: boolean;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { dataTypesById, importsByNamespace } = useDmnEditorDerivedStore();
 
-  const onRenamed = useCallback(
-    (newName: string | undefined) => {
-      if (isReadonly) {
-        return;
-      }
+  const dataType = dataTypesById.get(itemDefinition["@_id"]!);
 
-      if (!newName?.trim()) {
+  const feelQNameToDisplay = buildFeelQNameFromNamespace({
+    namedElement: itemDefinition,
+    importsByNamespace,
+    namespace: dataType!.namespace,
+    relativeToNamespace,
+  });
+
+  const onRenamed = useCallback<OnInlineFeelNameRenamed>(
+    (newName) => {
+      if (isReadonly) {
         return;
       }
 
@@ -49,64 +57,16 @@ export function DataTypeName({
     [dataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
   );
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const previouslyFocusedElement = useRef<Element | undefined>();
-
-  const restoreFocus = useCallback(() => {
-    // We only restore the focus to the previously focused element if we're still holding focus. If focus has changed, we let it be.
-    setTimeout(() => {
-      if (document.activeElement === inputRef.current) {
-        (previouslyFocusedElement.current as any)?.focus?.();
-      }
-    }, 0);
-  }, []);
-
-  const dataType = dataTypesById.get(itemDefinition["@_id"]!);
-
-  const displayName = buildFeelQNameFromNamespace({
-    namedElement: itemDefinition,
-    importsByNamespace,
-    namespace: dataType!.namespace,
-    relativeToNamespace,
-  });
-
   return (
     <>
       {editMode === "hover" && (
-        <input
-          ref={inputRef}
-          key={itemDefinition["@_id"] + itemDefinition["@_name"]}
-          style={{
-            border: 0,
-            flexGrow: 1,
-            outline: "none",
-            display: "inline",
-            background: "transparent",
-            width: "100%",
-          }}
-          disabled={isReadonly}
-          defaultValue={displayName.full}
-          onFocus={(e) => {
-            previouslyFocusedElement.current = document.activeElement ?? undefined; // Save potential focused element.
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.stopPropagation();
-              e.preventDefault();
-              e.currentTarget.value = e.currentTarget.value.trimStart();
-              onRenamed(e.currentTarget.value);
-            } else if (e.key === "Escape") {
-              e.stopPropagation();
-              e.preventDefault();
-              e.currentTarget.value = itemDefinition["@_name"];
-              e.currentTarget.blur();
-            }
-          }}
-          onBlur={(e) => {
-            onRenamed(e.currentTarget.value);
-            restoreFocus();
-          }}
+        <InlineFeelNameInput
+          isPlain={true}
+          isReadonly={isReadonly}
+          id={itemDefinition["@_id"] + itemDefinition["@_name"]}
+          shouldCommitOnBlur={shouldCommitOnBlur ?? true}
+          name={feelQNameToDisplay.full}
+          onRenamed={onRenamed}
         />
       )}
       {editMode === "double-click" && (
@@ -127,7 +87,7 @@ export function DataTypeName({
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             onChange={onRenamed}
-            saveOnBlur={true}
+            shouldCommitOnBlur={shouldCommitOnBlur ?? true}
             value={itemDefinition["@_name"]}
             key={itemDefinition["@_id"]}
             position={"top-left"}
@@ -135,7 +95,7 @@ export function DataTypeName({
             namedElementQName={{
               type: "xml-qname",
               localPart: itemDefinition["@_name"],
-              prefix: displayName.prefix,
+              prefix: feelQNameToDisplay.prefix,
             }}
           />
           {!isEditingLabel && (

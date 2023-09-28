@@ -93,27 +93,6 @@ export function DataTypes() {
     [dmnEditorStoreApi]
   );
 
-  const nav = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (!activeDataType) {
-        return;
-      }
-      dmnEditorStoreApi.setState((state) => {
-        if (e.key === "ArrowDown") {
-          state.dataTypesEditor.activeItemDefinitionId =
-            dataTypesTree[(activeDataType?.index + 1) % filteredTree.length].itemDefinition["@_id"];
-        } else if (e.key === "ArrowUp") {
-          state.dataTypesEditor.activeItemDefinitionId =
-            dataTypesTree[
-              (activeDataType?.index - 1 === -1 ? filteredTree.length - 1 : activeDataType?.index - 1) %
-                filteredTree.length
-            ].itemDefinition["@_id"];
-        }
-      });
-    },
-    [activeDataType, dmnEditorStoreApi, filteredTree.length, dataTypesTree]
-  );
-
   return (
     <>
       {(dataTypesTree.length <= 0 && <DataTypesEmptyState onAdd={addTopLevelItemDefinition} />) || (
@@ -130,7 +109,7 @@ export function DataTypes() {
                     <PlusCircleIcon />
                   </Button>
                 </Flex>
-                <div className={`kie-dmn-editor--data-types-nav`} onKeyDown={nav}>
+                <div className={`kie-dmn-editor--data-types-nav`}>
                   {filteredTree.map(({ namespace, itemDefinition, feelName }) => (
                     <Flex
                       key={itemDefinition["@_id"]}

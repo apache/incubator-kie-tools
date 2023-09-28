@@ -3,30 +3,45 @@ import { DMN15__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/s
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { renameDrgElement } from "../mutations/renameNode";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 
-export function BkmProperties({ bkm, index }: { bkm: DMN15__tBusinessKnowledgeModel; index: number }) {
+export function BkmProperties({
+  bkm,
+  namespace,
+  index,
+}: {
+  bkm: DMN15__tBusinessKnowledgeModel;
+  namespace: string | undefined;
+  index: number;
+}) {
   const { setState } = useDmnEditorStoreApi();
+
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
 
   return (
     <>
       <FormGroup label="Name">
-        <TextInput
-          aria-label={"Name"}
-          type={"text"}
-          isDisabled={false}
-          onChange={(newName) => {
+        <InlineFeelNameInput
+          isPlain={false}
+          id={bkm["@_id"]!}
+          name={bkm["@_name"]}
+          isReadonly={isReadonly}
+          shouldCommitOnBlur={true}
+          className={"pf-c-form-control"}
+          onRenamed={(newName) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).variable!["@_name"] =
-                newName;
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel)["@_name"] = newName;
+              renameDrgElement({
+                definitions: state.dmn.model.definitions,
+                index,
+                newName,
+              });
             });
           }}
-          value={bkm["@_name"]}
-          placeholder={"Enter a name..."}
         />
       </FormGroup>
 
@@ -47,7 +62,7 @@ export function BkmProperties({ bkm, index }: { bkm: DMN15__tBusinessKnowledgeMo
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={isReadonly}
           value={bkm.description}
           onChange={(newDescription) => {
             setState((state) => {

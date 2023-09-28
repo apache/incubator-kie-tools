@@ -7,7 +7,6 @@ import {
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
@@ -15,6 +14,8 @@ import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { useMemo } from "react";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
+import { renameDrgElement } from "../mutations/renameNode";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -23,11 +24,11 @@ export type AllKnownDrgElementsByHref = Map<
 
 export function DecisionServiceProperties({
   decisionService,
-  decisionServiceNamespace,
+  namespace,
   index,
 }: {
   decisionService: DMN15__tDecisionService;
-  decisionServiceNamespace: string | undefined;
+  namespace: string | undefined;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
@@ -57,21 +58,28 @@ export function DecisionServiceProperties({
     return ret;
   }, [otherDmnsByNamespace, thisDmn]);
 
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+
   return (
     <>
       <FormGroup label="Name">
-        <TextInput
-          aria-label={"Name"}
-          type={"text"}
-          isDisabled={false}
-          onChange={(newName) => {
+        <InlineFeelNameInput
+          isPlain={false}
+          id={decisionService["@_id"]!}
+          name={decisionService["@_name"]}
+          isReadonly={isReadonly}
+          shouldCommitOnBlur={true}
+          className={"pf-c-form-control"}
+          onRenamed={(newName) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).variable!["@_name"] = newName;
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService)["@_name"] = newName;
+              renameDrgElement({
+                definitions: state.dmn.model.definitions,
+                index,
+                newName,
+              });
             });
           }}
-          value={decisionService["@_name"]}
-          placeholder={"Enter a name..."}
         />
       </FormGroup>
 
@@ -91,7 +99,7 @@ export function DecisionServiceProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={isReadonly}
           value={decisionService.description}
           onChange={(newDescription) => {
             setState((state) => {
@@ -112,28 +120,28 @@ export function DecisionServiceProperties({
 
       <FormGroup label="Output decisions">
         <DecisionServiceElementList
-          decisionServiceNamespace={decisionServiceNamespace}
+          decisionServiceNamespace={namespace}
           elements={decisionService.outputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
       <FormGroup label="Encapsulated decisions">
         <DecisionServiceElementList
-          decisionServiceNamespace={decisionServiceNamespace}
+          decisionServiceNamespace={namespace}
           elements={decisionService.encapsulatedDecision}
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
       <FormGroup label="Input decisions">
         <DecisionServiceElementList
-          decisionServiceNamespace={decisionServiceNamespace}
+          decisionServiceNamespace={namespace}
           elements={decisionService.inputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
       <FormGroup label="Input data">
         <DecisionServiceElementList
-          decisionServiceNamespace={decisionServiceNamespace}
+          decisionServiceNamespace={namespace}
           elements={decisionService.inputData}
           allDrgElementsByHref={allDrgElementsByHref}
         />

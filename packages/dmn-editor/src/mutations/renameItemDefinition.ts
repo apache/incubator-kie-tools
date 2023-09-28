@@ -28,7 +28,7 @@ export function renameItemDefinition({
     );
   }
 
-  newName = newName.trim();
+  const trimmedNewName = newName.trim();
 
   const { itemDefinition } = findDataTypeById({ definitions, itemDefinitionId: itemDefinitionId, dataTypesById });
 
@@ -36,7 +36,7 @@ export function renameItemDefinition({
   if (!dataType?.parentId) {
     traverseItemDefinition(definitions.itemDefinition ?? [], (item) => {
       if (item.typeRef === itemDefinition["@_name"]) {
-        item.typeRef = newName;
+        item.typeRef = trimmedNewName;
       }
     });
 
@@ -50,13 +50,13 @@ export function renameItemDefinition({
         element.__$$element === "decisionService"
       ) {
         if (element.variable?.["@_typeRef"] === itemDefinition["@_name"]) {
-          element.variable["@_typeRef"] = newName;
+          element.variable["@_typeRef"] = trimmedNewName;
         }
 
         if (element.__$$element === "decision" || element.__$$element === "businessKnowledgeModel") {
           traverseTypeRefedInExpressionHolders(element, (typeRefed) => {
             if (typeRefed["@_typeRef"] === itemDefinition["@_name"]) {
-              typeRefed["@_typeRef"] = newName;
+              typeRefed["@_typeRef"] = trimmedNewName;
             }
           });
         }
@@ -69,5 +69,5 @@ export function renameItemDefinition({
     // FIXME: Daniel --> Implement this...
   }
 
-  itemDefinition["@_name"] = newName;
+  itemDefinition["@_name"] = trimmedNewName;
 }

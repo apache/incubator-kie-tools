@@ -6,6 +6,11 @@
 
 .kie-dmn-editor--bee-container {
   position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  user-select: none;
 }
 /* (end) global */
 
@@ -555,7 +560,8 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 .sticky-top-glass {
   position: sticky;
   top: 0;
-  z-index: 1;
+  left: 0;
+  z-index: 9999;
   background: rgb(255, 255, 255, 60%);
   backdrop-filter: blur(4px);
   border-bottom: 1px solid lightgray;

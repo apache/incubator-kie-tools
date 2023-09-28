@@ -26,7 +26,7 @@ export function DataTypeNodePanel(props: {
           className={"kie-dmn-editor--data-type-node-panel"}
           // Do not allow any events to go to the node itself...
           onMouseDownCapture={stopPropagation}
-          onKeyDown={stopPropagation}
+          onKeyDownCapture={stopPropagation}
           onClick={stopPropagation}
           onDoubleClick={stopPropagation}
           onMouseLeave={stopPropagation}

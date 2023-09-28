@@ -99,6 +99,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     };
   }, [otherDmnsByNamespace, thisDmn.model.definitions, thisDmnsImports, thisDmnsImportsByNamespace]);
 
+  const uniqueNames = useMemo(() => {}, []);
+
   const selectedNodeTypes = useMemo(() => {
     const ret = new Set<NodeType>();
     for (let i = 0; i < diagram.selectedNodes.length; i++) {

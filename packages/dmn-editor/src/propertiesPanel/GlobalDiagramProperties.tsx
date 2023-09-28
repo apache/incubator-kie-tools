@@ -11,6 +11,7 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -38,17 +39,18 @@ export function GlobalDiagramProperties() {
         }
       >
         <FormGroup label="Name">
-          <TextInput
-            aria-label={"Name"}
-            type={"text"}
-            isDisabled={false}
-            placeholder={"Enter a name..."}
-            value={thisDmn.model.definitions["@_name"]}
-            onChange={(newName) =>
+          <InlineFeelNameInput
+            isPlain={false}
+            id={thisDmn.model.definitions["@_id"]!}
+            name={thisDmn.model.definitions["@_name"]}
+            isReadonly={false}
+            shouldCommitOnBlur={true}
+            className={"pf-c-form-control"}
+            onRenamed={(newName) => {
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_name"] = newName;
-              })
-            }
+              });
+            }}
           />
         </FormGroup>
         <FormGroup label="Description">

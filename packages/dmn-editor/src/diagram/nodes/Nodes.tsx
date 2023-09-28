@@ -381,6 +381,7 @@ export const KnowledgeSourceNode = React.memo(
             setEditing={setEditingLabel}
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
+            skipValidation={true}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
@@ -452,6 +453,7 @@ export const TextAnnotationNode = React.memo(
             setEditing={setEditingLabel}
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
+            skipValidation={true}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
@@ -657,6 +659,7 @@ export const GroupNode = React.memo(
             setEditing={setEditingLabel}
             value={group["@_label"] ?? group["@_name"]}
             onChange={setName}
+            skipValidation={true}
           />
           {selected && !dragging && (
             <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />

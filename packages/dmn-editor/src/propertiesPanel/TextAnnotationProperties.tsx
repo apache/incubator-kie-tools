@@ -5,6 +5,7 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/Store";
+import { updateTextAnnotation } from "../mutations/renameNode";
 
 export function TextAnnotationProperties({
   textAnnotation,
@@ -25,8 +26,8 @@ export function TextAnnotationProperties({
           value={textAnnotation["@_textFormat"]}
           placeholder={"Enter a text format..."}
           onChange={(newTextFormat) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tTextAnnotation)["@_textFormat"] = newTextFormat;
+            setState((state) => {
+              (state.dmn.model.definitions.artifact![index] as DMN15__tTextAnnotation)["@_textFormat"] = newTextFormat;
             });
           }}
         />
@@ -39,8 +40,12 @@ export function TextAnnotationProperties({
           isDisabled={false}
           value={textAnnotation.text}
           onChange={(newText) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tTextAnnotation).text = newText;
+            setState((state) => {
+              updateTextAnnotation({
+                definitions: state.dmn.model.definitions,
+                index,
+                newText,
+              });
             });
           }}
           placeholder={"Enter text..."}
@@ -56,8 +61,8 @@ export function TextAnnotationProperties({
           isDisabled={false}
           value={textAnnotation.description}
           onChange={(newDescription) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tTextAnnotation).description = newDescription;
+            setState((state) => {
+              (state.dmn.model.definitions.artifact![index] as DMN15__tTextAnnotation).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}

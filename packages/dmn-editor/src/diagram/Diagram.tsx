@@ -795,14 +795,12 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               console.debug("DMN DIAGRAM: Esc pressed. Desselecting everything.");
               state.diagram.selectedNodes = [];
               state.diagram.selectedEdges = [];
-              e.stopPropagation();
               e.preventDefault();
             } else if (state.diagram.selectedNodes.length <= 0 && state.diagram.selectedEdges.length <= 0) {
               console.debug("DMN DIAGRAM: Esc pressed. Closing all open panels.");
               state.diagram.propertiesPanel.isOpen = false;
               state.diagram.overlaysPanel.isOpen = false;
               state.diagram.externalNodesPanel.isOpen = false;
-              e.stopPropagation();
               e.preventDefault();
             } else {
               // Let the

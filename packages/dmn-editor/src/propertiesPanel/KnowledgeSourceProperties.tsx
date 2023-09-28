@@ -5,31 +5,43 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { renameDrgElement } from "../mutations/renameNode";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
+  namespace,
   index,
 }: {
   knowledgeSource: DMN15__tKnowledgeSource;
+  namespace: string | undefined;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
 
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+
   return (
     <>
       <FormGroup label="Name">
-        <TextInput
-          aria-label={"Name"}
-          type={"text"}
-          isDisabled={false}
-          onChange={(newName) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_name"] = newName;
+        <InlineFeelNameInput
+          isPlain={false}
+          id={knowledgeSource["@_id"]!}
+          name={knowledgeSource["@_name"]}
+          isReadonly={isReadonly}
+          shouldCommitOnBlur={true}
+          className={"pf-c-form-control"}
+          onRenamed={(newName) => {
+            setState((state) => {
+              renameDrgElement({
+                definitions: state.dmn.model.definitions,
+                index,
+                newName,
+              });
             });
           }}
-          value={knowledgeSource["@_name"]}
-          placeholder={"Enter a name..."}
         />
       </FormGroup>
 
@@ -37,11 +49,11 @@ export function KnowledgeSourceProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={isReadonly}
           value={knowledgeSource.description}
           onChange={(newDescription) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = newDescription;
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = newDescription;
             });
           }}
           placeholder={"Enter a description..."}
@@ -60,11 +72,11 @@ export function KnowledgeSourceProperties({
         <TextInput
           aria-label={"Source type"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={isReadonly}
           value={knowledgeSource.type}
           onChange={(newType) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = newType;
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = newType;
             });
           }}
           placeholder={"Enter source type..."}
@@ -75,11 +87,11 @@ export function KnowledgeSourceProperties({
         <TextInput
           aria-label={"Location URI"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={isReadonly}
           value={knowledgeSource["@_locationURI"]}
           onChange={(newLocationUri) => {
-            setState((dmn) => {
-              (dmn.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_locationURI"] =
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_locationURI"] =
                 newLocationUri;
             });
           }}

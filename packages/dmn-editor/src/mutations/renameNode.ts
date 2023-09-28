@@ -13,7 +13,15 @@ export function renameDrgElement({
   newName: string;
   index: number;
 }) {
-  definitions.drgElement![index]["@_name"] = newName;
+  const trimmedNewName = newName.trim();
+
+  const drgElement = definitions.drgElement![index];
+
+  drgElement["@_name"] = trimmedNewName;
+
+  if (drgElement.__$$element !== "knowledgeSource") {
+    drgElement.variable!["@_name"] = trimmedNewName;
+  }
 
   // FIXME: Daniel --> Here we need to update all FEEL expression that were using this node's name as a variable.
 }

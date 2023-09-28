@@ -217,6 +217,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               <Flex
                 justifyContent={{ default: "justifyContentFlexStart" }}
                 alignItems={{ default: "alignItemsCenter" }}
+                flexWrap={{ default: "nowrap" }}
               >
                 <div style={{ height: "40px", width: "40px", margin: "0 0 -23px 0" }}>
                   <Icon />
@@ -248,7 +249,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
           </>
         )}
         {expression && (
-          <div style={{ overflow: "scroll" }}>
+          <div style={{ flexGrow: 1 }}>
             <BoxedExpressionEditor
               beeGwtService={beeGwtService}
               pmmlParams={pmmlParams}

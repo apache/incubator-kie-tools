@@ -14,7 +14,7 @@ export function addIncludedModel({
 }) {
   const newImport = {
     "@_id": generateUuid(),
-    "@_name": includedModel.alias,
+    "@_name": includedModel.alias.trim(),
     "@_importType": includedModel.xmlns,
     "@_namespace": includedModel.namespace,
   };

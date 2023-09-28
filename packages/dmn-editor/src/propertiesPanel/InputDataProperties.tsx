@@ -3,29 +3,45 @@ import { DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
-import { useDmnEditorStoreApi } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { renameDrgElement } from "../mutations/renameNode";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 
-export function InputDataProperties({ inputData, index }: { inputData: DMN15__tInputData; index: number }) {
+export function InputDataProperties({
+  inputData,
+  namespace,
+  index,
+}: {
+  inputData: DMN15__tInputData;
+  namespace: string | undefined;
+  index: number;
+}) {
   const { setState } = useDmnEditorStoreApi();
+
+  const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
+  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
 
   return (
     <>
       <FormGroup label="Name">
-        <TextInput
-          aria-label={"Name"}
-          type={"text"}
-          isDisabled={false}
-          onChange={(newName) => {
+        <InlineFeelNameInput
+          isPlain={false}
+          id={inputData["@_id"]!}
+          name={inputData["@_name"]}
+          isReadonly={isReadonly}
+          shouldCommitOnBlur={true}
+          className={"pf-c-form-control"}
+          onRenamed={(newName) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).variable!["@_name"] = newName;
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData)["@_name"] = newName;
+              renameDrgElement({
+                definitions: state.dmn.model.definitions,
+                index,
+                newName,
+              });
             });
           }}
-          value={inputData["@_name"]}
-          placeholder={"Enter a name..."}
         />
       </FormGroup>
       <FormGroup label="Data type">
@@ -42,7 +58,7 @@ export function InputDataProperties({ inputData, index }: { inputData: DMN15__tI
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={isReadonly}
           value={inputData.description}
           onChange={(newDescription) => {
             setState((state) => {
