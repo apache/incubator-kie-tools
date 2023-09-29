@@ -67,6 +67,13 @@ export function SettingsPageNav(props: { pathname: string }) {
               <Link to={routes.settings.storage.path({})}>Storage</Link>
             </NavItem>
           )}
+          <NavItem
+            itemId={0}
+            key={`Settings-runtime_tools-nav`}
+            isActive={props.pathname === routes.settings.runtime_tools.path({})}
+          >
+            <Link to={routes.settings.runtime_tools.path({})}>Runtime Tools</Link>
+          </NavItem>
         </NavList>
       </Nav>
     </>

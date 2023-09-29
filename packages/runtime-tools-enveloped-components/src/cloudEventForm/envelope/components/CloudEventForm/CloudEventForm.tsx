@@ -16,58 +16,86 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { CodeEditor, Language } from "@patternfly/react-code-editor/dist/js/components/CodeEditor";
-import { ActionList, ActionListItem } from "@patternfly/react-core/dist/js/components/ActionList";
+
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { CloudEventFormDefaultValues, CloudEventFormDriver } from "../../../api";
+import { ActionListGroup } from "@patternfly/react-core/dist/js/components/ActionList";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import ExclamationCircleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon";
-import React, { useCallback, useRef, useState } from "react";
-import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../apis";
-import { CloudEventCustomHeadersEditor, CloudEventCustomHeadersEditorApi } from "./CloudEventCustomHeadersEditor";
-import CloudEventFieldLabelIcon from "./CloudEventFieldLabelIcon";
 import { FormValidations, validateCloudEventRequest } from "./validateCloudEventRequest";
-
-export type CloudEventFormDefaultValues = {
-  method: CloudEventMethod;
-  endpoint: string;
-  instanceId: string;
-  cloudEventType: string;
-  cloudEventSource: string;
-  cloudEventData: string;
-};
+import CloudEventCustomHeadersEditor, {
+  CloudEventCustomHeadersEditorApi,
+} from "../CloudEventCustomHeadersEditor/CloudEventCustomHeadersEditor";
+import CloudEventFieldLabelIcon from "../CloudEventFieldLabelIcon/CloudEventFieldLabelIcon";
+import {
+  RequestDataEditor,
+  RequestDataEditorApi,
+} from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import {
+  CloudEventMethod,
+  KOGITO_BUSINESS_KEY,
+  KOGITO_PROCESS_REFERENCE_ID,
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;
-  defaultValues: CloudEventFormDefaultValues;
+  isNewInstanceEvent?: boolean;
+  defaultValues?: CloudEventFormDefaultValues;
 }
 
-export function CloudEventForm(props: CloudEventFormProps) {
-  const { driver, defaultValues } = props;
+export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
+  driver,
+  isNewInstanceEvent,
+  defaultValues,
+  ouiaId,
+  ouiaSafe,
+}) => {
   const [validationState, setValidationState] = useState<FormValidations>();
 
   const customHeadersEditorApi = useRef<CloudEventCustomHeadersEditorApi>(null);
+  const requestDataEditorRef = useRef<RequestDataEditorApi>(null);
 
   const [isMethodOpen, setIsMethodOpen] = useState<boolean>(false);
-  const [method, setMethod] = useState<CloudEventMethod>(defaultValues.method);
-  const [endpoint, setEndpoint] = useState<string>(defaultValues.endpoint);
-  const [instanceId, setInstanceId] = useState<string>(defaultValues.instanceId);
-  const [eventType, setEventType] = useState<string>(defaultValues.cloudEventType);
-  const [eventSource, setEventSource] = useState<string>(defaultValues.cloudEventSource);
-  const [eventData, setEventData] = useState<string>(defaultValues.cloudEventData);
+  const [method, setMethod] = useState<CloudEventMethod>(CloudEventMethod.POST);
+  const [endpoint, setEndpoint] = useState<string>("/");
+  const [instanceId, setInstanceId] = useState<string>("");
+  const [businessKey, setBusinessKey] = useState<string>("");
+  const [eventType, setEventType] = useState<string>("");
+  const [eventSource, setEventSource] = useState<string>("/from/form");
+  const [eventData, setEventData] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const resetForm = useCallback(() => {
-    setMethod(defaultValues.method);
-    setEndpoint(defaultValues.endpoint);
-    setEventType(defaultValues.cloudEventType);
-    setEventSource(defaultValues.cloudEventSource);
-    setEventData(defaultValues.cloudEventData);
-    setInstanceId(defaultValues?.instanceId);
+    setMethod(CloudEventMethod.POST);
+    setEndpoint("/");
+    setEventType("");
+    setEventSource(defaultValues?.cloudEventSource ?? "/from/form");
+    setEventData("");
+    setInstanceId(defaultValues?.instanceId ?? "");
+    setBusinessKey("");
     customHeadersEditorApi?.current?.reset();
+    requestDataEditorRef.current?.setContent("");
   }, [defaultValues]);
+
+  useEffect(() => {
+    setEventSource(defaultValues?.cloudEventSource ?? "/from/form");
+    setInstanceId(defaultValues?.instanceId ?? "");
+  }, [defaultValues]);
+
+  const getValidatedOption = useCallback(
+    (fieldId: string): ValidatedOptions => {
+      return getValidationMessage(fieldId) ? ValidatedOptions.error : ValidatedOptions.default;
+    },
+    [validationState]
+  );
 
   const getValidationMessage = useCallback(
     (fieldId: string): string | undefined => {
@@ -76,21 +104,18 @@ export function CloudEventForm(props: CloudEventFormProps) {
     [validationState]
   );
 
-  const getValidatedOption = useCallback(
-    (fieldId: string): ValidatedOptions => {
-      return getValidationMessage(fieldId) ? ValidatedOptions.error : ValidatedOptions.default;
-    },
-    [getValidationMessage]
-  );
-
   const doTrigger = useCallback(() => {
-    const extensions: { [key: string]: string } = {
+    const extensions = {
       ...customHeadersEditorApi?.current?.getCustomHeaders(),
     };
 
-    instanceId && (extensions[SONATAFLOW_PROCESS_REFERENCE_ID] = instanceId);
+    if (isNewInstanceEvent) {
+      businessKey && (extensions[KOGITO_BUSINESS_KEY] = businessKey);
+    } else {
+      instanceId && (extensions[KOGITO_PROCESS_REFERENCE_ID] = instanceId);
+    }
 
-    const eventRequest: CloudEventRequest = {
+    const eventRequest = {
       endpoint: endpoint,
       method: method,
       data: eventData,
@@ -109,13 +134,38 @@ export function CloudEventForm(props: CloudEventFormProps) {
       return;
     }
 
-    driver.triggerCloudEvent(eventRequest).then(() => {
-      resetForm();
-    });
-  }, [resetForm, driver, method, endpoint, eventType, eventSource, eventData, instanceId]);
+    setIsLoading(true);
+    driver
+      .triggerCloudEvent(eventRequest)
+      .then((response: any) => {
+        resetForm();
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [method, endpoint, eventType, eventSource, eventData, instanceId, businessKey]);
+
+  const requestDataEditor = useMemo(() => {
+    return (
+      <RequestDataEditor
+        ref={requestDataEditorRef}
+        content={""}
+        onContentChange={(args) => setEventData(args.content)}
+        isReadOnly={false}
+      />
+    );
+  }, [setEventData]);
+
+  if (isLoading) {
+    return (
+      <Bullseye>
+        <KogitoSpinner spinnerText="Triggering cloud event..." ouiaId="cloud-event-form-loading" />
+      </Bullseye>
+    );
+  }
 
   return (
-    <div>
+    <div {...componentOuiaProps(ouiaId, "workflow-form", ouiaSafe)}>
       <Form isHorizontal>
         <FormGroup
           label={"Event Endpoint"}
@@ -137,8 +187,8 @@ export function CloudEventForm(props: CloudEventFormProps) {
               width={"100px"}
               variant={SelectVariant.single}
               selections={method}
-              onSelect={(_event, value: string) => {
-                setMethod(CloudEventMethod[value as keyof typeof CloudEventMethod] ?? CloudEventMethod.POST);
+              onSelect={(event, value: "POST" | "PUT") => {
+                setMethod(CloudEventMethod[value] ?? CloudEventMethod.POST);
                 setIsMethodOpen(false);
               }}
               isOpen={isMethodOpen}
@@ -193,19 +243,36 @@ export function CloudEventForm(props: CloudEventFormProps) {
         >
           <TextInput value={eventSource} isRequired type="text" id="eventSource" onChange={setEventSource} />
         </FormGroup>
-        <FormGroup
-          label="Instance Id"
-          fieldId="instanceId"
-          labelIcon={
-            <CloudEventFieldLabelIcon
-              fieldId={"instanceId"}
-              helpMessage={"Sets the Service Workflow instance Id the cloud event will interact with."}
-              cloudEventHeader={"kogitoprocrefid"}
-            />
-          }
-        >
-          <TextInput value={instanceId} isRequired type="text" id="instanceId" onChange={setInstanceId} />
-        </FormGroup>
+        {!isNewInstanceEvent && (
+          <FormGroup
+            label="Instance Id"
+            fieldId="instanceId"
+            labelIcon={
+              <CloudEventFieldLabelIcon
+                fieldId={"instanceId"}
+                helpMessage={"Sets the Service Workflow instance Id the cloud event will interact with."}
+                cloudEventHeader={"kogitoprocrefid"}
+              />
+            }
+          >
+            <TextInput value={instanceId} isRequired type="text" id="instanceId" onChange={setInstanceId} />
+          </FormGroup>
+        )}
+        {isNewInstanceEvent && (
+          <FormGroup
+            label="Business Key"
+            fieldId="businessKey"
+            labelIcon={
+              <CloudEventFieldLabelIcon
+                fieldId={"businessKey"}
+                helpMessage={"Sets the Business Key for the Serverless Workflow instance started by the cloud event."}
+                cloudEventHeader={"kogitobusinesskey"}
+              />
+            }
+          >
+            <TextInput value={businessKey} isRequired type="text" id="businessKey" onChange={setBusinessKey} />
+          </FormGroup>
+        )}
         <FormGroup
           label="Event Custom Headers"
           fieldId="customHeaders"
@@ -240,32 +307,19 @@ export function CloudEventForm(props: CloudEventFormProps) {
             />
           }
         >
-          <CodeEditor
-            isDarkTheme={false}
-            isLineNumbersVisible={true}
-            isReadOnly={false}
-            isCopyEnabled={false}
-            isMinimapVisible={true}
-            isLanguageLabelVisible={false}
-            code={eventData}
-            language={Language.json}
-            height="300px"
-            onChange={setEventData}
-          />
+          {requestDataEditor}
         </FormGroup>
-        <ActionList>
-          <ActionListItem>
-            <Button key={"triggerCloudEventButton"} variant="primary" onClick={doTrigger}>
-              Trigger
-            </Button>
-          </ActionListItem>
-          <ActionListItem>
-            <Button key={"resetCloudEventFormButton"} variant="secondary" onClick={resetForm}>
-              Reset
-            </Button>
-          </ActionListItem>
-        </ActionList>
+        <ActionListGroup>
+          <Button key={"triggerCloudEventButton"} variant="primary" onClick={doTrigger}>
+            Trigger
+          </Button>
+          <Button key={"resetCloudEventFormButton"} variant="secondary" onClick={resetForm}>
+            Reset
+          </Button>
+        </ActionListGroup>
       </Form>
     </div>
   );
-}
+};
+
+export default CloudEventForm;
