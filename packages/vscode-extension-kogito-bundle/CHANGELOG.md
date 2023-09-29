@@ -3,18 +3,18 @@
 - NO-ISSUE - Improved localization for Stunner BPMN Editor
 - NO-ISSUE - Add DMN 1.5 specification files to `packages/dmn-marshaller`
 - [kie-issues#180](https://github.com/kiegroup/kie-issues/issues/180) - On DMN Editor's Boxed Expression Editor, when resizing Context/Invocation entry info cells, minWidths are getting messy
-- [kie-issues#510](https://github.com/kiegroup/kie-issues/issues/510) - Content assist in DMN Editor doesn't allow true/false without major changeskiegroup/kie-tools/pull/1950
+- [kie-issues#510](https://github.com/kiegroup/kie-issues/issues/510) - Content assist in DMN Editor doesn't allow true/false without major changes
 - [kie-issues#420](https://github.com/kiegroup/kie-issues/issues/420) - Boxed expression component context menu renders both selected and the chosen cell menu
-- [kie-issues#159](https://github.com/kiegroup/kie-issues/issues/159) - Colorize variable names in FEEL inputs on DMN Editor's Boxed Expression Editorkiegroup/kie-tools/pull/1869
-- [kie-issues#589](https://github.com/kiegroup/kie-issues/issues/589) - Monaco-editor doesn't apply colorisation in DMN Editor1986
-- [kie-issues#590](https://github.com/kiegroup/kie-issues/issues/590) - In Boxed Expression Editor, Insert N columns/rows does nothingkie-tools/pull/1988
-- [KOGITO-9668](https://issues.redhat.com/browse/KOGITO-9668) - SWF Editor - In VSCode the diagram reloads if a user clicks on any area of the canvaskiegroup/kie-tools/pull/1886
+- [kie-issues#159](https://github.com/kiegroup/kie-issues/issues/159) - Colorize variable names in FEEL inputs on DMN Editor's Boxed Expression Editor
+- [kie-issues#589](https://github.com/kiegroup/kie-issues/issues/589) - Monaco-editor doesn't apply colorisation in DMN Editor
+- [kie-issues#590](https://github.com/kiegroup/kie-issues/issues/590) - In Boxed Expression Editor, Insert N columns/rows does nothing
+- [KOGITO-9668](https://issues.redhat.com/browse/KOGITO-9668) - SWF Editor - In VSCode the diagram reloads if a user clicks on any area of the canvas
 - [KOGITO-8289](https://issues.redhat.com/browse/KOGITO-8289) - SWF Editor - Marshalling codebase clean-up
 - [KOGITO-9597](https://issues.redhat.com/browse/KOGITO-9597) - Broken error page layout
 - [KOGITO-9685](https://issues.redhat.com/browse/KOGITO-9685) - Fix dirty state on SWF combined editor
 - [KOGITO-8328](https://issues.redhat.com/browse/KOGITO-8328) - SWF Editor - Upgrade stream to GWT 2.10
-- [KOGITO-9536](https://issues.redhat.com/browse/KOGITO-9536) - SWF Editor - Simplifying the hierarchy of canvas elements.1867
-- [KOGITO-9538](https://issues.redhat.com/browse/KOGITO-9538) - SWF Editor - Get rid of HandlerRegistration and MouseUpHandler1914
+- [KOGITO-9536](https://issues.redhat.com/browse/KOGITO-9536) - SWF Editor - Simplifying the hierarchy of canvas elements.
+- [KOGITO-9538](https://issues.redhat.com/browse/KOGITO-9538) - SWF Editor - Get rid of HandlerRegistration and MouseUpHandler
 - [KOGITO-9724](https://issues.redhat.com/browse/KOGITO-9724) - Move selectFromContentAssist to SwfTextEditor class
 - [KOGITO-9695](https://issues.redhat.com/browse/KOGITO-9695) - SWF Editor - Refactor GWT components
 - [KOGITO-9767](https://issues.redhat.com/browse/KOGITO-9767) - SWF Editor - final migration to native apis
