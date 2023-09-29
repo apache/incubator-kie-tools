@@ -45,26 +45,56 @@ function TestScenarioDrawerSettingsPanel({
 
   return (
     <>
-      <Title headingLevel={"h6"}>{i18n.drawer.settings.fileName}</Title>
-      <TextInput value={fileName} type="text" isDisabled />
-      <Title headingLevel={"h6"}>{i18n.drawer.settings.assetType}</Title>
-      <TextInput value={testScenarioSettings.assetType} type="text" isDisabled />
+      <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
+        {i18n.drawer.settings.fileName}
+      </Title>
+      <TextInput className={"kie-scesim-editor-drawer-settings--text-input"} value={fileName} type="text" isDisabled />
+      <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
+        {i18n.drawer.settings.assetType}
+      </Title>
+      <TextInput
+        className={"kie-scesim-editor-drawer-settings--text-input"}
+        value={testScenarioSettings.assetType}
+        type="text"
+        isDisabled
+      />
       {testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN] ? (
         <>
-          <Title headingLevel={"h6"}>{i18n.drawer.settings.dmnModel}</Title>
+          <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
+            {i18n.drawer.settings.dmnModel}
+          </Title>
           {/* Temporary Mocked */}
-          <FormSelect value={"1"} aria-label="FormSelect Input" ouiaId="BasicFormSelect">
+          <FormSelect
+            className={"kie-scesim-editor-drawer-settings--form-select"}
+            value={"1"}
+            aria-label="FormSelect Input"
+            ouiaId="BasicFormSelect"
+          >
             <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
             <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
           </FormSelect>
-          <Title headingLevel={"h6"}>{i18n.drawer.settings.dmnName}</Title>
-          <TextInput value={testScenarioSettings.dmnName} type="text" isDisabled />
-          <Title headingLevel={"h6"}>{i18n.drawer.settings.dmnNameSpace}</Title>
-          <TextInput value={testScenarioSettings.dmnNamespace} type="text" isDisabled />
+          <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
+            {i18n.drawer.settings.dmnName}
+          </Title>
+          <TextInput
+            className={"kie-scesim-editor-drawer-settings--text-input"}
+            value={testScenarioSettings.dmnName}
+            type="text"
+            isDisabled
+          />
+          <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
+            {i18n.drawer.settings.dmnNameSpace}
+          </Title>
+          <TextInput
+            className={"kie-scesim-editor-drawer-settings--text-input"}
+            value={testScenarioSettings.dmnNamespace}
+            type="text"
+            isDisabled
+          />
         </>
       ) : (
         <>
-          <Title headingLevel={"h6"}>
+          <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.kieSessionRule}
             <Tooltip content={i18n.drawer.settings.kieSessionRuleTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
@@ -73,12 +103,13 @@ function TestScenarioDrawerSettingsPanel({
             </Tooltip>
           </Title>
           <TextInput
+            className={"kie-scesim-editor-drawer-settings--text-input"}
             onChange={(value) => onUpdateSettingField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
             value={testScenarioSettings.kieSessionRule}
           />
-          <Title headingLevel={"h6"}>
+          <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.ruleFlowGroup}
             <Tooltip content={i18n.drawer.settings.ruleFlowGroupTooltip}>
               <Icon className={"kie-scesim-editor-drawer-settings--info-icon"} size="sm" status="info">
@@ -87,6 +118,7 @@ function TestScenarioDrawerSettingsPanel({
             </Tooltip>
           </Title>
           <TextInput
+            className={"kie-scesim-editor-drawer-settings--text-input"}
             onChange={(value) => onUpdateSettingField("ruleFlowGroup", value)}
             placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
             type="text"
