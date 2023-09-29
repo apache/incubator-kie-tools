@@ -21,18 +21,21 @@ import * as React from "react";
 
 import { useCallback, useEffect, useState } from "react";
 
-import { Button } from "@patternfly/react-core/dist/js/components/Button/Button";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider/Divider";
-import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Toolbar } from "@patternfly/react-core/dist/js/components/Toolbar/Toolbar";
-import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar/ToolbarItem";
-import { ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar/ToolbarContent";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/Tooltip";
-import { TreeView, TreeViewDataItem } from "@patternfly/react-core/dist/js/components/TreeView/TreeView";
-import { TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/TreeViewSearch";
-
-import { Icon } from "@patternfly/react-core/dist/esm/components/Icon";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Button } from "@patternfly/react-core/dist/js/components/Button/";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider/";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/esm/icons/info-circle-icon";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Toolbar } from "@patternfly/react-core/dist/js/components/Toolbar/";
+import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar/";
+import { ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar/";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/";
+import { TreeView, TreeViewDataItem } from "@patternfly/react-core/dist/js/components/TreeView/";
+import { TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/";
 
 import { TestScenarioDataObject, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
@@ -65,19 +68,21 @@ function TestScenarioDataObjectsPanel({
     if (item.children) {
       return (
         (item.children = item.children
-          .map((opt: TestScenarioDataObject) => Object.assign({}, opt))
+          .map((object: TestScenarioDataObject) => Object.assign({}, object))
           .filter((child: TestScenarioDataObject) => filterItems(child, input))).length > 0
       );
     }
   }, []);
 
   const onSearchTreeView = useCallback(
-    (evt) => {
-      const input = evt.target.value;
+    (event) => {
+      const input = event.target.value;
       if (input === "") {
         setFilteredItems({ items: dataObjects, isFiltered: false });
       } else {
-        const filtered = dataObjects.map((opt) => Object.assign({}, opt)).filter((item) => filterItems(item, input));
+        const filtered = dataObjects
+          .map((object) => Object.assign({}, object))
+          .filter((item) => filterItems(item, input));
         setFilteredItems({ items: filtered, isFiltered: true });
       }
     },
@@ -89,7 +94,7 @@ function TestScenarioDataObjectsPanel({
     setTreeViewActiveItems([treeViewItem]);
   }, []);
 
-  const onAllExpandedToggle = useCallback((_evt) => {
+  const onAllExpandedToggle = useCallback((_event) => {
     setAllExpanded((prev) => !prev);
   }, []);
 
@@ -137,7 +142,19 @@ function TestScenarioDataObjectsPanel({
             toolbar={toolbar}
           />
         ) : (
-          <Text>OOOpps</Text>
+          <Bullseye>
+            <EmptyState>
+              <EmptyStateIcon icon={CubesIcon} />
+              <Title headingLevel="h4" size="lg">
+                {i18n.drawer.dataObjects.emptyDataObjectsTitle}
+              </Title>
+              <EmptyStateBody>
+                {assetType === TestScenarioType[TestScenarioType.DMN]
+                  ? i18n.drawer.dataObjects.emptyDataObjectsDescriptionDMN
+                  : i18n.drawer.dataObjects.emptyDataObjectsDescriptionRule}
+              </EmptyStateBody>
+            </EmptyState>
+          </Bullseye>
         )}
       </div>
       <Divider />
@@ -152,7 +169,11 @@ function TestScenarioDataObjectsPanel({
         >
           {i18n.drawer.dataObjects.clearSelection}
         </Button>
-        <Button onClick={onAllExpandedToggle} isDisabled={filteredItems.isFiltered} variant="link">
+        <Button
+          onClick={onAllExpandedToggle}
+          isDisabled={filteredItems.items.length < 1 || filteredItems.isFiltered}
+          variant="link"
+        >
           {allExpanded ? i18n.drawer.dataObjects.collapseAll : i18n.drawer.dataObjects.expandAll}
         </Button>
       </div>

@@ -31,9 +31,7 @@
 }
 
 .kie-scesim-editor-drawer-data-objects--selector {
-  /*border: solid 1px #d2d2d2; */
-  /* margin-top: 5px; */
-  height: 390px;
+  height: 400px;
   overflow: scroll;
 }
 

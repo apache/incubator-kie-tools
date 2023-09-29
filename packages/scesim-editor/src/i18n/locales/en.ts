@@ -69,6 +69,9 @@ export const en: TestScenarioEditorI18n = {
       dataObjectsDescriptionRule: "Data objects are the Java objects specified in your project.",
       description:
         'To create a test scenario, define the "Given" and "Expect" columns by using the data object selector below.',
+      emptyDataObjectsTitle: "No Data objects",
+      emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Data objects from the linked DMN file.",
+      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
       expandAll: "Expand all",
       insertDataObject: "Insert Data object",
       selectorTitle: "Selector",
