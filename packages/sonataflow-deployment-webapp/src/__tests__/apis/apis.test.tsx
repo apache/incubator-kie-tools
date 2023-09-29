@@ -19,13 +19,15 @@
 import axios from "axios";
 import {
   CloudEventMethod,
-  getCustomWorkflowSchema,
-  SONATAFLOW_BUSINESS_KEY,
-  SONATAFLOW_PROCESS_REFERENCE_ID,
-  startWorkflowRest,
+  KOGITO_BUSINESS_KEY,
+  KOGITO_PROCESS_REFERENCE_ID,
+} from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import {
   triggerCloudEvent,
   triggerStartCloudEvent,
-} from "../../apis";
+  getCustomWorkflowSchemaFromApi,
+  startWorkflowRest,
+} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 jest.mock("axios");
@@ -72,7 +74,7 @@ describe("swf custom form tests", () => {
         },
       },
     };
-    const result = await getCustomWorkflowSchema(api, "expression");
+    const result = await getCustomWorkflowSchemaFromApi(api, "expression");
     expect(result.type).toEqual("object");
     expect(result.properties.numbers.type).toEqual("array");
   });
@@ -84,7 +86,7 @@ describe("swf custom form tests", () => {
         },
       },
     };
-    const result = await getCustomWorkflowSchema(api, "expression");
+    const result = await getCustomWorkflowSchemaFromApi(api, "expression");
     expect(result).toEqual(null);
   });
 
@@ -105,7 +107,7 @@ describe("swf custom form tests", () => {
         },
       },
     };
-    const result = await getCustomWorkflowSchema(api, workflowName);
+    const result = await getCustomWorkflowSchemaFromApi(api, workflowName);
     expect(result).toEqual(schema);
   });
 
@@ -165,7 +167,7 @@ describe("triiger cloud events serction", () => {
     expect(request.data).toHaveProperty("specversion", "1.0");
     expect(request.data).toHaveProperty("type", "eventType");
     expect(request.data).toHaveProperty("source", "eventSource");
-    expect(request.data).toHaveProperty(SONATAFLOW_BUSINESS_KEY, "1234");
+    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, "1234");
     expect(request.data).toHaveProperty("data", JSON.parse(event.data));
   });
 
@@ -190,7 +192,7 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty(SONATAFLOW_BUSINESS_KEY, response);
+    expect(request.data).toHaveProperty(KOGITO_BUSINESS_KEY, response);
   });
 
   it("trigger cloud event - with instanceId", async () => {
@@ -216,8 +218,8 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).toHaveProperty(SONATAFLOW_PROCESS_REFERENCE_ID, "1234");
-    expect(request.data).not.toHaveProperty(SONATAFLOW_BUSINESS_KEY);
+    expect(request.data).toHaveProperty(KOGITO_PROCESS_REFERENCE_ID, "1234");
+    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
   });
 
   it("trigger cloud event - without instanceId", async () => {
@@ -241,8 +243,8 @@ describe("triiger cloud events serction", () => {
 
     expect(request.url).toBe("http://localhost:8080/endpoint");
     expect(request.method).toBe("POST");
-    expect(request.data).not.toHaveProperty(SONATAFLOW_PROCESS_REFERENCE_ID);
-    expect(request.data).not.toHaveProperty(SONATAFLOW_BUSINESS_KEY);
+    expect(request.data).not.toHaveProperty(KOGITO_PROCESS_REFERENCE_ID);
+    expect(request.data).not.toHaveProperty(KOGITO_BUSINESS_KEY);
   });
 
   it("trigger cloud event - using PUT", async () => {

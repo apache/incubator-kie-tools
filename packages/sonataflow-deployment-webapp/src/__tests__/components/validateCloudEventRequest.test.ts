@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CloudEventMethod } from "../../apis";
+import { CloudEventMethod } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { validateCloudEventRequest } from "../../components/validateCloudEventRequest";
 
 describe("validateCloudEventRequest tests", () => {

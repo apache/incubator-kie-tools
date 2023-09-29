@@ -17,7 +17,7 @@
  * under the License.
  */
 import { isPlainObject } from "lodash";
-import { CloudEventRequest } from "../apis";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 
 export interface FormValidations {
   isValid(): boolean;

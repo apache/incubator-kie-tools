@@ -19,7 +19,7 @@
 import React, { useMemo } from "react";
 import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import ReactJson from "react-json-view";
-import { WorkflowResponse } from "../apis/WorkflowResponse";
+import { WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export interface WorkflowResultProps {

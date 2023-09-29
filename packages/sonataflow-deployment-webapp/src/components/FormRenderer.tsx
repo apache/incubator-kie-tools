@@ -20,7 +20,7 @@ import React, { useImperativeHandle, useState } from "react";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { AutoFields, AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { FormAction, lookupValidator, ModelConversionTool } from "./utils";
-import { FormRendererApi } from "../types";
+import { FormRendererApi } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { FormFooter } from "./FormFooter";
 interface IOwnProps {
   formSchema: any;

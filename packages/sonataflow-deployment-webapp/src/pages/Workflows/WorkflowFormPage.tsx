@@ -33,7 +33,7 @@ import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { routes } from "../../routes";
 import { useHistory } from "react-router";
 import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
-import { WorkflowResponse } from "../../apis/WorkflowResponse";
+import { WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
 import { WorkflowResult } from "../../components/WorkflowResult";
 
 export function WorkflowFormPage(props: { workflowId: string }) {

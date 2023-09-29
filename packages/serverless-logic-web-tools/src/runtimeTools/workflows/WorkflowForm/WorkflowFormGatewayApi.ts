@@ -51,7 +51,7 @@ export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
     return getCustomWorkflowSchema(this.baseUrl, this.openApiPath, workflowName);
   }
 
-  startWorkflow(endpoint: string, data: Record<string, any>): Promise<string> {
-    return startWorkflowRest(data, endpoint, this.businessKey, this.proxyEndpoint);
+  async startWorkflow(endpoint: string, data: Record<string, any>): Promise<string> {
+    return (await startWorkflowRest(data, endpoint, this.businessKey, this.proxyEndpoint)).id;
   }
 }
