@@ -24,7 +24,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider/Divider";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title/Title";
 import { Toolbar } from "@patternfly/react-core/dist/js/components/Toolbar/Toolbar";
 import { ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar/ToolbarItem";
 import { ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolbar/ToolbarContent";
@@ -49,16 +48,13 @@ function TestScenarioDataObjectsPanel({
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
-  console.log("dataObjects");
-
-  console.log(dataObjects);
-
-  //const [expandAll, setExpandAll] = useState<boolean | null>(null);
-  const [filteredItems, setFilteredItems] = useState({items: dataObjects, isFiltered: false})
+  const [allExpanded, setAllExpanded] = useState(false);
+  const [filteredItems, setFilteredItems] = useState({ items: dataObjects, isFiltered: false });
   const [treeViewActiveItems, setTreeViewActiveItems] = useState<TreeViewDataItem[]>([]);
 
   useEffect(() => {
-    setFilteredItems({items: dataObjects, isFiltered: false});
+    setFilteredItems({ items: dataObjects, isFiltered: false });
+    setAllExpanded(false);
   }, [dataObjects]);
 
   const filterItems = useCallback((item, input) => {
@@ -75,25 +71,27 @@ function TestScenarioDataObjectsPanel({
     }
   }, []);
 
-  const onSearchTreeView = useCallback((evt) => {
-    const input = evt.target.value;
-    if (input === "") {
-      setFilteredItems({ items: dataObjects, isFiltered: false });
-    } else {
-      const filtered = dataObjects
-        .map((opt) => Object.assign({}, opt))
-        .filter((item) => filterItems(item, input));
+  const onSearchTreeView = useCallback(
+    (evt) => {
+      const input = evt.target.value;
+      if (input === "") {
+        setFilteredItems({ items: dataObjects, isFiltered: false });
+      } else {
+        const filtered = dataObjects.map((opt) => Object.assign({}, opt)).filter((item) => filterItems(item, input));
         setFilteredItems({ items: filtered, isFiltered: true });
-    }
-  }, [dataObjects, filterItems, setFilteredItems]);
+      }
+    },
+    [dataObjects, filterItems]
+  );
 
   const onSelectTreeViewItem = useCallback((_event, treeViewItem: TreeViewDataItem) => {
+    console.log(treeViewItem);
     setTreeViewActiveItems([treeViewItem]);
   }, []);
 
-  /*const onExpandAllToggle = useCallback((_evt) => {
-    setExpandAll((prev) => prev !== undefined ? !prev : true);
-  }, []); */
+  const onAllExpandedToggle = useCallback((_evt) => {
+    setAllExpanded((prev) => !prev);
+  }, []);
 
   const toolbar = (
     <Toolbar style={{ padding: 0 }}>
@@ -126,34 +124,37 @@ function TestScenarioDataObjectsPanel({
           </Icon>
         </Tooltip>
       </Text>
-      {/* <Title className={"kie-scesim-editor-drawer-data-objects--selector-title"} headingLevel={"h6"}>
-        {i18n.drawer.dataObjects.selectorTitle}
-      </Title> */}
       <Divider />
       <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
         {dataObjects.length > 0 ? (
           <TreeView
             activeItems={treeViewActiveItems}
-            allExpanded={filteredItems.isFiltered}
+            allExpanded={allExpanded || filteredItems.isFiltered}
             data={filteredItems.items}
             hasBadges
             hasSelectableNodes
             onSelect={onSelectTreeViewItem}
             toolbar={toolbar}
-            useMemo
           />
         ) : (
           <Text>OOOpps</Text>
         )}
       </div>
-      <Divider/>
+      <Divider />
       <div className={"kie-scesim-editor-drawer-data-objects--button-container"}>
-      <Button isDisabled={treeViewActiveItems.length < 1} variant="primary">
+        <Button isDisabled={treeViewActiveItems.length < 1} variant="primary">
           {i18n.drawer.dataObjects.insertDataObject}
-      </Button>
-      {/* <Button variant="link" onClick={onExpandAllToggle}>
-          {i18n.drawer.dataObjects.expandAll}
-      </Button> */}
+        </Button>
+        <Button
+          onClick={() => setTreeViewActiveItems([])}
+          isDisabled={treeViewActiveItems.length < 1}
+          variant="secondary"
+        >
+          {i18n.drawer.dataObjects.clearSelection}
+        </Button>
+        <Button onClick={onAllExpandedToggle} isDisabled={filteredItems.isFiltered} variant="link">
+          {allExpanded ? i18n.drawer.dataObjects.collapseAll : i18n.drawer.dataObjects.expandAll}
+        </Button>
       </div>
     </>
   );

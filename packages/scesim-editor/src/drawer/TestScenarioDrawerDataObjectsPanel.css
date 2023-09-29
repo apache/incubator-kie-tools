@@ -17,8 +17,12 @@
  * under the License.
  */
 
- .kie-scesim-editor-drawer-data-objects--button-container {
+.kie-scesim-editor-drawer-data-objects--button-container {
   margin-top: 10px;
+}
+
+.kie-scesim-editor-drawer-data-objects--button-container button + button {
+  margin-left: 10px;
 }
 
 .kie-scesim-editor-drawer-data-objects--info-icon {
