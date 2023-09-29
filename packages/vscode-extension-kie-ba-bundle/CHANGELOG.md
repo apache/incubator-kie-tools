@@ -1,3 +1,14 @@
+# 0.32.0 (alpha)
+
+- NO-ISSUE - Improved localization for Stunner BPMN Editor
+- NO-ISSUE - Add DMN 1.5 specification files to `packages/dmn-marshaller`
+- [kie-issues#180](https://github.com/kiegroup/kie-issues/issues/180) - On DMN Editor's Boxed Expression Editor, when resizing Context/Invocation entry info cells, minWidths are getting messy
+- [kie-issues#510](https://github.com/kiegroup/kie-issues/issues/510) - Content assist in DMN Editor doesn't allow true/false without major changeskiegroup/kie-tools/pull/1950
+- [kie-issues#420](https://github.com/kiegroup/kie-issues/issues/420) - Boxed expression component context menu renders both selected and the chosen cell menu
+- [kie-issues#159](https://github.com/kiegroup/kie-issues/issues/159) - Colorize variable names in FEEL inputs on DMN Editor's Boxed Expression Editorkiegroup/kie-tools/pull/1869
+- [kie-issues#589](https://github.com/kiegroup/kie-issues/issues/589) - Monaco-editor doesn't apply colorisation in DMN Editor1986
+- [kie-issues#590](https://github.com/kiegroup/kie-issues/issues/590) - In Boxed Expression Editor, Insert N columns/rows does nothingkie-tools/pull/1988
+
 # 0.31.0 (alpha)
 
 - [kie-issues#183](https://github.com/kiegroup/kie-issues/issues/183) - Dead keys (E.g., ˜ˆ´¨) are not triggering edit mode correctly on BeeTable cells

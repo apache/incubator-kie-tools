@@ -1,3 +1,7 @@
+# 0.32.0 (alpha)
+
+- _(No new features)_
+
 # 0.31.0 (alpha)
 
 - [KOGITO-9425](https://issues.redhat.com/browse/KOGITO-9425) - Make sure that column settings are respected for meters and timeseries in Dashbuilder
