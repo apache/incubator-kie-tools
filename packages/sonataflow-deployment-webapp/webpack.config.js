@@ -69,6 +69,9 @@ module.exports = async (env) =>
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
       port: buildEnv.sonataFlowDeploymentWebapp.dev.port,
+      client: {
+        overlay: false,
+      },
     },
     resolve: {
       fallback: {

@@ -36,7 +36,6 @@ import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
-import jsinterop.base.Js;
 import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
@@ -152,7 +151,6 @@ public class ShapeGlyphDragHandler {
     }
 
     void attachHandlers(final ShapeGlyphDragHandler.Callback callback) {
-        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
         HTMLElement panelElement = rootPanelSupplier.get();
 
         mouseMoveHandler = new NativeHandler(MOUSE_MOVE,
@@ -217,7 +215,7 @@ public class ShapeGlyphDragHandler {
     private void clearState(final Command proxyDestroyCommand) {
         clearHandlers();
         if (Objects.nonNull(dragProxyPanel)) {
-            rootPanelSupplier.get().removeChild(Js.cast(dragProxyPanel.getElement()));
+            rootPanelSupplier.get().removeChild(dragProxyPanel.getElement());
             if (null != proxyDestroyCommand) {
                 proxyDestroyCommand.execute();
             }

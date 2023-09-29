@@ -25,6 +25,10 @@ public class DomGlobal {
         return 0d;
     }
 
+    public static void clearTimeout(double timerId) {
+        // Do nothing
+    }
+
     public static final Promise<Response> fetch(String input) {
         return new Promise<Response>((resolve, reject) ->
                                              new Response()

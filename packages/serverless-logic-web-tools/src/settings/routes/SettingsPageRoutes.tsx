@@ -27,6 +27,7 @@ import { ServiceAccountSettings } from "../serviceAccount/ServiceAccountSettings
 import { ServiceRegistrySettings } from "../serviceRegistry/ServiceRegistrySettings";
 import { SettingsPageProps } from "../types";
 import { StorageSettings } from "../storage/StorageSettings";
+import { RuntimeToolsSettings } from "../runtimeTools/RuntimeToolsSettings";
 
 export function SettingsPageRoutes(props: {} & SettingsPageProps) {
   const routes = useRoutes();
@@ -50,6 +51,9 @@ export function SettingsPageRoutes(props: {} & SettingsPageProps) {
       </Route>
       <Route path={routes.settings.storage.path({})}>
         <StorageSettings />
+      </Route>
+      <Route path={routes.settings.runtime_tools.path({})}>
+        <RuntimeToolsSettings {...settingsPageProps} />
       </Route>
       <Route>
         <Redirect to={routes.settings.github.path({})} />

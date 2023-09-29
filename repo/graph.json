@@ -120,6 +120,9 @@
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
+      { "id": "@kie-tools/runtime-tools-components" },
+      { "id": "@kie-tools/runtime-tools-gateway-api" },
+      { "id": "@kie-tools/runtime-tools-enveloped-components" },
       { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -709,6 +712,34 @@
       { "source": "@kie-tools/unitables", "target": "@kie-tools/dmn-runner", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "pmml-vscode-extension", "target": "@kie-tools/pmml-editor", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-components",
+        "target": "@kie-tools/json-yaml-language-service",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-components",
+        "target": "@kie-tools/runtime-tools-gateway-api",
+        "weight": 1
+      },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools/uniforms-patternfly", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-components", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/eslint", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/runtime-tools-gateway-api", "target": "@kie-tools/tsconfig", "weight": 1 },
+      {
+        "source": "@kie-tools/runtime-tools-enveloped-components",
+        "target": "@kie-tools/runtime-tools-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-enveloped-components",
+        "target": "@kie-tools/serverless-workflow-combined-editor",
+        "weight": 1
+      },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/scesim-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -720,7 +751,7 @@
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-web-tools",
-        "target": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/runtime-tools-enveloped-components",
         "weight": 1
       },
       { "source": "@kie-tools/serverless-logic-web-tools", "target": "@kie-tools/text-editor", "weight": 1 },
@@ -781,9 +812,12 @@
         "target": "sonataflow-deployment-webapp",
         "weight": 1
       },
-      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/react-hooks", "weight": 1 },
-      { "source": "sonataflow-deployment-webapp", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      {
+        "source": "sonataflow-deployment-webapp",
+        "target": "@kie-tools/runtime-tools-enveloped-components",
+        "weight": 1
+      },
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app",
         "target": "@kie-tools/maven-config-setup-helper",
@@ -957,6 +991,9 @@
     ["pmml-vscode-extension", "packages/pmml-vscode-extension"],
     ["@kie-tools-core/react-hooks", "packages/react-hooks"],
     ["@kie-tools/root-env", "packages/root-env"],
+    ["@kie-tools/runtime-tools-components", "packages/runtime-tools-components"],
+    ["@kie-tools/runtime-tools-enveloped-components", "packages/runtime-tools-enveloped-components"],
+    ["@kie-tools/runtime-tools-gateway-api", "packages/runtime-tools-gateway-api"],
     ["@kie-tools/scesim-editor", "packages/scesim-editor"],
     ["@kie-tools/scesim-marshaller", "packages/scesim-marshaller"],
     ["@kie-tools/serverless-logic-web-tools", "packages/serverless-logic-web-tools"],
