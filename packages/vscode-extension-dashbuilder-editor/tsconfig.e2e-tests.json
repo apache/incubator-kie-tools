@@ -1,0 +1,11 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false,
+    "resolveJsonModule": true,
+    "outDir": "out"
+  },
+  "include": ["e2e-tests"],
+  "exclude": ["test-resources"]
+}

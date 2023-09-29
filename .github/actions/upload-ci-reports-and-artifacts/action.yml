@@ -25,18 +25,18 @@ runs:
       env:
         TESTS_REPORTS_PATTERNS: >-
           ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
-        INTEGRATION_TESTS_REPORTS_PATTERNS: >-
-          ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
-        INTEGRATION_TESTS_ARTIFACTS_PATTERNS: >-
-          ${{ steps.ci_patterns.outputs.integration_tests_artifacts_patterns }}
+        END_TO_END_TESTS_REPORTS_PATTERNS: >-
+          ${{ steps.ci_patterns.outputs.end_to_end_tests_reports_patterns }}
+        END_TO_END_TESTS_ARTIFACTS_PATTERNS: >-
+          ${{ steps.ci_patterns.outputs.end_to_end_tests_artifacts_patterns }}
         BUILD_ARTIFACTS_PATTERNS: >-
           ${{ steps.ci_patterns.outputs.build_artifacts_patterns }}
       shell: bash
       run: |
         output_empty_zip () { echo UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA== | base64 -d; }
         zip -r $RUNNER_TEMP/tests-reports.zip $TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/tests-reports.zip
-        zip -r $RUNNER_TEMP/integration-tests-reports.zip $INTEGRATION_TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/integration-tests-reports.zip
-        zip -r $RUNNER_TEMP/integration-tests-artifacts.zip $INTEGRATION_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/integration-tests-artifacts.zip
+        zip -r $RUNNER_TEMP/end-to-end-tests-reports.zip $END_TO_END_TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/end-to-end-tests-reports.zip
+        zip -r $RUNNER_TEMP/end-to-end-tests-artifacts.zip $END_TO_END_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/end-to-end-tests-artifacts.zip
         zip -r $RUNNER_TEMP/build-artifacts.zip $BUILD_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/build-artifacts.zip
         ls -la $RUNNER_TEMP
 
@@ -48,21 +48,21 @@ runs:
         path: |
           ${{ runner.temp }}/tests-reports.zip
 
-    - name: "Upload integration tests reports"
+    - name: "Upload end-to-end tests reports"
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: ${{ runner.os }}__integration-tests-reports
+        name: ${{ runner.os }}__end-to-end-tests-reports
         path: |
-          ${{ runner.temp }}/integration-tests-reports.zip
+          ${{ runner.temp }}/end-to-end-tests-reports.zip
 
-    - name: "Upload integration tests artifacts"
+    - name: "Upload end-to-end tests artifacts"
       uses: actions/upload-artifact@v3
       if: always()
       with:
-        name: ${{ runner.os }}__integration-tests-artifacts
+        name: ${{ runner.os }}__end-to-end-tests-artifacts
         path: |
-          ${{ runner.temp }}/integration-tests-artifacts.zip
+          ${{ runner.temp }}/end-to-end-tests-artifacts.zip
 
     - name: "Upload build artifacts"
       uses: actions/upload-artifact@v3

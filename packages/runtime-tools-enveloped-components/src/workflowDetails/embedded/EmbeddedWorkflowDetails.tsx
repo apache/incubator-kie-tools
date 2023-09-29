@@ -86,8 +86,7 @@ export const EmbeddedWorkflowDetails = React.forwardRef((props: Props, forwarded
   );
 });
 
-const EmbeddedWorkflowDetailsEnvelope =
-  React.forwardRef<
-    WorkflowDetailsApi,
-    EmbeddedEnvelopeProps<WorkflowDetailsChannelApi, WorkflowDetailsEnvelopeApi, WorkflowDetailsApi>
-  >(RefForwardingEmbeddedEnvelope);
+const EmbeddedWorkflowDetailsEnvelope = React.forwardRef<
+  WorkflowDetailsApi,
+  EmbeddedEnvelopeProps<WorkflowDetailsChannelApi, WorkflowDetailsEnvelopeApi, WorkflowDetailsApi>
+>(RefForwardingEmbeddedEnvelope);

@@ -84,12 +84,7 @@ export const EmbeddedWorkflowDefinitionList = React.forwardRef(
   }
 );
 
-const EmbeddedWorkflowDefinitionListEnvelope =
-  React.forwardRef<
-    WorkflowDefinitionListApi,
-    EmbeddedEnvelopeProps<
-      WorkflowDefinitionListChannelApi,
-      WorkflowDefinitionListEnvelopeApi,
-      WorkflowDefinitionListApi
-    >
-  >(RefForwardingEmbeddedEnvelope);
+const EmbeddedWorkflowDefinitionListEnvelope = React.forwardRef<
+  WorkflowDefinitionListApi,
+  EmbeddedEnvelopeProps<WorkflowDefinitionListChannelApi, WorkflowDefinitionListEnvelopeApi, WorkflowDefinitionListApi>
+>(RefForwardingEmbeddedEnvelope);

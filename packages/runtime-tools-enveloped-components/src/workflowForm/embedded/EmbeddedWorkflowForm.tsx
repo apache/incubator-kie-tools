@@ -84,8 +84,7 @@ export const EmbeddedWorkflowForm = React.forwardRef(
   }
 );
 
-const EmbeddedWorkflowFormEnvelope =
-  React.forwardRef<
-    WorkflowFormApi,
-    EmbeddedEnvelopeProps<WorkflowFormChannelApi, WorkflowFormEnvelopeApi, WorkflowFormApi>
-  >(RefForwardingEmbeddedEnvelope);
+const EmbeddedWorkflowFormEnvelope = React.forwardRef<
+  WorkflowFormApi,
+  EmbeddedEnvelopeProps<WorkflowFormChannelApi, WorkflowFormEnvelopeApi, WorkflowFormApi>
+>(RefForwardingEmbeddedEnvelope);

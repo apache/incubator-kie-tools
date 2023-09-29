@@ -1,10 +1,10 @@
 # Integration tests
 
-There is a set of cypress tests in `it-tests` folder. To run them, please refer to one option bellow.
+There is a set of cypress tests in `e2e-tests` folder. To run them, please refer to one option bellow.
 
 ## Run tests manually
 
-More suitable for running particular tests from `it-tests`.
+More suitable for running particular tests from `e2e-tests`.
 
 - `packages/extended-services$ pnpm start`
 - `packages/online-editor$ pnpm start`
@@ -12,9 +12,9 @@ More suitable for running particular tests from `it-tests`.
 
 ## Run tests automatically
 
-More suitable for running `it-tests` completely.
+More suitable for running `e2e-tests` completely.
 
-- `packages/online-editor$ START_SERVER_AND_TEST_INSECURE=true KOGITO_TOOLING_BUILD_testIT=true pnpm test:it`
+- `packages/online-editor$ START_SERVER_AND_TEST_INSECURE=true KOGITO_TOOLING_BUILD_testIT=true pnpm test:e2e`
 
 > **NOTE:**
 > Before test development, you may need to build `online-editor` as:

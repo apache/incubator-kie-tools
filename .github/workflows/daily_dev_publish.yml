@@ -28,7 +28,7 @@ jobs:
       KIE_TOOLS_BUILD__buildContainerImages: ${{ matrix.os != 'windows-latest' }}
       KIE_TOOLS_BUILD__runLinters: "false"
       KIE_TOOLS_BUILD__runTests: "false"
-      KIE_TOOLS_BUILD__runIntegrationTests: "false"
+      KIE_TOOLS_BUILD__runEndToEndTests: "false"
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__registry: "quay.io"
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__account: "kie-tools"
       DMN_DEV_DEPLOYMENT_BASE_IMAGE__name: "dmn-dev-deployment-base-image"
