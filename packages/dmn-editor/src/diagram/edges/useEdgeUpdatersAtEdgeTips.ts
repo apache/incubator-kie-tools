@@ -1,19 +1,18 @@
-import * as RF from "reactflow";
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { useCallback, useEffect, useLayoutEffect } from "react";
-import { getHandlePosition, getNodeIntersection, getPointForHandle } from "../maths/DmnMaths";
+import { useLayoutEffect } from "react";
+import * as RF from "reactflow";
+import { getLineRectangleIntersectionPoint } from "../maths/DmnMaths";
 import { scaleFromCenter } from "../maths/Maths";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
+
+const RADIUS = 5;
+const HOVERED_RADIUS = 10;
 
 export function useEdgeUpdatersAtEdgeTips(
   interactionPathRef: React.RefObject<SVGPathElement>,
   sourceNode: RF.Node,
   targetNode: RF.Node,
-  waypoints: DC__Point[]
+  snappedWaypoints: DC__Point[]
 ) {
-  const isConnecting = !!RF.useStore((s) => s.connectionNodeId);
-
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;
 
@@ -21,11 +20,11 @@ export function useEdgeUpdatersAtEdgeTips(
     const edgeUpdaterTarget = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-target") as SVGCircleElement;
 
     function onEnter(e: MouseEvent) {
-      (e.target as any)?.setAttribute("r", "10");
+      (e.target as any)?.setAttribute("r", `${HOVERED_RADIUS}`);
     }
 
     function onLeave(e: MouseEvent) {
-      (e.target as any)?.setAttribute("r", "5");
+      (e.target as any)?.setAttribute("r", `${RADIUS}`);
     }
 
     edgeUpdaterSource?.addEventListener("mouseenter", onEnter);
@@ -38,60 +37,55 @@ export function useEdgeUpdatersAtEdgeTips(
       edgeUpdaterTarget?.removeEventListener("mouseleave", onLeave);
       edgeUpdaterTarget?.removeEventListener("mouseenter", onEnter);
     };
-  }, [interactionPathRef, sourceNode, targetNode, waypoints]);
+  }, [interactionPathRef, sourceNode, targetNode, snappedWaypoints]);
 
   useLayoutEffect(() => {
     const edgeSvgGroup = interactionPathRef.current!.parentElement;
 
-    // const sourceHandlePosition = getHandlePosition({
-    //   shapeBounds: sourceNode.data.shape["dc:Bounds"],
-    //   waypoint: waypoints[0],
-    // });
-    // const targetHandlePosition = getHandlePosition({
-    //   shapeBounds: targetNode.data.shape["dc:Bounds"],
-    //   waypoint: waypoints[waypoints.length - 1],
-    // });
+    // Get fake scaled bounds to give the Edge Updaters some distance of the node.
+    const scaledSourceNode = scaleFromCenter(HOVERED_RADIUS, {
+      position: sourceNode.positionAbsolute,
+      dimensions: sourceNode,
+    });
+    const scaledTargetNode = scaleFromCenter(HOVERED_RADIUS, {
+      position: targetNode.positionAbsolute,
+      dimensions: targetNode,
+    });
 
-    // const scaledSourceNode = scaleFromCenter(10, { position: sourceNode.positionAbsolute, dimensions: sourceNode });
-    // const sourcePoint = switchExpression(sourceHandlePosition, {
-    //   [TargetHandleId.TargetCenter]: getNodeIntersection(waypoints[1], scaledSourceNode),
-    //   default: getPointForHandle({
-    //     handle: sourceHandlePosition,
-    //     bounds: {
-    //       "@_x": scaledSourceNode.position.x,
-    //       "@_y": scaledSourceNode.position.y,
-    //       "@_width": scaledSourceNode.dimensions.width,
-    //       "@_height": scaledSourceNode.dimensions.height,
-    //     },
-    //   }),
-    // });
+    // Get the intersection point between the edge and the nodes. The Edge Updater must be visible at all times!
+    //
+    // FIXME: Tiago --> Sometimes the immediate next waypoint is hidden behind the node.
+    //                  Ideally, we would use the first waypoints that's outside of the node's bounds.
+    const firstWaypointOutsideSourceNodeBounds = snappedWaypoints[1];
+    const sourcePoint = getLineRectangleIntersectionPoint(firstWaypointOutsideSourceNodeBounds, snappedWaypoints[0], {
+      x: scaledSourceNode.position.x ?? 0,
+      y: scaledSourceNode.position.y ?? 0,
+      width: scaledSourceNode.dimensions.width ?? 0,
+      height: scaledSourceNode.dimensions.height ?? 0,
+    });
 
-    // const scaledTargetNode = scaleFromCenter(10, { position: targetNode.positionAbsolute, dimensions: targetNode });
-    // const targetPoint = switchExpression(targetHandlePosition, {
-    //   [TargetHandleId.TargetCenter]: getNodeIntersection(waypoints[waypoints.length - 2], scaledTargetNode),
-    //   default: getPointForHandle({
-    //     handle: targetHandlePosition,
-    //     bounds: {
-    //       "@_x": scaledTargetNode.position.x,
-    //       "@_y": scaledTargetNode.position.y,
-    //       "@_width": scaledTargetNode.dimensions.width,
-    //       "@_height": scaledTargetNode.dimensions.height,
-    //     },
-    //   }),
-    // });
+    const firstWaypointOutsideTargetNodeBounds = snappedWaypoints[snappedWaypoints.length - 2];
+    const targetPoint = getLineRectangleIntersectionPoint(
+      firstWaypointOutsideTargetNodeBounds,
+      snappedWaypoints[snappedWaypoints.length - 1],
+      {
+        x: scaledTargetNode.position.x ?? 0,
+        y: scaledTargetNode.position.y ?? 0,
+        width: scaledTargetNode.dimensions.width ?? 0,
+        height: scaledTargetNode.dimensions.height ?? 0,
+      }
+    );
 
-    // source
-    const sourcePoint = interactionPathRef.current?.getPointAtLength(10);
+    // Update source Edge Updater
     const edgeUpdaterSource = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-source") as SVGCircleElement;
-    edgeUpdaterSource.setAttribute("cx", "" + sourcePoint!.x);
-    edgeUpdaterSource.setAttribute("cy", "" + sourcePoint!.y);
-    edgeUpdaterSource.setAttribute("r", "5");
+    edgeUpdaterSource.setAttribute("cx", "" + sourcePoint!["@_x"]);
+    edgeUpdaterSource.setAttribute("cy", "" + sourcePoint!["@_y"]);
+    edgeUpdaterSource.setAttribute("r", `${RADIUS}`);
 
-    // target
-    const targetPoint = interactionPathRef.current?.getPointAtLength(interactionPathRef.current?.getTotalLength() - 10);
+    // Update target Edge Updater
     const edgeUpdaterTarget = edgeSvgGroup!.querySelector(".react-flow__edgeupdater-target") as SVGCircleElement;
-    edgeUpdaterTarget.setAttribute("cx", "" + targetPoint!.x);
-    edgeUpdaterTarget.setAttribute("cy", "" + targetPoint!.y);
-    edgeUpdaterTarget.setAttribute("r", "5");
-  }, [interactionPathRef, sourceNode, targetNode, waypoints]);
+    edgeUpdaterTarget.setAttribute("cx", "" + targetPoint!["@_x"]);
+    edgeUpdaterTarget.setAttribute("cy", "" + targetPoint!["@_y"]);
+    edgeUpdaterTarget.setAttribute("r", `${RADIUS}`);
+  }, [interactionPathRef, sourceNode, targetNode, snappedWaypoints]);
 }

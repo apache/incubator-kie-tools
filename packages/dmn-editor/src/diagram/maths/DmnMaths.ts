@@ -51,7 +51,7 @@ export function getHandlePosition({
 }: {
   shapeBounds: DC__Bounds | undefined;
   waypoint: DC__Point;
-}): TargetHandleId {
+}): { handlePosition: TargetHandleId; point: DC__Point } {
   const x = shapeBounds?.["@_x"] ?? 0;
   const y = shapeBounds?.["@_y"] ?? 0;
   const w = shapeBounds?.["@_width"] ?? 0;
@@ -64,58 +64,103 @@ export function getHandlePosition({
   const bottom = { "@_x": x + w / 2, "@_y": y + h };
 
   if (getDistance(center, waypoint) <= 1) {
-    return TargetHandleId.TargetCenter;
+    return { handlePosition: TargetHandleId.TargetCenter, point: center };
   } else if (getDistance(top, waypoint) <= 1) {
-    return TargetHandleId.TargetTop;
+    return { handlePosition: TargetHandleId.TargetTop, point: top };
   } else if (getDistance(right, waypoint) <= 1) {
-    return TargetHandleId.TargetRight;
+    return { handlePosition: TargetHandleId.TargetRight, point: right };
   } else if (getDistance(bottom, waypoint) <= 1) {
-    return TargetHandleId.TargetBottom;
+    return { handlePosition: TargetHandleId.TargetBottom, point: bottom };
   } else if (getDistance(left, waypoint) <= 1) {
-    return TargetHandleId.TargetLeft;
+    return { handlePosition: TargetHandleId.TargetLeft, point: left };
   } else {
     console.warn("DMN DIAGRAM: Can't find a match of NSWE/Center handles. Using Center as default.");
-    return TargetHandleId.TargetCenter;
+    return { handlePosition: TargetHandleId.TargetCenter, point: center };
   }
 }
 
-// this helper function returns the intersection point
-// of the line between the center of the intersectionNode and `point`
-export function getNodeIntersection(
-  point: DC__Point | undefined,
-  node: {
-    position: RF.XYPosition | undefined;
-    dimensions: Pick<RF.Node, "width" | "height">;
+export function getLineRectangleIntersectionPoint(
+  point1: DC__Point,
+  point2: DC__Point,
+  rectangle: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
   }
 ): DC__Point {
-  // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
+  const [x1, y1] = [point1["@_x"], point1["@_y"]];
+  const [x2, y2] = [point2["@_x"], point2["@_y"]];
+  const [rx, ry] = [rectangle.x, rectangle.y];
+  const [rw, rh] = [rectangle.width, rectangle.height];
 
-  const { width: nodeW, height: nodeH } = node.dimensions;
+  // Calculate the line equation: y = mx + b
+  const m = (y2 - y1) / (x2 - x1);
+  const b = y1 - m * x1;
 
-  const w = (nodeW ?? 0) / 2;
-  const h = (nodeH ?? 0) / 2;
+  if (m === Infinity || m === -Infinity) {
+    // Vertical line
+    const x = point1["@_x"];
+    const minY = Math.min(point1["@_y"], point2["@_y"]);
+    const maxY = Math.max(point1["@_y"], point2["@_y"]);
 
-  const x2 = (node.position?.x ?? 0) + w;
-  const y2 = (node.position?.y ?? 0) + h;
-  const x1 = point?.["@_x"] ?? 0;
-  const y1 = point?.["@_y"] ?? 0;
-
-  const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
-  const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
-
-  const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-  if (!Number.isFinite(a)) {
-    return { "@_x": x1, "@_y": y1 };
+    if (x >= rectangle.x && x <= rectangle.x + rectangle.width) {
+      if (minY <= rectangle.y) {
+        return { "@_x": x, "@_y": rectangle.y };
+      } else if (maxY >= rectangle.y + rectangle.height) {
+        return { "@_x": x, "@_y": rectangle.y + rectangle.height };
+      }
+    }
   }
 
-  const xx3 = a * xx1;
-  const yy3 = a * yy1;
+  console.log(`(${x1},${y1}) (${x2},${y2}) (${rx},${ry}) (${rw},${rh}) --> y = ${m}x + ${b}`);
+  // Check intersections with rectangle sides
+  const intersections: { x: number; y: number }[] = [];
 
-  const x = w * (xx3 + yy3) + x2;
-  const y = h * (-xx3 + yy3) + y2;
+  // Top side (y = ry)
+  const topX = Math.round((ry - b) / m);
+  if (topX >= rx && topX <= rx + rw) {
+    intersections.push({ x: topX, y: ry });
+  }
 
-  return { "@_x": x, "@_y": y };
+  // Bottom side (y = ry + rh)
+  const bottomX = Math.round((ry + rh - b) / m);
+  if (bottomX >= rx && bottomX <= rx + rw) {
+    intersections.push({ x: bottomX, y: ry + rh });
+  }
+
+  // Left side (x = rx)
+  const leftY = Math.round(m * rx + b);
+  if (leftY >= ry && leftY <= ry + rh) {
+    intersections.push({ x: rx, y: leftY });
+  }
+
+  // Right side (x = rx + rw)
+  const rightY = Math.round(m * (rx + rw) + b);
+  if (rightY >= ry && rightY <= ry + rh) {
+    intersections.push({ x: rx + rw, y: rightY });
+  }
+
+  // Find the closest intersection point to the line segment
+  let closestIntersection: { x: number; y: number } | null = null;
+
+  for (const intersection of intersections) {
+    if (!closestIntersection || minDistance(intersection, x1, y1) < minDistance(closestIntersection, x1, y1)) {
+      closestIntersection = intersection;
+    }
+  }
+
+  return (
+    (closestIntersection && {
+      "@_x": closestIntersection.x,
+      "@_y": closestIntersection.y,
+    }) ||
+    point2
+  );
 }
+
+const minDistance = (point: { x: number; y: number }, x1: number, y1: number) =>
+  Math.pow(point.x - x1, 2) + Math.pow(point.y - y1, 2);
 
 export function getContainmentRelationship({
   bounds,

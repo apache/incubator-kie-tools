@@ -71,7 +71,7 @@ export function resizeNode({
         last: edge["di:waypoint"][edge["di:waypoint"].length - 1],
       });
 
-      const offset = offsetByPosition(getHandlePosition({ shapeBounds, waypoint }));
+      const offset = offsetByPosition(getHandlePosition({ shapeBounds, waypoint }).handlePosition);
       waypoint["@_x"] += offset.x;
       waypoint["@_y"] += offset.y;
     }

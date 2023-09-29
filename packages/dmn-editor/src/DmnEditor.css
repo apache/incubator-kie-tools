@@ -807,12 +807,12 @@ th {
 /* edge updaters */
 .react-flow__edgeupdater {
   z-index: 9000;
-  fill: black;
-  stroke: white;
+  fill: white;
+  stroke: #006ba4;
   stroke-width: 2px;
   cursor: grab;
 }
-.react-flow__edge:not(.selected) .react-flow__edgeupdater,
+.react-flow__edge:not(.selected:hover) .react-flow__edgeupdater,
 .react-flow__edgeupdater.hidden {
   opacity: 0;
   pointer-events: none;

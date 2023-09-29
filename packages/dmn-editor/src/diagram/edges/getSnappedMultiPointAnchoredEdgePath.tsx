@@ -7,7 +7,12 @@ import * as RF from "reactflow";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
 import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
-import { getHandlePosition, getNodeCenterPoint, getNodeIntersection, pointsToPath } from "../maths/DmnMaths";
+import {
+  getLineRectangleIntersectionPoint,
+  getHandlePosition,
+  getNodeCenterPoint,
+  pointsToPath,
+} from "../maths/DmnMaths";
 import { getDiscretelyAutoPositionedEdgeParamsForRfNodes } from "../maths/Maths";
 import { AutoPositionedEdgeMarker } from "./AutoPositionedEdgeMarker";
 import { SnapGrid } from "../../store/Store";
@@ -59,8 +64,8 @@ export function getSnappedMultiPointAnchoredEdgePath({
     const secondWaypoint = points[1] ?? dmnEdge["di:waypoint"][1];
     const sourceHandlePoint = getSnappedHandlePosition(
       dmnShapeSource!,
-      firstWaypoint,
       sourceNode,
+      firstWaypoint,
       points.length === 2 ? getNodeCenterPoint(targetNode) : snapPoint(snapGrid, secondWaypoint)
     );
     points[0] ??= sourceHandlePoint;
@@ -69,8 +74,8 @@ export function getSnappedMultiPointAnchoredEdgePath({
     const secondToLastWaypoint = points[points.length - 2] ?? dmnEdge["di:waypoint"][dmnEdge["di:waypoint"].length - 2];
     const targetHandlePoint = getSnappedHandlePosition(
       dmnShapeTarget!,
-      lastWaypoint,
       targetNode,
+      lastWaypoint,
       points.length === 2 ? getNodeCenterPoint(sourceNode) : snapPoint(snapGrid, secondToLastWaypoint)
     );
     points[points.length - 1] ??= targetHandlePoint;
@@ -88,25 +93,36 @@ export function getSnappedMultiPointAnchoredEdgePath({
 
 export function getSnappedHandlePosition(
   shape: DMNDI15__DMNShape,
-  handleWaypoint: DC__Point,
   snappedNode: RF.Node,
+  originalHandleWaypoint: DC__Point,
   snappedSecondWaypoint: DC__Point
 ): DC__Point {
-  const position = getHandlePosition({ shapeBounds: shape["dc:Bounds"], waypoint: handleWaypoint });
+  const { handlePosition } = getHandlePosition({ shapeBounds: shape["dc:Bounds"], waypoint: originalHandleWaypoint });
 
-  const xx = snappedNode.positionAbsolute?.x ?? 0;
-  const yy = snappedNode.positionAbsolute?.y ?? 0;
-  const ww = snappedNode.width ?? 0;
-  const hh = snappedNode.height ?? 0;
+  const centerHandleWaypoint = getNodeCenterPoint(snappedNode);
 
-  return switchExpression(position, {
-    [TargetHandleId.TargetCenter]: getNodeIntersection(snappedSecondWaypoint, {
-      position: snappedNode.positionAbsolute,
-      dimensions: snappedNode,
-    }),
-    [TargetHandleId.TargetTop]: { "@_x": xx + ww / 2, "@_y": yy },
-    [TargetHandleId.TargetRight]: { "@_x": xx + ww, "@_y": yy + hh / 2 },
-    [TargetHandleId.TargetBottom]: { "@_x": xx + ww / 2, "@_y": yy + hh },
-    [TargetHandleId.TargetLeft]: { "@_x": xx, "@_y": yy + hh / 2 },
+  const nodeRectangle = {
+    x: snappedNode.positionAbsolute?.x ?? 0,
+    y: snappedNode.positionAbsolute?.y ?? 0,
+    width: snappedNode.width ?? 0,
+    height: snappedNode.height ?? 0,
+  };
+
+  return switchExpression(handlePosition, {
+    [TargetHandleId.TargetTop]: { "@_x": nodeRectangle.x + nodeRectangle.width / 2, "@_y": nodeRectangle.y },
+    [TargetHandleId.TargetRight]: {
+      "@_x": nodeRectangle.x + nodeRectangle.width,
+      "@_y": nodeRectangle.y + nodeRectangle.height / 2,
+    },
+    [TargetHandleId.TargetBottom]: {
+      "@_x": nodeRectangle.x + nodeRectangle.width / 2,
+      "@_y": nodeRectangle.y + nodeRectangle.height,
+    },
+    [TargetHandleId.TargetLeft]: { "@_x": nodeRectangle.x, "@_y": nodeRectangle.y + nodeRectangle.height / 2 },
+    [TargetHandleId.TargetCenter]: getLineRectangleIntersectionPoint(
+      snappedSecondWaypoint,
+      centerHandleWaypoint,
+      nodeRectangle
+    ),
   });
 }
