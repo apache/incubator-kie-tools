@@ -12,6 +12,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -51,6 +52,7 @@ export function GlobalDiagramProperties() {
                 state.dmn.model.definitions["@_name"] = newName;
               });
             }}
+            allUniqueNames={new Map()} // Right now, there's no way to know what are the unique names of all DMNs in the scope. So we let any name go.
           />
         </FormGroup>
         <FormGroup label="Description">

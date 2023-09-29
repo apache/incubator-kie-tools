@@ -1,10 +1,10 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Hooks
 
 export function useIsHovered(ref: React.RefObject<HTMLElement | SVGElement>) {
-  const [isHovered, setHovered] = React.useState(false);
+  const [isHovered, setHovered] = useState(false);
 
   useEffect(() => {
     function onEnter() {

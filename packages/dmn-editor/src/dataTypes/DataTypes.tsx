@@ -29,7 +29,7 @@ export type DataType = {
   children?: DataType[];
 };
 export type DataTypeTreeViewDataItem = {};
-export type DataTypesById = Map<string, DataType>;
+export type DataTypeIndex = Map<string, DataType>;
 
 export type AddItemComponent = (id: string, how: "unshift" | "push", partial?: Partial<DMN15__tItemDefinition>) => void;
 export type AddTopLevelItemDefinition = (partial?: Partial<DMN15__tItemDefinition>) => void;
@@ -51,11 +51,11 @@ export function DataTypes() {
 
   const [filter, setFilter] = useState("");
 
-  const { dataTypesById, dataTypesTree } = useDmnEditorDerivedStore();
+  const { allDataTypesById, dataTypesTree, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
 
   const activeDataType = useMemo(() => {
-    return activeItemDefinitionId ? dataTypesById.get(activeItemDefinitionId) : undefined;
-  }, [activeItemDefinitionId, dataTypesById]);
+    return activeItemDefinitionId ? allDataTypesById.get(activeItemDefinitionId) : undefined;
+  }, [activeItemDefinitionId, allDataTypesById]);
 
   const filteredTree = useMemo(
     () =>
@@ -71,14 +71,14 @@ export function DataTypes() {
         const { itemDefinition, items, index } = findDataTypeById({
           definitions: state.dmn.model.definitions,
           itemDefinitionId: id,
-          dataTypesById,
+          allDataTypesById,
         });
 
         state.dmn.model.definitions.itemDefinition ??= [];
         consumer(itemDefinition, items, index, state.dmn.model.definitions.itemDefinition);
       });
     },
-    [dataTypesById, dmnEditorStoreApi]
+    [allDataTypesById, dmnEditorStoreApi]
   );
 
   const addTopLevelItemDefinition = useCallback<AddTopLevelItemDefinition>(
@@ -136,6 +136,7 @@ export function DataTypes() {
                           itemDefinition={itemDefinition}
                           isActive={activeItemDefinitionId === itemDefinition["@_id"]}
                           editMode={"double-click"}
+                          allUniqueNames={allTopLevelItemDefinitionUniqueNames}
                         />
                       )) || (
                         <>
@@ -156,7 +157,7 @@ export function DataTypes() {
                 <DataTypePanel
                   isReadonly={activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
-                  dataTypesById={dataTypesById}
+                  allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}
                 />
               )}

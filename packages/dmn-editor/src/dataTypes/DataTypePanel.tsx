@@ -16,7 +16,7 @@ import {
   DropdownSeparator,
   KebabToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { DataType, DataTypesById, EditItemDefinition, AddItemComponent } from "./DataTypes";
+import { DataType, DataTypeIndex, EditItemDefinition, AddItemComponent } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
 import { getNewItemDefinition, isStruct } from "./DataTypeSpec";
@@ -24,17 +24,18 @@ import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { UniqueNameIndex } from "../Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 
 export function DataTypePanel({
   isReadonly,
   dataType,
-  dataTypesById,
+  allDataTypesById,
   editItemDefinition,
 }: {
   isReadonly: boolean;
   dataType: DataType;
-  dataTypesById: DataTypesById;
+  allDataTypesById: DataTypeIndex;
   editItemDefinition: EditItemDefinition;
 }) {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -102,13 +103,13 @@ export function DataTypePanel({
 
     let cur = dataType;
     while (cur.parentId) {
-      const p = dataTypesById.get(cur.parentId)!;
+      const p = allDataTypesById.get(cur.parentId)!;
       parents.unshift(p);
       cur = p;
     }
 
     return parents;
-  }, [dataType, dataTypesById]);
+  }, [dataType, allDataTypesById]);
 
   const addItemComponent = useCallback<AddItemComponent>(
     (id, how, partial) => {
@@ -130,7 +131,18 @@ export function DataTypePanel({
   const [dropdownOpenFor, setDropdownOpenFor] = useState<string | undefined>(undefined);
   const [topLevelDropdownOpen, setTopLevelDropdownOpen] = useState<boolean>(false);
 
-  const { importsByNamespace } = useDmnEditorDerivedStore();
+  const { importsByNamespace, allTopLevelItemDefinitionUniqueNames } = useDmnEditorDerivedStore();
+
+  const allUniqueNames = useMemo(
+    () =>
+      !dataType.parentId
+        ? allTopLevelItemDefinitionUniqueNames
+        : (allDataTypesById.get(dataType.parentId)!.itemDefinition.itemComponent ?? []).reduce<UniqueNameIndex>(
+            (acc, s) => acc.set(s["@_name"], s["@_id"]!),
+            new Map()
+          ),
+    [allDataTypesById, allTopLevelItemDefinitionUniqueNames, dataType.parentId]
+  );
 
   return (
     <>
@@ -166,6 +178,7 @@ export function DataTypePanel({
               isActive={false}
               editMode={"hover"}
               isReadonly={dataType.namespace !== thisDmnsNamespace}
+              allUniqueNames={allUniqueNames}
             />
           </div>
           <FlexItem>
@@ -275,7 +288,7 @@ export function DataTypePanel({
           <ItemComponentsTable
             isReadonly={isReadonly}
             addItemComponent={addItemComponent}
-            dataTypesById={dataTypesById}
+            allDataTypesById={allDataTypesById}
             parent={dataType}
             editItemDefinition={editItemDefinition}
             dropdownOpenFor={dropdownOpenFor}

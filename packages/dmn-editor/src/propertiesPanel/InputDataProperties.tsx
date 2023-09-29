@@ -8,6 +8,7 @@ import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 export function InputDataProperties({
   inputData,
@@ -22,6 +23,8 @@ export function InputDataProperties({
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+
+  const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
   return (
     <>
@@ -42,6 +45,7 @@ export function InputDataProperties({
               });
             });
           }}
+          allUniqueNames={allFeelVariableUniqueNames}
         />
       </FormGroup>
       <FormGroup label="Data type">

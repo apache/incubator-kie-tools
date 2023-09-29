@@ -16,6 +16,7 @@ import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -61,6 +62,8 @@ export function DecisionServiceProperties({
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
 
+  const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
   return (
     <>
       <FormGroup label="Name">
@@ -80,6 +83,7 @@ export function DecisionServiceProperties({
               });
             });
           }}
+          allUniqueNames={allFeelVariableUniqueNames}
         />
       </FormGroup>
 

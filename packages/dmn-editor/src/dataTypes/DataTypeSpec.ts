@@ -16,22 +16,22 @@ import {
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SPEC } from "../Spec";
-import { DataTypesById } from "./DataTypes";
+import { DataTypeIndex } from "./DataTypes";
 
 export function findDataTypeById({
   definitions,
   itemDefinitionId,
-  dataTypesById,
+  allDataTypesById,
 }: {
-  dataTypesById: DataTypesById;
+  allDataTypesById: DataTypeIndex;
   itemDefinitionId: string;
   definitions: DMN15__tDefinitions;
 }) {
   const indexesPath: number[] = [];
-  let current = dataTypesById.get(itemDefinitionId);
+  let current = allDataTypesById.get(itemDefinitionId);
   do {
     indexesPath.unshift(current!.index);
-    current = current!.parentId ? dataTypesById.get(current!.parentId) : undefined;
+    current = current!.parentId ? allDataTypesById.get(current!.parentId) : undefined;
   } while (current);
 
   const last = indexesPath.pop()!; // Since we're using do-while, it's guaranteed we'll have at least one element on the `indexesPath` array.

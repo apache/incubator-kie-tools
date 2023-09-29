@@ -7,6 +7,7 @@ import { TypeRefLabel } from "./TypeRefLabel";
 import { useDmnEditorStoreApi } from "../store/Store";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { UniqueNameIndex } from "../Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 
@@ -17,6 +18,7 @@ export function DataTypeName({
   editMode,
   relativeToNamespace,
   shouldCommitOnBlur,
+  allUniqueNames,
 }: {
   isReadonly: boolean;
   editMode: "hover" | "double-click";
@@ -24,13 +26,14 @@ export function DataTypeName({
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
+  allUniqueNames: UniqueNameIndex;
 }) {
   const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel();
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { dataTypesById, importsByNamespace } = useDmnEditorDerivedStore();
+  const { allDataTypesById, importsByNamespace } = useDmnEditorDerivedStore();
 
-  const dataType = dataTypesById.get(itemDefinition["@_id"]!);
+  const dataType = allDataTypesById.get(itemDefinition["@_id"]!);
 
   const feelQNameToDisplay = buildFeelQNameFromNamespace({
     namedElement: itemDefinition,
@@ -50,11 +53,11 @@ export function DataTypeName({
           definitions: state.dmn.model.definitions,
           newName,
           itemDefinitionId: itemDefinition["@_id"]!,
-          dataTypesById,
+          allDataTypesById,
         });
       });
     },
-    [dataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
+    [allDataTypesById, dmnEditorStoreApi, isReadonly, itemDefinition]
   );
 
   return (
@@ -63,10 +66,11 @@ export function DataTypeName({
         <InlineFeelNameInput
           isPlain={true}
           isReadonly={isReadonly}
-          id={itemDefinition["@_id"] + itemDefinition["@_name"]}
+          id={itemDefinition["@_id"]!}
           shouldCommitOnBlur={shouldCommitOnBlur ?? true}
           name={feelQNameToDisplay.full}
           onRenamed={onRenamed}
+          allUniqueNames={allUniqueNames}
         />
       )}
       {editMode === "double-click" && (
@@ -97,6 +101,7 @@ export function DataTypeName({
               localPart: itemDefinition["@_name"],
               prefix: feelQNameToDisplay.prefix,
             }}
+            allUniqueNames={allUniqueNames}
           />
           {!isEditingLabel && (
             <TypeRefLabel

@@ -20,7 +20,7 @@ export function DmnObjectListItem({
   namespace: string;
   relativeToNamespace: string;
 }) {
-  const { importsByNamespace, dataTypesByFeelName } = useDmnEditorDerivedStore();
+  const { importsByNamespace, allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
   if (!dmnObject) {
     return <>{dmnObjectHref}</>;
   }
@@ -49,7 +49,7 @@ export function DmnObjectListItem({
             typeRef={dmnObject.variable?.["@_typeRef"]}
             relativeToNamespace={namespace}
             isCollection={
-              dataTypesByFeelName.get(dmnObject.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
+              allTopLevelDataTypesByFeelName.get(dmnObject.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined)
                 ?.itemDefinition["@_isCollection"]
             }
           />

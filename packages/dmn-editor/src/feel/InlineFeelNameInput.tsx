@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SPEC } from "../Spec";
+import { UniqueNameIndex } from "../Spec";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -17,6 +18,7 @@ export function InlineFeelNameInput({
   name,
   shouldCommitOnBlur,
   isPlain,
+  allUniqueNames,
   ...inputProps
 }: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   id: string;
@@ -25,6 +27,7 @@ export function InlineFeelNameInput({
   isReadonly: boolean;
   isPlain: boolean;
   shouldCommitOnBlur: boolean;
+  allUniqueNames: UniqueNameIndex;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -39,12 +42,15 @@ export function InlineFeelNameInput({
     }, 0);
   }, []);
 
-  const [isValid, setValid] = useState(SPEC.namedElement.isValidName(name));
-  const updateIsValidFlag = useCallback((name: string) => {
-    const isValid = SPEC.namedElement.isValidName(name);
-    setValid(isValid);
-    return isValid;
-  }, []);
+  const [isValid, setValid] = useState(SPEC.namedElement.isValidName(id, name, allUniqueNames));
+  const updateIsValidFlag = useCallback(
+    (name: string) => {
+      const isValid = SPEC.namedElement.isValidName(id, name, allUniqueNames);
+      setValid(isValid);
+      return isValid;
+    },
+    [allUniqueNames, id]
+  );
 
   useEffect(() => {
     updateIsValidFlag(name);

@@ -24,13 +24,14 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { DmnModel } from "@kie-tools/dmn-marshaller";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
 
   const { includedModelsContextDescription } = useDmnEditor();
-  const { importsByNamespace } = useDmnEditorDerivedStore();
+  const { importsByNamespace, allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
   const { otherDmnsByNamespace, onRequestOtherDmnsAvailableToInclude, onRequestOtherDmnByPath } = useOtherDmns();
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -76,8 +77,7 @@ export function IncludedModels() {
   );
 
   const add = useCallback(() => {
-    const valid = true; // FIXME: Tiago --> Do additional checks here like unicity etc
-    if (!selectedModel || !valid || !SPEC.IMPORT.name.isValid(modelAlias)) {
+    if (!selectedModel || !SPEC.IMPORT.name.isValid(generateUuid(), modelAlias, allFeelVariableUniqueNames)) {
       return;
     }
 
@@ -94,7 +94,7 @@ export function IncludedModels() {
     });
 
     cancel();
-  }, [cancel, dmnEditorStoreApi, selectedModel, modelAlias]);
+  }, [selectedModel, modelAlias, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
 
   // FIXME: Tiago --> Use `useCancellableEffect`
   const [modelPaths, setModelPaths] = useState<string[]>([]);

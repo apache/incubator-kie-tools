@@ -23,11 +23,11 @@ export function TypeRefSelector(props: {
 }) {
   const [isOpen, setOpen] = useState(false);
 
-  const { dataTypesByFeelName } = useDmnEditorDerivedStore();
+  const { allTopLevelDataTypesByFeelName } = useDmnEditorDerivedStore();
 
   const selectedDataType = useMemo(() => {
-    return props.typeRef ? dataTypesByFeelName.get(props.typeRef) : undefined;
-  }, [dataTypesByFeelName, props.typeRef]);
+    return props.typeRef ? allTopLevelDataTypesByFeelName.get(props.typeRef) : undefined;
+  }, [allTopLevelDataTypesByFeelName, props.typeRef]);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -36,7 +36,7 @@ export function TypeRefSelector(props: {
     const customDataTypes: DataType[] = [];
     const externalDataTypes: DataType[] = [];
 
-    [...dataTypesByFeelName.values()].forEach((s) => {
+    [...allTopLevelDataTypesByFeelName.values()].forEach((s) => {
       if (s.parentId) {
         return; // Not top-level.
       }
@@ -49,7 +49,7 @@ export function TypeRefSelector(props: {
     });
 
     return { customDataTypes, externalDataTypes };
-  }, [dataTypesByFeelName, thisDmnsNamespace]);
+  }, [allTopLevelDataTypesByFeelName, thisDmnsNamespace]);
 
   return (
     <Flex

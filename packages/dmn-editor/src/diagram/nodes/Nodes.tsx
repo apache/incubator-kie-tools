@@ -99,6 +99,8 @@ export const InputDataNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -130,6 +132,7 @@ export const InputDataNode = React.memo(
             setEditing={setEditingLabel}
             value={inputData["@_label"] ?? inputData["@_name"]}
             onChange={setName}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
           <DataTypeNodePanel
@@ -185,6 +188,8 @@ export const DecisionNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -217,6 +222,7 @@ export const DecisionNode = React.memo(
             setEditing={setEditingLabel}
             value={decision["@_label"] ?? decision["@_name"]}
             onChange={setName}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
           <DataTypeNodePanel
@@ -272,6 +278,8 @@ export const BkmNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -304,6 +312,7 @@ export const BkmNode = React.memo(
             setEditing={setEditingLabel}
             value={bkm["@_label"] ?? bkm["@_name"]}
             onChange={setName}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
           <DataTypeNodePanel
@@ -350,6 +359,8 @@ export const KnowledgeSourceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -382,6 +393,7 @@ export const KnowledgeSourceNode = React.memo(
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
             onChange={setName}
             skipValidation={true}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
@@ -422,6 +434,8 @@ export const TextAnnotationNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -454,6 +468,7 @@ export const TextAnnotationNode = React.memo(
             value={textAnnotation["@_label"] ?? textAnnotation.text}
             onChange={setText}
             skipValidation={true}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
         </div>
@@ -522,6 +537,8 @@ export const DecisionServiceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -562,6 +579,7 @@ export const DecisionServiceNode = React.memo(
             setEditing={setEditingLabel}
             value={decisionService["@_label"] ?? decisionService["@_name"]}
             onChange={setName}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {selected && !dragging && !shape["@_isCollapsed"] && (
             <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
@@ -632,6 +650,8 @@ export const GroupNode = React.memo(
       };
     }, [dmnEditorStoreApi, reactFlow, shape]);
 
+    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -660,6 +680,7 @@ export const GroupNode = React.memo(
             value={group["@_label"] ?? group["@_name"]}
             onChange={setName}
             skipValidation={true}
+            allUniqueNames={allFeelVariableUniqueNames}
           />
           {selected && !dragging && (
             <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />

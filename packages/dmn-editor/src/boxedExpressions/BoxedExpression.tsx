@@ -6,10 +6,8 @@ import {
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   PmmlParam,
-  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -35,11 +33,9 @@ import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
-import { parseXmlQName } from "../xml/xmlQNames";
-import { buildXmlHref } from "../xml/xmlHrefs";
-import { isStruct, traverseItemDefinition } from "../dataTypes/DataTypeSpec";
+import { isStruct } from "../dataTypes/DataTypeSpec";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
-import { DataType, DataTypesById } from "../dataTypes/DataTypes";
+import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { getTextWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
@@ -123,7 +119,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const { dataTypesTree, dataTypesByFeelName, nodesById } = useDmnEditorDerivedStore();
+  const { dataTypesTree, allTopLevelDataTypesByFeelName, nodesById } = useDmnEditorDerivedStore();
 
   const dataTypes = useMemo<DmnDataType[]>(() => {
     const customDataTypes = dataTypesTree.map((d) => ({
@@ -147,12 +143,12 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         return getDefaultExpressionDefinitionByLogicType({
           logicType: logicType as ExpressionDefinitionLogicType,
           typeRef: typeRef ?? DmnBuiltInDataType.Undefined,
-          dataTypesByFeelName,
+          allTopLevelDataTypesByFeelName,
           getInputs: () => {
             if (!isRoot || expression?.drgElement.__$$element !== "decision") {
               return undefined;
             } else {
-              return determineInputsForDecision(expression?.drgElement, dataTypesByFeelName, nodesById);
+              return determineInputsForDecision(expression?.drgElement, allTopLevelDataTypesByFeelName, nodesById);
             }
           },
           getDefaultColumnWidth: ({ name, typeRef }) => {
@@ -181,7 +177,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         });
       },
     };
-  }, [dataTypesByFeelName, dmnEditorStoreApi, expression?.drgElement, nodesById]);
+  }, [allTopLevelDataTypesByFeelName, dmnEditorStoreApi, expression?.drgElement, nodesById]);
 
   ////
 
@@ -303,7 +299,7 @@ function drgElementToBoxedExpression(
 
 function determineInputsForDecision(
   decision: DMN15__tDecision,
-  dataTypesByFeelName: DataTypesById,
+  allTopLevelDataTypesByFeelName: DataTypeIndex,
   nodesById: Map<string, RF.Node<DmnDiagramNodeData>>
 ) {
   try {
@@ -315,7 +311,7 @@ function determineInputsForDecision(
         );
       }
 
-      const dataType = dataTypesByFeelName.get(dmnObject.variable!["@_typeRef"]!)!;
+      const dataType = allTopLevelDataTypesByFeelName.get(dmnObject.variable!["@_typeRef"]!)!;
       return !isStruct(dataType.itemDefinition)
         ? [
             {

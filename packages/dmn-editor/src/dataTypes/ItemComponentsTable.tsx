@@ -19,12 +19,13 @@ import {
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
-import { DataType, EditItemDefinition, AddItemComponent, DataTypesById } from "./DataTypes";
+import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, reassignIds, getNewItemDefinition } from "./DataTypeSpec";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { UniqueNameIndex } from "../Spec";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -42,14 +43,14 @@ export function ItemComponentsTable({
   editItemDefinition,
   addItemComponent,
   dropdownOpenFor,
-  dataTypesById,
+  allDataTypesById,
   setDropdownOpenFor,
 }: {
   isReadonly: boolean;
   parent: DataType;
   editItemDefinition: EditItemDefinition;
   addItemComponent: AddItemComponent;
-  dataTypesById: DataTypesById;
+  allDataTypesById: DataTypeIndex;
   dropdownOpenFor: string | undefined;
   setDropdownOpenFor: React.Dispatch<React.SetStateAction<string | undefined>>;
 }) {
@@ -66,22 +67,34 @@ export function ItemComponentsTable({
   const dataTypes = parent.children;
 
   const flatTree = useMemo(() => {
-    const ret: DataType[] = [];
-    function traverse(d: DataType[]) {
-      for (let i = 0; i < (d?.length ?? 0); i++) {
-        ret.push(d[i]);
-        traverse(d[i].children ?? []);
+    const ret: { dataType: DataType; allUniqueNamesAtLevel: UniqueNameIndex }[] = [];
+    function traverse(dataType: DataType[], allUniqueNamesAtLevel: UniqueNameIndex) {
+      for (let i = 0; i < (dataType?.length ?? 0); i++) {
+        ret.push({ dataType: dataType[i], allUniqueNamesAtLevel });
+        traverse(
+          dataType[i].children ?? [],
+          (dataType[i].itemDefinition.itemComponent ?? []).reduce<UniqueNameIndex>(
+            (acc, s) => acc.set(s["@_name"], s["@_id"]!),
+            new Map()
+          )
+        );
       }
     }
 
-    traverse(dataTypes ?? []);
+    traverse(
+      dataTypes ?? [],
+      (parent.itemDefinition.itemComponent ?? []).reduce<UniqueNameIndex>(
+        (acc, s) => acc.set(s["@_name"], s["@_id"]!),
+        new Map()
+      )
+    );
     return ret;
-  }, [dataTypes]);
+  }, [dataTypes, parent.itemDefinition.itemComponent]);
 
   const expandAll = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
       state.dataTypesEditor.expandedItemComponentIds = flatTree.flatMap((s) =>
-        isStruct(s.itemDefinition) ? s.itemDefinition["@_id"]! : []
+        isStruct(s.dataType.itemDefinition) ? s.dataType.itemDefinition["@_id"]! : []
       );
     });
   }, [dmnEditorStoreApi, flatTree]);
@@ -164,9 +177,9 @@ export function ItemComponentsTable({
           </tr>
         </thead>
         <tbody>
-          {flatTree.map((dt, i) => {
-            const nextDt = flatTree[Math.min(i + 1, flatTree.length - 1)];
-            const lastDt = flatTree[Math.max(i - 1, 0)];
+          {flatTree.map(({ dataType: dt, allUniqueNamesAtLevel }, i) => {
+            const nextDt = flatTree[Math.min(i + 1, flatTree.length - 1)].dataType;
+            const lastDt = flatTree[Math.max(i - 1, 0)].dataType;
 
             const nextIsUpper = nextDt.parents.size < dt.parents.size;
             const lastIsUpper = lastDt.parents.size < dt.parents.size;
@@ -182,7 +195,7 @@ export function ItemComponentsTable({
 
             const shouldShowRow =
               dt.parentId === parent.itemDefinition["@_id"] ||
-              (isStruct(dataTypesById.get(dt.parentId!)!.itemDefinition) && areAllParentsExpanded);
+              (isStruct(allDataTypesById.get(dt.parentId!)!.itemDefinition) && areAllParentsExpanded);
 
             const level = dt.parents.size - parent.parents.size - 1;
 
@@ -258,6 +271,7 @@ export function ItemComponentsTable({
                             isActive={false}
                             itemDefinition={dt.itemDefinition}
                             isReadonly={dt.namespace !== thisDmnsNamespace}
+                            allUniqueNames={allUniqueNamesAtLevel}
                           />
                         </div>
                       </div>

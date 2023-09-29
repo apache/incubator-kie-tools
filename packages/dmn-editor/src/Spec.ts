@@ -8,14 +8,17 @@ const feelNamePart =
 // This is not part of the spec.
 const forbiddenEndingChars = /^.*[.:+-/*\s^]$/; // Although they're fine by the Spec, they can seriously complicate FEEL expressions readability.
 
+export type UniqueNameIndex = Map<string, string>;
+
 export const SPEC = {
   namedElement: {
-    isValidName: (name: string | undefined): boolean => {
+    isValidName: (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex): boolean => {
       return (
         !!name?.trim() && // Names need to be non-empty.
-        !!name?.match(feelNameStart) &&
-        !!name?.match(feelNamePart) &&
-        !name?.trim().match(forbiddenEndingChars)
+        !!name.match(feelNameStart) &&
+        !!name.match(feelNamePart) &&
+        !name?.trim().match(forbiddenEndingChars) &&
+        (!allUniqueNames.get(name?.trim()) || allUniqueNames.get(name?.trim()) === id) // All names need to be unique.
       );
     },
   },
@@ -23,10 +26,10 @@ export const SPEC = {
   typeLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/` }, // FIXME: Tiago --> This is not quite right, as DMN now has multiple versions of FEEL
   IMPORT: {
     name: {
-      isValid: (name: string) => {
+      isValid: (id: string, name: string, allUniqueNames: UniqueNameIndex) => {
         // Empty strings are allowed for imports, so that imported elements can be used without a prefix.
         // Source: https://www.omg.org/spec/DMN/1.5/Beta1/PDF. PDF page 40, document page 32. Section "6.3.3 Import Metamodel".
-        return name === "" || SPEC.namedElement.isValidName(name);
+        return name === "" || SPEC.namedElement.isValidName(id, name, allUniqueNames);
       },
     },
   },

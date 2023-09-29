@@ -8,6 +8,7 @@ import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
@@ -22,6 +23,8 @@ export function KnowledgeSourceProperties({
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+
+  const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
   return (
     <>
@@ -42,6 +45,7 @@ export function KnowledgeSourceProperties({
               });
             });
           }}
+          allUniqueNames={allFeelVariableUniqueNames}
         />
       </FormGroup>
 

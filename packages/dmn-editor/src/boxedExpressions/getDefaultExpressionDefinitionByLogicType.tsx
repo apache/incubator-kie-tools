@@ -20,7 +20,6 @@ import {
   DECISION_TABLE_INPUT_DEFAULT_WIDTH,
   DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
   DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
-  LITERAL_EXPRESSION_EXTRA_WIDTH,
   RELATION_EXPRESSION_COLUMN_DEFAULT_WIDTH,
 } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
 import {
@@ -33,23 +32,23 @@ import {
   INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE,
 } from "@kie-tools/boxed-expression-component/dist/expressions/InvocationExpression";
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression";
-import { DataTypesById } from "../dataTypes/DataTypes";
+import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
 
 export function getDefaultExpressionDefinitionByLogicType({
   logicType,
   typeRef,
-  dataTypesByFeelName,
+  allTopLevelDataTypesByFeelName,
   getInputs,
   getDefaultColumnWidth,
 }: {
   logicType: ExpressionDefinitionLogicType;
   typeRef: string;
-  dataTypesByFeelName: DataTypesById;
+  allTopLevelDataTypesByFeelName: DataTypeIndex;
   getInputs?: () => { name: string; typeRef: string | undefined }[] | undefined;
   getDefaultColumnWidth?: (args: { name: string; typeRef: string | undefined }) => number | undefined;
 }): ExpressionDefinition {
-  const dataType = dataTypesByFeelName.get(typeRef);
+  const dataType = allTopLevelDataTypesByFeelName.get(typeRef);
 
   if (logicType === ExpressionDefinitionLogicType.Literal) {
     const literalExpression: LiteralExpressionDefinition = {

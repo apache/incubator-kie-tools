@@ -4,20 +4,20 @@ import {
   traverseItemDefinition,
   traverseTypeRefedInExpressionHolders,
 } from "../dataTypes/DataTypeSpec";
-import { DataTypesById } from "../dataTypes/DataTypes";
+import { DataTypeIndex } from "../dataTypes/DataTypes";
 
 export function renameItemDefinition({
   definitions,
   newName,
-  dataTypesById,
+  allDataTypesById,
   itemDefinitionId,
 }: {
   definitions: DMN15__tDefinitions;
   newName: string;
   itemDefinitionId: string;
-  dataTypesById: DataTypesById;
+  allDataTypesById: DataTypeIndex;
 }) {
-  const dataType = dataTypesById.get(itemDefinitionId);
+  const dataType = allDataTypesById.get(itemDefinitionId);
   if (!dataType) {
     throw new Error(`Can't rename unnexistent item definition. ID ${itemDefinitionId}`);
   }
@@ -30,7 +30,7 @@ export function renameItemDefinition({
 
   const trimmedNewName = newName.trim();
 
-  const { itemDefinition } = findDataTypeById({ definitions, itemDefinitionId: itemDefinitionId, dataTypesById });
+  const { itemDefinition } = findDataTypeById({ definitions, itemDefinitionId: itemDefinitionId, allDataTypesById });
 
   // Is top-level itemDefinition
   if (!dataType?.parentId) {

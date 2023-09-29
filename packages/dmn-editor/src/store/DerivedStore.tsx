@@ -13,9 +13,10 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
-import { DataTypesById as DataTypeIndex, DataType } from "../dataTypes/DataTypes";
+import { DataTypeIndex, DataType } from "../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
+import { UniqueNameIndex } from "../Spec";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
@@ -27,10 +28,12 @@ export type DerivedStore = {
   edgesById: Map<string, RF.Edge<DmnDiagramEdgeData>>;
   importsByNamespace: Map<string, DMN15__tImport>;
   dataTypesTree: DataType[];
-  dataTypesById: DataTypeIndex;
-  dataTypesByFeelName: DataTypeIndex;
+  allDataTypesById: DataTypeIndex;
+  allTopLevelDataTypesByFeelName: DataTypeIndex;
   dmnEdgesByDmnElementRef: Map<string, DMNDI15__DMNEdge & { index: number }>;
   dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  allFeelVariableUniqueNames: UniqueNameIndex;
+  allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
 };
 
 const DmnEditorDerivedStoreContext = React.createContext<DerivedStore>({} as any);
@@ -56,11 +59,11 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
 
   const { otherDmnsByNamespace } = useOtherDmns();
 
-  const { dataTypesTree, dataTypesById, dataTypesByFeelName } = useMemo(() => {
-    const dataTypesById: DataTypeIndex = new Map();
-    const dataTypesByFeelName: DataTypeIndex = new Map();
+  const { dataTypesTree, allDataTypesById, allTopLevelDataTypesByFeelName } = useMemo(() => {
+    const allDataTypesById: DataTypeIndex = new Map();
+    const allTopLevelDataTypesByFeelName: DataTypeIndex = new Map();
 
-    const otherDmnsDataTypes = thisDmnsImports.flatMap((_import) => {
+    const otherDmnsDataTypeTree = thisDmnsImports.flatMap((_import) => {
       const otherDmn = otherDmnsByNamespace[_import["@_namespace"]];
       if (!otherDmn) {
         console.warn(
@@ -72,8 +75,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       return buildDataTypesTree(
         otherDmn.model.definitions.itemDefinition ?? [],
         thisDmnsImportsByNamespace,
-        dataTypesById,
-        dataTypesByFeelName,
+        allDataTypesById,
+        allTopLevelDataTypesByFeelName,
         undefined,
         new Set(),
         otherDmn.model.definitions["@_namespace"],
@@ -81,11 +84,13 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       );
     });
 
-    const thisDmnsDataTypes = buildDataTypesTree(
+    // Purposefully do thisDmn's after. This will make sure thisDmn's ItemDefintiions
+    // take precedence over any external ones imported to the default namespace.
+    const thisDmnsDataTypeTree = buildDataTypesTree(
       thisDmn.model.definitions.itemDefinition ?? [],
       thisDmnsImportsByNamespace,
-      dataTypesById,
-      dataTypesByFeelName,
+      allDataTypesById,
+      allTopLevelDataTypesByFeelName,
       undefined,
       new Set(),
       thisDmn.model.definitions["@_namespace"],
@@ -93,13 +98,40 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     );
 
     return {
-      dataTypesTree: [...thisDmnsDataTypes, ...otherDmnsDataTypes],
-      dataTypesById,
-      dataTypesByFeelName,
+      dataTypesTree: [...thisDmnsDataTypeTree, ...otherDmnsDataTypeTree],
+      allDataTypesById,
+      allTopLevelDataTypesByFeelName,
     };
   }, [otherDmnsByNamespace, thisDmn.model.definitions, thisDmnsImports, thisDmnsImportsByNamespace]);
 
-  const uniqueNames = useMemo(() => {}, []);
+  const allTopLevelItemDefinitionUniqueNames = useMemo(() => {
+    const ret: UniqueNameIndex = new Map();
+
+    for (const [k, v] of allTopLevelDataTypesByFeelName.entries()) {
+      ret.set(k, v.itemDefinition["@_id"]!);
+    }
+
+    return ret;
+  }, [allTopLevelDataTypesByFeelName]);
+
+  const allFeelVariableUniqueNames = useMemo(() => {
+    const ret: UniqueNameIndex = new Map();
+
+    const drgElements = thisDmn.model.definitions.drgElement ?? [];
+    for (let i = 0; i < drgElements.length; i++) {
+      const drgElement = drgElements[i];
+      ret.set(drgElement["@_name"]!, drgElement["@_id"]!);
+    }
+
+    for (let i = 0; i < thisDmnsImports.length; i++) {
+      const _import = thisDmnsImports[i];
+      ret.set(_import["@_name"], _import["@_id"]!);
+    }
+
+    // FIXME: Tiago --> Add the names of external nodes here that come from imports namespaced with "". Inlcude all names, or only what is referenced into `thisDmn`?
+
+    return ret;
+  }, [thisDmn.model.definitions.drgElement, thisDmnsImports]);
 
   const selectedNodeTypes = useMemo(() => {
     const ret = new Set<NodeType>();
@@ -133,8 +165,10 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       dmnEdgesByDmnElementRef,
       dmnShapesByHref,
       dataTypesTree,
-      dataTypesById,
-      dataTypesByFeelName,
+      allDataTypesById,
+      allTopLevelDataTypesByFeelName,
+      allFeelVariableUniqueNames,
+      allTopLevelItemDefinitionUniqueNames,
     }),
     [
       selectedNodeTypes,
@@ -148,8 +182,10 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       dmnEdgesByDmnElementRef,
       dmnShapesByHref,
       dataTypesTree,
-      dataTypesById,
-      dataTypesByFeelName,
+      allDataTypesById,
+      allTopLevelDataTypesByFeelName,
+      allFeelVariableUniqueNames,
+      allTopLevelItemDefinitionUniqueNames,
     ]
   );
 
@@ -159,8 +195,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
 function buildDataTypesTree(
   items: DMN15__tItemDefinition[],
   importsByNamespace: Map<string, DMN15__tImport>,
-  dataTypesById: DataTypeIndex,
-  dataTypesByFeelName: DataTypeIndex,
+  allDataTypesById: DataTypeIndex,
+  allTopLevelDataTypesByFeelName: DataTypeIndex,
   parentId: string | undefined,
   parents: Set<string>,
   namespace: string,
@@ -188,8 +224,8 @@ function buildDataTypesTree(
       children: buildDataTypesTree(
         itemDefinition.itemComponent ?? [],
         importsByNamespace,
-        dataTypesById,
-        dataTypesByFeelName,
+        allDataTypesById,
+        allTopLevelDataTypesByFeelName,
         itemDefinition["@_id"],
         new Set([...parents, itemDefinition["@_id"]!]),
         namespace,
@@ -198,8 +234,11 @@ function buildDataTypesTree(
     };
 
     dataTypesTree.push(dataType);
-    dataTypesById.set(itemDefinition["@_id"]!, dataType);
-    dataTypesByFeelName.set(feelName, dataType);
+    allDataTypesById.set(itemDefinition["@_id"]!, dataType);
+
+    if (parentId === undefined) {
+      allTopLevelDataTypesByFeelName.set(feelName, dataType);
+    }
   }
 
   return dataTypesTree;

@@ -4,12 +4,14 @@ import { EmptyLabel } from "./Nodes";
 import { XmlQName } from "../../xml/xmlQNames";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
+import { UniqueNameIndex } from "../../Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { SPEC } from "../../Spec";
-import "./EditableNodeLabel.css";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import "./EditableNodeLabel.css";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -25,6 +27,7 @@ export function EditableNodeLabel({
   grow,
   shouldCommitOnBlur,
   skipValidation,
+  allUniqueNames,
 }: {
   shouldCommitOnBlur?: boolean;
   grow?: boolean;
@@ -37,6 +40,7 @@ export function EditableNodeLabel({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   onChange: OnEditableNodeLabelChange;
   skipValidation?: boolean;
+  allUniqueNames: UniqueNameIndex;
 }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { importsByNamespace } = useDmnEditorDerivedStore();
@@ -79,9 +83,8 @@ export function EditableNodeLabel({
       return true;
     }
 
-    const valid = true; // FIXME: Tiago --> Do additional checks here like unicity etc
-    return valid && SPEC.namedElement.isValidName(internalValue);
-  }, [internalValue, skipValidation]);
+    return SPEC.namedElement.isValidName(namedElement?.["@_id"] ?? generateUuid(), internalValue, allUniqueNames);
+  }, [skipValidation, namedElement, internalValue, allUniqueNames]);
 
   const onBlur = useCallback(() => {
     setEditing(false);
