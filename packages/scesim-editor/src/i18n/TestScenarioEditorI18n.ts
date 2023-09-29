@@ -52,9 +52,13 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       title: string;
     };
     dataObjects: {
+      clearSelection: string;
+      collapseAll: string;
       dataObjectsDescriptionDMN: string;
       dataObjectsDescriptionRule: string;
       description: string;
+      expandAll: string;
+      insertDataObject: string;
       selectorTitle: string;
       title: string;
     };

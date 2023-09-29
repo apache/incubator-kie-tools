@@ -63,10 +63,14 @@ export const en: TestScenarioEditorI18n = {
       title: "Cheatsheet",
     },
     dataObjects: {
+      clearSelection: "Clear selection",
+      collapseAll: "Collapse all",
       dataObjectsDescriptionDMN: "Data objects are the DMN Types specified in the related DMN file.",
       dataObjectsDescriptionRule: "Data objects are the Java objects specified in your project.",
       description:
         'To create a test scenario, define the "Given" and "Expect" columns by using the data object selector below.',
+      expandAll: "Expand all",
+      insertDataObject: "Insert Data object",
       selectorTitle: "Selector",
       title: "Data objects",
     },
