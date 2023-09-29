@@ -385,6 +385,9 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   align-items: end;
   zoom: 0.8;
 }
+.kie-dmn-editor--data-type-node-panel .kie-dmn-editor--data-type-jump-to-definition {
+  padding-left: 0;
+}
 /* Customizing some patternfly components is hard... */
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
@@ -397,7 +400,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   outline: none;
 }
 .kie-dmn-editor--data-type-node-panel > div {
-  padding-left: 12px;
+  padding-left: 16px;
   border: 1.25px solid black;
   background: white;
   box-shadow: 5px 5px 2px 0px rgb(127 127 127);

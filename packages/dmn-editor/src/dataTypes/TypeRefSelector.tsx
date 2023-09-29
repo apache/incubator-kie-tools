@@ -60,6 +60,7 @@ export function TypeRefSelector(props: {
       {selectedDataType?.itemDefinition && (
         <Tooltip content="Jump to definition">
           <Button
+            className={"kie-dmn-editor--data-type-jump-to-definition"}
             variant={ButtonVariant.control}
             onClick={(e) =>
               dmnEditorStoreApi.setState((state) => {
