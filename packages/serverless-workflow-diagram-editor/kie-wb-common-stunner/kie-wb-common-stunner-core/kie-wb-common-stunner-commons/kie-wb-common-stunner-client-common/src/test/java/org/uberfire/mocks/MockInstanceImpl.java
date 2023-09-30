@@ -21,6 +21,7 @@
 package org.uberfire.mocks;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import jakarta.enterprise.inject.Instance;
@@ -61,7 +62,7 @@ public class MockInstanceImpl<T> implements Instance<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return null;
+        return Arrays.asList(instances).iterator();
     }
 
     @Override

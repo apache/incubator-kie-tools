@@ -20,7 +20,6 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,14 +30,12 @@ public class ExceptionsTest {
     public static final String RESULT = "RESULT";
 
     @Test
-    @Ignore
     public void swallowRuntimeException() {
         final String result = Exceptions.swallow(() -> methodThatThrowsRuntimeException(), DEFAULT_RESULT);
         assertEquals(result, DEFAULT_RESULT);
     }
 
     @Test
-    @Ignore
     public void swallowException() {
         final String result = Exceptions.swallow(() -> methodThatThrowsException(), DEFAULT_RESULT);
         assertEquals(result, DEFAULT_RESULT);

@@ -22,10 +22,8 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.util.Collections;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.JsDefinitionManager;
@@ -64,6 +62,7 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.stubs.ManagedInstanceStub;
 
@@ -76,8 +75,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class GeneralCreateNodeActionTest {
 
     @Mock
@@ -123,7 +121,7 @@ public class GeneralCreateNodeActionTest {
 
     @Before
     public void setUp() throws Exception {
-        doReturn(canvas).when(canvasHandler).getCanvas();
+        //doReturn(canvas).when(canvasHandler).getCanvas();
         doReturn(canvas).when(canvasHandler).getAbstractCanvas();
         doReturn(diagram).when(canvasHandler).getDiagram();
         doReturn(metadata).when(diagram).getMetadata();
@@ -146,7 +144,6 @@ public class GeneralCreateNodeActionTest {
     }
 
     @Test
-    @Ignore("CCE")
     public void testExecuteAction() {
         final String sourceNodeId = "src-id";
         final String targetNodeId = "dest-id";
@@ -184,12 +181,12 @@ public class GeneralCreateNodeActionTest {
 
         when(JsWindow.editor.definitions.getName(any())).thenReturn("State");
 
-        when(canvasLayoutUtils.getNext(eq(canvasHandler),
-                                       eq(sourceNode),
-                                       eq(targetNode),
-                                       eq(CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION)))
-                .thenReturn(new Point2D(100d,
-                                        500d));
+        //when(canvasLayoutUtils.getNext(eq(canvasHandler),
+        //                               eq(sourceNode),
+        //                               eq(targetNode),
+        //                               eq(CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION)))
+        //        .thenReturn(new Point2D(100d,
+        //                                500d));
 
         createNodeAction.executeAction(canvasHandler,
                                        sourceNodeId,

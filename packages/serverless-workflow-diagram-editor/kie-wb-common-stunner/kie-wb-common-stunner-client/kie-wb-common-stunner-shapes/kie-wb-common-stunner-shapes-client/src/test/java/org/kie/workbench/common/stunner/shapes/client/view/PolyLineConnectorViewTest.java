@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.shapes.client.factory.PolyLineConnectorFactory;
@@ -34,7 +33,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 @RunWith(LienzoMockitoTestRunner.class)
-@Ignore
 public class PolyLineConnectorViewTest {
 
     @Test

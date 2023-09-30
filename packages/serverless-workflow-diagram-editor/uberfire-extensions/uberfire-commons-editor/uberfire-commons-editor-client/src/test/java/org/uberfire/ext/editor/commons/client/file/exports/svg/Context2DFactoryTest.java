@@ -20,19 +20,26 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports.svg;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.CanvasRenderingContext2D;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.uberfire.ext.editor.commons.client.file.exports.jso.svg.C2S;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.svg.C2SContext2D;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(C2S.class)
 public class Context2DFactoryTest {
 
     private Context2DFactory context2DFactory;
@@ -45,7 +52,15 @@ public class Context2DFactoryTest {
     @Test
     public void testCreate() {
         final CanvasRenderingContext2D nativeContext = mock(CanvasRenderingContext2D.class);
-        final SvgExportSettings settings = new SvgExportSettings(100, 100, nativeContext);
+
+        PowerMockito.mockStatic(C2S.class);
+
+        when(C2S.create(anyDouble(), anyDouble(), any(CanvasRenderingContext2D.class))).thenReturn(new C2S(null));
+
+        final SvgExportSettings settings = spy(new SvgExportSettings(100, 100, nativeContext));
+        doReturn(100d).when(settings).getWidth();
+        doReturn(100d).when(settings).getHeight();
+        doReturn(nativeContext).when(settings).getContext();
         final IContext2D context2D = context2DFactory.create(settings);
         assertTrue(C2SContext2D.class.isInstance(context2D));
     }

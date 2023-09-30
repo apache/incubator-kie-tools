@@ -22,10 +22,8 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 
 import java.util.Optional;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import jakarta.enterprise.event.Event;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -39,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
@@ -52,8 +51,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractCanvasTest {
 
     private static final String PARENT_UUID = "parentUUID";

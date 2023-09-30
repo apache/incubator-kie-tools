@@ -20,9 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -34,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.processing.layout.LayoutService;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.client.mvp.LockRequiredEvent;
 import org.uberfire.mocks.EventSourceMock;
 
@@ -42,8 +41,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class PerformAutomaticLayoutCommandTest {
 
     @Mock

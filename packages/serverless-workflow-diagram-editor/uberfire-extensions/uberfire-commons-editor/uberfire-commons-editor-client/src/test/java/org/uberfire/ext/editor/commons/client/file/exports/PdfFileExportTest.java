@@ -20,12 +20,11 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
 
@@ -33,8 +32,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class PdfFileExportTest {
 
     private PdfFileExport tested;

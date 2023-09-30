@@ -157,6 +157,10 @@ public class StunnerEditor {
             }
         });
 
+        setupRootContainer();
+    }
+
+    protected void setupRootContainer() {
         HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
         removeAllChildren(rootContainer);
 
@@ -212,7 +216,6 @@ public class StunnerEditor {
     }
 
     public void handleError(final ClientRuntimeError error) {
-        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
         final Throwable throwable = error.getThrowable();
         String message;
         if (throwable instanceof DiagramParsingException) {
@@ -242,9 +245,14 @@ public class StunnerEditor {
                 (diagramPresenter.getView() != null)) {
             addError(message);
         } else {
-            removeAllChildren(rootContainer);
-            rootContainer.appendChild(Js.uncheckedCast(errorPage.getElement()));
+            clearRootAndDrawError();
         }
+    }
+
+    protected void clearRootAndDrawError() {
+        HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+        removeAllChildren(rootContainer);
+        rootContainer.appendChild(errorPage.getElement());
     }
 
     public StunnerEditor close() {

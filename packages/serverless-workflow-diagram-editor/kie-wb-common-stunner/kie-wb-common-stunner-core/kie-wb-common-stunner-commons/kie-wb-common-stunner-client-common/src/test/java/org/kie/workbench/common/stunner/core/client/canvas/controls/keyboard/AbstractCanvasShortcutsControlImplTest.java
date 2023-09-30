@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import jakarta.enterprise.inject.Instance;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -39,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mocks.MockInstanceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,8 +49,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class AbstractCanvasShortcutsControlImplTest {
 
     @Mock
@@ -83,7 +81,7 @@ public class AbstractCanvasShortcutsControlImplTest {
     public void testRegisterCauseCanvasFocus() {
         final EditorSession session = mock(EditorSession.class);
         final KeyboardControl keyboardControl = mock(KeyboardControl.class);
-        doReturn(canvas).when(session).getCanvas();
+        //doReturn(canvas).when(session).getCanvas();
         doReturn(keyboardControl).when(session).getKeyboardControl();
         canvasShortcutsControl.bind(session);
 

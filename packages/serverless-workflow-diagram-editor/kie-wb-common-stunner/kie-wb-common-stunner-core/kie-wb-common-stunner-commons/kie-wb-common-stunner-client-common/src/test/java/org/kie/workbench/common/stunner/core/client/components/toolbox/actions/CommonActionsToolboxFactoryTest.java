@@ -22,9 +22,7 @@ package org.kie.workbench.common.stunner.core.client.components.toolbox.actions;
 
 import java.util.Optional;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -35,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultB
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -45,8 +44,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class CommonActionsToolboxFactoryTest {
 
     private static final String E_UUID = "e1";

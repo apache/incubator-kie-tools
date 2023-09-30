@@ -27,10 +27,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -45,6 +43,7 @@ import org.kie.workbench.common.stunner.core.lookup.domain.CommonDomainLookups;
 import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
@@ -58,8 +57,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class GroupActionsToolboxFactoryTest {
 
     private static final String DS_ID = "defSetId1";
@@ -127,7 +125,7 @@ public class GroupActionsToolboxFactoryTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn(DS_ID);
         when(element.getUUID()).thenReturn(E_UUID);
-        when(element.asNode()).thenReturn(element);
+        //when(element.asNode()).thenReturn(element);
         when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
         when(domainLookups.lookupTargetConnectors(eq(element)))
                 .thenReturn(Stream.of(EDGE_ID).collect(Collectors.toSet()));

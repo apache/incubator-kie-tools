@@ -24,9 +24,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -46,6 +44,7 @@ import org.kie.workbench.common.stunner.core.profile.DomainProfileManager;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.assertEquals;
@@ -58,8 +57,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class MorphActionsToolboxFactoryTest {
 
     private static final String E_UUID = "e1";
@@ -130,7 +128,7 @@ public class MorphActionsToolboxFactoryTest {
     public void setup() throws Exception {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
-        when(profileFilter.test(anyString())).thenReturn(true);
+        //when(profileFilter.test(anyString())).thenReturn(true);
         when(profileManager.isDefinitionIdAllowed(eq(metadata))).thenReturn(profileFilter);
         when(morphNodeAction.setMorphDefinition(any(MorphDefinition.class))).thenReturn(morphNodeAction);
         when(morphNodeAction.setTargetDefinitionId(anyString())).thenReturn(morphNodeAction);

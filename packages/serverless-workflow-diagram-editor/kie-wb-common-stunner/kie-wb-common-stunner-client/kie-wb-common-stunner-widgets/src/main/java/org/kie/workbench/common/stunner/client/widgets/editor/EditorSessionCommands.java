@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.core.client.session.command.impl.DeleteS
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToJpgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPdfSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToPngSessionCommand;
-import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToRawFormatSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ExportToSvgSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.PasteSelectionSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
@@ -71,7 +70,6 @@ public class EditorSessionCommands {
                 .register(ExportToJpgSessionCommand.class)
                 .register(ExportToPdfSessionCommand.class)
                 .register(ExportToSvgSessionCommand.class)
-                .register(ExportToRawFormatSessionCommand.class)
                 .register(CopySelectionSessionCommand.class)
                 .register(PasteSelectionSessionCommand.class)
                 .register(CutSelectionSessionCommand.class)
@@ -138,10 +136,6 @@ public class EditorSessionCommands {
 
     public ExportToSvgSessionCommand getExportToSvgSessionCommand() {
         return commands.get(ExportToSvgSessionCommand.class);
-    }
-
-    public ExportToRawFormatSessionCommand getExportToRawFormatSessionCommand() {
-        return commands.get(ExportToRawFormatSessionCommand.class);
     }
 
     public CopySelectionSessionCommand getCopySelectionSessionCommand() {

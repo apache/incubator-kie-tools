@@ -30,7 +30,6 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.gwtproject.timer.client.Timer;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.lienzo.Decorator.ItemCallback;
@@ -47,7 +46,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
-@Ignore
 public class DecoratorTest {
 
     @Mock

@@ -104,7 +104,6 @@ public class DomainInitializerTest {
 
     @Before
     public void setup() {
-        when(registryFactory.newAdapterRegistry()).thenCallRealMethod();
         when(registryFactory.newDefinitionSetRegistry()).thenCallRealMethod();
         doCallRealMethod().when(registryFactory).setAdapterManager(any());
 

@@ -22,13 +22,13 @@ package org.uberfire.ext.editor.commons.client.file.exports.jso;
 
 import java.util.function.Consumer;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.ext.editor.commons.client.file.exports.FileExportResources;
 
 import static org.junit.Assert.assertEquals;
@@ -36,8 +36,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.uberfire.ext.editor.commons.client.file.exports.jso.FileExportScriptInjector.buildNamespaceObject;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class FileExportScriptInjectorTest {
 
     public static final String NS = "window.";
@@ -52,6 +51,7 @@ public class FileExportScriptInjectorTest {
     }
 
     @Test
+    @Ignore("ScriptInjector is not mocked correctly")
     public void testInject() {
         tested.inject();
         final ArgumentCaptor<String> scriptCaptor = ArgumentCaptor.forClass(String.class);
@@ -61,6 +61,10 @@ public class FileExportScriptInjectorTest {
         final String fsNsObject = buildNamespaceObject(NS + JsFileSaver.class.getSimpleName() + ".saveAs");
         final String jsPdfNsObject = buildNamespaceObject(NS + JsPdf.class.getSimpleName());
         final String c2sNsObject = FileExportResources.INSTANCE.canvas2svg().getText();
+
+        System.out.println("script = \n" + script);
+
+
         assertEquals("var " +
                              fsNsObject +
                              " = function(blob, fileName, disableAutoBOM) {\n" +

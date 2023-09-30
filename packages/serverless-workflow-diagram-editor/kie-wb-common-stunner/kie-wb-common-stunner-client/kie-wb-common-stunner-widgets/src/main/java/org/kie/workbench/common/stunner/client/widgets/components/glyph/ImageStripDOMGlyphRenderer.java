@@ -76,9 +76,13 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         final int clipX = isHorizontal ? (strip.getWide() + strip.getPadding()) * index : 0;
         final int clipY = !isHorizontal ? (strip.getHigh() + strip.getPadding()) * index : 0;
         final WidgetElementRendererView view = views.get();
-        StyleInjector.fromString(strip.getCss().getCssResource()).inject();
+        inject(strip.getCss().getCssResource());
         view.setWidget(panelBuilder.apply(strip.getCss().getClassName(), new Integer[]{clipX, clipY * -1}));
         return view;
+    }
+
+    protected void inject(final String css) {
+        StyleInjector.fromString(css).inject();
     }
 
     @PreDestroy
@@ -86,7 +90,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         views.destroyAll();
     }
 
-    private static HTMLDivElement buildPanel(final String className,
+    protected static HTMLDivElement buildPanel(final String className,
                                         final int clipX,
                                         final int clipY) {
         HTMLDivElement root = (HTMLDivElement) DomGlobal.document.createElement("div");

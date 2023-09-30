@@ -31,7 +31,6 @@ import elemental2.dom.Element;
 import elemental2.dom.ImageData;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,7 +42,6 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 @WithClassesToStub(JsArray.class)
-@Ignore
 public class C2SContext2DTest {
 
     private C2SContext2D c2SContext2D;

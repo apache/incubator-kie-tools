@@ -23,22 +23,20 @@ package org.kie.workbench.common.stunner.core.client.util;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.gwtproject.safehtml.shared.SafeUri;
 import org.jboss.errai.common.client.util.Base64Util;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class SvgDataUriGeneratorTest {
 
     private static final String SVG_CONTENT = "svg-content";

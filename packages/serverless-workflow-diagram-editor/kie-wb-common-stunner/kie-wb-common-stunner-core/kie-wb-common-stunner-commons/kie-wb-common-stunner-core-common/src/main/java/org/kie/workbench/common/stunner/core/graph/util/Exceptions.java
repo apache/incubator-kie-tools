@@ -20,8 +20,6 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
-import elemental2.dom.DomGlobal;
-
 /**
  * Utility class that allows working with functional programming and streams easier when having exceptions.
  */
@@ -41,7 +39,6 @@ public class Exceptions {
         try {
             return supplier.get();
         } catch (Exception e) {
-            DomGlobal.console.debug("Exception swallowed", e.getMessage());
             return defaultReturn;
         }
     }

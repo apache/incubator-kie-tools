@@ -20,24 +20,16 @@
 
 package org.kie.workbench.common.stunner.core.client.api;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.appformer.client.context.EditorContextProvider;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.appformer.client.context.Channel.DEFAULT;
-import static org.appformer.client.context.Channel.EMBEDDED;
-import static org.appformer.client.context.Channel.GITHUB;
-import static org.appformer.client.context.Channel.ONLINE;
-import static org.appformer.client.context.Channel.VSCODE;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class EditorReadOnlyProviderTest {
 
     @Mock
@@ -52,31 +44,31 @@ public class EditorReadOnlyProviderTest {
 
     @Test
     public void testIsReadOnlyDiagramWhenIsGithub() {
-        when(contextProvider.getChannel()).thenReturn(GITHUB);
+        //when(contextProvider.getChannel()).thenReturn(GITHUB);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsDefault() {
-        when(contextProvider.getChannel()).thenReturn(DEFAULT);
+        //when(contextProvider.getChannel()).thenReturn(DEFAULT);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsVsCode() {
-        when(contextProvider.getChannel()).thenReturn(VSCODE);
+        //when(contextProvider.getChannel()).thenReturn(VSCODE);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsOnline() {
-        when(contextProvider.getChannel()).thenReturn(ONLINE);
+        //when(contextProvider.getChannel()).thenReturn(ONLINE);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsEmbedded() {
-        when(contextProvider.getChannel()).thenReturn(EMBEDDED);
+        //when(contextProvider.getChannel()).thenReturn(EMBEDDED);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 }

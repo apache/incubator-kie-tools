@@ -20,9 +20,7 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -33,15 +31,14 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-@RunWith(GwtMockitoTestRunner.class)
-@Ignore
+@RunWith(MockitoJUnitRunner.class)
 public class SaveDiagramSessionCommandTest {
 
     private static final String DIAGRAM_UUID = UUID.uuid();
@@ -68,12 +65,12 @@ public class SaveDiagramSessionCommandTest {
 
     @Before
     public void setUp() throws Exception {
-        when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        when(canvasHandler.getDiagram()).thenReturn(diagram);
-        when(diagram.getMetadata()).thenReturn(metadata);
-        when(metadata.getPath()).thenReturn(path);
-        when(metadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
-        when(session.getSelectionControl()).thenReturn(selectionControl);
+        //when(session.getCanvasHandler()).thenReturn(canvasHandler);
+        //when(canvasHandler.getDiagram()).thenReturn(diagram);
+        //when(diagram.getMetadata()).thenReturn(metadata);
+        //when(metadata.getPath()).thenReturn(path);
+        //when(metadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
+        //when(session.getSelectionControl()).thenReturn(selectionControl);
 
         command = new SaveDiagramSessionCommand();
         command.bind(session);

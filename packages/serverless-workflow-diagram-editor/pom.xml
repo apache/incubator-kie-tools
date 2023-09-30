@@ -936,7 +936,6 @@
           <artifactId>j2cl-maven-plugin</artifactId>
           <version>${version.j2cl.plugin}</version>
           <configuration>
-            <incremental>true</incremental>
             <webappDirectory>${project.build.directory}/j2cl-watch</webappDirectory>
           </configuration>
         </plugin>
