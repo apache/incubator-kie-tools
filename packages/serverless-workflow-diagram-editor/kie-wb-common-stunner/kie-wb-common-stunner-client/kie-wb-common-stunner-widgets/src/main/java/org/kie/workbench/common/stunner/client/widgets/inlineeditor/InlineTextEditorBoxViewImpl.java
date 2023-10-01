@@ -28,6 +28,7 @@ import elemental2.dom.HTMLElement;
 import elemental2.dom.KeyboardEvent;
 import io.crysknife.client.IsElement;
 import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
 import io.crysknife.ui.templates.client.annotation.ForEvent;
 import io.crysknife.ui.templates.client.annotation.Templated;
 import io.crysknife.ui.translation.client.TranslationService;
@@ -102,12 +103,6 @@ public class InlineTextEditorBoxViewImpl
         placeholder = translationService.getTranslation(StunnerWidgetsConstants.NameEditBoxWidgetViewImp_name);
         fontSize = DEFAULT_FONT_SIZE;
         fontFamily = DEFAULT_FONT_FAMILY;
-
-        //TODO restore event binding via @EventHandler annotation once J2CL migration is complete
-        nameField.addEventListener("keydown", this::onChangeName);
-        nameField.addEventListener("keyup", this::onChangeName);
-        nameField.addEventListener("keypress", this::onChangeName);
-        nameField.addEventListener("blur", this::onChangeName);
     }
 
     @Override
@@ -187,7 +182,7 @@ public class InlineTextEditorBoxViewImpl
         return style.toString();
     }
 
-    //@EventHandler("nameField")
+    @EventHandler("nameField")
     void onChangeName(@ForEvent({"keydown", "keyup", "keypress", "blur"}) Event event) {
         KeyboardEvent e = Js.uncheckedCast(event);
         if (isVisible()) {
