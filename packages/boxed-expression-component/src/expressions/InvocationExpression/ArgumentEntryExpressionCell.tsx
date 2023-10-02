@@ -36,12 +36,14 @@ export interface ArgumentEntryExpressionCellProps {
   data: readonly ContextExpressionDefinitionEntry[];
   rowIndex: number;
   columnIndex: number;
+  parentElementId: string;
 }
 
 export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryExpressionCellProps> = ({
   data: argumentEntries,
   rowIndex,
   columnIndex,
+  parentElementId,
 }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
@@ -66,6 +68,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<ArgumentEntryE
         isNested={true}
         rowIndex={rowIndex}
         columnIndex={columnIndex}
+        parentElementId={parentElementId}
       />
     </NestedExpressionDispatchContextProvider>
   );

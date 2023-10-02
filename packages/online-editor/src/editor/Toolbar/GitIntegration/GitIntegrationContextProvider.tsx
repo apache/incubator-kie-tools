@@ -105,8 +105,9 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
   const bitbucketClient = useBitbucketClient(authSession);
 
   const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
-  const [gitHubGist, setGitHubGist] =
-    useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
+  const [gitHubGist, setGitHubGist] = useState<
+    OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined
+  >(undefined);
   const [bitbucketSnippet, setBitbucketSnippet] = useState<any>(undefined);
 
   const insecurelyDisableTlsCertificateValidation = useMemo(() => {

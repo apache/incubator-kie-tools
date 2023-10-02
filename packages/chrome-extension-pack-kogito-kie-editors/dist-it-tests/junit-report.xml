@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Chrome Extension for BPMN and DMN" tests="7" failures="5" errors="0" time="80.025">
+  <testsuite name="it-tests/tests/BpmnFullScreenTest.ts" errors="0" failures="1" skipped="0" timestamp="2023-07-06T22:06:07" time="4.855" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="BpmnFullScreenTest" time="4.387" file="it-tests/tests/BpmnFullScreenTest.ts">
+      <failure>TimeoutError: Waiting for element to be located By(css selector, .kogito-toolbar-container)
+Wait timed out after 2052ms
+    at /home/thiago-lugli/ibm/kie-tools/node_modules/.pnpm/selenium-webdriver@4.8.1_patch_hash=lbqefch5nrzt5atgrk2dnw5phe/node_modules/selenium-webdriver/lib/webdriver.js:929:17
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="it-tests/tests/DmnFullScreenTest.ts" errors="0" failures="1" skipped="0" timestamp="2023-07-06T22:06:11" time="4.394" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="DmnFullScreenTest" time="4.248" file="it-tests/tests/DmnFullScreenTest.ts">
+      <failure>TimeoutError: Waiting for element to be located By(css selector, .kogito-toolbar-container)
+Wait timed out after 2163ms
+    at /home/thiago-lugli/ibm/kie-tools/node_modules/.pnpm/selenium-webdriver@4.8.1_patch_hash=lbqefch5nrzt5atgrk2dnw5phe/node_modules/selenium-webdriver/lib/webdriver.js:929:17
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="it-tests/tests/BpmnTest.ts" errors="0" failures="1" skipped="0" timestamp="2023-07-06T22:06:16" time="3.122" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="BpmnTest" time="2.966" file="it-tests/tests/BpmnTest.ts">
+      <failure>TimeoutError: Waiting for element to be located By(xpath, //a[@title=&apos;Go to parent directory&apos;])
+Wait timed out after 1090ms
+    at /home/thiago-lugli/ibm/kie-tools/node_modules/.pnpm/selenium-webdriver@4.8.1_patch_hash=lbqefch5nrzt5atgrk2dnw5phe/node_modules/selenium-webdriver/lib/webdriver.js:929:17
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="it-tests/tests/DmnTest.ts" errors="0" failures="1" skipped="0" timestamp="2023-07-06T22:06:19" time="2.9" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="DmnTest" time="2.751" file="it-tests/tests/DmnTest.ts">
+      <failure>TimeoutError: Waiting for element to be located By(xpath, //a[@title=&apos;Go to parent directory&apos;])
+Wait timed out after 1044ms
+    at /home/thiago-lugli/ibm/kie-tools/node_modules/.pnpm/selenium-webdriver@4.8.1_patch_hash=lbqefch5nrzt5atgrk2dnw5phe/node_modules/selenium-webdriver/lib/webdriver.js:929:17
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="it-tests/tests/DmnExpressionEditorTest.ts" errors="0" failures="1" skipped="0" timestamp="2023-07-06T22:06:22" time="2.826" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="DmnExpressionEditorTest" time="2.683" file="it-tests/tests/DmnExpressionEditorTest.ts">
+      <failure>TimeoutError: Waiting for element to be located By(xpath, //a[@title=&apos;Go to parent directory&apos;])
+Wait timed out after 1062ms
+    at /home/thiago-lugli/ibm/kie-tools/node_modules/.pnpm/selenium-webdriver@4.8.1_patch_hash=lbqefch5nrzt5atgrk2dnw5phe/node_modules/selenium-webdriver/lib/webdriver.js:929:17
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="it-tests/tests/BpmnPrTest.ts" errors="0" failures="0" skipped="0" timestamp="2023-07-06T22:06:25" time="31.275" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="BpmnPrTest" time="31.115" file="it-tests/tests/BpmnPrTest.ts">
+    </testcase>
+  </testsuite>
+  <testsuite name="it-tests/tests/DmnPrTest.ts" errors="0" failures="0" skipped="0" timestamp="2023-07-06T22:06:56" time="30.241" tests="1">
+    <testcase classname="Chrome Extension for BPMN and DMN ::" name="DmnPrTest" time="30.08" file="it-tests/tests/DmnPrTest.ts">
+    </testcase>
+  </testsuite>
+</testsuites>

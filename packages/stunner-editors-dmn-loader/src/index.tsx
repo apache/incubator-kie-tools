@@ -33,6 +33,7 @@ import {
   ExpressionDefinition,
   PmmlParam,
 } from "@kie-tools/boxed-expression-component/dist/api";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorWrapperProps {
   /** Identifier of the decision node, where the expression will be hold */
@@ -53,6 +54,8 @@ export interface BoxedExpressionEditorWrapperProps {
   pmmlParams?: PmmlParam[];
   /** BoxedExpressionWrapper root node */
   boxedExpressionEditorRootNode: Element | null;
+  /** The variables used in the current Boxed Expression Editor context */
+  variables?: FeelVariables;
 }
 
 const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEditorWrapperProps> = ({
@@ -62,6 +65,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
   isResetSupportedOnRootExpression,
   pmmlParams,
   boxedExpressionEditorRootNode,
+  variables,
 }) => {
   const [expressionWrapper, setExpressionWrapper] = useState<{
     source: "gwt" | "react";
@@ -138,6 +142,7 @@ const BoxedExpressionEditorWrapper: React.FunctionComponent<BoxedExpressionEdito
       dataTypes={dataTypes}
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
+      variables={variables}
     />
   );
 };
@@ -148,7 +153,8 @@ const renderBoxedExpressionEditor = (
   expressionDefinition: ExpressionDefinition,
   dataTypes: DmnDataType[],
   isResetSupportedOnRootExpression: boolean,
-  pmmlParams: PmmlParam[]
+  pmmlParams: PmmlParam[],
+  variables: FeelVariables
 ) => {
   const boxedExpressionEditorRootNode = document.querySelector(selector);
   ReactDOM.render(
@@ -159,6 +165,7 @@ const renderBoxedExpressionEditor = (
       isResetSupportedOnRootExpression={isResetSupportedOnRootExpression}
       pmmlParams={pmmlParams}
       boxedExpressionEditorRootNode={boxedExpressionEditorRootNode}
+      variables={variables}
     />,
     boxedExpressionEditorRootNode
   );
@@ -193,4 +200,8 @@ const renderImportJavaClasses = (selector: string) => {
   ReactDOM.render(<ImportJavaClassesWrapper />, document.querySelector(selector));
 };
 
-export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor };
+const getVariables = (xml: string): FeelVariables => {
+  return new FeelVariables(xml);
+};
+
+export { renderBoxedExpressionEditor, renderImportJavaClasses, unmountBoxedExpressionEditor, getVariables };

@@ -1,0 +1,35 @@
+{/* prettier-ignore */}
+{/*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story } from "@storybook/blocks";
+import * as BureauCallType from "./BureauCallType.stories";
+
+<Meta title="Use cases/Loan Originations/Bureau Strategy Decision Service/Bureau Call Type" of={BureauCallType} />
+
+The **Bureau call type** decision is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) expression with the
+_Unique_ Hit Policy. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
+creates rules with the result of the
+"[Pre-bureau risk category](/docs/use-cases-loan-originations-bureau-strategy-decision-service-pre-bureau-risk-category--overview)" decision.
+The result is how much data should be requested from the credit bureau for this application. It can be "Full", meaning all information
+available. It can be "Mini", meaning a minimal amount of data. Finally, "None" if no data is needed.
+
+<Story of={BureauCallType.Expression} />

@@ -197,8 +197,9 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
   const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
-  const [_currentDepth, _setCurrentDepth] =
-    useState<{ active: number | undefined; max: number }>(INITIAL_CURRENT_DEPTH);
+  const [_currentDepth, _setCurrentDepth] = useState<{ active: number | undefined; max: number }>(
+    INITIAL_CURRENT_DEPTH
+  );
 
   const {
     isSelectionHere: isParentSelectionThere,

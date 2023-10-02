@@ -18,6 +18,8 @@
  */
 
 import "@patternfly/react-core/dist/styles/base.css";
+import "@patternfly/react-core/dist/styles/base.css";
+import "@patternfly/patternfly/patternfly-addons.css";
 import "@patternfly/quickstarts/dist/quickstarts.min.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";

@@ -29,6 +29,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
+import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
@@ -78,7 +79,7 @@ function TestScenarioDrawerPanel({
             {(() => {
               switch (selectedDock) {
                 case TestScenarioEditorDock.CHEATSHEET:
-                  return i18n.drawer.cheatSheet.title;
+                  return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
                 case TestScenarioEditorDock.DATA_OBJECT:
                   return i18n.drawer.dataObject.description;
                 case TestScenarioEditorDock.SETTINGS:

@@ -44,7 +44,9 @@ export interface FormConfig {
 
 export interface FormAsset {
   id: string;
+  sanitizedId: string;
   assetName: string;
+  sanitizedAssetName: string;
   content: string;
   type: FormAssetType | string;
   config: FormConfig;

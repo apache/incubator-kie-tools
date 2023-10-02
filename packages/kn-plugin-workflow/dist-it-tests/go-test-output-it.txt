@@ -1,0 +1,82 @@
+=== RUN   TestCreateProjectSuccess
+=== RUN   TestCreateProjectSuccess/Test_create_project_success_index:_0
+=== RUN   TestCreateProjectSuccess/Test_create_project_success_index:_1
+--- PASS: TestCreateProjectSuccess (0.03s)
+    --- PASS: TestCreateProjectSuccess/Test_create_project_success_index:_0 (0.02s)
+    --- PASS: TestCreateProjectSuccess/Test_create_project_success_index:_1 (0.01s)
+=== RUN   TestCreateProjectFail
+=== RUN   TestCreateProjectFail/Test_create_project_fail_index:_0
+--- PASS: TestCreateProjectFail (0.01s)
+    --- PASS: TestCreateProjectFail/Test_create_project_fail_index:_0 (0.01s)
+=== RUN   TestDeployProjectSuccess
+--- PASS: TestDeployProjectSuccess (0.00s)
+=== RUN   TestQuarkusBuildCommand
+=== RUN   TestQuarkusBuildCommand/Test_build_project_success_index:_0
+    quarkus_build_test.go:124: 
+        	Error Trace:	/home/thiago-lugli/ibm/kie-tools/packages/kn-plugin-workflow/it-tests/quarkus_build_test.go:124
+        	            				/home/thiago-lugli/ibm/kie-tools/packages/kn-plugin-workflow/it-tests/quarkus_build_test.go:107
+        	Error:      	Received unexpected error:
+        	            	exit status 1
+        	Test:       	TestQuarkusBuildCommand/Test_build_project_success_index:_0
+        	Messages:   	Expected nil error, got exit status 1
+=== RUN   TestQuarkusBuildCommand/Test_build_project_success_index:_1
+    quarkus_build_test.go:124: 
+        	Error Trace:	/home/thiago-lugli/ibm/kie-tools/packages/kn-plugin-workflow/it-tests/quarkus_build_test.go:124
+        	            				/home/thiago-lugli/ibm/kie-tools/packages/kn-plugin-workflow/it-tests/quarkus_build_test.go:107
+        	Error:      	Received unexpected error:
+        	            	exit status 1
+        	Test:       	TestQuarkusBuildCommand/Test_build_project_success_index:_1
+        	Messages:   	Expected nil error, got exit status 1
+=== RUN   TestQuarkusBuildCommand/Test_build_project_success_index:_2
+    quarkus_build_test.go:124: 
+        	Error Trace:	/home/thiago-lugli/ibm/kie-tools/packages/kn-plugin-workflow/it-tests/quarkus_build_test.go:124
+        	            				/home/thiago-lugli/ibm/kie-tools/packages/kn-plugin-workflow/it-tests/quarkus_build_test.go:107
+        	Error:      	Received unexpected error:
+        	            	exit status 1
+        	Test:       	TestQuarkusBuildCommand/Test_build_project_success_index:_2
+        	Messages:   	Expected nil error, got exit status 1
+--- FAIL: TestQuarkusBuildCommand (24.50s)
+    --- FAIL: TestQuarkusBuildCommand/Test_build_project_success_index:_0 (16.37s)
+    --- FAIL: TestQuarkusBuildCommand/Test_build_project_success_index:_1 (3.89s)
+    --- FAIL: TestQuarkusBuildCommand/Test_build_project_success_index:_2 (4.23s)
+=== RUN   TestQuarkusConvertProjectSuccess
+=== RUN   TestQuarkusConvertProjectSuccess/Test_quarkus_convert_project_success_index:_0
+=== RUN   TestQuarkusConvertProjectSuccess/Test_quarkus_convert_project_success_index:_1
+=== RUN   TestQuarkusConvertProjectSuccess/Test_quarkus_convert_project_success_index:_2
+--- PASS: TestQuarkusConvertProjectSuccess (17.32s)
+    --- PASS: TestQuarkusConvertProjectSuccess/Test_quarkus_convert_project_success_index:_0 (4.55s)
+    --- PASS: TestQuarkusConvertProjectSuccess/Test_quarkus_convert_project_success_index:_1 (2.57s)
+    --- PASS: TestQuarkusConvertProjectSuccess/Test_quarkus_convert_project_success_index:_2 (10.21s)
+=== RUN   TestQuarkusConvertProjectFailed
+=== RUN   TestQuarkusConvertProjectFailed/Test_quarkus_convert_project_fail_index:_0
+--- PASS: TestQuarkusConvertProjectFailed (2.02s)
+    --- PASS: TestQuarkusConvertProjectFailed/Test_quarkus_convert_project_fail_index:_0 (2.02s)
+=== RUN   TestQuarkusConvertProjectFailedAlreadyQuarkus
+=== RUN   TestQuarkusConvertProjectFailedAlreadyQuarkus/Test_quarkus_convert_project_fail_already_quarkus_index:_0
+--- PASS: TestQuarkusConvertProjectFailedAlreadyQuarkus (2.18s)
+    --- PASS: TestQuarkusConvertProjectFailedAlreadyQuarkus/Test_quarkus_convert_project_fail_already_quarkus_index:_0 (2.18s)
+=== RUN   TestQuarkusCreateProjectSuccess
+=== RUN   TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_0
+=== RUN   TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_1
+=== RUN   TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_2
+=== RUN   TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_3
+--- PASS: TestQuarkusCreateProjectSuccess (8.81s)
+    --- PASS: TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_0 (2.32s)
+    --- PASS: TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_1 (2.11s)
+    --- PASS: TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_2 (1.96s)
+    --- PASS: TestQuarkusCreateProjectSuccess/Test_quarkus_create_project_success_index:_3 (2.41s)
+=== RUN   TestQuarkusCreateProjectFail
+=== RUN   TestQuarkusCreateProjectFail/Test_quarkus_create_project_fail_index:_0
+=== RUN   TestQuarkusCreateProjectFail/Test_quarkus_create_project_fail_index:_1
+--- PASS: TestQuarkusCreateProjectFail (2.20s)
+    --- PASS: TestQuarkusCreateProjectFail/Test_quarkus_create_project_fail_index:_0 (0.31s)
+    --- PASS: TestQuarkusCreateProjectFail/Test_quarkus_create_project_fail_index:_1 (1.88s)
+=== RUN   TestQuarkusRunCommand
+    quarkus_run_test.go:77: Skipping test because of `quarkus run` not working properly. Probably related to https://issues.redhat.com/browse/KOGITO-9449
+--- SKIP: TestQuarkusRunCommand (0.00s)
+=== RUN   TestRunCommand
+    run_test.go:71: Skipping test because of `run` not working properly on osx
+--- SKIP: TestRunCommand (0.00s)
+FAIL
+FAIL	github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/it-tests	57.085s
+FAIL

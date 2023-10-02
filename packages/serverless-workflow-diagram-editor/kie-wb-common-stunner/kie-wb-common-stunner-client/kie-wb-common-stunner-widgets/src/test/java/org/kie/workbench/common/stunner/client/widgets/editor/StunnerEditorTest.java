@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -25,9 +25,9 @@ import java.util.function.Consumer;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import elemental2.dom.HTMLDivElement;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
@@ -60,6 +60,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -67,17 +68,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Ignore("Some native apis can't be mocked")
 @RunWith(GwtMockitoTestRunner.class)
 public class StunnerEditorTest {
 
     @Mock
     private SessionEditorPresenter<EditorSession> sessionEditorPresenter;
+
     @Mock
     private ManagedInstance<SessionEditorPresenter<EditorSession>> sessionEditorPresenters;
 
     @Mock
     private SessionViewerPresenter<ViewerSession> sessionViewerPresenter;
+
     @Mock
     private ManagedInstance<SessionViewerPresenter<ViewerSession>> sessionViewerPresenters;
 
@@ -92,26 +94,35 @@ public class StunnerEditorTest {
 
     @Mock
     private EditorSession editorSession;
+
     @Mock
     private ViewerSession viewerSession;
+
     @Mock
     private AbstractCanvasHandler canvasHandler;
+
     @Mock
     private AlertsControl<AbstractCanvas> alertsControl;
+
     @Mock
     private LienzoCanvas canvas;
+
     @Mock
     private WiresCanvasView canvasView;
+
     @Mock
     private LienzoPanel panel;
+
     @Mock
     private LienzoBoundsPanel panelView;
+
     @Mock
     private Layer layer;
 
-    private DiagramImpl diagram;
-
+    @Mock
     private StunnerEditor tested;
+
+    private DiagramImpl diagram;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -136,10 +147,25 @@ public class StunnerEditorTest {
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(viewerSession.getAlertsControl()).thenReturn(alertsControl);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        tested = new StunnerEditor(sessionEditorPresenters,
-                                   sessionViewerPresenters,
-                                   translationService,
-                                   errorPage);
+        when(tested.getRootContainer()).thenReturn(new HTMLDivElement());
+        doCallRealMethod().when(tested).isClosed();
+        doCallRealMethod().when(tested).getSession();
+        doCallRealMethod().when(tested).getCurrentContentHash();
+        doCallRealMethod().when(tested).getCanvasHandler();
+        doCallRealMethod().when(tested).getDiagram();
+        doCallRealMethod().when(tested).setReadOnly(any(Boolean.class));
+        doCallRealMethod().when(tested).close();
+        doCallRealMethod().when(tested).isReadOnly();
+        doCallRealMethod().when(tested).destroy();
+        doCallRealMethod().when(tested).setExceptionProcessor(any(Consumer.class));
+        doCallRealMethod().when(tested).setParsingExceptionProcessor(any(Consumer.class));
+        doCallRealMethod().when(tested).handleError(any(ClientRuntimeError.class));
+        doNothing().when(tested).addResizeListener();
+
+        tested.editorSessionPresenterInstances = sessionEditorPresenters;
+        tested.viewerSessionPresenterInstances = sessionViewerPresenters;
+        tested.translationService = translationService;
+        tested.errorPage = errorPage;
         JsWindow.editor = new JsStunnerEditor();
     }
 
@@ -197,6 +223,7 @@ public class StunnerEditorTest {
         DiagramParsingException dpe = new DiagramParsingException(mock(Metadata.class), "testXml");
         ClientRuntimeError error = new ClientRuntimeError(dpe);
         tested.handleError(error);
+
         verify(parsingExceptionConsumer, times(1)).accept(eq(dpe));
         verify(exceptionConsumer, never()).accept(any());
     }
@@ -228,6 +255,8 @@ public class StunnerEditorTest {
             return null;
         }).when(sessionEditorPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));
         SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
+        doCallRealMethod().when(tested).open(diagram, callback);
+
         tested.open(diagram, callback);
         verify(callback, times(1)).onSuccess();
         verify(callback, never()).onError(any());
