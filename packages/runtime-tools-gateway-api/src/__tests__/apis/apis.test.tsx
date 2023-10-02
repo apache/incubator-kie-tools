@@ -17,17 +17,13 @@
  * under the License.
  */
 import axios from "axios";
-import {
-  CloudEventMethod,
-  KOGITO_BUSINESS_KEY,
-  KOGITO_PROCESS_REFERENCE_ID,
-} from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { CloudEventMethod, KOGITO_BUSINESS_KEY, KOGITO_PROCESS_REFERENCE_ID } from "../../types";
 import {
   triggerCloudEvent,
   triggerStartCloudEvent,
   getCustomWorkflowSchemaFromApi,
   startWorkflowRest,
-} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
+} from "../..//gatewayApi";
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 jest.mock("axios");

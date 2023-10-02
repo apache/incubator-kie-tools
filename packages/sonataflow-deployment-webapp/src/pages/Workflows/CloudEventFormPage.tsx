@@ -26,7 +26,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { CloudEventRequest, KOGITO_PROCESS_REFERENCE_ID } from "@kie-tools/runtime-tools-gateway-api/dist/types";
-import { FormNotification, Notification } from "../../components";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { CloudEventForm } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/envelope/components/CloudEventForm/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";
 import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";

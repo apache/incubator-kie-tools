@@ -18,7 +18,7 @@
  */
 
 import { CloudEventMethod } from "@kie-tools/runtime-tools-gateway-api/dist/types";
-import { validateCloudEventRequest } from "../../components/validateCloudEventRequest";
+import { validateCloudEventRequest } from "../../cloudEventForm/envelope/components/CloudEventForm/validateCloudEventRequest";
 
 describe("validateCloudEventRequest tests", () => {
   it("Valid result", () => {
