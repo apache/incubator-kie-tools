@@ -29,7 +29,9 @@ export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl:
       }
 
       const globalUrl = `${apiGroupEndpoint}/${apiResource.name}`;
+      const globalPath = globalUrl.replace(kubeApiServerUrl, "");
       const namespacedUrl = `${apiGroupEndpoint}/namespaces/:namespace/${apiResource.name}`;
+      const namespacedPath = namespacedUrl.replace(kubeApiServerUrl, "");
 
       // That's just for debugging purposes (begin)
       if (map.get(apiResource.kind)?.get(apiGroupVersion)) {
@@ -37,8 +39,11 @@ export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl:
         console.log(map.get(apiResource.kind)?.get(apiGroupVersion));
         console.log(
           `${apiResource.namespaced}` === "true"
-            ? { url: { namespaced: namespacedUrl, global: globalUrl } }
-            : { url: { global: globalUrl } }
+            ? {
+                url: { namespaced: namespacedUrl, global: globalUrl },
+                path: { namespaced: namespacedPath, global: globalPath },
+              }
+            : { url: { global: globalUrl }, path: { global: globalPath } }
         );
       }
       // That's just for debugging purposes (end)
@@ -50,8 +55,11 @@ export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl:
           [
             apiGroupVersion,
             `${apiResource.namespaced}` === "true"
-              ? { url: { namespaced: namespacedUrl, global: globalUrl } }
-              : { url: { global: globalUrl } },
+              ? {
+                  url: { namespaced: namespacedUrl, global: globalUrl },
+                  path: { namespaced: namespacedPath, global: globalPath },
+                }
+              : { url: { global: globalUrl }, path: { global: globalPath } },
           ],
         ])
       );

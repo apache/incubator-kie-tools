@@ -46,15 +46,20 @@ export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
-      try {
-        await this.kubernetesService.kubernetesFetch(getNamespaceApiPath(this.args.connection.namespace), {
-          method: "GET",
-        });
-      } catch (e) {
-        if (e.cause.status === 404) {
-          return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
-        }
-        throw e;
+      const namespaceApiPath = this.args.k8sApiServerEndpointsByResourceKind.get("Namespace")?.get("v1")?.path.global;
+      if (!namespaceApiPath) {
+        return KubernetesConnectionStatus.ERROR;
+      }
+
+      const response = await this.kubernetesService.kubernetesFetch(
+        `${namespaceApiPath}/${this.args.connection.namespace}`
+      );
+      if (response.status === 401) {
+        return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+      } else if (response.status === 404) {
+        return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+      } else if (response.status !== 200) {
+        return KubernetesConnectionStatus.ERROR;
       }
 
       const requiredResources = ["deployments", "services", "ingresses"];
@@ -95,11 +100,15 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async listDeployments(): Promise<K8sResourceYaml[]> {
-    const deployments = await this.kubernetesService.kubernetesFetch(
-      getDeploymentListApiPath(this.args.connection.namespace, defaultLabelTokens.createdBy)
-    );
-
-    console.log(deployments);
+    const rawApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
+    const apiPath = rawApiUrl?.path.namespaced ?? rawApiUrl?.path.global;
+    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
+    if (apiPath) {
+      const deployments = await this.kubernetesService.kubernetesFetch(
+        `${apiPath.replace(":namespace", this.args.connection.namespace)}${selector}`
+      );
+      console.log(await deployments.json());
+    }
 
     // TO DO: Parse this.
 
@@ -144,6 +153,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     //       workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
     //     };
     //   });
+    this.listDeployments();
     return [];
   }
 

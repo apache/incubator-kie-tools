@@ -39,8 +39,25 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
 
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
-      await this.kubernetesService.kubernetesFetch(getProjectApiPath(this.args.connection.namespace));
-      return KubernetesConnectionStatus.CONNECTED;
+      const projectApiPath = this.args.k8sApiServerEndpointsByResourceKind
+        .get("Project")
+        ?.get("project.openshift.io/v1")?.path.global;
+      if (!projectApiPath) {
+        return KubernetesConnectionStatus.ERROR;
+      }
+
+      const response = await this.kubernetesService.kubernetesFetch(
+        `${projectApiPath}/${this.args.connection.namespace}`
+      );
+      if (response.status === 401) {
+        return KubernetesConnectionStatus.MISSING_PERMISSIONS;
+      } else if (response.status === 404) {
+        return KubernetesConnectionStatus.NAMESPACE_NOT_FOUND;
+      } else if (response.status !== 200) {
+        return KubernetesConnectionStatus.ERROR;
+      } else {
+        return KubernetesConnectionStatus.CONNECTED;
+      }
     } catch (_e) {
       return KubernetesConnectionStatus.ERROR;
     }

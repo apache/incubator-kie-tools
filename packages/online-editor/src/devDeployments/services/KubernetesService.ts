@@ -28,6 +28,7 @@ import {
 import { DeploymentState } from "./common";
 import { DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
 import { ResourceArgs } from "./KieSandboxDevDeploymentsService";
+import Path from "path";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -92,8 +93,9 @@ export class KubernetesService {
     return args.proxyUrl ? `${args.proxyUrl}/${new URL(args.connection.host).host}` : args.connection.host;
   }
 
-  public kubernetesFetch(path: string, init?: RequestInit): Promise<Response> {
-    return fetch(`${this.baseUrl}/${path}`, {
+  public async kubernetesFetch(path: string, init?: RequestInit): Promise<Response> {
+    const url = new URL(Path.join(this.baseUrl, path));
+    return await fetch(url, {
       headers: { Authorization: `Bearer ${this.args.connection.token}`, ...init?.headers },
       ...init,
     });

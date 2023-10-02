@@ -65,5 +65,5 @@ spec:
 
 export const getDeploymentListApiPath = (namespace: string, labelSelector?: string) => {
   const selector = labelSelector ? `?labelSelector=${labelSelector}` : "";
-  return `apis/apps/v1/namespaces/${namespace}/deployments${selector}`;
+  return `apis/app/v1/namespaces/${namespace}/deployments${selector}`;
 };

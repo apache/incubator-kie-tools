@@ -11,7 +11,7 @@ export type K8sResourceYaml = {
 
 export type K8sApiServerEndpointByResourceKind = Map<
   string,
-  Map<string, { url: { namespaced?: string; global: string } }>
+  Map<string, { url: { namespaced?: string; global: string }; path: { namespaced?: string; global: string } }>
 >;
 
 export function isValidK8sResource(content: any): content is K8sResourceYaml {

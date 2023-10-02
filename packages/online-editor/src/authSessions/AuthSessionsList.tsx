@@ -51,7 +51,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { KieSandboxDeployment } from "../devDeployments/services/KieSandboxDevDeploymentsService";
 
 export function AuthSessionsList(props: {}) {
-  const { authSessions } = useAuthSessions();
+  const { authSessions, authSessionStatus } = useAuthSessions();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const devDeployments = useDevDeployments();
   const [devDeploymentsUsages, setDevDeploymentsUsages] = useState(new Map<string, KieSandboxDeployment[]>());
@@ -60,7 +60,10 @@ export function AuthSessionsList(props: {}) {
     useCallback(
       ({ canceled }) => {
         [...authSessions.values()].map((authSession) => {
-          if (authSession.type === "openshift" || authSession.type === "kubernetes") {
+          if (
+            (authSession.type === "openshift" || authSession.type === "kubernetes") &&
+            authSessionStatus.get(authSession.id) === AuthSessionStatus.VALID
+          ) {
             devDeployments.loadDevDeployments({ authSession }).then((deployments) => {
               if (canceled.get()) {
                 return;
@@ -70,7 +73,7 @@ export function AuthSessionsList(props: {}) {
           }
         });
       },
-      [authSessions, devDeployments]
+      [authSessionStatus, authSessions, devDeployments]
     )
   );
 
