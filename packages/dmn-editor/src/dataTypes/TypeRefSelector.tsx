@@ -88,7 +88,7 @@ export function TypeRefSelector(props: {
         aria-labelledby={"Data types selector"}
         placeholderText={"Select a data type..."}
         isGrouped={true}
-        menuAppendTo={props.menuAppendTo}
+        menuAppendTo={props.menuAppendTo ?? document.body}
 
         // isCreatable={true} // FIXME: Tiago --> Maybe this is a good idea?
       >
