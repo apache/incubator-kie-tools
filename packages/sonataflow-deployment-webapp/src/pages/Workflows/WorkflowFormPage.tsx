@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from "react";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { WorkflowFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api/WorkflowFormDriver";
