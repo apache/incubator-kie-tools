@@ -320,68 +320,65 @@ function TestScenarioMainPanel({
     <>
       {/* <Alert variant="warning" title="Warning alert title" /> */}
       <div className="kie-scesim-editor--content">
-        <Tabs
-          isFilled={true}
-          activeKey={tab}
-          onSelect={onTabChanged}
-          role="region"
-          className={"kie-scesim-editor--tabs"}
-        >
-          <Tab
-            eventKey={TestScenarioEditorTab.EDITOR}
-            title={
-              <>
-                <TabTitleIcon>
-                  <TableIcon />
-                </TabTitleIcon>
-                <TabTitleText>Test Scenarios</TabTitleText>
-              </>
+        <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
+          <DrawerContent
+            panelContent={
+              <TestScenarioDrawerPanel
+                dataObjects={dataObjects}
+                fileName={fileName}
+                onDrawerClose={closeDockPanel}
+                onUpdateSettingField={updateSettingField}
+                selectedDock={dockPanel.selected}
+                testScenarioSettings={{
+                  assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!,
+                  dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"],
+                  dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"],
+                  isStatelessSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["stateless"] ?? false,
+                  isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false,
+                  kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"],
+                  ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"],
+                }}
+              />
             }
           >
-            {tab === TestScenarioEditorTab.EDITOR && (
-              <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
-                <DrawerContent
-                  panelContent={
-                    <TestScenarioDrawerPanel
-                      dataObjects={dataObjects}
-                      fileName={fileName}
-                      onDrawerClose={closeDockPanel}
-                      onUpdateSettingField={updateSettingField}
-                      selectedDock={dockPanel.selected}
-                      testScenarioSettings={{
-                        assetType: scesimModel.ScenarioSimulationModel["settings"]!["type"]!,
-                        dmnName: scesimModel.ScenarioSimulationModel["settings"]!["dmnName"],
-                        dmnNamespace: scesimModel.ScenarioSimulationModel["settings"]!["dmnNamespace"],
-                        isStatelessSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["stateless"] ?? false,
-                        isTestSkipped: scesimModel.ScenarioSimulationModel["settings"]!["skipFromBuild"] ?? false,
-                        kieSessionRule: scesimModel.ScenarioSimulationModel["settings"]!["dmoSession"],
-                        ruleFlowGroup: scesimModel.ScenarioSimulationModel["settings"]!["ruleFlowGroup"],
-                      }}
-                    />
+            <DrawerContentBody>
+              {/* <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>*/}
+              <Tabs
+                isFilled={true}
+                activeKey={tab}
+                onSelect={onTabChanged}
+                role="region"
+                className={"kie-scesim-editor--tabs"}
+              >
+                <Tab
+                  eventKey={TestScenarioEditorTab.EDITOR}
+                  title={
+                    <>
+                      <TabTitleIcon>
+                        <TableIcon />
+                      </TabTitleIcon>
+                      <TabTitleText>Test Scenarios</TabTitleText>
+                    </>
+                  }
+                ></Tab>
+                <Tab
+                  eventKey={TestScenarioEditorTab.BACKGROUND}
+                  isDisabled
+                  title={
+                    <>
+                      <TabTitleIcon>
+                        <TableIcon />
+                      </TabTitleIcon>
+                      <TabTitleText>Background</TabTitleText>
+                    </>
                   }
                 >
-                  <DrawerContentBody>
-                    <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>
-                  </DrawerContentBody>
-                </DrawerContent>
-              </Drawer>
-            )}
-          </Tab>
-          <Tab
-            eventKey={TestScenarioEditorTab.BACKGROUND}
-            isDisabled
-            title={
-              <>
-                <TabTitleIcon>
-                  <TableIcon />
-                </TabTitleIcon>
-                <TabTitleText>Background</TabTitleText>
-              </>
-            }
-          >
-            Backgroud
-          </Tab>
-        </Tabs>
+                  Backgroud
+                </Tab>
+              </Tabs>
+            </DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
       </div>
       <TestScenarioSideBarMenu selectedSideBarMenuItem={dockPanel} onSideBarButtonClicked={openDockPanel} />
     </>
