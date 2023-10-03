@@ -27,6 +27,7 @@ import (
 const (
 	ConfigMapWorkflowPropsVolumeName = "workflow-properties"
 	kogitoServiceUrlProperty         = "kogito.service.url"
+	kogitoServiceUrlProtocol         = "http"
 )
 
 var immutableApplicationProperties = "quarkus.http.port=" + defaultHTTPWorkflowPortIntStr.String() + "\n" +
@@ -45,52 +46,69 @@ type AppPropertyHandler interface {
 }
 
 type appPropertyHandler struct {
-	workflow   *operatorapi.SonataFlow
-	properties string
+	workflow                 *operatorapi.SonataFlow
+	userProperties           string
+	defaultMutableProperties string
 }
 
-func (a *appPropertyHandler) WithUserProperties(userProperties string) AppPropertyHandler {
-	if len(userProperties) == 0 {
-		return a
-	}
-	props, propErr := properties.LoadString(userProperties)
-	if propErr != nil {
-		// can't load user's properties, ignore it
-		klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", userProperties)
-		return a
-	}
-	defaultProps := properties.MustLoadString(a.properties)
-	// we overwrite with the defaults
-	props.Merge(defaultProps)
-	// Disable expansions since it's not our responsibility
-	// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
-	props.DisableExpansion = true
-	a.properties = props.String()
+func (a *appPropertyHandler) WithUserProperties(properties string) AppPropertyHandler {
+	a.userProperties = properties
 	return a
 }
 
 func (a *appPropertyHandler) Build() string {
-	return a.properties
+	var props *properties.Properties
+	var propErr error = nil
+	if len(a.userProperties) == 0 {
+		props = properties.NewProperties()
+	} else {
+		props, propErr = properties.LoadString(a.userProperties)
+	}
+	if propErr != nil {
+		// can't load user's properties, ignore it
+		klog.V(log.D).InfoS("Can't load user's property", "workflow", a.workflow.Name, "namespace", a.workflow.Namespace, "properties", a.userProperties)
+		props = properties.NewProperties()
+	}
+	// Disable expansions since it's not our responsibility
+	// Property expansion means resolving ${} within the properties and environment context. Quarkus will do that in runtime.
+	props.DisableExpansion = true
+	defaultMutableProps := properties.MustLoadString(a.defaultMutableProperties)
+	for _, k := range defaultMutableProps.Keys() {
+		if _, ok := props.Get(k); ok {
+			defaultMutableProps.Delete(k)
+		}
+	}
+	// overwrite with the default mutable properties provided by the operator that are not set by the user.
+	props.Merge(defaultMutableProps)
+	defaultImmutableProps := properties.MustLoadString(immutableApplicationProperties)
+	// finally overwrite with the defaults immutable properties.
+	props.Merge(defaultImmutableProps)
+	return props.String()
 }
 
 // withKogitoServiceUrl adds the property kogitoServiceUrlProperty to the application properties.
 // See Service Discovery https://kubernetes.io/docs/concepts/services-networking/service/#dns
 func (a *appPropertyHandler) withKogitoServiceUrl() AppPropertyHandler {
+	var kogitoServiceUrl string
 	if len(a.workflow.Namespace) > 0 {
-		a.properties = a.properties +
-			fmt.Sprintf("%s=%s.%s\n", kogitoServiceUrlProperty, a.workflow.Name, a.workflow.Namespace)
+		kogitoServiceUrl = fmt.Sprintf("%s://%s.%s", kogitoServiceUrlProtocol, a.workflow.Name, a.workflow.Namespace)
 	} else {
-		a.properties = a.properties +
-			fmt.Sprintf("%s=%s\n", kogitoServiceUrlProperty, a.workflow.Name)
+		kogitoServiceUrl = fmt.Sprintf("%s://%s", kogitoServiceUrlProtocol, a.workflow.Name)
 	}
+	return a.addDefaultMutableProperty(kogitoServiceUrlProperty, kogitoServiceUrl)
+}
+
+func (a *appPropertyHandler) addDefaultMutableProperty(name string, value string) AppPropertyHandler {
+	a.defaultMutableProperties = a.defaultMutableProperties + fmt.Sprintf("%s=%s\n", name, value)
 	return a
 }
 
 // NewAppPropertyHandler creates the default workflow configurations property handler
+// The set of properties is initialized with the operator provided immutable properties.
+// The set of defaultMutableProperties is initialized with the operator provided properties that the user might override.
 func NewAppPropertyHandler(workflow *operatorapi.SonataFlow) AppPropertyHandler {
 	handler := &appPropertyHandler{
-		workflow:   workflow,
-		properties: immutableApplicationProperties,
+		workflow: workflow,
 	}
 	return handler.withKogitoServiceUrl()
 }
