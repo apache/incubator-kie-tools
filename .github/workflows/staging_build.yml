@@ -158,7 +158,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:
-          KIE_TOOLS_BUILD__runIntegrationTests: "false"
+          KIE_TOOLS_BUILD__runEndToEndTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
           KIE_TOOLS_BUILD__runLinters: "false"
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}

@@ -1,0 +1,104 @@
+{/_ prettier-ignore _/}
+{/\*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story, Canvas, Subtitle } from "@storybook/blocks";
+import * as List from "./List.stories";
+
+<Meta title="MDX/List" of={List} />
+
+# Boxed List
+
+A Boxed List expression enables to creation of a vertical list of boxed expressions.
+Each row starts with the row index and has a boxed expression item associated with it.
+It's possible to create any type of boxed expression for each item, even nested lists [1].
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={List.AgeGroups} />
+  <small>
+    <br />
+    <br />
+    This is an example of a Boxed List expression for an Age group decision that has the "number" type. In this Boxed
+    List each row is a Boxed Literal and on each one of these Boxed Literal, we have four different number ranges.
+  </small>
+</div>
+
+## Items columns
+
+### Header
+
+The header of the Boxed List expression will only exist if it's the root expression
+of a decision node, and the header will represent the decision name and type.
+Right-clicking on it, a context menu will open enabling you to edit its values.
+
+### Items
+
+The items can be any type of boxed expression, even other Boxed List. By default, a Boxed Literal expression will be placed
+on the first item, and it's possible to reset the expression by Left clicking on it, and clicking on "Reset".
+
+## Index column
+
+### Header
+
+The header row has a "#" symbol, which is a placeholder without any functionalities.
+
+### Rows
+
+Each item has a row number associated with it starting with the number 1.
+
+## Controls
+
+### Items
+
+Left-clicking on the index column cells or in the header cell (if applicable) will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, and delete the row.
+
+Another way to add rows is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
+or on the bottom (insert below) of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new row above or below the actual row.
+
+**Important**: It's not possible to perform the above process in the header row index ("#").
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column"}}>
+  <div style={{ display: "flex", flexDirection: "row"}}>
+    <Story of={List.Base} />
+    <small>
+      <br/>
+      <br/>
+      The smallest Boxed List expression with a Boxed Literal expression on the first item.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row"}}>
+    <Story of={List.Nested} />
+    <small>
+      <br/>
+      <br/>
+      A Boxed List with three rows. The first row is a Boxed Literal. The second row is
+      a Boxed List. The third is a Boxed Context.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=107)

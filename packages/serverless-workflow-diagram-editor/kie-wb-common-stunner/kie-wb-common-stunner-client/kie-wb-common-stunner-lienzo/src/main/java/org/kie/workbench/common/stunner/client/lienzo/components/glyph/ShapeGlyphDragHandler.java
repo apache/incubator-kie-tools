@@ -29,15 +29,13 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.RootPanel;
+import com.ait.lienzo.client.core.style.Style;
 import elemental2.dom.CSSProperties;
+import elemental2.dom.DomGlobal;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
-import jsinterop.base.Js;
 import org.gwtproject.timer.client.Timer;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.NativeHandler;
@@ -71,7 +69,7 @@ public class ShapeGlyphDragHandler {
 
     private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
     final NativeHandlerRegistration handlerRegistrations;
-    private final Supplier<AbsolutePanel> rootPanelSupplier;
+    private final Supplier<HTMLElement> rootPanelSupplier;
     private final Function<ShapeGlyphDragHandler.Item, LienzoPanelWidget> lienzoPanelBuilder;
     private final BiConsumer<Command, Integer> timer;
     private LienzoPanelWidget dragProxyPanel;
@@ -86,7 +84,7 @@ public class ShapeGlyphDragHandler {
     public ShapeGlyphDragHandler(final LienzoGlyphRenderers glyphLienzoGlyphRenderer) {
         this(glyphLienzoGlyphRenderer,
              new NativeHandlerRegistration(),
-             RootPanel::get,
+             () -> DomGlobal.document.body,
              item -> LienzoPanelWidget.create(item.getWidth() * 2,
                                               item.getHeight() * 2),
              (task, millis) -> new Timer() {
@@ -99,7 +97,7 @@ public class ShapeGlyphDragHandler {
 
     ShapeGlyphDragHandler(final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer,
                           final NativeHandlerRegistration handlerRegistrations,
-                          final Supplier<AbsolutePanel> rootPanelSupplier,
+                          final Supplier<HTMLElement> rootPanelSupplier,
                           final Function<ShapeGlyphDragHandler.Item, LienzoPanelWidget> lienzoPanelBuilder,
                           final BiConsumer<Command, Integer> timer) {
         this.glyphLienzoGlyphRenderer = glyphLienzoGlyphRenderer;
@@ -129,7 +127,7 @@ public class ShapeGlyphDragHandler {
 
         // Handle the proxy panel instance.
         moveProxyTo(x, y);
-        rootPanelSupplier.get().getElement().appendChild(Js.cast(dragProxyPanel.getElement()));
+        rootPanelSupplier.get().appendChild(dragProxyPanel.getElement());
 
         return this;
     }
@@ -153,8 +151,7 @@ public class ShapeGlyphDragHandler {
     }
 
     void attachHandlers(final ShapeGlyphDragHandler.Callback callback) {
-        //TODO: Remove Js.uncheckedCast() when j2cl migration is complete
-        HTMLElement panelElement = Js.uncheckedCast(rootPanelSupplier.get().getElement());
+        HTMLElement panelElement = rootPanelSupplier.get();
 
         mouseMoveHandler = new NativeHandler(MOUSE_MOVE,
                                              mouseMoveEvent -> onMouseMove(mouseMoveEvent, callback),
@@ -181,8 +178,8 @@ public class ShapeGlyphDragHandler {
             MouseEvent mouseEvent = (MouseEvent) event;
 
             HTMLDivElement element = dragProxyPanel.getElement();
-            element.style.left = (int) mouseEvent.x + Style.Unit.PX.getType();
-            element.style.top = (int) mouseEvent.y + Style.Unit.PX.getType();
+            element.style.left = (int) mouseEvent.x + "px";
+            element.style.top = (int) mouseEvent.y + "px";
             callback.onMove((int) mouseEvent.clientX, (int) mouseEvent.clientY);
         }
     }
@@ -192,7 +189,7 @@ public class ShapeGlyphDragHandler {
         if (event.type.equals(MOUSE_UP)) {
             MouseEvent mouseEvent = (MouseEvent) event;
             clearHandlers();
-            rootPanelSupplier.get().getElement().removeChild(Js.cast(dragProxyPanel.getElement()));
+            rootPanelSupplier.get().removeChild(dragProxyPanel.getElement());
             callback.onComplete((int) mouseEvent.clientX,
                                 (int) mouseEvent.clientY);
         }
@@ -218,7 +215,7 @@ public class ShapeGlyphDragHandler {
     private void clearState(final Command proxyDestroyCommand) {
         clearHandlers();
         if (Objects.nonNull(dragProxyPanel)) {
-            rootPanelSupplier.get().getElement().removeChild(Js.cast(dragProxyPanel.getElement()));
+            rootPanelSupplier.get().removeChild(dragProxyPanel.getElement());
             if (null != proxyDestroyCommand) {
                 proxyDestroyCommand.execute();
             }

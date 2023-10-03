@@ -33,6 +33,7 @@ import {
 } from "./serviceRegistry/ServiceRegistryConfig";
 import { useEnv } from "../env/EnvContext";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
+import { readRuntimeToolsConfigCookie, RuntimeToolsSettingsConfig } from "./runtimeTools/RuntimeToolsConfig";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -70,6 +71,9 @@ export interface SettingsContextType {
   serviceRegistry: {
     config: ServiceRegistrySettingsConfig;
   };
+  runtimeTools: {
+    config: RuntimeToolsSettingsConfig;
+  };
 }
 
 export interface SettingsDispatchContextType {
@@ -89,6 +93,9 @@ export interface SettingsDispatchContextType {
   serviceRegistry: {
     setConfig: React.Dispatch<React.SetStateAction<ServiceRegistrySettingsConfig>>;
     catalogStore: SwfServiceCatalogStore;
+  };
+  runtimeTools: {
+    setConfig: React.Dispatch<React.SetStateAction<RuntimeToolsSettingsConfig>>;
   };
 }
 
@@ -159,6 +166,7 @@ export function SettingsContextProvider(props: any) {
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState(readServiceAccountConfigCookie());
   const [serviceRegistryConfig, setServiceRegistryConfig] = useState(readServiceRegistryConfigCookie());
+  const [runtimeToolsConfig, setRuntimeToolsConfig] = useState(readRuntimeToolsConfigCookie());
 
   const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
 
@@ -202,6 +210,9 @@ export function SettingsContextProvider(props: any) {
         setConfig: setServiceRegistryConfig,
         catalogStore: serviceCatalogStore,
       },
+      runtimeTools: {
+        setConfig: setRuntimeToolsConfig,
+      },
     };
   }, [githubAuthService, githubOctokit, openshiftService, serviceCatalogStore]);
 
@@ -224,6 +235,9 @@ export function SettingsContextProvider(props: any) {
       serviceRegistry: {
         config: serviceRegistryConfig,
       },
+      runtimeTools: {
+        config: runtimeToolsConfig,
+      },
     };
   }, [
     openshiftStatus,
@@ -235,6 +249,7 @@ export function SettingsContextProvider(props: any) {
     githubScopes,
     serviceAccountConfig,
     serviceRegistryConfig,
+    runtimeToolsConfig,
   ]);
 
   return (

@@ -28,7 +28,10 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();
   const [workspaceFilePromise, setWorkspaceFilePromise] =
-    usePromiseState<{ workspaceFile: WorkspaceFile; uniqueId: string }>();
+    usePromiseState<{
+      workspaceFile: WorkspaceFile;
+      uniqueId: string;
+    }>();
 
   const refresh = useCallback(
     async (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {

@@ -25,7 +25,6 @@ import java.util.Collections;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.JsDefinitionManager;
@@ -145,7 +144,6 @@ public class GeneralCreateNodeActionTest {
     }
 
     @Test
-    @Ignore("CCE")
     public void testExecuteAction() {
         final String sourceNodeId = "src-id";
         final String targetNodeId = "dest-id";

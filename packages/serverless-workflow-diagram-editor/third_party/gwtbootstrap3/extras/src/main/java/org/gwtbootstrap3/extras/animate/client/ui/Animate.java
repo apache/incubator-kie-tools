@@ -23,9 +23,20 @@ package org.gwtbootstrap3.extras.animate.client.ui;
 import java.util.ArrayList;
 
 import com.google.gwt.dom.client.StyleInjector;
+import elemental2.core.JsArray;
+import elemental2.core.JsObject;
+import elemental2.dom.Event;
 import elemental2.dom.HTMLElement;
+import jsinterop.annotations.JsFunction;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
+import org.gwtbootstrap3.client.shared.js.JQuery;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtproject.core.client.Scheduler;
+
+import static org.gwtbootstrap3.client.shared.js.JQuery.$;
 
 /**
  * Utility class to dynamically animate objects using CSS animations.
@@ -35,7 +46,7 @@ import org.gwtproject.core.client.Scheduler;
 public class Animate {
 
     // store used styles, so they are not injected to the DOM everytime.
-    private static final ArrayList<String> usedStyles = new ArrayList<>();
+    private static final ArrayList<String> usedStyles = new ArrayList<String>();
 
     /**
      * Animate any element with specific animation. Animation is done by CSS and runs only once.
@@ -102,7 +113,6 @@ public class Animate {
     public static String animate(final HTMLElement widget, final Animation animation, final int count, final int duration, final int delay) {
 
         if (widget != null && animation != null) {
-
             // on valid input
             if (widget.classList.contains(animation.getCssName())) {
                 // animation is present, remove it and run again.
@@ -342,14 +352,16 @@ public class Animate {
      * @param element Element to remove style from.
      * @param animation Animation CSS class to remove.
      */
-    private static final native void _removeAnimationOnEnd(HTMLElement element, String animation) /*-{
+    private static void _removeAnimationOnEnd(HTMLElement element, String animation) {
 
-        var elem = $wnd.jQuery(element);
-        elem.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', { elem: elem }, function(event) {
-            event.data.elem.removeClass(animation);
-        });
+        JQueryExt elem = (JQueryExt) $(element);
+        JsArray arrayString = new JsArray<String>();
+        arrayString.push("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend");
+        JsPropertyMap params = JsPropertyMap.of();
+        params.set("elem", elem);
 
-    }-*/;
+        elem.one(arrayString, Js.uncheckedCast(params), event -> ((HasRemoveClass)Js.asPropertyMap(Js.asPropertyMap(event).get("data")).get("elem")).removeClass(animation));
+    }
 
     /**
      * Removes custom animation class and stops animation.
@@ -369,9 +381,10 @@ public class Animate {
      * @param element Element to remove style from.
      * @param animation Animation CSS class to remove.
      */
-    private static final native void _stopAnimation(HTMLElement element, String animation) /*-{
-        $wnd.jQuery(element).removeClass(animation);
-    }-*/;
+    private static final void _stopAnimation(final HTMLElement element, String animation) {
+        JQueryExt elem = (JQueryExt) $(element);
+        ((HasRemoveClass) Js.uncheckedCast(elem)).removeClass(animation);
+    }
 
     /**
      * Helper method, which returns unique class name for combination of animation and it's settings.
@@ -396,7 +409,7 @@ public class Animate {
 
             styleName += animation.split(" ")[1]+"-"+count+"-"+duration+"-"+delay;
 
-        // for all custom animations
+            // for all custom animations
         } else if (animation != null && !animation.isEmpty() && animation.split(" ").length == 1) {
 
             styleName += animation+"-"+count+"-"+duration+"-"+delay;
@@ -405,6 +418,33 @@ public class Animate {
 
         return styleName;
 
+    }
+
+    @JsType(
+            isNative = true,
+            namespace = "<global>",
+            name = "jQuery"
+    )
+    private static class JQueryExt extends JQuery {
+
+        @JsMethod
+        native void one(JsArray arrayString, JsObject params, Fn callback);
+
+    }
+
+    @FunctionalInterface
+    @JsFunction
+    interface Fn {
+        void onInvoke(Event event);
+    }
+
+    @JsType(
+            isNative = true,
+            name = "Object",
+            namespace = "<global>"
+    )
+    static class HasRemoveClass implements JsPropertyMap {
+        native void removeClass(String animation);
     }
 
 }

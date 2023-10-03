@@ -23,13 +23,12 @@ package org.kie.workbench.common.stunner.client.lienzo.components.glyph;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.ui.AbsolutePanel;
 import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.Event;
 import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
 import elemental2.dom.MouseEvent;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler.Callback;
@@ -69,9 +68,6 @@ public class ShapeGlyphDragHandlerTest {
     private ShapeGlyphDragHandler.Item glyphDragItem;
 
     @Mock
-    private AbsolutePanel rootPanel;
-
-    @Mock
     private HTMLDivElement proxyElement;
 
     @Mock
@@ -85,6 +81,9 @@ public class ShapeGlyphDragHandlerTest {
 
     @Mock
     private NativeHandler keyHandlerReg;
+
+    @Mock
+    private HTMLElement body;
 
     private ShapeGlyphDragHandler tested;
     private NativeHandlerRegistration handlerRegistrations;
@@ -104,14 +103,13 @@ public class ShapeGlyphDragHandlerTest {
         when(glyphDragItem.getShape()).thenReturn(glyph);
         tested = spy(new ShapeGlyphDragHandler(glyphLienzoGlyphRenderer,
                                                handlerRegistrations,
-                                               () -> rootPanel,
+                                               () -> body,
                                                item -> proxyPanel,
                                                (task, timeout) -> task.execute()));
         doNothing().when(tested).attachHandlers(any(Callback.class));
     }
 
     @Test
-    @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testShowProxy() {
         tested.show(glyphDragItem, 11, 33, mock(Callback.class));
         ArgumentCaptor<Layer> layerArgumentCaptor = ArgumentCaptor.forClass(Layer.class);
@@ -123,11 +121,10 @@ public class ShapeGlyphDragHandlerTest {
         assertEquals("absolute", proxyStyle.position);
         assertEquals((11d + "px"), proxyStyle.left);
         assertEquals((33d + "px"), proxyStyle.top);
-        //verify(rootPanel, times(1)).add(eq(proxyPanel)); //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
+        verify(body, times(1)).appendChild(proxyPanel.getElement());
     }
 
     @Test
-    @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testProxyHandlers() {
         Callback callback = mock(Callback.class);
 
@@ -165,13 +162,12 @@ public class ShapeGlyphDragHandlerTest {
                          callback);
         verify(moveHandlerReg, times(1)).removeHandler();
         verify(upHandlerReg, times(1)).removeHandler();
-        //verify(rootPanel, times(1)).remove(eq(proxyPanel)); //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
+        verify(body, times(1)).removeChild(proxyPanel.getElement());
         verify(callback, times(1)).onComplete(eq(3), eq(5));
         assertTrue(handlerRegistrations.isEmpty());
     }
 
     @Test
-    @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testKeyboardHandling() {
         Callback callback = mock(Callback.class);
         attachHandlers();
@@ -184,12 +180,11 @@ public class ShapeGlyphDragHandlerTest {
         tested.onKeyDown(event);
         verify(moveHandlerReg, times(1)).removeHandler();
         verify(upHandlerReg, times(1)).removeHandler();
-        //verify(rootPanel, times(1)).remove(eq(proxyPanel)); //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
+        verify(body, times(1)).removeChild(proxyPanel.getElement());
         assertTrue(handlerRegistrations.isEmpty());
     }
 
     @Test
-    @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testClear() throws Exception {
         Callback callback = mock(Callback.class);
         attachHandlers();
@@ -198,12 +193,11 @@ public class ShapeGlyphDragHandlerTest {
         verify(proxyPanel, never()).destroy();
         verify(moveHandlerReg, times(1)).removeHandler();
         verify(upHandlerReg, times(1)).removeHandler();
-        //verify(rootPanel, times(1)).remove(eq(proxyPanel));
+        verify(body, times(1)).removeChild(proxyPanel.getElement());
         assertTrue(handlerRegistrations.isEmpty());
     }
 
     @Test
-    @Ignore //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
     public void testDestroy() throws Exception {
         Callback callback = mock(Callback.class);
         attachHandlers();
@@ -212,7 +206,7 @@ public class ShapeGlyphDragHandlerTest {
         verify(proxyPanel, times(1)).destroy();
         verify(moveHandlerReg, times(1)).removeHandler();
         verify(upHandlerReg, times(1)).removeHandler();
-        //verify(rootPanel, times(1)).remove(eq(proxyPanel)); //TODO this test must be fixed, once the rootPanel is replaced with HtmlElement
+        verify(body, times(1)).removeChild(proxyPanel.getElement());
         assertTrue(handlerRegistrations.isEmpty());
     }
 

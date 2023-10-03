@@ -1,2 +1,0 @@
-**/dist-it-tests/junit-report*.xml
-**/target/failsafe-reports/TEST-*.xml

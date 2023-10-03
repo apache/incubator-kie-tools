@@ -1,0 +1,113 @@
+{/_ prettier-ignore _/}
+{/\*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import * as Context from "./Context.stories";
+
+<Meta title="MDX/Context" of={Context} />
+
+# Boxed Context
+
+A Boxed Context is a set of name-value pairs. Each one of these pairs is called a context entry. The Boxed Context has an optional result value
+and if the intent is to return the context entries the result should be left empty. The Boxed Context values and the result can be any type of boxed
+expression, even nested Boxed Contexts [1].
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Context.InstallmentCalculation} />
+  <small>
+    <br />
+    <br />
+    This is an example of an "Installment calculation" decision with the "number" type. It has a Boxed Context
+    expression with two context entries "Fee" with a Boxed Literal containing the value "25", and "Repayments" with
+    Boxed Literal containing a FEEL expression using values from the decision context, such as "Amount", "Rate" and
+    "Term". This Boxed Context has a result, which is the sum of both context entries.
+  </small>
+</div>
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Context.Customer} />
+  <small>
+    <br />
+    <br />
+    This is an example of a "Customer" decision with the "tCustomer" type. It has a Boxed Context expression with two
+    context entries "Name" with a Boxed Literal containing the value "Luiz", and "Age", with another Boxed Literal
+    containing the value "30". This Boxed Context doesn't have a result, therefore it will return a context with two
+    properties: "Name" and "Age".
+  </small>
+</div>
+
+## Header
+
+If the Boxed Context is the root expression of a decision node, the Boxed Context will have one
+header row, which represents the decision name and type.
+Right-clicking on it a context menu will open enabling you to edit its values.
+
+## Context Entries
+
+The context entries rows can't be less than one and don't have a maximum number. Each context entry has a name, and type and has
+a boxed expression associated with it. Right-clicking on the parameter name opens a context menu, enabling to edit its
+name and type.
+
+## Result
+
+The result can't be less than one and doesn't have a maximum number. Each parameter has a name and type and has
+a boxed expression associated with it. Right-clicking on the parameter name opens a context menu, enabling to edit its
+name and type.
+
+**Important**: It's not possible to have a parameterless function.
+
+## Controls
+
+### Context Entries
+
+Left-clicking on a context entry cell will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and reset the context entry.
+
+Another way to add context entries is by hovering the mouse on a context entry cell, which will
+make appear a plus sign on the top (insert above) or on the bottom (insert below) of the cell,
+the position of the plus sign will depend of the mouse position. Right-clicking on it will add
+a new context entry above or below the actual context entry.
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Context.Base} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Context expression.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Context.Nested} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Context expression nested on a Boxed Context expression.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)

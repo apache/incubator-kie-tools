@@ -29,13 +29,15 @@ describe("Bootstrap4FormGenerationTool tests", () => {
     const tool = new Bootstrap4FormGenerationTool();
 
     const formAsset: FormAsset = tool.generate({
-      name: "ApplyForVisa",
+      name: "ApplyFor#Visa",
       schema: ApplyForVisaSchema,
     });
 
     expect(formAsset).not.toBeUndefined();
-    expect(formAsset.id).toStrictEqual("ApplyForVisa");
-    expect(formAsset.assetName).toStrictEqual("ApplyForVisa.html");
+    expect(formAsset.id).toStrictEqual("ApplyFor#Visa");
+    expect(formAsset.sanitizedId).toStrictEqual("ApplyFor_Visa");
+    expect(formAsset.assetName).toStrictEqual("ApplyFor#Visa.html");
+    expect(formAsset.sanitizedAssetName).toStrictEqual("ApplyFor_Visa.html");
     expect(formAsset.content).not.toBeUndefined();
     expect(formAsset.config).not.toBeUndefined();
     expect(formAsset.config).toMatchObject(new Bootstrap4FormConfig(ApplyForVisaSchema));

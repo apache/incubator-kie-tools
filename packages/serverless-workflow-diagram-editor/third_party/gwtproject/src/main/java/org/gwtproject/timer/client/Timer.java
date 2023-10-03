@@ -31,9 +31,7 @@ import elemental2.dom.DomGlobal;
  */
 public abstract class Timer {
 
-    private boolean isRepeating;
-
-    private Double timerId = null;
+    private final GWTTimer timer = new JRETimer();
 
     /**
      * Returns {@code true} if the timer is running. Timer is running if and only if it is scheduled
@@ -42,21 +40,12 @@ public abstract class Timer {
      * @return boolean
      */
     public final boolean isRunning() {
-        return timerId != null;
+        return timer.isRunning();
     }
 
     /** Cancels this timer. If the timer is not running, this is a no-op. */
     public void cancel() {
-        if (!isRunning()) {
-            return;
-        }
-
-        if (isRepeating) {
-            DomGlobal.clearInterval(timerId);
-        } else {
-            DomGlobal.clearTimeout(timerId);
-        }
-        timerId = null;
+        timer.cancel();
     }
 
     /** This method will be called when a timer fires. Override it to implement the timer's logic. */
@@ -69,14 +58,7 @@ public abstract class Timer {
      * @param delayMillis how long to wait before the timer elapses, in milliseconds
      */
     public void schedule(int delayMillis) {
-        if (delayMillis < 0) {
-            throw new IllegalArgumentException("must be non-negative");
-        }
-        if (isRunning()) {
-            cancel();
-        }
-        isRepeating = false;
-        timerId = DomGlobal.setTimeout(createTimeoutCallback(this), delayMillis);
+        timer.schedule(delayMillis);
     }
 
     /**
@@ -87,36 +69,128 @@ public abstract class Timer {
      *     repetition
      */
     public void scheduleRepeating(int periodMillis) {
-        if (periodMillis <= 0) {
-            throw new IllegalArgumentException("must be positive");
-        }
-        if (isRunning()) {
-            cancel();
-        }
-        isRepeating = true;
-        timerId = DomGlobal.setInterval(createIntervalCallback(this), periodMillis);
+        timer.scheduleRepeating(periodMillis);
     }
 
-    /*
-     * Called by native code when this timer fires.
-     *
-     * Only call run() if cancelCounter has not changed since the timer was scheduled.
-     */
-    final void fire() {
+    private class GWTTimer {
+        private boolean isRepeating;
 
-        if (!isRepeating) {
+        private Double timerId = null;
+
+        public final boolean isRunning() {
+            return timerId != null;
+        }
+
+        public void cancel() {
+            if (!isRunning()) {
+                return;
+            }
+
+            if (isRepeating) {
+                DomGlobal.clearInterval(timerId);
+            } else {
+                DomGlobal.clearTimeout(timerId);
+            }
             timerId = null;
         }
 
-        // Run the timer's code.
-        run();
+        public void schedule(int delayMillis) {
+            if (delayMillis < 0) {
+                throw new IllegalArgumentException("must be non-negative");
+            }
+            if (isRunning()) {
+                cancel();
+            }
+            isRepeating = false;
+            timerId = DomGlobal.setTimeout(createTimeoutCallback(this), delayMillis);
+        }
+
+        /**
+         * Schedules a timer that elapses repeatedly. If the timer is already running then it will be
+         * first canceled before re-scheduling.
+         *
+         * @param periodMillis how long to wait before the timer elapses, in milliseconds, between each
+         *     repetition
+         */
+        public void scheduleRepeating(int periodMillis) {
+            if (periodMillis <= 0) {
+                throw new IllegalArgumentException("must be positive");
+            }
+            if (isRunning()) {
+                cancel();
+            }
+            isRepeating = true;
+            timerId = DomGlobal.setInterval(createIntervalCallback(this), periodMillis);
+        }
+
+        /*
+         * Called by native code when this timer fires.
+         *
+         * Only call run() if cancelCounter has not changed since the timer was scheduled.
+         */
+        final void fire() {
+
+            if (!isRepeating) {
+                timerId = null;
+            }
+
+            // Run the timer's code.
+            Timer.this.run();
+        }
+
+        private DomGlobal.SetTimeoutCallbackFn createTimeoutCallback(GWTTimer timer) {
+            return callback -> timer.fire();
+        }
+
+        private DomGlobal.SetIntervalCallbackFn createIntervalCallback(GWTTimer timer) {
+            return callback -> timer.fire();
+        }
     }
 
-    private DomGlobal.SetTimeoutCallbackFn createTimeoutCallback(Timer timer) {
-        return callback -> timer.fire();
-    }
+    private class JRETimer extends GWTTimer {
 
-    private DomGlobal.SetIntervalCallbackFn createIntervalCallback(Timer timer) {
-        return callback -> timer.fire();
+        @GwtIncompatible
+        private final java.util.Timer timer = new java.util.Timer();
+
+        @GwtIncompatible
+        private java.util.TimerTask repeatingTask;
+
+        @GwtIncompatible
+        @Override
+        public void schedule(int periodMillis) {
+            java.util.TimerTask task = new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    Timer.this.run();
+                }
+            };
+
+            // Schedule the timer to run once after 5000 milliseconds (5 seconds).
+            timer.schedule(task, periodMillis);
+        }
+
+        @GwtIncompatible
+        @Override
+        public void scheduleRepeating(int periodMillis) {
+            if (repeatingTask != null) {
+                repeatingTask.cancel(); // Cancel the previous task if exists.
+            }
+
+            repeatingTask = new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    Timer.this.run();
+                }
+            };
+
+            // Schedule the timer to run repeatedly every periodMillis milliseconds.
+            timer.scheduleAtFixedRate(repeatingTask, 0, periodMillis);
+        }
+
+        @GwtIncompatible
+        @Override
+        public void cancel() {
+            timer.cancel();
+        }
     }
 }

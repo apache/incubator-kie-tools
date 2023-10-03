@@ -1,0 +1,42 @@
+{/_ prettier-ignore _/}
+{/\*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story } from "@storybook/blocks";
+import * as PostBureauRiskCategory from "./PostBureauRiskCategory.stories";
+
+<Meta
+  title="Use cases/Loan Originations/Routing Decision Service/Post Bureau Risk Category"
+  of={PostBureauRiskCategory}
+/>
+
+The **Post-bureau risk category** decision is a
+[Boxed Context](/docs/boxed-expressions-context--overview) expression.
+It has two context entries with [Boxed Literal](/docs/boxed-expressions-literal--overview)
+expressions. The first entry, "Existing Customer", saves if the applicant is a previous customer.
+The second entry, "Credit Score", saves the credit score value that comes from the bureau office.
+The result expression is a
+[Decision Table](/docs/boxed-expressions-decision-table--overview) with
+the _Unique_ Hit Policy, which uses the "Existing Customer", "Credit Score", and
+"[Application risk score](/docs/use-cases-loan-originations-application-risk-score--overview)"
+to create rules. This [Decision Table](/docs/boxed-expressions-decision-table--overview)
+is a complete table with all possible combinations.
+
+<Story of={PostBureauRiskCategory.Expression} />

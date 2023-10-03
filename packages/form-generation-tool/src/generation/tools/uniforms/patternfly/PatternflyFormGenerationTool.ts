@@ -23,6 +23,7 @@ import { FormAssetType, FormAsset, FormStyle, FormConfig, FormGenerationTool, Fo
 import { renderForm } from "@kie-tools/uniforms-patternfly-codegen/dist";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import { getUniformsSchema } from "../utils/UniformsSchemaUtils";
+import { inputSanitizationUtil } from "../utils/InputSanitizationUtil";
 
 export class PatternflyFormConfig implements FormConfig {
   public readonly schema: string;
@@ -44,13 +45,16 @@ export class PatternflyFormGenerationTool implements FormGenerationTool {
     const uniformsSchema = getUniformsSchema(inputSchema.schema);
     const form = renderForm({
       id: inputSchema.name,
+      sanitizedId: inputSanitizationUtil(inputSchema.name),
       schema: new JSONSchemaBridge(uniformsSchema, () => true),
       disabled: false,
       placeholder: true,
     });
     return {
       id: inputSchema.name,
+      sanitizedId: inputSanitizationUtil(inputSchema.name),
       assetName: `${inputSchema.name}.${FormAssetType.TSX}`,
+      sanitizedAssetName: `${inputSanitizationUtil(inputSchema.name)}.${FormAssetType.TSX}`,
       type: FormAssetType.TSX,
       content: unescape(form),
       config: new PatternflyFormConfig(inputSchema.schema),

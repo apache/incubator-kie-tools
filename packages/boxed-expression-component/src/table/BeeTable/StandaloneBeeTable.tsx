@@ -38,8 +38,8 @@ export function StandaloneBeeTable<R extends object>(
   }, []);
 
   return (
-    <div className="expression-container">
-      <div className="expression-container-box" data-ouia-component-id="expression-container">
+    <div className="expression-container" data-testid="standalone-bee-table">
+      <div className="expression-container-box">
         <div className={`standalone-bee-table ${props.tableId}`}>
           <I18nDictionariesProvider
             defaults={boxedExpressionEditorI18nDefaults}

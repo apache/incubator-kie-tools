@@ -54,6 +54,8 @@
 // import 'monaco-editor/esm/vs/editor/contrib/smartSelect/smartSelect.js';
 // import 'monaco-editor/esm/vs/editor/contrib/snippet/snippetController2.js';
 import "monaco-editor/esm/vs/editor/contrib/suggest/browser/suggestController.js";
+import "monaco-editor/esm/vs/editor/contrib/semanticTokens/browser/documentSemanticTokens.js";
+import "monaco-editor/esm/vs/editor/contrib/semanticTokens/browser/viewportSemanticTokens.js";
 // import 'monaco-editor/esm/vs/editor/contrib/toggleTabFocusMode/toggleTabFocusMode.js';
 // import 'monaco-editor/esm/vs/editor/contrib/unusualLineTerminators/unusualLineTerminators.js';
 // import 'monaco-editor/esm/vs/editor/contrib/viewportSemanticTokens/viewportSemanticTokens.js';

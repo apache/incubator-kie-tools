@@ -37,7 +37,7 @@ public class DMNLoader {
      * @param pmmlParams PMML parameters
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
-    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean isClearSupportedOnRootExpression, final PMMLParam[] pmmlParams);
+    public static native void renderBoxedExpressionEditor(final String selector, final String decisionNodeId, final ExpressionProps expressionProps, final DataTypeProps[] dataTypes, final Boolean isClearSupportedOnRootExpression, final PMMLParam[] pmmlParams, final Object semanticProvider);
 
     /**
      * Method used to unmount the boxed-expression-component (TS/React world) from the DMN Editor (Java/GWT world)
@@ -52,4 +52,7 @@ public class DMNLoader {
      */
     @JsMethod(namespace = "__KIE__DMN_LOADER__")
     public static native void renderImportJavaClasses(final String selector);
+
+    @JsMethod(namespace = "__KIE__DMN_LOADER__")
+    public static native Object getVariables(final String xml);
 }
