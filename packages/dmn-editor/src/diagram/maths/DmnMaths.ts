@@ -113,7 +113,6 @@ export function getLineRectangleIntersectionPoint(
     }
   }
 
-  console.log(`(${x1},${y1}) (${x2},${y2}) (${rx},${ry}) (${rw},${rh}) --> y = ${m}x + ${b}`);
   // Check intersections with rectangle sides
   const intersections: { x: number; y: number }[] = [];
 

@@ -126,6 +126,9 @@ export function DevWebApp() {
     return {};
   }, []);
 
+  const isUndoEnabled = state.pointer > 0;
+  const isRedoEnabled = state.pointer !== state.stack.length - 1;
+
   return (
     <>
       <Page onDragOver={onDragOver} onDrop={onDrop}>
@@ -138,9 +141,13 @@ export function DevWebApp() {
               <h5>(Drag & drop a file anywhere to open it)</h5>
             </FlexItem>
             <FlexItem shrink={{ default: "shrink" }}>
-              <button onClick={undo}>Undo</button>
+              <button disabled={!isUndoEnabled} style={{ opacity: isUndoEnabled ? 1 : 0.5 }} onClick={undo}>
+                {`Undo (${state.pointer})`}
+              </button>
               &nbsp; &nbsp;
-              <button onClick={redo}>Redo</button>
+              <button disabled={!isRedoEnabled} style={{ opacity: isRedoEnabled ? 1 : 0.5 }} onClick={redo}>
+                {`Redo (${state.stack.length - 1 - state.pointer})`}
+              </button>
               &nbsp; &nbsp; | &nbsp; &nbsp;
               <button onClick={reset}>Reset</button>
               &nbsp; &nbsp;

@@ -146,6 +146,12 @@ export const DmnEditorInternal = ({
     }
 
     const timeout = setTimeout(() => {
+      // Ignore changes made outside... If the controller of the component
+      // changed its props, it knows it already, we don't need to call "onModelChange" again.
+      if (model === dmn.model) {
+        return;
+      }
+
       console.debug("DMN EDITOR: Model changed!");
       onModelChange?.(dmn.model);
     }, ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS);
