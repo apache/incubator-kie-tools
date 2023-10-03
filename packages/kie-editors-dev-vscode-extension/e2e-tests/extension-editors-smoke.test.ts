@@ -29,7 +29,7 @@ import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
  * Smoke tests, ensuring editors can open files.
  * Anything above this level should go to respectives editors test suite.
  */
-describe("KIE Editors Integration Test Suite - Smoke tests", () => {
+describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
   const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
   const DEMO_BPMN: string = "demo.bpmn";

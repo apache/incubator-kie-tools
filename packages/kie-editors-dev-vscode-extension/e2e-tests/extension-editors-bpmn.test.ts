@@ -42,7 +42,7 @@ import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutio
  * file for the integration e.g. "extensions-editors-bpmn-dmn.test.ts"
  */
 
-describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
+describe("KIE Editors End to End Test Suite - BPMN Editor", () => {
   const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
   const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
