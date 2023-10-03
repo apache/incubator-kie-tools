@@ -96,7 +96,7 @@ func TestMergePodSpec(t *testing.T) {
 				{Name: "myvolume", ReadOnly: true, MountPath: "/tmp/any/path"},
 			},
 		},
-		PodSpec: v1alpha08.FlowPodSpec{
+		FlowPodSpec: v1alpha08.FlowPodSpec{
 			ServiceAccountName: "superuser",
 			Containers: []corev1.Container{
 				{
@@ -134,7 +134,7 @@ func TestMergePodSpec(t *testing.T) {
 func TestMergePodSpec_OverrideContainers(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	workflow.Spec.PodTemplate = v1alpha08.FlowPodTemplateSpec{
-		PodSpec: v1alpha08.FlowPodSpec{
+		FlowPodSpec: v1alpha08.FlowPodSpec{
 			// Try to override the workflow container via the podspec
 			Containers: []corev1.Container{
 				{

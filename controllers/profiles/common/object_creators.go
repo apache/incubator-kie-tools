@@ -80,7 +80,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 		},
 	}
 
-	if err := mergo.Merge(&deployment.Spec.Template.Spec, workflow.Spec.PodTemplate.PodSpec.ToPodSpec(), mergo.WithOverride); err != nil {
+	if err := mergo.Merge(&deployment.Spec.Template.Spec, workflow.Spec.PodTemplate.FlowPodSpec.ToPodSpec(), mergo.WithOverride); err != nil {
 		return nil, err
 	}
 

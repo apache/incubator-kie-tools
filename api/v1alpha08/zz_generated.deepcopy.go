@@ -485,7 +485,7 @@ func (in *FlowPodSpec) DeepCopy() *FlowPodSpec {
 func (in *FlowPodTemplateSpec) DeepCopyInto(out *FlowPodTemplateSpec) {
 	*out = *in
 	in.Container.DeepCopyInto(&out.Container)
-	in.PodSpec.DeepCopyInto(&out.PodSpec)
+	in.FlowPodSpec.DeepCopyInto(&out.FlowPodSpec)
 	if in.Replicas != nil {
 		in, out := &in.Replicas, &out.Replicas
 		*out = new(int32)

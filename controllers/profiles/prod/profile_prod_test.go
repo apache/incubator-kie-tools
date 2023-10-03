@@ -34,6 +34,11 @@ import (
 
 func Test_Reconciler_ProdOps(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithProdOpsProfile(t.Name())
+	workflow.Spec.PodTemplate.FlowPodSpec.InitContainers = append(workflow.Spec.PodTemplate.FlowPodSpec.InitContainers, corev1.Container{
+		Name:    "check-postgres",
+		Image:   "registry.access.redhat.com/ubi9/ubi-minimal:latest",
+		Command: []string{"sh", "-c", "until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo \"Waiting for postgres server\"; sleep 3; done;"},
+	})
 	client := test.NewKogitoClientBuilder().
 		WithRuntimeObjects(workflow).
 		WithStatusSubresource(workflow, &operatorapi.SonataFlowBuild{}).Build()
@@ -58,6 +63,35 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 
 	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
+	assert.Len(t, deployment.Spec.Template.Spec.InitContainers, 1)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
+}
+
+func Test_Reconciler_ProdCustomPod(t *testing.T) {
+	workflow := test.GetBaseSonataFlowWithProdProfile(t.Name())
+	workflow.Spec.PodTemplate.FlowPodSpec.InitContainers = append(workflow.Spec.PodTemplate.FlowPodSpec.InitContainers, corev1.Container{
+		Name:    "check-postgres",
+		Image:   "registry.access.redhat.com/ubi9/ubi-minimal:latest",
+		Command: []string{"sh", "-c", "until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo \"Waiting for postgres server\"; sleep 3; done;"},
+	})
+	workflow.Status.Manager().MarkTrue(api.BuiltConditionType)
+	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
+	build := test.GetLocalSucceedSonataFlowBuild(workflow.Name, workflow.Namespace)
+	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
+	client := test.NewKogitoClientBuilder().
+		WithRuntimeObjects(workflow, build, platform).
+		WithStatusSubresource(workflow, build, platform).Build()
+	_, err := NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+
+	// Let's check for the right creation of the workflow (one CM volume, one container with a custom image)
+	deployment := &appsv1.Deployment{}
+	err = client.Get(context.TODO(), clientruntime.ObjectKeyFromObject(workflow), deployment)
+	assert.NoError(t, err)
+
+	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 1)
+	assert.Len(t, deployment.Spec.Template.Spec.Containers, 1)
+	assert.Len(t, deployment.Spec.Template.Spec.InitContainers, 1)
 	assert.Len(t, deployment.Spec.Template.Spec.Containers[0].VolumeMounts, 1)
 }
 

@@ -548,7 +548,8 @@ type FlowPodTemplateSpec struct {
 	// One can change this attribute in order to override the defaults provided by the operator.
 	// +optional
 	Container FlowContainer `json:"container,omitempty"`
-	PodSpec   FlowPodSpec   `json:",omitempty"`
+	// +optional
+	FlowPodSpec `json:",inline"`
 	// +optional
 	Replicas *int32 `json:"replicas,omitempty"`
 }
@@ -649,6 +650,7 @@ type SonataFlowSpec struct {
 	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="resources"
 	Resources WorkflowResources `json:"resources,omitempty"`
 	// PodTemplate describes the deployment details of this SonataFlow instance.
+	//+operator-sdk:csv:customresourcedefinitions:type=spec,displayName="podTemplate"
 	PodTemplate FlowPodTemplateSpec `json:"podTemplate,omitempty"`
 }
 
