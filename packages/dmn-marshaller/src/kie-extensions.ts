@@ -44,11 +44,15 @@ declare module "./schemas/dmn-1_2/ts-gen/types" {
     "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
   }
 
-  export interface DMN12__tKnowledgeSource__extensionElements {
+  export interface DMN12__tBusinessKnowledgeModel__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 
   export interface DMN12__tDecision__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN12__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -63,13 +67,19 @@ dmn12ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
-(dmn12meta["DMN12__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+(dmn12meta["DMN12__tBusinessKnowledgeModel__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
 };
 
 (dmn12meta["DMN12__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
+(dmn12meta["DMN12__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
@@ -84,11 +94,15 @@ declare module "./schemas/dmn-1_3/ts-gen/types" {
     "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
   }
 
-  export interface DMN13__tKnowledgeSource__extensionElements {
+  export interface DMN13__tBusinessKnowledgeModel__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 
   export interface DMN13__tDecision__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN13__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -104,15 +118,21 @@ dmn13ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
-(dmn13meta["DMN13__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+(dmn13meta["DMN13__tBusinessKnowledgeModel__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
-  isArray: false,
+  isArray: true,
   isOptional: true,
 };
 
 (dmn13meta["DMN13__tDecision__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
+  isOptional: true,
+};
+
+(dmn13meta["DMN13__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: false,
   isOptional: true,
 };
 
@@ -125,11 +145,15 @@ declare module "./schemas/dmn-1_4/ts-gen/types" {
     "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
   }
 
-  export interface DMN14__tKnowledgeSource__extensionElements {
+  export interface DMN14__tBusinessKnowledgeModel__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 
   export interface DMN14__tDecision__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN14__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -145,13 +169,19 @@ dmn14ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
-(dmn14meta["DMN14__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+(dmn14meta["DMN14__tBusinessKnowledgeModel__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
 };
 
 (dmn14meta["DMN14__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
+(dmn14meta["DMN14__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
@@ -166,11 +196,15 @@ declare module "./schemas/dmn-1_5/ts-gen/types" {
     "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
   }
 
-  export interface DMN15__tKnowledgeSource__extensionElements {
+  export interface DMN15__tBusinessKnowledgeModel__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 
   export interface DMN15__tDecision__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN15__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -186,13 +220,19 @@ dmn15ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
-(dmn15meta["DMN15__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+(dmn15meta["DMN15__tBusinessKnowledgeModel__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
 };
 
 (dmn15meta["DMN15__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
+(dmn15meta["DMN15__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
