@@ -47,6 +47,10 @@ declare module "./schemas/dmn-1_2/ts-gen/types" {
   export interface DMN12__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
+
+  export interface DMN12__tDecision__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
 }
 dmn12ns.set(KIE_NS, kie10ns.get("")!);
 dmn12ns.set(kie10ns.get("")!, KIE_NS);
@@ -65,6 +69,12 @@ dmn12ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
+(dmn12meta["DMN12__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
 ///////////////////////////
 ///       DMN 1.3       ///
 ///////////////////////////
@@ -75,6 +85,10 @@ declare module "./schemas/dmn-1_3/ts-gen/types" {
   }
 
   export interface DMN13__tKnowledgeSource__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN13__tDecision__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -96,6 +110,12 @@ dmn13ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
+(dmn13meta["DMN13__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
 ///////////////////////////
 ///       DMN 1.4       ///
 ///////////////////////////
@@ -106,6 +126,10 @@ declare module "./schemas/dmn-1_4/ts-gen/types" {
   }
 
   export interface DMN14__tKnowledgeSource__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN14__tDecision__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -127,6 +151,12 @@ dmn14ns.set(kie10ns.get("")!, KIE_NS);
   isOptional: true,
 };
 
+(dmn14meta["DMN14__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
 ///////////////////////////
 ///       DMN 1.5       ///
 ///////////////////////////
@@ -137,6 +167,10 @@ declare module "./schemas/dmn-1_5/ts-gen/types" {
   }
 
   export interface DMN15__tKnowledgeSource__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN15__tDecision__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
 }
@@ -153,6 +187,12 @@ dmn15ns.set(kie10ns.get("")!, KIE_NS);
 };
 
 (dmn15meta["DMN15__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  isOptional: true,
+};
+
+(dmn15meta["DMN15__tDecision__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   isOptional: true,
