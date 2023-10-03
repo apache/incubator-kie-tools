@@ -23,9 +23,7 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer;
@@ -92,9 +90,8 @@ public class DelegateLienzoPanelTest {
     }
 
     @Test
-    @Ignore("throws CCE")
     public void testIsElement() {
-        HTMLElement e = (HTMLElement) mock(IsElement.class);
+        HTMLElement e = mock(HTMLElement.class);
         when(delegate.getElement()).thenReturn(e);
         assertEquals(e, tested.getElement());
     }

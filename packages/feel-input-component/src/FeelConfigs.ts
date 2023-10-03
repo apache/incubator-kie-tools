@@ -52,11 +52,11 @@ export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
     functions: Array.from(ReservedWords.FeelFunctions),
     tokenizer: {
       root: [
-        [/(?:true|false)/, "feel-boolean"],
-        [/[0-9]+/, "feel-numeric"],
-        [/(?:"(?:.*?)")/, "feel-string"],
-        [/([a-z{1}][a-z_\s]*[a-z$])(?=\()/, { cases: { "@functions": "feel-function" } }],
-        [/[\w$]*[a-z_$][\w$]*/, { cases: { "@keywords": "feel-keyword" } }],
+        [/(?:true|false)/, Element[Element.FeelBoolean]],
+        [/[0-9]+/, Element[Element.FeelNumeric]],
+        [/(?:"(?:.*?)")/, Element[Element.FeelString]],
+        [/([a-z{1}][a-z_\s]*[a-z$])(?=\()/, { cases: { "@functions": Element[Element.FeelFunction] } }],
+        [/[\w$]*[a-z_$][\w$]*/, { cases: { "@keywords": Element[Element.FeelKeyword] } }],
       ],
     },
   };

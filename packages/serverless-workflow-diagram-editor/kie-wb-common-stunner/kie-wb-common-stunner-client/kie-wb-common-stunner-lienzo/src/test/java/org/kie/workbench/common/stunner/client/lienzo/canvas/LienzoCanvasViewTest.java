@@ -25,11 +25,9 @@ import java.util.function.BiFunction;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
+import elemental2.dom.CSSStyleDeclaration;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -49,8 +47,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-// TODO: J2CL migration - Drop the Ignore once 2 TODOs fixed
-@Ignore
 @RunWith(LienzoMockitoTestRunner.class)
 public class LienzoCanvasViewTest {
 
@@ -65,9 +61,9 @@ public class LienzoCanvasViewTest {
     @Mock
     private LienzoPanel panel;
     @Mock
-    private Style panelStyle;
-    @Mock
     private CanvasSettings settings;
+
+    private HTMLElement element;
 
     private LienzoCanvasView tested;
 
@@ -76,28 +72,22 @@ public class LienzoCanvasViewTest {
     @Before
     public void setUp() throws Exception {
         decoratorFactory = (integer, integer2) -> decorator;
+        element = new HTMLElement();
         when(lienzoLayer.getLienzoLayer()).thenReturn(layer);
-        Widget panelWidget = mock(Widget.class);
-        Element panelElement = mock(Element.class);
-        // TODO: J2CL migration - when(panel.asWidget()).thenReturn(panelWidget);
-        when(panelWidget.getElement()).thenReturn(panelElement);
-        when(panelElement.getStyle()).thenReturn(panelStyle);
+        when(panel.getElement()).thenReturn(element);
         when(lienzoLayer.getTopLayer()).thenReturn(topLayer);
         when(panel.show(lienzoLayer)).thenReturn(panel);
         this.tested = new LienzoCanvasViewStub(decoratorFactory);
     }
 
-    @Ignore("TODO fix test once gwt widgets is replaced with native ones.")
     @Test
     public void testInitialize() {
-        assertEquals(tested, tested.initialize(panel,
-                                               settings));
+        assertEquals(tested, tested.initialize(panel, settings));
         verify(panel, times(1)).show(eq(lienzoLayer));
-        verify(panelStyle, times(1)).setBackgroundColor(eq(LienzoCanvasView.BG_COLOR));
+        assertEquals(LienzoCanvasView.BG_COLOR, element.style.backgroundColor);
         verify(topLayer, times(1)).add(eq(decorator));
     }
 
-    @Ignore("TODO fix test once gwt widgets is replaced with native ones.")
     @Test
     public void testSetGrid() {
         tested.initialize(panel, settings);
@@ -105,23 +95,21 @@ public class LienzoCanvasViewTest {
         verify(panel, times(1)).setBackgroundLayer(any(Layer.class));
     }
 
-    @Ignore("TODO fix test once gwt widgets is replaced with native ones.")
     @Test
     public void testCursor() {
-        Widget widget = mock(Widget.class);
-        Element element = mock(Element.class);
-        Style style = mock(Style.class);
-        // TODO: J2CL migration - when(panel.asWidget()).thenReturn(widget);
-        when(widget.getElement()).thenReturn(element);
-        when(element.getStyle()).thenReturn(style);
+        HTMLElement panelElement = mock(HTMLElement.class);
+        CSSStyleDeclaration style = mock(CSSStyleDeclaration.class);
+        panelElement.style = style;
+        when(panel.getElement()).thenReturn(panelElement);
+
         tested.initialize(panel, settings);
         tested.setCursor(AbstractCanvas.Cursors.GRAB);
 
         verify(style, times(1))
-                .setProperty(AbstractCanvasView.CURSOR, "grab");
+                .setProperty(AbstractCanvasView.CURSOR,
+                             AbstractCanvasView.toLienzoCursorKey(AbstractCanvas.Cursors.GRAB));
     }
 
-    @Ignore("TODO fix test once gwt widgets is replaced with native ones.")
     @Test
     public void testRemoveGrid() {
         tested.initialize(panel, settings);
@@ -142,7 +130,6 @@ public class LienzoCanvasViewTest {
         assertEquals(transform, tested.getTransform());
     }
 
-    @Ignore("TODO fix test once gwt widgets is replaced with native ones.")
     @Test
     public void testDestroy() {
         tested.initialize(panel,
