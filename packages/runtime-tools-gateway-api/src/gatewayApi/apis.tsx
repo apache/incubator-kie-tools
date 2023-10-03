@@ -466,12 +466,7 @@ export const getJobsWithFilters = async (
   }
 };
 
-/* TODO: apis: remove this export */
-export const doTriggerCloudEvent = (
-  event: CloudEventRequest,
-  baseUrl: string,
-  proxyEndpoint?: string
-): Promise<any> => {
+const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEndpoint?: string): Promise<any> => {
   const cloudEvent = {
     ...event.headers.extensions,
     specversion: "1.0",

@@ -26,7 +26,7 @@ export interface WorkflowResultProps {
   response: WorkflowResponse;
 }
 
-export function WorkflowResult(props: WorkflowResultProps) {
+export default function WorkflowResult(props: WorkflowResultProps) {
   const filteredResponse = useMemo(() => ({ workflowdata: props.response.workflowdata }), [props.response]);
 
   return (

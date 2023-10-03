@@ -23,7 +23,7 @@ import {
   triggerStartCloudEvent,
   getCustomWorkflowSchemaFromApi,
   startWorkflowRest,
-} from "../..//gatewayApi";
+} from "../../gatewayApi";
 
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 jest.mock("axios");
