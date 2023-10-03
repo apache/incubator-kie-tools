@@ -31,7 +31,7 @@ import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
  */
 describe("KIE Editors End to End Test Suite - Smoke tests", () => {
   const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
-  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
@@ -54,7 +54,7 @@ describe("KIE Editors End to End Test Suite - Smoke tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();

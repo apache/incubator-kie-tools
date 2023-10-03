@@ -34,7 +34,7 @@ import { assert } from "chai";
  */
 describe("KIE Editors End to End Test Suite - SCESIM Editor", () => {
   const RESOURCES: string = path.resolve("e2e-tests-tmp", "resources");
-  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_DMN_SCESIM: string = "demo-dmn.scesim";
 
@@ -55,7 +55,7 @@ describe("KIE Editors End to End Test Suite - SCESIM Editor", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();
