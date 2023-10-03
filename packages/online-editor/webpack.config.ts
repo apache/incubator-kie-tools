@@ -165,11 +165,11 @@ export default async (env: any, argv: any) => {
         ],
       }),
       devServer: {
-        https: true,
+        https: buildEnv.onlineEditor.dev.https,
+        port: buildEnv.onlineEditor.dev.port,
         historyApiFallback: false,
         static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
         compress: true,
-        port: buildEnv.onlineEditor.dev.port,
       },
     },
   ];

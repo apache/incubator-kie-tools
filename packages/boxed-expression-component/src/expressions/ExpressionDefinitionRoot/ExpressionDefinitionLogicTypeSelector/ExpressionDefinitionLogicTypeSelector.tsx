@@ -387,10 +387,12 @@ export function ExpressionDefinitionLogicTypeSelector({
             {showExpressionHeader && (
               <div className={"logic-type-selected-header"}>
                 <Dropdown
+                  data-testid={"logic-type-selected-header"}
                   isPlain={true}
                   isOpen={isDropdownOpen}
                   toggle={
                     <DropdownToggle
+                      data-testid={"logic-type-button-test-id"}
                       icon={<>{logicTypeIcon(expression.logicType)}</>}
                       style={{ padding: 0 }}
                       onToggle={setDropdownOpen}

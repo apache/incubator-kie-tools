@@ -44,7 +44,10 @@ export function PromiseModal<ExpectedReturnType, ExtraArgs>(props: PromiseModalP
   const [isOpen, setIsOpen] = useState(false);
   const [args, setArgs] = useState<ExtraArgs>();
   const [promiseCallbacks, setPromiseCallbacks] =
-    useState<{ resolve: (value: ExpectedReturnType) => void; reject: (reason?: any) => void }>();
+    useState<{
+      resolve: (value: ExpectedReturnType) => void;
+      reject: (reason?: any) => void;
+    }>();
 
   const open = useCallback(async (openArgs?: ExtraArgs) => {
     setArgs(openArgs);

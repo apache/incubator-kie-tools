@@ -1,0 +1,90 @@
+{/_ prettier-ignore _/}
+{/\*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story } from "@storybook/blocks";
+import * as FindEmployees from "./FindEmployees.stories";
+
+<Meta title="MDX/Use cases/Find Employees" of={FindEmployees} />
+
+## Find Employees
+
+This example brings an employee finder by knowledge and department. The following DRD brings two input nodes "Knowledge"
+and "Dept" (Department) that will be used for the search. It also contains two decision nodes, one with the employee's
+information, called "Employees", and one "Find by Employees" responsible for invoking the function "Find an employee by knowledge"
+on the Business Knowledge Model node.
+
+<p>
+  <img src={"./find-employees-dmn.png"} alt="Find Employees DMN" title="Find Employees DMN" />
+</p>
+
+It was created some data types for this DMN model. The "tEmployee" data type contains
+all relevant information about the employee, such as "Id", "Knowledges", "Dept" and "Name".
+The "Knowledges" is of the type "tKnowledges", which is a list of "tKnowledge". It can have
+the values "Git", "Java", "Scrum", and "TypeScript".
+The "Dept" is from the type "tDept", which is an enumeration with the "Sales", "Engineering"
+and "Management" values.
+
+<p>
+  <img src={"./find-employees-data-types.png"} alt="Find Employees Data Types" title="Find Employees Data Types" />
+</p>
+
+## Boxed expressions
+
+The decision logic of the DRG was divided as follow:
+
+### Employees
+
+---
+
+This decision node contains all Employee's information. For this, it's used the
+[Relation](/docs/boxed-expressions-relation--overview) expression, which enables
+to creation of a column for each Employee property. The Employee contains "Id", "Name", "Dept"
+(Department) and the employee's "Knowledges". The " Knowledges" is a List of Knowledge.
+
+<Story of={FindEmployees.Employees} />
+
+### Find employee by knowledge
+
+---
+
+The Business Knowledge Model **Find employees by knowledge** contains a
+[Boxed Function](/docs/boxed-expressions-function--overview) expression. This function has
+received three parameters: "employees", "knowledge" and "dept" and returns a list of employees that met the knowledge
+and department requirements. The [Boxed Function](/docs/boxed-expressions-function--overview) has a
+[Boxed Context](/docs/boxed-expressions-context--overview) on its body. The first context entry has a
+[Boxed Literal](/docs/boxed-expressions-literal--overview), and is responsible
+for filtering the Employees list by department and saving the value as **Employees by Dept**.
+The second context entry **Employees with Knowledge** also has a
+[Boxed Literal](/docs/boxed-expressions-literal--overview) and checks the required knowledge on all employees,
+the ones that know are returned, otherwise returns null. Finally, on the context results, we have a
+a [Boxed Literal](/docs/boxed-expressions-literal--overview) which filters the null values from **Employees with Knowledge**
+
+<Story of={FindEmployees.FindEmployeesByKnowledge} />
+
+### Find by Employees
+
+---
+
+The **Find by Employees** decision invokes the **Find employees by knowledge** function using a
+[Boxed Invocation](/docs/boxed-expressions-invocation--overview).
+The "Knowledge" and "Dept" come from input nodes, and "Employees" comes from the **Employees** decision node.
+
+<Story of={FindEmployees.FindByEmployees} />

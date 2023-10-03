@@ -1,0 +1,73 @@
+{/_ prettier-ignore _/}
+{/\*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story, Canvas, Subtitle } from "@storybook/blocks";
+import * as Literal from "./Literal.stories";
+
+<Meta title="MDX/Literal" of={Literal} />
+
+The Boxed Literal expression was implemented as a boxed FEEL expression, which is defined by the FEEL grammar.
+This expression has access to the scope context derived from the DRD [1].
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Literal.CanDrive} />
+  <small>
+    This is an example of a Boxed Literal expression for a "Can Drive?" decision which has the boolean type. The "Age"
+    derives from the DRD, and it comes from another decision or input. The expression uses the FEEL grammar to return a
+    "true" value when the "Age" is above or equal to 18 and on the opposite side, it returns "false" when "Age" is below
+    18.
+  </small>
+</div>
+
+## Header
+
+The header of the boxed FEEL expression will only exist if it's the root expression of a decision node,
+and the header will represent the decision name and type. Right-clicking on it a context menu will open enabling you to edit its values.
+
+## Value
+
+The FEEL expression has the DRD scope.
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Literal.Base} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Literal expression.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Literal.Nested} />
+    <small>
+      <br />
+      <br />
+      An empty Boxed Literal expression nested on a Boxed Context expression.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=103)

@@ -96,7 +96,7 @@ export function BeeTableContextMenuHandler({
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
 
   const [direction, setDirection] = useState(InsertRowColumnsDirection.AboveOrRight);
-  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number | "">(
+  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number>(
     DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION
   );
 
@@ -120,6 +120,10 @@ export function BeeTableContextMenuHandler({
     }
     return lastRootMenuId;
   }, [lastRootMenuId, menuId]);
+
+  useEffect(() => {
+    setLastRootMenuId(menuId);
+  }, [menuId]);
 
   useEffect(() => {
     // If menuId changes it means that user clicked in another cell, so we have to close the currently open

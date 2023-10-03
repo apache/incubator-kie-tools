@@ -23,17 +23,16 @@ module.exports = {
       tsconfig: "<rootDir>/tsconfig.json",
     },
   },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
+    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
+  },
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/jest-report.xml" }]],
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
     "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
   },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/tests/__mocks__/styleMocks.js",
-    "@kie-tools-core/monaco-editor": "<rootDir>/tests/__mocks__/monacoMock.js",
-  },
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
 };

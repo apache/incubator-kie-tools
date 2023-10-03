@@ -1,0 +1,204 @@
+{/_ prettier-ignore _/}
+{/\*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story, Canvas } from "@storybook/blocks";
+import * as DecisionTable from "./DecisionTable.stories";
+
+<Meta title="MDX/Decision Table" of={DecisionTable} />
+
+# Decision Table
+
+The Decision Table expression creates a table of business rules. For each row, the
+combination of the input columns creates a rule. These rules can have one or multiple
+outputs, which are defined by the output column. The Decision Table should contain only
+the inputs required to determine the output [1]. It's also possible to achieve
+different results with the same rules by tweaking the Decision Table **Hit Policy**.
+The Hit Policy is a way of changing how the Decision Table outputs should be considered.
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={DecisionTable.Discount} />
+  <small>
+    <br />
+    This is an example of a "Discount" decision with the "number" type. It has a Decision Table with one input column "Customer.Category"
+    with "tCategory" type. The "Customer" can have multiple categories. The output column "Discount" has the "number" type.
+    The "annotation-1" column is empty, but it could be used to create useful annotations for each rule. The Decision Table
+    has the **Priority** Hit Policy meaning that has a priority order to match a rule. If a "Customer" is a "Student" and
+    a "New Client", the customer should receive 30% of discount. The priority is determined by the DRG.
+  </small>
+</div>
+
+## Hit Policy
+
+The Decision Table Hit Policy determines how to evaluate the Decision Table rules or
+how the outputs should be considered. By right-clicking in the Hit Policy cell, which
+is the top left corner cell, it's possible to tweak the Decision Table Hit Policy.
+
+### Unique (U)
+
+The **Unique** Hit Policy dictates that there shouldn't be overlapping rules, therefore
+just one rule should be matched. If more than one rule is matched the result is
+undefined.
+
+### First (F)
+
+The **First** Hit Policy will return the first matched rule, halting the evaluation
+further evaluation. This type of Hit Policy isn't considered a good practice as they
+do not offer a clear overview of the decision logic [2].
+
+### Priority (P)
+
+The **Priority** Hit Policy can match multiple rules but will return the highest
+output priority. The priorities are determined by the list of output values in order
+and are independent of rule order. For example: an output that can assume the values
+"Accept" and "Decline", the "Accept" value has the priority. On the other hand, if the
+output can assume the values "Decline" and "Accept" the "Decline" value has priority.
+
+### Any (A)
+
+The **Any** Hit Policy can match multiple rules, but all matching rules should have
+equal output entries. This process ignores annotations and any match can be
+used. If all output entries from the matched rule are non-equal, the result is undefined.
+
+### Collect (C)
+
+The **Collect** Hit Policy will return all matched rules in arbitrary order. A
+function can be applied to the outputs before it is returned. By default no function
+is used, thus the addition of the **?** symbol.
+
+**Important**: These functions can't be used by Decision Tables with more
+than one output column.
+
+> #### Aggregation Function (+, #, \<, >)
+>
+> - **Sum(+)**: returns the sum of all matched outputs. It only works for number outputs.
+> - **Count(#)**: returns the count of matched outputs.
+> - **Max (>)**: returns the largest value of all matched outputs. It only works for number,
+>   date, text (lexicographic order).
+> - **Min (\<)**: returns the lowest value of all matched outputs. It only works for number,
+>   date, text (lexicographic order).
+
+### Rule Order (R)
+
+The **Rule Order** Hit Policy will return all matched rules in order. The order is
+determined by the sequence of rules.
+
+### Output Order (O)
+
+The **Output Order** Hit Policy will return all matched rules in decreasing
+priority order. The priorities are determined by the list of output values and are
+independent of rule order. Read more about Priority in the **Priority** Hit Policy.
+
+## Inputs
+
+In the Decision Table expression, the input columns have names and types, and all of them
+should be used during the rule evaluation. In the input cells, a dash symbol ("-") can
+be used to mean any input value. For example, when the input is irrelevant to the
+containing rule. An empty cell means the input should have an empty value.
+
+### Curiosities
+
+- Tables containing at least one "-" input entry are called contracted tables. The others are called expanded.
+- Tables where every input entry is true, false, or "-" are historically called limited-entry tables.
+- A complete Decision Table contains all possible combinations of input values
+
+## Outputs
+
+In the Decision Table expression, the output columns have the return value for each rule
+and in the output header its name and type.
+If the Decision Table is the root expression of a decision node, the header row
+_can_ be split into two rows. It will only be split if the Decision Table has more
+than one output column. In this case, the first row will represent the decision name
+and type, and the second will represent the output name and type. On the contrary,
+if the Decision Table has only one output column, it will have the same name and type
+as its decision. Now, if the Decision Table is a nested expression, it will have
+only one row, which will be the output's name and type.
+
+> ### Decision header
+>
+> This row will be a single cell that has the decision name and its type, and by right-clicking on it a
+> context menu will open enabling you to edit its values.
+>
+> ### Outputs header
+>
+> This row has a cell for each output name and type, and right-clicking on a context menu will
+> open enabling it to edit its values.
+
+## Annotations
+
+In the Decision Table expression, the annotation column is used to provide additional
+and helpful information about each one of the rules. These annotations are not used
+during the rule evaluation.
+
+## Rules
+
+In the Decision Table expression on each row, the combination of input columns creates
+a rule. The rule evaluation does not produce side effects that influence the evaluation
+of other rules in the same Decisio Table. This is particularly important in first
+hit tables where the rules are evaluated in a predefined sequence.
+
+## Controls
+
+### Rows
+
+Left-clicking on the index column cells or in the value cells will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and duplicate the row.
+
+Another way to add rows is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
+or on the bottom (insert below) of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new row above or below the actual row.
+
+**Important**: It's not possible to perform the above process in the header row index ("#").
+
+### Header
+
+Left-clicking on the header cells or in the value cells will open the "Columns" context menu.
+It's possible to insert left, insert right, insert multiples, and delete the column.
+
+Another way to add columns is by hovering the mouse on a variable cell will make appear a plus sign on the right (insert right)
+or left (insert left) side of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new column on the right or left side of the actual column.
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={DecisionTable.Base} />
+    <small>
+      <br />
+      <br />
+      An empty Decision Table expression.
+    </small>
+  </div>
+
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={DecisionTable.Nested} />
+    <small>
+      <br />
+      <br />
+      An empty Decision Table expression nested on a Boxed Context expression.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=77)
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=88)

@@ -146,7 +146,13 @@ function ParameterEntry({ parameter, index }: { parameter: ContextExpressionDefi
 
   return (
     <div key={`${parameter.name}_${index}`} className="parameter-entry">
-      <input className="parameter-name" type="text" onBlur={onNameChange} defaultValue={parameter.name} />
+      <input
+        className="parameter-name"
+        type="text"
+        onBlur={onNameChange}
+        placeholder={"Parameter Name"}
+        defaultValue={parameter.name}
+      />
       <DataTypeSelector value={parameter.dataType} onChange={onDataTypeChange} menuAppendTo="parent" />
       <Button
         variant="danger"

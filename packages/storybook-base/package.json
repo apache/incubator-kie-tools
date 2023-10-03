@@ -1,0 +1,44 @@
+{
+  "name": "@kie-tools/storybook-base",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "bin": {
+    "storybook-base": "bin.js"
+  },
+  "main": "bin.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "install": "rimraf dist && tsc"
+  },
+  "devDependencies": {
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@storybook/addon-controls": "^7.3.2",
+    "@storybook/addon-docs": "^7.3.2",
+    "@storybook/addon-highlight": "^7.3.2",
+    "@storybook/addon-links": "^7.3.2",
+    "@storybook/addon-measure": "^7.3.2",
+    "@storybook/addon-outline": "^7.3.2",
+    "@storybook/addon-toolbars": "^7.3.2",
+    "@storybook/addon-viewport": "^7.3.2",
+    "@storybook/react-webpack5": "^7.3.2",
+    "@storybook/theming": "^7.3.2",
+    "rimraf": "^3.0.2",
+    "storybook": "^7.3.2",
+    "typescript": "^4.6.2"
+  }
+}
