@@ -282,8 +282,9 @@
         </executions>
         <configuration>
           <incrementalEnabled>true</incrementalEnabled>
-          <webappDirectory>${project.build.directory}/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor</webappDirectory>
-          <initialScriptFilename>org.kie.workbench.common.stunner.sw.KogitoSWEditor.nocache.js</initialScriptFilename>
+          <webappDirectory
+          >${project.build.directory}/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor</webappDirectory>
+          <initialScriptFilename>org.kie.workbench.common.stunner.sw.KogitoSWEditor.js</initialScriptFilename>
           <compilationLevel>ADVANCED</compilationLevel>
         </configuration>
       </plugin>
