@@ -20,6 +20,6 @@ export function parseFeelQName(qName: string): FeelQName {
   return { type: "feel-qname", importName: split[0], localPart: split[1] };
 }
 
-export function buildFeelQName({ importName: prefix, localPart }: FeelQName) {
-  return prefix ? `${prefix}.${localPart}` : localPart;
+export function buildFeelQName({ importName, localPart }: FeelQName) {
+  return importName ? `${importName}.${localPart}` : localPart;
 }

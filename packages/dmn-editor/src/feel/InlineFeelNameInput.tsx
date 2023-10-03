@@ -19,6 +19,8 @@ export function InlineFeelNameInput({
   shouldCommitOnBlur,
   isPlain,
   allUniqueNames,
+  validate,
+  placeholder,
   ...inputProps
 }: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   id: string;
@@ -28,7 +30,11 @@ export function InlineFeelNameInput({
   isPlain: boolean;
   shouldCommitOnBlur: boolean;
   allUniqueNames: UniqueNameIndex;
+  placeholder?: string;
+  validate?: typeof SPEC.namedElement.isValidName;
 }) {
+  const _validate = (validate ??= SPEC.namedElement.isValidName);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const previouslyFocusedElement = useRef<Element | undefined>();
@@ -42,14 +48,14 @@ export function InlineFeelNameInput({
     }, 0);
   }, []);
 
-  const [isValid, setValid] = useState(SPEC.namedElement.isValidName(id, name, allUniqueNames));
+  const [isValid, setValid] = useState(_validate(id, name, allUniqueNames));
   const updateIsValidFlag = useCallback(
     (name: string) => {
-      const isValid = SPEC.namedElement.isValidName(id, name, allUniqueNames);
+      const isValid = _validate(id, name, allUniqueNames);
       setValid(isValid);
       return isValid;
     },
-    [allUniqueNames, id]
+    [_validate, allUniqueNames, id]
   );
 
   useEffect(() => {
@@ -72,6 +78,7 @@ export function InlineFeelNameInput({
         ..._style,
       }}
       disabled={isReadonly}
+      placeholder={placeholder ?? "Enter a name..."}
       onChange={(e) => updateIsValidFlag(e.currentTarget.value)}
       defaultValue={name}
       onFocus={(e) => {

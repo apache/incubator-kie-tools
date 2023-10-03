@@ -1,7 +1,7 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 
-export function deleteIncludedModel({ definitions, index }: { definitions: DMN15__tDefinitions; index: number }) {
+export function deleteImport({ definitions, index }: { definitions: DMN15__tDefinitions; index: number }) {
   definitions.import ??= [];
   const [deleted] = definitions.import.splice(index, 1);
 
@@ -12,4 +12,6 @@ export function deleteIncludedModel({ definitions, index }: { definitions: DMN15
   if (namespaceName) {
     delete definitions[`@_xmlns:${namespaceName}`];
   }
+
+  // FIXME: Tiago --> Delete all references to DRG elements and ItemDefinitions of this import.
 }

@@ -44,7 +44,7 @@ export type DmnEditorRef = {
 export type OtherDmnsByNamespace = Record<string, OtherDmn | undefined>;
 export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
-export type onRequestOtherDmnsAvailableToInclude = () => Promise<string[]>;
+export type OnRequestModelsAvailableToInclude = () => Promise<string[]>;
 export type onRequestOtherDmnByPath = (path: string) => Promise<DmnModel | null>;
 export type OnDmnModelChange = (model: DmnModel) => void;
 export type OtherDmn = {
@@ -73,7 +73,7 @@ export type DmnEditorProps = {
   /**
    * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
    */
-  onRequestOtherDmnsAvailableToInclude?: onRequestOtherDmnsAvailableToInclude;
+  onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
   /**
    * When the DMN represented by `model` ("This DMN") contains `import`ed models, this prop needs to map their contents by namespace.
    * The DMN model won't be correctly rendered if an included model is not found on this object.

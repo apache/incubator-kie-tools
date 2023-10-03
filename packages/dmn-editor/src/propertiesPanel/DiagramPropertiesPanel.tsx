@@ -8,7 +8,6 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Form, FormFieldGroupExpandable, FormFieldGroupHeader } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
 import { StyleOptions } from "./StyleOptions";
 import { ShapeOptions } from "./ShapeOptions";
 import { InputDataProperties } from "./InputDataProperties";
@@ -76,11 +75,11 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                             case NODE_TYPES.bkm:
                               return <>Business Knowledge Model</>;
                             case NODE_TYPES.decisionService:
-                              return <>Decision service</>;
+                              return <>Decision Service</>;
                             case NODE_TYPES.knowledgeSource:
-                              return <>Knowledge source</>;
+                              return <>Knowledge Source</>;
                             case NODE_TYPES.textAnnotation:
-                              return <>Text annotation</>;
+                              return <>Text Annotation</>;
                             case NODE_TYPES.group:
                               return <>Group</>;
                             default:

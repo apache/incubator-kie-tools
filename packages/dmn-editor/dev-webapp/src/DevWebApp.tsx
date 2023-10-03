@@ -114,7 +114,7 @@ export function DevWebApp() {
     return avaiableModelsByPath[path] ?? null;
   }, []);
 
-  const onRequestOtherDmnsAvailableToInclude = useCallback<DmnEditor.onRequestOtherDmnsAvailableToInclude>(async () => {
+  const onRequestModelsAvailableToInclude = useCallback<DmnEditor.OnRequestModelsAvailableToInclude>(async () => {
     return Object.keys(avaiableModelsByPath);
   }, []);
 
@@ -166,7 +166,7 @@ export function DevWebApp() {
             model={currentModel}
             onModelChange={onModelChange}
             onRequestOtherDmnByPath={onRequestOtherDmnByPath}
-            onRequestOtherDmnsAvailableToInclude={onRequestOtherDmnsAvailableToInclude}
+            onRequestModelsAvailableToInclude={onRequestModelsAvailableToInclude}
             otherDmnsByNamespace={otherDmnsByNamespace}
             validationMessages={validationMessages}
             evaluationResults={evaluationResults}

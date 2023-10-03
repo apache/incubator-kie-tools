@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useContext } from "react";
-import { OtherDmnsByNamespace, onRequestOtherDmnByPath, onRequestOtherDmnsAvailableToInclude } from "../DmnEditor";
+import { OtherDmnsByNamespace, onRequestOtherDmnByPath, OnRequestModelsAvailableToInclude } from "../DmnEditor";
 
 export interface DmnEditorOtherDmnsContextType {
   onRequestOtherDmnByPath?: onRequestOtherDmnByPath;
-  onRequestOtherDmnsAvailableToInclude?: onRequestOtherDmnsAvailableToInclude;
+  onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
   otherDmnsByNamespace: OtherDmnsByNamespace;
 }
 
