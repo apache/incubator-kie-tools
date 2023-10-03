@@ -5,6 +5,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { beeToDmn } from "../boxedExpressions/beeToDmn";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
+import { renameDrgElement } from "./renameNode";
 
 export function updateExpression({
   definitions,
@@ -19,6 +20,17 @@ export function updateExpression({
   const updatedExpression = beeToDmn(expression, updatedWidthsMap);
 
   const drgElement = definitions.drgElement?.[drgElementIndex];
+
+  if (!drgElement) {
+    throw new Error("Can't update expression for drgElement that doesn't exist.");
+  }
+
+  renameDrgElement({
+    definitions,
+    newName: updatedExpression?.["@_label"] ?? drgElement!["@_name"]!,
+    index: drgElementIndex,
+  });
+
   if (drgElement?.__$$element === "decision") {
     drgElement.expression = updatedExpression;
     drgElement.variable!["@_typeRef"] = updatedExpression?.["@_typeRef"] ?? drgElement.variable!["@_typeRef"];
