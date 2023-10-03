@@ -84,8 +84,7 @@ export const EmbeddedCloudEventForm = React.forwardRef(
   }
 );
 
-const EmbeddedCloudEventFormEnvelope =
-  React.forwardRef<
-    CloudEventFormApi,
-    EmbeddedEnvelopeProps<CloudEventFormChannelApi, CloudEventFormEnvelopeApi, CloudEventFormApi>
-  >(RefForwardingEmbeddedEnvelope);
+const EmbeddedCloudEventFormEnvelope = React.forwardRef<
+  CloudEventFormApi,
+  EmbeddedEnvelopeProps<CloudEventFormChannelApi, CloudEventFormEnvelopeApi, CloudEventFormApi>
+>(RefForwardingEmbeddedEnvelope);

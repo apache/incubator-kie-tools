@@ -1,0 +1,95 @@
+{/* prettier-ignore */}
+{/*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story } from "@storybook/blocks";
+
+<Meta title="Use cases/Loan Originations/Overview" />
+
+# Loan Originations Example
+
+## Overview
+
+The loan origination process is an example that was picked from the [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=180).
+This example brings decisions with a big variety of boxed expressions. The loan origination process can be modeled in a BPMN as follows:
+
+<p>
+  <img src={"./loan-origination.png"} alt="Loan Origination BPMN" title="Loan Origination BPMN" />
+</p>
+
+A summary of the loan origination process:
+
+First, is collected the application data. The application data is used as input for the "Decide Bureau strategy"
+which uses the [Bureau Strategy Decision Service](/docs/use-cases-loan-originations-bureau-strategy-decision-service-overview--overview) DRD.
+This Decision Service will output which strategy should be used:
+
+- Bureau: collect bureau data before proceeding;
+- Through: approve for the next steps;
+- Decline: decline the application and end the process;
+
+After collecting bureau data, if required, all the information is passed to the
+[Routing Decision Service](/docs/use-cases-loan-originations-routing-decision-service-overview--overview) DRD. Now, this Decision Service will:
+
+- Accept: Accept the application and end the process;
+- Decline: decline the application and end the process;
+- Refer: manually review the application;
+
+In case the application should be manually reviewed, supporting documents are required to be reviewed by a credit officer,
+which can accept or decline the application.
+
+## Data Types
+
+In this section, we have the data types that were used for this example.
+
+### Applicant data
+
+All the applicant's relevant information for the loan origination process.
+
+<p>
+  <img src={"./data-types-applicant-data.png"} alt="Applicant Data" title="Applicant Data" />
+</p>
+
+### Requested product
+
+The information related to the requested loan.
+
+<p>
+  <img src={"./data-types-requested-product.png"} alt="Requested Product" title="Requested Product" />
+</p>
+
+### Bureau data
+
+The bureau information related to the applicant.
+
+<p>
+  <img src={"./data-types-bureau-data.png"} alt="Bureau Data" title="Bureau Data" />
+</p>
+
+### Decision types
+
+The decision types.
+
+<p>
+  <img src={"./data-types-decisions.png"} alt="Decisions Data Types" title="Decisions Data Types" />
+</p>
+
+---
+
+This example was picked from the [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=180)

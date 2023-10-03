@@ -81,7 +81,7 @@ export const EmbeddedDivPingPong = React.forwardRef(
   }
 );
 
-const EmbeddedDivPingPongEnvelope =
-  React.forwardRef<PingPongApi, EmbeddedEnvelopeProps<PingPongChannelApi, PingPongEnvelopeApi, PingPongApi>>(
-    RefForwardingEmbeddedEnvelope
-  );
+const EmbeddedDivPingPongEnvelope = React.forwardRef<
+  PingPongApi,
+  EmbeddedEnvelopeProps<PingPongChannelApi, PingPongEnvelopeApi, PingPongApi>
+>(RefForwardingEmbeddedEnvelope);

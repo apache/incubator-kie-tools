@@ -96,7 +96,7 @@ export function BeeTableContextMenuHandler({
   const [menuHeights, setMenuHeights] = useState<{ [key: string]: number }>({});
 
   const [direction, setDirection] = useState(InsertRowColumnsDirection.AboveOrRight);
-  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number | "">(
+  const [insertMultipleRowColumnsValue, setInsertMultipleRowColumnsValue] = React.useState<number>(
     DEFAULT_MULTIPLE_ROWS_COLUMNS_INSERTION
   );
 

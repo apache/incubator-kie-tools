@@ -27,7 +27,7 @@ export enum WorkspaceKind {
 }
 
 const gitBasedTypeKeys = [WorkspaceKind.GIT, WorkspaceKind.BITBUCKET_SNIPPET, WorkspaceKind.GITHUB_GIST] as const;
-export type WorkspaceKindGitBased = typeof gitBasedTypeKeys[number];
+export type WorkspaceKindGitBased = (typeof gitBasedTypeKeys)[number];
 
 export const isGitBasedWorkspaceKind = (
   maybeGitBasedType: WorkspaceKind | undefined
@@ -36,7 +36,7 @@ export const isGitBasedWorkspaceKind = (
 };
 
 const gistLikeTypeKeys = [WorkspaceKind.GITHUB_GIST, WorkspaceKind.BITBUCKET_SNIPPET] as const;
-export type WorkspaceKindGistLike = typeof gistLikeTypeKeys[number];
+export type WorkspaceKindGistLike = (typeof gistLikeTypeKeys)[number];
 
 export const isGistLikeWorkspaceKind = (
   maybeGistLikeType: WorkspaceKind | undefined
