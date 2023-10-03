@@ -108,7 +108,7 @@ func installSonataFlowUsingYaml() error {
 		return err
 	}
 
-	_, err = framework.CreateCommand("oc", "apply", "-f", tempFilePath).Execute()
+	_, err = framework.CreateCommand("oc", "create", "-f", tempFilePath).Execute()
 	if err != nil {
 		framework.GetMainLogger().Error(err, "Error while installing SonataFlow operator from YAML file")
 		return err
