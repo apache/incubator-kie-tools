@@ -487,7 +487,7 @@ const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEnd
     method: event.method,
     data: cloudEvent,
     headers: {
-      ...(proxyEndpoint ? { "Target-Url": baseUrl } : {}),
+      ...(proxyEndpoint ? { "Target-Url": url } : {}),
     },
   });
 };
