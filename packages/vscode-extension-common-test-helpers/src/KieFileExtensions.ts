@@ -25,6 +25,7 @@ const DMN_EXTENSIONS = ".dmn";
 const SCESIM_EXTENSIONS = ".scesim";
 const PMML_EXTENSIONS = ".pmml";
 
+const SERVERLESS_WORKFLOW_JSON_EXTENSION = `.sw(${JSON_EXTENSIONS})`;
 const SERVERLESS_WORKFLOW_EXTENSIONS = `.sw(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
 const DASHBUILDER_EXTENSIONS = `.dash(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
 const YARD_EXTENSIONS = `.yard(${JSON_EXTENSIONS}|${YAML_EXTENSIONS})`;
@@ -84,4 +85,14 @@ export function isKieEditorWithDualView(fileName: string): boolean {
  */
 export function isDashbuilderEditor(fileName: string): boolean {
   return getDashbuilderExtensionsRegExp().test(fileName);
+}
+
+/**
+ * Checks if the file is serverless workflow JSON file.
+ *
+ * @param fileName a name of the file to be checked.
+ * @returns true or false.
+ */
+export function isWorkflowJSONFile(fileName: string): boolean {
+  return new RegExp(`${SERVERLESS_WORKFLOW_JSON_EXTENSION}$`).test(fileName);
 }

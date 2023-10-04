@@ -37,7 +37,7 @@ export const supportedFileExtensionArray = [
   FileTypes.PMML,
 ];
 
-export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
+export type SupportedFileExtensions = (typeof supportedFileExtensionArray)[number];
 
 export function isModel(path: string): boolean {
   return isOfKind("dmn", path) || isOfKind("bpmn", path) || isOfKind("pmml", path);

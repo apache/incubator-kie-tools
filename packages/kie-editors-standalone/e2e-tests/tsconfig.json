@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./e2e-tests",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "jsx": "react-jsxdev",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "declaration": false,
+    "declarationMap": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": false,
+    "downlevelIteration": true
+  },
+  "include": ["src"]
+}

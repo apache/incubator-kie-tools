@@ -7,8 +7,8 @@
     "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
     "bootstrap:root": "pnpm install --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
-    "format": "prettier --write . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
-    "format:check": "prettier --check . '**/*.xml' '!./packages/uniforms-patternfly/src/cjs' '!./packages/uniforms-patternfly/src/esm'",
+    "format": "prettier --write . '**/*.xml'",
+    "format:check": "prettier --check . '**/*.xml'",
     "prepare": "husky install",
     "update-version-to": "kie-tools--update-version-to"
   },
@@ -25,7 +25,7 @@
     "filemanager-webpack-plugin": "^7.0.0",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
-    "prettier": "^2.2.1",
+    "prettier": "^2.8.8",
     "pretty-quick": "^3.1.0"
   },
   "resolutions": {
@@ -45,9 +45,9 @@
       }
     },
     "patchedDependencies": {
-      "immer@10.0.2": "patches/immer@10.0.2.patch",
+      "immer@10.0.3": "patches/immer@10.0.3.patch",
       "selenium-webdriver@4.10.0": "patches/selenium-webdriver@4.10.0.patch",
-      "zustand@4.4.1": "patches/zustand@4.4.1.patch"
+      "zustand@4.4.2": "patches/zustand@4.4.2.patch"
     }
   },
   "kieTools": {

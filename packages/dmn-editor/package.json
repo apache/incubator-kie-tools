@@ -42,13 +42,13 @@
     "@patternfly/react-styles": "^4.92.6",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
-    "immer": "^10.0.2",
+    "immer": "^10.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-error-boundary": "^4.0.11",
     "reactflow": "^11.8.3",
     "uuid": "^8.3.2",
-    "zustand": "^4.4.1"
+    "zustand": "^4.4.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

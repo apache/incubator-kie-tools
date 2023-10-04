@@ -41,7 +41,9 @@ describe("storeFormAssets tests", () => {
   const sourcePath = "/a/test/path";
   const formAsset: FormAsset = {
     id: "test",
+    sanitizedId: "test",
     assetName: "test.tsx",
+    sanitizedAssetName: "test.tsx",
     type: FormAssetType.TSX,
     content: "content",
     config: new PatternflyFormConfig({}),

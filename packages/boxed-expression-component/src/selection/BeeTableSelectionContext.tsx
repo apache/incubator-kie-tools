@@ -174,8 +174,6 @@ export function BeeTableCoordinatesContextProvider({
     setMaxDepth((prev) => Math.max(prev, depth));
   }, [coordinates.columnIndex, coordinates.rowIndex, depth, setMaxDepth]);
 
-  //
-
   useEffect(() => {
     if (coincides(activeCell, coordinates)) {
       setCurrentDepth((prev) => ({
@@ -184,8 +182,6 @@ export function BeeTableCoordinatesContextProvider({
       }));
     }
   }, [_maxDepth, activeCell, coordinates, depth, setCurrentDepth]);
-
-  //
 
   const value = useMemo<BeeTableCoordinatesContextType>(() => {
     return {
@@ -212,8 +208,9 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
   const refs = React.useRef<Map<number, Map<number, Set<BeeTableCellRef>>>>(new Map());
 
   const [_selection, _setSelection] = useState<BeeTableSelection>(NEUTRAL_SELECTION);
-  const [_currentDepth, _setCurrentDepth] =
-    useState<{ active: number | undefined; max: number }>(INITIAL_CURRENT_DEPTH);
+  const [_currentDepth, _setCurrentDepth] = useState<{ active: number | undefined; max: number }>(
+    INITIAL_CURRENT_DEPTH
+  );
 
   const {
     isSelectionHere: isParentSelectionThere,
@@ -998,21 +995,30 @@ export function useBeeTableSelectableCell(
     `;
   }, [isActive, isEditing, isSelected, selectedPositions]);
 
+  const { selectionStart, selectionEnd } = useBeeTableSelection();
   const { resetSelectionAt, setSelectionEnd } = useBeeTableSelectionDispatch();
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
 
-      // That's the right-click case to open the Context Menu at the right place.
-      if (e.button !== 0 && isSelected) {
-        resetSelectionAt({
-          columnIndex,
-          rowIndex,
-          isEditing: false,
-          keepSelection: true,
-        });
-        return;
+      if (
+        isCellSelected(rowIndex, columnIndex, {
+          active: undefined,
+          selectionEnd: selectionEnd,
+          selectionStart: selectionStart,
+        })
+      ) {
+        // That's the right-click case to open the Context Menu at the right place.
+        if (e.button !== 0 && isSelected) {
+          resetSelectionAt({
+            columnIndex,
+            rowIndex,
+            isEditing: false,
+            keepSelection: true,
+          });
+          return;
+        }
       }
 
       if (!isActive && !isEditing) {
@@ -1024,7 +1030,17 @@ export function useBeeTableSelectableCell(
         });
       }
     },
-    [columnIndex, isActive, isEditing, isSelected, rowIndex, resetSelectionAt, setSelectionEnd]
+    [
+      rowIndex,
+      columnIndex,
+      selectionEnd,
+      selectionStart,
+      isActive,
+      isEditing,
+      isSelected,
+      resetSelectionAt,
+      setSelectionEnd,
+    ]
   );
 
   const onDoubleClick = useCallback(

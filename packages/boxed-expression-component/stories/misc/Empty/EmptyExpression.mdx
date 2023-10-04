@@ -1,0 +1,47 @@
+{/* prettier-ignore */}
+{/*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story } from "@storybook/blocks";
+import * as EmptyExpression from "./EmptyExpression.stories";
+
+<Meta title="MDX/Empty Expression" of={EmptyExpression} />
+
+# Empty Expression
+
+An Empty Boxed expression is the first step for a decision node. It is also what is shown in expressions
+that uses nested expressions, such as the Boxed Context, Boxed Function, Boxed Invocation, and Boxed List.
+
+The Empty Boxed expression gives the option to create a new Boxed expression by right-clicking on it. If we're
+creating a new decision logic for a decision node, it will show as follows:
+
+- Literal ([Boxed Literal](/docs/boxed-expressions-literal--overview))
+- Context ([Boxed Context](/docs/boxed-expressions-context--overview))
+- [Decision table](/docs/boxed-expressions-decision-table--overview)
+- [Relation](/docs/boxed-expressions-relation--overview)
+- Invocation ([Boxed Invocation](/docs/boxed-expressions-invocation--overview))
+- List ([Boxed List](/docs/boxed-expressions-list--overview))
+- Paste ([Selection context](/docs/features-selection--overview))
+
+**Important**: The option for creating a [Boxed Function](/docs/boxed-expressions-function--overview) will only appear on a nested expression.
+
+<div style={{ height: "500px" }}>
+  <Story of={EmptyExpression.Base} />
+</div>

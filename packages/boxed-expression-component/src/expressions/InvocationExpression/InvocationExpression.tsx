@@ -60,9 +60,11 @@ export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME = "p-1";
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_DATA_TYPE = DmnBuiltInDataType.Undefined;
 export const INVOCATION_EXPRESSION_DEFAULT_PARAMETER_LOGIC_TYPE = ExpressionDefinitionLogicType.Undefined;
 
-export function InvocationExpression(invocationExpression: InvocationExpressionDefinition & { isNested: boolean }) {
+export function InvocationExpression(
+  invocationExpression: InvocationExpressionDefinition & { isNested: boolean; parentElementId: string }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const parametersWidth = useMemo(() => {
@@ -232,9 +234,11 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     () => ({
       parametersInfo: (props) => <ContextEntryInfoCell {...props} onEntryUpdate={updateEntry} />,
-      argumentExpression: (props) => <ArgumentEntryExpressionCell {...props} />,
+      argumentExpression: (props) => (
+        <ArgumentEntryExpressionCell {...props} parentElementId={invocationExpression.parentElementId} />
+      ),
     }),
-    [updateEntry]
+    [invocationExpression.parentElementId, updateEntry]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -376,6 +380,7 @@ export function InvocationExpression(invocationExpression: InvocationExpressionD
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={true}
           shouldShowColumnsInlineControls={false}
+          variables={variables}
         />
       </div>
     </NestedExpressionContainerContext.Provider>

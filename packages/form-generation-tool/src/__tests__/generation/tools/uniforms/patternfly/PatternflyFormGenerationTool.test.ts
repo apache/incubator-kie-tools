@@ -29,16 +29,18 @@ describe("PatternflyFormGenerationTool tests", () => {
     const tool = new PatternflyFormGenerationTool();
 
     const formAsset: FormAsset = tool.generate({
-      name: "ApplyForVisa",
+      name: "ApplyFor#Visa",
       schema: ApplyForVisaSchema,
     });
 
     expect(formAsset).not.toBeUndefined();
-    expect(formAsset.id).toStrictEqual("ApplyForVisa");
-    expect(formAsset.assetName).toStrictEqual("ApplyForVisa.tsx");
+    expect(formAsset.id).toStrictEqual("ApplyFor#Visa");
+    expect(formAsset.sanitizedId).toStrictEqual("ApplyFor_Visa");
+    expect(formAsset.assetName).toStrictEqual("ApplyFor#Visa.tsx");
+    expect(formAsset.sanitizedAssetName).toStrictEqual("ApplyFor_Visa.tsx");
     expect(formAsset.content).not.toBeUndefined();
-    expect(formAsset.content).toContain("const Form__ApplyForVisa");
-    expect(formAsset.content).toContain("export default Form__ApplyForVisa;");
+    expect(formAsset.content).toContain("const Form__ApplyFor_Visa");
+    expect(formAsset.content).toContain("export default Form__ApplyFor_Visa;");
     expect(formAsset.config).not.toBeUndefined();
     expect(formAsset.config).toMatchObject(new PatternflyFormConfig(ApplyForVisaSchema));
   });

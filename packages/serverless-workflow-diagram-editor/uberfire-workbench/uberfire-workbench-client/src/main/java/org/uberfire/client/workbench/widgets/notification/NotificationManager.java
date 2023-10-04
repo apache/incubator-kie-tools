@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -28,11 +28,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLElement;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -64,7 +64,7 @@ public class NotificationManager {
      */
     public void addNotification(@Observes final NotificationEvent event) {
         //If an explicit container has not been specified use the RootPanel
-        IsWidget notificationsContainer = RootPanel.get();
+        HTMLElement notificationsContainer = DomGlobal.document.body;
 
         //Lookup, or create, a View specific to the container
         View notificationsContainerView = notificationsContainerViewMap.get(rootPlaceRequest);
@@ -112,7 +112,7 @@ public class NotificationManager {
          *
          * @param container The container relative to which Notifications will be shown. Must not be null.
          */
-        void setContainer(final IsWidget container);
+        void setContainer(final HTMLElement container);
 
         /**
          * Configures the initial vertical spacing for the first notifications

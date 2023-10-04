@@ -58,8 +58,8 @@
     "jest-junit": "^14.0.0",
     "jest-when": "^3.5.0",
     "minimatch": "^3.0.5",
-    "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^4.0.0",
+    "monaco-editor": "^0.39.0",
+    "monaco-yaml": "^4.0.4",
     "raw-loader": "^4.0.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -73,10 +73,10 @@
     "vscode-json-languageservice": "^4.2.1",
     "vscode-languageserver-textdocument": "^1.0.4",
     "vscode-languageserver-types": "^3.16.0",
-    "webpack": "^5.36.2",
+    "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.8.0",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0",
     "yaml-language-server-parser": "^0.1.3"
   }
 }

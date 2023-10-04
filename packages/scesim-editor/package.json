@@ -6,14 +6,16 @@
   "keywords": [],
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:it",
+    "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test && pnpm test:e2e",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "echo 'No Tests to run at this moment.'",
-    "test:it": "echo 'No IT Tests to run at this moment.'"
+    "test:e2e": "echo 'No IT Tests to run at this moment.'"
   },
   "dependencies": {
+    "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-styles": "^4.92.6",
@@ -27,6 +29,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/scesim-marshaller": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
@@ -35,9 +38,9 @@
     "react-json-view": "^1.21.3",
     "rimraf": "^3.0.2",
     "typescript": "^4.6.2",
-    "webpack": "^5.36.2",
+    "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.8.0"
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
   }
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import org.jboss.errai.ui.client.local.api.IsElement;
 
 public class FlowPanel implements IsElement {
 
@@ -35,5 +35,9 @@ public class FlowPanel implements IsElement {
     @Override
     public HTMLElement getElement() {
         return root;
+    }
+
+    public boolean isVisible() {
+        return !root.style.display.equals("none");
     }
 }

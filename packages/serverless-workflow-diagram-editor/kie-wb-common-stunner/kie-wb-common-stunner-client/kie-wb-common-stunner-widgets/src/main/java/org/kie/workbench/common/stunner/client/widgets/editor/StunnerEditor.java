@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -67,10 +67,10 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 @Dependent
 public class StunnerEditor {
 
-    private final ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
-    private final ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
-    private final ClientTranslationService translationService;
-    private final ErrorPage errorPage;
+    ManagedInstance<SessionEditorPresenter<EditorSession>> editorSessionPresenterInstances;
+    ManagedInstance<SessionViewerPresenter<ViewerSession>> viewerSessionPresenterInstances;
+    ClientTranslationService translationService;
+    ErrorPage errorPage;
     private boolean hasErrors;
 
     private SessionDiagramPresenter diagramPresenter;
@@ -79,7 +79,7 @@ public class StunnerEditor {
     private Consumer<Throwable> exceptionProcessor;
     private AlertsControl<AbstractCanvas> alertsControl;
 
-    private final HTMLDivElement rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+    private HTMLDivElement rootContainer;
 
     // CDI proxy.
     public StunnerEditor() {
@@ -100,6 +100,13 @@ public class StunnerEditor {
         };
         this.exceptionProcessor = e -> {
         };
+    }
+
+    HTMLDivElement getRootContainer() {
+        if (null == rootContainer) {
+            rootContainer = (HTMLDivElement) DomGlobal.document.getElementById("root-container");
+        }
+        return rootContainer;
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -160,23 +167,29 @@ public class StunnerEditor {
                 callback.onError(error);
             }
         });
-        removeAllChildren(rootContainer);
+        removeAllChildren(getRootContainer());
 
-        rootContainer.appendChild(diagramPresenter.getView().getElement());
-        DomGlobal.window.addEventListener("resize", evt -> {
-            resizeTo(DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
-        });
+        getRootContainer().appendChild(diagramPresenter.getView().getElement());
+
+        addResizeListener();
+
         resize();
     }
 
-    private void resize() {
+    void addResizeListener() {
+        DomGlobal.window.addEventListener("resize", evt -> {
+            resizeTo(DomGlobal.window.innerWidth, DomGlobal.window.innerHeight);
+        });
+    }
+
+    void resize() {
         resizeTo(DomGlobal.document.body.clientWidth,
-                DomGlobal.document.body.clientHeight);
+                 DomGlobal.document.body.clientHeight);
     }
 
     private void resizeTo(int width,
                           int height) {
-        CSSStyleDeclaration style = rootContainer.style;
+        CSSStyleDeclaration style = getRootContainer().style;
         style.width = WidthUnionType.of(width + "px");
         style.height = HeightUnionType.of(height + "px");
     }
@@ -243,8 +256,8 @@ public class StunnerEditor {
                 (diagramPresenter.getView() != null)) {
             addError(message);
         } else {
-            removeAllChildren(rootContainer);
-            rootContainer.appendChild(Js.uncheckedCast(errorPage.getElement()));
+            removeAllChildren(getRootContainer());
+            getRootContainer().appendChild(Js.uncheckedCast(errorPage.getElement()));
         }
     }
 

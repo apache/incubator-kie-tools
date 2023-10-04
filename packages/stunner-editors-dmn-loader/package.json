@@ -15,9 +15,10 @@
   "dependencies": {
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
+    "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/import-java-classes-component": "workspace:*",
     "lodash": "^4.17.21",
-    "monaco-editor": "^0.33.0",
+    "monaco-editor": "^0.39.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
@@ -40,9 +41,9 @@
     "rimraf": "^3.0.2",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
-    "webpack": "^5.36.2",
+    "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.8.0"
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
   }
 }

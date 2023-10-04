@@ -25,6 +25,7 @@ import {
 import { ServerlessWorkflowTextEditorFactory } from "@kie-tools/serverless-workflow-text-editor/dist/editor";
 import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-text-editor/dist/envelope/ServerlessWorkflowTextEditorEnvelopeApiImpl";
 import { ServerlessWorkflowTextEditorApi } from "@kie-tools/serverless-workflow-text-editor/src";
+import { Environment } from "monaco-editor";
 
 const MONACO_LANG_WORKERS = ["json", "yaml"];
 const EDITOR_WORKER = "editor";
@@ -45,27 +46,25 @@ interface MonacoEditorWorkersHelper {
  * Overrides the way Monaco initializes their workers.
  * If `MonacoEnvironment` implements the optional `getWorker` method it will use it to is default mechanism
  */
-interface MonacoEnvironment {
-  getWorker(moduleId: string, label: string): Worker;
-}
 
 declare global {
   interface Window {
     MonacoEditorWorkersHelper: MonacoEditorWorkersHelper;
-    MonacoEnvironment: MonacoEnvironment;
+    MonacoEnvironment?: Environment;
   }
 }
 const initEnvelope = () => {
   // Overriding the MonacoEnvironment. It should be done here to make sure Monaco scripts are already loaded.
-  self.MonacoEnvironment.getWorker = (moduleId: string, label: string) => {
-    /*
-     Identifying the worker to start. The 'label' argument refers to the worker to be started, the value could be the editor
-     lang ('json'/'yaml') or 'editorWorker'. Assuming that if the label doesn't match any available lang should start the worker.
-     */
-    const workerId: any = MONACO_LANG_WORKERS.includes(label) ? label : EDITOR_WORKER;
-    return self.MonacoEditorWorkersHelper.getMonacoEditorWorker(workerId);
-  };
-
+  if (self.MonacoEnvironment) {
+    self.MonacoEnvironment.getWorker = (moduleId: string, label: string) => {
+      /*
+       Identifying the worker to start. The 'label' argument refers to the worker to be started, the value could be the editor
+       lang ('json'/'yaml') or 'editorWorker'. Assuming that if the label doesn't match any available lang should start the worker.
+       */
+      const workerId: any = MONACO_LANG_WORKERS.includes(label) ? label : EDITOR_WORKER;
+      return self.MonacoEditorWorkersHelper.getMonacoEditorWorker(workerId);
+    };
+  }
   initCustom<
     ServerlessWorkflowTextEditorApi,
     ServerlessWorkflowTextEditorEnvelopeApi,

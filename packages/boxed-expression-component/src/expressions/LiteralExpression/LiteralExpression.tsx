@@ -44,7 +44,7 @@ type ROWTYPE = any;
 
 export function LiteralExpression(literalExpression: LiteralExpressionDefinition & { isNested: boolean }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-  const { decisionNodeId } = useBoxedExpressionEditor();
+  const { decisionNodeId, variables } = useBoxedExpressionEditor();
 
   const getValue = useCallback(() => {
     return literalExpression.content ?? "";
@@ -209,6 +209,7 @@ export function LiteralExpression(literalExpression: LiteralExpressionDefinition
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
+          variables={variables}
         ></BeeTable>
       </div>
     </div>

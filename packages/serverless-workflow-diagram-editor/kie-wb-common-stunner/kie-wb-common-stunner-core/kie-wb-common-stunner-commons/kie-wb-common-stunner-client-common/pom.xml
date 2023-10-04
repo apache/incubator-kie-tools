@@ -132,6 +132,11 @@
       <artifactId>appformer-client-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
+      <artifactId>gwtproject</artifactId>
+    </dependency>
+
     <!-- Test scope. -->
     <dependency>
       <groupId>org.assertj</groupId>
@@ -168,10 +173,16 @@
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-          <artifactId>uberfire-workbench-client</artifactId>
-      </dependency>
+
+    <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>uberfire-workbench-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>lienzo-tests</artifactId>
+    </dependency>
 
   </dependencies>
 

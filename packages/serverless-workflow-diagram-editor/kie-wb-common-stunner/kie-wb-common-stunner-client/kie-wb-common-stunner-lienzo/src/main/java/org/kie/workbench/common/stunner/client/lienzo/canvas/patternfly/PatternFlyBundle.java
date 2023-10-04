@@ -41,15 +41,11 @@ public interface PatternFlyBundle extends ClientBundle {
     @Source("bootstrap-select.min.css")
     TextResource bootstrapselect();
 
-    @Source("font-awesome-4.7.0.min.cache.css")
-    TextResource fontawesome();
-
     @Source("uberfire-patternfly.css")
     TextResource uberfirepatternfly();
 
     @Source("patternfly-additions.min.css")
     TextResource patternflyadditions();
-
 
     @Source("bootstrap-3.4.1.min.cache.js")
     TextResource bootstrapjs();
@@ -63,6 +59,10 @@ public interface PatternFlyBundle extends ClientBundle {
     @Source("patternfly.min.js")
     TextResource patternflyjs();
 
+    @Source("font-awesome-4.7.0.min.cache.css")
+    TextResource fontawesome();
 
+    @Source("fonts.css")
+    TextResource fonts();
 
 }

@@ -30,6 +30,7 @@ import { ExpressionDefinitionRoot } from "../ExpressionDefinitionRoot";
 import "./base-no-reset-wrapped.css";
 import "../../@types/react-table";
 import { BoxedExpressionEditorContextProvider } from "./BoxedExpressionEditorContext";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export interface BoxedExpressionEditorProps {
   /** The API methods which BoxedExpressionEditor component can use to dialog with GWT Layer */
@@ -47,6 +48,7 @@ export interface BoxedExpressionEditorProps {
   pmmlParams?: PmmlParam[];
   //
   scrollableParentRef: React.RefObject<HTMLElement>;
+  variables?: FeelVariables;
 }
 
 export function BoxedExpressionEditor({
@@ -58,6 +60,7 @@ export function BoxedExpressionEditor({
   isResetSupportedOnRootExpression,
   scrollableParentRef,
   pmmlParams,
+  variables,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
@@ -74,6 +77,7 @@ export function BoxedExpressionEditor({
         setExpressionDefinition={setExpressionDefinition}
         dataTypes={dataTypes}
         pmmlParams={pmmlParams}
+        variables={variables}
       >
         <ExpressionDefinitionRoot
           decisionNodeId={decisionNodeId}

@@ -17,16 +17,16 @@
   "main": "dist/extension/extension.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:e2e",
     "compile": "webpack --env dev",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/serverless_workflow_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
-    "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
-    "test:it:clean:offline": "rimraf ./dist-it-tests && rimraf ./out && rimraf ./it-tests-tmp && rimraf *.vsix",
-    "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js",
-    "test:it:offline": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean:offline\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
+    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test:e2e:clean\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./e2e-tests/settings.json out/*.test.js\"",
+    "test:e2e:clean": "rimraf ./dist-e2e-tests && rimraf ./test-resources && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
+    "test:e2e:clean:offline": "rimraf ./dist-e2e-tests && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
+    "test:e2e:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o ./e2e-tests/settings.json out/*.test.js",
+    "test:e2e:offline": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test:e2e:clean:offline\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
     "watch": "webpack --env dev"
   },
   "dependencies": {
@@ -45,12 +45,12 @@
     "@kie-tools/serverless-workflow-language-service": "workspace:*",
     "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
     "@rhoas/registry-instance-sdk": "^0.34.1",
-    "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^4.0.0",
+    "monaco-editor": "^0.39.0",
+    "monaco-yaml": "^4.0.4",
     "openapi-types": "^7.0.1",
     "vscode-languageserver-textdocument": "^1.0.4",
     "vscode-languageserver-types": "^3.16.0",
-    "yaml": "^2.0.1"
+    "yaml": "^2.3.2"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -59,7 +59,7 @@
     "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/vscode-extension-common-test-helpers": "workspace:*",
-    "@types/chai": "^4.2.17",
+    "@types/chai": "^4.3.6",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^8.2.2",
     "@types/selenium-webdriver": "^4.1.15",
@@ -67,7 +67,7 @@
     "@vscode/test-electron": "^2.3.4",
     "@vscode/test-web": "^0.0.30",
     "@vscode/vsce": "^2.20.1",
-    "chai": "^4.3.4",
+    "chai": "^4.3.10",
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
     "mocha": "^9.2.0",
@@ -80,10 +80,10 @@
     "selenium-webdriver": "^4.10.0",
     "typescript": "^4.6.2",
     "vscode-extension-tester": "5.9.1",
-    "webpack": "^5.36.2",
+    "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.8.0"
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
   },
   "engines": {
     "vscode": "^1.67.0"

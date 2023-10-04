@@ -18,6 +18,8 @@
  */
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
+import { ReservedWords } from "@kie-tools/dmn-feel-antlr4-parser";
+import { Element } from "./themes/Element";
 
 export const MONACO_FEEL_LANGUAGE = "feel-language";
 
@@ -28,11 +30,15 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
     base: "vs",
     inherit: true,
     rules: [
-      { token: "feel-keyword", foreground: "26268C", fontStyle: "bold" },
-      { token: "feel-numeric", foreground: "1750EB" },
-      { token: "feel-boolean", foreground: "26268D", fontStyle: "bold" },
-      { token: "feel-string", foreground: "067D17" },
-      { token: "feel-function", foreground: "00627A" },
+      { token: Element[Element.FeelKeyword], foreground: "#26268C", fontStyle: "bold" },
+      { token: Element[Element.FeelNumeric], foreground: "#1750EB" },
+      { token: Element[Element.FeelBoolean], foreground: "#26268D", fontStyle: "bold" },
+      { token: Element[Element.FeelString], foreground: "#067D17" },
+      { token: Element[Element.FeelFunction], foreground: "#00627A" },
+      { token: Element[Element.InputDataVariable], foreground: "#917632", fontStyle: "underline" },
+      { token: Element[Element.BkmVariable], foreground: "#917632", fontStyle: "underline italic" },
+      { token: Element[Element.UnknownVariable], foreground: "#ff0000", fontStyle: "underline bold" },
+      { token: Element[Element.FunctionParameterVariable], foreground: "#036e9b", fontStyle: "italic" },
     ],
     colors: {
       "editorLineNumber.foreground": "#000000",
@@ -42,123 +48,15 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
 
 export const feelTokensConfig = (): Monaco.languages.IMonarchLanguage => {
   return {
-    keywords: [
-      "for",
-      "in",
-      "instance of",
-      "return",
-      "if",
-      "then",
-      "else",
-      "some",
-      "every",
-      "satisfies",
-      "function",
-      "external",
-      "or",
-      "and",
-      "between",
-      "not",
-      "null",
-    ],
-    functions: [
-      "abs",
-      "after",
-      "all",
-      "any",
-      "append",
-      "before",
-      "ceiling",
-      "code",
-      "coincides",
-      "concatenate",
-      "contains",
-      "count",
-      "date",
-      "date and time",
-      "day of week",
-      "day of year",
-      "decimal",
-      "decision table",
-      "distinct values",
-      "duration",
-      "during",
-      "ends with",
-      "even",
-      "exp",
-      "finished by",
-      "finishes",
-      "flatten",
-      "floor",
-      "get entries",
-      "get value",
-      "includes",
-      "index of",
-      "insert before",
-      "invoke",
-      "is",
-      "list contains",
-      "log",
-      "lower case",
-      "matches",
-      "max",
-      "mean",
-      "median",
-      "meets",
-      "met by",
-      "min",
-      "mode",
-      "modulo",
-      "month of year",
-      "nn all",
-      "nn any",
-      "nn count",
-      "nn max",
-      "nn mean",
-      "nn median",
-      "nn min",
-      "nn mode",
-      "nn stddev",
-      "nn sum",
-      "not",
-      "now",
-      "number",
-      "odd",
-      "overlaps after",
-      "overlaps before",
-      "overlaps",
-      "product",
-      "remove",
-      "replace",
-      "reverse",
-      "sort",
-      "split",
-      "sqrt",
-      "started by",
-      "starts with",
-      "starts",
-      "stddev",
-      "string length",
-      "string",
-      "sublist",
-      "substring after",
-      "substring before",
-      "substring",
-      "sum",
-      "time",
-      "today",
-      "union",
-      "upper case",
-      "week of year",
-      "years and months duration",
-    ],
+    keywords: Array.from(ReservedWords.FeelKeywords),
+    functions: Array.from(ReservedWords.FeelFunctions),
     tokenizer: {
       root: [
-        [/(?:true|false)/, "feel-boolean"],
-        [/[0-9]+/, "feel-numeric"],
-        [/(?:"(?:.*?)")/, "feel-string"],
-        [/([a-z{1}][a-z_\s]*[a-z$])(?=\()/, { cases: { "@functions": "feel-function" } }],
-        [/[\w$]*[a-z_$][\w$]*/, { cases: { "@keywords": "feel-keyword" } }],
+        [/(?:true|false)/, Element[Element.FeelBoolean]],
+        [/[0-9]+/, Element[Element.FeelNumeric]],
+        [/(?:"(?:.*?)")/, Element[Element.FeelString]],
+        [/([a-z{1}][a-z_\s]*[a-z$])(?=\()/, { cases: { "@functions": Element[Element.FeelFunction] } }],
+        [/[\w$]*[a-z_$][\w$]*/, { cases: { "@keywords": Element[Element.FeelKeyword] } }],
       ],
     },
   };
@@ -185,7 +83,7 @@ export const feelDefaultConfig = (
     minimap: {
       enabled: false,
     },
-
+    "semanticHighlighting.enabled": true,
     ...options,
   };
 };
@@ -194,6 +92,27 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
+    keywords: [
+      "and",
+      "between",
+      "else",
+      "every",
+      "external",
+      "false",
+      "for",
+      "function",
+      "if",
+      "in",
+      "instance of",
+      "not",
+      "null",
+      "or",
+      "return",
+      "then",
+      "satisfies",
+      "some",
+      "true",
+    ],
     snippet: [
       ["if", "if $1 then\n\t$0\nelse\n\t"],
       ["instance of", "instance of $0"],
@@ -1494,9 +1413,17 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
     ],
   };
 
-  for (const suggestion of suggestionTypes.snippet) {
+  for (const suggestion of suggestionTypes.keywords) {
     suggestions.push({
       kind: Monaco.languages.CompletionItemKind.Keyword,
+      label: suggestion,
+      insertText: suggestion,
+    } as Monaco.languages.CompletionItem);
+  }
+
+  for (const suggestion of suggestionTypes.snippet) {
+    suggestions.push({
+      kind: Monaco.languages.CompletionItemKind.Snippet,
       insertTextRules: Monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       label: suggestion[0],
       insertText: suggestion[1],

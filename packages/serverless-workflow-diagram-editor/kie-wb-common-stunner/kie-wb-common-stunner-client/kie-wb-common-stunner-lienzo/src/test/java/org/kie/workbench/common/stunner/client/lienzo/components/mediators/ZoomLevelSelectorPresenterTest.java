@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -38,7 +38,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
@@ -113,9 +112,6 @@ public class ZoomLevelSelectorPresenterTest {
     private Element selectorElement;
 
     @Mock
-    private com.google.gwt.user.client.Element gwtElement;
-
-    @Mock
     private HTMLElement widget;
 
     @Mock
@@ -148,8 +144,7 @@ public class ZoomLevelSelectorPresenterTest {
 
         floatingView = spy(new FloatingWidgetView());
 
-        doReturn(rootPanel).when(((FloatingWidgetView)floatingView)).getRootPanel();
-        //when(((FloatingWidgetView)floatingView).getRootPanel()).thenReturn(rootPanel);
+        doReturn(rootPanel).when(((FloatingWidgetView) floatingView)).getRootPanel();
 
         tested = new ZoomLevelSelectorPresenter(translationService,
                                                 floatingView,
@@ -192,17 +187,13 @@ public class ZoomLevelSelectorPresenterTest {
         verify(floatingView, times(1)).setY(eq(25d));
     }
 
-    //TODO: Fix me when the widgets are migrated to J2CL
-    // temporary Js.uncheckedCast() breaks these tests
-    @Ignore
+    @Test
     public void testShow() {
         tested.show();
         verify(floatingView, times(1)).show();
     }
 
-    //TODO: Fix me when the widgets are migrated to J2CL
-    // temporary Js.uncheckedCast() breaks these tests
-    @Ignore
+    @Test
     public void testHideZoomOnLoad() {
         //First call on canvas loading
         verify(floatingView, times(0)).show();

@@ -48,7 +48,7 @@ on:
 env:
   KIE_TOOLS_BUILD__runLinters: "false"
   KIE_TOOLS_BUILD__runTests: "false"
-  KIE_TOOLS_BUILD__runIntegrationTests: "false"
+  KIE_TOOLS_BUILD__runEndToEndTests: "false"
   KIE_TOOLS_BUILD__buildContainerImages: "true"
   OPENSHIFT_NAMESPACE: "kie-sandbox"
   OPENSHIFT_PART_OF: "kie-sandbox-app"
@@ -223,6 +223,10 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
+      - name: "Load docker built images to podman local registry"
+        if: ${{ !inputs.dry_run }}
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.KIE_SANDBOX__imageName }}' | grep -v '<none>' | xargs podman pull
+
       - name: "Push kie-sandbox-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -293,6 +297,10 @@ jobs:
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
+      - name: "Load docker built images to podman local registry"
+        if: ${{ !inputs.dry_run }}
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.KIE_SANDBOX_EXTENDED_SERVICES__imageName }}' | grep -v '<none>' | xargs podman pull
+
       - name: "Push kie-sandbox-extended-services-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -354,6 +362,10 @@ jobs:
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
+      - name: "Load docker built images to podman local registry"
+        if: ${{ !inputs.dry_run }}
+        run: docker images --format docker-daemon:{{.Repository}}:{{.Tag}} | grep -e '${{ env.CORS_PROXY_IMAGE__imageName }}' | grep -v '<none>' | xargs podman pull
 
       - name: "Push cors-proxy-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -897,9 +909,15 @@ jobs:
           echo "Copy standalone resources"
           rm -rf $STANDALONE_EDITORS_DIR
           mkdir $STANDALONE_EDITORS_DIR
-          cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn
-          cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn
-          cp ${{ github.workspace }}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js $STANDALONE_EDITORS_DIR/swf
+          cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/bpmn/index.js $STANDALONE_EDITORS_DIR/bpmn/
+          cp ${{ github.workspace }}/kie-tools/packages/kie-editors-standalone/dist/dmn/index.js $STANDALONE_EDITORS_DIR/dmn/
+          cp ${{ github.workspace }}/kie-tools/packages/serverless-workflow-standalone-editor/dist/swf/index.js $STANDALONE_EDITORS_DIR/swf/
+          rm -f ./standalone/bpmn/index.js
+          rm -f ./standalone/dmn/index.js
+          rm -f ./standalone/swf/index.js
+          ln -s ../${{ inputs.tag }}/bpmn/index.js ./standalone/bpmn/index.js
+          ln -s ../${{ inputs.tag }}/dmn/index.js ./standalone/dmn/index.js
+          ln -s ../${{ inputs.tag }}/swf/index.js ./standalone/swf/index.js
 
           echo "Commit changes and push"
           git add .

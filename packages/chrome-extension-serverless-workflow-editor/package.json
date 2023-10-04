@@ -14,14 +14,14 @@
   },
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:e2e",
     "install": "node install.js",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start https-get://localhost:$(build-env swfChromeExtension.dev.port) test:it:run\"",
-    "test:it:run": "jest --runInBand -c ./jest.it.config.js",
-    "test:it:start": "pnpm start"
+    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-e2e-tests\" \"pnpm start-server-and-test test:e2e:start https-get://localhost:$(build-env swfChromeExtension.dev.port) test:e2e:run\"",
+    "test:e2e:run": "jest --runInBand -c ./jest.e2e.config.js",
+    "test:e2e:start": "pnpm start"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -46,17 +46,17 @@
     "copy-webpack-plugin": "^11.0.0",
     "jest": "^26.6.3",
     "jest-when": "^3.5.0",
-    "monaco-editor": "^0.33.0",
+    "monaco-editor": "^0.39.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
-    "monaco-yaml": "^4.0.0",
+    "monaco-yaml": "^4.0.4",
     "rimraf": "^3.0.2",
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",
     "typescript": "^4.6.2",
-    "webpack": "^5.36.2",
+    "webpack": "^5.88.2",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.7.3",
-    "webpack-merge": "^5.8.0",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0",
     "zip-webpack-plugin": "^4.0.1"
   }
 }

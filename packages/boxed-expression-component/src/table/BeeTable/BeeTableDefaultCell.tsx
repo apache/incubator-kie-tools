@@ -5,6 +5,7 @@ import { BeeTableEditableCellContent } from "./BeeTableEditableCellContent";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../expressions/BoxedExpressionEditor/BoxedExpressionEditorContext";
 import * as ReactTable from "react-table";
+import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 
 export function BeeTableDefaultCell<R extends object>({
   cellProps,
@@ -14,6 +15,7 @@ export function BeeTableDefaultCell<R extends object>({
   setEditing,
   navigateHorizontally,
   navigateVertically,
+  variables,
 }: {
   isReadOnly: boolean;
   cellProps: ReactTable.CellProps<R, string | { content: string; id: string }>;
@@ -22,6 +24,7 @@ export function BeeTableDefaultCell<R extends object>({
   setEditing: React.Dispatch<React.SetStateAction<boolean>>;
   navigateVertically: (args: { isShiftPressed: boolean }) => void;
   navigateHorizontally: (args: { isShiftPressed: boolean }) => void;
+  variables?: FeelVariables;
 }) {
   const onCellChanged = useCallback(
     (value: string) => {
@@ -59,6 +62,8 @@ export function BeeTableDefaultCell<R extends object>({
       isReadOnly={isReadOnly}
       onFeelEnterKeyDown={navigateVertically}
       onFeelTabKeyDown={navigateHorizontally}
+      variables={variables}
+      expressionId={typeof cellProps.value === "string" ? "" : cellProps.value?.id}
     />
   );
 }

@@ -28,6 +28,7 @@ import {
   DecisionTableExpressionDefinition,
   DecisionTableExpressionDefinitionBuiltInAggregation,
   DecisionTableExpressionDefinitionHitPolicy,
+  DecisionTableExpressionDefinitionRule,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
@@ -74,12 +75,27 @@ export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
+function createInputEntry() {
+  return {
+    id: generateUuid(),
+    content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
+  };
+}
+
+function createOutputEntry() {
+  return {
+    id: generateUuid(),
+    content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
+  };
+}
+
 export function DecisionTableExpression(
-  decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean }
+  decisionTableExpression: DecisionTableExpressionDefinition & { isNested: boolean; parentElementId: string }
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { variables } = useBoxedExpressionEditor();
 
   const generateOperationConfig = useCallback(
     (groupName: string) => [
@@ -445,6 +461,33 @@ export function DecisionTableExpression(
     ]
   );
 
+  const addVariables = useCallback(
+    (newRules: DecisionTableExpressionDefinitionRule[]) => {
+      for (const rule of newRules) {
+        if (rule.inputEntries) {
+          for (const inputEntry of rule.inputEntries) {
+            variables?.repository.addVariableToContext(
+              inputEntry.id,
+              inputEntry.id,
+              decisionTableExpression.parentElementId
+            );
+          }
+        }
+
+        if (rule.outputEntries) {
+          for (const outputEntry of rule.outputEntries) {
+            variables?.repository.addVariableToContext(
+              outputEntry.id,
+              outputEntry.id,
+              decisionTableExpression.parentElementId
+            );
+          }
+        }
+      }
+    },
+    [decisionTableExpression.parentElementId, variables?.repository]
+  );
+
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: DecisionTableExpressionDefinition) => {
@@ -452,21 +495,17 @@ export function DecisionTableExpression(
         newRules.splice(args.beforeIndex, 0, {
           id: generateUuid(),
           inputEntries: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
-            return {
-              id: generateUuid(),
-              content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
-            };
+            return createInputEntry();
           }),
           outputEntries: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
-            return {
-              id: generateUuid(),
-              content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-            };
+            return createOutputEntry();
           }),
           annotationEntries: Array.from(new Array(prev.annotations?.length ?? 0)).map(
             () => DECISION_TABLE_ANNOTATION_DEFAULT_VALUE
           ),
         });
+
+        addVariables(newRules);
 
         return {
           ...prev,
@@ -474,7 +513,7 @@ export function DecisionTableExpression(
         };
       });
     },
-    [setExpression]
+    [addVariables, setExpression]
   );
 
   const getSectionIndexForGroupType = useCallback(
@@ -518,12 +557,15 @@ export function DecisionTableExpression(
               width: DECISION_TABLE_INPUT_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) =>
-              r.inputEntries.splice(sectionIndex, 0, {
-                id: generateUuid(),
-                content: DECISION_TABLE_INPUT_DEFAULT_VALUE,
-              })
-            );
+            newRules.forEach((r) => {
+              const inputEntry = createInputEntry();
+              variables?.repository.addVariableToContext(
+                inputEntry.id,
+                inputEntry.id,
+                decisionTableExpression.parentElementId
+              );
+              r.inputEntries.splice(sectionIndex, 0, inputEntry);
+            });
 
             return {
               ...prev,
@@ -539,12 +581,15 @@ export function DecisionTableExpression(
               width: DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
             });
 
-            newRules.forEach((r) =>
-              r.outputEntries.splice(sectionIndex, 0, {
-                id: generateUuid(),
-                content: DECISION_TABLE_OUTPUT_DEFAULT_VALUE,
-              })
-            );
+            newRules.forEach((r) => {
+              const outputEntry = createOutputEntry();
+              variables?.repository.addVariableToContext(
+                outputEntry.id,
+                outputEntry.id,
+                decisionTableExpression.parentElementId
+              );
+              r.outputEntries.splice(sectionIndex, 0, outputEntry);
+            });
 
             return {
               ...prev,
@@ -759,6 +804,7 @@ export function DecisionTableExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
+        variables={variables}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>

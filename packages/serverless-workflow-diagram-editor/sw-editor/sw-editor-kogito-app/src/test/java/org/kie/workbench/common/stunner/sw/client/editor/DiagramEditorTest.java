@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 
@@ -34,8 +34,6 @@ import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.PostResizeCallback;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.promise.Promise;
@@ -48,7 +46,6 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasVi
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
-import org.kie.workbench.common.stunner.core.client.api.JsStunnerEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
@@ -143,9 +140,6 @@ public class DiagramEditorTest {
 
     @Mock
     private Graph graph;
-
-    @Mock
-    private JsStunnerEditor jsEditor;
 
     @Mock
     private JsCanvas jsCanvas;
@@ -357,16 +351,6 @@ public class DiagramEditorTest {
         verify(tested, times(1)).updateContent("", rawJSON, DocType.JSON);
         verify(tested, never()).setNewContent("", rawJSON, DocType.JSON);
         verify(diagramApi).setContentSuccess();
-    }
-
-    @Test
-    public void testRegex() {
-        RegExp regExp = RegExp.compile(DiagramEditor.ID_SEARCH_PATTERN_JSON);
-        MatchResult matcher = regExp.exec(rawJSON);
-
-        assertNotNull(matcher);
-        assertEquals("id", matcher.getGroup(1));
-        assertEquals("injectExample", matcher.getGroup(2));
     }
 
     @Test

@@ -53,10 +53,13 @@ type ROWTYPE = RelationExpressionDefinitionRow;
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
-export function RelationExpression(relationExpression: RelationExpressionDefinition & { isNested: boolean }) {
+export function RelationExpression(
+  relationExpression: RelationExpressionDefinition & { isNested: boolean; parentElementId: string }
+) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { decisionNodeId } = useBoxedExpressionEditor();
   const { setExpression } = useBoxedExpressionEditorDispatch();
+  const { variables } = useBoxedExpressionEditor();
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -227,6 +230,12 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
     [setExpression]
   );
 
+  const createCell = useCallback(() => {
+    const cell = { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE };
+    variables?.repository.addVariableToContext(cell.id, cell.id, relationExpression.parentElementId);
+    return cell;
+  }, [relationExpression.parentElementId, variables?.repository]);
+
   const onRowAdded = useCallback(
     (args: { beforeIndex: number }) => {
       setExpression((prev: RelationExpressionDefinition) => {
@@ -234,7 +243,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         newRows.splice(args.beforeIndex, 0, {
           id: generateUuid(),
           cells: Array.from(new Array(prev.columns?.length ?? 0)).map(() => {
-            return { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE };
+            return createCell();
           }),
         });
 
@@ -244,7 +253,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         };
       });
     },
-    [setExpression]
+    [createCell, setExpression]
   );
 
   const onColumnAdded = useCallback(
@@ -260,7 +269,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
 
         const newRows = [...(prev.rows ?? [])].map((row) => {
           const newCells = [...row.cells];
-          newCells.splice(args.beforeIndex, 0, { id: generateUuid(), content: RELATION_EXPRESSION_DEFAULT_VALUE });
+          newCells.splice(args.beforeIndex, 0, createCell());
           return {
             ...row,
             cells: newCells,
@@ -274,7 +283,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         };
       });
     },
-    [setExpression]
+    [createCell, setExpression]
   );
 
   const onColumnDeleted = useCallback(
@@ -408,6 +417,7 @@ export function RelationExpression(relationExpression: RelationExpressionDefinit
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
+        variables={variables}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/kiegroup/kie-issues/issues/181
       />
     </div>
