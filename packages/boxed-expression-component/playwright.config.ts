@@ -34,6 +34,7 @@ const customConfig = defineConfig({
     url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
     reuseExistingServer: !process.env.CI || true,
     stdout: "pipe",
+    timeout: 180000,
   },
 });
 
