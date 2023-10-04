@@ -179,6 +179,8 @@
                   <type>jar</type>
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/jspdf</outputDirectory>
+                  <includes
+                  >META-INF/resources/webjars/jspdf/dist/</includes>
                 </artifactItem>
               </artifactItems>
               <overWriteReleases>false</overWriteReleases>
