@@ -26,6 +26,8 @@ export function BkmProperties({
 
   const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
+  bkm.extensionElements?.["kie:attachment"];
+
   return (
     <>
       <FormGroup label="Name">
@@ -86,8 +88,17 @@ export function BkmProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Documentation links (Work in progress 🔧)">
-        <DocumentationLinksInput />
+      <FormGroup label="Documentation links">
+        <DocumentationLinksInput
+          value={bkm.extensionElements?.["kie:attachment"]}
+          onChange={(newExtensionElements) => {
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).extensionElements = {
+                "kie:attachment": newExtensionElements,
+              };
+            });
+          }}
+        />
       </FormGroup>
     </>
   );

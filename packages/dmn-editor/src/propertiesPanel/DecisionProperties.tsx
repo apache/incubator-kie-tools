@@ -96,7 +96,7 @@ export function DecisionProperties({
           }}
           placeholder={"Enter a question..."}
           style={{ resize: "vertical", minHeight: "40px" }}
-          rows={3}
+          rows={6}
         />
       </FormGroup>
 
@@ -113,12 +113,21 @@ export function DecisionProperties({
           }}
           placeholder={"Enter allowed answers..."}
           style={{ resize: "vertical", minHeight: "40px" }}
-          rows={6}
+          rows={3}
         />
       </FormGroup>
 
-      <FormGroup label="Documentation links (Work in progress 🔧)">
-        <DocumentationLinksInput />
+      <FormGroup label="Documentation links">
+        <DocumentationLinksInput
+          value={decision.extensionElements?.["kie:attachment"]}
+          onChange={(newExtensionElements) => {
+            setState((state) => {
+              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).extensionElements = {
+                "kie:attachment": newExtensionElements,
+              };
+            });
+          }}
+        />
       </FormGroup>
 
       {/* 
