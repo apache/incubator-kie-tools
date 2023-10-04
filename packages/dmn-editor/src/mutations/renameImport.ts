@@ -21,11 +21,13 @@ export function renameImport({
   traverseItemDefinition(definitions.itemDefinition ?? [], (item) => {
     if (item.typeRef) {
       const feelQName = parseFeelQName(item.typeRef);
-      item.typeRef = buildFeelQName({
-        type: "feel-qname",
-        importName: trimmedNewName,
-        localPart: feelQName.localPart,
-      });
+      if (allTopLevelDataTypesByFeelName.get(item.typeRef)?.namespace === _import["@_namespace"]) {
+        item.typeRef = buildFeelQName({
+          type: "feel-qname",
+          importName: trimmedNewName,
+          localPart: feelQName.localPart,
+        });
+      }
     }
   });
 
