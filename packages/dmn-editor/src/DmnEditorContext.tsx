@@ -5,14 +5,14 @@ import { DmnModel } from "@kie-tools/dmn-marshaller";
 
 export type DmnEditorContextProviderProps = Pick<
   DmnEditorProps,
-  "includedModelsContextDescription" | "includedModelsContextName" | "issueTrackerHref" | "model"
+  "externalContextDescription" | "externalContextName" | "issueTrackerHref" | "model" | "onRequestToJumpToPath"
 >;
 
 export type DmnModelBeforeEditing = DmnModel;
 
 export type DmnEditorContextType = Pick<
   DmnEditorContextProviderProps,
-  "includedModelsContextDescription" | "includedModelsContextName" | "issueTrackerHref"
+  "externalContextDescription" | "externalContextName" | "issueTrackerHref" | "onRequestToJumpToPath"
 > & {
   dmnModelBeforeEditingRef: React.MutableRefObject<DmnModelBeforeEditing>;
 };
@@ -29,11 +29,12 @@ export function DmnEditorContextProvider(props: React.PropsWithChildren<DmnEdito
   const value = useMemo<DmnEditorContextType>(
     () => ({
       dmnModelBeforeEditingRef,
-      includedModelsContextDescription: props.includedModelsContextDescription,
-      includedModelsContextName: props.includedModelsContextName,
+      externalContextDescription: props.externalContextDescription,
+      externalContextName: props.externalContextName,
       issueTrackerHref: props.issueTrackerHref,
+      onRequestToJumpToPath: props.onRequestToJumpToPath,
     }),
-    [props.includedModelsContextDescription, props.includedModelsContextName, props.issueTrackerHref]
+    [props.externalContextDescription, props.externalContextName, props.issueTrackerHref, props.onRequestToJumpToPath]
   );
   return <DmnEditorContext.Provider value={value}>{props.children}</DmnEditorContext.Provider>;
 }

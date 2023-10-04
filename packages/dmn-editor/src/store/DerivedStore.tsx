@@ -15,8 +15,9 @@ import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { DataTypeIndex, DataType } from "../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
-import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "../Spec";
+import { ExternalPmmlsIndex, ExternalDmn, ExternalDmnsIndex } from "../DmnEditor";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
@@ -34,6 +35,8 @@ export type DerivedStore = {
   dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
   allFeelVariableUniqueNames: UniqueNameIndex;
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
+  externalDmnsByNamespace: ExternalDmnsIndex;
+  externalPmmlsByNamespace: ExternalPmmlsIndex;
 };
 
 const DmnEditorDerivedStoreContext = React.createContext<DerivedStore>({} as any);
@@ -55,31 +58,50 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     return ret;
   }, [thisDmnsImports]);
 
-  const { nodes, edges, nodesById, edgesById, dmnEdgesByDmnElementRef, dmnShapesByHref } = useDiagramData();
+  const { externalModelsByNamespace } = useExternalModels();
 
-  const { otherDmnsByNamespace } = useOtherDmns();
+  const { dmns: externalDmnsByNamespace, pmmls: externalPmmlsByNamespace } = useMemo<{
+    dmns: ExternalDmnsIndex;
+    pmmls: ExternalPmmlsIndex;
+  }>(() => {
+    return thisDmnsImports.reduce<{ dmns: ExternalDmnsIndex; pmmls: ExternalPmmlsIndex }>(
+      (acc, _import) => {
+        const externalModel = externalModelsByNamespace[_import["@_namespace"]];
+        if (!externalModel) {
+          console.warn(
+            `DMN DIAGRAM: Can't index external model with namespace '${_import["@_namespace"]}' because it doesn't exist on the external models list.`
+          );
+          return acc;
+        }
+
+        if (externalModel.type === "dmn") {
+          acc.dmns.set(_import["@_namespace"], externalModel);
+        } else if (externalModel.type === "pmml") {
+          acc.pmmls.set(_import["@_namespace"], externalModel);
+        }
+
+        return acc;
+      },
+      { dmns: new Map(), pmmls: new Map() }
+    );
+  }, [externalModelsByNamespace, thisDmnsImports]);
+
+  const { nodes, edges, nodesById, edgesById, dmnEdgesByDmnElementRef, dmnShapesByHref } =
+    useDiagramData(externalDmnsByNamespace);
 
   const { dataTypesTree, allDataTypesById, allTopLevelDataTypesByFeelName } = useMemo(() => {
     const allDataTypesById: DataTypeIndex = new Map();
     const allTopLevelDataTypesByFeelName: DataTypeIndex = new Map();
 
-    const otherDmnsDataTypeTree = thisDmnsImports.flatMap((_import) => {
-      const otherDmn = otherDmnsByNamespace[_import["@_namespace"]];
-      if (!otherDmn) {
-        console.warn(
-          `DMN DIAGRAM: Can't determine External Data Types for model with namespace '${_import["@_namespace"]}' because it doesn't exist on the dependencies object.`
-        );
-        return [];
-      }
-
+    const externalDmnsDataTypeTree = [...externalDmnsByNamespace.values()].flatMap((externalDmn) => {
       return buildDataTypesTree(
-        otherDmn.model.definitions.itemDefinition ?? [],
+        externalDmn.model.definitions.itemDefinition ?? [],
         thisDmnsImportsByNamespace,
         allDataTypesById,
         allTopLevelDataTypesByFeelName,
         undefined,
         new Set(),
-        otherDmn.model.definitions["@_namespace"],
+        externalDmn.model.definitions["@_namespace"],
         thisDmn.model.definitions["@_namespace"]
       );
     });
@@ -98,11 +120,11 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     );
 
     return {
-      dataTypesTree: [...thisDmnsDataTypeTree, ...otherDmnsDataTypeTree],
+      dataTypesTree: [...thisDmnsDataTypeTree, ...externalDmnsDataTypeTree],
       allDataTypesById,
       allTopLevelDataTypesByFeelName,
     };
-  }, [otherDmnsByNamespace, thisDmn.model.definitions, thisDmnsImports, thisDmnsImportsByNamespace]);
+  }, [externalDmnsByNamespace, thisDmn.model.definitions, thisDmnsImportsByNamespace]);
 
   const allTopLevelItemDefinitionUniqueNames = useMemo(() => {
     const ret: UniqueNameIndex = new Map();
@@ -169,6 +191,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelDataTypesByFeelName,
       allFeelVariableUniqueNames,
       allTopLevelItemDefinitionUniqueNames,
+      externalDmnsByNamespace,
+      externalPmmlsByNamespace,
     }),
     [
       selectedNodeTypes,
@@ -186,6 +210,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelDataTypesByFeelName,
       allFeelVariableUniqueNames,
       allTopLevelItemDefinitionUniqueNames,
+      externalDmnsByNamespace,
+      externalPmmlsByNamespace,
     ]
   );
 

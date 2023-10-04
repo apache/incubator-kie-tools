@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import * as JSONata from "jsonata";
+import JSONata from "jsonata";
 import { Expression } from "jsonata";
 import * as XMLJS from "xml-js";
 import { JSON2UI_TRANSFORMATION as json2ui } from "./jsonata/JSON2UI";

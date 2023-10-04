@@ -13,10 +13,10 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
-import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { XmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../diagram/nodes/NodeSvgs";
+import { ExternalDmnsIndex } from "../DmnEditor";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -25,8 +25,10 @@ export const diagramColors = {
 };
 
 export const UNKNOWN_DMN_NAMESPACE = "https://kie.org/dmn/unknown";
+export const UNKNOWN_NAMESPACE = "https://kie.org/dmn/unknown";
+export const PMML_NAMESPACE = "https://kie.org/pmml";
 
-export function useDiagramData() {
+export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
   ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag =
     !___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches.flag;
 
@@ -77,8 +79,6 @@ export function useDiagramData() {
         dmnElementRefsForForShapesPointingToExternalDmnObjects,
       };
     }, [diagram.drdIndex, thisDmn.model.definitions]);
-
-  const { otherDmnsByNamespace } = useOtherDmns();
 
   const { nodes, edges, nodesById, edgesById } = useMemo(() => {
     // console.time("nodes");
@@ -326,7 +326,7 @@ export function useDiagramData() {
       const shape = dmnShapesByHref.get(href)!;
       const namespace = thisDmn.model.definitions[`@_xmlns:${shape.dmnElementRefQName.prefix}`];
       if (namespace) {
-        const externalDrgElements = otherDmnsByNamespace[namespace]?.model.definitions.drgElement ?? [];
+        const externalDrgElements = externalDmnsByNamespace.get(namespace)?.model.definitions.drgElement ?? [];
         const index = externalDrgElements.findIndex((e) => e["@_id"] === shape.dmnElementRefQName.localPart); // FIXME: Tiago --> O(n) for each external node.. Not good.
         if (index < 0) {
           throw new Error("Can't find drgElement for shape with dmnElementRef " + shape["@_dmnElementRef"]);
@@ -372,7 +372,7 @@ export function useDiagramData() {
     dmnElementRefsForForShapesPointingToExternalDmnObjects,
     dmnEdgesByDmnElementRef,
     dmnShapesByHref,
-    otherDmnsByNamespace,
+    externalDmnsByNamespace,
   ]);
 
   return {

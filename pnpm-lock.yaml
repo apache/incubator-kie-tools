@@ -3221,6 +3221,9 @@ importers:
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      "@kie-tools/pmml-editor-marshaller":
+        specifier: workspace:*
+        version: link:../pmml-editor-marshaller
       "@kie-tools/xml-parser-ts":
         specifier: workspace:*
         version: link:../xml-parser-ts

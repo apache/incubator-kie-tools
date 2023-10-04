@@ -6,6 +6,7 @@ import {
   ExpressionDefinition,
   ExpressionDefinitionLogicType,
   PmmlParam,
+  generateUuid,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/expressions";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -32,7 +33,6 @@ import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-ci
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import { isStruct } from "../dataTypes/DataTypeSpec";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
@@ -41,6 +41,34 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller/dist/api";
+import { PMMLModelData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLModelData";
+import {
+  AnomalyDetectionModel,
+  AssociationModel,
+  BaselineModel,
+  BayesianNetworkModel,
+  ClusteringModel,
+  GaussianProcessModel,
+  GeneralRegressionModel,
+  MiningModel,
+  Model,
+  NaiveBayesModel,
+  NearestNeighborModel,
+  NeuralNetwork,
+  PMML,
+  RegressionModel,
+  RuleSetModel,
+  Scorecard,
+  SequenceModel,
+  SupportVectorMachineModel,
+  TextModel,
+  TimeSeriesModel,
+  TreeModel,
+} from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
+import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
+
+import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -119,7 +147,8 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   ////
 
-  const { dataTypesTree, allTopLevelDataTypesByFeelName, nodesById } = useDmnEditorDerivedStore();
+  const { dataTypesTree, allTopLevelDataTypesByFeelName, nodesById, importsByNamespace, externalPmmlsByNamespace } =
+    useDmnEditorDerivedStore();
 
   const dataTypes = useMemo<DmnDataType[]>(() => {
     const customDataTypes = dataTypesTree.map((d) => ({
@@ -131,7 +160,27 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
     return [...builtInFeelTypes, ...customDataTypes];
   }, [dataTypesTree]);
 
-  const pmmlParams = useMemo<PmmlParam[]>(() => [], []);
+  const pmmlParams = useMemo<PmmlParam[]>(() => {
+    return [...externalPmmlsByNamespace.entries()].flatMap(([namespace, pmml]) => {
+      const documentData = getPmmlDocumentData(pmml.model);
+      const importName = importsByNamespace.get(namespace)?.["@_name"];
+      if (!importName) {
+        return [];
+      }
+
+      return {
+        document: importName,
+        modelsFromDocument: documentData.models.map((m) => ({
+          model: m.modelName,
+          parametersFromModel: m.fields.map((f) => ({
+            id: generateUuid(),
+            name: f.fieldName,
+            dataType: undefined as any,
+          })),
+        })),
+      };
+    });
+  }, [importsByNamespace, externalPmmlsByNamespace]);
 
   const beeGwtService = useMemo<BeeGwtService>(() => {
     return {
@@ -350,4 +399,55 @@ function flattenComponents(
   return (itemDefinition.itemComponent ?? []).flatMap((ic) => {
     return flattenComponents(ic, `${acc}.${itemDefinition["@_name"]!}`);
   });
+}
+
+export function getPmmlDocumentData(pmml: PMML): PMMLDocumentData {
+  const models: PMMLModelData[] = [];
+  const document = new PMMLDocumentData(models);
+
+  if (pmml.models) {
+    pmml.models.forEach((model) => {
+      const modelData = retrieveModelData(model);
+      if (modelData) {
+        models.push(modelData);
+      }
+    });
+  }
+  return document;
+}
+
+export function retrieveModelData(model: Model): PMMLModelData | undefined {
+  const modelsTypes = [
+    AnomalyDetectionModel,
+    AssociationModel,
+    BayesianNetworkModel,
+    BaselineModel,
+    ClusteringModel,
+    GaussianProcessModel,
+    GeneralRegressionModel,
+    MiningModel,
+    NaiveBayesModel,
+    NearestNeighborModel,
+    NeuralNetwork,
+    RegressionModel,
+    RuleSetModel,
+    SequenceModel,
+    Scorecard,
+    SupportVectorMachineModel,
+    TextModel,
+    TimeSeriesModel,
+    TreeModel,
+  ];
+  let modelData;
+
+  for (const type of modelsTypes) {
+    if (model instanceof type) {
+      const modelFields = model.MiningSchema.MiningField.map(
+        (field) => new PMMLFieldData(field.name.toString(), field.usageType)
+      );
+      modelData = new PMMLModelData(model.modelName == null ? "" : model.modelName, modelFields);
+    }
+  }
+
+  return modelData;
 }

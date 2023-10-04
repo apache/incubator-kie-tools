@@ -1,63 +1,102 @@
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  ns as dmn10ns,
+  ns as dmn11ns,
+  ns as dmn12ns,
+  ns as dmn13ns,
+  ns as dmn14ns,
+  ns as dmn15ns,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Card, CardBody, CardFooter, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { CardTitle, Card, CardHeader, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { basename, dirname, extname } from "path";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ExternalModel } from "../DmnEditor";
+import { useDmnEditor } from "../DmnEditorContext";
+import { SPEC } from "../Spec";
+import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { addImport } from "../mutations/addImport";
 import { deleteImport } from "../mutations/deleteImport";
-import { SPEC } from "../Spec";
-import { useOtherDmns } from "./DmnEditorDependenciesContext";
-import { dirname, basename } from "path";
-import { OtherDmn } from "../DmnEditor";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { useDmnEditor } from "../DmnEditorContext";
-import { DmnModel } from "@kie-tools/dmn-marshaller";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { renameImport } from "../mutations/renameImport";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { PMML_NAMESPACE, UNKNOWN_NAMESPACE } from "../store/useDiagramData";
+import { buildXmlHref } from "../xml/xmlHrefs";
+import { ExternalModelLabel } from "./ExternalModelLabel";
+import { useExternalModels } from "./DmnEditorDependenciesContext";
+
+const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
+
+export const allDmnImportNamespaces = new Set([
+  dmn15ns.get("")!,
+  dmn14ns.get("")!,
+  dmn13ns.get("")!,
+  dmn12ns.get("")!,
+  dmn11ns.get("")!,
+  dmn10ns.get("")!,
+]);
+
+export const allPmmlImportNamespaces = new Set([
+  "https://www.dmg.org/PMML-4_4",
+  "https://www.dmg.org/PMML-4_3",
+  "https://www.dmg.org/PMML-4_2",
+  "https://www.dmg.org/PMML-4_1",
+  "https://www.dmg.org/PMML-4_0",
+  "https://www.dmg.org/PMML-3_2",
+  "https://www.dmg.org/PMML-3_1",
+  "https://www.dmg.org/PMML-3_0",
+  "https://www.dmg.org/PMML-2_1",
+  "https://www.dmg.org/PMML-2_0",
+  "https://www.dmg.org/PMML-1_1",
+]);
+
+const namespaceForNewImportsByFileExtension: Record<string, string> = {
+  ".dmn": dmn15ns.get("")!,
+  ".pmml": "https://www.dmg.org/PMML-4_4",
+};
 
 export function IncludedModels() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsImports = useDmnEditorStore((s) => s.dmn.model.definitions.import ?? []);
 
-  const { includedModelsContextDescription, includedModelsContextName } = useDmnEditor();
+  const { externalContextDescription, externalContextName } = useDmnEditor();
   const { importsByNamespace, allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
-  const { otherDmnsByNamespace, onRequestModelsAvailableToInclude, onRequestOtherDmnByPath } = useOtherDmns();
+  const { externalModelsByNamespace, onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } =
+    useExternalModels();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModelSelectOpen, setModelSelectOpen] = useState(false);
   const [selectedPath, setSelectedPath] = useState<string | undefined>(undefined);
   const [importName, setImportName] = useState("");
 
-  const [selectedModel, setSelectedModel] = useState<DmnModel | undefined>(undefined);
+  const [selectedModel, setSelectedModel] = useState<ExternalModel | undefined>(undefined);
   // FIXME: Tiago --> Use `useCancellableEffect`
   useEffect(() => {
     if (!selectedPath) {
       return;
     }
 
-    // FIXME: Tiago --> Handle `onRequestOtherDmnByPath` not being available.
-    onRequestOtherDmnByPath?.(selectedPath).then((m) => {
+    // FIXME: Tiago --> Handle `onRequestExternalModelByPath` not being available.
+    onRequestExternalModelByPath?.(selectedPath).then((m) => {
       if (m) {
         setSelectedModel(m);
       } else {
         // FIXME: Tiago --> Handle error.
       }
     });
-  }, [onRequestOtherDmnByPath, selectedPath]);
+  }, [onRequestExternalModelByPath, selectedPath]);
 
   const openModal = useCallback(() => {
     setModalOpen(true);
@@ -71,50 +110,82 @@ export function IncludedModels() {
   }, []);
 
   const add = useCallback(() => {
-    if (!selectedModel || !SPEC.IMPORT.name.isValid(generateUuid(), importName, allFeelVariableUniqueNames)) {
+    if (
+      !selectedPath ||
+      !selectedModel ||
+      !SPEC.IMPORT.name.isValid(generateUuid(), importName, allFeelVariableUniqueNames)
+    ) {
       return;
     }
+
+    const xmlns = namespaceForNewImportsByFileExtension[extname(selectedPath)];
+    if (!xmlns) {
+      throw new Error(`Can't import model with an unsupported file extension: '${selectedPath}'.`);
+    }
+
+    const namespace =
+      selectedModel.type === "dmn"
+        ? selectedModel.model.definitions["@_namespace"]!
+        : selectedModel.type === "pmml"
+        ? buildXmlHref({ namespace: PMML_NAMESPACE, id: selectedModel.path })
+        : UNKNOWN_NAMESPACE;
 
     setModalOpen(false);
     dmnEditorStoreApi.setState((state) => {
       addImport({
         definitions: state.dmn.model.definitions,
         includedModel: {
-          xmlns: selectedModel.definitions["@_xmlns"]!, // FIXME: Tiago --> This is not always true, we can have a DMN file that doesn't even have a "xmlns" property... We should be able to figure it out based on the type of file.
-          namespace: selectedModel.definitions["@_namespace"]!,
+          xmlns,
+          namespace,
           name: importName,
         },
       });
     });
 
     cancel();
-  }, [selectedModel, importName, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
+  }, [selectedPath, selectedModel, importName, allFeelVariableUniqueNames, dmnEditorStoreApi, cancel]);
 
   // FIXME: Tiago --> Use `useCancellableEffect`
   const [modelPaths, setModelPaths] = useState<string[] | undefined>(undefined);
   useEffect(() => {
-    // FIXME: Tiago --> Handle `onRequestModelsAvailableToInclude` not being available.
-    onRequestModelsAvailableToInclude?.().then((m) => {
+    // FIXME: Tiago --> Handle `onRequestExternalModelsAvailableToInclude` not being available.
+    onRequestExternalModelsAvailableToInclude?.().then((m) => {
       setModelPaths(m);
     });
-  }, [isModelSelectOpen, onRequestModelsAvailableToInclude]);
+  }, [isModelSelectOpen, onRequestExternalModelsAvailableToInclude]);
 
-  const otherDmnsByPath = useMemo(
-    () => Object.values(otherDmnsByNamespace).reduce((acc, d) => acc.set(d!.path, d!), new Map<string, OtherDmn>()),
-    [otherDmnsByNamespace]
+  const externalModelsByPath = useMemo(
+    () =>
+      Object.entries(externalModelsByNamespace).reduce((acc, [namespace, externalModel]) => {
+        if (!externalModel) {
+          console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
+          return acc;
+        } else {
+          return acc.set(externalModel.path, externalModel);
+        }
+      }, new Map<string, ExternalModel>()),
+    [externalModelsByNamespace]
   );
 
   const modelPathsNotYetIncluded = useMemo(
     () =>
       modelPaths &&
       modelPaths.filter((path) => {
-        // If otherDmn does not exist, or there's no existing import with this
+        // If externalModel does not exist, or there's no existing import with this
         // namespace, it can be listed as available for including.
-        const otherDmn = otherDmnsByPath.get(path);
-        return !otherDmn || !importsByNamespace.get(otherDmn.model.definitions["@_namespace"]);
+        const externalModel = externalModelsByPath.get(path);
+        return (
+          !externalModel ||
+          (externalModel.type === "dmn" && !importsByNamespace.get(externalModel.model.definitions["@_namespace"])) ||
+          (externalModel.type === "pmml" &&
+            !importsByNamespace.get(buildXmlHref({ namespace: PMML_NAMESPACE, id: externalModel.path })))
+        );
       }),
-    [otherDmnsByPath, importsByNamespace, modelPaths]
+    [externalModelsByPath, importsByNamespace, modelPaths]
   );
+
+  const pmmlPathsNotYetIncluded = modelPathsNotYetIncluded?.filter((s) => s.endsWith(".pmml"));
+  const dmnPathsNotYetIncluded = modelPathsNotYetIncluded?.filter((s) => s.endsWith(".dmn"));
 
   return (
     <>
@@ -145,7 +216,7 @@ export function IncludedModels() {
             {(modelPathsNotYetIncluded.length > 0 && (
               <>
                 <br />
-                {includedModelsContextDescription}
+                {externalContextDescription}
                 <br />
                 <br />
                 <Form>
@@ -171,33 +242,36 @@ export function IncludedModels() {
                       isGrouped={true}
                     >
                       <SelectGroup label={"DMN"} key={"DMN"}>
-                        {modelPathsNotYetIncluded
-                          .filter((s) => s.endsWith(".dmn"))
-                          .map((path) => (
+                        {((dmnPathsNotYetIncluded?.length ?? 0) > 0 &&
+                          dmnPathsNotYetIncluded?.map((path) => (
                             <SelectOption key={path} description={dirname(path)} value={path}>
                               {basename(path)}
                             </SelectOption>
-                          ))}
+                          ))) || (
+                          <SelectOption key={"none-dmn"} isDisabled={true} description={""} value={""}>
+                            <i>None</i>
+                          </SelectOption>
+                        )}
                       </SelectGroup>
                       <Divider key="divider" />
-                      <SelectGroup label={"PMML"} key={"DMN"}>
-                        {modelPathsNotYetIncluded
-                          .filter((s) => s.endsWith(".pmml"))
-                          .map((path) => (
+                      <SelectGroup label={"PMML"} key={"PMML"}>
+                        {((pmmlPathsNotYetIncluded?.length ?? 0) > 0 &&
+                          pmmlPathsNotYetIncluded?.map((path) => (
                             <SelectOption key={path} description={dirname(path)} value={path}>
                               {basename(path)}
                             </SelectOption>
-                          ))}
-                        <SelectOption key={"none-pmml"} description={""} value={""} isDisabled={true}>
-                          <i>None</i>
-                        </SelectOption>
+                          ))) || (
+                          <SelectOption key={"none-pmml"} isDisabled={true} description={""} value={""}>
+                            <i>None</i>
+                          </SelectOption>
+                        )}
                       </SelectGroup>
                     </Select>
                   </FormGroup>
                   <FormGroup label={"Name"}>
                     <InlineFeelNameInput
                       validate={SPEC.IMPORT.name.isValid}
-                      placeholder={"<Default>"}
+                      placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
                       isPlain={false}
                       id={generateUuid()}
                       name={importName}
@@ -211,7 +285,13 @@ export function IncludedModels() {
                   <br />
                 </Form>
               </>
-            )) || <>{`All models available in '${includedModelsContextName}' are already included.`}</>}
+            )) || (
+              <>
+                {((modelPaths?.length ?? 0) > 0 &&
+                  `All models available in '${externalContextName}' are already included.`) ||
+                  `There's no available models in '${externalContextName}' to be included.`}
+              </>
+            )}
           </>
         )) || <>Loading...</>}
       </Modal>
@@ -226,8 +306,12 @@ export function IncludedModels() {
           <br />
           <Gallery hasGutter={true}>
             {thisDmnsImports.flatMap((i, index) => {
-              const otherDmn = otherDmnsByNamespace[i["@_namespace"]];
-              return !otherDmn ? [] : <IncludedModelCard i={i} index={index} otherDmn={otherDmn} />;
+              const externalModel = externalModelsByNamespace[i["@_namespace"]];
+              return !externalModel ? (
+                []
+              ) : (
+                <IncludedModelCard key={i["@_id"]} _import={i} index={index} externalModel={externalModel} />
+              );
             })}
           </Gallery>
         </PageSection>
@@ -255,8 +339,17 @@ export function IncludedModels() {
   );
 }
 
-function IncludedModelCard({ i, index, otherDmn }: { i: DMN15__tImport; otherDmn: OtherDmn; index: number }) {
+function IncludedModelCard({
+  _import,
+  index,
+  externalModel,
+}: {
+  _import: DMN15__tImport;
+  externalModel: ExternalModel;
+  index: number;
+}) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { onRequestToJumpToPath } = useDmnEditor();
 
   const remove = useCallback(
     (index: number) => {
@@ -278,28 +371,62 @@ function IncludedModelCard({ i, index, otherDmn }: { i: DMN15__tImport; otherDmn
     [allTopLevelDataTypesByFeelName, dmnEditorStoreApi, index]
   );
 
+  const extension = useMemo(() => {
+    if (allDmnImportNamespaces.has(_import["@_importType"])) {
+      return "dmn";
+    } else if (allPmmlImportNamespaces.has(_import["@_importType"])) {
+      return "pmml";
+    } else {
+      return "Unknwon";
+    }
+  }, [_import]);
+
+  const title = useMemo(() => {
+    if (externalModel.type === "dmn") {
+      return externalModel.model.definitions["@_name"];
+    } else if (externalModel.type === "pmml") {
+      return "";
+    }
+  }, [externalModel.model, externalModel.type]);
+
   return (
-    <Card key={i["@_name"]} isCompact={false}>
+    <Card isCompact={false}>
       <CardHeader>
         <CardTitle>
           <InlineFeelNameInput
-            placeholder={"<Default>"}
+            placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
             isPlain={true}
             allUniqueNames={allFeelVariableUniqueNames}
-            id={i["@_id"]!}
-            name={i["@_name"]}
+            id={_import["@_id"]!}
+            name={_import["@_name"]}
             isReadonly={false}
             shouldCommitOnBlur={true}
             onRenamed={rename}
             validate={SPEC.IMPORT.name.isValid}
           />
+          <br />
+          <br />
+          <ExternalModelLabel extension={extension} />
+          <br />
+          <br />
         </CardTitle>
       </CardHeader>
       <CardBody>
-        {`${otherDmn.model.definitions["@_name"]}`}
+        {`${title}`}
+        <br />
         <br />
         <small>
-          <i>{otherDmn.path ?? "WARNING: Path couldn't be determined."}</i>
+          {(onRequestToJumpToPath && externalModel.path && (
+            <Button
+              variant={ButtonVariant.link}
+              style={{ paddingLeft: 0, whiteSpace: "break-spaces", textAlign: "left" }}
+              onClick={() => {
+                onRequestToJumpToPath?.(externalModel.path);
+              }}
+            >
+              <i>{externalModel.path}</i>
+            </Button>
+          )) || <i>{externalModel.path ?? "WARNING: Path couldn't be determined."}</i>}
         </small>
       </CardBody>
       <CardFooter>

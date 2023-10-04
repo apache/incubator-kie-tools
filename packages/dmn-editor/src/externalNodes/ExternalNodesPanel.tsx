@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useCallback } from "react";
-import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { DmnEditorTab, useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
@@ -28,8 +27,7 @@ export const MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS =
 export function ExternalNodesPanel() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { otherDmnsByNamespace } = useOtherDmns();
-  const { dmnShapesByHref } = useDmnEditorDerivedStore();
+  const { dmnShapesByHref, externalDmnsByNamespace, importsByNamespace } = useDmnEditorDerivedStore();
 
   const onDragStart = useCallback((event: React.DragEvent, externalNode: ExternalNode) => {
     event.dataTransfer.setData(
@@ -67,62 +65,63 @@ export function ExternalNodesPanel() {
           </EmptyState>
         </>
       )}
-      {(thisDmn.model.definitions.import ?? []).flatMap((i) => {
-        const otherDmnDefinitions = otherDmnsByNamespace[i["@_namespace"]]?.model.definitions;
-        if (!otherDmnDefinitions) {
-          console.warn(
-            `DMN DIAGRAM: Can't determine External Nodes for model with namespace '${i["@_namespace"]}' because it doesn't exist on the dependencies object'.`
+      {[...externalDmnsByNamespace.entries()].flatMap(([namespace, externalDmn]) => {
+        const externalDmnDefinitions = externalDmn.model.definitions;
+        const importName = importsByNamespace.get(namespace)?.["@_name"];
+        if (!importName) {
+          console.debug(
+            `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
           );
           return [];
-        } else {
-          return (
-            <div key={otherDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
-              <div className={"kie-dmn-editor--external-nodes-section-title"}>
-                <b>{`${otherDmnDefinitions["@_name"]}`}</b> {`(${i["@_name"]})`}
-                <small>
-                  <i>
-                    <Truncate content={otherDmnsByNamespace[i["@_namespace"]]?.path ?? ""} />
-                  </i>
-                </small>
-              </div>
-              {otherDmnDefinitions.drgElement?.map((dmnObject) => {
-                return (
-                  <div
-                    key={dmnObject["@_id"]}
-                    className={"kie-dmn-editor--external-nodes-list-item"}
-                    draggable={true}
-                    onDragStart={(event) =>
-                      onDragStart(event, {
-                        externalDrgElementNamespace: i["@_namespace"],
-                        externalDrgElementId: dmnObject["@_id"]!,
-                      })
-                    }
-                  >
-                    <Flex
-                      alignItems={{ default: "alignItemsCenter" }}
-                      justifyContent={{ default: "justifyContentFlexStart" }}
-                      spaceItems={{ default: "spaceItemsNone" }}
-                    >
-                      <DmnObjectListItem
-                        dmnObjectHref={buildXmlHref({ namespace: i["@_namespace"], id: dmnObject["@_id"]! })}
-                        dmnObject={dmnObject}
-                        namespace={i["@_namespace"]}
-                        relativeToNamespace={i["@_namespace"]}
-                      />
-                      {dmnShapesByHref.has(buildXmlHref({ namespace: i["@_namespace"], id: dmnObject["@_id"]! })) ? (
-                        <small>
-                          <div>&nbsp;&nbsp;✓</div>
-                        </small>
-                      ) : (
-                        <></>
-                      )}
-                    </Flex>
-                  </div>
-                );
-              })}
-            </div>
-          );
         }
+
+        return (
+          <div key={externalDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
+            <div className={"kie-dmn-editor--external-nodes-section-title"}>
+              <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(${importName})`}
+              <small>
+                <i>
+                  <Truncate content={externalDmnsByNamespace.get(namespace)?.path ?? ""} />
+                </i>
+              </small>
+            </div>
+            {externalDmnDefinitions.drgElement?.map((dmnObject) => {
+              return (
+                <div
+                  key={dmnObject["@_id"]}
+                  className={"kie-dmn-editor--external-nodes-list-item"}
+                  draggable={true}
+                  onDragStart={(event) =>
+                    onDragStart(event, {
+                      externalDrgElementNamespace: namespace,
+                      externalDrgElementId: dmnObject["@_id"]!,
+                    })
+                  }
+                >
+                  <Flex
+                    alignItems={{ default: "alignItemsCenter" }}
+                    justifyContent={{ default: "justifyContentFlexStart" }}
+                    spaceItems={{ default: "spaceItemsNone" }}
+                  >
+                    <DmnObjectListItem
+                      dmnObjectHref={buildXmlHref({ namespace, id: dmnObject["@_id"]! })}
+                      dmnObject={dmnObject}
+                      namespace={namespace}
+                      relativeToNamespace={namespace}
+                    />
+                    {dmnShapesByHref.has(buildXmlHref({ namespace, id: dmnObject["@_id"]! })) ? (
+                      <small>
+                        <div>&nbsp;&nbsp;✓</div>
+                      </small>
+                    ) : (
+                      <></>
+                    )}
+                  </Flex>
+                </div>
+              );
+            })}
+          </div>
+        );
       })}
     </>
   );

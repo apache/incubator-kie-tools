@@ -13,7 +13,7 @@ import { DmnMarshaller, DmnModel, getMarshaller } from "@kie-tools/dmn-marshalle
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { SPEC } from "../../src/Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { avaiableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
+import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 
 const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN);
 
@@ -103,20 +103,25 @@ export function DevWebApp() {
     });
   }, []);
 
-  const otherDmnsByNamespace = useMemo<DmnEditor.OtherDmnsByNamespace>(() => {
+  const onRequestToJumpToPath = useCallback<DmnEditor.OnRequestToJumpToPath>((path) => {
+    alert("Jumping to file " + path);
+  }, []);
+
+  const externalModelsByNamespace = useMemo<DmnEditor.ExternalModelsIndex>(() => {
     return (currentModel.definitions.import ?? []).reduce((acc, i) => {
       acc[i["@_namespace"]] = modelsByNamespace[i["@_namespace"]];
       return acc;
-    }, {} as DmnEditor.OtherDmnsByNamespace);
+    }, {} as DmnEditor.ExternalModelsIndex);
   }, [currentModel.definitions.import]);
 
-  const onRequestOtherDmnByPath = useCallback<DmnEditor.onRequestOtherDmnByPath>(async (path) => {
-    return avaiableModelsByPath[path] ?? null;
+  const onRequestExternalModelByPath = useCallback<DmnEditor.OnRequestExternalModelByPath>(async (path) => {
+    return availableModelsByPath[path] ?? null;
   }, []);
 
-  const onRequestModelsAvailableToInclude = useCallback<DmnEditor.OnRequestModelsAvailableToInclude>(async () => {
-    return Object.keys(avaiableModelsByPath);
-  }, []);
+  const onRequestExternalModelsAvailableToInclude =
+    useCallback<DmnEditor.OnRequestExternalModelsAvailableToInclude>(async () => {
+      return Object.keys(availableModelsByPath);
+    }, []);
 
   const evaluationResults = useMemo<DmnEditor.EvaluationResults>(() => {
     return {};
@@ -165,14 +170,15 @@ export function DevWebApp() {
             marshaller={state.marshaller}
             model={currentModel}
             onModelChange={onModelChange}
-            onRequestOtherDmnByPath={onRequestOtherDmnByPath}
-            onRequestModelsAvailableToInclude={onRequestModelsAvailableToInclude}
-            otherDmnsByNamespace={otherDmnsByNamespace}
+            onRequestExternalModelByPath={onRequestExternalModelByPath}
+            onRequestExternalModelsAvailableToInclude={onRequestExternalModelsAvailableToInclude}
+            externalModelsByNamespace={externalModelsByNamespace}
+            externalContextName={`Dev webapp`}
+            externalContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
             validationMessages={validationMessages}
             evaluationResults={evaluationResults}
-            includedModelsContextName={`Dev webapp`}
-            includedModelsContextDescription={`You're using the DMN Dev webapp, so there's only two simple external models that can be included.`}
             issueTrackerHref={`https://github.com/kiegroup/kie-issues/issues/new`}
+            onRequestToJumpToPath={onRequestToJumpToPath}
           />
         </PageSection>
       </Page>

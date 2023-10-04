@@ -1,20 +1,26 @@
 import * as React from "react";
 import { useContext } from "react";
-import { OtherDmnsByNamespace, onRequestOtherDmnByPath, OnRequestModelsAvailableToInclude } from "../DmnEditor";
+import {
+  OnRequestExternalModelsAvailableToInclude,
+  OnRequestExternalModelByPath,
+  ExternalModelsIndex,
+} from "../DmnEditor";
 
-export interface DmnEditorOtherDmnsContextType {
-  onRequestOtherDmnByPath?: onRequestOtherDmnByPath;
-  onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
-  otherDmnsByNamespace: OtherDmnsByNamespace;
+export interface DmnEditorExternalModelsContextType {
+  onRequestExternalModelByPath?: OnRequestExternalModelByPath;
+  onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
+  externalModelsByNamespace: ExternalModelsIndex;
 }
 
-const DmnEditorOtherDmnsContext = React.createContext<DmnEditorOtherDmnsContextType>({} as any);
+const DmnEditorExternalModelsContext = React.createContext<DmnEditorExternalModelsContextType>({} as any);
 
-export function useOtherDmns() {
-  return useContext(DmnEditorOtherDmnsContext);
+export function useExternalModels() {
+  return useContext(DmnEditorExternalModelsContext);
 }
 
-export function DmnEditorOtherDmnsContextProvider(_props: React.PropsWithChildren<DmnEditorOtherDmnsContextType>) {
+export function DmnEditorExternalModelsContextProvider(
+  _props: React.PropsWithChildren<DmnEditorExternalModelsContextType>
+) {
   const { children, ...props } = _props;
-  return <DmnEditorOtherDmnsContext.Provider value={props}>{children}</DmnEditorOtherDmnsContext.Provider>;
+  return <DmnEditorExternalModelsContext.Provider value={props}>{children}</DmnEditorExternalModelsContext.Provider>;
 }

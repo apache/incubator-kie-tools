@@ -60,7 +60,6 @@ import {
   MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
 } from "../externalNodes/ExternalNodesPanel";
 import { addShape } from "../mutations/addShape";
-import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { buildXmlQName } from "../xml/xmlQNames";
 import { original } from "immer";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
@@ -99,8 +98,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const { dmnModelBeforeEditingRef } = useDmnEditor();
 
-  const { otherDmnsByNamespace } = useOtherDmns();
-
   const {
     dmnShapesByHref,
     nodesById,
@@ -110,12 +107,14 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     isDropTargetNodeValidForSelection,
     isDiagramEditingInProgress,
     selectedNodeTypes,
+    externalDmnsByNamespace,
   } = useDmnEditorDerivedStore();
 
   // State
 
-  const [reactFlowInstance, setReactFlowInstance] =
-    useState<RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined>(undefined);
+  const [reactFlowInstance, setReactFlowInstance] = useState<
+    RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined
+  >(undefined);
 
   const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
 
@@ -273,7 +272,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         // --------- This is where we draw the line between the diagram and the model.
 
         const externalDrgElement = (
-          otherDmnsByNamespace[externalNode.externalDrgElementNamespace]?.model.definitions.drgElement ?? []
+          externalDmnsByNamespace.get(externalNode.externalDrgElementNamespace)?.model.definitions.drgElement ?? []
         ).find((s) => s["@_id"] === externalNode.externalDrgElementId);
         if (!externalDrgElement) {
           throw new Error(`Can't find DRG element with id '${externalNode.externalDrgElementId}'.`);
@@ -321,7 +320,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         console.debug(`DMN DIAGRAM: Adding external node`, JSON.stringify(externalNode));
       }
     },
-    [container, otherDmnsByNamespace, diagram.snapGrid, dmnEditorStoreApi, reactFlowInstance]
+    [container, externalDmnsByNamespace, diagram.snapGrid, dmnEditorStoreApi, reactFlowInstance]
   );
 
   useEffect(() => {

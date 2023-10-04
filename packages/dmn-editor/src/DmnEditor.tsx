@@ -28,10 +28,11 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DmnEditorDerivedStoreContextProvider, useDmnEditorDerivedStore } from "./store/DerivedStore";
 import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
-import { DmnEditorOtherDmnsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
+import { DmnEditorExternalModelsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 import { DmnMarshaller, DmnModel } from "@kie-tools/dmn-marshaller";
+import { PMML } from "@kie-tools/pmml-editor-marshaller";
 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
@@ -41,17 +42,21 @@ export type DmnEditorRef = {
   reset: (mode: DmnModel) => void;
 };
 
-export type OtherDmnsByNamespace = Record<string, OtherDmn | undefined>;
 export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
-export type OnRequestModelsAvailableToInclude = () => Promise<string[]>;
-export type onRequestOtherDmnByPath = (path: string) => Promise<DmnModel | null>;
 export type OnDmnModelChange = (model: DmnModel) => void;
-export type OtherDmn = {
-  model: DmnModel;
-  path: string;
-  svg: string;
-};
+
+export type OnRequestToJumpToPath = (path: string) => void;
+export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
+export type OnRequestExternalModelByPath = (path: string) => Promise<ExternalModel | null>;
+export type ExternalModelsIndex = Record<string, ExternalModel | undefined>;
+export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
+
+export type ExternalDmnsIndex = Map<string, ExternalDmn>;
+export type ExternalDmn = { model: DmnModel; path: string; svg: string };
+
+export type ExternalPmmlsIndex = Map<string, ExternalPmml>;
+export type ExternalPmml = { model: PMML; path: string };
 
 export type DmnEditorProps = {
   /**
@@ -69,16 +74,16 @@ export type DmnEditorProps = {
   /**
    * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
    */
-  onRequestOtherDmnByPath?: onRequestOtherDmnByPath;
+  onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   /**
    * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
    */
-  onRequestModelsAvailableToInclude?: OnRequestModelsAvailableToInclude;
+  onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
   /**
    * When the DMN represented by `model` ("This DMN") contains `import`ed models, this prop needs to map their contents by namespace.
    * The DMN model won't be correctly rendered if an included model is not found on this object.
    */
-  otherDmnsByNamespace: OtherDmnsByNamespace;
+  externalModelsByNamespace: ExternalModelsIndex;
   /**
    * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
@@ -89,20 +94,25 @@ export type DmnEditorProps = {
   validationMessages: ValidationMessages;
   /**
    * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
-   * is displaying a model from a project called "My project", you could use `includedModelsContextName={"My project"}`
+   * is displaying a model from a project called "My project", you could use `externalContextName={"My project"}`
    */
-  includedModelsContextName: string;
+  externalContextName: string;
   /**
    * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
    * is displaying a model from a project called "My project", you could use
-   * `includedModelsContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
+   * `externalContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
    */
-  includedModelsContextDescription: string;
+  externalContextDescription: string;
   /**
    * A link that will take users to an issue tracker so they can report problems they find on the DMN Editor.
    * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.
    */
   issueTrackerHref?: string;
+  /**
+   * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
+   * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
+   */
+  onRequestToJumpToPath?: OnRequestToJumpToPath;
 };
 
 export const DmnEditorInternal = ({
@@ -274,13 +284,13 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   return (
     <DmnEditorContextProvider {...props}>
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
-        <DmnEditorOtherDmnsContextProvider {...props}>
+        <DmnEditorExternalModelsContextProvider {...props}>
           <DmnEditorStoreApiContext.Provider value={storeRef.current}>
             <DmnEditorDerivedStoreContextProvider>
               <DmnEditorInternal forwardRef={ref} {...props} />
             </DmnEditorDerivedStoreContextProvider>
           </DmnEditorStoreApiContext.Provider>
-        </DmnEditorOtherDmnsContextProvider>
+        </DmnEditorExternalModelsContextProvider>
       </ErrorBoundary>
     </DmnEditorContextProvider>
   );

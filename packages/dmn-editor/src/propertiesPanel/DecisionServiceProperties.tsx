@@ -10,7 +10,6 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksInput } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
-import { useOtherDmns } from "../includedModels/DmnEditorDependenciesContext";
 import { useMemo } from "react";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
@@ -35,15 +34,15 @@ export function DecisionServiceProperties({
   const { setState } = useDmnEditorStoreApi();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { otherDmnsByNamespace } = useOtherDmns();
+  const { externalDmnsByNamespace, allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
   const allDrgElementsByHref = useMemo(() => {
     const ret: AllKnownDrgElementsByHref = new Map();
 
-    const allOtherDmns = [{ model: thisDmn.model }, ...Object.values(otherDmnsByNamespace)];
+    const allDmns = [{ model: thisDmn.model }, ...externalDmnsByNamespace.values()];
 
-    for (let i = 0; i < allOtherDmns.length; i++) {
-      const anyDmn = allOtherDmns[i]!;
+    for (let i = 0; i < allDmns.length; i++) {
+      const anyDmn = allDmns[i]!;
 
       const namespace = anyDmn.model.definitions["@_namespace"];
 
@@ -57,12 +56,10 @@ export function DecisionServiceProperties({
     }
 
     return ret;
-  }, [otherDmnsByNamespace, thisDmn]);
+  }, [externalDmnsByNamespace, thisDmn]);
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
-
-  const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
   return (
     <>

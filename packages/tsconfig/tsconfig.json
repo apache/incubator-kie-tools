@@ -11,6 +11,7 @@
     "removeComments": true,
     "strictNullChecks": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "downlevelIteration": true,
     "skipLibCheck": true,
     "jsx": "react-jsx"

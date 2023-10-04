@@ -81,6 +81,7 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-quarkus-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-feel-antlr4-parser" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -102,7 +103,6 @@ digraph G {
   "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/yaml-language-server" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-editors-dev-vscode-extension" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-extension-common-test-helpers" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -265,6 +265,7 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/dmn-feel-antlr4-parser" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools-core/switch-expression-ts" [ style = "dashed", color = "blue" ];

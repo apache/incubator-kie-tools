@@ -1,5 +1,5 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { traverseTypeRefedInExpressionHolders } from "../dataTypes/DataTypeSpec";
+import { traverseItemDefinition, traverseTypeRefedInExpressionHolders } from "../dataTypes/DataTypeSpec";
 import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 
@@ -18,6 +18,17 @@ export function renameImport({
 
   const _import = definitions.import![index];
 
+  traverseItemDefinition(definitions.itemDefinition ?? [], (item) => {
+    if (item.typeRef) {
+      const feelQName = parseFeelQName(item.typeRef);
+      item.typeRef = buildFeelQName({
+        type: "feel-qname",
+        importName: trimmedNewName,
+        localPart: feelQName.localPart,
+      });
+    }
+  });
+
   definitions.drgElement ??= [];
   for (let i = 0; i < definitions.drgElement.length; i++) {
     const element = definitions.drgElement[i];
@@ -29,7 +40,7 @@ export function renameImport({
     ) {
       if (element.variable?.["@_typeRef"]) {
         if (allTopLevelDataTypesByFeelName.get(element.variable?.["@_typeRef"])?.namespace === _import["@_namespace"]) {
-          const feelQName = parseFeelQName(element.variable?.["@_typeRef"]);
+          const feelQName = parseFeelQName(element.variable["@_typeRef"]);
           element.variable["@_typeRef"] = buildFeelQName({
             type: "feel-qname",
             importName: trimmedNewName,
@@ -54,6 +65,10 @@ export function renameImport({
       }
     }
   }
+
+  // TODO: Tiago --> Update the "document" entry of PMML functions that were pointing to the renamed included PMML model.
+
+  // FIXME: Daniel --> Update FEEL expressions that contain references to this import.
 
   _import["@_name"] = trimmedNewName;
 }
