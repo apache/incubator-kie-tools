@@ -19,6 +19,15 @@
 
 .kie-scesim-editor--content {
   margin-right: 50px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.kie-scesim-editor--content-alert {
+  margin: 15px;
 }
 
 .kie-scesim-editor--creation-form {

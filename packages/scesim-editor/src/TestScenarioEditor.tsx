@@ -52,6 +52,7 @@ import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
+import { useTestScenarioEditorI18n } from "./i18n";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
@@ -232,6 +233,8 @@ function TestScenarioMainPanel({
   scesimModel: { ScenarioSimulationModel: SceSim__ScenarioSimulationModelType };
   updateSettingField: (field: string, value: string) => void;
 }) {
+  const { i18n } = useTestScenarioEditorI18n();
+
   const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
 
   const onTabChanged = useCallback((_event, tab) => {
@@ -316,9 +319,35 @@ function TestScenarioMainPanel({
     return data;
   }, [scesimModel]);
 
+  const alert = useMemo(() => {
+    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"];
+    const variant: "success" | "danger" | "warning" | "info" | "default" = "warning";
+    let message = "";
+
+    if (dataObjects.length > 0) {
+      message =
+        assetType === TestScenarioType[TestScenarioType.DMN]
+          ? i18n.alerts.dmnDataRetrievedFromScesim
+          : i18n.alerts.ruleDataRetrievedFromScesim;
+    } else {
+      message =
+        assetType === TestScenarioType[TestScenarioType.DMN]
+          ? i18n.alerts.dmnDataNotAvailable
+          : i18n.alerts.ruleDataNotAvailable;
+    }
+
+    return { variant: variant, message: message };
+  }, [
+    dataObjects.length,
+    i18n.alerts.dmnDataNotAvailable,
+    i18n.alerts.dmnDataRetrievedFromScesim,
+    i18n.alerts.ruleDataNotAvailable,
+    i18n.alerts.ruleDataRetrievedFromScesim,
+    scesimModel.ScenarioSimulationModel,
+  ]);
+
   return (
     <>
-      {/* <Alert variant="warning" title="Warning alert title" /> */}
       <div className="kie-scesim-editor--content">
         <Drawer isExpanded={dockPanel.isOpen} isInline={true} position={"right"}>
           <DrawerContent
@@ -342,7 +371,7 @@ function TestScenarioMainPanel({
             }
           >
             <DrawerContentBody>
-              {/* <div className={"kie-scesim-editor--grid-container"}>Scenario Grid</div>*/}
+              <Alert className="kie-scesim-editor--content-alert" variant={alert.variant} title={alert.message} />
               <Tabs
                 isFilled={true}
                 activeKey={tab}
@@ -357,23 +386,24 @@ function TestScenarioMainPanel({
                       <TabTitleIcon>
                         <TableIcon />
                       </TabTitleIcon>
-                      <TabTitleText>Test Scenarios</TabTitleText>
+                      <TabTitleText>{i18n.tab.scenarioTabTitle}</TabTitleText>
                     </>
                   }
-                ></Tab>
+                >
+                  {i18n.tab.scenarioTabTitle}
+                </Tab>
                 <Tab
                   eventKey={TestScenarioEditorTab.BACKGROUND}
-                  isDisabled
                   title={
                     <>
                       <TabTitleIcon>
                         <TableIcon />
                       </TabTitleIcon>
-                      <TabTitleText>Background</TabTitleText>
+                      <TabTitleText>{i18n.tab.backgroundTabTitle}</TabTitleText>
                     </>
                   }
                 >
-                  Backgroud
+                  {i18n.tab.backgroundTabTitle}
                 </Tab>
               </Tabs>
             </DrawerContentBody>

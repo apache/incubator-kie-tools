@@ -23,7 +23,6 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider/";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
@@ -36,6 +35,7 @@ import { ToolbarContent } from "@patternfly/react-core/dist/js/components/Toolba
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/";
 import { TreeView, TreeViewDataItem } from "@patternfly/react-core/dist/js/components/TreeView/";
 import { TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/";
+import { WarningTriangleIcon } from "@patternfly/react-icons/dist/esm/icons/warning-triangle-icon";
 
 import { TestScenarioDataObject, TestScenarioType } from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
@@ -144,7 +144,7 @@ function TestScenarioDataObjectsPanel({
         ) : (
           <Bullseye>
             <EmptyState>
-              <EmptyStateIcon icon={CubesIcon} />
+              <EmptyStateIcon icon={WarningTriangleIcon} />
               <Title headingLevel="h4" size="lg">
                 {i18n.drawer.dataObjects.emptyDataObjectsTitle}
               </Title>

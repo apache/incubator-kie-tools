@@ -22,6 +22,15 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 
 export const en: TestScenarioEditorI18n = {
   ...en_common,
+  alerts: {
+    dmnDataNotAvailable:
+      "It's still not possibile to retrieve the DMN information from your DMN file. Work in progress.",
+    ruleDataNotAvailable: "It's still not possibile to retrieve the Java Objects information from your project.",
+    dmnDataRetrievedFromScesim:
+      "Impossibile to retrieve DMN information from the given DMN file. Data Objects have been restored the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose that Class Object data.",
+    ruleDataRetrievedFromScesim:
+      "Impossibile to retrieve the Java Classes from your project. Data Objects have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose that DMN Node data.",
+  },
   drawer: {
     cheatSheet: {
       paragraph1: "To start off, use contextual menus in the table to insert or edit or delete new columns and rows.",
