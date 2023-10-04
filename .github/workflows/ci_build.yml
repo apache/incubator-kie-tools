@@ -112,7 +112,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -129,7 +129,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -146,7 +146,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -163,7 +163,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
+          KIE_TOOLS_BUILD__runEndToEndTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"

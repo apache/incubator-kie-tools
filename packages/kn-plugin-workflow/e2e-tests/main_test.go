@@ -1,4 +1,4 @@
-//go:build it_tests
+//go:build e2e_tests
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -19,7 +19,7 @@
  * under the License.
  */
 
-package it_tests
+package e2e_tests
 
 import (
 	"flag"
