@@ -111,7 +111,7 @@ export function traverseTypeRefedInExpressionHolders(
 ) {
   if (expressionHolder.__$$element === "decision") {
     if (expressionHolder.expression) {
-      traverseTypeRefedInExpressions(expressionHolder.expression, expressionHolder.expression.__$$element, consumer);
+      traverseTypeRefedInExpressions(expressionHolder.expression, expressionHolder.expression?.__$$element, consumer);
     }
   } else if (expressionHolder.__$$element === "businessKnowledgeModel") {
     if (expressionHolder.encapsulatedLogic) {
@@ -167,7 +167,7 @@ export function traverseTypeRefedInExpressions(
       if (e.variable) {
         consumer(e.variable);
       }
-      traverseTypeRefedInExpressions(e.expression, e.expression.__$$element, consumer);
+      traverseTypeRefedInExpressions(e.expression, e.expression?.__$$element, consumer);
     }
   } else if (__$$element === "invocation") {
     for (const e of (expression as DMN15__tInvocation).binding ?? []) {
@@ -181,28 +181,28 @@ export function traverseTypeRefedInExpressions(
     traverseTypeRefedInExpressions(e.expression, e.expression?.__$$element, consumer);
   } else if (__$$element === "conditional") {
     const e = expression as DMN15__tConditional;
-    traverseTypeRefedInExpressions(e.if.expression, e.if.expression.__$$element, consumer);
-    traverseTypeRefedInExpressions(e.then.expression, e.then.expression.__$$element, consumer);
-    traverseTypeRefedInExpressions(e.else.expression, e.else.expression.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.if.expression, e.if.expression?.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.then.expression, e.then.expression?.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.else.expression, e.else.expression?.__$$element, consumer);
   } else if (__$$element === "every") {
     const e = expression as DMN15__tQuantified;
     consumer(e.in);
-    traverseTypeRefedInExpressions(e.in.expression, e.in.expression.__$$element, consumer);
-    traverseTypeRefedInExpressions(e.satisfies.expression, e.satisfies.expression.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
   } else if (__$$element === "some") {
     const e = expression as DMN15__tQuantified;
     consumer(e.in);
-    traverseTypeRefedInExpressions(e.in.expression, e.in.expression.__$$element, consumer);
-    traverseTypeRefedInExpressions(e.satisfies.expression, e.satisfies.expression.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
   } else if (__$$element === "filter") {
     const e = expression as DMN15__tFilter;
-    traverseTypeRefedInExpressions(e.in.expression, e.in.expression.__$$element, consumer);
-    traverseTypeRefedInExpressions(e.match.expression, e.match.expression.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.match.expression, e.match.expression?.__$$element, consumer);
   } else if (__$$element === "for") {
     const e = expression as DMN15__tFor;
     consumer(e.in);
-    traverseTypeRefedInExpressions(e.in.expression, e.in.expression.__$$element, consumer);
-    traverseTypeRefedInExpressions(e.return.expression, e.return.expression.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseTypeRefedInExpressions(e.return.expression, e.return.expression?.__$$element, consumer);
   } else {
     throw new Error(`Unknown type of expression '${__$$element}'.`);
   }
