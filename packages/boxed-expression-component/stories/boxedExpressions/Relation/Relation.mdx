@@ -1,0 +1,136 @@
+{/* prettier-ignore */}
+{/*
+
+- Licensed to the Apache Software Foundation (ASF) under one
+- or more contributor license agreements. See the NOTICE file
+- distributed with this work for additional information
+- regarding copyright ownership. The ASF licenses this file
+- to you under the Apache License, Version 2.0 (the
+- "License"); you may not use this file except in compliance
+- with the License. You may obtain a copy of the License at
+-
+- http://www.apache.org/licenses/LICENSE-2.0
+-
+- Unless required by applicable law or agreed to in writing,
+- software distributed under the License is distributed on an
+- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+- KIND, either express or implied. See the License for the
+- specific language governing permissions and limitations
+- under the License.
+  \*/}
+
+import { Meta, Story, Canvas, Subtitle } from "@storybook/blocks";
+import * as Relation from "./Relation.stories";
+
+<Meta title="MDX/Relation" of={Relation} />
+
+# Relation
+
+A Relation is a form of boxed expression that shows a relational table.
+Each column has a variable associated with it, and each row starts with the row index
+and has one cell related to each column. Those cells store values for each variable.
+This expression doesn't have results, and its purpose is to store information [1].
+
+**Important**: Only literal expressions are supported on the Relations cells.
+
+<div style={{ display: "flex", flexDirection: "row" }}>
+  <Story of={Relation.People} />
+  <small>
+    <br />
+    <br />
+    <br />
+    This is an example of a Relation expression for a People decision which has the tPeople type. The columns Name, Age and
+    Country are variables from the "tPeople" type, and we have two data sets: - Row 1: "Luiz", "30", "Brazil" - Row 2: "Tiago",
+    "29", "USA"
+  </small>
+</div>
+
+## Variable columns
+
+The variable columns can't be less than 1 and don't have a maximum number.
+
+### Headers
+
+If the Relation is the root expression of a decision node, the header row will be split into two rows.
+The first will represent the decision name and type, and the second will represent the variable's name and type.
+Now, if the Relation is a nested expression, it will have only one row, which will be the variable's name and type.
+
+> #### Decision header
+>
+> This row will be a single cell that has the decision name and its type,
+> and by right-clicking on it a context menu will open enabling you to edit its values.
+>
+> #### Variable header
+>
+> This row has a cell for each variable name and type, and by right-clicking on it a context menu will open enabling you to edit its values.
+
+### Values
+
+The value cells are literal expressions that can be filled with static data.
+
+## Index column
+
+### Header
+
+The header row has a "#" symbol which is a placeholder and has any purposes.
+
+### Values
+
+The first and any other additional rows have the row index.
+
+## Controls
+
+### Rows
+
+Left-clicking on the index column cells or in the value cells will open the "Rows" context menu.
+It's possible to insert above, insert below, insert multiples, delete, and duplicate the row.
+
+Another way to add rows is by hovering the mouse on the index column cells will make appear a plus sign on the top (insert above)
+or on the bottom (insert below) of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new row above or below the actual row.
+
+**Important**: It's not possible to perform the above process in the header row index ("#").
+
+### Variables
+
+Left-clicking on the header cells or in the value cells will open the "Columns" context menu.
+It's possible to insert left, insert right, insert multiples, and delete the column.
+
+Another way to add columns is by hovering the mouse on a variable cell will make appear a plus sign on the right (insert right)
+or left (insert left) side of the cell, the position of the plus sign will depend on the mouse position.
+Right-clicking on it will add a new column on the right or left side of the actual column.
+
+## Examples
+
+<div style={{ display: "flex", flexDirection: "column" }}>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Relation.Base} />
+    <small>
+      <br />
+      <br />
+      <br />
+      The smallest Relation expression with one variable and one row.
+    </small>
+  </div>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Relation.Bigger} />
+    <small>
+      <br />
+      <br />
+      <br />A Relation expression with size 4x3.
+    </small>
+  </div>
+  <div style={{ display: "flex", flexDirection: "row" }}>
+    <Story of={Relation.Nested} />
+    <small>
+      <br />
+      <br />
+      <br />
+      The smallest Relation expression nested in a Boxed Context.
+    </small>
+  </div>
+</div>
+
+## Reference
+
+[1] [DMN 1.4 Spec](https://www.omg.org/spec/DMN/1.4/Beta1/PDF#page=108)

@@ -23,6 +23,7 @@ import * as swEditor from "@kie-tools/serverless-workflow-diagram-editor-assets"
 import CopyPlugin from "copy-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
+import NodePolyfillPlugin from "node-polyfill-webpack-plugin";
 import * as path from "path";
 import { EnvironmentPlugin, ProvidePlugin } from "webpack";
 import { merge } from "webpack-merge";
@@ -166,6 +167,7 @@ export default async (env: any, argv: any) => {
               },
             ],
           }),
+          new NodePolyfillPlugin(),
         ],
         module: {
           rules: [

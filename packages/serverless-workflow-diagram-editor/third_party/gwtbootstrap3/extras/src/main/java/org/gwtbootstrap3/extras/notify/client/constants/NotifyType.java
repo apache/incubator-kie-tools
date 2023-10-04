@@ -20,9 +20,9 @@ package org.gwtbootstrap3.extras.notify.client.constants;
  * #L%
  */
 
-import com.google.gwt.dom.client.Style.HasCssName;
 import org.gwtbootstrap3.client.ui.base.helper.EnumHelper;
 import org.gwtbootstrap3.client.ui.constants.Type;
+import org.gwtproject.dom.client.Style;
 
 /**
  * Enumeration of Notify's types (CSS class names).
@@ -31,7 +31,7 @@ import org.gwtbootstrap3.client.ui.constants.Type;
  *
  * @author Pavel Zlámal
  */
-public enum NotifyType implements Type, HasCssName {
+public enum NotifyType implements Type, Style.HasCssName {
 
     DANGER("danger"),
     INFO("info"),

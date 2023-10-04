@@ -66,7 +66,7 @@ export function isSupportingFileForDevMode(args: { path: string; targetFolder: s
   );
 }
 
-export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];
+export type SupportedFileExtensions = (typeof supportedFileExtensionArray)[number];
 
 export function splitFiles(files: WorkspaceFile[]): {
   editableFiles: WorkspaceFile[];

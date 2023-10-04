@@ -31,6 +31,11 @@ import { EditorPage } from "../../editor/EditorPage";
 import { NoMatchPage } from "../../navigation/NoMatchPage";
 import { SamplesCatalog } from "../../samples/SamplesCatalog";
 import { WorkspaceFiles } from "../recentModels/workspaceFiles/WorkspaceFiles";
+import { RuntimeToolsWorkflowInstances } from "../../runtimeTools/workflows/RuntimeToolsWorkflowInstances";
+import { RuntimeToolsWorkflowDetails } from "../../runtimeTools/workflows/RuntimeToolsWorkflowDetails";
+import { RuntimeToolsWorkflowDefinitions } from "../../runtimeTools/workflows/RuntimeToolsWorkflowDefinitions";
+import { RuntimeToolsTriggerCloudEvent } from "../../runtimeTools/workflows/RuntimeToolsTriggerCloudEvent";
+import { RuntimeToolsWorkflowForm } from "../../runtimeTools/workflows/RuntimeToolsWorkflowForm";
 
 export function HomePageRoutes(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
@@ -73,6 +78,21 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
       </Route>
       <Route path={routes.sampleCatalog.path({})}>
         <SamplesCatalog />
+      </Route>
+      <Route path={routes.runtimeToolsWorkflowInstances.path({})}>
+        <RuntimeToolsWorkflowInstances />
+      </Route>
+      <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
+        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
+      </Route>
+      <Route path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}>
+        <RuntimeToolsWorkflowForm />
+      </Route>
+      <Route path={routes.runtimeToolsWorkflowDefinitions.path({})}>
+        <RuntimeToolsWorkflowDefinitions />
+      </Route>
+      <Route path={routes.runtimeToolsTriggerCloudEvent.path({})}>
+        <RuntimeToolsTriggerCloudEvent />
       </Route>
       <Route component={NoMatchPage} />
     </Switch>

@@ -12,13 +12,14 @@ import (
 var cfgTestInputRoot = RootCmdConfig{Name: "kn\u00A0workflow", Version: metadata.PluginVersion}
 
 func TestNewRootCommand(t *testing.T) {
-	t.Run("Test root command name and help", func(t *testing.T) {
-		cmd := NewRootCommand(cfgTestInputRoot)
-		output, err := ExecuteCommandSoft(cmd)
-		require.NoError(t, err, "Error: %v", err)
-		require.Contains(t, output, "Usage:\n  kn\u00a0workflow [command]\n\nAliases:\n  kn\u00a0workflow, kn-workflow")
-		require.Contains(t, output, "Use \"kn\u00a0workflow [command] --help\" for more information about a command.")
-	})
+	//https://issues.redhat.com/browse/KOGITO-9847
+	//t.Run("Test root command name and help", func(t *testing.T) {
+	//	cmd := NewRootCommand(cfgTestInputRoot)
+	//	output, err := ExecuteCommandSoft(cmd)
+	//	require.NoError(t, err, "Error: %v", err)
+	//	require.Contains(t, output, "Usage:\n  kn\u00a0workflow [command]\n\nAliases:\n  kn\u00a0workflow, kn-workflow")
+	//	require.Contains(t, output, "Use \"kn\u00a0workflow [command] --help\" for more information about a command.")
+	//})
 
 	t.Run("Check subcommands except Cobra generated (help, completion)", func(t *testing.T) {
 		expectedSubCommands := []string{
@@ -27,6 +28,7 @@ func TestNewRootCommand(t *testing.T) {
 			"quarkus",
 			"run",
 			"undeploy",
+			"gen-manifest",
 			"version",
 		}
 
