@@ -1178,8 +1178,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/chrome":
         specifier: ^0.0.193
         version: 0.0.193
@@ -1193,8 +1193,8 @@ importers:
         specifier: ^4.1.15
         version: 4.1.15
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -1349,14 +1349,14 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/selenium-webdriver":
         specifier: ^4.1.15
         version: 4.1.15
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3175,10 +3175,10 @@ importers:
         version: 5.76.1(webpack-cli@4.10.0)
       webpack-cli:
         specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.76.1)
       webpack-dev-server:
         specifier: ^4.7.3
-        version: 4.11.0(webpack-cli@4.10.0)(webpack@5.76.1)
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.76.1)
       webpack-merge:
         specifier: ^5.8.0
         version: 5.8.0
@@ -5190,8 +5190,8 @@ importers:
         specifier: workspace:*
         version: link:../vscode-extension-common-test-helpers
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/fs-extra":
         specifier: ^11.0.1
         version: 11.0.1
@@ -5220,8 +5220,8 @@ importers:
         specifier: ^2.20.1
         version: 2.20.1
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -7566,108 +7566,6 @@ importers:
         specifier: ^5.9.0
         version: 5.9.0
 
-  packages/serverless-logic-web-tools-swf-deployment-webapp2:
-    devDependencies:
-      "@babel/core":
-        specifier: ^7.16.0
-        version: 7.18.10
-      "@babel/preset-env":
-        specifier: ^7.16.0
-        version: 7.18.10(@babel/core@7.18.10)
-      "@babel/preset-react":
-        specifier: ^7.16.0
-        version: 7.16.0(@babel/core@7.18.10)
-      "@kie-tools-core/patternfly-base":
-        specifier: workspace:*
-        version: link:../patternfly-base
-      "@kie-tools-core/webpack-base":
-        specifier: workspace:*
-        version: link:../webpack-base
-      "@kie-tools/eslint":
-        specifier: workspace:*
-        version: link:../eslint
-      "@kie-tools/root-env":
-        specifier: workspace:*
-        version: link:../root-env
-      "@kie-tools/tsconfig":
-        specifier: workspace:*
-        version: link:../tsconfig
-      "@patternfly/react-core":
-        specifier: ^4.276.6
-        version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
-      "@patternfly/react-icons":
-        specifier: ^4.93.6
-        version: 4.93.6(react-dom@17.0.2)(react@17.0.2)
-      "@types/jest":
-        specifier: ^26.0.23
-        version: 26.0.23
-      "@types/jest-when":
-        specifier: ^2.7.4
-        version: 2.7.4
-      "@types/react":
-        specifier: ^17.0.6
-        version: 17.0.21
-      "@types/react-dom":
-        specifier: ^17.0.5
-        version: 17.0.8
-      "@types/react-router":
-        specifier: ^5.1.14
-        version: 5.1.14
-      "@types/react-router-dom":
-        specifier: ^5.1.7
-        version: 5.1.7
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.76.1)
-      html-replace-webpack-plugin:
-        specifier: ^2.6.0
-        version: 2.6.0
-      html-webpack-plugin:
-        specifier: ^5.3.2
-        version: 5.3.2(webpack@5.76.1)
-      jest:
-        specifier: ^26.6.3
-        version: 26.6.3
-      jest-junit:
-        specifier: ^14.0.0
-        version: 14.0.0
-      jest-when:
-        specifier: ^3.5.0
-        version: 3.5.0(jest@26.6.3)
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.2.1
-        version: 5.2.1(react@17.0.2)
-      react-router-dom:
-        specifier: ^5.2.1
-        version: 5.3.0(react@17.0.2)
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      ts-jest:
-        specifier: ^26.5.6
-        version: 26.5.6(jest@26.6.3)(typescript@4.8.4)
-      typescript:
-        specifier: ^4.6.2
-        version: 4.8.4
-      webpack:
-        specifier: ^5.36.2
-        version: 5.76.1(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
-      webpack-dev-server:
-        specifier: ^4.7.3
-        version: 4.11.0(webpack-cli@4.10.0)(webpack@5.76.1)
-      webpack-merge:
-        specifier: ^5.8.0
-        version: 5.8.0
-
   packages/serverless-logic-web-tools-swf-dev-mode-image:
     devDependencies:
       "@kie-tools/root-env":
@@ -8566,8 +8464,8 @@ importers:
         specifier: workspace:*
         version: link:../vscode-extension-common-test-helpers
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/fs-extra":
         specifier: ^11.0.1
         version: 11.0.1
@@ -8590,8 +8488,8 @@ importers:
         specifier: ^2.20.1
         version: 2.20.1
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -9711,8 +9609,8 @@ importers:
   packages/vscode-extension-common-test-helpers:
     dependencies:
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       fs-extra:
         specifier: ^11.1.1
         version: 11.1.1
@@ -9727,8 +9625,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/fs-extra":
         specifier: ^11.0.1
         version: 11.0.1
@@ -9815,8 +9713,8 @@ importers:
         specifier: workspace:*
         version: link:../vscode-extension-common-test-helpers
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/fs-extra":
         specifier: ^11.0.1
         version: 11.0.1
@@ -9839,8 +9737,8 @@ importers:
         specifier: ^2.20.1
         version: 2.20.1
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
@@ -10656,8 +10554,8 @@ importers:
         specifier: workspace:*
         version: link:../vscode-extension-common-test-helpers
       "@types/chai":
-        specifier: ^4.2.17
-        version: 4.2.18
+        specifier: ^4.3.6
+        version: 4.3.6
       "@types/fs-extra":
         specifier: ^11.0.1
         version: 11.0.1
@@ -10680,8 +10578,8 @@ importers:
         specifier: ^2.20.1
         version: 2.20.1
       chai:
-        specifier: ^4.3.4
-        version: 4.3.4
+        specifier: ^4.3.10
+        version: 4.3.10
       cpr:
         specifier: ^3.0.1
         version: 3.0.1
@@ -16277,7 +16175,7 @@ packages:
     dependencies:
       "@babel/core": 7.22.9
       "@babel/helper-annotate-as-pure": 7.22.5
-      "@babel/helper-create-class-features-plugin": 7.22.15(@babel/core@7.22.9)
+      "@babel/helper-create-class-features-plugin": 7.22.9(@babel/core@7.22.9)
       "@babel/helper-plugin-utils": 7.22.5
       "@babel/plugin-syntax-typescript": 7.22.5(@babel/core@7.22.9)
     dev: true
@@ -18548,7 +18446,7 @@ packages:
       "@jest/test-result": 26.6.2
       "@jest/transform": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 18.13.0
+      "@types/node": 18.17.18
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -18589,7 +18487,7 @@ packages:
       "@jest/test-result": 26.6.2
       "@jest/transform": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 18.13.0
+      "@types/node": 18.17.18
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -23145,9 +23043,9 @@ packages:
       "@types/responselike": 1.0.0
     dev: true
 
-  /@types/chai@4.2.18:
+  /@types/chai@4.3.6:
     resolution:
-      { integrity: sha512-rS27+EkB/RE1Iz3u0XtVL5q36MGDWbgYe7zWiodyKNUnthxY0rukK5V36eiUCtCisB7NN8zKYH6DO2M37qxFEQ== }
+      { integrity: sha512-VOVRLM1mBxIRxydiViqPcKn6MIxZytrbMpd6RJLIWKxUNr3zux8no0Oc7kJx0WAPIitgZ0gkrDS+btlqQpubpw== }
     dev: true
 
   /@types/chrome@0.0.193:
@@ -24509,7 +24407,7 @@ packages:
       webpack-cli: 4.x.x
     dependencies:
       webpack: 5.76.1(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.76.1)
     dev: true
 
   /@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0)(webpack@5.88.2):
@@ -24544,20 +24442,6 @@ packages:
         optional: true
     dependencies:
       webpack-cli: 4.10.0(webpack@5.88.2)
-    dev: true
-
-  /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.11.0):
-    resolution:
-      { integrity: sha512-oxnCNGj88fL+xzV+dacXs44HcDwf1ovs3AuEzvP7mqXw7fQntqIhQ1BRmynh4qEKQSSSRSWVyXRjmTbZIX9V2Q== }
-    peerDependencies:
-      webpack-cli: 4.x.x
-      webpack-dev-server: "*"
-    peerDependenciesMeta:
-      webpack-dev-server:
-        optional: true
-    dependencies:
-      webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
-      webpack-dev-server: 4.11.0(webpack-cli@4.10.0)(webpack@5.76.1)
     dev: true
 
   /@webpack-cli/serve@1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.15.1):
@@ -25046,15 +24930,6 @@ packages:
       acorn-walk: 7.2.0
     dev: true
 
-  /acorn-import-assertions@1.8.0(acorn@8.8.2):
-    resolution:
-      { integrity: sha512-m7VZ3jwz4eK6A4Vtt8Ew1/mNbP24u0FhdyfA7fSvnJR6LMdfOYnmuIrrJAgrYfYJ10F/otaHTtrtrtmHdMNzEw== }
-    peerDependencies:
-      acorn: ^8
-    dependencies:
-      acorn: 8.8.2
-    dev: true
-
   /acorn-import-assertions@1.9.0(acorn@8.10.0):
     resolution:
       { integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA== }
@@ -25062,6 +24937,15 @@ packages:
       acorn: ^8
     dependencies:
       acorn: 8.10.0
+    dev: true
+
+  /acorn-import-assertions@1.9.0(acorn@8.8.2):
+    resolution:
+      { integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA== }
+    peerDependencies:
+      acorn: ^8
+    dependencies:
+      acorn: 8.8.2
     dev: true
 
   /acorn-jsx@5.3.2(acorn@7.4.1):
@@ -27052,15 +26936,16 @@ packages:
       { integrity: sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw== }
     dev: true
 
-  /chai@4.3.4:
+  /chai@4.3.10:
     resolution:
-      { integrity: sha512-yS5H68VYOCtN1cjfwumDSuzn/9c+yza4f3reKXlE5rUg7SFcCEy90gJvydNgOYtblyf4Zi6jIWRnXOgErta0KA== }
+      { integrity: sha512-0UXG04VuVbruMUYbJ6JctvH0YnC/4q3/AkT18q4NaITo91CUm0liMS9VqzT9vZhVQ/1eqPanMWjBM+Juhfb/9g== }
     engines: { node: ">=4" }
     dependencies:
       assertion-error: 1.1.0
-      check-error: 1.0.2
-      deep-eql: 3.0.1
-      get-func-name: 2.0.0
+      check-error: 1.0.3
+      deep-eql: 4.1.3
+      get-func-name: 2.0.2
+      loupe: 2.3.6
       pathval: 1.1.1
       type-detect: 4.0.8
 
@@ -27163,9 +27048,11 @@ packages:
       { integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA== }
     dev: true
 
-  /check-error@1.0.2:
+  /check-error@1.0.3:
     resolution:
-      { integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA== }
+      { integrity: sha512-iKEoDYaRmd1mxM90a2OEfWhjsjPpYPuQ+lMYsoxB126+t8fw7ySEO48nmDg5COTjxDI65/Y2OWpeEHk3ZOe8zg== }
+    dependencies:
+      get-func-name: 2.0.2
 
   /check-more-types@2.24.0:
     resolution:
@@ -28835,10 +28722,10 @@ packages:
     engines: { node: ">=4.0.0" }
     dev: false
 
-  /deep-eql@3.0.1:
+  /deep-eql@4.1.3:
     resolution:
-      { integrity: sha512-+QeIQyN5ZuO+3Uk5DYh6/1eKO0m0YmJFGNmFHGACpf1ClL1nmlV/p4gNgbl2pJGxgXb4faqo6UE+M5ACEMyVcw== }
-    engines: { node: ">=0.12" }
+      { integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw== }
+    engines: { node: ">=6" }
     dependencies:
       type-detect: 4.0.8
 
@@ -29531,15 +29418,6 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
-    dev: true
-
-  /enhanced-resolve@5.14.0:
-    resolution:
-      { integrity: sha512-+DCows0XNwLDcUhbFJPdlQEVnT2zXlCv7hPxemTz86/O+B/hCQ+mb7ydkPKiflpVraqLPCAfu7lDy+hBXueojw== }
-    engines: { node: ">=10.13.0" }
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.2.1
     dev: true
 
   /enhanced-resolve@5.15.0:
@@ -31663,9 +31541,9 @@ packages:
       { integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg== }
     engines: { node: 6.* || 8.* || >= 10.* }
 
-  /get-func-name@2.0.0:
+  /get-func-name@2.0.2:
     resolution:
-      { integrity: sha512-Hm0ixYtaSZ/V7C8FJrtZIuBBI+iSgL+1Aq82zSu8VQNB4S3Gk8e7Qs3VwBDJAhmRZcFqkl3tQu36g/Foh5I5ig== }
+      { integrity: sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ== }
 
   /get-intrinsic@1.2.1:
     resolution:
@@ -35660,6 +35538,12 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
+
+  /loupe@2.3.6:
+    resolution:
+      { integrity: sha512-RaPMZKiMy8/JruncMU5Bt6na1eftNoo++R4Y+N2FrxkDVTrGvcyzFTsaGif4QTeKESheMGegbhw6iUAq+5A8zA== }
+    dependencies:
+      get-func-name: 2.0.2
 
   /lower-case-first@2.0.2:
     resolution:
@@ -42376,7 +42260,7 @@ packages:
       jest-worker: 27.4.6
       schema-utils: 3.3.0
       serialize-javascript: 6.0.1
-      terser: 5.19.3
+      terser: 5.19.2
       webpack: 5.76.1(@swc/core@1.3.71)(esbuild@0.18.17)(webpack-cli@4.10.0)
     dev: true
 
@@ -42403,7 +42287,7 @@ packages:
       jest-worker: 27.4.6
       schema-utils: 3.3.0
       serialize-javascript: 6.0.1
-      terser: 5.19.3
+      terser: 5.19.2
       webpack: 5.88.2(@swc/core@1.3.71)(esbuild@0.18.17)(webpack-cli@4.10.0)
     dev: true
 
@@ -42429,7 +42313,7 @@ packages:
       jest-worker: 27.4.6
       schema-utils: 3.3.0
       serialize-javascript: 6.0.1
-      terser: 5.19.3
+      terser: 5.19.2
       webpack: 5.76.1(esbuild@0.15.5)
     dev: true
 
@@ -44169,7 +44053,7 @@ packages:
     engines: { node: ">=12" }
     dev: true
 
-  /webpack-cli@4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1):
+  /webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.76.1):
     resolution:
       { integrity: sha512-NLhDfH/h4O6UOy+0LSso42xvYypClINuMNBVVzX4vX98TmTaTUxwRbXdhucbFMd2qLaCTcLq/PdYrvi8onw90w== }
     engines: { node: ">=10.13.0" }
@@ -44193,7 +44077,7 @@ packages:
       "@discoveryjs/json-ext": 0.5.7
       "@webpack-cli/configtest": 1.2.0(webpack-cli@4.10.0)(webpack@5.76.1)
       "@webpack-cli/info": 1.5.0(webpack-cli@4.10.0)
-      "@webpack-cli/serve": 1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.11.0)
+      "@webpack-cli/serve": 1.7.0(webpack-cli@4.10.0)(webpack-dev-server@4.15.1)
       colorette: 2.0.16
       commander: 7.2.0
       cross-spawn: 7.0.3
@@ -44202,7 +44086,7 @@ packages:
       interpret: 2.2.0
       rechoir: 0.7.0
       webpack: 5.76.1(webpack-cli@4.10.0)
-      webpack-dev-server: 4.11.0(webpack-cli@4.10.0)(webpack@5.76.1)
+      webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.76.1)
       webpack-merge: 5.9.0
     dev: true
 
@@ -44286,7 +44170,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      colorette: 2.0.16
+      colorette: 2.0.20
       memfs: 3.5.1
       mime-types: 2.1.34
       range-parser: 1.2.1
@@ -44301,7 +44185,7 @@ packages:
     peerDependencies:
       webpack: ^4.0.0 || ^5.0.0
     dependencies:
-      colorette: 2.0.16
+      colorette: 2.0.20
       memfs: 3.5.1
       mime-types: 2.1.34
       range-parser: 1.2.1
@@ -44327,56 +44211,6 @@ packages:
       webpack: 5.88.2(@swc/core@1.3.71)(esbuild@0.18.17)(webpack-cli@4.10.0)
     dev: true
 
-  /webpack-dev-server@4.11.0(webpack-cli@4.10.0)(webpack@5.76.1):
-    resolution:
-      { integrity: sha512-L5S4Q2zT57SK7tazgzjMiSMBdsw+rGYIX27MgPgx7LDhWO0lViPrHKoLS7jo5In06PWYAhlYu3PbyoC6yAThbw== }
-    engines: { node: ">= 12.13.0" }
-    hasBin: true
-    peerDependencies:
-      webpack: ^4.37.0 || ^5.0.0
-      webpack-cli: "*"
-    peerDependenciesMeta:
-      webpack-cli:
-        optional: true
-    dependencies:
-      "@types/bonjour": 3.5.10
-      "@types/connect-history-api-fallback": 1.3.5
-      "@types/express": 4.17.17
-      "@types/serve-index": 1.9.1
-      "@types/serve-static": 1.13.10
-      "@types/sockjs": 0.3.33
-      "@types/ws": 8.5.4
-      ansi-html-community: 0.0.8
-      bonjour-service: 1.1.1
-      chokidar: 3.5.3
-      colorette: 2.0.16
-      compression: 1.7.4
-      connect-history-api-fallback: 2.0.0
-      default-gateway: 6.0.3
-      express: 4.18.2
-      graceful-fs: 4.2.11
-      html-entities: 2.3.2
-      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
-      ipaddr.js: 2.0.1
-      open: 8.4.0
-      p-retry: 4.6.1
-      rimraf: 3.0.2
-      schema-utils: 4.0.0
-      selfsigned: 2.1.1
-      serve-index: 1.9.1
-      sockjs: 0.3.24
-      spdy: 4.0.2
-      webpack: 5.76.1(webpack-cli@4.10.0)
-      webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
-      webpack-dev-middleware: 5.3.3(webpack@5.76.1)
-      ws: 8.13.0
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - supports-color
-      - utf-8-validate
-    dev: true
-
   /webpack-dev-server@4.11.0(webpack@5.76.1):
     resolution:
       { integrity: sha512-L5S4Q2zT57SK7tazgzjMiSMBdsw+rGYIX27MgPgx7LDhWO0lViPrHKoLS7jo5In06PWYAhlYu3PbyoC6yAThbw== }
@@ -44399,7 +44233,7 @@ packages:
       ansi-html-community: 0.0.8
       bonjour-service: 1.1.1
       chokidar: 3.5.3
-      colorette: 2.0.16
+      colorette: 2.0.20
       compression: 1.7.4
       connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3
@@ -44417,6 +44251,59 @@ packages:
       sockjs: 0.3.24
       spdy: 4.0.2
       webpack: 5.76.1(esbuild@0.15.5)
+      webpack-dev-middleware: 5.3.3(webpack@5.76.1)
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.76.1):
+    resolution:
+      { integrity: sha512-5hbAst3h3C3L8w6W4P96L5vaV0PxSmJhxZvWKYIdgxOQm8pNZ5dEOmmSLBVpP85ReeyRt6AS1QJNyo/oFFPeVA== }
+    engines: { node: ">= 12.13.0" }
+    hasBin: true
+    peerDependencies:
+      webpack: ^4.37.0 || ^5.0.0
+      webpack-cli: "*"
+    peerDependenciesMeta:
+      webpack:
+        optional: true
+      webpack-cli:
+        optional: true
+    dependencies:
+      "@types/bonjour": 3.5.10
+      "@types/connect-history-api-fallback": 1.3.5
+      "@types/express": 4.17.17
+      "@types/serve-index": 1.9.1
+      "@types/serve-static": 1.13.10
+      "@types/sockjs": 0.3.33
+      "@types/ws": 8.5.5
+      ansi-html-community: 0.0.8
+      bonjour-service: 1.1.1
+      chokidar: 3.5.3
+      colorette: 2.0.20
+      compression: 1.7.4
+      connect-history-api-fallback: 2.0.0
+      default-gateway: 6.0.3
+      express: 4.18.2
+      graceful-fs: 4.2.11
+      html-entities: 2.3.2
+      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
+      ipaddr.js: 2.0.1
+      launch-editor: 2.6.0
+      open: 8.4.0
+      p-retry: 4.6.1
+      rimraf: 3.0.2
+      schema-utils: 4.0.0
+      selfsigned: 2.1.1
+      serve-index: 1.9.1
+      sockjs: 0.3.24
+      spdy: 4.0.2
+      webpack: 5.76.1(webpack-cli@4.10.0)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.76.1)
       webpack-dev-middleware: 5.3.3(webpack@5.76.1)
       ws: 8.13.0
     transitivePeerDependencies:
@@ -44645,10 +44532,10 @@ packages:
       "@webassemblyjs/wasm-edit": 1.11.1
       "@webassemblyjs/wasm-parser": 1.11.1
       acorn: 8.8.2
-      acorn-import-assertions: 1.8.0(acorn@8.8.2)
+      acorn-import-assertions: 1.9.0(acorn@8.8.2)
       browserslist: 4.21.5
       chrome-trace-event: 1.0.2
-      enhanced-resolve: 5.14.0
+      enhanced-resolve: 5.15.0
       es-module-lexer: 0.9.3
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -44662,7 +44549,7 @@ packages:
       tapable: 2.2.0
       terser-webpack-plugin: 5.3.0(webpack@5.76.1)
       watchpack: 2.4.0
-      webpack-cli: 4.10.0(webpack-dev-server@4.11.0)(webpack@5.76.1)
+      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.76.1)
       webpack-sources: 3.2.3
     transitivePeerDependencies:
       - "@swc/core"
