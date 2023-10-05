@@ -118,6 +118,7 @@ export function DecisionProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
+        isReadonly={isReadonly}
         value={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {

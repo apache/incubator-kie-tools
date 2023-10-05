@@ -89,6 +89,7 @@ export function BkmProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
+        isReadonly={isReadonly}
         value={bkm.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {

@@ -82,6 +82,7 @@ export function InputDataProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
+        isReadonly={isReadonly}
         value={inputData.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {

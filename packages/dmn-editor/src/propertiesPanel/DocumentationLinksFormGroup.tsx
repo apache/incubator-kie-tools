@@ -18,15 +18,15 @@ const PLACEHOLDER_URL_ALIAS = "Enter the URL alias...";
 const PLACEHOLDER_URL = "Enter your documentation URL...";
 
 export function DocumentationLinksFormGroup({
+  isReadonly,
   value,
   onChange,
 }: {
+  isReadonly: boolean;
   value?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
-  const isReadonly = useMemo(() => false, []);
-
-  const onUrlAliasRenamed = useCallback(
+  const onChangeUrlAlias = useCallback(
     (newUrlAlias: string, index: number) => {
       if (isReadonly) {
         return;
@@ -40,7 +40,7 @@ export function DocumentationLinksFormGroup({
     [isReadonly, onChange, value]
   );
 
-  const onUrlRenamed = useCallback(
+  const onChangeUrl = useCallback(
     (newUrl: string, index: number) => {
       if (isReadonly) {
         return;
@@ -97,8 +97,8 @@ export function DocumentationLinksFormGroup({
             kieAttachment={kieAttachment}
             index={index}
             isReadonly={isReadonly}
-            onUrlAliasRenamed={onUrlAliasRenamed}
-            onUrlRenamed={onUrlRenamed}
+            onChangeUrlAlias={onChangeUrlAlias}
+            onChangeUrl={onChangeUrl}
             onRemove={onRemove}
           />
         ))}
@@ -111,15 +111,15 @@ function DocumentationLinksInput({
   kieAttachment,
   index,
   isReadonly,
-  onUrlAliasRenamed,
-  onUrlRenamed,
+  onChangeUrlAlias,
+  onChangeUrl,
   onRemove,
 }: {
   kieAttachment: Namespaced<"kie", KIE__tAttachment>;
   index: number;
   isReadonly: boolean;
-  onUrlAliasRenamed: (newUrlAlias: string, index: number) => void;
-  onUrlRenamed: (newUrl: string, index: number) => void;
+  onChangeUrlAlias: (newUrlAlias: string, index: number) => void;
+  onChangeUrl: (newUrl: string, index: number) => void;
   onRemove: (index: number) => void;
 }) {
   const [isUrlExpanded, setUrlExpanded] = useState<boolean>(kieAttachment["@_url"] !== "" ? false : true);
@@ -152,7 +152,7 @@ function DocumentationLinksInput({
               shouldCommitOnBlur={true}
               placeholder={PLACEHOLDER_URL_ALIAS}
               name={kieAttachment["@_name"] ?? ""}
-              onRenamed={(newUrlAlias) => onUrlAliasRenamed(newUrlAlias, index)}
+              onRenamed={(newUrlAlias) => onChangeUrlAlias(newUrlAlias, index)}
               allUniqueNames={new Map<string, string>([])}
               onClick={() => {
                 if (kieAttachment["@_url"] !== "") {
@@ -164,7 +164,7 @@ function DocumentationLinksInput({
           </Tooltip>
         </FlexItem>
         <FlexItem>
-          <Tooltip content={<Text component={TextVariants.p}>{"Delete"}</Text>}>
+          <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>
             <Button
               style={{ padding: "0px 16px" }}
               variant={"plain"}
@@ -187,7 +187,7 @@ function DocumentationLinksInput({
             shouldCommitOnBlur={true}
             placeholder={PLACEHOLDER_URL}
             name={kieAttachment["@_url"] ?? ""}
-            onRenamed={(newUrl) => onUrlRenamed(newUrl, index)}
+            onRenamed={(newUrl) => onChangeUrl(newUrl, index)}
             allUniqueNames={new Map<string, string>([])}
             onKeyDown={(e) => {
               if (e.code === "Enter") {

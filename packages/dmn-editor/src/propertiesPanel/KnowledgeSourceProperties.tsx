@@ -104,6 +104,7 @@ export function KnowledgeSourceProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
+        isReadonly={isReadonly}
         value={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
