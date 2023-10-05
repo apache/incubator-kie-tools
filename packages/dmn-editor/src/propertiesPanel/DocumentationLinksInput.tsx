@@ -17,7 +17,10 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 const PLACEHOLDER_URL_ALIAS = "Enter the URL alias...";
 const PLACEHOLDER_URL = "Enter your documentation URL...";
 
-export function DocumentationLinksFormGroup(props: {
+export function DocumentationLinksFormGroup({
+  value,
+  onChange,
+}: {
   value?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
@@ -29,12 +32,12 @@ export function DocumentationLinksFormGroup(props: {
         return;
       }
 
-      const newValue = [...(props.value ?? [])];
+      const newValue = [...(value ?? [])];
       const newKieAttachment = newValue[index] ?? { "@_name": "", "@_url": "" };
       newValue[index] = { "@_name": newUrlAlias, "@_url": newKieAttachment["@_url"] };
-      props.onChange?.(newValue);
+      onChange?.(newValue);
     },
-    [isReadonly, props]
+    [isReadonly, onChange, value]
   );
 
   const onUrlRenamed = useCallback(
@@ -43,21 +46,21 @@ export function DocumentationLinksFormGroup(props: {
         return;
       }
 
-      const newValue = [...(props.value ?? [])];
+      const newValue = [...(value ?? [])];
       const newKieAttachment = newValue[index] ?? { "@_name": "", "@_url": "" };
       newValue[index] = { "@_name": newKieAttachment["@_name"], "@_url": newUrl };
-      props.onChange?.(newValue);
+      onChange?.(newValue);
     },
-    [isReadonly, props]
+    [isReadonly, onChange, value]
   );
 
   const onRemove = useCallback(
     (index: number) => {
-      const newValue = [...(props.value ?? [])];
+      const newValue = [...(value ?? [])];
       newValue.splice(index, 1);
-      props.onChange?.(newValue);
+      onChange?.(newValue);
     },
-    [props]
+    [onChange, value]
   );
 
   return (
@@ -67,7 +70,7 @@ export function DocumentationLinksFormGroup(props: {
         <FormFieldGroupHeader
           titleText={{
             text: (
-              <>
+              <React.Fragment>
                 <label className="pf-c-form__label">
                   <span className="pf-c-form__label-text">Documentation links</span>
                 </label>
@@ -75,12 +78,12 @@ export function DocumentationLinksFormGroup(props: {
                   variant={"plain"}
                   icon={<PlusCircleIcon />}
                   onClick={() => {
-                    const newValue = [...(props.value ?? [])];
+                    const newValue = [...(value ?? [])];
                     newValue.push({ "@_name": "", "@_url": "" });
-                    props.onChange?.(newValue);
+                    onChange?.(newValue);
                   }}
                 />
-              </>
+              </React.Fragment>
             ),
             id: "documentation-links",
           }}
@@ -88,18 +91,16 @@ export function DocumentationLinksFormGroup(props: {
       }
     >
       <div>
-        {props.value?.map((kieAttachment, index) => (
-          <>
-            <DocumentationLinksInput
-              key={index}
-              kieAttachment={kieAttachment}
-              index={index}
-              isReadonly={isReadonly}
-              onUrlAliasRenamed={onUrlAliasRenamed}
-              onUrlRenamed={onUrlRenamed}
-              onRemove={onRemove}
-            />
-          </>
+        {value?.map((kieAttachment, index) => (
+          <DocumentationLinksInput
+            key={`${index}-${kieAttachment["@_name"]}-${kieAttachment["@_url"]}`}
+            kieAttachment={kieAttachment}
+            index={index}
+            isReadonly={isReadonly}
+            onUrlAliasRenamed={onUrlAliasRenamed}
+            onUrlRenamed={onUrlRenamed}
+            onRemove={onRemove}
+          />
         ))}
       </div>
     </FormFieldGroup>
@@ -121,12 +122,12 @@ export function DocumentationLinksInput({
   onUrlRenamed: (newUrl: string, index: number) => void;
   onRemove: (index: number) => void;
 }) {
-  const [isUrlExpanded, setUrlExpanded] = useState<boolean>(true);
+  const [isUrlExpanded, setUrlExpanded] = useState<boolean>(kieAttachment["@_url"] !== "" ? false : true);
 
   const urlAliasClassName = useMemo(() => (kieAttachment["@_url"] !== "" ? "url-alias" : ""), [kieAttachment]);
 
   return (
-    <>
+    <React.Fragment>
       <Flex direction={{ default: "row" }}>
         <FlexItem>
           <Button
@@ -196,6 +197,6 @@ export function DocumentationLinksInput({
           />
         </FlexItem>
       )}
-    </>
+    </React.Fragment>
   );
 }

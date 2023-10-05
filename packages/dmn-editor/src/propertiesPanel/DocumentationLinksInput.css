@@ -4,5 +4,6 @@
 }
 
 .url-alias:hover {
+  cursor: pointer;
   text-decoration: underline;
 }
