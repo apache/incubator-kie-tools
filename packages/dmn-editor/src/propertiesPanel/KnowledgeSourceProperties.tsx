@@ -4,7 +4,7 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { DocumentationLinksInput } from "./DocumentationLinksInput";
+import { DocumentationLinksFormGroup, DocumentationLinksInput } from "./DocumentationLinksInput";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -103,9 +103,16 @@ export function KnowledgeSourceProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Documentation links (Work in progress 🔧)">
-        <DocumentationLinksInput />
-      </FormGroup>
+      <DocumentationLinksFormGroup
+        value={knowledgeSource.extensionElements?.["kie:attachment"]}
+        onChange={(newExtensionElements) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
+          });
+        }}
+      />
     </>
   );
 }

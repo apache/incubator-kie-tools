@@ -3,7 +3,7 @@ import { DMN15__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/s
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { DocumentationLinksInput } from "./DocumentationLinksInput";
+import { DocumentationLinksFormGroup } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
@@ -88,18 +88,16 @@ export function BkmProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Documentation links">
-        <DocumentationLinksInput
-          value={bkm.extensionElements?.["kie:attachment"]}
-          onChange={(newExtensionElements) => {
-            setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).extensionElements = {
-                "kie:attachment": newExtensionElements,
-              };
-            });
-          }}
-        />
-      </FormGroup>
+      <DocumentationLinksFormGroup
+        value={bkm.extensionElements?.["kie:attachment"]}
+        onChange={(newExtensionElements) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
+          });
+        }}
+      />
     </>
   );
 }

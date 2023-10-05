@@ -3,7 +3,7 @@ import { DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { DocumentationLinksInput } from "./DocumentationLinksInput";
+import { DocumentationLinksFormGroup, DocumentationLinksInput } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { renameDrgElement } from "../mutations/renameNode";
@@ -81,9 +81,16 @@ export function InputDataProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Documentation links (Work in progress 🔧)">
-        <DocumentationLinksInput />
-      </FormGroup>
+      <DocumentationLinksFormGroup
+        value={inputData.extensionElements?.["kie:attachment"]}
+        onChange={(newExtensionElements) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
+          });
+        }}
+      />
     </>
   );
 }

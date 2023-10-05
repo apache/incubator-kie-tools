@@ -7,7 +7,7 @@ import {
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { DocumentationLinksInput } from "./DocumentationLinksInput";
+import { DocumentationLinksFormGroup, DocumentationLinksInput } from "./DocumentationLinksInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { useMemo } from "react";
@@ -148,9 +148,16 @@ export function DecisionServiceProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Documentation links (Work in progress 🔧)">
-        <DocumentationLinksInput />
-      </FormGroup>
+      <DocumentationLinksFormGroup
+        value={decisionService.extensionElements?.["kie:attachment"]}
+        onChange={(newExtensionElements) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as DMN15__tDecisionService).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
+          });
+        }}
+      />
     </>
   );
 }

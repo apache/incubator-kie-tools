@@ -1,0 +1,8 @@
+.url-alias {
+  color: rgb(0, 102, 204);
+  text-decoration: none;
+}
+
+.url-alias:hover {
+  text-decoration: underline;
+}
