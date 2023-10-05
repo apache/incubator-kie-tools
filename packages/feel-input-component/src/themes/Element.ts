@@ -24,7 +24,7 @@ export enum Element {
   FeelString,
   FeelFunction,
   InputDataVariable,
-  BkmVariable,
+  FunctionCall,
   UnknownVariable,
   FunctionParameterVariable,
 }

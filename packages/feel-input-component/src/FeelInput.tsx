@@ -29,7 +29,7 @@ import {
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
 
-import { VariableType, FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { SymbolType, FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
 
 export type SuggestionProvider = (
@@ -74,17 +74,17 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 // Don't remove this mechanism. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
 let __firstTimeInitializingMonacoToEnableColorizingCorrectly = true;
 
-function getTokenTypeIndex(variableType: VariableType) {
-  switch (variableType) {
+function getTokenTypeIndex(symbolType: SymbolType) {
+  switch (symbolType) {
     default:
-    case VariableType.LocalVariable:
-    case VariableType.Input:
+    case SymbolType.LocalVariable:
+    case SymbolType.GlobalVariable:
       return Element.InputDataVariable;
-    case VariableType.Unknown:
+    case SymbolType.Unknown:
       return Element.UnknownVariable;
-    case VariableType.BusinessKnowledgeModel:
-      return Element.BkmVariable;
-    case VariableType.Parameter:
+    case SymbolType.Invocable:
+      return Element.FunctionCall;
+    case SymbolType.Parameter:
       return Element.FunctionParameterVariable;
   }
 }

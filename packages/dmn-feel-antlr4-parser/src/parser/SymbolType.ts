@@ -17,10 +17,29 @@
  * under the License.
  */
 
-export enum VariableType {
-  Unknown = 0,
-  Input = 1,
-  BusinessKnowledgeModel = 2,
-  LocalVariable = 3,
-  Parameter = 4,
+export enum SymbolType {
+  /**
+   * Symbol not recognized.
+   */
+  Unknown,
+
+  /**
+   * A symbol defined in a Decision or Input node.
+   */
+  GlobalVariable,
+
+  /**
+   * Decision Service and Business Knowledge Model are invocable.
+   */
+  Invocable,
+
+  /**
+   * Local variables.
+   */
+  LocalVariable,
+
+  /**
+   * Parameters of functions.
+   */
+  Parameter,
 }
