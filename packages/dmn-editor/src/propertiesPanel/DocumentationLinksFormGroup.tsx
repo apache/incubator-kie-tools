@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useMemo, useState, useCallback } from "react";
-import "./DocumentationLinksInput.css";
+import "./DocumentationLinksFormGroup.css";
 import { KIE__tAttachment } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Namespaced } from "@kie-tools/xml-parser-ts";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -107,7 +107,7 @@ export function DocumentationLinksFormGroup({
   );
 }
 
-export function DocumentationLinksInput({
+function DocumentationLinksInput({
   kieAttachment,
   index,
   isReadonly,

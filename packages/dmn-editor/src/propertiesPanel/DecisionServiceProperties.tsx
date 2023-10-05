@@ -7,7 +7,7 @@ import {
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { DocumentationLinksFormGroup, DocumentationLinksInput } from "./DocumentationLinksInput";
+import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { useMemo } from "react";
