@@ -641,15 +641,15 @@ export const getCustomWorkflowSchemaFromApi = async (
   return schema ?? null;
 };
 
-export const getCustomWorkflowSchema = (
+export const getCustomWorkflowSchema = async (
   baseUrl: string,
   openApiPath: string,
   workflowName: string
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${baseUrl}/${openApiPath}`)
-      .then((response: any) => {
-        return getCustomWorkflowSchemaFromApi(response, workflowName);
+      .then(async (response: any) => {
+        resolve(await getCustomWorkflowSchemaFromApi(response, workflowName));
       })
       .catch((err) => reject(err));
   });
