@@ -19,7 +19,7 @@
 
 describe("Open from source test", () => {
   const SAMPLES_URL: string =
-    "https://raw.githubusercontent.com/kiegroup/kie-tools/main/packages/online-editor/it-tests/fixtures/";
+    "https://raw.githubusercontent.com/kiegroup/kie-tools/0.32.0-prerelease/packages/online-editor/it-tests/fixtures/";
 
   beforeEach(() => {
     cy.visit("/");
