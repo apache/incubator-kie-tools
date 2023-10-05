@@ -8,7 +8,7 @@ import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/compone
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
-import { FormFieldGroup, FormFieldGroupHeader } from "@patternfly/react-core/dist/js/components/Form";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -64,30 +64,24 @@ export function DocumentationLinksFormGroup({
   );
 
   return (
-    <FormFieldGroup
-      style={{ paddingLeft: "0px" }}
-      header={
-        <FormFieldGroupHeader
-          titleText={{
-            text: (
-              <React.Fragment>
-                <label className="pf-c-form__label">
-                  <span className="pf-c-form__label-text">Documentation links</span>
-                </label>
-                <Button
-                  variant={"plain"}
-                  icon={<PlusCircleIcon />}
-                  onClick={() => {
-                    const newValue = [...(value ?? [])];
-                    newValue.push({ "@_name": "", "@_url": "" });
-                    onChange?.(newValue);
-                  }}
-                />
-              </React.Fragment>
-            ),
-            id: "documentation-links",
-          }}
-        />
+    <FormGroup
+      label={
+        <Flex direction={{ default: "row" }}>
+          <FlexItem>
+            <Text>Documentation links</Text>
+          </FlexItem>
+          <FlexItem>
+            <Button
+              variant={"plain"}
+              icon={<PlusCircleIcon />}
+              onClick={() => {
+                const newValue = [...(value ?? [])];
+                newValue.push({ "@_name": "", "@_url": "" });
+                onChange?.(newValue);
+              }}
+            />
+          </FlexItem>
+        </Flex>
       }
     >
       <div>
@@ -103,7 +97,7 @@ export function DocumentationLinksFormGroup({
           />
         ))}
       </div>
-    </FormFieldGroup>
+    </FormGroup>
   );
 }
 
