@@ -67,8 +67,8 @@ export function ExternalNodesPanel() {
       )}
       {[...externalDmnsByNamespace.entries()].flatMap(([namespace, externalDmn]) => {
         const externalDmnDefinitions = externalDmn.model.definitions;
-        const importName = importsByNamespace.get(namespace)?.["@_name"];
-        if (!importName) {
+        const _import = importsByNamespace.get(namespace);
+        if (!_import) {
           console.debug(
             `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
           );
@@ -78,7 +78,7 @@ export function ExternalNodesPanel() {
         return (
           <div key={externalDmnDefinitions["@_id"]} className={"kie-dmn-editor--external-nodes-section"}>
             <div className={"kie-dmn-editor--external-nodes-section-title"}>
-              <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(${importName})`}
+              <b>{`${externalDmnDefinitions["@_name"]}`}</b> {`(${_import["@_name"]})`}
               <small>
                 <i>
                   <Truncate content={externalDmnsByNamespace.get(namespace)?.path ?? ""} />

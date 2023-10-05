@@ -163,13 +163,13 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   const pmmlParams = useMemo<PmmlParam[]>(() => {
     return [...externalPmmlsByNamespace.entries()].flatMap(([namespace, pmml]) => {
       const documentData = getPmmlDocumentData(pmml.model);
-      const importName = importsByNamespace.get(namespace)?.["@_name"];
-      if (!importName) {
+      const _import = importsByNamespace.get(namespace);
+      if (!_import) {
         return [];
       }
 
       return {
-        document: importName,
+        document: _import["@_name"],
         modelsFromDocument: documentData.models.map((m) => ({
           model: m.modelName,
           parametersFromModel: m.fields.map((f) => ({
