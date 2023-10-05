@@ -234,9 +234,9 @@
         "editor.wordBasedSuggestions": false
       },
       "files.associations": {
-        "*.sw.json": "json",
-        "*.sw.yaml": "yaml",
-        "*.sw.yml": "yaml"
+        "*.sw.json": "serverless-workflow-json",
+        "*.sw.yaml": "serverless-workflow-yaml",
+        "*.sw.yml": "serverless-workflow-yaml"
       },
       "yaml.schemas": {
         "https://serverlessworkflow.io/schemas/0.8/workflow.json": [
