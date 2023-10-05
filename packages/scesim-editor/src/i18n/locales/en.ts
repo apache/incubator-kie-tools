@@ -74,7 +74,7 @@ export const en: TestScenarioEditorI18n = {
     dataObjects: {
       clearSelection: "Clear selection",
       collapseAll: "Collapse all",
-      dataObjectsDescriptionDMN: "DMN Nodes are DMN Input or Decision nodes defined in your DMN asset.",
+      dataObjectsDescriptionDMN: "DMN Nodes are Input or Decision nodes defined in your DMN asset.",
       dataObjectsDescriptionRule: "Java Classes are the required Input or Output data by your DRL asset.",
       descriptionDMN:
         "To edit a test scenario definition, select a grid's column and assign it a DMN Node attribute using the below selector",
@@ -85,7 +85,7 @@ export const en: TestScenarioEditorI18n = {
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
       expandAll: "Expand all",
-      insertDataObject: "Assign it",
+      insertDataObject: "Assign",
       titleDMN: "DMN Nodes selector",
       titleRule: "Java Classes selector",
     },
