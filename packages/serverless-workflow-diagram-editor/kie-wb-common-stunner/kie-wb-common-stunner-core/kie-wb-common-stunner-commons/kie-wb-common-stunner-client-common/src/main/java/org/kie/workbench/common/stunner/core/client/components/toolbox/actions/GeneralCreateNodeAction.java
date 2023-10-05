@@ -206,13 +206,13 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
         final String shapeSetId = canvasHandler.getDiagram().getMetadata().getShapeSetId();
 
         Object definition = targetNode.getContent().getDefinition();
-        String nodeName = JsWindow.editor.definitions.getName(definition);
+        String nodeName = JsWindow.getEditor().getDefinitions().getName(definition);
         final String availableNodeName = getAvailableNodeName(canvasHandler,
-                                                              JsWindow.editor.definitions.getName(definition),
+                JsWindow.getEditor().getDefinitions().getName(definition),
                                                               0);
 
         if (!nodeName.equals(availableNodeName)) {
-            JsWindow.editor.definitions.setName(definition, availableNodeName);
+            JsWindow.getEditor().getDefinitions().setName(definition, availableNodeName);
         }
 
         if (null != parent) {
@@ -232,7 +232,7 @@ public class GeneralCreateNodeAction implements CreateNodeAction<AbstractCanvasH
         String finalNodeName = nodeName;
         canvasHandler.getDiagram().getGraph().nodes().forEach((node) -> {
             View content = (View) ((Node) node).getContent();
-            if (JsWindow.editor.definitions.getName(content.getDefinition()).equals(finalNodeName)) {
+            if (JsWindow.getEditor().getDefinitions().getName(content.getDefinition()).equals(finalNodeName)) {
                 found.set(true);
             }
         });

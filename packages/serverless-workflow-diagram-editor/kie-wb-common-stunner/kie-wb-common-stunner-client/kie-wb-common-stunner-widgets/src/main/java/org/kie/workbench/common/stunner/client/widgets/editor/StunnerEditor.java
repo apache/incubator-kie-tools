@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.api.JsCanvasWrapper;
 import org.kie.workbench.common.stunner.core.client.api.JsStunnerSession;
 import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -186,7 +187,7 @@ public class StunnerEditor {
     @SuppressWarnings("all")
     private void initializeJsSession(AbstractSession session) {
         JsStunnerSession jssession = new JsStunnerSession(session);
-        JsWindow.editor.session = jssession;
+        JsWindow.getEditor().setSession(jssession);
         initializeJsCanvas(session);
     }
 
@@ -201,8 +202,9 @@ public class StunnerEditor {
                 return canvas.getShape(uuid);
             }
         });
-        JsWindow.canvas = jsCanvas;
-        JsWindow.editor.canvas = jsCanvas;
+        JsCanvasWrapper jsCanvasWrapper = new JsCanvasWrapper().setWrapper(jsCanvas);
+        JsWindow.setCanvas(jsCanvasWrapper);
+        JsWindow.getEditor().setCanvas(jsCanvasWrapper);
     }
 
     public int getCurrentContentHash() {

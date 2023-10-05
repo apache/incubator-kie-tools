@@ -72,52 +72,52 @@ public class DomainInitializer {
                                                                             jsDefinitionAdapter,
                                                                             jsPropertyAdapter,
                                                                             jsRuleAdapter);
-        JsWindow.editor = new JsStunnerEditor();
-        JsWindow.editor.definitions = jsDefinitionManager;
+        JsWindow.setEditor(new JsStunnerEditor());
+        JsWindow.getEditor().setDefinitions(jsDefinitionManager);
         this.rules = new HashSet<>();
     }
 
     public DomainInitializer initializeDefinitionSet(Object definitionSet) {
-        JsWindow.editor.definitions.initializeDefinitionSet(definitionSet);
+        JsWindow.getEditor().getDefinitions().initializeDefinitionSet(definitionSet);
         return this;
     }
 
     public DomainInitializer initializeDefinitionsField(String definitionsField) {
-        JsWindow.editor.definitions.initializeDefinitionsField(definitionsField);
+        JsWindow.getEditor().getDefinitions().initializeDefinitionsField(definitionsField);
         return this;
     }
 
     public DomainInitializer initializeDomainQualifier(Annotation domainQualifier) {
-        JsWindow.editor.definitions.initializeDomainQualifier(domainQualifier);
+        JsWindow.getEditor().getDefinitions().initializeDomainQualifier(domainQualifier);
         return this;
     }
 
     @SuppressWarnings("all")
     public DomainInitializer initializeCategory(Class type, String category) {
-        JsWindow.editor.definitions.initializeCategory(type.getName(), category);
+        JsWindow.getEditor().getDefinitions().initializeCategory(type.getName(), category);
         return this;
     }
 
     @SuppressWarnings("all")
     public DomainInitializer initializeLabels(Class type, String... definitionLabels) {
-        JsWindow.editor.definitions.initializeLabels(type.getName(), definitionLabels);
+        JsWindow.getEditor().getDefinitions().initializeLabels(type.getName(), definitionLabels);
         return this;
     }
 
     @SuppressWarnings("all")
     public DomainInitializer initializeDefinitionNameField(Class type, String nameField) {
-        JsWindow.editor.definitions.initializeDefinitionNameField(type.getName(), nameField);
+        JsWindow.getEditor().getDefinitions().initializeDefinitionNameField(type.getName(), nameField);
         return this;
     }
 
     @SuppressWarnings("all")
     public DomainInitializer initializeElementFactory(Class<? extends ElementFactory> factory, String category) {
-        JsWindow.editor.definitions.initializeElementFactory(category, factory);
+        JsWindow.getEditor().getDefinitions().initializeElementFactory(category, factory);
         return this;
     }
 
     public DomainInitializer initializeRules() {
-        JsWindow.editor.definitions.initializeRules(new RuleSetImpl("DefinitionsRuleAdapterImpl", rules));
+        JsWindow.getEditor().getDefinitions().initializeRules(new RuleSetImpl("DefinitionsRuleAdapterImpl", rules));
         return this;
     }
 

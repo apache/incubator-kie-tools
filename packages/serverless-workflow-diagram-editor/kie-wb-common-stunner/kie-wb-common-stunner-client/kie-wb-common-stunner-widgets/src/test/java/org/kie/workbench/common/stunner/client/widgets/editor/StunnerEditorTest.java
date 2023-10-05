@@ -142,7 +142,7 @@ public class StunnerEditorTest {
                 errorPage));
         doNothing().when(tested).setupRootContainer();
         doNothing().when(tested).clearRootAndDrawError();
-        JsWindow.editor = new JsStunnerEditor();
+        JsWindow.setEditor(new JsStunnerEditor());
 
     }
 

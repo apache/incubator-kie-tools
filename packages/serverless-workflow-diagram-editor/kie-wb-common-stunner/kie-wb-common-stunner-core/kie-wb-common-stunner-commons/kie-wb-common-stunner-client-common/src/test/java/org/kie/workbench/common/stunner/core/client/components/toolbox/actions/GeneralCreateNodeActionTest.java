@@ -139,8 +139,8 @@ public class GeneralCreateNodeActionTest {
 
         };
 
-        JsWindow.editor = new JsStunnerEditor();
-        JsWindow.editor.definitions = jsDefinitionManager;
+        JsWindow.setEditor(new JsStunnerEditor());
+        JsWindow.getEditor().setDefinitions(jsDefinitionManager);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class GeneralCreateNodeActionTest {
         final Edge connectorEdge = mock(Edge.class);
         doReturn(connectorEdge).when(connectorElement).asEdge();
 
-        when(JsWindow.editor.definitions.getName(any())).thenReturn("State");
+        when(JsWindow.getEditor().getDefinitions().getName(any())).thenReturn("State");
 
         //when(canvasLayoutUtils.getNext(eq(canvasHandler),
         //                               eq(sourceNode),

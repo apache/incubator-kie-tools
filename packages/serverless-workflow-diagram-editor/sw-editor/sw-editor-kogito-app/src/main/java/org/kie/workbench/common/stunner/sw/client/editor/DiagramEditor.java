@@ -265,7 +265,7 @@ public class DiagramEditor {
     }
 
     JsCanvas getJsCanvas() {
-        return Js.uncheckedCast(JsWindow.editor.canvas);
+        return Js.uncheckedCast(JsWindow.getEditor().getCanvas());
     }
 
     @SuppressWarnings("all")

@@ -132,8 +132,8 @@ public class DomainInitializerTest {
         tested.jsDefinitionSetAdapter = jsDefinitionSetAdapter;
         tested.rules = new HashSet<>();
 
-        JsWindow.editor = new JsStunnerEditor();
-        JsWindow.editor.definitions = jsDefinitionManager;
+        JsWindow.setEditor(new JsStunnerEditor());
+        JsWindow.getEditor().setDefinitions(jsDefinitionManager);
 
         when(adapterManager.forDefinitionSet()).thenReturn(new JsDefinitionSetAdapter());
     }
@@ -145,7 +145,7 @@ public class DomainInitializerTest {
 
         tested.initializeDefinitionSet(definitionSetTest);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDefinitionSet(definitionSetTest);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDefinitionSet(definitionSetTest);
         verify(((DynamicRegistry) registry), times(1)).register(definitionSetTest);
     }
 
@@ -161,7 +161,7 @@ public class DomainInitializerTest {
 
         tested.initializeDefinitionsField(definitionsField);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDefinitionsField(definitionsField);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDefinitionsField(definitionsField);
         assertTrue(jsDefinitionSetAdapter.getDefinitions(pojo).contains(definitionsField));
     }
 
@@ -177,7 +177,7 @@ public class DomainInitializerTest {
 
         tested.initializeDomainQualifier(testEditor);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDomainQualifier(testEditor);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDomainQualifier(testEditor);
         assertEquals(jsDefinitionSetAdapter.getQualifier(pojo), testEditor);
     }
 
@@ -189,7 +189,7 @@ public class DomainInitializerTest {
 
         tested.initializeCategory(type, category);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeCategory(type.getName(), category);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeCategory(type.getName(), category);
         assertEquals(jsDefinitionAdapter.getCategory(pojo), category);
         assertEquals(jsDefinitionAdapter.getId(pojo).type(), DomainInitializerTest.class.getName() + "$Start");
     }
@@ -214,7 +214,7 @@ public class DomainInitializerTest {
 
         tested.initializeLabels(Start.class, "rootNode", "start");
 
-        verify(JsWindow.editor.definitions, times(1)).initializeLabels(type.getName(), labels);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeLabels(type.getName(), labels);
         assertArrayEquals(jsDefinitionAdapter.getLabels(pojo), labels);
     }
 
@@ -227,7 +227,7 @@ public class DomainInitializerTest {
         tested.initializeDefinitionNameField(Start.class, field);
         final Optional<?> property = jsDefinitionAdapter.getProperty(pojo, field);
 
-        verify(JsWindow.editor.definitions, times(1)).initializeDefinitionNameField(type.getName(), field);
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeDefinitionNameField(type.getName(), field);
         assertTrue(property.isPresent());
         JsDefinitionProperty name = (JsDefinitionProperty) property.get();
         assertEquals(pojo, name.getPojo());
@@ -293,7 +293,7 @@ public class DomainInitializerTest {
         assertEquals(0, edgeOccurrences2.getMaxOccurrences());
 
         // Initialization
-        verify(JsWindow.editor.definitions, times(1)).initializeRules(any(RuleSetImpl.class));
+        verify(JsWindow.getEditor().getDefinitions(), times(1)).initializeRules(any(RuleSetImpl.class));
     }
 
     private Rule getRule(final String ruleName, final Collection<Rule> rules) {

@@ -19,7 +19,6 @@
 
 package org.kie.workbench.common.stunner.sw.client;
 
-import elemental2.dom.DomGlobal;
 import io.crysknife.annotation.Application;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -41,7 +40,6 @@ public class MainEntryPoint {
 
     @GWT3EntryPoint
     public void onModuleLoad() {
-        DomGlobal.console.log("init SWDiagramEditor");
         new StunnerLienzoCore().init();
 
         new MainEntryPointBootstrap(this).initialize();
