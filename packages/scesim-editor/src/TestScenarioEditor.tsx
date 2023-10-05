@@ -375,13 +375,7 @@ function TestScenarioMainPanel({
                 <Alert variant={alert.variant} title={alert.message} />
               </div>
               <div className="kie-scesim-editor--content-tabs">
-                <Tabs
-                  isFilled={true}
-                  activeKey={tab}
-                  onSelect={onTabChanged}
-                  role="region"
-                  className={"kie-scesim-editor--tabs"}
-                >
+                <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region">
                   <Tab
                     eventKey={TestScenarioEditorTab.EDITOR}
                     title={
@@ -393,7 +387,7 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    {i18n.tab.scenarioTabTitle}
+                    <Bullseye>{i18n.tab.scenarioTabTitle}</Bullseye>
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}
@@ -406,7 +400,7 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    {i18n.tab.backgroundTabTitle}
+                    <Bullseye>{i18n.tab.backgroundTabTitle}</Bullseye>
                   </Tab>
                 </Tabs>
               </div>
