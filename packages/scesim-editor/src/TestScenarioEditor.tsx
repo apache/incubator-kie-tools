@@ -371,41 +371,45 @@ function TestScenarioMainPanel({
             }
           >
             <DrawerContentBody>
-              <Alert className="kie-scesim-editor--content-alert" variant={alert.variant} title={alert.message} />
-              <Tabs
-                isFilled={true}
-                activeKey={tab}
-                onSelect={onTabChanged}
-                role="region"
-                className={"kie-scesim-editor--tabs"}
-              >
-                <Tab
-                  eventKey={TestScenarioEditorTab.EDITOR}
-                  title={
-                    <>
-                      <TabTitleIcon>
-                        <TableIcon />
-                      </TabTitleIcon>
-                      <TabTitleText>{i18n.tab.scenarioTabTitle}</TabTitleText>
-                    </>
-                  }
+              <div className="kie-scesim-editor--content-alert">
+                <Alert variant={alert.variant} title={alert.message} />
+              </div>
+              <div className="kie-scesim-editor--content-tabs">
+                <Tabs
+                  isFilled={true}
+                  activeKey={tab}
+                  onSelect={onTabChanged}
+                  role="region"
+                  className={"kie-scesim-editor--tabs"}
                 >
-                  {i18n.tab.scenarioTabTitle}
-                </Tab>
-                <Tab
-                  eventKey={TestScenarioEditorTab.BACKGROUND}
-                  title={
-                    <>
-                      <TabTitleIcon>
-                        <TableIcon />
-                      </TabTitleIcon>
-                      <TabTitleText>{i18n.tab.backgroundTabTitle}</TabTitleText>
-                    </>
-                  }
-                >
-                  {i18n.tab.backgroundTabTitle}
-                </Tab>
-              </Tabs>
+                  <Tab
+                    eventKey={TestScenarioEditorTab.EDITOR}
+                    title={
+                      <>
+                        <TabTitleIcon>
+                          <TableIcon />
+                        </TabTitleIcon>
+                        <TabTitleText>{i18n.tab.scenarioTabTitle}</TabTitleText>
+                      </>
+                    }
+                  >
+                    {i18n.tab.scenarioTabTitle}
+                  </Tab>
+                  <Tab
+                    eventKey={TestScenarioEditorTab.BACKGROUND}
+                    title={
+                      <>
+                        <TabTitleIcon>
+                          <TableIcon />
+                        </TabTitleIcon>
+                        <TabTitleText>{i18n.tab.backgroundTabTitle}</TabTitleText>
+                      </>
+                    }
+                  >
+                    {i18n.tab.backgroundTabTitle}
+                  </Tab>
+                </Tabs>
+              </div>
             </DrawerContentBody>
           </DrawerContent>
         </Drawer>

@@ -62,14 +62,16 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       collapseAll: string;
       dataObjectsDescriptionDMN: string;
       dataObjectsDescriptionRule: string;
-      description: string;
-      emptyDataObjectsTitle: string;
+      descriptionDMN: string;
+      descriptionRule: string;
+      emptyDataObjectsTitleDMN: string;
+      emptyDataObjectsTitleRule: string;
       emptyDataObjectsDescriptionDMN: string;
       emptyDataObjectsDescriptionRule: string;
       expandAll: string;
       insertDataObject: string;
-      selectorTitle: string;
-      title: string;
+      titleDMN: string;
+      titleRule: string;
     };
     settings: {
       assetType: string;

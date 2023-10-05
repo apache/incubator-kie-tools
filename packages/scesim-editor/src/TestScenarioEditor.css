@@ -18,7 +18,7 @@
  */
 
 .kie-scesim-editor--content {
-  margin-right: 50px;
+  padding-right: 50px;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -27,7 +27,12 @@
 }
 
 .kie-scesim-editor--content-alert {
-  margin: 15px;
+  padding: 15px;
+}
+
+.kie-scesim-editor--content-tabs {
+  padding-left: 15px;
+  height: 100%;
 }
 
 .kie-scesim-editor--creation-form {

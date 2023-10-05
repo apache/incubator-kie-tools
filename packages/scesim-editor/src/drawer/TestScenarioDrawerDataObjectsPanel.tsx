@@ -116,7 +116,9 @@ function TestScenarioDataObjectsPanel({
   return (
     <>
       <Text className="kie-scesim-editor-drawer-data-objects--text">
-        {i18n.drawer.dataObjects.description}
+        {assetType === TestScenarioType[TestScenarioType.DMN]
+          ? i18n.drawer.dataObjects.descriptionDMN
+          : i18n.drawer.dataObjects.descriptionRule}
         <Tooltip
           content={
             assetType === TestScenarioType[TestScenarioType.DMN]
@@ -146,7 +148,9 @@ function TestScenarioDataObjectsPanel({
             <EmptyState>
               <EmptyStateIcon icon={WarningTriangleIcon} />
               <Title headingLevel="h4" size="lg">
-                {i18n.drawer.dataObjects.emptyDataObjectsTitle}
+                {assetType === TestScenarioType[TestScenarioType.DMN]
+                  ? i18n.drawer.dataObjects.emptyDataObjectsTitleDMN
+                  : i18n.drawer.dataObjects.emptyDataObjectsTitleRule}
               </Title>
               <EmptyStateBody>
                 {assetType === TestScenarioType[TestScenarioType.DMN]

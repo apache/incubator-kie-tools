@@ -32,7 +32,12 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import TestScenarioDrawerDataObjectsPanel from "./TestScenarioDrawerDataObjectsPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
-import { TestScenarioDataObject, TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
+import {
+  TestScenarioDataObject,
+  TestScenarioEditorDock,
+  TestScenarioSettings,
+  TestScenarioType,
+} from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 function TestScenarioDrawerPanel({
@@ -65,7 +70,9 @@ function TestScenarioDrawerPanel({
                 case TestScenarioEditorDock.CHEATSHEET:
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return i18n.drawer.dataObjects.title;
+                  return testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN]
+                    ? i18n.drawer.dataObjects.titleDMN
+                    : i18n.drawer.dataObjects.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
                   return i18n.drawer.settings.title;
                 default:

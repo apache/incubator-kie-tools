@@ -27,9 +27,9 @@ export const en: TestScenarioEditorI18n = {
       "It's still not possibile to retrieve the DMN information from your DMN file. Work in progress.",
     ruleDataNotAvailable: "It's still not possibile to retrieve the Java Objects information from your project.",
     dmnDataRetrievedFromScesim:
-      "Impossibile to retrieve DMN information from the given DMN file. Data Objects have been restored the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose that Class Object data.",
+      "Impossibile to retrieve DMN information from the given DMN file. Data Objects have been restored the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data.",
     ruleDataRetrievedFromScesim:
-      "Impossibile to retrieve the Java Classes from your project. Data Objects have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose that DMN Node data.",
+      "Impossibile to retrieve the Java Classes from your project. Data Objects have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
   },
   drawer: {
     cheatSheet: {
@@ -74,17 +74,20 @@ export const en: TestScenarioEditorI18n = {
     dataObjects: {
       clearSelection: "Clear selection",
       collapseAll: "Collapse all",
-      dataObjectsDescriptionDMN: "Data objects are the DMN Types specified in the related DMN file.",
-      dataObjectsDescriptionRule: "Data objects are the Java objects specified in your project.",
-      description:
-        'To create a test scenario, define the "Given" and "Expect" columns by using the data object selector below.',
-      emptyDataObjectsTitle: "No Data objects",
-      emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Data objects from the linked DMN file.",
+      dataObjectsDescriptionDMN: "DMN Nodes are DMN Input or Decision nodes defined in your DMN asset.",
+      dataObjectsDescriptionRule: "Java Classes are the required Input or Output data by your DRL asset.",
+      descriptionDMN:
+        "To edit a test scenario definition, select a grid's column and assign it a DMN Node attribute using the below selector",
+      descriptionRule:
+        "To edit a test scenario definition, select a grid's column and assign it a Java Class field using the below selector",
+      emptyDataObjectsTitleDMN: "No DMN Nodes",
+      emptyDataObjectsTitleRule: "No Java Classes",
+      emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
       expandAll: "Expand all",
-      insertDataObject: "Insert Data object",
-      selectorTitle: "Selector",
-      title: "Data objects",
+      insertDataObject: "Assign it",
+      titleDMN: "DMN Nodes selector",
+      titleRule: "Java Classes selector",
     },
     settings: {
       assetType: "Type",
@@ -109,7 +112,7 @@ export const en: TestScenarioEditorI18n = {
   },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
-    dataObjectsTooltip: "Data Objects: It provides a tool to edit your Scenarios",
+    dataObjectsTooltip: "Selector: It provides a tool to edit your Scenarios",
     settingsTooltip: "Setting: Properties of this Test Scenario asset",
   },
   tab: {
