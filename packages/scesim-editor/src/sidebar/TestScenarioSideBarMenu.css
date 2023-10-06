@@ -17,6 +17,20 @@
  * under the License.
  */
 
+.kie-scesim-editor--side-bar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 50px;
+  border-left: 1px solid #d2d2d2;
+  background-color: var(--pf-global--BackgroundColor--100);
+}
+
+.kie-scesim-editor--side-bar .pf-c-button {
+  margin-bottom: 10px;
+}
+
 .kie-scesim-editor-side-bar-menu--button {
   display: inline-block;
   --pf-c-button--m-plain--Color: #06c;

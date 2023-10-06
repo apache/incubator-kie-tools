@@ -25,6 +25,8 @@ import { TestScenarioEditor, TestScenarioEditorRef } from "../../src/TestScenari
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
+import "./DevWebApp.css";
+
 export function DevWebApp() {
   const ref = useRef<TestScenarioEditorRef>(null);
 
@@ -91,7 +93,13 @@ export function DevWebApp() {
           <a ref={downloadRef} />
         </PageSection>
         <hr />
-        <PageSection aria-label={"dev-app-body"} variant={"light"} isFilled={true} hasOverflowScroll={true}>
+        <PageSection
+          aria-label={"dev-app-body"}
+          className={"section-body"}
+          isFilled={true}
+          hasOverflowScroll={true}
+          variant={"light"}
+        >
           <TestScenarioEditor ref={ref} />
         </PageSection>
       </Page>
