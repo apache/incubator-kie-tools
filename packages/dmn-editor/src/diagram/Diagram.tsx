@@ -13,7 +13,7 @@ import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
-import { offsetShapePosition, snapShapePosition } from "./SnapGrid";
+import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { TargetHandleId } from "./connections/PositionalTargetNodeHandles";
 import { EdgeType, NodeType, containment, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
@@ -437,26 +437,33 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               state.dispatch.diagram.setNodeStatus(state, change.id, { resizing: change.resizing });
               if (change.dimensions) {
                 const node = nodesById.get(change.id)!;
-                resizeNode({
-                  definitions: state.dmn.model.definitions,
-                  dmnShapesByHref,
-                  change: {
-                    isExternal: !!node.data.dmnObjectQName.prefix,
-                    nodeType: node.type as NodeType,
-                    index: node.data.index,
-                    shapeIndex: node.data.shape.index,
-                    sourceEdgeIndexes: edges.flatMap((e) =>
-                      e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                    ),
-                    targetEdgeIndexes: edges.flatMap((e) =>
-                      e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
-                    ),
-                    dimension: {
-                      "@_width": change.dimensions?.width ?? 0,
-                      "@_height": change.dimensions?.height ?? 0,
+                // We only need to resize the node if its snapped dimensions change, as snapping is non-destructive.
+                const snappedShape = snapShapeDimensions(diagram.snapGrid, node.data.shape);
+                if (
+                  snappedShape.width !== change.dimensions.width ||
+                  snappedShape.height !== change.dimensions.height
+                ) {
+                  resizeNode({
+                    definitions: state.dmn.model.definitions,
+                    dmnShapesByHref,
+                    change: {
+                      isExternal: !!node.data.dmnObjectQName.prefix,
+                      nodeType: node.type as NodeType,
+                      index: node.data.index,
+                      shapeIndex: node.data.shape.index,
+                      sourceEdgeIndexes: edges.flatMap((e) =>
+                        e.source === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                      ),
+                      targetEdgeIndexes: edges.flatMap((e) =>
+                        e.target === change.id && e.data?.dmnEdge ? [e.data.dmnEdge.index] : []
+                      ),
+                      dimension: {
+                        "@_width": change.dimensions?.width ?? 0,
+                        "@_height": change.dimensions?.height ?? 0,
+                      },
                     },
-                  },
-                });
+                  });
+                }
               }
               break;
             case "position":
@@ -1048,6 +1055,25 @@ export function KeyboardShortcuts({
       return rfState;
     });
   }, [dmnEditorStoreApi, esc, rfStoreApi, setConnection]);
+
+  const cut = RF.useKeyPress(["Meta+x"]);
+  useEffect(() => {
+    if (!cut) {
+      return;
+    }
+  }, [cut]);
+  const copy = RF.useKeyPress(["Meta+c"]);
+  useEffect(() => {
+    if (!copy) {
+      return;
+    }
+  }, [copy]);
+  const paste = RF.useKeyPress(["Meta+v"]);
+  useEffect(() => {
+    if (!paste) {
+      return;
+    }
+  }, [paste]);
 
   const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {

@@ -87,14 +87,12 @@ export function resizeNode({
     const encapsulatedDecisionsOffset = (dividerLinelocalY * deltaHeight) / shapeBounds["@_height"]; // We proportionally increase the Encapuslated Decisions area, based on where the Divider Line is positioned.
     const outputDecisionsOffset = deltaHeight - encapsulatedDecisionsOffset;
 
-    dividerLinePoints[0] = {
-      "@_x": dividerLinePoints[0]["@_x"],
-      "@_y": dividerLinePoints[0]["@_y"] + encapsulatedDecisionsOffset,
-    };
-    dividerLinePoints[1] = {
-      "@_x": dividerLinePoints[1]["@_x"] + deltaWidth / 2,
-      "@_y": dividerLinePoints[1]["@_y"] + encapsulatedDecisionsOffset,
-    };
+    // Don't need to assign to itself. Here just for "completeness".
+    // dividerLinePoints[0]["@_x"] = dividerLinePoints[0]["@_x"];
+    dividerLinePoints[0]["@_y"] = dividerLinePoints[0]["@_y"] + encapsulatedDecisionsOffset;
+
+    dividerLinePoints[1]["@_x"] = dividerLinePoints[1]["@_x"] + deltaWidth / 2;
+    dividerLinePoints[1]["@_y"] = dividerLinePoints[1]["@_y"] + encapsulatedDecisionsOffset;
 
     // We ignore handling the contents of the Decision Service when it is external
     if (!change.isExternal) {
