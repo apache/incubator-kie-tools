@@ -17,7 +17,7 @@ import { DataTypeIndex, DataType } from "../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "../Spec";
-import { ExternalPmmlsIndex, ExternalDmn, ExternalDmnsIndex } from "../DmnEditor";
+import { ExternalPmmlsIndex, ExternalDmnsIndex } from "../DmnEditor";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;

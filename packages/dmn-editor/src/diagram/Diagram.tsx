@@ -5,7 +5,6 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import { TenantIcon } from "@patternfly/react-icons/dist/js/icons/tenant-icon";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addEdge } from "../mutations/addEdge";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
@@ -65,6 +64,9 @@ import { original } from "immer";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
+import { DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE, DmnEditorDiagramClipboard } from "../clipboard/Clipboard";
+import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
+import { buildClipboardFromDiagram } from "../clipboard/Clipboard";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -1060,19 +1062,102 @@ export function KeyboardShortcuts({
     if (!cut) {
       return;
     }
-  }, [cut]);
+    console.debug("DMN DIAGRAM: Cutting selected nodes...");
+
+    const { clipboard, copiedEdgesById, danglingEdgesById } = buildClipboardFromDiagram(
+      rfStoreApi.getState(),
+      dmnEditorStoreApi.getState()
+    );
+
+    navigator.clipboard.writeText(JSON.stringify(clipboard)).then(() => {
+      dmnEditorStoreApi.setState((state) => {
+        // Delete edges first
+        [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
+          deleteEdge({
+            definitions: state.dmn.model.definitions,
+            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
+          });
+          state.dispatch.diagram.setEdgeStatus(state, edge.id, {
+            selected: false,
+            draggingWaypoint: false,
+          });
+        });
+
+        // Then delete nodes
+        rfStoreApi
+          .getState()
+          .getNodes()
+          .forEach((node: RF.Node<DmnDiagramNodeData>) => {
+            if (node.selected) {
+              deleteNode({
+                definitions: state.dmn.model.definitions,
+                dmnObjectQName: node.data.dmnObjectQName,
+                dmnObject: { type: node.type as NodeType, id: node.data.dmnObject["@_id"]! },
+              });
+              state.dispatch.diagram.setNodeStatus(state, node.id, {
+                selected: false,
+                dragging: false,
+                resizing: false,
+              });
+            }
+          });
+      });
+    });
+  }, [cut, dmnEditorStoreApi, rfStoreApi]);
+
   const copy = RF.useKeyPress(["Meta+c"]);
   useEffect(() => {
     if (!copy) {
       return;
     }
-  }, [copy]);
+
+    console.debug("DMN DIAGRAM: Copying selected nodes...");
+
+    const { clipboard } = buildClipboardFromDiagram(rfStoreApi.getState(), dmnEditorStoreApi.getState());
+    navigator.clipboard.writeText(JSON.stringify(clipboard));
+  }, [copy, dmnEditorStoreApi, rfStoreApi]);
+
   const paste = RF.useKeyPress(["Meta+v"]);
   useEffect(() => {
     if (!paste) {
       return;
     }
-  }, [paste]);
+
+    console.debug("DMN DIAGRAM: Pasting nodes...");
+
+    navigator.clipboard.readText().then((text) => {
+      let possibleClipboard: DmnEditorDiagramClipboard | undefined;
+      try {
+        possibleClipboard = JSON.parse(text);
+      } catch (e) {
+        console.debug("DMN DIAGRAM: Ignoring pasted content. Not a valid JSON.");
+      }
+
+      console.debug("DMN DIAGRAM: Ignoring pasted content. MIME type doesn't match.");
+      if (!possibleClipboard || possibleClipboard?.mimeType !== DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE) {
+        return;
+      }
+
+      const clipboard = possibleClipboard;
+
+      // FIXME: Tiago --> Deal with IDs to make sure they're unique to this pasting operation.
+      //                  Create a new function called `randomizeIds` on xml-parser-ts, using meta from xml-parser-ts-codegen
+
+      // FIXME: Tiago --> Slightly offset nodes if positions clash with existing nodes.
+
+      dmnEditorStoreApi.setState((state) => {
+        state.dmn.model.definitions.drgElement ??= [];
+        state.dmn.model.definitions.drgElement.push(...clipboard.drgElements);
+        state.dmn.model.definitions.artifact ??= [];
+        state.dmn.model.definitions.artifact.push(...clipboard.artifacts);
+
+        const { diagramElements, diagram } = addOrGetDefaultDiagram({ definitions: state.dmn.model.definitions });
+        diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
+        diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
+        diagram["di:extension"]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"]?.push(...clipboard.widths);
+      });
+    });
+  }, [dmnEditorStoreApi, paste]);
 
   const selectAll = RF.useKeyPress(["a", "Meta+a"]);
   useEffect(() => {

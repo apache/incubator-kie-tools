@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Unpacked } from "../store/useDiagramData";
+import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
 import { NodeIcon } from "../icons/Icons";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";

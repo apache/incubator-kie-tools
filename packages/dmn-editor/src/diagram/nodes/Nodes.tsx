@@ -38,7 +38,7 @@ import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from 
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "../../xml/xmlQNames";
-import { Unpacked } from "../../store/useDiagramData";
+import { Unpacked } from "../../tsExt/tsExt";
 import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 
 export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>;

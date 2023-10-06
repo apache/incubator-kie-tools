@@ -9,7 +9,7 @@ import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
 import { getCenter } from "./Maths";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { Unpacked } from "../../store/useDiagramData";
+import { Unpacked } from "../../tsExt/tsExt";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;

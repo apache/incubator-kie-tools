@@ -5,7 +5,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as React from "react";
 import * as RF from "reactflow";
-import { Unpacked } from "../../store/useDiagramData";
+import { Unpacked } from "../../tsExt/tsExt";
 import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { useIsHovered } from "../useIsHovered";
@@ -21,6 +21,7 @@ export type DmnDiagramEdgeData = {
       | Unpacked<DMN15__tDefinitions["artifact"]>["__$$element"]
       | Unpacked<DMN15__tDefinitions["drgElement"]>["__$$element"];
     requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";
+    index: number;
   };
   dmnShapeSource: DMNDI15__DMNShape | undefined;
   dmnShapeTarget: DMNDI15__DMNShape | undefined;

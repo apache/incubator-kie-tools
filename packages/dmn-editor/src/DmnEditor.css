@@ -768,6 +768,7 @@ th {
   border-radius: 20px;
   border: 1px solid black;
   background: white;
+  margin-bottom: 24px;
 }
 .react-flow__controls:hover {
   box-shadow: -4px -4px 2px 0px rgb(127 127 127);
@@ -819,6 +820,10 @@ th {
 }
 .react-flow__pane.selection {
   cursor: crosshair;
+}
+/* attribution*/
+.react-flow__attribution {
+  margin-right: 7px;
 }
 /* ⬆ (end) react-flow theming ⬆ */
 

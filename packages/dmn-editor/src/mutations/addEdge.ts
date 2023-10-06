@@ -20,7 +20,7 @@ import {
 } from "../diagram/maths/DmnMaths";
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
-import { Unpacked } from "../store/useDiagramData";
+import { Unpacked } from "../tsExt/tsExt";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 

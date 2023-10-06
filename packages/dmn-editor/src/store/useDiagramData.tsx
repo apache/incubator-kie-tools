@@ -17,6 +17,7 @@ import { XmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../diagram/nodes/NodeSvgs";
 import { ExternalDmnsIndex } from "../DmnEditor";
+import { Unpacked } from "../tsExt/tsExt";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -146,13 +147,14 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
       ...(thisDmn.model.definitions.drgElement ?? []).reduce<RF.Edge<DmnDiagramEdgeData>[]>((acc, dmnObject) => {
         if (dmnObject.__$$element === "decision") {
           acc.push(
-            ...(dmnObject.informationRequirement ?? []).map((ir) =>
+            ...(dmnObject.informationRequirement ?? []).map((ir, index) =>
               newEdge({
                 id: ir["@_id"] ?? "",
                 dmnObject: {
                   type: dmnObject.__$$element,
                   id: dmnObject["@_id"] ?? "",
                   requirementType: "informationRequirement",
+                  index,
                 },
                 type: EDGE_TYPES.informationRequirement,
                 source: (ir.requiredDecision ?? ir.requiredInput)!["@_href"],
@@ -164,13 +166,14 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         // knowledge requirements
         if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
           acc.push(
-            ...(dmnObject.knowledgeRequirement ?? []).map((kr) =>
+            ...(dmnObject.knowledgeRequirement ?? []).map((kr, index) =>
               newEdge({
                 id: kr["@_id"] ?? "",
                 dmnObject: {
                   type: dmnObject.__$$element,
                   id: dmnObject["@_id"] ?? "",
                   requirementType: "knowledgeRequirement",
+                  index,
                 },
                 type: EDGE_TYPES.knowledgeRequirement,
                 source: kr.requiredKnowledge["@_href"],
@@ -186,13 +189,14 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           dmnObject.__$$element === "knowledgeSource"
         ) {
           acc.push(
-            ...(dmnObject.authorityRequirement ?? []).map((ar) =>
+            ...(dmnObject.authorityRequirement ?? []).map((ar, index) =>
               newEdge({
                 id: ar["@_id"] ?? "",
                 dmnObject: {
                   type: dmnObject.__$$element,
                   id: dmnObject["@_id"] ?? "",
                   requirementType: "authorityRequirement",
+                  index,
                 },
                 type: EDGE_TYPES.authorityRequirement,
                 source: (ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"],
@@ -204,7 +208,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         return acc;
       }, []),
       // associations
-      ...(thisDmn.model.definitions.artifact ?? []).flatMap((dmnObject) =>
+      ...(thisDmn.model.definitions.artifact ?? []).flatMap((dmnObject, index) =>
         dmnObject.__$$element === "association"
           ? [
               newEdge({
@@ -213,6 +217,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
                   type: dmnObject.__$$element,
                   id: dmnObject["@_id"] ?? "",
                   requirementType: "association",
+                  index,
                 },
                 type: EDGE_TYPES.association,
                 source: dmnObject.sourceRef?.["@_href"],
@@ -240,7 +245,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
 
       const dmnObjectNamespace = thisDmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`];
       const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
-      const shape = dmnShapesByHref.get(id)!;
+      const { dmnElementRefQName, ...shape } = dmnShapesByHref.get(id)!;
       const data: DmnDiagramNodeData = {
         dmnObjectNamespace,
         dmnObjectQName,
@@ -445,5 +450,3 @@ export type AdjMatrix = Record<
 >;
 
 export type HierarchyDirection = "up" | "down";
-
-export type Unpacked<T> = T extends Array<infer U> ? U : never;
