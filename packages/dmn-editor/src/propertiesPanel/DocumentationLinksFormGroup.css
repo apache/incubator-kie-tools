@@ -1,9 +1,20 @@
-.url-alias {
+.url-title {
+  width: fit-content;
+}
+
+.url-title > input[disabled] {
+  pointer-events: none;
+}
+
+.url-title-is-link {
+  cursor: pointer;
+}
+
+.url-title-is-link > input {
   color: rgb(0, 102, 204);
   text-decoration: none;
 }
 
-.url-alias:hover {
-  cursor: pointer;
+.url-title-is-link:hover {
   text-decoration: underline;
 }

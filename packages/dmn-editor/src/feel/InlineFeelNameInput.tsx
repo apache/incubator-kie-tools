@@ -100,6 +100,7 @@ export function InlineFeelNameInput({
           updateIsValidFlag(e.currentTarget.value);
           e.currentTarget.blur();
         }
+        onKeyDown?.(e);
       }}
       onBlur={(e) => {
         if (isValid && shouldCommitOnBlur) {

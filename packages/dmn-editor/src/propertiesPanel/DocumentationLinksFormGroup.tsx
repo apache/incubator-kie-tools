@@ -14,9 +14,10 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { UniqueNameIndex } from "../Spec";
 
-const PLACEHOLDER_URL_ALIAS = "Enter the URL alias...";
-const PLACEHOLDER_URL = "Enter your documentation URL...";
+const PLACEHOLDER_URL_TITLE = "Enter a title...";
+const PLACEHOLDER_URL = "Enter a URL...";
 
 export function DocumentationLinksFormGroup({
   isReadonly,
@@ -27,15 +28,15 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
-  const onChangeUrlAlias = useCallback(
-    (newUrlAlias: string, index: number) => {
+  const onChangeUrlTitle = useCallback(
+    (newUrlTitle: string, index: number) => {
       if (isReadonly) {
         return;
       }
 
       const newValues = [...(values ?? [])];
       const newKieAttachment = newValues[index] ?? { "@_name": "", "@_url": "" };
-      newValues[index] = { "@_name": newUrlAlias, "@_url": newKieAttachment["@_url"] };
+      newValues[index] = { "@_name": newUrlTitle, "@_url": newKieAttachment["@_url"] };
       onChange?.(newValues);
     },
     [isReadonly, onChange, values]
@@ -96,19 +97,18 @@ export function DocumentationLinksFormGroup({
       }
     >
       <div>
-        {values?.map((kieAttachment, index) => {
-          return (
+        {values?.map((kieAttachment, index) => (
+          <div key={documentationKeys.get(index)} style={{ paddingTop: index === 0 ? "0" : "16px" }}>
             <DocumentationLinksInput
-              key={documentationKeys.get(index)}
               kieAttachment={kieAttachment}
               index={index}
               isReadonly={isReadonly}
-              onChangeUrlAlias={onChangeUrlAlias}
+              onChangeUrlTitle={onChangeUrlTitle}
               onChangeUrl={onChangeUrl}
               onRemove={onRemove}
             />
-          );
-        })}
+          </div>
+        ))}
       </div>
     </FormGroup>
   );
@@ -118,22 +118,45 @@ function DocumentationLinksInput({
   kieAttachment,
   index,
   isReadonly,
-  onChangeUrlAlias,
+  onChangeUrlTitle,
   onChangeUrl,
   onRemove,
 }: {
   kieAttachment: Namespaced<"kie", KIE__tAttachment>;
   index: number;
   isReadonly: boolean;
-  onChangeUrlAlias: (newUrlAlias: string, index: number) => void;
+  onChangeUrlTitle: (newUrlTitle: string, index: number) => void;
   onChangeUrl: (newUrl: string, index: number) => void;
   onRemove: (index: number) => void;
 }) {
   const [isUrlExpanded, setUrlExpanded] = useState<boolean>(kieAttachment["@_url"] !== "" ? false : true);
 
-  const urlAliasClassName = useMemo(() => (kieAttachment["@_url"] !== "" ? "url-alias" : ""), [kieAttachment]);
+  const urlTitleRef = useRef<HTMLInputElement>(null);
 
-  const urlAliasRef = useRef<HTMLInputElement>(null);
+  const isValidUrl = useCallback((urlString) => {
+    try {
+      const url = new URL(urlString);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch (error) {
+      return false;
+    }
+  }, []);
+
+  const urlTitleIsLink = useMemo(
+    () => isValidUrl(kieAttachment["@_url"]) && !isUrlExpanded,
+    [isValidUrl, isUrlExpanded, kieAttachment]
+  );
+  const shouldRenderTooltip = useMemo(
+    () => kieAttachment["@_url"] !== "" && !isUrlExpanded,
+    [isUrlExpanded, kieAttachment]
+  );
+  const urlTitleClassName = useMemo(
+    () => (urlTitleIsLink ? "url-title url-title-is-link" : "url-title"),
+    [urlTitleIsLink]
+  );
+  const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
+  const urlUniqueMap = useMemo(() => new Map<string, string>(), []);
+  const validate = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
 
   return (
     <React.Fragment>
@@ -150,29 +173,35 @@ function DocumentationLinksInput({
           </Button>
         </FlexItem>
         <FlexItem style={{ flexGrow: 1 }}>
-          <div ref={urlAliasRef}>
+          <div
+            ref={urlTitleRef}
+            className={urlTitleClassName}
+            onClick={() => {
+              if (urlTitleIsLink) {
+                window.open(kieAttachment["@_url"]);
+              } else if (!isUrlExpanded) {
+                setUrlExpanded(true);
+              }
+            }}
+          >
             <InlineFeelNameInput
               isPlain={true}
-              isReadonly={isReadonly}
+              isReadonly={!isUrlExpanded || isReadonly}
               id={`${index}-name`}
               shouldCommitOnBlur={true}
-              placeholder={PLACEHOLDER_URL_ALIAS}
+              placeholder={PLACEHOLDER_URL_TITLE}
               name={kieAttachment["@_name"] ?? ""}
-              onRenamed={(newUrlAlias) => onChangeUrlAlias(newUrlAlias, index)}
-              allUniqueNames={new Map<string, string>([])}
-              onClick={() => {
-                if (kieAttachment["@_url"] !== "") {
-                  window.open(kieAttachment["@_url"]);
-                }
-              }}
-              className={urlAliasClassName}
+              onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle, index)}
+              allUniqueNames={urlTitleUniqueMap}
+              validate={validate}
             />
           </div>
-          {!isUrlExpanded && (
+
+          {shouldRenderTooltip && (
             <Tooltip
               content={<Text component={TextVariants.p}>{kieAttachment["@_url"]}</Text>}
               position={TooltipPosition.topStart}
-              reference={urlAliasRef}
+              reference={urlTitleRef}
             />
           )}
         </FlexItem>
@@ -190,7 +219,7 @@ function DocumentationLinksInput({
       {isUrlExpanded && (
         <FlexItem
           style={{
-            paddingLeft: `${72}px`,
+            paddingLeft: "40px",
           }}
         >
           <InlineFeelNameInput
@@ -201,7 +230,8 @@ function DocumentationLinksInput({
             placeholder={PLACEHOLDER_URL}
             name={kieAttachment["@_url"] ?? ""}
             onRenamed={(newUrl) => onChangeUrl(newUrl, index)}
-            allUniqueNames={new Map<string, string>([])}
+            allUniqueNames={urlUniqueMap}
+            validate={validate}
             onKeyDown={(e) => {
               if (e.code === "Enter") {
                 setUrlExpanded(false);
