@@ -164,305 +164,320 @@ export function ItemComponentsTable({
           )}
         </FlexItem>
       </Flex>
-      <table className={"kie-dmn-editor--data-type-properties-table"}>
-        <thead>
-          <tr>
-            <th style={{ minWidth: "200px", width: "67%" }}>Name</th>
-            <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is struct?</th>
-            <th style={{ minWidth: "280px", width: "33%" }}>Type</th>
-            <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is collection?</th>
-            <th style={{ minWidth: "160px", maxWidth: "160px" }}>{/** Constraints */}</th>
-            <th style={{ minWidth: "160px", maxWidth: "160px" }}>{/** Remove */}</th>
-            <th>{/** Actions */}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {flatTree.map(({ dataType: dt, allUniqueNamesAtLevel }, i) => {
-            const nextDt = flatTree[Math.min(i + 1, flatTree.length - 1)].dataType;
-            const lastDt = flatTree[Math.max(i - 1, 0)].dataType;
+      {flatTree.length <= 0 && (
+        <div
+          style={{
+            margin: "8px 24px 0 0",
+            padding: "24px",
+            background: "#eee",
+            borderRadius: "24px",
+            textAlign: "center",
+          }}
+        >
+          None yet
+        </div>
+      )}
+      {flatTree.length > 0 && (
+        <table className={"kie-dmn-editor--data-type-properties-table"}>
+          <thead>
+            <tr>
+              <th style={{ minWidth: "200px", width: "67%" }}>Name</th>
+              <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is struct?</th>
+              <th style={{ minWidth: "280px", width: "33%" }}>Type</th>
+              <th style={{ minWidth: "140px", maxWidth: "140px" }}>Is collection?</th>
+              <th style={{ minWidth: "160px", maxWidth: "160px" }}>{/** Constraints */}</th>
+              <th style={{ minWidth: "160px", maxWidth: "160px" }}>{/** Remove */}</th>
+              <th>{/** Actions */}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {flatTree.map(({ dataType: dt, allUniqueNamesAtLevel }, i) => {
+              const nextDt = flatTree[Math.min(i + 1, flatTree.length - 1)].dataType;
+              const lastDt = flatTree[Math.max(i - 1, 0)].dataType;
 
-            const nextIsUpper = nextDt.parents.size < dt.parents.size;
-            const lastIsUpper = lastDt.parents.size < dt.parents.size;
+              const nextIsUpper = nextDt.parents.size < dt.parents.size;
+              const lastIsUpper = lastDt.parents.size < dt.parents.size;
 
-            let areAllParentsExpanded = true;
-            for (const p of [...dt.parents].reverse()) {
-              if (p === parent.itemDefinition["@_id"]) {
-                break; // The top-level ItemDefinition open, so this is where we stop checking.
-              } else if (!expandedItemComponentIdsSet.has(p)) {
-                areAllParentsExpanded = false; // If one of the parents are not
+              let areAllParentsExpanded = true;
+              for (const p of [...dt.parents].reverse()) {
+                if (p === parent.itemDefinition["@_id"]) {
+                  break; // The top-level ItemDefinition open, so this is where we stop checking.
+                } else if (!expandedItemComponentIdsSet.has(p)) {
+                  areAllParentsExpanded = false; // If one of the parents are not
+                }
               }
-            }
 
-            const shouldShowRow =
-              dt.parentId === parent.itemDefinition["@_id"] ||
-              (isStruct(allDataTypesById.get(dt.parentId!)!.itemDefinition) && areAllParentsExpanded);
+              const shouldShowRow =
+                dt.parentId === parent.itemDefinition["@_id"] ||
+                (isStruct(allDataTypesById.get(dt.parentId!)!.itemDefinition) && areAllParentsExpanded);
 
-            const level = dt.parents.size - parent.parents.size - 1;
+              const level = dt.parents.size - parent.parents.size - 1;
 
-            const brigthnessPercentage =
-              STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
-              level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
+              const brigthnessPercentage =
+                STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE -
+                level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
 
-            return (
-              <React.Fragment key={dt.itemDefinition["@_id"]}>
-                {shouldShowRow && (
-                  <tr
-                    style={{ backdropFilter: `brightness(${brigthnessPercentage}%)` }}
-                    className={`${nextIsUpper ? "last-nested-at-level" : ""} ${
-                      lastIsUpper ? "first-nested-at-level" : ""
-                    }`}
-                  >
-                    <td
-                      style={{
-                        paddingLeft: `${rowPaddingRight + level * leftGutterForStructsInPxs}px`,
-                      }}
+              return (
+                <React.Fragment key={dt.itemDefinition["@_id"]}>
+                  {shouldShowRow && (
+                    <tr
+                      style={{ backdropFilter: `brightness(${brigthnessPercentage}%)` }}
+                      className={`${nextIsUpper ? "last-nested-at-level" : ""} ${
+                        lastIsUpper ? "first-nested-at-level" : ""
+                      }`}
                     >
-                      <div style={{ display: "flex" }}>
-                        <div
-                          style={{
-                            width: `${expandButtonWidthInPxs}px`,
-                            margin: `0 ${expandButtonoHorizontalMarginInPxs}px`,
-                          }}
-                        >
-                          {isStruct(dt.itemDefinition) && (
-                            <Button
-                              variant={ButtonVariant.link}
-                              style={{ padding: "0 8px 0 0" }}
-                              onClick={(e) =>
-                                dmnEditorStoreApi.setState((state) => {
-                                  if (expandedItemComponentIdsSet.has(dt.itemDefinition["@_id"]!)) {
-                                    state.dataTypesEditor.expandedItemComponentIds =
-                                      state.dataTypesEditor.expandedItemComponentIds.filter(
-                                        (s) => s !== dt.itemDefinition["@_id"]!
-                                      );
-                                  } else {
-                                    // FIXME: Tiago --> Expand/collapse recursively when alt is pressed.
-                                    state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
-                                  }
-                                })
-                              }
-                            >
-                              {(expandedItemComponentIdsSet.has(dt.itemDefinition["@_id"]!) && <AngleDownIcon />) || (
-                                <AngleRightIcon />
-                              )}
-                            </Button>
-                          )}
-                        </div>
-                        <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
-                          {!isReadonly && isStruct(dt.itemDefinition) && (
-                            <Button
-                              variant={ButtonVariant.link}
-                              style={{ padding: "0 8px 0 0" }}
-                              onClick={() => {
-                                addItemComponent(dt.itemDefinition["@_id"]!, "unshift");
-                                dmnEditorStoreApi.setState((state) => {
-                                  state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
-                                });
-                              }}
-                            >
-                              <PlusCircleIcon />
-                            </Button>
-                          )}
-                        </div>
-                        <div style={{ flexGrow: 1 }}>
-                          <DataTypeName
-                            relativeToNamespace={dt.namespace}
-                            editMode={"hover"}
-                            isActive={false}
-                            itemDefinition={dt.itemDefinition}
-                            isReadonly={dt.namespace !== thisDmnsNamespace}
-                            allUniqueNames={allUniqueNamesAtLevel}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <Switch
-                        aria-label={"Is struct?"}
-                        isChecked={isStruct(dt.itemDefinition)}
-                        onChange={(isChecked) => {
-                          editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                            if (isChecked) {
-                              itemDefinition.typeRef = undefined;
-                              itemDefinition.itemComponent = [];
-                            } else {
-                              itemDefinition.typeRef = DmnBuiltInDataType.Any;
-                              itemDefinition.itemComponent = undefined;
-                            }
-                          });
+                      <td
+                        style={{
+                          paddingLeft: `${rowPaddingRight + level * leftGutterForStructsInPxs}px`,
                         }}
-                      />
-                    </td>
-                    <td>
-                      {!isStruct(dt.itemDefinition) && (
-                        <TypeRefSelector
-                          isDisabled={isReadonly}
-                          typeRef={dt.itemDefinition.typeRef}
-                          onChange={(newDataType) => {
+                      >
+                        <div style={{ display: "flex" }}>
+                          <div
+                            style={{
+                              width: `${expandButtonWidthInPxs}px`,
+                              margin: `0 ${expandButtonoHorizontalMarginInPxs}px`,
+                            }}
+                          >
+                            {isStruct(dt.itemDefinition) && (
+                              <Button
+                                variant={ButtonVariant.link}
+                                style={{ padding: "0 8px 0 0" }}
+                                onClick={(e) =>
+                                  dmnEditorStoreApi.setState((state) => {
+                                    if (expandedItemComponentIdsSet.has(dt.itemDefinition["@_id"]!)) {
+                                      state.dataTypesEditor.expandedItemComponentIds =
+                                        state.dataTypesEditor.expandedItemComponentIds.filter(
+                                          (s) => s !== dt.itemDefinition["@_id"]!
+                                        );
+                                    } else {
+                                      // FIXME: Tiago --> Expand/collapse recursively when alt is pressed.
+                                      state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
+                                    }
+                                  })
+                                }
+                              >
+                                {(expandedItemComponentIdsSet.has(dt.itemDefinition["@_id"]!) && <AngleDownIcon />) || (
+                                  <AngleRightIcon />
+                                )}
+                              </Button>
+                            )}
+                          </div>
+                          <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
+                            {!isReadonly && isStruct(dt.itemDefinition) && (
+                              <Button
+                                variant={ButtonVariant.link}
+                                style={{ padding: "0 8px 0 0" }}
+                                onClick={() => {
+                                  addItemComponent(dt.itemDefinition["@_id"]!, "unshift");
+                                  dmnEditorStoreApi.setState((state) => {
+                                    state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
+                                  });
+                                }}
+                              >
+                                <PlusCircleIcon />
+                              </Button>
+                            )}
+                          </div>
+                          <div style={{ flexGrow: 1 }}>
+                            <DataTypeName
+                              relativeToNamespace={dt.namespace}
+                              editMode={"hover"}
+                              isActive={false}
+                              itemDefinition={dt.itemDefinition}
+                              isReadonly={dt.namespace !== thisDmnsNamespace}
+                              allUniqueNames={allUniqueNamesAtLevel}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <Switch
+                          aria-label={"Is struct?"}
+                          isChecked={isStruct(dt.itemDefinition)}
+                          onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                              itemDefinition.typeRef = newDataType;
+                              if (isChecked) {
+                                itemDefinition.typeRef = undefined;
+                                itemDefinition.itemComponent = [];
+                              } else {
+                                itemDefinition.typeRef = DmnBuiltInDataType.Any;
+                                itemDefinition.itemComponent = undefined;
+                              }
                             });
                           }}
                         />
-                      )}
-                    </td>
-                    <td>
-                      <Switch
-                        aria-label={"Is collection?"}
-                        isChecked={dt.itemDefinition["@_isCollection"] ?? false}
-                        onChange={(isChecked) => {
-                          editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                            itemDefinition["@_isCollection"] = isChecked;
-                          });
-                        }}
-                      />
-                    </td>
-                    <td>
-                      {canHaveConstraints(dt.itemDefinition) && (
-                        <Button
-                          variant={ButtonVariant.link}
-                          onClick={() => {
-                            dmnEditorStoreApi.setState((state) => {
-                              state.dataTypesEditor.activeItemDefinitionId = dt.itemDefinition["@_id"]!;
-                            });
-                          }}
-                        >
-                          <LinkIcon />
-                          &nbsp;&nbsp;Constraints
-                        </Button>
-                      )}
-                    </td>
-                    <td>
-                      {!isReadonly && (
-                        <Button
-                          variant={ButtonVariant.link}
-                          onClick={() => {
-                            editItemDefinition(dt.parentId!, (itemDefinition) => {
-                              itemDefinition.itemComponent?.splice(dt.index, 1);
-                            });
-                          }}
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </td>
-                    <td>
-                      <Dropdown
-                        toggle={
-                          <KebabToggle
-                            id={"toggle-kebab-" + dt.itemDefinition["@_id"]}
-                            onToggle={(isOpen) => setDropdownOpenFor(isOpen ? dt.itemDefinition["@_id"] : undefined)}
+                      </td>
+                      <td>
+                        {!isStruct(dt.itemDefinition) && (
+                          <TypeRefSelector
+                            isDisabled={isReadonly}
+                            typeRef={dt.itemDefinition.typeRef}
+                            onChange={(newDataType) => {
+                              editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
+                                itemDefinition.typeRef = newDataType;
+                              });
+                            }}
                           />
-                        }
-                        onSelect={() => setDropdownOpenFor(undefined)}
-                        isOpen={dropdownOpenFor === dt.itemDefinition["@_id"]}
-                        menuAppendTo={document.body}
-                        isPlain={true}
-                        position={"right"}
-                        dropdownItems={[
-                          <DropdownItem
-                            key={"extract-to-top-level"}
-                            icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
-                            style={{ minWidth: "240px" }}
+                        )}
+                      </td>
+                      <td>
+                        <Switch
+                          aria-label={"Is collection?"}
+                          isChecked={dt.itemDefinition["@_isCollection"] ?? false}
+                          onChange={(isChecked) => {
+                            editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
+                              itemDefinition["@_isCollection"] = isChecked;
+                            });
+                          }}
+                        />
+                      </td>
+                      <td>
+                        {canHaveConstraints(dt.itemDefinition) && (
+                          <Button
+                            variant={ButtonVariant.link}
                             onClick={() => {
-                              editItemDefinition(
-                                dt.itemDefinition["@_id"]!,
-                                (itemDefinition, _, __, itemDefinitions) => {
-                                  const newItemDefinition = reassignIds(
-                                    getNewItemDefinition({
-                                      ...dt.itemDefinition,
-                                      typeRef: dt.itemDefinition.typeRef,
-                                      "@_name": `t${dt.itemDefinition["@_name"]}`,
-                                      "@_isCollection": false,
-                                    }),
-                                    "itemComponent"
-                                  );
+                              dmnEditorStoreApi.setState((state) => {
+                                state.dataTypesEditor.activeItemDefinitionId = dt.itemDefinition["@_id"]!;
+                              });
+                            }}
+                          >
+                            <LinkIcon />
+                            &nbsp;&nbsp;Constraints
+                          </Button>
+                        )}
+                      </td>
+                      <td>
+                        {!isReadonly && (
+                          <Button
+                            variant={ButtonVariant.link}
+                            onClick={() => {
+                              editItemDefinition(dt.parentId!, (itemDefinition) => {
+                                itemDefinition.itemComponent?.splice(dt.index, 1);
+                              });
+                            }}
+                          >
+                            Remove
+                          </Button>
+                        )}
+                      </td>
+                      <td>
+                        <Dropdown
+                          toggle={
+                            <KebabToggle
+                              id={"toggle-kebab-" + dt.itemDefinition["@_id"]}
+                              onToggle={(isOpen) => setDropdownOpenFor(isOpen ? dt.itemDefinition["@_id"] : undefined)}
+                            />
+                          }
+                          onSelect={() => setDropdownOpenFor(undefined)}
+                          isOpen={dropdownOpenFor === dt.itemDefinition["@_id"]}
+                          menuAppendTo={document.body}
+                          isPlain={true}
+                          position={"right"}
+                          dropdownItems={[
+                            <DropdownItem
+                              key={"extract-to-top-level"}
+                              icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
+                              style={{ minWidth: "240px" }}
+                              onClick={() => {
+                                editItemDefinition(
+                                  dt.itemDefinition["@_id"]!,
+                                  (itemDefinition, _, __, itemDefinitions) => {
+                                    const newItemDefinition = reassignIds(
+                                      getNewItemDefinition({
+                                        ...dt.itemDefinition,
+                                        typeRef: dt.itemDefinition.typeRef,
+                                        "@_name": `t${dt.itemDefinition["@_name"]}`,
+                                        "@_isCollection": false,
+                                      }),
+                                      "itemComponent"
+                                    );
 
-                                  itemDefinitions.unshift(newItemDefinition);
+                                    itemDefinitions.unshift(newItemDefinition);
 
-                                  // Creating a new type is fine, but only update the current type if it is not readOnly
-                                  if (!isReadonly) {
-                                    itemDefinition["@_id"] = generateUuid();
-                                    itemDefinition.typeRef = newItemDefinition["@_name"];
-                                    itemDefinition.itemComponent = undefined;
+                                    // Creating a new type is fine, but only update the current type if it is not readOnly
+                                    if (!isReadonly) {
+                                      itemDefinition["@_id"] = generateUuid();
+                                      itemDefinition.typeRef = newItemDefinition["@_name"];
+                                      itemDefinition.itemComponent = undefined;
+                                    }
                                   }
-                                }
-                              );
-                            }}
-                          >
-                            Extract data type
-                          </DropdownItem>,
-                          <DropdownSeparator key="separator-1" />,
-                          <DropdownItem
-                            key={"copy"}
-                            icon={<CopyIcon />}
-                            onClick={() => {
-                              navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
-                            }}
-                          >
-                            Copy
-                          </DropdownItem>,
-                          <React.Fragment key={"cut-fragment"}>
-                            {!isReadonly && (
-                              <DropdownItem
-                                icon={<CutIcon />}
-                                onClick={() => {
-                                  navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
-                                  editItemDefinition(dt.parentId!, (itemDefinition) => {
-                                    itemDefinition.itemComponent?.splice(dt.index, 1);
-                                  });
-                                }}
-                              >
-                                Cut
-                              </DropdownItem>
-                            )}
-                          </React.Fragment>,
-                          <DropdownSeparator key="separator-2" />,
-                          <React.Fragment key={"paste-fragment"}>
-                            {!isReadonly && isStruct(dt.itemDefinition) && (
-                              <DropdownItem
-                                icon={<PasteIcon />}
-                                onClick={() => {
-                                  navigator.clipboard.readText().then((t) => {
-                                    const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
-                                    // FIXME: Tiago --> Validate
-                                    addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
-                                      ...reassignIds(pastedItemDefinition, "itemComponent"),
-                                      typeRef: pastedItemDefinition.typeRef ?? undefined,
+                                );
+                              }}
+                            >
+                              Extract data type
+                            </DropdownItem>,
+                            <DropdownSeparator key="separator-1" />,
+                            <DropdownItem
+                              key={"copy"}
+                              icon={<CopyIcon />}
+                              onClick={() => {
+                                navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
+                              }}
+                            >
+                              Copy
+                            </DropdownItem>,
+                            <React.Fragment key={"cut-fragment"}>
+                              {!isReadonly && (
+                                <DropdownItem
+                                  icon={<CutIcon />}
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
+                                    editItemDefinition(dt.parentId!, (itemDefinition) => {
+                                      itemDefinition.itemComponent?.splice(dt.index, 1);
                                     });
-                                  });
-                                }}
-                              >
-                                Paste property
-                              </DropdownItem>
-                            )}
-                          </React.Fragment>,
-                        ]}
-                      />
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            );
-          })}
-        </tbody>
-        {!isReadonly && (
-          <tfoot>
-            <tr>
-              <td colSpan={5}>
-                <Button
-                  variant={ButtonVariant.link}
-                  onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "push")}
-                  style={{ paddingLeft: 0 }}
-                >
-                  <PlusCircleIcon />
-                  &nbsp;&nbsp;{`Add property to '${parent.itemDefinition["@_name"]}'`}
-                </Button>
-              </td>
-            </tr>
-          </tfoot>
-        )}
-      </table>
+                                  }}
+                                >
+                                  Cut
+                                </DropdownItem>
+                              )}
+                            </React.Fragment>,
+                            <DropdownSeparator key="separator-2" />,
+                            <React.Fragment key={"paste-fragment"}>
+                              {!isReadonly && isStruct(dt.itemDefinition) && (
+                                <DropdownItem
+                                  icon={<PasteIcon />}
+                                  onClick={() => {
+                                    navigator.clipboard.readText().then((t) => {
+                                      const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
+                                      // FIXME: Tiago --> Validate
+                                      addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
+                                        ...reassignIds(pastedItemDefinition, "itemComponent"),
+                                        typeRef: pastedItemDefinition.typeRef ?? undefined,
+                                      });
+                                    });
+                                  }}
+                                >
+                                  Paste property
+                                </DropdownItem>
+                              )}
+                            </React.Fragment>,
+                          ]}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </tbody>
+          {!isReadonly && (
+            <tfoot>
+              <tr>
+                <td colSpan={5}>
+                  <Button
+                    variant={ButtonVariant.link}
+                    onClick={() => addItemComponent(parent.itemDefinition["@_id"]!, "push")}
+                    style={{ paddingLeft: 0 }}
+                  >
+                    <PlusCircleIcon />
+                    &nbsp;&nbsp;{`Add property to '${parent.itemDefinition["@_name"]}'`}
+                  </Button>
+                </td>
+              </tr>
+            </tfoot>
+          )}
+        </table>
+      )}
     </>
   );
 }
