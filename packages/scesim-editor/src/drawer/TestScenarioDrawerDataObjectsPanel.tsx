@@ -102,12 +102,7 @@ function TestScenarioDataObjectsPanel({
     <Toolbar style={{ padding: 0 }}>
       <ToolbarContent style={{ padding: 0 }}>
         <ToolbarItem widths={{ default: "100%" }}>
-          <TreeViewSearch
-            onSearch={onSearchTreeView}
-            id="input-search"
-            name="search-input"
-            aria-label="Search input example"
-          />
+          <TreeViewSearch onSearch={onSearchTreeView} id="input-search" name="search-input" />
         </ToolbarItem>
       </ToolbarContent>
     </Toolbar>

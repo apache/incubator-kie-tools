@@ -257,66 +257,48 @@ function TestScenarioMainPanel({
     /* To create the Data Object arrays we need an external source, in details: */
     /* DMN Data: Retrieving DMN type from linked DMN file */
     /* Java classes: Retrieving Java classes info from the user projects */
-    /* At this time, none of the above are not supported */
-    /* In that case, is to try to retrieve these info from the SCESIM file, if are present */
+    /* At this time, none of the above are supported */
+    /* Therefore, it tries to retrieve these info from the SCESIM file, if are present */
 
     /* Retriving Data Object from the scesim file.       
        That makes sense for previously created scesim files */
 
-    /* TODO check assumption: are these ALWAYS present? */
-    const facts: SceSim__FactMappingType[] =
-      scesimModel!.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"]!;
-    console.log(facts);
-    /* The first two FactMapping are related to the "Number" and "Description" columns. 
-       If the column only are present, no Data Objects can be detected in the scesim file */
-    /*if (facts.length <= 2) {
-      return [];
-    }*/
+    const factsMappings: SceSim__FactMappingType[] =
+      scesimModel!.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"] ??
+      [];
 
     const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!;
-    const data: TestScenarioDataObject[] = [];
+    const dataObjects: TestScenarioDataObject[] = [];
 
-    for (let i = 2; i < facts.length; i++) {
-      const fi = data.find((x) => x.id === facts[i]["factAlias"]);
+    /* The first two FactMapping are related to the "Number" and "Description" columns. 
+       If the column only are present, no Data Objects can be detected in the scesim file */
+    for (let i = 2; i < factsMappings.length; i++) {
+      const fi = dataObjects.find((x) => x.id === factsMappings[i]["factAlias"]);
       if (fi) {
         fi.children!.push({
-          id: facts[i]["expressionAlias"]!,
-          name: facts[i]["expressionAlias"]!,
-          customBadgeContent: facts[i]["className"],
+          id: factsMappings[i]["expressionAlias"]!,
+          name: factsMappings[i]["expressionAlias"]!,
+          customBadgeContent: factsMappings[i]["className"],
         });
       } else {
-        data.push({
-          id: facts[i]["factAlias"],
-          name: facts[i]["factAlias"],
+        dataObjects.push({
+          id: factsMappings[i]["factAlias"],
+          name: factsMappings[i]["factAlias"],
           customBadgeContent:
             assetType === TestScenarioType[TestScenarioType.DMN]
               ? "Structure"
-              : facts[i]["factIdentifier"]!["className"],
+              : factsMappings[i]["factIdentifier"]!["className"],
           children: [
             {
-              id: facts[i]["expressionAlias"]!,
-              name: facts[i]["expressionAlias"]!,
-              customBadgeContent: facts[i]["className"],
+              id: factsMappings[i]["expressionAlias"]!,
+              name: factsMappings[i]["expressionAlias"]!,
+              customBadgeContent: factsMappings[i]["className"],
             },
           ],
         });
       }
     }
-
-    //const retrievedDataObjects = new Map<string, [{name: string, type:string}]>();
-
-    /*    facts.slice(2).forEach((value) => {
-      if (retrievedDataObjects.get(value["factAlias"])) {
-        retrievedDataObjects.set(value["factAlias"], [...retrievedDataObjects.get(value["factAlias"])!, {name: value["expressionAlias"]!, type: value["className"]!}] );
-      }
-    });*/
-
-    //facts.slice(2).map((fact) => retrievedDataObjects.set(fact["factAlias"], [...retrievedDataObjects.get(fact["factAlias"]) || [], {name: fact["expressionAlias"], type:fact["expressionAlias"] }] //(retrievedDataObjects.get(fact["factAlias"])! || []).concat({name: fact["expressionAlias"]!, type:fact["expressionAlias"]! }))
-
-    //const result = new Map(facts.slice(2).map((fact) => [fact["factAlias"], fact["expressionAlias"]]));
-
-    console.log(data);
-    return data;
+    return dataObjects;
   }, [scesimModel]);
 
   const alert = useMemo(() => {
