@@ -1,4 +1,5 @@
 debug/
 kogito-serverless-operator/
 TODO.txt
-it-tests/temp-tests/
+e2e-tests/temp-tests/
+dist-it-tests/

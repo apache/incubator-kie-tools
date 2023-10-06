@@ -50,9 +50,10 @@ func NewGenManifest() *cobra.Command {
 		SuggestFor: []string{"gen-manifests", "generate-manifest"}, //nolint:misspell
 	}
 
-	cmd.Run = func(cmd *cobra.Command, args []string) {
-		generateManifestsCmd(cmd, args)
+	cmd.RunE = func(cmd *cobra.Command, args []string) error {
+		return generateManifestsCmd(cmd, args)
 	}
+
 	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
 	cmd.Flags().StringP("manifestPath", "c", "", "Target directory of your generated Operator manifests.")
 	cmd.Flags().StringP("supportFilesFolder", "s", "", "Specify a custom support files folder")
@@ -72,8 +73,8 @@ func generateManifestsCmd(cmd *cobra.Command, args []string) error {
 	fmt.Println("🛠️️ Generating a list of Operator manifests for a SonataFlow project...")
 	fmt.Printf("📂 Manifests will be generated in %s\n", cfg.ManifestPath)
 
-	if err := checkEnvironment(&cfg); err != nil {
-		return fmt.Errorf("❌ ERROR: checking environment: %w", err)
+	if err := setupEnvironment(&cfg); err != nil {
+		return fmt.Errorf("❌ ERROR: setup environment: %w", err)
 	}
 
 	if err := generateManifests(&cfg); err != nil {
@@ -114,6 +115,25 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 	cfg.ManifestPath = manifestDir
 
 	return cfg, nil
+}
+
+func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
+	fmt.Println("\n🔎 Checking your environment...")
+
+	//setup namespace
+	if len(cfg.NameSpace) == 0 {
+		if defaultNamespace, err := common.GetKubectlNamespace(); err == nil {
+			cfg.NameSpace = defaultNamespace
+			fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
+		} else {
+			cfg.NameSpace = "default"
+			fmt.Printf(" - ✅  resolved namespace (default): %s\n", cfg.NameSpace)
+		}
+	} else {
+		fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
+	}
+
+	return nil
 }
 
 func resolveManifestDir(folderName string) (string, error) {
