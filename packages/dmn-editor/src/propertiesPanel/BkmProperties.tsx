@@ -90,7 +90,7 @@ export function BkmProperties({
 
       <DocumentationLinksFormGroup
         isReadonly={isReadonly}
-        value={bkm.extensionElements?.["kie:attachment"]}
+        values={bkm.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
             (state.dmn.model.definitions.drgElement![index] as DMN15__tBusinessKnowledgeModel).extensionElements = {

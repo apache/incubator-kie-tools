@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useRef } from "react";
 import "./DocumentationLinksFormGroup.css";
 import { KIE__tAttachment } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Namespaced } from "@kie-tools/xml-parser-ts";
@@ -13,17 +13,18 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 const PLACEHOLDER_URL_ALIAS = "Enter the URL alias...";
 const PLACEHOLDER_URL = "Enter your documentation URL...";
 
 export function DocumentationLinksFormGroup({
   isReadonly,
-  value,
+  values,
   onChange,
 }: {
   isReadonly: boolean;
-  value?: Namespaced<"kie", KIE__tAttachment>[];
+  values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
   const onChangeUrlAlias = useCallback(
@@ -32,12 +33,12 @@ export function DocumentationLinksFormGroup({
         return;
       }
 
-      const newValue = [...(value ?? [])];
-      const newKieAttachment = newValue[index] ?? { "@_name": "", "@_url": "" };
-      newValue[index] = { "@_name": newUrlAlias, "@_url": newKieAttachment["@_url"] };
-      onChange?.(newValue);
+      const newValues = [...(values ?? [])];
+      const newKieAttachment = newValues[index] ?? { "@_name": "", "@_url": "" };
+      newValues[index] = { "@_name": newUrlAlias, "@_url": newKieAttachment["@_url"] };
+      onChange?.(newValues);
     },
-    [isReadonly, onChange, value]
+    [isReadonly, onChange, values]
   );
 
   const onChangeUrl = useCallback(
@@ -46,22 +47,32 @@ export function DocumentationLinksFormGroup({
         return;
       }
 
-      const newValue = [...(value ?? [])];
-      const newKieAttachment = newValue[index] ?? { "@_name": "", "@_url": "" };
-      newValue[index] = { "@_name": newKieAttachment["@_name"], "@_url": newUrl };
-      onChange?.(newValue);
+      const newValues = [...(values ?? [])];
+      const newKieAttachment = newValues[index] ?? { "@_name": "", "@_url": "" };
+      newValues[index] = { "@_name": newKieAttachment["@_name"], "@_url": newUrl };
+      onChange?.(newValues);
     },
-    [isReadonly, onChange, value]
+    [isReadonly, onChange, values]
   );
 
   const onRemove = useCallback(
     (index: number) => {
-      const newValue = [...(value ?? [])];
+      const newValue = [...(values ?? [])];
       newValue.splice(index, 1);
       onChange?.(newValue);
     },
-    [onChange, value]
+    [onChange, values]
   );
+
+  // This is required to give each documentation row an unique
+  // key, and not update it on every change.
+  const documentationKeys = useMemo(() => {
+    return new Map<number, string>(
+      Array(values?.length ?? 0)
+        .fill(0)
+        .map((_, index) => [index, generateUuid()])
+    );
+  }, [values?.length]);
 
   return (
     <FormGroup
@@ -75,9 +86,9 @@ export function DocumentationLinksFormGroup({
               variant={"plain"}
               icon={<PlusCircleIcon />}
               onClick={() => {
-                const newValue = [...(value ?? [])];
-                newValue.push({ "@_name": "", "@_url": "" });
-                onChange?.(newValue);
+                const newValues = [...(values ?? [])];
+                newValues.push({ "@_name": "", "@_url": "" });
+                onChange?.(newValues);
               }}
             />
           </FlexItem>
@@ -85,17 +96,19 @@ export function DocumentationLinksFormGroup({
       }
     >
       <div>
-        {value?.map((kieAttachment, index) => (
-          <DocumentationLinksInput
-            key={`${index}-${kieAttachment["@_name"]}-${kieAttachment["@_url"]}`}
-            kieAttachment={kieAttachment}
-            index={index}
-            isReadonly={isReadonly}
-            onChangeUrlAlias={onChangeUrlAlias}
-            onChangeUrl={onChangeUrl}
-            onRemove={onRemove}
-          />
-        ))}
+        {values?.map((kieAttachment, index) => {
+          return (
+            <DocumentationLinksInput
+              key={documentationKeys.get(index)}
+              kieAttachment={kieAttachment}
+              index={index}
+              isReadonly={isReadonly}
+              onChangeUrlAlias={onChangeUrlAlias}
+              onChangeUrl={onChangeUrl}
+              onRemove={onRemove}
+            />
+          );
+        })}
       </div>
     </FormGroup>
   );
@@ -120,6 +133,8 @@ function DocumentationLinksInput({
 
   const urlAliasClassName = useMemo(() => (kieAttachment["@_url"] !== "" ? "url-alias" : ""), [kieAttachment]);
 
+  const urlAliasRef = useRef<HTMLInputElement>(null);
+
   return (
     <React.Fragment>
       <Flex direction={{ default: "row" }}>
@@ -135,10 +150,7 @@ function DocumentationLinksInput({
           </Button>
         </FlexItem>
         <FlexItem style={{ flexGrow: 1 }}>
-          <Tooltip
-            content={<Text component={TextVariants.p}>{kieAttachment["@_url"]}</Text>}
-            position={TooltipPosition.topStart}
-          >
+          <div ref={urlAliasRef}>
             <InlineFeelNameInput
               isPlain={true}
               isReadonly={isReadonly}
@@ -155,7 +167,14 @@ function DocumentationLinksInput({
               }}
               className={urlAliasClassName}
             />
-          </Tooltip>
+          </div>
+          {!isUrlExpanded && (
+            <Tooltip
+              content={<Text component={TextVariants.p}>{kieAttachment["@_url"]}</Text>}
+              position={TooltipPosition.topStart}
+              reference={urlAliasRef}
+            />
+          )}
         </FlexItem>
         <FlexItem>
           <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>

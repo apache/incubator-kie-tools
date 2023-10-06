@@ -119,7 +119,7 @@ export function DecisionProperties({
 
       <DocumentationLinksFormGroup
         isReadonly={isReadonly}
-        value={decision.extensionElements?.["kie:attachment"]}
+        values={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
             (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).extensionElements = {

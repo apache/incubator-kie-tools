@@ -83,7 +83,7 @@ export function InputDataProperties({
 
       <DocumentationLinksFormGroup
         isReadonly={isReadonly}
-        value={inputData.extensionElements?.["kie:attachment"]}
+        values={inputData.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
             (state.dmn.model.definitions.drgElement![index] as DMN15__tInputData).extensionElements = {

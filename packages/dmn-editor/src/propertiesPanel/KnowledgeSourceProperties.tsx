@@ -105,7 +105,7 @@ export function KnowledgeSourceProperties({
 
       <DocumentationLinksFormGroup
         isReadonly={isReadonly}
-        value={knowledgeSource.extensionElements?.["kie:attachment"]}
+        values={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
             (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).extensionElements = {
