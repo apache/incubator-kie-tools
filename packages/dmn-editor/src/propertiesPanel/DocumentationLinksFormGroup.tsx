@@ -8,7 +8,7 @@ import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/compone
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
-import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { FormFieldGroup, FormFieldGroupHeader } from "@patternfly/react-core/dist/js/components/Form";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -28,6 +28,50 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
+  // This is required to give each documentation row an unique
+  // key, and not update it on every change.
+  const documentationKeys = useMemo(
+    () =>
+      new Map<number, string>(
+        Array(values?.length ?? 0)
+          .fill(0)
+          .map((_, index) => [index, generateUuid()])
+      ),
+    [values?.length]
+  );
+  const [expandedUrls, setExpandedUrls] = useState<boolean[]>([]);
+
+  const onAddNewUrl = useCallback(() => {
+    const newValues = [...(values ?? [])];
+    const newLength = newValues.unshift({ "@_name": "", "@_url": "" });
+
+    // Expand the URL
+    setExpandedUrls((prev) => {
+      const newUrlExpanded = [...prev];
+      newUrlExpanded.unshift(true);
+      return newUrlExpanded;
+    });
+
+    // Adds the uuid
+    if (newLength === 1) {
+      documentationKeys.set(0, generateUuid());
+    } else {
+      [...documentationKeys.values()].forEach((uuid, index) => {
+        documentationKeys.set(index + 1, uuid);
+      });
+      documentationKeys.set(0, generateUuid());
+    }
+    onChange?.(newValues);
+  }, [onChange, values, documentationKeys]);
+
+  const setUrlExpanded = useCallback((index: number, isExpanded: boolean) => {
+    setExpandedUrls((prev) => {
+      const newUrlExpanded = [...prev];
+      newUrlExpanded[index] = isExpanded;
+      return newUrlExpanded;
+    });
+  }, []);
+
   const onChangeUrlTitle = useCallback(
     (newUrlTitle: string, index: number) => {
       if (isReadonly) {
@@ -61,56 +105,78 @@ export function DocumentationLinksFormGroup({
       const newValue = [...(values ?? [])];
       newValue.splice(index, 1);
       onChange?.(newValue);
+
+      // Expand the URL
+      setExpandedUrls((prev) => {
+        const newUrlExpanded = [...prev];
+        newUrlExpanded.splice(index, 1);
+        return newUrlExpanded;
+      });
+
+      documentationKeys.delete(index);
+      // Removes the uuid
+      [...documentationKeys.values()].forEach((uuid, index) => {
+        documentationKeys.set(index, uuid);
+      });
     },
-    [onChange, values]
+    [documentationKeys, onChange, values]
   );
 
-  // This is required to give each documentation row an unique
-  // key, and not update it on every change.
-  const documentationKeys = useMemo(() => {
-    return new Map<number, string>(
-      Array(values?.length ?? 0)
-        .fill(0)
-        .map((_, index) => [index, generateUuid()])
-    );
-  }, [values?.length]);
+  const onUpdateKey = useCallback(
+    (index: number) => {
+      documentationKeys.set(index, generateUuid());
+    },
+    [documentationKeys]
+  );
 
   return (
-    <FormGroup
-      label={
-        <Flex direction={{ default: "row" }}>
-          <FlexItem>
-            <Text>Documentation links</Text>
-          </FlexItem>
-          <FlexItem>
-            <Button
-              variant={"plain"}
-              icon={<PlusCircleIcon />}
-              onClick={() => {
-                const newValues = [...(values ?? [])];
-                newValues.push({ "@_name": "", "@_url": "" });
-                onChange?.(newValues);
-              }}
-            />
-          </FlexItem>
-        </Flex>
+    <FormFieldGroup
+      header={
+        <FormFieldGroupHeader
+          titleText={{
+            text: (
+              <label className="pf-c-form__label">
+                <span className="pf-c-form__label-text">Documentation links</span>
+              </label>
+            ),
+            id: "documentation-links",
+          }}
+          actions={<Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAddNewUrl} />}
+        />
       }
     >
       <div>
-        {values?.map((kieAttachment, index) => (
-          <div key={documentationKeys.get(index)} style={{ paddingTop: index === 0 ? "0" : "16px" }}>
-            <DocumentationLinksInput
-              kieAttachment={kieAttachment}
-              index={index}
-              isReadonly={isReadonly}
-              onChangeUrlTitle={onChangeUrlTitle}
-              onChangeUrl={onChangeUrl}
-              onRemove={onRemove}
-            />
+        {(values ?? []).length === 0 ? (
+          <div
+            style={{
+              padding: "10px",
+              background: "#eee",
+              borderRadius: "10px",
+              textAlign: "center",
+              marginRight: "24px",
+            }}
+          >
+            None yet
           </div>
-        ))}
+        ) : (
+          values?.map((kieAttachment, index) => (
+            <div key={documentationKeys.get(index)} style={{ paddingTop: index === 0 ? "0" : "16px" }}>
+              <DocumentationLinksInput
+                kieAttachment={kieAttachment}
+                index={index}
+                isReadonly={isReadonly}
+                onChangeUrlTitle={onChangeUrlTitle}
+                onChangeUrl={onChangeUrl}
+                onRemove={onRemove}
+                isUrlExpanded={expandedUrls[index]}
+                setUrlExpanded={setUrlExpanded}
+                onUpdateKey={onUpdateKey}
+              />
+            </div>
+          ))
+        )}
       </div>
-    </FormGroup>
+    </FormFieldGroup>
   );
 }
 
@@ -121,6 +187,9 @@ function DocumentationLinksInput({
   onChangeUrlTitle,
   onChangeUrl,
   onRemove,
+  isUrlExpanded,
+  setUrlExpanded,
+  onUpdateKey,
 }: {
   kieAttachment: Namespaced<"kie", KIE__tAttachment>;
   index: number;
@@ -128,9 +197,10 @@ function DocumentationLinksInput({
   onChangeUrlTitle: (newUrlTitle: string, index: number) => void;
   onChangeUrl: (newUrl: string, index: number) => void;
   onRemove: (index: number) => void;
+  isUrlExpanded: boolean;
+  setUrlExpanded: (index: number, isExpanded: boolean) => void;
+  onUpdateKey: (index: number) => void;
 }) {
-  const [isUrlExpanded, setUrlExpanded] = useState<boolean>(kieAttachment["@_url"] !== "" ? false : true);
-
   const urlTitleRef = useRef<HTMLInputElement>(null);
 
   const isValidUrl = useCallback((urlString) => {
@@ -141,6 +211,14 @@ function DocumentationLinksInput({
       return false;
     }
   }, []);
+
+  const toogleExpanded = useCallback(() => {
+    if (isUrlExpanded === true && kieAttachment["@_name"] === "" && kieAttachment["@_url"] !== "") {
+      onUpdateKey(index);
+      onChangeUrlTitle(kieAttachment["@_url"] ?? "", index);
+    }
+    setUrlExpanded(index, !isUrlExpanded);
+  }, [index, isUrlExpanded, kieAttachment, onChangeUrlTitle, setUrlExpanded, onUpdateKey]);
 
   const urlTitleIsLink = useMemo(
     () => isValidUrl(kieAttachment["@_url"]) && !isUrlExpanded,
@@ -165,8 +243,8 @@ function DocumentationLinksInput({
           <Button
             variant={ButtonVariant.plain}
             style={{ padding: "0 8px 0 0" }}
-            onClick={(e) => {
-              setUrlExpanded((prev) => !prev);
+            onClick={() => {
+              toogleExpanded();
             }}
           >
             {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
@@ -180,7 +258,7 @@ function DocumentationLinksInput({
               if (urlTitleIsLink) {
                 window.open(kieAttachment["@_url"]);
               } else if (!isUrlExpanded) {
-                setUrlExpanded(true);
+                setUrlExpanded(index, true);
               }
             }}
           >
@@ -234,7 +312,7 @@ function DocumentationLinksInput({
             validate={validate}
             onKeyDown={(e) => {
               if (e.code === "Enter") {
-                setUrlExpanded(false);
+                setUrlExpanded(index, false);
               }
             }}
           />

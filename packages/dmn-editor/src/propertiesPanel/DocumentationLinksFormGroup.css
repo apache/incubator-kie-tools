@@ -12,6 +12,7 @@
 
 .url-title-is-link > input {
   color: rgb(0, 102, 204);
+  font-style: italic;
   text-decoration: none;
 }
 
