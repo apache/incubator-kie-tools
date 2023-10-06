@@ -603,7 +603,6 @@ jobs:
         working-directory: ${{ github.workspace }}/kie-tools
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -639,7 +638,6 @@ jobs:
         working-directory: ${{ github.workspace }}/kie-tools
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -675,7 +673,6 @@ jobs:
         working-directory: ${{ github.workspace }}/kie-tools
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
@@ -711,7 +708,6 @@ jobs:
         working-directory: ${{ github.workspace }}/kie-tools
         env:
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: "true"
           KIE_TOOLS_BUILD__buildContainerImages: "true"
         run: |
           echo "Clean up container image resources"
