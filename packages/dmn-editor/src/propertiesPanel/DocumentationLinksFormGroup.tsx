@@ -8,7 +8,7 @@ import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/compone
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
-import { FormFieldGroup, FormFieldGroupHeader } from "@patternfly/react-core/dist/js/components/Form";
+import { FormFieldGroup, FormFieldGroupHeader, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -130,8 +130,8 @@ export function DocumentationLinksFormGroup({
   );
 
   return (
-    <FormFieldGroup
-      header={
+    <FormGroup
+      label={
         <FormFieldGroupHeader
           titleText={{
             text: (
@@ -145,7 +145,7 @@ export function DocumentationLinksFormGroup({
         />
       }
     >
-      <div>
+      <>
         {(values ?? []).length === 0 ? (
           <div
             style={{
@@ -153,7 +153,6 @@ export function DocumentationLinksFormGroup({
               background: "#eee",
               borderRadius: "10px",
               textAlign: "center",
-              marginRight: "24px",
             }}
           >
             None yet
@@ -175,8 +174,8 @@ export function DocumentationLinksFormGroup({
             </div>
           ))
         )}
-      </div>
-    </FormFieldGroup>
+      </>
+    </FormGroup>
   );
 }
 
