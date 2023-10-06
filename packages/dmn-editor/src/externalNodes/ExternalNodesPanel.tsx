@@ -59,7 +59,7 @@ export function ExternalNodesPanel() {
                   })
                 }
               >
-                Add an included model...
+                Included model...
               </Button>
             </EmptyStatePrimary>
           </EmptyState>

@@ -935,7 +935,6 @@ export function TopRightCornerPanels() {
             hideOnOutsideClick={false}
             isVisible={diagram.overlaysPanel.isOpen}
             enableFlip={true}
-            headerContent={<div>Overlays</div>}
             bodyContent={<OverlaysPanel />}
           >
             <button className={"kie-dmn-editor--overlays-panel-toggle-button"} onClick={toggleOverlaysPanel}>

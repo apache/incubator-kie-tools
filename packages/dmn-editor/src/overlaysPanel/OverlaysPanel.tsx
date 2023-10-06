@@ -15,9 +15,6 @@ export function OverlaysPanel() {
 
   return (
     <>
-      <br />
-      <Divider inset={{ default: "insetMd" }} />
-      <br />
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
