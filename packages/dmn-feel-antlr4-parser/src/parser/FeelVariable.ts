@@ -17,15 +17,15 @@
  * under the License.
  */
 
-import { VariableType } from "./VariableType";
+import { SymbolType } from "./SymbolType";
 
 export class FeelVariable {
   private readonly _text: string;
   private readonly _startIndex: number;
-  private readonly _variableType: VariableType;
+  private readonly _variableType: SymbolType;
   private readonly _length: number;
 
-  constructor(startIndex: number, length: number, variableType: VariableType, text: string) {
+  constructor(startIndex: number, length: number, variableType: SymbolType, text: string) {
     this._startIndex = startIndex;
     this._length = length;
     this._variableType = variableType;
@@ -40,7 +40,7 @@ export class FeelVariable {
     return this._startIndex;
   }
 
-  get variableType(): VariableType {
+  get variableType(): SymbolType {
     return this._variableType;
   }
 

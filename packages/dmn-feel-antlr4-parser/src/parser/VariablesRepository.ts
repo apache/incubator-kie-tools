@@ -19,13 +19,14 @@
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { DataType } from "./DataType";
-import { VariableType } from "./VariableType";
+import { SymbolType } from "./SymbolType";
 import { VariableContext } from "./VariableContext";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tContext,
   DMN15__tContextEntry,
   DMN15__tDecision,
+  DMN15__tDecisionService,
   DMN15__tDecisionTable,
   DMN15__tDefinitions,
   DMN15__tFunctionDefinition,
@@ -69,6 +70,7 @@ type DmnItemDefinition = DMN15__tItemDefinition;
 type DmnContextEntry = DMN15__tContextEntry;
 type DmnInputData = DMN15__tInputData;
 type DmnInformationRequirement = DMN15__tInformationRequirement;
+type DmnDecisionService = DMN15__tDecisionService;
 
 export class VariablesRepository {
   private readonly variablesIndexedByUuid: Map<string, VariableContext>;
@@ -96,7 +98,7 @@ export class VariablesRepository {
     if (parentContext) {
       const newVariable = {
         value: variableName,
-        variableType: VariableType.Input,
+        variableType: SymbolType.GlobalVariable,
         typeRef: undefined,
       };
 
@@ -188,6 +190,10 @@ export class VariablesRepository {
           this.createVariablesFromBkm(drg);
           break;
 
+        case "decisionService":
+          this.createVariablesFromDecisionService(drg);
+          break;
+
         default:
           // Do nothing because it is an element that does not declare variables
           break;
@@ -196,14 +202,24 @@ export class VariablesRepository {
   }
 
   private createVariablesFromInputData(drg: DmnInputData) {
-    this.addVariable(drg["@_id"] ?? "", drg["@_name"], VariableType.Input, undefined, drg.variable?.["@_typeRef"]);
+    this.addVariable(
+      drg["@_id"] ?? "",
+      drg["@_name"],
+      SymbolType.GlobalVariable,
+      undefined,
+      drg.variable?.["@_typeRef"]
+    );
+  }
+
+  private createVariablesFromDecisionService(drg: DmnDecisionService) {
+    this.addVariable(drg["@_id"] ?? "", drg["@_name"], SymbolType.Invocable, undefined, drg.variable?.["@_typeRef"]);
   }
 
   private createVariablesFromBkm(drg: DmnBusinessKnowledgeModel) {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      VariableType.BusinessKnowledgeModel,
+      SymbolType.Invocable,
       undefined,
       drg.variable?.["@_typeRef"]
     );
@@ -216,7 +232,7 @@ export class VariablesRepository {
           parentElement = this.addVariable(
             parameter["@_id"] ?? "",
             parameter["@_name"] ?? "<parameter>",
-            VariableType.Parameter,
+            SymbolType.Parameter,
             parentElement
           );
         }
@@ -232,7 +248,7 @@ export class VariablesRepository {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      VariableType.Input,
+      SymbolType.GlobalVariable,
       undefined,
       drg.variable?.["@_typeRef"]
     );
@@ -257,7 +273,7 @@ export class VariablesRepository {
   private addVariable(
     uuid: string,
     name: string,
-    variableType: VariableType,
+    variableType: SymbolType,
     parent?: VariableContext,
     typeRef?: string
   ) {
@@ -271,7 +287,7 @@ export class VariablesRepository {
   private createVariableNode(
     uuid: string,
     name: string,
-    variableType: VariableType,
+    variableType: SymbolType,
     parent: VariableContext | undefined,
     typeRef: string | undefined
   ) {
@@ -322,7 +338,7 @@ export class VariablesRepository {
   }
 
   private addLiteralExpression(parent: VariableContext, element: DmnLiteralExpression) {
-    this.addVariable(element["@_id"] ?? "", "<literalExpression>", VariableType.LocalVariable, parent);
+    this.addVariable(element["@_id"] ?? "", "<literalExpression>", SymbolType.LocalVariable, parent);
   }
 
   private addInvocation(parent: VariableContext, element: DmnInvocation) {
@@ -348,7 +364,7 @@ export class VariablesRepository {
     const variableNode = this.addVariable(
       contextEntry.variable?.["@_id"] ?? "",
       contextEntry.variable?.["@_name"] ?? "",
-      VariableType.LocalVariable,
+      SymbolType.LocalVariable,
       parentNode,
       contextEntry.variable?.["@_typeRef"]
     );
@@ -372,7 +388,7 @@ export class VariablesRepository {
         parentElement = this.addVariable(
           parameter["@_id"] ?? "",
           parameter["@_name"] ?? "<parameter>",
-          VariableType.Parameter,
+          SymbolType.Parameter,
           parentElement
         );
       }

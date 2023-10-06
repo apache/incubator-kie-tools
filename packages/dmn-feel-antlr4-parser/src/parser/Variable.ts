@@ -18,7 +18,7 @@
  */
 
 import { DataType } from "./DataType";
-import { VariableType } from "./VariableType";
+import { SymbolType } from "./SymbolType";
 
 /**
  * Describe a variable in FEEL.
@@ -32,7 +32,7 @@ export interface Variable {
   /**
    * The source of the variable.
    */
-  variableType: VariableType;
+  variableType: SymbolType;
 
   /**
    * Some variables are of one of the custom data types defined by user.
