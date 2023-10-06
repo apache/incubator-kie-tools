@@ -91,6 +91,12 @@ export enum TestScenarioType {
 
 /* Types */
 
+export type TestScenarioAlert = {
+  enabled: boolean;
+  message?: string;
+  variant: "success" | "danger" | "warning" | "info" | "default";
+};
+
 export type TestScenarioDataObject = {
   id: string;
   name: string;
@@ -235,7 +241,8 @@ function TestScenarioMainPanel({
 }) {
   const { i18n } = useTestScenarioEditorI18n();
 
-  const [tab, setTab] = useState<TestScenarioEditorTab>(TestScenarioEditorTab.EDITOR);
+  const [alert, setAlert] = useState<TestScenarioAlert>({ enabled: false, variant: "info" });
+  const [tab, setTab] = useState(TestScenarioEditorTab.EDITOR);
 
   const onTabChanged = useCallback((_event, tab) => {
     setTab(tab);
@@ -253,7 +260,8 @@ function TestScenarioMainPanel({
     setDockPanel({ isOpen: true, selected: selected });
   }, []);
 
-  const dataObjects = useMemo(() => {
+  /** This is TEMPORARY */
+  const dataObjectsFromScesim = useMemo(() => {
     /* To create the Data Object arrays we need an external source, in details: */
     /* DMN Data: Retrieving DMN type from linked DMN file */
     /* Java classes: Retrieving Java classes info from the user projects */
@@ -267,27 +275,25 @@ function TestScenarioMainPanel({
       scesimModel!.ScenarioSimulationModel["simulation"]!["scesimModelDescriptor"]!["factMappings"]!["FactMapping"] ??
       [];
 
-    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!;
     const dataObjects: TestScenarioDataObject[] = [];
 
     /* The first two FactMapping are related to the "Number" and "Description" columns. 
-       If the column only are present, no Data Objects can be detected in the scesim file */
+       If those columns only are present, no Data Objects can be detected in the scesim file */
     for (let i = 2; i < factsMappings.length; i++) {
-      const fi = dataObjects.find((x) => x.id === factsMappings[i]["factAlias"]);
-      if (fi) {
-        fi.children!.push({
-          id: factsMappings[i]["expressionAlias"]!,
-          name: factsMappings[i]["expressionAlias"]!,
-          customBadgeContent: factsMappings[i]["className"],
-        });
+      const dataObject = dataObjects.find((value) => value.id === factsMappings[i]["factAlias"]);
+      if (dataObject) {
+        if (!dataObject.children?.some((value) => value.id === factsMappings[i]["expressionAlias"])) {
+          dataObject.children!.push({
+            id: factsMappings[i]["expressionAlias"]!,
+            name: factsMappings[i]["expressionAlias"]!,
+            customBadgeContent: factsMappings[i]["className"],
+          });
+        }
       } else {
         dataObjects.push({
           id: factsMappings[i]["factAlias"],
           name: factsMappings[i]["factAlias"],
-          customBadgeContent:
-            assetType === TestScenarioType[TestScenarioType.DMN]
-              ? "Structure"
-              : factsMappings[i]["factIdentifier"]!["className"],
+          customBadgeContent: factsMappings[i]["factIdentifier"]!["className"],
           children: [
             {
               id: factsMappings[i]["expressionAlias"]!,
@@ -298,35 +304,35 @@ function TestScenarioMainPanel({
         });
       }
     }
+
     return dataObjects;
   }, [scesimModel]);
 
-  const alert = useMemo(() => {
-    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"];
-    const variant: "success" | "danger" | "warning" | "info" | "default" = "warning";
-    let message = "";
+  /** It determines the Alert State */
+  useEffect(() => {
+    const assetType = scesimModel.ScenarioSimulationModel["settings"]!["type"]!;
 
-    if (dataObjects.length > 0) {
-      message =
+    let alertEnabled = false;
+    let alertMessage = "";
+    let alertVariant: "default" | "danger" | "warning" | "info" | "success" = "danger";
+
+    if (dataObjectsFromScesim.length > 0) {
+      alertMessage =
         assetType === TestScenarioType[TestScenarioType.DMN]
           ? i18n.alerts.dmnDataRetrievedFromScesim
           : i18n.alerts.ruleDataRetrievedFromScesim;
+      alertEnabled = true;
     } else {
-      message =
+      alertMessage =
         assetType === TestScenarioType[TestScenarioType.DMN]
           ? i18n.alerts.dmnDataNotAvailable
           : i18n.alerts.ruleDataNotAvailable;
+      alertVariant = assetType === TestScenarioType[TestScenarioType.DMN] ? "warning" : "danger";
+      alertEnabled = true;
     }
 
-    return { variant: variant, message: message };
-  }, [
-    dataObjects.length,
-    i18n.alerts.dmnDataNotAvailable,
-    i18n.alerts.dmnDataRetrievedFromScesim,
-    i18n.alerts.ruleDataNotAvailable,
-    i18n.alerts.ruleDataRetrievedFromScesim,
-    scesimModel.ScenarioSimulationModel,
-  ]);
+    setAlert({ enabled: alertEnabled, message: alertMessage, variant: alertVariant });
+  }, [dataObjectsFromScesim, i18n, scesimModel.ScenarioSimulationModel]);
 
   return (
     <>
@@ -335,7 +341,7 @@ function TestScenarioMainPanel({
           <DrawerContent
             panelContent={
               <TestScenarioDrawerPanel
-                dataObjects={dataObjects}
+                dataObjects={dataObjectsFromScesim}
                 fileName={fileName}
                 onDrawerClose={closeDockPanel}
                 onUpdateSettingField={updateSettingField}
@@ -353,9 +359,11 @@ function TestScenarioMainPanel({
             }
           >
             <DrawerContentBody>
-              <div className="kie-scesim-editor--content-alert">
-                <Alert variant={alert.variant} title={alert.message} />
-              </div>
+              {alert.enabled && (
+                <div className="kie-scesim-editor--content-alert">
+                  <Alert variant={alert.variant} title={alert.message} />
+                </div>
+              )}
               <div className="kie-scesim-editor--content-tabs">
                 <Tabs isFilled={true} activeKey={tab} onSelect={onTabChanged} role="region">
                   <Tab

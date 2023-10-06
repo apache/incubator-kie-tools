@@ -25,11 +25,12 @@ export const en: TestScenarioEditorI18n = {
   alerts: {
     dmnDataNotAvailable:
       "It's still not possibile to retrieve the DMN information from your DMN file. Work in progress.",
-    ruleDataNotAvailable: "It's still not possibile to retrieve the Java Objects information from your project.",
+    ruleDataNotAvailable:
+      "It's not possibile to retrieve the Java Classes from your project. This feature is still not supported.",
     dmnDataRetrievedFromScesim:
-      "Impossibile to retrieve DMN information from the given DMN file. Data Objects have been restored the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data.",
+      "Impossibile to retrieve DMN Nodes from the given DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data.",
     ruleDataRetrievedFromScesim:
-      "Impossibile to retrieve the Java Classes from your project. Data Objects have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
+      "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
   },
   drawer: {
     cheatSheet: {
