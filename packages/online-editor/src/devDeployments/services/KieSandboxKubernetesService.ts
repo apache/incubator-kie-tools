@@ -43,6 +43,83 @@ export const RESOURCE_PREFIX = "dmn-dev-deployment";
 export const RESOURCE_OWNER = "kie-sandbox";
 export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
+type ResourceMetadata = {
+  annotations?: Record<string, string>;
+  labels?: Record<string, string>;
+  name: string;
+  namespace: string;
+  creationTimestamp: string;
+  uid: string;
+};
+
+type IngressResource = {
+  metadata: ResourceMetadata;
+  spec: {
+    rules: {
+      http: {
+        paths: {
+          backend: {
+            service: {
+              name: string;
+              port: {
+                number: number;
+              };
+            };
+            path: string;
+            pathType: string;
+          };
+        }[];
+      };
+    };
+  };
+  status: {
+    loadBalancer: {
+      ingress: {
+        hostname: string;
+      }[];
+    };
+  };
+};
+
+type ServiceResource = {
+  metadata: ResourceMetadata;
+  spec: any;
+};
+
+type DeploymentResource = {
+  metadata: ResourceMetadata;
+  spec: {
+    replicas: number;
+    selector: {
+      matchLabels: string;
+    };
+    template: {
+      spec: {
+        containers: {
+          env: { name: string; value: string }[];
+          image: string;
+          imagePullPolicy: string;
+          name: string;
+        }[];
+      };
+    };
+  };
+  status: {
+    availableReplicas: number;
+    readyReplicas: number;
+    replicas: number;
+    updatedReplicas: number;
+    conditions: {
+      type: string;
+      status: string;
+      reason: string;
+      message: string;
+      lastTransitionTime: string;
+      lastUpdateTime: string;
+    }[];
+  };
+};
+
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
@@ -99,15 +176,49 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     return this.kubernetesService.newResourceName(RESOURCE_PREFIX);
   }
 
-  public async listDeployments(): Promise<K8sResourceYaml[]> {
-    const rawApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const apiPath = rawApiUrl?.path.namespaced ?? rawApiUrl?.path.global;
+  public async listIngress(): Promise<IngressResource[]> {
+    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Ingress")?.get("networking.k8s.io/v1");
+    const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
     const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-    if (apiPath) {
-      const deployments = await this.kubernetesService.kubernetesFetch(
-        `${apiPath.replace(":namespace", this.args.connection.namespace)}${selector}`
-      );
-      console.log(await deployments.json());
+    if (ingressApiPath) {
+      const ingresses = await this.kubernetesService
+        .kubernetesFetch(`${ingressApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
+        .then((data) => data.json());
+      return ingresses.items as IngressResource[];
+    }
+
+    // TO DO: Parse this.
+
+    return [];
+  }
+
+  public async listServices(): Promise<ServiceResource[]> {
+    const rawServicesApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Service")?.get("v1");
+    const servicesApiPath = rawServicesApiUrl?.path.namespaced ?? rawServicesApiUrl?.path.global;
+    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
+
+    if (servicesApiPath) {
+      const services = await this.kubernetesService
+        .kubernetesFetch(`${servicesApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
+        .then((data) => data.json());
+      return services.items as ServiceResource[];
+    }
+
+    // TO DO: Parse this.
+
+    return [];
+  }
+
+  public async listDeployments(): Promise<DeploymentResource[]> {
+    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
+    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
+    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
+
+    if (deploymentsApiPath) {
+      const deployments = await this.kubernetesService
+        .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
+        .then((data) => data.json());
+      return deployments.items as DeploymentResource[];
     }
 
     // TO DO: Parse this.
@@ -153,7 +264,9 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     //       workspaceName: deployment.metadata.annotations![ResourceLabelNames.WORKSPACE_NAME],
     //     };
     //   });
-    this.listDeployments();
+    console.log(await this.listDeployments());
+    console.log(await this.listServices());
+    console.log(await this.listIngress());
     return [];
   }
 
@@ -331,7 +444,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   //   ;
   // }
 
-  getIngressUrl(resource: K8sResourceYaml): string {
+  getIngressUrl(resource: IngressResource): string {
     return `${new URL(this.args.connection.host).origin}/${resource.metadata?.name}`;
   }
 
