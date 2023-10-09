@@ -1,21 +1,20 @@
-.url-title {
+.kie-dmn-editor--documentation-link-title {
   width: fit-content;
 }
 
-.url-title > input[disabled] {
+.kie-dmn-editor--documentation-link-title > input[disabled] {
   pointer-events: none;
 }
 
-.url-title-is-link {
+.kie-dmn-editor--documentation-link-title--is-link {
   cursor: pointer;
 }
 
-.url-title-is-link > input {
+.kie-dmn-editor--documentation-link-title--is-link > input {
   color: rgb(0, 102, 204);
-  font-style: italic;
   text-decoration: none;
 }
 
-.url-title-is-link:hover {
+.kie-dmn-editor--documentation-link-title--is-link:hover {
   text-decoration: underline;
 }

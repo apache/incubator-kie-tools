@@ -8,7 +8,7 @@ import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/compone
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
-import { FormFieldGroup, FormFieldGroupHeader, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { FormFieldGroupHeader, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
@@ -41,7 +41,7 @@ export function DocumentationLinksFormGroup({
   );
   const [expandedUrls, setExpandedUrls] = useState<boolean[]>([]);
 
-  const onAddNewUrl = useCallback(() => {
+  const onNewUrl = useCallback(() => {
     const newValues = [...(values ?? [])];
     const newLength = newValues.unshift({ "@_name": "", "@_url": "" });
 
@@ -64,37 +64,18 @@ export function DocumentationLinksFormGroup({
     onChange?.(newValues);
   }, [onChange, values, documentationKeys]);
 
-  const setUrlExpanded = useCallback((index: number, isExpanded: boolean) => {
-    setExpandedUrls((prev) => {
-      const newUrlExpanded = [...prev];
-      newUrlExpanded[index] = isExpanded;
-      return newUrlExpanded;
-    });
-  }, []);
-
-  const onChangeUrlTitle = useCallback(
-    (newUrlTitle: string, index: number) => {
-      if (isReadonly) {
-        return;
-      }
-
-      const newValues = [...(values ?? [])];
-      const newKieAttachment = newValues[index] ?? { "@_name": "", "@_url": "" };
-      newValues[index] = { "@_name": newUrlTitle, "@_url": newKieAttachment["@_url"] };
-      onChange?.(newValues);
-    },
-    [isReadonly, onChange, values]
-  );
-
   const onChangeUrl = useCallback(
-    (newUrl: string, index: number) => {
+    (args: { index: number; newUrlTitle?: string; newUrl?: string }) => {
       if (isReadonly) {
         return;
       }
 
       const newValues = [...(values ?? [])];
-      const newKieAttachment = newValues[index] ?? { "@_name": "", "@_url": "" };
-      newValues[index] = { "@_name": newKieAttachment["@_name"], "@_url": newUrl };
+      const newKieAttachment = newValues[args.index] ?? { "@_name": "", "@_url": "" };
+      newValues[args.index] = {
+        "@_name": args.newUrlTitle ?? newKieAttachment["@_name"],
+        "@_url": args.newUrl ?? newKieAttachment["@_url"],
+      };
       onChange?.(newValues);
     },
     [isReadonly, onChange, values]
@@ -113,8 +94,8 @@ export function DocumentationLinksFormGroup({
         return newUrlExpanded;
       });
 
-      documentationKeys.delete(index);
       // Removes the uuid
+      documentationKeys.delete(index);
       [...documentationKeys.values()].forEach((uuid, index) => {
         documentationKeys.set(index, uuid);
       });
@@ -122,12 +103,13 @@ export function DocumentationLinksFormGroup({
     [documentationKeys, onChange, values]
   );
 
-  const onUpdateKey = useCallback(
-    (index: number) => {
-      documentationKeys.set(index, generateUuid());
-    },
-    [documentationKeys]
-  );
+  const setUrlExpanded = useCallback((isExpanded: boolean, index: number) => {
+    setExpandedUrls((prev) => {
+      const newUrlExpanded = [...prev];
+      newUrlExpanded[index] = isExpanded;
+      return newUrlExpanded;
+    });
+  }, []);
 
   return (
     <FormGroup
@@ -141,7 +123,7 @@ export function DocumentationLinksFormGroup({
             ),
             id: "documentation-links",
           }}
-          actions={<Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAddNewUrl} />}
+          actions={<Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNewUrl} />}
         />
       }
     >
@@ -161,15 +143,14 @@ export function DocumentationLinksFormGroup({
           values?.map((kieAttachment, index) => (
             <div key={documentationKeys.get(index)} style={{ paddingTop: index === 0 ? "0" : "16px" }}>
               <DocumentationLinksInput
-                kieAttachment={kieAttachment}
-                index={index}
+                title={kieAttachment["@_name"] ?? ""}
+                url={kieAttachment["@_url"] ?? ""}
                 isReadonly={isReadonly}
-                onChangeUrlTitle={onChangeUrlTitle}
-                onChangeUrl={onChangeUrl}
-                onRemove={onRemove}
+                onChangeUrlTitle={(newUrlTitle) => onChangeUrl({ newUrlTitle, index })}
+                onChangeUrl={(newUrl) => onChangeUrl({ newUrl, index })}
+                onRemove={() => onRemove(index)}
                 isUrlExpanded={expandedUrls[index]}
-                setUrlExpanded={setUrlExpanded}
-                onUpdateKey={onUpdateKey}
+                setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
               />
             </div>
           ))
@@ -180,27 +161,26 @@ export function DocumentationLinksFormGroup({
 }
 
 function DocumentationLinksInput({
-  kieAttachment,
-  index,
+  title,
+  url,
   isReadonly,
+  isUrlExpanded,
   onChangeUrlTitle,
   onChangeUrl,
   onRemove,
-  isUrlExpanded,
   setUrlExpanded,
-  onUpdateKey,
 }: {
-  kieAttachment: Namespaced<"kie", KIE__tAttachment>;
-  index: number;
+  title: string;
+  url: string;
   isReadonly: boolean;
-  onChangeUrlTitle: (newUrlTitle: string, index: number) => void;
-  onChangeUrl: (newUrl: string, index: number) => void;
-  onRemove: (index: number) => void;
   isUrlExpanded: boolean;
-  setUrlExpanded: (index: number, isExpanded: boolean) => void;
-  onUpdateKey: (index: number) => void;
+  onChangeUrlTitle: (newUrlTitle: string) => void;
+  onChangeUrl: (newUrl: string) => void;
+  onRemove: () => void;
+  setUrlExpanded: (isExpanded: boolean) => void;
 }) {
   const urlTitleRef = useRef<HTMLInputElement>(null);
+  const uuid = useMemo(() => generateUuid(), []);
 
   const isValidUrl = useCallback((urlString) => {
     try {
@@ -212,23 +192,20 @@ function DocumentationLinksInput({
   }, []);
 
   const toogleExpanded = useCallback(() => {
-    if (isUrlExpanded === true && kieAttachment["@_name"] === "" && kieAttachment["@_url"] !== "") {
-      onUpdateKey(index);
-      onChangeUrlTitle(kieAttachment["@_url"] ?? "", index);
+    // If the title is empty the title should be the URL.
+    if (isUrlExpanded === true && title === "" && url !== "") {
+      onChangeUrlTitle(url ?? "");
     }
-    setUrlExpanded(index, !isUrlExpanded);
-  }, [index, isUrlExpanded, kieAttachment, onChangeUrlTitle, setUrlExpanded, onUpdateKey]);
+    setUrlExpanded(!isUrlExpanded);
+  }, [isUrlExpanded, title, url, setUrlExpanded, onChangeUrlTitle]);
 
-  const urlTitleIsLink = useMemo(
-    () => isValidUrl(kieAttachment["@_url"]) && !isUrlExpanded,
-    [isValidUrl, isUrlExpanded, kieAttachment]
-  );
-  const shouldRenderTooltip = useMemo(
-    () => kieAttachment["@_url"] !== "" && !isUrlExpanded,
-    [isUrlExpanded, kieAttachment]
-  );
+  const urlTitleIsLink = useMemo(() => isValidUrl(url) && !isUrlExpanded, [isValidUrl, url, isUrlExpanded]);
+  const shouldRenderTooltip = useMemo(() => url !== "" && !isUrlExpanded, [isUrlExpanded, url]);
   const urlTitleClassName = useMemo(
-    () => (urlTitleIsLink ? "url-title url-title-is-link" : "url-title"),
+    () =>
+      urlTitleIsLink
+        ? "kie-dmn-editor--documentation-link-title kie-dmn-editor--documentation-link-title--is-link"
+        : "kie-dmn-editor--documentation-link-title",
     [urlTitleIsLink]
   );
   const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
@@ -250,46 +227,44 @@ function DocumentationLinksInput({
           </Button>
         </FlexItem>
         <FlexItem style={{ flexGrow: 1 }}>
-          <div
-            ref={urlTitleRef}
-            className={urlTitleClassName}
-            onClick={() => {
-              if (urlTitleIsLink) {
-                window.open(kieAttachment["@_url"]);
-              } else if (!isUrlExpanded) {
-                setUrlExpanded(index, true);
-              }
-            }}
-          >
+          {!isUrlExpanded ? (
+            <>
+              <div ref={urlTitleRef}>
+                {urlTitleIsLink ? (
+                  <a className={urlTitleClassName} href={url} target={"_blank"}>
+                    {title}
+                  </a>
+                ) : (
+                  <p style={{ color: title !== "" ? "black" : "gray" }}>
+                    {title !== "" ? title : PLACEHOLDER_URL_TITLE}
+                  </p>
+                )}
+              </div>
+              {shouldRenderTooltip && (
+                <Tooltip
+                  content={<Text component={TextVariants.p}>{url}</Text>}
+                  position={TooltipPosition.topStart}
+                  reference={urlTitleRef}
+                />
+              )}
+            </>
+          ) : (
             <InlineFeelNameInput
               isPlain={true}
-              isReadonly={!isUrlExpanded || isReadonly}
-              id={`${index}-name`}
+              isReadonly={isReadonly}
+              id={`${uuid}-name`}
               shouldCommitOnBlur={true}
               placeholder={PLACEHOLDER_URL_TITLE}
-              name={kieAttachment["@_name"] ?? ""}
-              onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle, index)}
+              name={title ?? ""}
+              onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle)}
               allUniqueNames={urlTitleUniqueMap}
               validate={validate}
-            />
-          </div>
-
-          {shouldRenderTooltip && (
-            <Tooltip
-              content={<Text component={TextVariants.p}>{kieAttachment["@_url"]}</Text>}
-              position={TooltipPosition.topStart}
-              reference={urlTitleRef}
             />
           )}
         </FlexItem>
         <FlexItem>
           <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>
-            <Button
-              style={{ padding: "0px 16px" }}
-              variant={"plain"}
-              icon={<TimesIcon />}
-              onClick={() => onRemove(index)}
-            />
+            <Button style={{ padding: "0px 16px" }} variant={"plain"} icon={<TimesIcon />} onClick={() => onRemove()} />
           </Tooltip>
         </FlexItem>
       </Flex>
@@ -300,18 +275,19 @@ function DocumentationLinksInput({
           }}
         >
           <InlineFeelNameInput
+            style={{ fontStyle: "italic" }}
             isPlain={true}
             isReadonly={isReadonly}
-            id={`${index}-url`}
+            id={`${uuid}-url`}
             shouldCommitOnBlur={true}
             placeholder={PLACEHOLDER_URL}
-            name={kieAttachment["@_url"] ?? ""}
-            onRenamed={(newUrl) => onChangeUrl(newUrl, index)}
+            name={url ?? ""}
+            onRenamed={(newUrl) => onChangeUrl(newUrl)}
             allUniqueNames={urlUniqueMap}
             validate={validate}
             onKeyDown={(e) => {
               if (e.code === "Enter") {
-                setUrlExpanded(index, false);
+                setUrlExpanded(false);
               }
             }}
           />
