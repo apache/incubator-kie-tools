@@ -57,6 +57,7 @@ export function Palette() {
       <RF.Panel position={"top-left"}>
         <aside className={"kie-dmn-editor--palette"}>
           <button
+            title="Input Data"
             className={"kie-dmn-editor--palette-button dndnode input-data"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
@@ -64,6 +65,7 @@ export function Palette() {
             <InputDataIcon />
           </button>
           <button
+            title="Decision"
             className={"kie-dmn-editor--palette-button dndnode decision"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
             draggable={true}
@@ -71,6 +73,7 @@ export function Palette() {
             <DecisionIcon />
           </button>
           <button
+            title="Business Knowledge Model"
             className={"kie-dmn-editor--palette-button dndnode bkm"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
             draggable={true}
@@ -78,6 +81,7 @@ export function Palette() {
             <BkmIcon />
           </button>
           <button
+            title="Knowledge Source"
             className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
             draggable={true}
@@ -85,6 +89,7 @@ export function Palette() {
             <KnowledgeSourceIcon />
           </button>
           <button
+            title="Decision Service"
             className={"kie-dmn-editor--palette-button dndnode decision-service"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
             draggable={true}
@@ -95,6 +100,7 @@ export function Palette() {
         <br />
         <aside className={"kie-dmn-editor--palette"}>
           <button
+            title="Group"
             className={"kie-dmn-editor--palette-button dndnode group"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
             draggable={true}
@@ -103,6 +109,7 @@ export function Palette() {
             <GroupIcon />
           </button>
           <button
+            title="Text Annotation"
             className={"kie-dmn-editor--palette-button dndnode text-annotation"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
             draggable={true}
@@ -133,6 +140,7 @@ export function Palette() {
             bodyContent={<ExternalNodesPanel />}
           >
             <button
+              title="External nodes"
               className={"kie-dmn-editor--external-nodes-panel-toggle-button"}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {
