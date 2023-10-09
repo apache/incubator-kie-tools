@@ -20,6 +20,6 @@
 export * from "./FeelVariables";
 export * from "./parser/FeelVariable";
 export * from "./parser/ReservedWords";
-export * from "./parser/VariableType";
+export * from "./parser/SymbolType";
 export * from "./parser/FeelVariablesParser";
 export * from "./parser/VariablesRepository";

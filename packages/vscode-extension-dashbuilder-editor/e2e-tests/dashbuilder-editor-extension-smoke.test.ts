@@ -26,7 +26,7 @@ import DashbuilderEditorTestHelper from "./helpers/dashbuilder/DashbuilderEditor
 // TODO Fix tests and re-enable them
 describe.skip("Dashbuilder editor - smoke end-to-end tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources", "smoke-test");
-  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
 
   let testHelper: VSCodeTestHelper;
   let browser: VSBrowser;
@@ -45,7 +45,7 @@ describe.skip("Dashbuilder editor - smoke end-to-end tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

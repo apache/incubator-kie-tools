@@ -20,17 +20,17 @@
 import { BaseSymbol } from "./BaseSymbol";
 import { Type } from "./Type";
 
-import { VariableType } from "../VariableType";
+import { SymbolType } from "../SymbolType";
 
 export class VariableSymbol extends BaseSymbol {
-  private readonly _variableType: VariableType | undefined;
+  private readonly _symbolType: SymbolType | undefined;
 
-  constructor(id?: string, type?: Type, variableType?: VariableType) {
+  constructor(id?: string, type?: Type, variableType?: SymbolType) {
     super(id, type);
-    this._variableType = variableType;
+    this._symbolType = variableType;
   }
 
-  get variableType(): VariableType | undefined {
-    return this._variableType;
+  get symbolType(): SymbolType | undefined {
+    return this._symbolType;
   }
 }

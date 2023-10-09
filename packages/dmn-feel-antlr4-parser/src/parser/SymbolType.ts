@@ -17,14 +17,29 @@
  * under the License.
  */
 
-export enum Element {
-  FeelKeyword,
-  FeelNumeric,
-  FeelBoolean,
-  FeelString,
-  FeelFunction,
-  InputDataVariable,
-  FunctionCall,
-  UnknownVariable,
-  FunctionParameterVariable,
+export enum SymbolType {
+  /**
+   * Symbol not recognized.
+   */
+  Unknown,
+
+  /**
+   * A symbol defined in a Decision or Input node.
+   */
+  GlobalVariable,
+
+  /**
+   * Decision Service and Business Knowledge Model are invocable.
+   */
+  Invocable,
+
+  /**
+   * Local variables.
+   */
+  LocalVariable,
+
+  /**
+   * Parameters of functions.
+   */
+  Parameter,
 }

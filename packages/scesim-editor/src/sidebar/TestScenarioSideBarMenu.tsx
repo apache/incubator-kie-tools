@@ -49,7 +49,7 @@ function TestScenarioSideBarMenu({
   );
 
   return (
-    <div className="kie-scesim-editor--right-sidebar">
+    <div className="kie-scesim-editor--side-bar">
       <Tooltip content={i18n.sidebar.dataObjectsTooltip}>
         <Button
           className={

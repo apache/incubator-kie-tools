@@ -1,4 +1,4 @@
-# Integration tests
+# End to End tests
 
 There is a set of cypress tests in `e2e-tests` folder. To run them, please refer to one option bellow.
 

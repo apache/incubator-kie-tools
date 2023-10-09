@@ -35,7 +35,7 @@ beforeEach(async () => {
 test(TEST_NAME, async () => {
   const dmnUrl: string =
     "https://github.com/kiegroup/kie-tools/" +
-    "blob/main/packages/chrome-extension-pack-kogito-kie-editors/it-tests/samples/test.dmn";
+    "blob/main/packages/chrome-extension-pack-kogito-kie-editors/e2e-tests/samples/test.dmn";
   let dmnPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, dmnUrl);
   // open and check full screen editor
   const fullScreenPage: FullScreenPage = await dmnPage.fullScreen();

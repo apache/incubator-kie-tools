@@ -27,7 +27,7 @@ import { NameQueue } from "./NameQueue";
 import { FeelVariable } from "../FeelVariable";
 import { Scopes } from "./Scopes";
 import { ReservedWords } from "../ReservedWords";
-import { VariableType } from "../VariableType";
+import { SymbolType } from "../SymbolType";
 import { MapBackedType } from "./MapBackedType";
 
 export class ParserHelper {
@@ -94,7 +94,7 @@ export class ParserHelper {
     return key;
   }
 
-  defineVariable(variable: string | ParserRuleContext, type?: Type, variableType?: VariableType) {
+  defineVariable(variable: string | ParserRuleContext, type?: Type, variableType?: SymbolType) {
     const variableSymbol = new VariableSymbol(
       variable instanceof ParserRuleContext ? this.getName(variable) : variable,
       type,
@@ -165,18 +165,18 @@ export class ParserHelper {
     const length = end - start + 1;
 
     if (this.currentScope?.getChildScopes().has(name)) {
-      this.variables.push(new FeelVariable(start, length, VariableType.Input, name));
+      this.variables.push(new FeelVariable(start, length, SymbolType.GlobalVariable, name));
     } else {
       const symbol = this.currentScope?.resolve(name);
       if (symbol) {
         if (symbol instanceof VariableSymbol) {
-          this.variables.push(new FeelVariable(start, length, symbol.variableType ?? VariableType.Input, name));
+          this.variables.push(new FeelVariable(start, length, symbol.symbolType ?? SymbolType.GlobalVariable, name));
         } else {
-          this.variables.push(new FeelVariable(start, length, VariableType.Input, name));
+          this.variables.push(new FeelVariable(start, length, SymbolType.GlobalVariable, name));
         }
       } else {
         if (!ReservedWords.FeelFunctions.has(name) && !ReservedWords.FeelKeywords.has(name)) {
-          this.variables.push(new FeelVariable(start, length, VariableType.Unknown, name));
+          this.variables.push(new FeelVariable(start, length, SymbolType.Unknown, name));
         }
       }
     }

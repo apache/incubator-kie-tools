@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,14 +17,28 @@
  * under the License.
  */
 
-export enum Element {
-  FeelKeyword,
-  FeelNumeric,
-  FeelBoolean,
-  FeelString,
-  FeelFunction,
-  InputDataVariable,
-  FunctionCall,
-  UnknownVariable,
-  FunctionParameterVariable,
+.kie-scesim-editor-drawer-data-objects--button-container {
+  margin-top: 10px;
+}
+
+.kie-scesim-editor-drawer-data-objects--button-container button + button {
+  margin-left: 10px;
+}
+
+.kie-scesim-editor-drawer-data-objects--info-icon {
+  margin-left: 5px;
+  vertical-align: top;
+}
+
+.kie-scesim-editor-drawer-data-objects--selector {
+  height: 500px;
+  overflow: scroll;
+}
+
+.kie-scesim-editor-drawer-data-objects--selector-title {
+  margin-top: 10px;
+}
+
+.kie-scesim-editor-drawer-data-objects--text {
+  margin-bottom: 10px;
 }

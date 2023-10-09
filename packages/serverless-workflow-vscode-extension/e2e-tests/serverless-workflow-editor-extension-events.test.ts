@@ -28,7 +28,7 @@ import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
 
 describe("Serverless workflow editor - events tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources", "functions-events");
-  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
 
   let testHelper: VSCodeTestHelper;
 
@@ -45,7 +45,7 @@ describe("Serverless workflow editor - events tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });

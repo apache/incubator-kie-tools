@@ -25,7 +25,7 @@ import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 
 describe("yard editor - end-to-end tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("e2e-tests-tmp", "resources");
-  const DIST_IT_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
+  const DIST_E2E_TESTS_FOLDER: string = path.resolve("dist-e2e-tests");
   const EMPTY_YARD_YAML = "empty.yard.yaml";
   const EMPTY_YARD_YML = "empty.yard.yml";
 
@@ -44,7 +44,7 @@ describe("yard editor - end-to-end tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    await testHelper.takeScreenshotOnTestFailure(this, DIST_IT_TESTS_FOLDER);
+    await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
