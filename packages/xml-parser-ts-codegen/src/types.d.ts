@@ -102,7 +102,7 @@ export type XptcSimpleType = {
 );
 
 export type XptcTsPrimitiveType = {
-  doc: string;
+  xsdType: string;
   type: "primitive";
   tsEquivalent: string;
 };
@@ -121,6 +121,7 @@ export type XptcMetaTypeProperty = {
   elem: XptcElement | undefined;
   metaType: {
     name: string;
+    xsdType: string;
   };
   typeBody?: string;
   isArray: boolean;

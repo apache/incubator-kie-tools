@@ -57,21 +57,21 @@ const __LOGS = {
 };
 
 export const XSD__TYPES = new Map<string, XptcTsPrimitiveType>([
-  ["xsd:boolean", { type: "primitive", tsEquivalent: "boolean", doc: "xsd:boolean" }],
-  ["xsd:string", { type: "primitive", tsEquivalent: "string", doc: "xsd:string" }],
-  ["xsd:int", { type: "primitive", tsEquivalent: "number", doc: "xsd:int" }],
-  ["xsd:integer", { type: "primitive", tsEquivalent: "number", doc: "xsd:integer" }],
-  ["xsd:dateTime", { type: "primitive", tsEquivalent: "string", doc: "xsd:dateTime" }],
-  ["xsd:double", { type: "primitive", tsEquivalent: "number", doc: "xsd:double" }],
-  ["xsd:long", { type: "primitive", tsEquivalent: "number", doc: "xsd:long" }],
-  ["xsd:float", { type: "primitive", tsEquivalent: "number", doc: "xsd:float" }],
-  ["xsd:duration", { type: "primitive", tsEquivalent: "string", doc: "xsd:duration" }],
-  ["xsd:anyType", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyType" }],
-  ["xsd:anyURI", { type: "primitive", tsEquivalent: "string", doc: "xsd:anyURI" }], // Literally any URI
-  ["xsd:QName", { type: "primitive", tsEquivalent: "string", doc: "xsd:QName" }], // Qualified name. Can be prefixed by a local namespace. E.g., `import1:764374-384738-37843`
-  ["xsd:ID", { type: "primitive", tsEquivalent: "string", doc: "xsd:ID" }], // Unique IDs inside the document, independent of tag name
-  ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREF" }], // References to a xsd:ID
-  ["xsd:IDREFS", { type: "primitive", tsEquivalent: "string", doc: "xsd:IDREFS" }], // Space-separated xsd:IDREF's
+  ["xsd:boolean", { type: "primitive", tsEquivalent: "boolean", xsdType: "xsd:boolean" }],
+  ["xsd:string", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:string" }],
+  ["xsd:int", { type: "primitive", tsEquivalent: "number", xsdType: "xsd:int" }],
+  ["xsd:integer", { type: "primitive", tsEquivalent: "number", xsdType: "xsd:integer" }],
+  ["xsd:dateTime", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:dateTime" }],
+  ["xsd:double", { type: "primitive", tsEquivalent: "number", xsdType: "xsd:double" }],
+  ["xsd:long", { type: "primitive", tsEquivalent: "number", xsdType: "xsd:long" }],
+  ["xsd:float", { type: "primitive", tsEquivalent: "number", xsdType: "xsd:float" }],
+  ["xsd:duration", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:duration" }],
+  ["xsd:anyType", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:anyType" }],
+  ["xsd:anyURI", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:anyURI" }], // Literally any URI
+  ["xsd:QName", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:QName" }], // Qualified name. Can be prefixed by a local namespace. E.g., `import1:764374-384738-37843`
+  ["xsd:ID", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:ID" }], // Unique IDs inside the document, independent of tag name
+  ["xsd:IDREF", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:IDREF" }], // References to a xsd:ID
+  ["xsd:IDREFS", { type: "primitive", tsEquivalent: "string", xsdType: "xsd:IDREFS" }], // Space-separated xsd:IDREF's
 ]);
 
 // TODO: Tiago --> Write unit tests
@@ -466,7 +466,7 @@ export const meta = {
 `;
     type.properties.forEach((p) => {
       const ns = getMetaPropertyNs(__RELATIVE_LOCATION, p);
-      meta += `        "${ns}${p.name}": { type: "${p.metaType.name}", isArray: ${p.isArray} },
+      meta += `        "${ns}${p.name}": { type: "${p.metaType.name}", isArray: ${p.isArray}, fromType: "${p.fromType}", xsdType: "${p.metaType.xsdType}" },
 `;
     });
 
@@ -518,8 +518,8 @@ function resolveElementRef(
   });
 }
 
-function getMetaTypeName(typeName: string, doc: string) {
-  return typeName === "number" ? (doc === "xsd:double" || doc === "xsd:float" ? "float" : "integer") : typeName;
+function getMetaTypeName(typeName: string, xsdType: string) {
+  return typeName === "number" ? (xsdType === "xsd:double" || xsdType === "xsd:float" ? "float" : "integer") : typeName;
 }
 
 function getTypeBodyForElementRef(
@@ -590,7 +590,7 @@ function getMetaProperties(
       fromType: metaTypeName,
       name: `@_${a.name}`,
       elem: undefined,
-      metaType: { name: getMetaTypeName(attributeType.name, attributeType.doc) },
+      metaType: { name: getMetaTypeName(attributeType.name, attributeType.xsdType), xsdType: attributeType.xsdType },
       isArray: false,
       isOptional: a.isOptional,
     });
@@ -616,16 +616,17 @@ function getMetaProperties(
               ct.declaredAtRelativeLocation,
               getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
             ),
-            doc: "Anonymous type from element " + referencedElement.name,
+            xsdType: "Anonymous type from element " + referencedElement.name,
           };
 
       metaProperties.push({
         declaredAt: referencedElement?.declaredAtRelativeLocation,
-        fromType: ct.isAnonymous ? "" : ct.name,
+        fromType: ct.isAnonymous ? "" : metaTypeName,
         name: referencedElement.name,
         elem: referencedElement,
         metaType: {
-          name: getMetaTypeName(tsType.name, tsType.doc),
+          name: getMetaTypeName(tsType.name, tsType.xsdType),
+          xsdType: tsType.xsdType,
         },
         typeBody: getTypeBodyForElementRef(
           __RELATIVE_LOCATION,
@@ -649,13 +650,14 @@ function getMetaProperties(
         name: e.name,
         elem: undefined, // REALLY?
         metaType: {
-          name: getMetaTypeName(tsType.name, tsType.doc),
+          name: getMetaTypeName(tsType.name, tsType.xsdType),
+          xsdType: tsType.xsdType,
         },
         isArray: e.isArray,
         isOptional: e.isOptional,
       });
     } else if (e.kind === "ofAnonymousType") {
-      const anonymousType = getAnonymousMetaTypeName(e.name, metaTypeName);
+      const anonymousTypeName = getAnonymousMetaTypeName(e.name, metaTypeName);
       const mp = getMetaProperties(
         __RELATIVE_LOCATION,
         __META_TYPE_MAPPING,
@@ -664,12 +666,12 @@ function getMetaProperties(
         __XSDS,
         __NAMED_TYPES_BY_TS_NAME,
         e.anonymousType,
-        anonymousType
+        anonymousTypeName
       );
-      anonymousTypes.push({ name: anonymousType, properties: mp.metaProperties });
+      anonymousTypes.push({ name: anonymousTypeName, properties: mp.metaProperties });
       anonymousTypes.push(...mp.anonymousTypes);
-      __META_TYPE_MAPPING.set(anonymousType, {
-        name: anonymousType,
+      __META_TYPE_MAPPING.set(anonymousTypeName, {
+        name: anonymousTypeName,
         properties: mp.metaProperties,
       });
       metaProperties.push({
@@ -677,7 +679,7 @@ function getMetaProperties(
         fromType: metaTypeName,
         name: e.name,
         elem: undefined, // REALLY?
-        metaType: { name: anonymousType },
+        metaType: { name: anonymousTypeName, xsdType: "Anonymous type..." },
         isArray: e.isArray,
         isOptional: e.isOptional,
       });
@@ -693,8 +695,13 @@ function getMetaProperties(
   let curParentCt = immediateParentType ? __NAMED_TYPES_BY_TS_NAME.get(immediateParentType.name) : undefined;
 
   let needsExtensionType = ct.needsExtensionType;
+
   while (curParentCt) {
     if (curParentCt?.type === "complex") {
+      const curParentCtMetaTypeName = getTsNameFromNamedType(
+        ct.declaredAtRelativeLocation,
+        ct.isAnonymous ? getAnonymousMetaTypeName(ct.forElementWithName, "GLOBAL") : ct.name
+      );
       needsExtensionType = needsExtensionType || curParentCt.needsExtensionType;
       if (curParentCt.isAnonymous) {
         throw new Error("Anonymous types are never parent types.");
@@ -713,10 +720,13 @@ function getMetaProperties(
 
         metaProperties.push({
           declaredAt: curParentCt.declaredAtRelativeLocation,
-          fromType: curParentCt.name,
+          fromType: curParentCtMetaTypeName,
           elem: undefined,
           name: `@_${a.name}`,
-          metaType: { name: getMetaTypeName(attributeType.name, attributeType.doc) },
+          metaType: {
+            name: getMetaTypeName(attributeType.name, attributeType.xsdType),
+            xsdType: attributeType.xsdType,
+          },
           isArray: false,
           isOptional: a.isOptional,
         });
@@ -744,9 +754,9 @@ function getMetaProperties(
           metaProperties.push({
             elem: undefined, // REALLY?
             declaredAt: curParentCt.declaredAtRelativeLocation,
-            fromType: curParentCt.name,
+            fromType: curParentCtMetaTypeName,
             name: e.name,
-            metaType: { name: anonymousTypeName },
+            metaType: { name: anonymousTypeName, xsdType: "Anonumous type..." },
             isArray: e.isArray,
             isOptional: e.isOptional,
           });
@@ -760,11 +770,12 @@ function getMetaProperties(
 
           metaProperties.push({
             declaredAt: curParentCt.declaredAtRelativeLocation,
-            fromType: curParentCt.name,
+            fromType: curParentCtMetaTypeName,
             elem: undefined, // REALLY?
             name: e.name,
             metaType: {
-              name: getMetaTypeName(tsType.name, tsType.doc),
+              name: getMetaTypeName(tsType.name, tsType.xsdType),
+              xsdType: tsType.xsdType,
             },
             isArray: e.isArray,
             isOptional: e.isOptional,
@@ -793,16 +804,17 @@ function getMetaProperties(
                   ct.declaredAtRelativeLocation,
                   getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
                 ),
-                doc: "Anonymous type from element " + referencedElement.name,
+                xsdType: "Anonymous type from element " + referencedElement.name,
               };
 
           metaProperties.push({
             declaredAt: referencedElement?.declaredAtRelativeLocation,
-            fromType: ct.isAnonymous ? "" : ct.name,
+            fromType: ct.isAnonymous ? "" : curParentCtMetaTypeName,
             name: referencedElement.name,
             elem: referencedElement,
             metaType: {
-              name: getMetaTypeName(tsType.name, tsType.doc),
+              name: getMetaTypeName(tsType.name, tsType.xsdType),
+              xsdType: tsType.xsdType,
             },
             typeBody: getTypeBodyForElementRef(
               __RELATIVE_LOCATION,
@@ -862,7 +874,7 @@ function getTsTypeFromLocalRef(
   __NAMED_TYPES_BY_TS_NAME: Map<string, XptcComplexType | XptcSimpleType>,
   relativeLocation: string,
   namedTypeLocalRef: string
-): { name: string; doc: string } {
+): { name: string; xsdType: string } {
   // check if it's a local ref to another namespace
   if (namedTypeLocalRef.includes(":") && namedTypeLocalRef.split(":").length === 2) {
     const [localNsName, namedTypeName] = namedTypeLocalRef.split(":");
@@ -875,7 +887,7 @@ function getTsTypeFromLocalRef(
       if (!xsdType) {
         throw new Error(`Unknown XSD type '${namedTypeLocalRef}'`);
       }
-      return { name: xsdType.tsEquivalent, doc: xsdType.doc };
+      return { name: xsdType.tsEquivalent, xsdType: xsdType.xsdType };
     }
 
     // find the XSD with matching namespace declaration.
@@ -899,13 +911,13 @@ function getTsTypeFromLocalRef(
     }
 
     // found it!
-    return { name: tsTypeName, doc: `type found from local ref '${localNsName}'.` };
+    return { name: tsTypeName, xsdType: `type found from local ref '${localNsName}'.` };
   }
 
   // not a reference to a type in another namespace. simply local name.
   return {
     name: getTsNameFromNamedType(relativeLocation, namedTypeLocalRef),
-    doc: "// local type",
+    xsdType: "// local type",
   };
 }
 
