@@ -143,6 +143,7 @@ export function DocumentationLinksFormGroup({
           values?.map((kieAttachment, index) => (
             <div key={documentationKeys.get(index)} style={{ paddingTop: index === 0 ? "0" : "16px" }}>
               <DocumentationLinksInput
+                autoFocus={index === 0}
                 title={kieAttachment["@_name"] ?? ""}
                 url={kieAttachment["@_url"] ?? ""}
                 isReadonly={isReadonly}
@@ -161,6 +162,7 @@ export function DocumentationLinksFormGroup({
 }
 
 function DocumentationLinksInput({
+  autoFocus,
   title,
   url,
   isReadonly,
@@ -170,6 +172,7 @@ function DocumentationLinksInput({
   onRemove,
   setUrlExpanded,
 }: {
+  autoFocus: boolean;
   title: string;
   url: string;
   isReadonly: boolean;
@@ -214,85 +217,86 @@ function DocumentationLinksInput({
 
   return (
     <React.Fragment>
-      <Flex direction={{ default: "row" }}>
-        <FlexItem>
-          <Button
-            variant={ButtonVariant.plain}
-            style={{ padding: "0 8px 0 0" }}
-            onClick={() => {
-              toogleExpanded();
-            }}
-          >
-            {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
-          </Button>
-        </FlexItem>
-        <FlexItem style={{ flexGrow: 1 }}>
-          {!isUrlExpanded ? (
-            <>
-              <div ref={urlTitleRef}>
-                {urlTitleIsLink ? (
-                  <a className={urlTitleClassName} href={url} target={"_blank"}>
-                    {title}
-                  </a>
-                ) : (
-                  <p style={{ color: title !== "" ? "black" : "gray" }}>
-                    {title !== "" ? title : PLACEHOLDER_URL_TITLE}
-                  </p>
-                )}
-              </div>
-              {shouldRenderTooltip && (
-                <Tooltip
-                  content={<Text component={TextVariants.p}>{url}</Text>}
-                  position={TooltipPosition.topStart}
-                  reference={urlTitleRef}
+      <div style={{ display: "flex", flexDirection: "row" }}>
+        <div style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <Button
+              variant={ButtonVariant.plain}
+              style={{ padding: "0 8px 0 0" }}
+              onClick={() => {
+                toogleExpanded();
+              }}
+            >
+              {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
+            </Button>
+            <div style={{ flexGrow: 1 }}>
+              {!isUrlExpanded ? (
+                <>
+                  <div ref={urlTitleRef}>
+                    {urlTitleIsLink ? (
+                      <a className={urlTitleClassName} href={url} target={"_blank"}>
+                        {title}
+                      </a>
+                    ) : (
+                      <p style={{ color: title !== "" ? "black" : "gray" }}>
+                        {title !== "" ? title : PLACEHOLDER_URL_TITLE}
+                      </p>
+                    )}
+                  </div>
+                  {shouldRenderTooltip && (
+                    <Tooltip
+                      content={<Text component={TextVariants.p}>{url}</Text>}
+                      position={TooltipPosition.topStart}
+                      reference={urlTitleRef}
+                    />
+                  )}
+                </>
+              ) : (
+                <InlineFeelNameInput
+                  isPlain={true}
+                  isReadonly={isReadonly}
+                  id={`${uuid}-name`}
+                  shouldCommitOnBlur={true}
+                  placeholder={PLACEHOLDER_URL_TITLE}
+                  name={title ?? ""}
+                  onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle)}
+                  allUniqueNames={urlTitleUniqueMap}
+                  validate={validate}
+                  autoFocus={autoFocus}
                 />
               )}
-            </>
-          ) : (
-            <InlineFeelNameInput
-              isPlain={true}
-              isReadonly={isReadonly}
-              id={`${uuid}-name`}
-              shouldCommitOnBlur={true}
-              placeholder={PLACEHOLDER_URL_TITLE}
-              name={title ?? ""}
-              onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle)}
-              allUniqueNames={urlTitleUniqueMap}
-              validate={validate}
-            />
+            </div>
+          </div>
+          {isUrlExpanded && (
+            <div
+              style={{
+                paddingLeft: "24px",
+              }}
+            >
+              <InlineFeelNameInput
+                style={{ fontStyle: "italic" }}
+                isPlain={true}
+                isReadonly={isReadonly}
+                id={`${uuid}-url`}
+                shouldCommitOnBlur={true}
+                placeholder={PLACEHOLDER_URL}
+                name={url ?? ""}
+                onRenamed={(newUrl) => onChangeUrl(newUrl)}
+                allUniqueNames={urlUniqueMap}
+                validate={validate}
+                onKeyDown={(e) => {
+                  if (e.code === "Enter") {
+                    setUrlExpanded(false);
+                  }
+                }}
+              />
+            </div>
           )}
-        </FlexItem>
-        <FlexItem>
-          <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>
-            <Button style={{ padding: "0px 16px" }} variant={"plain"} icon={<TimesIcon />} onClick={() => onRemove()} />
-          </Tooltip>
-        </FlexItem>
-      </Flex>
-      {isUrlExpanded && (
-        <FlexItem
-          style={{
-            paddingLeft: "40px",
-          }}
-        >
-          <InlineFeelNameInput
-            style={{ fontStyle: "italic" }}
-            isPlain={true}
-            isReadonly={isReadonly}
-            id={`${uuid}-url`}
-            shouldCommitOnBlur={true}
-            placeholder={PLACEHOLDER_URL}
-            name={url ?? ""}
-            onRenamed={(newUrl) => onChangeUrl(newUrl)}
-            allUniqueNames={urlUniqueMap}
-            validate={validate}
-            onKeyDown={(e) => {
-              if (e.code === "Enter") {
-                setUrlExpanded(false);
-              }
-            }}
-          />
-        </FlexItem>
-      )}
+        </div>
+        <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>
+          <Button style={{ padding: "0px 16px" }} variant={"plain"} icon={<TimesIcon />} onClick={() => onRemove()} />
+        </Tooltip>
+      </div>
     </React.Fragment>
   );
 }
