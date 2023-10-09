@@ -26,6 +26,7 @@ import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { UniqueNameIndex } from "../Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
+import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 
 export function DataTypePanel({
   isReadonly,
@@ -205,7 +206,8 @@ export function DataTypePanel({
                   key={"copy"}
                   icon={<CopyIcon />}
                   onClick={() => {
-                    navigator.clipboard.writeText(JSON.stringify(dataType.itemDefinition));
+                    const clipboard = buildClipboardFromDataType(dataType, thisDmnsNamespace);
+                    navigator.clipboard.writeText(JSON.stringify(clipboard));
                   }}
                 >
                   Copy

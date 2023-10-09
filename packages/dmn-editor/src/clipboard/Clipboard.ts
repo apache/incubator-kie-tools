@@ -1,6 +1,7 @@
 import {
   DMN15__tDecision,
   DMN15__tDefinitions,
+  DMN15__tItemDefinition,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -13,15 +14,23 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { KIE, Namespaced } from "@kie-tools/dmn-marshaller/dist/kie-extensions";
 import { KIE__tComponentWidths } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
+import { DataType } from "../dataTypes/DataTypes";
 
 export const DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--diagram" as const;
 export const DMN_EDITOR_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
   "application/json+kie-dmn-editor--boxed-expression" as const;
-export const DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--dataTypes" as const;
+export const DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--data-types" as const;
+
+export type DmnEditorDataTypesClipboard = {
+  mimeType: typeof DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE;
+  namespaceWhereClipboardWasCreatedFrom: string;
+  namespace: string;
+  itemDefinitions: DMN15__tItemDefinition[];
+};
 
 export type DmnEditorDiagramClipboard = {
   mimeType: typeof DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE;
-  originNamespace: string;
+  namespaceWhereClipboardWasCreatedFrom: string;
   drgElements: NonNullable<Unpacked<DMN15__tDefinitions["drgElement"]>>[];
   artifacts: NonNullable<Unpacked<DMN15__tDefinitions["artifact"]>>[];
   widths: Namespaced<KIE, KIE__tComponentWidths>[];
@@ -82,7 +91,7 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
     },
     {
       mimeType: DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
-      originNamespace: dmnEditorState.dmn.model.definitions["@_namespace"],
+      namespaceWhereClipboardWasCreatedFrom: dmnEditorState.dmn.model.definitions["@_namespace"],
       widths: [],
       drgElements: [],
       artifacts: [],
@@ -113,4 +122,30 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
   });
 
   return { clipboard, copiedEdgesById, copiedNodesById, danglingEdgesById };
+}
+
+export function buildClipboardFromDataType(dataType: DataType, thisDmnsNamespace: string): DmnEditorDataTypesClipboard {
+  return {
+    namespaceWhereClipboardWasCreatedFrom: thisDmnsNamespace,
+    namespace: dataType.namespace,
+    mimeType: DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
+    itemDefinitions: [dataType.itemDefinition],
+  };
+}
+
+export function getClipboard<T extends { mimeType: string }>(text: string, mimeType: string): T | undefined {
+  let potentialClipboard: T | undefined;
+  try {
+    potentialClipboard = JSON.parse(text);
+  } catch (e) {
+    console.debug("DMN DIAGRAM: Ignoring pasted content. Not a valid JSON.");
+    return undefined;
+  }
+
+  if (!potentialClipboard || potentialClipboard.mimeType !== mimeType) {
+    console.debug("DMN DIAGRAM: Ignoring pasted content. MIME type doesn't match.");
+    return undefined;
+  }
+
+  return potentialClipboard;
 }

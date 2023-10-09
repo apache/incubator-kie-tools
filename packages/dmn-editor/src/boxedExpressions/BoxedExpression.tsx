@@ -68,8 +68,6 @@ import {
 } from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
 
-import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
-
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const dispatch = useDmnEditorStore((s) => s.dispatch);

@@ -34,6 +34,7 @@ import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 import { DmnMarshaller, DmnModel } from "@kie-tools/dmn-marshaller";
 import { PMML } from "@kie-tools/pmml-editor-marshaller";
 
+import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;

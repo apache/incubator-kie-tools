@@ -64,7 +64,11 @@ import { original } from "immer";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
-import { DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE, DmnEditorDiagramClipboard } from "../clipboard/Clipboard";
+import {
+  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
+  DmnEditorDiagramClipboard,
+  getClipboard,
+} from "../clipboard/Clipboard";
 import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
 import { buildClipboardFromDiagram } from "../clipboard/Clipboard";
 
@@ -1126,19 +1130,10 @@ export function KeyboardShortcuts({
     console.debug("DMN DIAGRAM: Pasting nodes...");
 
     navigator.clipboard.readText().then((text) => {
-      let possibleClipboard: DmnEditorDiagramClipboard | undefined;
-      try {
-        possibleClipboard = JSON.parse(text);
-      } catch (e) {
-        console.debug("DMN DIAGRAM: Ignoring pasted content. Not a valid JSON.");
-      }
-
-      console.debug("DMN DIAGRAM: Ignoring pasted content. MIME type doesn't match.");
-      if (!possibleClipboard || possibleClipboard?.mimeType !== DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE) {
+      const clipboard = getClipboard<DmnEditorDiagramClipboard>(text, DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE);
+      if (!clipboard) {
         return;
       }
-
-      const clipboard = possibleClipboard;
 
       // FIXME: Tiago --> Deal with IDs to make sure they're unique to this pasting operation.
       //                  Create a new function called `randomizeIds` on xml-parser-ts, using meta from xml-parser-ts-codegen

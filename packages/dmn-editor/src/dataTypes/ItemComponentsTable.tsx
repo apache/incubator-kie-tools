@@ -22,10 +22,15 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, reassignIds, getNewItemDefinition } from "./DataTypeSpec";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { UniqueNameIndex } from "../Spec";
+import {
+  DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
+  DmnEditorDataTypesClipboard,
+  buildClipboardFromDataType,
+  getClipboard,
+} from "../clipboard/Clipboard";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -147,13 +152,21 @@ export function ItemComponentsTable({
                   style={{ minWidth: "240px" }}
                   icon={<PasteIcon />}
                   onClick={() => {
-                    navigator.clipboard.readText().then((t) => {
-                      const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
-                      // FIXME: Tiago --> Validate
-                      addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
-                        ...reassignIds(pastedItemDefinition, "itemComponent"),
-                        typeRef: pastedItemDefinition.typeRef ?? undefined,
-                      });
+                    navigator.clipboard.readText().then((text) => {
+                      const clipboard = getClipboard<DmnEditorDataTypesClipboard>(
+                        text,
+                        DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE
+                      );
+                      if (!clipboard) {
+                        return;
+                      }
+
+                      for (const itemDefinition of clipboard.itemDefinitions) {
+                        addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
+                          ...reassignIds(itemDefinition, "itemComponent"),
+                          typeRef: itemDefinition.typeRef ?? undefined,
+                        });
+                      }
                     });
                   }}
                 >
@@ -411,7 +424,8 @@ export function ItemComponentsTable({
                               key={"copy"}
                               icon={<CopyIcon />}
                               onClick={() => {
-                                navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
+                                const clipboard = buildClipboardFromDataType(dt, thisDmnsNamespace);
+                                navigator.clipboard.writeText(JSON.stringify(clipboard));
                               }}
                             >
                               Copy
@@ -421,9 +435,11 @@ export function ItemComponentsTable({
                                 <DropdownItem
                                   icon={<CutIcon />}
                                   onClick={() => {
-                                    navigator.clipboard.writeText(JSON.stringify(dt.itemDefinition));
-                                    editItemDefinition(dt.parentId!, (itemDefinition) => {
-                                      itemDefinition.itemComponent?.splice(dt.index, 1);
+                                    const clipboard = buildClipboardFromDataType(dt, thisDmnsNamespace);
+                                    navigator.clipboard.writeText(JSON.stringify(clipboard)).then(() => {
+                                      editItemDefinition(dt.parentId!, (itemDefinition) => {
+                                        itemDefinition.itemComponent?.splice(dt.index, 1);
+                                      });
                                     });
                                   }}
                                 >
@@ -437,13 +453,21 @@ export function ItemComponentsTable({
                                 <DropdownItem
                                   icon={<PasteIcon />}
                                   onClick={() => {
-                                    navigator.clipboard.readText().then((t) => {
-                                      const pastedItemDefinition = JSON.parse(t) as DMN15__tItemDefinition;
-                                      // FIXME: Tiago --> Validate
-                                      addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
-                                        ...reassignIds(pastedItemDefinition, "itemComponent"),
-                                        typeRef: pastedItemDefinition.typeRef ?? undefined,
-                                      });
+                                    navigator.clipboard.readText().then((text) => {
+                                      const clipboard = getClipboard<DmnEditorDataTypesClipboard>(
+                                        text,
+                                        DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE
+                                      );
+                                      if (!clipboard) {
+                                        return;
+                                      }
+
+                                      for (const itemDefinition of clipboard.itemDefinitions) {
+                                        addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
+                                          ...reassignIds(itemDefinition, "itemComponent"),
+                                          typeRef: itemDefinition.typeRef ?? undefined,
+                                        });
+                                      }
                                     });
                                   }}
                                 >
