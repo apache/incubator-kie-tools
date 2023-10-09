@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "The image registry.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__account: {
-      default: "kie-tools",
+      default: "thiagoelg",
       description: "The image registry account.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__name: {

@@ -21,6 +21,7 @@ import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver
 import { v4 as uuid } from "uuid";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
+import { KieSandboxDeployment, Tokens } from "./types";
 
 export enum DeploymentState {
   UP = "UP",
@@ -30,19 +31,9 @@ export enum DeploymentState {
   ERROR = "ERROR",
 }
 
-export type KieSandboxDeployment = {
-  name: string;
-  routeUrl: string;
-  creationTimestamp: Date;
-  state: DeploymentState;
-  resources: K8sResourceYaml[];
-  workspaceId: string;
-  resourceName: string;
-};
-
 export interface DeployArgs {
   workspaceZipBlob: Blob;
-  tokenMap: TokenMap;
+  tokenMap: { devDeployment: Tokens };
 }
 
 export type ResourceArgs = {
@@ -62,14 +53,14 @@ export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServic
   loadDevDeployments(): Promise<KieSandboxDeployment[]>;
   deploy(args: DeployArgs): Promise<void>;
   deleteDevDeployment(resourceName: string): Promise<void>;
-  uploadAssets(args: {
-    resourceArgs: ResourceArgs;
-    deployment: K8sResourceYaml;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-  }): Promise<void>;
+  uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
   extractDevDeploymentState(args: { deployment?: any }): DeploymentState;
+  newResourceName(): string;
 };
+
+export const RESOURCE_PREFIX = "dev-deployment";
+export const RESOURCE_OWNER = "kie-tools";
+export const CHECK_UPLOAD_STATUS_POLLING_TIME = 3000;
 
 export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDeploymentsServiceType {
   id: string;
@@ -117,10 +108,9 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
 
   abstract deleteDevDeployment(resourceName: string): Promise<void>;
 
-  abstract uploadAssets(args: {
-    resourceArgs: ResourceArgs;
-    deployment: K8sResourceYaml;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-  }): Promise<void>;
+  abstract uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
+
+  public newResourceName(): string {
+    return this.kubernetesService.newResourceName(RESOURCE_PREFIX);
+  }
 }

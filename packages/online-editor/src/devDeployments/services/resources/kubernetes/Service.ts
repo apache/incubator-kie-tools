@@ -21,14 +21,14 @@ export const createServiceYaml = `
 kind: Service
 apiVersion: v1
 metadata:
-  name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+  name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/component: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/instance: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/part-of: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+    app: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
 spec:
   ports:
@@ -37,7 +37,7 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    deploymentconfig: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+    app: \${{ devDeployment.uniqueName }}
+    deploymentconfig: \${{ devDeployment.uniqueName }}
   type: ClusterIP
 `;

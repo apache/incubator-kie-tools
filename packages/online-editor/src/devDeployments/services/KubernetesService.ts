@@ -25,10 +25,9 @@ import {
   interpolateK8sResourceYamls,
   TokenMap,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { DeploymentState } from "./common";
-import { DeploymentDescriptor } from "@kie-tools-core/kubernetes-bridge/dist/resources";
-import { ResourceArgs } from "./KieSandboxDevDeploymentsService";
 import Path from "path";
+import { DeploymentCondition, DeploymentResource } from "./types";
+import { DeploymentState } from "./KieSandboxDevDeploymentsService";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -119,5 +118,33 @@ export class KubernetesService {
     const milliseconds = new Date().getMilliseconds();
     const suffix = `${randomPart}${milliseconds}`;
     return `${prefix}-${suffix}`;
+  }
+
+  public extractDeploymentState(args: { deployment?: DeploymentResource }): DeploymentState {
+    if (!args.deployment || !args.deployment.status) {
+      // Deployment still being created
+      return DeploymentState.IN_PROGRESS;
+    }
+
+    if (!args.deployment.status.replicas) {
+      // Deployment with no replicas is down
+      return DeploymentState.DOWN;
+    }
+
+    const progressingCondition = args.deployment.status.conditions?.find(
+      (condition: DeploymentCondition) => condition.type === "Progressing"
+    );
+
+    if (!progressingCondition || progressingCondition.status !== "True") {
+      // Without `Progressing` condition, the deployment will never be up
+      return DeploymentState.DOWN;
+    }
+
+    if (!args.deployment.status.readyReplicas) {
+      // Deployment is progressing but no replicas are ready yet
+      return DeploymentState.IN_PROGRESS;
+    }
+
+    return DeploymentState.UP;
   }
 }

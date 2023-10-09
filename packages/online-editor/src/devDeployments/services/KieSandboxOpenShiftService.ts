@@ -18,14 +18,9 @@
  */
 
 import { KubernetesConnectionStatus } from "./KubernetesService";
-import { getProjectApiPath } from "./resources/openshift/Project";
-import {
-  DeployArgs,
-  KieSandboxDeployment,
-  KieSandboxDevDeploymentsService,
-  ResourceArgs,
-} from "./KieSandboxDevDeploymentsService";
+import { DeployArgs, KieSandboxDevDeploymentsService, ResourceArgs } from "./KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { KieSandboxDeployment } from "./types";
 
 export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService {
   uploadAssets(args: {

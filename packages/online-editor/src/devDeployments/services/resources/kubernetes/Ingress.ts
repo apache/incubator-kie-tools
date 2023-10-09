@@ -21,14 +21,14 @@ export const createIngressYaml = `
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+  name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/component: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/instance: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/part-of: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+    app: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
@@ -37,11 +37,11 @@ spec:
   rules:
     - http:
         paths:
-          - path: /\${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+          - path: /\${{ devDeployment.uniqueName }}
             pathType: Prefix
             backend:
               service:
-                name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+                name: \${{ devDeployment.uniqueName }}
                 port:
                   number: 8080
 `;

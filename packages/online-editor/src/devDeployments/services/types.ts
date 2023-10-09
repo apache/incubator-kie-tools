@@ -102,8 +102,7 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
 }
 
 export type DevDeploymentTokens = {
-  uniqueId: string;
-  name: string;
+  uniqueName: string;
   defaultContainerImageUrl: string;
 };
 
@@ -152,3 +151,82 @@ export type Tokens = DevDeploymentTokens & {
 };
 
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
+
+export type ResourceMetadata = {
+  annotations?: Record<string, string>;
+  labels?: Record<string, string>;
+  name: string;
+  namespace: string;
+  creationTimestamp: string;
+  uid: string;
+};
+
+export type IngressResource = {
+  metadata: ResourceMetadata;
+  spec: {
+    rules: {
+      http: {
+        paths: {
+          backend: {
+            service: {
+              name: string;
+              port: {
+                number: number;
+              };
+            };
+            path: string;
+            pathType: string;
+          };
+        }[];
+      };
+    };
+  };
+  status: {
+    loadBalancer: {
+      ingress: {
+        hostname: string;
+      }[];
+    };
+  };
+} & K8sResourceYaml;
+
+export type ServiceResource = {
+  metadata: ResourceMetadata;
+  spec: any;
+} & K8sResourceYaml;
+
+export type DeploymentCondition = {
+  type: string;
+  status: string;
+  reason: string;
+  message: string;
+  lastTransitionTime: string;
+  lastUpdateTime: string;
+};
+
+export type DeploymentResource = {
+  metadata: ResourceMetadata;
+  spec: {
+    replicas: number;
+    selector: {
+      matchLabels: string;
+    };
+    template: {
+      spec: {
+        containers: {
+          env: { name: string; value: string }[];
+          image: string;
+          imagePullPolicy: string;
+          name: string;
+        }[];
+      };
+    };
+  };
+  status: {
+    availableReplicas: number;
+    readyReplicas: number;
+    replicas: number;
+    updatedReplicas: number;
+    conditions: DeploymentCondition[];
+  };
+} & K8sResourceYaml;

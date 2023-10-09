@@ -28,7 +28,7 @@ import { AuthSession, CloudAuthSession, isCloudAuthSession } from "../authSessio
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
-import { defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
+import { Tokens, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { KubernetesService } from "./services/KubernetesService";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
@@ -191,10 +191,9 @@ export function DevDeploymentsContextProvider(props: Props) {
         devDeployment: {
           labels: defaultLabelTokens,
           annotations: defaultAnnotationTokens,
-          name: "dev-deployment",
-          uniqueId: "123",
+          uniqueName: service.newResourceName(),
           uploadService: {
-            apiKey: "abc123",
+            apiKey: "dev",
           },
           workspace: {
             id: workspaceId,
@@ -204,7 +203,8 @@ export function DevDeploymentsContextProvider(props: Props) {
           kubernetes: {
             namespace: authSession.namespace,
           },
-          defaultContainerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+          // defaultContainerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+          defaultContainerImageUrl: "quay.io/thiagoelg/dev-deployment-base-image:daily-dev",
         },
       };
 

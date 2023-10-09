@@ -21,14 +21,14 @@ export const createDeploymentYaml = `
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+  name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/component: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/instance: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/part-of: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+    app: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
   annotations:
     \${{ devDeployment.annotations.uri }}: \${{ devDeployment.workspace.resourceName }}
@@ -37,28 +37,28 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+      app: \${{ devDeployment.uniqueName }}
   template:
     metadata:
       labels:
-        app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-        deploymentconfig: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+        app: \${{ devDeployment.uniqueName }}
+        deploymentconfig: \${{ devDeployment.uniqueName }}
     spec:
       containers:
-        - name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+        - name: \${{ devDeployment.uniqueName }}
           image: \${{ devDeployment.defaultContainerImageUrl }}
           ports:
             - containerPort: 8080
               protocol: TCP
           env:
             - name: BASE_URL
-              value: http://localhost/\${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+              value: http://localhost/\${{ devDeployment.uniqueName }}
             - name: QUARKUS_PLATFORM_VERSION
               value: 2.16.7.Final
             - name: KOGITO_RUNTIME_VERSION
               value: 1.40.0.Final
             - name: ROOT_PATH
-              value: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+              value: \${{ devDeployment.uniqueName }}
           resources: {}
           imagePullPolicy: Always
 `;

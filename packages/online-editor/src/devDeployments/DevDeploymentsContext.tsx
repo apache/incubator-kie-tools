@@ -21,7 +21,8 @@ import * as React from "react";
 import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
-import { KieSandboxDeployment, KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
+import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
+import { KieSandboxDeployment } from "./services/types";
 
 export interface DeploymentFile {
   path: string;

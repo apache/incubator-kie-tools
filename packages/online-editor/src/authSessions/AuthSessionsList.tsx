@@ -48,7 +48,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspacesHooks";
 import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { KieSandboxDeployment } from "../devDeployments/services/KieSandboxDevDeploymentsService";
+import { KieSandboxDeployment } from "../devDeployments/services/types";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions, authSessionStatus } = useAuthSessions();

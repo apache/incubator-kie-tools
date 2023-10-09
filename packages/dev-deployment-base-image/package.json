@@ -27,7 +27,7 @@
     "create-test-image:minikube": "kie-tools--image-builder minikube $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
     "create-test-image:openshift": "kie-tools--image-builder openshift $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
     "image:build-args": "echo \"--build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/\"",
-    "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
+    "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) -p",
     "image:podman:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) -e podman",
     "image:tag-info": "echo -r \"$(pnpm build-env devDeploymentBaseImage.registry)\" -a \"$(pnpm build-env devDeploymentBaseImage.account)\" -n \"$(pnpm build-env devDeploymentBaseImage.name)\" -t \"$(pnpm build-env devDeploymentBaseImage.tags)\"",
     "install": "cd quarkus-app && node install.js",

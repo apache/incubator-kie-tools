@@ -33,7 +33,7 @@ import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useDevDeployments } from "./DevDeploymentsContext";
 import { AuthSession } from "../authSessions/AuthSessionApi";
 import { DeploymentState } from "@kie-tools-core/kubernetes-bridge/dist/resources/common";
-import { KieSandboxDeployment } from "./services/KieSandboxDevDeploymentsService";
+import { KieSandboxDeployment } from "./services/types";
 
 interface Props {
   id: number;
@@ -46,7 +46,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
   const devDeployments = useDevDeployments();
 
   const deploymentName = useMemo(() => {
-    return "bla";
+    return props.deployment.name;
     // const maxSize = 30;
 
     // let name = props.deployment.workspaceName;
@@ -63,7 +63,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
     // }
 
     // return `${name.substring(0, maxSize)}...${extension}`;
-  }, []);
+  }, [props.deployment]);
 
   const stateIcon = useMemo(() => {
     if (props.deployment.state === DeploymentState.UP) {
@@ -128,9 +128,9 @@ export function DevDeploymentsDropdownItem(props: Props) {
     );
   }, [i18n, props.deployment.state, props.id]);
 
-  // const onItemClicked = useCallback(() => {
-  //   window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.uri}`, "_blank");
-  // }, [props.deployment.routeUrl, props.deployment.uri]);
+  const onItemClicked = useCallback(() => {
+    window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.resourceName}`, "_blank");
+  }, [props.deployment.routeUrl, props.deployment.resourceName]);
 
   const onDelete = useCallback(() => {
     devDeployments.setConfirmDeleteModalState({
@@ -146,7 +146,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
         <DropdownItem
           id="dev-deployments-deployment-item-button"
           key={`dev-deployments-dropdown-item-${props.id}`}
-          // onClick={onItemClicked}
+          onClick={onItemClicked}
           description={i18n.devDeployments.dropdown.item.createdAt(props.deployment.creationTimestamp.toLocaleString())}
           icon={stateIcon}
         >

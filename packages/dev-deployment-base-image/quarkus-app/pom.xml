@@ -21,7 +21,7 @@
 >
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
-  <artifactId>dmn-dev-deployment-quarkus-app</artifactId>
+  <artifactId>dev-deployment-quarkus-app</artifactId>
   <version>${revision}</version>
 
   <properties>

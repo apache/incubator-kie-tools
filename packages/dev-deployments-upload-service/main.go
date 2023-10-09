@@ -83,6 +83,12 @@ func main() {
 		httpServerBgGroup.Go(func() error { return errors.New(fmt.Sprintf("Uploading '%s' failed.", filename)) })
 	}
 
+	http.HandleFunc("/upload/status", func(w http.ResponseWriter, req *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("READY"))
+		return
+	})
+
 	http.HandleFunc("/upload", func(w http.ResponseWriter, req *http.Request) {
 		apiKey := req.URL.Query().Get("apiKey")
 		if apiKey != apiKeyArgString {
