@@ -525,6 +525,15 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
   width: 100%;
   height: 100%;
 }
+.kie-dmn-editor--sticky-top-glass-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background: rgb(255, 255, 255, 60%);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid lightgray;
+}
 /* (end) misc */
 
 /* (begin) external nodes */
@@ -561,15 +570,6 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 /* (end) data type label */
 
 /* (begin) data types */
-.sticky-top-glass {
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  background: rgb(255, 255, 255, 60%);
-  backdrop-filter: blur(4px);
-  border-bottom: 1px solid lightgray;
-}
 .kie-dmn-editor--data-types-filter {
   padding: 16px;
 }
@@ -657,6 +657,11 @@ th {
 }
 .kie-dmn-editor--data-type-properties-table .pf-m-typeahead {
   background: rgb(255, 255, 255, 0.7); /* Let */
+}
+.kie-dmn-editor--type-ref-selector-invalid-value input {
+  color: red;
+  text-decoration: red dotted underline;
+  text-underline-position: under;
 }
 /* (end) data types */
 

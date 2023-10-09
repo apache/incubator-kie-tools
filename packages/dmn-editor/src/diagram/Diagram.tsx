@@ -71,6 +71,7 @@ import {
 } from "../clipboard/Clipboard";
 import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
 import { buildClipboardFromDiagram } from "../clipboard/Clipboard";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -1068,7 +1069,7 @@ export function KeyboardShortcuts({
     }
     console.debug("DMN DIAGRAM: Cutting selected nodes...");
 
-    const { clipboard, copiedEdgesById, danglingEdgesById } = buildClipboardFromDiagram(
+    const { clipboard, copiedEdgesById, danglingEdgesById, copiedNodesById } = buildClipboardFromDiagram(
       rfStoreApi.getState(),
       dmnEditorStoreApi.getState()
     );
@@ -1092,7 +1093,7 @@ export function KeyboardShortcuts({
           .getState()
           .getNodes()
           .forEach((node: RF.Node<DmnDiagramNodeData>) => {
-            if (node.selected) {
+            if (copiedNodesById.has(node.id)) {
               deleteNode({
                 definitions: state.dmn.model.definitions,
                 dmnObjectQName: node.data.dmnObjectQName,
@@ -1150,6 +1151,17 @@ export function KeyboardShortcuts({
         diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
         diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
         diagram["di:extension"]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"]?.push(...clipboard.widths);
+
+        // FIXME: Tiago --> How to make this reactively?
+        for (let i = 0; i < (state.dmn.model.definitions.drgElement ?? []).length; i++) {
+          const drgElement = state.dmn.model.definitions.drgElement![i];
+          if (drgElement.__$$element === "decisionService") {
+            repopulateInputDataAndDecisionsOnDecisionService({
+              definitions: state.dmn.model.definitions,
+              decisionService: drgElement,
+            });
+          }
+        }
       });
     });
   }, [dmnEditorStoreApi, paste]);

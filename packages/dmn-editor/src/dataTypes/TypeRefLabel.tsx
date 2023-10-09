@@ -7,8 +7,7 @@ import { buildXmlQName, parseXmlQName } from "../xml/xmlQNames";
 import { useDmnEditorStore } from "../store/Store";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { parseFeelQName } from "../feel/parseFeelQName";
-
-const builtInFeelTypes = new Set<string>(Object.values(DmnBuiltInDataType));
+import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 
 export function TypeRefLabel({
   typeRef,
@@ -28,7 +27,7 @@ export function TypeRefLabel({
     }
 
     // Built-in FEEL types are never namespaced
-    if (builtInFeelTypes.has(typeRef)) {
+    if (builtInFeelTypeNames.has(typeRef)) {
       return typeRef;
     }
 

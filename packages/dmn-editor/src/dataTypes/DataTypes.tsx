@@ -104,7 +104,7 @@ export function DataTypes() {
               <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"400px"}>
                 <Flex
                   justifyContent={{ default: "justifyContentSpaceBetween" }}
-                  className={"kie-dmn-editor--data-types-filter sticky-top-glass"}
+                  className={"kie-dmn-editor--data-types-filter kie-dmn-editor--sticky-top-glass-header"}
                 >
                   <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={"Filter..."} />
                   <Button onClick={() => addTopLevelItemDefinition()} variant={ButtonVariant.link}>

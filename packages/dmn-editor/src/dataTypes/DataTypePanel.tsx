@@ -147,7 +147,7 @@ export function DataTypePanel({
 
   return (
     <>
-      <div className={"sticky-top-glass"} style={{ padding: "16px" }}>
+      <div className={"kie-dmn-editor--sticky-top-glass-header"} style={{ padding: "16px" }}>
         <div className={"kie-dmn-editor--data-type-parents"}>
           {parents.map((p) => (
             <Button

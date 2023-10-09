@@ -10,7 +10,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { DataType } from "./DataTypes";
-import { builtInFeelTypes } from "./BuiltInFeelTypes";
+import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export type OnTypeRefChange = (newDataType: DmnBuiltInDataType) => void;
@@ -51,6 +51,8 @@ export function TypeRefSelector(props: {
     return { customDataTypes, externalDataTypes };
   }, [allTopLevelDataTypesByFeelName, thisDmnsNamespace]);
 
+  const exists = selectedDataType || (props.typeRef && builtInFeelTypeNames.has(props.typeRef));
+
   return (
     <Flex
       justifyContent={{ default: "justifyContentFlexStart" }}
@@ -75,6 +77,7 @@ export function TypeRefSelector(props: {
       )}
       <Select
         style={{ flexGrow: 1 }}
+        className={!exists ? "kie-dmn-editor--type-ref-selector-invalid-value" : undefined}
         isDisabled={props.isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}

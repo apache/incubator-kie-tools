@@ -233,7 +233,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
   return (
     <>
       <>
-        <div className={"sticky-top-glass"} style={{ paddingBottom: "18px" }}>
+        <div className={"kie-dmn-editor--sticky-top-glass-header"} style={{ paddingBottom: "18px" }}>
           {!boxedExpressionEditor.propertiesPanel.isOpen && (
             <aside className={"kie-dmn-editor--properties-panel-toggle"}>
               <button

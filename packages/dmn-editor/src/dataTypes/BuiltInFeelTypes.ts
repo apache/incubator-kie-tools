@@ -6,3 +6,5 @@ export const builtInFeelTypes: DmnDataType[] = Object.values(DmnBuiltInDataType)
   typeRef: feelType,
   name: feelType,
 }));
+
+export const builtInFeelTypeNames = new Set<string>(Object.values(DmnBuiltInDataType));
