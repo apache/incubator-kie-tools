@@ -875,7 +875,7 @@ function getTsTypeFromLocalRef(
   relativeLocation: string,
   namedTypeLocalRef: string
 ): { name: string; xsdType: string } {
-  // check if it's a local ref to another namespace
+  // check if it's a QName to another namespace
   if (namedTypeLocalRef.includes(":") && namedTypeLocalRef.split(":").length === 2) {
     const [localNsName, namedTypeName] = namedTypeLocalRef.split(":");
     const xmlnsKey = `@_xmlns:${localNsName}`;
@@ -911,7 +911,7 @@ function getTsTypeFromLocalRef(
     }
 
     // found it!
-    return { name: tsTypeName, xsdType: `type found from local ref '${localNsName}'.` };
+    return { name: tsTypeName, xsdType: `type found from namespace with declaration name '${localNsName}'.` };
   }
 
   // not a reference to a type in another namespace. simply local name.
@@ -956,7 +956,7 @@ function getXptcElementFromLocalElementRef(
   relativeLocation: string,
   localElementRef: string
 ): XptcElement | undefined {
-  // check if it's a local ref to another namespace
+  // check if it's a QName to another namespace
   if (localElementRef.includes(":") && localElementRef.split(":").length === 2) {
     const [localNsName, referencedElementName] = localElementRef.split(":");
     const xmlnsKey = `@_xmlns:${localNsName}`;
