@@ -3,7 +3,7 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { XmlQName, buildXmlQName } from "../xml/xmlQNames";
+import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 
 export function deleteNode({
   definitions,

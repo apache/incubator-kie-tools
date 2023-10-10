@@ -13,7 +13,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
-import { XmlQName, parseXmlQName } from "../xml/xmlQNames";
+import { XmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../diagram/nodes/NodeSvgs";
 import { ExternalDmnsIndex } from "../DmnEditor";

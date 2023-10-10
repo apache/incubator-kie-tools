@@ -79,20 +79,6 @@ export function canHaveConstraints(itemDefinition: DMN15__tItemDefinition) {
   );
 }
 
-export function reassignIds<O extends { "@_id"?: string }, T extends keyof O>(obj: O, prop: T): O {
-  obj = { ...obj, "@_id": generateUuid() };
-
-  if (obj[prop]) {
-    const newArr = [];
-    for (const nested of obj[prop] as O[]) {
-      newArr.push(reassignIds(nested, prop));
-    }
-    (obj[prop] as O[]) = newArr;
-  }
-
-  return obj;
-}
-
 export function traverseItemDefinition(
   items: DMN15__tItemDefinition[],
   consumer: (itemDefinition: DMN15__tItemDefinition) => void

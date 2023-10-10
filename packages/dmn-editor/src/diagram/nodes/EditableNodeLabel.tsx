@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { EmptyLabel } from "./Nodes";
-import { XmlQName } from "../../xml/xmlQNames";
+import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { UniqueNameIndex } from "../../Spec";

@@ -37,7 +37,7 @@ import { useIsHovered } from "../useIsHovered";
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 import { DmnDiagramEdgeData } from "../edges/Edges";
-import { XmlQName } from "../../xml/xmlQNames";
+import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Unpacked } from "../../tsExt/tsExt";
 import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 

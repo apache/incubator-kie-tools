@@ -36,7 +36,7 @@ export type XmlDocument = {
   };
 };
 
-export type MetaTypeDef = { type: string; isArray: boolean };
+export type MetaTypeDef = { type: string; isArray: boolean; fromType: string; xsdType: string };
 
 export type Meta = Record<string, Record<string, MetaTypeDef>>;
 
@@ -112,8 +112,8 @@ export function getParser<T extends object>(args: {
       const instanceNs = parseArgs.type === "domdoc" ? parseArgs.instanceNs : getInstanceNs(domdoc);
 
       // console.time("parsing overhead took");
-      const rootType = { [args.root.element]: { type: args.root.type, isArray: false } };
-      const json = parse({ ...args, instanceNs, node: domdoc, nodeType: rootType });
+      const rootType = { [args.root.element]: { type: args.root.type, isArray: false, xsdType: "", fromType: "" } };
+      const json = parse({ ...args, instanceNs, node: domdoc, nodeMetaType: rootType });
       // console.timeEnd("parsing overhead took");
 
       return { json, instanceNs };
@@ -149,7 +149,7 @@ export function getParser<T extends object>(args: {
 
 export function parse(args: {
   node: Node;
-  nodeType: Record<string, MetaTypeDef | undefined> | undefined;
+  nodeMetaType: Record<string, MetaTypeDef | undefined> | undefined;
   ns: Map<string, string>;
   instanceNs: Map<string, string>;
   meta: Meta;
@@ -163,27 +163,27 @@ export function parse(args: {
     const elemNode = children[ii];
 
     if (elemNode.nodeType === 1 /* element */) {
-      const { nsedName, subsedName } = resolveElement(elemNode.nodeName, args.nodeType, args);
+      const { nsedName, subsedName } = resolveElement(elemNode.nodeName, args.nodeMetaType, args);
 
-      const elemPropType = args.nodeType?.[subsedName ?? nsedName];
+      const elemMetaProp = args.nodeMetaType?.[subsedName ?? nsedName];
 
-      const elemType =
+      const elemMetaType =
         args.meta[args.elements[nsedName]] ?? // Regardless of subsitutions that might have occured, we need the type information for the concrete implementation of the element. (E.g., On DMN, tDecision is substituted by tDrgElement)
-        (elemPropType
-          ? args.meta[elemPropType.type] // If we can't find this type with the `elements` mapping, we try directly from `meta`.
+        (elemMetaProp
+          ? args.meta[elemMetaProp.type] // If we can't find this type with the `elements` mapping, we try directly from `meta`.
           : undefined); // If the current element is not known, we simply ignore its type and go with the defaults.
 
       let elemValue: any;
-      if (elemPropType?.type === "string") {
+      if (elemMetaProp?.type === "string") {
         elemValue = elemNode.textContent ?? "";
-      } else if (elemPropType?.type === "boolean") {
+      } else if (elemMetaProp?.type === "boolean") {
         elemValue = parseBoolean(elemNode.textContent ?? "");
-      } else if (elemPropType?.type === "float") {
+      } else if (elemMetaProp?.type === "float") {
         elemValue = parseFloat(elemNode.textContent ?? "");
-      } else if (elemPropType?.type === "integer") {
+      } else if (elemMetaProp?.type === "integer") {
         elemValue = parseFloat(elemNode.textContent ?? "");
       } else {
-        elemValue = parse({ ...args, node: elemNode, nodeType: elemType });
+        elemValue = parse({ ...args, node: elemNode, nodeMetaType: elemMetaType });
         if (subsedName !== nsedName) {
           // substitution occurred, need to save the original, normalized element name
           elemValue["__$$element"] = nsedName;
@@ -193,7 +193,7 @@ export function parse(args: {
       const attrs = (elemNode as Element).attributes;
       for (let i = 0; i < attrs.length; i++) {
         const attr = attrs[i];
-        const attrPropType = elemType?.[`@_${attr.name}`];
+        const attrPropType = elemMetaType?.[`@_${attr.name}`];
 
         let attrValue: any;
         if (attrPropType?.type === "string") {
@@ -215,13 +215,13 @@ export function parse(args: {
 
       const currentValue = json[subsedName ?? nsedName];
 
-      if (elemPropType?.isArray) {
+      if (elemMetaProp?.isArray) {
         json[subsedName ?? nsedName] ??= [];
         json[subsedName ?? nsedName].push(elemValue);
       } else if (currentValue) {
-        if (elemPropType && !elemPropType.isArray) {
+        if (elemMetaProp && !elemMetaProp.isArray) {
           console.warn(
-            `[xml-parser-ts] Accumulating values on known non-array property '${subsedName}' (${nsedName}) of type '${elemPropType.type}'.`
+            `[xml-parser-ts] Accumulating values on known non-array property '${subsedName}' (${nsedName}) of type '${elemMetaProp.type}'.`
           );
         }
 
@@ -239,9 +239,9 @@ export function parse(args: {
   return json;
 }
 
-function resolveElement(
+export function resolveElement(
   name: string,
-  parentType: Record<string, MetaTypeDef | undefined> | undefined,
+  parentMetaType: Record<string, MetaTypeDef | undefined> | undefined,
   {
     ns,
     instanceNs,
@@ -275,7 +275,7 @@ function resolveElement(
   let subsedName: string | undefined = nsedName;
 
   // Resolve substituionGroups
-  while (nsedSubs && !parentType?.[subsedName]) {
+  while (nsedSubs && !parentMetaType?.[subsedName]) {
     if (subsedName === undefined) {
       break; // Not mapped, ignore unknown element...
     }
@@ -394,7 +394,7 @@ export function build(args: {
     if (propName[0] === "@") {
       continue;
     }
-    // ignore this. this is supposed to be on array elements only.
+    // ignore this, as we won't make it part of the final XML.
     else if (propName === "__$$element") {
       continue;
     }

@@ -59,7 +59,7 @@ import {
   MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
 } from "../externalNodes/ExternalNodesPanel";
 import { addShape } from "../mutations/addShape";
-import { buildXmlQName } from "../xml/xmlQNames";
+import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { original } from "immer";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { buildXmlHref } from "../xml/xmlHrefs";
@@ -72,6 +72,7 @@ import {
 import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
 import { buildClipboardFromDiagram } from "../clipboard/Clipboard";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -1136,8 +1137,22 @@ export function KeyboardShortcuts({
         return;
       }
 
-      // FIXME: Tiago --> Deal with IDs to make sure they're unique to this pasting operation.
-      //                  Create a new function called `randomizeIds` on xml-parser-ts, using meta from xml-parser-ts-codegen
+      const idRandomizer = getNewDmnIdRandomizer();
+      idRandomizer.ack({ json: clipboard.drgElements, type: "DMN15__tDefinitions", attr: "drgElement" });
+      idRandomizer.ack({ json: clipboard.artifacts, type: "DMN15__tDefinitions", attr: "artifact" });
+      idRandomizer.ack({
+        json: clipboard.shapes,
+        type: "DMNDI15__DMNDiagram",
+        attr: "dmndi:DMNDiagramElement",
+        __$$element: "dmndi:DMNShape",
+      });
+      idRandomizer.ack({
+        json: clipboard.edges,
+        type: "DMNDI15__DMNDiagram",
+        attr: "dmndi:DMNDiagramElement",
+        __$$element: "dmndi:DMNEdge",
+      });
+      idRandomizer.randomize();
 
       // FIXME: Tiago --> Slightly offset nodes if positions clash with existing nodes.
 
@@ -1162,6 +1177,10 @@ export function KeyboardShortcuts({
             });
           }
         }
+
+        state.diagram.selectedNodes = [...clipboard.drgElements, ...clipboard.artifacts].map((s) =>
+          buildXmlHref({ id: s["@_id"]! })
+        );
       });
     });
   }, [dmnEditorStoreApi, paste]);

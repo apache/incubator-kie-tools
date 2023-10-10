@@ -21,7 +21,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
-import { isStruct, canHaveConstraints, reassignIds, getNewItemDefinition } from "./DataTypeSpec";
+import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { UniqueNameIndex } from "../Spec";
@@ -31,6 +31,7 @@ import {
   buildClipboardFromDataType,
   getClipboard,
 } from "../clipboard/Clipboard";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export const BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL = 5;
 export const STARTING_BRIGHTNESS_LEVEL_IN_PERCENTAGE = 95;
@@ -161,9 +162,17 @@ export function ItemComponentsTable({
                         return;
                       }
 
+                      const idRandomizer = getNewDmnIdRandomizer();
+                      idRandomizer.ack({
+                        json: clipboard.itemDefinitions,
+                        type: "DMN15__tDefinitions",
+                        attr: "itemDefinition",
+                      });
+                      idRandomizer.randomize();
+
                       for (const itemDefinition of clipboard.itemDefinitions) {
                         addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
-                          ...reassignIds(itemDefinition, "itemComponent"),
+                          ...itemDefinition,
                           typeRef: itemDefinition.typeRef ?? undefined,
                         });
                       }
@@ -395,22 +404,29 @@ export function ItemComponentsTable({
                                 editItemDefinition(
                                   dt.itemDefinition["@_id"]!,
                                   (itemDefinition, _, __, itemDefinitions) => {
-                                    const newItemDefinition = reassignIds(
-                                      getNewItemDefinition({
-                                        ...dt.itemDefinition,
-                                        typeRef: dt.itemDefinition.typeRef,
-                                        "@_name": `t${dt.itemDefinition["@_name"]}`,
-                                        "@_isCollection": false,
-                                      }),
-                                      "itemComponent"
-                                    );
+                                    const newItemDefinition = getNewItemDefinition({
+                                      ...dt.itemDefinition,
+                                      typeRef: dt.itemDefinition.typeRef,
+                                      "@_name": `t${dt.itemDefinition["@_name"]}`,
+                                      "@_isCollection": false,
+                                    });
 
-                                    itemDefinitions.unshift(newItemDefinition);
+                                    const newItemDefinitionCopy = JSON.parse(JSON.stringify(newItemDefinition)); // Necessary because idRandomizer will mutate this object.
+
+                                    const idRandomizer = getNewDmnIdRandomizer();
+                                    idRandomizer.ack({
+                                      json: [newItemDefinitionCopy],
+                                      type: "DMN15__tDefinitions",
+                                      attr: "itemDefinition",
+                                    });
+                                    idRandomizer.randomize();
+
+                                    itemDefinitions.unshift(newItemDefinitionCopy);
 
                                     // Creating a new type is fine, but only update the current type if it is not readOnly
                                     if (!isReadonly) {
                                       itemDefinition["@_id"] = generateUuid();
-                                      itemDefinition.typeRef = newItemDefinition["@_name"];
+                                      itemDefinition.typeRef = newItemDefinitionCopy["@_name"];
                                       itemDefinition.itemComponent = undefined;
                                     }
                                   }
@@ -462,9 +478,17 @@ export function ItemComponentsTable({
                                         return;
                                       }
 
+                                      const idRandomizer = getNewDmnIdRandomizer();
+                                      idRandomizer.ack({
+                                        json: clipboard.itemDefinitions,
+                                        type: "DMN15__tDefinitions",
+                                        attr: "itemDefinition",
+                                      });
+                                      idRandomizer.randomize();
+
                                       for (const itemDefinition of clipboard.itemDefinitions) {
                                         addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
-                                          ...reassignIds(itemDefinition, "itemComponent"),
+                                          ...itemDefinition,
                                           typeRef: itemDefinition.typeRef ?? undefined,
                                         });
                                       }

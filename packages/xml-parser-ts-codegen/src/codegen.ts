@@ -27,7 +27,6 @@ import {
   XptcElement,
   XptcSimpleType,
   XptcComplexType,
-  XptcComplexTypeNamed,
   XptcComplexTypeAnonymous,
   XptcMetaType,
   XptcMetaTypeProperty,
@@ -474,7 +473,7 @@ export const meta = {
 `;
   });
 
-  meta += `}
+  meta += `} as const;
 `;
 
   fs.mkdirSync(path.dirname(__CONVENTIONS.outputFileForGeneratedMeta), { recursive: true });
@@ -699,8 +698,8 @@ function getMetaProperties(
   while (curParentCt) {
     if (curParentCt?.type === "complex") {
       const curParentCtMetaTypeName = getTsNameFromNamedType(
-        ct.declaredAtRelativeLocation,
-        ct.isAnonymous ? getAnonymousMetaTypeName(ct.forElementWithName, "GLOBAL") : ct.name
+        curParentCt.declaredAtRelativeLocation,
+        curParentCt.isAnonymous ? getAnonymousMetaTypeName(curParentCt.forElementWithName, "GLOBAL") : curParentCt.name
       );
       needsExtensionType = needsExtensionType || curParentCt.needsExtensionType;
       if (curParentCt.isAnonymous) {
@@ -804,7 +803,7 @@ function getMetaProperties(
                   ct.declaredAtRelativeLocation,
                   getAnonymousMetaTypeName(referencedElement.name, "GLOBAL")
                 ),
-                xsdType: "Anonymous type from element " + referencedElement.name,
+                xsdType: `Anonymous type from element '${referencedElement.name}'.`,
               };
 
           metaProperties.push({

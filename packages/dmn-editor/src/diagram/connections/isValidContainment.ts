@@ -1,4 +1,4 @@
-import { XmlQName } from "../../xml/xmlQNames";
+import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { NodeType, containment } from "./graphStructure";
 
 export function isValidContainment({

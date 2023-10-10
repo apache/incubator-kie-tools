@@ -3,7 +3,7 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { buildXmlQName, parseXmlQName } from "../xml/xmlQNames";
+import { buildXmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore } from "../store/Store";
 import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { parseFeelQName } from "../feel/parseFeelQName";
