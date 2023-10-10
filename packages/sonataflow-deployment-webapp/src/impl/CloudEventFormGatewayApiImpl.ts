@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { CloudEventRequest, triggerStartCloudEvent, triggerCloudEvent } from "../apis";
+import { CloudEventRequest } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { triggerStartCloudEvent, triggerCloudEvent } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 
 export interface CloudEventFormGatewayApi {
   triggerStartCloudEvent(event: CloudEventRequest): Promise<string>;

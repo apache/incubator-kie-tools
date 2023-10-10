@@ -49,6 +49,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@types/jest": "^26.0.23",
     "@types/uuid": "^8.3.0",
     "copyfiles": "^2.4.1",
     "identity-obj-proxy": "^3.0.0",

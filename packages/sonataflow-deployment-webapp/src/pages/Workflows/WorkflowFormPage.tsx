@@ -16,25 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React from "react";
 import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseState";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
+import { WorkflowFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/api/WorkflowFormDriver";
+import CustomWorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/CustomWorkflowForm/CustomWorkflowForm";
+import WorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/WorkflowForm/WorkflowForm";
+import WorkflowResult from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/WorkflowResult/WorkflowResult";
+import { WorkflowDefinition, WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { WorkflowDefinition, WorkflowFormDriver } from "../../apis";
-import { CustomWorkflowForm, FormNotification, Notification } from "../../components";
-import WorkflowForm from "@kie-tools/runtime-tools-enveloped-components/dist/workflowForm/envelope/components/WorkflowForm/WorkflowForm";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router";
 import { useOpenApi } from "../../context/OpenApiContext";
+import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
+import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorPage } from "../ErrorPage";
-import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
-import { routes } from "../../routes";
-import { useHistory } from "react-router";
-import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
-import { WorkflowResponse } from "../../apis/WorkflowResponse";
-import { WorkflowResult } from "../../components/WorkflowResult";
 
 export function WorkflowFormPage(props: { workflowId: string }) {
   const [notification, setNotification] = useState<Notification>();

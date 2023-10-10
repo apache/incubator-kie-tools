@@ -6573,6 +6573,9 @@ importers:
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@types/jest":
+        specifier: ^26.0.23
+        version: 26.0.23
       "@types/uuid":
         specifier: ^8.3.0
         version: 8.3.0
@@ -8134,15 +8137,18 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      "@kie-tools/runtime-tools-components":
+        specifier: workspace:*
+        version: link:../runtime-tools-components
       "@kie-tools/runtime-tools-enveloped-components":
         specifier: workspace:*
         version: link:../runtime-tools-enveloped-components
+      "@kie-tools/runtime-tools-gateway-api":
+        specifier: workspace:*
+        version: link:../runtime-tools-gateway-api
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
-      "@kie-tools/uniforms-patternfly":
-        specifier: workspace:*
-        version: link:../uniforms-patternfly
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.12(react-dom@17.0.2)(react@17.0.2)
@@ -8155,9 +8161,6 @@ importers:
       "@types/jest":
         specifier: ^26.0.23
         version: 26.0.23
-      "@types/lodash":
-        specifier: ^4.14.168
-        version: 4.14.169
       "@types/react":
         specifier: ^17.0.6
         version: 17.0.21
@@ -8170,33 +8173,15 @@ importers:
       "@types/react-router-dom":
         specifier: ^5.1.7
         version: 5.1.7
-      "@types/uuid":
-        specifier: ^8.3.0
-        version: 8.3.0
-      ajv:
-        specifier: ^6.12.6
-        version: 6.12.6
-      axios:
-        specifier: ^0.27.2
-        version: 0.27.2
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
-      html-replace-webpack-plugin:
-        specifier: ^2.6.0
-        version: 2.6.0
-      html-webpack-plugin:
-        specifier: ^5.3.2
-        version: 5.3.2(webpack@5.88.2)
       jest:
         specifier: ^26.6.3
         version: 26.6.3
       jest-junit:
         specifier: ^14.0.0
         version: 14.0.0
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
         version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4)(webpack@5.88.2)
@@ -8212,9 +8197,6 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-json-view:
-        specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
       react-router:
         specifier: ^5.2.1
         version: 5.2.1(react@17.0.2)
@@ -8236,15 +8218,6 @@ importers:
       typescript:
         specifier: ^4.6.2
         version: 4.8.4
-      uniforms:
-        specifier: ^3.10.2
-        version: 3.10.2(react@17.0.2)
-      uniforms-bridge-json-schema:
-        specifier: ^3.10.2
-        version: 3.10.2(react@17.0.2)
-      uuid:
-        specifier: ^8.3.2
-        version: 8.3.2
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -18025,7 +17998,7 @@ packages:
       "@jest/test-result": 26.6.2
       "@jest/transform": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 18.13.0
+      "@types/node": 18.17.18
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -18066,7 +18039,7 @@ packages:
       "@jest/test-result": 26.6.2
       "@jest/transform": 26.6.2
       "@jest/types": 26.6.2
-      "@types/node": 18.13.0
+      "@types/node": 18.17.18
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       exit: 0.1.2
@@ -25340,6 +25313,7 @@ packages:
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
+    dev: false
 
   /azure-devops-node-api@11.0.1:
     resolution:
@@ -42559,6 +42533,7 @@ packages:
       uniforms: 3.10.2(react@17.0.2)
     transitivePeerDependencies:
       - react
+    dev: false
 
   /uniforms-bridge-simple-schema-2@3.10.2(react@17.0.2):
     resolution:
