@@ -190,6 +190,8 @@ export const DecisionNode = React.memo(
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
+    const isExternal = !!dmnObjectQName.prefix;
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -209,7 +211,7 @@ export const DecisionNode = React.memo(
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
 
-          <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />
+          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={decision["@_id"]!} />}
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
@@ -280,6 +282,8 @@ export const BkmNode = React.memo(
 
     const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
 
+    const isExternal = !!dmnObjectQName.prefix;
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
@@ -299,7 +303,7 @@ export const BkmNode = React.memo(
         >
           <InfoNodePanel isVisible={!isTargeted && isHovered} />
 
-          <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />
+          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && isHovered} id={bkm["@_id"]!} />}
           <OutgoingStuffNodePanel
             isVisible={!isConnecting && !isTargeted && isHovered}
             nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
