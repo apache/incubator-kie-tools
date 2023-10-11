@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.*;
 public class PingResourceTest {
 
     @Inject
-    @ConfigProperty(name = "quarkus.application.version")
+    @ConfigProperty(name = "extended.services.version")
     String expected_version;
     @Inject
     @ConfigProperty(name = "quarkus.http.host")

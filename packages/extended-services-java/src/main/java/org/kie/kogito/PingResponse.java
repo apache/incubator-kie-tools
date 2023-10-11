@@ -20,12 +20,15 @@
 package org.kie.kogito;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 @ApplicationScoped
+@JsonPropertyOrder({ "version", "proxy", "kieSandboxUrl", "started" })
 public class PingResponse {
 
     private final String version;
@@ -34,7 +37,7 @@ public class PingResponse {
     private final boolean started;
 
     @Inject
-    public PingResponse(@ConfigProperty(name = "quarkus.application.version") String version,
+    public PingResponse(@ConfigProperty(name = "extended.services.version") String version,
                         ProxyConfig proxyConfig,
                         @ConfigProperty(name = "kie.sandbox.url") String kie_sandbox_url) {
         this.version = version;
