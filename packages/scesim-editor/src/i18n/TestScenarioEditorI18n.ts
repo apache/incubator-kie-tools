@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { TestScenarioUnitablesI18n } from "./TestScenarioUnitablesI18n";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
   alerts: {
@@ -100,6 +101,9 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
   tab: {
     backgroundTabTitle: string;
     scenarioTabTitle: string;
+  };
+  testScenarioGrid: {
+    table: TestScenarioUnitablesI18n;
   };
 }
 

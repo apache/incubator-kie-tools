@@ -18,6 +18,7 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
+import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 
 export const en: TestScenarioEditorI18n = {
@@ -119,5 +120,8 @@ export const en: TestScenarioEditorI18n = {
   tab: {
     backgroundTabTitle: "Background",
     scenarioTabTitle: "Test Scenario",
+  },
+  testScenarioGrid: {
+    table: { ...en_unitables },
   },
 };

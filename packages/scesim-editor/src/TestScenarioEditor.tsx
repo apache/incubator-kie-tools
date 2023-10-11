@@ -32,6 +32,7 @@ import {
   SceSim__ScenarioSimulationModelType,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -52,12 +53,12 @@ import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import ErrorBoundary from "./reactExt/ErrorBoundary";
 import TestScenarioDrawerPanel from "./drawer/TestScenarioDrawerPanel";
 import TestScenarioSideBarMenu from "./sidebar/TestScenarioSideBarMenu";
+import TestScenarioTable from "./table/TestScenarioTable";
 import { useTestScenarioEditorI18n } from "./i18n";
 
 import { EMPTY_ONE_EIGHT } from "./resources/EmptyScesimFile";
 
 import "./TestScenarioEditor.css";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 
 /* Constants */
 
@@ -377,7 +378,7 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <Bullseye>{i18n.tab.scenarioTabTitle}</Bullseye>
+                    <TestScenarioTable />
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}
