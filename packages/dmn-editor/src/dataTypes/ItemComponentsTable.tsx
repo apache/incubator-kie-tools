@@ -171,10 +171,7 @@ export function ItemComponentsTable({
                       idRandomizer.randomize();
 
                       for (const itemDefinition of clipboard.itemDefinitions) {
-                        addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
-                          ...itemDefinition,
-                          typeRef: itemDefinition.typeRef ?? undefined,
-                        });
+                        addItemComponent(parent.itemDefinition["@_id"]!, "unshift", itemDefinition);
                       }
                     });
                   }}
@@ -487,10 +484,7 @@ export function ItemComponentsTable({
                                       idRandomizer.randomize();
 
                                       for (const itemDefinition of clipboard.itemDefinitions) {
-                                        addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
-                                          ...itemDefinition,
-                                          typeRef: itemDefinition.typeRef ?? undefined,
-                                        });
+                                        addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);
                                       }
                                     });
                                   }}

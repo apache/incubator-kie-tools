@@ -20,6 +20,22 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { SPEC } from "../Spec";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  DropdownToggle,
+  DropdownToggleAction,
+} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
+import {
+  DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
+  DmnEditorDataTypesClipboard,
+  getClipboard,
+} from "../clipboard/Clipboard";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export type DataType = {
   itemDefinition: DMN15__tItemDefinition;
@@ -95,6 +111,29 @@ export function DataTypes() {
     [dmnEditorStoreApi]
   );
 
+  const pasteTopLevelItemDefinition = useCallback(() => {
+    navigator.clipboard.readText().then((text) => {
+      const clipboard = getClipboard<DmnEditorDataTypesClipboard>(text, DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE);
+      if (!clipboard) {
+        return;
+      }
+
+      const idRandomizer = getNewDmnIdRandomizer();
+      idRandomizer.ack({
+        json: clipboard.itemDefinitions,
+        type: "DMN15__tDefinitions",
+        attr: "itemDefinition",
+      });
+      idRandomizer.randomize();
+
+      for (const itemDefinition of clipboard.itemDefinitions) {
+        addTopLevelItemDefinition(itemDefinition);
+      }
+    });
+  }, [addTopLevelItemDefinition]);
+
+  const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
+
   return (
     <>
       {(dataTypesTree.length <= 0 && <DataTypesEmptyState onAdd={addTopLevelItemDefinition} />) || (
@@ -106,10 +145,47 @@ export function DataTypes() {
                   justifyContent={{ default: "justifyContentSpaceBetween" }}
                   className={"kie-dmn-editor--data-types-filter kie-dmn-editor--sticky-top-glass-header"}
                 >
-                  <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={"Filter..."} />
-                  <Button onClick={() => addTopLevelItemDefinition()} variant={ButtonVariant.link}>
-                    <PlusCircleIcon />
-                  </Button>
+                  <InputGroup>
+                    <SearchInput
+                      placeholder="Filter..."
+                      value={filter}
+                      onChange={(_event, value) => setFilter(value)}
+                      onClear={() => setFilter("")}
+                    />
+
+                    <Dropdown
+                      onSelect={() => setAddDataTypeDropdownOpen(false)}
+                      menuAppendTo={document.body}
+                      toggle={
+                        <DropdownToggle
+                          id="add-data-type-toggle"
+                          splitButtonItems={[
+                            <DropdownToggleAction
+                              key="add-data-type-action"
+                              aria-label="Add Data Type"
+                              onClick={() => addTopLevelItemDefinition()}
+                            >
+                              <PlusCircleIcon />
+                            </DropdownToggleAction>,
+                          ]}
+                          splitButtonVariant="action"
+                          onToggle={setAddDataTypeDropdownOpen}
+                        />
+                      }
+                      position={DropdownPosition.right}
+                      isOpen={isAddDataTypeDropdownOpen}
+                      dropdownItems={[
+                        <DropdownItem
+                          key={"paste"}
+                          onClick={() => pasteTopLevelItemDefinition()}
+                          style={{ minWidth: "240px" }}
+                          icon={<PasteIcon />}
+                        >
+                          Paste
+                        </DropdownItem>,
+                      ]}
+                    />
+                  </InputGroup>
                 </Flex>
                 <div className={`kie-dmn-editor--data-types-nav`}>
                   {filteredTree.map(({ namespace, itemDefinition, feelName }) => (
