@@ -20,15 +20,12 @@
     "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs",
     "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs \"",
     "build:prod": "run-script-os",
-    "build:prod:linux:darwin": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env integrationTests.run --not) && pnpm dist",
-    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env integrationTests.run --not)\" && pnpm dist",
-    "dist": "rimraf dist && mkdir dist && pnpm dist:esj",
-    "dist:esj": "copyfiles -u ./target/*.jar ./dist/",
+    "build:prod:linux:darwin": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env endToEndTests.run --not) && pnpm dist",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env endToEndTests.run --not)\" && pnpm dist",
+    "copy:jar": "copyfiles -u 1 \"target/*.jar\" dist/",
+    "dist": "rimraf dist && mkdir dist && pnpm copy:jar",
     "install": "node install.js",
-    "start": "pnpm mvn quarkus:dev"
-  },
-  "dependencies": {
-    "@kie-tools/jitexecutor-native": "1.40.0-Final"
+    "start": "mvn quarkus:dev"
   },
   "devDependencies": {
     "@kie-tools/maven-config-setup-helper": "workspace:*",

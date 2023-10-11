@@ -32,17 +32,17 @@ import javax.inject.Inject;
 public class PingResponse {
 
     private final String version;
-    private final ProxyConfig proxy_config;
-    private final String kie_sandbox_url;
+    private final ProxyConfig proxyConfig;
+    private final String kieSandboxUrl;
     private final boolean started;
 
     @Inject
     public PingResponse(@ConfigProperty(name = "extended.services.version") String version,
                         ProxyConfig proxyConfig,
-                        @ConfigProperty(name = "kie.sandbox.url") String kie_sandbox_url) {
+                        @ConfigProperty(name = "kie.sandbox.url") String kieSandboxUrl) {
         this.version = version;
-        this.proxy_config = proxyConfig;
-        this.kie_sandbox_url = kie_sandbox_url;
+        this.proxyConfig = proxyConfig;
+        this.kieSandboxUrl = kieSandboxUrl;
         this.started = true;
     }
 
@@ -53,12 +53,12 @@ public class PingResponse {
 
     @JsonProperty("proxy")
     public ProxyConfig getProxyConfig() {
-        return proxy_config;
+        return proxyConfig;
     }
 
     @JsonProperty("kieSandboxUrl")
-    public String getKIESandboxURL() {
-        return kie_sandbox_url;
+    public String getKieSandboxUrl() {
+        return kieSandboxUrl;
     }
 
     @JsonProperty("started")

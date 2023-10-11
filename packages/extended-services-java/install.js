@@ -24,5 +24,5 @@ setup(`
     -Drevision=${buildEnv.env.extendedServices.version}
     -Dip=${buildEnv.env.extendedServices.ip}
     -Dport=${buildEnv.env.extendedServices.port}
-    -DkieSandboxURL=${buildEnv.env.extendedServices.kieSandboxURL}
+    -DkieSandboxUrl=${buildEnv.env.extendedServices.kieSandboxUrl}
 `);

@@ -27,8 +27,8 @@
   <version>${revision}</version>
   <packaging>jar</packaging>
 
-  <name>Stunner Editors Java - Parent</name>
-  <description>Stunner Editors Java - Parent</description>
+  <name>Extended Services - Java</name>
+  <description>Extended Services - Java</description>
 
   <url>http://kogito.kie.org</url>
   <inceptionYear>2021</inceptionYear>

@@ -30,43 +30,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PingResponseTest {
 
     @Inject
-    @ConfigProperty(name = "quarkus.application.version")
-    String expected_version;
+    @ConfigProperty(name = "extended.services.version")
+    String expectedVersion;
     @Inject
     @ConfigProperty(name = "quarkus.http.host")
-    String expected_ip;
+    String expectedIp;
     @Inject
     @ConfigProperty(name = "quarkus.http.port")
-    String expected_port;
-    boolean expected_insecure_skip_verify = false;
+    String expectedPort;
+    boolean expectedInsecureSkipVerify = false;
     @Inject
     @ConfigProperty(name = "kie.sandbox.url")
-    String expected_kie_sandbox_url;
-    boolean expected_started = true;
+    String expectedKieSandboxUrl;
+    boolean expectedStarted = true;
 
     @Inject
     PingResponse pingResponse;
 
     @Test
     public void testGetVersion() {
-        assertEquals(expected_version, pingResponse.getVersion());
+        assertEquals(expectedVersion, pingResponse.getVersion());
     }
 
     @Test
     public void testGetProxyConfig() {
         ProxyConfig proxyConfig = pingResponse.getProxyConfig();
-        assertEquals(expected_ip, proxyConfig.getIP());
-        assertEquals(expected_port, proxyConfig.getPort());
-        assertEquals(expected_insecure_skip_verify, proxyConfig.getInsecureSkipVerify());
+        assertEquals(expectedIp, proxyConfig.getIP());
+        assertEquals(expectedPort, proxyConfig.getPort());
+        assertEquals(expectedInsecureSkipVerify, proxyConfig.getInsecureSkipVerify());
     }
 
     @Test
-    public void testGetKIESandboxURL() {
-        assertEquals(expected_kie_sandbox_url, pingResponse.getKIESandboxURL());
+    public void testGetKieSandboxUrl() {
+        assertEquals(expectedKieSandboxUrl, pingResponse.getKieSandboxUrl());
     }
 
     @Test
     public void testGetStarted() {
-        assertEquals(expected_started, pingResponse.getStarted());
+        assertEquals(expectedStarted, pingResponse.getStarted());
     }
 }

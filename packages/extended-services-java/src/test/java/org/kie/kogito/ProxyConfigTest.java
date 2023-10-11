@@ -30,19 +30,19 @@ public class ProxyConfigTest {
 
     @Inject
     @ConfigProperty(name = "quarkus.http.host")
-    String expected_ip;
+    String expectedIp;
     @Inject
     @ConfigProperty(name = "quarkus.http.port")
-    String expected_port;
-    boolean expected_insecure_skip_verify = false;
-
+    String expectedPort;
+    boolean expectedInsecureSkipVerify = false;
+    
     @Inject
     ProxyConfig proxyConfig;
 
     @Test
     public void testProxyConfig() {
-        assertEquals(expected_ip, proxyConfig.getIP());
-        assertEquals(expected_port, proxyConfig.getPort());
-        assertEquals(expected_insecure_skip_verify, proxyConfig.getInsecureSkipVerify());
+        assertEquals(expectedIp, proxyConfig.getIP());
+        assertEquals(expectedPort, proxyConfig.getPort());
+        assertEquals(expectedInsecureSkipVerify, proxyConfig.getInsecureSkipVerify());
     }
 }

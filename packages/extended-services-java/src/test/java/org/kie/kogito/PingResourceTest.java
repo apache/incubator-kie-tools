@@ -34,18 +34,18 @@ public class PingResourceTest {
 
     @Inject
     @ConfigProperty(name = "extended.services.version")
-    String expected_version;
+    String expectedVersion;
     @Inject
     @ConfigProperty(name = "quarkus.http.host")
-    String expected_ip;
+    String expectedIp;
     @Inject
     @ConfigProperty(name = "quarkus.http.port")
-    String expected_port;
-    boolean expected_insecure_skip_verify = false;
+    String expectedPort;
+    boolean expectedInsecureSkipVerify = false;
     @Inject
     @ConfigProperty(name = "kie.sandbox.url")
-    String expected_kie_sandbox_url;
-    boolean expected_started = true;
+    String expectedKieSandboxUrl;
+    boolean expectedStarted = true;
 
     @Test
     public void testPingEndpoint() {
@@ -54,12 +54,12 @@ public class PingResourceTest {
           .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("version", equalTo(expected_version))
-                .body("proxy.ip", equalTo(expected_ip))
-                .body("proxy.port", equalTo(expected_port))
-                .body("proxy.insecureSkipVerify", equalTo(expected_insecure_skip_verify))
-                .body("kieSandboxUrl", equalTo(expected_kie_sandbox_url))
-                .body("started", equalTo(expected_started));
+                .body("version", equalTo(expectedVersion))
+                .body("proxy.ip", equalTo(expectedIp))
+                .body("proxy.port", equalTo(expectedPort))
+                .body("proxy.insecureSkipVerify", equalTo(expectedInsecureSkipVerify))
+                .body("kieSandboxUrl", equalTo(expectedKieSandboxUrl))
+                .body("started", equalTo(expectedStarted));
     }
 
 }

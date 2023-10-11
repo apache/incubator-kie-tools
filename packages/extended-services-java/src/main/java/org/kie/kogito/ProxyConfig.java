@@ -29,13 +29,13 @@ public class ProxyConfig {
 
     private final String ip;
     private final String port;
-    private final boolean insecure_skip_verify;
+    private final boolean insecureSkipVerify;
 
     public ProxyConfig(@ConfigProperty(name = "quarkus.http.host") String ip,
                        @ConfigProperty(name = "quarkus.http.port") String port) {
         this.ip = ip;
         this.port = port;
-        this.insecure_skip_verify = false;
+        this.insecureSkipVerify = false;
     }
 
     @JsonProperty("ip")
@@ -50,6 +50,6 @@ public class ProxyConfig {
 
     @JsonProperty("insecureSkipVerify")
     public boolean getInsecureSkipVerify() {
-        return insecure_skip_verify;
+        return insecureSkipVerify;
     }
 }

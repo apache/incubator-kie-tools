@@ -26,15 +26,15 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Extended Services Version",
     },
     EXTENDED_SERVICES__ip: {
-      default: "127.0.0.1",
+      default: "0.0.0.0",
       description: "Extended Services IP",
     },
     EXTENDED_SERVICES__port: {
-      default: "2512",
+      default: "21345",
       description: "Extended Services Port",
     },
     EXTENDED_SERVICES__kieSandboxUrl: {
-      default: "https://localhost:1702",
+      default: "https://localhost:9001",
       description: "KIE Sandbox URL",
     },
   }),
@@ -44,7 +44,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         version: getOrDefault(this.vars.EXTENDED_SERVICES__version),
         ip: getOrDefault(this.vars.EXTENDED_SERVICES__ip),
         port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
-        kieSandboxURL: getOrDefault(this.vars.EXTENDED_SERVICES__kieSandboxUrl),
+        kieSandboxUrl: getOrDefault(this.vars.EXTENDED_SERVICES__kieSandboxUrl),
       },
     };
   },
