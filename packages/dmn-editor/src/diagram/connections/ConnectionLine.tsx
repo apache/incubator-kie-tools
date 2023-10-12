@@ -14,7 +14,7 @@ import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNode
 import { getNodeCenterPoint, pointsToPath } from "../maths/DmnMaths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { MIN_NODE_SIZES } from "../nodes/DefaultSizes";
+import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "../nodes/DefaultSizes";
 import { useDmnEditorStore } from "../../store/Store";
 import { useKieEdgePath } from "../edges/useKieEdgePath";
 import { TargetHandleId } from "./PositionalTargetNodeHandles";
@@ -64,9 +64,9 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
     const nodeType = handleId as NodeType;
     const { "@_x": toXsnapped, "@_y": toYsnapped } = snapPoint(diagram.snapGrid, { "@_x": toX, "@_y": toY });
 
-    const minSize = MIN_NODE_SIZES[nodeType](diagram.snapGrid);
+    const defaultSize = DEFAULT_NODE_SIZES[nodeType](diagram.snapGrid);
     const [toXauto, toYauto] = getPositionalHandlePosition(
-      { x: toXsnapped, y: toYsnapped, width: minSize["@_width"], height: minSize["@_height"] },
+      { x: toXsnapped, y: toYsnapped, width: defaultSize["@_width"], height: defaultSize["@_height"] },
       { x: fromX, y: fromY, width: 1, height: 1 }
     );
 
@@ -84,51 +84,46 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
       [EDGE_TYPES.association]: <AssociationPath d={path} />,
     });
 
-    if (handleId === NODE_TYPES.decision) {
+    if (nodeType === NODE_TYPES.decision) {
       return (
         <g>
           {edgeSvg}
           <DecisionNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"]}
-            height={MIN_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"]}
+            width={defaultSize["@_width"]}
+            height={defaultSize["@_height"]}
           />
         </g>
       );
-    } else if (handleId === NODE_TYPES.bkm) {
+    } else if (nodeType === NODE_TYPES.bkm) {
       return (
         <g className={"pulse"}>
           {edgeSvg}
-          <BkmNodeSvg
-            x={toXsnapped}
-            y={toYsnapped}
-            width={MIN_NODE_SIZES[NODE_TYPES.bkm](diagram.snapGrid)["@_width"]}
-            height={MIN_NODE_SIZES[NODE_TYPES.bkm](diagram.snapGrid)["@_height"]}
-          />
+          <BkmNodeSvg x={toXsnapped} y={toYsnapped} width={defaultSize["@_width"]} height={defaultSize["@_height"]} />
         </g>
       );
-    } else if (handleId === NODE_TYPES.knowledgeSource) {
+    } else if (nodeType === NODE_TYPES.knowledgeSource) {
       return (
         <g>
           {edgeSvg}
           <KnowledgeSourceNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_NODE_SIZES[NODE_TYPES.knowledgeSource](diagram.snapGrid)["@_width"]}
-            height={MIN_NODE_SIZES[NODE_TYPES.knowledgeSource](diagram.snapGrid)["@_height"]}
+            width={defaultSize["@_width"]}
+            height={defaultSize["@_height"]}
           />
         </g>
       );
-    } else if (handleId === NODE_TYPES.textAnnotation) {
+    } else if (nodeType === NODE_TYPES.textAnnotation) {
       return (
         <g>
           {edgeSvg}
           <TextAnnotationNodeSvg
             x={toXsnapped}
             y={toYsnapped}
-            width={MIN_NODE_SIZES[NODE_TYPES.textAnnotation](diagram.snapGrid)["@_width"]}
-            height={MIN_NODE_SIZES[NODE_TYPES.textAnnotation](diagram.snapGrid)["@_height"]}
+            width={defaultSize["@_width"]}
+            height={defaultSize["@_height"]}
           />
         </g>
       );

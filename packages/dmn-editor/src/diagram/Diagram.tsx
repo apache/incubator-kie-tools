@@ -26,7 +26,7 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
-import { MIN_NODE_SIZES } from "./nodes/DefaultSizes";
+import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "./nodes/DefaultSizes";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
   BkmNode,
@@ -266,8 +266,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               bounds: {
                 "@_x": dropPoint.x,
                 "@_y": dropPoint.y,
-                "@_width": MIN_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_width"],
-                "@_height": MIN_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_height"],
+                "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_width"],
+                "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_height"],
               },
             },
           });
@@ -289,7 +289,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
 
         const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
-        const defaultExternalNodeDimensions = MIN_NODE_SIZES[externalNodeType](diagram.snapGrid);
+        const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](diagram.snapGrid);
 
         dmnEditorStoreApi.setState((state) => {
           const namespaceName = getXmlNamespaceDeclarationName({
@@ -410,8 +410,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             bounds: {
               "@_x": dropPoint.x,
               "@_y": dropPoint.y,
-              "@_width": MIN_NODE_SIZES[newNodeType](diagram.snapGrid)["@_width"],
-              "@_height": MIN_NODE_SIZES[newNodeType](diagram.snapGrid)["@_height"],
+              "@_width": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_width"],
+              "@_height": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_height"],
             },
           },
         });
