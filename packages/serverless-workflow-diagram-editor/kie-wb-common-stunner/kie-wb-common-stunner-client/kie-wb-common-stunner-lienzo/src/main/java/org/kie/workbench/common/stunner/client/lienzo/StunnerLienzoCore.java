@@ -49,17 +49,17 @@ public class StunnerLienzoCore {
 
         // sequence of resources is important
         resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.jquery()));
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.bootstrap()));
+        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.bootstrapJs()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.animate()));
         resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.gwtbootstrap3()));
-        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.patternflyAdditions()));
-        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.patternflys()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.patternflyStyleAdditionsMin()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.patternflyStyleMin()));
         resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.patternfly()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.uberfirePatternfly()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.fontAwesome()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.fonts()));
         resources.add(() -> injectScript(NotifyClientBundle.INSTANCE.notifyJS()));
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.bootstrapSelect()));
+        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.bootstrapSelectJs()));
 
         pollResource();
 

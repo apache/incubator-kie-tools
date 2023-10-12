@@ -28,34 +28,87 @@ public interface StunnerLienzoCoreResources extends ClientBundle {
 
     StunnerLienzoCoreResources INSTANCE = StunnerLienzoCoreResourcesImpl.INSTANCE;
 
-    @Source("js/jquery-1.12.4.min.cache.js.back")
+    @MavenArtifactSource(
+            group = "org.gwtbootstrap3",
+            artifact = "gwtbootstrap3",
+            version = "1.0.1",
+            path = "org/gwtbootstrap3/client/resource/js/jquery-1.12.4.min.cache.js",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/js/jquery-1.12.4.min.js.noproc"
+    )
     TextResource jquery();
 
-    @Source("js/bootstrap-3.4.1.min.cache.js.back")
-    TextResource bootstrap();
+    @MavenArtifactSource(
+            group = "org.webjars",
+            artifact = "bootstrap",
+            version = "3.4.1",
+            path = "META-INF/resources/webjars/bootstrap/3.4.1/js/bootstrap.min.js",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/js/bootstrap.min.js.noproc")
+    TextResource bootstrapJs();
 
-    @Source("js/gwtbootstrap3.js.back")
+    @MavenArtifactSource(
+            group = "org.gwtbootstrap3",
+            artifact = "gwtbootstrap3",
+            version = "1.0.1",
+            path = "org/gwtbootstrap3/client/resource/js/gwtbootstrap3.js",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/js/gwtbootstrap3.min.js.noproc"
+    )
     TextResource gwtbootstrap3();
 
-    @Source("js/patternfly.min.js.back")
+    @MavenArtifactSource(
+            group = "org.uberfire",
+            artifact = "uberfire-workbench-client-views-patternfly",
+            version = "7.74.1.Final",
+            path = "org/uberfire/client/views/static/js/patternfly.min.js",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/js/patternfly.min.js.noproc"
+    )
     TextResource patternfly();
 
-    @Source("js/bootstrap-select-1.12.4.min.cache.js.back")
-    TextResource bootstrapSelect();
+    @MavenArtifactSource(
+            group = "org.uberfire",
+            artifact = "uberfire-workbench-client-views-patternfly",
+            version = "7.74.1.Final",
+            path = "org/uberfire/client/views/static/bootstrap-select/js/bootstrap-select.min.js",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/js/bootstrap-select.min.js.noproc"
+    )
+    TextResource bootstrapSelectJs();
 
-    @Source("css/animate-3.5.2.min.cache.css")
+    @MavenArtifactSource(
+            group = "org.webjars",
+            artifact = "animate.css",
+            version = "3.5.2",
+            path = "META-INF/resources/webjars/animate.css/3.5.2/animate.min.css",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/css/animate.min.css"
+    )
     TextResource animate();
 
-    @Source("css/patternfly-additions.min.css")
-    TextResource patternflyAdditions();
+    @MavenArtifactSource(
+            group = "org.uberfire",
+            artifact = "uberfire-workbench-client-views-patternfly",
+            version = "7.74.1.Final",
+            path = "org/uberfire/client/views/static/css/patternfly-additions.min.css")
+    TextResource patternflyStyleAdditionsMin();
 
-    @Source("css/patternfly.min.css")
-    TextResource patternflys();
+    @MavenArtifactSource(
+            group = "org.uberfire",
+            artifact = "uberfire-workbench-client-views-patternfly",
+            version = "7.74.1.Final",
+            path = "org/uberfire/client/views/static/css/patternfly.min.css")
+    TextResource patternflyStyleMin();
 
-    @Source("css/uberfire-patternfly.css")
+    @MavenArtifactSource(
+            group = "org.uberfire",
+            artifact = "uberfire-workbench-client-views-patternfly",
+            version = "7.74.1.Final",
+            path = "org/uberfire/client/views/static/uberfire-patternfly.css")
     TextResource uberfirePatternfly();
 
-    @Source("css/font-awesome-4.7.0.min.cache.css")
+    @MavenArtifactSource(
+            group = "org.webjars",
+            artifact = "font-awesome",
+            version = "4.7.0",
+            path = "META-INF/resources/webjars/font-awesome/4.7.0/css/font-awesome.min.css",
+            copyTo = "org/kie/workbench/common/stunner/client/lienzo/resources/fonts/font-awesome.min.css"
+    )
     TextResource fontAwesome();
 
     @Source("css/fonts.css")

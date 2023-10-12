@@ -288,7 +288,7 @@
     <version.org.uberfire.patternfly>7.74.1.Final</version.org.uberfire.patternfly>
 
     <version.io.crysknife>0.6</version.io.crysknife>
-    <version.org.gwt3.processors>0.6.2</version.org.gwt3.processors>
+    <version.org.gwt3.processors>0.6.3</version.org.gwt3.processors>
     <version.j2cl>0.11.0-9336533b6</version.j2cl>
     <version.j2cl.maven.plugin>0.21.0</version.j2cl.maven.plugin>
 
@@ -1235,6 +1235,7 @@
                       <ignoreClass>jsinterop.*</ignoreClass>
                       <ignoreClass>elemental2.*</ignoreClass>
                       <ignoreClass>org.treblereel.*</ignoreClass>
+                      <ignoreClass>org.apache.*</ignoreClass>
 
                       <!-- Classes from gwt-user duplicated in errai-uibinder -->
                       <ignoreClass>org.gwtproject.uibinder.rebind.UiBinderWriter</ignoreClass>
