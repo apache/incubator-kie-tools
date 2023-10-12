@@ -1220,17 +1220,29 @@ export function KeyboardShortcuts({
       return;
     }
 
-    rfStoreApi.setState((prev) => {
-      const unselected = prev.getNodes().flatMap((n) => (!n.selected ? [n.id] : []));
-      if (unselected.length > 0) {
-        prev.addSelectedNodes(prev.getNodes().map((s) => s.id));
-      } else {
-        prev.resetSelectedElements();
-      }
+    const allNodeIds = rfStoreApi
+      .getState()
+      .getNodes()
+      .map((s) => s.id);
 
-      return prev;
+    const allEdgeIds = rfStoreApi.getState().edges.map((s) => s.id);
+
+    dmnEditorStoreApi.setState((state) => {
+      const allSelectedNodesSet = new Set(state.diagram._selectedNodes);
+      const allSelectedEdgesSet = new Set(state.diagram._selectedEdges);
+
+      // If everything is selected, deselect everything.
+      if (
+        allNodeIds.every((id) => allSelectedNodesSet.has(id) && allEdgeIds.every((id) => allSelectedEdgesSet.has(id)))
+      ) {
+        state.diagram._selectedNodes = [];
+        state.diagram._selectedEdges = [];
+      } else {
+        state.diagram._selectedNodes = allNodeIds;
+        state.diagram._selectedEdges = allEdgeIds;
+      }
     });
-  }, [rfStoreApi, selectAll]);
+  }, [dmnEditorStoreApi, rfStoreApi, selectAll]);
 
   const g = RF.useKeyPress(["g"]);
   useEffect(() => {
