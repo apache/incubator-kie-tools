@@ -12,12 +12,21 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { useState } from "react";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { InputGroup } from "@patternfly/react-core";
+import { SyncAltIcon } from "@patternfly/react-icons/dist/esm/icons/sync-alt-icon";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const [isIdSuffleModalOpen, setIdSuffleModalOpen] = useState(false);
 
   return (
     <Form>
@@ -72,23 +81,6 @@ export function GlobalDiagramProperties() {
           />
         </FormGroup>
 
-        <br />
-        <br />
-
-        <FormGroup label="Namespace">
-          <TextInput
-            aria-label={"Namespace"}
-            type={"text"}
-            isDisabled={false}
-            placeholder={"Enter a namespace..."}
-            value={thisDmn.model.definitions["@_namespace"]}
-            onChange={(newNamespace) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.dmn.model.definitions["@_namespace"] = newNamespace;
-              })
-            }
-          />
-        </FormGroup>
         <FormGroup label="Expression language">
           <TextInput
             aria-label={"Expression language"}
@@ -103,12 +95,93 @@ export function GlobalDiagramProperties() {
             }
           />
         </FormGroup>
+
+        <br />
+        <br />
+      </FormFieldGroupExpandable>
+
+      <FormFieldGroupExpandable
+        isExpanded={true}
+        header={
+          <FormFieldGroupHeader
+            titleText={{
+              id: "properties-panel-global-options-id-and-namespace",
+              text: (
+                <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                  <TextContent>
+                    <Text component={TextVariants.h4}>ID & Namespace</Text>
+                  </TextContent>
+                  <Button
+                    variant={ButtonVariant.plain}
+                    onClick={() => setIdSuffleModalOpen(true)}
+                    style={{ paddingBottom: 0, paddingTop: 0 }}
+                  >
+                    <SyncAltIcon />
+                  </Button>
+                </Flex>
+              ),
+            }}
+          />
+        }
+      >
         <FormGroup label="ID">
-          <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+          <ClipboardCopy
+            isReadOnly={false}
+            hoverTip="Copy"
+            clickTip="Copied"
+            onChange={(newId) => {
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions["@_id"] = `${newId}`;
+              });
+            }}
+          >
             {thisDmn.model.definitions["@_id"]}
           </ClipboardCopy>
         </FormGroup>
+
+        <FormGroup label="Namespace">
+          <ClipboardCopy
+            isReadOnly={false}
+            hoverTip="Copy"
+            clickTip="Copied"
+            onChange={(newNamespace) => {
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions["@_namespace"] = `${newNamespace}`;
+              });
+            }}
+          >
+            {thisDmn.model.definitions["@_namespace"]}
+          </ClipboardCopy>
+        </FormGroup>
       </FormFieldGroupExpandable>
+      <Modal
+        variant={ModalVariant.small}
+        isOpen={isIdSuffleModalOpen}
+        onClose={() => setIdSuffleModalOpen(false)}
+        actions={[
+          <Button
+            key="confirm"
+            variant={ButtonVariant.primary}
+            onClick={() => {
+              setIdSuffleModalOpen(false);
+              dmnEditorStoreApi.setState((state) => {
+                state.dmn.model.definitions["@_id"] = generateUuid();
+                state.dmn.model.definitions["@_namespace"] = `https://kie.org/dmn/${generateUuid()}`;
+              });
+            }}
+          >
+            Yes, re-generate ID and Namespace
+          </Button>,
+          <Button key="cancel" variant="link" onClick={() => setIdSuffleModalOpen(false)}>
+            Cancel
+          </Button>,
+        ]}
+      >
+        Re-generating the ID and Namespace of a DMN file will potentially break other DMN files that depend on it.
+        <br />
+        <br />
+        Are you sure you want to continue?
+      </Modal>
     </Form>
   );
 }

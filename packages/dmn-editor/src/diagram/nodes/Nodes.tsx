@@ -108,7 +108,6 @@ export const InputDataNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        g
         <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
           ref={ref}
