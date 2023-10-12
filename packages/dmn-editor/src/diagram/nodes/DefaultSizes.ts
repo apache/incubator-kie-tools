@@ -1,10 +1,10 @@
 import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SnapGrid } from "../../store/Store";
-import { MIN_SIZE_FOR_NODES, NODE_MIN_WIDTH } from "../SnapGrid";
+import { snapPoint } from "../SnapGrid";
 import { NodeType } from "../connections/graphStructure";
 import { NODE_TYPES } from "./NodeTypes";
 
-export const DEFAULT_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimension> = {
+export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimension> = {
   [NODE_TYPES.inputData]: (snapGrid) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
@@ -54,4 +54,17 @@ export const DEFAULT_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Di
       "@_height": snappedMinSize.height,
     };
   },
+};
+
+export const DECISION_SERVICE_COLLAPSED_DIMENSIONS = {
+  width: 300,
+  height: 100,
+};
+
+const NODE_MIN_WIDTH = 160;
+const NODE_MIN_HEIGHT = 80;
+
+const MIN_SIZE_FOR_NODES = (grid: SnapGrid, width = NODE_MIN_WIDTH, height = NODE_MIN_HEIGHT) => {
+  const snapped = snapPoint(grid, { "@_x": width, "@_y": height }, "ceil");
+  return { width: snapped["@_x"], height: snapped["@_y"] };
 };

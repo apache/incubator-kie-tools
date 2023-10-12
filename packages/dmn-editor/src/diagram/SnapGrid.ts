@@ -1,18 +1,9 @@
-import { DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  DC__Dimension,
+  DC__Point,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { SnapGrid } from "../store/Store";
-
-export const NODE_MIN_WIDTH = 160;
-export const NODE_MIN_HEIGHT = 80;
-
-export const DECISION_SERVICE_COLLAPSED_DIMENSIONS = {
-  width: 300,
-  height: 100,
-};
-
-export const MIN_SIZE_FOR_NODES = (grid: SnapGrid, width = NODE_MIN_WIDTH, height = NODE_MIN_HEIGHT) => {
-  const snapped = snapPoint(grid, { "@_x": width, "@_y": height }, "ceil");
-  return { width: snapped["@_x"], height: snapped["@_y"] };
-};
 
 export function snapShapePosition(snapGrid: SnapGrid, shape: DMNDI15__DMNShape) {
   return {
@@ -36,11 +27,10 @@ export function offsetShapePosition(shape: DMNDI15__DMNShape, offset: { x: numbe
   };
 }
 
-export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI15__DMNShape) {
-  const minSizes = MIN_SIZE_FOR_NODES(grid);
+export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI15__DMNShape, minSizes: DC__Dimension) {
   return {
-    width: Math.max(snap(grid, "x", shape["dc:Bounds"]?.["@_width"]), minSizes.width),
-    height: Math.max(snap(grid, "y", shape["dc:Bounds"]?.["@_height"]), minSizes.height),
+    width: Math.max(snap(grid, "x", shape["dc:Bounds"]?.["@_width"]), minSizes["@_width"]),
+    height: Math.max(snap(grid, "y", shape["dc:Bounds"]?.["@_height"]), minSizes["@_height"]),
   };
 }
 

@@ -26,7 +26,7 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
-import { DEFAULT_NODE_SIZES } from "./nodes/DefaultSizes";
+import { MIN_NODE_SIZES } from "./nodes/DefaultSizes";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
   BkmNode,
@@ -264,8 +264,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               bounds: {
                 "@_x": dropPoint.x,
                 "@_y": dropPoint.y,
-                "@_width": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_width"],
-                "@_height": DEFAULT_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_height"],
+                "@_width": MIN_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_width"],
+                "@_height": MIN_NODE_SIZES[typeOfNewNodeFromPalette](diagram.snapGrid)["@_height"],
               },
             },
           });
@@ -287,7 +287,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         }
 
         const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
-        const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType](diagram.snapGrid);
+        const defaultExternalNodeDimensions = MIN_NODE_SIZES[externalNodeType](diagram.snapGrid);
 
         dmnEditorStoreApi.setState((state) => {
           const namespaceName = getXmlNamespaceDeclarationName({
@@ -408,8 +408,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             bounds: {
               "@_x": dropPoint.x,
               "@_y": dropPoint.y,
-              "@_width": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_width"],
-              "@_height": DEFAULT_NODE_SIZES[newNodeType](diagram.snapGrid)["@_height"],
+              "@_width": MIN_NODE_SIZES[newNodeType](diagram.snapGrid)["@_width"],
+              "@_height": MIN_NODE_SIZES[newNodeType](diagram.snapGrid)["@_height"],
             },
           },
         });
@@ -446,7 +446,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               if (change.dimensions) {
                 const node = nodesById.get(change.id)!;
                 // We only need to resize the node if its snapped dimensions change, as snapping is non-destructive.
-                const snappedShape = snapShapeDimensions(diagram.snapGrid, node.data.shape);
+                const snappedShape = snapShapeDimensions(
+                  diagram.snapGrid,
+                  node.data.shape,
+                  MIN_NODE_SIZES[node.type as NodeType](diagram.snapGrid)
+                );
                 if (
                   snappedShape.width !== change.dimensions.width ||
                   snappedShape.height !== change.dimensions.height

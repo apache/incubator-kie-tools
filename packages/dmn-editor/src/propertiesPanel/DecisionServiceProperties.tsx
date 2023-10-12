@@ -16,6 +16,7 @@ import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -133,17 +134,20 @@ export function DecisionServiceProperties({
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>
-      <FormGroup label="Input decisions">
-        <DecisionServiceElementList
-          decisionServiceNamespace={namespace}
-          elements={decisionService.inputDecision}
-          allDrgElementsByHref={allDrgElementsByHref}
-        />
-      </FormGroup>
+
+      <Divider />
+
       <FormGroup label="Input data">
         <DecisionServiceElementList
           decisionServiceNamespace={namespace}
           elements={decisionService.inputData}
+          allDrgElementsByHref={allDrgElementsByHref}
+        />
+      </FormGroup>
+      <FormGroup label="Input decisions">
+        <DecisionServiceElementList
+          decisionServiceNamespace={namespace}
+          elements={decisionService.inputDecision}
           allDrgElementsByHref={allDrgElementsByHref}
         />
       </FormGroup>

@@ -14,7 +14,8 @@ import { useCallback, useEffect, useRef } from "react";
 import * as RF from "reactflow";
 import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
 import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
-import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_SIZE_FOR_NODES, snapShapeDimensions } from "../SnapGrid";
+import { snapShapeDimensions } from "../SnapGrid";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "./DefaultSizes";
 import { PositionalTargetNodeHandles } from "../connections/PositionalTargetNodeHandles";
 import { NodeType, containment, outgoingStructure } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
@@ -40,6 +41,7 @@ import { DmnDiagramEdgeData } from "../edges/Edges";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Unpacked } from "../../tsExt/tsExt";
 import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
+import { MIN_NODE_SIZES } from "./DefaultSizes";
 
 export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>;
 
@@ -106,9 +108,8 @@ export const InputDataNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-
+        g
         <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
-
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
@@ -134,7 +135,14 @@ export const InputDataNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && (
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
+          )}
           <DataTypeNodePanel
             isVisible={!isTargeted && isHovered}
             variable={inputData.variable}
@@ -226,7 +234,14 @@ export const DecisionNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && (
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
+          )}
           <DataTypeNodePanel
             isVisible={!isTargeted && isHovered}
             variable={decision.variable}
@@ -318,7 +333,14 @@ export const BkmNode = React.memo(
             onChange={setName}
             allUniqueNames={allFeelVariableUniqueNames}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && (
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
+          )}
           <DataTypeNodePanel
             isVisible={!isTargeted && isHovered}
             variable={bkm.variable}
@@ -399,7 +421,14 @@ export const KnowledgeSourceNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && (
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
+          )}
         </div>
       </>
     );
@@ -474,7 +503,14 @@ export const TextAnnotationNode = React.memo(
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
           />
-          {isHovered && <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />}
+          {isHovered && (
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
+          )}
         </div>
       </>
     );
@@ -586,7 +622,12 @@ export const DecisionServiceNode = React.memo(
             allUniqueNames={allFeelVariableUniqueNames}
           />
           {selected && !dragging && !shape["@_isCollapsed"] && (
-            <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
           )}
           {shape["@_isCollapsed"] && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
           <DataTypeNodePanel
@@ -687,7 +728,12 @@ export const GroupNode = React.memo(
             allUniqueNames={allFeelVariableUniqueNames}
           />
           {selected && !dragging && (
-            <NodeResizerHandle snapGrid={diagram.snapGrid} nodeId={id} nodeShapeIndex={shape.index} />
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
           )}
         </div>
       </>
@@ -712,10 +758,15 @@ const resizerControlStyle = {
   border: "none",
 };
 
-export function NodeResizerHandle(props: { snapGrid: SnapGrid; nodeId: string; nodeShapeIndex: number }) {
-  const minSize = MIN_SIZE_FOR_NODES(props.snapGrid);
+export function NodeResizerHandle(props: {
+  snapGrid: SnapGrid;
+  nodeId: string;
+  nodeType: NodeType;
+  nodeShapeIndex: number;
+}) {
+  const minSize = MIN_NODE_SIZES[props.nodeType](props.snapGrid);
   return (
-    <RF.NodeResizeControl style={resizerControlStyle} minWidth={minSize.width} minHeight={minSize.height}>
+    <RF.NodeResizeControl style={resizerControlStyle} minWidth={minSize["@_width"]} minHeight={minSize["@_height"]}>
       <div
         style={{
           position: "absolute",
@@ -749,9 +800,11 @@ function useNodeDimensions(type: NodeType, snapGrid: SnapGrid, id: string, shape
     return DECISION_SERVICE_COLLAPSED_DIMENSIONS;
   }
 
+  const minSizes = MIN_NODE_SIZES[node.type as NodeType](snapGrid);
+
   return {
-    width: node.width ?? snapShapeDimensions(snapGrid, shape).width,
-    height: node.height ?? snapShapeDimensions(snapGrid, shape).height,
+    width: node.width ?? snapShapeDimensions(snapGrid, shape, minSizes).width,
+    height: node.height ?? snapShapeDimensions(snapGrid, shape, minSizes).height,
   };
 }
 

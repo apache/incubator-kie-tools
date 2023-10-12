@@ -6,7 +6,8 @@ import {
 import { useMemo } from "react";
 import * as RF from "reactflow";
 import { NODE_LAYERS, useDmnEditorStore } from "./Store";
-import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "../diagram/nodes/DefaultSizes";
 import { EdgeType } from "../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
@@ -18,6 +19,7 @@ import { buildXmlHref } from "../xml/xmlHrefs";
 import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glitches } from "../diagram/nodes/NodeSvgs";
 import { ExternalDmnsIndex } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";
+import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -264,7 +266,7 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
         position: snapShapePosition(diagram.snapGrid, shape),
         data,
         zIndex: NODE_LAYERS.NODES,
-        style: { ...snapShapeDimensions(diagram.snapGrid, shape) },
+        style: { ...snapShapeDimensions(diagram.snapGrid, shape, MIN_NODE_SIZES[type](diagram.snapGrid)) },
       };
 
       if (dmnObject.__$$element === "decisionService") {
