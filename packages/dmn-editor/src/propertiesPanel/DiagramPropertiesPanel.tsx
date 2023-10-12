@@ -160,8 +160,8 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
 }
 
 export function DiagramPropertiesPanel() {
-  const diagram = useDmnEditorStore((s) => s.diagram);
   const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const { selectedNodesById } = useDmnEditorDerivedStore();
 
   return (
     <DrawerPanelContent
@@ -171,13 +171,13 @@ export function DiagramPropertiesPanel() {
       onKeyDown={(e) => e.stopPropagation()} // This prevents ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
     >
       <DrawerHead>
-        {diagram.selectedNodes.length <= 0 && <GlobalDiagramProperties />}
-        {diagram.selectedNodes.length === 1 && <SingleNodeProperties nodeId={diagram.selectedNodes[0]} />}
-        {diagram.selectedNodes.length > 1 && (
+        {selectedNodesById.size <= 0 && <GlobalDiagramProperties />}
+        {selectedNodesById.size === 1 && <SingleNodeProperties nodeId={[...selectedNodesById.keys()][0]} />}
+        {selectedNodesById.size > 1 && (
           <>
             <Flex justifyContent={{ default: "justifyContentCenter" }}>
               <TextContent>
-                <Text component={TextVariants.h4}>Multiple nodes selected ({diagram.selectedNodes.length})</Text>
+                <Text component={TextVariants.h4}>Multiple nodes selected ({selectedNodesById.size})</Text>
               </TextContent>
             </Flex>
             <Form>

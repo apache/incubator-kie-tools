@@ -27,6 +27,8 @@ export type DerivedStore = {
   edges: RF.Edge[];
   nodesById: Map<string, RF.Node<DmnDiagramNodeData>>;
   edgesById: Map<string, RF.Edge<DmnDiagramEdgeData>>;
+  selectedNodesById: Map<string, RF.Node<DmnDiagramNodeData>>;
+  selectedEdgesById: Map<string, RF.Edge<DmnDiagramEdgeData>>;
   importsByNamespace: Map<string, DMN15__tImport>;
   dataTypesTree: DataType[];
   allDataTypesById: DataTypeIndex;
@@ -86,8 +88,17 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     );
   }, [externalModelsByNamespace, thisDmnsImports]);
 
-  const { nodes, edges, nodesById, edgesById, dmnEdgesByDmnElementRef, dmnShapesByHref } =
-    useDiagramData(externalDmnsByNamespace);
+  const {
+    nodes,
+    edges,
+    nodesById,
+    edgesById,
+    dmnEdgesByDmnElementRef,
+    dmnShapesByHref,
+    selectedNodesById,
+    selectedEdgesById,
+    selectedNodeTypes,
+  } = useDiagramData(externalDmnsByNamespace);
 
   const { dataTypesTree, allDataTypesById, allTopLevelDataTypesByFeelName } = useMemo(() => {
     const allDataTypesById: DataTypeIndex = new Map();
@@ -155,14 +166,6 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     return ret;
   }, [thisDmn.model.definitions.drgElement, thisDmnsImports]);
 
-  const selectedNodeTypes = useMemo(() => {
-    const ret = new Set<NodeType>();
-    for (let i = 0; i < diagram.selectedNodes.length; i++) {
-      ret.add(nodesById.get(diagram.selectedNodes[i])!.type as NodeType);
-    }
-    return ret;
-  }, [diagram.selectedNodes, nodesById]);
-
   const isDropTargetNodeValidForSelection =
     !!diagram.dropTargetNode &&
     _isValidContainment({
@@ -183,6 +186,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       edges,
       nodesById,
       edgesById,
+      selectedNodesById,
+      selectedEdgesById,
       importsByNamespace: thisDmnsImportsByNamespace,
       dmnEdgesByDmnElementRef,
       dmnShapesByHref,
@@ -202,6 +207,8 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       edges,
       nodesById,
       edgesById,
+      selectedNodesById,
+      selectedEdgesById,
       thisDmnsImportsByNamespace,
       dmnEdgesByDmnElementRef,
       dmnShapesByHref,

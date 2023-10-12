@@ -226,7 +226,6 @@ export function getBounds({
     width?: number | null;
     height?: number | null;
     position: { x: number; y: number };
-    selected?: boolean;
   }>;
   padding: number;
 }): DC__Bounds {
@@ -237,12 +236,10 @@ export function getBounds({
 
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
-    if (node.selected) {
-      maxX = Math.max(maxX, node.position.x + (node.width ?? 0));
-      minX = Math.min(minX, node.position.x);
-      maxY = Math.max(maxY, node.position.y + (node.height ?? 0));
-      minY = Math.min(minY, node.position.y);
-    }
+    maxX = Math.max(maxX, node.position.x + (node.width ?? 0));
+    minX = Math.min(minX, node.position.x);
+    maxY = Math.max(maxY, node.position.y + (node.height ?? 0));
+    minY = Math.min(minY, node.position.y);
   }
 
   return {

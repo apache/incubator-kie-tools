@@ -62,10 +62,10 @@ export interface State {
       enableDataTypesToolbarOnNodes: boolean;
     };
     snapGrid: SnapGrid;
-    selectedNodes: Array<string>;
+    _selectedNodes: Array<string>;
+    _selectedEdges: Array<string>;
     draggingNodes: Array<string>;
     resizingNodes: Array<string>;
-    selectedEdges: Array<string>;
     draggingWaypoints: Array<string>;
   };
 }
@@ -165,10 +165,10 @@ export const defaultStaticState = () => ({
       enableDataTypesToolbarOnNodes: true,
     },
     snapGrid: { isEnabled: true, x: 20, y: 20 },
-    selectedNodes: [],
+    _selectedNodes: [],
+    _selectedEdges: [],
     draggingNodes: [],
     resizingNodes: [],
-    selectedEdges: [],
     draggingWaypoints: [],
   },
 });
@@ -188,7 +188,7 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
         dmn: {
           reset: (model) => {
             set((state) => {
-              state.diagram.selectedNodes = [];
+              state.diagram._selectedNodes = [];
               state.diagram.draggingNodes = [];
               state.diagram.resizingNodes = [];
               state.navigation.tab = DmnEditorTab.EDITOR;
@@ -260,9 +260,9 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
             //selected
             if (newStatus.selected !== undefined) {
               if (newStatus.selected) {
-                prev.diagram.selectedNodes.push(nodeId);
+                prev.diagram._selectedNodes.push(nodeId);
               } else {
-                prev.diagram.selectedNodes = prev.diagram.selectedNodes.filter((s) => s !== nodeId);
+                prev.diagram._selectedNodes = prev.diagram._selectedNodes.filter((s) => s !== nodeId);
               }
             }
             //dragging
@@ -286,9 +286,9 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
             //selected
             if (newStatus.selected !== undefined) {
               if (newStatus.selected) {
-                prev.diagram.selectedEdges.push(edgeId);
+                prev.diagram._selectedEdges.push(edgeId);
               } else {
-                prev.diagram.selectedEdges = prev.diagram.selectedEdges.filter((s) => s !== edgeId);
+                prev.diagram._selectedEdges = prev.diagram._selectedEdges.filter((s) => s !== edgeId);
               }
             }
             //dragging

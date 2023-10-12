@@ -33,7 +33,12 @@ export function Palette() {
 
   const groupNodes = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
-      if (state.diagram.selectedNodes.length <= 0) {
+      const selectedNodes = rfStoreApi
+        .getState()
+        .getNodes()
+        .filter((s) => s.selected);
+
+      if (selectedNodes.length <= 0) {
         return;
       }
 
@@ -42,7 +47,7 @@ export function Palette() {
         newNode: {
           type: NODE_TYPES.group,
           bounds: getBounds({
-            nodes: rfStoreApi.getState().getNodes(),
+            nodes: selectedNodes,
             padding: CONTAINER_NODES_DESIRABLE_PADDING,
           }),
         },

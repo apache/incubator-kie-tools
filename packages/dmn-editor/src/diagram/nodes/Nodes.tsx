@@ -552,7 +552,7 @@ export const DecisionServiceNode = React.memo(
     useEffect(() => {
       const onDoubleClick = () => {
         dmnEditorStoreApi.setState((state) => {
-          state.diagram.selectedNodes = [
+          state.diagram._selectedNodes = [
             id, // Include the Decision Service itself.
             ...(decisionService.outputDecision ?? []).map((od) => od["@_href"]),
             ...(decisionService.encapsulatedDecision ?? []).map((ed) => ed["@_href"]),
@@ -676,7 +676,7 @@ export const GroupNode = React.memo(
     useEffect(() => {
       const onDoubleClick = () => {
         dmnEditorStoreApi.setState((state) => {
-          state.diagram.selectedNodes = reactFlow
+          state.diagram._selectedNodes = reactFlow
             .getNodes()
             .flatMap((n) =>
               getContainmentRelationship({ bounds: n.data.shape["dc:Bounds"]!, container: shape["dc:Bounds"]! })

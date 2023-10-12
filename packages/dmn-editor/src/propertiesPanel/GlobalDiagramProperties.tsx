@@ -14,11 +14,9 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { InputGroup } from "@patternfly/react-core";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/esm/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export function GlobalDiagramProperties() {
@@ -26,7 +24,7 @@ export function GlobalDiagramProperties() {
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-  const [isIdSuffleModalOpen, setIdSuffleModalOpen] = useState(false);
+  const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
 
   return (
     <Form>
@@ -113,7 +111,7 @@ export function GlobalDiagramProperties() {
                   </TextContent>
                   <Button
                     variant={ButtonVariant.plain}
-                    onClick={() => setIdSuffleModalOpen(true)}
+                    onClick={() => setRegenerateIdConfirmationModal(true)}
                     style={{ paddingBottom: 0, paddingTop: 0 }}
                   >
                     <SyncAltIcon />
@@ -156,14 +154,14 @@ export function GlobalDiagramProperties() {
       </FormFieldGroupExpandable>
       <Modal
         variant={ModalVariant.small}
-        isOpen={isIdSuffleModalOpen}
-        onClose={() => setIdSuffleModalOpen(false)}
+        isOpen={regenerateIdConfirmationModal}
+        onClose={() => setRegenerateIdConfirmationModal(false)}
         actions={[
           <Button
             key="confirm"
             variant={ButtonVariant.primary}
             onClick={() => {
-              setIdSuffleModalOpen(false);
+              setRegenerateIdConfirmationModal(false);
               dmnEditorStoreApi.setState((state) => {
                 state.dmn.model.definitions["@_id"] = generateUuid();
                 state.dmn.model.definitions["@_namespace"] = `https://kie.org/dmn/${generateUuid()}`;
@@ -172,7 +170,7 @@ export function GlobalDiagramProperties() {
           >
             Yes, re-generate ID and Namespace
           </Button>,
-          <Button key="cancel" variant="link" onClick={() => setIdSuffleModalOpen(false)}>
+          <Button key="cancel" variant="link" onClick={() => setRegenerateIdConfirmationModal(false)}>
             Cancel
           </Button>,
         ]}
