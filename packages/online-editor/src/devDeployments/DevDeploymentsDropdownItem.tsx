@@ -136,9 +136,9 @@ export function DevDeploymentsDropdownItem(props: Props) {
     devDeployments.setConfirmDeleteModalState({
       isOpen: true,
       cloudAuthSessionId: props.cloudAuthSession.id,
-      resourceNames: [props.deployment.resourceName],
+      resources: [props.deployment.name],
     });
-  }, [devDeployments, props.cloudAuthSession.id, props.deployment.resourceName]);
+  }, [devDeployments, props.cloudAuthSession.id, props.deployment.name]);
 
   return (
     <Flex>

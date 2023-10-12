@@ -20,8 +20,8 @@
 export type UploadStatus = "NOT_READY" | "READY" | "UPLOADING" | "UPLOADED" | "ERROR";
 
 const UPLOAD_ENDPOINT = "/upload";
-const UPLOAD_STATUS_ENDPOINT = `/upload/status`;
-const DATA_PART_KEY = "zipFile";
+const UPLOAD_STATUS_ENDPOINT = `/upload-status`;
+const DATA_PART_KEY = "myFile";
 
 export async function getUploadStatus(args: { baseUrl: string }): Promise<UploadStatus> {
   try {

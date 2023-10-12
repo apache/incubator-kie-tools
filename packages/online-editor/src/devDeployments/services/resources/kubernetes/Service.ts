@@ -40,4 +40,27 @@ spec:
     app: \${{ devDeployment.uniqueName }}
     deploymentconfig: \${{ devDeployment.uniqueName }}
   type: ClusterIP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: \${{ devDeployment.uniqueName }}-form-webapp
+  namespace: \${{ devDeployment.kubernetes.namespace }}
+  labels:
+    app: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    \${{ devDeployment.labels.createdBy }}: kie-tools
+spec:
+  ports:
+    - name: 8081-tcp
+      protocol: TCP
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: \${{ devDeployment.uniqueName }}
+    deploymentconfig: \${{ devDeployment.uniqueName }}
+  type: ClusterIP
 `;

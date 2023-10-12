@@ -19,27 +19,30 @@ import (
 )
 
 type Args struct {
-	UNZIP_AT string
-	PORT     string
-	API_KEY  string
+	UNZIP_AT  string
+	PORT      string
+	API_KEY   string
+	ROOT_PATH string
 }
 
 var ENV_VARS = Args{
-	UNZIP_AT: "DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR",
-	PORT:     "DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT",
-	API_KEY:  "DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY",
+	UNZIP_AT:  "DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR",
+	PORT:      "DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT",
+	API_KEY:   "DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY",
+	ROOT_PATH: "DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH",
 }
 
 var GLOBAL__UPLOAD_CAPTURED = false
 var MAX_UPLOADED_FILE_SIZE_IN_BYTES int64 = 200 << 20 // 200 MiB
 
-var LOG_PREFIX = "[dev-deployments-upload-service] "
+var LOG_PREFIX = "[dev-deployment-upload-service] "
 
 func main() {
 
 	unzipAtArgString := os.Getenv(ENV_VARS.UNZIP_AT)
 	portArgString := os.Getenv(ENV_VARS.PORT)
 	apiKeyArgString := os.Getenv(ENV_VARS.API_KEY)
+	rootPathArgString := os.Getenv(ENV_VARS.ROOT_PATH)
 
 	// Validate arguments
 	if len(os.Args) > 1 {
@@ -75,6 +78,21 @@ func main() {
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Created directory '%s'.\n", unzipAtArgString)
 	}
 
+	// router := mux.NewRouter()
+
+	// // CORS middleware
+	// router.Use(func(next http.Handler) http.Handler {
+	// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 		// Set CORS headers
+	// 		w.Header().Set("Access-Control-Allow-Origin", "*")
+	// 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	// 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+	// 		// Continue with the request
+	// 		next.ServeHTTP(w, r)
+	// 	})
+	// })
+
 	// All validations passed. Start the program.
 
 	httpServerBgContext, cancelHttpServerBgContext := context.WithCancel(context.Background())
@@ -83,13 +101,32 @@ func main() {
 		httpServerBgGroup.Go(func() error { return errors.New(fmt.Sprintf("Uploading '%s' failed.", filename)) })
 	}
 
-	http.HandleFunc("/upload/status", func(w http.ResponseWriter, req *http.Request) {
+	rootPath := rootPathArgString
+
+	uploadStatusPath := "/upload-status"
+
+	if len(rootPathArgString) > 1 {
+		uploadStatusPath = fmt.Sprintf("/%s/upload-status", rootPath)
+	}
+
+	http.HandleFunc(uploadStatusPath, func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("READY"))
-		return
 	})
 
-	http.HandleFunc("/upload", func(w http.ResponseWriter, req *http.Request) {
+	uploadPath := "/upload"
+
+	if len(rootPathArgString) > 1 {
+		uploadPath = fmt.Sprintf("/%s/upload", rootPath)
+	}
+
+	http.HandleFunc(uploadPath, func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		apiKey := req.URL.Query().Get("apiKey")
 		if apiKey != apiKeyArgString {
 			fmt.Fprintf(os.Stdout, LOG_PREFIX+"⚠️  Attempted to upload with the wrong API Key: '%s'.\n", apiKey)
@@ -239,7 +276,8 @@ func main() {
 	httpServerBgGroup.Go(func() error {
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Starting HTTP server...\n")
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Running at port %d.\n", port)
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  The uploaded zip will be extracted to '%s'.\n", unzipAtPath)
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  The uploaded zip will be extracted to %s.\n", unzipAtPath)
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  The root path is set to %s.\n", rootPathArgString)
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"ℹ️  Waiting for upload to arrive...\n")
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"--------------------------------------------------------\n")
 		return httpServer.ListenAndServe()
@@ -274,7 +312,7 @@ func readZipFile(zf *zip.File) ([]byte, error) {
 }
 
 func printUsage() {
-	fmt.Fprintf(os.Stderr, LOG_PREFIX+"USAGE: `dev-deployments-upload-service`. Arguments are passed using env vars:\n")
+	fmt.Fprintf(os.Stderr, LOG_PREFIX+"USAGE: `dev-deployment-upload-service`. Arguments are passed using env vars:\n")
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s:\t Required. Where the uploaded zip will be extracted to. If it doesn't exist, it will be created.\n", ENV_VARS.UNZIP_AT))
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s:\t\t\t Required. Port where the HTTP Server will run at. The /upload endpoint will be made available.\n", ENV_VARS.PORT))
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+fmt.Sprintf("- %s:\t\t Required. Allowed API Key used as a queryParam at the /upload endpoint.\n", ENV_VARS.API_KEY))

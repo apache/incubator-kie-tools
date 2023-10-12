@@ -44,4 +44,32 @@ spec:
                 name: \${{ devDeployment.uniqueName }}
                 port:
                   number: 8080
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: \${{ devDeployment.uniqueName }}-form-webapp
+  namespace: \${{ devDeployment.kubernetes.namespace }}
+  labels:
+    app: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    \${{ devDeployment.labels.createdBy }}: kie-tools
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /\${{ devDeployment.uniqueName }}/webapp(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: \${{ devDeployment.uniqueName }}-form-webapp
+                port:
+                  number: 8081
 `;

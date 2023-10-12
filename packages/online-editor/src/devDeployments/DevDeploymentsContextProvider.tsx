@@ -91,9 +91,9 @@ export function DevDeploymentsContextProvider(props: Props) {
 
   // Deployments
   const deleteDeployment = useCallback(
-    async (args: { authSession: CloudAuthSession; resourceName: string }) => {
+    async (args: { authSession: CloudAuthSession; resource: string }) => {
       try {
-        await devDeploymentsServices.get(args.authSession.id)?.deleteDevDeployment(args.resourceName);
+        await devDeploymentsServices.get(args.authSession.id)?.deleteDevDeployment(args.resource);
         return true;
       } catch (error) {
         console.error(error);
@@ -103,10 +103,10 @@ export function DevDeploymentsContextProvider(props: Props) {
     [devDeploymentsServices]
   );
   const deleteDeployments = useCallback(
-    async (args: { authSession: CloudAuthSession; resourceNames: string[] }) => {
+    async (args: { authSession: CloudAuthSession; resources: string[] }) => {
       const result = await Promise.all(
-        args.resourceNames.map((resourceName) => {
-          return deleteDeployment({ authSession: args.authSession, resourceName });
+        args.resources.map((resource) => {
+          return deleteDeployment({ authSession: args.authSession, resource });
         })
       );
 

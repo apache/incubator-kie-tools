@@ -21,7 +21,7 @@
     "build-quarkus:prod:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
     "build:dev": "pnpm copy-assets && pnpm build-quarkus:dev",
     "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm build-quarkus:prod\" \"pnpm image:docker:build\"",
-    "copy-assets": "cp -R ../dev-deployments-upload-service/dist/linux dist-dev",
+    "copy-assets": "rimraf dist-dev && cp -R ../dev-deployment-upload-service/dist/linux dist-dev",
     "create-test-image:build-only": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
     "create-test-image:kind": "kie-tools--image-builder kind $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) --kind-cluster-name kie-sandbox-dev-cluster",
     "create-test-image:minikube": "kie-tools--image-builder minikube $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
@@ -38,12 +38,13 @@
     "quarkus:dev": "cd quarkus-app && mvn clean package quarkus:dev -DskipTests"
   },
   "dependencies": {
-    "@kie-tools/dev-deployments-upload-service": "workspace:*"
+    "@kie-tools/dev-deployment-upload-service": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
     "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
   },
   "kieTools": {

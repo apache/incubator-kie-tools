@@ -108,7 +108,7 @@ export const routes = {
 
   error: new Route<{}>(() => "/error"),
 
-  dataJson: new Route<{}>(() => "./data.json"),
+  dataJson: new Route<{}>(() => "../data.json"),
 
   swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
 

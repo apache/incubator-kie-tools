@@ -28,7 +28,7 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.53-11.el9
 
 COPY dist-dev /var/www/html
 
-EXPOSE 8081 
+EXPOSE 8081
 
 USER 1000
 

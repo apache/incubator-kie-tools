@@ -3024,9 +3024,9 @@ importers:
 
   packages/dev-deployment-base-image:
     dependencies:
-      "@kie-tools/dev-deployments-upload-service":
+      "@kie-tools/dev-deployment-upload-service":
         specifier: workspace:*
-        version: link:../dev-deployments-upload-service
+        version: link:../dev-deployment-upload-service
     devDependencies:
       "@kie-tools/image-builder":
         specifier: workspace:*
@@ -3037,6 +3037,9 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
@@ -3195,6 +3198,21 @@ importers:
       "@kie-tools/root-env":
         specifier: workspace:*
         version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/dev-deployment-upload-service:
+    devDependencies:
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
@@ -5802,9 +5820,9 @@ importers:
       "@kie-tools/cors-proxy-api":
         specifier: workspace:*
         version: link:../cors-proxy-api
-      "@kie-tools/dev-deployments-upload-service":
+      "@kie-tools/dev-deployment-upload-service":
         specifier: workspace:*
-        version: link:../dev-deployments-upload-service
+        version: link:../dev-deployment-upload-service
       "@kie-tools/dmn-language-service":
         specifier: workspace:*
         version: link:../dmn-language-service
@@ -18440,7 +18458,7 @@ packages:
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 4.0.3
@@ -25262,7 +25280,7 @@ packages:
       { integrity: sha512-bEL/yUb/fNNiNTuUz979Z0Yg5L+LzLxGJz8x79lYmR54fmTIb6ob/hNQgkQnIUDWIFjZVQwl9Xs356I6BAMHfw== }
     engines: { node: ">= 6" }
     dependencies:
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       lazystream: 1.0.0
       lodash.defaults: 4.2.0
@@ -33546,7 +33564,7 @@ packages:
       babel-jest: 26.6.3(@babel/core@7.22.9)
       chalk: 4.1.2
       deepmerge: 4.2.2
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       jest-environment-jsdom: 26.6.2
       jest-environment-node: 26.6.2
@@ -33581,7 +33599,7 @@ packages:
       babel-jest: 26.6.3(@babel/core@7.22.9)
       chalk: 4.1.2
       deepmerge: 4.2.2
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       jest-environment-jsdom: 26.6.2
       jest-environment-node: 26.6.2
@@ -34027,7 +34045,7 @@ packages:
       cjs-module-lexer: 0.6.0
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       jest-config: 26.6.3
       jest-haste-map: 26.6.2
@@ -34068,7 +34086,7 @@ packages:
       cjs-module-lexer: 0.6.0
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       jest-config: 26.6.3(ts-node@10.9.1)
       jest-haste-map: 26.6.2
@@ -36585,7 +36603,7 @@ packages:
     hasBin: true
     dependencies:
       env-paths: 2.2.1
-      glob: 7.2.0
+      glob: 7.2.3
       graceful-fs: 4.2.11
       make-fetch-happen: 10.2.1
       nopt: 6.0.0
@@ -40286,7 +40304,7 @@ packages:
       { integrity: sha512-Lw7SHMjssciQb/rRz7JyPIy9+bbUshEucPoLRvWqy09vC5zQixl8Uet+Zl+SROBB/JMWHJRdCk1qdxNWHNMvlQ== }
     hasBin: true
     dependencies:
-      glob: 7.2.0
+      glob: 7.2.3
     dev: true
 
   /rimraf@2.6.3:
@@ -44151,7 +44169,7 @@ packages:
       ansi-html-community: 0.0.8
       bonjour-service: 1.1.1
       chokidar: 3.5.3
-      colorette: 2.0.20
+      colorette: 2.0.16
       compression: 1.7.4
       connect-history-api-fallback: 2.0.0
       default-gateway: 6.0.3

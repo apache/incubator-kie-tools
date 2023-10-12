@@ -52,7 +52,7 @@ export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServic
   isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
   loadDevDeployments(): Promise<KieSandboxDeployment[]>;
   deploy(args: DeployArgs): Promise<void>;
-  deleteDevDeployment(resourceName: string): Promise<void>;
+  deleteDevDeployment(resource: string): Promise<void>;
   uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
   extractDevDeploymentState(args: { deployment?: any }): DeploymentState;
   newResourceName(): string;
@@ -106,7 +106,7 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
 
   abstract deploy(args: DeployArgs): Promise<void>;
 
-  abstract deleteDevDeployment(resourceName: string): Promise<void>;
+  abstract deleteDevDeployment(resource: string): Promise<void>;
 
   abstract uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
 

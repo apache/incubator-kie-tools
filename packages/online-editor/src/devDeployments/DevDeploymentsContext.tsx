@@ -42,7 +42,7 @@ export type DeleteDeployModalState =
   | {
       isOpen: true;
       cloudAuthSessionId: string;
-      resourceNames: string[];
+      resources: string[];
     }
   | {
       isOpen: false;
@@ -64,8 +64,8 @@ export interface DevDeploymentsContextType {
   // Actions
   deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
   loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
-  deleteDeployment: (args: { authSession: CloudAuthSession; resourceName: string }) => Promise<boolean>;
-  deleteDeployments: (args: { authSession: CloudAuthSession; resourceNames: string[] }) => Promise<boolean>;
+  deleteDeployment: (args: { authSession: CloudAuthSession; resource: string }) => Promise<boolean>;
+  deleteDeployments: (args: { authSession: CloudAuthSession; resources: string[] }) => Promise<boolean>;
 
   // Services
   devDeploymentsServices: Map<string, KieSandboxDevDeploymentsService>;

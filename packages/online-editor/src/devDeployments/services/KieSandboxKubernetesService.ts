@@ -30,7 +30,6 @@ import {
   parseK8sResourceYaml,
   callK8sApiServer,
   interpolateK8sResourceYamls,
-  K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KubernetesConnectionStatus, KubernetesService } from "./KubernetesService";
 import { createDeploymentYaml } from "./resources/kubernetes/Deployment";
@@ -164,10 +163,16 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
 
     const services = await this.listServices();
 
-    const uploadStatuses = await Promise.all(
+    const healthStatus = await Promise.all(
       ingresses
         .map((ingress) => this.getIngressUrl(ingress))
-        .map(async (url) => ({ url: url, uploadStatus: await getUploadStatus({ baseUrl: url }) }))
+        .map(async (url) => ({
+          url,
+          healtStatus: await fetch(`${url}/q/health`)
+            .then((data) => data.json())
+            .then((response) => response.status)
+            .catch(() => "ERROR"),
+        }))
     );
 
     return deployments
@@ -184,13 +189,13 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
         const ingress = ingresses.find((ingress) => ingress.metadata.name === deployment.metadata.name)!;
         const service = services.find((service) => service.metadata.name === deployment.metadata.name)!;
         const baseUrl = this.getIngressUrl(ingress);
-        const uploadStatus = uploadStatuses.find((status) => status.url === baseUrl)!.uploadStatus;
+        const healtStatus = healthStatus.find((status) => status.url === baseUrl)!.healtStatus;
         return {
           name: deployment.metadata.name,
           resourceName: deployment.metadata.annotations![defaultAnnotationTokens.uri],
-          routeUrl: baseUrl,
+          routeUrl: `${baseUrl}/webapp`,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
-          state: this.extractDeploymentStateWithUploadStatus(deployment, uploadStatus),
+          state: this.extractDeploymentStateWithHealthStatus(deployment, healtStatus),
           workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
           resources: [deployment, ingress, service],
         };
@@ -245,99 +250,72 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     this.uploadAssets({ deployment, workspaceZipBlob: args.workspaceZipBlob, baseUrl: ingressUrl, apiKey });
   }
 
-  public async deleteDeployment(resourceName: string) {
-    // await this.service.withFetch((fetcher: ResourceFetcher) =>
-    //   fetcher.execute({
-    //     target: new DeleteDeployment({
-    //       resourceName,
-    //       namespace: this.args.connection.namespace,
-    //     }),
-    //   })
-    // );
-  }
-  public async deleteService(resourceName: string) {
-    // await this.service.withFetch((fetcher: ResourceFetcher) =>
-    //   fetcher.execute({
-    //     target: new DeleteService({
-    //       resourceName,
-    //       namespace: this.args.connection.namespace,
-    //     }),
-    //   })
-    // );
+  public async deleteDeployment(resource: string) {
+    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
+    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
+
+    if (!deploymentsApiPath) {
+      throw new Error("No Deployment API path");
+    }
+
+    return await this.kubernetesService
+      .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
+        method: "DELETE",
+      })
+      .then((data) => data.json());
   }
 
-  public async deleteDevDeployment(resourceName: string): Promise<void> {
-    await this.deleteDeployment(resourceName);
-    await this.deleteService(resourceName);
-    await this.deleteIngress(resourceName);
+  public async deleteService(resource: string) {
+    const rawServicesApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Service")?.get("v1");
+    const servicesApiPath = rawServicesApiUrl?.path.namespaced ?? rawServicesApiUrl?.path.global;
+
+    if (!servicesApiPath) {
+      throw new Error("No Service API path");
+    }
+
+    return await this.kubernetesService
+      .kubernetesFetch(`${servicesApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
+        method: "DELETE",
+      })
+      .then((data) => data.json());
   }
 
-  public extractDeploymentStateWithUploadStatus(
-    deployment: DeploymentResource,
-    uploadStatus: UploadStatus
-  ): DeploymentState {
+  async deleteIngress(resource: string) {
+    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Ingress")?.get("networking.k8s.io/v1");
+    const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
+
+    if (!ingressApiPath) {
+      throw new Error("No Ingress API path");
+    }
+
+    return await this.kubernetesService
+      .kubernetesFetch(`${ingressApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
+        method: "DELETE",
+      })
+      .then((data) => data.json());
+  }
+
+  public async deleteDevDeployment(resource: string): Promise<void> {
+    await this.deleteDeployment(resource);
+    await this.deleteService(resource);
+    await this.deleteIngress(resource);
+  }
+
+  public extractDeploymentStateWithHealthStatus(deployment: DeploymentResource, healtStatus: string): DeploymentState {
     const state = this.extractDevDeploymentState({ deployment });
 
     if (state !== DeploymentState.UP) {
       return state;
     }
 
-    if (uploadStatus === "ERROR") {
+    if (healtStatus !== "UP") {
       return DeploymentState.ERROR;
-    }
-
-    if (uploadStatus !== "UPLOADED") {
-      return DeploymentState.IN_PROGRESS;
     }
 
     return DeploymentState.UP;
   }
 
-  // public composeDeploymentUrlFromIngress(ingress: any): string {
-  //   ;
-  // }
-
   getIngressUrl(resource: IngressResource): string {
     return `${new URL(this.args.connection.host).origin}/${resource.metadata?.name}`;
-  }
-
-  // async createIngress(
-  //   resourceArgs: ResourceArgs,
-  //   getUpdatedRollbacks: () => ResourceFetch[]
-  // ): Promise<IngressDescriptor> {
-  //   const route = await this.service.withFetch((fetcher: ResourceFetcher) =>
-  //     fetcher.execute<IngressDescriptor>({
-  //       target: new CreateIngress({ ...resourceArgs, resourceDataSource: ResourceDataSource.TEMPLATE }),
-  //       rollbacks: getUpdatedRollbacks(),
-  //     })
-  //   );
-  //   return route;
-  // }
-
-  // async listIngresses(): Promise<IngressDescriptor[]> {
-  //   const ingresses = (
-  //     await this.service.withFetch((fetcher: ResourceFetcher) =>
-  //       fetcher.execute<IngressGroupDescriptor>({
-  //         target: new ListIngresses({
-  //           namespace: this.args.connection.namespace,
-  //         }),
-  //       })
-  //     )
-  //   ).items.filter(
-  //     (route) => route.metadata.labels && route.metadata.labels[ResourceLabelNames.CREATED_BY] === RESOURCE_OWNER
-  //   );
-
-  //   return ingresses;
-  // }
-
-  async deleteIngress(resourceName: string) {
-    // await this.service.withFetch((fetcher: ResourceFetcher) =>
-    //   fetcher.execute({
-    //     target: new DeleteIngress({
-    //       resourceName,
-    //       namespace: this.args.connection.namespace,
-    //     }),
-    //   })
-    // );
   }
 }

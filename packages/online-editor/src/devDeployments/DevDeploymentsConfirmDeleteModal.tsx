@@ -79,7 +79,7 @@ export function DevDeploymentsConfirmDeleteModal() {
     setLoading(true);
     const deleteStarted = await devDeployments.deleteDeployments({
       authSession,
-      resourceNames: devDeployments.confirmDeleteModalState.resourceNames,
+      resources: devDeployments.confirmDeleteModalState.resources,
     });
     await delay(600);
     setLoading(false);
@@ -133,10 +133,10 @@ export function DevDeploymentsConfirmDeleteModal() {
       <br />
       {devDeployments.confirmDeleteModalState.isOpen && (
         <ul>
-          {devDeployments.confirmDeleteModalState.resourceNames.map((resourceName) => {
+          {devDeployments.confirmDeleteModalState.resources.map((resource) => {
             return (
-              <li key={resourceName}>
-                <b>- {resourceName}</b>
+              <li key={resource}>
+                <b>- {resource}</b>
               </li>
             );
           })}

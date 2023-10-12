@@ -59,6 +59,15 @@ spec:
               value: 1.40.0.Final
             - name: ROOT_PATH
               value: \${{ devDeployment.uniqueName }}
+            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH
+              value: \${{ devDeployment.uniqueName }}
+            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
+              value: \${{ devDeployment.uploadService.apiKey }}
+        - name: \${{ devDeployment.uniqueName }}-form-webapp
+          image: quay.io/thiagoelg/dev-deployment-form-webapp-image:daily-dev
+          ports:
+            - containerPort: 8081
+              protocol: TCP
           resources: {}
           imagePullPolicy: Always
 `;

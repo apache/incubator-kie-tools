@@ -141,7 +141,7 @@ export default async (env: any, argv: any) => {
               },
               {
                 from: path.join(
-                  path.dirname(require.resolve("@kie-tools/dev-deployments-upload-service/package.json")),
+                  path.dirname(require.resolve("@kie-tools/dev-deployment-upload-service/package.json")),
                   "/dist"
                 ),
                 to: "./dev-deployments/upload-service",

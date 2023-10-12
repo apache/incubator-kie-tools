@@ -77,7 +77,7 @@ digraph G {
   "@kie-tools/dashbuilder-viewer-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dev-deployments-upload-service" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dev-deployment-upload-service" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dev-deployment-form-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -261,14 +261,14 @@ digraph G {
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployment-base-image" -> "@kie-tools/dev-deployments-upload-service" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-base-image" -> "@kie-tools/dev-deployment-upload-service" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-form-webapp-image" -> "@kie-tools/dev-deployment-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployments-upload-service" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/dmn-dev-deployment-quarkus-app" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
@@ -356,7 +356,7 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools-core/k8s-yaml-to-apiserver-requests" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/dev-deployments-upload-service" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/dev-deployment-upload-service" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];

@@ -17,14 +17,13 @@ FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/openjdk-11:1.15
 ARG QUARKUS_PLATFORM_VERSION
 ARG KOGITO_RUNTIME_VERSION
 ARG ROOT_PATH
-ARG PORT
 
 USER 1000
 
 RUN mkdir -p -m 777 /tmp/kogito
 
 COPY --chown=1000:1000 quarkus-app /tmp/kogito/quarkus-app/
-COPY --chown=1000:1000 dist-dev/dev-deployments-upload-service /tmp/kogito/quarkus-app/
+COPY --chown=1000:1000 dist-dev/dev-deployment-upload-service /tmp/kogito/quarkus-app/
 
 WORKDIR /tmp/kogito/quarkus-app/
 
@@ -34,7 +33,8 @@ RUN ./mvnw clean package -B -ntp -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogit
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=/tmp/kogito/quarkus-app/src/main/resources
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_ROOT_PATH="/"
 
 EXPOSE 8080
 
-CMD ["/bin/bash", "-c", "./dev-deployments-upload-service && ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} -Dquarkus.http.root-path=${ROOT_PATH}"]
+CMD ["/bin/bash", "-c", "./dev-deployment-upload-service && ./mvnw quarkus:dev -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -DQUARKUS_PLATFORM_VERSION=${QUARKUS_PLATFORM_VERSION} -DKOGITO_RUNTIME_VERSION=${KOGITO_RUNTIME_VERSION} -Dquarkus.http.root-path=${ROOT_PATH}"]

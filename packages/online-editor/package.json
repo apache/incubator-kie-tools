@@ -42,7 +42,7 @@
     "@kie-tools-core/workspaces-git-fs": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/cors-proxy-api": "workspace:*",
-    "@kie-tools/dev-deployments-upload-service": "workspace:*",
+    "@kie-tools/dev-deployment-upload-service": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/dmn-runner": "workspace:*",
     "@kie-tools/emscripten-fs": "^0.0.2",

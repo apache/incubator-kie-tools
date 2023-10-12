@@ -7,7 +7,7 @@ The "Dev deployments upload service" runs an HTTP server that accepts ZIP file u
 ### Usage:
 
 ```
-USAGE: `dev-deployments-upload-service`. Arguments are passed using env vars:
+USAGE: `dev-deployment-upload-service`. Arguments are passed using env vars:
 - DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR	: Required. Where the uploaded zip will be extracted to. If it doesn't exist, it will be created.
 - DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT		: Required. Port where the HTTP Server will run at. The /upload endpoint will be made available.
 - DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY		: Required. Allowed API Key used as a queryParam at the /upload endpoint.
@@ -27,7 +27,7 @@ ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=[unzip dir path]
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=[port number]
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=[api key]
 
-CMD ["/bin/bash", "-c", "dev-deployments-upload-service && cd [unzip dir path] && mvn quarkus:dev"]
+CMD ["/bin/bash", "-c", "dev-deployment-upload-service && cd [unzip dir path] && mvn quarkus:dev"]
 ```
 
 On KIE Sandbox Dev deployments Kubernetes/OpenShift YAMLs, you can use it like:
@@ -47,7 +47,7 @@ pnpm build:dev && \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR='/tmp/upload-service-dev' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT='8091' \
 DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY='dev' \
-./dist/darwin/dev-deployments-upload-service
+./dist/darwin/dev-deployment-upload-service
 ```
 
 ```bash
