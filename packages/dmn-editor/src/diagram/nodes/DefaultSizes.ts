@@ -37,8 +37,8 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
   [NODE_TYPES.decisionService]: (snapGrid) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(
       snapGrid,
-      NODE_MIN_WIDTH + CONTAINER_NODES_DESIRABLE_PADDING,
-      NODE_MIN_HEIGHT + CONTAINER_NODES_DESIRABLE_PADDING
+      NODE_MIN_WIDTH + CONTAINER_NODES_DESIRABLE_PADDING * 2,
+      NODE_MIN_HEIGHT * 2 + CONTAINER_NODES_DESIRABLE_PADDING * 2
     );
     return {
       "@_width": snappedMinSize.width,
@@ -55,8 +55,8 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
   [NODE_TYPES.group]: (snapGrid) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(
       snapGrid,
-      NODE_MIN_WIDTH + CONTAINER_NODES_DESIRABLE_PADDING,
-      NODE_MIN_HEIGHT + CONTAINER_NODES_DESIRABLE_PADDING
+      NODE_MIN_WIDTH + CONTAINER_NODES_DESIRABLE_PADDING * 2,
+      NODE_MIN_HEIGHT + CONTAINER_NODES_DESIRABLE_PADDING * 2
     );
     return {
       "@_width": snappedMinSize.width,
