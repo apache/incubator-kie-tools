@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import "./DocumentationLinksFormGroup.css";
 import { KIE__tAttachment } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Namespaced } from "@kie-tools/xml-parser-ts";
@@ -14,8 +14,7 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { UniqueNameIndex } from "../Spec";
-import { GripVerticalIcon } from "@patternfly/react-icons/dist/js/icons/grip-vertical-icon";
-import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { Draggable, DraggableContextProvider } from "./DraggableHook";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "Enter a URL...";
@@ -103,41 +102,19 @@ export function DocumentationLinksFormGroup({
     });
   }, []);
 
-  const [source, setSource] = useState<number>(-1);
-  const [dest, setDest] = useState<number>(-1);
-  const [dragging, setDragging] = useState<boolean>();
-
-  const onDragStart = useCallback((index: number) => {
-    // console.log("on drag start", index);
-    setDragging(true);
-    setSource(index);
-  }, []);
-
-  const onDragEnter = useCallback((index: number) => {
-    // console.log("on drag enter", index);
-    setDest(index);
-  }, []);
-
-  const onDragEnd = useCallback((index: number) => {
-    // console.log("on drag end", index);\
-    setDragging(false);
-  }, []);
-
-  React.useEffect(() => {
-    if (dragging === false && source !== -1 && dest !== -1) {
-      setSource(-1);
-      setDest(-1);
-
+  const reorder = useCallback(
+    (source: number, dest: number) => {
       const reordened = [...(values ?? [])];
       const [removed] = reordened.splice(source, 1);
       reordened.splice(dest, 0, removed);
 
       onChange?.(reordened);
       updateKey();
-    }
-  }, [source, dest, dragging, values, onChange, updateKey]);
+    },
+    [onChange, updateKey, values]
+  );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (JSON.stringify(values) !== JSON.stringify(valuesCache.current)) {
       updateKey();
       valuesCache.current = [...(values ?? [])];
@@ -173,34 +150,15 @@ export function DocumentationLinksFormGroup({
             None yet
           </div>
         ) : (
-          <div>
+          <DraggableContextProvider reorder={reorder}>
             {values?.map((kieAttachment, index) => (
               <div
                 key={updateKeyToggle ? index + 99999999 : index - 99999999}
                 style={{
-                  display: "flex",
-                  flexDirection: "row",
                   marginTop: index === 0 ? "0" : "16px",
-                  borderWidth: "1px",
-                  borderStyle: "dashed",
-                  borderColor: dragging ? "gray" : "white",
-                  borderRadius: "5px",
-                  borderTopColor: index === dest && index !== source ? "blue" : dragging ? "gray" : "white",
                 }}
               >
-                <Icon
-                  style={{
-                    marginTop: "4px",
-                    marginRight: "8px",
-                  }}
-                  draggable={true}
-                  onDragStart={() => onDragStart(index)}
-                  onDragEnter={() => onDragEnter(index)}
-                  onDragEnd={() => onDragEnd(index)}
-                >
-                  <GripVerticalIcon style={{ color: "#8080809e" }} />
-                </Icon>
-                <div style={{ flexGrow: 1 }}>
+                <Draggable index={index}>
                   <DocumentationLinksInput
                     autoFocus={index === 0}
                     title={kieAttachment["@_name"] ?? ""}
@@ -212,10 +170,10 @@ export function DocumentationLinksFormGroup({
                     isUrlExpanded={expandedUrls[index]}
                     setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
                   />
-                </div>
+                </Draggable>
               </div>
             ))}
-          </div>
+          </DraggableContextProvider>
         )}
       </React.Fragment>
     </FormGroup>
