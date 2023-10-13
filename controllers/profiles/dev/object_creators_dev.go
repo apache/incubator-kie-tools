@@ -26,7 +26,6 @@ import (
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
 	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
 	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
 	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
 )
@@ -139,7 +138,7 @@ func mountDevConfigMapsMutateVisitor(flowDefCM, propsCM *corev1.ConfigMap, workf
 				}
 				// the resource configMap needs a specific dir, inside the src/main/resources
 				// to avoid clashing with other configMaps trying to mount on the same dir, we create one projected per path
-				volumeMountName := configMapExternalResourcesVolumeNamePrefix + utils.PathToString(workflowResCM.WorkflowPath)
+				volumeMountName := kubeutil.MustSafeDNS1035(configMapExternalResourcesVolumeNamePrefix, workflowResCM.WorkflowPath)
 				volumeMounts = kubeutil.VolumeMountAdd(volumeMounts, volumeMountName, path.Join(quarkusDevConfigMountPath, workflowResCM.WorkflowPath))
 				resourceVolumes = kubeutil.VolumeAddVolumeProjectionConfigMap(resourceVolumes, workflowResCM.ConfigMap.Name, volumeMountName)
 			}

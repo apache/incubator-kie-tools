@@ -15,8 +15,6 @@
 package utils
 
 import (
-	"os"
-	"path"
 	"strings"
 )
 
@@ -32,9 +30,4 @@ func RemoveKnownExtension(fileName, extension string) string {
 		return fileName[:i]
 	}
 	return fileName
-}
-
-// PathToString replaces the PathSeparator from a given path.
-func PathToString(pathRef string) string {
-	return strings.ReplaceAll(path.Clean(pathRef), string(os.PathSeparator), "")
 }

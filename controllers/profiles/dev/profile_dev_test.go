@@ -22,6 +22,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+
 	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
 
 	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
@@ -296,12 +298,11 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
 	sortVolumeMounts(&deployment.Spec.Template.Spec.Containers[0])
 
-	wd := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
-	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
+	wd := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
+	extCamel := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	assert.Equal(t, configMapResourcesVolumeName, wd.Name)
 	assert.Equal(t, quarkusDevConfigMountPath, wd.MountPath)
 
-	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamel.Name)
 	assert.Equal(t, extCamel.MountPath, quarkusDevConfigMountPath+"/routes")
 
 	cmData[camelYamlRouteFileName] = yamlRoute
@@ -323,8 +324,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	assert.Equal(t, 2, len(deployment.Spec.Template.Spec.Volumes))
 	sortVolumeMounts(&deployment.Spec.Template.Spec.Containers[0])
 
-	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[1]
-	assert.Equal(t, configMapExternalResourcesVolumeNamePrefix+"routes", extCamelRouteOne.Name)
+	extCamelRouteOne := deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	assert.Equal(t, quarkusDevConfigMountPath+"/routes", extCamelRouteOne.MountPath)
 
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
@@ -366,6 +366,29 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	wd = deployment.Spec.Template.Spec.Containers[0].VolumeMounts[0]
 	assert.Equal(t, wd.Name, configMapResourcesVolumeName)
 	assert.Equal(t, wd.MountPath, quarkusDevConfigMountPath)
+}
+
+func Test_VolumeWithCapitalizedPaths(t *testing.T) {
+	configMap := &v1.ConfigMap{}
+	test.GetKubernetesResource(test.SonataFlowGreetingsStaticFilesConfig, configMap)
+	configMap.Namespace = t.Name()
+	workflow := test.GetSonataFlow(test.SonataFlowGreetingsWithStaticResourcesCR, t.Name())
+
+	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, configMap).WithStatusSubresource(workflow, configMap).Build()
+
+	devReconciler := NewProfileReconciler(client)
+
+	result, err := devReconciler.Reconcile(context.TODO(), workflow)
+	assert.NoError(t, err)
+	assert.NotNil(t, result)
+
+	deployment := test.MustGetDeployment(t, client, workflow)
+	assert.NotNil(t, deployment)
+
+	container, _ := kubeutil.GetContainerByName(operatorapi.DefaultContainerName, &deployment.Spec.Template.Spec)
+	// properties, definitions, and the capitalized value
+	assert.Len(t, container.VolumeMounts, 2)
+	assert.Len(t, deployment.Spec.Template.Spec.Volumes, 2)
 }
 
 func sortVolumeMounts(container *v1.Container) {

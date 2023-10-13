@@ -38,8 +38,7 @@ import (
 
 const (
 	configMapResourcesVolumeName               = "resources"
-	configMapExternalResourcesVolumeNamePrefix = configMapResourcesVolumeName + "-"
-
+	configMapExternalResourcesVolumeNamePrefix = "res-"
 	// quarkusDevConfigMountPath mount path for application properties file in the Workflow Quarkus Application
 	// See: https://quarkus.io/guides/config-reference#application-properties-file
 	quarkusDevConfigMountPath = "/home/kogito/serverless-workflow-project/src/main/resources"

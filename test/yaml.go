@@ -24,6 +24,7 @@ import (
 
 	"github.com/davecgh/go-spew/spew"
 	"k8s.io/klog/v2"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/kiegroup/kogito-serverless-operator/api"
 
@@ -40,8 +41,10 @@ const (
 	sonataFlowOrderProcessingFolder           = "order-processing"
 	sonataFlowSampleYamlCR                    = "sonataflow.org_v1alpha08_sonataflow.yaml"
 	SonataFlowGreetingsWithDataInputSchemaCR  = "sonataflow.org_v1alpha08_sonataflow_greetings_datainput.yaml"
+	SonataFlowGreetingsWithStaticResourcesCR  = "sonataflow.org_v1alpha08_sonataflow-metainf.yaml"
 	SonataFlowSimpleOpsYamlCR                 = "sonataflow.org_v1alpha08_sonataflow-simpleops.yaml"
 	SonataFlowGreetingsDataInputSchemaConfig  = "v1_configmap_greetings_datainput.yaml"
+	SonataFlowGreetingsStaticFilesConfig      = "v1_configmap_greetings_staticfiles.yaml"
 	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
 	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
 	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
@@ -54,9 +57,16 @@ const (
 
 var projectDir = ""
 
-func getSonataFlow(testFile, namespace string) *operatorapi.SonataFlow {
+func GetSonataFlow(testFile, namespace string) *operatorapi.SonataFlow {
 	ksw := &operatorapi.SonataFlow{}
 
+	GetKubernetesResource(testFile, ksw)
+	klog.V(log.D).InfoS("Successfully read KSW", "ksw", spew.Sprint(ksw))
+	ksw.Namespace = namespace
+	return ksw
+}
+
+func GetKubernetesResource(testFile string, resource client.Object) {
 	yamlFile, err := os.ReadFile(path.Join(getTestDataDir(), testFile))
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "yamlFile.Get")
@@ -64,14 +74,11 @@ func getSonataFlow(testFile, namespace string) *operatorapi.SonataFlow {
 	}
 
 	// Important: Here we are reading the CR deployment file from a given path and creating an &operatorapi.SonataFlow struct
-	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(ksw)
+	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(resource)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Unmarshal")
 		panic(err)
 	}
-	klog.V(log.D).InfoS("Successfully read KSW", "ksw", spew.Sprint(ksw))
-	ksw.Namespace = namespace
-	return ksw
 }
 
 func getSonataFlowPlatform(testFile string) *operatorapi.SonataFlowPlatform {
@@ -149,7 +156,7 @@ func GetSonataFlowBuilderConfig(namespace string) *corev1.ConfigMap {
 }
 
 func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
-	return getSonataFlow(sonataFlowSampleYamlCR, namespace)
+	return GetSonataFlow(sonataFlowSampleYamlCR, namespace)
 }
 
 func GetBaseSonataFlowWithDevProfile(namespace string) *operatorapi.SonataFlow {
@@ -165,7 +172,7 @@ func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow 
 }
 
 func GetBaseSonataFlowWithProdOpsProfile(namespace string) *operatorapi.SonataFlow {
-	workflow := getSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
+	workflow := GetSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
 	return workflow
 }
 
