@@ -165,7 +165,7 @@ func BindFlags(set *flag.FlagSet) {
 
 	// build
 	set.StringVar(&env.customMavenRepoURL, prefix+"custom_maven_repo_url", "", "Set a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information")
-	set.BoolVar(&env.customMavenRepoReplaceDefault, prefix+"custom_maven_repo_replace_default", false, "If you specified the option 'tests.custom_maven_repo_url' and you want that one to replace the main JBoss repository (useful with snapshots).")
+	set.BoolVar(&env.customMavenRepoReplaceDefault, prefix+"custom_maven_repo_replace_default", false, "If you specified the option 'tests.custom_maven_repo_url' and you want that one to replace the main Apache repository (useful with snapshots).")
 	set.StringVar(&env.mavenMirrorURL, prefix+"maven_mirror_url", "", "Maven mirror url to be used when building app in the tests")
 	set.StringVar(&env.quarkusPlatformMavenMirrorURL, prefix+"quarkusPlatformMavenMirrorURL", "", "Maven mirror url to be used when building app from source files with Quarkus, using the quarkus maven plugin.")
 	set.BoolVar(&env.mavenIgnoreSelfSignedCertificate, prefix+"maven_ignore_self_signed_certificate", false, "Set to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url.")

@@ -127,7 +127,7 @@ function usage(){
 
   # build
   printf "\n--custom_maven_repo_url {URI}\n\tSet a custom Maven repository url for S2I builds, in case your artifacts are in a specific repository. See https://github.com/kiegroup/kogito-images/README.md for more information."
-  printf "\n--custom_maven_repo_replace_default\n\tIf you specified the option 'custom_maven_repo' and you want that one to replace the main JBoss repository (useful with snapshots)."
+  printf "\n--custom_maven_repo_replace_default\n\tIf you specified the option 'custom_maven_repo' and you want that one to replace the main Apache repository (useful with snapshots)."
   printf "\n--maven_mirror_url {URI}\n\tMaven mirror url to be used when building app in the tests."
   printf "\n--quarkus_platform_maven_mirror_url {URI}\n\tMaven mirror url to be used when building app from source files with Quarkus, using the quarkus maven plugin."
   printf "\n--maven_ignore_self_signed_certificate\n\tSet to true if maven build need to ignore self-signed certificate. This could happen when using internal maven mirror url."

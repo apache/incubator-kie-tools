@@ -25,9 +25,9 @@ import (
 const (
 	mavenCommandName = "mvn"
 
-	defaultJBossRepository = "https://repository.jboss.org/nexus/content/groups/public/"
-	mainRepositoryID       = "main-repository"
-	stagingRepositoryID    = "staging-repository"
+	defaultRemoteMavenRepository = "https://repository.apache.org/content/groups/public/"
+	mainRepositoryID             = "main-repository"
+	stagingRepositoryID          = "staging-repository"
 )
 
 // CreateMavenCommand methods initializes the basic data to run maven commands.
@@ -152,11 +152,11 @@ func (mvnCmd *mavenCommandStruct) setSettingsXML() error {
 		mvnCmd.otherOptions = append(mvnCmd.otherOptions, "-Denforcer.skip")
 
 		if !config.IsCustomMavenRepoReplaceDefault() {
-			settings.AddRepository(mainRepositoryID, defaultJBossRepository, false)
+			settings.AddRepository(mainRepositoryID, defaultRemoteMavenRepository, false)
 		}
 		settings.AddRepository(stagingRepositoryID, customMavenRepoURL, true)
 	} else {
-		settings.AddRepository(mainRepositoryID, defaultJBossRepository, false)
+		settings.AddRepository(mainRepositoryID, defaultRemoteMavenRepository, false)
 	}
 
 	// Create settings.xml in directory
