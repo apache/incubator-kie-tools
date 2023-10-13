@@ -1,3 +1,16 @@
+# 0.32.0 (alpha)
+
+- [KOGITO-9668](https://issues.redhat.com/browse/KOGITO-9668) - SWF Editor - In VSCode the diagram reloads if a user clicks on any area of the canvas
+- [KOGITO-8289](https://issues.redhat.com/browse/KOGITO-8289) - SWF Editor - Marshalling codebase clean-up
+- [KOGITO-9597](https://issues.redhat.com/browse/KOGITO-9597) - Broken error page layout
+- [KOGITO-9685](https://issues.redhat.com/browse/KOGITO-9685) - Fix dirty state on SWF combined editor
+- [KOGITO-8328](https://issues.redhat.com/browse/KOGITO-8328) - SWF Editor - Upgrade stream to GWT 2.10
+- [KOGITO-9536](https://issues.redhat.com/browse/KOGITO-9536) - SWF Editor - Simplifying the hierarchy of canvas elements.
+- [KOGITO-9538](https://issues.redhat.com/browse/KOGITO-9538) - SWF Editor - Get rid of HandlerRegistration and MouseUpHandler
+- [KOGITO-9724](https://issues.redhat.com/browse/KOGITO-9724) - Move selectFromContentAssist to SwfTextEditor class
+- [KOGITO-9695](https://issues.redhat.com/browse/KOGITO-9695) - SWF Editor - Refactor GWT components
+- [KOGITO-9767](https://issues.redhat.com/browse/KOGITO-9767) - SWF Editor - final migration to native apis
+
 # 0.31.0 (alpha)
 
 - [KOGITO-7733](https://issues.redhat.com/browse/KOGITO-7733) - SWF Editor - Enable & customize toolbox
