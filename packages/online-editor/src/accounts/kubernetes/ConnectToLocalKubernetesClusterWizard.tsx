@@ -250,11 +250,6 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     setConnecting(false);
 
     if (isConnectionEstablished === KubernetesConnectionStatus.CONNECTED && props.kieSandboxKubernetesService) {
-      console.log(
-        props.kieSandboxKubernetesService,
-        props.kieSandboxKubernetesService.args,
-        props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind
-      );
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
         version: AUTH_SESSION_VERSION,

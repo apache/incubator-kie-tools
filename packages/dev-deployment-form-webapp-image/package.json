@@ -15,14 +15,15 @@
   "scripts": {
     "build:dev": "pnpm build:prod",
     "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
-    "copy-assets": "rimraf dist-dev && cp -R ../dev-deployment-form-webapp/dist dist-dev",
-    "create-test-image:build-only": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1)",
-    "create-test-image:kind": "kie-tools--image-builder kind $(pnpm image:tag-info | tail -1) --kind-cluster-name kie-sandbox-dev-cluster",
-    "create-test-image:minikube": "kie-tools--image-builder minikube $(pnpm image:tag-info | tail -1)",
-    "create-test-image:openshift": "kie-tools--image-builder openshift $(pnpm image:tag-info | tail -1)",
-    "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) -p",
-    "image:podman:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) -e podman",
-    "image:tag-info": "echo -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\"",
+    "copy-assets": "run-script-os",
+    "copy-assets:linux:darwin": "rimraf dist-dev && cp -R ../dev-deployment-form-webapp/dist dist-dev",
+    "copy-assets:win32": "rimraf dist-dev && pnpm powershell \"Copy-Item -R ../dev-deployment-form-webapp/dist dist-dev\"",
+    "create-test-image:build-only": "kie-tools--image-builder build -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\"",
+    "create-test-image:kind": "kie-tools--image-builder kind -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\" --kind-cluster-name kie-sandbox-dev-cluster",
+    "create-test-image:minikube": "kie-tools--image-builder minikube -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\"",
+    "create-test-image:openshift": "kie-tools--image-builder openshift -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\"",
+    "image:docker:build": "kie-tools--image-builder build -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\" -p",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(pnpm build-env devDeploymentFormWebappImage.registry)\" -a \"$(pnpm build-env devDeploymentFormWebappImage.account)\" -n \"$(pnpm build-env devDeploymentFormWebappImage.name)\" -t \"$(pnpm build-env devDeploymentFormWebappImage.tags)\" -e podman",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {

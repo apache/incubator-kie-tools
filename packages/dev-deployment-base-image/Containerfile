@@ -22,8 +22,8 @@ USER 1000
 
 RUN mkdir -p -m 777 /tmp/kogito
 
-COPY --chown=1000:1000 quarkus-app /tmp/kogito/quarkus-app/
-COPY --chown=1000:1000 dist-dev/dev-deployment-upload-service /tmp/kogito/quarkus-app/
+COPY --chown=1000:1000 dist-dev/quarkus-app /tmp/kogito/quarkus-app/
+COPY --chown=1000:1000 dist-dev/upload-service/dev-deployment-upload-service /tmp/kogito/quarkus-app/
 
 WORKDIR /tmp/kogito/quarkus-app/
 

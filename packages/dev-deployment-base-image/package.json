@@ -13,31 +13,25 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "build-quarkus:dev": "run-script-os",
-    "build-quarkus:dev:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests",
-    "build-quarkus:dev:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests\"",
-    "build-quarkus:prod": "run-script-os",
-    "build-quarkus:prod:darwin:linux": "cd quarkus-app && pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build-quarkus:prod:win32": "cd quarkus-app && pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
-    "build:dev": "pnpm copy-assets && pnpm build-quarkus:dev",
-    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm build-quarkus:prod\" \"pnpm image:docker:build\"",
-    "copy-assets": "rimraf dist-dev && cp -R ../dev-deployment-upload-service/dist/linux dist-dev",
-    "create-test-image:build-only": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
-    "create-test-image:kind": "kie-tools--image-builder kind $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) --kind-cluster-name kie-sandbox-dev-cluster",
-    "create-test-image:minikube": "kie-tools--image-builder minikube $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
-    "create-test-image:openshift": "kie-tools--image-builder openshift $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1)",
-    "image:build-args": "echo \"--build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) --build-arg ROOT_PATH=/\"",
-    "image:docker:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) -p",
-    "image:podman:build": "kie-tools--image-builder build $(pnpm image:tag-info | tail -1) $(pnpm image:build-args | tail -1) -e podman",
-    "image:tag-info": "echo -r \"$(pnpm build-env devDeploymentBaseImage.registry)\" -a \"$(pnpm build-env devDeploymentBaseImage.account)\" -n \"$(pnpm build-env devDeploymentBaseImage.name)\" -t \"$(pnpm build-env devDeploymentBaseImage.tags)\"",
-    "install": "cd quarkus-app && node install.js",
-    "install:mvnw": "run-script-os",
-    "install:mvnw:darwin:linux": "cd quarkus-app && mvn wrapper:wrapper",
-    "install:mvnw:win32": "pnpm powershell \"cd quarkus-app && mvn wrapper:wrapper\"",
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "quarkus:dev": "cd quarkus-app && mvn clean package quarkus:dev -DskipTests"
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy-assets\" \"pnpm image:docker:build\"",
+    "copy-assets": "rimraf dist-dev && pnpm copy-upload-service-assets && pnpm copy-quarkus-app-assets",
+    "copy-quarkus-app-assets": "run-script-os",
+    "copy-quarkus-app-assets:linux:darwin": "cp -R ../dev-deployment-quarkus-app ./dist-dev/quarkus-app",
+    "copy-quarkus-app-assets:win32": "pnpm powershell \"New-Item -ItemType Directory -Force -Path ./dist-dev/quarkus-app; Copy-Item -R ../dev-deployment-quarkus-app/* ./dist-dev/quarkus-app -Exclude @('node_modules')\"",
+    "copy-upload-service-assets": "run-script-os",
+    "copy-upload-service-assets:linux:darwin": "cp -R ../dev-deployment-upload-service/dist/linux ./dist-dev/upload-service",
+    "copy-upload-service-assets:win32": "pnpm powershell \"Copy-Item -R ../dev-deployment-upload-service/dist/linux ./dist-dev/upload-service\"",
+    "create-test-image:build-only": "kie-tools--image-builder build -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg QUARKUS_PLATFORM_VERSION=\"$(build-env quarkusPlatform.version)\" --build-arg KOGITO_RUNTIME_VERSION=\"$(build-env kogitoRuntime.version)\" --build-arg ROOT_PATH=/",
+    "create-test-image:kind": "kie-tools--image-builder kind -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg QUARKUS_PLATFORM_VERSION=\"$(build-env quarkusPlatform.version)\" --build-arg KOGITO_RUNTIME_VERSION=\"$(build-env kogitoRuntime.version)\" --build-arg ROOT_PATH=/ --kind-cluster-name kie-sandbox-dev-cluster",
+    "create-test-image:minikube": "kie-tools--image-builder minikube -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg QUARKUS_PLATFORM_VERSION=\"$(build-env quarkusPlatform.version)\" --build-arg KOGITO_RUNTIME_VERSION=\"$(build-env kogitoRuntime.version)\" --build-arg ROOT_PATH=/",
+    "create-test-image:openshift": "kie-tools--image-builder openshift -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg QUARKUS_PLATFORM_VERSION=\"$(build-env quarkusPlatform.version)\" --build-arg KOGITO_RUNTIME_VERSION=\"$(build-env kogitoRuntime.version)\" --build-arg ROOT_PATH=/",
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg QUARKUS_PLATFORM_VERSION=\"$(build-env quarkusPlatform.version)\" --build-arg KOGITO_RUNTIME_VERSION=\"$(build-env kogitoRuntime.version)\" --build-arg ROOT_PATH=/ -p",
+    "image:podman:build": "kie-tools--image-builder build -r \"$(build-env devDeploymentBaseImage.registry)\" -a \"$(build-env devDeploymentBaseImage.account)\" -n \"$(build-env devDeploymentBaseImage.name)\" -t \"$(build-env devDeploymentBaseImage.tags)\" --build-arg QUARKUS_PLATFORM_VERSION=\"$(build-env quarkusPlatform.version)\" --build-arg KOGITO_RUNTIME_VERSION=\"$(build-env kogitoRuntime.version)\" --build-arg ROOT_PATH=/ -e podman",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {
+    "@kie-tools/dev-deployment-quarkus-app": "workspace:*",
     "@kie-tools/dev-deployment-upload-service": "workspace:*"
   },
   "devDependencies": {
@@ -46,11 +40,5 @@
     "@kie-tools/root-env": "workspace:*",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
-  },
-  "kieTools": {
-    "requiredPreinstalledCliCommands": [
-      "java",
-      "mvn"
-    ]
   }
 }

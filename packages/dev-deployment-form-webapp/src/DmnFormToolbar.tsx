@@ -145,12 +145,8 @@ export function DmnFormToolbar(props: Props) {
       logo={
         <Flex alignItems={{ default: "alignItemsCenter" }}>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>
-            <Brand
-              src={routes.static.images.appLogoReverse.path({}, app?.data?.baseUrl)}
-              alt={"Logo"}
-              heights={{ default: "38px" }}
-            >
-              <source srcSet={routes.static.images.appLogoReverse.path({}, app?.data?.baseUrl)} />
+            <Brand src={routes.static.images.appLogoReverse.path({})} alt={"Logo"} heights={{ default: "38px" }}>
+              <source srcSet={routes.static.images.appLogoReverse.path({})} />
             </Brand>
           </FlexItem>
           <FlexItem style={{ display: "flex", alignItems: "center" }}>

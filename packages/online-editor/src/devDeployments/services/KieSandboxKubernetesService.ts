@@ -186,9 +186,19 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
           ingresses.some((ingress) => ingress.metadata.name === deployment.metadata.name)
       )
       .map((deployment) => {
-        const ingress = ingresses.find((ingress) => ingress.metadata.name === deployment.metadata.name)!;
-        const service = services.find((service) => service.metadata.name === deployment.metadata.name)!;
-        const baseUrl = this.getIngressUrl(ingress);
+        const ingressList = ingresses.filter(
+          (ingress) =>
+            ingress.metadata.name === deployment.metadata.name ||
+            ingress.metadata.name === `${deployment.metadata.name}-form-webapp`
+        )!;
+        const servicesList = services.filter(
+          (service) =>
+            service.metadata.name === deployment.metadata.name ||
+            service.metadata.name === `${deployment.metadata.name}-form-webapp`
+        )!;
+        const baseUrl = this.getIngressUrl(
+          ingressList.find((ingress) => ingress.metadata.name === deployment.metadata.name)!
+        );
         const healtStatus = healthStatus.find((status) => status.url === baseUrl)!.healtStatus;
         return {
           name: deployment.metadata.name,
@@ -197,7 +207,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
           creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
           state: this.extractDeploymentStateWithHealthStatus(deployment, healtStatus),
           workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
-          resources: [deployment, ingress, service],
+          resources: [deployment, ...ingressList, ...servicesList],
         };
       });
   }
@@ -298,7 +308,9 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   public async deleteDevDeployment(resource: string): Promise<void> {
     await this.deleteDeployment(resource);
     await this.deleteService(resource);
+    await this.deleteService(`${resource}-form-webapp`);
     await this.deleteIngress(resource);
+    await this.deleteIngress(`${resource}-form-webapp`);
   }
 
   public extractDeploymentStateWithHealthStatus(deployment: DeploymentResource, healtStatus: string): DeploymentState {

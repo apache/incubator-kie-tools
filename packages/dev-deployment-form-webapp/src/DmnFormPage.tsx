@@ -58,6 +58,11 @@ export function DmnFormPage(props: Props) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const app = useApp();
 
+  useEffect(() => {
+    console.log({ formInputs, jsonSchema });
+    console.log({ defaultValue: getDefaultValues(jsonSchema!) });
+  }, [formInputs, jsonSchema]);
+
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -68,11 +73,13 @@ export function DmnFormPage(props: Props) {
 
           setJsonSchema(resolvedJsonSchema);
           setFormInputs((previousFormInputs) => {
+            console.log({ resolvedJsonSchema, previousFormInputs });
             if (!resolvedJsonSchema) {
               return {};
             }
             return {
               ...getDefaultValues(resolvedJsonSchema),
+              // ...resolvedJsonSchema.definitions!['InputSet']['properties'],
               ...previousFormInputs,
             };
           });

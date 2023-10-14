@@ -93,6 +93,7 @@
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
       { "id": "@kie-tools/dev-deployment-base-image" },
+      { "id": "@kie-tools/dev-deployment-quarkus-app" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-form-webapp" },
       { "id": "@kie-tools/form-dmn" },
@@ -606,15 +607,21 @@
       { "source": "@kie-tools/dashbuilder-viewer-image-env", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dev-deployment-base-image",
+        "target": "@kie-tools/dev-deployment-quarkus-app",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/dev-deployment-upload-service",
         "weight": 1
       },
       { "source": "@kie-tools/dev-deployment-base-image", "target": "@kie-tools/image-builder", "weight": 1 },
       {
-        "source": "@kie-tools/dev-deployment-base-image",
+        "source": "@kie-tools/dev-deployment-quarkus-app",
         "target": "@kie-tools/maven-config-setup-helper",
         "weight": 1
       },
+      { "source": "@kie-tools/dev-deployment-quarkus-app", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dev-deployment-upload-service", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dev-deployment-form-webapp", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "@kie-tools/dev-deployment-form-webapp", "target": "@kie-tools/form-dmn", "weight": 1 },
@@ -980,6 +987,7 @@
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-form-webapp", "packages/dev-deployment-form-webapp"],
     ["@kie-tools/dev-deployment-form-webapp-image", "packages/dev-deployment-form-webapp-image"],
+    ["@kie-tools/dev-deployment-quarkus-app", "packages/dev-deployment-quarkus-app"],
     ["@kie-tools/dev-deployment-upload-service", "packages/dev-deployment-upload-service"],
     ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
     ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],

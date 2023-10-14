@@ -3024,6 +3024,9 @@ importers:
 
   packages/dev-deployment-base-image:
     dependencies:
+      "@kie-tools/dev-deployment-quarkus-app":
+        specifier: workspace:*
+        version: link:../dev-deployment-quarkus-app
       "@kie-tools/dev-deployment-upload-service":
         specifier: workspace:*
         version: link:../dev-deployment-upload-service
@@ -3201,6 +3204,18 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
+  packages/dev-deployment-quarkus-app:
+    devDependencies:
+      "@kie-tools/maven-config-setup-helper":
+        specifier: workspace:*
+        version: link:../maven-config-setup-helper
+      "@kie-tools/root-env":
+        specifier: workspace:*
+        version: link:../root-env
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6

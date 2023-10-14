@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-const buildEnv = require(`${__dirname}/../env`);
+const buildEnv = require(`${__dirname}/env`);
 const { setup } = require("@kie-tools/maven-config-setup-helper");
 
 setup(`
-    -Drevision=${buildEnv.env.devDeploymentBaseImage.version}
+    -Drevision=${buildEnv.env.devDeploymentQuarkusApp.version}
     -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
     -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
 `);

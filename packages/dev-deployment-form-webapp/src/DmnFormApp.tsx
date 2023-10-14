@@ -42,14 +42,13 @@ export function DmnFormApp() {
                 <Switch>
                   {app.data && (
                     <Route
-                      path={routes.form.path(
-                        {
-                          filePath: ":filePath*",
-                        },
-                        app.data.baseUrl
-                      )}
+                      path={routes.form.path({
+                        filePath: ":filePath*",
+                      })}
                     >
                       {({ match }) => {
+                        console.log({ app });
+                        console.log({ match });
                         const formData = app.data!.forms.find((form) => form.uri === `/${match!.params.filePath}`);
                         return formData ? <DmnFormPage formData={formData} /> : <Redirect to={routes.error.path({})} />;
                       }}

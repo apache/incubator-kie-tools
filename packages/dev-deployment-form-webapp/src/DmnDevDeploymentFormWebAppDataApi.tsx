@@ -28,21 +28,30 @@ export interface AppData {
   forms: FormData[];
 }
 
+export type DmnDefinitionsJson = FormData;
+
 export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dataJson.path({}));
-  const appData = (await response.json()) as AppData;
+  const response = await fetch(routes.dmnDefinitionsJson.path({}));
+  const dmnDefinitionsJson = (await response.json()) as ExtendedServicesDmnJsonSchema;
+  dmnDefinitionsJson["$ref"] = "#/definitions/InputSet";
+
+  console.log({ response, dmnDefinitionsJson });
+
+  const inputRef = dmnDefinitionsJson["$ref"]!.replace("#/definitions/", "");
+  const schema = JSON.parse(JSON.stringify(dmnDefinitionsJson).replace(new RegExp(inputRef, "g"), "InputSet"));
 
   return {
-    ...appData,
+    // ...appData,
+    baseUrl: "..",
     // The input set property associated with the mainURI is InputSetX, where X is a number not always 1.
     // So replace all occurrences InputSetX -> InputSet to keep compatibility with the current DmnForm.
-    forms: appData.forms.map((form: any) => {
-      const inputRef = form.schema["$ref"].replace("#/definitions/", "");
-      const schema = JSON.parse(JSON.stringify(form.schema).replace(new RegExp(inputRef, "g"), "InputSet"));
-      return {
-        ...form,
+    forms: [
+      {
+        // ...dmnDefinitionsJson,
         schema: schema,
-      };
-    }),
+        uri: "/Sample.dmn",
+        modelName: "loan_pre_qualification",
+      },
+    ],
   };
 }
