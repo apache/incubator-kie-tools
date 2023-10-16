@@ -11,9 +11,10 @@ replace (
 
 // Direct dependencies (please keep organized, no indirects)
 require (
-	github.com/RHsyseng/operator-utils v1.4.12
+	github.com/RHsyseng/operator-utils v1.4.13
 	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0
 	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder v0.0.0
+	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/magiconair/properties v1.8.7
 	github.com/onsi/ginkgo/v2 v2.9.5
@@ -33,7 +34,6 @@ require (
 )
 
 require (
-	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/imdario/mergo v0.3.13
 	k8s.io/klog/v2 v2.100.1
@@ -85,13 +85,13 @@ require (
 	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/vmware-labs/yaml-jsonpath v0.3.2 // indirect
-	golang.org/x/crypto v0.8.0 // indirect
-	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/term v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/term v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.9.1 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.3.0 // indirect
