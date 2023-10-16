@@ -29,17 +29,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTest
 public class PingResponseTest {
 
-    @Inject
     @ConfigProperty(name = "extended.services.version")
     String expectedVersion;
-    @Inject
     @ConfigProperty(name = "quarkus.http.host")
     String expectedIp;
-    @Inject
     @ConfigProperty(name = "quarkus.http.port")
     String expectedPort;
     boolean expectedInsecureSkipVerify = false;
-    @Inject
     @ConfigProperty(name = "kie.sandbox.url")
     String expectedKieSandboxUrl;
     boolean expectedStarted = true;

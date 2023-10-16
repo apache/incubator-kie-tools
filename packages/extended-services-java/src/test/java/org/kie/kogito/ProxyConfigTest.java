@@ -28,10 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @QuarkusTest
 public class ProxyConfigTest {
 
-    @Inject
     @ConfigProperty(name = "quarkus.http.host")
     String expectedIp;
-    @Inject
     @ConfigProperty(name = "quarkus.http.port")
     String expectedPort;
     boolean expectedInsecureSkipVerify = false;

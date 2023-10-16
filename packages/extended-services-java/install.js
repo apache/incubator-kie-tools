@@ -25,4 +25,6 @@ setup(`
     -Dip=${buildEnv.env.extendedServices.ip}
     -Dport=${buildEnv.env.extendedServices.port}
     -DkieSandboxUrl=${buildEnv.env.extendedServices.kieSandboxUrl}
+    -Dquarkus.platform.version=${buildEnv.env.quarkusPlatform.version}
+    -Dversion.org.kie.kogito=${buildEnv.env.kogitoRuntime.version}
 `);
