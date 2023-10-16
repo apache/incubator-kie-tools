@@ -1,7 +1,8 @@
+import "./Draggable.css";
+import * as React from "react";
+import { useState, useCallback, useEffect, useContext, useMemo } from "react";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import GripVerticalIcon from "@patternfly/react-icons/dist/js/icons/grip-vertical-icon";
-import * as React from "react";
-import { useState, useCallback, useEffect, useContext } from "react";
 
 export interface DraggableContext {
   source: number;
@@ -67,32 +68,25 @@ export function DraggableContextProvider({
 export function Draggable(props: React.PropsWithChildren<{ index: number }>) {
   const { dest, dragging, onDragStart, onDragEnter, onDragEnd } = useDraggableContext();
 
+  const destClassName = useMemo(
+    () => (props.index === dest ? "kie-dmn-editor--draggable-row-dest" : ""),
+    [dest, props.index]
+  );
+
+  const draggingClassName = useMemo(() => (dragging ? "kie-dmn-editor--draggable-row-dragging" : ""), [dragging]);
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        borderWidth: "1px",
-        borderStyle: "dashed",
-        borderRadius: "5px",
-        borderColor: props.index === dest ? "rgb(0, 107, 164)" : dragging ? "gray" : "transparent",
-        backgroundColor:
-          props.index === dest ? "rgb(0 107 164 / 10%)" : dragging ? "rgb(128 128 128 / 10%)" : "transparent",
-      }}
-    >
+    <div className={`kie-dmn-editor--draggable-row ${destClassName} ${draggingClassName}`}>
       <Icon
-        style={{
-          marginTop: "4px",
-          marginRight: "8px",
-        }}
+        className={"kie-dmn-editor--draggable-icon"}
         draggable={true}
         onDragStart={() => onDragStart(props.index)}
         onDragEnter={() => onDragEnter(props.index)}
         onDragEnd={() => onDragEnd(props.index)}
       >
-        <GripVerticalIcon style={{ color: "#8080809e" }} />
+        <GripVerticalIcon />
       </Icon>
-      <div style={{ flexGrow: 1 }}>{props.children}</div>
+      <div className={"kie-dmn-editor--draggable-children"}>{props.children}</div>
     </div>
   );
 }

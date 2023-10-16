@@ -14,7 +14,7 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { UniqueNameIndex } from "../Spec";
-import { Draggable, DraggableContextProvider } from "./DraggableHook";
+import { Draggable, DraggableContextProvider } from "./Draggable";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "Enter a URL...";
@@ -127,8 +127,8 @@ export function DocumentationLinksFormGroup({
         <FormFieldGroupHeader
           titleText={{
             text: (
-              <label className="pf-c-form__label">
-                <span className="pf-c-form__label-text">Documentation links</span>
+              <label className={"pf-c-form__label"}>
+                <span className={"pf-c-form__label-text"}>Documentation links</span>
               </label>
             ),
             id: "documentation-links",
@@ -139,24 +139,13 @@ export function DocumentationLinksFormGroup({
     >
       <React.Fragment>
         {(values ?? []).length === 0 ? (
-          <div
-            style={{
-              padding: "10px",
-              background: "#eee",
-              borderRadius: "10px",
-              textAlign: "center",
-            }}
-          >
-            None yet
-          </div>
+          <div className={"kie-dmn-editor--documentation-link--none-yet"}>None yet</div>
         ) : (
           <DraggableContextProvider reorder={reorder}>
             {values?.map((kieAttachment, index) => (
               <div
                 key={updateKeyToggle ? index + 99999999 : index - 99999999}
-                style={{
-                  marginTop: index === 0 ? "0" : "16px",
-                }}
+                className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
               >
                 <Draggable index={index}>
                   <DocumentationLinksInput
@@ -223,41 +212,32 @@ function DocumentationLinksInput({
 
   const urlTitleIsLink = useMemo(() => isValidUrl(url) && !isUrlExpanded, [isValidUrl, url, isUrlExpanded]);
   const shouldRenderTooltip = useMemo(() => url !== "" && !isUrlExpanded, [isUrlExpanded, url]);
-  const urlTitleClassName = useMemo(
-    () =>
-      urlTitleIsLink
-        ? "kie-dmn-editor--documentation-link-title kie-dmn-editor--documentation-link-title--is-link"
-        : "kie-dmn-editor--documentation-link-title",
-    [urlTitleIsLink]
-  );
   const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
   const urlUniqueMap = useMemo(() => new Map<string, string>(), []);
   const validate = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
 
   return (
     <React.Fragment>
-      <div style={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
+      <div className={"kie-dmn-editor--documentation-link--row"}>
         <Button
           variant={ButtonVariant.plain}
-          style={{ padding: "0 8px 0 0", marginTop: "2px" }}
+          className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
           onClick={() => {
             toogleExpanded();
           }}
         >
           {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
         </Button>
-        <div style={{ flexGrow: 1 }}>
+        <div className={"kie-dmn-editor--documentation-link--row-item"}>
           {!isUrlExpanded ? (
             <>
-              <div ref={urlTitleRef} style={{ paddingLeft: "2px", marginTop: "2px" }}>
+              <div ref={urlTitleRef} className={"kie-dmn-editor--documentation-link--row-title"}>
                 {urlTitleIsLink ? (
-                  <a className={urlTitleClassName} href={url} target={"_blank"}>
+                  <a href={url} target={"_blank"}>
                     {title}
                   </a>
                 ) : (
-                  <p style={{ color: title !== "" ? "black" : "gray" }}>
-                    {title !== "" ? title : PLACEHOLDER_URL_TITLE}
-                  </p>
+                  <p>{title !== "" ? title : PLACEHOLDER_URL_TITLE}</p>
                 )}
               </div>
               {shouldRenderTooltip && (
@@ -269,7 +249,7 @@ function DocumentationLinksInput({
               )}
             </>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
+            <div className={"kie-dmn-editor--documentation-link--row-inputs"}>
               <InlineFeelNameInput
                 isPlain={true}
                 isReadonly={isReadonly}
@@ -283,7 +263,7 @@ function DocumentationLinksInput({
                 autoFocus={autoFocus}
               />
               <InlineFeelNameInput
-                style={{ fontStyle: "italic" }}
+                className={"kie-dmn-editor--documentation-link--row-inputs-url"}
                 isPlain={true}
                 isReadonly={isReadonly}
                 id={`${uuid}-url`}
@@ -304,7 +284,7 @@ function DocumentationLinksInput({
         </div>
         <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>
           <Button
-            style={{ padding: "0px 16px", marginTop: "2px" }}
+            className={"kie-dmn-editor--documentation-link--row-remove"}
             variant={"plain"}
             icon={<TimesIcon />}
             onClick={() => onRemove()}

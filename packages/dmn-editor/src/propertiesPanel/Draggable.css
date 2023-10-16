@@ -1,0 +1,38 @@
+.kie-dmn-editor--draggable-row {
+  display: flex;
+  flex-direction: row;
+  border-width: 1px;
+  border-style: dashed;
+  border-radius: 5px;
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.kie-dmn-editor--draggable-row-dest {
+  border-style: solid;
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+.kie-dmn-editor--draggable-row-dragging {
+  border-color: gray;
+}
+
+.kie-dmn-editor--draggable-icon {
+  margin-top: 4px;
+  margin-right: 8px;
+  cursor: grab;
+}
+
+.kie-dmn-editor--draggable-icon:active {
+  margin-top: 4px;
+  margin-right: 8px;
+  cursor: grabbing;
+}
+
+.kie-dmn-editor--draggable-icon > span {
+  color: rgba(128, 128, 128, 0.62);
+}
+
+.kie-dmn-editor--draggable-children {
+  flex-grow: 1;
+}
