@@ -29,7 +29,7 @@ import (
 	"github.com/docker/go-connections/nat"
 	"golang.org/x/net/context"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
 func GetDockerConnection() (*client.Client, error) {

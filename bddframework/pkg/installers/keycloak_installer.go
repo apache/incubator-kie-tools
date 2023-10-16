@@ -17,8 +17,8 @@ package installers
 import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	keycloak "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/keycloak/v1alpha1"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	keycloak "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/infrastructure/keycloak/v1alpha1"
 )
 
 var (

@@ -17,8 +17,8 @@ package operator
 import (
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/logger"
 )
 
 // Context ...

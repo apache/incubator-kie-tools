@@ -22,17 +22,17 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
+	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
@@ -40,8 +40,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/api"
-	"github.com/kiegroup/kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
 
 func Test_OverrideStartupProbe(t *testing.T) {

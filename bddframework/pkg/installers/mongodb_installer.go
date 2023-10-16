@@ -23,8 +23,8 @@ import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	mongodbv1 "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/mongodb/v1"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	mongodbv1 "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/infrastructure/mongodb/v1"
 )
 
 var (

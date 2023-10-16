@@ -21,11 +21,11 @@ import (
 
 	"github.com/cucumber/godog"
 
-	framework "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/test"
-	"github.com/kiegroup/kogito-serverless-operator/test/utils"
+	framework "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
-	//"github.com/kiegroup/kogito-serverless-operator/test"
+	//"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 	"os"
 )
 

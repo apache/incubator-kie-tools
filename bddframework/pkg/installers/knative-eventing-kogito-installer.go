@@ -19,7 +19,7 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 var (

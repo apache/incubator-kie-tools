@@ -20,8 +20,8 @@ import (
 	"github.com/cucumber/godog"
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps/mappers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/steps/mappers"
 )
 
 const defaultTimeoutToStartBuildInMin = 5

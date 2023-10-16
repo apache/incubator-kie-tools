@@ -1,21 +1,21 @@
-module github.com/kiegroup/kogito-serverless-operator/testbdd
+module github.com/apache/incubator-kie-kogito-serverless-operator/testbdd
 
 go 1.19
 
 replace (
-	github.com/kiegroup/kogito-serverless-operator => ../
-	github.com/kiegroup/kogito-serverless-operator/api => ../api
-	github.com/kiegroup/kogito-serverless-operator/bddframework => ../bddframework
-	github.com/kiegroup/kogito-serverless-operator/container-builder => ../container-builder
+	github.com/apache/incubator-kie-kogito-serverless-operator => ../
+	github.com/apache/incubator-kie-kogito-serverless-operator/api => ../api
+	github.com/apache/incubator-kie-kogito-serverless-operator/bddframework => ../bddframework
+	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder => ../container-builder
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring => github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.50.0
 )
 
 require (
 	github.com/cucumber/godog v0.12.5
 	github.com/cucumber/messages-go/v16 v16.0.1
-	github.com/kiegroup/kogito-serverless-operator v1.43.1
-	github.com/kiegroup/kogito-serverless-operator/api v0.0.0
-	github.com/kiegroup/kogito-serverless-operator/bddframework v0.0.0-00010101000000-000000000000
+	github.com/apache/incubator-kie-kogito-serverless-operator v0.0.0
+	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0
+	github.com/apache/incubator-kie-kogito-serverless-operator/bddframework v0.0.0
 	github.com/openshift/api v0.0.0-20230522130544-0eef84f63102
 	github.com/operator-framework/operator-lifecycle-manager v0.0.0-20200321030439-57b580e57e88
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1
@@ -76,7 +76,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
-	github.com/kiegroup/kogito-serverless-operator/container-builder v0.0.0 // indirect
+	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder v0.0.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

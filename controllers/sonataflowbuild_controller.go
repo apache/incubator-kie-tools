@@ -32,11 +32,11 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/builder"
-	"github.com/kiegroup/kogito-serverless-operator/log"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/builder"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
 // SonataFlowBuildReconciler reconciles a SonataFlowBuild object

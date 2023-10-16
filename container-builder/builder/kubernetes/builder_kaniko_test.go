@@ -26,9 +26,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/test"
 )
 
 // Test that verify we are able to create a Kaniko build with cache enabled, a specific set of resources and additional flags

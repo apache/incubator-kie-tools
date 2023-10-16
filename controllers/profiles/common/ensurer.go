@@ -19,12 +19,12 @@ import (
 
 	"k8s.io/klog/v2"
 
-	"github.com/kiegroup/kogito-serverless-operator/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
 
 var _ ObjectEnsurer = &defaultObjectEnsurer{}

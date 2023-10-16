@@ -21,8 +21,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/installers"
 )
 
 func registerKnativeSteps(ctx *godog.ScenarioContext, data *Data) {

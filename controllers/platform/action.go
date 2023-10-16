@@ -17,9 +17,9 @@ package platform
 import (
 	"context"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	v08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
 
 // Action --.

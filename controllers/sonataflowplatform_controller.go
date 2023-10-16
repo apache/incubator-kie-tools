@@ -28,17 +28,17 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/kiegroup/kogito-serverless-operator/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 
-	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	clientr "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 
 	ctrlrun "sigs.k8s.io/controller-runtime"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/log"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
 // SonataFlowPlatformReconciler reconciles a SonataFlowPlatform object

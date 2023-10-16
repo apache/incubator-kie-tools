@@ -17,7 +17,7 @@ package kubernetes
 import (
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 )
 
 func SecurityDefaults() *corev1.SecurityContext {

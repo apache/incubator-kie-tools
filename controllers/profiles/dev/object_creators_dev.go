@@ -22,12 +22,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
-	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
+	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
 
 const (

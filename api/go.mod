@@ -1,4 +1,4 @@
-module github.com/kiegroup/kogito-serverless-operator/api
+module github.com/apache/incubator-kie-kogito-serverless-operator/api
 
 go 1.19
 

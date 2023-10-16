@@ -21,11 +21,11 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
-	srvframework "github.com/kiegroup/kogito-serverless-operator/testbdd/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/installers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
+	srvframework "github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/framework"
 )
 
 var (

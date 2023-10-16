@@ -17,7 +17,7 @@ package framework
 import (
 	"fmt"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
 )
 
 var verifications = []func() error{

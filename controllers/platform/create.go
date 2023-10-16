@@ -17,8 +17,8 @@ package platform
 import (
 	"context"
 
-	"github.com/kiegroup/kogito-serverless-operator/api"
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
+	v08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
 
 // NewCreateAction returns an action that creates resources needed by the platform.

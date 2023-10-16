@@ -29,14 +29,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/env"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/env"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/logger"
 
 	"io/ioutil"
 
 	"k8s.io/api/events/v1beta1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
 )
 
 const (

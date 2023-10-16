@@ -21,7 +21,7 @@ import (
 	"knative.dev/pkg/apis"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 )
 
 const DefaultContainerName = "workflow"

@@ -21,7 +21,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kiegroup/kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
 
 func TestSonataFlowBuildController(t *testing.T) {

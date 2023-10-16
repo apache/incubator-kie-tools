@@ -21,15 +21,15 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	clientruntime "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/api"
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
 
 func Test_Reconciler_ProdOps(t *testing.T) {

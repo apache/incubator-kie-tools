@@ -20,7 +20,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/api"
 )
 
 func TestGetItems(t *testing.T) {

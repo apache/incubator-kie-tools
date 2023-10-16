@@ -19,7 +19,7 @@ package cleaner
 import (
 	"testing"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/common"
 
 	"github.com/stretchr/testify/assert"
 )

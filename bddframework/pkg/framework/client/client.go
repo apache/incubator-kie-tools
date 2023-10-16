@@ -25,7 +25,7 @@ import (
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	logger "sigs.k8s.io/controller-runtime/pkg/log"
 
-	frameworklogger "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
+	frameworklogger "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/logger"
 
 	appsv1 "github.com/openshift/client-go/apps/clientset/versioned/typed/apps/v1"
 	corev1 "k8s.io/api/core/v1"

@@ -15,7 +15,7 @@
       container:
         image_build_method: imagebuilder
         remote_source:
-          repo: https://github.com/kiegroup/kogito-serverless-operator
+          repo: https://github.com/apache/incubator-kie-kogito-serverless-operator
           ref: 078cef15b1860d0c52fc1fd479a37d43819f09a3
           pkg_managers:
             - gomod

@@ -26,8 +26,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	kogitocli "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
+	kogitocli "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/meta"
 
 	imgfake "github.com/openshift/client-go/image/clientset/versioned/fake"
 )

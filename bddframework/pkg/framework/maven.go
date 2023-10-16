@@ -19,7 +19,7 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
 )
 
 const (

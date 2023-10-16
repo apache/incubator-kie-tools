@@ -111,7 +111,7 @@ metadata:
     operators.operatorframework.io/builder: operator-sdk-v1.25.0
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-    repository: https://github.com/kiegroup/kogito-serverless-operator
+    repository: https://github.com/apache/incubator-kie-kogito-serverless-operator
     support: Red Hat
   name: logic-operator-rhel8.v1.30.0
   namespace: placeholder

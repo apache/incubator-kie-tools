@@ -17,7 +17,7 @@ spec:
     - name: deployment-name
       value: kogito-serverless-operator
     - name: git-url
-      value: https://github.com/kiegroup/kogito-serverless-operator.git
+      value: https://github.com/apache/incubator-kie-kogito-serverless-operator.git
     - name: git-revision
       value: "main"
     - name: IMAGE

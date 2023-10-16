@@ -22,9 +22,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
-	ispn "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/client/kubernetes"
+	ispn "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/infrastructure/infinispan/v1"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/operator"
 )
 
 const (

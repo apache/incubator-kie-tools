@@ -19,20 +19,20 @@ import (
 
 	"k8s.io/klog/v2"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/workflowdef"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/workflowdef"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/rest"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	clientr "github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	clientr "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-	builder "github.com/kiegroup/kogito-serverless-operator/container-builder/builder/kubernetes"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
+	builder "github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/builder/kubernetes"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 )
 
 const (

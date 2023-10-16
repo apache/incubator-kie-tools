@@ -20,7 +20,7 @@ import (
 
 	"k8s.io/klog/v2"
 
-	profiles "github.com/kiegroup/kogito-serverless-operator/controllers/profiles/factory"
+	profiles "github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/factory"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -35,12 +35,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/kiegroup/kogito-serverless-operator/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 
-	"github.com/kiegroup/kogito-serverless-operator/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/platform"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/platform"
 )
 
 // SonataFlowReconciler reconciles a SonataFlow object

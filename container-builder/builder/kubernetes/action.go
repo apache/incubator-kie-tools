@@ -17,8 +17,8 @@ package kubernetes
 import (
 	"context"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
 )
 
 type Action interface {

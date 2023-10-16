@@ -15,7 +15,7 @@
 package main
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 func main() {

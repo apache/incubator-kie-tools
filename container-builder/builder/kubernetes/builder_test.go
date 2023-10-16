@@ -26,8 +26,8 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/test"
 )
 
 func TestNewBuild(t *testing.T) {

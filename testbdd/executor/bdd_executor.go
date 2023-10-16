@@ -22,8 +22,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-serverless-operator/testbdd/installers"
-	"github.com/kiegroup/kogito-serverless-operator/testbdd/steps"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/installers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/steps"
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
@@ -32,11 +32,11 @@ import (
 	olmapiv1alpha1 "github.com/operator-framework/operator-lifecycle-manager/pkg/api/apis/operators/v1alpha1"
 	flag "github.com/spf13/pflag"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/gherkin"
-	frameworkInstallers "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
-	kogitoSteps "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/gherkin"
+	frameworkInstallers "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/installers"
+	kogitoSteps "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/steps"
 )
 
 const (

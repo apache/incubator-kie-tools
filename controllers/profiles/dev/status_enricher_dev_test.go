@@ -23,10 +23,10 @@ import (
 	"github.com/stretchr/testify/assert"
 	"knative.dev/pkg/apis"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/common"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
 
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/test"
+	apiv08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
 )
 
 func Test_enrichmentStatusOnK8s(t *testing.T) {

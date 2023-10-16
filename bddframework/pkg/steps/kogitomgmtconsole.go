@@ -17,9 +17,9 @@ package steps
 import (
 	"github.com/cucumber/godog"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps/mappers"
-	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/steps/mappers"
+	bddtypes "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/types"
 )
 
 /*

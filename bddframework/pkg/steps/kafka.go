@@ -18,11 +18,11 @@ import (
 	"github.com/cucumber/godog"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/infrastructure"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/installers"
 )
 
 func registerKafkaSteps(ctx *godog.ScenarioContext, data *Data) {

@@ -15,9 +15,9 @@
 package workflowdef
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
-	"github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/version"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/version"
 )
 
 const (

@@ -21,11 +21,11 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/defaults"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/minikube"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/registry"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/minikube"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/registry"
 )
 
 var (

@@ -22,10 +22,10 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	kubeutil "github.com/kiegroup/kogito-serverless-operator/utils/kubernetes"
-	"github.com/kiegroup/kogito-serverless-operator/utils/openshift"
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	kubeutil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/kubernetes"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils/openshift"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
 
 // ObjectCreator is the func that creates the initial reference object, if the object doesn't exist in the cluster, this one is created.

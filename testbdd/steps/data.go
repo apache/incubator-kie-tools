@@ -20,8 +20,8 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
-	kogitoSteps "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/steps"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
+	kogitoSteps "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/steps"
 )
 
 // Data contains all data needed by Gherkin steps to run

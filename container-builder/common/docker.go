@@ -29,8 +29,8 @@ import (
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
 type Docker struct {

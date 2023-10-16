@@ -22,10 +22,10 @@ import (
 
 	"k8s.io/klog/v2"
 
-	"github.com/kiegroup/kogito-serverless-operator/utils"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 
-	"github.com/kiegroup/kogito-serverless-operator/controllers"
-	ocputil "github.com/kiegroup/kogito-serverless-operator/utils/openshift"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers"
+	ocputil "github.com/apache/incubator-kie-kogito-serverless-operator/utils/openshift"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
@@ -37,8 +37,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/log"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	//+kubebuilder:scaffold:imports
 )
 

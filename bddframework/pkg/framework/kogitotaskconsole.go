@@ -15,10 +15,10 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api/app/v1beta1"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	bddtypes "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/types"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/api/app/v1beta1"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
+	bddtypes "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/types"
 )
 
 const (

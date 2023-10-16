@@ -25,7 +25,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 
-	apiv08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	apiv08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	//+kubebuilder:scaffold:imports
 )
 

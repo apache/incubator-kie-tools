@@ -19,7 +19,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/logger"
 )
 
 var (

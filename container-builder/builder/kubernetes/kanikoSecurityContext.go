@@ -18,7 +18,7 @@ package kubernetes
 import (
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util"
 )
 
 func KanikoSecurityDefaults() *corev1.SecurityContext {

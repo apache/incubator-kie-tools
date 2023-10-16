@@ -23,10 +23,10 @@ import (
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/client"
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/defaults"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
 
-	v08 "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
+	v08 "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
 
 // kanikoCacheDir is the cache directory for Kaniko builds (mounted into the Kaniko pod).

@@ -22,11 +22,11 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/client"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/logger"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework/operator"
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/meta"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/client"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/infrastructure/kafka/v1beta2"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/logger"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework/operator"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/meta"
 )
 
 func Test_getKafkaInstanceWithName(t *testing.T) {

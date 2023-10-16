@@ -21,7 +21,7 @@ package main
 import (
 	"os"
 
-	"github.com/kiegroup/kogito-serverless-operator/workflowproj"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj"
 )
 
 func Main() {

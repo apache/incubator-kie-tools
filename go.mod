@@ -1,21 +1,20 @@
-module github.com/kiegroup/kogito-serverless-operator
+module github.com/apache/incubator-kie-kogito-serverless-operator
 
 go 1.19
 
 // Internal dependencies
 replace (
-	github.com/kiegroup/kogito-serverless-operator/api v0.0.0 => ./api
-	github.com/kiegroup/kogito-serverless-operator/container-builder v0.0.0 => ./container-builder
-	github.com/kiegroup/kogito-serverless-operator/workflowproj v0.0.0 => ./workflowproj
+	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0 => ./api
+	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder v0.0.0 => ./container-builder
+	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0 => ./workflowproj
 )
 
 // Direct dependencies (please keep organized, no indirects)
 require (
 	github.com/RHsyseng/operator-utils v1.4.12
+	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0
+	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder v0.0.0
 	github.com/go-logr/logr v1.2.4 // indirect
-	github.com/kiegroup/kogito-serverless-operator/api v0.0.0
-	github.com/kiegroup/kogito-serverless-operator/container-builder v0.0.0
-	github.com/kiegroup/kogito-serverless-operator/workflowproj v0.0.0
 	github.com/magiconair/properties v1.8.7
 	github.com/onsi/ginkgo/v2 v2.9.5
 	github.com/onsi/gomega v1.27.7
@@ -34,6 +33,7 @@ require (
 )
 
 require (
+	github.com/apache/incubator-kie-kogito-serverless-operator/workflowproj v0.0.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/imdario/mergo v0.3.13
 	k8s.io/klog/v2 v2.100.1

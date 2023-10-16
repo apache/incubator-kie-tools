@@ -36,9 +36,9 @@ kubectl apply -f tekton/pipeline/kogito_serverless_operator_pipeline_run.yaml
 or with the Tekton cli:
 ```sh
 tkn pipeline start kogito-serverless-operator-pipeline \
-  -w name=shared-workspace,volumeClaimTemplateFile=https://raw.githubusercontent.com/kiegroup/kogito-serverless-operator/main/tekton/volume/persistent_volume.yaml \
+  -w name=shared-workspace,volumeClaimTemplateFile=https://raw.githubusercontent.com/apache/incubator-kie-kogito-serverless-operator/main/tekton/volume/persistent_volume.yaml \
   -p deployment-name=kogito-serverless-operator \
-  -p git-url=https://github.com/kiegroup/kogito-serverless-operator.git \
+  -p git-url=https://github.com/apache/incubator-kie-kogito-serverless-operator.git \
   -p git-revision=main \
   -p IMAGE='image-registry.openshift-image-registry.svc:5000/sonataflow-operator-system/kogito-serverless-operator:latest' \
   --use-param-defaults

@@ -17,7 +17,7 @@ package kubernetes
 import (
 	"context"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
 )
 
 func newErrorAction() Action {

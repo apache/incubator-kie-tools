@@ -10,7 +10,7 @@ metadata:
     operators.openshift.io/valid-subscription: '["OpenShift Container Platform", "OpenShift
       Platform Plus"]'
     operators.operatorframework.io/internal-objects: '["sonataflowbuilds.sonataflow.org"]'
-    repository: https://github.com/kiegroup/kogito-serverless-operator
+    repository: https://github.com/apache/incubator-kie-kogito-serverless-operator
     support: Red Hat
   name: logic-operator-rhel8.v0.0.0
   namespace: placeholder

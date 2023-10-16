@@ -19,10 +19,10 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/kiegroup/kogito-serverless-operator/testbdd/installers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/testbdd/installers"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/config"
-	kogitoInstallers "github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/installers"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/config"
+	kogitoInstallers "github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/installers"
 )
 
 func registerOperatorSteps(ctx *godog.ScenarioContext, data *Data) {

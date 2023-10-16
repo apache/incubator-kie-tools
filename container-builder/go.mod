@@ -1,4 +1,4 @@
-module github.com/kiegroup/kogito-serverless-operator/container-builder
+module github.com/apache/incubator-kie-kogito-serverless-operator/container-builder
 
 go 1.19
 

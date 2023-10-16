@@ -24,8 +24,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kiegroup/kogito-serverless-operator/test"
-	"github.com/kiegroup/kogito-serverless-operator/test/utils"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/test/utils"
 
 	//nolint:golint
 	//nolint:revive

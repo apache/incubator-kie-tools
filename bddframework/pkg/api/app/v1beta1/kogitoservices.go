@@ -20,7 +20,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/api"
 )
 
 // KogitoServiceStatus is the basic structure for any Kogito Service status.

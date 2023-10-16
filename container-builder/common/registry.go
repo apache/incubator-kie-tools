@@ -29,7 +29,7 @@ import (
 	registryContainer "github.com/heroku/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/log"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/log"
 )
 
 const REGISTRY_IMG = "registry"

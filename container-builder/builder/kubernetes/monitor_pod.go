@@ -24,7 +24,7 @@ import (
 
 	"github.com/hashicorp/go-version"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/util/defaults"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/util/defaults"
 
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
@@ -33,7 +33,7 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/container-builder/api"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/container-builder/api"
 )
 
 const timeoutAnnotation = "sonataflow.org/timeout"

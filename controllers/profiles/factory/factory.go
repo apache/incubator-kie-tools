@@ -17,11 +17,11 @@ package factory
 import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
-	operatorapi "github.com/kiegroup/kogito-serverless-operator/api/v1alpha08"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/dev"
-	"github.com/kiegroup/kogito-serverless-operator/controllers/profiles/prod"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
+	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/dev"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/prod"
 )
 
 const (

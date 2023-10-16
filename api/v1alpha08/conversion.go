@@ -26,7 +26,7 @@ import (
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/yaml"
 
-	"github.com/kiegroup/kogito-serverless-operator/api/metadata"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/api/metadata"
 )
 
 var namingRegexp = regexp.MustCompile("^[a-z0-9](-?[a-z0-9])*$")

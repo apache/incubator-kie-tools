@@ -22,7 +22,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/kiegroup/kogito-serverless-operator/bddframework/pkg/framework"
+	"github.com/apache/incubator-kie-kogito-serverless-operator/bddframework/pkg/framework"
 )
 
 func registerGraphQLSteps(ctx *godog.ScenarioContext, data *Data) {
