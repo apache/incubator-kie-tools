@@ -16,6 +16,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { KIE, Namespaced } from "@kie-tools/dmn-marshaller/dist/kie-extensions";
 import { KIE__tComponentWidths } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { DataType } from "../dataTypes/DataTypes";
+import { parseXmlHref } from "../xml/xmlHrefs";
 
 export const DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--diagram" as const;
 export const DMN_EDITOR_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
@@ -63,6 +64,11 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
         }
         // DRG Elements
         else if (nodeNature === NodeNature.DRG_ELEMENT) {
+          if (_node.data.dmnObjectQName.prefix) {
+            // External node. Will not go in the Clipboard.
+            return;
+          }
+
           const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as DMN15__tDecision; // Casting to `DMN15__tDecision` because it has all requirement types.
 
           // This is going to get repopulated when this data is pasted somewhere.
@@ -74,23 +80,35 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
           if (dmnObject.authorityRequirement) {
             dmnObject.authorityRequirement = dmnObject.authorityRequirement.filter(
               (s) =>
-                (s.requiredInput && selectedNodesById.has(s.requiredInput["@_href"])) ||
-                (s.requiredDecision && selectedNodesById.has(s.requiredDecision["@_href"])) ||
-                (s.requiredAuthority && selectedNodesById.has(s.requiredAuthority["@_href"]))
+                (s.requiredInput &&
+                  selectedNodesById.has(s.requiredInput["@_href"]) &&
+                  !selectedNodesById.get(s.requiredInput["@_href"])?.data?.dmnObjectQName.prefix) ||
+                (s.requiredDecision &&
+                  selectedNodesById.has(s.requiredDecision["@_href"]) &&
+                  !selectedNodesById.get(s.requiredDecision["@_href"])?.data?.dmnObjectQName.prefix) ||
+                (s.requiredAuthority &&
+                  selectedNodesById.has(s.requiredAuthority["@_href"]) &&
+                  !selectedNodesById.get(s.requiredAuthority["@_href"])?.data?.dmnObjectQName.prefix)
             );
           }
 
           if (dmnObject.knowledgeRequirement) {
-            dmnObject.knowledgeRequirement = dmnObject.knowledgeRequirement.filter((s) =>
-              selectedNodesById.has(s.requiredKnowledge["@_href"])
+            dmnObject.knowledgeRequirement = dmnObject.knowledgeRequirement.filter(
+              (s) =>
+                selectedNodesById.has(s.requiredKnowledge["@_href"]) &&
+                !selectedNodesById.get(s.requiredKnowledge["@_href"])?.data?.dmnObjectQName.prefix
             );
           }
 
           if (dmnObject.informationRequirement) {
             dmnObject.informationRequirement = dmnObject.informationRequirement.filter(
               (s) =>
-                (s.requiredInput && selectedNodesById.has(s.requiredInput["@_href"])) ||
-                (s.requiredDecision && selectedNodesById.has(s.requiredDecision["@_href"]))
+                (s.requiredInput &&
+                  selectedNodesById.has(s.requiredInput["@_href"]) &&
+                  !selectedNodesById.get(s.requiredInput["@_href"])?.data?.dmnObjectQName.prefix) ||
+                (s.requiredDecision &&
+                  selectedNodesById.has(s.requiredDecision["@_href"]) &&
+                  !selectedNodesById.get(s.requiredDecision["@_href"])?.data?.dmnObjectQName.prefix)
             );
           }
           acc.drgElements.unshift(dmnObject as any);
@@ -116,12 +134,17 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
           ...(_node.data.dmnObject.outputDecision ?? []),
           ...(_node.data.dmnObject.encapsulatedDecision ?? []),
         ]) {
+          if (parseXmlHref(decision["@_href"]).namespace) {
+            continue; // External decision relative to this DMN. Will not go in the Clipboard.
+          }
+
           const decisionNode = nodesById.get(decision["@_href"]);
           if (!decisionNode) {
-            throw new Error("Can't copy Decision Service with non-existent contained Decision " + decision["@_href"]);
-          } else {
-            accNode(decisionNode);
+            // Decision Service has a reference to an unknown Decision. Ignoring.
+            continue;
           }
+
+          accNode(decisionNode);
         }
       }
 
