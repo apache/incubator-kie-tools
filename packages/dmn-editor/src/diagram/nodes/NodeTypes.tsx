@@ -6,4 +6,5 @@ export const NODE_TYPES = {
   knowledgeSource: "node_knowledgeSource" as const,
   textAnnotation: "node_textAnnotation" as const,
   group: "node_group" as const,
+  unknown: "node_unknown" as const,
 };

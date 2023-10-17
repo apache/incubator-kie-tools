@@ -1,16 +1,11 @@
-import {
-  DC__Bounds,
-  DC__Point,
-  DMN15__tDefinitions,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
 import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
-import { getCenter } from "./Maths";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
-import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { Unpacked } from "../../tsExt/tsExt";
 import { NODE_TYPES } from "../nodes/NodeTypes";
+import { NodeDmnObjects } from "../nodes/Nodes";
+import { getCenter } from "./Maths";
 
 export const DEFAULT_INTRACTION_WIDTH = 40;
 export const CONTAINER_NODES_DESIRABLE_PADDING = 60;
@@ -250,18 +245,22 @@ export function getBounds({
   };
 }
 
-export function getNodeTypeFromDmnObject(
-  dmnObject: Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>
-) {
+export function getNodeTypeFromDmnObject(dmnObject: NodeDmnObjects) {
+  if (!dmnObject) {
+    return NODE_TYPES.unknown;
+  }
+
   const type = switchExpression(dmnObject.__$$element, {
+    // Normal nodes
     inputData: NODE_TYPES.inputData,
     decision: NODE_TYPES.decision,
     businessKnowledgeModel: NODE_TYPES.bkm,
     knowledgeSource: NODE_TYPES.knowledgeSource,
     decisionService: NODE_TYPES.decisionService,
-    association: undefined,
     group: NODE_TYPES.group,
     textAnnotation: NODE_TYPES.textAnnotation,
+    // No nodes associated with
+    association: undefined,
     default: undefined,
   });
 

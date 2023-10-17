@@ -7,11 +7,13 @@ import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 
 export function deleteNode({
   definitions,
-  dmnObject,
+  nodeNature,
+  dmnObjectId,
   dmnObjectQName,
 }: {
   definitions: DMN15__tDefinitions;
-  dmnObject: { type: NodeType; id: string };
+  nodeNature: NodeNature;
+  dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
 }) {
   const { diagramElements } = addOrGetDefaultDiagram({ definitions });
@@ -27,21 +29,23 @@ export function deleteNode({
     1
   );
 
-  // External nodes don't have a dmnObject associated with it, just the shape..
+  // External or unknown nodes don't have a dmnObject associated with it, just the shape..
   if (!dmnObjectQName.prefix) {
     // Delete the dmnObject itself
-    if (nodeNatures[dmnObject.type] === NodeNature.ARTIFACT) {
+    if (nodeNature === NodeNature.ARTIFACT) {
       definitions.artifact?.splice(
-        (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObject.id),
+        (definitions.artifact ?? []).findIndex((a) => a["@_id"] === dmnObjectId),
         1
       );
-    } else if (nodeNatures[dmnObject.type] === NodeNature.DRG_ELEMENT) {
+    } else if (nodeNature === NodeNature.DRG_ELEMENT) {
       definitions.drgElement?.splice(
-        (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObject.id),
+        (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId),
         1
       );
+    } else if (nodeNature === NodeNature.UNKNOWN) {
+      // Ignore. There's no dmnObject here.
     } else {
-      throw new Error(`Unknown node nature '${nodeNatures[dmnObject.type]}'.`);
+      throw new Error(`Unknown node nature '${nodeNature}'.`);
     }
   }
 

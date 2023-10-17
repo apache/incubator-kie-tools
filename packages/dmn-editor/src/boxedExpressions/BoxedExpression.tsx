@@ -352,7 +352,7 @@ function determineInputsForDecision(
   try {
     const ret = (decision.informationRequirement ?? []).flatMap((s) => {
       const dmnObject = nodesById.get((s.requiredDecision?.["@_href"] ?? s.requiredInput?.["@_href"])!)!.data.dmnObject;
-      if (!(dmnObject.__$$element === "inputData" || dmnObject.__$$element === "decision")) {
+      if (!(dmnObject?.__$$element === "inputData" || dmnObject?.__$$element === "decision")) {
         throw new Error(
           "DMN EDITOR: Information requirement can't ever point to anything other than an InputData or a Decision"
         );

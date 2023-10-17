@@ -31,6 +31,7 @@ import {
   InputDataNodeSvg,
   KnowledgeSourceNodeSvg,
   TextAnnotationNodeSvg,
+  UnknownNodeSvg,
 } from "./NodeSvgs";
 import { NODE_TYPES } from "./NodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
@@ -43,7 +44,7 @@ import { Unpacked } from "../../tsExt/tsExt";
 import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 import { MIN_NODE_SIZES } from "./DefaultSizes";
 
-export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]>;
+export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]> | null;
 
 export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObjectNamespace: string | undefined;
@@ -725,6 +726,61 @@ export const GroupNode = React.memo(
             onChange={setName}
             skipValidation={true}
             allUniqueNames={allFeelVariableUniqueNames}
+          />
+          {selected && !dragging && (
+            <NodeResizerHandle
+              nodeType={type as NodeType}
+              snapGrid={diagram.snapGrid}
+              nodeId={id}
+              nodeShapeIndex={shape.index}
+            />
+          )}
+        </div>
+      </>
+    );
+  }
+);
+
+export const UnknownNode = React.memo(
+  ({
+    data: { shape, dmnObjectQName },
+    selected,
+    dragging,
+    zIndex,
+    type,
+    id,
+  }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const isResizing = useNodeResizing(id);
+
+    const diagram = useDmnEditorStore((s) => s.diagram);
+    const isHovered = (useIsHovered(ref) || isResizing) && diagram.draggingNodes.length === 0;
+
+    const { isTargeted, isValidConnectionTarget, isConnecting } = useConnectionTargetStatus(id, isHovered);
+    const className = useNodeClassName(diagram.dropTargetNode, isConnecting, isValidConnectionTarget, id);
+    const nodeDimensions = useNodeDimensions(type as NodeType, diagram.snapGrid, id, shape);
+
+    return (
+      <>
+        <svg className={`kie-dmn-editor--node-shape ${className}`}>
+          <UnknownNodeSvg {...nodeDimensions} x={0} y={0} />
+        </svg>
+
+        <RF.Handle key={"unknown"} id={"unknown"} type={"source"} style={{ opacity: 0 }} position={RF.Position.Top} />
+
+        <div ref={ref} className={`kie-dmn-editor--node kie-dmn-editor--unknown-node ${className}`} tabIndex={-1}>
+          <InfoNodePanel isVisible={!isTargeted && isHovered} />
+
+          <EditableNodeLabel
+            namedElement={undefined}
+            namedElementQName={undefined}
+            position={"center-center"}
+            isEditing={false}
+            setEditing={() => {}}
+            value={`? `}
+            onChange={() => {}}
+            skipValidation={false}
+            allUniqueNames={new Map()}
           />
           {selected && !dragging && (
             <NodeResizerHandle

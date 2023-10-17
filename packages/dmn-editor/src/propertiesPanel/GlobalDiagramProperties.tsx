@@ -153,6 +153,7 @@ export function GlobalDiagramProperties() {
         </FormGroup>
       </FormFieldGroupExpandable>
       <Modal
+        aria-labelledby={"Regenerate ID & Namespace"}
         variant={ModalVariant.small}
         isOpen={regenerateIdConfirmationModal}
         onClose={() => setRegenerateIdConfirmationModal(false)}

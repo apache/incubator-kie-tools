@@ -55,6 +55,10 @@
   text-align: left;
   display: block;
 }
+
+.kie-dmn-editor--unknown-node {
+  color: red;
+}
 /* (end) nodes */
 
 /* (begin) decisionService and group nodes */
@@ -127,7 +131,8 @@
 }
 /* (end) external node */
 
-/* (begin) textAnnotation node */
+/* (begin) textAnnotation, and unknown nodes */
+.react-flow__node-node_unknown.selected:before,
 .react-flow__node-node_textAnnotation.selected:before {
   content: "";
   display: block;
@@ -138,11 +143,17 @@
   left: -10px;
   width: calc(100% + 20px);
   height: calc(100% + 20px);
-  border: 1px dashed #006ba4;
   backdrop-filter: blur(8px);
+}
+.react-flow__node-node_textAnnotation.selected:before {
+  border: 1px dashed #006ba4;
   background-color: rgb(161 222 255 / 20%); /* Very slightly blue hue */
 }
-/* (end) textAnnotation node */
+.react-flow__node-node_unknown.selected:before {
+  border: 1px dashed #a40000;
+  background-color: rgb(255 161 161 / 20%); /* Very slightly red hue */
+}
+/* (end) textAnnotation, and unknown nodes */
 
 /* (begin) palette */
 .kie-dmn-editor--palette {
@@ -734,7 +745,7 @@ th {
   fill: rgba(0, 107, 164, 0.1) !important;
 }
 
-.react-flow__node.selected > .kie-dmn-editor--node-shape > g * {
+.react-flow__node.selected:not(.react-flow__node-node_unknown) > .kie-dmn-editor--node-shape > g * {
   stroke: #006ba4 !important;
 }
 

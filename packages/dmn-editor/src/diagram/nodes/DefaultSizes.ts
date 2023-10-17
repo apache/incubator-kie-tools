@@ -63,6 +63,13 @@ export const MIN_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimens
       "@_height": snappedMinSize.height,
     };
   },
+  [NODE_TYPES.unknown]: (snapGrid) => {
+    const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
+    return {
+      "@_width": snappedMinSize.width,
+      "@_height": snappedMinSize.height,
+    };
+  },
 };
 
 export const DEFAULT_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Dimension> = {
@@ -110,6 +117,13 @@ export const DEFAULT_NODE_SIZES: Record<NodeType, (snapGrid: SnapGrid) => DC__Di
   },
   [NODE_TYPES.group]: (snapGrid) => {
     const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid, NODE_MIN_WIDTH * 2, NODE_MIN_WIDTH * 2); // This is not a mistake, we want the Group node to be a bigger square.
+    return {
+      "@_width": snappedMinSize.width,
+      "@_height": snappedMinSize.height,
+    };
+  },
+  [NODE_TYPES.unknown]: (snapGrid) => {
+    const snappedMinSize = MIN_SIZE_FOR_NODES(snapGrid);
     return {
       "@_width": snappedMinSize.width,
       "@_height": snappedMinSize.height,

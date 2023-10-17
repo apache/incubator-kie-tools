@@ -44,7 +44,7 @@ export function addConnectedNode({
       "@_typeRef": DmnBuiltInDataType.Undefined,
     };
     definitions.drgElement?.push(
-      switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation">, {
+      switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation" | "node_unknown">, {
         [NODE_TYPES.bkm]: {
           __$$element: "businessKnowledgeModel",
           "@_name": "New BKM",

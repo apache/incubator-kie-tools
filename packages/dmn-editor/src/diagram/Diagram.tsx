@@ -37,6 +37,7 @@ import {
   InputDataNode,
   KnowledgeSourceNode,
   TextAnnotationNode,
+  UnknownNode,
 } from "./nodes/Nodes";
 import { deleteNode } from "../mutations/deleteNode";
 import { DC__Bounds, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
@@ -73,6 +74,7 @@ import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
 import { buildClipboardFromDiagram } from "../clipboard/Clipboard";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { nodeNatures } from "../mutations/NodeNature";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -88,6 +90,7 @@ const nodeTypes: Record<NodeType, any> = {
   [NODE_TYPES.bkm]: BkmNode,
   [NODE_TYPES.knowledgeSource]: KnowledgeSourceNode,
   [NODE_TYPES.textAnnotation]: TextAnnotationNode,
+  [NODE_TYPES.unknown]: UnknownNode,
 };
 
 const edgeTypes: Record<EdgeType, any> = {
@@ -546,7 +549,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               deleteNode({
                 definitions: state.dmn.model.definitions,
                 dmnObjectQName: node.data.dmnObjectQName,
-                dmnObject: { type: node.type as NodeType, id: node.data.dmnObject["@_id"]! },
+                dmnObjectId: node.data.dmnObject?.["@_id"],
+                nodeNature: nodeNatures[node.type as NodeType],
               });
               state.dispatch.diagram.setNodeStatus(state, node.id, {
                 selected: false,
@@ -644,8 +648,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
               for (let i = 0; i < selectedNodes.length; i++) {
                 deleteDecisionFromDecisionService({
                   definitions: state.dmn.model.definitions,
-                  decisionId: selectedNodes[i].data.dmnObject["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
-                  decisionServiceId: nodesById.get(p.id)!.data.dmnObject["@_id"]!,
+                  decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                  decisionServiceId: nodeBeingDragged.data.dmnObject!["@_id"]!,
                 });
               }
             } else {
@@ -660,8 +664,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             for (let i = 0; i < selectedNodes.length; i++) {
               addDecisionToDecisionService({
                 definitions: state.dmn.model.definitions,
-                decisionId: selectedNodes[i].data.dmnObject["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
-                decisionServiceId: nodesById.get(dropTargetNode.id)!.data.dmnObject["@_id"]!,
+                decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                decisionServiceId: nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
               });
             }
           } else {
@@ -1127,7 +1131,8 @@ export function KeyboardShortcuts({
               deleteNode({
                 definitions: state.dmn.model.definitions,
                 dmnObjectQName: node.data.dmnObjectQName,
-                dmnObject: { type: node.type as NodeType, id: node.data.dmnObject["@_id"]! },
+                dmnObjectId: node.data.dmnObject?.["@_id"],
+                nodeNature: nodeNatures[node.type as NodeType],
               });
               state.dispatch.diagram.setNodeStatus(state, node.id, {
                 selected: false,

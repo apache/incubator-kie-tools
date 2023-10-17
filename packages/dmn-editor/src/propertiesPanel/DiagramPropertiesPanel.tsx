@@ -35,6 +35,7 @@ import {
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
 import { GroupProperties } from "./GroupProperties";
+import { UnknownProperties } from "./UnknownProperties";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
   const { nodesById } = useDmnEditorDerivedStore();
@@ -82,6 +83,8 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                               return <>Text Annotation</>;
                             case NODE_TYPES.group:
                               return <>Group</>;
+                            case NODE_TYPES.unknown:
+                              return <>Unknown</>;
                             default:
                               throw new Error(`Unknown type of node ${node.type}`);
                           }
@@ -146,6 +149,8 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                 );
               case NODE_TYPES.group:
                 return <GroupProperties group={node.data!.dmnObject as DMN15__tGroup} index={node.data.index} />;
+              case NODE_TYPES.unknown:
+                return <UnknownProperties shape={node.data.shape} dmnElementRefQName={node.data.dmnObjectQName} />;
               default:
                 throw new Error(`Unknown type of node ${(node as any)?.__$$element}`);
             }

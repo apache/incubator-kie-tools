@@ -267,3 +267,24 @@ export const GroupNodeSvg = React.forwardRef<SVGRectElement, NodeSvgProps & { st
     );
   }
 );
+
+export const UnknownNodeSvg = (_props: NodeSvgProps & { strokeDasharray?: string }) => {
+  const { strokeWidth, x, y, width, height, props } = normalize(_props);
+  const strokeDasharray = props.strokeDasharray ?? "2,4";
+  return (
+    <g>
+      <rect
+        {...props}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        fill={"transparent"}
+        stroke={"red"}
+        strokeLinejoin={"round"}
+        strokeWidth={strokeWidth}
+        strokeDasharray={strokeDasharray}
+      />
+    </g>
+  );
+};

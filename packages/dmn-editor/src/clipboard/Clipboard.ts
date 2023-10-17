@@ -66,7 +66,7 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
           const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as DMN15__tDecision; // Casting to `DMN15__tDecision` because it has all requirement types.
 
           // This is going to get repopulated when this data is pasted somewhere.
-          if (node.data.dmnObject.__$$element === "decisionService") {
+          if (node.data.dmnObject?.__$$element === "decisionService") {
             (dmnObject as DMN15__tDecisionService).inputData = [];
             (dmnObject as DMN15__tDecisionService).inputDecision = [];
           }
@@ -94,6 +94,8 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
             );
           }
           acc.drgElements.unshift(dmnObject as any);
+        } else if (nodeNature === NodeNature.UNKNOWN) {
+          // Ignore.
         } else {
           throw new Error(`Unknwon node nature '${nodeNature}'`);
         }
@@ -109,7 +111,7 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
       }
 
       // When a Decision Service is selected, we treat all its contained Decisions as if they were too, making them part of the cut/copy/paste operations.
-      if (_node.data.dmnObject.__$$element === "decisionService") {
+      if (_node.data.dmnObject?.__$$element === "decisionService") {
         for (const decision of [
           ...(_node.data.dmnObject.outputDecision ?? []),
           ...(_node.data.dmnObject.encapsulatedDecision ?? []),

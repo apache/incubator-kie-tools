@@ -4,6 +4,7 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 export enum NodeNature {
   DRG_ELEMENT = "DRG_ELEMENT",
   ARTIFACT = "ARTIFACT",
+  UNKNOWN = "UNKNOWN",
 }
 
 export const nodeNatures: Record<NodeType, NodeNature> = {
@@ -14,4 +15,5 @@ export const nodeNatures: Record<NodeType, NodeNature> = {
   [NODE_TYPES.decisionService]: NodeNature.DRG_ELEMENT,
   [NODE_TYPES.textAnnotation]: NodeNature.ARTIFACT,
   [NODE_TYPES.group]: NodeNature.ARTIFACT,
+  [NODE_TYPES.unknown]: NodeNature.UNKNOWN,
 };

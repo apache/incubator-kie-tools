@@ -11,6 +11,7 @@ import {
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { QuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons/question-circle-icon";
 
 const radius = 34;
 const svgViewboxPadding = Math.sqrt(Math.pow(radius, 2) / 2) - radius / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -39,6 +40,7 @@ export function NodeIcon(nodeType?: NodeType) {
     [NODE_TYPES.decisionService]: DecisionServiceIcon,
     [NODE_TYPES.group]: GroupIcon,
     [NODE_TYPES.textAnnotation]: TextAnnotationIcon,
+    [NODE_TYPES.unknown]: UnknownIcon,
     default: () => <div>?</div>,
   });
 }
@@ -91,5 +93,12 @@ export function TextAnnotationIcon() {
     <RoundSvg>
       <TextAnnotationNodeSvg {...nodeSvgProps} showPlaceholder={true} />
     </RoundSvg>
+  );
+}
+export function UnknownIcon() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+      <QuestionCircleIcon />
+    </div>
   );
 }
