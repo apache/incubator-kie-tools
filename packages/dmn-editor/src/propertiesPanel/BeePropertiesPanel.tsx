@@ -5,11 +5,11 @@ import {
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { SingleNodeProperties } from "./DiagramPropertiesPanel";
 import { useDmnEditorStore } from "../store/Store";
 import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
+import { SingleNodeProperties } from "./SingleNodeProperties";
 
 export function BeePropertiesPanel() {
   const dispatch = useDmnEditorStore((s) => s.dispatch);

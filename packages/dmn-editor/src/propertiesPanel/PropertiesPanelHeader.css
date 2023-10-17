@@ -1,0 +1,23 @@
+.kie-dmn-editor--properties-panel-header {
+  border-width: 1px;
+  border-bottom-style: solid;
+  border-color: rgb(210, 210, 210);
+  padding-bottom: 10px;
+}
+
+.kie-dmn-editor--properties-panel-header-fixed {
+  position: fixed;
+  background-color: white;
+  top: 0px;
+  padding-top: 20px;
+  z-index: 5000;
+  width: 88%;
+  right: 30px;
+}
+
+.kie-dmn-editor--properties-panel-header-items {
+  display: inline-flex;
+  flex-flow: row;
+  width: 100%;
+  align-items: center;
+}
