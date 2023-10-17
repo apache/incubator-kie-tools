@@ -108,6 +108,13 @@ export function DocumentationLinksFormGroup({
       const [removed] = reordened.splice(source, 1);
       reordened.splice(dest, 0, removed);
 
+      setExpandedUrls((prev) => {
+        const newUrlExpanded = [...prev];
+        const [removed] = newUrlExpanded.splice(source, 1);
+        newUrlExpanded.splice(dest, 0, removed);
+        return newUrlExpanded;
+      });
+
       onChange?.(reordened);
       updateKey();
     },
