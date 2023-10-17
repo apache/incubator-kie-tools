@@ -6664,9 +6664,6 @@ importers:
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
-      react-json-view:
-        specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
