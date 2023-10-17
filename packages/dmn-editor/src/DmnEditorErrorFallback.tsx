@@ -43,7 +43,7 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
           hoverTip={"Copy"}
           clickTip={"Copied"}
           variant={ClipboardCopyVariant.expansion}
-          style={{ textAlign: "left" }}
+          style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
         >
           {JSON.stringify(
             {
@@ -54,7 +54,7 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
             },
             null,
             2
-          )}
+          ).replaceAll("\\n", "\n")}
         </ClipboardCopy>
         <br />
         <EmptyStatePrimary>
