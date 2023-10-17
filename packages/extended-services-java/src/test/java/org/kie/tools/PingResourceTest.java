@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.kie.kogito;
+package org.kie.tools;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;

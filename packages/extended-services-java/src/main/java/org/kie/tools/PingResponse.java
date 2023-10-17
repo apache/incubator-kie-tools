@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.kie.kogito;
+package org.kie.tools;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

@@ -17,52 +17,30 @@
  * under the License.
  */
 
-package org.kie.kogito;
+package org.kie.tools;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
-public class PingResponseTest {
+public class ProxyConfigTest {
 
-    @ConfigProperty(name = "extended.services.version")
-    String expectedVersion;
     @ConfigProperty(name = "quarkus.http.host")
     String expectedIp;
     @ConfigProperty(name = "quarkus.http.port")
     String expectedPort;
     boolean expectedInsecureSkipVerify = false;
-    @ConfigProperty(name = "kie.sandbox.url")
-    String expectedKieSandboxUrl;
-    boolean expectedStarted = true;
-
+    
     @Inject
-    PingResponse pingResponse;
+    ProxyConfig proxyConfig;
 
     @Test
-    public void testGetVersion() {
-        assertEquals(expectedVersion, pingResponse.getVersion());
-    }
-
-    @Test
-    public void testGetProxyConfig() {
-        ProxyConfig proxyConfig = pingResponse.getProxyConfig();
+    public void testProxyConfig() {
         assertEquals(expectedIp, proxyConfig.getIP());
         assertEquals(expectedPort, proxyConfig.getPort());
         assertEquals(expectedInsecureSkipVerify, proxyConfig.getInsecureSkipVerify());
-    }
-
-    @Test
-    public void testGetKieSandboxUrl() {
-        assertEquals(expectedKieSandboxUrl, pingResponse.getKieSandboxUrl());
-    }
-
-    @Test
-    public void testGetStarted() {
-        assertEquals(expectedStarted, pingResponse.getStarted());
     }
 }

@@ -22,7 +22,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" >
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie.kogito</groupId>
+  <groupId>org.kie.tools</groupId>
   <artifactId>extended-services-java</artifactId>
   <version>${revision}</version>
   <packaging>jar</packaging>

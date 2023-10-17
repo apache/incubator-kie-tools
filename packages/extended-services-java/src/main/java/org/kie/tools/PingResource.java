@@ -17,30 +17,24 @@
  * under the License.
  */
 
-package org.kie.kogito;
+package org.kie.tools;
 
-import io.quarkus.test.junit.QuarkusTest;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-@QuarkusTest
-public class ProxyConfigTest {
+@Path("/ping")
+public class PingResource {
 
-    @ConfigProperty(name = "quarkus.http.host")
-    String expectedIp;
-    @ConfigProperty(name = "quarkus.http.port")
-    String expectedPort;
-    boolean expectedInsecureSkipVerify = false;
-    
     @Inject
-    ProxyConfig proxyConfig;
+    PingResponse pingResponse;
 
-    @Test
-    public void testProxyConfig() {
-        assertEquals(expectedIp, proxyConfig.getIP());
-        assertEquals(expectedPort, proxyConfig.getPort());
-        assertEquals(expectedInsecureSkipVerify, proxyConfig.getInsecureSkipVerify());
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPingResponse() {
+        return Response.ok(pingResponse).build();
     }
 }

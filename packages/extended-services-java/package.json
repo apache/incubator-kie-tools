@@ -25,6 +25,7 @@
     "copy:jar": "copyfiles -u 1 \"target/*.jar\" dist/",
     "dist": "rimraf dist && mkdir dist && pnpm copy:jar",
     "install": "node install.js",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "mvn quarkus:dev"
   },
   "devDependencies": {
