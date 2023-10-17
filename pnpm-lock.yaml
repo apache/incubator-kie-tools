@@ -3764,8 +3764,8 @@ importers:
   packages/extended-services:
     dependencies:
       "@kie-tools/jitexecutor-native":
-        specifier: 1.40.0-Final
-        version: 1.40.0-Final
+        specifier: 1.44.1-Final
+        version: 1.44.1-Final
     devDependencies:
       "@kie-tools/root-env":
         specifier: workspace:*
@@ -17951,9 +17951,9 @@ packages:
       { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
     dev: false
 
-  /@kie-tools/jitexecutor-native@1.40.0-Final:
+  /@kie-tools/jitexecutor-native@1.44.1-Final:
     resolution:
-      { integrity: sha512-mmxVLBsLgZzuGESakwsHjTBuYk2npBr2oaF2V9jx7gpbZzJMc60S0sUcC7IsPbufZvuqEuPWgOAOO4wS9PWSmQ== }
+      { integrity: sha512-yf03B3gV7c3VATLKBmcZ2gavc8JyhCEarqsxIy8JhyF8sCTRIPLkFYIbLnW9kosucO36zLrggDZHzY3navC7GA== }
     dev: false
 
   /@koa/cors@3.4.3:
