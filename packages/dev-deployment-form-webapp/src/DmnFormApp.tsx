@@ -25,6 +25,7 @@ import { DmnFormPage } from "./DmnFormPage";
 import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
 import { routes } from "./Routes";
+import { DmnFormList } from "./DmnFormList";
 
 export function DmnFormApp() {
   return (
@@ -41,22 +42,27 @@ export function DmnFormApp() {
               <HashRouter>
                 <Switch>
                   {app.data && (
+                    <Route path={routes.home.path({})}>
+                      <DmnFormList />
+                    </Route>
+                  )}
+                  {app.data && (
                     <Route
                       path={routes.form.path({
-                        filePath: ":filePath*",
+                        modelName: ":modelName*",
                       })}
                     >
                       {({ match }) => {
                         console.log({ app });
                         console.log({ match });
-                        const formData = app.data!.forms.find((form) => form.uri === `/${match!.params.filePath}`);
+                        const formData = app.data!.forms.find((form) => form.modelName === match!.params.modelName);
                         return formData ? <DmnFormPage formData={formData} /> : <Redirect to={routes.error.path({})} />;
                       }}
                     </Route>
                   )}
                   {app.data && (
                     <Route exact={true} path={routes.root.path({})}>
-                      <Redirect to={routes.form.path({ filePath: app.data.forms[0].uri.slice(1) }, app.data.baseUrl)} />
+                      <Redirect to={routes.form.path({ modelName: app.data.forms[0].modelName })} />
                     </Route>
                   )}
                   <Route path={routes.error.path({})}>

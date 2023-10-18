@@ -18,7 +18,6 @@ import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api"
 import { routes } from "./Routes";
 
 export interface FormData {
-  uri: string;
   modelName: string;
   schema: ExtendedServicesDmnJsonSchema;
 }
@@ -30,28 +29,40 @@ export interface AppData {
 
 export type DmnDefinitionsJson = FormData;
 
+function fromiAsciiSpacing(value: string) {
+  return value.replace(new RegExp("_32", "g"), " ").replace(new RegExp("__", "g"), "_");
+}
+
 export async function fetchAppData(): Promise<AppData> {
   const response = await fetch(routes.dmnDefinitionsJson.path({}));
   const dmnDefinitionsJson = (await response.json()) as ExtendedServicesDmnJsonSchema;
-  dmnDefinitionsJson["$ref"] = "#/definitions/InputSet";
 
-  console.log({ response, dmnDefinitionsJson });
+  if (!dmnDefinitionsJson.definitions) {
+    throw new Error("No DMN definitions available.");
+  }
 
-  const inputRef = dmnDefinitionsJson["$ref"]!.replace("#/definitions/", "");
-  const schema = JSON.parse(JSON.stringify(dmnDefinitionsJson).replace(new RegExp(inputRef, "g"), "InputSet"));
+  const forms = Object.keys(dmnDefinitionsJson.definitions)
+    .filter((key: string) => key.startsWith("InputSet"))
+    .map((asciiSpacedInputSetRef) => {
+      const modelName = fromiAsciiSpacing(asciiSpacedInputSetRef.replace("InputSet", ""));
+      const fullDmnDefinitions = {
+        $ref: `#/definitions/${asciiSpacedInputSetRef}`,
+        ...dmnDefinitionsJson,
+      };
+
+      // The input set property associated with a model is InputSetX, where X is the model name (with some character substitutions).
+      // So replace all occurrences of InputSetX -> InputSet to keep compatibility with the current DmnForm.
+      const inputRef = fullDmnDefinitions["$ref"]!.replace("#/definitions/", "");
+      const schema = JSON.parse(JSON.stringify(fullDmnDefinitions).replace(new RegExp(inputRef, "g"), "InputSet"));
+      return {
+        modelName,
+        schema,
+      };
+    });
 
   return {
     // ...appData,
     baseUrl: "..",
-    // The input set property associated with the mainURI is InputSetX, where X is a number not always 1.
-    // So replace all occurrences InputSetX -> InputSet to keep compatibility with the current DmnForm.
-    forms: [
-      {
-        // ...dmnDefinitionsJson,
-        schema: schema,
-        uri: "/Sample.dmn",
-        modelName: "loan_pre_qualification",
-      },
-    ],
+    forms,
   };
 }

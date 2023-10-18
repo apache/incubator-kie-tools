@@ -159,7 +159,7 @@ export function DmnFormPage(props: Props) {
   }, [onSubmit]);
 
   return (
-    <Page data-testid="dmn-form-page" header={<DmnFormToolbar uri={props.formData.uri} />}>
+    <Page data-testid="dmn-form-page" header={<DmnFormToolbar modelName={props.formData.modelName} />}>
       {openAlert === AlertTypes.ERROR && (
         <div className={"kogito--alert-container"}>
           <Alert

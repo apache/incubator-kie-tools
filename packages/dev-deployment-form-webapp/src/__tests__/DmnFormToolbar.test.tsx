@@ -24,10 +24,10 @@ describe("DmnFormToolbar", () => {
     const uri = "/a_really_really_really_really_large_filename_for_my_model.dmn";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar uri={uri} />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} />, {
           data: {
             baseUrl: "",
-            forms: [{ uri: uri, modelName: "myModel", schema: {} }],
+            forms: [{ modelName: "myModel", schema: {} }],
           },
         }).wrapper
       ).wrapper
@@ -39,10 +39,10 @@ describe("DmnFormToolbar", () => {
     const uri = "/my_model.dmn";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar uri={uri} />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} />, {
           data: {
             baseUrl: "",
-            forms: [{ uri: uri, modelName: "myModel", schema: {} }],
+            forms: [{ modelName: "myModel", schema: {} }],
           },
         }).wrapper
       ).wrapper

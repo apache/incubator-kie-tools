@@ -108,6 +108,8 @@ export const routes = {
 
   error: new Route<{}>(() => "/error"),
 
+  home: new Route<{}>(() => "/home"),
+
   dmnDefinitionsJson: new Route<{}>(() => "../dmnDefinitions.json"),
 
   swaggerUi: new Route<{}>((_, baseUrl) => `${baseUrl}/q/swagger-ui`),
@@ -117,8 +119,8 @@ export const routes = {
   }>(({ modelName }, baseUrl) => `${baseUrl}/${modelName}/dmnresult`),
 
   form: new Route<{
-    pathParams: PathParams.FILE_PATH;
-  }>(({ filePath }) => `/form/${filePath}`),
+    pathParams: PathParams.MODEL_NAME;
+  }>(({ modelName }) => `/form/${modelName}`),
 
   model: new Route<{
     pathParams: PathParams.FILE_PATH;

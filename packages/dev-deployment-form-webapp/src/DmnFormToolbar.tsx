@@ -43,7 +43,7 @@ import { routes } from "./Routes";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 interface Props {
-  uri: string;
+  modelName?: string;
 }
 
 export function DmnFormToolbar(props: Props) {
@@ -59,26 +59,26 @@ export function DmnFormToolbar(props: Props) {
   }, [app?.data?.baseUrl]);
 
   const openForm = useCallback(
-    (uri: string) => {
+    (modelName: string) => {
       history.push({
-        pathname: routes.form.path({ filePath: uri.slice(1) }, app?.data?.baseUrl),
+        pathname: routes.form.path({ modelName }),
       });
     },
-    [history, app?.data?.baseUrl]
+    [history]
   );
 
-  const filename = useMemo(() => {
-    const fullFilename = basename(props.uri);
-    const maxSize = 25;
-    const extension = fullFilename.substring(fullFilename.lastIndexOf(".") + 1);
-    const name = fullFilename.replace(`.${extension}`, "");
+  // const modelName = useMemo(() => {
+  //   const fullFilename = basename(props.modelName);
+  //   const maxSize = 25;
+  //   const extension = fullFilename.substring(fullFilename.lastIndexOf(".") + 1);
+  //   const name = fullFilename.replace(`.${extension}`, "");
 
-    if (name.length < maxSize) {
-      return fullFilename;
-    }
+  //   if (name.length < maxSize) {
+  //     return fullFilename;
+  //   }
 
-    return `${name.substring(0, maxSize)}... .${extension}`;
-  }, [props.uri]);
+  //   return `${name.substring(0, maxSize)}... .${extension}`;
+  // }, [props.uri]);
 
   const disclaimer = useMemo(() => {
     return (
@@ -103,20 +103,20 @@ export function DmnFormToolbar(props: Props) {
     }
 
     return app.data.forms
-      .map((form) => form.uri)
-      .filter((uri) => uri !== props.uri)
+      .map((form) => form.modelName)
+      .filter((modelName) => modelName !== props.modelName)
       .sort((a, b) => a.localeCompare(b))
-      .map((uri, idx) => (
+      .map((modelName, idx) => (
         <DropdownItem
           id={`dmn-form-toolbar-model-dropdown-item-${idx}`}
           key={`dmn-form-toolbar-model-dropdown-item-${idx}`}
           component="button"
-          onClick={() => openForm(uri)}
+          onClick={() => openForm(modelName)}
         >
-          {basename(uri)}
+          {basename(modelName)}
         </DropdownItem>
       ));
-  }, [app.data, openForm, props.uri]);
+  }, [app.data, openForm, props.modelName]);
 
   const dropdownItems = useCallback(
     (dropdownId: string) => [
@@ -173,8 +173,8 @@ export function DmnFormToolbar(props: Props) {
               }}
             >
               {app.data!.forms.length === 1 && (
-                <Text data-testid={"text-filename"} className="kogito--dmn-form__toolbar-filename">
-                  {filename}
+                <Text data-testid={"text-model-name"} className="kogito--dmn-form__toolbar-model-name">
+                  {props.modelName}
                 </Text>
               )}
               {app.data!.forms.length > 1 && (
@@ -186,7 +186,7 @@ export function DmnFormToolbar(props: Props) {
                       onToggle={(isOpen) => setModelDropdownOpen(isOpen)}
                       data-testid="dmn-dev-deployment-form-toolbar-model-dropdown-button"
                     >
-                      {filename}
+                      {props.modelName}
                     </DropdownToggle>
                   }
                   isOpen={modelDropdownOpen}
