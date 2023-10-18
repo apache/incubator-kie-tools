@@ -174,22 +174,22 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 
           switch (newExpression.logicType) {
             case ExpressionDefinitionLogicType.Context:
-              addContextExpressionToVariables(newExpression as ContextExpressionDefinition);
+              addContextExpressionToVariables(newExpression);
               break;
             case ExpressionDefinitionLogicType.Relation:
               addRelationExpressionToVariables(newExpression);
               break;
             case ExpressionDefinitionLogicType.Invocation:
-              addInvocationExpressionToVariables(newExpression as InvocationExpressionDefinition);
+              addInvocationExpressionToVariables(newExpression);
               break;
             case ExpressionDefinitionLogicType.List:
-              addListExpressionToVariables(newExpression as ListExpressionDefinition);
+              addListExpressionToVariables(newExpression);
               break;
             case ExpressionDefinitionLogicType.DecisionTable:
-              addDecisionTableExpressionToVariables(newExpression as DecisionTableExpressionDefinition);
+              addDecisionTableExpressionToVariables(newExpression);
               break;
             case ExpressionDefinitionLogicType.Function:
-              addFunctionExpressionToVariables(newExpression as FunctionExpressionDefinition);
+              addFunctionExpressionToVariables(newExpression);
               break;
             default:
               // Expression without variables

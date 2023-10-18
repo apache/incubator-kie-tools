@@ -67,6 +67,7 @@ import {
   TreeModel,
 } from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
+import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -203,6 +204,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
               8 * 2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
               2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
               Math.max(
+                DEFAULT_MIN_WIDTH,
                 getTextWidth(name, "700 11.2px Menlo, monospace"), // FIXME: Tiago --> These values were obtained by looking at the values calculated by BEE columns.
                 getTextWidth(
                   `(${typeRef ?? ""})`,
