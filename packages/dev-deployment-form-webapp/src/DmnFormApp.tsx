@@ -25,7 +25,6 @@ import { DmnFormPage } from "./DmnFormPage";
 import { DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "./i18n";
 import { NoMatchPage } from "./NoMatchPage";
 import { routes } from "./Routes";
-import { DmnFormList } from "./DmnFormList";
 
 export function DmnFormApp() {
   return (
@@ -43,7 +42,11 @@ export function DmnFormApp() {
                 <Switch>
                   {app.data && (
                     <Route path={routes.home.path({})}>
-                      <DmnFormList />
+                      <Redirect
+                        to={routes.form.path({
+                          modelName: app.data.forms[0].modelName,
+                        })}
+                      />
                     </Route>
                   )}
                   {app.data && (

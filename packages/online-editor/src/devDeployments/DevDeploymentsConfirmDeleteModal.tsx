@@ -128,15 +128,18 @@ export function DevDeploymentsConfirmDeleteModal() {
       {`This action is not reversible and links you shared with other people will not be available anymore.`}
       <br />
       <br />
-      {`The following deployments will be deleted:`}
+      {`The following resources will be deleted:`}
       <br />
       <br />
       {devDeployments.confirmDeleteModalState.isOpen && (
         <ul>
           {devDeployments.confirmDeleteModalState.resources.map((resource) => {
+            console.log(resource);
             return (
-              <li key={resource}>
-                <b>- {resource}</b>
+              <li key={`${resource.kind}: ${resource.metadata?.name}`}>
+                <b>
+                  - {resource.kind}: {resource.metadata?.name}
+                </b>
               </li>
             );
           })}

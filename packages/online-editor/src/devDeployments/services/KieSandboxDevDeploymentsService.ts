@@ -17,23 +17,16 @@
  * under the License.
  */
 
-import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { v4 as uuid } from "uuid";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 import { KieSandboxDeployment, Tokens } from "./types";
-
-export enum DeploymentState {
-  UP = "UP",
-  DOWN = "DOWN",
-  IN_PROGRESS = "IN_PROGRESS",
-  PREPARING = "PREPARING",
-  ERROR = "ERROR",
-}
+import { DeploymentState } from "./common";
 
 export interface DeployArgs {
   workspaceZipBlob: Blob;
   tokenMap: { devDeployment: Tokens };
+  deploymentOption: string;
 }
 
 export type ResourceArgs = {
@@ -52,7 +45,7 @@ export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServic
   isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
   loadDevDeployments(): Promise<KieSandboxDeployment[]>;
   deploy(args: DeployArgs): Promise<void>;
-  deleteDevDeployment(resource: string): Promise<void>;
+  deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void>;
   uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
   extractDevDeploymentState(args: { deployment?: any }): DeploymentState;
   newResourceName(): string;
@@ -106,7 +99,7 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
 
   abstract deploy(args: DeployArgs): Promise<void>;
 
-  abstract deleteDevDeployment(resource: string): Promise<void>;
+  abstract deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void>;
 
   abstract uploadAssets(args: { deployment: K8sResourceYaml; workspaceZipBlob: Blob; baseUrl: string }): Promise<void>;
 

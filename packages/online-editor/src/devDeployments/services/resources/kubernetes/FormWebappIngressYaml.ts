@@ -17,34 +17,7 @@
  * under the License.
  */
 
-export const createIngressYaml = `
-kind: Ingress
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
-  labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
-    \${{ devDeployment.labels.createdBy }}: kie-tools
-  annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: HTTP
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /\${{ devDeployment.uniqueName }}
-            pathType: Prefix
-            backend:
-              service:
-                name: \${{ devDeployment.uniqueName }}
-                port:
-                  number: 8080
----
+export const formWebappIngressYaml = `
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -57,6 +30,7 @@ metadata:
     app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
+    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: HTTP
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -65,7 +39,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /\${{ devDeployment.uniqueName }}/webapp(/|$)(.*)
+          - path: /\${{ devDeployment.uniqueName }}/form-webapp(/|$)(.*)
             pathType: Prefix
             backend:
               service:

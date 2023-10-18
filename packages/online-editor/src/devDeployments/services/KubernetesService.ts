@@ -27,7 +27,7 @@ import {
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import Path from "path";
 import { DeploymentCondition, DeploymentResource } from "./types";
-import { DeploymentState } from "./KieSandboxDevDeploymentsService";
+import { DeploymentState } from "./common";
 
 export interface KubernetesConnection {
   namespace: string;

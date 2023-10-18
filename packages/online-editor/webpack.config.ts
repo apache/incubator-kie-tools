@@ -48,7 +48,6 @@ export default async (env: any, argv: any) => {
     extendedServices_windowsDownloadUrl,
     extendedServices_compatibleVersion,
   ] = getExtendedServicesArgs();
-  const dmnDevDeployment_imagePullPolicy = getDmnDevDeploymentImagePullPolicy();
   const gtmResource = getGtmResource();
 
   let lastCommitHash = "";
@@ -106,7 +105,6 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
-            WEBPACK_REPLACE__dmnDevDeployment_imagePullPolicy: dmnDevDeployment_imagePullPolicy,
             WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
             WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
           }),
@@ -233,10 +231,4 @@ function getExtendedServicesArgs() {
   console.info("Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
-}
-
-function getDmnDevDeploymentImagePullPolicy() {
-  const baseImagePullPolicy = buildEnv.devDeployments.dmn.imagePullPolicy;
-  console.info("DMN Dev deployment :: Image pull policy: " + baseImagePullPolicy);
-  return baseImagePullPolicy;
 }

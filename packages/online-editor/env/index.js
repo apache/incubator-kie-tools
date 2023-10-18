@@ -77,23 +77,39 @@ module.exports = composeEnv(
         default: "KIE Sandbox",
         description: "The name used to refer to a particular KIE Sandbox distribution.",
       },
-      ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry: {
+      ONLINE_EDITOR__devDeploymentBaseImageRegistry: {
         default: "quay.io",
-        description: "Image registry to be used by DMN Dev deployments when deploying DMN models.",
+        description: "Image registry to be used by Dev deployments when deploying models.",
       },
-      ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount: {
-        default: "kie-tools",
-        description: "Image account to be used by DMN Dev deployments when deploying DMN models.",
+      ONLINE_EDITOR__devDeploymentBaseImageAccount: {
+        default: "thiagoelg",
+        description: "Image account to be used by Dev deployments when deploying models.",
       },
-      ONLINE_EDITOR__dmnDevDeploymentBaseImageName: {
-        default: "dmn-dev-deployment-base-image",
-        description: "Image name to be used by DMN Dev deployments when deploying DMN models.",
+      ONLINE_EDITOR__devDeploymentBaseImageName: {
+        default: "dev-deployment-base-image",
+        description: "Image name to be used by Dev deployments when deploying models.",
       },
-      ONLINE_EDITOR__dmnDevDeploymentBaseImageTag: {
+      ONLINE_EDITOR__devDeploymentBaseImageTag: {
         default: "daily-dev",
-        description: "Image tag to be used by DMN Dev deployments when deploying DMN models.",
+        description: "Image tag to be used by Dev deployments when deploying models.",
       },
-      ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy: {
+      ONLINE_EDITOR__devDeploymentFormWebappImageRegistry: {
+        default: "quay.io",
+        description: "Image registry to be used by Dev deployments to display a form for deployed models.",
+      },
+      ONLINE_EDITOR__devDeploymentFormWebappImageAccount: {
+        default: "thiagoelg",
+        description: "Image account to be used by Dev deployments to display a form for deployed models.",
+      },
+      ONLINE_EDITOR__devDeploymentFormWebappImageName: {
+        default: "dev-deployment-form-webapp-image",
+        description: "Image name to be used by Dev deployments to display a form for deployed models.",
+      },
+      ONLINE_EDITOR__devDeploymentFormWebappImageTag: {
+        default: "daily-dev",
+        description: "Image tag to be used by Dev deployments to display a form for deployed models.",
+      },
+      ONLINE_EDITOR__devDeploymentImagePullPolicy: {
         default: "Always",
         description: "The image pull policy. Can be 'Always', 'IfNotPresent', or 'Never'.",
       },
@@ -132,14 +148,18 @@ module.exports = composeEnv(
           ),
         },
         devDeployments: {
-          dmn: {
-            imagePullPolicy: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImagePullPolicy),
-            baseImage: {
-              tag: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageTag),
-              registry: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageRegistry),
-              account: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageAccount),
-              name: getOrDefault(this.vars.ONLINE_EDITOR__dmnDevDeploymentBaseImageName),
-            },
+          imagePullPolicy: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentImagePullPolicy),
+          baseImage: {
+            tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageTag),
+            registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageRegistry),
+            account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageAccount),
+            name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageName),
+          },
+          formWebappImage: {
+            tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageTag),
+            registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageRegistry),
+            account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageAccount),
+            name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentFormWebappImageName),
           },
         },
       };

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export const createDeploymentYaml = `
+export const deploymentYaml = `
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -30,6 +30,7 @@ metadata:
     app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
+    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
     \${{ devDeployment.annotations.uri }}: \${{ devDeployment.workspace.resourceName }}
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
@@ -46,7 +47,8 @@ spec:
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
-          image: \${{ devDeployment.defaultContainerImageUrl }}
+          image: \${{ devDeployment.devDeploymentBaseImageUrl }}
+          imagePullPolicy: \${{ devDeployment.imagePullPolicy }}
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -63,16 +65,4 @@ spec:
               value: \${{ devDeployment.uniqueName }}
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
-        - name: \${{ devDeployment.uniqueName }}-form-webapp
-          image: quay.io/thiagoelg/dev-deployment-form-webapp-image:daily-dev
-          ports:
-            - containerPort: 8081
-              protocol: TCP
-          resources: {}
-          imagePullPolicy: Always
 `;
-
-export const getDeploymentListApiPath = (namespace: string, labelSelector?: string) => {
-  const selector = labelSelector ? `?labelSelector=${labelSelector}` : "";
-  return `apis/apps/v1/namespaces/${namespace}/deployments${selector}`;
-};

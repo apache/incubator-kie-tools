@@ -98,7 +98,7 @@ export function DevDeploymentsDropdown() {
     }
     devDeployments.setConfirmDeleteModalState({
       isOpen: true,
-      resources: (deployments.data ?? []).map((s) => s.name),
+      resources: (deployments.data ?? []).reduce((acc, deployment) => [...acc, ...deployment.resources], []),
       cloudAuthSessionId: authSessionId,
     });
   }, [authSessionId, deployments.data, devDeployments]);

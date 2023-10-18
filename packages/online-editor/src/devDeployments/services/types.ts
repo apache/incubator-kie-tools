@@ -22,14 +22,7 @@ import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/di
 import { KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
 import { v4 as uuid } from "uuid";
-
-export enum DeploymentState {
-  UP = "UP",
-  DOWN = "DOWN",
-  IN_PROGRESS = "IN_PROGRESS",
-  PREPARING = "PREPARING",
-  ERROR = "ERROR",
-}
+import { DeploymentState } from "./common";
 
 export type KieSandboxDeployment = {
   name: string;
@@ -103,7 +96,9 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
 
 export type DevDeploymentTokens = {
   uniqueName: string;
-  defaultContainerImageUrl: string;
+  devDeploymentBaseImageUrl: string;
+  devDeploymentFormWebappImageUrl: string;
+  imagePullPolicy: string;
 };
 
 export type WorkspaceTokens = {
@@ -122,6 +117,7 @@ export type UploadServiceTokens = {
 
 export type LabelTokens = {
   createdBy: string;
+  partOf: string;
 };
 
 export type AnnotationTokens = {
@@ -131,6 +127,7 @@ export type AnnotationTokens = {
 
 export const defaultLabelTokens: LabelTokens = {
   createdBy: "tools.kie.org/created-by",
+  partOf: "tools.kie.org/part-of",
 } as const;
 
 export const defaultAnnotationTokens: AnnotationTokens = {

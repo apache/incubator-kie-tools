@@ -28,10 +28,11 @@ import { AuthSession, CloudAuthSession, isCloudAuthSession } from "../authSessio
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
-import { Tokens, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
+import { KieSandboxDeployment, Tokens, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { KubernetesService } from "./services/KubernetesService";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
 interface Props {
   children: React.ReactNode;
@@ -90,10 +91,10 @@ export function DevDeploymentsContextProvider(props: Props) {
   }, [authSessions, getService]);
 
   // Deployments
-  const deleteDeployment = useCallback(
-    async (args: { authSession: CloudAuthSession; resource: string }) => {
+  const deleteDeployments = useCallback(
+    async (args: { authSession: CloudAuthSession; resources: K8sResourceYaml[] }) => {
       try {
-        await devDeploymentsServices.get(args.authSession.id)?.deleteDevDeployment(args.resource);
+        await devDeploymentsServices.get(args.authSession.id)?.deleteDevDeployment(args.resources);
         return true;
       } catch (error) {
         console.error(error);
@@ -101,18 +102,6 @@ export function DevDeploymentsContextProvider(props: Props) {
       }
     },
     [devDeploymentsServices]
-  );
-  const deleteDeployments = useCallback(
-    async (args: { authSession: CloudAuthSession; resources: string[] }) => {
-      const result = await Promise.all(
-        args.resources.map((resource) => {
-          return deleteDeployment({ authSession: args.authSession, resource });
-        })
-      );
-
-      return result.every(Boolean);
-    },
-    [deleteDeployment]
   );
 
   const loadDevDeployments = useCallback(
@@ -203,8 +192,9 @@ export function DevDeploymentsContextProvider(props: Props) {
           kubernetes: {
             namespace: authSession.namespace,
           },
-          // defaultContainerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-          defaultContainerImageUrl: "quay.io/thiagoelg/dev-deployment-base-image:daily-dev",
+          devDeploymentBaseImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+          devDeploymentFormWebappImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE_URL,
+          imagePullPolicy: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
         },
       };
 
@@ -212,6 +202,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         await service.deploy({
           workspaceZipBlob: zipBlob,
           tokenMap,
+          deploymentOption: "DMN Dev deployment with Form Webapp",
         });
         return true;
       } catch (error) {
@@ -219,7 +210,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         return false;
       }
     },
-    [devDeploymentsServices, env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, workspaces]
+    [devDeploymentsServices, env, workspaces]
   );
 
   const value = useMemo(
@@ -233,7 +224,6 @@ export function DevDeploymentsContextProvider(props: Props) {
       setConfirmDeleteModalState,
       setDeploymentsDropdownOpen,
       deploy,
-      deleteDeployment,
       deleteDeployments,
       loadDevDeployments,
       devDeploymentsServices,
@@ -244,7 +234,6 @@ export function DevDeploymentsContextProvider(props: Props) {
       confirmDeployModalState,
       confirmDeleteModalState,
       deploy,
-      deleteDeployment,
       deleteDeployments,
       loadDevDeployments,
       devDeploymentsServices,

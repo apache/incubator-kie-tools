@@ -129,16 +129,17 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    window.open(`${props.deployment.routeUrl}/#/form/${props.deployment.resourceName}`, "_blank");
-  }, [props.deployment.routeUrl, props.deployment.resourceName]);
+    window.open(`${props.deployment.routeUrl}/#/home`, "_blank");
+  }, [props.deployment.routeUrl]);
 
   const onDelete = useCallback(() => {
+    console.log(props.deployment);
     devDeployments.setConfirmDeleteModalState({
       isOpen: true,
       cloudAuthSessionId: props.cloudAuthSession.id,
-      resources: [props.deployment.name],
+      resources: props.deployment.resources,
     });
-  }, [devDeployments, props.cloudAuthSession.id, props.deployment.name]);
+  }, [devDeployments, props.cloudAuthSession.id, props.deployment]);
 
   return (
     <Flex>

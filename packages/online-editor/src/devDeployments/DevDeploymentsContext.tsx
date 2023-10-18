@@ -23,6 +23,7 @@ import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 import { KieSandboxDeployment } from "./services/types";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
 export interface DeploymentFile {
   path: string;
@@ -42,7 +43,7 @@ export type DeleteDeployModalState =
   | {
       isOpen: true;
       cloudAuthSessionId: string;
-      resources: string[];
+      resources: K8sResourceYaml[];
     }
   | {
       isOpen: false;
@@ -64,8 +65,7 @@ export interface DevDeploymentsContextType {
   // Actions
   deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
   loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
-  deleteDeployment: (args: { authSession: CloudAuthSession; resource: string }) => Promise<boolean>;
-  deleteDeployments: (args: { authSession: CloudAuthSession; resources: string[] }) => Promise<boolean>;
+  deleteDeployments: (args: { authSession: CloudAuthSession; resources: K8sResourceYaml[] }) => Promise<boolean>;
 
   // Services
   devDeploymentsServices: Map<string, KieSandboxDevDeploymentsService>;

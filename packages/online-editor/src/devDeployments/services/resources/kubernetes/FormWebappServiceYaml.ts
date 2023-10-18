@@ -17,30 +17,7 @@
  * under the License.
  */
 
-export const createServiceYaml = `
-kind: Service
-apiVersion: v1
-metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
-  labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
-    \${{ devDeployment.labels.createdBy }}: kie-tools
-spec:
-  ports:
-    - name: 8080-tcp
-      protocol: TCP
-      port: 8080
-      targetPort: 8080
-  selector:
-    app: \${{ devDeployment.uniqueName }}
-    deploymentconfig: \${{ devDeployment.uniqueName }}
-  type: ClusterIP
----
+export const formWebappServiceYaml = `
 kind: Service
 apiVersion: v1
 metadata:
@@ -53,6 +30,7 @@ metadata:
     app.kubernetes.io/name: \${{ devDeployment.uniqueName }}-form-webapp
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
+    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
 spec:
   ports:
     - name: 8081-tcp

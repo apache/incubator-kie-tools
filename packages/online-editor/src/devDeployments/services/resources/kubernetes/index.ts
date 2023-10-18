@@ -17,12 +17,36 @@
  * under the License.
  */
 
-export const createSelfSubjectAccessReviewYaml = `
-kind: SelfSubjectAccessReview
-apiVersion: authorization.k8s.io/v1
-spec:
-  resourceAttributes:
-    resource: \${{ resource }}
-    verb: "*"
-    namespace: \${{ namespace }}
-`;
+import { deploymentWithFormWebappYaml } from "./DeploymentWithFormWebappYaml";
+import { deploymentYaml } from "./DeploymentYaml";
+import { formWebappIngressYaml } from "./FormWebappIngressYaml";
+import { formWebappServiceYaml } from "./FormWebappServiceYaml";
+import { ingressYaml } from "./IngressYaml";
+import { serviceYaml } from "./ServiceYaml";
+
+export const createDeploymentYamls = [
+  {
+    name: "DMN Dev deployment",
+    content: `
+${deploymentYaml}
+---
+${serviceYaml}
+---
+${ingressYaml}
+`,
+  },
+  {
+    name: "DMN Dev deployment with Form Webapp",
+    content: `
+${deploymentWithFormWebappYaml}
+---
+${serviceYaml}
+---
+${formWebappServiceYaml}
+---
+${ingressYaml}
+---
+${formWebappIngressYaml}
+`,
+  },
+];

@@ -130,7 +130,7 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
     // });
   }
 
-  public async deleteDevDeployment(resourceName: string): Promise<void> {
+  public async deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void> {
     // this.kieSandboxKubernetesService.deleteDeployment(resourceName);
     // this.kieSandboxKubernetesService.deleteService(resourceName);
     // this.deleteRoute(resourceName);
