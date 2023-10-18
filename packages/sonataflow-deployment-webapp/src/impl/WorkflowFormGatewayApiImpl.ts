@@ -17,8 +17,11 @@
  * under the License.
  */
 import { OpenAPI } from "openapi-types";
-import { getCustomWorkflowSchema, startWorkflowRest } from "../apis";
-import { WorkflowResponse } from "../apis/WorkflowResponse";
+import { WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import {
+  startWorkflowRest,
+  getCustomWorkflowSchemaFromApi,
+} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi/apis";
 
 export interface WorkflowFormGatewayApi {
   setBusinessKey(bk: string): void;
@@ -43,7 +46,7 @@ export class WorkflowFormGatewayApiImpl implements WorkflowFormGatewayApi {
   }
 
   getCustomWorkflowSchema(workflowName: string) {
-    return getCustomWorkflowSchema(this.api, workflowName);
+    return getCustomWorkflowSchemaFromApi(this.api, workflowName);
   }
 
   startWorkflow(endpoint: string, data: Record<string, any>) {

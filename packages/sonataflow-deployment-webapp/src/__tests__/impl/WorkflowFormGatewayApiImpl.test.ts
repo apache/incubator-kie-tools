@@ -16,12 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { getCustomWorkflowSchema, startWorkflowRest } from "../../apis";
+import {
+  startWorkflowRest,
+  getCustomWorkflowSchemaFromApi,
+} from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi/apis";
 import { WorkflowFormGatewayApi, WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
 
-jest.mock("../../apis/apis", () => ({
-  getCustomWorkflowSchema: jest.fn(),
+jest.mock("@kie-tools/runtime-tools-gateway-api/dist/gatewayApi/apis", () => ({
   startWorkflowRest: jest.fn(),
+  getCustomWorkflowSchemaFromApi: jest.fn(),
 }));
 
 let gatewayApi: WorkflowFormGatewayApi;
@@ -35,7 +38,7 @@ describe("WorkflowFormListGatewayApi tests", () => {
   it("get custom workflow schema", async () => {
     const workflowName = "expression";
     await gatewayApi.getCustomWorkflowSchema(workflowName);
-    expect(getCustomWorkflowSchema).toHaveBeenCalledWith({}, "expression");
+    expect(getCustomWorkflowSchemaFromApi).toHaveBeenCalledWith({}, "expression");
   });
 
   it("start workflow rest", async () => {

@@ -16,29 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import _ from "lodash";
-import { ActionList, ActionListItem } from "@patternfly/react-core/dist/js/components/ActionList";
-import { convertActionsToButton, FormAction } from "./utils";
+import React, { useMemo } from "react";
+import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import ReactJson from "react-json-view";
+import { WorkflowResponse } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
-interface IOwnProps {
-  actions?: FormAction[];
-  enabled?: boolean;
-  onSubmitForm?: () => void;
+export interface WorkflowResultProps {
+  response: WorkflowResponse;
 }
 
-export function FormFooter({ actions, enabled = true, onSubmitForm }: IOwnProps) {
-  if (_.isEmpty(actions)) {
-    return null;
-  }
-
-  const actionItems = convertActionsToButton(actions || [], enabled, onSubmitForm)?.map((button, index) => {
-    return <ActionListItem key={`form-action-${index}`}>{button}</ActionListItem>;
-  });
+export default function WorkflowResult(props: WorkflowResultProps) {
+  const filteredResponse = useMemo(() => ({ workflowdata: props.response.workflowdata }), [props.response]);
 
   return (
-    <div className="sonataflow-deployment-common__form-footer-padding-top">
-      <ActionList>{actionItems}</ActionList>
-    </div>
+    <>
+      <TextContent>
+        <Title headingLevel="h3">Workflow result</Title>
+      </TextContent>
+      <br />
+      <TextContent>
+        <div>
+          <ReactJson src={filteredResponse} name={false} />
+        </div>
+      </TextContent>
+    </>
   );
 }

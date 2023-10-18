@@ -25,7 +25,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       boxedExpressionComponent: {
         storybook: {
-          port: 6006,
+          port: 9900,
         },
       },
     };

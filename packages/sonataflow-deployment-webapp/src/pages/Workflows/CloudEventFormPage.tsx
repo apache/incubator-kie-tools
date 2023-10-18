@@ -25,8 +25,8 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { CloudEventFormDriver, CloudEventMethod, CloudEventRequest, SONATAFLOW_PROCESS_REFERENCE_ID } from "../../apis";
-import { FormNotification, Notification } from "../../components";
+import { CloudEventRequest, KOGITO_PROCESS_REFERENCE_ID } from "@kie-tools/runtime-tools-gateway-api/dist/types";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { CloudEventForm } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/envelope/components/CloudEventForm/CloudEventForm";
 import { useOpenApi } from "../../context/OpenApiContext";
 import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";
@@ -34,6 +34,7 @@ import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
 import { ErrorPage } from "../ErrorPage";
 import { CloudEventFormDefaultValues } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm";
+import { CloudEventFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/api/CloudEventFormDriver";
 
 const defaultValues: CloudEventFormDefaultValues = {
   instanceId: "",
@@ -121,7 +122,7 @@ export function CloudEventFormPage() {
   const driver: CloudEventFormDriver = useMemo(
     () => ({
       triggerCloudEvent(event: CloudEventRequest): Promise<void> {
-        const isTriggerNewInstance = !event.headers.extensions[SONATAFLOW_PROCESS_REFERENCE_ID]?.length;
+        const isTriggerNewInstance = !event.headers.extensions[KOGITO_PROCESS_REFERENCE_ID]?.length;
         const doTrigger = isTriggerNewInstance ? triggerStartCloudEvent : triggerCloudEvent;
         return doTrigger(event);
       },

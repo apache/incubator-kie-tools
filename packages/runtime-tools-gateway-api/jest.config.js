@@ -17,12 +17,23 @@
  * under the License.
  */
 
-export type JsonType = { [key: string]: string | number | boolean };
-
-export enum SCHEMA_VERSION {
-  DRAFT_7 = "http://json-schema.org/draft-07/schema#",
-  DRAFT_2019_09 = "https://json-schema.org/draft/2019-09/schema",
-}
-export interface FormRendererApi {
-  doReset: () => void;
-}
+module.exports = {
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.json",
+    },
+  },
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  transformIgnorePatterns: [],
+  transform: {
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+  },
+};
