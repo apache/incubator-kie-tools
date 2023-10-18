@@ -1186,6 +1186,11 @@ export function KeyboardShortcuts({
         attr: "dmndi:DMNDiagramElement",
         __$$element: "dmndi:DMNEdge",
       });
+      idRandomizer.ack<any>({
+        json: clipboard.widths,
+        type: "KIE__tComponentsWidthsExtension",
+        attr: "kie:ComponentWidths",
+      });
       idRandomizer.randomize();
 
       // FIXME: Tiago --> Slightly offset nodes if positions clash with existing nodes.
@@ -1196,10 +1201,11 @@ export function KeyboardShortcuts({
         state.dmn.model.definitions.artifact ??= [];
         state.dmn.model.definitions.artifact.push(...clipboard.artifacts);
 
-        const { diagramElements, diagram } = addOrGetDefaultDiagram({ definitions: state.dmn.model.definitions });
+        const { diagramElements, widths } = addOrGetDefaultDiagram({ definitions: state.dmn.model.definitions });
         diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
         diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
-        diagram["di:extension"]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"]?.push(...clipboard.widths);
+
+        widths.push(...clipboard.widths);
 
         // FIXME: Tiago --> How to make this reactively?
         for (let i = 0; i < (state.dmn.model.definitions.drgElement ?? []).length; i++) {

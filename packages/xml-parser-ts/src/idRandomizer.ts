@@ -41,6 +41,10 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     }
   ) {}
 
+  public getOriginalIdsSoFar(): Set<string> {
+    return new Set([...this.updaters.keys()]);
+  }
+
   public ack<X extends keyof M>({
     json,
     parentJson,
@@ -53,10 +57,10 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     attr: keyof M[X];
     __$$element?: string;
     parentJson?: any;
-  }): void {
+  }): XmlParserTsIdRandomizer<M> {
     if (json === undefined) {
       console.debug(`ID RANDOMIZER: ack: ${String(type)}.${String(attr)}: ${json}. skip.`);
-      return;
+      return this;
     }
 
     const rootMetaProp = this.args.meta[type][attr];
@@ -140,6 +144,8 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
         }
       }
     }
+
+    return this;
   }
 
   public randomize(): void {

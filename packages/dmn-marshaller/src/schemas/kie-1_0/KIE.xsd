@@ -19,7 +19,7 @@
     <xsd:sequence>
       <xsd:element type="xsd:float" name="width" maxOccurs="unbounded" minOccurs="0" />
     </xsd:sequence>
-    <xsd:attribute type="xsd:string" name="dmnElementRef" />
+    <xsd:attribute type="xsd:QName" name="dmnElementRef" />
   </xsd:complexType>
 
   <xsd:complexType name="tAttachment">

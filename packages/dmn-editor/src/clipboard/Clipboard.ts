@@ -17,6 +17,7 @@ import { KIE, Namespaced } from "@kie-tools/dmn-marshaller/dist/kie-extensions";
 import { KIE__tComponentWidths } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { DataType } from "../dataTypes/DataTypes";
 import { parseXmlHref } from "../xml/xmlHrefs";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export const DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--diagram" as const;
 export const DMN_EDITOR_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
@@ -163,7 +164,17 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
     }
   );
 
-  // FIXME: Tiago --> Populate `widths` from the copied Boxed Expressions inside Nodes.
+  const drgElementsTreeIds = getNewDmnIdRandomizer()
+    .ack({ json: clipboard.drgElements, type: "DMN15__tDefinitions", attr: "drgElement" })
+    .getOriginalIdsSoFar();
+
+  clipboard.widths = (
+    dmnEditorState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[dmnEditorState.diagram.drdIndex][
+      "di:extension"
+    ]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"] ?? []
+  ).filter((w: KIE__tComponentWidths) => {
+    return drgElementsTreeIds.has(w["@_dmnElementRef"]!);
+  });
 
   const artifacts = dmnEditorState.dmn.model.definitions.artifact ?? [];
 

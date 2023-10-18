@@ -71,6 +71,7 @@ import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/re
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const dispatch = useDmnEditorStore((s) => s.dispatch);
   const boxedExpressionEditor = useDmnEditorStore((s) => s.boxedExpressionEditor);
 
@@ -78,7 +79,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
 
   const widthsById = useMemo(() => {
     return (
-      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.[
+      thisDmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[diagram.drdIndex]["di:extension"]?.[
         "kie:ComponentsWidthsExtension"
       ]?.["kie:ComponentWidths"] ?? []
     ).reduce((acc, c) => {
@@ -88,7 +89,7 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
         return acc.set(c["@_dmnElementRef"], c["kie:width"] ?? []);
       }
     }, new Map<string, number[]>());
-  }, [thisDmn.model.definitions]);
+  }, [diagram.drdIndex, thisDmn.model.definitions]);
 
   const expression = useMemo(() => {
     if (!boxedExpressionEditor.activeDrgElementId) {
