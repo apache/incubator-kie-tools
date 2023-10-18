@@ -118,13 +118,13 @@ export function DataTypes() {
         return;
       }
 
-      const idRandomizer = getNewDmnIdRandomizer();
-      idRandomizer.ack({
-        json: clipboard.itemDefinitions,
-        type: "DMN15__tDefinitions",
-        attr: "itemDefinition",
-      });
-      idRandomizer.randomize();
+      getNewDmnIdRandomizer()
+        .ack({
+          json: clipboard.itemDefinitions,
+          type: "DMN15__tDefinitions",
+          attr: "itemDefinition",
+        })
+        .randomize();
 
       for (const itemDefinition of clipboard.itemDefinitions) {
         addTopLevelItemDefinition(itemDefinition);

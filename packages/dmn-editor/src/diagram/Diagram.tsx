@@ -1171,28 +1171,36 @@ export function KeyboardShortcuts({
         return;
       }
 
-      const idRandomizer = getNewDmnIdRandomizer();
-      idRandomizer.ack({ json: clipboard.drgElements, type: "DMN15__tDefinitions", attr: "drgElement" });
-      idRandomizer.ack({ json: clipboard.artifacts, type: "DMN15__tDefinitions", attr: "artifact" });
-      idRandomizer.ack({
-        json: clipboard.shapes,
-        type: "DMNDI15__DMNDiagram",
-        attr: "dmndi:DMNDiagramElement",
-        __$$element: "dmndi:DMNShape",
-      });
-      idRandomizer.ack({
-        json: clipboard.edges,
-        type: "DMNDI15__DMNDiagram",
-        attr: "dmndi:DMNDiagramElement",
-        __$$element: "dmndi:DMNEdge",
-      });
-      // FIXME: Tiago --> This `any` argument ideally wouldn't be here, but the type of `dmn15meta` is not being composed with `kie10meta` in compile-time.
-      idRandomizer.ack<any>({
-        json: clipboard.widths,
-        type: "KIE__tComponentsWidthsExtension",
-        attr: "kie:ComponentWidths",
-      });
-      idRandomizer.randomize();
+      getNewDmnIdRandomizer()
+        .ack({
+          json: clipboard.drgElements,
+          type: "DMN15__tDefinitions",
+          attr: "drgElement",
+        })
+        .ack({
+          json: clipboard.artifacts,
+          type: "DMN15__tDefinitions",
+          attr: "artifact",
+        })
+        .ack({
+          json: clipboard.shapes,
+          type: "DMNDI15__DMNDiagram",
+          attr: "dmndi:DMNDiagramElement",
+          __$$element: "dmndi:DMNShape",
+        })
+        .ack({
+          json: clipboard.edges,
+          type: "DMNDI15__DMNDiagram",
+          attr: "dmndi:DMNDiagramElement",
+          __$$element: "dmndi:DMNEdge",
+        })
+        .ack<any>({
+          // FIXME: Tiago --> This `any` argument ideally wouldn't be here, but the type of `dmn15meta` is not being composed with `kie10meta` in compile-time
+          json: clipboard.widths,
+          type: "KIE__tComponentsWidthsExtension",
+          attr: "kie:ComponentWidths",
+        })
+        .randomize();
 
       // FIXME: Tiago --> Slightly offset nodes if positions clash with existing nodes.
 

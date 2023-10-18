@@ -41,7 +41,7 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
     }
   ) {}
 
-  public getOriginalIdsSoFar(): Set<string> {
+  public getOriginalIds(): Set<string> {
     return new Set([...this.updaters.keys()]);
   }
 

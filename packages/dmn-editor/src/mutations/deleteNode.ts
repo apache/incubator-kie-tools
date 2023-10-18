@@ -1,9 +1,9 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { NodeType } from "../diagram/connections/graphStructure";
-import { NodeNature, nodeNatures } from "./NodeNature";
+import { NodeNature } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export function deleteNode({
   definitions,
@@ -16,11 +16,9 @@ export function deleteNode({
   dmnObjectId: string | undefined;
   dmnObjectQName: XmlQName;
 }) {
-  const { diagramElements } = addOrGetDefaultDiagram({ definitions });
+  const { diagramElements, widthsExtension } = addOrGetDefaultDiagram({ definitions });
 
-  // Edges are deleted by a separate call to `deleteEdge`.
-
-  // FIXME: Tiago --> Delete extension elements when deleting nodes that contain expressions. What else needs to be clened up?
+  // Edges need to be deleted by a separate call to `deleteEdge` prior to this.
 
   // delete the DMNShape
   const shapeDmnElementRef = buildXmlQName(dmnObjectQName);
@@ -38,10 +36,19 @@ export function deleteNode({
         1
       );
     } else if (nodeNature === NodeNature.DRG_ELEMENT) {
-      definitions.drgElement?.splice(
+      const deleted = definitions.drgElement?.splice(
         (definitions.drgElement ?? []).findIndex((d) => d["@_id"] === dmnObjectId),
         1
       );
+
+      const deletedIdsOnDrgElementTree = getNewDmnIdRandomizer()
+        .ack({ json: deleted, type: "DMN15__tDefinitions", attr: "drgElement" })
+        .getOriginalIds();
+
+      // Delete widths
+      widthsExtension["kie:ComponentWidths"] = widthsExtension["kie:ComponentWidths"]?.filter((w) => {
+        !deletedIdsOnDrgElementTree.has(w["@_dmnElementRef"]!);
+      });
     } else if (nodeNature === NodeNature.UNKNOWN) {
       // Ignore. There's no dmnObject here.
     } else {

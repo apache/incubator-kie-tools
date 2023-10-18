@@ -162,13 +162,13 @@ export function ItemComponentsTable({
                         return;
                       }
 
-                      const idRandomizer = getNewDmnIdRandomizer();
-                      idRandomizer.ack({
-                        json: clipboard.itemDefinitions,
-                        type: "DMN15__tDefinitions",
-                        attr: "itemDefinition",
-                      });
-                      idRandomizer.randomize();
+                      getNewDmnIdRandomizer()
+                        .ack({
+                          json: clipboard.itemDefinitions,
+                          type: "DMN15__tDefinitions",
+                          attr: "itemDefinition",
+                        })
+                        .randomize();
 
                       for (const itemDefinition of clipboard.itemDefinitions) {
                         addItemComponent(parent.itemDefinition["@_id"]!, "unshift", itemDefinition);
@@ -410,13 +410,13 @@ export function ItemComponentsTable({
 
                                     const newItemDefinitionCopy = JSON.parse(JSON.stringify(newItemDefinition)); // Necessary because idRandomizer will mutate this object.
 
-                                    const idRandomizer = getNewDmnIdRandomizer();
-                                    idRandomizer.ack({
-                                      json: [newItemDefinitionCopy],
-                                      type: "DMN15__tDefinitions",
-                                      attr: "itemDefinition",
-                                    });
-                                    idRandomizer.randomize();
+                                    getNewDmnIdRandomizer()
+                                      .ack({
+                                        json: [newItemDefinitionCopy],
+                                        type: "DMN15__tDefinitions",
+                                        attr: "itemDefinition",
+                                      })
+                                      .randomize();
 
                                     itemDefinitions.unshift(newItemDefinitionCopy);
 
@@ -475,13 +475,13 @@ export function ItemComponentsTable({
                                         return;
                                       }
 
-                                      const idRandomizer = getNewDmnIdRandomizer();
-                                      idRandomizer.ack({
-                                        json: clipboard.itemDefinitions,
-                                        type: "DMN15__tDefinitions",
-                                        attr: "itemDefinition",
-                                      });
-                                      idRandomizer.randomize();
+                                      getNewDmnIdRandomizer()
+                                        .ack({
+                                          json: clipboard.itemDefinitions,
+                                          type: "DMN15__tDefinitions",
+                                          attr: "itemDefinition",
+                                        })
+                                        .randomize();
 
                                       for (const itemDefinition of clipboard.itemDefinitions) {
                                         addItemComponent(dt.itemDefinition["@_id"]!, "unshift", itemDefinition);
