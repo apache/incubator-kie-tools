@@ -1186,6 +1186,7 @@ export function KeyboardShortcuts({
         attr: "dmndi:DMNDiagramElement",
         __$$element: "dmndi:DMNEdge",
       });
+      // FIXME: Tiago --> This `any` argument ideally wouldn't be here, but the type of `dmn15meta` is not being composed with `kie10meta` in compile-time.
       idRandomizer.ack<any>({
         json: clipboard.widths,
         type: "KIE__tComponentsWidthsExtension",

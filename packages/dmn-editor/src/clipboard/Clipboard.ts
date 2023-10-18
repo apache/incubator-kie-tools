@@ -172,9 +172,7 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
     dmnEditorState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[dmnEditorState.diagram.drdIndex][
       "di:extension"
     ]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"] ?? []
-  ).filter((w: KIE__tComponentWidths) => {
-    return drgElementsTreeIds.has(w["@_dmnElementRef"]!);
-  });
+  ).filter((w: KIE__tComponentWidths) => drgElementsTreeIds.has(w["@_dmnElementRef"]!));
 
   const artifacts = dmnEditorState.dmn.model.definitions.artifact ?? [];
 
