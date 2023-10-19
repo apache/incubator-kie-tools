@@ -17,18 +17,25 @@ export function PropertiesPanelHeader(props: {
   action?: React.ReactNode;
 }) {
   const propertiesPanelHeaderClass = useMemo(() => {
-    const className = "kie-dmn-editor--properties-panel-header";
+    let className = "kie-dmn-editor--properties-panel-header";
     if (props.fixed) {
-      return `${className} kie-dmn-editor--properties-panel-header-fixed`;
+      className += " kie-dmn-editor--properties-panel-header-fixed";
+    } else {
+      className += " kie-dmn-editor--properties-panel-header-not-fixed";
     }
+
+    if (props.fixed || !props.expands || !props.isSectionExpanded) {
+      className += " kie-dmn-editor--properties-panel-header-border";
+    }
+
     return className;
-  }, [props.fixed]);
+  }, [props.expands, props.fixed, props.isSectionExpanded]);
 
   return (
     <div className={propertiesPanelHeaderClass}>
       <div className={"kie-dmn-editor--properties-panel-header-items"}>
         {props.expands && (
-          <div style={{ width: "40px", flexShrink: 0 }}>
+          <div className={"kie-dmn-editor--properties-panel-header-toogle-expanded"}>
             <Button
               variant={ButtonVariant.plain}
               className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
@@ -38,11 +45,11 @@ export function PropertiesPanelHeader(props: {
             </Button>
           </div>
         )}
-        {props.icon && <div style={{ width: "40px", height: "40px", marginRight: 0, flexShrink: 0 }}>{props.icon}</div>}
-        <div style={{ marginLeft: "10px", flexGrow: 1 }}>
+        {props.icon && <div className={"kie-dmn-editor--properties-panel-header-icon"}>{props.icon}</div>}
+        <div className={"kie-dmn-editor--properties-panel-header-title"}>
           {typeof props.title === "string" ? <Truncate content={props.title} /> : props.title}
         </div>
-        {props.action && <div style={{ width: "40px", flexShrink: 0 }}>{props.action}</div>}
+        {props.action && <div className={"kie-dmn-editor--properties-panel-header-action"}>{props.action}</div>}
       </div>
     </div>
   );

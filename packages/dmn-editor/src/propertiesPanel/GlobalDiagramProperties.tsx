@@ -120,7 +120,7 @@ export function GlobalDiagramProperties() {
       >
         {isIdNamespaceSectionExpanded && (
           <>
-            <FormSection style={{ paddingLeft: "20px" }}>
+            <FormSection style={{ paddingLeft: "20px", marginTop: 0 }}>
               <FormGroup label="ID">
                 <ClipboardCopy
                   isReadOnly={false}
