@@ -17,12 +17,10 @@
  * under the License.
  */
 
-import { getUploadStatus, postUpload } from "../DevDeploymentUploadAppApi";
 import {
   DeploymentResource,
   IngressResource,
   KieSandboxDeployment,
-  ServiceResource,
   defaultAnnotationTokens,
   defaultLabelTokens,
 } from "./types";
@@ -33,14 +31,9 @@ import {
   K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KubernetesConnectionStatus, KubernetesService } from "./KubernetesService";
-import {
-  CHECK_UPLOAD_STATUS_POLLING_TIME,
-  DeployArgs,
-  KieSandboxDevDeploymentsService,
-} from "./KieSandboxDevDeploymentsService";
-import { DeploymentState } from "./common";
+import { DeployArgs, KieSandboxDevDeploymentsService } from "./KieSandboxDevDeploymentsService";
 import { selfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReviewYaml";
-import { createDeploymentYamls } from "./resources/kubernetes";
+import { createKubernetesDeploymentYamls } from "./resources/kubernetes";
 
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
@@ -108,52 +101,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     return [];
   }
 
-  public async listServices(): Promise<ServiceResource[]> {
-    const rawServicesApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Service")?.get("v1");
-    const servicesApiPath = rawServicesApiUrl?.path.namespaced ?? rawServicesApiUrl?.path.global;
-    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-
-    if (servicesApiPath) {
-      const services = await this.kubernetesService
-        .kubernetesFetch(`${servicesApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
-        .then((data) => data.json());
-      return services.items.map((item: ServiceResource) => ({ ...item, kind: "Service" })) as ServiceResource[];
-    }
-
-    return [];
-  }
-
-  public async listDeployments(): Promise<DeploymentResource[]> {
-    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
-    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-
-    if (deploymentsApiPath) {
-      const deployments = await this.kubernetesService
-        .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
-        .then((data) => data.json());
-      return deployments.items.map((item: DeploymentResource) => ({
-        ...item,
-        kind: "Deployment",
-      })) as DeploymentResource[];
-    }
-
-    return [];
-  }
-
-  public async getDeployment(resourceId: string): Promise<DeploymentResource> {
-    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
-
-    if (!deploymentsApiPath) {
-      throw new Error("No Deployment API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}/${resourceId}`)
-      .then((data) => data.json());
-  }
-
   public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
     const deployments = await this.listDeployments();
 
@@ -219,41 +166,8 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
       });
   }
 
-  public async uploadAssets(args: {
-    deployment: DeploymentResource;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-    apiKey: string;
-  }) {
-    return new Promise<void>((resolve, reject) => {
-      let deploymentState = this.kubernetesService.extractDeploymentState({ deployment: args.deployment });
-      const interval = setInterval(async () => {
-        if (deploymentState !== DeploymentState.UP) {
-          const deployment = await this.getDeployment(args.deployment.metadata.name);
-          deploymentState = this.kubernetesService.extractDeploymentState({ deployment });
-        } else {
-          try {
-            const uploadStatus = await getUploadStatus({ baseUrl: args.baseUrl });
-            if (uploadStatus === "NOT_READY") {
-              return;
-            }
-            clearInterval(interval);
-            if (uploadStatus === "READY") {
-              await postUpload({ baseUrl: args.baseUrl, workspaceZipBlob: args.workspaceZipBlob, apiKey: args.apiKey });
-              resolve();
-            }
-          } catch (e) {
-            console.error(e);
-            reject(e);
-            clearInterval(interval);
-          }
-        }
-      }, CHECK_UPLOAD_STATUS_POLLING_TIME);
-    });
-  }
-
   public async deploy(args: DeployArgs): Promise<void> {
-    const deploymentYamls = createDeploymentYamls.find(
+    const deploymentYamls = createKubernetesDeploymentYamls.find(
       (deploymentOptionYamls) => deploymentOptionYamls.name === args.deploymentOption
     );
 
@@ -292,36 +206,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     }
   }
 
-  public async deleteDeployment(resource: string) {
-    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
-
-    if (!deploymentsApiPath) {
-      throw new Error("No Deployment API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
-        method: "DELETE",
-      })
-      .then((data) => data.json());
-  }
-
-  public async deleteService(resource: string) {
-    const rawServicesApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Service")?.get("v1");
-    const servicesApiPath = rawServicesApiUrl?.path.namespaced ?? rawServicesApiUrl?.path.global;
-
-    if (!servicesApiPath) {
-      throw new Error("No Service API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${servicesApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
-        method: "DELETE",
-      })
-      .then((data) => data.json());
-  }
-
   async deleteIngress(resource: string) {
     const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Ingress")?.get("networking.k8s.io/v1");
     const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
@@ -355,20 +239,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
         }
       })
     );
-  }
-
-  public extractDeploymentStateWithHealthStatus(deployment: DeploymentResource, healtStatus: string): DeploymentState {
-    const state = this.extractDevDeploymentState({ deployment });
-
-    if (state !== DeploymentState.UP) {
-      return state;
-    }
-
-    if (healtStatus !== "UP") {
-      return DeploymentState.ERROR;
-    }
-
-    return DeploymentState.UP;
   }
 
   getIngressUrl(resource: IngressResource): string {

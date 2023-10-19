@@ -26,7 +26,7 @@ import {
   TokenMap,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import Path from "path";
-import { DeploymentCondition, DeploymentResource } from "./types";
+import { Condition, DeploymentResource } from "./types";
 import { DeploymentState } from "./common";
 
 export interface KubernetesConnection {
@@ -132,7 +132,7 @@ export class KubernetesService {
     }
 
     const progressingCondition = args.deployment.status.conditions?.find(
-      (condition: DeploymentCondition) => condition.type === "Progressing"
+      (condition: Condition) => condition.type === "Progressing"
     );
 
     if (!progressingCondition || progressingCondition.status !== "True") {

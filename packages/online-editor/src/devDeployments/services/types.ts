@@ -158,7 +158,16 @@ export type ResourceMetadata = {
   uid: string;
 };
 
-export type IngressResource = {
+export type Condition = {
+  type: string;
+  status: string;
+  reason: string;
+  message: string;
+  lastTransitionTime: string;
+  lastUpdateTime: string;
+};
+
+export type IngressResource = K8sResourceYaml & {
   metadata: ResourceMetadata;
   spec: {
     rules: {
@@ -185,23 +194,30 @@ export type IngressResource = {
       }[];
     };
   };
-} & K8sResourceYaml;
-
-export type ServiceResource = {
-  metadata: ResourceMetadata;
-  spec: any;
-} & K8sResourceYaml;
-
-export type DeploymentCondition = {
-  type: string;
-  status: string;
-  reason: string;
-  message: string;
-  lastTransitionTime: string;
-  lastUpdateTime: string;
 };
 
-export type DeploymentResource = {
+export type RouteResource = K8sResourceYaml & {
+  metadata: ResourceMetadata;
+  spec: {
+    host: string;
+    path: string;
+  };
+  status: {
+    ingress: {
+      host: string;
+      routerCanonicalHostname: string;
+      routerName: string;
+      conditions: Condition[];
+    }[];
+  };
+};
+
+export type ServiceResource = K8sResourceYaml & {
+  metadata: ResourceMetadata;
+  spec: any;
+};
+
+export type DeploymentResource = K8sResourceYaml & {
   metadata: ResourceMetadata;
   spec: {
     replicas: number;
@@ -224,6 +240,6 @@ export type DeploymentResource = {
     readyReplicas: number;
     replicas: number;
     updatedReplicas: number;
-    conditions: DeploymentCondition[];
+    conditions: Condition[];
   };
-} & K8sResourceYaml;
+};

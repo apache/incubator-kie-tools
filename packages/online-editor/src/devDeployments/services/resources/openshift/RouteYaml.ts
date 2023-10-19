@@ -17,36 +17,27 @@
  * under the License.
  */
 
-import { deploymentWithFormWebappYaml } from "./DeploymentWithFormWebappYaml";
-import { deploymentYaml } from "./DeploymentYaml";
-import { formWebappIngressYaml } from "./FormWebappIngressYaml";
-import { formWebappServiceYaml } from "./FormWebappServiceYaml";
-import { ingressYaml } from "./IngressYaml";
-import { serviceYaml } from "./ServiceYaml";
-
-export const createKubernetesDeploymentYamls = [
-  {
-    name: "DMN Dev deployment",
-    content: `
-${deploymentYaml}
----
-${serviceYaml}
----
-${ingressYaml}
-`,
-  },
-  {
-    name: "DMN Dev deployment with Form Webapp",
-    content: `
-${deploymentWithFormWebappYaml}
----
-${serviceYaml}
----
-${formWebappServiceYaml}
----
-${ingressYaml}
----
-${formWebappIngressYaml}
-`,
-  },
-];
+export const routeYaml = `
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: \${{ devDeployment.uniqueName }}
+  namespace: \${{ devDeployment.kubernetes.namespace }}
+  labels:
+    app: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
+    \${{ devDeployment.labels.createdBy }}: kie-tools
+    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
+spec:
+  to:
+    name: \${{ devDeployment.uniqueName }}
+    kind: Service
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: None
+`;

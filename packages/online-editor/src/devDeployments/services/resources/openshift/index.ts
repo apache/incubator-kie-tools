@@ -17,4 +17,36 @@
  * under the License.
  */
 
-export const getProjectApiPath = (namespace: string) => `apis/project.openshift.io/v1/projects/${namespace}`;
+import { deploymentWithFormWebappYaml } from "./DeploymentWithFormWebappYaml";
+import { deploymentYaml } from "./DeploymentYaml";
+import { formWebappRouteYaml } from "./FormWebappRouteYaml";
+import { formWebappServiceYaml } from "./FormWebappServiceYaml";
+import { routeYaml } from "./RouteYaml";
+import { serviceYaml } from "./ServiceYaml";
+
+export const createOpenShiftDeploymentYamls = [
+  {
+    name: "DMN Dev deployment",
+    content: `
+${deploymentYaml}
+---
+${serviceYaml}
+---
+${routeYaml}
+`,
+  },
+  {
+    name: "DMN Dev deployment with Form Webapp",
+    content: `
+${deploymentWithFormWebappYaml}
+---
+${serviceYaml}
+---
+${formWebappServiceYaml}
+---
+${routeYaml}
+---
+${formWebappRouteYaml}
+`,
+  },
+];

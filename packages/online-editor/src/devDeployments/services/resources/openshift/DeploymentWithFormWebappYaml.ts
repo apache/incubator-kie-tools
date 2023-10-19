@@ -17,19 +17,20 @@
  * under the License.
  */
 
-export const createDeploymentYaml = `
+export const deploymentWithFormWebappYaml = `
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+  name: \${{ devDeployment.uniqueName }}
   namespace: \${{ devDeployment.kubernetes.namespace }}
   labels:
-    app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/component: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/instance: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-    app.kubernetes.io/part-of: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+    app: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
+    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
+    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
     \${{ devDeployment.annotations.uri }}: \${{ devDeployment.workspace.resourceName }}
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
@@ -37,33 +38,31 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+      app: \${{ devDeployment.uniqueName }}
   template:
     metadata:
       labels:
-        app: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-        deploymentconfig: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
+        app: \${{ devDeployment.uniqueName }}
+        deploymentconfig: \${{ devDeployment.uniqueName }}
     spec:
       containers:
-        - name: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-          image: \${{ devDeployment.defaultContainerImageUrl }}
+        - name: \${{ devDeployment.uniqueName }}
+          image: \${{ devDeployment.devDeploymentBaseImageUrl }}
+          imagePullPolicy: \${{ devDeployment.imagePullPolicy }}
           ports:
             - containerPort: 8080
               protocol: TCP
           env:
-            - name: BASE_URL
-              value: http://localhost/\${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
             - name: QUARKUS_PLATFORM_VERSION
               value: 2.16.7.Final
             - name: KOGITO_RUNTIME_VERSION
               value: 1.40.0.Final
-            - name: ROOT_PATH
-              value: \${{ devDeployment.name }}-\${{ devDeployment.uniqueId }}
-          resources: {}
-          imagePullPolicy: Always
+            - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
+              value: \${{ devDeployment.uploadService.apiKey }}
+        - name: \${{ devDeployment.uniqueName }}-form-webapp
+          image: \${{ devDeployment.devDeploymentFormWebappImageUrl }}
+          imagePullPolicy: \${{ devDeployment.imagePullPolicy }}
+          ports:
+            - containerPort: 8081
+              protocol: TCP
 `;
-
-export const getDeploymentListApiPath = (namespace: string, labelSelector?: string) => {
-  const selector = labelSelector ? `?labelSelector=${labelSelector}` : "";
-  return `apis/app/v1/namespaces/${namespace}/deployments${selector}`;
-};
