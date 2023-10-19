@@ -13,7 +13,7 @@ export interface DraggableContext {
   onDragEnd: (index: number) => void;
 }
 
-const DraggableContext = React.createContext<DraggableContext>({} as any);
+export const DraggableContext = React.createContext<DraggableContext>({} as any);
 
 export function useDraggableContext() {
   return useContext(DraggableContext);
@@ -66,26 +66,47 @@ export function DraggableContextProvider({
 }
 
 export function Draggable(props: React.PropsWithChildren<{ index: number }>) {
-  const { dest, dragging, onDragStart, onDragEnter, onDragEnd } = useDraggableContext();
+  const { source, dest, dragging, onDragStart, onDragEnter, onDragEnd } = useDraggableContext();
+  const [draggable, setDraggable] = useState(false);
+  const [hover, setHover] = useState(false);
 
-  const destClassName = useMemo(
-    () => (props.index === dest ? "kie-dmn-editor--draggable-row-dest" : ""),
-    [dest, props.index]
-  );
-
-  const draggingClassName = useMemo(() => (dragging ? "kie-dmn-editor--draggable-row-dragging" : ""), [dragging]);
+  const rowClassName = useMemo(() => {
+    let className = "kie-dmn-editor--draggable-row";
+    if (props.index === dest) {
+      className += " kie-dmn-editor--draggable-row-dest";
+    }
+    if (hover) {
+      className += " kie-dmn-editor--draggable-row-hovered";
+    }
+    return className;
+  }, [dest, props.index, hover]);
 
   return (
-    <div className={`kie-dmn-editor--draggable-row ${destClassName} ${draggingClassName}`}>
-      <Icon
-        className={"kie-dmn-editor--draggable-icon"}
-        draggable={true}
-        onDragStart={() => onDragStart(props.index)}
-        onDragEnter={() => onDragEnter(props.index)}
-        onDragEnd={() => onDragEnd(props.index)}
-      >
-        <GripVerticalIcon />
-      </Icon>
+    <div
+      className={rowClassName}
+      draggable={dragging || draggable}
+      onDragStart={() => onDragStart(props.index)}
+      onDragEnter={() => onDragEnter(props.index)}
+      onDragEnd={() => onDragEnd(props.index)}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+      onPointerOver={() => setHover(true)}
+    >
+      {
+        <Icon
+          className={"kie-dmn-editor--draggable-icon"}
+          onPointerEnter={() => setDraggable(true)}
+          onPointerLeave={() => setDraggable(false)}
+        >
+          <GripVerticalIcon
+            className={
+              props.index === source || hover
+                ? "kie-dmn-editor--draggable-icon-svg-hovered"
+                : "kie-dmn-editor--draggable-icon-svg"
+            }
+          />
+        </Icon>
+      }
       <div className={"kie-dmn-editor--draggable-children"}>{props.children}</div>
     </div>
   );
