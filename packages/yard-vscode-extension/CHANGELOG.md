@@ -9,3 +9,4 @@
 - [KOGITO-7526](https://issues.redhat.com/browse/KOGITO-7526) - [yard Editor] First draft of yard UI editor
 - [KOGITO-7576](https://issues.redhat.com/browse/KOGITO-7576) - [yard Editor] First draft of General and Decision Inputs tabs
 - [KOGITO-8720](https://issues.redhat.com/browse/KOGITO-8720) - Auto complete and YAML schema validation for YARD Editor
+- [KOGITO-9704](https://issues.redhat.com/browse/KOGITO-9704) - [yard Editor] Add diagram to YaRD editor

@@ -16,8 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export interface WorkflowFormDriver {
-  resetBusinessKey(): Promise<void>;
-  getCustomWorkflowSchema(): Promise<Record<string, any>>;
-  startWorkflow(endpoint: string, data: Record<string, any>): Promise<void>;
-}

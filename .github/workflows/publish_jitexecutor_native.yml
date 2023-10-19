@@ -23,6 +23,10 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
+      - name: "Set long paths for Windows"
+        if: runner.os == 'Windows'
+        run: git config --system core.longpaths true
+
       - name: "Checkout kogito-apps"
         uses: actions/checkout@v3
         with:
@@ -40,10 +44,6 @@ jobs:
         with:
           java-version: "11"
           distribution: "zulu"
-
-      - name: "Set long paths for Windows"
-        if: runner.os == 'Windows'
-        run: git config --system core.longpaths true
 
       - name: "Build macOS"
         if: runner.os == 'macOS'
