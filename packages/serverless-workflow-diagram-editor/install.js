@@ -22,7 +22,6 @@ const { setup } = require("@kie-tools/maven-config-setup-helper");
 
 const fs = require("fs").promises;
 const path = require("path");
-const constants = require("./package.json").constants;
 const download = require("mvn-artifact-download").default;
 const AdmZip = require("adm-zip");
 
@@ -42,7 +41,7 @@ const artifacts = new Map([
     {
       groupId: "org.uberfire",
       artifactId: "uberfire-workbench-client-views-patternfly",
-      version: constants.UBERFIRE_VERSION,
+      version: buildEnv.env.swfDiagramEditor.UBERFIRE__version,
     },
     [
       {
@@ -71,11 +70,14 @@ const artifacts = new Map([
     {
       groupId: "org.webjars",
       artifactId: "font-awesome",
-      version: constants.FONT_AWESOME_VERSION,
+      version: buildEnv.env.swfDiagramEditor.FONT_AWESOME__version,
     },
     [
       {
-        path: "META-INF/resources/webjars/font-awesome/" + constants.FONT_AWESOME_VERSION + "/css/font-awesome.min.css",
+        path:
+          "META-INF/resources/webjars/font-awesome/" +
+          buildEnv.env.swfDiagramEditor.FONT_AWESOME__version +
+          "/css/font-awesome.min.css",
         type: "css",
       },
     ],
@@ -84,7 +86,7 @@ const artifacts = new Map([
     {
       groupId: "org.gwtbootstrap3",
       artifactId: "gwtbootstrap3",
-      version: constants.GWTBOOTSTRAP3_VERSION,
+      version: buildEnv.env.swfDiagramEditor.GWTBOOTSTRAP3__version,
     },
     [
       {
@@ -101,11 +103,14 @@ const artifacts = new Map([
     {
       groupId: "org.webjars",
       artifactId: "bootstrap",
-      version: constants.BOOTSTRAP_VERSION,
+      version: buildEnv.env.swfDiagramEditor.BOOTSTRAP__version,
     },
     [
       {
-        path: "META-INF/resources/webjars/bootstrap/" + constants.BOOTSTRAP_VERSION + "/js/bootstrap.min.js",
+        path:
+          "META-INF/resources/webjars/bootstrap/" +
+          buildEnv.env.swfDiagramEditor.BOOTSTRAP__version +
+          "/js/bootstrap.min.js",
         type: "js",
       },
     ],
@@ -114,11 +119,14 @@ const artifacts = new Map([
     {
       groupId: "org.webjars",
       artifactId: "animate.css",
-      version: constants.ANIMATE_CSS_VERSION,
+      version: buildEnv.env.swfDiagramEditor.ANIMATE_CSS__version,
     },
     [
       {
-        path: "META-INF/resources/webjars/animate.css/" + constants.ANIMATE_CSS_VERSION + "/animate.min.css",
+        path:
+          "META-INF/resources/webjars/animate.css/" +
+          buildEnv.env.swfDiagramEditor.ANIMATE_CSS__version +
+          "/animate.min.css",
         type: "css",
       },
     ],
