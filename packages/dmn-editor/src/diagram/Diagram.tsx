@@ -649,7 +649,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                 deleteDecisionFromDecisionService({
                   definitions: state.dmn.model.definitions,
                   decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
-                  decisionServiceId: nodeBeingDragged.data.dmnObject!["@_id"]!,
+                  decisionServiceId: p.data.dmnObject!["@_id"]!,
                 });
               }
             } else {
