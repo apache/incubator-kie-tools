@@ -28,16 +28,11 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
-  // toogle to upda
-  const [updateKeyToggle, toogleKey] = useState<boolean>(false);
   // used to perform undo/redo
   const valuesCache = useRef<Namespaced<"kie", KIE__tAttachment>[]>([]);
+  const valuesUuid = useRef<string[]>([]);
   // all expaded urls
   const [expandedUrls, setExpandedUrls] = useState<boolean[]>([]);
-
-  const updateKey = useCallback(() => {
-    toogleKey((prev) => !prev);
-  }, []);
 
   const onNewUrl = useCallback(() => {
     const newValues = [...(values ?? [])];
@@ -51,9 +46,9 @@ export function DocumentationLinksFormGroup({
     });
 
     valuesCache.current = [...newValues];
+    valuesUuid.current = [...valuesUuid.current, generateUuid()];
     onChange?.(newValues);
-    updateKey();
-  }, [onChange, updateKey, values]);
+  }, [onChange, values]);
 
   const onChangeUrl = useCallback(
     (args: { index: number; newUrlTitle?: string; newUrl?: string }) => {
@@ -82,7 +77,10 @@ export function DocumentationLinksFormGroup({
 
       valuesCache.current = [...newValues];
       onChange?.(newValues);
-      updateKey();
+
+      const newUuids = [...valuesUuid.current];
+      newUuids.splice(index, 1);
+      valuesUuid.current = newUuids;
 
       // Expand the URL
       setExpandedUrls((prev) => {
@@ -91,7 +89,7 @@ export function DocumentationLinksFormGroup({
         return newUrlExpanded;
       });
     },
-    [onChange, updateKey, values]
+    [onChange, values]
   );
 
   const setUrlExpanded = useCallback((isExpanded: boolean, index: number) => {
@@ -115,18 +113,23 @@ export function DocumentationLinksFormGroup({
         return newUrlExpanded;
       });
 
+      const reordenedUuid = [...valuesUuid.current];
+      const [removedUuid] = reordenedUuid.splice(source, 1);
+      reordenedUuid.splice(dest, 0, removedUuid);
+      valuesUuid.current = reordenedUuid;
+
+      valuesCache.current = reordened;
       onChange?.(reordened);
-      updateKey();
     },
-    [onChange, updateKey, values]
+    [onChange, values]
   );
 
   useEffect(() => {
     if (JSON.stringify(values) !== JSON.stringify(valuesCache.current)) {
-      updateKey();
+      valuesUuid.current = valuesUuid.current?.map(() => generateUuid());
       valuesCache.current = [...(values ?? [])];
     }
-  }, [values, updateKey]);
+  }, [values]);
 
   return (
     <FormGroup
@@ -144,14 +147,15 @@ export function DocumentationLinksFormGroup({
         />
       }
     >
-      <React.Fragment>
+      <ul id={"documentation-links-list"}>
         {(values ?? []).length === 0 ? (
-          <div className={"kie-dmn-editor--documentation-link--none-yet"}>None yet</div>
+          <li className={"kie-dmn-editor--documentation-link--none-yet"}>None yet</li>
         ) : (
           <DraggableContextProvider reorder={reorder}>
             {values?.map((kieAttachment, index) => (
-              <div
-                key={updateKeyToggle ? index + 99999999 : index - 99999999}
+              <li
+                key={valuesUuid.current?.[index] ?? generateUuid()}
+                id={valuesUuid.current?.[index] ?? generateUuid()}
                 className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
               >
                 <Draggable index={index}>
@@ -167,11 +171,11 @@ export function DocumentationLinksFormGroup({
                     setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
                   />
                 </Draggable>
-              </div>
+              </li>
             ))}
           </DraggableContextProvider>
         )}
-      </React.Fragment>
+      </ul>
     </FormGroup>
   );
 }

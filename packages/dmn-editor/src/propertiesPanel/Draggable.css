@@ -4,17 +4,19 @@
   background-color: transparent;
 }
 
-.kie-dmn-editor--draggable-row-dest {
+.kie-dmn-editor--draggable-row-hovered {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-.kie-dmn-editor--draggable-row-hovered {
-  background-color: rgba(128, 128, 128, 0.05);
+.kie-dmn-editor--draggable-row-aaa {
+  opacity: 0;
 }
 
 .kie-dmn-editor--draggable-icon {
   margin-top: 4px;
   margin-right: 8px;
+  padding-left: 24px;
+  padding-right: 8px;
   cursor: grab;
 }
 
