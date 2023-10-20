@@ -17,7 +17,6 @@
 
     <modules>
         <module>gwtbootstrap3</module>
-        <module>stylesheets</module>
         <module>gwtproject</module>
         <module>errai</module>
     </modules>
