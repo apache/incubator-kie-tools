@@ -51,7 +51,6 @@ export function getNewItemDefinition(partial?: Partial<DMN15__tItemDefinition>) 
     "@_name": "New data type",
     "@_isCollection": false,
     "@_typeLanguage": SPEC.typeLanguage.default,
-    typeRef: DmnBuiltInDataType.Any,
     ...(partial ?? {}),
   };
 }
