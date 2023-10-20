@@ -39,7 +39,7 @@ export function ExternalNodesPanel() {
 
   return (
     <>
-      {(thisDmn.model.definitions.import ?? []).length === 0 && (
+      {externalDmnsByNamespace.size === 0 && (
         <>
           <EmptyState>
             <EmptyStateIcon icon={CubesIcon} />

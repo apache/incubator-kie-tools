@@ -247,9 +247,16 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           return undefined;
         }
 
-        const dmnObjectNamespace = thisDmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`];
+        // If the QName is composite, we try and get the namespace from the XML namespace declarations. If it's not found, we use `UNKNOWN_DMN_NAMESPACE`
+        // If the QName is simple, we simply say that the namespace is undefined, which is the same as the default namespace.
+        const dmnObjectNamespace = dmnObjectQName.prefix
+          ? thisDmn.model.definitions[`@_xmlns:${dmnObjectQName.prefix}`] ?? UNKNOWN_DMN_NAMESPACE
+          : undefined;
+
         const id = buildXmlHref({ namespace: dmnObjectNamespace, id: dmnObjectQName.localPart });
+
         const { dmnElementRefQName, ...shape } = dmnShapesByHref.get(id)!;
+
         const data: DmnDiagramNodeData = {
           dmnObjectNamespace,
           dmnObjectQName,
