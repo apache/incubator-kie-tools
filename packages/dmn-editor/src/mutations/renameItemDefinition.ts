@@ -1,7 +1,7 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import {
   findDataTypeById,
-  traverseItemDefinition,
+  traverseItemDefinitions,
   traverseTypeRefedInExpressionHolders,
 } from "../dataTypes/DataTypeSpec";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
@@ -34,7 +34,7 @@ export function renameItemDefinition({
 
   // Is top-level itemDefinition
   if (!dataType?.parentId) {
-    traverseItemDefinition(definitions.itemDefinition ?? [], (item) => {
+    traverseItemDefinitions(definitions.itemDefinition ?? [], (item) => {
       if (item.typeRef === itemDefinition["@_name"]) {
         item.typeRef = trimmedNewName;
       }

@@ -78,15 +78,21 @@ export function canHaveConstraints(itemDefinition: DMN15__tItemDefinition) {
   );
 }
 
-export function traverseItemDefinition(
+export function traverseItemDefinitions(
   items: DMN15__tItemDefinition[],
   consumer: (itemDefinition: DMN15__tItemDefinition) => void
 ) {
   for (let i = 0; i < (items.length ?? 0); i++) {
     consumer(items[i]);
-    traverseItemDefinition(items[i].itemComponent ?? [], consumer);
+    traverseItemDefinitions(items[i].itemComponent ?? [], consumer);
   }
 }
+
+export type AllExpressions = NonNullable<DMN15__tDecision["expression"]>;
+export type AllExpressionsWithoutTypes = Omit<AllExpressions, "__$$element">;
+export type AllExpressionTypes = AllExpressions["__$$element"];
+
+// TypeRef'ed
 
 export function traverseTypeRefedInExpressionHolders(
   expressionHolder:
@@ -107,9 +113,7 @@ export function traverseTypeRefedInExpressionHolders(
   }
 }
 
-export type AllExpressions = NonNullable<DMN15__tDecision["expression"]>;
-export type AllExpressionsWithoutTypes = Omit<AllExpressions, "__$$element">;
-export type AllExpressionTypes = AllExpressions["__$$element"];
+// FIXME: Tiago --> This could be refactored to be a special method that we execute inside the `consumer` of `traverseExpressions`.
 
 export function traverseTypeRefedInExpressions(
   expression: AllExpressionsWithoutTypes | undefined,
@@ -188,6 +192,87 @@ export function traverseTypeRefedInExpressions(
     consumer(e.in);
     traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.return.expression, e.return.expression?.__$$element, consumer);
+  } else {
+    throw new Error(`Unknown type of expression '${__$$element}'.`);
+  }
+}
+
+// Expressions
+
+export function traverseExpressionsInExpressionHolders(
+  expressionHolder:
+    | (DMN15__tDecision & { __$$element: "decision" })
+    | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }),
+  consumer: (expression: AllExpressionsWithoutTypes | undefined, __$$element: AllExpressionTypes | undefined) => void
+) {
+  if (expressionHolder.__$$element === "decision") {
+    if (expressionHolder.expression) {
+      traverseExpressions(expressionHolder.expression, expressionHolder.expression?.__$$element, consumer);
+    }
+  } else if (expressionHolder.__$$element === "businessKnowledgeModel") {
+    if (expressionHolder.encapsulatedLogic) {
+      traverseExpressions(expressionHolder.encapsulatedLogic, "functionDefinition", consumer);
+    }
+  } else {
+    throw new Error(`Unknown type of expression holder '${(expressionHolder as any).__$$element}'`);
+  }
+}
+
+export function traverseExpressions(
+  expression: AllExpressionsWithoutTypes | undefined,
+  __$$element: AllExpressionTypes | undefined,
+  consumer: (expression: AllExpressionsWithoutTypes | undefined, __$$element: AllExpressionTypes | undefined) => void
+) {
+  if (!expression || !__$$element) {
+    return;
+  }
+
+  consumer(expression, __$$element);
+
+  if (__$$element === "literalExpression") {
+    // No nested expressions.
+  } else if (__$$element === "decisionTable") {
+    for (const e of (expression as DMN15__tDecisionTable).input ?? []) {
+      traverseExpressions(e.inputExpression, "literalExpression", consumer);
+    }
+  } else if (__$$element === "relation") {
+    // No nested expressions.
+  } else if (__$$element === "list") {
+    for (const e of (expression as DMN15__tList).expression ?? []) {
+      traverseExpressions(e, e.__$$element, consumer);
+    }
+  } else if (__$$element === "context") {
+    for (const e of (expression as DMN15__tContext).contextEntry ?? []) {
+      traverseExpressions(e.expression, e.expression?.__$$element, consumer);
+    }
+  } else if (__$$element === "invocation") {
+    for (const e of (expression as DMN15__tInvocation).binding ?? []) {
+      traverseExpressions(e.expression, e.expression?.__$$element, consumer);
+    }
+  } else if (__$$element === "functionDefinition") {
+    const e = expression as DMN15__tFunctionDefinition;
+    traverseExpressions(e.expression, e.expression?.__$$element, consumer);
+  } else if (__$$element === "conditional") {
+    const e = expression as DMN15__tConditional;
+    traverseExpressions(e.if.expression, e.if.expression?.__$$element, consumer);
+    traverseExpressions(e.then.expression, e.then.expression?.__$$element, consumer);
+    traverseExpressions(e.else.expression, e.else.expression?.__$$element, consumer);
+  } else if (__$$element === "every") {
+    const e = expression as DMN15__tQuantified;
+    traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
+  } else if (__$$element === "some") {
+    const e = expression as DMN15__tQuantified;
+    traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
+  } else if (__$$element === "filter") {
+    const e = expression as DMN15__tFilter;
+    traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseExpressions(e.match.expression, e.match.expression?.__$$element, consumer);
+  } else if (__$$element === "for") {
+    const e = expression as DMN15__tFor;
+    traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
+    traverseExpressions(e.return.expression, e.return.expression?.__$$element, consumer);
   } else {
     throw new Error(`Unknown type of expression '${__$$element}'.`);
   }

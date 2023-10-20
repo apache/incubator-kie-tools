@@ -1,7 +1,17 @@
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { traverseItemDefinition, traverseTypeRefedInExpressionHolders } from "../dataTypes/DataTypeSpec";
+import {
+  DMN15__tDefinitions,
+  DMN15__tFunctionDefinition,
+  DMN15__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import {
+  traverseExpressionsInExpressionHolders,
+  traverseItemDefinitions,
+  traverseTypeRefedInExpressionHolders,
+} from "../dataTypes/DataTypeSpec";
 import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
+import { DMN15__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { SPEC } from "../Spec";
 
 export function renameImport({
   definitions,
@@ -18,7 +28,7 @@ export function renameImport({
 
   const _import = definitions.import![index];
 
-  traverseItemDefinition(definitions.itemDefinition ?? [], (item) => {
+  traverseItemDefinitions(definitions.itemDefinition ?? [], (item) => {
     if (item.typeRef) {
       const feelQName = parseFeelQName(item.typeRef);
       if (allTopLevelDataTypesByFeelName.get(item.typeRef)?.namespace === _import["@_namespace"]) {
@@ -52,6 +62,22 @@ export function renameImport({
       }
 
       if (element.__$$element === "decision" || element.__$$element === "businessKnowledgeModel") {
+        traverseExpressionsInExpressionHolders(element, (expression, __$$element) => {
+          if (__$$element === "functionDefinition") {
+            const e = expression as DMN15__tFunctionDefinition;
+            if (e["@_kind"] === "PMML") {
+              const pmmlDocument = (e.expression as DMN15__tContext).contextEntry?.find(
+                ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
+              );
+
+              const pmmlDocumentLiteralExpression = pmmlDocument?.expression as DMN15__tLiteralExpression | undefined;
+              if (pmmlDocumentLiteralExpression?.text === _import["@_name"]) {
+                pmmlDocumentLiteralExpression.text = trimmedNewName;
+              }
+            }
+          }
+        });
+
         traverseTypeRefedInExpressionHolders(element, (typeRefed) => {
           if (typeRefed["@_typeRef"]) {
             if (allTopLevelDataTypesByFeelName.get(typeRefed["@_typeRef"])?.namespace === _import["@_namespace"]) {
