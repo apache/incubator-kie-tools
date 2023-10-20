@@ -3,14 +3,60 @@ import * as RF from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
+import {
+  DC__Bounds,
+  DMN15__tDecision,
+  DMN15__tDecisionService,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStatePrimary,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
+import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
+import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
+import { original } from "immer";
+import { useDmnEditor } from "../DmnEditorContext";
+import {
+  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
+  DmnEditorDiagramClipboard,
+  buildClipboardFromDiagram,
+  getClipboard,
+} from "../clipboard/Clipboard";
+import {
+  ExternalNode,
+  MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
+} from "../externalNodes/ExternalNodesPanel";
+import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
+import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
+import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
+import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
+import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
+import { deleteEdge } from "../mutations/deleteEdge";
+import { deleteNode } from "../mutations/deleteNode";
+import { repopulateInputDataAndDecisionsOnDecisionService } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
+import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
+import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
+import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
+import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
+import { DiagramContainerContextProvider } from "./DiagramContainerContext";
 import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
 import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
@@ -26,6 +72,12 @@ import {
   InformationRequirementEdge,
   KnowledgeRequirementEdge,
 } from "./edges/Edges";
+import {
+  CONTAINER_NODES_DESIRABLE_PADDING,
+  getBounds,
+  getContainmentRelationship,
+  getNodeTypeFromDmnObject,
+} from "./maths/DmnMaths";
 import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "./nodes/DefaultSizes";
 import { NODE_TYPES } from "./nodes/NodeTypes";
 import {
@@ -39,42 +91,13 @@ import {
   TextAnnotationNode,
   UnknownNode,
 } from "./nodes/Nodes";
-import { deleteNode } from "../mutations/deleteNode";
-import { DC__Bounds, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
-import { deleteEdge } from "../mutations/deleteEdge";
-import { DiagramContainerContextProvider } from "./DiagramContainerContext";
-import {
-  CONTAINER_NODES_DESIRABLE_PADDING,
-  getBounds,
-  getContainmentRelationship,
-  getNodeTypeFromDmnObject,
-} from "./maths/DmnMaths";
-import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
-import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
-import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { useDmnEditor } from "../DmnEditorContext";
-import {
-  ExternalNode,
-  MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
-} from "../externalNodes/ExternalNodesPanel";
-import { addShape } from "../mutations/addShape";
-import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { original } from "immer";
-import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
-import { buildXmlHref } from "../xml/xmlHrefs";
-import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
-import {
-  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
-  DmnEditorDiagramClipboard,
-  getClipboard,
-} from "../clipboard/Clipboard";
-import { addOrGetDefaultDiagram } from "../mutations/addOrGetDefaultDiagram";
-import { buildClipboardFromDiagram } from "../clipboard/Clipboard";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { nodeNatures } from "../mutations/NodeNature";
+import BlueprintIcon from "@patternfly/react-icons/dist/esm/icons/blueprint-icon";
+import ExpandIcon from "@patternfly/react-icons/dist/esm/icons/expand-icon";
+import MousePointerIcon from "@patternfly/react-icons/dist/esm/icons/mouse-pointer-icon";
+import { updateExpression } from "../mutations/updateExpression";
+import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -262,7 +285,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         // --------- This is where we draw the line between the diagram and the model.
 
         dmnEditorStoreApi.setState((state) => {
-          const newNodeId = addStandaloneNode({
+          const { href: newNodeId } = addStandaloneNode({
             definitions: state.dmn.model.definitions,
             newNode: {
               type: typeOfNewNodeFromPalette,
@@ -399,7 +422,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       // --------- This is where we draw the line between the diagram and the model.
 
       dmnEditorStoreApi.setState((state) => {
-        const newDmnObejctHref = addConnectedNode({
+        const { href: newDmnObejctHref } = addConnectedNode({
           definitions: state.dmn.model.definitions,
           edge,
           sourceNode: {
@@ -855,8 +878,132 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     ]
   );
 
+  const [showEmptyState, setShowEmptyState] = useState(true);
+
+  const isEmptyStateShowing = showEmptyState && nodes.length === 0;
+
   return (
     <>
+      {isEmptyStateShowing && (
+        <Bullseye
+          style={{
+            position: "absolute",
+            width: "100%",
+            pointerEvents: "none",
+            zIndex: 1,
+            height: "auto",
+            marginTop: "120px",
+          }}
+        >
+          <div className={"kie-dmn-editor--diagram-empty-state"}>
+            <Button
+              style={{
+                position: "absolute",
+                top: "8px",
+                right: 0,
+              }}
+              variant={ButtonVariant.plain}
+              icon={<TimesIcon />}
+              onClick={() => setShowEmptyState(false)}
+            ></Button>
+
+            <EmptyState>
+              <EmptyStateIcon icon={MousePointerIcon} />
+              <Title size={"md"} headingLevel={"h4"}>
+                {`This DMN's Diagram is empty`}
+              </Title>
+              <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
+              <br />
+              <EmptyStateBody>or</EmptyStateBody>
+              <EmptyStatePrimary>
+                <Button
+                  variant={ButtonVariant.link}
+                  icon={<TableIcon />}
+                  onClick={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      const { href: decisionNodeHref } = addStandaloneNode({
+                        definitions: state.dmn.model.definitions,
+                        newNode: {
+                          type: NODE_TYPES.decision,
+                          bounds: {
+                            "@_x": 100,
+                            "@_y": 100,
+                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
+                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
+                          },
+                        },
+                      });
+
+                      updateExpression({
+                        definitions: state.dmn.model.definitions,
+                        drgElementIndex: (state.dmn.model.definitions.drgElement ?? []).length - 1, // We just added this. We *know* that the Decision is the last element here.
+                        expression: getDefaultExpressionDefinitionByLogicType({
+                          logicType: ExpressionDefinitionLogicType.DecisionTable,
+                          allTopLevelDataTypesByFeelName: new Map(),
+                          typeRef: DmnBuiltInDataType.Undefined,
+                          getDefaultColumnWidth,
+                        }),
+                      });
+
+                      state.dispatch.boxedExpressionEditor.open(state, parseXmlHref(decisionNodeHref).id);
+                    });
+                  }}
+                >
+                  New Decision Table...
+                </Button>
+                <br />
+                <Button
+                  variant={ButtonVariant.link}
+                  icon={<BlueprintIcon />}
+                  onClick={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      const inputDataNodeBounds: DC__Bounds = {
+                        "@_x": 100,
+                        "@_y": 300,
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_width"],
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData](diagram.snapGrid)["@_height"],
+                      };
+
+                      const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
+                        definitions: state.dmn.model.definitions,
+                        newNode: {
+                          type: NODE_TYPES.inputData,
+                          bounds: inputDataNodeBounds,
+                        },
+                      });
+
+                      const { href: decisionNodeHref } = addConnectedNode({
+                        definitions: state.dmn.model.definitions,
+                        edge: EDGE_TYPES.informationRequirement,
+                        sourceNode: {
+                          href: inputDataNodeHref,
+                          type: NODE_TYPES.inputData,
+                          bounds: inputDataNodeBounds,
+                          shapeId: inputDataShapeId,
+                        },
+                        newNode: {
+                          type: NODE_TYPES.decision,
+                          bounds: {
+                            "@_x": 100,
+                            "@_y": 100,
+                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_width"],
+                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision](diagram.snapGrid)["@_height"],
+                          },
+                        },
+                      });
+
+                      state.diagram._selectedNodes = [decisionNodeHref];
+                      state.diagram.propertiesPanel.isOpen = true;
+                    });
+                  }}
+                >
+                  New Decision with Input Data...
+                </Button>
+              </EmptyStatePrimary>
+            </EmptyState>
+          </div>
+        </Bullseye>
+      )}
       <DiagramContainerContextProvider container={container}>
         <EdgeMarkers />
         <RF.ReactFlow
@@ -905,7 +1052,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           // (end)
         >
           <SelectionStatus />
-          <Palette />
+          <Palette pulse={isEmptyStateShowing} />
           <TopRightCornerPanels />
           <PanWhenAltPressed />
           <KeyboardShortcuts setConnection={setConnection} />
@@ -933,17 +1080,20 @@ export function SetConnectionToReactFlowStore({ connection }: { connection: RF.O
 }
 
 export function TopRightCornerPanels() {
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   const togglePropertiesPanel = useCallback(() => {
-    dmnEditorStoreApi.setState((state) => dispatch.diagram.togglePropertiesPanel(state));
-  }, [dispatch.diagram, dmnEditorStoreApi]);
+    dmnEditorStoreApi.setState((state) => {
+      state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
+    });
+  }, [dmnEditorStoreApi]);
 
   const toggleOverlaysPanel = useCallback(() => {
-    dmnEditorStoreApi.setState((state) => dispatch.diagram.toggleOverlaysPanel(state));
-  }, [dispatch.diagram, dmnEditorStoreApi]);
+    dmnEditorStoreApi.setState((state) => {
+      state.diagram.overlaysPanel.isOpen = !state.diagram.overlaysPanel.isOpen;
+    });
+  }, [dmnEditorStoreApi]);
 
   useLayoutEffect(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -1280,7 +1430,7 @@ export function KeyboardShortcuts({
         return;
       }
 
-      const newNodeId = addStandaloneNode({
+      const { href: newNodeId } = addStandaloneNode({
         definitions: state.dmn.model.definitions,
         newNode: {
           type: NODE_TYPES.group,

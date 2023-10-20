@@ -1,16 +1,23 @@
 import * as React from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
-import { useDmnEditorStore } from "../../store/Store";
+import { useDmnEditorStoreApi } from "../../store/Store";
 
 export function InfoNodePanel(props: { isVisible: boolean }) {
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   return (
     <>
       {props.isVisible && (
         <div className={"kie-dmn-editor--info-node-panel"}>
-          <Label onClick={dispatch.diagram.propertiesPanel.open} className={"kie-dmn-editor--info-label"}>
+          <Label
+            onClick={() =>
+              dmnEditorStoreApi.setState((state) => {
+                state.diagram.propertiesPanel.isOpen = true;
+              })
+            }
+            className={"kie-dmn-editor--info-label"}
+          >
             <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
           </Label>
         </div>

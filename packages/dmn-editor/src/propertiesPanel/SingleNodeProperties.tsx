@@ -11,7 +11,7 @@ import { DecisionServiceProperties } from "./DecisionServiceProperties";
 import { KnowledgeSourceProperties } from "./KnowledgeSourceProperties";
 import { TextAnnotationProperties } from "./TextAnnotationProperties";
 import { useMemo } from "react";
-import { useDmnEditorStore } from "../store/Store";
+import { useDmnEditorStoreApi } from "../store/Store";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import {
@@ -33,7 +33,7 @@ import { UnknownProperties } from "./UnknownProperties";
 import "./SingleNodeProperties.css";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { nodesById } = useDmnEditorDerivedStore();
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
 
@@ -81,7 +81,15 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
               }
             })()}
             action={
-              <Button variant={ButtonVariant.plain} onClick={() => dispatch.diagram.propertiesPanel.close()}>
+              <Button
+                variant={ButtonVariant.plain}
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.boxedExpressionEditor.propertiesPanel.isOpen = false;
+                    state.diagram.propertiesPanel.isOpen = false;
+                  });
+                }}
+              >
                 <TimesIcon />
               </Button>
             }

@@ -18,7 +18,6 @@ export function GlobalDiagramProperties() {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -36,7 +35,14 @@ export function GlobalDiagramProperties() {
             icon={<DataSourceIcon width={16} height={36} style={{ marginLeft: "12px" }} />}
             title={"Global properties"}
             action={
-              <Button variant={ButtonVariant.plain} onClick={() => dispatch.diagram.propertiesPanel.close()}>
+              <Button
+                variant={ButtonVariant.plain}
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.diagram.propertiesPanel.isOpen = false;
+                  });
+                }}
+              >
                 <TimesIcon />
               </Button>
             }

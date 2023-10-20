@@ -4,7 +4,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Form, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { StyleOptions } from "./StyleOptions";
-import { useDmnEditorStore } from "../store/Store";
+import { useDmnEditorStoreApi } from "../store/Store";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
@@ -12,7 +12,7 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 
 export function MultipleNodeProperties(props: { size: number }) {
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
 
   return (
     <Form>
@@ -35,7 +35,14 @@ export function MultipleNodeProperties(props: { size: number }) {
             </Flex>
           }
           action={
-            <Button variant={ButtonVariant.plain} onClick={() => dispatch.diagram.propertiesPanel.close()}>
+            <Button
+              variant={ButtonVariant.plain}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.propertiesPanel.isOpen = false;
+                });
+              }}
+            >
               <TimesIcon />
             </Button>
           }

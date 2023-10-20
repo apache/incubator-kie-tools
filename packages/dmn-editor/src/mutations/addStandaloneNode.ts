@@ -100,9 +100,10 @@ export function addStandaloneNode({
 
   // Add the new node shape
   const { diagramElements } = getDefaultDiagram({ definitions });
+  const shapeId = generateUuid();
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",
-    "@_id": generateUuid(),
+    "@_id": shapeId,
     "@_dmnElementRef": newNodeId,
     "@_isCollapsed": false,
     "@_isListedInputData": false,
@@ -120,5 +121,5 @@ export function addStandaloneNode({
     }
   }
 
-  return buildXmlHref({ id: newNodeId });
+  return { href: buildXmlHref({ id: newNodeId }), shapeId };
 }

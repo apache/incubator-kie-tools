@@ -161,7 +161,7 @@ export function addConnectedNode({
     }
   }
 
-  return newDmnObjectHref;
+  return { href: newDmnObjectHref };
 }
 
 export function getRequirementsFromEdge(

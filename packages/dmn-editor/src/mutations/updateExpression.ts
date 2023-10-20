@@ -15,7 +15,7 @@ export function updateExpression({
   definitions: DMN15__tDefinitions;
   expression: ExpressionDefinition;
   drgElementIndex: number;
-}) {
+}): void {
   const updatedWidthsMap = new Map<string, number[]>();
   const updatedExpression = beeToDmn(expression, updatedWidthsMap);
 

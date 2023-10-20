@@ -36,7 +36,6 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { isStruct } from "../dataTypes/DataTypeSpec";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
-import { getTextWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
@@ -67,7 +66,7 @@ import {
   TreeModel,
 } from "@kie-tools/pmml-editor-marshaller/dist/marshaller/model/pmml4_4";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
-import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
+import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
 
 export function BoxedExpression({ container }: { container: React.RefObject<HTMLElement> }) {
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -193,26 +192,13 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
           logicType: logicType as ExpressionDefinitionLogicType,
           typeRef: typeRef ?? DmnBuiltInDataType.Undefined,
           allTopLevelDataTypesByFeelName,
+          getDefaultColumnWidth,
           getInputs: () => {
             if (!isRoot || expression?.drgElement.__$$element !== "decision") {
               return undefined;
             } else {
               return determineInputsForDecision(expression?.drgElement, allTopLevelDataTypesByFeelName, nodesById);
             }
-          },
-          getDefaultColumnWidth: ({ name, typeRef }) => {
-            return (
-              8 * 2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
-              2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
-              Math.max(
-                DEFAULT_MIN_WIDTH,
-                getTextWidth(name, "700 11.2px Menlo, monospace"), // FIXME: Tiago --> These values were obtained by looking at the values calculated by BEE columns.
-                getTextWidth(
-                  `(${typeRef ?? ""})`,
-                  "700 11.6667px RedHatText, Overpass, overpass, helvetica, arial, sans-serif"
-                ) // FIXME: Tiago --> These values were obtained by looking at the values calculated by BEE columns.
-              )
-            );
           },
         });
       },
@@ -241,7 +227,12 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
             <aside className={"kie-dmn-editor--properties-panel-toggle"}>
               <button
                 className={"kie-dmn-editor--properties-panel-toggle-button"}
-                onClick={dispatch.boxedExpressionEditor.propertiesPanel.toggle}
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.boxedExpressionEditor.propertiesPanel.isOpen =
+                      !state.boxedExpressionEditor.propertiesPanel.isOpen;
+                  });
+                }}
               >
                 <InfoIcon size={"sm"} />
               </button>
@@ -255,7 +246,11 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
             <Label
               isCompact={true}
               className={"kie-dmn-editor--boxed-expression-back"}
-              onClick={dispatch.boxedExpressionEditor.close}
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  dispatch.boxedExpressionEditor.close(state);
+                });
+              }}
             >
               Back to Diagram
             </Label>
@@ -287,7 +282,14 @@ export function BoxedExpression({ container }: { container: React.RefObject<HTML
                 This happens when the DMN file is modified externally while the expression was open here.
               </EmptyStateBody>
               <EmptyStatePrimary>
-                <Button variant="link" onClick={dispatch.boxedExpressionEditor.close}>
+                <Button
+                  variant="link"
+                  onClick={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      dispatch.boxedExpressionEditor.close(state);
+                    });
+                  }}
+                >
                   Go back to the Diagram
                 </Button>
               </EmptyStatePrimary>

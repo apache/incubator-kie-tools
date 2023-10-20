@@ -14,6 +14,17 @@
 }
 /* (end) global */
 
+/* (begin) diagram empty state */
+.kie-dmn-editor--diagram-empty-state {
+  border: 1px solid lightgray;
+  backdrop-filter: blur(4px);
+  background: rgb(255, 255, 255, 20%);
+  border-radius: 16px;
+  padding: 16px;
+  pointer-events: all;
+}
+/* (end) diagram empty state */
+
 /* (begin) nodes */
 .kie-dmn-editor--node {
   height: 100%;
@@ -164,6 +175,24 @@
 }
 .kie-dmn-editor--palette:hover {
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-dmn-editor--palette.pulse {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+
+  70% {
+    box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0);
+  }
 }
 
 .kie-dmn-editor--palette-button {

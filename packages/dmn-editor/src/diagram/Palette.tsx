@@ -21,7 +21,7 @@ import {
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
-export function Palette() {
+export function Palette({ pulse }: { pulse: boolean }) {
   const onDragStart = useCallback((event: React.DragEvent, nodeType: NodeType) => {
     event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, nodeType);
     event.dataTransfer.effectAllowed = "move";
@@ -42,7 +42,7 @@ export function Palette() {
         return;
       }
 
-      const newNodeId = addStandaloneNode({
+      const { href: newNodeId } = addStandaloneNode({
         definitions: state.dmn.model.definitions,
         newNode: {
           type: NODE_TYPES.group,
@@ -60,7 +60,7 @@ export function Palette() {
   return (
     <>
       <RF.Panel position={"top-left"}>
-        <aside className={"kie-dmn-editor--palette"}>
+        <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <button
             title="Input Data"
             className={"kie-dmn-editor--palette-button dndnode input-data"}
@@ -103,7 +103,7 @@ export function Palette() {
           </button>
         </aside>
         <br />
-        <aside className={"kie-dmn-editor--palette"}>
+        <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
           <button
             title="Group"
             className={"kie-dmn-editor--palette-button dndnode group"}
@@ -149,7 +149,7 @@ export function Palette() {
               className={"kie-dmn-editor--external-nodes-panel-toggle-button"}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {
-                  state.dispatch.diagram.toggleExternalNodesPanel(state);
+                  state.diagram.externalNodesPanel.isOpen = !state.diagram.externalNodesPanel.isOpen;
                 });
               }}
             >

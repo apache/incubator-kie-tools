@@ -5,14 +5,14 @@ import {
   DrawerHead,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { useDmnEditorStore } from "../store/Store";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/Store";
 import { useMemo } from "react";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { buildXmlHref } from "../xml/xmlHrefs";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 
 export function BeePropertiesPanel() {
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { nodesById } = useDmnEditorDerivedStore();
 
@@ -38,7 +38,13 @@ export function BeePropertiesPanel() {
           {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
           {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
           <DrawerActions>
-            <DrawerCloseButton onClick={() => dispatch.boxedExpressionEditor.propertiesPanel.close()} />
+            <DrawerCloseButton
+              onClick={() => {
+                dmnEditorStoreApi.setState((state) => {
+                  state.boxedExpressionEditor.propertiesPanel.isOpen = false;
+                });
+              }}
+            />
           </DrawerActions>
         </DrawerHead>
       </DrawerPanelContent>

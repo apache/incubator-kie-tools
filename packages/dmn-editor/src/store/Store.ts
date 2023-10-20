@@ -75,23 +75,10 @@ export type Dispatch = {
     reset: (model: State["dmn"]["model"]) => void;
   };
   boxedExpressionEditor: {
-    open: (id: string) => void;
-    close: () => void;
-    propertiesPanel: {
-      open: () => void;
-      close: () => void;
-      toggle: () => void;
-    };
+    open: (state: State, id: string) => void;
+    close: (state: State) => void;
   };
   diagram: {
-    propertiesPanel: {
-      open: () => void;
-      close: () => void;
-    };
-    togglePropertiesPanel: (state: State) => void;
-    toggleOverlaysPanel: (state: State) => void;
-    toggleExternalNodesPanel: (state: State) => void;
-    setSnapGrid: (state: State, snap: SnapGrid) => void;
     setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
     setEdgeStatus: (state: State, edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
   };
@@ -198,64 +185,18 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
           },
         },
         boxedExpressionEditor: {
-          propertiesPanel: {
-            open: () => {
-              set((state) => {
-                state.boxedExpressionEditor.propertiesPanel.isOpen = true;
-              });
-            },
-            close: () => {
-              set((state) => {
-                state.boxedExpressionEditor.propertiesPanel.isOpen = false;
-              });
-            },
-            toggle: () => {
-              set((state) => {
-                state.boxedExpressionEditor.propertiesPanel.isOpen =
-                  !state.boxedExpressionEditor.propertiesPanel.isOpen;
-              });
-            },
+          open: (state, id) => {
+            state.boxedExpressionEditor.activeDrgElementId = id;
+            state.boxedExpressionEditor.selectedObjectId = undefined;
+            state.boxedExpressionEditor.propertiesPanel.isOpen = state.diagram.propertiesPanel.isOpen;
           },
-          open: (id) => {
-            set((state) => {
-              state.boxedExpressionEditor.activeDrgElementId = id;
-              state.boxedExpressionEditor.selectedObjectId = undefined;
-              state.boxedExpressionEditor.propertiesPanel.isOpen = state.diagram.propertiesPanel.isOpen;
-            });
-          },
-          close: () => {
-            set((state) => {
-              state.diagram.propertiesPanel.isOpen = state.boxedExpressionEditor.propertiesPanel.isOpen;
-              state.boxedExpressionEditor.activeDrgElementId = undefined;
-              state.boxedExpressionEditor.selectedObjectId = undefined;
-            });
+          close: (state) => {
+            state.diagram.propertiesPanel.isOpen = state.boxedExpressionEditor.propertiesPanel.isOpen;
+            state.boxedExpressionEditor.activeDrgElementId = undefined;
+            state.boxedExpressionEditor.selectedObjectId = undefined;
           },
         },
         diagram: {
-          propertiesPanel: {
-            open: () => {
-              set((state) => {
-                state.diagram.propertiesPanel.isOpen = true;
-              });
-            },
-            close: () => {
-              set((state) => {
-                state.diagram.propertiesPanel.isOpen = false;
-              });
-            },
-          },
-          togglePropertiesPanel: (prev) => {
-            prev.diagram.propertiesPanel.isOpen = !prev.diagram.propertiesPanel.isOpen;
-          },
-          toggleOverlaysPanel: (prev) => {
-            prev.diagram.overlaysPanel.isOpen = !prev.diagram.overlaysPanel.isOpen;
-          },
-          toggleExternalNodesPanel: (prev) => {
-            prev.diagram.externalNodesPanel.isOpen = !prev.diagram.externalNodesPanel.isOpen;
-          },
-          setSnapGrid: (prev, snapGrid) => {
-            prev.diagram.snapGrid = snapGrid;
-          },
           setNodeStatus: (prev, nodeId, newStatus) => {
             //selected
             if (newStatus.selected !== undefined) {
