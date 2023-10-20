@@ -20,17 +20,31 @@
 import SwfEditor from "@kie-tools/chrome-extension-test-helper/dist/framework/editor/swf/SwfEditor";
 import FullScreenPage from "@kie-tools/chrome-extension-test-helper/dist/framework/fullscreen-editor/FullScreenPage";
 import GitHubEditorPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-editor/GitHubEditorPage";
+import GitHubRepoPage from "@kie-tools/chrome-extension-test-helper/dist/framework/github-repo/GitHubRepoPage";
 import Tools from "@kie-tools/chrome-extension-test-helper/dist/utils/Tools";
+
+// @ts-ignore
+import { env } from "../../env";
 
 const TEST_NAME = "SwfFullScreenTest";
 
 let tools: Tools;
+
+const buildEnv: any = env;
 
 beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
 });
 
 test(TEST_NAME, async () => {
+  if (buildEnv.swfChromeExtension.e2eTestingToken !== "") {
+    const gitHubRepoPage: GitHubRepoPage = await tools.openPage(
+      GitHubRepoPage,
+      "https://github.com/kiegroup/kie-tools"
+    );
+    await gitHubRepoPage.addToken(buildEnv.swfChromeExtension.e2eTestingToken);
+  }
+
   const workflowUrl: string =
     "https://github.com/kiegroup/kie-tools/blob/main/packages/chrome-extension-serverless-workflow-editor/e2e-tests/samples/chrome_sample.sw.yaml";
   let swfPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, workflowUrl);
