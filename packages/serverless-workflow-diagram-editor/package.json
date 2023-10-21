@@ -37,11 +37,6 @@
     "run-script-os": "^1.1.6",
     "symlink-dir": "^5.0.1"
   },
-  "ANIMATE_CSS_version": "3.5.2",
-  "BOOTSTRAP_version": "3.4.1",
-  "FONT_AWESOME_version": "4.7.0",
-  "GWTBOOTSTRAP3_version": "1.0.1",
-  "UBERFIRE_version": "7.74.1.Final",
   "kieTools": {
     "requiredPreinstalledCliCommands": [
       "java",

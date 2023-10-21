@@ -25,11 +25,11 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       swfDiagramEditor: {
         version: require("../package.json").version,
-        UBERFIRE__version: require("../package.json").UBERFIRE_version,
-        ANIMATE_CSS__version: require("../package.json").ANIMATE_CSS_version,
-        BOOTSTRAP__version: require("../package.json").BOOTSTRAP_version,
-        FONT_AWESOME__version: require("../package.json").FONT_AWESOME_version,
-        GWTBOOTSTRAP3__version: require("../package.json").GWTBOOTSTRAP3_version,
+        UBERFIRE__version: "7.74.1.Final",
+        ANIMATE_CSS__version: "3.5.2",
+        BOOTSTRAP__version: "3.4.1",
+        FONT_AWESOME__version: "4.7.0",
+        GWTBOOTSTRAP3__version: "1.0.1",
       },
     };
   },
