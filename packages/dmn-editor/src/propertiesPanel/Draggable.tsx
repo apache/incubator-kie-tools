@@ -10,7 +10,7 @@ export interface DraggableContext {
   dragging: boolean;
   dragged: number;
   onDragStart: (index: number) => void;
-  onDragOver: (index: number) => void;
+  onDragOver: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
   onDragEnd: (index: number) => void;
   onDragEnter: (index: number) => void;
 }
@@ -31,18 +31,17 @@ export function DraggableContextProvider({
   const [dragging, setDragging] = useState<boolean>(false);
 
   const onDragStart = useCallback((index: number) => {
-    console.log("onDragStart");
     setDragging(true);
     setSource(index);
     setDragged(index);
   }, []);
 
-  const onDragOver = useCallback((index: number) => {
+  const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, index: number) => {
+    e.preventDefault();
     setDest(index);
   }, []);
 
   const onDragEnd = useCallback((index: number) => {
-    console.log("onDragEnd");
     setDragging(false);
     setSource(-1);
     setDest(-1);
@@ -51,8 +50,6 @@ export function DraggableContextProvider({
 
   const onDragEnter = useCallback(
     (index: number) => {
-      console.log("onDragEnter");
-
       if (index === dest && index !== source) {
         reorder(source, dest);
         setSource(dest);
@@ -85,25 +82,28 @@ export function Draggable(props: React.PropsWithChildren<{ index: number }>) {
   const [draggable, setDraggable] = useState(false);
   const [hover, setHover] = useState(false);
 
+  const hovered = useMemo(() => source === -1 && dragged === -1 && hover, [dragged, hover, source]);
+
   const rowClassName = useMemo(() => {
     let className = "kie-dmn-editor--draggable-row";
 
-    if (hover) {
+    if (hovered) {
       className += " kie-dmn-editor--draggable-row-hovered";
     }
 
-    // if (props.index === source) {
-    //   className += " kie-dmn-editor--draggable-row-aaa";
-    // }
+    if (props.index === source && dragged !== source) {
+      className += " kie-dmn-editor--draggable-row-is-dragging";
+    }
+
     return className;
-  }, [hover]);
+  }, [dragged, hovered, props.index, source]);
 
   return (
     <div
       className={rowClassName}
       draggable={dragging || draggable}
       onDragStart={() => onDragStart(props.index)}
-      onDragOver={() => onDragOver(props.index)}
+      onDragOver={(e) => onDragOver(e, props.index)}
       onDragEnd={() => {
         onDragEnd(props.index);
         setHover(false);
@@ -120,11 +120,7 @@ export function Draggable(props: React.PropsWithChildren<{ index: number }>) {
           onPointerLeave={() => setDraggable(false)}
         >
           <GripVerticalIcon
-            className={
-              props.index === source || hover
-                ? "kie-dmn-editor--draggable-icon-svg-hovered"
-                : "kie-dmn-editor--draggable-icon-svg"
-            }
+            className={hovered ? "kie-dmn-editor--draggable-icon-svg-hovered" : "kie-dmn-editor--draggable-icon-svg"}
           />
         </Icon>
       }

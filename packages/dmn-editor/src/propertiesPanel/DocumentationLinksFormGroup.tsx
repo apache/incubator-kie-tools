@@ -11,7 +11,7 @@ import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
 import { FormFieldGroupHeader, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
-import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
+import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { UniqueNameIndex } from "../Spec";
 import { Draggable, DraggableContextProvider } from "./Draggable";
@@ -46,7 +46,7 @@ export function DocumentationLinksFormGroup({
     });
 
     valuesCache.current = [...newValues];
-    valuesUuid.current = [...valuesUuid.current, generateUuid()];
+    valuesUuid.current = [generateUuid(), ...valuesUuid.current];
     onChange?.(newValues);
   }, [onChange, values]);
 
@@ -75,9 +75,6 @@ export function DocumentationLinksFormGroup({
       const newValues = [...(values ?? [])];
       newValues.splice(index, 1);
 
-      valuesCache.current = [...newValues];
-      onChange?.(newValues);
-
       const newUuids = [...valuesUuid.current];
       newUuids.splice(index, 1);
       valuesUuid.current = newUuids;
@@ -88,6 +85,9 @@ export function DocumentationLinksFormGroup({
         newUrlExpanded.splice(index, 1);
         return newUrlExpanded;
       });
+
+      valuesCache.current = [...newValues];
+      onChange?.(newValues);
     },
     [onChange, values]
   );
@@ -134,17 +134,12 @@ export function DocumentationLinksFormGroup({
   return (
     <FormGroup
       label={
-        <FormFieldGroupHeader
-          titleText={{
-            text: (
-              <label className={"pf-c-form__label"}>
-                <span className={"pf-c-form__label-text"}>Documentation links</span>
-              </label>
-            ),
-            id: "documentation-links",
-          }}
-          actions={<Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNewUrl} />}
-        />
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
+            <span className={"pf-c-form__label-text"}>Documentation links</span>
+          </label>
+          <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNewUrl} />
+        </div>
       }
     >
       <ul id={"documentation-links-list"}>
@@ -203,6 +198,7 @@ function DocumentationLinksInput({
 }) {
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
+  const [validTitle, setValidTitle] = useState(true);
 
   const isValidUrl = useCallback((urlString) => {
     try {
@@ -221,11 +217,26 @@ function DocumentationLinksInput({
     setUrlExpanded(!isUrlExpanded);
   }, [isUrlExpanded, title, url, setUrlExpanded, onChangeUrlTitle]);
 
+  const checkIfUrlIsValid = useCallback(
+    (url: string) => {
+      if (url !== "" && !isValidUrl(url)) {
+        setValidTitle(false);
+      } else {
+        setValidTitle(true);
+      }
+    },
+    [isValidUrl]
+  );
+
   const urlTitleIsLink = useMemo(() => isValidUrl(url) && !isUrlExpanded, [isValidUrl, url, isUrlExpanded]);
   const shouldRenderTooltip = useMemo(() => url !== "" && !isUrlExpanded, [isUrlExpanded, url]);
   const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
   const urlUniqueMap = useMemo(() => new Map<string, string>(), []);
-  const validate = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
+  const validateTitle = useCallback(
+    (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true,
+    []
+  );
+  const validateUrl = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
 
   return (
     <React.Fragment>
@@ -235,6 +246,7 @@ function DocumentationLinksInput({
           className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
           onClick={() => {
             toogleExpanded();
+            checkIfUrlIsValid(url);
           }}
         >
           {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
@@ -248,7 +260,16 @@ function DocumentationLinksInput({
                     {title}
                   </a>
                 ) : (
-                  <p>{title !== "" ? title : PLACEHOLDER_URL_TITLE}</p>
+                  <p
+                    style={validTitle ? {} : invalidInlineFeelNameStyle}
+                    onClick={() => {
+                      if (!validTitle) {
+                        setUrlExpanded(true);
+                      }
+                    }}
+                  >
+                    {title !== "" ? title : PLACEHOLDER_URL_TITLE}
+                  </p>
                 )}
               </div>
               {shouldRenderTooltip && (
@@ -270,7 +291,7 @@ function DocumentationLinksInput({
                 name={title ?? ""}
                 onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle)}
                 allUniqueNames={urlTitleUniqueMap}
-                validate={validate}
+                validate={validateTitle}
                 autoFocus={autoFocus}
               />
               <InlineFeelNameInput
@@ -281,9 +302,12 @@ function DocumentationLinksInput({
                 shouldCommitOnBlur={true}
                 placeholder={PLACEHOLDER_URL}
                 name={url ?? ""}
-                onRenamed={(newUrl) => onChangeUrl(newUrl)}
+                onRenamed={(newUrl) => {
+                  checkIfUrlIsValid(newUrl);
+                  onChangeUrl(newUrl);
+                }}
                 allUniqueNames={urlUniqueMap}
-                validate={validate}
+                validate={validateUrl}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
                     setUrlExpanded(false);
@@ -293,7 +317,7 @@ function DocumentationLinksInput({
             </div>
           )}
         </div>
-        <Tooltip content={<Text component={TextVariants.p}>{"Remove documentation link"}</Text>}>
+        <Tooltip content={<Text component={TextVariants.p}>{"Remove"}</Text>}>
           <Button
             className={"kie-dmn-editor--documentation-link--row-remove"}
             variant={"plain"}

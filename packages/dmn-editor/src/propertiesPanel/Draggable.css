@@ -8,7 +8,7 @@
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-.kie-dmn-editor--draggable-row-aaa {
+.kie-dmn-editor--draggable-row-is-dragging {
   opacity: 0;
 }
 
