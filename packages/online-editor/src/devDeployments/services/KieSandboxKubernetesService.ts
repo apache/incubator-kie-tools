@@ -242,6 +242,7 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   getIngressUrl(resource: IngressResource): string {
+    console.log(resource);
     return `${new URL(this.args.connection.host).origin}/${resource.metadata?.name}`;
   }
 }

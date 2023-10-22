@@ -32,6 +32,7 @@ metadata:
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
 spec:
+  subdomain: \${{ devDeployment.uniqueName }}
   to:
     name: \${{ devDeployment.uniqueName }}
     kind: Service

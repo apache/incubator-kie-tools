@@ -31,7 +31,12 @@ metadata:
     app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
+    type: sharded
+  annotations:
+    haproxy.router.openshift.io/rewrite-target: /
 spec:
+  subdomain: \${{ devDeployment.uniqueName }}
+  path: /form-webapp
   to:
     name: \${{ devDeployment.uniqueName }}-form-webapp
     kind: Service

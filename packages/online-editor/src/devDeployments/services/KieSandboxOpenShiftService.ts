@@ -118,9 +118,8 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
             service.metadata.labels && service.metadata.labels[defaultLabelTokens.partOf] === deploymentPartOf
         )!;
         const baseUrl = this.getRouteUrl(routesList.find((route) => route.metadata.name === deploymentPartOf)!);
-        const formWebappUrl = this.getRouteUrl(
-          routesList.find((route) => route.metadata.name.includes("form-webapp"))!
-        );
+        const formWebappRoute = routesList.find((route) => route.metadata.name.includes("form-webapp"));
+        const formWebappUrl = formWebappRoute && this.getRouteUrl(formWebappRoute);
         const healthStatus = healthStatusList.find((status) => status.url === baseUrl)!.healtStatus;
         return {
           name: deployment.metadata.name,
@@ -151,8 +150,8 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
         (resource) =>
           resource.kind === "Deployment" && resource.metadata.name === args.tokenMap.devDeployment.uniqueName
       ) as DeploymentResource;
-      const mainRoute = resources.find(
-        (resource) => resource.kind === "Route" && resource.metadata.name === args.tokenMap.devDeployment.uniqueName
+      const mainRoute = (await this.listRoutes()).find(
+        (route) => route.metadata.name === args.tokenMap.devDeployment.uniqueName
       ) as RouteResource;
       const routeUrl = this.getRouteUrl(mainRoute);
 
@@ -210,6 +209,9 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   getRouteUrl(resource: RouteResource): string {
-    return `https://${resource.spec.host}`;
+    if (!resource.status) {
+      return "";
+    }
+    return `https://${resource.status.ingress[0].host}${resource.spec.path ?? ""}`;
   }
 }
