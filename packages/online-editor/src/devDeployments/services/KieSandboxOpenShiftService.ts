@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { KubernetesConnectionStatus } from "./KubernetesService";
+import { KubernetesConnectionStatus, kubernetesResourcesApi } from "./KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService, ResourceArgs } from "./KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import {
@@ -27,14 +27,25 @@ import {
   defaultAnnotationTokens,
   defaultLabelTokens,
 } from "./types";
-import { createOpenShiftDeploymentYamls } from "./resources/openshift";
+
+export const openShiftResourcesApi = {
+  ...kubernetesResourcesApi,
+  route: {
+    kind: "Route",
+    apiVersion: "route.openshift.io/v1",
+  },
+  project: {
+    kind: "Project",
+    apiVersion: "project.openshift.io/v1",
+  },
+};
 
 export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
       const projectApiPath = this.args.k8sApiServerEndpointsByResourceKind
-        .get("Project")
-        ?.get("project.openshift.io/v1")?.path.global;
+        .get(openShiftResourcesApi.project.kind)
+        ?.get(openShiftResourcesApi.project.apiVersion)?.path.global;
       if (!projectApiPath) {
         return KubernetesConnectionStatus.ERROR;
       }
@@ -57,14 +68,19 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   public async listRoutes(): Promise<RouteResource[]> {
-    const rawRouteApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Route")?.get("route.openshift.io/v1");
+    const rawRouteApiUrl = this.args.k8sApiServerEndpointsByResourceKind
+      .get(openShiftResourcesApi.route.kind)
+      ?.get(openShiftResourcesApi.route.apiVersion);
     const routeApiPath = rawRouteApiUrl?.path.namespaced ?? rawRouteApiUrl?.path.global;
     const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
     if (routeApiPath) {
       const routes = await this.kubernetesService
         .kubernetesFetch(`${routeApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
         .then((data) => data.json());
-      return routes.items.map((item: RouteResource) => ({ ...item, kind: "Route" })) as RouteResource[];
+      return routes.items.map((item: RouteResource) => ({
+        ...item,
+        kind: openShiftResourcesApi.route.kind,
+      })) as RouteResource[];
     }
 
     return [];
@@ -124,7 +140,7 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
         return {
           name: deployment.metadata.name,
           resourceName: deployment.metadata.annotations![defaultAnnotationTokens.uri],
-          routeUrl: formWebappUrl ?? `${baseUrl}/q/dev`,
+          routeUrl: formWebappUrl ? `${formWebappUrl}/` : `${baseUrl}/q/dev/`,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
           state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
           workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
@@ -134,21 +150,18 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    const deploymentYamls = createOpenShiftDeploymentYamls.find(
-      (deploymentOptionYamls) => deploymentOptionYamls.name === args.deploymentOption
-    );
-
-    if (!deploymentYamls) {
+    if (!args.deploymentOption) {
       throw new Error("Invalid deployment option!");
     }
 
     let resources = [];
     try {
-      resources = await this.kubernetesService.applyResourceYamls([deploymentYamls.content], args.tokenMap);
+      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOption], args.tokenMap);
 
       const mainDeployment = resources.find(
         (resource) =>
-          resource.kind === "Deployment" && resource.metadata.name === args.tokenMap.devDeployment.uniqueName
+          resource.kind === openShiftResourcesApi.deployment.kind &&
+          resource.metadata.name === args.tokenMap.devDeployment.uniqueName
       ) as DeploymentResource;
       const mainRoute = (await this.listRoutes()).find(
         (route) => route.metadata.name === args.tokenMap.devDeployment.uniqueName
@@ -174,7 +187,9 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   async deleteRoute(resource: string) {
-    const rawRouteApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Route")?.get("route.openshift.io/v1");
+    const rawRouteApiUrl = this.args.k8sApiServerEndpointsByResourceKind
+      .get(openShiftResourcesApi.route.kind)
+      ?.get(openShiftResourcesApi.route.apiVersion);
     const routeApiPath = rawRouteApiUrl?.path.namespaced ?? rawRouteApiUrl?.path.global;
 
     if (!routeApiPath) {
@@ -192,13 +207,13 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
     await Promise.all(
       resources.map(async (resource) => {
         switch (resource.kind) {
-          case "Deployment":
+          case openShiftResourcesApi.deployment.kind:
             await this.deleteDeployment(resource.metadata!.name!);
             break;
-          case "Service":
+          case openShiftResourcesApi.service.kind:
             await this.deleteService(resource.metadata!.name!);
             break;
-          case "Route":
+          case openShiftResourcesApi.route.kind:
             await this.deleteRoute(resource.metadata!.name!);
             break;
           default:

@@ -134,7 +134,6 @@ export function DevDeploymentsConfirmDeleteModal() {
       {devDeployments.confirmDeleteModalState.isOpen && (
         <ul>
           {devDeployments.confirmDeleteModalState.resources.map((resource) => {
-            console.log(resource);
             return (
               <li key={`${resource.kind}: ${resource.metadata?.name}`}>
                 <b>

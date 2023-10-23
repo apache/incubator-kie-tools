@@ -30,15 +30,16 @@ import {
   interpolateK8sResourceYamls,
   K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { KubernetesConnectionStatus, KubernetesService } from "./KubernetesService";
+import { KubernetesConnectionStatus, KubernetesService, kubernetesResourcesApi } from "./KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService } from "./KieSandboxDevDeploymentsService";
 import { selfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReviewYaml";
-import { createKubernetesDeploymentYamls } from "./resources/kubernetes";
 
 export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService {
   public async isConnectionEstablished(): Promise<KubernetesConnectionStatus> {
     try {
-      const namespaceApiPath = this.args.k8sApiServerEndpointsByResourceKind.get("Namespace")?.get("v1")?.path.global;
+      const namespaceApiPath = this.args.k8sApiServerEndpointsByResourceKind
+        .get(kubernetesResourcesApi.namespace.kind)
+        ?.get(kubernetesResourcesApi.namespace.apiVersion)?.path.global;
       if (!namespaceApiPath) {
         return KubernetesConnectionStatus.ERROR;
       }
@@ -88,14 +89,19 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async listIngress(): Promise<IngressResource[]> {
-    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Ingress")?.get("networking.k8s.io/v1");
+    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind
+      .get(kubernetesResourcesApi.ingress.kind)
+      ?.get(kubernetesResourcesApi.ingress.apiVersion);
     const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
     const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
     if (ingressApiPath) {
       const ingresses = await this.kubernetesService
         .kubernetesFetch(`${ingressApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
         .then((data) => data.json());
-      return ingresses.items.map((item: IngressResource) => ({ ...item, kind: "Ingress" })) as IngressResource[];
+      return ingresses.items.map((item: IngressResource) => ({
+        ...item,
+        kind: kubernetesResourcesApi.ingress.kind,
+      })) as IngressResource[];
     }
 
     return [];
@@ -156,8 +162,8 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
           name: deployment.metadata.name,
           resourceName: deployment.metadata.annotations![defaultAnnotationTokens.uri],
           routeUrl: ingressList.find((ingress) => ingress.metadata.name.includes("form-webapp"))
-            ? `${baseUrl}/form-webapp`
-            : `${baseUrl}/q/dev`,
+            ? `${baseUrl}/form-webapp/`
+            : `${baseUrl}/q/dev/`,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
           state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
           workspaceId: deployment.metadata.annotations![defaultAnnotationTokens.workspaceId],
@@ -167,24 +173,23 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    const deploymentYamls = createKubernetesDeploymentYamls.find(
-      (deploymentOptionYamls) => deploymentOptionYamls.name === args.deploymentOption
-    );
-
-    if (!deploymentYamls) {
+    if (!args.deploymentOption) {
       throw new Error("Invalid deployment option!");
     }
 
     let resources = [];
     try {
-      resources = await this.kubernetesService.applyResourceYamls([deploymentYamls.content], args.tokenMap);
+      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOption], args.tokenMap);
 
       const mainDeployment = resources.find(
         (resource) =>
-          resource.kind === "Deployment" && resource.metadata.name === args.tokenMap.devDeployment.uniqueName
+          resource.kind === kubernetesResourcesApi.deployment.kind &&
+          resource.metadata.name === args.tokenMap.devDeployment.uniqueName
       ) as DeploymentResource;
       const mainIngress = resources.find(
-        (resource) => resource.kind === "Ingress" && resource.metadata.name === args.tokenMap.devDeployment.uniqueName
+        (resource) =>
+          resource.kind === kubernetesResourcesApi.ingress.kind &&
+          resource.metadata.name === args.tokenMap.devDeployment.uniqueName
       ) as IngressResource;
       const ingressUrl = this.getIngressUrl(mainIngress);
 
@@ -197,7 +202,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
         apiKey,
       });
     } catch (e) {
-      console.log({ resources });
       console.error(e);
       if (resources.length) {
         this.deleteDevDeployment(resources);
@@ -207,7 +211,9 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   async deleteIngress(resource: string) {
-    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Ingress")?.get("networking.k8s.io/v1");
+    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind
+      .get(kubernetesResourcesApi.ingress.kind)
+      ?.get(kubernetesResourcesApi.ingress.apiVersion);
     const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
 
     if (!ingressApiPath) {
@@ -225,13 +231,13 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
     await Promise.all(
       resources.map(async (resource) => {
         switch (resource.kind) {
-          case "Deployment":
+          case kubernetesResourcesApi.deployment.kind:
             await this.deleteDeployment(resource.metadata!.name!);
             break;
-          case "Service":
+          case kubernetesResourcesApi.service.kind:
             await this.deleteService(resource.metadata!.name!);
             break;
-          case "Ingress":
+          case kubernetesResourcesApi.ingress.kind:
             await this.deleteIngress(resource.metadata!.name!);
             break;
           default:
@@ -242,7 +248,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   getIngressUrl(resource: IngressResource): string {
-    console.log(resource);
     return `${new URL(this.args.connection.host).origin}/${resource.metadata?.name}`;
   }
 }

@@ -42,19 +42,31 @@ export interface KubernetesServiceArgs {
   proxyUrl?: string;
 }
 
-export const EMPTY_KUBERNETES_CONNECTION = {
-  namespace: "",
-  host: "",
-  token: "",
-  insecurelyDisableTlsCertificateValidation: false,
-};
-
 export enum KubernetesConnectionStatus {
   CONNECTED = "CONNECTED",
   ERROR = "ERROR",
   MISSING_PERMISSIONS = "MISSING_PERMISSIONS",
   NAMESPACE_NOT_FOUND = "NAMESPACE_NOT_FOUND",
 }
+
+export const kubernetesResourcesApi = {
+  namespace: {
+    kind: "Namespace",
+    apiVersion: "v1",
+  },
+  deployment: {
+    kind: "Deployment",
+    apiVersion: "apps/v1",
+  },
+  service: {
+    kind: "Service",
+    apiVersion: "v1",
+  },
+  ingress: {
+    kind: "Ingress",
+    apiVersion: "networking.k8s.io/v1",
+  },
+} as const;
 
 export const isKubernetesConnectionValid = (connection: KubernetesConnection) =>
   isNamespaceValid(connection.namespace) && isHostValid(connection.host) && isTokenValid(connection.token);

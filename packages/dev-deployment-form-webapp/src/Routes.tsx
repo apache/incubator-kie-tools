@@ -104,11 +104,9 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 }
 
 export const routes = {
-  root: new Route<{}>(() => "./"),
+  root: new Route<{}>(() => "/"),
 
   error: new Route<{}>(() => "/error"),
-
-  home: new Route<{}>(() => "/home"),
 
   dmnDefinitionsJson: new Route<{}>(() => "../dmnDefinitions.json"),
 

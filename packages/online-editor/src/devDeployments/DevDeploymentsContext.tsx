@@ -63,7 +63,7 @@ export interface DevDeploymentsContextType {
   setConfirmDeleteModalState: React.Dispatch<React.SetStateAction<DeleteDeployModalState>>;
 
   // Actions
-  deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => Promise<boolean>;
+  deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession, deploymentOption: string) => Promise<boolean>;
   loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
   deleteDeployments: (args: { authSession: CloudAuthSession; resources: K8sResourceYaml[] }) => Promise<boolean>;
 

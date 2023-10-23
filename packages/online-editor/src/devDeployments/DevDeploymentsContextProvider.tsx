@@ -119,44 +119,8 @@ export function DevDeploymentsContextProvider(props: Props) {
     [devDeploymentsServices]
   );
 
-  // const deploy = useCallback(
-  //   async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
-  //     const service = devDeploymentServices.get(authSession.id);
-  //     if (!service) {
-  //       throw new Error(`Missing service for authSession with id ${authSession.id}.`);
-  //     }
-
-  //     if ((await service.isConnectionEstablished()) !== KubernetesConnectionStatus.CONNECTED) {
-  //       return false;
-  //     }
-
-  //     const zipBlob = await workspaces.prepareZip({
-  //       workspaceId: workspaceFile.workspaceId,
-  //       onlyExtensions: ["dmn"],
-  //     });
-
-  //     const workspace = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
-
-  //     const workspaceName = workspace.name !== NEW_WORKSPACE_DEFAULT_NAME ? workspace.name : workspaceFile.name;
-
-  //     try {
-  //       await service.deploy({
-  //         targetFilePath: workspaceFile.relativePath,
-  //         workspaceName,
-  //         workspaceZipBlob: zipBlob,
-  //         containerImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-  //       });
-  //       return true;
-  //     } catch (error) {
-  //       console.error(error);
-  //       return false;
-  //     }
-  //   },
-  //   [env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL, devDeploymentServices, workspaces]
-  // );
-
   const deploy = useCallback(
-    async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession) => {
+    async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession, deploymentOption: string) => {
       const service = devDeploymentsServices.get(authSession.id);
       if (!service) {
         throw new Error(`Missing service for authSession with id ${authSession.id}.`);
@@ -202,7 +166,7 @@ export function DevDeploymentsContextProvider(props: Props) {
         await service.deploy({
           workspaceZipBlob: zipBlob,
           tokenMap,
-          deploymentOption: "DMN Dev deployment with Form Webapp",
+          deploymentOption,
         });
         return true;
       } catch (error) {

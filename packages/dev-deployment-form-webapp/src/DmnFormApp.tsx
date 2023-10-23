@@ -41,30 +41,19 @@ export function DmnFormApp() {
               <HashRouter>
                 <Switch>
                   {app.data && (
-                    <Route path={routes.home.path({})}>
-                      <Redirect
-                        to={routes.form.path({
-                          modelName: app.data.forms[0].modelName,
-                        })}
-                      />
-                    </Route>
-                  )}
-                  {app.data && (
                     <Route
                       path={routes.form.path({
                         modelName: ":modelName*",
                       })}
                     >
                       {({ match }) => {
-                        console.log({ app });
-                        console.log({ match });
                         const formData = app.data!.forms.find((form) => form.modelName === match!.params.modelName);
                         return formData ? <DmnFormPage formData={formData} /> : <Redirect to={routes.error.path({})} />;
                       }}
                     </Route>
                   )}
-                  {app.data && (
-                    <Route exact={true} path={routes.root.path({})}>
+                  {app.data?.forms[0] && (
+                    <Route path={routes.root.path({})}>
                       <Redirect to={routes.form.path({ modelName: app.data.forms[0].modelName })} />
                     </Route>
                   )}

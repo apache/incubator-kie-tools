@@ -129,11 +129,10 @@ export function DevDeploymentsDropdownItem(props: Props) {
   }, [i18n, props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    window.open(`${props.deployment.routeUrl}/#/home`, "_blank");
+    window.open(`${props.deployment.routeUrl}`, "_blank");
   }, [props.deployment.routeUrl]);
 
   const onDelete = useCallback(() => {
-    console.log(props.deployment);
     devDeployments.setConfirmDeleteModalState({
       isOpen: true,
       cloudAuthSessionId: props.cloudAuthSession.id,
