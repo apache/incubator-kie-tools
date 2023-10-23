@@ -428,6 +428,7 @@ export function BeeTableContextMenuHandler({
         min={1}
         max={MAXIMUM_ROWS_COLUMNS_PER_INSERTION}
         style={{ textAlign: "center" }}
+        onDoubleClick={(e) => e.stopPropagation()}
       />
     );
   }, [insertMultipleRowColumnsValue, onMinus, onChange, onPlus]);
