@@ -17,7 +17,7 @@ import { UniqueNameIndex } from "../Spec";
 import { Draggable, DraggableContextProvider } from "./Draggable";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
-const PLACEHOLDER_URL = "Enter a URL...";
+const PLACEHOLDER_URL = "https://";
 
 export function DocumentationLinksFormGroup({
   isReadonly,
@@ -217,26 +217,10 @@ function DocumentationLinksInput({
     setUrlExpanded(!isUrlExpanded);
   }, [isUrlExpanded, title, url, setUrlExpanded, onChangeUrlTitle]);
 
-  const checkIfUrlIsValid = useCallback(
-    (url: string) => {
-      if (url !== "" && !isValidUrl(url)) {
-        setValidTitle(false);
-      } else {
-        setValidTitle(true);
-      }
-    },
-    [isValidUrl]
-  );
-
   const urlTitleIsLink = useMemo(() => isValidUrl(url) && !isUrlExpanded, [isValidUrl, url, isUrlExpanded]);
-  const shouldRenderTooltip = useMemo(() => url !== "" && !isUrlExpanded, [isUrlExpanded, url]);
   const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
   const urlUniqueMap = useMemo(() => new Map<string, string>(), []);
-  const validateTitle = useCallback(
-    (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true,
-    []
-  );
-  const validateUrl = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
+  const validate = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
 
   return (
     <React.Fragment>
@@ -245,8 +229,12 @@ function DocumentationLinksInput({
           variant={ButtonVariant.plain}
           className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
           onClick={() => {
+            if (url === "" && !isValidUrl(url)) {
+              setValidTitle(false);
+            } else {
+              setValidTitle(true);
+            }
             toogleExpanded();
-            checkIfUrlIsValid(url);
           }}
         >
           {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
@@ -272,9 +260,15 @@ function DocumentationLinksInput({
                   </p>
                 )}
               </div>
-              {shouldRenderTooltip && (
+              {!isUrlExpanded && (
                 <Tooltip
-                  content={<Text component={TextVariants.p}>{url}</Text>}
+                  content={
+                    url !== "" ? (
+                      <Text component={TextVariants.p}>{url}</Text>
+                    ) : (
+                      <Text component={TextVariants.p}>Empty URL</Text>
+                    )
+                  }
                   position={TooltipPosition.topStart}
                   reference={urlTitleRef}
                 />
@@ -291,8 +285,13 @@ function DocumentationLinksInput({
                 name={title ?? ""}
                 onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle)}
                 allUniqueNames={urlTitleUniqueMap}
-                validate={validateTitle}
+                validate={validate}
                 autoFocus={autoFocus}
+                onKeyDown={(e) => {
+                  if (e.code === "Enter") {
+                    setUrlExpanded(false);
+                  }
+                }}
               />
               <InlineFeelNameInput
                 className={"kie-dmn-editor--documentation-link--row-inputs-url"}
@@ -302,12 +301,14 @@ function DocumentationLinksInput({
                 shouldCommitOnBlur={true}
                 placeholder={PLACEHOLDER_URL}
                 name={url ?? ""}
-                onRenamed={(newUrl) => {
-                  checkIfUrlIsValid(newUrl);
+                onRenamed={(newUrl: string) => {
+                  if (!newUrl.includes("http://") && !newUrl.includes("https://")) {
+                    newUrl = `https://${newUrl}`;
+                  }
                   onChangeUrl(newUrl);
                 }}
                 allUniqueNames={urlUniqueMap}
-                validate={validateUrl}
+                validate={validate}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
                     setUrlExpanded(false);
