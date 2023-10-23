@@ -26,11 +26,11 @@
   cursor: grabbing;
 }
 
-.kie-dmn-editor--draggable-icon-svg {
+.kie-dmn-editor--draggable-icon-handler {
   color: transparent;
 }
 
-.kie-dmn-editor--draggable-icon-svg-hovered {
+.kie-dmn-editor--draggable-icon-handler-hovered {
   color: rgba(128, 128, 128, 0.62);
 }
 

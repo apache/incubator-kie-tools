@@ -8,11 +8,13 @@ export interface DraggableContext {
   source: number;
   dest: number;
   dragging: boolean;
-  dragged: number;
+  origin: number;
+  leftOrigin: boolean;
   onDragStart: (index: number) => void;
   onDragOver: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
   onDragEnd: (index: number) => void;
   onDragEnter: (index: number) => void;
+  onDragLeave: (index: number) => void;
 }
 
 export const DraggableContext = React.createContext<DraggableContext>({} as any);
@@ -27,13 +29,15 @@ export function DraggableContextProvider({
 }: React.PropsWithChildren<{ reorder: (source: number, dest: number) => void }>) {
   const [source, setSource] = useState<number>(-1);
   const [dest, setDest] = useState<number>(-1);
-  const [dragged, setDragged] = useState(-1);
   const [dragging, setDragging] = useState<boolean>(false);
+  const [origin, setOrigin] = useState(-1);
+  const [leftOrigin, setLeftOrigin] = useState(false);
 
   const onDragStart = useCallback((index: number) => {
     setDragging(true);
     setSource(index);
-    setDragged(index);
+    setOrigin(index);
+    setLeftOrigin(false);
   }, []);
 
   const onDragOver = useCallback((e: React.DragEvent<HTMLDivElement>, index: number) => {
@@ -45,7 +49,8 @@ export function DraggableContextProvider({
     setDragging(false);
     setSource(-1);
     setDest(-1);
-    setDragged(-1);
+    setOrigin(-1);
+    setLeftOrigin(false);
   }, []);
 
   const onDragEnter = useCallback(
@@ -59,17 +64,28 @@ export function DraggableContextProvider({
     [dest, reorder, source]
   );
 
+  const onDragLeave = useCallback(
+    (index: number) => {
+      if (!leftOrigin && index !== source) {
+        setLeftOrigin(true);
+      }
+    },
+    [leftOrigin, source]
+  );
+
   return (
     <DraggableContext.Provider
       value={{
         source,
         dest,
         dragging,
-        dragged,
+        origin,
+        leftOrigin,
         onDragStart,
         onDragOver,
         onDragEnd,
         onDragEnter,
+        onDragLeave,
       }}
     >
       {children}
@@ -78,11 +94,12 @@ export function DraggableContextProvider({
 }
 
 export function Draggable(props: { index: number; children: (hovered: boolean) => React.ReactNode }) {
-  const { source, dragged, dragging, onDragStart, onDragOver, onDragEnd, onDragEnter } = useDraggableContext();
+  const { source, dragging, origin, leftOrigin, onDragStart, onDragOver, onDragEnd, onDragEnter, onDragLeave } =
+    useDraggableContext();
   const [draggable, setDraggable] = useState(false);
   const [hover, setHover] = useState(false);
 
-  const hovered = useMemo(() => source === -1 && dragged === -1 && hover, [dragged, hover, source]);
+  const hovered = useMemo(() => source === -1 && origin === -1 && hover, [origin, hover, source]);
 
   const rowClassName = useMemo(() => {
     let className = "kie-dmn-editor--draggable-row";
@@ -91,12 +108,12 @@ export function Draggable(props: { index: number; children: (hovered: boolean) =
       className += " kie-dmn-editor--draggable-row-hovered";
     }
 
-    if (props.index === source && dragged !== source) {
+    if (props.index === source && leftOrigin) {
       className += " kie-dmn-editor--draggable-row-is-dragging";
     }
 
     return className;
-  }, [dragged, hovered, props.index, source]);
+  }, [hovered, leftOrigin, props.index, source]);
 
   return (
     <div
@@ -108,6 +125,7 @@ export function Draggable(props: { index: number; children: (hovered: boolean) =
         onDragEnd(props.index);
         setHover(false);
       }}
+      onDragLeave={() => onDragLeave(props.index)}
       onDragEnter={() => onDragEnter(props.index)}
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => setHover(false)}
@@ -120,7 +138,9 @@ export function Draggable(props: { index: number; children: (hovered: boolean) =
           onPointerLeave={() => setDraggable(false)}
         >
           <GripVerticalIcon
-            className={hovered ? "kie-dmn-editor--draggable-icon-svg-hovered" : "kie-dmn-editor--draggable-icon-svg"}
+            className={
+              hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
+            }
           />
         </Icon>
       }
