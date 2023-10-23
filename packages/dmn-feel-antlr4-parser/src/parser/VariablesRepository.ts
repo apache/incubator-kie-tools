@@ -389,7 +389,31 @@ export class VariablesRepository {
 
     if (contextEntry.expression) {
       if (contextEntry.expression.__$$element) {
-        this.addInnerExpression(variableNode, contextEntry.expression);
+        // The parent is always the previous node to prevent recursive calls.
+        // Consider this example:
+        //
+        // [ROOT] Context Expression
+        // [X] Client DTI  | [A]
+        // [Y] Some Other  | [B]
+        // [Z] And Another | [C]
+        //
+        // Inside the B we can not call "Some Other" for instance, but we can call "Client DTI"
+        //
+        // So the structure for that case should be:
+        //            [ROOT]
+        //              /    \
+        //             [X]  [A]
+        //             /  \
+        //            [Y]  [B]
+        //            / \
+        //          [Z]  [C]
+        //
+        // So in that case, inside "C" we recognize Y, X and ROOT
+        // Inside B, X and ROOT
+        //
+        // By "ROOT" we understand the root expression which for example
+        // can be the Decision Node itself and its input nodes.
+        this.addInnerExpression(parentNode, contextEntry.expression);
       }
     }
 
