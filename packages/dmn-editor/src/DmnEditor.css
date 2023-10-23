@@ -18,10 +18,11 @@
 .kie-dmn-editor--diagram-empty-state {
   border: 1px solid lightgray;
   backdrop-filter: blur(4px);
-  background: rgb(255, 255, 255, 20%);
+  background: rgb(255, 255, 255, 60%);
   border-radius: 16px;
   padding: 16px;
   pointer-events: all;
+  box-shadow: 0 0 60px 20px #e1e1e1;
 }
 /* (end) diagram empty state */
 
