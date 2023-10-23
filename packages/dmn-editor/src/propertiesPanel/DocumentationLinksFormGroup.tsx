@@ -154,17 +154,20 @@ export function DocumentationLinksFormGroup({
                 className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
               >
                 <Draggable index={index}>
-                  <DocumentationLinksInput
-                    autoFocus={index === 0}
-                    title={kieAttachment["@_name"] ?? ""}
-                    url={kieAttachment["@_url"] ?? ""}
-                    isReadonly={isReadonly}
-                    onChangeUrlTitle={(newUrlTitle) => onChangeUrl({ newUrlTitle, index })}
-                    onChangeUrl={(newUrl) => onChangeUrl({ newUrl, index })}
-                    onRemove={() => onRemove(index)}
-                    isUrlExpanded={expandedUrls[index]}
-                    setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
-                  />
+                  {(hovered) => (
+                    <DocumentationLinksInput
+                      autoFocus={index === 0}
+                      title={kieAttachment["@_name"] ?? ""}
+                      url={kieAttachment["@_url"] ?? ""}
+                      isReadonly={isReadonly}
+                      hovered={hovered}
+                      onChangeUrlTitle={(newUrlTitle) => onChangeUrl({ newUrlTitle, index })}
+                      onChangeUrl={(newUrl) => onChangeUrl({ newUrl, index })}
+                      onRemove={() => onRemove(index)}
+                      isUrlExpanded={expandedUrls[index]}
+                      setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
+                    />
+                  )}
                 </Draggable>
               </li>
             ))}
@@ -181,6 +184,7 @@ function DocumentationLinksInput({
   url,
   isReadonly,
   isUrlExpanded,
+  hovered,
   onChangeUrlTitle,
   onChangeUrl,
   onRemove,
@@ -191,6 +195,7 @@ function DocumentationLinksInput({
   url: string;
   isReadonly: boolean;
   isUrlExpanded: boolean;
+  hovered: boolean;
   onChangeUrlTitle: (newUrlTitle: string) => void;
   onChangeUrl: (newUrl: string) => void;
   onRemove: () => void;
@@ -318,14 +323,16 @@ function DocumentationLinksInput({
             </div>
           )}
         </div>
-        <Tooltip content={<Text component={TextVariants.p}>{"Remove"}</Text>}>
-          <Button
-            className={"kie-dmn-editor--documentation-link--row-remove"}
-            variant={"plain"}
-            icon={<TimesIcon />}
-            onClick={() => onRemove()}
-          />
-        </Tooltip>
+        {hovered && (
+          <Tooltip content={<Text component={TextVariants.p}>{"Remove"}</Text>}>
+            <Button
+              className={"kie-dmn-editor--documentation-link--row-remove"}
+              variant={"plain"}
+              icon={<TimesIcon />}
+              onClick={() => onRemove()}
+            />
+          </Tooltip>
+        )}
       </div>
     </React.Fragment>
   );

@@ -77,7 +77,7 @@ export function DraggableContextProvider({
   );
 }
 
-export function Draggable(props: React.PropsWithChildren<{ index: number }>) {
+export function Draggable(props: { index: number; children: (hovered: boolean) => React.ReactNode }) {
   const { source, dragged, dragging, onDragStart, onDragOver, onDragEnd, onDragEnter } = useDraggableContext();
   const [draggable, setDraggable] = useState(false);
   const [hover, setHover] = useState(false);
@@ -124,7 +124,7 @@ export function Draggable(props: React.PropsWithChildren<{ index: number }>) {
           />
         </Icon>
       }
-      <div className={"kie-dmn-editor--draggable-children"}>{props.children}</div>
+      <div className={"kie-dmn-editor--draggable-children"}>{props.children(hovered)}</div>
     </div>
   );
 }
