@@ -16,6 +16,10 @@ export interface DmnEditorDiagramEdgeStatus {
   draggingWaypoint: boolean;
 }
 
+export interface DmnEditorDiagramDividerLineStatus {
+  moving: boolean;
+}
+
 export interface SnapGrid {
   isEnabled: boolean;
   x: number;
@@ -67,6 +71,7 @@ export interface State {
     draggingNodes: Array<string>;
     resizingNodes: Array<string>;
     draggingWaypoints: Array<string>;
+    movingDividerLines: Array<string>;
   };
 }
 
@@ -81,6 +86,11 @@ export type Dispatch = {
   diagram: {
     setNodeStatus: (state: State, nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
     setEdgeStatus: (state: State, edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
+    setDividerLineStatus: (
+      state: State,
+      decisionServiceId: string,
+      status: Partial<DmnEditorDiagramDividerLineStatus>
+    ) => void;
   };
 };
 
@@ -157,6 +167,7 @@ export const defaultStaticState = () => ({
     draggingNodes: [],
     resizingNodes: [],
     draggingWaypoints: [],
+    movingDividerLines: [],
   },
 });
 
@@ -238,6 +249,18 @@ export function createDmnEditorStore(model: State["dmn"]["model"]) {
                 prev.diagram.draggingWaypoints.push(edgeId);
               } else {
                 prev.diagram.draggingWaypoints = prev.diagram.draggingWaypoints.filter((s) => s !== edgeId);
+              }
+            }
+          },
+          setDividerLineStatus: (prev, decisionServiceId, newStatus) => {
+            //dragging
+            if (newStatus.moving !== undefined) {
+              if (newStatus.moving) {
+                prev.diagram.movingDividerLines.push(decisionServiceId);
+              } else {
+                prev.diagram.movingDividerLines = prev.diagram.movingDividerLines.filter(
+                  (s) => s !== decisionServiceId
+                );
               }
             }
           },

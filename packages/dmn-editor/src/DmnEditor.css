@@ -86,6 +86,9 @@
   /* stroke: purple;
   opacity: 0.2; */
 }
+.kie-dmn-editor--node-decisionService-interactionDividerLine:hover {
+  cursor: row-resize;
+}
 
 .react-flow__node-node_group,
 .react-flow__node-node_decisionService {

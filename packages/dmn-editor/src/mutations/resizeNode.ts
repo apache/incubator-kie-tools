@@ -5,16 +5,14 @@ import {
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
 import { NodeType } from "../diagram/connections/graphStructure";
-import { getDecisionServiceDividerLineLocalY, getHandlePosition } from "../diagram/maths/DmnMaths";
-import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
-import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
-import { repositionNode } from "./repositionNode";
-import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
-import { SnapGrid } from "../store/Store";
-import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { getHandlePosition } from "../diagram/maths/DmnMaths";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
+import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { SnapGrid } from "../store/Store";
+import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 
 export function resizeNode({
   definitions,

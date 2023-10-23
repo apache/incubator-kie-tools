@@ -43,6 +43,9 @@ import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Unpacked } from "../../tsExt/tsExt";
 import { OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 import { MIN_NODE_SIZES } from "./DefaultSizes";
+import { select } from "d3-selection";
+import { drag } from "d3-drag";
+import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
 
 export type NodeDmnObjects = Unpacked<DMN15__tDefinitions["drgElement"] | DMN15__tDefinitions["artifact"]> | null;
 
@@ -577,12 +580,51 @@ export const DecisionServiceNode = React.memo(
       [dmnEditorStoreApi, index]
     );
 
-    const { allFeelVariableUniqueNames } = useDmnEditorDerivedStore();
+    const { allFeelVariableUniqueNames, dmnShapesByHref } = useDmnEditorDerivedStore();
+
+    const dividerLineRef = useRef<SVGPathElement>(null);
+
+    useEffect(() => {
+      if (!dividerLineRef.current) {
+        return;
+      }
+
+      const selection = select(dividerLineRef.current);
+      const dragHandler = drag<SVGCircleElement, unknown>()
+        .on("start", () => {
+          dmnEditorStoreApi.setState((state) =>
+            state.dispatch.diagram.setDividerLineStatus(state, id, { moving: true })
+          );
+        })
+        .on("drag", (e) => {
+          dmnEditorStoreApi.setState((state) => {
+            updateDecisionServiceDividerLine({
+              definitions: state.dmn.model.definitions,
+              dmnShapesByHref,
+              drgElementIndex: index,
+              shapeIndex: shape.index,
+              localYPosition: e.y,
+              snapGrid: diagram.snapGrid,
+            });
+          });
+        })
+        .on("end", (e) => {
+          dmnEditorStoreApi.setState((state) =>
+            state.dispatch.diagram.setDividerLineStatus(state, id, { moving: false })
+          );
+        });
+
+      selection.call(dragHandler);
+      return () => {
+        selection.on(".drag", null);
+      };
+    }, [decisionService, diagram.snapGrid, dmnEditorStoreApi, dmnShapesByHref, id, index, shape.index]);
 
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <DecisionServiceNodeSvg
+            dividerLineRef={dividerLineRef}
             ref={ref}
             {...nodeDimensions}
             x={0}

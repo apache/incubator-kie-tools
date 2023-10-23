@@ -175,7 +175,10 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     });
 
   const isDiagramEditingInProgress =
-    diagram.draggingNodes.length > 0 || diagram.resizingNodes.length > 0 || diagram.draggingWaypoints.length > 0;
+    diagram.draggingNodes.length > 0 ||
+    diagram.resizingNodes.length > 0 ||
+    diagram.draggingWaypoints.length > 0 ||
+    diagram.movingDividerLines.length > 0;
 
   const value = useMemo(
     () => ({
