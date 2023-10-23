@@ -486,6 +486,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   resizeNode({
                     definitions: state.dmn.model.definitions,
                     dmnShapesByHref,
+                    snapGrid: diagram.snapGrid,
                     change: {
                       isExternal: !!node.data.dmnObjectQName.prefix,
                       nodeType: node.type as NodeType,

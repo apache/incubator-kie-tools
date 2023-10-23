@@ -12,14 +12,19 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { repositionNode } from "./repositionNode";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
+import { SnapGrid } from "../store/Store";
+import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
+import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 
 export function resizeNode({
   definitions,
   dmnShapesByHref,
+  snapGrid,
   change,
 }: {
   definitions: DMN15__tDefinitions;
   dmnShapesByHref: Map<string, DMNDI15__DMNShape & { index: number }>;
+  snapGrid: SnapGrid;
   change: {
     nodeType: NodeType;
     isExternal: boolean;
@@ -40,8 +45,37 @@ export function resizeNode({
     throw new Error("Cannot resize non-existent shape bounds");
   }
 
-  const deltaWidth = change.dimension["@_width"] - (shapeBounds?.["@_width"] ?? 0);
-  const deltaHeight = change.dimension["@_height"] - (shapeBounds?.["@_height"] ?? 0);
+  const limit = { x: 0, y: 0 };
+  if (change.nodeType === NODE_TYPES.decisionService) {
+    const ds = definitions.drgElement![change.index] as DMN15__tDecisionService;
+
+    // We ignore handling the contents of the Decision Service when it is external
+    if (!change.isExternal) {
+      ds.encapsulatedDecision?.forEach((ed) => {
+        const edShape = dmnShapesByHref.get(ed["@_href"])!;
+        const dim = snapShapeDimensions(snapGrid, edShape, MIN_NODE_SIZES[NODE_TYPES.decision](snapGrid));
+        const pos = snapShapePosition(snapGrid, edShape);
+        if (pos.x + dim.width > limit.x) {
+          limit.x = pos.x + dim.width;
+        }
+
+        if (pos.y + dim.height > limit.y) {
+          limit.y = pos.y + dim.height;
+        }
+      });
+    }
+  }
+
+  const snappedPosition = snapShapePosition(snapGrid, shape);
+  const snappedDimensions = snapShapeDimensions(snapGrid, shape, MIN_NODE_SIZES[change.nodeType](snapGrid));
+
+  const newDimensions = {
+    width: Math.max(change.dimension["@_width"], limit.x - snappedPosition.x),
+    height: Math.max(change.dimension["@_height"], limit.y - snappedPosition.y),
+  };
+
+  const deltaWidth = newDimensions.width - snappedDimensions.width;
+  const deltaHeight = newDimensions.height - snappedDimensions.height;
 
   const offsetByPosition = (position: TargetHandleId | undefined) => {
     return switchExpression(position, {
@@ -77,109 +111,13 @@ export function resizeNode({
     }
   };
 
-  if (change.nodeType === NODE_TYPES.decisionService) {
-    const ds = definitions.drgElement![change.index] as DMN15__tDecisionService;
-
-    shape["dmndi:DMNDecisionServiceDividerLine"] ??= getCentralizedDecisionServiceDividerLine(shapeBounds);
-    const dividerLinePoints = shape["dmndi:DMNDecisionServiceDividerLine"]["di:waypoint"]!;
-
-    const dividerLinelocalY = getDecisionServiceDividerLineLocalY(shape);
-    const encapsulatedDecisionsOffset = (dividerLinelocalY * deltaHeight) / shapeBounds["@_height"]; // We proportionally increase the Encapuslated Decisions area, based on where the Divider Line is positioned.
-    const outputDecisionsOffset = deltaHeight - encapsulatedDecisionsOffset;
-
-    // Don't need to assign to itself. Here just for "completeness".
-    // dividerLinePoints[0]["@_x"] = dividerLinePoints[0]["@_x"];
-    dividerLinePoints[0]["@_y"] = dividerLinePoints[0]["@_y"] + encapsulatedDecisionsOffset;
-
-    dividerLinePoints[1]["@_x"] = dividerLinePoints[1]["@_x"] + deltaWidth / 2;
-    dividerLinePoints[1]["@_y"] = dividerLinePoints[1]["@_y"] + encapsulatedDecisionsOffset;
-
-    // We ignore handling the contents of the Decision Service when it is external
-    if (!change.isExternal) {
-      const controlWaypointsByEdge = new Map<number, Set<number>>();
-
-      // Encapsulated Decisions should be moved together with the node, as they're in the lower portion of the Decision Service.
-      ds.encapsulatedDecision?.forEach((ed) => {
-        repositionNode({
-          definitions,
-          controlWaypointsByEdge,
-          change: {
-            nodeType: NODE_TYPES.decision,
-            type: "offset",
-            offset: { deltaX: 0, deltaY: Math.round(encapsulatedDecisionsOffset) },
-            selectedEdges: [], // FIXME: Tiago --> Waypoints are not being moved. We need to get the intenral sub-graph of the Encapsulated Decisions on the Decision Service and move those edges too.
-            shapeIndex: dmnShapesByHref.get(ed["@_href"])!.index,
-            sourceEdgeIndexes: [], // FIXME: Tiago --> This is wrong, as edge tips won't be updated, causing connections to fallback to automatic continous positioning
-            targetEdgeIndexes: [], // FIXME: Tiago --> This is wrong, as edge tips won't be updated, causing connections to fallback to automatic continous positioning
-          },
-        });
-      });
-
-      // if (outputDecisionsOffset < 0) {
-      //   ds.outputDecision?.forEach((od) => {
-      //     const shape = dmnShapesByHref.get(od["@_href"]);
-      //     const potentialNewY = shape!["dc:Bounds"]!["@_y"]! + outputDecisionsOffset;
-      //     repositionNode({
-      //       definitions,
-      //       edgeIndexesAlreadyUpdated: new Set(),
-      //       change: {
-      //         nodeType: NODE_TYPES.decision,
-      //         type: "absolute",
-      //         position: {
-      //           x: shape!["dc:Bounds"]!["@_x"]!,
-      //           y: potentialNewY < shapeBounds["@_y"] ? shapeBounds["@_y"] : potentialNewY,
-      //         },
-      //         selectedEdges: [], // FIXME: Tiago --> Waypoints are not being moved. We need to get the intenral sub-graph of the Encapsulated Decisions on the Decision Service and move those edges too.
-      //         shapeIndex: shape!.index,
-      //         sourceEdgeIndexes: [], // FIXME: Tiago --> This is wrong, as edge tips won't be updated, causing connections to fallback to automatic continous positioning
-      //         targetEdgeIndexes: [], // FIXME: Tiago --> This is wrong, as edge tips won't be updated, causing connections to fallback to automatic continous positioning
-      //       },
-      //     });
-      //   });
-      // }
-
-      // const getBoundsFromDmnElementRefs = (refs: DMN15__tDMNElementReference[]) =>
-      //   getBounds({
-      //     padding: 0,
-      //     nodes: refs.map((ref) => {
-      //       const bounds = dmnShapesByHref.get(ref["@_href"])!["dc:Bounds"]!;
-      //       return {
-      //         width: bounds["@_width"],
-      //         height: bounds["@_height"],
-      //         position: { x: bounds["@_x"], y: bounds["@_y"] },
-      //         selected: true,
-      //       };
-      //     }),
-      //   });
-
-      // const outputDecisionBounds = getBoundsFromDmnElementRefs(ds.outputDecision ?? []);
-      // const encapsulatedDecisionBounds = getBoundsFromDmnElementRefs(ds.encapsulatedDecision ?? []);
-
-      // const outputDecisionsContaiment = getContainmentRelationship({
-      //   bounds: outputDecisionBounds,
-      //   container: { ...shapeBounds, ...change.dimension },
-      //   divingLineLocalY: getDecisionServiceDividerLineLocalY(shape),
-      // });
-      // const encapsulatedDecisionsContainment = getContainmentRelationship({
-      //   bounds: encapsulatedDecisionBounds,
-      //   container: { ...shapeBounds, ...change.dimension },
-      //   divingLineLocalY: getDecisionServiceDividerLineLocalY(shape),
-      // });
-
-      // if (
-      //   !(outputDecisionsContaiment.isInside && outputDecisionsContaiment.section === "upper") ||
-      //   !(encapsulatedDecisionsContainment.isInside && encapsulatedDecisionsContainment.section === "lower")
-      // ) {
-      //   throw new Error("Can't resize anymore. Output and Encapsulated Decisions won't fit!");
-      // }
-    }
-  }
-
   // Reposition edges after resizing
+
   offsetEdges({ edgeIndexes: change.sourceEdgeIndexes, waypointSelector: "first" });
   offsetEdges({ edgeIndexes: change.targetEdgeIndexes, waypointSelector: "last" });
 
   // Update at the end because we need the original shapeBounds value to correctly identify the position of the edges
-  shapeBounds["@_width"] = change.dimension["@_width"];
-  shapeBounds["@_height"] = change.dimension["@_height"];
+
+  shapeBounds["@_width"] = newDimensions.width;
+  shapeBounds["@_height"] = newDimensions.height;
 }
