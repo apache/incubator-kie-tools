@@ -24,12 +24,10 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { DevDeploymentsConfirmDeleteModal } from "./DevDeploymentsConfirmDeleteModal";
 import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesService";
-import { AuthSession, CloudAuthSession, isCloudAuthSession } from "../authSessions/AuthSessionApi";
+import { CloudAuthSession, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import { useRoutes } from "../navigation/Hooks";
-import { KieSandboxDeployment, Tokens, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
-import { KubernetesService } from "./services/KubernetesService";
+import { defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";

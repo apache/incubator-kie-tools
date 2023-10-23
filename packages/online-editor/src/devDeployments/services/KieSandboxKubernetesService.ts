@@ -17,20 +17,19 @@
  * under the License.
  */
 
-import {
-  DeploymentResource,
-  IngressResource,
-  KieSandboxDeployment,
-  defaultAnnotationTokens,
-  defaultLabelTokens,
-} from "./types";
+import { KieSandboxDeployment, defaultAnnotationTokens, defaultLabelTokens } from "./types";
 import {
   parseK8sResourceYaml,
   callK8sApiServer,
   interpolateK8sResourceYamls,
-  K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { KubernetesConnectionStatus, KubernetesService, kubernetesResourcesApi } from "./KubernetesService";
+import {
+  DeploymentResource,
+  IngressResource,
+  KubernetesConnectionStatus,
+  KubernetesService,
+  kubernetesResourcesApi,
+} from "./KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService } from "./KieSandboxDevDeploymentsService";
 import { selfSubjectAccessReviewYaml } from "./resources/kubernetes/SelfSubjectAccessReviewYaml";
 
@@ -89,22 +88,11 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async listIngress(): Promise<IngressResource[]> {
-    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind
-      .get(kubernetesResourcesApi.ingress.kind)
-      ?.get(kubernetesResourcesApi.ingress.apiVersion);
-    const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
-    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-    if (ingressApiPath) {
-      const ingresses = await this.kubernetesService
-        .kubernetesFetch(`${ingressApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
-        .then((data) => data.json());
-      return ingresses.items.map((item: IngressResource) => ({
-        ...item,
-        kind: kubernetesResourcesApi.ingress.kind,
-      })) as IngressResource[];
-    }
-
-    return [];
+    return await this.kubernetesService.listResources<IngressResource>({
+      kind: kubernetesResourcesApi.ingress.kind,
+      apiVersion: kubernetesResourcesApi.ingress.apiVersion,
+      queryParams: [`labelSelector=${defaultLabelTokens.createdBy}`],
+    });
   }
 
   public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
@@ -208,43 +196,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
       }
       throw new Error("Failed to deploy resources.");
     }
-  }
-
-  async deleteIngress(resource: string) {
-    const rawIngressApiUrl = this.args.k8sApiServerEndpointsByResourceKind
-      .get(kubernetesResourcesApi.ingress.kind)
-      ?.get(kubernetesResourcesApi.ingress.apiVersion);
-    const ingressApiPath = rawIngressApiUrl?.path.namespaced ?? rawIngressApiUrl?.path.global;
-
-    if (!ingressApiPath) {
-      throw new Error("No Ingress API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${ingressApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
-        method: "DELETE",
-      })
-      .then((data) => data.json());
-  }
-
-  public async deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void> {
-    await Promise.all(
-      resources.map(async (resource) => {
-        switch (resource.kind) {
-          case kubernetesResourcesApi.deployment.kind:
-            await this.deleteDeployment(resource.metadata!.name!);
-            break;
-          case kubernetesResourcesApi.service.kind:
-            await this.deleteService(resource.metadata!.name!);
-            break;
-          case kubernetesResourcesApi.ingress.kind:
-            await this.deleteIngress(resource.metadata!.name!);
-            break;
-          default:
-            console.error("Invalid resource kind. Can't delete.");
-        }
-      })
-    );
   }
 
   getIngressUrl(resource: IngressResource): string {

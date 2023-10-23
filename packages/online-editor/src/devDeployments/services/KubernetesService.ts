@@ -24,9 +24,9 @@ import {
   K8sApiServerEndpointByResourceKind,
   interpolateK8sResourceYamls,
   TokenMap,
+  K8sResourceYaml,
 } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import Path from "path";
-import { Condition, DeploymentResource } from "./types";
 import { DeploymentState } from "./common";
 
 export interface KubernetesConnection {
@@ -67,6 +67,91 @@ export const kubernetesResourcesApi = {
     apiVersion: "networking.k8s.io/v1",
   },
 } as const;
+
+export type ResourceMetadata = {
+  annotations?: Record<string, string>;
+  labels?: Record<string, string>;
+  name: string;
+  namespace: string;
+  creationTimestamp: string;
+  uid: string;
+};
+
+export type Condition = {
+  type: string;
+  status: string;
+  reason: string;
+  message: string;
+  lastTransitionTime: string;
+  lastUpdateTime: string;
+};
+
+export type IngressResource = K8sResourceYaml & {
+  kind: "Ingress";
+  apiVersion: "networking.k8s.io/v1";
+  metadata: ResourceMetadata;
+  spec: {
+    rules: {
+      http: {
+        paths: {
+          backend: {
+            service: {
+              name: string;
+              port: {
+                number: number;
+              };
+            };
+            path: string;
+            pathType: string;
+          };
+        }[];
+      };
+    };
+  };
+  status: {
+    loadBalancer: {
+      ingress: {
+        hostname: string;
+      }[];
+    };
+  };
+};
+
+export type ServiceResource = K8sResourceYaml & {
+  kind: "Service";
+  apiVersion: "v1";
+  metadata: ResourceMetadata;
+  spec: any;
+};
+
+export type DeploymentResource = K8sResourceYaml & {
+  kind: "Deployment";
+  apiVersion: "apps/v1";
+  metadata: ResourceMetadata;
+  spec: {
+    replicas: number;
+    selector: {
+      matchLabels: string;
+    };
+    template: {
+      spec: {
+        containers: {
+          env: { name: string; value: string }[];
+          image: string;
+          imagePullPolicy: string;
+          name: string;
+        }[];
+      };
+    };
+  };
+  status: {
+    availableReplicas: number;
+    readyReplicas: number;
+    replicas: number;
+    updatedReplicas: number;
+    conditions: Condition[];
+  };
+};
 
 export const isKubernetesConnectionValid = (connection: KubernetesConnection) =>
   isNamespaceValid(connection.namespace) && isHostValid(connection.host) && isTokenValid(connection.token);
@@ -158,5 +243,95 @@ export class KubernetesService {
     }
 
     return DeploymentState.UP;
+  }
+
+  public async getResource<ResourceType extends K8sResourceYaml>(args: {
+    kind: string;
+    apiVersion: string;
+    resourceId: string;
+  }): Promise<ResourceType> {
+    const rawApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get(args.kind)?.get(args.apiVersion);
+    const apiPath = rawApiUrl?.path.namespaced ?? rawApiUrl?.path.global;
+
+    if (apiPath) {
+      try {
+        return await this.kubernetesFetch(
+          `${apiPath.replace(":namespace", this.args.connection.namespace)}/${args.resourceId}`
+        )
+          .then((data) => data.json())
+          .then(
+            (jsonData) =>
+              ({
+                ...jsonData,
+                kind: args.kind,
+                apiVersion: args.apiVersion,
+              } as ResourceType)
+          );
+      } catch (e) {
+        console.error(`Failed to fetch ${args.kind} resource with id ${args.resourceId}: ${e}`);
+        throw new Error(`Failed to fetch ${args.kind} resource with id ${args.resourceId}: ${e}`);
+      }
+    } else {
+      console.error(`Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`);
+      throw new Error(
+        `Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`
+      );
+    }
+  }
+
+  public async listResources<ResourceType extends K8sResourceYaml>(args: {
+    kind: string;
+    apiVersion: string;
+    queryParams?: string[];
+  }): Promise<ResourceType[]> {
+    const rawApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get(args.kind)?.get(args.apiVersion);
+    const apiPath = rawApiUrl?.path.namespaced ?? rawApiUrl?.path.global;
+
+    if (apiPath) {
+      try {
+        const resources = await this.kubernetesFetch(
+          `${apiPath.replace(":namespace", this.args.connection.namespace)}${
+            args.queryParams ? `?${args.queryParams.join("&")}` : ""
+          }`
+        ).then((data) => data.json());
+        return resources.items.map(
+          (item: K8sResourceYaml) =>
+            ({
+              ...item,
+              kind: args.kind,
+              apiVersion: args.apiVersion,
+            } as ResourceType)
+        );
+      } catch (e) {
+        console.error(`Failed to fetch list of ${args.kind}: ${e}`);
+      }
+    } else {
+      console.error(`Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`);
+    }
+    return [];
+  }
+
+  public async deleteResource(args: { kind: string; apiVersion: string; resourceId: string }): Promise<any> {
+    const rawApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get(args.kind)?.get(args.apiVersion);
+    const apiPath = rawApiUrl?.path.namespaced ?? rawApiUrl?.path.global;
+
+    if (apiPath) {
+      try {
+        return await this.kubernetesFetch(
+          `${apiPath.replace(":namespace", this.args.connection.namespace)}/${args.resourceId}`,
+          {
+            method: "DELETE",
+          }
+        ).then((data) => data.json());
+      } catch (e) {
+        console.error(`Failed to delete ${args.kind} resource with id ${args.resourceId}: ${e}`);
+        throw new Error(`Failed to fetch ${args.kind} resource with id ${args.resourceId}: ${e}`);
+      }
+    } else {
+      console.error(`Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`);
+      throw new Error(
+        `Failed to find resource of kind ${args.kind} and apiVersion ${args.apiVersion} on endpoints map.`
+      );
+    }
   }
 }

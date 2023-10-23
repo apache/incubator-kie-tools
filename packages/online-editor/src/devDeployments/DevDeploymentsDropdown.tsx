@@ -17,8 +17,7 @@
  * under the License.
  */
 
-import * as React from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { DevDeploymentsDropdownItem } from "./DevDeploymentsDropdownItem";
@@ -45,7 +44,6 @@ import { Holder } from "@kie-tools-core/react-hooks/dist/Holder";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KieSandboxDeployment } from "./services/types";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;

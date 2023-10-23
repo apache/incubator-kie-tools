@@ -17,15 +17,13 @@
  * under the License.
  */
 
-import * as React from "react";
+import React, { useCallback, useMemo } from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { basename } from "path";
-import { useCallback, useMemo } from "react";
 import { useOnlineI18n } from "../i18n";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";

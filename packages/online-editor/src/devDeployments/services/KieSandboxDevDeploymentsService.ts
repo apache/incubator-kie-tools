@@ -19,8 +19,15 @@
 
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
-import { KubernetesConnectionStatus, KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
-import { DeploymentResource, KieSandboxDeployment, ServiceResource, Tokens, defaultLabelTokens } from "./types";
+import {
+  DeploymentResource,
+  KubernetesConnectionStatus,
+  KubernetesService,
+  KubernetesServiceArgs,
+  ServiceResource,
+  kubernetesResourcesApi,
+} from "./KubernetesService";
+import { KieSandboxDeployment, Tokens, defaultLabelTokens } from "./types";
 import { DeploymentState } from "./common";
 import { getUploadStatus, postUpload } from "../DevDeploymentUploadAppApi";
 
@@ -71,8 +78,6 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
   abstract loadDevDeployments(): Promise<KieSandboxDeployment[]>;
 
   abstract deploy(args: DeployArgs): Promise<void>;
-
-  abstract deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void>;
 
   public extractDevDeploymentState(args: { deployment?: any }): DeploymentState {
     if (!args.deployment || !args.deployment.status) {
@@ -154,78 +159,54 @@ export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDe
   }
 
   public async listServices(): Promise<ServiceResource[]> {
-    const rawServicesApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Service")?.get("v1");
-    const servicesApiPath = rawServicesApiUrl?.path.namespaced ?? rawServicesApiUrl?.path.global;
-    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-
-    if (servicesApiPath) {
-      const services = await this.kubernetesService
-        .kubernetesFetch(`${servicesApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
-        .then((data) => data.json());
-      return services.items.map((item: ServiceResource) => ({ ...item, kind: "Service" })) as ServiceResource[];
-    }
-
-    return [];
+    return await this.kubernetesService.listResources<ServiceResource>({
+      kind: kubernetesResourcesApi.service.kind,
+      apiVersion: kubernetesResourcesApi.service.apiVersion,
+      queryParams: [`labelSelector=${defaultLabelTokens.createdBy}`],
+    });
   }
 
   public async listDeployments(): Promise<DeploymentResource[]> {
-    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
-    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-
-    if (deploymentsApiPath) {
-      const deployments = await this.kubernetesService
-        .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
-        .then((data) => data.json());
-      return deployments.items.map((item: DeploymentResource) => ({
-        ...item,
-        kind: "Deployment",
-      })) as DeploymentResource[];
-    }
-
-    return [];
+    return await this.kubernetesService.listResources<DeploymentResource>({
+      kind: kubernetesResourcesApi.deployment.kind,
+      apiVersion: kubernetesResourcesApi.deployment.apiVersion,
+      queryParams: [`labelSelector=${defaultLabelTokens.createdBy}`],
+    });
   }
 
   public async getDeployment(resourceId: string): Promise<DeploymentResource> {
-    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
-
-    if (!deploymentsApiPath) {
-      throw new Error("No Deployment API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}/${resourceId}`)
-      .then((data) => data.json());
+    return await this.kubernetesService.getResource<DeploymentResource>({
+      kind: kubernetesResourcesApi.deployment.kind,
+      apiVersion: kubernetesResourcesApi.deployment.apiVersion,
+      resourceId,
+    });
   }
 
-  public async deleteDeployment(resource: string) {
-    const rawDeploymentsApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Deployment")?.get("apps/v1");
-    const deploymentsApiPath = rawDeploymentsApiUrl?.path.namespaced ?? rawDeploymentsApiUrl?.path.global;
-
-    if (!deploymentsApiPath) {
-      throw new Error("No Deployment API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${deploymentsApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
-        method: "DELETE",
-      })
-      .then((data) => data.json());
+  public async deleteDeployment(resourceId: string) {
+    return await this.kubernetesService.deleteResource({
+      kind: kubernetesResourcesApi.deployment.kind,
+      apiVersion: kubernetesResourcesApi.deployment.apiVersion,
+      resourceId,
+    });
   }
 
-  public async deleteService(resource: string) {
-    const rawServicesApiUrl = this.args.k8sApiServerEndpointsByResourceKind.get("Service")?.get("v1");
-    const servicesApiPath = rawServicesApiUrl?.path.namespaced ?? rawServicesApiUrl?.path.global;
+  public async deleteService(resourceId: string) {
+    return await this.kubernetesService.deleteResource({
+      kind: kubernetesResourcesApi.service.kind,
+      apiVersion: kubernetesResourcesApi.service.apiVersion,
+      resourceId,
+    });
+  }
 
-    if (!servicesApiPath) {
-      throw new Error("No Service API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${servicesApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
-        method: "DELETE",
+  public async deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void> {
+    await Promise.all(
+      resources.map(async (resource) => {
+        await this.kubernetesService.deleteResource({
+          kind: resource.kind,
+          apiVersion: resource.apiVersion,
+          resourceId: resource.metadata!.name!,
+        });
       })
-      .then((data) => data.json());
+    );
   }
 }

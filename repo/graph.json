@@ -99,9 +99,6 @@
       { "id": "@kie-tools/form-dmn" },
       { "id": "@kie-tools/form" },
       { "id": "@kie-tools/dev-deployment-form-webapp-image" },
-      { "id": "@kie-tools/dmn-dev-deployment-base-image" },
-      { "id": "@kie-tools/dmn-dev-deployment-form-webapp" },
-      { "id": "@kie-tools/dmn-dev-deployment-quarkus-app" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-runner" },
@@ -636,29 +633,6 @@
         "weight": 1
       },
       { "source": "@kie-tools/dev-deployment-form-webapp-image", "target": "@kie-tools/image-builder", "weight": 1 },
-      {
-        "source": "@kie-tools/dmn-dev-deployment-base-image",
-        "target": "@kie-tools/dmn-dev-deployment-form-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-dev-deployment-base-image",
-        "target": "@kie-tools/dmn-dev-deployment-quarkus-app",
-        "weight": 1
-      },
-      { "source": "@kie-tools/dmn-dev-deployment-base-image", "target": "@kie-tools/image-builder", "weight": 1 },
-      {
-        "source": "@kie-tools/dmn-dev-deployment-form-webapp",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      { "source": "@kie-tools/dmn-dev-deployment-form-webapp", "target": "@kie-tools/form-dmn", "weight": 1 },
-      {
-        "source": "@kie-tools/dmn-dev-deployment-quarkus-app",
-        "target": "@kie-tools/maven-config-setup-helper",
-        "weight": 1
-      },
-      { "source": "@kie-tools/dmn-dev-deployment-quarkus-app", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/dmn-feel-antlr4-parser", "target": "@kie-tools/dmn-marshaller", "weight": 1 },
       { "source": "@kie-tools/dmn-marshaller", "target": "@kie-tools/xml-parser-ts-codegen", "weight": 1 },
       { "source": "@kie-tools/dmn-runner", "target": "@kie-tools-core/react-hooks", "weight": 1 },
@@ -992,9 +966,6 @@
     ["@kie-tools/dev-deployment-form-webapp-image", "packages/dev-deployment-form-webapp-image"],
     ["@kie-tools/dev-deployment-quarkus-app", "packages/dev-deployment-quarkus-app"],
     ["@kie-tools/dev-deployment-upload-service", "packages/dev-deployment-upload-service"],
-    ["@kie-tools/dmn-dev-deployment-base-image", "packages/dmn-dev-deployment-base-image"],
-    ["@kie-tools/dmn-dev-deployment-form-webapp", "packages/dmn-dev-deployment-form-webapp"],
-    ["@kie-tools/dmn-dev-deployment-quarkus-app", "packages/dmn-dev-deployment-quarkus-app"],
     ["@kie-tools/dmn-feel-antlr4-parser", "packages/dmn-feel-antlr4-parser"],
     ["@kie-tools/dmn-language-service", "packages/dmn-language-service"],
     ["@kie-tools/dmn-marshaller", "packages/dmn-marshaller"],

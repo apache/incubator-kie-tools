@@ -17,16 +17,16 @@
  * under the License.
  */
 
-import { KubernetesConnectionStatus, kubernetesResourcesApi } from "./KubernetesService";
+import {
+  Condition,
+  DeploymentResource,
+  KubernetesConnectionStatus,
+  ResourceMetadata,
+  kubernetesResourcesApi,
+} from "./KubernetesService";
 import { DeployArgs, KieSandboxDevDeploymentsService, ResourceArgs } from "./KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import {
-  DeploymentResource,
-  KieSandboxDeployment,
-  RouteResource,
-  defaultAnnotationTokens,
-  defaultLabelTokens,
-} from "./types";
+import { KieSandboxDeployment, defaultAnnotationTokens, defaultLabelTokens } from "./types";
 
 export const openShiftResourcesApi = {
   ...kubernetesResourcesApi,
@@ -38,6 +38,24 @@ export const openShiftResourcesApi = {
     kind: "Project",
     apiVersion: "project.openshift.io/v1",
   },
+};
+
+export type RouteResource = K8sResourceYaml & {
+  kind: "Route";
+  apiVersion: "route.openshift.io/v1";
+  metadata: ResourceMetadata;
+  spec: {
+    host: string;
+    path: string;
+  };
+  status: {
+    ingress: {
+      host: string;
+      routerCanonicalHostname: string;
+      routerName: string;
+      conditions: Condition[];
+    }[];
+  };
 };
 
 export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService {
@@ -68,22 +86,11 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   public async listRoutes(): Promise<RouteResource[]> {
-    const rawRouteApiUrl = this.args.k8sApiServerEndpointsByResourceKind
-      .get(openShiftResourcesApi.route.kind)
-      ?.get(openShiftResourcesApi.route.apiVersion);
-    const routeApiPath = rawRouteApiUrl?.path.namespaced ?? rawRouteApiUrl?.path.global;
-    const selector = defaultLabelTokens.createdBy ? `?labelSelector=${defaultLabelTokens.createdBy}` : "";
-    if (routeApiPath) {
-      const routes = await this.kubernetesService
-        .kubernetesFetch(`${routeApiPath.replace(":namespace", this.args.connection.namespace)}${selector}`)
-        .then((data) => data.json());
-      return routes.items.map((item: RouteResource) => ({
-        ...item,
-        kind: openShiftResourcesApi.route.kind,
-      })) as RouteResource[];
-    }
-
-    return [];
+    return await this.kubernetesService.listResources<RouteResource>({
+      kind: openShiftResourcesApi.route.kind,
+      apiVersion: openShiftResourcesApi.route.apiVersion,
+      queryParams: [`labelSelector=${defaultLabelTokens.createdBy}`],
+    });
   }
 
   public async loadDevDeployments(): Promise<KieSandboxDeployment[]> {
@@ -184,43 +191,6 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
       }
       throw new Error("Failed to deploy resources.");
     }
-  }
-
-  async deleteRoute(resource: string) {
-    const rawRouteApiUrl = this.args.k8sApiServerEndpointsByResourceKind
-      .get(openShiftResourcesApi.route.kind)
-      ?.get(openShiftResourcesApi.route.apiVersion);
-    const routeApiPath = rawRouteApiUrl?.path.namespaced ?? rawRouteApiUrl?.path.global;
-
-    if (!routeApiPath) {
-      throw new Error("No Route API path");
-    }
-
-    return await this.kubernetesService
-      .kubernetesFetch(`${routeApiPath.replace(":namespace", this.args.connection.namespace)}/${resource}`, {
-        method: "DELETE",
-      })
-      .then((data) => data.json());
-  }
-
-  public async deleteDevDeployment(resources: K8sResourceYaml[]): Promise<void> {
-    await Promise.all(
-      resources.map(async (resource) => {
-        switch (resource.kind) {
-          case openShiftResourcesApi.deployment.kind:
-            await this.deleteDeployment(resource.metadata!.name!);
-            break;
-          case openShiftResourcesApi.service.kind:
-            await this.deleteService(resource.metadata!.name!);
-            break;
-          case openShiftResourcesApi.route.kind:
-            await this.deleteRoute(resource.metadata!.name!);
-            break;
-          default:
-            console.error("Invalid resource kind. Can't delete.");
-        }
-      })
-    );
   }
 
   getRouteUrl(resource: RouteResource): string {
