@@ -8,16 +8,17 @@ import { Tooltip, TooltipPosition } from "@patternfly/react-core/dist/js/compone
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import PlusCircleIcon from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/esm/icons/times-icon";
-import { FormFieldGroupHeader, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { UniqueNameIndex } from "../Spec";
 import { Draggable, DraggableContextProvider } from "./Draggable";
+import { useDmnEditorStoreApi } from "../store/Store";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
-const PLACEHOLDER_URL = "https://";
+const PLACEHOLDER_URL = "http://";
 
 export function DocumentationLinksFormGroup({
   isReadonly,
@@ -28,6 +29,8 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
   // used to perform undo/redo
   const valuesCache = useRef<Namespaced<"kie", KIE__tAttachment>[]>([]);
   const valuesUuid = useRef<string[]>([]);
@@ -47,10 +50,11 @@ export function DocumentationLinksFormGroup({
 
     valuesCache.current = [...newValues];
     valuesUuid.current = [generateUuid(), ...valuesUuid.current];
+    console.log("on new", newValues);
     onChange?.(newValues);
   }, [onChange, values]);
 
-  const onChangeUrl = useCallback(
+  const onChangeKieAttachment = useCallback(
     (args: { index: number; newUrlTitle?: string; newUrl?: string }) => {
       if (isReadonly) {
         return;
@@ -58,6 +62,13 @@ export function DocumentationLinksFormGroup({
 
       const newValues = [...(values ?? [])];
       const newKieAttachment = newValues[args.index] ?? { "@_name": "", "@_url": "" };
+      if (
+        valuesCache.current[args.index]["@_name"] === args.newUrlTitle &&
+        valuesCache.current[args.index]["@_url"] === args.newUrl
+      ) {
+        return;
+      }
+
       newValues[args.index] = {
         "@_name": args.newUrlTitle ?? newKieAttachment["@_name"],
         "@_url": args.newUrl ?? newKieAttachment["@_url"],
@@ -65,6 +76,7 @@ export function DocumentationLinksFormGroup({
 
       // change reference and save values
       valuesCache.current = [...newValues];
+      console.log("on change", newValues);
       onChange?.(newValues);
     },
     [isReadonly, onChange, values]
@@ -87,6 +99,7 @@ export function DocumentationLinksFormGroup({
       });
 
       valuesCache.current = [...newValues];
+      console.log("on remove", newValues);
       onChange?.(newValues);
     },
     [onChange, values]
@@ -161,8 +174,7 @@ export function DocumentationLinksFormGroup({
                       url={kieAttachment["@_url"] ?? ""}
                       isReadonly={isReadonly}
                       hovered={hovered}
-                      onChangeUrlTitle={(newUrlTitle) => onChangeUrl({ newUrlTitle, index })}
-                      onChangeUrl={(newUrl) => onChangeUrl({ newUrl, index })}
+                      onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
                       onRemove={() => onRemove(index)}
                       isUrlExpanded={expandedUrls[index]}
                       setUrlExpanded={(isExpanded) => setUrlExpanded(isExpanded, index)}
@@ -185,8 +197,7 @@ function DocumentationLinksInput({
   isReadonly,
   isUrlExpanded,
   hovered,
-  onChangeUrlTitle,
-  onChangeUrl,
+  onChange,
   onRemove,
   setUrlExpanded,
 }: {
@@ -196,54 +207,76 @@ function DocumentationLinksInput({
   isReadonly: boolean;
   isUrlExpanded: boolean;
   hovered: boolean;
-  onChangeUrlTitle: (newUrlTitle: string) => void;
-  onChangeUrl: (newUrl: string) => void;
+  onChange: (newUrlTitle: string, newUrl: string) => void;
   onRemove: () => void;
   setUrlExpanded: (isExpanded: boolean) => void;
 }) {
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
-  const [validTitle, setValidTitle] = useState(true);
+  const [isTitleSetByUrl, setIsTitleSetByUrl] = useState(false);
 
-  const isValidUrl = useCallback((urlString) => {
+  const getUrl = useCallback((newUrl: string) => {
     try {
-      const url = new URL(urlString);
-      return url.protocol === "http:" || url.protocol === "https:";
+      if (!newUrl.includes("http://") && !newUrl.includes("https://")) {
+        const urlWithProtocol = "http://" + newUrl + "/";
+        const url = new URL(urlWithProtocol);
+        return url.toString() === urlWithProtocol ? url.toString() : undefined;
+      }
+      const url = new URL(newUrl);
+      return url.toString();
     } catch (error) {
-      return false;
+      return undefined;
     }
   }, []);
 
-  const toogleExpanded = useCallback(() => {
-    // If the title is empty the title should be the URL.
-    if (isUrlExpanded === true && title === "" && url !== "") {
-      onChangeUrlTitle(url ?? "");
-    }
-    setUrlExpanded(!isUrlExpanded);
-  }, [isUrlExpanded, title, url, setUrlExpanded, onChangeUrlTitle]);
+  const toogleExpanded = useCallback(
+    (title: string, url: string) => {
+      if (getUrl(url) !== undefined && isUrlExpanded === true && (title === "" || isTitleSetByUrl)) {
+        // valid url and empty title
+        setIsTitleSetByUrl(true);
+        onChange(url, url);
+        setUrlExpanded(false);
+      } else if (url !== "" && getUrl(url) === undefined && title === "") {
+        // invalid url and empty title
+        onChange("", url);
+      } else if (url !== "" && getUrl(url) === undefined) {
+        // nothing should be done with an invalid url
+      } else {
+        setUrlExpanded(!isUrlExpanded);
+      }
+    },
+    [isUrlExpanded, isTitleSetByUrl, getUrl, setUrlExpanded, onChange]
+  );
 
-  const urlTitleIsLink = useMemo(() => isValidUrl(url) && !isUrlExpanded, [isValidUrl, url, isUrlExpanded]);
+  const urlTitleIsLink = useMemo(() => getUrl(url) && !isUrlExpanded, [getUrl, url, isUrlExpanded]);
   const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
   const urlUniqueMap = useMemo(() => new Map<string, string>(), []);
-  const validate = useCallback((id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true, []);
+  const validateTitle = useCallback(
+    (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true,
+    []
+  );
+  const validateUrl = useCallback(
+    (id: string, url: string | undefined, allUniqueNames: UniqueNameIndex) => {
+      if (url !== undefined && url !== "") {
+        return getUrl(url) !== undefined;
+      }
+      return true;
+    },
+    [getUrl]
+  );
 
   return (
     <React.Fragment>
       <div className={"kie-dmn-editor--documentation-link--row"}>
-        <Button
-          variant={ButtonVariant.plain}
-          className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
-          onClick={() => {
-            if (url === "" && !isValidUrl(url)) {
-              setValidTitle(false);
-            } else {
-              setValidTitle(true);
-            }
-            toogleExpanded();
-          }}
-        >
-          {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
-        </Button>
+        <Tooltip content={<Text component={TextVariants.p}>{isUrlExpanded ? "Close" : "Edit"}</Text>}>
+          <Button
+            variant={ButtonVariant.plain}
+            className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
+            onClick={() => toogleExpanded(title, url)}
+          >
+            {(isUrlExpanded && <AngleDownIcon />) || <AngleRightIcon />}
+          </Button>
+        </Tooltip>
         <div className={"kie-dmn-editor--documentation-link--row-item"}>
           {!isUrlExpanded ? (
             <>
@@ -253,14 +286,7 @@ function DocumentationLinksInput({
                     {title}
                   </a>
                 ) : (
-                  <p
-                    style={validTitle ? {} : invalidInlineFeelNameStyle}
-                    onClick={() => {
-                      if (!validTitle) {
-                        setUrlExpanded(true);
-                      }
-                    }}
-                  >
+                  <p style={title === "" ? {} : invalidInlineFeelNameStyle} onClick={() => setUrlExpanded(true)}>
                     {title !== "" ? title : PLACEHOLDER_URL_TITLE}
                   </p>
                 )}
@@ -288,13 +314,18 @@ function DocumentationLinksInput({
                 shouldCommitOnBlur={true}
                 placeholder={PLACEHOLDER_URL_TITLE}
                 name={title ?? ""}
-                onRenamed={(newUrlTitle) => onChangeUrlTitle(newUrlTitle)}
+                onRenamed={(newUrlTitle) => {
+                  onChange(newUrlTitle, url);
+                  if (newUrlTitle !== title) {
+                    setIsTitleSetByUrl(false);
+                  }
+                }}
                 allUniqueNames={urlTitleUniqueMap}
-                validate={validate}
+                validate={validateTitle}
                 autoFocus={autoFocus}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
-                    setUrlExpanded(false);
+                    toogleExpanded(e.currentTarget.value, url);
                   }
                 }}
               />
@@ -307,16 +338,17 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL}
                 name={url ?? ""}
                 onRenamed={(newUrl: string) => {
-                  if (!newUrl.includes("http://") && !newUrl.includes("https://")) {
-                    newUrl = `https://${newUrl}`;
-                  }
-                  onChangeUrl(newUrl);
+                  const url = getUrl(newUrl);
+                  onChange(title, url ?? newUrl);
                 }}
                 allUniqueNames={urlUniqueMap}
-                validate={validate}
+                validate={validateUrl}
+                saveInvalidValue={true}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
-                    setUrlExpanded(false);
+                    // onRenamed and onKeyDown are performed simultaneously, calling the toggleExpdaded callback
+                    // with a outdate url value.
+                    toogleExpanded(title, e.currentTarget.value);
                   }
                 }}
               />

@@ -22,6 +22,7 @@ export function InlineFeelNameInput({
   validate,
   placeholder,
   onKeyDown,
+  saveInvalidValue,
   ...inputProps
 }: React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   id: string;
@@ -32,6 +33,7 @@ export function InlineFeelNameInput({
   shouldCommitOnBlur: boolean;
   allUniqueNames: UniqueNameIndex;
   placeholder?: string;
+  saveInvalidValue?: boolean;
   validate?: typeof SPEC.namedElement.isValidName;
 }) {
   const _validate = (validate ??= SPEC.namedElement.isValidName);
@@ -90,7 +92,7 @@ export function InlineFeelNameInput({
           e.stopPropagation();
           e.preventDefault();
           const isValid = updateIsValidFlag(e.currentTarget.value);
-          if (isValid) {
+          if (isValid || saveInvalidValue) {
             onRenamed(e.currentTarget.value);
           }
         } else if (e.key === "Escape") {
@@ -103,7 +105,7 @@ export function InlineFeelNameInput({
         onKeyDown?.(e);
       }}
       onBlur={(e) => {
-        if (isValid && shouldCommitOnBlur) {
+        if ((isValid || saveInvalidValue) && shouldCommitOnBlur) {
           onRenamed(e.currentTarget.value);
         } else {
           e.currentTarget.value = name;
