@@ -83,6 +83,7 @@ export const feelDefaultConfig = (
     minimap: {
       enabled: false,
     },
+    wordBasedSuggestions: false,
     "semanticHighlighting.enabled": true,
     ...options,
   };

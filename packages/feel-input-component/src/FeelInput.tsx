@@ -31,6 +31,7 @@ import {
 
 import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
+import * as monaco from "monaco-editor";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
 
@@ -171,7 +172,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     const completionItemProvider = useCallback(() => {
       return {
-        triggerCharacters: [EXPRESSION_PROPERTIES_SEPARATOR],
+        triggerCharacters: [" ", EXPRESSION_PROPERTIES_SEPARATOR],
         provideCompletionItems: (model: Monaco.editor.ITextModel, position: Monaco.Position) => {
           const completionItems = getDefaultCompletionItems(suggestionProvider, model, position);
           const variablesSuggestions = new Array<Monaco.languages.CompletionItem>();
@@ -286,7 +287,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       return () => {
         disposable.dispose();
       };
-    }, [enabled]);
+    }, [enabled, expressionId, feelVariables]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);
