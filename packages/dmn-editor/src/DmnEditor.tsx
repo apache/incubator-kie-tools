@@ -2,7 +2,7 @@ import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useRef, useState, useMemo } from "react";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
@@ -33,6 +33,7 @@ import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-bound
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 import { DmnMarshaller, DmnModel } from "@kie-tools/dmn-marshaller";
 import { PMML } from "@kie-tools/pmml-editor-marshaller";
+import { original } from "immer";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
@@ -139,6 +140,10 @@ export const DmnEditorInternal = ({
   // Make sure the DMN Editor reacts to props changing.
   useEffectAfterFirstRender(() => {
     dmnEditorStoreApi.setState((state) => {
+      // Avoid unecessary state updates
+      if (model === original(state.dmn.model)) {
+        return;
+      }
       state.dmn.model = model;
     });
   }, [dmnEditorStoreApi, dispatch.dmn, model]);
@@ -184,6 +189,44 @@ export const DmnEditorInternal = ({
   const diagramContainerRef = useRef<HTMLDivElement>(null);
   const beeContainerRef = useRef<HTMLDivElement>(null);
 
+  const tabTitle = useMemo(() => {
+    return {
+      editor: (
+        <>
+          <TabTitleIcon>
+            <PficonTemplateIcon />
+          </TabTitleIcon>
+          <TabTitleText>Editor</TabTitleText>
+        </>
+      ),
+      dataTypes: (
+        <>
+          <TabTitleIcon>
+            <InfrastructureIcon />
+          </TabTitleIcon>
+          <TabTitleText>
+            Data types&nbsp;&nbsp;
+            <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.itemDefinition?.length ?? 0}</Label>
+          </TabTitleText>
+        </>
+      ),
+      includedModels: (
+        <>
+          <TabTitleIcon>
+            <FileIcon />
+          </TabTitleIcon>
+          <TabTitleText>
+            Included models&nbsp;&nbsp;
+            <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.import?.length ?? 0}</Label>
+          </TabTitleText>
+        </>
+      ),
+    };
+  }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length]);
+
+  const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
+  const beePropertiesPanel = useMemo(() => <BeePropertiesPanel />, []);
+
   return (
     <>
       <Tabs
@@ -193,22 +236,12 @@ export const DmnEditorInternal = ({
         role={"region"}
         className={"kie-dmn-editor--tabs"}
       >
-        <Tab
-          eventKey={DmnEditorTab.EDITOR}
-          title={
-            <>
-              <TabTitleIcon>
-                <PficonTemplateIcon />
-              </TabTitleIcon>
-              <TabTitleText>Editor</TabTitleText>
-            </>
-          }
-        >
+        <Tab eventKey={DmnEditorTab.EDITOR} title={tabTitle.editor}>
           {navigation.tab === DmnEditorTab.EDITOR && (
             <>
               {!boxedExpressionEditor.activeDrgElementId && (
                 <Drawer isExpanded={diagram.propertiesPanel.isOpen} isInline={true} position={"right"}>
-                  <DrawerContent panelContent={<DiagramPropertiesPanel />}>
+                  <DrawerContent panelContent={diagramPropertiesPanel}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
                         <DmnVersionLabel version={marshaller.version} />
@@ -220,7 +253,7 @@ export const DmnEditorInternal = ({
               )}
               {boxedExpressionEditor.activeDrgElementId && (
                 <Drawer isExpanded={boxedExpressionEditor.propertiesPanel.isOpen} isInline={true} position={"right"}>
-                  <DrawerContent panelContent={<BeePropertiesPanel />}>
+                  <DrawerContent panelContent={beePropertiesPanel}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--bee-container"} ref={beeContainerRef}>
                         <BoxedExpression container={beeContainerRef} />
@@ -233,37 +266,11 @@ export const DmnEditorInternal = ({
           )}
         </Tab>
 
-        <Tab
-          eventKey={DmnEditorTab.DATA_TYPES}
-          title={
-            <>
-              <TabTitleIcon>
-                <InfrastructureIcon />
-              </TabTitleIcon>
-              <TabTitleText>
-                Data types&nbsp;&nbsp;
-                <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.itemDefinition?.length ?? 0}</Label>
-              </TabTitleText>
-            </>
-          }
-        >
+        <Tab eventKey={DmnEditorTab.DATA_TYPES} title={tabTitle.dataTypes}>
           {navigation.tab === DmnEditorTab.DATA_TYPES && <DataTypes />}
         </Tab>
 
-        <Tab
-          eventKey={DmnEditorTab.INCLUDED_MODELS}
-          title={
-            <>
-              <TabTitleIcon>
-                <FileIcon />
-              </TabTitleIcon>
-              <TabTitleText>
-                Included models&nbsp;&nbsp;
-                <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.import?.length ?? 0}</Label>
-              </TabTitleText>
-            </>
-          }
-        >
+        <Tab eventKey={DmnEditorTab.INCLUDED_MODELS} title={tabTitle.includedModels}>
           {navigation.tab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
         </Tab>
       </Tabs>
