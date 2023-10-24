@@ -27,21 +27,21 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
-  // used as list keys
+  // Start - Values Cache and UUID
+  // A cache is created to keep this component updated even when the values prop is changed
+  // by an outside event. If the values prop is changed new UUIDs are generated to force
+  // a re-render in the list. This is necessary as the values elements doesn't have an ID.
   const [valuesUuid, setValuesUuid] = useState((values ?? [])?.map((_) => generateUuid()));
-  // used to perform undo/redo, refer useEffect
   const valuesCache = useRef<Namespaced<"kie", KIE__tAttachment>[]>(values ?? []);
-
-  // undo/redo: if the values and the cache differs, a change happened outside the component
-  // this useEffect updates all uuid, forcing a re-render.
   useEffect(() => {
     if (JSON.stringify(values) !== JSON.stringify(valuesCache.current)) {
       setValuesUuid((values ?? [])?.map(() => generateUuid()));
       valuesCache.current = [...(values ?? [])];
     }
   }, [values]);
+  // END - Values Cache and UUID
 
-  // all expaded urls
+  // Controls if a url is expaded or not
   const [expandedUrls, setExpandedUrls] = useState<boolean[]>([]);
 
   const onInternalChange = useCallback(
@@ -52,7 +52,7 @@ export function DocumentationLinksFormGroup({
     [onChange]
   );
 
-  const onNewUrl = useCallback(() => {
+  const onNew = useCallback(() => {
     const newValues = [...(values ?? [])];
     newValues.unshift({ "@_name": "", "@_url": "" });
 
@@ -147,7 +147,7 @@ export function DocumentationLinksFormGroup({
           <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
             <span className={"pf-c-form__label-text"}>Documentation links</span>
           </label>
-          <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNewUrl} />
+          <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onNew} />
         </div>
       }
     >
@@ -158,14 +158,13 @@ export function DocumentationLinksFormGroup({
           <DraggableContextProvider reorder={reorder}>
             {values?.map((kieAttachment, index) => (
               <li
-                key={valuesUuid[index]}
-                id={valuesUuid[index]}
+                key={valuesUuid?.[index] ?? generateUuid()}
+                id={valuesUuid?.[index] ?? generateUuid()}
                 className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
               >
                 <Draggable index={index}>
                   {(hovered) => (
                     <DocumentationLinksInput
-                      autoFocus={index === 0}
                       title={kieAttachment["@_name"] ?? ""}
                       url={kieAttachment["@_url"] ?? ""}
                       isReadonly={isReadonly}
@@ -187,7 +186,6 @@ export function DocumentationLinksFormGroup({
 }
 
 function DocumentationLinksInput({
-  autoFocus,
   title,
   url,
   isReadonly,
@@ -197,7 +195,6 @@ function DocumentationLinksInput({
   onRemove,
   setUrlExpanded,
 }: {
-  autoFocus: boolean;
   title: string;
   url: string;
   isReadonly: boolean;
@@ -209,7 +206,7 @@ function DocumentationLinksInput({
 }) {
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
-  const [isTitleSetByUrl, setIsTitleSetByUrl] = useState(false);
+  const [titleIsUrl, setTitleIsUrl] = useState(false);
   const changedByToogle = useRef(false);
 
   const parseUrl = useCallback((newUrl: string) => {
@@ -235,9 +232,9 @@ function DocumentationLinksInput({
   const toogleExpanded = useCallback(
     (title: string, url: string) => {
       const parsedUrl = parseUrl(url);
-      if (parsedUrl !== undefined && isUrlExpanded === true && (title === "" || isTitleSetByUrl)) {
+      if (parsedUrl !== undefined && isUrlExpanded === true && (title === "" || titleIsUrl)) {
         // valid parsed url and empty title
-        setIsTitleSetByUrl(true);
+        setTitleIsUrl(true);
         changedByToogle.current = true;
         onChange(parsedUrl, parsedUrl);
         setUrlExpanded(false);
@@ -255,7 +252,7 @@ function DocumentationLinksInput({
         setUrlExpanded(!isUrlExpanded);
       }
     },
-    [isUrlExpanded, isTitleSetByUrl, parseUrl, setUrlExpanded, onChange]
+    [isUrlExpanded, titleIsUrl, parseUrl, setUrlExpanded, onChange]
   );
 
   const isUrl = useMemo(() => {
@@ -280,10 +277,23 @@ function DocumentationLinksInput({
     [parseUrl]
   );
 
+  const toogleIconTooltip = useMemo(
+    () => <Text component={TextVariants.p}>{isUrlExpanded ? "Close" : "Edit"}</Text>,
+    [isUrlExpanded]
+  );
+  const urlDescriptionTooltip = useMemo(() => {
+    return url !== "" ? (
+      <Text component={TextVariants.p}>{url}</Text>
+    ) : (
+      <Text component={TextVariants.p}>Empty URL</Text>
+    );
+  }, [url]);
+  const removeTooltip = useMemo(() => <Text component={TextVariants.p}>Remove</Text>, []);
+
   return (
     <React.Fragment>
       <div className={"kie-dmn-editor--documentation-link--row"}>
-        <Tooltip content={<Text component={TextVariants.p}>{isUrlExpanded ? "Close" : "Edit"}</Text>}>
+        <Tooltip content={toogleIconTooltip}>
           <Button
             variant={ButtonVariant.plain}
             className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
@@ -307,17 +317,7 @@ function DocumentationLinksInput({
                 )}
               </div>
               {!isUrlExpanded && (
-                <Tooltip
-                  content={
-                    url !== "" ? (
-                      <Text component={TextVariants.p}>{url}</Text>
-                    ) : (
-                      <Text component={TextVariants.p}>Empty URL</Text>
-                    )
-                  }
-                  position={TooltipPosition.topStart}
-                  reference={urlTitleRef}
-                />
+                <Tooltip content={urlDescriptionTooltip} position={TooltipPosition.topStart} reference={urlTitleRef} />
               )}
             </>
           ) : (
@@ -333,7 +333,7 @@ function DocumentationLinksInput({
                   if (!changedByToogle.current) {
                     onChange(newUrlTitle, url);
                     if (newUrlTitle !== title) {
-                      setIsTitleSetByUrl(false);
+                      setTitleIsUrl(false);
                     }
                   }
                   // reset the changedByToogle
@@ -341,7 +341,7 @@ function DocumentationLinksInput({
                 }}
                 allUniqueNames={allUniqueNames}
                 validate={validateTitle}
-                autoFocus={autoFocus}
+                autoFocus={isUrlExpanded}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
                     // onRenamed and onKeyDown are performed simultaneously, calling the toggleExpdaded callback
@@ -380,7 +380,7 @@ function DocumentationLinksInput({
           )}
         </div>
         {hovered && (
-          <Tooltip content={<Text component={TextVariants.p}>{"Remove"}</Text>}>
+          <Tooltip content={removeTooltip}>
             <Button
               className={"kie-dmn-editor--documentation-link--row-remove"}
               variant={"plain"}
