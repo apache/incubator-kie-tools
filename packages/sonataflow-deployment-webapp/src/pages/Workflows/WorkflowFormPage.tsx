@@ -36,7 +36,7 @@ import { useOpenApi } from "../../context/OpenApiContext";
 import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
 import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
-import { ErrorPage } from "../ErrorPage";
+import { ErrorKind, ErrorPage } from "../ErrorPage";
 
 export function WorkflowFormPage(props: { workflowId: string }) {
   const [notification, setNotification] = useState<Notification>();
@@ -137,14 +137,20 @@ export function WorkflowFormPage(props: { workflowId: string }) {
   }, [gatewayApi, props.workflowId]);
 
   if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
-    return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;
+    return <ErrorPage kind={ErrorKind.OPENAPI} errors={["OpenAPI service not available"]} />;
   }
 
   if (
     openApi.openApiPromise.status === PromiseStateStatus.RESOLVED &&
     !openApi.openApiData?.tags?.find((t) => t.name === workflowDefinition.workflowName)
   ) {
-    return <ErrorPage kind="Workflow" workflowId={workflowDefinition.workflowName} errors={["Workflow not found"]} />;
+    return (
+      <ErrorPage
+        kind={ErrorKind.WORKFLOW}
+        workflowId={workflowDefinition.workflowName}
+        errors={["Workflow not found"]}
+      />
+    );
   }
 
   return (

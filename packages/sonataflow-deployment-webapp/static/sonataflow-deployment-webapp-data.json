@@ -1,4 +1,5 @@
 {
   "appName": "SonataFlow Deployment",
-  "showDisclaimer": true
+  "showDisclaimer": true,
+  "dataIndexExternalUrl": ""
 }

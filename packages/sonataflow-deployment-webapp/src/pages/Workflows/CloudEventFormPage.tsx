@@ -32,7 +32,7 @@ import { useOpenApi } from "../../context/OpenApiContext";
 import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";
 import { routes } from "../../routes";
 import { BasePage } from "../BasePage";
-import { ErrorPage } from "../ErrorPage";
+import { ErrorKind, ErrorPage } from "../ErrorPage";
 import { CloudEventFormDefaultValues } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm";
 import { CloudEventFormDriver } from "@kie-tools/runtime-tools-enveloped-components/dist/cloudEventForm/api/CloudEventFormDriver";
 
@@ -131,7 +131,7 @@ export function CloudEventFormPage() {
   );
 
   if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
-    return <ErrorPage kind="OpenApi" errors={["OpenAPI service not available"]} />;
+    return <ErrorPage kind={ErrorKind.OPENAPI} errors={["OpenAPI service not available"]} />;
   }
 
   return (

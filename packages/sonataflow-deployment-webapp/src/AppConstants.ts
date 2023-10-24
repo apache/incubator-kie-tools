@@ -21,6 +21,7 @@ import { AppData } from "./data";
 
 export const SONATAFLOW_DEPLOYMENT_DOCUMENTATION_URL = "https://sonataflow.org/serverlessworkflow/latest/index.html";
 export const KUBESMARTS_URL = "https://start.kubesmarts.org";
+export const APPDATA_JSON_FILENAME = "sonataflow-deployment-webapp-data.json";
 
 export const DEFAULT_APPDATA_VALUES: AppData = {
   appName: "Deployment",
