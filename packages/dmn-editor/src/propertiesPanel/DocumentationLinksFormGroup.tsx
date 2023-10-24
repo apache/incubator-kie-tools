@@ -13,9 +13,7 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { UniqueNameIndex } from "../Spec";
 import { Draggable, DraggableContextProvider } from "./Draggable";
-import { useDmnEditorStoreApi } from "../store/Store";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "http://";
@@ -29,13 +27,30 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  // used as list keys
+  const [valuesUuid, setValuesUuid] = useState((values ?? [])?.map((_) => generateUuid()));
+  // used to perform undo/redo, refer useEffect
+  const valuesCache = useRef<Namespaced<"kie", KIE__tAttachment>[]>(values ?? []);
 
-  // used to perform undo/redo
-  const valuesCache = useRef<Namespaced<"kie", KIE__tAttachment>[]>([]);
-  const valuesUuid = useRef<string[]>([]);
+  // undo/redo: if the values and the cache differs, a change happened outside the component
+  // this useEffect updates all uuid, forcing a re-render.
+  useEffect(() => {
+    if (JSON.stringify(values) !== JSON.stringify(valuesCache.current)) {
+      setValuesUuid((values ?? [])?.map(() => generateUuid()));
+      valuesCache.current = [...(values ?? [])];
+    }
+  }, [values]);
+
   // all expaded urls
   const [expandedUrls, setExpandedUrls] = useState<boolean[]>([]);
+
+  const onInternalChange = useCallback(
+    (newValues: Namespaced<"kie", KIE__tAttachment>[]) => {
+      valuesCache.current = [...newValues];
+      onChange?.(newValues);
+    },
+    [onChange]
+  );
 
   const onNewUrl = useCallback(() => {
     const newValues = [...(values ?? [])];
@@ -48,11 +63,9 @@ export function DocumentationLinksFormGroup({
       return newUrlExpanded;
     });
 
-    valuesCache.current = [...newValues];
-    valuesUuid.current = [generateUuid(), ...valuesUuid.current];
-    console.log("on new", newValues);
-    onChange?.(newValues);
-  }, [onChange, values]);
+    setValuesUuid((prev) => [generateUuid(), ...prev]);
+    onInternalChange(newValues);
+  }, [onInternalChange, values]);
 
   const onChangeKieAttachment = useCallback(
     (args: { index: number; newUrlTitle?: string; newUrl?: string }) => {
@@ -62,24 +75,14 @@ export function DocumentationLinksFormGroup({
 
       const newValues = [...(values ?? [])];
       const newKieAttachment = newValues[args.index] ?? { "@_name": "", "@_url": "" };
-      if (
-        valuesCache.current[args.index]["@_name"] === args.newUrlTitle &&
-        valuesCache.current[args.index]["@_url"] === args.newUrl
-      ) {
-        return;
-      }
 
       newValues[args.index] = {
         "@_name": args.newUrlTitle ?? newKieAttachment["@_name"],
         "@_url": args.newUrl ?? newKieAttachment["@_url"],
       };
-
-      // change reference and save values
-      valuesCache.current = [...newValues];
-      console.log("on change", newValues);
-      onChange?.(newValues);
+      onInternalChange(newValues);
     },
-    [isReadonly, onChange, values]
+    [isReadonly, onInternalChange, values]
   );
 
   const onRemove = useCallback(
@@ -87,9 +90,11 @@ export function DocumentationLinksFormGroup({
       const newValues = [...(values ?? [])];
       newValues.splice(index, 1);
 
-      const newUuids = [...valuesUuid.current];
-      newUuids.splice(index, 1);
-      valuesUuid.current = newUuids;
+      setValuesUuid((prev) => {
+        const newUuids = [...prev];
+        newUuids.splice(index, 1);
+        return newUuids;
+      });
 
       // Expand the URL
       setExpandedUrls((prev) => {
@@ -97,12 +102,9 @@ export function DocumentationLinksFormGroup({
         newUrlExpanded.splice(index, 1);
         return newUrlExpanded;
       });
-
-      valuesCache.current = [...newValues];
-      console.log("on remove", newValues);
-      onChange?.(newValues);
+      onInternalChange(newValues);
     },
-    [onChange, values]
+    [onInternalChange, values]
   );
 
   const setUrlExpanded = useCallback((isExpanded: boolean, index: number) => {
@@ -126,23 +128,17 @@ export function DocumentationLinksFormGroup({
         return newUrlExpanded;
       });
 
-      const reordenedUuid = [...valuesUuid.current];
-      const [removedUuid] = reordenedUuid.splice(source, 1);
-      reordenedUuid.splice(dest, 0, removedUuid);
-      valuesUuid.current = reordenedUuid;
+      setValuesUuid((prev) => {
+        const reordenedUuid = [...prev];
+        const [removedUuid] = reordenedUuid.splice(source, 1);
+        reordenedUuid.splice(dest, 0, removedUuid);
+        return reordenedUuid;
+      });
 
-      valuesCache.current = reordened;
-      onChange?.(reordened);
+      onInternalChange(reordened);
     },
-    [onChange, values]
+    [onInternalChange, values]
   );
-
-  useEffect(() => {
-    if (JSON.stringify(values) !== JSON.stringify(valuesCache.current)) {
-      valuesUuid.current = valuesUuid.current?.map(() => generateUuid());
-      valuesCache.current = [...(values ?? [])];
-    }
-  }, [values]);
 
   return (
     <FormGroup
@@ -162,8 +158,8 @@ export function DocumentationLinksFormGroup({
           <DraggableContextProvider reorder={reorder}>
             {values?.map((kieAttachment, index) => (
               <li
-                key={valuesUuid.current?.[index] ?? generateUuid()}
-                id={valuesUuid.current?.[index] ?? generateUuid()}
+                key={valuesUuid[index]}
+                id={valuesUuid[index]}
                 className={index !== 0 ? "kie-dmn-editor--documentation-link--not-first-element" : ""}
               >
                 <Draggable index={index}>
@@ -214,55 +210,68 @@ function DocumentationLinksInput({
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
   const [isTitleSetByUrl, setIsTitleSetByUrl] = useState(false);
+  const changedByToogle = useRef(false);
 
-  const getUrl = useCallback((newUrl: string) => {
+  const parseUrl = useCallback((newUrl: string) => {
     try {
+      const url = new URL(newUrl);
+      return url.toString();
+    } catch (error) {
       if (!newUrl.includes("http://") && !newUrl.includes("https://")) {
         const urlWithProtocol = "http://" + newUrl + "/";
         const url = new URL(urlWithProtocol);
         return url.toString() === urlWithProtocol ? url.toString() : undefined;
       }
-      const url = new URL(newUrl);
-      return url.toString();
-    } catch (error) {
       return undefined;
     }
   }, []);
 
   const toogleExpanded = useCallback(
     (title: string, url: string) => {
-      if (getUrl(url) !== undefined && isUrlExpanded === true && (title === "" || isTitleSetByUrl)) {
-        // valid url and empty title
+      const parsedUrl = parseUrl(url);
+      if (parsedUrl !== undefined && isUrlExpanded === true && (title === "" || isTitleSetByUrl)) {
+        // valid parsed url and empty title
         setIsTitleSetByUrl(true);
-        onChange(url, url);
+        changedByToogle.current = true;
+        onChange(parsedUrl, parsedUrl);
         setUrlExpanded(false);
-      } else if (url !== "" && getUrl(url) === undefined && title === "") {
-        // invalid url and empty title
+      } else if (parsedUrl !== undefined && parsedUrl !== url && isUrlExpanded === true) {
+        // valid parsed url and different than the current url
+        onChange(title, parsedUrl);
+        setUrlExpanded(false);
+      } else if (url !== "" && parsedUrl === undefined && title === "") {
+        // invalid parsed url and empty title
+        changedByToogle.current = true;
         onChange("", url);
-      } else if (url !== "" && getUrl(url) === undefined) {
+      } else if (url !== "" && parsedUrl === undefined) {
         // nothing should be done with an invalid url
       } else {
         setUrlExpanded(!isUrlExpanded);
       }
     },
-    [isUrlExpanded, isTitleSetByUrl, getUrl, setUrlExpanded, onChange]
+    [isUrlExpanded, isTitleSetByUrl, parseUrl, setUrlExpanded, onChange]
   );
 
-  const urlTitleIsLink = useMemo(() => getUrl(url) && !isUrlExpanded, [getUrl, url, isUrlExpanded]);
-  const urlTitleUniqueMap = useMemo(() => new Map<string, string>(), []);
-  const urlUniqueMap = useMemo(() => new Map<string, string>(), []);
-  const validateTitle = useCallback(
-    (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex) => true,
-    []
-  );
+  const isUrl = useMemo(() => {
+    try {
+      return new URL(url) && !isUrlExpanded;
+    } catch (error) {
+      return false;
+    }
+  }, [url, isUrlExpanded]);
+
+  const allUniqueNames = useMemo(() => new Map<string, string>(), []);
+
+  const validateTitle = useCallback((id, name, allUniqueNames) => true, []);
+
   const validateUrl = useCallback(
-    (id: string, url: string | undefined, allUniqueNames: UniqueNameIndex) => {
+    (id: string, url: string | undefined, allUniqueNames) => {
       if (url !== undefined && url !== "") {
-        return getUrl(url) !== undefined;
+        return parseUrl(url) !== undefined;
       }
       return true;
     },
-    [getUrl]
+    [parseUrl]
   );
 
   return (
@@ -281,7 +290,7 @@ function DocumentationLinksInput({
           {!isUrlExpanded ? (
             <>
               <div ref={urlTitleRef} className={"kie-dmn-editor--documentation-link--row-title"}>
-                {urlTitleIsLink ? (
+                {isUrl ? (
                   <a href={url} target={"_blank"}>
                     {title}
                   </a>
@@ -315,16 +324,22 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL_TITLE}
                 name={title ?? ""}
                 onRenamed={(newUrlTitle) => {
-                  onChange(newUrlTitle, url);
-                  if (newUrlTitle !== title) {
-                    setIsTitleSetByUrl(false);
+                  if (!changedByToogle.current) {
+                    onChange(newUrlTitle, url);
+                    if (newUrlTitle !== title) {
+                      setIsTitleSetByUrl(false);
+                    }
                   }
+                  // reset the changedByToogle
+                  changedByToogle.current = false;
                 }}
-                allUniqueNames={urlTitleUniqueMap}
+                allUniqueNames={allUniqueNames}
                 validate={validateTitle}
                 autoFocus={autoFocus}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
+                    // onRenamed and onKeyDown are performed simultaneously, calling the toggleExpdaded callback
+                    // with a outdate title value, making it necessary to use the e.currentTarget.value.
                     toogleExpanded(e.currentTarget.value, url);
                   }
                 }}
@@ -338,16 +353,19 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL}
                 name={url ?? ""}
                 onRenamed={(newUrl: string) => {
-                  const url = getUrl(newUrl);
-                  onChange(title, url ?? newUrl);
+                  if (!changedByToogle.current) {
+                    onChange(title, newUrl);
+                  }
+                  // reset the changedByToogle
+                  changedByToogle.current = false;
                 }}
-                allUniqueNames={urlUniqueMap}
+                allUniqueNames={allUniqueNames}
                 validate={validateUrl}
                 saveInvalidValue={true}
                 onKeyDown={(e) => {
                   if (e.code === "Enter") {
                     // onRenamed and onKeyDown are performed simultaneously, calling the toggleExpdaded callback
-                    // with a outdate url value.
+                    // with a outdate url value, making it necessary to use the e.currentTarget.value.
                     toogleExpanded(title, e.currentTarget.value);
                   }
                 }}
