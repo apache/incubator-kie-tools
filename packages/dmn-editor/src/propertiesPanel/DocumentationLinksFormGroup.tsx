@@ -217,10 +217,16 @@ function DocumentationLinksInput({
       const url = new URL(newUrl);
       return url.toString();
     } catch (error) {
-      if (!newUrl.includes("http://") && !newUrl.includes("https://")) {
-        const urlWithProtocol = "http://" + newUrl + "/";
-        const url = new URL(urlWithProtocol);
-        return url.toString() === urlWithProtocol ? url.toString() : undefined;
+      try {
+        if (!newUrl.includes("http://") && !newUrl.includes("https://")) {
+          const urlWithProtocol = "http://" + newUrl + "/";
+          const url = new URL(urlWithProtocol);
+          // the new URL automatically converts the whitespaces to %20
+          // this check verifies if the url has whitespaces
+          return url.toString() === urlWithProtocol ? url.toString() : undefined;
+        }
+      } catch (error) {
+        return undefined;
       }
       return undefined;
     }
