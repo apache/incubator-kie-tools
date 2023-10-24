@@ -208,7 +208,7 @@ function DocumentationLinksInput({
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
   const [titleIsUrl, setTitleIsUrl] = useState(false);
-  const changedByToogle = useRef(false);
+  const updatedOnToogle = useRef(false);
 
   const parseUrl = useCallback((newUrl: string) => {
     try {
@@ -236,16 +236,17 @@ function DocumentationLinksInput({
       if (parsedUrl !== undefined && isUrlExpanded === true && (title === "" || titleIsUrl)) {
         // valid parsed url and empty title
         setTitleIsUrl(true);
-        changedByToogle.current = true;
+        updatedOnToogle.current = true;
         onChange(parsedUrl, parsedUrl);
         setUrlExpanded(false);
       } else if (parsedUrl !== undefined && parsedUrl !== url && isUrlExpanded === true) {
         // valid parsed url and different than the current url
+        updatedOnToogle.current = true;
         onChange(title, parsedUrl);
         setUrlExpanded(false);
       } else if (url !== "" && parsedUrl === undefined && title === "") {
         // invalid parsed url and empty title
-        changedByToogle.current = true;
+        updatedOnToogle.current = true;
         onChange("", url);
       } else if (url !== "" && parsedUrl === undefined) {
         // nothing should be done with an invalid url
@@ -331,12 +332,12 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL_TITLE}
                 name={title ?? ""}
                 onRenamed={(newUrlTitle) => {
-                  if (!changedByToogle.current && newUrlTitle !== title) {
+                  if (!updatedOnToogle.current && newUrlTitle !== title) {
                     onChange(newUrlTitle, url);
                     setTitleIsUrl(false);
                   }
                   // reset the changedByToogle
-                  changedByToogle.current = false;
+                  updatedOnToogle.current = false;
                 }}
                 allUniqueNames={allUniqueNames}
                 validate={validateTitle}
@@ -358,11 +359,11 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL}
                 name={url ?? ""}
                 onRenamed={(newUrl: string) => {
-                  if (!changedByToogle.current && newUrl !== url) {
+                  if (!updatedOnToogle.current && newUrl !== url) {
                     onChange(title, newUrl);
                   }
                   // reset the changedByToogle
-                  changedByToogle.current = false;
+                  updatedOnToogle.current = false;
                 }}
                 allUniqueNames={allUniqueNames}
                 validate={validateUrl}
