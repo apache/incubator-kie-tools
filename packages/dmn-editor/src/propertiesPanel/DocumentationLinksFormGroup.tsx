@@ -14,6 +14,7 @@ import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-righ
 import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Draggable, DraggableContextProvider } from "./Draggable";
+import { useDmnEditorStoreApi } from "../store/Store";
 
 const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "http://";
@@ -330,11 +331,9 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL_TITLE}
                 name={title ?? ""}
                 onRenamed={(newUrlTitle) => {
-                  if (!changedByToogle.current) {
+                  if (!changedByToogle.current && newUrlTitle !== title) {
                     onChange(newUrlTitle, url);
-                    if (newUrlTitle !== title) {
-                      setTitleIsUrl(false);
-                    }
+                    setTitleIsUrl(false);
                   }
                   // reset the changedByToogle
                   changedByToogle.current = false;
@@ -359,7 +358,7 @@ function DocumentationLinksInput({
                 placeholder={PLACEHOLDER_URL}
                 name={url ?? ""}
                 onRenamed={(newUrl: string) => {
-                  if (!changedByToogle.current) {
+                  if (!changedByToogle.current && newUrl !== url) {
                     onChange(title, newUrl);
                   }
                   // reset the changedByToogle
