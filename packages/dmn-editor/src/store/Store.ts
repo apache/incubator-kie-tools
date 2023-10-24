@@ -49,6 +49,7 @@ export interface State {
     drdIndex: number;
     edgeIdBeingUpdated: string | undefined;
     dropTargetNode: DropTargetNode;
+    ongoingConnection: RF.OnConnectStartParams | undefined;
     propertiesPanel: {
       isOpen: boolean;
       elementId: string | undefined;
@@ -145,6 +146,7 @@ export const defaultStaticState = () => ({
     drdIndex: 0,
     edgeIdBeingUpdated: undefined,
     dropTargetNode: undefined,
+    ongoingConnection: undefined,
     propertiesPanel: {
       isOpen: false,
       elementId: undefined,

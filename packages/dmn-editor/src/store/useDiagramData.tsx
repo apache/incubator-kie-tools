@@ -20,6 +20,7 @@ import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glit
 import { ExternalDmnsIndex } from "../DmnEditor";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { Unpacked } from "../tsExt/tsExt";
+import { NodeVisitor, EdgeVisitor, getAdjMatrix, traverse } from "../diagram/graph/graph";
 
 export const diagramColors = {
   hierarchyUp: "#0083a4",
@@ -433,58 +434,17 @@ export function assignClassesToHighlightedHierarchyNodes(
   nodes: Map<string, RF.Node>,
   edges: RF.Edge[]
 ) {
-  function traverse(curNodeIds: string[], traversalDirection: HierarchyDirection, visited = new Set<string>()) {
-    if (curNodeIds.length <= 0) {
-      return;
-    }
+  const nodeVisitor: NodeVisitor = (nodeId, traversalDirection) => {
+    nodes.get(nodeId)!.className = `hierarchy ${traversalDirection}`;
+  };
 
-    const nextNodeIds = curNodeIds.flatMap((curNodeId) => {
-      if (visited.has(curNodeId)) {
-        return [];
-      }
-
-      // Only paint nodes if they're not selected.
-      if (!__selectedSet.has(curNodeId)) {
-        nodes.get(curNodeId)!.className = `hierarchy ${traversalDirection}`;
-      }
-
-      const curNodeAdjs = __adjMatrix[curNodeId] ?? {};
-      return Object.keys(curNodeAdjs).flatMap((adjNodeId) => {
-        const { edge, direction: edgeDirection } = curNodeAdjs[adjNodeId]!;
-        if (traversalDirection !== edgeDirection) {
-          return [];
-        }
-
-        visited.add(curNodeId);
-        // Only paint edges if at least one of the endpoints is not selected.
-        if (!(__selectedSet.has(edge.source) && __selectedSet.has(edge.target))) {
-          edge.className = `hierarchy ${traversalDirection}`;
-        }
-
-        return [adjNodeId];
-      });
-    });
-
-    traverse(nextNodeIds, traversalDirection, visited);
-  }
+  const edgeVisitor: EdgeVisitor = (edge, traversalDirection) => {
+    edge.className = `hierarchy ${traversalDirection}`;
+  };
 
   const __selectedSet = new Set(selected);
-  const __adjMatrix: AdjMatrix = {};
+  const __adjMatrix = getAdjMatrix(edges);
 
-  for (const e of edges) {
-    __adjMatrix[e.source] ??= {};
-    __adjMatrix[e.target] ??= {};
-    __adjMatrix[e.source]![e.target] = { direction: "up", edge: e };
-    __adjMatrix[e.target]![e.source] = { direction: "down", edge: e };
-  }
-
-  traverse(selected, "up");
-  traverse(selected, "down"); // Traverse "down" after "up" because when there's a cycle, highlighting a node as a dependency is preferable.
+  traverse(__adjMatrix, __selectedSet, selected, "up", nodeVisitor, edgeVisitor);
+  traverse(__adjMatrix, __selectedSet, selected, "down", nodeVisitor, edgeVisitor); // Traverse "down" after "up" because when there's a cycle, highlighting a node as a dependency is preferable.
 }
-
-export type AdjMatrix = Record<
-  string,
-  undefined | Record<string, undefined | { direction: HierarchyDirection; edge: RF.Edge }>
->;
-
-export type HierarchyDirection = "up" | "down";

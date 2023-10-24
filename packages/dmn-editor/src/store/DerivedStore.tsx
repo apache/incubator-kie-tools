@@ -18,6 +18,7 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "../Spec";
 import { ExternalPmmlsIndex, ExternalDmnsIndex } from "../DmnEditor";
+import { getAdjMatrix, traverse } from "../diagram/graph/graph";
 
 export type DerivedStore = {
   selectedNodeTypes: Set<NodeType>;
@@ -39,6 +40,7 @@ export type DerivedStore = {
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
   externalDmnsByNamespace: ExternalDmnsIndex;
   externalPmmlsByNamespace: ExternalPmmlsIndex;
+  nodeIdsOfOngoingConnectionDependencies: Set<string>;
 };
 
 const DmnEditorDerivedStoreContext = React.createContext<DerivedStore>({} as any);
@@ -180,6 +182,22 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     diagram.draggingWaypoints.length > 0 ||
     diagram.movingDividerLines.length > 0;
 
+  const nodeIdsOfOngoingConnectionDependencies = useMemo(() => {
+    if (!diagram.ongoingConnection?.nodeId) {
+      return new Set<string>();
+    }
+
+    const selected = [diagram.ongoingConnection.nodeId];
+    const __selectedSet = new Set(selected);
+    const __adjMatrix = getAdjMatrix(edges);
+
+    const ret = new Set<string>();
+    traverse(__adjMatrix, __selectedSet, selected, "down", (nodeId) => {
+      ret.add(nodeId);
+    });
+    return ret;
+  }, [diagram.ongoingConnection?.nodeId, edges]);
+
   const value = useMemo(
     () => ({
       selectedNodeTypes,
@@ -201,6 +219,7 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelItemDefinitionUniqueNames,
       externalDmnsByNamespace,
       externalPmmlsByNamespace,
+      nodeIdsOfOngoingConnectionDependencies,
     }),
     [
       selectedNodeTypes,
@@ -222,6 +241,7 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelItemDefinitionUniqueNames,
       externalDmnsByNamespace,
       externalPmmlsByNamespace,
+      nodeIdsOfOngoingConnectionDependencies,
     ]
   );
 

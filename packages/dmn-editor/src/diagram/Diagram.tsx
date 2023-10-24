@@ -144,6 +144,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     isDiagramEditingInProgress,
     selectedNodeTypes,
     externalDmnsByNamespace,
+    nodeIdsOfOngoingConnectionDependencies,
   } = useDmnEditorDerivedStore();
 
   // State
@@ -151,8 +152,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const [reactFlowInstance, setReactFlowInstance] = useState<
     RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined
   >(undefined);
-
-  const [connection, setConnection] = useState<RF.OnConnectStartParams | undefined>(undefined);
 
   // Refs
 
@@ -363,25 +362,32 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     const edgeUpdaterSource = document.querySelectorAll(
       ".react-flow__edgeupdater-source, .react-flow__edgeupdater-target"
     );
-    if (connection) {
+    if (diagram.ongoingConnection) {
       edgeUpdaterSource.forEach((e) => e.classList.add("hidden"));
     } else {
       edgeUpdaterSource.forEach((e) => e.classList.remove("hidden"));
     }
-  }, [connection]);
+  }, [diagram.ongoingConnection]);
 
-  const onConnectStart = useCallback<RF.OnConnectStart>((e, newConnection) => {
-    console.debug("DMN DIAGRAM: `onConnectStart`");
-    setConnection(newConnection);
-  }, []);
+  const onConnectStart = useCallback<RF.OnConnectStart>(
+    (e, newConnection) => {
+      console.debug("DMN DIAGRAM: `onConnectStart`");
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.ongoingConnection = newConnection;
+      });
+    },
+    [dmnEditorStoreApi]
+  );
 
   const onConnectEnd = useCallback(
     (e: MouseEvent) => {
       console.debug("DMN DIAGRAM: `onConnectEnd`");
-      setConnection(undefined);
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.ongoingConnection = undefined;
+      });
 
       const targetIsPane = (e.target as Element | null)?.classList?.contains("react-flow__pane");
-      if (!targetIsPane || !container.current || !connection || !reactFlowInstance) {
+      if (!targetIsPane || !container.current || !diagram.ongoingConnection || !reactFlowInstance) {
         return;
       }
 
@@ -393,15 +399,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       });
 
       // only try to create node if source handle is compatible
-      if (!Object.values(NODE_TYPES).find((n) => n === connection.handleId)) {
+      if (!Object.values(NODE_TYPES).find((n) => n === diagram.ongoingConnection!.handleId)) {
         return;
       }
 
-      if (!connection.nodeId) {
+      if (!diagram.ongoingConnection.nodeId) {
         return;
       }
 
-      const sourceNode = nodesById.get(connection.nodeId);
+      const sourceNode = nodesById.get(diagram.ongoingConnection.nodeId);
       if (!sourceNode) {
         return;
       }
@@ -411,7 +417,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         return;
       }
 
-      const newNodeType = connection.handleId as NodeType;
+      const newNodeType = diagram.ongoingConnection.handleId as NodeType;
       const sourceNodeType = sourceNode.type as NodeType;
 
       const edge = getDefaultEdgeTypeBetween(sourceNodeType as NodeType, newNodeType);
@@ -445,12 +451,23 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         state.diagram._selectedNodes = [newDmnObejctHref];
       });
     },
-    [connection, container, diagram.snapGrid, dmnEditorStoreApi, nodesById, reactFlowInstance, dmnShapesByHref]
+    [
+      dmnEditorStoreApi,
+      container,
+      diagram.ongoingConnection,
+      diagram.snapGrid,
+      reactFlowInstance,
+      nodesById,
+      dmnShapesByHref,
+    ]
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
-    (edgeOrConnection) => checkIsValidConnection(nodesById, edgeOrConnection),
-    [nodesById]
+    (edgeOrConnection) =>
+      checkIsValidConnection(nodesById, edgeOrConnection) &&
+      !!edgeOrConnection.target &&
+      !nodeIdsOfOngoingConnectionDependencies.has(edgeOrConnection.target),
+    [nodeIdsOfOngoingConnectionDependencies, nodesById]
   );
 
   const onNodesChange = useCallback<RF.OnNodesChange>(
@@ -825,8 +842,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const onEdgeUpdateEnd = useCallback(
     (e: MouseEvent | TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
       console.debug("DMN DIAGRAM: `onEdgeUpdateEnd`");
-      setConnection(undefined);
       dmnEditorStoreApi.setState((state) => {
+        state.diagram.ongoingConnection = undefined;
         state.diagram.edgeIdBeingUpdated = undefined;
       });
     },
@@ -846,7 +863,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           e.preventDefault();
 
           resetToBeforeEditingBegan();
-        } else if (!connection) {
+        } else if (!diagram.ongoingConnection) {
           dmnEditorStoreApi.setState((state) => {
             if (selectedNodesById.size > 0 || selectedEdgesById.size > 0) {
               console.debug("DMN DIAGRAM: Esc pressed. Desselecting everything.");
@@ -869,7 +886,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       }
     },
     [
-      connection,
+      diagram.ongoingConnection,
       dmnEditorStoreApi,
       dmnModelBeforeEditingRef,
       isDiagramEditingInProgress,
@@ -1056,26 +1073,32 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           <Palette pulse={isEmptyStateShowing} />
           <TopRightCornerPanels />
           <PanWhenAltPressed />
-          <KeyboardShortcuts setConnection={setConnection} />
+          <KeyboardShortcuts />
           {/** FIXME: Tiago --> The background is making the Diagram VERY slow on Firefox. Render this conditionally. */}
           <RF.Background />
           <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
-          <SetConnectionToReactFlowStore connection={connection} />
+          <SetConnectionToReactFlowStore />
         </RF.ReactFlow>
       </DiagramContainerContextProvider>
     </>
   );
 }
 
-export function SetConnectionToReactFlowStore({ connection }: { connection: RF.OnConnectStartParams | undefined }) {
+export function SetConnectionToReactFlowStore(props: {}) {
+  const diagram = useDmnEditorStore((s) => s.diagram);
   const rfStoreApi = RF.useStoreApi();
   useEffect(() => {
     rfStoreApi.setState({
-      connectionHandleId: connection?.handleId,
-      connectionHandleType: connection?.handleType,
-      connectionNodeId: connection?.nodeId,
+      connectionHandleId: diagram.ongoingConnection?.handleId,
+      connectionHandleType: diagram.ongoingConnection?.handleType,
+      connectionNodeId: diagram.ongoingConnection?.nodeId,
     });
-  }, [connection?.handleId, connection?.handleType, connection?.nodeId, rfStoreApi]);
+  }, [
+    diagram.ongoingConnection?.handleId,
+    diagram.ongoingConnection?.handleType,
+    diagram.ongoingConnection?.nodeId,
+    rfStoreApi,
+  ]);
 
   return <></>;
 }
@@ -1143,7 +1166,6 @@ export function TopRightCornerPanels() {
 export function SelectionStatus() {
   const rfStoreApi = RF.useStoreApi();
 
-  const diagram = useDmnEditorStore((s) => s.diagram);
   const { selectedNodesById, selectedEdgesById } = useDmnEditorDerivedStore();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
 
@@ -1181,14 +1203,9 @@ export function SelectionStatus() {
   );
 }
 
-export function KeyboardShortcuts({
-  setConnection,
-}: {
-  setConnection: React.Dispatch<React.SetStateAction<RF.OnConnectStartParams | undefined>>;
-}) {
+export function KeyboardShortcuts(props: {}) {
   const rfStoreApi = RF.useStoreApi();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { selectedNodesById } = useDmnEditorDerivedStore();
 
   const rf = RF.useReactFlow();
 
@@ -1238,14 +1255,16 @@ export function KeyboardShortcuts({
       if (rfState.connectionNodeId) {
         console.debug("DMN DIAGRAM: Esc pressed. Cancelling connection.");
         rfState.cancelConnection();
-        setConnection(undefined);
+        dmnEditorStoreApi.setState((state) => {
+          state.diagram.ongoingConnection = undefined;
+        });
       } else {
         (document.activeElement as any)?.blur?.();
       }
 
       return rfState;
     });
-  }, [dmnEditorStoreApi, esc, rfStoreApi, setConnection]);
+  }, [dmnEditorStoreApi, esc, rfStoreApi]);
 
   const cut = RF.useKeyPress(["Meta+x"]);
   useEffect(() => {
