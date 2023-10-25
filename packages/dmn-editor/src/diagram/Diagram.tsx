@@ -300,7 +300,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
         dmnEditorStoreApi.setState((state) => {
           const namespaceName = getXmlNamespaceDeclarationName({
-            model: original(state.dmn.model.definitions), // We need to use the `original` here, because Immer drafts won't work with Object.keys, as they're proxies.
+            model: state.dmn.model.definitions,
             namespace: externalNode.externalDrgElementNamespace,
           });
 

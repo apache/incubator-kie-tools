@@ -5,6 +5,7 @@
 **/node_modules/
 **/dist/
 **/dist-dev/
+**/dist-dev-webapp/
 **/dist-tests/
 **/dist-e2e-tests/
 **/dist-storybook/
