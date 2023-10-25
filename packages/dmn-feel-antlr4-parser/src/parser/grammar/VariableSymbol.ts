@@ -20,17 +20,17 @@
 import { BaseSymbol } from "./BaseSymbol";
 import { Type } from "./Type";
 
-import { VariableType } from "../VariableType";
+import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 
 export class VariableSymbol extends BaseSymbol {
-  private readonly _variableType: VariableType | undefined;
+  private readonly _symbolType: FeelSyntacticSymbolNature | undefined;
 
-  constructor(id?: string, type?: Type, variableType?: VariableType) {
+  constructor(id?: string, type?: Type, variableType?: FeelSyntacticSymbolNature) {
     super(id, type);
-    this._variableType = variableType;
+    this._symbolType = variableType;
   }
 
-  get variableType(): VariableType | undefined {
-    return this._variableType;
+  get symbolType(): FeelSyntacticSymbolNature | undefined {
+    return this._symbolType;
   }
 }

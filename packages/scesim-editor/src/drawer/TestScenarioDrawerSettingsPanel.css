@@ -22,10 +22,22 @@
 }
 
 .kie-scesim-editor-drawer-settings--checkbox-group {
-  margin-top: 30px;
+  margin-top: 20px;
+}
+
+.kie-scesim-editor-drawer-settings--form-select {
+  margin-bottom: 20px;
 }
 
 .kie-scesim-editor-drawer-settings--info-icon {
   margin-left: 5px;
   vertical-align: top;
+}
+
+.kie-scesim-editor-drawer-settings--text-input {
+  margin-bottom: 20px;
+}
+
+.kie-scesim-editor-drawer-settings--title {
+  margin-bottom: 5px;
 }

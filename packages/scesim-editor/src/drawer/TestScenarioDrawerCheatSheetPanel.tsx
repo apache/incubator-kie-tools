@@ -30,7 +30,13 @@ function TestScenarioDrawerCheatSheetPanel({ assetType }: { assetType: string })
   return (
     <TextContent>
       <Text>{i18n.drawer.cheatSheet.paragraph1}</Text>
-      <Text>{i18n.drawer.cheatSheet.paragraph2(i18n.drawer.dataObject.title)}</Text>
+      <Text>
+        {i18n.drawer.cheatSheet.paragraph2(
+          assetType === TestScenarioType[TestScenarioType.DMN]
+            ? i18n.drawer.dataObjects.titleDMN
+            : i18n.drawer.dataObjects.titleRule
+        )}
+      </Text>
       <Text>{i18n.drawer.cheatSheet.paragraph3(i18n.tab.backgroundTabTitle, i18n.tab.scenarioTabTitle)}</Text>
       <Text>{i18n.drawer.cheatSheet.paragraph4}</Text>
       {assetType === TestScenarioType[TestScenarioType.DMN] && <Text>{i18n.drawer.cheatSheet.paragraph5DMN}</Text>}

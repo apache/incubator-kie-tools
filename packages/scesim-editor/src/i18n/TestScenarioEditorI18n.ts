@@ -21,11 +21,13 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
+  alerts: {
+    dmnDataNotAvailable: string;
+    ruleDataNotAvailable: string;
+    dmnDataRetrievedFromScesim: string;
+    ruleDataRetrievedFromScesim: string;
+  };
   drawer: {
-    dataObject: {
-      description: string;
-      title: string;
-    };
     cheatSheet: {
       expression1DMN: string;
       expression1Rule: string;
@@ -54,6 +56,22 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       paragraph6DMN: string;
       paragraph6Rule: string;
       title: string;
+    };
+    dataObjects: {
+      clearSelection: string;
+      collapseAll: string;
+      dataObjectsDescriptionDMN: string;
+      dataObjectsDescriptionRule: string;
+      descriptionDMN: string;
+      descriptionRule: string;
+      emptyDataObjectsTitleDMN: string;
+      emptyDataObjectsTitleRule: string;
+      emptyDataObjectsDescriptionDMN: string;
+      emptyDataObjectsDescriptionRule: string;
+      expandAll: string;
+      insertDataObject: string;
+      titleDMN: string;
+      titleRule: string;
     };
     settings: {
       assetType: string;

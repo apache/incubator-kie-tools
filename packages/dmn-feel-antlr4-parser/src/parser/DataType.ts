@@ -20,4 +20,5 @@
 export interface DataType {
   name: string;
   properties: Map<string, DataType>;
+  typeRef?: string;
 }

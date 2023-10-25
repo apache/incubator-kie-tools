@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { OpenAPI } from "openapi-types";
 import { GraphQL } from "../graphql";
 import {
   BulkWorkflowInstanceActionResponse,
@@ -33,6 +34,7 @@ import {
   OperationType,
   CloudEventRequest,
   KOGITO_BUSINESS_KEY,
+  WorkflowResponse,
 } from "../types";
 import { ApolloClient } from "apollo-client";
 import { buildWorkflowListWhereArgument } from "./QueryUtils";
@@ -464,7 +466,7 @@ export const getJobsWithFilters = async (
   }
 };
 
-const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEndpoint: string): Promise<any> => {
+const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEndpoint?: string): Promise<any> => {
   const cloudEvent = {
     ...event.headers.extensions,
     specversion: "1.0",
@@ -481,11 +483,11 @@ const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEnd
   const url = `${baseUrl}${event.endpoint.startsWith("/") ? "" : "/"}${event.endpoint}`;
 
   return axios.request({
-    url: proxyEndpoint,
+    url: proxyEndpoint || url,
     method: event.method,
     data: cloudEvent,
     headers: {
-      "Target-Url": url,
+      ...(proxyEndpoint ? { "Target-Url": url } : {}),
     },
   });
 };
@@ -493,7 +495,7 @@ const doTriggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEnd
 export const triggerStartCloudEvent = (
   event: CloudEventRequest,
   baseUrl: string,
-  proxyEndpoint: string
+  proxyEndpoint?: string
 ): Promise<string> => {
   if (!event.headers.extensions[KOGITO_BUSINESS_KEY]) {
     event.headers.extensions[KOGITO_BUSINESS_KEY] = String(Math.floor(Math.random() * 100000));
@@ -506,7 +508,7 @@ export const triggerStartCloudEvent = (
   });
 };
 
-export const triggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEndpoint: string): Promise<any> => {
+export const triggerCloudEvent = (event: CloudEventRequest, baseUrl: string, proxyEndpoint?: string): Promise<any> => {
   return doTriggerCloudEvent(event, baseUrl, proxyEndpoint);
 };
 
@@ -593,57 +595,61 @@ export const startWorkflowRest = (
   data: Record<string, any>,
   endpoint: string,
   businessKey: string,
-  proxyEndpoint: string
-): Promise<string> => {
+  proxyEndpoint?: string
+): Promise<WorkflowResponse> => {
   const requestURL = `${endpoint}${businessKey.length > 0 ? `?businessKey=${businessKey}` : ""}`;
   return new Promise((resolve, reject) => {
     axios
       .post(
-        proxyEndpoint,
+        proxyEndpoint || endpoint,
         { workflowdata: data },
         {
           headers: {
-            "Target-Url": requestURL,
+            ...(proxyEndpoint ? { "Target-Url": requestURL } : {}),
           },
         }
       )
       .then((response: any) => {
-        resolve(response.data.id);
+        resolve(response.data);
       })
       .catch((err) => reject(err));
   });
 };
 
-export const getCustomWorkflowSchema = (
+export const getCustomWorkflowSchemaFromApi = async (
+  api: OpenAPI.Document,
+  workflowName: string
+): Promise<Record<string, any>> => {
+  let schema = {};
+
+  try {
+    const schemaFromRequestBody = api.paths["/" + workflowName].post.requestBody.content["application/json"].schema;
+
+    if (schemaFromRequestBody.type) {
+      schema = {
+        type: schemaFromRequestBody.type,
+        properties: schemaFromRequestBody.properties,
+      };
+    } else {
+      schema = (api as any).components.schemas[workflowName + "_input"];
+    }
+  } catch (e) {
+    console.log(e);
+    schema = (api as any).components.schemas[workflowName + "_input"];
+  }
+
+  return schema ?? null;
+};
+
+export const getCustomWorkflowSchema = async (
   baseUrl: string,
   openApiPath: string,
   workflowName: string
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     SwaggerParser.parse(`${baseUrl}/${openApiPath}`)
-      .then((response: any) => {
-        let schema = {};
-        try {
-          const schemaFromRequestBody =
-            response.paths["/" + workflowName].post.requestBody.content["application/json"].schema;
-          /* istanbul ignore else*/
-          if (schemaFromRequestBody.type) {
-            schema = {
-              type: schemaFromRequestBody.type,
-              properties: schemaFromRequestBody.properties,
-            };
-          } else {
-            schema = response.components.schemas[workflowName + "_input"];
-          }
-        } catch (e) {
-          console.log(e);
-          schema = response.components.schemas[workflowName + "_input"];
-        }
-        if (schema) {
-          resolve(schema);
-        } else {
-          reject();
-        }
+      .then(async (response: any) => {
+        resolve(await getCustomWorkflowSchemaFromApi(response, workflowName));
       })
       .catch((err) => reject(err));
   });

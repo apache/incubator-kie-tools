@@ -17,19 +17,28 @@
  * under the License.
  */
 
-import { VariableType } from "./VariableType";
+import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
+import { FeelSymbol } from "./FeelSymbol";
 
 export class FeelVariable {
   private readonly _text: string;
   private readonly _startIndex: number;
-  private readonly _variableType: VariableType;
+  private readonly _feelSymbolNature: FeelSyntacticSymbolNature;
   private readonly _length: number;
+  private readonly _scopeSymbols: FeelSymbol[];
 
-  constructor(startIndex: number, length: number, variableType: VariableType, text: string) {
+  constructor(
+    startIndex: number,
+    length: number,
+    symbolType: FeelSyntacticSymbolNature,
+    text: string,
+    scopeSymbols?: FeelSymbol[]
+  ) {
     this._startIndex = startIndex;
     this._length = length;
-    this._variableType = variableType;
+    this._feelSymbolNature = symbolType;
     this._text = text;
+    this._scopeSymbols = scopeSymbols ?? [];
   }
 
   get text(): string {
@@ -40,11 +49,15 @@ export class FeelVariable {
     return this._startIndex;
   }
 
-  get variableType(): VariableType {
-    return this._variableType;
+  get feelSymbolNature(): FeelSyntacticSymbolNature {
+    return this._feelSymbolNature;
   }
 
   get length(): number {
     return this._length;
+  }
+
+  get scopeSymbols(): FeelSymbol[] {
+    return this._scopeSymbols;
   }
 }

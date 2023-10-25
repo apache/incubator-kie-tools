@@ -29,18 +29,26 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
+import TestScenarioDrawerDataObjectsPanel from "./TestScenarioDrawerDataObjectsPanel";
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
-import { TestScenarioEditorDock, TestScenarioSettings } from "../TestScenarioEditor";
+import {
+  TestScenarioDataObject,
+  TestScenarioEditorDock,
+  TestScenarioSettings,
+  TestScenarioType,
+} from "../TestScenarioEditor";
 import { useTestScenarioEditorI18n } from "../i18n";
 
 function TestScenarioDrawerPanel({
+  dataObjects,
   fileName,
   onDrawerClose,
   onUpdateSettingField,
   selectedDock,
   testScenarioSettings,
 }: {
+  dataObjects: TestScenarioDataObject[];
   fileName: string;
   onDrawerClose: () => void;
   onUpdateSettingField: (field: string, value: boolean | string) => void;
@@ -62,7 +70,9 @@ function TestScenarioDrawerPanel({
                 case TestScenarioEditorDock.CHEATSHEET:
                   return i18n.drawer.cheatSheet.title;
                 case TestScenarioEditorDock.DATA_OBJECT:
-                  return i18n.drawer.dataObject.title;
+                  return testScenarioSettings.assetType === TestScenarioType[TestScenarioType.DMN]
+                    ? i18n.drawer.dataObjects.titleDMN
+                    : i18n.drawer.dataObjects.titleRule;
                 case TestScenarioEditorDock.SETTINGS:
                   return i18n.drawer.settings.title;
                 default:
@@ -74,28 +84,29 @@ function TestScenarioDrawerPanel({
         <Divider />
       </DrawerHead>
       <DrawerPanelBody>
-        <TextContent>
-          <Text>
-            {(() => {
-              switch (selectedDock) {
-                case TestScenarioEditorDock.CHEATSHEET:
-                  return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
-                case TestScenarioEditorDock.DATA_OBJECT:
-                  return i18n.drawer.dataObject.description;
-                case TestScenarioEditorDock.SETTINGS:
-                  return (
-                    <TestScenarioDrawerSettingsPanel
-                      fileName={fileName}
-                      onUpdateSettingField={onUpdateSettingField}
-                      testScenarioSettings={testScenarioSettings}
-                    />
-                  );
-                default:
-                  throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
-              }
-            })()}
-          </Text>
-        </TextContent>
+        {(() => {
+          switch (selectedDock) {
+            case TestScenarioEditorDock.CHEATSHEET:
+              return <TestScenarioDrawerCheatSheetPanel assetType={testScenarioSettings.assetType} />;
+            case TestScenarioEditorDock.DATA_OBJECT:
+              return (
+                <TestScenarioDrawerDataObjectsPanel
+                  assetType={testScenarioSettings.assetType}
+                  dataObjects={dataObjects}
+                />
+              );
+            case TestScenarioEditorDock.SETTINGS:
+              return (
+                <TestScenarioDrawerSettingsPanel
+                  fileName={fileName}
+                  onUpdateSettingField={onUpdateSettingField}
+                  testScenarioSettings={testScenarioSettings}
+                />
+              );
+            default:
+              throw new Error("Wrong state, an invalid dock has been selected " + selectedDock);
+          }
+        })()}
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { triggerStartCloudEvent } from "../../apis";
+import { triggerStartCloudEvent } from "@kie-tools/runtime-tools-gateway-api/dist/gatewayApi";
 import { CloudEventFormGatewayApiImpl } from "../../impl/CloudEventFormGatewayApiImpl";
 
-jest.mock("../../apis/apis", () => ({
+jest.mock("@kie-tools/runtime-tools-gateway-api/dist/gatewayApi", () => ({
   triggerStartCloudEvent: jest.fn(),
 }));
 

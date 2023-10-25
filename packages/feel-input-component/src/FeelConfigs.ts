@@ -36,7 +36,7 @@ export const feelTheme = (): Monaco.editor.IStandaloneThemeData => {
       { token: Element[Element.FeelString], foreground: "#067D17" },
       { token: Element[Element.FeelFunction], foreground: "#00627A" },
       { token: Element[Element.InputDataVariable], foreground: "#917632", fontStyle: "underline" },
-      { token: Element[Element.BkmVariable], foreground: "#917632", fontStyle: "underline italic" },
+      { token: Element[Element.FunctionCall], foreground: "#917632", fontStyle: "underline italic" },
       { token: Element[Element.UnknownVariable], foreground: "#ff0000", fontStyle: "underline bold" },
       { token: Element[Element.FunctionParameterVariable], foreground: "#036e9b", fontStyle: "italic" },
     ],
@@ -83,6 +83,7 @@ export const feelDefaultConfig = (
     minimap: {
       enabled: false,
     },
+    wordBasedSuggestions: false,
     "semanticHighlighting.enabled": true,
     ...options,
   };

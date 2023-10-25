@@ -18,7 +18,7 @@
  */
 
 import { DataType } from "./DataType";
-import { VariableType } from "./VariableType";
+import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 
 /**
  * Describe a variable in FEEL.
@@ -30,12 +30,12 @@ export interface Variable {
   value: string;
 
   /**
-   * The source of the variable.
+   * The nature of the variable.
    */
-  variableType: VariableType;
+  feelSyntacticSymbolNature: FeelSyntacticSymbolNature;
 
   /**
-   * Some variables are of one of the custom data types defined by user.
+   * The type of the variable, which can be a custom data type defined by the user, a built-in type or not defined.
    */
-  typeRef?: DataType | undefined;
+  typeRef?: DataType | string | undefined;
 }
