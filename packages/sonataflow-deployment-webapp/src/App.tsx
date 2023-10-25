@@ -22,9 +22,17 @@ import { HashRouter } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
+import { WorkflowListContextProvider } from "./runtimeTools/workflows/WorkflowList";
 
 export const App = () => (
-  <HashRouter>{nest([AppContextProvider, {}], [OpenApiContextProvider, {}], [RoutesSwitch, {}])}</HashRouter>
+  <HashRouter>
+    {nest(
+      [AppContextProvider, {}],
+      [OpenApiContextProvider, {}],
+      [WorkflowListContextProvider, {}],
+      [RoutesSwitch, {}]
+    )}
+  </HashRouter>
 );
 
 function nest(...components: Array<[(...args: any[]) => any, object]>) {

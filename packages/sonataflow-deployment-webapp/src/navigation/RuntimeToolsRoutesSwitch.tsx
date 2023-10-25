@@ -16,16 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import { BasePage } from "../pages/BasePage";
+import { RuntimeToolsWorkflowInstances } from "../runtimeTools/workflows/RuntimeToolsWorkflowInstances";
 import { routes } from "../routes";
 
-export interface AppData {
-  appName: string;
-  showDisclaimer: boolean;
-  dataIndexExternalUrl?: string;
-}
-
-export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dataJson.path({}));
-  return (await response.json()) as AppData;
+export function RuntimeToolsRoutesSwitch() {
+  return (
+    <BasePage>
+      <Switch>
+        <Route path={routes.runtimeTools.workflowInstances.path({})}>
+          <RuntimeToolsWorkflowInstances />
+        </Route>
+      </Switch>
+    </BasePage>
+  );
 }

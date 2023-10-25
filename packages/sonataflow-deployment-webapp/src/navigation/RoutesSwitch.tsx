@@ -16,16 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useRef } from "react";
+import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { APPDATA_JSON_FILENAME } from "../AppConstants";
 import { ErrorKind, ErrorPage } from "../pages/ErrorPage";
 import { NoMatchPage } from "../pages/NoMatchPage";
-import { RuntimeToolsWorkflowInstances } from "../pages/runtimeTools/workflows/RuntimeToolsWorkflowInstances";
 import { Workflows } from "../pages/Workflows/";
 import { CloudEventFormPage } from "../pages/Workflows/CloudEventFormPage";
 import { WorkflowFormPage } from "../pages/Workflows/WorkflowFormPage";
 import { routes } from "../routes";
+import { RuntimeToolsRoutesSwitch } from "./RuntimeToolsRoutesSwitch";
 
 export function RoutesSwitch() {
   return (
@@ -39,8 +39,8 @@ export function RoutesSwitch() {
       <Route path={routes.workflows.home.path({})}>
         <Workflows />
       </Route>
-      <Route path={routes.runtimeTools.workflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
+      <Route path={routes.runtimeTools.home.path({})}>
+        <RuntimeToolsRoutesSwitch />
       </Route>
       <Route path={routes.dataJsonError.path({})}>
         <ErrorPage kind={ErrorKind.APPDATA_JSON} errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]} />

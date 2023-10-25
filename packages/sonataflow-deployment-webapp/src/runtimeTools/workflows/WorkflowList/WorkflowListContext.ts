@@ -17,15 +17,11 @@
  * under the License.
  */
 
-import { routes } from "../routes";
+import React, { useContext } from "react";
+import { WorkflowListGatewayApi } from "./WorkflowListGatewayApi";
 
-export interface AppData {
-  appName: string;
-  showDisclaimer: boolean;
-  dataIndexExternalUrl?: string;
-}
+export const WorkflowListContext = React.createContext<WorkflowListGatewayApi>({} as any);
 
-export async function fetchAppData(): Promise<AppData> {
-  const response = await fetch(routes.dataJson.path({}));
-  return (await response.json()) as AppData;
+export function useWorkflowListGatewayApi() {
+  return useContext(WorkflowListContext);
 }

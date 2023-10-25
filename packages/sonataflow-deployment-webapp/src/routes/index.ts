@@ -99,6 +99,7 @@ export const routes = {
   },
 
   runtimeTools: {
+    home: new Route<{}>(() => RUNTIME_TOOLS_ROUTE),
     workflowInstances: new Route<{}>(() => RUNTIME_TOOLS_ROUTE + `/workflow-instances`),
     workflowDetails: new Route<{
       queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
