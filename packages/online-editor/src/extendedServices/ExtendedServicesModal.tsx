@@ -784,7 +784,7 @@ function ExtendedServicesWizardFooter(props: WizardImperativeControlProps) {
   const { i18n } = useOnlineI18n();
 
   useEffect(() => {
-    if (status === ExtendedServicesStatus.STOPPED) {
+    if (status === ExtendedServicesStatus.STOPPED && wizardContext.activeStep.name !== props.steps[1].name) {
       wizardContext.goToStepByName(props.steps[1].name);
     }
   }, [status, props.steps, wizardContext]);
