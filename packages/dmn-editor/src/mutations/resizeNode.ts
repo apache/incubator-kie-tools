@@ -65,15 +65,14 @@ export function resizeNode({
   }
 
   const snappedPosition = snapShapePosition(snapGrid, shape);
-  const snappedDimensions = snapShapeDimensions(snapGrid, shape, MIN_NODE_SIZES[change.nodeType](snapGrid));
 
   const newDimensions = {
     width: Math.max(change.dimension["@_width"], limit.x - snappedPosition.x),
     height: Math.max(change.dimension["@_height"], limit.y - snappedPosition.y),
   };
 
-  const deltaWidth = newDimensions.width - snappedDimensions.width;
-  const deltaHeight = newDimensions.height - snappedDimensions.height;
+  const deltaWidth = newDimensions.width - shapeBounds["@_width"];
+  const deltaHeight = newDimensions.height - shapeBounds["@_height"];
 
   const offsetByPosition = (position: TargetHandleId | undefined) => {
     return switchExpression(position, {
