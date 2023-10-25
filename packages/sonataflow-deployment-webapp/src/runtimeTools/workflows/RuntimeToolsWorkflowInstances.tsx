@@ -17,17 +17,51 @@
  * under the License.
  */
 import React from "react";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { CubesIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useHistory } from "react-router";
+import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "./WorkflowList/WorkflowListGatewayApi";
+import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
 
 const PAGE_TITLE = "Workflow Instances";
 
+const DataIndexNotAvailable = () => (
+  <PageSection variant="light">
+    <Bullseye>
+      <EmptyState>
+        <EmptyStateIcon icon={CubesIcon} />
+        <Title headingLevel="h4" size="lg">
+          {`Data Index service not available`}
+        </Title>
+        <EmptyStateBody>
+          <TextContent>
+            <Text>
+              Start by setting the Data Index in the config file.
+              <br />
+              Read more on &nbsp;
+              <a
+                href="https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/data-index/data-index-core-concepts.html"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                SonataFlow Guides.
+              </a>
+            </Text>
+          </TextContent>
+        </EmptyStateBody>
+      </EmptyState>
+    </Bullseye>
+  </PageSection>
+);
+
 export function RuntimeToolsWorkflowInstances() {
   const history = useHistory();
-
+  const app = useApp();
   const initialState: WorkflowListState = history.location && (history.location.state as WorkflowListState);
 
   return (
@@ -43,7 +77,7 @@ export function RuntimeToolsWorkflowInstances() {
         </PageSection>
 
         <PageSection isFilled aria-label="workflow-instances-section">
-          <WorkflowListContainer initialState={initialState} />
+          {!app.dataIndexAvailable ? <DataIndexNotAvailable /> : <WorkflowListContainer initialState={initialState} />}
         </PageSection>
       </Page>
     </>

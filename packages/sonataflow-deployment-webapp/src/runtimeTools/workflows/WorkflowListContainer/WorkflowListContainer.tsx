@@ -46,28 +46,8 @@ const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAProps> = 
         });
       },
     });
-    // const onTriggerCloudEventUnsubscriber = gatewayApi.onOpenTriggerCloudEventListen({
-    //   onOpen(workflowInstance?: WorkflowInstance) {
-    //     if (workflowInstance) {
-    //       history.push({
-    //         pathname: routes.runtimeToolsTriggerCloudEventForWorkflow.path({ workflowId: workflowInstance.id }),
-    //         state: {
-    //           source: CloudEventPageSource.INSTANCES,
-    //         },
-    //       });
-    //     }
-    //
-    //     history.push({
-    //       pathname: routes.runtimeToolsTriggerCloudEvent.path({}),
-    //       state: {
-    //         source: CloudEventPageSource.INSTANCES,
-    //       },
-    //     });
-    //   },
-    // });
     return () => {
       onOpenInstanceUnsubscriber.unSubscribe();
-      // onTriggerCloudEventUnsubscriber?.unSubscribe();
     };
   }, []);
 

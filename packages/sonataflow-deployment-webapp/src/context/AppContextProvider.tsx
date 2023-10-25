@@ -19,13 +19,14 @@
 
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
 import { DEFAULT_APPDATA_VALUES } from "../AppConstants";
-import { AppData } from "../data";
+import { AppData, verifyDataIndex } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
   const appDataPromise = useAppDataPromise();
   const [data, setData] = useState<AppData>(DEFAULT_APPDATA_VALUES);
+  const [dataIndexAvailable, setDataIndexAvailable] = useState(true);
 
   useEffect(() => {
     if (!appDataPromise.data) {
@@ -35,14 +36,17 @@ export function AppContextProvider(props: PropsWithChildren<{}>) {
     setData(appDataPromise.data);
 
     document.title = appDataPromise.data.appName;
+
+    verifyDataIndex(appDataPromise.data.dataIndexExternalUrl ?? "").then(setDataIndexAvailable);
   }, [appDataPromise.data]);
 
   const value = useMemo(
     () => ({
       appDataPromise,
       data,
+      dataIndexAvailable,
     }),
-    [data, appDataPromise]
+    [data, appDataPromise, dataIndexAvailable]
   );
 
   return <AppContext.Provider value={value}>{props.children}</AppContext.Provider>;

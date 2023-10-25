@@ -24,6 +24,7 @@ import { AppData } from "../data";
 export interface AppContextType {
   appDataPromise: PromiseState<AppData>;
   data: AppData;
+  dataIndexAvailable: boolean;
 }
 
 export const AppContext = createContext<AppContextType>({} as any);

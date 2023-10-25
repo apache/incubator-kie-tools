@@ -29,3 +29,14 @@ export async function fetchAppData(): Promise<AppData> {
   const response = await fetch(routes.dataJson.path({}));
   return (await response.json()) as AppData;
 }
+
+export async function verifyDataIndex(dataIndexUrl: string): Promise<boolean> {
+  const response = await fetch(dataIndexUrl, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: '{"query":""}',
+  });
+  return response.status === 200;
+}
