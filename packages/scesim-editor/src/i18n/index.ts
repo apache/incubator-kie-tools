@@ -19,4 +19,3 @@
 
 export * from "./setup";
 export * from "./TestScenarioEditorI18n";
-export * from "./TestScenarioUnitablesI18n";

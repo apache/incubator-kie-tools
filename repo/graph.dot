@@ -119,7 +119,6 @@ digraph G {
   "@kie-tools/runtime-tools-gateway-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/runtime-tools-enveloped-components" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/scesim-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-web-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -141,6 +140,7 @@ digraph G {
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "swf-vscode-extension" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -376,7 +376,7 @@ digraph G {
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-gateway-api" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
-  "@kie-tools/scesim-editor" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];
+  "@kie-tools/scesim-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/scesim-editor" -> "@kie-tools/scesim-marshaller" [ style = "dashed", color = "blue" ];
   "@kie-tools/scesim-marshaller" -> "@kie-tools/xml-parser-ts-codegen" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
