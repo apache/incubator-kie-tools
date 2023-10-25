@@ -20,66 +20,133 @@
 import * as React from "react";
 import { useEffect, useMemo, useRef } from "react";
 
-import { UnitablesWrapper } from "@kie-tools/unitables/dist/UnitablesWrapper";
+import * as ReactTable from "react-table";
 
-import { TestScenarioUnitablesValidator } from "./unitables/TestScenarioUnitablesValidator";
+import { BeeTableHeaderVisibility } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
+import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
+import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
+
 import { useTestScenarioEditorI18n } from "../i18n";
 
 function TestScenarioTable({ fileName }: { fileName?: string }) {
+  type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+
   const { i18n } = useTestScenarioEditorI18n();
 
-  const inputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
-  const outputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
+  const tableScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
 
   useEffect(() => {
-    inputsScrollableElementRef.current.current =
+    tableScrollableElementRef.current.current =
       document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__content") ?? null;
-    outputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__panel-main") ?? null;
   }, []);
 
-  const jsonSchemaBridge = useMemo(() => {
-    try {
-      return new TestScenarioUnitablesValidator(i18n.testScenarioGrid.table).getBridge();
-    } catch (err) {
-      throw Error(`getBridge ${err}`);
-    }
-  }, [i18n]);
+  const scesimTableColumns1 = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+    return [];
+  }, []);
+
+  const scesimTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+    const descriptionColumn: ReactTable.Column<ROWTYPE> = {
+      accessor: "asd",
+      id: "Asd",
+      width: 250,
+      minWidth: 250,
+    };
+
+    return [descriptionColumn];
+
+    /*const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
+      (inputClause, inputIndex) => ({
+        accessor: inputClause.id ?? generateUuid(),
+        label: inputClause.name,
+        id: inputClause.id,
+        dataType: inputClause.dataType,
+        width: inputClause.width ?? DECISION_TABLE_INPUT_MIN_WIDTH,
+        setWidth: setInputColumnWidth(inputIndex),
+        minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
+        groupType: DecisionTableColumnType.InputClause,
+        cssClasses: "decision-table--input",
+        isRowIndexColumn: false,
+      })
+    );
+
+    const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.output ?? []).map(
+      (outputClause, outputIndex) => ({
+        accessor: outputClause.id ?? generateUuid(),
+        id: outputClause.id,
+        label:
+          decisionTableExpression.output?.length == 1
+            ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
+            : outputClause.name,
+        dataType:
+          decisionTableExpression.output?.length == 1 ? decisionTableExpression.dataType : outputClause.dataType,
+        width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        setWidth: setOutputColumnWidth(outputIndex),
+        minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
+        groupType: DecisionTableColumnType.OutputClause,
+        cssClasses: "decision-table--output",
+        isRowIndexColumn: false,
+      })
+    );
+
+    const outputSection = {
+      groupType: DecisionTableColumnType.OutputClause,
+      id: decisionTableExpression.id,
+      accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
+      label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
+      dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
+      cssClasses: "decision-table--output",
+      isRowIndexColumn: false,
+      width: undefined,
+      columns: outputColumns,
+    };
+
+    const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
+      (annotation, annotationIndex) => {
+        const annotationId = generateUuid();
+        return {
+          accessor: annotationId,
+          id: annotationId,
+          label: annotation.name,
+          width: annotation.width ?? DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+          setWidth: setAnnotationColumnWidth(annotationIndex),
+          minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
+          isInlineEditable: true,
+          groupType: DecisionTableColumnType.Annotation,
+          cssClasses: "decision-table--annotation",
+          isRowIndexColumn: false,
+          dataType: undefined as any,
+        };
+      }
+    ); */
+
+    /*
+    if (outputColumns.length == 1) {
+      return [...inputColumns, ...outputColumns, ...annotationColumns];
+    } else {
+      return [...inputColumns, outputSection, ...annotationColumns];
+    }*/
+    // return [descriptionColumn];
+  }, []);
 
   return (
-    <UnitablesWrapper
-      rows={[{ uno: "prova", due: "maoo" }]}
-      setRows={function (
-        previousStateFunction: Record<string, any>[] | ((previous: Record<string, any>[]) => Record<string, any>[])
-      ): void {
-        console.log("Function not implemented. 1 ");
-      }}
-      error={false}
-      setError={function (value: React.SetStateAction<boolean>): void {
-        console.log("Function not implemented. 2 value:" + value);
-      }}
-      openRow={function (rowIndex: number): void {
-        console.log("Function not implemented. 3");
-      }}
-      i18n={i18n.testScenarioGrid.table}
-      jsonSchemaBridge={jsonSchemaBridge}
-      scrollableParentRef={inputsScrollableElementRef.current}
-      onRowAdded={function (args: { beforeIndex: number }): void {
-        console.log("Function not implemented. 4");
-      }}
-      onRowDuplicated={function (args: { rowIndex: number }): void {
-        console.log("Function not implemented.5 ");
-      }}
-      onRowReset={function (args: { rowIndex: number }): void {
-        console.log("Function not implemented.6");
-      }}
-      onRowDeleted={function (args: { rowIndex: number }): void {
-        console.log("Function not implemented.7");
-      }}
-      configs={{}}
-      setWidth={function (newWidth: number, fieldName: string): void {
-        throw new Error("Function not implemented.");
-      }}
+    <StandaloneBeeTable
+      scrollableParentRef={tableScrollableElementRef.current}
+      allowedOperations={() => []}
+      getColumnKey={undefined}
+      getRowKey={undefined}
+      tableId={undefined}
+      isEditableHeader={true}
+      headerLevelCountForAppendingRowIndexColumn={1}
+      headerVisibility={BeeTableHeaderVisibility.AllLevels}
+      operationConfig={undefined}
+      columns={scesimTableColumns}
+      rows={[{}, {}]}
+      isReadOnly={false} //OK
+      enableKeyboardNavigation={true} //OK
+      shouldRenderRowIndexColumn={true} //OK
+      shouldShowRowsInlineControls={true} //OK
+      shouldShowColumnsInlineControls={true} //OK
+      resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_ALWAYS} //OK
     />
   );
 }
