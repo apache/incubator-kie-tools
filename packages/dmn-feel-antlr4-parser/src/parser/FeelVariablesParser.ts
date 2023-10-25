@@ -26,6 +26,7 @@ import { Type } from "./grammar/Type";
 import { FeelVariable } from "./FeelVariable";
 import { MapBackedType } from "./grammar/MapBackedType";
 import { VariableContext } from "./VariableContext";
+import { ParsedExpression } from "./ParsedExpression";
 
 export class FeelVariablesParser {
   private variablesRepository: VariablesRepository;
@@ -34,7 +35,7 @@ export class FeelVariablesParser {
     this.variablesRepository = variablesSource;
   }
 
-  public parse(variableContextUuid: string, expression: string): FeelVariable[] {
+  public parse(variableContextUuid: string, expression: string): ParsedExpression {
     const variables = new Array<FeelVariable>();
     const chars = new CharStream(expression);
     const lexer = new FEEL_1_1Lexer(chars);
@@ -53,7 +54,10 @@ export class FeelVariablesParser {
 
     variables.push(...parser.helper.variables);
 
-    return variables;
+    return {
+      availableSymbols: parser.helper.availableSymbols,
+      feelVariables: variables,
+    };
   }
 
   private defineVariables(variableContext: VariableContext, parser: FEEL_1_1Parser) {
@@ -81,15 +85,22 @@ export class FeelVariablesParser {
     }
   }
 
-  private createType(dataType: DataType): Type {
-    const type = new MapBackedType(dataType.name);
+  private createType(dataType: DataType | string): Type {
+    if (typeof dataType !== "string") {
+      const type = new MapBackedType(dataType.name, dataType.typeRef ?? dataType.name);
 
-    for (const property of dataType.properties) {
-      const innerType = this.createType(property[1]);
-      type.properties.set(property[0], innerType);
+      for (const property of dataType.properties) {
+        const innerType = this.createType(property[1]);
+        type.properties.set(property[0], innerType);
+      }
+
+      return type;
+    } else {
+      return {
+        name: dataType,
+        typeRef: dataType,
+      };
     }
-
-    return type;
   }
 
   private defineInputVariables(inputVariables: Array<string>, parser: FEEL_1_1Parser) {
@@ -102,10 +113,12 @@ export class FeelVariablesParser {
   }
 
   private addToParser(parser: FEEL_1_1Parser, context: VariableContext) {
-    parser.helper.defineVariable(
-      context.variable.value,
-      context.variable.typeRef ? this.createType(context.variable.typeRef) : undefined,
-      context.variable.variableType
-    );
+    if (context.variable.value !== "") {
+      parser.helper.defineVariable(
+        context.variable.value,
+        context.variable.typeRef ? this.createType(context.variable.typeRef) : undefined,
+        context.variable.feelSyntacticSymbolNature
+      );
+    }
   }
 }

@@ -19,4 +19,5 @@
 
 export interface Type {
   name: string;
+  typeRef?: string;
 }
