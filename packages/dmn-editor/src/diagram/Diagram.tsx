@@ -96,7 +96,11 @@ import ExpandIcon from "@patternfly/react-icons/dist/esm/icons/expand-icon";
 import MousePointerIcon from "@patternfly/react-icons/dist/esm/icons/mouse-pointer-icon";
 import { updateExpression } from "../mutations/updateExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
-import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DmnBuiltInDataType,
+  ExpressionDefinitionLogicType,
+  generateUuid,
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
 
 const PAN_ON_DRAG = [1, 2];
@@ -223,42 +227,20 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [reactFlowInstance]
   );
 
-  const onDragOver = useCallback(
-    (e: React.DragEvent) => {
-      if (
-        !e.dataTransfer.types.find(
-          (t) =>
-            t === MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE ||
-            t === MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS
-        )
-      ) {
-        return;
-      }
+  const onDragOver = useCallback((e: React.DragEvent) => {
+    if (
+      !e.dataTransfer.types.find(
+        (t) =>
+          t === MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE ||
+          t === MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS
+      )
+    ) {
+      return;
+    }
 
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-
-      if (!container.current || !reactFlowInstance) {
-        return;
-      }
-
-      const containerBounds = container.current!.getBoundingClientRect();
-      const dropPoint = reactFlowInstance.project({
-        x: e.clientX - containerBounds.left,
-        y: e.clientY - containerBounds.top,
-      });
-
-      dmnEditorStoreApi.setState((state) => {
-        state.diagram.dropTargetNode = getFirstNodeFittingBounds("", {
-          "@_x": dropPoint.x,
-          "@_y": dropPoint.y,
-          "@_width": 0,
-          "@_height": 0,
-        });
-      });
-    },
-    [container, dmnEditorStoreApi, getFirstNodeFittingBounds, reactFlowInstance]
-  );
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }, []);
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
@@ -318,7 +300,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
         dmnEditorStoreApi.setState((state) => {
           const namespaceName = getXmlNamespaceDeclarationName({
-            model: original(state.dmn.model.definitions),
+            model: original(state.dmn.model.definitions), // We need to use the `original` here, because Immer drafts won't work with Object.keys, as they're proxies.
             namespace: externalNode.externalDrgElementNamespace,
           });
 
