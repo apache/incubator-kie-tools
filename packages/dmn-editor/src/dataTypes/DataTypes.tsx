@@ -188,55 +188,59 @@ export function DataTypes() {
                   </InputGroup>
                 </Flex>
                 <div className={`kie-dmn-editor--data-types-nav`}>
-                  {filteredTree.map(({ namespace, itemDefinition, feelName }) => (
-                    <Flex
-                      key={itemDefinition["@_id"]}
-                      flexWrap={{ default: "nowrap" }}
-                      spaceItems={{ default: "spaceItemsNone" }}
-                      onClick={() =>
-                        dmnEditorStoreApi.setState((state) => {
-                          state.dataTypesEditor.activeItemDefinitionId = itemDefinition["@_id"]!;
-                        })
-                      }
-                      justifyContent={{ default: "justifyContentFlexStart" }}
-                      alignItems={{ default: "alignItemsCenter" }}
-                      className={`kie-dmn-editor--data-types-nav-item ${
-                        activeItemDefinitionId === itemDefinition["@_id"] ? "active" : ""
-                      }`}
-                    >
-                      <InfrastructureIcon
-                        style={{ display: "inline", opacity: isStruct(itemDefinition) ? 1 : 0, minWidth: "1em" }}
-                      />
-                      {(namespace === thisDmnsNamespace && (
-                        <DataTypeName
-                          relativeToNamespace={thisDmnsNamespace}
-                          isReadonly={namespace !== thisDmnsNamespace}
-                          itemDefinition={itemDefinition}
-                          isActive={activeItemDefinitionId === itemDefinition["@_id"]}
-                          editMode={"double-click"}
-                          allUniqueNames={allTopLevelItemDefinitionUniqueNames}
+                  {filteredTree.map(({ namespace, itemDefinition, feelName }) => {
+                    const isActive =
+                      itemDefinition["@_id"] === activeDataType?.itemDefinition["@_id"] ||
+                      (activeDataType?.parents.has(itemDefinition["@_id"]!) ?? false);
+
+                    return (
+                      <Flex
+                        key={itemDefinition["@_id"]}
+                        flexWrap={{ default: "nowrap" }}
+                        spaceItems={{ default: "spaceItemsNone" }}
+                        onClick={() =>
+                          dmnEditorStoreApi.setState((state) => {
+                            state.dataTypesEditor.activeItemDefinitionId = itemDefinition["@_id"]!;
+                          })
+                        }
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        alignItems={{ default: "alignItemsCenter" }}
+                        className={`kie-dmn-editor--data-types-nav-item ${isActive ? "active" : ""}`}
+                      >
+                        <InfrastructureIcon
+                          style={{ display: "inline", opacity: isStruct(itemDefinition) ? 1 : 0, minWidth: "1em" }}
                         />
-                      )) || (
-                        <>
-                          <Label style={{ marginLeft: "8px" }}>External</Label>
-                          <div
-                            className={`kie-dmn-editor--editable-node-name-input top-left grow`}
-                            style={
-                              SPEC.namedElement.isValidName(
-                                itemDefinition["@_id"]!,
-                                feelName,
-                                allTopLevelItemDefinitionUniqueNames
-                              )
-                                ? {}
-                                : invalidInlineFeelNameStyle
-                            }
-                          >
-                            {`${feelName}`}
-                          </div>
-                        </>
-                      )}
-                    </Flex>
-                  ))}
+                        {(namespace === thisDmnsNamespace && (
+                          <DataTypeName
+                            relativeToNamespace={thisDmnsNamespace}
+                            isReadonly={namespace !== thisDmnsNamespace}
+                            itemDefinition={itemDefinition}
+                            isActive={isActive}
+                            editMode={"double-click"}
+                            allUniqueNames={allTopLevelItemDefinitionUniqueNames}
+                          />
+                        )) || (
+                          <>
+                            <Label style={{ marginLeft: "8px" }}>External</Label>
+                            <div
+                              className={`kie-dmn-editor--editable-node-name-input top-left grow`}
+                              style={
+                                SPEC.namedElement.isValidName(
+                                  itemDefinition["@_id"]!,
+                                  feelName,
+                                  allTopLevelItemDefinitionUniqueNames
+                                )
+                                  ? {}
+                                  : invalidInlineFeelNameStyle
+                              }
+                            >
+                              {`${feelName}`}
+                            </div>
+                          </>
+                        )}
+                      </Flex>
+                    );
+                  })}
                 </div>
               </DrawerPanelContent>
             }
