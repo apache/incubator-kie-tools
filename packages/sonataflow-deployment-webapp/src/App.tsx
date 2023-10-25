@@ -18,46 +18,17 @@
  */
 
 import React from "react";
-import { Route, Switch } from "react-router";
-import { HashRouter, Redirect } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { AppContextProvider } from "./context/AppContextProvider";
 import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
-import { Workflows } from "./pages/Workflows/";
-import { NoMatchPage } from "./pages/NoMatchPage";
-import { routes } from "./routes";
-import { WorkflowFormPage } from "./pages/Workflows/WorkflowFormPage";
-import { CloudEventFormPage } from "./pages/Workflows/CloudEventFormPage";
-import { ErrorKind, ErrorPage } from "./pages/ErrorPage";
-import { APPDATA_JSON_FILENAME } from "./AppConstants";
+import { RoutesSwitch } from "./navigation/RoutesSwitch";
 
-export function App() {
-  return (
-    <AppContextProvider>
-      <OpenApiContextProvider>
-        <HashRouter>
-          <Switch>
-            <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })}>
-              {({ match }) => <WorkflowFormPage workflowId={match!.params.workflowId!} />}
-            </Route>
-            <Route path={routes.workflows.cloudEvent.path({})}>
-              <CloudEventFormPage />
-            </Route>
-            <Route path={routes.workflows.home.path({})}>
-              <Workflows />
-            </Route>
-            <Route path={routes.dataJsonError.path({})}>
-              <ErrorPage
-                kind={ErrorKind.APPDATA_JSON}
-                errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]}
-              />
-            </Route>
-            <Route path={routes.home.path({})}>
-              <Redirect to={routes.workflows.home.path({})} />
-            </Route>
-            <Route component={NoMatchPage} />
-          </Switch>
-        </HashRouter>
-      </OpenApiContextProvider>
-    </AppContextProvider>
-  );
+export const App = () => (
+  <HashRouter>{nest([AppContextProvider, {}], [OpenApiContextProvider, {}], [RoutesSwitch, {}])}</HashRouter>
+);
+
+function nest(...components: Array<[(...args: any[]) => any, object]>) {
+  return components.reduceRight((acc, [Component, props]) => {
+    return <Component {...props}>{acc}</Component>;
+  }, <></>);
 }
