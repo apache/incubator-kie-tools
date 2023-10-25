@@ -363,17 +363,17 @@ function determineInputsForDecision(
         );
       }
 
-      const dataType = allTopLevelDataTypesByFeelName.get(dmnObject.variable!["@_typeRef"]!)!;
-      return !isStruct(dataType.itemDefinition)
-        ? [
+      const dataType = allTopLevelDataTypesByFeelName.get(dmnObject.variable!["@_typeRef"]!);
+      return dataType && isStruct(dataType.itemDefinition)
+        ? (dataType.itemDefinition.itemComponent ?? []).flatMap((ic) =>
+            flattenComponents(ic, dmnObject.variable!["@_name"])
+          )
+        : [
             {
               name: dmnObject.variable!["@_name"]!,
               typeRef: dmnObject.variable?.["@_typeRef"],
             },
-          ]
-        : (dataType.itemDefinition.itemComponent ?? []).flatMap((ic) =>
-            flattenComponents(ic, dmnObject.variable!["@_name"])
-          );
+          ];
     });
 
     if (ret.length === 0) {
