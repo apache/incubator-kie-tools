@@ -34,9 +34,7 @@ const buildEnv: any = env;
 
 beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
-});
 
-test(TEST_NAME, async () => {
   if (buildEnv.swfChromeExtension.e2eTestingToken !== "") {
     const gitHubRepoPage: GitHubRepoPage = await tools.openPage(
       GitHubRepoPage,
@@ -44,7 +42,9 @@ test(TEST_NAME, async () => {
     );
     await gitHubRepoPage.addToken(buildEnv.swfChromeExtension.e2eTestingToken);
   }
+});
 
+test(TEST_NAME, async () => {
   const workflowUrl: string =
     "https://github.com/kiegroup/kie-tools/blob/main/packages/chrome-extension-serverless-workflow-editor/e2e-tests/samples/chrome_sample.sw.yaml";
   let swfPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, workflowUrl);
