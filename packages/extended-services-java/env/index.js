@@ -21,30 +21,21 @@ const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    EXTENDED_SERVICES__version: {
-      default: require("../package.json").version,
-      description: "Extended Services Version",
-    },
-    EXTENDED_SERVICES__ip: {
+    EXTENDED_SERVICES_JAVA__ip: {
       default: "0.0.0.0",
       description: "Extended Services IP",
     },
-    EXTENDED_SERVICES__port: {
+    EXTENDED_SERVICES_JAVA__port: {
       default: "21345",
       description: "Extended Services Port",
-    },
-    EXTENDED_SERVICES__kieSandboxUrl: {
-      default: "https://localhost:9001",
-      description: "KIE Sandbox URL",
     },
   }),
   get env() {
     return {
-      extendedServices: {
-        version: getOrDefault(this.vars.EXTENDED_SERVICES__version),
-        ip: getOrDefault(this.vars.EXTENDED_SERVICES__ip),
-        port: getOrDefault(this.vars.EXTENDED_SERVICES__port),
-        kieSandboxUrl: getOrDefault(this.vars.EXTENDED_SERVICES__kieSandboxUrl),
+      extendedServicesJava: {
+        version: require("../package.json").version,
+        ip: getOrDefault(this.vars.EXTENDED_SERVICES_JAVA__ip),
+        port: getOrDefault(this.vars.EXTENDED_SERVICES_JAVA__port),
       },
     };
   },

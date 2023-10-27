@@ -15,17 +15,25 @@
 # specific language governing permissions and limitations
 # under the License. 
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/openjdk-11-runtime:1.16-3
 
-RUN mkdir /kie-sandbox /.cache \
-  && chgrp -R 0 /kie-sandbox /.cache \
-  && chmod -R g=u /kie-sandbox /.cache \
-  && chown -R 1000:0 /kie-sandbox /.cache
 
-COPY --chown=1000:0 dist-dev/kie_sandbox_extended_services_headless /kie-sandbox/kie_sandbox_extended_services_headless
+ARG EXTENDED_SERVICES_IMAGE_PORT
+ARG EXTENDED_SERVICES_IMAGE_IP
 
-EXPOSE 21345
+ENV IMAGE_PORT=$EXTENDED_SERVICES_IMAGE_PORT
+ENV IMAGE_IP=$EXTENDED_SERVICES_IMAGE_IP
+
+RUN echo $IMAGE_PORT
+RUN echo $IMAGE_IP
+
+RUN mkdir kie-sandbox
+
+COPY --chown=1000:0 dist-dev/kie_sandbox_extended_services /kie-sandbox/kie_sandbox_extended_services
+
+EXPOSE $IMAGE_PORT
 
 USER 1000
 
-CMD [ "/kie-sandbox/kie_sandbox_extended_services_headless" ]
+WORKDIR /kie-sandbox/kie_sandbox_extended_services
+CMD java -Dquarkus.http.port=$IMAGE_PORT -Dquarkus.http.host=$IMAGE_IP -jar quarkus-run.jar

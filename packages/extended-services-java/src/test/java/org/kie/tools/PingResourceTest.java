@@ -17,45 +17,30 @@
  * under the License.
  */
 
-package org.kie.tools;
+ package org.kie.tools;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.junit.jupiter.api.Test;
-
-import javax.inject.Inject;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
-@QuarkusTest
-public class PingResourceTest {
-
-    @ConfigProperty(name = "extended.services.version")
-    String expectedVersion;
-    @ConfigProperty(name = "quarkus.http.host")
-    String expectedIp;
-    @ConfigProperty(name = "quarkus.http.port")
-    String expectedPort;
-    boolean expectedInsecureSkipVerify = false;
-    @ConfigProperty(name = "kie.sandbox.url")
-    String expectedKieSandboxUrl;
-    boolean expectedStarted = true;
-
-    @Test
-    public void testPingEndpoint() {
-        given()
-          .when().get("/ping")
-          .then()
-                .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("version", equalTo(expectedVersion))
-                .body("proxy.ip", equalTo(expectedIp))
-                .body("proxy.port", equalTo(expectedPort))
-                .body("proxy.insecureSkipVerify", equalTo(expectedInsecureSkipVerify))
-                .body("kieSandboxUrl", equalTo(expectedKieSandboxUrl))
-                .body("started", equalTo(expectedStarted));
-    }
-
-}
+ import io.quarkus.test.junit.QuarkusTest;
+ import io.restassured.http.ContentType;
+ import org.eclipse.microprofile.config.inject.ConfigProperty;
+ import org.junit.jupiter.api.Test;
+ 
+ import javax.inject.Inject;
+ 
+ import static io.restassured.RestAssured.given;
+ import static org.hamcrest.Matchers.*;
+ 
+ @QuarkusTest
+ public class PingResourceTest extends AbstractPingTest {
+ 
+     @Test
+     public void testPingEndpoint() {
+         given()
+           .when().get("/ping")
+           .then()
+                 .statusCode(200)
+                 .contentType(ContentType.JSON)
+                 .body("version", equalTo(expectedVersion))
+                 .body("started", equalTo(expectedStarted));
+     }
+ 
+ }

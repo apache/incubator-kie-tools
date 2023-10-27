@@ -18,13 +18,13 @@
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:extended-services",
     "copy:extended-services": "run-script-os",
-    "copy:extended-services:linux:darwin": "cp -R ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless",
-    "copy:extended-services:win32": "pnpm powershell \"Copy-Item ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless\"",
-    "docker:build": "kie-tools--image-builder -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\"",
-    "podman:build": "kie-tools--image-builder -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" -e podman"
+    "copy:extended-services:linux:darwin": "cp -R ../extended-services-java/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services",
+    "copy:extended-services:win32": "pnpm powershell \"Copy-Item ../extended-services/dist/extended-services-java ./dist-dev/kie_sandbox_extended_services\"",
+    "docker:build": "kie-tools--image-builder -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg \"EXTENDED_SERVICES_IMAGE_PORT=$(build-env extendedServicesJava.port)\" --build-arg \"EXTENDED_SERVICES_IMAGE_IP=$(build-env extendedServicesJava.ip)\"",
+    "podman:build": "kie-tools--image-builder -r \"$(build-env extendedServicesImage.registry)\" -a \"$(build-env extendedServicesImage.account)\" -n \"$(build-env extendedServicesImage.name)\" -t \"$(build-env extendedServicesImage.buildTags)\" --build-arg \"EXTENDED_SERVICES_IMAGE_PORT=$(build-env extendedServicesJava.port)\" --build-arg \"EXTENDED_SERVICES_IMAGE_IP=$(build-env extendedServicesJava.ip)\" -e podman"
   },
   "dependencies": {
-    "@kie-tools/extended-services": "workspace:*"
+    "@kie-tools/extended-services-java": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
