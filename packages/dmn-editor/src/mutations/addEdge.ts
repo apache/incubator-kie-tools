@@ -9,15 +9,11 @@ import {
   DMN15__tKnowledgeRequirement,
   DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
+import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
 import { _checkIsValidConnection } from "../diagram/connections/isValidConnection";
 import { EDGE_TYPES } from "../diagram/edges/EdgeTypes";
-import {
-  getBoundsCenterPoint,
-  getDiscreteAutoPositioningEdgeIdMarker,
-  getPointForHandle,
-} from "../diagram/maths/DmnMaths";
+import { getDiscreteAutoPositioningEdgeIdMarker, getPointForHandle } from "../diagram/maths/DmnMaths";
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { Unpacked } from "../tsExt/tsExt";
@@ -29,7 +25,7 @@ export function addEdge({
   sourceNode,
   targetNode,
   edge,
-  keepWaypointsIfSameTarget,
+  keepWaypoints,
 }: {
   definitions: DMN15__tDefinitions;
   sourceNode: {
@@ -47,8 +43,8 @@ export function addEdge({
     shapeId: string | undefined;
     index: number;
   };
-  edge: { type: EdgeType; handle: TargetHandleId };
-  keepWaypointsIfSameTarget: boolean;
+  edge: { type: EdgeType; targetHandle: PositionalNodeHandleId; sourceHandle: PositionalNodeHandleId };
+  keepWaypoints: boolean;
 }) {
   if (!_checkIsValidConnection(sourceNode, targetNode, edge.type)) {
     throw new Error(`DMN MUTATION: Invalid structure: (${sourceNode.type}) --${edge.type}--> (${targetNode.type}) `);
@@ -138,17 +134,16 @@ export function addEdge({
     (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingEdgeId
   );
 
-  const newWaypoints = keepWaypointsIfSameTarget
+  const newWaypoints = keepWaypoints
     ? [
-        ...(
-          removedDmnEdge?.["di:waypoint"] ?? [
-            getBoundsCenterPoint(sourceNode.bounds),
-            getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle }),
-          ]
-        ).slice(0, -1),
-        getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle }),
+        getPointForHandle({ bounds: sourceNode.bounds, handle: edge.sourceHandle }),
+        ...(removedDmnEdge?.["di:waypoint"] ?? []).slice(1, -1), // Slicing an empty array will always return an empty array, so it's ok.
+        getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
       ]
-    : [getBoundsCenterPoint(sourceNode.bounds), getPointForHandle({ bounds: targetNode.bounds, handle: edge.handle })];
+    : [
+        getPointForHandle({ bounds: targetNode.bounds, handle: edge.sourceHandle }),
+        getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
+      ];
 
   const newDmnEdge: Unpacked<typeof diagramElements> = {
     __$$element: "dmndi:DMNEdge",

@@ -1,7 +1,7 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DC__Bounds, DC__Point, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import * as RF from "reactflow";
-import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
+import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import { AutoPositionedEdgeMarker } from "../edges/AutoPositionedEdgeMarker";
 import { NODE_TYPES } from "../nodes/NodeTypes";
 import { NodeDmnObjects } from "../nodes/Nodes";
@@ -24,16 +24,22 @@ export function getBoundsCenterPoint(bounds: DC__Bounds): DC__Point {
   return { "@_x": x, "@_y": y };
 }
 
-export function getPointForHandle({ handle, bounds }: { bounds: DC__Bounds; handle: TargetHandleId }): DC__Point {
-  if (handle === TargetHandleId.TargetCenter) {
+export function getPointForHandle({
+  handle,
+  bounds,
+}: {
+  bounds: DC__Bounds;
+  handle: PositionalNodeHandleId;
+}): DC__Point {
+  if (handle === PositionalNodeHandleId.Center) {
     return getBoundsCenterPoint(bounds);
-  } else if (handle === TargetHandleId.TargetTop) {
+  } else if (handle === PositionalNodeHandleId.Top) {
     return { "@_x": bounds["@_x"] + bounds["@_width"] / 2, "@_y": bounds["@_y"] };
-  } else if (handle === TargetHandleId.TargetRight) {
+  } else if (handle === PositionalNodeHandleId.Right) {
     return { "@_x": bounds["@_x"] + bounds["@_width"], "@_y": bounds["@_y"] + bounds["@_height"] / 2 };
-  } else if (handle === TargetHandleId.TargetBottom) {
+  } else if (handle === PositionalNodeHandleId.Bottom) {
     return { "@_x": bounds["@_x"] + bounds["@_width"] / 2, "@_y": bounds["@_y"] + bounds["@_height"] };
-  } else if (handle === TargetHandleId.TargetLeft) {
+  } else if (handle === PositionalNodeHandleId.Left) {
     return { "@_x": bounds["@_x"], "@_y": bounds["@_y"] + bounds["@_height"] / 2 };
   } else {
     throw new Error(`Invalid target handle id '${handle}'.`);
@@ -46,7 +52,7 @@ export function getHandlePosition({
 }: {
   shapeBounds: DC__Bounds | undefined;
   waypoint: DC__Point;
-}): { handlePosition: TargetHandleId; point: DC__Point } {
+}): { handlePosition: PositionalNodeHandleId; point: DC__Point } {
   const x = shapeBounds?.["@_x"] ?? 0;
   const y = shapeBounds?.["@_y"] ?? 0;
   const w = shapeBounds?.["@_width"] ?? 0;
@@ -59,18 +65,18 @@ export function getHandlePosition({
   const bottom = { "@_x": x + w / 2, "@_y": y + h };
 
   if (getDistance(center, waypoint) <= 1) {
-    return { handlePosition: TargetHandleId.TargetCenter, point: center };
+    return { handlePosition: PositionalNodeHandleId.Center, point: center };
   } else if (getDistance(top, waypoint) <= 1) {
-    return { handlePosition: TargetHandleId.TargetTop, point: top };
+    return { handlePosition: PositionalNodeHandleId.Top, point: top };
   } else if (getDistance(right, waypoint) <= 1) {
-    return { handlePosition: TargetHandleId.TargetRight, point: right };
+    return { handlePosition: PositionalNodeHandleId.Right, point: right };
   } else if (getDistance(bottom, waypoint) <= 1) {
-    return { handlePosition: TargetHandleId.TargetBottom, point: bottom };
+    return { handlePosition: PositionalNodeHandleId.Bottom, point: bottom };
   } else if (getDistance(left, waypoint) <= 1) {
-    return { handlePosition: TargetHandleId.TargetLeft, point: left };
+    return { handlePosition: PositionalNodeHandleId.Left, point: left };
   } else {
     console.warn("DMN DIAGRAM: Can't find a match of NSWE/Center handles. Using Center as default.");
-    return { handlePosition: TargetHandleId.TargetCenter, point: center };
+    return { handlePosition: PositionalNodeHandleId.Center, point: center };
   }
 }
 

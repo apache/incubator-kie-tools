@@ -6,7 +6,7 @@ import {
 import * as RF from "reactflow";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
-import { TargetHandleId } from "../connections/PositionalTargetNodeHandles";
+import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
 import {
   getLineRectangleIntersectionPoint,
   getHandlePosition,
@@ -109,17 +109,17 @@ export function getSnappedHandlePosition(
   };
 
   return switchExpression(handlePosition, {
-    [TargetHandleId.TargetTop]: { "@_x": nodeRectangle.x + nodeRectangle.width / 2, "@_y": nodeRectangle.y },
-    [TargetHandleId.TargetRight]: {
+    [PositionalNodeHandleId.Top]: { "@_x": nodeRectangle.x + nodeRectangle.width / 2, "@_y": nodeRectangle.y },
+    [PositionalNodeHandleId.Right]: {
       "@_x": nodeRectangle.x + nodeRectangle.width,
       "@_y": nodeRectangle.y + nodeRectangle.height / 2,
     },
-    [TargetHandleId.TargetBottom]: {
+    [PositionalNodeHandleId.Bottom]: {
       "@_x": nodeRectangle.x + nodeRectangle.width / 2,
       "@_y": nodeRectangle.y + nodeRectangle.height,
     },
-    [TargetHandleId.TargetLeft]: { "@_x": nodeRectangle.x, "@_y": nodeRectangle.y + nodeRectangle.height / 2 },
-    [TargetHandleId.TargetCenter]: getLineRectangleIntersectionPoint(
+    [PositionalNodeHandleId.Left]: { "@_x": nodeRectangle.x, "@_y": nodeRectangle.y + nodeRectangle.height / 2 },
+    [PositionalNodeHandleId.Center]: getLineRectangleIntersectionPoint(
       snappedSecondWaypoint,
       centerHandleWaypoint,
       nodeRectangle

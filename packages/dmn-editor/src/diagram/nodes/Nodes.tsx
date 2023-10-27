@@ -16,7 +16,7 @@ import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../m
 import { DropTargetNode, SnapGrid, useDmnEditorStore, useDmnEditorStoreApi } from "../../store/Store";
 import { snapShapeDimensions } from "../SnapGrid";
 import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "./DefaultSizes";
-import { PositionalTargetNodeHandles } from "../connections/PositionalTargetNodeHandles";
+import { PositionalNodeHandles } from "../connections/PositionalNodeHandles";
 import { NodeType, containment, outgoingStructure } from "../connections/graphStructure";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
@@ -112,7 +112,7 @@ export const InputDataNode = React.memo(
         <svg className={`kie-dmn-editor--node-shape ${className} ${dmnObjectQName.prefix ? "external" : ""}`}>
           <InputDataNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--input-data-node ${className} ${
@@ -209,7 +209,7 @@ export const DecisionNode = React.memo(
           <DecisionNodeSvg {...nodeDimensions} x={0} y={0} strokeWidth={parentRfNode ? 3 : undefined} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -308,7 +308,7 @@ export const BkmNode = React.memo(
           <BkmNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -396,7 +396,7 @@ export const KnowledgeSourceNode = React.memo(
           <KnowledgeSourceNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -478,7 +478,7 @@ export const TextAnnotationNode = React.memo(
           <TextAnnotationNodeSvg {...nodeDimensions} x={0} y={0} />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           ref={ref}
@@ -636,7 +636,7 @@ export const DecisionServiceNode = React.memo(
           />
         </svg>
 
-        <PositionalTargetNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
+        <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
 
         <div
           className={`kie-dmn-editor--node kie-dmn-editor--decision-service-node ${className} ${

@@ -4,7 +4,8 @@ import { DmnDiagramNodeData } from "../nodes/Nodes";
 
 export function checkIsValidConnection(
   nodesById: Map<string, RF.Node<DmnDiagramNodeData>>,
-  edgeOrConnection: RF.Edge | RF.Connection
+  edgeOrConnection: RF.Edge | RF.Connection,
+  ongoingConnectionEdgeType: EdgeType | undefined
 ) {
   if (!edgeOrConnection.source || !edgeOrConnection.target) {
     return false;
@@ -13,7 +14,7 @@ export function checkIsValidConnection(
   const sourceNode = nodesById.get(edgeOrConnection.source);
   const targetNode = nodesById.get(edgeOrConnection.target);
 
-  return _checkIsValidConnection(sourceNode, targetNode, edgeOrConnection.sourceHandle);
+  return _checkIsValidConnection(sourceNode, targetNode, ongoingConnectionEdgeType ?? edgeOrConnection.sourceHandle);
 }
 
 export function _checkIsValidConnection(
@@ -31,12 +32,10 @@ export function _checkIsValidConnection(
   }
 
   const ret =
-    (graphStructure
+    graphStructure
       .get(sourceNode.type as NodeType)
       ?.get(edgeType as EdgeType)
-      ?.has(targetNode.type as NodeType) ??
-      false) ||
-    edgeType.startsWith("source-");
+      ?.has(targetNode.type as NodeType) ?? false;
 
   return ret;
 }

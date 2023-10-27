@@ -6,7 +6,7 @@ import {
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
-import { TargetHandleId } from "../diagram/connections/PositionalTargetNodeHandles";
+import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { getHandlePosition } from "../diagram/maths/DmnMaths";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
@@ -74,13 +74,13 @@ export function resizeNode({
   const deltaWidth = newDimensions.width - shapeBounds["@_width"];
   const deltaHeight = newDimensions.height - shapeBounds["@_height"];
 
-  const offsetByPosition = (position: TargetHandleId | undefined) => {
+  const offsetByPosition = (position: PositionalNodeHandleId | undefined) => {
     return switchExpression(position, {
-      [TargetHandleId.TargetCenter]: { x: deltaWidth / 2, y: deltaHeight / 2 },
-      [TargetHandleId.TargetTop]: { x: deltaWidth / 2, y: 0 },
-      [TargetHandleId.TargetRight]: { x: deltaWidth, y: deltaHeight / 2 },
-      [TargetHandleId.TargetBottom]: { x: deltaWidth / 2, y: deltaHeight },
-      [TargetHandleId.TargetLeft]: { x: 0, y: deltaHeight / 2 },
+      [PositionalNodeHandleId.Center]: { x: deltaWidth / 2, y: deltaHeight / 2 },
+      [PositionalNodeHandleId.Top]: { x: deltaWidth / 2, y: 0 },
+      [PositionalNodeHandleId.Right]: { x: deltaWidth, y: deltaHeight / 2 },
+      [PositionalNodeHandleId.Bottom]: { x: deltaWidth / 2, y: deltaHeight },
+      [PositionalNodeHandleId.Left]: { x: 0, y: deltaHeight / 2 },
     });
   };
 

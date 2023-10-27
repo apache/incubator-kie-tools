@@ -3,11 +3,7 @@ import * as RF from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import {
-  DC__Bounds,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Bounds, DMN15__tDecisionService } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -21,11 +17,9 @@ import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
-import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
-import { original } from "immer";
 import { useDmnEditor } from "../DmnEditorContext";
 import {
   DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
@@ -60,7 +54,7 @@ import { DiagramContainerContextProvider } from "./DiagramContainerContext";
 import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
 import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
-import { TargetHandleId } from "./connections/PositionalTargetNodeHandles";
+import { PositionalNodeHandleId } from "./connections/PositionalNodeHandles";
 import { EdgeType, NodeType, containment, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeMarkers } from "./edges/EdgeMarkers";
@@ -76,6 +70,7 @@ import {
   CONTAINER_NODES_DESIRABLE_PADDING,
   getBounds,
   getContainmentRelationship,
+  getHandlePosition,
   getNodeTypeFromDmnObject,
 } from "./maths/DmnMaths";
 import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "./nodes/DefaultSizes";
@@ -148,7 +143,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     isDiagramEditingInProgress,
     selectedNodeTypes,
     externalDmnsByNamespace,
-    nodeIdsOfOngoingConnectionDependencies,
+    ongoingConnectionHierarchy,
   } = useDmnEditorDerivedStore();
 
   // State
@@ -191,7 +186,11 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       dmnEditorStoreApi.setState((state) => {
         addEdge({
           definitions: state.dmn.model.definitions,
-          edge: { type: connection.sourceHandle as EdgeType, handle: connection.targetHandle as TargetHandleId },
+          edge: {
+            type: connection.sourceHandle as EdgeType,
+            targetHandle: connection.targetHandle as PositionalNodeHandleId,
+            sourceHandle: PositionalNodeHandleId.Center,
+          },
           sourceNode: {
             type: sourceNode.type as NodeType,
             data: sourceNode.data,
@@ -207,7 +206,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             index: targetNode.data.index,
             shapeId: targetNode.data.shape["@_id"],
           },
-          keepWaypointsIfSameTarget: false,
+          keepWaypoints: false,
         });
       });
     },
@@ -445,11 +444,28 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   );
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
-    (edgeOrConnection) =>
-      checkIsValidConnection(nodesById, edgeOrConnection) &&
-      !!edgeOrConnection.target &&
-      !nodeIdsOfOngoingConnectionDependencies.has(edgeOrConnection.target),
-    [nodeIdsOfOngoingConnectionDependencies, nodesById]
+    (edgeOrConnection) => {
+      const edgeId = dmnEditorStoreApi.getState().diagram.edgeIdBeingUpdated;
+      const edgeType = edgeId ? (reactFlowInstance?.getEdge(edgeId)?.type as EdgeType) : undefined;
+      return (
+        // Reflexive edges are not allowed for DMN
+        edgeOrConnection.source !== edgeOrConnection.target &&
+        // Matches DMNs structure.
+        checkIsValidConnection(nodesById, edgeOrConnection, edgeType) &&
+        // Do not form cycles.
+        !!edgeOrConnection.target &&
+        !ongoingConnectionHierarchy.dependencies.has(edgeOrConnection.target) &&
+        !!edgeOrConnection.source &&
+        !ongoingConnectionHierarchy.dependents.has(edgeOrConnection.source)
+      );
+    },
+    [
+      dmnEditorStoreApi,
+      reactFlowInstance,
+      nodesById,
+      ongoingConnectionHierarchy.dependencies,
+      ongoingConnectionHierarchy.dependents,
+    ]
   );
 
   const onNodesChange = useCallback<RF.OnNodesChange>(
@@ -742,9 +758,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     [dmnEditorStoreApi, edgesById]
   );
 
-  const onEdgesUpdate = useCallback<RF.OnEdgeUpdateFunc>(
+  const onEdgeUpdate = useCallback<RF.OnEdgeUpdateFunc<DmnDiagramEdgeData>>(
     (oldEdge, newConnection) => {
-      console.debug("DMN DIAGRAM: `onEdgesUpdate`", oldEdge, newConnection);
+      console.debug("DMN DIAGRAM: `onEdgeUpdate`", oldEdge, newConnection);
 
       const sourceNode = nodesById.get(newConnection.source!);
       const targetNode = nodesById.get(newConnection.target!);
@@ -760,10 +776,23 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
       // --------- This is where we draw the line between the diagram and the model.
 
+      const lastWaypoint = oldEdge.data!.dmnEdge!["di:waypoint"]![oldEdge.data!.dmnEdge!["di:waypoint"]!.length - 1]!;
+      const firstWaypoint = oldEdge.data!.dmnEdge!["di:waypoint"]![0]!;
+
       dmnEditorStoreApi.setState((state) => {
         const { newDmnEdge } = addEdge({
           definitions: state.dmn.model.definitions,
-          edge: { type: newConnection.sourceHandle as EdgeType, handle: newConnection.targetHandle as TargetHandleId },
+          edge: {
+            type: oldEdge.type as EdgeType,
+            targetHandle: (newConnection.targetHandle ??
+              oldEdge.targetHandle ??
+              getHandlePosition({ shapeBounds: targetBounds, waypoint: lastWaypoint })
+                .handlePosition) as PositionalNodeHandleId,
+            sourceHandle: (newConnection.sourceHandle ??
+              oldEdge.sourceHandle ??
+              getHandlePosition({ shapeBounds: sourceBounds, waypoint: firstWaypoint })
+                .handlePosition) as PositionalNodeHandleId,
+          },
           sourceNode: {
             type: sourceNode.type as NodeType,
             href: sourceNode.id,
@@ -779,7 +808,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
             index: targetNode.data.index,
             shapeId: targetNode.data.shape["@_id"],
           },
-          keepWaypointsIfSameTarget: true,
+          keepWaypoints: true,
         });
 
         // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints!
@@ -806,6 +835,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
         // Keep the updated edge selected
         state.diagram._selectedEdges = [newDmnEdge["@_dmnElementRef"]!];
+
+        // Finish edge update atomically.
+        state.diagram.ongoingConnection = undefined;
+        state.diagram.edgeIdBeingUpdated = undefined;
       });
     },
     [dmnEditorStoreApi, nodesById]
@@ -824,6 +857,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
   const onEdgeUpdateEnd = useCallback(
     (e: MouseEvent | TouchEvent, edge: RF.Edge, handleType: RF.HandleType) => {
       console.debug("DMN DIAGRAM: `onEdgeUpdateEnd`");
+
+      // Needed for when the edge update operation doesn't change anything.
       dmnEditorStoreApi.setState((state) => {
         state.diagram.ongoingConnection = undefined;
         state.diagram.edgeIdBeingUpdated = undefined;
@@ -1007,6 +1042,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
       <DiagramContainerContextProvider container={container}>
         <EdgeMarkers />
         <RF.ReactFlow
+          connectionMode={RF.ConnectionMode.Loose} // Allow target handles to be used as source. This is very important for allowing the positional handles to be updated for the base of an edge.
           onKeyDownCapture={handleRfKeyDownCapture} // Override Reactflow's keyboard listeners.
           nodes={nodes}
           edges={edges}
@@ -1014,7 +1050,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           onEdgesChange={onEdgesChange}
           onEdgeUpdateStart={onEdgeUpdateStart}
           onEdgeUpdateEnd={onEdgeUpdateEnd}
-          onEdgeUpdate={onEdgesUpdate}
+          onEdgeUpdate={onEdgeUpdate}
           onlyRenderVisibleElements={true}
           zoomOnDoubleClick={false}
           elementsSelectable={true}

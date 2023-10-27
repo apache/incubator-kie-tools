@@ -14,10 +14,10 @@ import { DecisionNodeSvg, BkmNodeSvg, KnowledgeSourceNodeSvg, TextAnnotationNode
 import { getNodeCenterPoint, pointsToPath } from "../maths/DmnMaths";
 import { NodeType, getDefaultEdgeTypeBetween } from "./graphStructure";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "../nodes/DefaultSizes";
+import { DEFAULT_NODE_SIZES } from "../nodes/DefaultSizes";
 import { useDmnEditorStore } from "../../store/Store";
 import { useKieEdgePath } from "../edges/useKieEdgePath";
-import { TargetHandleId } from "./PositionalTargetNodeHandles";
+import { PositionalNodeHandleId } from "./PositionalNodeHandles";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
 
 export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.ConnectionLineComponentProps) {
@@ -34,8 +34,8 @@ export function ConnectionLine({ toX, toY, fromNode, fromHandle }: RF.Connection
   //
   // When editing an existing edge from its first waypoint (i.e., source handle) the edge is rendered
   // in reverse. So the connection line's "from" properties are actually "to" properties.
-  const isUpdatingFromSourceHandle = Object.keys(TargetHandleId).some(
-    (k) => (TargetHandleId as any)[k] === fromHandle?.id
+  const isUpdatingFromSourceHandle = Object.keys(PositionalNodeHandleId).some(
+    (k) => (PositionalNodeHandleId as any)[k] === fromHandle?.id
   );
 
   const { "@_x": fromX, "@_y": fromY } = getNodeCenterPoint(fromNode);

@@ -139,7 +139,6 @@ export function useDiagramData(externalDmnsByNamespace: ExternalDmnsIndex) {
           type,
           source,
           target,
-          sourceHandle: type, // We have one source handle for each edge type. This is what makes the edge updaters work.
           selected: selectedEdges.has(id),
         };
         edgesById.set(edge.id, edge);
