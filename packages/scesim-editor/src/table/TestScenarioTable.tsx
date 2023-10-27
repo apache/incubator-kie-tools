@@ -46,35 +46,52 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
   }, []);
 
   const simulationColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    const givenFactMappingToFactMap: Map<String, SceSim__FactMappingType[]> = new Map();
-    const expectFactMappingToFactMap: Map<String, SceSim__FactMappingType[]> = new Map();
+    const givenFactMappingToFactMap: Map<{ factName: String; factType: String }, SceSim__FactMappingType[]> = new Map();
+    const expectFactMappingToFactMap: Map<{ factName: String; factType: String }, SceSim__FactMappingType[]> =
+      new Map();
+    let descriptionFactMapping: SceSim__FactMappingType | undefined;
 
     (simulationData?.scesimModelDescriptor?.factMappings?.FactMapping ?? []).forEach((factMapping) => {
       if (factMapping.expressionIdentifier.type === "GIVEN") {
-        givenFactMappingToFactMap.set(factMapping.factAlias, [
-          ...(givenFactMappingToFactMap.get(factMapping.factAlias) ?? []),
-          factMapping,
-        ]);
-      } else if (factMapping.expressionIdentifier.type === "EXPECT")
-        expectFactMappingToFactMap.set(factMapping.factAlias, [
-          ...(expectFactMappingToFactMap.get(factMapping.factAlias) ?? []),
-          factMapping,
-        ]);
+        givenFactMappingToFactMap.set(
+          { factName: factMapping.factAlias, factType: factMapping.factIdentifier!.className! },
+          [
+            ...(givenFactMappingToFactMap.get({
+              factName: factMapping.factAlias,
+              factType: factMapping.factIdentifier!.className!,
+            }) ?? []),
+            factMapping,
+          ]
+        );
+      } else if (factMapping.expressionIdentifier.type === "EXPECT") {
+        expectFactMappingToFactMap.set(
+          { factName: factMapping.factAlias, factType: factMapping.factIdentifier!.className! },
+          [
+            ...(expectFactMappingToFactMap.get({
+              factName: factMapping.factAlias,
+              factType: factMapping.factIdentifier!.className!,
+            }) ?? []),
+            factMapping,
+          ]
+        );
+      } else if (
+        factMapping.expressionIdentifier.type === "OTHER" &&
+        factMapping.expressionIdentifier.name === "Description"
+      ) {
+        descriptionFactMapping = factMapping;
+      }
     });
 
     const descriptionSection = {
-      groupType: "OTHER",
-      id: "DESCRIPTION",
-      accessor: "DESCRIPTION",
-      label: "Scenario Description",
+      groupType: descriptionFactMapping!.expressionIdentifier.type,
+      id: descriptionFactMapping!.factAlias + descriptionFactMapping!.expressionIdentifier.type,
+      //accessor: descriptionFactMapping!.expressionIdentifier.type,
+      label: descriptionFactMapping!.factAlias,
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
-      width: 300,
-      minWidth: 300,
+      width: descriptionFactMapping!.columnWidth ?? 300,
+      minWidth: descriptionFactMapping!.columnWidth ?? 300,
     };
-
-    console.log(givenFactMappingToFactMap);
-    console.log(expectFactMappingToFactMap);
 
     const givenSection = {
       groupType: "given",
@@ -86,12 +103,10 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       width: undefined,
       columns: [...givenFactMappingToFactMap.entries()].map((entry) => {
         return {
-          accessor: entry[0],
-          label: entry[0],
-          id: entry[0] + "GIVEN",
-          //dataType: factMapping.className,
-          //width: factMapping.columnWidth,
-          //minWidth: 100,
+          accessor: entry[0].factName + "GIVEN",
+          label: entry[0].factName,
+          id: entry[0].factName + "GIVEN",
+          dataType: entry[0].factType,
           groupType: "GIVEN",
           cssClasses: "decision-table--input",
           isRowIndexColumn: false,
@@ -121,12 +136,10 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       width: undefined,
       columns: [...expectFactMappingToFactMap.entries()].map((entry) => {
         return {
-          accessor: entry[0],
-          label: entry[0],
-          id: entry[0],
-          //dataType: factMapping.className,
-          //width: factMapping.columnWidth,
-          //minWidth: 100,
+          accessor: entry[0].factName,
+          label: entry[0].factName,
+          id: entry[0].factName,
+          dataType: entry[0].factType,
           groupType: "EXPECT",
           cssClasses: "decision-table--input",
           isRowIndexColumn: false,
