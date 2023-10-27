@@ -141,7 +141,7 @@ export function addEdge({
         getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
       ]
     : [
-        getPointForHandle({ bounds: targetNode.bounds, handle: edge.sourceHandle }),
+        getPointForHandle({ bounds: sourceNode.bounds, handle: edge.sourceHandle }),
         getPointForHandle({ bounds: targetNode.bounds, handle: edge.targetHandle }),
       ];
 
