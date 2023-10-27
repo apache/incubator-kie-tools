@@ -22,13 +22,15 @@ import { useEffect, useMemo, useRef } from "react";
 
 import * as ReactTable from "react-table";
 
+import { SceSim__simulationType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+
 import { BeeTableHeaderVisibility } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import { StandaloneBeeTable } from "@kie-tools/boxed-expression-component/dist/table/BeeTable";
 
 import { useTestScenarioEditorI18n } from "../i18n";
 
-function TestScenarioTable({ fileName }: { fileName?: string }) {
+function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulationType }) {
   type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
   const { i18n } = useTestScenarioEditorI18n();
@@ -40,19 +42,69 @@ function TestScenarioTable({ fileName }: { fileName?: string }) {
       document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__content") ?? null;
   }, []);
 
-  const scesimTableColumns1 = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return [];
-  }, []);
+  const fakeList = [{ label: "asd1" }, { label: "asd2" }, { label: "asd3" }];
+
+  const fakeList2 = [{ label: "asd11" }, { label: "asd12" }, { label: "asd13" }];
 
   const scesimTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    const descriptionColumn: ReactTable.Column<ROWTYPE> = {
-      accessor: "asd",
-      id: "Asd",
-      width: 250,
-      minWidth: 250,
+    const descriptionSection = {
+      groupType: "description",
+      id: "DESCRIPTION",
+      accessor: "DESCRIPTION",
+      label: "Description",
+      cssClasses: "decision-table--output",
+      isRowIndexColumn: false,
+      width: 200,
+      minWidth: 200,
     };
 
-    return [descriptionColumn];
+    const givenColumns: ReactTable.Column<ROWTYPE>[] = (fakeList ?? []).map((inputClause, inputIndex) => ({
+      accessor: inputClause.label,
+      label: inputClause.label,
+      id: inputClause.label,
+      dataType: "asd",
+      width: 150,
+      minWidth: 100,
+      groupType: "input",
+      cssClasses: "decision-table--input",
+      isRowIndexColumn: false,
+    }));
+
+    const givenSection = {
+      groupType: "given",
+      id: "GIVEN",
+      accessor: "GIVEN",
+      label: "GIVEN",
+      cssClasses: "decision-table--output",
+      isRowIndexColumn: false,
+      width: undefined,
+      columns: givenColumns,
+    };
+
+    const expectedColumns: ReactTable.Column<ROWTYPE>[] = (fakeList2 ?? []).map((inputClause, inputIndex) => ({
+      accessor: inputClause.label,
+      label: inputClause.label,
+      id: inputClause.label,
+      dataType: "asd",
+      width: 150,
+      minWidth: 100,
+      groupType: "output",
+      cssClasses: "decision-table--input",
+      isRowIndexColumn: false,
+    }));
+
+    const expectedSection = {
+      groupType: "expected",
+      id: "EXPECTED",
+      accessor: "EXPECTED",
+      label: "EXPECTED",
+      cssClasses: "decision-table--output",
+      isRowIndexColumn: false,
+      width: undefined,
+      columns: expectedColumns,
+    };
+
+    return [descriptionSection, givenSection, expectedSection];
 
     /*const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
       (inputClause, inputIndex) => ({
@@ -126,7 +178,23 @@ function TestScenarioTable({ fileName }: { fileName?: string }) {
       return [...inputColumns, outputSection, ...annotationColumns];
     }*/
     // return [descriptionColumn];
-  }, []);
+  }, [fakeList, fakeList2]);
+
+  const simulationRows = useMemo(
+    () =>
+      (simulationData.scesimData.Scenario ?? []).map((rule) => {
+        /*const ruleRow = [...rule.inputEntries, ...rule.outputEntries, ...rule.annotationEntries];
+        const tableRow = getColumnsAtLastLevel(beeTableColumns).reduce(
+          (tableRow: ROWTYPE, column, columnIndex) => {
+            tableRow[column.accessor] = ruleRow[columnIndex] ?? "";
+            return tableRow;
+          },
+          { id: rule.id }
+        );
+        return tableRow; */
+      }),
+    [simulationData]
+  );
 
   return (
     <StandaloneBeeTable

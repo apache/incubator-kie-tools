@@ -378,7 +378,7 @@ function TestScenarioMainPanel({
                       </>
                     }
                   >
-                    <TestScenarioTable />
+                    <TestScenarioTable simulationData={scesimModel.ScenarioSimulationModel["simulation"]} />
                   </Tab>
                   <Tab
                     eventKey={TestScenarioEditorTab.BACKGROUND}
