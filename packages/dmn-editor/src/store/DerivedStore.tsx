@@ -40,7 +40,6 @@ export type DerivedStore = {
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex;
   externalDmnsByNamespace: ExternalDmnsIndex;
   externalPmmlsByNamespace: ExternalPmmlsIndex;
-  ongoingConnectionHierarchy: { dependencies: Set<string>; dependents: Set<string> };
 };
 
 const DmnEditorDerivedStoreContext = React.createContext<DerivedStore>({} as any);
@@ -182,27 +181,6 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
     diagram.draggingWaypoints.length > 0 ||
     diagram.movingDividerLines.length > 0;
 
-  const ongoingConnectionHierarchy = useMemo(() => {
-    if (!diagram.ongoingConnection?.nodeId) {
-      return { dependencies: new Set<string>(), dependents: new Set<string>() };
-    }
-
-    const selected = [diagram.ongoingConnection.nodeId];
-    const __selectedSet = new Set(selected);
-    const __adjMatrix = getAdjMatrix(edges);
-
-    const down = new Set<string>();
-    traverse(__adjMatrix, __selectedSet, selected, "down", (nodeId) => {
-      down.add(nodeId);
-    });
-
-    const up = new Set<string>();
-    traverse(__adjMatrix, __selectedSet, selected, "up", (nodeId) => {
-      up.add(nodeId);
-    });
-    return { dependencies: down, dependents: up };
-  }, [diagram.ongoingConnection?.nodeId, edges]);
-
   const value = useMemo(
     () => ({
       selectedNodeTypes,
@@ -224,7 +202,6 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelItemDefinitionUniqueNames,
       externalDmnsByNamespace,
       externalPmmlsByNamespace,
-      ongoingConnectionHierarchy,
     }),
     [
       selectedNodeTypes,
@@ -246,7 +223,6 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       allTopLevelItemDefinitionUniqueNames,
       externalDmnsByNamespace,
       externalPmmlsByNamespace,
-      ongoingConnectionHierarchy,
     ]
   );
 

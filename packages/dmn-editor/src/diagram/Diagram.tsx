@@ -87,16 +87,12 @@ import {
   UnknownNode,
 } from "./nodes/Nodes";
 import BlueprintIcon from "@patternfly/react-icons/dist/esm/icons/blueprint-icon";
-import ExpandIcon from "@patternfly/react-icons/dist/esm/icons/expand-icon";
 import MousePointerIcon from "@patternfly/react-icons/dist/esm/icons/mouse-pointer-icon";
 import { updateExpression } from "../mutations/updateExpression";
 import { getDefaultExpressionDefinitionByLogicType } from "../boxedExpressions/getDefaultExpressionDefinitionByLogicType";
-import {
-  DmnBuiltInDataType,
-  ExpressionDefinitionLogicType,
-  generateUuid,
-} from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
+import { buildHierarchy } from "./graph/graph";
 
 const PAN_ON_DRAG = [1, 2];
 
@@ -143,7 +139,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
     isDiagramEditingInProgress,
     selectedNodeTypes,
     externalDmnsByNamespace,
-    ongoingConnectionHierarchy,
   } = useDmnEditorDerivedStore();
 
   // State
@@ -445,8 +440,15 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
 
   const isValidConnection = useCallback<RF.IsValidConnection>(
     (edgeOrConnection) => {
-      const edgeId = dmnEditorStoreApi.getState().diagram.edgeIdBeingUpdated;
+      const state = dmnEditorStoreApi.getState();
+      const edgeId = state.diagram.edgeIdBeingUpdated;
       const edgeType = edgeId ? (reactFlowInstance?.getEdge(edgeId)?.type as EdgeType) : undefined;
+
+      const ongoingConnectionHierarchy = buildHierarchy({
+        nodeId: state.diagram.ongoingConnection?.nodeId,
+        edges: reactFlowInstance?.getEdges() ?? [],
+      });
+
       return (
         // Reflexive edges are not allowed for DMN
         edgeOrConnection.source !== edgeOrConnection.target &&
@@ -459,13 +461,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         !ongoingConnectionHierarchy.dependents.has(edgeOrConnection.source)
       );
     },
-    [
-      dmnEditorStoreApi,
-      reactFlowInstance,
-      nodesById,
-      ongoingConnectionHierarchy.dependencies,
-      ongoingConnectionHierarchy.dependents,
-    ]
+    [dmnEditorStoreApi, reactFlowInstance, nodesById]
   );
 
   const onNodesChange = useCallback<RF.OnNodesChange>(

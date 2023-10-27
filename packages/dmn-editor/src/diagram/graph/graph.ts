@@ -65,3 +65,31 @@ export function traverse(
 
   traverse(__adjMatrix, originalStartingNodeIds, nextNodeIds, traversalDirection, nodeVisitor, edgeVisitor, visited);
 }
+
+export function buildHierarchy({
+  nodeId,
+  edges,
+}: {
+  nodeId: string | undefined | null;
+  edges: RF.Edge<DmnDiagramEdgeData>[];
+}) {
+  if (!nodeId) {
+    return { dependencies: new Set<string>(), dependents: new Set<string>() };
+  }
+
+  const selected = [nodeId];
+  const __selectedSet = new Set(selected);
+  const __adjMatrix = getAdjMatrix(edges);
+
+  const down = new Set<string>();
+  traverse(__adjMatrix, __selectedSet, selected, "down", (nodeId) => {
+    down.add(nodeId);
+  });
+
+  const up = new Set<string>();
+  traverse(__adjMatrix, __selectedSet, selected, "up", (nodeId) => {
+    up.add(nodeId);
+  });
+
+  return { dependencies: down, dependents: up };
+}
