@@ -18,7 +18,7 @@
  */
 import React from "react";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -27,6 +27,7 @@ import { useHistory } from "react-router";
 import { useApp } from "../../context/AppContext";
 import { WorkflowListState } from "./WorkflowList/WorkflowListGatewayApi";
 import WorkflowListContainer from "./WorkflowListContainer/WorkflowListContainer";
+import { BasePage } from "../../pages/BasePage";
 
 const PAGE_TITLE = "Workflow Instances";
 
@@ -65,21 +66,19 @@ export function RuntimeToolsWorkflowInstances() {
   const initialState: WorkflowListState = history.location && (history.location.state as WorkflowListState);
 
   return (
-    <>
-      <Page>
-        <PageSection variant={"light"}>
-          <TextContent>
-            <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
-            <Text component={TextVariants.p}>
-              List and view workflows from the Data Index linked in your Runtime Tools settings.
-            </Text>
-          </TextContent>
-        </PageSection>
+    <BasePage>
+      <PageSection variant={"light"}>
+        <TextContent>
+          <Text component={TextVariants.h1}>{PAGE_TITLE}</Text>
+          <Text component={TextVariants.p}>
+            List and view workflows from the Data Index linked in your Runtime Tools settings.
+          </Text>
+        </TextContent>
+      </PageSection>
 
-        <PageSection isFilled aria-label="workflow-instances-section">
-          {!app.dataIndexAvailable ? <DataIndexNotAvailable /> : <WorkflowListContainer initialState={initialState} />}
-        </PageSection>
-      </Page>
-    </>
+      <PageSection isFilled aria-label="workflow-instances-section">
+        {!app.dataIndexAvailable ? <DataIndexNotAvailable /> : <WorkflowListContainer initialState={initialState} />}
+      </PageSection>
+    </BasePage>
   );
 }

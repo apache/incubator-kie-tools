@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-import "../static/resources/style.css";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { TextEditorFactory } from "@kie-tools/text-editor";
 
-ReactDOM.render(<App />, document.getElementById("app"));
+EditorEnvelope.init({
+  container: document.getElementById("text-editor-envelope-app")!,
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
+  editorFactory: new TextEditorFactory(),
+});

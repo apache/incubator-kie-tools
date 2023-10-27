@@ -23,6 +23,7 @@ import { AppContextProvider } from "./context/AppContextProvider";
 import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { WorkflowListContextProvider } from "./runtimeTools/workflows/WorkflowList";
+import { WorkflowDetailsContextProvider } from "./runtimeTools/workflows/WorkflowDetails";
 
 export const App = () => (
   <HashRouter>
@@ -30,6 +31,7 @@ export const App = () => (
       [AppContextProvider, {}],
       [OpenApiContextProvider, {}],
       [WorkflowListContextProvider, {}],
+      [WorkflowDetailsContextProvider, {}],
       [RoutesSwitch, {}]
     )}
   </HashRouter>

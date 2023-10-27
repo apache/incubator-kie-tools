@@ -8140,6 +8140,12 @@ importers:
       "@babel/preset-react":
         specifier: ^7.16.0
         version: 7.16.0(@babel/core@7.18.10)
+      "@kie-tools-core/editor":
+        specifier: workspace:*
+        version: link:../editor
+      "@kie-tools-core/keyboard-shortcuts":
+        specifier: workspace:*
+        version: link:../keyboard-shortcuts
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
@@ -8164,9 +8170,27 @@ importers:
       "@kie-tools/runtime-tools-gateway-api":
         specifier: workspace:*
         version: link:../runtime-tools-gateway-api
+      "@kie-tools/serverless-workflow-combined-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-assets
+      "@kie-tools/serverless-workflow-diagram-editor-envelope":
+        specifier: workspace:*
+        version: link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-text-editor":
+        specifier: workspace:*
+        version: link:../serverless-workflow-text-editor
+      "@kie-tools/text-editor":
+        specifier: workspace:*
+        version: link:../text-editor
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
+      "@patternfly/patternfly":
+        specifier: ^4.224.2
+        version: 4.224.2
       "@patternfly/react-core":
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2)(react@17.0.2)
@@ -18425,7 +18449,6 @@ packages:
   /@patternfly/patternfly@4.224.2:
     resolution:
       { integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g== }
-    dev: false
 
   /@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6)(react-dom@17.0.2)(react@17.0.2)(showdown@2.1.0):
     resolution:

@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
-import "@patternfly/patternfly/patternfly-addons.css";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-import "../static/resources/style.css";
+import React, { useContext } from "react";
+import { WorkflowDetailsGatewayApi } from "./WorkflowDetailsGatewayApi";
 
-ReactDOM.render(<App />, document.getElementById("app"));
+export const WorkflowDetailsContext = React.createContext<WorkflowDetailsGatewayApi>({} as any);
+
+export function useWorkflowDetailsGatewayApi() {
+  return useContext(WorkflowDetailsContext);
+}

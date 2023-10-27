@@ -18,18 +18,19 @@
  */
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { BasePage } from "../pages/BasePage";
 import { RuntimeToolsWorkflowInstances } from "../runtimeTools/workflows/RuntimeToolsWorkflowInstances";
 import { routes } from "../routes";
+import { RuntimeToolsWorkflowDetails } from "../runtimeTools/workflows/RuntimeToolsWorkflowDetails";
 
 export function RuntimeToolsRoutesSwitch() {
   return (
-    <BasePage>
-      <Switch>
-        <Route path={routes.runtimeTools.workflowInstances.path({})}>
-          <RuntimeToolsWorkflowInstances />
-        </Route>
-      </Switch>
-    </BasePage>
+    <Switch>
+      <Route path={routes.runtimeTools.workflowInstances.path({})}>
+        <RuntimeToolsWorkflowInstances />
+      </Route>
+      <Route path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}>
+        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
+      </Route>
+    </Switch>
   );
 }
