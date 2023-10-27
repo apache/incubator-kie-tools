@@ -22,7 +22,10 @@ import { useEffect, useMemo, useRef } from "react";
 
 import * as ReactTable from "react-table";
 
-import { SceSim__simulationType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
+import {
+  SceSim__FactMappingType,
+  SceSim__simulationType,
+} from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { BeeTableHeaderVisibility } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
@@ -42,33 +45,36 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__content") ?? null;
   }, []);
 
-  const fakeList = [{ label: "asd1" }, { label: "asd2" }, { label: "asd3" }];
+  const simulationColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
+    const givenFactMappingToFactMap: Map<String, SceSim__FactMappingType[]> = new Map();
+    const expectFactMappingToFactMap: Map<String, SceSim__FactMappingType[]> = new Map();
 
-  const fakeList2 = [{ label: "asd11" }, { label: "asd12" }, { label: "asd13" }];
+    (simulationData?.scesimModelDescriptor?.factMappings?.FactMapping ?? []).forEach((factMapping) => {
+      if (factMapping.expressionIdentifier.type === "GIVEN") {
+        givenFactMappingToFactMap.set(factMapping.factAlias, [
+          ...(givenFactMappingToFactMap.get(factMapping.factAlias) ?? []),
+          factMapping,
+        ]);
+      } else if (factMapping.expressionIdentifier.type === "EXPECT")
+        expectFactMappingToFactMap.set(factMapping.factAlias, [
+          ...(expectFactMappingToFactMap.get(factMapping.factAlias) ?? []),
+          factMapping,
+        ]);
+    });
 
-  const scesimTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     const descriptionSection = {
-      groupType: "description",
+      groupType: "OTHER",
       id: "DESCRIPTION",
       accessor: "DESCRIPTION",
-      label: "Description",
+      label: "Scenario Description",
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
-      width: 200,
-      minWidth: 200,
+      width: 300,
+      minWidth: 300,
     };
 
-    const givenColumns: ReactTable.Column<ROWTYPE>[] = (fakeList ?? []).map((inputClause, inputIndex) => ({
-      accessor: inputClause.label,
-      label: inputClause.label,
-      id: inputClause.label,
-      dataType: "asd",
-      width: 150,
-      minWidth: 100,
-      groupType: "input",
-      cssClasses: "decision-table--input",
-      isRowIndexColumn: false,
-    }));
+    console.log(givenFactMappingToFactMap);
+    console.log(expectFactMappingToFactMap);
 
     const givenSection = {
       groupType: "given",
@@ -78,107 +84,71 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       width: undefined,
-      columns: givenColumns,
-    };
-
-    const expectedColumns: ReactTable.Column<ROWTYPE>[] = (fakeList2 ?? []).map((inputClause, inputIndex) => ({
-      accessor: inputClause.label,
-      label: inputClause.label,
-      id: inputClause.label,
-      dataType: "asd",
-      width: 150,
-      minWidth: 100,
-      groupType: "output",
-      cssClasses: "decision-table--input",
-      isRowIndexColumn: false,
-    }));
-
-    const expectedSection = {
-      groupType: "expected",
-      id: "EXPECTED",
-      accessor: "EXPECTED",
-      label: "EXPECTED",
-      cssClasses: "decision-table--output",
-      isRowIndexColumn: false,
-      width: undefined,
-      columns: expectedColumns,
-    };
-
-    return [descriptionSection, givenSection, expectedSection];
-
-    /*const inputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.input ?? []).map(
-      (inputClause, inputIndex) => ({
-        accessor: inputClause.id ?? generateUuid(),
-        label: inputClause.name,
-        id: inputClause.id,
-        dataType: inputClause.dataType,
-        width: inputClause.width ?? DECISION_TABLE_INPUT_MIN_WIDTH,
-        setWidth: setInputColumnWidth(inputIndex),
-        minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
-        groupType: DecisionTableColumnType.InputClause,
-        cssClasses: "decision-table--input",
-        isRowIndexColumn: false,
-      })
-    );
-
-    const outputColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.output ?? []).map(
-      (outputClause, outputIndex) => ({
-        accessor: outputClause.id ?? generateUuid(),
-        id: outputClause.id,
-        label:
-          decisionTableExpression.output?.length == 1
-            ? decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME
-            : outputClause.name,
-        dataType:
-          decisionTableExpression.output?.length == 1 ? decisionTableExpression.dataType : outputClause.dataType,
-        width: outputClause.width ?? DECISION_TABLE_OUTPUT_MIN_WIDTH,
-        setWidth: setOutputColumnWidth(outputIndex),
-        minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
-        groupType: DecisionTableColumnType.OutputClause,
-        cssClasses: "decision-table--output",
-        isRowIndexColumn: false,
-      })
-    );
-
-    const outputSection = {
-      groupType: DecisionTableColumnType.OutputClause,
-      id: decisionTableExpression.id,
-      accessor: "decision-table-expression" as any, // FIXME: https://github.com/kiegroup/kie-issues/issues/169
-      label: decisionTableExpression.name ?? DEFAULT_EXPRESSION_NAME,
-      dataType: decisionTableExpression.dataType ?? DmnBuiltInDataType.Undefined,
-      cssClasses: "decision-table--output",
-      isRowIndexColumn: false,
-      width: undefined,
-      columns: outputColumns,
-    };
-
-    const annotationColumns: ReactTable.Column<ROWTYPE>[] = (decisionTableExpression.annotations ?? []).map(
-      (annotation, annotationIndex) => {
-        const annotationId = generateUuid();
+      columns: [...givenFactMappingToFactMap.entries()].map((entry) => {
         return {
-          accessor: annotationId,
-          id: annotationId,
-          label: annotation.name,
-          width: annotation.width ?? DECISION_TABLE_ANNOTATION_MIN_WIDTH,
-          setWidth: setAnnotationColumnWidth(annotationIndex),
-          minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
-          isInlineEditable: true,
-          groupType: DecisionTableColumnType.Annotation,
-          cssClasses: "decision-table--annotation",
+          accessor: entry[0],
+          label: entry[0],
+          id: entry[0] + "GIVEN",
+          //dataType: factMapping.className,
+          //width: factMapping.columnWidth,
+          //minWidth: 100,
+          groupType: "GIVEN",
+          cssClasses: "decision-table--input",
           isRowIndexColumn: false,
-          dataType: undefined as any,
+          columns: entry[1].map((factMapping) => {
+            return {
+              accessor: factMapping.factAlias,
+              label: factMapping.expressionAlias,
+              id: factMapping.factAlias + factMapping.expressionAlias + "GIVEN",
+              dataType: factMapping.className,
+              width: factMapping.columnWidth,
+              minWidth: 100,
+              groupType: factMapping.expressionIdentifier.type,
+              cssClasses: "decision-table--input",
+              isRowIndexColumn: false,
+            };
+          }),
         };
-      }
-    ); */
+      }),
+    };
 
-    /*
-    if (outputColumns.length == 1) {
-      return [...inputColumns, ...outputColumns, ...annotationColumns];
-    } else {
-      return [...inputColumns, outputSection, ...annotationColumns];
-    }*/
-    // return [descriptionColumn];
-  }, [fakeList, fakeList2]);
+    const expectSection = {
+      groupType: "expected",
+      id: "EXPECT",
+      accessor: "EXPECT",
+      label: "EXPECT",
+      isRowIndexColumn: false,
+      width: undefined,
+      columns: [...expectFactMappingToFactMap.entries()].map((entry) => {
+        return {
+          accessor: entry[0],
+          label: entry[0],
+          id: entry[0],
+          //dataType: factMapping.className,
+          //width: factMapping.columnWidth,
+          //minWidth: 100,
+          groupType: "EXPECT",
+          cssClasses: "decision-table--input",
+          isRowIndexColumn: false,
+          columns: entry[1].map((factMapping) => {
+            return {
+              accessor: factMapping.factAlias,
+              label: factMapping.expressionAlias,
+              id: factMapping.factAlias + factMapping.expressionAlias,
+              dataType: factMapping.className,
+              width: factMapping.columnWidth,
+              minWidth: 100,
+              groupType: factMapping.expressionIdentifier.type,
+              cssClasses: "decision-table--input",
+              isRowIndexColumn: false,
+            };
+          }),
+        };
+      }),
+    };
+
+    return [descriptionSection, givenSection, expectSection];
+  }, [simulationData.scesimModelDescriptor.factMappings]);
 
   const simulationRows = useMemo(
     () =>
@@ -207,7 +177,7 @@ function TestScenarioTable({ simulationData }: { simulationData: SceSim__simulat
       headerLevelCountForAppendingRowIndexColumn={1}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
       operationConfig={undefined}
-      columns={scesimTableColumns}
+      columns={simulationColumns}
       rows={[{}, {}]}
       isReadOnly={false} //OK
       enableKeyboardNavigation={true} //OK
