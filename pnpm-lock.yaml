@@ -5409,7 +5409,7 @@ importers:
         version: 4.8.4
       url-loader:
         specifier: ^4.1.1
-        version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
+        version: 4.1.1(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
         version: 5.88.2(webpack-cli@4.10.0)
@@ -5822,7 +5822,7 @@ importers:
         version: 4.1.1(file-loader@6.2.0)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2(webpack-cli@4.10.0)
+        version: 5.88.2
 
   packages/playwright-base:
     devDependencies:
@@ -8182,9 +8182,6 @@ importers:
       "@kie-tools/serverless-workflow-text-editor":
         specifier: workspace:*
         version: link:../serverless-workflow-text-editor
-      "@kie-tools/text-editor":
-        specifier: workspace:*
-        version: link:../text-editor
       "@kie-tools/tsconfig":
         specifier: workspace:*
         version: link:../tsconfig
@@ -8221,9 +8218,6 @@ importers:
       apollo-client:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
-      apollo-link-error:
-        specifier: 1.1.13
-        version: 1.1.13(graphql@14.3.1)
       apollo-link-http:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
@@ -8649,10 +8643,10 @@ importers:
         version: 4.8.4
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2(webpack-cli@4.10.0)
+        version: 5.88.2
       webpack-dev-server:
         specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.88.2)
+        version: 4.15.1(webpack@5.88.2)
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
@@ -9535,7 +9529,7 @@ importers:
         version: 9.4.2(typescript@4.8.4)(webpack@5.88.2)
       webpack:
         specifier: ^5.88.2
-        version: 5.88.2(webpack-cli@4.10.0)
+        version: 5.88.2
 
   packages/workspace:
     dependencies:
@@ -23858,6 +23852,15 @@ packages:
       acorn-walk: 7.2.0
     dev: true
 
+  /acorn-import-assertions@1.9.0(acorn@8.10.0):
+    resolution:
+      { integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA== }
+    peerDependencies:
+      acorn: ^8
+    dependencies:
+      acorn: 8.10.0
+    dev: true
+
   /acorn-import-assertions@1.9.0(acorn@8.8.2):
     resolution:
       { integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA== }
@@ -23876,13 +23879,13 @@ packages:
       acorn: 7.4.1
     dev: true
 
-  /acorn-jsx@5.3.2(acorn@8.8.2):
+  /acorn-jsx@5.3.2(acorn@8.10.0):
     resolution:
       { integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ== }
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
     dependencies:
-      acorn: 8.8.2
+      acorn: 8.10.0
     dev: true
 
   /acorn-walk@7.2.0:
@@ -24237,6 +24240,7 @@ packages:
       tslib: 1.14.1
     transitivePeerDependencies:
       - graphql
+    dev: false
 
   /apollo-link-http-common@0.2.16(graphql@14.3.1):
     resolution:
@@ -29268,8 +29272,8 @@ packages:
       { integrity: sha512-7OASN1Wma5fum5SrNhFMAMJxOUAbhyfQ8dQ//PJaJbNw0URTPWqIghHWt1MmAANKhHZIYOHruW4Kw4ruUWOdGw== }
     engines: { node: ^12.22.0 || ^14.17.0 || >=16.0.0 }
     dependencies:
-      acorn: 8.8.2
-      acorn-jsx: 5.3.2(acorn@8.8.2)
+      acorn: 8.10.0
+      acorn-jsx: 5.3.2(acorn@8.10.0)
       eslint-visitor-keys: 3.4.1
     dev: true
 
@@ -29882,7 +29886,7 @@ packages:
       is-glob: 4.0.3
       normalize-path: 3.0.0
       schema-utils: 4.0.0
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack: 5.88.2
     dev: true
 
   /filename-reserved-regex@2.0.0:
@@ -33317,7 +33321,7 @@ packages:
         optional: true
     dependencies:
       abab: 2.0.6
-      acorn: 8.8.2
+      acorn: 8.10.0
       acorn-globals: 6.0.0
       cssom: 0.4.4
       cssstyle: 2.3.0
@@ -33750,7 +33754,7 @@ packages:
     dependencies:
       glob: 7.2.0
       minimatch: 3.0.5
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack: 5.88.2
       webpack-merge: 4.2.2
     dev: true
 
@@ -39474,7 +39478,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack: 5.88.2
     dev: true
 
   /sass-loader@13.0.2(sass@1.54.4)(webpack@5.76.1):
@@ -40146,7 +40150,7 @@ packages:
       abab: 2.0.5
       iconv-lite: 0.6.3
       source-map-js: 0.6.2
-      webpack: 5.88.2(webpack-cli@4.10.0)
+      webpack: 5.88.2
     dev: true
 
   /source-map-loader@4.0.0(webpack@5.76.1):
@@ -41133,7 +41137,7 @@ packages:
     engines: { node: ">=6.0.0" }
     hasBin: true
     dependencies:
-      acorn: 8.8.2
+      acorn: 8.10.0
       commander: 2.20.3
       source-map: 0.6.1
       source-map-support: 0.5.21
@@ -41146,7 +41150,7 @@ packages:
     hasBin: true
     dependencies:
       "@jridgewell/source-map": 0.3.3
-      acorn: 8.8.2
+      acorn: 8.10.0
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
@@ -41158,7 +41162,7 @@ packages:
     hasBin: true
     dependencies:
       "@jridgewell/source-map": 0.3.3
-      acorn: 8.8.2
+      acorn: 8.10.0
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
@@ -42051,6 +42055,23 @@ packages:
         optional: true
     dependencies:
       file-loader: 6.2.0(webpack@5.88.2)
+      loader-utils: 2.0.2
+      mime-types: 2.1.34
+      schema-utils: 3.1.1
+      webpack: 5.88.2
+    dev: true
+
+  /url-loader@4.1.1(webpack@5.88.2):
+    resolution:
+      { integrity: sha512-3BTV812+AVHHOJQO8O5MkWgZ5aosP7GnROJwvzLS9hWDj00lZ6Z0wNak423Lp9PBZN05N+Jk/N5Si8jRAlGyWA== }
+    engines: { node: ">= 10.13.0" }
+    peerDependencies:
+      file-loader: "*"
+      webpack: ^4.0.0 || ^5.0.0
+    peerDependenciesMeta:
+      file-loader:
+        optional: true
+    dependencies:
       loader-utils: 2.0.2
       mime-types: 2.1.34
       schema-utils: 3.1.1
@@ -43057,6 +43078,58 @@ packages:
       - utf-8-validate
     dev: true
 
+  /webpack-dev-server@4.15.1(webpack@5.88.2):
+    resolution:
+      { integrity: sha512-5hbAst3h3C3L8w6W4P96L5vaV0PxSmJhxZvWKYIdgxOQm8pNZ5dEOmmSLBVpP85ReeyRt6AS1QJNyo/oFFPeVA== }
+    engines: { node: ">= 12.13.0" }
+    hasBin: true
+    peerDependencies:
+      webpack: ^4.37.0 || ^5.0.0
+      webpack-cli: "*"
+    peerDependenciesMeta:
+      webpack:
+        optional: true
+      webpack-cli:
+        optional: true
+    dependencies:
+      "@types/bonjour": 3.5.10
+      "@types/connect-history-api-fallback": 1.3.5
+      "@types/express": 4.17.17
+      "@types/serve-index": 1.9.1
+      "@types/serve-static": 1.13.10
+      "@types/sockjs": 0.3.33
+      "@types/ws": 8.5.5
+      ansi-html-community: 0.0.8
+      bonjour-service: 1.1.1
+      chokidar: 3.5.3
+      colorette: 2.0.16
+      compression: 1.7.4
+      connect-history-api-fallback: 2.0.0
+      default-gateway: 6.0.3
+      express: 4.18.2
+      graceful-fs: 4.2.11
+      html-entities: 2.3.2
+      http-proxy-middleware: 2.0.6(@types/express@4.17.17)
+      ipaddr.js: 2.0.1
+      launch-editor: 2.6.0
+      open: 8.4.0
+      p-retry: 4.6.1
+      rimraf: 3.0.2
+      schema-utils: 4.0.0
+      selfsigned: 2.1.1
+      serve-index: 1.9.1
+      sockjs: 0.3.24
+      spdy: 4.0.2
+      webpack: 5.88.2
+      webpack-dev-middleware: 5.3.3(webpack@5.88.2)
+      ws: 8.13.0
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - supports-color
+      - utf-8-validate
+    dev: true
+
   /webpack-hot-middleware@2.25.4:
     resolution:
       { integrity: sha512-IRmTspuHM06aZh98OhBJtqLpeWFM8FXJS5UYpKYxCJzyFoyWj1w6VGFfomZU7OPA55dMLrQK0pRT1eQ3PACr4w== }
@@ -43139,8 +43212,8 @@ packages:
       "@webassemblyjs/ast": 1.11.1
       "@webassemblyjs/wasm-edit": 1.11.1
       "@webassemblyjs/wasm-parser": 1.11.1
-      acorn: 8.8.2
-      acorn-import-assertions: 1.9.0(acorn@8.8.2)
+      acorn: 8.10.0
+      acorn-import-assertions: 1.9.0(acorn@8.10.0)
       browserslist: 4.21.5
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.15.0
@@ -43156,6 +43229,47 @@ packages:
       schema-utils: 3.3.0
       tapable: 2.2.0
       terser-webpack-plugin: 5.3.9(esbuild@0.15.5)(webpack@5.76.1)
+      watchpack: 2.4.0
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - "@swc/core"
+      - esbuild
+      - uglify-js
+    dev: true
+
+  /webpack@5.88.2:
+    resolution:
+      { integrity: sha512-JmcgNZ1iKj+aiR0OvTYtWQqJwq37Pf683dY9bVORwVbUrDhLhdn/PlO2sHsFHPkj7sHNQF3JwaAkp49V+Sq1tQ== }
+    engines: { node: ">=10.13.0" }
+    hasBin: true
+    peerDependencies:
+      webpack-cli: "*"
+    peerDependenciesMeta:
+      webpack-cli:
+        optional: true
+    dependencies:
+      "@types/eslint-scope": 3.7.3
+      "@types/estree": 1.0.1
+      "@webassemblyjs/ast": 1.11.6
+      "@webassemblyjs/wasm-edit": 1.11.6
+      "@webassemblyjs/wasm-parser": 1.11.6
+      acorn: 8.10.0
+      acorn-import-assertions: 1.9.0(acorn@8.10.0)
+      browserslist: 4.21.5
+      chrome-trace-event: 1.0.2
+      enhanced-resolve: 5.15.0
+      es-module-lexer: 1.3.0
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.2.0
+      mime-types: 2.1.34
+      neo-async: 2.6.2
+      schema-utils: 3.3.0
+      tapable: 2.2.0
+      terser-webpack-plugin: 5.3.9(webpack@5.88.2)
       watchpack: 2.4.0
       webpack-sources: 3.2.3
     transitivePeerDependencies:
@@ -43180,8 +43294,8 @@ packages:
       "@webassemblyjs/ast": 1.11.6
       "@webassemblyjs/wasm-edit": 1.11.6
       "@webassemblyjs/wasm-parser": 1.11.6
-      acorn: 8.8.2
-      acorn-import-assertions: 1.9.0(acorn@8.8.2)
+      acorn: 8.10.0
+      acorn-import-assertions: 1.9.0(acorn@8.10.0)
       browserslist: 4.21.5
       chrome-trace-event: 1.0.2
       enhanced-resolve: 5.15.0
