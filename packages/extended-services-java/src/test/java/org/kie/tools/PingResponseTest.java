@@ -28,11 +28,6 @@
  
  @QuarkusTest
  public class PingResponseTest extends AbstractPingTest {
- 
-     @ConfigProperty(name = "extendedServicesJava.version")
-     String expectedVersion;
-     final boolean expectedStarted = true;
-     
      @Inject
      PingResponse pingResponse;
  

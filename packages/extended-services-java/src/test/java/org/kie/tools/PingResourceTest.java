@@ -31,7 +31,6 @@
  
  @QuarkusTest
  public class PingResourceTest extends AbstractPingTest {
- 
      @Test
      public void testPingEndpoint() {
          given()
