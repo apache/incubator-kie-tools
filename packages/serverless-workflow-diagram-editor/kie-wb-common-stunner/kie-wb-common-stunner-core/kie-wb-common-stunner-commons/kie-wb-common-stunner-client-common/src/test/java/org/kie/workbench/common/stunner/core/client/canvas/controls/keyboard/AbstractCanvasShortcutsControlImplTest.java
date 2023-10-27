@@ -81,7 +81,6 @@ public class AbstractCanvasShortcutsControlImplTest {
     public void testRegisterCauseCanvasFocus() {
         final EditorSession session = mock(EditorSession.class);
         final KeyboardControl keyboardControl = mock(KeyboardControl.class);
-        //doReturn(canvas).when(session).getCanvas();
         doReturn(keyboardControl).when(session).getKeyboardControl();
         canvasShortcutsControl.bind(session);
 

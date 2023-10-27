@@ -24,15 +24,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
-import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.util.UUID;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.uberfire.backend.vfs.Path;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,8 +35,6 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SaveDiagramSessionCommandTest {
-
-    private static final String DIAGRAM_UUID = UUID.uuid();
 
     private SaveDiagramSessionCommand command;
 
@@ -51,27 +44,8 @@ public class SaveDiagramSessionCommandTest {
     @Mock
     protected AbstractCanvasHandler canvasHandler;
 
-    @Mock
-    private Diagram diagram;
-
-    @Mock
-    private Metadata metadata;
-
-    @Mock
-    private Path path;
-
-    @Mock
-    private SelectionControl selectionControl;
-
     @Before
     public void setUp() throws Exception {
-        //when(session.getCanvasHandler()).thenReturn(canvasHandler);
-        //when(canvasHandler.getDiagram()).thenReturn(diagram);
-        //when(diagram.getMetadata()).thenReturn(metadata);
-        //when(metadata.getPath()).thenReturn(path);
-        //when(metadata.getCanvasRootUUID()).thenReturn(DIAGRAM_UUID);
-        //when(session.getSelectionControl()).thenReturn(selectionControl);
-
         command = new SaveDiagramSessionCommand();
         command.bind(session);
     }

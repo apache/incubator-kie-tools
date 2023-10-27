@@ -88,9 +88,6 @@ public class StunnerEditorTest {
     private ErrorPage errorPage;
 
     @Mock
-    private SessionPresenter.View sessionPresenterView;
-
-    @Mock
     private EditorSession editorSession;
     @Mock
     private ViewerSession viewerSession;
@@ -118,8 +115,6 @@ public class StunnerEditorTest {
     public void setup() {
         when(sessionEditorPresenters.get()).thenReturn(sessionEditorPresenter);
         when(sessionViewerPresenters.get()).thenReturn(sessionViewerPresenter);
-        //when(sessionEditorPresenter.getView()).thenReturn(sessionPresenterView);
-        //when(sessionViewerPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionEditorPresenter.getInstance()).thenReturn(editorSession);
         when(sessionViewerPresenter.getInstance()).thenReturn(viewerSession);
         when(sessionEditorPresenter.getHandler()).thenReturn(canvasHandler);
@@ -149,11 +144,6 @@ public class StunnerEditorTest {
     @Test
     @SuppressWarnings("all")
     public void testOpenSuccess() {
-/*        doAnswer(invocation -> {
-            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[0]).afterCanvasInitialized();
-            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).onSuccess();
-            return null;
-        }).when(sessionEditorPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));*/
         tested.setReadOnly(false);
         openSuccess();
         assertEquals(editorSession, tested.getSession());

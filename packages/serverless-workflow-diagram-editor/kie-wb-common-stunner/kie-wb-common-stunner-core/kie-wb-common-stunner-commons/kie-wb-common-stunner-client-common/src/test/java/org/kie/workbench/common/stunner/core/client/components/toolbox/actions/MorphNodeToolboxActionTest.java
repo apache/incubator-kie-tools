@@ -117,7 +117,6 @@ public class MorphNodeToolboxActionTest {
                 .thenReturn(morphNodeCommand);
         when(canvasHandler.getGraphIndex()).thenReturn(graphIndex);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
-        //when(canvasHandler.getCanvas()).thenReturn(canvas);
         when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         when(canvasHandler.getShapeFactory(eq(SSID_UUID))).thenReturn(shapeFactory);
         when(diagram.getMetadata()).thenReturn(metadata);

@@ -88,7 +88,6 @@ public class ElementProxyTest {
         commandFactories = new ManagedInstanceStub<>(commandFactory);
         when(proxyShape.getUUID()).thenReturn(SHAPE_UUID);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
-        //when(canvasHandler.getAbstractCanvas()).thenReturn(canvas);
         view = spy(new ElementProxyViewMock<>());
         tested = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils, sessionManager)
                              .setCanvasHandler(canvasHandler)

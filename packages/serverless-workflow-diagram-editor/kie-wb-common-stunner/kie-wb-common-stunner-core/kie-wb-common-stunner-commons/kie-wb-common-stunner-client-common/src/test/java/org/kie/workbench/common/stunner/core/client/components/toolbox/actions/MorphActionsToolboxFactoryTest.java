@@ -128,7 +128,6 @@ public class MorphActionsToolboxFactoryTest {
     public void setup() throws Exception {
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         when(diagram.getMetadata()).thenReturn(metadata);
-        //when(profileFilter.test(anyString())).thenReturn(true);
         when(profileManager.isDefinitionIdAllowed(eq(metadata))).thenReturn(profileFilter);
         when(morphNodeAction.setMorphDefinition(any(MorphDefinition.class))).thenReturn(morphNodeAction);
         when(morphNodeAction.setTargetDefinitionId(anyString())).thenReturn(morphNodeAction);
@@ -178,11 +177,6 @@ public class MorphActionsToolboxFactoryTest {
                times(1)).setTargetDefinitionId(eq(MORPH_TARGET_ID));
         verify(view,
                times(1)).init(eq(actionsToolbox));
-        // TODO: fix properly.
-        /*verify(view,
-               times(1)).addButton(any(Glyph.class),
-                                   anyString(),
-                                   any(Consumer.class));*/
     }
 
     @Test

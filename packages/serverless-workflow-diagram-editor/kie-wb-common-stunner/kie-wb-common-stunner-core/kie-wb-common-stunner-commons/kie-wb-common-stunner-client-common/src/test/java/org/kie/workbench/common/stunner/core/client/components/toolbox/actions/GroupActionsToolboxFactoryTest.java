@@ -125,7 +125,6 @@ public class GroupActionsToolboxFactoryTest {
         when(diagram.getMetadata()).thenReturn(metadata);
         when(metadata.getDefinitionSetId()).thenReturn(DS_ID);
         when(element.getUUID()).thenReturn(E_UUID);
-        //when(element.asNode()).thenReturn(element);
         when(toolboxLookups.get(anyString())).thenReturn(domainLookups);
         when(domainLookups.lookupTargetConnectors(eq(element)))
                 .thenReturn(Stream.of(EDGE_ID).collect(Collectors.toSet()));

@@ -83,7 +83,6 @@ public class WorkbenchEntryPoint {
         final Optional<SyncBeanDef<T>> optionalActivity = iocManager.lookupBeans(type)
                 .stream()
                 .filter(bean -> (name == null || bean.getName().equals(name)))
-                //.filter(bean -> bean.isActivated() && (name == null || bean.getName().equals(name)))
                 .findFirst();
 
         if (!optionalActivity.isPresent()) {

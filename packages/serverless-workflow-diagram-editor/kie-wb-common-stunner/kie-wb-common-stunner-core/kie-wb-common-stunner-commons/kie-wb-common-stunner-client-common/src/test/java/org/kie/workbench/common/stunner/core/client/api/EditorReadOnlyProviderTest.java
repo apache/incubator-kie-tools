@@ -44,31 +44,26 @@ public class EditorReadOnlyProviderTest {
 
     @Test
     public void testIsReadOnlyDiagramWhenIsGithub() {
-        //when(contextProvider.getChannel()).thenReturn(GITHUB);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsDefault() {
-        //when(contextProvider.getChannel()).thenReturn(DEFAULT);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsVsCode() {
-        //when(contextProvider.getChannel()).thenReturn(VSCODE);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsOnline() {
-        //when(contextProvider.getChannel()).thenReturn(ONLINE);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 
     @Test
     public void testIsReadOnlyDiagramWhenIsEmbedded() {
-        //when(contextProvider.getChannel()).thenReturn(EMBEDDED);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 }

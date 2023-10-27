@@ -121,7 +121,6 @@ public class GeneralCreateNodeActionTest {
 
     @Before
     public void setUp() throws Exception {
-        //doReturn(canvas).when(canvasHandler).getCanvas();
         doReturn(canvas).when(canvasHandler).getAbstractCanvas();
         doReturn(diagram).when(canvasHandler).getDiagram();
         doReturn(metadata).when(diagram).getMetadata();
@@ -180,13 +179,6 @@ public class GeneralCreateNodeActionTest {
         doReturn(connectorEdge).when(connectorElement).asEdge();
 
         when(JsWindow.getEditor().getDefinitions().getName(any())).thenReturn("State");
-
-        //when(canvasLayoutUtils.getNext(eq(canvasHandler),
-        //                               eq(sourceNode),
-        //                               eq(targetNode),
-        //                               eq(CanvasLayoutUtils.DEFAULT_NEW_NODE_ORIENTATION)))
-        //        .thenReturn(new Point2D(100d,
-        //                                500d));
 
         createNodeAction.executeAction(canvasHandler,
                                        sourceNodeId,

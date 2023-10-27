@@ -135,9 +135,6 @@ public class Promises {
     private <T> Promise<T> handleCatchBlockExceptions(final Object rejectedObject) {
 
         if (rejectedObject instanceof Throwable) {
-            //TODO
-
-            //GWT.getUncaughtExceptionHandler().onUncaughtException((Throwable) rejectedObject);
             return resolve();
         }
 
