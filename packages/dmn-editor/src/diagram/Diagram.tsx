@@ -452,7 +452,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         edgeOrConnection.source !== edgeOrConnection.target &&
         // Matches DMNs structure.
         checkIsValidConnection(nodesById, edgeOrConnection, edgeType) &&
-        // Do not form cycles.
+        // Does not form cycles.
         !!edgeOrConnection.target &&
         !ongoingConnectionHierarchy.dependencies.has(edgeOrConnection.target) &&
         !!edgeOrConnection.source &&
@@ -785,11 +785,9 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           edge: {
             type: oldEdge.type as EdgeType,
             targetHandle: (newConnection.targetHandle ??
-              oldEdge.targetHandle ??
               getHandlePosition({ shapeBounds: targetBounds, waypoint: lastWaypoint })
                 .handlePosition) as PositionalNodeHandleId,
             sourceHandle: (newConnection.sourceHandle ??
-              oldEdge.sourceHandle ??
               getHandlePosition({ shapeBounds: sourceBounds, waypoint: firstWaypoint })
                 .handlePosition) as PositionalNodeHandleId,
           },

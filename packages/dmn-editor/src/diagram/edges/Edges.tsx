@@ -10,7 +10,7 @@ import { PotentialWaypoint, Waypoints } from "./Waypoints";
 import { useKieEdgePath } from "./useKieEdgePath";
 import { useIsHovered } from "../useIsHovered";
 import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
-import { useEdgeUpdatersAtEdgeTips } from "./useEdgeUpdatersAtEdgeTips";
+import { useAlwaysVisibleEdgeUpdatersAtNodeBorders } from "./useAlwaysVisibleEdgeUpdatersAtNodeBorders";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
 
 export type DmnDiagramEdgeData = {
@@ -135,7 +135,7 @@ export const InformationRequirementEdge = React.memo((props: RF.EdgeProps<DmnDia
 
   const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
   const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>
@@ -181,7 +181,7 @@ export const KnowledgeRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
 
   const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
   const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>
@@ -227,7 +227,7 @@ export const AuthorityRequirementEdge = React.memo((props: RF.EdgeProps<DmnDiagr
 
   const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
   const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>
@@ -278,7 +278,7 @@ export const AssociationEdge = React.memo((props: RF.EdgeProps<DmnDiagramEdgeDat
 
   const sourceNode = RF.useStore((s) => s.nodeInternals.get(props.source)!);
   const targetNode = RF.useStore((s) => s.nodeInternals.get(props.target)!);
-  useEdgeUpdatersAtEdgeTips(interactionPathRef, sourceNode, targetNode, waypoints);
+  useAlwaysVisibleEdgeUpdatersAtNodeBorders(interactionPathRef, sourceNode, targetNode, waypoints);
 
   return (
     <>

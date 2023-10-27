@@ -7,7 +7,7 @@ import { scaleFromCenter } from "../maths/Maths";
 const RADIUS = 5;
 const HOVERED_RADIUS = 10;
 
-export function useEdgeUpdatersAtEdgeTips(
+export function useAlwaysVisibleEdgeUpdatersAtNodeBorders(
   interactionPathRef: React.RefObject<SVGPathElement>,
   sourceNode: RF.Node,
   targetNode: RF.Node,
