@@ -35,7 +35,7 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = toK8SNamespace(t.Name())
 		service, err := common.ServiceCreator(workflow)
-		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
+		client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, service).Build()
 		obj, err := statusEnricher(context.TODO(), client, workflow)
 
 		reflectWorkflow := obj.(*apiv08.SonataFlow)
@@ -51,7 +51,7 @@ func Test_enrichmentStatusOnK8s(t *testing.T) {
 		workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
 		workflow.Namespace = t.Name()
 		service, err := serviceCreator(workflow)
-		client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, service).Build()
+		client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, service).Build()
 		_, err = statusEnricher(context.TODO(), client, workflow)
 		assert.Error(t, err)
 

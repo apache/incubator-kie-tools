@@ -33,8 +33,8 @@ import (
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
 
-// NewKogitoClientBuilder creates a new fake.ClientBuilder with the right scheme references
-func NewKogitoClientBuilder() *fake.ClientBuilder {
+// NewSonataFlowClientBuilder creates a new fake.ClientBuilder with the right scheme references
+func NewSonataFlowClientBuilder() *fake.ClientBuilder {
 	s := scheme.Scheme
 	utilruntime.Must(operatorapi.AddToScheme(s))
 	return fake.NewClientBuilder().WithScheme(s)

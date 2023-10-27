@@ -15,6 +15,7 @@
 package common
 
 import (
+	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -55,19 +56,25 @@ func DeploymentMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {
 			if err != nil {
 				return err
 			}
-			EnsureDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
-			return nil
+			return EnsureDeployment(original.(*appsv1.Deployment), object.(*appsv1.Deployment))
 		}
 	}
 }
 
 // EnsureDeployment Ensure that the original Deployment fields are immutable.
-func EnsureDeployment(original *appsv1.Deployment, object *appsv1.Deployment) {
+func EnsureDeployment(original *appsv1.Deployment, object *appsv1.Deployment) error {
 	object.Spec.Replicas = original.Spec.Replicas
 	object.Spec.Selector = original.Spec.Selector
 	object.Labels = original.GetLabels()
 
-	object.Spec.Template.Spec = original.Spec.Template.Spec
+	// Clean up the volumes, they are inherited from original, additional are added by other visitors
+	object.Spec.Template.Spec.Volumes = nil
+	for i := range object.Spec.Template.Spec.Containers {
+		object.Spec.Template.Spec.Containers[i].VolumeMounts = nil
+	}
+
+	// we do a merge to not keep changing the spec since k8s will set default values to the podSpec
+	return mergo.Merge(&object.Spec.Template.Spec, original.Spec.Template.Spec, mergo.WithOverride)
 }
 
 func ServiceMutateVisitor(workflow *operatorapi.SonataFlow) MutateVisitor {

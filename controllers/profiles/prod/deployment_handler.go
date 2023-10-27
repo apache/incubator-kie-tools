@@ -17,18 +17,15 @@ package prod
 import (
 	"context"
 
-	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	"github.com/apache/incubator-kie-kogito-serverless-operator/api"
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/controllers/profiles/common"
-	"github.com/apache/incubator-kie-kogito-serverless-operator/log"
 	"github.com/apache/incubator-kie-kogito-serverless-operator/utils"
 )
 
@@ -56,69 +53,45 @@ func (d *deploymentHandler) handleWithImage(ctx context.Context, workflow *opera
 		return ctrl.Result{}, nil, err
 	}
 
-	// Check if this Deployment already exists
-	// TODO: we should NOT do this. The ensurers are there to do exactly this fetch. Review once we refactor this reconciliation algorithm. See https://issues.redhat.com/browse/KOGITO-8524
-	existingDeployment := &appsv1.Deployment{}
-	requeue := false
-	if err := d.C.Get(ctx, client.ObjectKeyFromObject(workflow), existingDeployment); err != nil {
-		if !errors.IsNotFound(err) {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to verify if deployment is available due to ", err)
-			_, err = d.PerformStatusUpdate(ctx, workflow)
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-		deployment, _, err :=
-			d.ensurers.deployment.Ensure(
-				ctx,
-				workflow,
-				d.getDeploymentMutateVisitors(workflow, image, propsCM.(*v1.ConfigMap))...,
-			)
-		if err != nil {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "Unable to perform the deploy due to ", err)
-			_, err = d.PerformStatusUpdate(ctx, workflow)
-			return reconcile.Result{}, nil, err
-		}
-		existingDeployment, _ = deployment.(*appsv1.Deployment)
-		requeue = true
+	deployment, deploymentOp, err :=
+		d.ensurers.deployment.Ensure(
+			ctx,
+			workflow,
+			d.getDeploymentMutateVisitors(workflow, image, propsCM.(*v1.ConfigMap))...,
+		)
+	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to perform the deploy due to ", err)
+		_, err = d.PerformStatusUpdate(ctx, workflow)
+		return reconcile.Result{}, nil, err
 	}
-	// TODO: verify if deployment is ready. See https://issues.redhat.com/browse/KOGITO-8524
 
-	existingService := &v1.Service{}
-	if err := d.C.Get(ctx, client.ObjectKeyFromObject(workflow), existingService); err != nil {
-		if !errors.IsNotFound(err) {
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-		service, _, err := d.ensurers.service.Ensure(ctx, workflow, common.ServiceMutateVisitor(workflow))
-		if err != nil {
-			workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to make the service available due to ", err)
-			_, err = d.PerformStatusUpdate(ctx, workflow)
-			return reconcile.Result{}, nil, err
-		}
-		existingService, _ = service.(*v1.Service)
-		requeue = true
+	service, _, err := d.ensurers.service.Ensure(ctx, workflow, common.ServiceMutateVisitor(workflow))
+	if err != nil {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentUnavailableReason, "Unable to make the service available due to ", err)
+		_, err = d.PerformStatusUpdate(ctx, workflow)
+		return reconcile.Result{}, nil, err
 	}
-	// TODO: verify if service is ready. See https://issues.redhat.com/browse/KOGITO-8524
 
-	objs := []client.Object{existingDeployment, existingService, propsCM}
+	objs := []client.Object{deployment, service, propsCM}
 
-	if !requeue {
-		klog.V(log.I).InfoS("Skip reconcile: Deployment and service already exists",
-			"Deployment.Namespace", existingDeployment.Namespace, "Deployment.Name", existingDeployment.Name)
-		result, err := common.DeploymentHandler(d.C).SyncDeploymentStatus(ctx, workflow)
-		if err != nil {
-			return reconcile.Result{Requeue: false}, nil, err
-		}
-
+	if deploymentOp == controllerutil.OperationResultCreated {
+		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 		if _, err := d.PerformStatusUpdate(ctx, workflow); err != nil {
 			return reconcile.Result{Requeue: false}, nil, err
 		}
-		return result, objs, nil
+		return reconcile.Result{RequeueAfter: common.RequeueAfterFollowDeployment, Requeue: true}, objs, nil
 	}
 
-	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
+	// Follow deployment status
+	result, err := common.DeploymentHandler(d.C).SyncDeploymentStatus(ctx, workflow)
+	if err != nil {
+		return reconcile.Result{Requeue: false}, nil, err
+	}
+
 	if _, err := d.PerformStatusUpdate(ctx, workflow); err != nil {
 		return reconcile.Result{Requeue: false}, nil, err
 	}
-	return reconcile.Result{RequeueAfter: common.RequeueAfterFollowDeployment}, objs, nil
+	return result, objs, nil
 }
 
 func (d *deploymentHandler) getDeploymentMutateVisitors(

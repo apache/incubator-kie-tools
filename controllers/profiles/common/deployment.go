@@ -88,7 +88,7 @@ func (d deploymentHandler) SyncDeploymentStatus(ctx context.Context, workflow *o
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForDeploymentReason, "")
 	klog.V(log.I).InfoS("Workflow is in WaitingForDeployment Condition")
-	return ctrl.Result{RequeueAfter: RequeueAfterFollowDeployment}, nil
+	return ctrl.Result{RequeueAfter: RequeueAfterFollowDeployment, Requeue: true}, nil
 }
 
 // GetDeploymentUnavailabilityMessage gets the replica failure reason.

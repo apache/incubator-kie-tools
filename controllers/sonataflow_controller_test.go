@@ -42,7 +42,7 @@ func TestSonataFlowController(t *testing.T) {
 		objs := []runtime.Object{ksw, ksp}
 
 		// Create a fake client to mock API calls.
-		cl := test.NewKogitoClientBuilder().WithRuntimeObjects(objs...).WithStatusSubresource(ksw, ksp).Build()
+		cl := test.NewSonataFlowClientBuilder().WithRuntimeObjects(objs...).WithStatusSubresource(ksw, ksp).Build()
 		// Create a SonataFlowReconciler object with the scheme and fake client.
 		r := &SonataFlowReconciler{Client: cl, Scheme: cl.Scheme()}
 

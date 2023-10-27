@@ -67,7 +67,7 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 			Labels:    lbl,
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: workflow.Spec.PodTemplate.Replicas,
+			Replicas: getReplicasOrDefault(workflow),
 			Selector: &metav1.LabelSelector{
 				MatchLabels: lbl,
 			},
@@ -91,6 +91,14 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow) (client.Object, error) 
 	kubeutil.AddOrReplaceContainer(operatorapi.DefaultContainerName, *flowContainer, &deployment.Spec.Template.Spec)
 
 	return deployment, nil
+}
+
+func getReplicasOrDefault(workflow *operatorapi.SonataFlow) *int32 {
+	var dReplicas int32 = 1
+	if workflow.Spec.PodTemplate.Replicas == nil {
+		return &dReplicas
+	}
+	return workflow.Spec.PodTemplate.Replicas
 }
 
 func defaultContainer(workflow *operatorapi.SonataFlow) (*corev1.Container, error) {

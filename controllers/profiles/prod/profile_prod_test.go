@@ -39,7 +39,7 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 		Image:   "registry.access.redhat.com/ubi9/ubi-minimal:latest",
 		Command: []string{"sh", "-c", "until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo \"Waiting for postgres server\"; sleep 3; done;"},
 	})
-	client := test.NewKogitoClientBuilder().
+	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow).
 		WithStatusSubresource(workflow, &operatorapi.SonataFlowBuild{}).Build()
 	result, err := NewProfileForOpsReconciler(client).Reconcile(context.TODO(), workflow)
@@ -78,7 +78,7 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	workflow.Status.Manager().MarkTrue(api.RunningConditionType)
 	build := test.GetLocalSucceedSonataFlowBuild(workflow.Name, workflow.Namespace)
 	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
-	client := test.NewKogitoClientBuilder().
+	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, build, platform).
 		WithStatusSubresource(workflow, build, platform).Build()
 	_, err := NewProfileReconciler(client).Reconcile(context.TODO(), workflow)
@@ -98,7 +98,7 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 func Test_reconcilerProdBuildConditions(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	client := test.NewKogitoClientBuilder().
+	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 
@@ -159,7 +159,7 @@ func Test_deployWorkflowReconciliationHandler_handleObjects(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
 	build := test.GetLocalSucceedSonataFlowBuild(workflow.Name, workflow.Namespace)
-	client := test.NewKogitoClientBuilder().
+	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform, build).
 		WithStatusSubresource(workflow, platform, build).
 		Build()
@@ -206,7 +206,7 @@ func Test_GenerationAnnotationCheck(t *testing.T) {
 	// we load a workflow with metadata.generation to 0
 	workflow := test.GetBaseSonataFlow(t.Name())
 	platform := test.GetBasePlatformInReadyPhase(t.Name())
-	client := test.NewKogitoClientBuilder().
+	client := test.NewSonataFlowClientBuilder().
 		WithRuntimeObjects(workflow, platform).
 		WithStatusSubresource(workflow, platform, &operatorapi.SonataFlowBuild{}).Build()
 

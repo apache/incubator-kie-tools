@@ -47,7 +47,7 @@ import (
 func Test_OverrideStartupProbe(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	devReconciler := NewProfileReconciler(client)
 
@@ -74,7 +74,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 	workflowID := clientruntime.ObjectKeyFromObject(workflow)
 
 	workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.DeploymentFailureReason, "")
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	reconciler := NewProfileReconciler(client)
 
@@ -115,7 +115,7 @@ func Test_recoverFromFailureNoDeployment(t *testing.T) {
 func Test_newDevProfile(t *testing.T) {
 	workflow := test.GetBaseSonataFlow(t.Name())
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	devReconciler := NewProfileReconciler(client)
 
@@ -189,7 +189,7 @@ func Test_newDevProfile(t *testing.T) {
 
 func Test_devProfileImageDefaultsNoPlatform(t *testing.T) {
 	workflow := test.GetBaseSonataFlowWithDevProfile(t.Name())
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 	devReconciler := NewProfileReconciler(client)
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
@@ -206,7 +206,7 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 
 	platform := test.GetBasePlatformWithDevBaseImageInReadyPhase(workflow.Namespace)
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	devReconciler := NewProfileReconciler(client)
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
@@ -223,7 +223,7 @@ func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.
 
 	platform := test.GetBasePlatformWithBaseImageInReadyPhase(workflow.Namespace)
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	devReconciler := NewProfileReconciler(client)
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
@@ -240,7 +240,7 @@ func Test_devProfileWithPlatformWithoutDevBaseImageAndWithoutBaseImage(t *testin
 
 	platform := test.GetBasePlatformInReadyPhase(workflow.Namespace)
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, platform).WithStatusSubresource(workflow, platform).Build()
 	devReconciler := NewProfileReconciler(client)
 
 	result, err := devReconciler.Reconcile(context.TODO(), workflow)
@@ -258,7 +258,7 @@ func Test_newDevProfileWithExternalConfigMaps(t *testing.T) {
 	workflow.Spec.Resources.ConfigMaps = append(workflow.Spec.Resources.ConfigMaps,
 		operatorapi.ConfigMapWorkflowResource{ConfigMap: v1.LocalObjectReference{Name: configmapName}, WorkflowPath: "routes"})
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow).WithStatusSubresource(workflow).Build()
 
 	devReconciler := NewProfileReconciler(client)
 
@@ -374,7 +374,7 @@ func Test_VolumeWithCapitalizedPaths(t *testing.T) {
 	configMap.Namespace = t.Name()
 	workflow := test.GetSonataFlow(test.SonataFlowGreetingsWithStaticResourcesCR, t.Name())
 
-	client := test.NewKogitoClientBuilder().WithRuntimeObjects(workflow, configMap).WithStatusSubresource(workflow, configMap).Build()
+	client := test.NewSonataFlowClientBuilder().WithRuntimeObjects(workflow, configMap).WithStatusSubresource(workflow, configMap).Build()
 
 	devReconciler := NewProfileReconciler(client)
 
