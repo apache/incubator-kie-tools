@@ -17,7 +17,9 @@
 package org.kie.workbench.common.stunner.kogito.client.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,6 +73,13 @@ public class FunctionsRegistry {
     }
 
     private void initRegistry() {
+
+        String[] types = new String[] {Object.class.getName(), Number.class.getName(), String.class.getName(),
+                Date.class.getName(), Boolean.class.getName(), ArrayList.class.getName()
+        };
+        Arrays.stream(types).map(type -> FunctionDef.FunctionDefBuilder.newFunction(IS_NULL)
+                .withParam("param1", type)
+                .build()).forEach(func -> registry.add(func));
 
         FunctionDef isNull = FunctionDef.FunctionDefBuilder.newFunction(IS_NULL)
                 .withParam("param1", Object.class.getName())
