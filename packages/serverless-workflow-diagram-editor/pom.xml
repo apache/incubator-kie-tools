@@ -301,7 +301,7 @@
     <version.org.uberfire.patternfly>7.74.1.Final</version.org.uberfire.patternfly>
 
     <!-- Test Libraries -->
-    <version.io.github.bonigarcia>5.5.0</version.io.github.bonigarcia>
+    <version.io.github.bonigarcia>5.5.3</version.io.github.bonigarcia>
     <version.junit>4.13.2</version.junit>
     <version.org.assertj>3.22.0</version.org.assertj>
     <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
