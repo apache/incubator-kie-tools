@@ -23,7 +23,7 @@ require (
 	github.com/openshift/client-go v0.0.0-20230503144108-75015d2347cb
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1
-	github.com/serverlessworkflow/sdk-go/v2 v2.2.4
+	github.com/serverlessworkflow/sdk-go/v2 v2.2.5
 	github.com/stretchr/testify v1.8.2
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
@@ -81,6 +81,7 @@ require (
 	github.com/prometheus/client_model v0.4.0 // indirect
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
+	github.com/relvacode/iso8601 v1.3.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.0 // indirect
 	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

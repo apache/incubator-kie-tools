@@ -11,11 +11,11 @@ replace (
 )
 
 require (
-	github.com/cucumber/godog v0.12.5
-	github.com/cucumber/messages-go/v16 v16.0.1
 	github.com/apache/incubator-kie-kogito-serverless-operator v0.0.0
 	github.com/apache/incubator-kie-kogito-serverless-operator/api v0.0.0
 	github.com/apache/incubator-kie-kogito-serverless-operator/bddframework v0.0.0
+	github.com/cucumber/godog v0.12.5
+	github.com/cucumber/messages-go/v16 v16.0.1
 	github.com/openshift/api v0.0.0-20230522130544-0eef84f63102
 	github.com/operator-framework/operator-lifecycle-manager v0.0.0-20200321030439-57b580e57e88
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1
@@ -32,6 +32,7 @@ require (
 	contrib.go.opencensus.io/exporter/ocagent v0.7.1-0.20200907061046-05415f1de66d // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0 // indirect
 	github.com/RHsyseng/operator-utils v1.4.13 // indirect
+	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder v0.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
@@ -76,7 +77,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd // indirect
-	github.com/apache/incubator-kie-kogito-serverless-operator/container-builder v0.0.0 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/machinebox/graphql v0.2.2 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -94,12 +94,13 @@ require (
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/prometheus/statsd_exporter v0.21.0 // indirect
+	github.com/relvacode/iso8601 v1.3.0 // indirect
 	github.com/rickb777/date v1.13.0 // indirect
 	github.com/rickb777/plural v1.2.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/senseyeio/duration v0.0.0-20180430131211-7c2a214ada46 // indirect
 	github.com/sergi/go-diff v1.1.0 // indirect
-	github.com/serverlessworkflow/sdk-go/v2 v2.2.4 // indirect
+	github.com/serverlessworkflow/sdk-go/v2 v2.2.5 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/src-d/gcfg v1.4.0 // indirect
 	github.com/stretchr/testify v1.8.2 // indirect

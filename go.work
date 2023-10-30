@@ -15,7 +15,7 @@ replace (
 	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20230503144108-75015d2347cb
 
 	// Main dependencies sync
-	github.com/serverlessworkflow/sdk-go/v2 => github.com/serverlessworkflow/sdk-go/v2 v2.2.4
+	github.com/serverlessworkflow/sdk-go/v2 => github.com/serverlessworkflow/sdk-go/v2 v2.2.5
 	// CVE-2023-40167 fix until third-party libs upgrade their side
 	golang.org/x/net => golang.org/x/net v0.17.0
 	k8s.io/api => k8s.io/api v0.27.2
