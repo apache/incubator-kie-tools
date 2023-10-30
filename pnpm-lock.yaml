@@ -6627,6 +6627,9 @@ importers:
       "@kie-tools-core/patternfly-base":
         specifier: workspace:*
         version: link:../patternfly-base
+      "@kie-tools/boxed-expression-component":
+        specifier: workspace:*
+        version: link:../boxed-expression-component
       "@kie-tools/i18n-common-dictionary":
         specifier: workspace:*
         version: link:../i18n-common-dictionary
@@ -6645,6 +6648,9 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
+      react-table:
+        specifier: ^7.6.2
+        version: 7.7.0(react@17.0.2)
     devDependencies:
       "@babel/core":
         specifier: ^7.16.0
@@ -6676,15 +6682,15 @@ importers:
       "@types/react-dom":
         specifier: ^17.0.5
         version: 17.0.8
+      "@types/react-table":
+        specifier: ^7.0.25
+        version: 7.7.7
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.88.2)
       file-loader:
         specifier: ^6.2.0
         version: 6.2.0(webpack@5.88.2)
-      react-json-view:
-        specifier: ^1.21.3
-        version: 1.21.3(@types/react@17.0.21)(react-dom@17.0.2)(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
