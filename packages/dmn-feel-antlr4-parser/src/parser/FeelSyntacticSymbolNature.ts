@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export enum SymbolType {
+export enum FeelSyntacticSymbolNature {
   /**
    * Symbol not recognized.
    */
