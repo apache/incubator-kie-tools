@@ -32,7 +32,7 @@ export function WorkflowListContextProvider(props: React.PropsWithChildren<{}>) 
   const httpLink = useMemo(
     () =>
       new HttpLink({
-        uri: app.data.dataIndexExternalUrl,
+        uri: app.data.dataIndexUrl,
       }),
     [app]
   );

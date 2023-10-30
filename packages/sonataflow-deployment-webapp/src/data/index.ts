@@ -23,6 +23,7 @@ export interface AppData {
   appName: string;
   showDisclaimer: boolean;
   dataIndexExternalUrl?: string;
+  dataIndexUrl: string;
 }
 
 export async function fetchAppData(): Promise<AppData> {
@@ -30,7 +31,11 @@ export async function fetchAppData(): Promise<AppData> {
   return (await response.json()) as AppData;
 }
 
-export async function verifyDataIndex(dataIndexUrl: string): Promise<boolean> {
+export async function verifyDataIndex(dataIndexUrl?: string): Promise<boolean> {
+  if (!dataIndexUrl) {
+    return false;
+  }
+
   const response = await fetch(dataIndexUrl, {
     headers: {
       "Content-Type": "application/json",

@@ -26,4 +26,5 @@ export const APPDATA_JSON_FILENAME = "sonataflow-deployment-webapp-data.json";
 export const DEFAULT_APPDATA_VALUES: AppData = {
   appName: "Deployment",
   showDisclaimer: false,
+  dataIndexUrl: "/graphql",
 };

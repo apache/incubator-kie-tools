@@ -33,11 +33,17 @@ export function AppContextProvider(props: PropsWithChildren<{}>) {
       return;
     }
 
-    setData(appDataPromise.data);
+    const appData = {
+      appName: appDataPromise.data.appName || DEFAULT_APPDATA_VALUES.appName,
+      showDisclaimer: appDataPromise.data.showDisclaimer ?? DEFAULT_APPDATA_VALUES.showDisclaimer,
+      dataIndexUrl: appDataPromise.data.dataIndexExternalUrl || DEFAULT_APPDATA_VALUES.dataIndexUrl,
+    };
+
+    setData(appData);
 
     document.title = appDataPromise.data.appName;
 
-    verifyDataIndex(appDataPromise.data.dataIndexExternalUrl ?? "").then(setDataIndexAvailable);
+    verifyDataIndex(appData.dataIndexUrl).then(setDataIndexAvailable);
   }, [appDataPromise.data]);
 
   const value = useMemo(
