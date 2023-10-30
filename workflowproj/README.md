@@ -44,7 +44,7 @@ func Main() {
 	// client.Create(...), other stuff
 	
 	// ... or you can save the files locally to use them later or to integrate in a GitOps process
-	_ = handler.SaveAsKubernetesResources("/my/dir/")
+	_ = handler.SaveAsKubernetesManifests("/my/dir/")
 }
 ```
 
