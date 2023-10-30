@@ -8,6 +8,7 @@
   <xsd:element name="ComponentsWidthsExtension" type="kie:tComponentsWidthsExtension" />
   <xsd:element name="ComponentWidths" type="kie:tComponentWidths" />
   <xsd:element name="attachment" type="kie:tAttachment" />
+  <xsd:attribute name="constraintType" type="tConstraintType" use="optional"/>
 
   <xsd:complexType name="tComponentsWidthsExtension">
     <xsd:sequence>
@@ -26,5 +27,13 @@
     <xsd:attribute type="xsd:anyURI" name="url" />
     <xsd:attribute type="xsd:string" name="name" />
   </xsd:complexType>
+
+  <xsd:simpleType name="tConstraintType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="enumeration"/>
+			<xsd:enumeration value="expression"/>
+			<xsd:enumeration value="range"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 
 </xsd:schema>

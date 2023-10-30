@@ -28,7 +28,11 @@ import "./schemas/dmn-1_4/ts-gen/types";
 import { meta as dmn15meta, ns as dmn15ns } from "./schemas/dmn-1_5/ts-gen/meta";
 import "./schemas/dmn-1_5/ts-gen/types";
 import { meta as kie10meta, ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
-import { KIE__tAttachment, KIE__tComponentsWidthsExtension } from "./schemas/kie-1_0/ts-gen/types";
+import {
+  KIE__tAttachment,
+  KIE__tComponentsWidthsExtension,
+  KIE__tConstraintType,
+} from "./schemas/kie-1_0/ts-gen/types";
 
 export const KIE_NS = "kie:";
 export type KIE = "kie";
@@ -62,6 +66,10 @@ declare module "./schemas/dmn-1_2/ts-gen/types" {
 
   export interface DMN12__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN12__tUnaryTests {
+    "@_kie:constraintType"?: KIE__tConstraintType;
   }
 }
 dmn12ns.set(KIE_NS, kie10ns.get("")!);
@@ -138,6 +146,10 @@ declare module "./schemas/dmn-1_3/ts-gen/types" {
 
   export interface DMN13__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN13__tUnaryTests {
+    "@_kie:constraintType"?: KIE__tConstraintType;
   }
 }
 
@@ -216,6 +228,10 @@ declare module "./schemas/dmn-1_4/ts-gen/types" {
   export interface DMN14__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
   }
+
+  export interface DMN14__tUnaryTests {
+    "@_kie:constraintType"?: KIE__tConstraintType;
+  }
 }
 
 dmn14ns.set(KIE_NS, kie10ns.get("")!);
@@ -292,6 +308,10 @@ declare module "./schemas/dmn-1_5/ts-gen/types" {
 
   export interface DMN15__tKnowledgeSource__extensionElements {
     "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN15__tUnaryTests {
+    "@_kie:constraintType"?: KIE__tConstraintType;
   }
 }
 
