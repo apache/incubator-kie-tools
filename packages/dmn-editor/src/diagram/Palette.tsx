@@ -61,50 +61,50 @@ export function Palette({ pulse }: { pulse: boolean }) {
     <>
       <RF.Panel position={"top-left"}>
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
-          <button
+          <div
             title="Input Data"
             className={"kie-dmn-editor--palette-button dndnode input-data"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.inputData)}
             draggable={true}
           >
             <InputDataIcon />
-          </button>
-          <button
+          </div>
+          <div
             title="Decision"
             className={"kie-dmn-editor--palette-button dndnode decision"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decision)}
             draggable={true}
           >
             <DecisionIcon />
-          </button>
-          <button
+          </div>
+          <div
             title="Business Knowledge Model"
             className={"kie-dmn-editor--palette-button dndnode bkm"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.bkm)}
             draggable={true}
           >
             <BkmIcon />
-          </button>
-          <button
+          </div>
+          <div
             title="Knowledge Source"
             className={"kie-dmn-editor--palette-button dndnode knowledge-source"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.knowledgeSource)}
             draggable={true}
           >
             <KnowledgeSourceIcon />
-          </button>
-          <button
+          </div>
+          <div
             title="Decision Service"
             className={"kie-dmn-editor--palette-button dndnode decision-service"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.decisionService)}
             draggable={true}
           >
             <DecisionServiceIcon />
-          </button>
+          </div>
         </aside>
         <br />
         <aside className={`kie-dmn-editor--palette ${pulse ? "pulse" : ""}`}>
-          <button
+          <div
             title="Group"
             className={"kie-dmn-editor--palette-button dndnode group"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.group)}
@@ -112,15 +112,15 @@ export function Palette({ pulse }: { pulse: boolean }) {
             onClick={groupNodes}
           >
             <GroupIcon />
-          </button>
-          <button
+          </div>
+          <div
             title="Text Annotation"
             className={"kie-dmn-editor--palette-button dndnode text-annotation"}
             onDragStart={(event) => onDragStart(event, NODE_TYPES.textAnnotation)}
             draggable={true}
           >
             <TextAnnotationIcon />
-          </button>
+          </div>
         </aside>
         <br />
         <aside className={"kie-dmn-editor--external-nodes-panel-toggle"}>

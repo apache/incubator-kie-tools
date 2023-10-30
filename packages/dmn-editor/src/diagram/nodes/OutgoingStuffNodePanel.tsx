@@ -107,6 +107,7 @@ export function OutgoingStuffNodePanel(props: { isVisible: boolean; nodeTypes: N
                       y={0}
                       height={nodeSvgProps.width}
                       showSectionLabels={true}
+                      isReadonly={true}
                     />
                   )}
                   {nodeType === NODE_TYPES.knowledgeSource && <KnowledgeSourceNodeSvg {...nodeSvgProps} />}

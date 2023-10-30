@@ -630,6 +630,7 @@ export const DecisionServiceNode = React.memo(
             x={0}
             y={0}
             strokeWidth={3}
+            isReadonly={false}
             isCollapsed={shape["@_isCollapsed"]}
             showSectionLabels={diagram.dropTargetNode?.id === id}
             dividerLineLocalY={getDecisionServiceDividerLineLocalY(shape)}

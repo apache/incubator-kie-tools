@@ -129,11 +129,12 @@ export const DecisionServiceNodeSvg = React.forwardRef<
     dividerLineLocalY?: number;
     showSectionLabels: boolean;
     isCollapsed?: boolean;
+    isReadonly: boolean;
   }
 >((__props, ref) => {
   const { strokeWidth, x, y, width, height, props: _props } = normalize(__props);
   const interactionRect = normalize({ ...__props, strokeWidth: DEFAULT_INTRACTION_WIDTH / 2 });
-  const { dividerLineLocalY, showSectionLabels, dividerLineRef, isCollapsed, ...props } = _props;
+  const { dividerLineLocalY, showSectionLabels, dividerLineRef, isCollapsed, isReadonly, ...props } = _props;
   const dividerLineCoords = {
     x: x + strokeWidth / 2,
     y: y + (dividerLineLocalY ? dividerLineLocalY : height / 2),
@@ -145,7 +146,7 @@ export const DecisionServiceNodeSvg = React.forwardRef<
         <>
           <path
             ref={dividerLineRef}
-            className={"kie-dmn-editor--node-decisionService-interactionDividerLine"}
+            className={`kie-dmn-editor--node-decisionService-interactionDividerLine ${isReadonly ? "readonly" : ""}`}
             d={`M0,0 L${width},0`}
             strokeWidth={DEFAULT_INTRACTION_WIDTH / 2}
             style={{ stroke: "transparent !important" }}

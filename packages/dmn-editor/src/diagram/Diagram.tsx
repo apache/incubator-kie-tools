@@ -94,6 +94,8 @@ import { DmnBuiltInDataType, ExpressionDefinitionLogicType } from "@kie-tools/bo
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
 import { buildHierarchy } from "./graph/graph";
 
+const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
+
 const PAN_ON_DRAG = [1, 2];
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
@@ -1087,7 +1089,7 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           <PanWhenAltPressed />
           <KeyboardShortcuts />
           {/** FIXME: Tiago --> The background is making the Diagram VERY slow on Firefox. Render this conditionally. */}
-          <RF.Background />
+          {!isFirefox && <RF.Background />}
           <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
           <SetConnectionToReactFlowStore />
         </RF.ReactFlow>

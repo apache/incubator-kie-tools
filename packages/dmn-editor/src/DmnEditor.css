@@ -87,7 +87,7 @@
   /* stroke: purple;
   opacity: 0.2; */
 }
-.kie-dmn-editor--node-decisionService-interactionDividerLine:hover {
+.kie-dmn-editor--node-decisionService-interactionDividerLine:not(.readonly):hover {
   cursor: row-resize;
 }
 
@@ -201,6 +201,7 @@
 
 .kie-dmn-editor--palette-button {
   margin: 0;
+  margin-bottom: 8px;
   padding: 0;
   width: 40px;
   height: 40px;

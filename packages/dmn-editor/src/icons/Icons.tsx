@@ -77,7 +77,13 @@ export function KnowledgeSourceIcon() {
 export function DecisionServiceIcon() {
   return (
     <RoundSvg>
-      <DecisionServiceNodeSvg {...nodeSvgProps} y={12} height={nodeSvgProps.width} showSectionLabels={false} />
+      <DecisionServiceNodeSvg
+        {...nodeSvgProps}
+        y={12}
+        height={nodeSvgProps.width}
+        showSectionLabels={false}
+        isReadonly={true}
+      />
     </RoundSvg>
   );
 }
