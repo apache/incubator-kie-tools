@@ -138,7 +138,7 @@ export function CloudEventFormPage() {
     <BasePage>
       <PageSection variant={"light"} title="Start New Workflow">
         <TextContent>
-          <Text component={TextVariants.h1}>Start New Workflow</Text>
+          <Text component={TextVariants.h1}>Trigger Cloud Event</Text>
         </TextContent>
         {notification && (
           <div>
