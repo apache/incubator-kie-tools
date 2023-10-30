@@ -99,28 +99,22 @@ export function BkmNodeSvg(_props: NodeSvgProps) {
 }
 
 export function KnowledgeSourceNodeSvg(_props: NodeSvgProps) {
-  const { strokeWidth, x, y, width, height, props } = normalize(_props);
-  const quarterX = width / 4;
-  const halfX = width / 2;
+  const { strokeWidth, x, y, width, height: totalHeight, props } = normalize(_props);
   const amplitude = 20;
+  const height = totalHeight - amplitude / 2; // Need to leave some space for the wave at the bottom.
+
+  const straightLines = `M${width},${height} L${width},0 L0,0 L0,${height}`;
+  const bottomWave = `Q${width / 4},${height + amplitude} ${width / 2},${height} T${width},${height}`;
   return (
     <g>
       <path
         {...props}
-        d={`M0,${height - amplitude / 2} L0,0 M0,0 L${width},0 M${width},0 L${width},${height - amplitude / 2} Z`}
+        d={`${straightLines} ${bottomWave} Z`}
         stroke={DEFAULT_NODE_STROKE_COLOR}
         strokeWidth={strokeWidth}
         fill={DEFAULT_NODE_FILL}
         strokeLinejoin={"round"}
         transform={`translate(${x},${y})`}
-      />
-      <path
-        d={`M0,0 Q${quarterX},${amplitude} ${halfX},0 T${width},0`}
-        stroke={DEFAULT_NODE_STROKE_COLOR}
-        fill={DEFAULT_NODE_FILL}
-        strokeWidth={strokeWidth}
-        strokeLinejoin={"round"}
-        transform={`translate(${x},${y - amplitude / 2 + height})`}
       />
     </g>
   );
