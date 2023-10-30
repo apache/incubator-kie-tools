@@ -27,6 +27,8 @@ import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { UniqueNameIndex } from "../Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
+import { Constraints } from "./Constraints";
+import { DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
 export function DataTypePanel({
   isReadonly,
@@ -143,6 +145,24 @@ export function DataTypePanel({
             new Map()
           ),
     [allDataTypesById, allTopLevelItemDefinitionUniqueNames, dataType.parentId]
+  );
+
+  const changeConstraint = useCallback(
+    (newConstraint: DMN15__tUnaryTests) => {
+      if (isReadonly) {
+        return;
+      }
+
+      editItemDefinition(dataType.itemDefinition["@_id"]!, (itemDefinition) => {
+        if (
+          itemDefinition.typeConstraint?.text !== newConstraint?.text ||
+          itemDefinition.typeConstraint?.["@_kie:constraintType"] !== newConstraint?.["@_kie:constraintType"]
+        ) {
+          itemDefinition.typeConstraint = newConstraint;
+        }
+      });
+    },
+    [dataType.itemDefinition, editItemDefinition, isReadonly]
   );
 
   return (
@@ -279,11 +299,11 @@ export function DataTypePanel({
             />
             <br />
             <br />
-            <Title size={"md"} headingLevel="h4">
-              Constraints
-            </Title>
-            Work in progress 🔧
-            <br />
+            <Constraints
+              type={(dataType.itemDefinition.typeRef ?? DmnBuiltInDataType.Undefined) as DmnBuiltInDataType}
+              value={dataType.itemDefinition.allowedValues ?? dataType.itemDefinition.typeConstraint}
+              onChange={changeConstraint}
+            />
           </>
         )}
         {isStruct(dataType.itemDefinition) && (

@@ -1,0 +1,5 @@
+.feel-input,
+.feel-input > div {
+  height: 100%;
+  text-align: left;
+}
