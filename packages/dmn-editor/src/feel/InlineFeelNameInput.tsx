@@ -65,6 +65,11 @@ export function InlineFeelNameInput({
     updateIsValidFlag(name);
   }, [name, updateIsValidFlag]);
 
+  // When the `name` prop changes externally, we need to update the value of the input, as the props are the source of truth.
+  useEffect(() => {
+    inputRef.current!.value = name;
+  }, [name]);
+
   const { style: _style, disabled, defaultValue, ..._inputProps } = inputProps;
 
   return (
