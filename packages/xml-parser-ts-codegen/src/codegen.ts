@@ -33,6 +33,7 @@ import {
   XptcMetaTypeProperty,
 } from "./types";
 import {
+  XSDExtension,
   XsdAttribute,
   XsdComplexType,
   XsdSchema,
@@ -172,6 +173,9 @@ async function main() {
   for (const [location, xsd] of __XSDS.entries()) {
     for (const xsdCt of xsd["xsd:schema"]["xsd:complexType"] || []) {
       const isAbstract = xsdCt["@_abstract"] ?? false;
+      const isComplexContent = xsdCt["xsd:complexContent"] ?? false;
+      const extensionElement =
+        xsdCt["xsd:complexContent"]?.["xsd:extension"] || xsdCt["xsd:simpleContent"]?.["xsd:extension"];
       __COMPLEX_TYPES.push({
         type: "complex",
         doc: isAbstract ? "abstract" : "",
@@ -180,7 +184,7 @@ async function main() {
         name: xsdCt["@_name"]!,
         needsExtensionType: !!xsdCt["xsd:anyAttribute"] || !!xsdCt["xsd:sequence"]?.["xsd:any"],
         declaredAtRelativeLocation: location,
-        childOf: xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["@_base"],
+        childOf: extensionElement?.["@_base"],
         elements: [
           ...(xsdCt["xsd:all"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
@@ -188,24 +192,25 @@ async function main() {
           ...(xsdCt["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
+          ...(extensionElement?.["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location)
           ),
-          ...(
-            xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:sequence"]?.["xsd:choice"]?.["xsd:element"] ?? []
-          ).map((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:element"] ?? []).map((s) =>
+          ...(extensionElement?.["xsd:sequence"]?.["xsd:choice"]?.["xsd:element"] ?? []).map((s) =>
             xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
           ),
-          ...(
-            xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []
-          ).map((s) => xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })),
+          ...(extensionElement?.["xsd:choice"]?.["xsd:element"] ?? []).map((s) =>
+            xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
+          ),
+          ...(extensionElement?.["xsd:choice"]?.["xsd:sequence"]?.["xsd:element"] ?? []).map((s) =>
+            xsdElementToXptcElement(xsdCt["@_name"]!, s, location, { forceOptional: true })
+          ),
+          ...(extensionElement && !isComplexContent
+            ? [xsdExtensionToXptcElement(extensionElement, xsdCt["@_name"]!)]
+            : []),
         ],
         attributes: [
           ...(xsdCt["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
-          ...(xsdCt["xsd:complexContent"]?.["xsd:extension"]?.["xsd:attribute"] ?? []).map((a) =>
-            xsdAttributeToXptcAttribute(a)
-          ),
+          ...(extensionElement?.["xsd:attribute"] ?? []).map((a) => xsdAttributeToXptcAttribute(a)),
         ],
       });
     }
@@ -1062,6 +1067,19 @@ function xsdElementToXptcElement(
   }
 
   throw new Error(`Unknown xsd:element structure. ${JSON.stringify(xsdElement)}`);
+}
+
+function xsdExtensionToXptcElement(
+  extensionElement: XSDExtension,
+  complexTypeName: string
+): Unpacked<XptcComplexType["elements"]> {
+  return {
+    isArray: false,
+    isOptional: false,
+    name: "#_" + complexTypeName,
+    kind: "ofNamedType",
+    typeName: extensionElement!["@_base"],
+  };
 }
 
 function xsdAttributeToXptcAttribute(xsdAttribute: XsdAttribute): Unpacked<XptcComplexType["attributes"]> {

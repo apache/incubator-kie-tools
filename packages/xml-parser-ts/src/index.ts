@@ -166,7 +166,7 @@ export function parse(args: {
         const hasSingleTextNodeChildren = elemNode.childNodes.length === 1 && elemNode.childNodes[0].nodeType === 3;
         const hasAttributes = (elemNode as Element).attributes.length > 0;
         if (hasSingleTextNodeChildren && hasAttributes) {
-          elemValue[`${elemNode.nodeName}Value`] = elemNode.textContent;
+          elemValue[`#_${elemNode.nodeName}`] = elemNode.textContent;
         }
         if (subsedName !== nsedName) {
           // substitution occurred, need to save the original, normalized element name
