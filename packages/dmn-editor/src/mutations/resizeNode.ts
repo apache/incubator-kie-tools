@@ -61,6 +61,16 @@ export function resizeNode({
           limit.y = pos.y + dim.height;
         }
       });
+
+      // Output Decisions don't limit the resizing vertically, only horizontally.
+      ds.outputDecision?.forEach((ed) => {
+        const edShape = dmnShapesByHref.get(ed["@_href"])!;
+        const dim = snapShapeDimensions(snapGrid, edShape, MIN_NODE_SIZES[NODE_TYPES.decision](snapGrid));
+        const pos = snapShapePosition(snapGrid, edShape);
+        if (pos.x + dim.width > limit.x) {
+          limit.x = pos.x + dim.width;
+        }
+      });
     }
   }
 
