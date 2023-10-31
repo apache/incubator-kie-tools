@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { ResourceArgs } from "../../types";
 import { deploymentWithFormWebappYaml } from "./DeploymentWithFormWebappYaml";
 import { deploymentYaml } from "./DeploymentYaml";
 import { formWebappIngressYaml } from "./FormWebappIngressYaml";
@@ -27,26 +28,26 @@ import { serviceYaml } from "./ServiceYaml";
 export const createKubernetesDeploymentYamls = [
   {
     name: "DMN Dev deployment",
-    content: `
-${deploymentYaml}
+    content: (args: ResourceArgs) => `
+${deploymentYaml(args)}
 ---
-${serviceYaml}
+${serviceYaml(args)}
 ---
-${ingressYaml}
+${ingressYaml(args)}
 `,
   },
   {
     name: "DMN Dev deployment with Form Webapp",
-    content: `
-${deploymentWithFormWebappYaml}
+    content: (args: ResourceArgs) => `
+${deploymentWithFormWebappYaml(args)}
 ---
-${serviceYaml}
+${serviceYaml(args)}
 ---
-${formWebappServiceYaml}
+${formWebappServiceYaml(args)}
 ---
-${ingressYaml}
+${ingressYaml(args)}
 ---
-${formWebappIngressYaml}
+${formWebappIngressYaml(args)}
 `,
   },
 ];

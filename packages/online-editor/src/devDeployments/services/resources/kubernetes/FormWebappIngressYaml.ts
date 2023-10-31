@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const formWebappIngressYaml = `
+import { ResourceArgs } from "../../types";
+
+export const formWebappIngressYaml = (args: ResourceArgs) => `
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:

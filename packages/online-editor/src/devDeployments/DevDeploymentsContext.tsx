@@ -22,7 +22,7 @@ import { useContext } from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { CloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
-import { KieSandboxDeployment } from "./services/types";
+import { KieSandboxDeployment, ResourceArgs } from "./services/types";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 
 export interface DeploymentFile {
@@ -63,7 +63,11 @@ export interface DevDeploymentsContextType {
   setConfirmDeleteModalState: React.Dispatch<React.SetStateAction<DeleteDeployModalState>>;
 
   // Actions
-  deploy: (workspaceFile: WorkspaceFile, authSession: CloudAuthSession, deploymentOption: string) => Promise<boolean>;
+  deploy: (
+    workspaceFile: WorkspaceFile,
+    authSession: CloudAuthSession,
+    deploymentOption: (args: ResourceArgs) => string
+  ) => Promise<boolean>;
   loadDevDeployments: (args: { authSession: CloudAuthSession }) => Promise<KieSandboxDeployment[]>;
   deleteDeployments: (args: { authSession: CloudAuthSession; resources: K8sResourceYaml[] }) => Promise<boolean>;
 

@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const serviceYaml = `
+import { ResourceArgs } from "../../types";
+
+export const serviceYaml = (args: ResourceArgs) => `
 kind: Service
 apiVersion: v1
 metadata:

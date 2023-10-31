@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { ResourceArgs } from "../../types";
 import { deploymentWithFormWebappYaml } from "./DeploymentWithFormWebappYaml";
 import { deploymentYaml } from "./DeploymentYaml";
 import { formWebappRouteYaml } from "./FormWebappRouteYaml";
@@ -27,26 +28,26 @@ import { serviceYaml } from "./ServiceYaml";
 export const createOpenShiftDeploymentYamls = [
   {
     name: "DMN Dev deployment",
-    content: `
-${deploymentYaml}
+    content: (args: ResourceArgs) => `
+${deploymentYaml(args)}
 ---
-${serviceYaml}
+${serviceYaml(args)}
 ---
-${routeYaml}
+${routeYaml(args)}
 `,
   },
   {
     name: "DMN Dev deployment with Form Webapp",
-    content: `
-${deploymentWithFormWebappYaml}
+    content: (args: ResourceArgs) => `
+${deploymentWithFormWebappYaml(args)}
 ---
-${serviceYaml}
+${serviceYaml(args)}
 ---
-${formWebappServiceYaml}
+${formWebappServiceYaml(args)}
 ---
-${routeYaml}
+${routeYaml(args)}
 ---
-${formWebappRouteYaml}
+${formWebappRouteYaml(args)}
 `,
   },
 ];

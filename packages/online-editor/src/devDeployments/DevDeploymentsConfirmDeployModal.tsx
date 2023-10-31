@@ -30,7 +30,7 @@ import { createOpenShiftDeploymentYamls } from "./services/resources/openshift";
 import { createKubernetesDeploymentYamls } from "./services/resources/kubernetes";
 import { CloudAuthSessionType, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 
 interface Props {
   workspaceFile: WorkspaceFile;

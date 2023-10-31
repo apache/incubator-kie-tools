@@ -24,7 +24,7 @@ import {
   ResourceMetadata,
   kubernetesResourcesApi,
 } from "./KubernetesService";
-import { DeployArgs, KieSandboxDevDeploymentsService, ResourceArgs } from "./KieSandboxDevDeploymentsService";
+import { DeployArgs, KieSandboxDevDeploymentsService } from "./KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { KieSandboxDeployment, defaultAnnotationTokens, defaultLabelTokens } from "./types";
 
@@ -146,7 +146,6 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
         const healthStatus = healthStatusList.find((status) => status.url === baseUrl)!.healtStatus;
         return {
           name: deployment.metadata.name,
-          resourceName: deployment.metadata.annotations![defaultAnnotationTokens.uri],
           routeUrl: formWebappUrl ? `${formWebappUrl}/` : `${baseUrl}/q/dev/`,
           creationTimestamp: new Date(deployment.metadata.creationTimestamp ?? Date.now()),
           state: this.extractDeploymentStateWithHealthStatus(deployment, healthStatus),
@@ -157,13 +156,13 @@ export class KieSandboxOpenShiftService extends KieSandboxDevDeploymentsService 
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    if (!args.deploymentOption) {
+    if (!args.deploymentOptionContent) {
       throw new Error("Invalid deployment option!");
     }
 
     let resources = [];
     try {
-      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOption], args.tokenMap);
+      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOptionContent], args.tokenMap);
 
       const mainDeployment = resources.find(
         (resource) =>

@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const ingressYaml = `
+import { ResourceArgs } from "../../types";
+
+export const ingressYaml = (args: ResourceArgs) => `
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:

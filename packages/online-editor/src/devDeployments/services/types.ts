@@ -17,11 +17,7 @@
  * under the License.
  */
 
-import { K8sResourceYaml, TokenMap } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
-import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
-import { KubernetesService, KubernetesServiceArgs } from "./KubernetesService";
-import { CloudAuthSessionType } from "../../authSessions/AuthSessionApi";
-import { v4 as uuid } from "uuid";
+import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
 import { DeploymentState } from "./common";
 
 export type KieSandboxDeployment = {
@@ -31,80 +27,15 @@ export type KieSandboxDeployment = {
   state: DeploymentState;
   resources: K8sResourceYaml[];
   workspaceId: string;
-  resourceName: string;
 };
-
-export interface DeployArgs {
-  workspaceZipBlob: Blob;
-  tokenMap: TokenMap;
-}
-
-export type ResourceArgs = {
-  namespace: string;
-  resourceName: string;
-  createdBy: string;
-};
-
-export type KieSandboxDevDeploymentsServiceProps = {
-  id: string;
-  type: CloudAuthSessionType;
-  args: KubernetesServiceArgs;
-  deployments: KieSandboxDeployment[];
-};
-
-export type KieSandboxDevDeploymentsServiceType = KieSandboxDevDeploymentsServiceProps & {
-  isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
-  loadDevDeployments(): Promise<KieSandboxDeployment[]>;
-  deploy(args: DeployArgs): Promise<void>;
-  deleteDevDeployment(resourceName: string): Promise<void>;
-  uploadAssets(args: {
-    resourceArgs: ResourceArgs;
-    deployment: K8sResourceYaml;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-  }): Promise<void>;
-};
-
-export abstract class KieSandboxDevDeploymentsService implements KieSandboxDevDeploymentsServiceType {
-  id: string;
-  type = CloudAuthSessionType.OpenShift;
-  deployments = [];
-
-  constructor(readonly args: KubernetesServiceArgs, id?: string, deployments?: KieSandboxDeployment[]) {
-    this.id = id ?? uuid();
-  }
-
-  get kubernetesService() {
-    return new KubernetesService(this.args);
-  }
-
-  abstract isConnectionEstablished(): Promise<KubernetesConnectionStatus>;
-
-  abstract loadDevDeployments(): Promise<KieSandboxDeployment[]>;
-
-  abstract deploy(args: DeployArgs): Promise<void>;
-
-  abstract deleteDevDeployment(resourceName: string): Promise<void>;
-
-  abstract uploadAssets(args: {
-    resourceArgs: ResourceArgs;
-    deployment: K8sResourceYaml;
-    workspaceZipBlob: Blob;
-    baseUrl: string;
-  }): Promise<void>;
-}
 
 export type DevDeploymentTokens = {
   uniqueName: string;
-  devDeploymentBaseImageUrl: string;
-  devDeploymentFormWebappImageUrl: string;
-  imagePullPolicy: string;
 };
 
 export type WorkspaceTokens = {
   id: string;
   name: string;
-  resourceName: string;
 };
 
 export type KubernetesTokens = {
@@ -121,7 +52,6 @@ export type LabelTokens = {
 };
 
 export type AnnotationTokens = {
-  uri: string;
   workspaceId: string;
 };
 
@@ -131,7 +61,6 @@ export const defaultLabelTokens: LabelTokens = {
 } as const;
 
 export const defaultAnnotationTokens: AnnotationTokens = {
-  uri: "tools.kie.org/uri",
   workspaceId: "tools.kie.org/workspace-id",
 } as const;
 
@@ -148,3 +77,9 @@ export type Tokens = DevDeploymentTokens & {
 };
 
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
+
+export type ResourceArgs = {
+  baseImageUrl: string;
+  formWebappImageUrl: string;
+  imagePullPolicy: string;
+};

@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const formWebappServiceYaml = `
+import { ResourceArgs } from "../../types";
+
+export const formWebappServiceYaml = (args: ResourceArgs) => `
 kind: Service
 apiVersion: v1
 metadata:

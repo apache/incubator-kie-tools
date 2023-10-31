@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const routeYaml = `
+import { ResourceArgs } from "../../types";
+
+export const routeYaml = (args: ResourceArgs) => `
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:

@@ -148,7 +148,6 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
         const healthStatus = healthStatusList.find((status) => status.url === baseUrl)!.healtStatus;
         return {
           name: deployment.metadata.name,
-          resourceName: deployment.metadata.annotations![defaultAnnotationTokens.uri],
           routeUrl: ingressList.find((ingress) => ingress.metadata.name.includes("form-webapp"))
             ? `${baseUrl}/form-webapp/`
             : `${baseUrl}/q/dev/`,
@@ -161,13 +160,13 @@ export class KieSandboxKubernetesService extends KieSandboxDevDeploymentsService
   }
 
   public async deploy(args: DeployArgs): Promise<void> {
-    if (!args.deploymentOption) {
+    if (!args.deploymentOptionContent) {
       throw new Error("Invalid deployment option!");
     }
 
     let resources = [];
     try {
-      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOption], args.tokenMap);
+      resources = await this.kubernetesService.applyResourceYamls([args.deploymentOptionContent], args.tokenMap);
 
       const mainDeployment = resources.find(
         (resource) =>

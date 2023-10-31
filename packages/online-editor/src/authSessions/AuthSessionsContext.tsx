@@ -99,6 +99,10 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     setAuthSessions(await getAuthSessionsFromFile());
   }, [getAuthSessionsFromFile]);
 
+  useEffect(() => {
+    console.log(authSessions);
+  }, [authSessions]);
+
   const persistAuthSessions = useCallback(
     async (map: Map<string, AuthSession>) => {
       const fs = fsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME);

@@ -27,10 +27,11 @@ import { KieSandboxKubernetesService } from "./services/KieSandboxKubernetesServ
 import { CloudAuthSession, isCloudAuthSession } from "../authSessions/AuthSessionApi";
 import { KubernetesConnectionStatus } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { useEnv } from "../env/hooks/EnvContext";
-import { defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
+import { ResourceArgs, defaultAnnotationTokens, defaultLabelTokens } from "./services/types";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { KieSandboxDevDeploymentsService } from "./services/KieSandboxDevDeploymentsService";
 import { K8sResourceYaml } from "@kie-tools-core/k8s-yaml-to-apiserver-requests/dist";
+import { v4 as uuid } from "uuid";
 
 interface Props {
   children: React.ReactNode;
@@ -118,7 +119,11 @@ export function DevDeploymentsContextProvider(props: Props) {
   );
 
   const deploy = useCallback(
-    async (workspaceFile: WorkspaceFile, authSession: CloudAuthSession, deploymentOption: string) => {
+    async (
+      workspaceFile: WorkspaceFile,
+      authSession: CloudAuthSession,
+      deploymentOption: (args: ResourceArgs) => string
+    ) => {
       const service = devDeploymentsServices.get(authSession.id);
       if (!service) {
         throw new Error(`Missing service for authSession with id ${authSession.id}.`);
@@ -144,19 +149,15 @@ export function DevDeploymentsContextProvider(props: Props) {
           annotations: defaultAnnotationTokens,
           uniqueName: service.newResourceName(),
           uploadService: {
-            apiKey: "dev",
+            apiKey: uuid(),
           },
           workspace: {
             id: workspaceId,
             name: workspaceName,
-            resourceName: workspaceFile.relativePath,
           },
           kubernetes: {
             namespace: authSession.namespace,
           },
-          devDeploymentBaseImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
-          devDeploymentFormWebappImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE_URL,
-          imagePullPolicy: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
         },
       };
 
@@ -164,7 +165,11 @@ export function DevDeploymentsContextProvider(props: Props) {
         await service.deploy({
           workspaceZipBlob: zipBlob,
           tokenMap,
-          deploymentOption,
+          deploymentOptionContent: deploymentOption({
+            baseImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
+            formWebappImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE_URL,
+            imagePullPolicy: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
+          }),
         });
         return true;
       } catch (error) {

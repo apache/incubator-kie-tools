@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const deploymentWithFormWebappYaml = `
+import { ResourceArgs } from "../../types";
+
+export const deploymentWithFormWebappYaml = (args: ResourceArgs) => `
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -32,7 +34,6 @@ metadata:
     \${{ devDeployment.labels.createdBy }}: kie-tools
     \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
   annotations:
-    \${{ devDeployment.annotations.uri }}: \${{ devDeployment.workspace.resourceName }}
     \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
 spec:
   replicas: 1
@@ -47,8 +48,8 @@ spec:
     spec:
       containers:
         - name: \${{ devDeployment.uniqueName }}
-          image: \${{ devDeployment.devDeploymentBaseImageUrl }}
-          imagePullPolicy: \${{ devDeployment.imagePullPolicy }}
+          image: ${args.baseImageUrl}
+          imagePullPolicy: ${args.imagePullPolicy}
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -66,8 +67,8 @@ spec:
             - name: DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY
               value: \${{ devDeployment.uploadService.apiKey }}
         - name: \${{ devDeployment.uniqueName }}-form-webapp
-          image: \${{ devDeployment.devDeploymentFormWebappImageUrl }}
-          imagePullPolicy: \${{ devDeployment.imagePullPolicy }}
+          image: ${args.formWebappImageUrl}
+          imagePullPolicy: ${args.imagePullPolicy}
           ports:
             - containerPort: 8081
               protocol: TCP

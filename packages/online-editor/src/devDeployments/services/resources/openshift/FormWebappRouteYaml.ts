@@ -17,7 +17,9 @@
  * under the License.
  */
 
-export const formWebappRouteYaml = `
+import { ResourceArgs } from "../../types";
+
+export const formWebappRouteYaml = (args: ResourceArgs) => `
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
