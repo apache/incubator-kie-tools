@@ -214,8 +214,7 @@ export function dmnToBee(
           classFieldId: clazz?.expression?.["@_id"],
           methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text,
           methodFieldId: method?.expression?.["@_id"],
-          // `clazz` and `method` would have the exact same width, as they're always in sync, so it doens't matter which one we use.
-          classAndMethodNamesWidth: widthsById.get(clazz?.expression?.["@_id"] ?? "")?.[0],
+          classAndMethodNamesWidth: widthsById.get(expr["@_id"] ?? "")?.[1],
         };
       }
       case "PMML": {

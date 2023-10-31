@@ -10,6 +10,7 @@ import {
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
   DECISION_TABLE_INPUT_MIN_WIDTH,
   DECISION_TABLE_OUTPUT_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "@kie-tools/boxed-expression-component/dist/resizing/WidthConstants";
 
 /** Converts an ExpressionDefinition to a DMN JSON. This convertion is
@@ -132,10 +133,10 @@ export function beeToDmn(
             ? beeToDmn(expression.expression, __widths)
             : expression.functionKind === "Java"
             ? (() => {
-                __widths.set(
-                  expression.id,
-                  expression.classAndMethodNamesWidth ? [expression.classAndMethodNamesWidth] : []
-                );
+                __widths.set(expression.id, [
+                  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+                  expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+                ]);
                 return {
                   __$$element: "context",
                   contextEntry: [
