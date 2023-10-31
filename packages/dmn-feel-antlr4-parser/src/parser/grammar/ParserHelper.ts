@@ -27,8 +27,9 @@ import { NameQueue } from "./NameQueue";
 import { FeelVariable } from "../FeelVariable";
 import { Scopes } from "./Scopes";
 import { ReservedWords } from "../ReservedWords";
-import { SymbolType } from "../SymbolType";
+import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 import { MapBackedType } from "./MapBackedType";
+import { FeelSymbol } from "../FeelSymbol";
 
 export class ParserHelper {
   private dynamicResolution = 0;
@@ -36,12 +37,18 @@ export class ParserHelper {
   private readonly currentName: NameQueue;
   private readonly _variables: Array<FeelVariable>;
   private readonly scopes = new Scopes();
+  private readonly _availableSymbols: Array<FeelSymbol>;
 
   constructor() {
     this.currentName = new NameQueue();
     this.currentName.push("<local>");
     this.currentScope = this.scopes.getGlobalScope();
     this._variables = new Array<FeelVariable>();
+    this._availableSymbols = new Array<FeelSymbol>();
+  }
+
+  get availableSymbols(): Array<FeelSymbol> {
+    return this._availableSymbols;
   }
 
   get variables(): Array<FeelVariable> {
@@ -94,12 +101,19 @@ export class ParserHelper {
     return key;
   }
 
-  defineVariable(variable: string | ParserRuleContext, type?: Type, variableType?: SymbolType) {
+  defineVariable(variable: string | ParserRuleContext, type?: Type, variableType?: FeelSyntacticSymbolNature) {
     const variableSymbol = new VariableSymbol(
       variable instanceof ParserRuleContext ? this.getName(variable) : variable,
       type,
       variableType
     );
+
+    if (variableSymbol.getId()) {
+      this.availableSymbols.push({
+        name: variableSymbol.getId() ?? "",
+        type: type?.name ?? "undefined-type",
+      });
+    }
 
     this.currentScope?.define(variableSymbol);
   }
@@ -165,18 +179,37 @@ export class ParserHelper {
     const length = end - start + 1;
 
     if (this.currentScope?.getChildScopes().has(name)) {
-      this.variables.push(new FeelVariable(start, length, SymbolType.GlobalVariable, name));
+      this.variables.push(new FeelVariable(start, length, FeelSyntacticSymbolNature.GlobalVariable, name));
     } else {
       const symbol = this.currentScope?.resolve(name);
       if (symbol) {
+        symbol.getType();
         if (symbol instanceof VariableSymbol) {
-          this.variables.push(new FeelVariable(start, length, symbol.symbolType ?? SymbolType.GlobalVariable, name));
+          const scopeSymbols = [];
+          if ((symbol as VariableSymbol).getType() instanceof MapBackedType) {
+            const map = (symbol as VariableSymbol).getType() as MapBackedType;
+            for (const [key, value] of map.properties) {
+              scopeSymbols.push({
+                name: key,
+                type: value.typeRef ?? value.name,
+              });
+            }
+          }
+          this.variables.push(
+            new FeelVariable(
+              start,
+              length,
+              symbol.symbolType ?? FeelSyntacticSymbolNature.GlobalVariable,
+              name,
+              scopeSymbols
+            )
+          );
         } else {
-          this.variables.push(new FeelVariable(start, length, SymbolType.GlobalVariable, name));
+          this.variables.push(new FeelVariable(start, length, FeelSyntacticSymbolNature.GlobalVariable, name));
         }
       } else {
         if (!ReservedWords.FeelFunctions.has(name) && !ReservedWords.FeelKeywords.has(name)) {
-          this.variables.push(new FeelVariable(start, length, SymbolType.Unknown, name));
+          this.variables.push(new FeelVariable(start, length, FeelSyntacticSymbolNature.Unknown, name));
         }
       }
     }

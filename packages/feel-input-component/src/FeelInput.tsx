@@ -19,7 +19,7 @@
 
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   feelDefaultConfig,
   feelDefaultSuggestions,
@@ -29,8 +29,11 @@ import {
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
 
-import { SymbolType, FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
+import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
+import * as monaco from "monaco-editor";
+
+export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
 
 export type SuggestionProvider = (
   feelExpression: string,
@@ -74,17 +77,17 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 // Don't remove this mechanism. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
 let __firstTimeInitializingMonacoToEnableColorizingCorrectly = true;
 
-function getTokenTypeIndex(symbolType: SymbolType) {
+function getTokenTypeIndex(symbolType: FeelSyntacticSymbolNature) {
   switch (symbolType) {
     default:
-    case SymbolType.LocalVariable:
-    case SymbolType.GlobalVariable:
+    case FeelSyntacticSymbolNature.LocalVariable:
+    case FeelSyntacticSymbolNature.GlobalVariable:
       return Element.InputDataVariable;
-    case SymbolType.Unknown:
+    case FeelSyntacticSymbolNature.Unknown:
       return Element.UnknownVariable;
-    case SymbolType.Invocable:
+    case FeelSyntacticSymbolNature.Invocable:
       return Element.FunctionCall;
-    case SymbolType.Parameter:
+    case FeelSyntacticSymbolNature.Parameter:
       return Element.FunctionParameterVariable;
   }
 }
@@ -109,6 +112,48 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     const monacoRef = useRef<Monaco.editor.IStandaloneCodeEditor>();
 
+    const [currentParsedExpression, setCurrentParsedExpression] = useState<ParsedExpression>();
+
+    const getLastValidSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
+      let lastValidSymbol;
+      for (let i = 0; i < currentParsedExpression.feelVariables.length; i++) {
+        const feelVariable = currentParsedExpression.feelVariables[i];
+
+        if (feelVariable.startIndex < position && position <= feelVariable.startIndex + feelVariable.length) {
+          lastValidSymbol = feelVariable;
+          const target = i - 1;
+          if (
+            target < currentParsedExpression.feelVariables.length &&
+            0 <= target &&
+            lastValidSymbol.feelSymbolNature === FeelSyntacticSymbolNature.Unknown
+          ) {
+            lastValidSymbol = currentParsedExpression.feelVariables[target];
+          }
+          break;
+        }
+      }
+      return lastValidSymbol;
+    }, []);
+
+    const getDefaultCompletionItems = useCallback(
+      (
+        suggestionProvider:
+          | ((feelExpression: string, row: number, col: number) => Monaco.languages.CompletionItem[])
+          | undefined,
+        model: Monaco.editor.ITextModel,
+        position: Monaco.Position
+      ) => {
+        if (suggestionProvider) {
+          const items = suggestionProvider(model.getValue(), position.lineNumber, position.column - 1);
+          if (items.length > 0) {
+            return items;
+          }
+        }
+        return feelDefaultSuggestions();
+      },
+      []
+    );
+
     useEffect(() => {
       if (!__firstTimeInitializingMonacoToEnableColorizingCorrectly) {
         return;
@@ -125,30 +170,71 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       __firstTimeInitializingMonacoToEnableColorizingCorrectly = false;
     }, []);
 
-    useEffect(() => {
-      if (!enabled) {
-        return;
-      }
-      const disposable = Monaco.languages.registerCompletionItemProvider(MONACO_FEEL_LANGUAGE, {
+    const completionItemProvider = useCallback(() => {
+      return {
+        triggerCharacters: [" ", EXPRESSION_PROPERTIES_SEPARATOR],
         provideCompletionItems: (model: Monaco.editor.ITextModel, position: Monaco.Position) => {
-          let completionItems = feelDefaultSuggestions();
+          const completionItems = getDefaultCompletionItems(suggestionProvider, model, position);
+          const variablesSuggestions = new Array<Monaco.languages.CompletionItem>();
 
-          if (suggestionProvider) {
-            const items = suggestionProvider(model.getValue(), position.lineNumber, position.column - 1);
-            if (items.length > 0) {
-              completionItems = items;
+          if (currentParsedExpression) {
+            let pos = position.column - 1; // The columns start at position 1 not 0
+            const expression = model.getValue();
+
+            const currentChar = expression.charAt(pos - 1);
+            if (currentChar === EXPRESSION_PROPERTIES_SEPARATOR) {
+              pos--;
             }
-          }
 
+            const lastValidSymbol = getLastValidSymbolAtPosition(currentParsedExpression, pos);
+            if (
+              lastValidSymbol &&
+              lastValidSymbol.feelSymbolNature !== FeelSyntacticSymbolNature.Unknown &&
+              expression.charAt(lastValidSymbol.startIndex + lastValidSymbol.length) === "."
+            ) {
+              for (const scopeSymbol of lastValidSymbol.scopeSymbols) {
+                variablesSuggestions.push({
+                  kind: Monaco.languages.CompletionItemKind.Variable,
+                  label: scopeSymbol.name,
+                  insertText: scopeSymbol.name,
+                  detail: scopeSymbol.type,
+                } as Monaco.languages.CompletionItem);
+              }
+            } else {
+              for (const scopeSymbol of currentParsedExpression.availableSymbols) {
+                variablesSuggestions.push({
+                  kind: Monaco.languages.CompletionItemKind.Variable,
+                  label: scopeSymbol.name,
+                  insertText: scopeSymbol.name,
+                  detail: scopeSymbol.type,
+                } as Monaco.languages.CompletionItem);
+              }
+
+              variablesSuggestions.push(...completionItems);
+            }
+            return {
+              suggestions: variablesSuggestions,
+            };
+          }
           return {
             suggestions: completionItems,
           };
         },
-      });
+      };
+    }, [currentParsedExpression, getDefaultCompletionItems, getLastValidSymbolAtPosition, suggestionProvider]);
+
+    useEffect(() => {
+      if (!enabled) {
+        return;
+      }
+      const disposable = Monaco.languages.registerCompletionItemProvider(
+        MONACO_FEEL_LANGUAGE,
+        completionItemProvider()
+      );
       return () => {
         disposable.dispose();
       };
-    }, [enabled, suggestionProvider]);
+    }, [completionItemProvider, currentParsedExpression, enabled, suggestionProvider]);
 
     useEffect(() => {
       if (!enabled) {
@@ -166,14 +252,16 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
               let lastPosition = 0;
               let offset = 0;
-              for (const variable of feelVariables.parser.parse(expressionId ?? "", text)) {
+              const parsedExpression = feelVariables.parser.parse(expressionId ?? "", text);
+              setCurrentParsedExpression(parsedExpression);
+              for (const variable of parsedExpression.feelVariables) {
                 lastPosition = variable.startIndex;
 
                 tokenTypes.push(
                   0, // lineIndex
                   lastPosition - offset, // columnIndex (it's relative to the PREVIOUS token NOT to the start of the line)
                   variable.length, // tokenLength
-                  getTokenTypeIndex(variable.variableType), // token type
+                  getTokenTypeIndex(variable.feelSymbolNature), // token type
                   0 // token modifier
                 );
                 offset = lastPosition;
@@ -199,7 +287,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       return () => {
         disposable.dispose();
       };
-    }, [enabled]);
+    }, [enabled, expressionId, feelVariables]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);

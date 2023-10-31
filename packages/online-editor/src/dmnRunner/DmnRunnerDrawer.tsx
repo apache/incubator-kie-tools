@@ -27,7 +27,11 @@ import { DmnRunnerErrorBoundary } from "./DmnRunnerErrorBoundary";
 export function DmnRunnerDrawer(props: React.PropsWithChildren<{}>) {
   const dmnRunnerState = useDmnRunnerState();
   return (
-    <Drawer isInline={true} isExpanded={dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM}>
+    <Drawer
+      isInline={true}
+      isExpanded={dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
       <DrawerContent
         className={
           !dmnRunnerState.isExpanded ? "kogito--editor__drawer-content-onClose" : "kogito--editor__drawer-content-open"

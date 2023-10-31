@@ -188,6 +188,7 @@ export function ContextExpression(
       setExpression((prev: ContextExpressionDefinition) => {
         const contextEntries = [...prev.contextEntries];
 
+        variables?.repository.updateVariableType(newEntry.entryInfo.id, newEntry.entryInfo.dataType);
         variables?.repository.renameVariable(newEntry.entryInfo.id, newEntry.entryInfo.name);
         contextEntries[rowIndex] = newEntry;
         return { ...prev, contextEntries };

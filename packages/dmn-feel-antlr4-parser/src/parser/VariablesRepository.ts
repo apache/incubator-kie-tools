@@ -19,7 +19,7 @@
 
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { DataType } from "./DataType";
-import { SymbolType } from "./SymbolType";
+import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { VariableContext } from "./VariableContext";
 import {
   DMN15__tBusinessKnowledgeModel,
@@ -86,6 +86,13 @@ export class VariablesRepository {
     return this.variablesIndexedByUuid;
   }
 
+  public updateVariableType(variableUuid: string, newType: string) {
+    const variableContext = this.variablesIndexedByUuid.get(variableUuid);
+    if (variableContext) {
+      variableContext.variable.typeRef = this.getTypeRef(newType);
+    }
+  }
+
   public renameVariable(variableUuid: string, newName: string) {
     const variableContext = this.variablesIndexedByUuid.get(variableUuid);
     if (variableContext) {
@@ -98,7 +105,7 @@ export class VariablesRepository {
     if (parentContext) {
       const newVariable = {
         value: variableName,
-        variableType: SymbolType.GlobalVariable,
+        feelSyntacticSymbolNature: FeelSyntacticSymbolNature.GlobalVariable,
         typeRef: undefined,
       };
 
@@ -205,21 +212,27 @@ export class VariablesRepository {
     this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      SymbolType.GlobalVariable,
+      FeelSyntacticSymbolNature.GlobalVariable,
       undefined,
       drg.variable?.["@_typeRef"]
     );
   }
 
   private createVariablesFromDecisionService(drg: DmnDecisionService) {
-    this.addVariable(drg["@_id"] ?? "", drg["@_name"], SymbolType.Invocable, undefined, drg.variable?.["@_typeRef"]);
+    this.addVariable(
+      drg["@_id"] ?? "",
+      drg["@_name"],
+      FeelSyntacticSymbolNature.Invocable,
+      undefined,
+      drg.variable?.["@_typeRef"]
+    );
   }
 
   private createVariablesFromBkm(drg: DmnBusinessKnowledgeModel) {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      SymbolType.Invocable,
+      FeelSyntacticSymbolNature.Invocable,
       undefined,
       drg.variable?.["@_typeRef"]
     );
@@ -232,7 +245,7 @@ export class VariablesRepository {
           parentElement = this.addVariable(
             parameter["@_id"] ?? "",
             parameter["@_name"] ?? "<parameter>",
-            SymbolType.Parameter,
+            FeelSyntacticSymbolNature.Parameter,
             parentElement
           );
         }
@@ -248,7 +261,7 @@ export class VariablesRepository {
     const parent = this.addVariable(
       drg["@_id"] ?? "",
       drg["@_name"],
-      SymbolType.GlobalVariable,
+      FeelSyntacticSymbolNature.GlobalVariable,
       undefined,
       drg.variable?.["@_typeRef"]
     );
@@ -273,7 +286,7 @@ export class VariablesRepository {
   private addVariable(
     uuid: string,
     name: string,
-    variableType: SymbolType,
+    variableType: FeelSyntacticSymbolNature,
     parent?: VariableContext,
     typeRef?: string
   ) {
@@ -287,7 +300,7 @@ export class VariablesRepository {
   private createVariableNode(
     uuid: string,
     name: string,
-    variableType: SymbolType,
+    variableType: FeelSyntacticSymbolNature,
     parent: VariableContext | undefined,
     typeRef: string | undefined
   ) {
@@ -298,20 +311,21 @@ export class VariablesRepository {
       inputVariables: new Array<string>(),
       variable: {
         value: name,
-        variableType: variableType,
+        feelSyntacticSymbolNature: variableType,
         typeRef: this.getTypeRef(typeRef),
       },
     };
   }
 
   private getTypeRef(typeRef: string | undefined) {
-    return this.dataTypes.has(typeRef ?? "") ? this.dataTypes.get(typeRef ?? "") : undefined;
+    return this.dataTypes.has(typeRef ?? "") ? this.dataTypes.get(typeRef ?? "") : typeRef;
   }
 
   private createDataType(itemDefinition: DmnItemDefinition) {
     return {
       name: itemDefinition["@_name"],
       properties: new Map<string, DataType>(),
+      typeRef: itemDefinition["typeRef"] ?? itemDefinition["@_name"],
     };
   }
 
@@ -319,6 +333,7 @@ export class VariablesRepository {
     return {
       name: itemComponent["@_name"],
       properties: this.buildProperties(itemComponent),
+      typeRef: itemComponent["typeRef"] ?? itemComponent["@_name"],
     };
   }
 
@@ -329,6 +344,7 @@ export class VariablesRepository {
       const rootProperty = {
         name: def["@_name"],
         properties: this.buildProperties(def),
+        typeRef: def["typeRef"] ?? def["@_name"],
       };
 
       properties.set(rootProperty.name, rootProperty);
@@ -338,7 +354,7 @@ export class VariablesRepository {
   }
 
   private addLiteralExpression(parent: VariableContext, element: DmnLiteralExpression) {
-    this.addVariable(element["@_id"] ?? "", "<literalExpression>", SymbolType.LocalVariable, parent);
+    this.addVariable(element["@_id"] ?? "", "", FeelSyntacticSymbolNature.LocalVariable, parent);
   }
 
   private addInvocation(parent: VariableContext, element: DmnInvocation) {
@@ -364,7 +380,7 @@ export class VariablesRepository {
     const variableNode = this.addVariable(
       contextEntry.variable?.["@_id"] ?? "",
       contextEntry.variable?.["@_name"] ?? "",
-      SymbolType.LocalVariable,
+      FeelSyntacticSymbolNature.LocalVariable,
       parentNode,
       contextEntry.variable?.["@_typeRef"]
     );
@@ -373,7 +389,31 @@ export class VariablesRepository {
 
     if (contextEntry.expression) {
       if (contextEntry.expression.__$$element) {
-        this.addInnerExpression(variableNode, contextEntry.expression);
+        // The parent is always the previous node to prevent recursive calls.
+        // Consider this example:
+        //
+        // [ROOT] Context Expression
+        // [X] Client DTI  | [A]
+        // [Y] Some Other  | [B]
+        // [Z] And Another | [C]
+        //
+        // Inside the B we can not call "Some Other" for instance, but we can call "Client DTI"
+        //
+        // So the structure for that case should be:
+        //            [ROOT]
+        //              /    \
+        //             [X]  [A]
+        //             /  \
+        //            [Y]  [B]
+        //            / \
+        //          [Z]  [C]
+        //
+        // So in that case, inside "C" we recognize Y, X and ROOT
+        // Inside B, X and ROOT
+        //
+        // By "ROOT" we understand the root expression which for example
+        // can be the Decision Node itself and its input nodes.
+        this.addInnerExpression(parentNode, contextEntry.expression);
       }
     }
 
@@ -388,7 +428,7 @@ export class VariablesRepository {
         parentElement = this.addVariable(
           parameter["@_id"] ?? "",
           parameter["@_name"] ?? "<parameter>",
-          SymbolType.Parameter,
+          FeelSyntacticSymbolNature.Parameter,
           parentElement
         );
       }
