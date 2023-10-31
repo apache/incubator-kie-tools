@@ -159,6 +159,15 @@ export function parse(args: {
         elemValue = parseFloat(elemNode.textContent ?? "");
       } else {
         elemValue = parse({ ...args, node: elemNode, nodeType: elemType });
+        /* If the element is not a simple type and it has a single child node of TEXT_NODE type
+         * and it has at least one attribute, that is a Complex type with Simple Content
+         * eg:  <tagName attrName="a-value">myValue<tagName>
+         */
+        const hasSingleTextNodeChildren = elemNode.childNodes.length === 1 && elemNode.childNodes[0].nodeType === 3;
+        const hasAttributes = (elemNode as Element).attributes.length > 0;
+        if (hasSingleTextNodeChildren && hasAttributes) {
+          elemValue[`${elemNode.nodeName}Value`] = elemNode.textContent;
+        }
         if (subsedName !== nsedName) {
           // substitution occurred, need to save the original, normalized element name
           elemValue["__$$element"] = nsedName;
