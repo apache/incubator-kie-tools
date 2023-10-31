@@ -185,6 +185,9 @@ func (d DockerLocalRegistry) IsImagePresent(name string) bool {
 		return false
 	}
 	for _, imagex := range imageList {
+		if len(imagex.RepoTags) == 0 || len(imagex.RepoDigests) == 0 {
+			continue
+		}
 		if imagex.RepoTags[0] == name || (imagex.RepoDigests != nil && strings.HasPrefix(imagex.RepoDigests[0], name)) {
 			return true
 		}
