@@ -82,7 +82,6 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "@types/react-transition-group": "^4.4.1",
-    "@types/testing-library__jest-dom": "^6.0.0",
     "@types/testing-library__react": "^9.1.2",
     "@types/uuid": "^8.3.0",
     "copy-webpack-plugin": "^11.0.0",
