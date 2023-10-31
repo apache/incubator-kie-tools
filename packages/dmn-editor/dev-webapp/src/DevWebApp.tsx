@@ -11,7 +11,7 @@ import * as DmnEditor from "../../src/DmnEditor";
 import { DmnMarshaller, DmnModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { SPEC } from "../../src/Spec";
+import { DMN15_SPEC } from "../../src/Dmn15Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 
@@ -20,7 +20,7 @@ const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN);
 const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
   xmlns="${dmn15ns.get("")}"
-  expressionLanguage="${SPEC.expressionLanguage.default}"
+  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
   namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">

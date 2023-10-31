@@ -4,11 +4,11 @@ import { EmptyLabel } from "./Nodes";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore } from "../../store/Store";
 import { useDmnEditorDerivedStore } from "../../store/DerivedStore";
-import { UniqueNameIndex } from "../../Spec";
+import { UniqueNameIndex } from "../../Dmn15Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
-import { SPEC } from "../../Spec";
+import { DMN15_SPEC } from "../../Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import "./EditableNodeLabel.css";
@@ -83,7 +83,7 @@ export function EditableNodeLabel({
       return true;
     }
 
-    return SPEC.namedElement.isValidName(namedElement?.["@_id"] ?? generateUuid(), internalValue, allUniqueNames);
+    return DMN15_SPEC.namedElement.isValidName(namedElement?.["@_id"] ?? generateUuid(), internalValue, allUniqueNames);
   }, [skipValidation, namedElement, internalValue, allUniqueNames]);
 
   const onBlur = useCallback(() => {

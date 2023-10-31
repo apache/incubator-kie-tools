@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SPEC } from "../Spec";
-import { UniqueNameIndex } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
+import { UniqueNameIndex } from "../Dmn15Spec";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -34,9 +34,9 @@ export function InlineFeelNameInput({
   allUniqueNames: UniqueNameIndex;
   placeholder?: string;
   saveInvalidValue?: boolean;
-  validate?: typeof SPEC.namedElement.isValidName;
+  validate?: typeof DMN15_SPEC.namedElement.isValidName;
 }) {
-  const _validate = (validate ??= SPEC.namedElement.isValidName);
+  const _validate = (validate ??= DMN15_SPEC.namedElement.isValidName);
 
   const inputRef = useRef<HTMLInputElement>(null);
 

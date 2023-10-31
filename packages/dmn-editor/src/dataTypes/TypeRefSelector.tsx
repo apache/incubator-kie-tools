@@ -92,8 +92,6 @@ export function TypeRefSelector(props: {
         placeholderText={"Select a data type..."}
         isGrouped={true}
         menuAppendTo={props.menuAppendTo ?? document.body}
-
-        // isCreatable={true} // FIXME: Tiago --> Maybe this is a good idea?
       >
         <SelectGroup label="Built-in" key="builtin">
           {builtInFeelTypes.map((dt) => (

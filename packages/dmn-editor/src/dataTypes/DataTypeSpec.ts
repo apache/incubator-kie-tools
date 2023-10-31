@@ -15,7 +15,7 @@ import {
   DMN15__tQuantified,
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { SPEC } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
 import { DataTypeIndex } from "./DataTypes";
 
 export function findDataTypeById({
@@ -50,7 +50,7 @@ export function getNewItemDefinition(partial?: Partial<DMN15__tItemDefinition>) 
     "@_id": generateUuid(),
     "@_name": "New data type",
     "@_isCollection": false,
-    "@_typeLanguage": SPEC.typeLanguage.default,
+    "@_typeLanguage": DMN15_SPEC.typeLanguage.default,
     ...(partial ?? {}),
   };
 }
@@ -113,8 +113,7 @@ export function traverseTypeRefedInExpressionHolders(
   }
 }
 
-// FIXME: Tiago --> This could be refactored to be a special method that we execute inside the `consumer` of `traverseExpressions`.
-
+// FIXME: Tiago --> `traverseTypeRefedInExpressions` could be refactored to be a special method that we execute inside the `consumer` of `traverseExpressions`.
 export function traverseTypeRefedInExpressions(
   expression: AllExpressionsWithoutTypes | undefined,
   __$$element: AllExpressionTypes | undefined,

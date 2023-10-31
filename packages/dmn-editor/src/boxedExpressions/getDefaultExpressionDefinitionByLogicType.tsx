@@ -226,7 +226,7 @@ export function getDefaultExpressionDefinitionByLogicType({
       return {
         id: generateUuid(),
         idLiteralExpression: generateUuid(),
-        name: input.name, // FIXME: Tiago --> This is actually a FEEL expression!
+        name: input.name, // This is actually a FEEL expression! Will be addressed as part of https://github.com/apache/incubator-kie-issues/issues/455
         dataType: (input.typeRef as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined,
         width: getDefaultColumnWidth?.(input) ?? DECISION_TABLE_INPUT_DEFAULT_WIDTH,
       };

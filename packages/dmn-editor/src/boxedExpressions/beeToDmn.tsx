@@ -4,7 +4,7 @@ import {
   ExpressionDefinitionLogicType,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { SPEC } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
 import {
   BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
   DECISION_TABLE_ANNOTATION_MIN_WIDTH,
@@ -83,7 +83,7 @@ export function beeToDmn(
             inputExpression: {
               "@_id": s.idLiteralExpression,
               "@_typeRef": s.dataType,
-              text: s.name, // FIXME: Tiago --> This is really bad... `s.name` is actually an expression!
+              text: s.name, // This is really bad... `s.name` is actually an expression. Will be addressed by https://github.com/apache/incubator-kie-issues/issues/455
             },
           };
         }),
@@ -143,12 +143,12 @@ export function beeToDmn(
                     {
                       "@_id": expression.classFieldId,
                       expression: { __$$element: "literalExpression", text: expression.className },
-                      variable: { "@_name": SPEC.BOXED.FUNCTION.JAVA.classFieldName },
+                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
                     },
                     {
                       "@_id": expression.methodFieldId,
                       expression: { __$$element: "literalExpression", text: expression.methodName },
-                      variable: { "@_name": SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
+                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
                     },
                   ],
                 };
@@ -161,12 +161,12 @@ export function beeToDmn(
                     {
                       "@_id": expression.documentFieldId,
                       expression: { __$$element: "literalExpression", text: expression.document },
-                      variable: { "@_name": SPEC.BOXED.FUNCTION.PMML.documentFieldName },
+                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
                     },
                     {
                       "@_id": expression.modelFieldId,
                       expression: { __$$element: "literalExpression", text: expression.model },
-                      variable: { "@_name": SPEC.BOXED.FUNCTION.PMML.modelFieldName },
+                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
                     },
                   ],
                 };

@@ -25,7 +25,7 @@ import { basename, dirname, extname } from "path";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExternalModel } from "../DmnEditor";
 import { useDmnEditor } from "../DmnEditorContext";
-import { SPEC } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { addImport } from "../mutations/addImport";
 import { deleteImport } from "../mutations/deleteImport";
@@ -113,7 +113,7 @@ export function IncludedModels() {
     if (
       !selectedPath ||
       !selectedModel ||
-      !SPEC.IMPORT.name.isValid(generateUuid(), importName, allFeelVariableUniqueNames)
+      !DMN15_SPEC.IMPORT.name.isValid(generateUuid(), importName, allFeelVariableUniqueNames)
     ) {
       return;
     }
@@ -270,7 +270,7 @@ export function IncludedModels() {
                   </FormGroup>
                   <FormGroup label={"Name"}>
                     <InlineFeelNameInput
-                      validate={SPEC.IMPORT.name.isValid}
+                      validate={DMN15_SPEC.IMPORT.name.isValid}
                       placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
                       isPlain={false}
                       id={generateUuid()}
@@ -402,7 +402,7 @@ function IncludedModelCard({
             isReadonly={false}
             shouldCommitOnBlur={true}
             onRenamed={rename}
-            validate={SPEC.IMPORT.name.isValid}
+            validate={DMN15_SPEC.IMPORT.name.isValid}
           />
           <br />
           <br />

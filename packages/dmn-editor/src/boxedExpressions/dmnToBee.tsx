@@ -12,7 +12,7 @@ import {
   DMN15__tContext,
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { SPEC } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
 import { AllExpressions } from "../dataTypes/DataTypeSpec";
 
 /** Converts a DMN JSON to an ExpressionDefinition. This convertion is
@@ -49,7 +49,7 @@ export function dmnToBee(
         : DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
       hitPolicy:
         (expr["@_hitPolicy"] as DecisionTableExpressionDefinitionHitPolicy) ??
-        SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
+        DMN15_SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
       input: (expr.input ?? []).map((input, i) => ({
         idLiteralExpression: input.inputExpression["@_id"]!,
         id: input["@_id"]!,
@@ -180,7 +180,7 @@ export function dmnToBee(
       })),
     };
 
-    const kind = expr["@_kind"] ?? SPEC.BOXED.FUNCTION.kind.default;
+    const kind = expr["@_kind"] ?? DMN15_SPEC.BOXED.FUNCTION.kind.default;
     switch (kind) {
       case "FEEL": {
         return {
@@ -201,10 +201,10 @@ export function dmnToBee(
         // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 106, document page 92. Section "10.2.1.7 Boxed Function".
         const c = expr.expression! as DMN15__tContext;
         const clazz = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.classFieldName
+          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName
         );
         const method = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName
+          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName
         );
 
         return {
@@ -221,10 +221,10 @@ export function dmnToBee(
         // Special case, defined by the spec, where the implementation is a context expression with two fields.
         const c = expr.expression as DMN15__tContext;
         const document = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
+          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName
         );
         const model = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.modelFieldName
+          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName
         );
         return {
           ...basic,

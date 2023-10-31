@@ -7,7 +7,7 @@ import { TypeRefLabel } from "./TypeRefLabel";
 import { useDmnEditorStoreApi } from "../store/Store";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { UniqueNameIndex } from "../Spec";
+import { UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 

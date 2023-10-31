@@ -24,7 +24,7 @@ import { DataTypeName } from "./DataTypeName";
 import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { UniqueNameIndex } from "../Spec";
+import { UniqueNameIndex } from "../Dmn15Spec";
 import {
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
@@ -269,7 +269,6 @@ export function ItemComponentsTable({
                                           (s) => s !== dt.itemDefinition["@_id"]!
                                         );
                                     } else {
-                                      // FIXME: Tiago --> Expand/collapse recursively when alt is pressed.
                                       state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
                                     }
                                   })

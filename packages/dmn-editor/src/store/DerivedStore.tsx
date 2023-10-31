@@ -16,7 +16,7 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { DataTypeIndex, DataType } from "../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { UniqueNameIndex } from "../Spec";
+import { UniqueNameIndex } from "../Dmn15Spec";
 import { ExternalPmmlsIndex, ExternalDmnsIndex } from "../DmnEditor";
 import { getAdjMatrix, traverse } from "../diagram/graph/graph";
 
@@ -161,8 +161,6 @@ export function DmnEditorDerivedStoreContextProvider(props: React.PropsWithChild
       const _import = thisDmnsImports[i];
       ret.set(_import["@_name"], _import["@_id"]!);
     }
-
-    // FIXME: Tiago --> Add the names of external nodes here that come from imports namespaced with "". Inlcude all names, or only what is referenced into `thisDmn`?
 
     return ret;
   }, [thisDmn.model.definitions.drgElement, thisDmnsImports]);

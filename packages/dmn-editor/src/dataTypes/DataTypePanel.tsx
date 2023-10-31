@@ -24,7 +24,7 @@ import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
-import { UniqueNameIndex } from "../Spec";
+import { UniqueNameIndex } from "../Dmn15Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { buildClipboardFromDataType } from "../clipboard/Clipboard";
 import { Constraints } from "./Constraints";

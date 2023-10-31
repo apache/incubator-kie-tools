@@ -12,6 +12,4 @@ export function deleteImport({ definitions, index }: { definitions: DMN15__tDefi
   if (namespaceName) {
     delete definitions[`@_xmlns:${namespaceName}`];
   }
-
-  // FIXME: Tiago --> Delete all references to DRG elements and ItemDefinitions of this import.
 }

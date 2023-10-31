@@ -3,8 +3,8 @@ import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/re
 
 export function getDefaultColumnWidth({ name, typeRef }: { name: string; typeRef: string | undefined }): number {
   return (
-    8 * 2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
-    2 + // FIXME: Tiago --> Copied from ContextEntry info `getWidthToFit`
+    8 * 2 + // Copied from ContextEntry info `getWidthToFit`
+    2 + // Copied from ContextEntry info `getWidthToFit`
     Math.max(
       DEFAULT_MIN_WIDTH,
       getTextWidth(name, "700 11.2px Menlo, monospace"),

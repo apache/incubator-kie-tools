@@ -18,7 +18,7 @@ import { findDataTypeById, getNewItemDefinition, isStruct } from "./DataTypeSpec
 import { DataTypeName } from "./DataTypeName";
 import { useDmnEditorDerivedStore } from "../store/DerivedStore";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { SPEC } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import {
   Dropdown,
@@ -225,7 +225,7 @@ export function DataTypes() {
                             <div
                               className={`kie-dmn-editor--editable-node-name-input top-left grow`}
                               style={
-                                SPEC.namedElement.isValidName(
+                                DMN15_SPEC.namedElement.isValidName(
                                   itemDefinition["@_id"]!,
                                   feelName,
                                   allTopLevelItemDefinitionUniqueNames

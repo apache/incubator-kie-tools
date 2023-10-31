@@ -11,7 +11,7 @@ export function addOrGetDefaultDiagram({ definitions }: { definitions: DMN15__tD
   // extensions
   defaultDiagram["di:extension"] ??= {};
   defaultDiagram["di:extension"]["kie:ComponentsWidthsExtension"] ??= {};
-  defaultDiagram["di:extension"]["kie:ComponentsWidthsExtension"]["kie:ComponentWidths"] ??= [{}]; // FIXME: Tiago --> Immer is throwing an error at this line for empty DMNs.
+  defaultDiagram["di:extension"]["kie:ComponentsWidthsExtension"]["kie:ComponentWidths"] ??= [{}];
 
   return {
     widthsExtension: defaultDiagram["di:extension"]["kie:ComponentsWidthsExtension"],

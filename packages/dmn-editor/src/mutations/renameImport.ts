@@ -11,7 +11,7 @@ import {
 import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { DMN15__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { SPEC } from "../Spec";
+import { DMN15_SPEC } from "../Dmn15Spec";
 
 export function renameImport({
   definitions,
@@ -67,7 +67,7 @@ export function renameImport({
             const e = expression as DMN15__tFunctionDefinition;
             if (e["@_kind"] === "PMML") {
               const pmmlDocument = (e.expression as DMN15__tContext).contextEntry?.find(
-                ({ variable }) => variable?.["@_name"] === SPEC.BOXED.FUNCTION.PMML.documentFieldName
+                ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName
               );
 
               const pmmlDocumentLiteralExpression = pmmlDocument?.expression as DMN15__tLiteralExpression | undefined;

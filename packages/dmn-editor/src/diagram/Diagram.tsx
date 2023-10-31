@@ -1088,7 +1088,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           <TopRightCornerPanels />
           <PanWhenAltPressed />
           <KeyboardShortcuts />
-          {/** FIXME: Tiago --> The background is making the Diagram VERY slow on Firefox. Render this conditionally. */}
           {!isFirefox && <RF.Background />}
           <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
           <SetConnectionToReactFlowStore />
@@ -1385,8 +1384,6 @@ export function KeyboardShortcuts(props: {}) {
           attr: "kie:ComponentWidths",
         })
         .randomize();
-
-      // FIXME: Tiago --> Slightly offset nodes if positions clash with existing nodes.
 
       dmnEditorStoreApi.setState((state) => {
         state.dmn.model.definitions.drgElement ??= [];

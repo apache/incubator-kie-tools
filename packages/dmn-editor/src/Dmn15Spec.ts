@@ -10,7 +10,7 @@ const forbiddenEndingChars = /^.*[.:+-/*\s^]$/; // Although they're fine by the 
 
 export type UniqueNameIndex = Map<string, string>;
 
-export const SPEC = {
+export const DMN15_SPEC = {
   namedElement: {
     isValidName: (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex): boolean => {
       return (
@@ -22,14 +22,14 @@ export const SPEC = {
       );
     },
   },
-  expressionLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/` }, // FIXME: Tiago --> This is not quite right, as DMN now has multiple versions of FEEL
-  typeLanguage: { default: `https://www.omg.org/spec/DMN/20211108/FEEL/` }, // FIXME: Tiago --> This is not quite right, as DMN now has multiple versions of FEEL
+  expressionLanguage: { default: `https://www.omg.org/spec/DMN/20230324/FEEL/` },
+  typeLanguage: { default: `https://www.omg.org/spec/DMN/20230324/FEEL/` },
   IMPORT: {
     name: {
       isValid: (id: string, name: string, allUniqueNames: UniqueNameIndex) => {
         // Empty strings are allowed for imports, so that imported elements can be used without a prefix.
         // Source: https://www.omg.org/spec/DMN/1.5/Beta1/PDF. PDF page 40, document page 32. Section "6.3.3 Import Metamodel".
-        return name === "" || SPEC.namedElement.isValidName(id, name, allUniqueNames);
+        return name === "" || DMN15_SPEC.namedElement.isValidName(id, name, allUniqueNames);
       },
     },
   },
