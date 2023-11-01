@@ -114,21 +114,21 @@ func GetOperatorLockName(operatorID string) string {
 }
 
 // GetActivePlatform returns the currently installed active platform in the local namespace.
-func GetActivePlatform(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatform, error) {
-	return GetLocalPlatform(ctx, c, namespace, true)
+func GetActivePlatform(ctx context.Context, c ctrl.Client, namespace string) (*operatorapi.SonataFlowPlatform, error) {
+	return getLocalPlatform(ctx, c, namespace, true)
 }
 
-// GetLocalPlatform returns the currently installed platform or any platform existing in local namespace.
-func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, active bool) (*operatorapi.SonataFlowPlatform, error) {
+// getLocalPlatform returns the currently installed platform or any platform existing in local namespace.
+func getLocalPlatform(ctx context.Context, c ctrl.Client, namespace string, active bool) (*operatorapi.SonataFlowPlatform, error) {
 	klog.V(log.D).InfoS("Finding available platforms")
 
-	lst, err := ListPrimaryPlatforms(ctx, c, namespace)
+	lst, err := listPrimaryPlatforms(ctx, c, namespace)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, platform := range lst.Items {
-		platform := platform // pin
+	for _, p := range lst.Items {
+		platform := p // pin
 		if IsActive(&platform) {
 			klog.V(log.D).InfoS("Found active local build platform", "platform", platform.Name)
 			return &platform, nil
@@ -141,14 +141,18 @@ func GetLocalPlatform(ctx context.Context, c ctrl.Reader, namespace string, acti
 		klog.V(log.D).InfoS("Found local build platform", "platform", res.Name)
 		return &res, nil
 	}
-
-	klog.V(log.D).InfoS("Not found a local build platform")
-	return nil, k8serrors.NewNotFound(operatorapi.Resource("SonataFlowPlatform"), DefaultPlatformName)
+	klog.V(log.I).InfoS("Not found a local build platform", "Namespace", namespace)
+	klog.V(log.I).InfoS("Creating a default SonataFlowPlatform", "Namespace", namespace)
+	sfp := newDefaultSonataFlowPlatform(namespace)
+	if err = c.Create(ctx, sfp); err != nil {
+		return nil, err
+	}
+	return sfp, nil
 }
 
-// ListPrimaryPlatforms returns all non-secondary platforms installed in a given namespace (only one will be active).
-func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatformList, error) {
-	lst, err := ListAllPlatforms(ctx, c, namespace)
+// listPrimaryPlatforms returns all non-secondary platforms installed in a given namespace (only one will be active).
+func listPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatformList, error) {
+	lst, err := listAllPlatforms(ctx, c, namespace)
 	if err != nil {
 		return nil, err
 	}
@@ -163,8 +167,8 @@ func ListPrimaryPlatforms(ctx context.Context, c ctrl.Reader, namespace string) 
 	return filtered, nil
 }
 
-// ListAllPlatforms returns all platforms installed in a given namespace.
-func ListAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatformList, error) {
+// listAllPlatforms returns all platforms installed in a given namespace.
+func listAllPlatforms(ctx context.Context, c ctrl.Reader, namespace string) (*operatorapi.SonataFlowPlatformList, error) {
 	lst := operatorapi.NewSonataFlowPlatformList()
 	if err := c.List(ctx, &lst, ctrl.InNamespace(namespace)); err != nil {
 		return nil, err
@@ -191,7 +195,7 @@ func IsNamespaceLocked(ctx context.Context, c ctrl.Reader, namespace string) (bo
 		return false, nil
 	}
 
-	platforms, err := ListPrimaryPlatforms(ctx, c, namespace)
+	platforms, err := listPrimaryPlatforms(ctx, c, namespace)
 	if err != nil {
 		return true, err
 	}

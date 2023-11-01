@@ -171,16 +171,6 @@ var _ = Describe("SonataFlow Operator", Ordered, func() {
 	Describe("ensure that Operator and Operand(s) can run in restricted namespaces", func() {
 		projectDir, _ := utils.GetProjectDir()
 
-		It("should create a basic platform for Minikube", func() {
-			By("creating an instance of the SonataFlowPlatform")
-			EventuallyWithOffset(1, func() error {
-				cmd := exec.Command("kubectl", "apply", "-f", filepath.Join(projectDir,
-					getSonataFlowPlatformFilename()), "-n", namespace)
-				_, err := utils.Run(cmd)
-				return err
-			}, time.Minute, time.Second).Should(Succeed())
-		})
-
 		It("should successfully deploy the Simple Workflow in prod ops mode and verify if it's running", func() {
 			By("creating an instance of the SonataFlow Operand(CR)")
 			EventuallyWithOffset(1, func() error {

@@ -67,7 +67,7 @@ func (k *sonataFlowBuildManager) GetOrCreateBuild(workflow *operatorapi.SonataFl
 type SonataFlowBuildManager interface {
 	// GetOrCreateBuild gets or creates a new instance of SonataFlowBuild for the given SonataFlow.
 	//
-	// Only one build is allowed per workflow instance
+	// Only one build is allowed per workflow instance.
 	GetOrCreateBuild(workflow *operatorapi.SonataFlow) (*operatorapi.SonataFlowBuild, error)
 	// MarkToRestart tell the controller to restart this build in the next iteration
 	MarkToRestart(build *operatorapi.SonataFlowBuild) error

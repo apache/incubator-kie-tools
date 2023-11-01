@@ -42,7 +42,7 @@ var builderDockerfileFromRE = regexp.MustCompile(`FROM (.*) AS builder`)
 // ResourceCustomizer can be used to inject code that changes the objects before they are created.
 type ResourceCustomizer func(object ctrl.Object) ctrl.Object
 
-func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
+func configureRegistry(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	if p.Spec.Build.Config.BuildStrategy == operatorapi.PlatformBuildStrategy && p.Status.Cluster == operatorapi.PlatformClusterOpenShift {
 		p.Spec.Build.Config.Registry = operatorapi.RegistrySpec{}
 		klog.V(log.D).InfoS("Platform registry not set and ignored on openshift cluster")
@@ -63,7 +63,7 @@ func ConfigureRegistry(ctx context.Context, c client.Client, p *operatorapi.Sona
 	return nil
 }
 
-func SetPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error {
+func setPlatformDefaults(p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	if p.Spec.Build.Config.BuildStrategyOptions == nil {
 		klog.V(log.D).InfoS("SonataFlow Platform: setting publish strategy options", "namespace", p.Namespace)
 		p.Spec.Build.Config.BuildStrategyOptions = map[string]string{}

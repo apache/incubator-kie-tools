@@ -17,6 +17,7 @@ package platform
 import (
 	"context"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -26,6 +27,8 @@ import (
 
 	operatorapi "github.com/apache/incubator-kie-kogito-serverless-operator/api/v1alpha08"
 )
+
+const defaultSonataFlowPlatformName = "sonataflow-platform"
 
 func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.SonataFlowPlatform, verbose bool) error {
 	// update missing fields in the resource
@@ -38,12 +41,12 @@ func ConfigureDefaults(ctx context.Context, c client.Client, p *operatorapi.Sona
 		p.Spec.Build.Config.BuildStrategy = operatorapi.OperatorBuildStrategy
 	}
 
-	err := SetPlatformDefaults(p, verbose)
+	err := setPlatformDefaults(p, verbose)
 	if err != nil {
 		return err
 	}
 
-	err = ConfigureRegistry(ctx, c, p, verbose)
+	err = configureRegistry(ctx, c, p, verbose)
 	if err != nil {
 		return err
 	}
@@ -69,5 +72,33 @@ func updatePlatform(ctx context.Context, c client.Client, p *operatorapi.SonataF
 	updateErr := c.Update(ctx, &config)
 	if updateErr != nil {
 		klog.V(log.E).ErrorS(updateErr, "Error updating the BuildPlatform")
+	}
+}
+
+func newDefaultSonataFlowPlatform(namespace string) *operatorapi.SonataFlowPlatform {
+	if utils.IsOpenShift() {
+		return &operatorapi.SonataFlowPlatform{
+			ObjectMeta: metav1.ObjectMeta{Name: defaultSonataFlowPlatformName, Namespace: namespace},
+			Spec: operatorapi.SonataFlowPlatformSpec{
+				Build: operatorapi.BuildPlatformSpec{
+					Config: operatorapi.BuildPlatformConfig{
+						BuildStrategy: operatorapi.PlatformBuildStrategy,
+					},
+				},
+			},
+		}
+	}
+
+	return &operatorapi.SonataFlowPlatform{
+		ObjectMeta: metav1.ObjectMeta{Name: defaultSonataFlowPlatformName, Namespace: namespace},
+		Spec: operatorapi.SonataFlowPlatformSpec{
+			Build: operatorapi.BuildPlatformSpec{
+				Config: operatorapi.BuildPlatformConfig{
+					BuildStrategyOptions: map[string]string{
+						kanikoBuildCacheEnabled: "true",
+					},
+				},
+			},
+		},
 	}
 }

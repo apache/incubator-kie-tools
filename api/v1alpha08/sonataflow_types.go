@@ -716,6 +716,11 @@ func (s *SonataFlowStatus) IsBuildRunningOrUnknown() bool {
 	return cond.IsUnknown() || (cond.IsFalse() && cond.Reason == api.BuildIsRunningReason)
 }
 
+func (s *SonataFlowStatus) IsBuildRunning() bool {
+	cond := s.GetCondition(api.BuiltConditionType)
+	return cond.IsFalse() && cond.Reason == api.BuildIsRunningReason
+}
+
 func (s *SonataFlowStatus) IsBuildFailed() bool {
 	cond := s.GetCondition(api.BuiltConditionType)
 	return cond.IsFalse() && cond.Reason == api.BuildFailedReason

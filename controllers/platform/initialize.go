@@ -156,7 +156,7 @@ func (action *initializeAction) isPrimaryDuplicate(ctx context.Context, thisPlat
 		// Always reconcile secondary platforms
 		return false, nil
 	}
-	platforms, err := ListPrimaryPlatforms(ctx, action.client, thisPlatform.Namespace)
+	platforms, err := listPrimaryPlatforms(ctx, action.client, thisPlatform.Namespace)
 	if err != nil {
 		return false, err
 	}

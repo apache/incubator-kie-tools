@@ -91,7 +91,7 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 	build, err := builder.NewSonataFlowBuildManager(ctx, h.C).GetOrCreateBuild(workflow)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Failed to get or create the build for the workflow.")
-		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason, build.Status.Error)
+		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason, err.Error())
 		if _, err = h.PerformStatusUpdate(ctx, workflow); err != nil {
 			return ctrl.Result{}, nil, err
 		}
@@ -110,10 +110,15 @@ func (h *followBuildStatusState) Do(ctx context.Context, workflow *operatorapi.S
 		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildFailedReason,
 			"Workflow %s build failed. Error: %s", workflow.Name, build.Status.Error)
 		_, err = h.PerformStatusUpdate(ctx, workflow)
+	} else if build.Status.BuildPhase == operatorapi.BuildPhaseRunning && !workflow.Status.IsBuildRunning() {
+		workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.BuildIsRunningReason, "")
+		_, err = h.PerformStatusUpdate(ctx, workflow)
 	}
+
 	if err != nil {
 		return ctrl.Result{}, nil, err
 	}
+
 	return ctrl.Result{RequeueAfter: requeueWhileWaitForBuild}, nil, nil
 }
 
