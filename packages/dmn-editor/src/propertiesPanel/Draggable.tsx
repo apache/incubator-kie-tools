@@ -93,7 +93,11 @@ export function DraggableContextProvider({
   );
 }
 
-export function Draggable(props: { index: number; children: (hovered: boolean) => React.ReactNode }) {
+export function Draggable(props: {
+  index: number;
+  children: (hovered: boolean) => React.ReactNode;
+  style?: React.CSSProperties;
+}) {
   const { source, dragging, origin, leftOrigin, onDragStart, onDragOver, onDragEnd, onDragEnter, onDragLeave } =
     useDraggableContext();
   const [draggable, setDraggable] = useState(false);
@@ -117,6 +121,7 @@ export function Draggable(props: { index: number; children: (hovered: boolean) =
 
   return (
     <div
+      style={props.style}
       className={rowClassName}
       draggable={dragging || draggable}
       onDragStart={() => onDragStart(props.index)}

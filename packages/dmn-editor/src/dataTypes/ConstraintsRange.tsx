@@ -9,11 +9,13 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 
 export function ConstraintsRange({
+  isReadonly,
   inputType,
   value,
   onChange,
   isDisabled,
 }: {
+  isReadonly: boolean;
   inputType: "text" | "number";
   value?: string;
   onChange: (newValue: string | undefined, origin: KIE__tConstraintType) => void;
@@ -90,63 +92,67 @@ export function ConstraintsRange({
   }, [onInternalChange]);
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "auto 1fr 1fr",
-        gridTemplateRows: "1fr 1fr",
-        gap: "10px",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <Title size={"md"} headingLevel="h5">
-          Starts with:
-        </Title>
-      </div>
-      <div>
-        <TextInput
-          type={inputType}
-          value={start}
-          onChange={onStartChange}
-          isDisabled={isDisabled}
-          onBlur={() => onInternalChange()}
-        />
-      </div>
-      <div>
-        <Checkbox
-          id={"end"}
-          isChecked={includeStart}
-          onChange={onIncludeStartToogle}
-          isDisabled={isDisabled}
-          onBlur={() => onInternalChange()}
-        />
-      </div>
+    <>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto 1fr 1fr",
+          gridTemplateRows: "1fr 1fr",
+          gap: "10px",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <Title size={"md"} headingLevel="h5">
+            Starts with:
+          </Title>
+        </div>
+        <div>
+          <TextInput
+            type={inputType}
+            value={start}
+            onChange={onStartChange}
+            isDisabled={isDisabled}
+            onBlur={() => onInternalChange()}
+          />
+        </div>
+        <div>
+          <Checkbox
+            id={"end"}
+            isChecked={includeStart}
+            onChange={onIncludeStartToogle}
+            isDisabled={isDisabled}
+            onBlur={() => onInternalChange()}
+          />
+        </div>
 
-      <div>
-        <Title size={"md"} headingLevel="h5">
-          Ends with:
-        </Title>
+        <div>
+          <Title size={"md"} headingLevel="h5">
+            Ends with:
+          </Title>
+        </div>
+        <div>
+          <TextInput
+            type={inputType}
+            value={end}
+            onChange={onEndChange}
+            isDisabled={isDisabled}
+            onBlur={() => onInternalChange()}
+          />
+        </div>
+        <div>
+          <Checkbox
+            id={"end"}
+            isChecked={includeEnd}
+            onChange={onIncludeEndToogle}
+            isDisabled={isDisabled}
+            onBlur={() => onInternalChange()}
+          />
+        </div>
       </div>
-      <div>
-        <TextInput
-          type={inputType}
-          value={end}
-          onChange={onEndChange}
-          isDisabled={isDisabled}
-          onBlur={() => onInternalChange()}
-        />
-      </div>
-      <div>
-        <Checkbox
-          id={"end"}
-          isChecked={includeEnd}
-          onChange={onIncludeEndToogle}
-          isDisabled={isDisabled}
-          onBlur={() => onInternalChange()}
-        />
-      </div>
-    </div>
+      <br />
+      <ConstraintsExpression isReadonly={true} value={value ?? ""} />
+    </>
   );
 }
 
