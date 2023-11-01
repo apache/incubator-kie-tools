@@ -91,24 +91,63 @@ export function ConstraintsRange({
     });
   }, [onInternalChange]);
 
+  const nextStartValue = useMemo(() => {
+    if (inputType === "number" && start !== "") {
+      return `The next valid number is: (${start} + 2e-52).`;
+    }
+
+    return "";
+  }, [start, inputType]);
+
+  const previousEndValue = useMemo(() => {
+    if (inputType === "number" && end !== "") {
+      return `The last valid number is: (${end} - 2e-52).`;
+    }
+
+    return "";
+  }, [end, inputType]);
+
   return (
-    <>
+    <div>
+      <div style={{ paddingTop: "10px" }}>
+        <p>The range constraint creates an expression that will limit the type value to be contained in a range.</p>
+        <p>It strict has a starting and ending value, and both can be included in the range.</p>
+      </div>
+      <br />
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "auto 1fr 1fr",
-          gridTemplateRows: "1fr 1fr",
-          gap: "10px",
+          gridTemplateColumns: "auto 1fr",
+          gridTemplateRows: "1fr 50px 100px 1fr 50px",
+          gridTemplateAreas: `
+          'includeStartButton startField'
+          'arrow startDescription'
+          'arrow empty'
+          'includeEndButton endField'
+          'empty2 endDescription'
+          `,
+          columnGap: "10px",
           alignItems: "center",
         }}
       >
-        <div>
-          <Title size={"md"} headingLevel="h5">
-            Starts with:
-          </Title>
+        <div style={{ gridArea: "includeStartButton" }}>
+          <button
+            id={"start"}
+            disabled={isDisabled}
+            onClick={() => onIncludeStartToogle()}
+            style={{
+              borderRadius: "100%",
+              borderColor: "gray",
+              borderStyle: "solid",
+              width: "20px",
+              height: "20px",
+              backgroundColor: includeStart ? "black" : "transparent",
+            }}
+          />
         </div>
-        <div>
+        <div style={{ gridArea: "startField" }}>
           <TextInput
+            placeholder={"Starts with"}
             type={inputType}
             value={start}
             onChange={onStartChange}
@@ -116,23 +155,36 @@ export function ConstraintsRange({
             onBlur={() => onInternalChange()}
           />
         </div>
-        <div>
-          <Checkbox
-            id={"end"}
-            isChecked={includeStart}
-            onChange={onIncludeStartToogle}
-            isDisabled={isDisabled}
-            onBlur={() => onInternalChange()}
-          />
+        <div style={{ gridArea: "startDescription" }}>
+          {includeStart ? (
+            <p style={{ color: "gray" }}>The starting value will be included in the range.</p>
+          ) : (
+            <p style={{ color: "gray" }}>The starting value will not be included in the range. {nextStartValue}</p>
+          )}
         </div>
 
-        <div>
-          <Title size={"md"} headingLevel="h5">
-            Ends with:
-          </Title>
+        <div style={{ gridArea: "arrow", justifySelf: "center", alignSelf: "center", height: "100%" }}>
+          <div style={{ borderLeftStyle: "solid", borderLeftColor: "gray", borderLeftWidth: "1px", height: "100%" }} />
         </div>
-        <div>
+
+        <div style={{ gridArea: "includeEndButton" }}>
+          <button
+            id={"end"}
+            disabled={isDisabled}
+            onClick={() => onIncludeEndToogle()}
+            style={{
+              borderRadius: "100%",
+              borderColor: "gray",
+              borderStyle: "solid",
+              width: "20px",
+              height: "20px",
+              backgroundColor: includeEnd ? "black" : "transparent",
+            }}
+          />
+        </div>
+        <div style={{ gridArea: "endField" }}>
           <TextInput
+            placeholder={"Ends with"}
             type={inputType}
             value={end}
             onChange={onEndChange}
@@ -140,19 +192,17 @@ export function ConstraintsRange({
             onBlur={() => onInternalChange()}
           />
         </div>
-        <div>
-          <Checkbox
-            id={"end"}
-            isChecked={includeEnd}
-            onChange={onIncludeEndToogle}
-            isDisabled={isDisabled}
-            onBlur={() => onInternalChange()}
-          />
+        <div style={{ gridArea: "endDescription" }}>
+          {includeEnd ? (
+            <p style={{ color: "gray" }}>The ending value will be included in the range.</p>
+          ) : (
+            <p style={{ color: "gray" }}>The ending value will not be included in the range. {previousEndValue}</p>
+          )}
         </div>
       </div>
       <br />
       <ConstraintsExpression isReadonly={true} value={value ?? ""} />
-    </>
+    </div>
   );
 }
 
