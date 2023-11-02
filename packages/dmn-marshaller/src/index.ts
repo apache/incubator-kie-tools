@@ -17,7 +17,14 @@
  * under the License.
  */
 
-import { Meta, domParser, getInstanceNs, getInstanceNsFromJson, getParser } from "@kie-tools/xml-parser-ts";
+import {
+  Meta,
+  XmlParserTs,
+  domParser,
+  getInstanceNs,
+  getInstanceNsFromJson,
+  getParser,
+} from "@kie-tools/xml-parser-ts";
 import { getNsDeclarationPropName } from "@kie-tools/xml-parser-ts/dist/ns";
 import {
   subs as dmn10subs,
@@ -142,43 +149,43 @@ export type DmnMarshaller15 = DmnMarshallerBase & {
   version: "1.5";
 };
 
-export const DMN_PARSERS = {
-  ["1.0"]: getParser<{ [dmn10root.element]: DMN10__tDefinitions }>({
+export const DMN_PARSERS: Record<DmnVersions, XmlParserTs<any>> = {
+  "1.0": getParser<{ [dmn10root.element]: DMN10__tDefinitions }>({
     ns: dmn10ns,
     meta: dmn10meta,
     subs: dmn10subs,
     elements: dmn10elements,
     root: dmn10root,
   }),
-  ["1.1"]: getParser<{ [dmn11root.element]: DMN11__tDefinitions }>({
+  "1.1": getParser<{ [dmn11root.element]: DMN11__tDefinitions }>({
     ns: dmn11ns,
     meta: dmn11meta,
     subs: dmn11subs,
     elements: dmn11elements,
     root: dmn11root,
   }),
-  ["1.2"]: getParser<{ [dmn12root.element]: DMN12__tDefinitions }>({
+  "1.2": getParser<{ [dmn12root.element]: DMN12__tDefinitions }>({
     ns: dmn12ns,
     meta: dmn12meta,
     subs: dmn12subs,
     elements: dmn12elements,
     root: dmn12root,
   }),
-  ["1.3"]: getParser<{ [dmn13root.element]: DMN13__tDefinitions }>({
+  "1.3": getParser<{ [dmn13root.element]: DMN13__tDefinitions }>({
     ns: dmn13ns,
     meta: dmn13meta,
     subs: dmn13subs,
     elements: dmn13elements,
     root: dmn13root,
   }),
-  ["1.4"]: getParser<{ [dmn14root.element]: DMN14__tDefinitions }>({
+  "1.4": getParser<{ [dmn14root.element]: DMN14__tDefinitions }>({
     ns: dmn14ns,
     meta: dmn14meta,
     subs: dmn14subs,
     elements: dmn14elements,
     root: dmn14root,
   }),
-  ["1.5"]: getParser<{ [dmn15root.element]: DMN15__tDefinitions }>({
+  "1.5": getParser<{ [dmn15root.element]: DMN15__tDefinitions }>({
     ns: dmn15ns,
     meta: dmn15meta,
     subs: dmn15subs,
@@ -186,7 +193,9 @@ export const DMN_PARSERS = {
     root: dmn15root,
   }),
 };
-export const FEEL_NAMESPACES = {
+
+export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
+  "1.0": "http://www.omg.org/spec/FEEL/20140401",
   "1.1": "http://www.omg.org/spec/FEEL/20140401",
   "1.2": "http://www.omg.org/spec/DMN/20180521/FEEL/",
   "1.3": "https://www.omg.org/spec/DMN/20191111/FEEL/",
