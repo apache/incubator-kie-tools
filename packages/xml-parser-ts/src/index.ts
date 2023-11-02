@@ -166,7 +166,7 @@ export function parse(args: {
         const hasSingleTextNodeChildren = elemNode.childNodes.length === 1 && elemNode.childNodes[0].nodeType === 3;
         const hasAttributes = (elemNode as Element).attributes.length > 0;
         if (hasSingleTextNodeChildren && hasAttributes) {
-          elemValue[`#_${elemNode.nodeName}`] = elemNode.textContent;
+          elemValue["__$$text"] = elemNode.textContent;
         }
         if (subsedName !== nsedName) {
           // substitution occurred, need to save the original, normalized element name
@@ -421,8 +421,12 @@ export function build(args: {
       if (isEmpty) {
         xml += " />\n";
       } else if (typeof item === "object") {
-        xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
-        xml += `${indent}</${elementName}>\n`;
+        if (item["__$$text"]) {
+          xml += `>${applyEntities(item)})}</${elementName}>\n`;
+        } else {
+          xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
+          xml += `${indent}</${elementName}>\n`;
+        }
       } else {
         xml += `>${applyEntities(item)}</${elementName}>\n`;
       }
