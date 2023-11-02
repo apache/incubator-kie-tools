@@ -34,6 +34,7 @@ import {
   KIE__tConstraintType,
 } from "./schemas/kie-1_0/ts-gen/types";
 
+export const LEGACY_KIE_NS__PRE_GWT_REMOVAL = "http://www.drools.org/kie/dmn/1.2";
 export const KIE_NS = "kie:";
 export type KIE = "kie";
 

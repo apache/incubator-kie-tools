@@ -412,7 +412,7 @@ ${ts}
 export const root = {
     element: "${getRealtiveLocationNs(__RELATIVE_LOCATION, __RELATIVE_LOCATION) + __ROOT_ELEMENT_NAME}",
     type: "${rootTsTypeName}" 
-};
+} as const;
 
 export const ns = new Map<string, string>([
 ${[...__XSDS.entries()]

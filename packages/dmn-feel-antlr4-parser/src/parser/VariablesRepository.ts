@@ -23,12 +23,15 @@ import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { VariableContext } from "./VariableContext";
 import {
   DMN15__tBusinessKnowledgeModel,
+  DMN15__tConditional,
   DMN15__tContext,
   DMN15__tContextEntry,
   DMN15__tDecision,
   DMN15__tDecisionService,
   DMN15__tDecisionTable,
   DMN15__tDefinitions,
+  DMN15__tFilter,
+  DMN15__tFor,
   DMN15__tFunctionDefinition,
   DMN15__tInformationRequirement,
   DMN15__tInputData,
@@ -37,15 +40,9 @@ import {
   DMN15__tKnowledgeRequirement,
   DMN15__tList,
   DMN15__tLiteralExpression,
+  DMN15__tQuantified,
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-
-import {
-  DMN14__tConditional,
-  DMN14__tFilter,
-  DMN14__tFor,
-  DMN14__tQuantified,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_4/ts-gen/types";
 
 type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
 type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
@@ -56,12 +53,12 @@ type DmnRelation = { __$$element: "relation" } & DMN15__tRelation;
 type DmnList = { __$$element: "list" } & DMN15__tList;
 type DmnKnowledgeRequirement = DMN15__tKnowledgeRequirement;
 
-type UnsupportedDmn14Types =
-  | ({ __$$element: "for" } & DMN14__tFor)
-  | ({ __$$element: "every" } & DMN14__tQuantified)
-  | ({ __$$element: "some" } & DMN14__tQuantified)
-  | ({ __$$element: "conditional" } & DMN14__tConditional)
-  | ({ __$$element: "filter" } & DMN14__tFilter);
+type UnsupportedDmnExpressions =
+  | ({ __$$element: "for" } & DMN15__tFor)
+  | ({ __$$element: "every" } & DMN15__tQuantified)
+  | ({ __$$element: "some" } & DMN15__tQuantified)
+  | ({ __$$element: "conditional" } & DMN15__tConditional)
+  | ({ __$$element: "filter" } & DMN15__tFilter);
 
 type DmnDecisionNode = { __$$element: "decision" } & DMN15__tDecision;
 type DmnBusinessKnowledgeModel = DMN15__tBusinessKnowledgeModel;
@@ -154,19 +151,10 @@ export class VariablesRepository {
   }
 
   private loadVariables(xml: string) {
-    const marshaller = getMarshaller(xml);
-    switch (marshaller.version) {
-      case "1.0":
-      case "1.1":
-        throw new Error("DMN file version not supported: " + marshaller.version);
-
-      case "1.2":
-      case "1.3":
-      case "1.4":
-        const definitions = marshaller.parser.parse().definitions;
-        this.createDataTypes(definitions);
-        this.createVariables(definitions);
-    }
+    const marshaller = getMarshaller(xml, { upgradeTo: "latest" });
+    const definitions = marshaller.parser.parse().definitions;
+    this.createDataTypes(definitions);
+    this.createVariables(definitions);
   }
 
   private createDataTypes(definitions: DmnDefinitions) {
@@ -469,7 +457,7 @@ export class VariablesRepository {
       | DmnFunctionDefinition
       | DmnRelation
       | DmnList
-      | UnsupportedDmn14Types
+      | UnsupportedDmnExpressions
   ) {
     switch (expression.__$$element) {
       case "literalExpression":

@@ -5,8 +5,8 @@ import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { buildXmlHref } from "../../src/xml/xmlHrefs";
 import { PMML_NAMESPACE } from "../../src/store/useDiagramData";
 
-export const sumBkmModel = getMarshaller(sumBkm).parser.parse();
-export const sumDiffDsModel = getMarshaller(sumDiffDs).parser.parse();
+export const sumBkmModel = getMarshaller(sumBkm, { upgradeTo: "latest" }).parser.parse();
+export const sumDiffDsModel = getMarshaller(sumDiffDs, { upgradeTo: "latest" }).parser.parse();
 export const testTreePmmlModel = XML2PMML(testTreePmml);
 
 export const avaiableModels: DmnEditor.ExternalModel[] = [

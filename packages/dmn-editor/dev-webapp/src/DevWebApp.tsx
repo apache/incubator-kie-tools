@@ -8,14 +8,14 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 
 import { DEFAULT_DEV_WEBAPP_DMN } from "./DefaultDmn";
 import * as DmnEditor from "../../src/DmnEditor";
-import { DmnMarshaller, DmnModel, getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel, getMarshaller, DmnMarshaller } from "@kie-tools/dmn-marshaller";
 
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { DMN15_SPEC } from "../../src/Dmn15Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { availableModelsByPath, modelsByNamespace } from "./AvailableModelsToInclude";
 
-const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN);
+const initialDmnMarshaller = getMarshaller(DEFAULT_DEV_WEBAPP_DMN, { upgradeTo: "latest" });
 
 const EMPTY_DMN_15 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -38,7 +38,7 @@ export function DevWebApp() {
         if (item.kind === "file") {
           const reader = new FileReader();
           reader.addEventListener("load", ({ target }) => {
-            const marshaller = getMarshaller(target?.result as string);
+            const marshaller = getMarshaller(target?.result as string, { upgradeTo: "latest" });
             setState({ marshaller, stack: [marshaller.parser.parse()], pointer: 0 });
           });
           reader.readAsText(item.getAsFile() as any);
@@ -54,7 +54,7 @@ export function DevWebApp() {
   const ref = useRef<DmnEditor.DmnEditorRef>(null);
 
   const reset = useCallback(() => {
-    const marshaller = getMarshaller(EMPTY_DMN_15());
+    const marshaller = getMarshaller(EMPTY_DMN_15(), { upgradeTo: "latest" });
     setState({
       marshaller,
       stack: [marshaller.parser.parse()],
@@ -62,7 +62,7 @@ export function DevWebApp() {
     });
   }, []);
 
-  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnModel[]; pointer: number }>({
+  const [state, setState] = useState<{ marshaller: DmnMarshaller; stack: DmnLatestModel[]; pointer: number }>({
     marshaller: initialDmnMarshaller,
     stack: [initialDmnMarshaller.parser.parse()],
     pointer: 0,
@@ -167,8 +167,8 @@ export function DevWebApp() {
         <PageSection variant={"light"} isFilled={true} hasOverflowScroll={true} aria-label={"editor"}>
           <DmnEditor.DmnEditor
             ref={ref}
-            marshaller={state.marshaller}
             model={currentModel}
+            originalVersion={state.marshaller.originalVersion}
             onModelChange={onModelChange}
             onRequestExternalModelByPath={onRequestExternalModelByPath}
             onRequestExternalModelsAvailableToInclude={onRequestExternalModelsAvailableToInclude}

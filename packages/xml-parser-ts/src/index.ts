@@ -94,6 +94,40 @@ export function getInstanceNs(domdoc: Document): Map<string, string> {
   return nsMap;
 }
 
+export function getInstanceNsFromJson(rootElement: XmlParserTsRootElementBaseType): Map<string, string> {
+  // console.time("instanceNsFromJson took");
+
+  const nsMap = new Map<string, string>(
+    [...Object.entries(rootElement)].flatMap(([attr, value]) => {
+      if (!attr.startsWith("@_xmlns")) {
+        return [];
+      }
+
+      const nsUri = value ?? "";
+
+      const s = attr.split(":");
+      if (s.length === 1) {
+        // That's the default namespace.
+        return [
+          [nsUri, ""],
+          ["", nsUri],
+        ];
+      } else if (s.length === 2) {
+        // Normal namespace mapping.
+        return [
+          [nsUri, `${s[1]}:`],
+          [`${s[1]}:`, nsUri],
+        ];
+      } else {
+        throw new Error(`Invalid xmlns mapping attribute '${attr}'`);
+      }
+    })
+  );
+
+  // console.timeEnd("instanceNsFromJson took");
+  return nsMap;
+}
+
 export function getParser<T extends object>(args: {
   /** Meta information about the structure of the XML. Used for deciding whether a property is array, boolean, float or integer. */
   meta: Meta;
@@ -123,8 +157,7 @@ export function getParser<T extends object>(args: {
       const __json = JSON.parse(JSON.stringify(json));
 
       for (const [k, v] of [...args.ns.entries()]) {
-        // xmlns --> URL
-        if (k.endsWith(":") || k === "") {
+        if (k.endsWith(":") || k === "" /* Filters only `xmlns --> URL` mappings, since `ns` is bi-directional.*/) {
           const instanceNsKey = instanceNs.get(v)?.slice(0, -1);
           const originalXmlnsPropName = instanceNsKey ? `@_xmlns:${instanceNsKey}` : `@_xmlns`;
           if (!instanceNsKey || !__json[args.root.element][originalXmlnsPropName]) {

@@ -31,7 +31,7 @@ import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
 import { DmnEditorExternalModelsContextProvider } from "./includedModels/DmnEditorDependenciesContext";
 import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
 import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
-import { DmnMarshaller, DmnModel } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel, AllDmnMarshallers } from "@kie-tools/dmn-marshaller";
 import { PMML } from "@kie-tools/pmml-editor-marshaller";
 import { original } from "immer";
 
@@ -41,12 +41,12 @@ import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
 export type DmnEditorRef = {
-  reset: (mode: DmnModel) => void;
+  reset: (mode: DmnLatestModel) => void;
 };
 
 export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
-export type OnDmnModelChange = (model: DmnModel) => void;
+export type OnDmnModelChange = (model: DmnLatestModel) => void;
 
 export type OnRequestToJumpToPath = (path: string) => void;
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
@@ -55,20 +55,20 @@ export type ExternalModelsIndex = Record<string, ExternalModel | undefined>;
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
 
 export type ExternalDmnsIndex = Map<string, ExternalDmn>;
-export type ExternalDmn = { model: DmnModel; path: string; svg: string };
+export type ExternalDmn = { model: DmnLatestModel; path: string; svg: string };
 
 export type ExternalPmmlsIndex = Map<string, ExternalPmml>;
 export type ExternalPmml = { model: PMML; path: string };
 
 export type DmnEditorProps = {
   /**
-   * The marshaller instance used to create `model` from the XML string
-   * */
-  marshaller: DmnMarshaller;
-  /**
    * The DMN itself.
    */
-  model: DmnModel;
+  model: DmnLatestModel;
+  /**
+   * The original version of `model` before upgrading to `latest`.
+   */
+  originalVersion?: AllDmnMarshallers["version"];
   /**
    * Called when a change occurs on `model`, so the controlled flow of the component can be done.
    */
@@ -118,8 +118,8 @@ export type DmnEditorProps = {
 };
 
 export const DmnEditorInternal = ({
-  marshaller,
   model,
+  originalVersion,
   onModelChange,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
@@ -244,7 +244,7 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={diagramPropertiesPanel}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--diagram-container"} ref={diagramContainerRef}>
-                        <DmnVersionLabel version={marshaller.version} />
+                        {originalVersion && <DmnVersionLabel version={originalVersion} />}
                         <Diagram container={diagramContainerRef} />
                       </div>
                     </DrawerContentBody>
@@ -285,7 +285,6 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
     storeRef.current?.setState((state) => {
       state.diagram = defaultStaticState().diagram;
       state.dmn.model = args[0];
-      React;
     });
   }, []);
 

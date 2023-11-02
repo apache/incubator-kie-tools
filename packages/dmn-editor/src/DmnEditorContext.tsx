@@ -1,14 +1,14 @@
 import * as React from "react";
 import { useContext, useMemo, useRef } from "react";
 import { DmnEditorProps } from "./DmnEditor";
-import { DmnModel } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export type DmnEditorContextProviderProps = Pick<
   DmnEditorProps,
   "externalContextDescription" | "externalContextName" | "issueTrackerHref" | "model" | "onRequestToJumpToPath"
 >;
 
-export type DmnModelBeforeEditing = DmnModel;
+export type DmnModelBeforeEditing = DmnLatestModel;
 
 export type DmnEditorContextType = Pick<
   DmnEditorContextProviderProps,

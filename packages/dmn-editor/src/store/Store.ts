@@ -3,7 +3,7 @@ import * as RF from "reactflow";
 import { StoreApi, UseBoundStore, create } from "zustand";
 import { WithImmer, immer } from "zustand/middleware/immer";
 import { useStoreWithEqualityFn } from "zustand/traditional";
-import { DmnModel } from "@kie-tools/dmn-marshaller";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 
 export interface DmnEditorDiagramNodeStatus {
@@ -30,7 +30,7 @@ export type DropTargetNode = undefined | RF.Node<DmnDiagramNodeData>;
 
 export interface State {
   dispatch: Dispatch;
-  dmn: { model: DmnModel };
+  dmn: { model: DmnLatestModel };
   boxedExpressionEditor: {
     activeDrgElementId: string | undefined;
     selectedObjectId: string | undefined;
