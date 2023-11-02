@@ -381,6 +381,8 @@ export function build(args: {
     // ignore this. this is supposed to be on array elements only.
     else if (propName === "__$$element") {
       continue;
+    } else if (propName === "__$$text") {
+      xml += applyEntities(propValue);
     }
     // pi tag
     else if (propName[0] === "?") {
@@ -405,8 +407,12 @@ export function build(args: {
         if (isEmpty) {
           xml += " />\n";
         } else if (typeof item === "object") {
-          xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
-          xml += `${indent}</${elementName}>\n`;
+          if (item["__$$text"]) {
+            xml += `>${build({ ...args, json: item })}</${elementName}>\n`;
+          } else {
+            xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
+            xml += `${indent}</${elementName}>\n`;
+          }
         } else {
           xml += `>${applyEntities(item)}</${elementName}>\n`;
         }
@@ -422,7 +428,7 @@ export function build(args: {
         xml += " />\n";
       } else if (typeof item === "object") {
         if (item["__$$text"]) {
-          xml += `>${applyEntities(item)})}</${elementName}>\n`;
+          xml += `>${build({ ...args, json: item })}</${elementName}>\n`;
         } else {
           xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
           xml += `${indent}</${elementName}>\n`;
