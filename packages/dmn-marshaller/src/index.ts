@@ -18,6 +18,7 @@
  */
 
 import { Meta, domParser, getInstanceNs, getInstanceNsFromJson, getParser } from "@kie-tools/xml-parser-ts";
+import { getNsDeclarationPropName } from "@kie-tools/xml-parser-ts/dist/ns";
 import {
   subs as dmn10subs,
   elements as dmn10elements,
@@ -141,53 +142,50 @@ export type DmnMarshaller15 = DmnMarshallerBase & {
   version: "1.5";
 };
 
-const p10 = getParser<{ [dmn10root.element]: DMN10__tDefinitions }>({
-  ns: dmn10ns,
-  meta: dmn10meta,
-  subs: dmn10subs,
-  elements: dmn10elements,
-  root: dmn10root,
-});
-
-const p11 = getParser<{ [dmn11root.element]: DMN11__tDefinitions }>({
-  ns: dmn11ns,
-  meta: dmn11meta,
-  subs: dmn11subs,
-  elements: dmn11elements,
-  root: dmn11root,
-});
-
-const p12 = getParser<{ [dmn12root.element]: DMN12__tDefinitions }>({
-  ns: dmn12ns,
-  meta: dmn12meta,
-  subs: dmn12subs,
-  elements: dmn12elements,
-  root: dmn12root,
-});
-
-const p13 = getParser<{ [dmn13root.element]: DMN13__tDefinitions }>({
-  ns: dmn13ns,
-  meta: dmn13meta,
-  subs: dmn13subs,
-  elements: dmn13elements,
-  root: dmn13root,
-});
-
-const p14 = getParser<{ [dmn14root.element]: DMN14__tDefinitions }>({
-  ns: dmn14ns,
-  meta: dmn14meta,
-  subs: dmn14subs,
-  elements: dmn14elements,
-  root: dmn14root,
-});
-
-const p15 = getParser<{ [dmn15root.element]: DMN15__tDefinitions }>({
-  ns: dmn15ns,
-  meta: dmn15meta,
-  subs: dmn15subs,
-  elements: dmn15elements,
-  root: dmn15root,
-});
+export const DMN_PARSERS = {
+  ["1.0"]: getParser<{ [dmn10root.element]: DMN10__tDefinitions }>({
+    ns: dmn10ns,
+    meta: dmn10meta,
+    subs: dmn10subs,
+    elements: dmn10elements,
+    root: dmn10root,
+  }),
+  ["1.1"]: getParser<{ [dmn11root.element]: DMN11__tDefinitions }>({
+    ns: dmn11ns,
+    meta: dmn11meta,
+    subs: dmn11subs,
+    elements: dmn11elements,
+    root: dmn11root,
+  }),
+  ["1.2"]: getParser<{ [dmn12root.element]: DMN12__tDefinitions }>({
+    ns: dmn12ns,
+    meta: dmn12meta,
+    subs: dmn12subs,
+    elements: dmn12elements,
+    root: dmn12root,
+  }),
+  ["1.3"]: getParser<{ [dmn13root.element]: DMN13__tDefinitions }>({
+    ns: dmn13ns,
+    meta: dmn13meta,
+    subs: dmn13subs,
+    elements: dmn13elements,
+    root: dmn13root,
+  }),
+  ["1.4"]: getParser<{ [dmn14root.element]: DMN14__tDefinitions }>({
+    ns: dmn14ns,
+    meta: dmn14meta,
+    subs: dmn14subs,
+    elements: dmn14elements,
+    root: dmn14root,
+  }),
+  ["1.5"]: getParser<{ [dmn15root.element]: DMN15__tDefinitions }>({
+    ns: dmn15ns,
+    meta: dmn15meta,
+    subs: dmn15subs,
+    elements: dmn15elements,
+    root: dmn15root,
+  }),
+};
 export const FEEL_NAMESPACES = {
   "1.1": "http://www.omg.org/spec/FEEL/20140401",
   "1.2": "http://www.omg.org/spec/DMN/20180521/FEEL/",
@@ -275,18 +273,7 @@ export function getMarshaller<V extends DmnMarshallerVersions>(
   }
 
   // Get the correct parser based on the new version.
-  const parserForUpgradedJson =
-    targetVersion === "1.1"
-      ? p11
-      : targetVersion === "1.2"
-      ? p12
-      : targetVersion === "1.3"
-      ? p13
-      : targetVersion === "1.4"
-      ? p14
-      : targetVersion === "1.5"
-      ? p15
-      : undefined;
+  const parserForUpgradedJson = DMN_PARSERS[targetVersion];
   if (!parserForUpgradedJson) {
     throw new Error(`DMN MARSHALLER: Unexpected error. Couldn't find parser for version '${targetVersion}'.`);
   }
@@ -369,8 +356,8 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         version: "1.0",
         root: dmn10root,
         meta: dmn10meta,
-        parser: { parse: () => p10.parse({ type: "domdoc", domdoc, instanceNs }).json },
-        builder: { build: (json) => p10.build({ json, instanceNs }) },
+        parser: { parse: () => DMN_PARSERS["1.0"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.0"].build({ json, instanceNs }) },
       };
     case "1.1":
       return {
@@ -378,8 +365,8 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         version: "1.1",
         root: dmn11root,
         meta: dmn11meta,
-        parser: { parse: () => p11.parse({ type: "domdoc", domdoc, instanceNs }).json },
-        builder: { build: (json) => p11.build({ json, instanceNs }) },
+        parser: { parse: () => DMN_PARSERS["1.1"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.1"].build({ json, instanceNs }) },
       };
     case "1.2":
       return {
@@ -387,8 +374,8 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         version: "1.2",
         root: dmn12root,
         meta: dmn12meta,
-        parser: { parse: () => p12.parse({ type: "domdoc", domdoc, instanceNs }).json },
-        builder: { build: (json) => p12.build({ json, instanceNs }) },
+        parser: { parse: () => DMN_PARSERS["1.2"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.2"].build({ json, instanceNs }) },
       };
     case "1.3":
       return {
@@ -396,8 +383,8 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         version: "1.3",
         root: dmn13root,
         meta: dmn13meta,
-        parser: { parse: () => p13.parse({ type: "domdoc", domdoc, instanceNs }).json },
-        builder: { build: (json) => p13.build({ json, instanceNs }) },
+        parser: { parse: () => DMN_PARSERS["1.3"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.3"].build({ json, instanceNs }) },
       };
     case "1.4":
       return {
@@ -405,8 +392,8 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         version: "1.4",
         root: dmn14root,
         meta: dmn14meta,
-        parser: { parse: () => p14.parse({ type: "domdoc", domdoc, instanceNs }).json },
-        builder: { build: (json) => p14.build({ json, instanceNs }) },
+        parser: { parse: () => DMN_PARSERS["1.4"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.4"].build({ json, instanceNs }) },
       };
     case "1.5":
       return {
@@ -414,8 +401,8 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         version: "1.5",
         root: dmn15root,
         meta: dmn15meta,
-        parser: { parse: () => p15.parse({ type: "domdoc", domdoc, instanceNs }).json },
-        builder: { build: (json) => p15.build({ json, instanceNs }) },
+        parser: { parse: () => DMN_PARSERS["1.5"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.5"].build({ json, instanceNs }) },
       };
     default:
       throw new Error(
@@ -458,7 +445,7 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
 
   // Upgrade DMN namespace
   dmn12.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: dmn12ns.get("")!,
       atInstanceNs: instanceNs,
       fallingBackToNs: dmn12ns,
@@ -467,7 +454,7 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
 
   // Upgrade DMNDI namespace
   dmn12.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: dmn12ns.get("dmndi:")!,
       atInstanceNs: instanceNs,
       fallingBackToNs: dmn12ns,
@@ -476,7 +463,7 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
 
   // Upgrade KIE namespace
   dmn12.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: LEGACY_KIE_NS__PRE_GWT_REMOVAL,
       atInstanceNs: instanceNs,
       fallingBackToNs: kieLegacyNs,
@@ -503,7 +490,7 @@ export function upgrade13to14(dmn13: { definitions: DMN13__tDefinitions }): { de
 
   // Upgrade DMN namespace
   dmn13.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: dmn13ns.get("")!,
       atInstanceNs: instanceNs,
       fallingBackToNs: dmn13ns,
@@ -512,7 +499,7 @@ export function upgrade13to14(dmn13: { definitions: DMN13__tDefinitions }): { de
 
   // Upgrade DMNDI namespace
   dmn13.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: dmn13ns.get("dmndi:")!,
       atInstanceNs: instanceNs,
       fallingBackToNs: dmn13ns,
@@ -539,7 +526,7 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
 
   // Upgrade DMN namespace
   dmn14.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: dmn14ns.get("")!,
       atInstanceNs: instanceNs,
       fallingBackToNs: dmn14ns,
@@ -548,7 +535,7 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
 
   // Upgrade DMNDI namespace
   dmn14.definitions[
-    getNsDeclarationPropNameFor({
+    getNsDeclarationPropName({
       namespace: dmn14ns.get("dmndi:")!,
       atInstanceNs: instanceNs,
       fallingBackToNs: dmn14ns,
@@ -565,28 +552,4 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
 
   // FIXME: Tiago --> Convert deprecated `allowedValues` to `typeConstraint` on ItemDefinitions
   return dmn14;
-}
-
-export function getNsDeclarationPropNameFor({
-  namespace,
-  atInstanceNs,
-  fallingBackToNs,
-}: {
-  namespace: string;
-  atInstanceNs: Map<string, string>;
-  fallingBackToNs: Map<string, string>;
-}): "@_xmlns" | `@_xmlns:${string}` {
-  let instanceNsKey = atInstanceNs.get(namespace);
-  if (instanceNsKey === undefined) {
-    instanceNsKey = fallingBackToNs.get(namespace);
-    if (instanceNsKey === undefined) {
-      throw new Error(`DMN MARSHALLER: Can't find namespace declaration for '${namespace}'`);
-    }
-  }
-
-  if (instanceNsKey === "") {
-    return "@_xmlns";
-  } else {
-    return `@_xmlns:${instanceNsKey.split(":")[0]}`;
-  }
 }
