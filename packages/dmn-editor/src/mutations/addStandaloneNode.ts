@@ -6,7 +6,10 @@ import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram as getDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import {
+  repopulateInputDataAndDecisionsOnAllDecisionServices,
+  repopulateInputDataAndDecisionsOnDecisionService,
+} from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
 
 export function addStandaloneNode({
@@ -113,13 +116,7 @@ export function addStandaloneNode({
       : {}),
   });
 
-  // FIXME: Tiago --> How to make this reactively?
-  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
-    const drgElement = definitions.drgElement![i];
-    if (drgElement.__$$element === "decisionService") {
-      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
-    }
-  }
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
   return { href: buildXmlHref({ id: newNodeId }), shapeId };
 }

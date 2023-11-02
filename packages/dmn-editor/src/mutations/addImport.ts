@@ -1,5 +1,6 @@
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 
 export function addImport({
   definitions,
@@ -22,8 +23,13 @@ export function addImport({
   definitions.import ??= [];
   definitions.import.push(newImport);
 
-  // FIXME: Tiago --> Maybe using a random name would be better? We need to check for collisions! Can't override one existing.
-  definitions[`@_xmlns:included${definitions.import.length - 1}`] = includedModel.namespace;
+  // Find the first unused index. This will prevent declaring two namespaces with the same name.
+  let index = 0;
+  while (definitions[`@_xmlns:included${index}`]) {
+    index++;
+  }
+
+  definitions[`@_xmlns:included${index}`] = includedModel.namespace;
 
   return newImport;
 }

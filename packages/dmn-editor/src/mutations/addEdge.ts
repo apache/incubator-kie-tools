@@ -17,7 +17,10 @@ import { getDiscreteAutoPositioningEdgeIdMarker, getPointForHandle } from "../di
 import { getRequirementsFromEdge } from "./addConnectedNode";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { Unpacked } from "../tsExt/tsExt";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import {
+  repopulateInputDataAndDecisionsOnAllDecisionServices,
+  repopulateInputDataAndDecisionsOnDecisionService,
+} from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { DmnDiagramNodeData } from "../diagram/nodes/Nodes";
 
 export function addEdge({
@@ -157,13 +160,7 @@ export function addEdge({
   // Replace with the new one.
   diagramElements.push(newDmnEdge);
 
-  // FIXME: Tiago --> How to make this reactively?
-  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
-    const drgElement = definitions.drgElement![i];
-    if (drgElement.__$$element === "decisionService") {
-      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
-    }
-  }
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
   return { newDmnEdge };
 }

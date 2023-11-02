@@ -3,6 +3,22 @@ import {
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
+export function repopulateInputDataAndDecisionsOnAllDecisionServices({
+  definitions,
+}: {
+  definitions: DMN15__tDefinitions;
+}) {
+  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
+    const drgElement = definitions.drgElement![i];
+    if (drgElement.__$$element === "decisionService") {
+      repopulateInputDataAndDecisionsOnDecisionService({
+        definitions,
+        decisionService: drgElement,
+      });
+    }
+  }
+}
+
 export function repopulateInputDataAndDecisionsOnDecisionService({
   definitions,
   decisionService,

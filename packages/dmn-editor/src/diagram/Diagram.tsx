@@ -42,7 +42,10 @@ import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
 import { deleteEdge } from "../mutations/deleteEdge";
 import { deleteNode } from "../mutations/deleteNode";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
+import {
+  repopulateInputDataAndDecisionsOnAllDecisionServices,
+  repopulateInputDataAndDecisionsOnDecisionService,
+} from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
@@ -543,7 +546,8 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
                   },
                 });
 
-                // FIXME: Tiago --> This should be inside `repositionNode` I guess?
+                // FIXME: This should be inside `repositionNode` I guess?
+
                 // Update nested
                 // External Decision Services will have encapsulated and output decisions, but they aren't depicted in the graph.
                 if (node.type === NODE_TYPES.decisionService && !node.data.dmnObjectQName.prefix) {
@@ -808,7 +812,6 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
         });
 
         // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints!
-        // FIXME: Tiago --> What about other DMNEdge properties? Style etc. Should we keep those too?
         if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
           const { dmnEdge: deletedDmnEdge } = deleteEdge({
             definitions: state.dmn.model.definitions,
@@ -1378,7 +1381,7 @@ export function KeyboardShortcuts(props: {}) {
           __$$element: "dmndi:DMNEdge",
         })
         .ack<any>({
-          // FIXME: Tiago --> This `any` argument ideally wouldn't be here, but the type of `dmn15meta` is not being composed with `kie10meta` in compile-time
+          // This `any` argument ideally wouldn't be here, but the type of DMN's `meta` is not composed with KIE's `meta` in compile-time
           json: clipboard.widths,
           type: "KIE__tComponentsWidthsExtension",
           attr: "kie:ComponentWidths",
@@ -1397,16 +1400,7 @@ export function KeyboardShortcuts(props: {}) {
 
         widths.push(...clipboard.widths);
 
-        // FIXME: Tiago --> How to make this reactively?
-        for (let i = 0; i < (state.dmn.model.definitions.drgElement ?? []).length; i++) {
-          const drgElement = state.dmn.model.definitions.drgElement![i];
-          if (drgElement.__$$element === "decisionService") {
-            repopulateInputDataAndDecisionsOnDecisionService({
-              definitions: state.dmn.model.definitions,
-              decisionService: drgElement,
-            });
-          }
-        }
+        repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions: state.dmn.model.definitions });
 
         state.diagram._selectedNodes = [...clipboard.drgElements, ...clipboard.artifacts].map((s) =>
           buildXmlHref({ id: s["@_id"]! })

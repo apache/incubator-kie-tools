@@ -16,7 +16,10 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import {
+  repopulateInputDataAndDecisionsOnAllDecisionServices,
+  repopulateInputDataAndDecisionsOnDecisionService,
+} from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { buildXmlHref } from "../xml/xmlHrefs";
 
 export function addConnectedNode({
@@ -153,13 +156,7 @@ export function addConnectedNode({
     "di:waypoint": [getBoundsCenterPoint(sourceNode.bounds), getBoundsCenterPoint(newNode.bounds)],
   });
 
-  // FIXME: Tiago --> How to make this reactively?
-  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
-    const drgElement = definitions.drgElement![i];
-    if (drgElement.__$$element === "decisionService") {
-      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
-    }
-  }
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 
   return { href: newDmnObjectHref };
 }

@@ -113,7 +113,7 @@ export function traverseTypeRefedInExpressionHolders(
   }
 }
 
-// FIXME: Tiago --> `traverseTypeRefedInExpressions` could be refactored to be a special method that we execute inside the `consumer` of `traverseExpressions`.
+// FIXME: `traverseTypeRefedInExpressions` could be refactored to be a special method that we execute inside the `consumer` of `traverseExpressions`.
 export function traverseTypeRefedInExpressions(
   expression: AllExpressionsWithoutTypes | undefined,
   __$$element: AllExpressionTypes | undefined,

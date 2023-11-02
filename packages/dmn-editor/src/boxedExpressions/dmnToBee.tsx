@@ -56,15 +56,12 @@ export function dmnToBee(
         name: input["@_label"] ?? input.inputExpression["@_label"] ?? input.inputExpression.text ?? "",
         dataType: (input.inputExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         width: widthsById.get(expr["@_id"]!)?.[1 + i],
-        //FIXME: Tiago --> Add clauseUnitaryTests?
       })),
       output: (expr.output ?? []).map((output, i) => ({
         id: output["@_id"]!,
         name: output["@_label"] ?? output["@_name"] ?? "",
         dataType: (output["@_typeRef"] ?? DmnBuiltInDataType.Undefined) as unknown as DmnBuiltInDataType,
         width: widthsById.get(expr["@_id"]!)?.[1 + (expr.input ?? []).length + i],
-        //FIXME: Tiago --> Add defaultOutputEntry?
-        //FIXME: Tiago --> Add clauseUnaryTests?
       })),
       annotations: (expr.annotation ?? []).map((a, i) => ({
         name: a["@_name"] ?? "",

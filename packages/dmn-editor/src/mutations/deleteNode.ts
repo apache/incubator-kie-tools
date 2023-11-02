@@ -1,7 +1,10 @@
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { NodeNature } from "./NodeNature";
 import { addOrGetDefaultDiagram } from "./addOrGetDefaultDiagram";
-import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import {
+  repopulateInputDataAndDecisionsOnAllDecisionServices,
+  repopulateInputDataAndDecisionsOnDecisionService,
+} from "./repopulateInputDataAndDecisionsOnDecisionService";
 import { XmlQName, buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
@@ -56,11 +59,5 @@ export function deleteNode({
     }
   }
 
-  // FIXME: Tiago --> How to make this reactively?
-  for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
-    const drgElement = definitions.drgElement![i];
-    if (drgElement.__$$element === "decisionService") {
-      repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService: drgElement });
-    }
-  }
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
 }

@@ -54,8 +54,8 @@ export function useAlwaysVisibleEdgeUpdatersAtNodeBorders(
 
     // Get the intersection point between the edge and the nodes. The Edge Updater must be visible at all times!
     //
-    // FIXME: Tiago --> Sometimes the immediate next waypoint is hidden behind the node.
-    //                  Ideally, we would use the first waypoints that's outside of the node's bounds.
+    // FIXME: Sometimes the immediate next waypoint is hidden behind the node.
+    //        Ideally, we would use the first waypoints that's outside of the node's bounds.
     const firstWaypointOutsideSourceNodeBounds = snappedWaypoints[1];
     const sourcePoint = getLineRectangleIntersectionPoint(firstWaypointOutsideSourceNodeBounds, snappedWaypoints[0], {
       x: scaledSourceNode.position.x ?? 0,
