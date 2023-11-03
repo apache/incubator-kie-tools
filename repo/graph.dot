@@ -82,6 +82,7 @@ digraph G {
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dmn-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-feel-antlr4-parser" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -267,6 +268,8 @@ digraph G {
   "@kie-tools/dmn-dev-deployment-quarkus-app" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor-envelope" -> "@kie-tools/dmn-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools/dmn-feel-antlr4-parser" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-language-service" -> "@kie-tools-core/switch-expression-ts" [ style = "dashed", color = "blue" ];
@@ -345,6 +348,7 @@ digraph G {
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/kubernetes-bridge" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/dmn-editor-envelope" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];

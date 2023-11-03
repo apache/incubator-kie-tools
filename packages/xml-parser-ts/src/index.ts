@@ -521,9 +521,9 @@ export type Namespaced<P extends string, T> = {
 /**
  * Receives a base meta and an array of prefix-meta pair. Types described by the extension metas have their properties prefixed by their corresponding prefix.
  *
- * @returns a single meta, containing the information of `base` and all extensions metas with prefixed properties.
+ * Modifies `base` to include properties on `extensionMetasByPrefix`.
  */
-export function mergeMetas(base: Meta, extensionMetasByPrefix: [string, Meta][]) {
+export function mergeMetas(base: Meta, extensionMetasByPrefix: [string, Meta][]): void {
   const prefixedMetas = extensionMetasByPrefix.reduce((acc, [k, m]) => {
     return {
       ...acc,
@@ -541,5 +541,7 @@ export function mergeMetas(base: Meta, extensionMetasByPrefix: [string, Meta][])
     };
   }, {});
 
-  return { ...base, ...prefixedMetas };
+  [...Object.entries(prefixedMetas)].forEach(([k, v]) => {
+    base[k] = v as any;
+  });
 }

@@ -85,26 +85,26 @@ export type DmnEditorProps = {
    * When the DMN represented by `model` ("This DMN") contains `import`ed models, this prop needs to map their contents by namespace.
    * The DMN model won't be correctly rendered if an included model is not found on this object.
    */
-  externalModelsByNamespace: ExternalModelsIndex;
+  externalModelsByNamespace?: ExternalModelsIndex;
   /**
    * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
-  evaluationResults: EvaluationResults;
+  evaluationResults?: EvaluationResults;
   /**
    * To show information about validation messages directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
-  validationMessages: ValidationMessages;
+  validationMessages?: ValidationMessages;
   /**
    * The name of context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
    * is displaying a model from a project called "My project", you could use `externalContextName={"My project"}`
    */
-  externalContextName: string;
+  externalContextName?: string;
   /**
    * Describe the context in which this instance of DMN Editor is running. For example, if this DMN Editor instance
    * is displaying a model from a project called "My project", you could use
    * `externalContextDescription={'All models (DMN and PMML) of "My project" are available.'}`
    */
-  externalContextDescription: string;
+  externalContextDescription?: string;
   /**
    * A link that will take users to an issue tracker so they can report problems they find on the DMN Editor.
    * This is shown on the ErrorBoundary fallback component, when an uncaught error happens.

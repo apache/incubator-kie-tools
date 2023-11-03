@@ -786,10 +786,10 @@ export function Diagram({ container }: { container: React.RefObject<HTMLElement>
           definitions: state.dmn.model.definitions,
           edge: {
             type: oldEdge.type as EdgeType,
-            targetHandle: (newConnection.targetHandle ??
+            targetHandle: ((newConnection.targetHandle as PositionalNodeHandleId) ??
               getHandlePosition({ shapeBounds: targetBounds, waypoint: lastWaypoint })
                 .handlePosition) as PositionalNodeHandleId,
-            sourceHandle: (newConnection.sourceHandle ??
+            sourceHandle: ((newConnection.sourceHandle as PositionalNodeHandleId) ??
               getHandlePosition({ shapeBounds: sourceBounds, waypoint: firstWaypoint })
                 .handlePosition) as PositionalNodeHandleId,
           },

@@ -76,7 +76,7 @@ declare module "./schemas/dmn-1_2/ts-gen/types" {
 dmn12ns.set(KIE_NS, kie10ns.get("")!);
 dmn12ns.set(kie10ns.get("")!, KIE_NS);
 
-(dmn12meta as any) = mergeMetas(dmn12meta, [[KIE_NS, kie10meta]]);
+mergeMetas(dmn12meta, [[KIE_NS, kie10meta]]);
 
 (dmn12meta["DMNDI12__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
   type: "KIE__tComponentsWidthsExtension",
@@ -157,7 +157,7 @@ declare module "./schemas/dmn-1_3/ts-gen/types" {
 dmn13ns.set(KIE_NS, kie10ns.get("")!);
 dmn13ns.set(kie10ns.get("")!, KIE_NS);
 
-(dmn13meta as any) = mergeMetas(dmn13meta, [[KIE_NS, kie10meta]]);
+mergeMetas(dmn13meta, [[KIE_NS, kie10meta]]);
 
 (dmn13meta["DMNDI13__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
   type: "KIE__tComponentsWidthsExtension",
@@ -238,7 +238,7 @@ declare module "./schemas/dmn-1_4/ts-gen/types" {
 dmn14ns.set(KIE_NS, kie10ns.get("")!);
 dmn14ns.set(kie10ns.get("")!, KIE_NS);
 
-(dmn14meta as any) = mergeMetas(dmn14meta, [[KIE_NS, kie10meta]]);
+mergeMetas(dmn14meta, [[KIE_NS, kie10meta]]);
 
 (dmn14meta["DMNDI13__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
   type: "KIE__tComponentsWidthsExtension",
@@ -319,7 +319,7 @@ declare module "./schemas/dmn-1_5/ts-gen/types" {
 dmn15ns.set(KIE_NS, kie10ns.get("")!);
 dmn15ns.set(kie10ns.get("")!, KIE_NS);
 
-(dmn15meta as any) = mergeMetas(dmn15meta, [[KIE_NS, kie10meta]]);
+mergeMetas(dmn15meta, [[KIE_NS, kie10meta]]);
 
 (dmn15meta["DMNDI15__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
   type: "KIE__tComponentsWidthsExtension",

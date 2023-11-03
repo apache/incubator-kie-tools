@@ -156,7 +156,7 @@ export function IncludedModels() {
 
   const externalModelsByPath = useMemo(
     () =>
-      Object.entries(externalModelsByNamespace).reduce((acc, [namespace, externalModel]) => {
+      Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
         if (!externalModel) {
           console.warn(`DMN EDITOR: Could not find model with namespace '${namespace}'. Ignoring.`);
           return acc;
@@ -306,7 +306,7 @@ export function IncludedModels() {
           <br />
           <Gallery hasGutter={true}>
             {thisDmnsImports.flatMap((i, index) => {
-              const externalModel = externalModelsByNamespace[i["@_namespace"]];
+              const externalModel = externalModelsByNamespace?.[i["@_namespace"]];
               return !externalModel ? (
                 []
               ) : (

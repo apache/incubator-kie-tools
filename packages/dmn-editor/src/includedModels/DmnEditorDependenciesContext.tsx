@@ -9,7 +9,7 @@ import {
 export interface DmnEditorExternalModelsContextType {
   onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
-  externalModelsByNamespace: ExternalModelsIndex;
+  externalModelsByNamespace?: ExternalModelsIndex;
 }
 
 const DmnEditorExternalModelsContext = React.createContext<DmnEditorExternalModelsContextType>({} as any);
