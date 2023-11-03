@@ -46,6 +46,8 @@ export const domParser = {
   },
 };
 
+const TEXT_VALUE_FIELD_NAME = "__$$text";
+
 /**
  * Returns a bi-directional map with the namespace aliases declared at the root element of a XML document pointing to their URIs and vice-versa. In this map, namespace aliases are suffixed with `:`.
  * E.g. "dmn:" => "https://www.omg.org/spec/DMN/20211108/MODEL/"
@@ -137,7 +139,7 @@ export function parse(args: {
   for (let ii = 0; ii < children.length; ii++) {
     const elemNode = children[ii];
 
-    if (elemNode.nodeType === 1 /* element */) {
+    if (elemNode.nodeType === 1 /* ELEMENT_NODE */) {
       const { nsedName, subsedName } = resolveElement(elemNode.nodeName, args.nodeType, args);
 
       const elemPropType = args.nodeType?.[subsedName ?? nsedName];
@@ -148,15 +150,15 @@ export function parse(args: {
           ? args.meta[elemPropType.type] // If we can't find this type with the `elements` mapping, we try directly from `meta`.
           : undefined); // If the current element is not known, we simply ignore its type and go with the defaults.
 
-      let elemValue: any;
+      let elemValue: any = {};
       if (elemPropType?.type === "string") {
-        elemValue = elemNode.textContent ?? "";
+        elemValue[TEXT_VALUE_FIELD_NAME] = elemNode.textContent ?? "";
       } else if (elemPropType?.type === "boolean") {
-        elemValue = parseBoolean(elemNode.textContent ?? "");
+        elemValue[TEXT_VALUE_FIELD_NAME] = parseBoolean(elemNode.textContent ?? "");
       } else if (elemPropType?.type === "float") {
-        elemValue = parseFloat(elemNode.textContent ?? "");
+        elemValue[TEXT_VALUE_FIELD_NAME] = parseFloat(elemNode.textContent ?? "");
       } else if (elemPropType?.type === "integer") {
-        elemValue = parseFloat(elemNode.textContent ?? "");
+        elemValue[TEXT_VALUE_FIELD_NAME] = parseFloat(elemNode.textContent ?? "");
       } else {
         elemValue = parse({ ...args, node: elemNode, nodeType: elemType });
         /* If the element is not a simple type and it has a single child node of TEXT_NODE type
@@ -166,7 +168,7 @@ export function parse(args: {
         const hasSingleTextNodeChildren = elemNode.childNodes.length === 1 && elemNode.childNodes[0].nodeType === 3;
         const hasAttributes = (elemNode as Element).attributes.length > 0;
         if (hasSingleTextNodeChildren && hasAttributes) {
-          elemValue["__$$text"] = elemNode.textContent;
+          elemValue[TEXT_VALUE_FIELD_NAME] = elemNode.textContent;
         }
         if (subsedName !== nsedName) {
           // substitution occurred, need to save the original, normalized element name
@@ -407,14 +409,12 @@ export function build(args: {
         if (isEmpty) {
           xml += " />\n";
         } else if (typeof item === "object") {
-          if (item["__$$text"]) {
-            xml += `>${build({ ...args, json: item })}</${elementName}>\n`;
+          if (item[TEXT_VALUE_FIELD_NAME]) {
+            xml += `>${applyEntities(item)}</${elementName}>\n`;
           } else {
             xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
             xml += `${indent}</${elementName}>\n`;
           }
-        } else {
-          xml += `>${applyEntities(item)}</${elementName}>\n`;
         }
       }
     }
@@ -427,14 +427,12 @@ export function build(args: {
       if (isEmpty) {
         xml += " />\n";
       } else if (typeof item === "object") {
-        if (item["__$$text"]) {
+        if (TEXT_VALUE_FIELD_NAME in item) {
           xml += `>${build({ ...args, json: item })}</${elementName}>\n`;
         } else {
           xml += `>\n${build({ ...args, json: item, indent: `${indent}  ` })}`;
           xml += `${indent}</${elementName}>\n`;
         }
-      } else {
-        xml += `>${applyEntities(item)}</${elementName}>\n`;
       }
     }
   }
