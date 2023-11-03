@@ -38,7 +38,6 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { basename } from "path";
 import { useHistory } from "react-router";
 import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
@@ -48,6 +47,13 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 interface Props {
   modelName?: string;
   baseUrl: string;
+}
+
+function truncateText(text: string) {
+  if (text.length >= 35) {
+    return `${text.substring(0, 32)}...`;
+  }
+  return text;
 }
 
 export function DmnFormToolbar(props: Props) {
@@ -104,7 +110,7 @@ export function DmnFormToolbar(props: Props) {
           component="button"
           onClick={() => openForm(modelName)}
         >
-          {basename(modelName)}
+          {truncateText(modelName)}
         </DropdownItem>
       ));
   }, [app.data, openForm, props.modelName]);
@@ -165,7 +171,7 @@ export function DmnFormToolbar(props: Props) {
             >
               {app.data!.forms.length === 1 && (
                 <Text data-testid={"text-model-name"} className="kogito--dmn-form__toolbar-model-name">
-                  {props.modelName}
+                  {props.modelName && truncateText(props.modelName)}
                 </Text>
               )}
               {app.data!.forms.length > 1 && (
@@ -177,7 +183,7 @@ export function DmnFormToolbar(props: Props) {
                       onToggle={(isOpen) => setModelDropdownOpen(isOpen)}
                       data-testid="dmn-dev-deployment-form-toolbar-model-dropdown-button"
                     >
-                      {props.modelName}
+                      {props.modelName && truncateText(props.modelName)}
                     </DropdownToggle>
                   }
                   isOpen={modelDropdownOpen}

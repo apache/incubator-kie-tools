@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Serverless Logic Web Tools" time="12.464" tests="1" failures="0">
-  <testsuite name="" timestamp="2023-01-24T14:47:38" tests="0" file="e2e/RecentModel.cy.ts" time="0.000" failures="0">
-  </testsuite>
-  <testsuite name="Root Suite.Serverless Logic Web Tools - Recent model test" timestamp="2023-01-24T14:47:38" tests="1" time="12.456" failures="0">
-    <testcase name="should create, edit, save and delete file" time="12.438" classname="Serverless Logic Web Tools - Recent model test should create, edit, save and delete file">
-    </testcase>
-  </testsuite>
-</testsuites>

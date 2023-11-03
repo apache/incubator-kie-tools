@@ -20,7 +20,7 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("../../env");
-const { ProvidePlugin } = require("webpack");
+const { ProvidePlugin, EnvironmentPlugin } = require("webpack");
 
 const buildEnv = env;
 
@@ -40,6 +40,9 @@ module.exports = (env) =>
       new ProvidePlugin({
         process: require.resolve("process/browser.js"),
         Buffer: ["buffer", "Buffer"],
+      }),
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__quarkusPort: buildEnv.dmnDevDeploymentFormWebapp.dev.quarkusPort,
       }),
     ],
 

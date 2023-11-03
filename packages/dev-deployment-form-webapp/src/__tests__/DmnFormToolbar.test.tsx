@@ -23,31 +23,31 @@ import { DmnFormToolbar } from "../DmnFormToolbar";
 import { usingTestingAppContext, usingTestingDmnFormI18nContext } from "./testing_utils";
 
 describe("DmnFormToolbar", () => {
-  it.skip("should truncate the filename when it is too large", () => {
-    const uri = "/a_really_really_really_really_large_filename_for_my_model.dmn";
+  it("should truncate the model name when it is too large", () => {
+    const modelName = "a_really_really_really_really_large_model_name_for_my_model";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} baseUrl=".." />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={modelName} baseUrl=".." />, {
           data: {
-            forms: [{ modelName: "myModel", schema: {} }],
+            forms: [{ modelName, schema: {} }],
           },
         }).wrapper
       ).wrapper
     );
-    expect(getByTestId("text-filename")).toHaveTextContent("myModel");
+    expect(getByTestId("text-model-name")).toHaveTextContent("a_really_really_really_really_la...");
   });
 
-  it.skip("should not truncate the filename when it is small enough", () => {
-    const uri = "/my_model.dmn";
+  it("should not truncate the model name when it is small enough", () => {
+    const modelName = "my_model";
     const { getByTestId } = render(
       usingTestingDmnFormI18nContext(
-        usingTestingAppContext(<DmnFormToolbar modelName={"myModel"} baseUrl=".." />, {
+        usingTestingAppContext(<DmnFormToolbar modelName={modelName} baseUrl=".." />, {
           data: {
-            forms: [{ modelName: "myModel", schema: {} }],
+            forms: [{ modelName, schema: {} }],
           },
         }).wrapper
       ).wrapper
     );
-    expect(getByTestId("text-filename")).toHaveTextContent("myModel");
+    expect(getByTestId("text-model-name")).toHaveTextContent("my_model");
   });
 });
