@@ -27,7 +27,7 @@ import {
   ServiceResource,
   kubernetesResourcesApi,
 } from "./KubernetesService";
-import { KieSandboxDeployment, ResourceArgs, Tokens, defaultLabelTokens } from "./types";
+import { KieSandboxDeployment, Tokens, defaultLabelTokens } from "./types";
 import { DeploymentState } from "./common";
 import { getUploadStatus, postUpload } from "../DevDeploymentUploadAppApi";
 

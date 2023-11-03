@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Serverless Logic Web Tools" time="69.659" tests="3" failures="2">
+  <testsuite name="" timestamp="2023-01-24T14:48:06" tests="0" file="e2e/TrySample.cy.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Root Suite.Serverless Logic Web Tools - Try samples test" timestamp="2023-01-24T14:48:06" tests="3" time="69.652" failures="2">
+    <testcase name="should check all samples are present" time="4.472" classname="Serverless Logic Web Tools - Try samples test should check all samples are present">
+    </testcase>
+    <testcase name="should check greetings sample" time="16.285" classname="Serverless Logic Web Tools - Try samples test should check greetings sample">
+      <failure message="Timed out retrying after 10000ms: expected &apos;&lt;div#pf-modal-part-0.pf-c-modal-box.kie-tools--keyboard-shortcuts&gt;&apos; to contain text &apos;Ctrl + Z&apos;, but the text was &apos;Keyboard shortcutsHelpShift + /Show keyboard shortcutsEditShift + Cmd + ZRedo last editCmd + ZUndo last edit&apos;" type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 10000ms: expected '<div#pf-modal-part-0.pf-c-modal-box.kie-tools--keyboard-shortcuts>' to contain text 'Ctrl + Z', but the text was 'Keyboard shortcutsHelpShift + /Show keyboard shortcutsEditShift + Cmd + ZRedo last editCmd + ZUndo last edit'
+    at Context.eval (webpack:///./e2e/TrySample.cy.ts:54:11)
+
+      + expected - actual
+
+      -'Keyboard shortcutsHelpShift + /Show keyboard shortcutsEditShift + Cmd + ZRedo last editCmd + ZUndo last edit'
+      +'Ctrl + Z'
+      ]]></failure>
+    </testcase>
+    <testcase name="should check swf-report example of dashboard" time="16.463" classname="Serverless Logic Web Tools - Try samples test should check swf-report example of dashboard">
+      <failure message="Timed out retrying after 10000ms: expected &apos;&lt;div#pf-modal-part-0.pf-c-modal-box.kie-tools--keyboard-shortcuts&gt;&apos; to contain text &apos;Shift + Ctrl + Z&apos;, but the text was &apos;Keyboard shortcutsHelpShift + /Show keyboard shortcutsEditShift + Cmd + ZRedo last editCmd + ZUndo last edit&apos;" type="AssertionError"><![CDATA[AssertionError: Timed out retrying after 10000ms: expected '<div#pf-modal-part-0.pf-c-modal-box.kie-tools--keyboard-shortcuts>' to contain text 'Shift + Ctrl + Z', but the text was 'Keyboard shortcutsHelpShift + /Show keyboard shortcutsEditShift + Cmd + ZRedo last editCmd + ZUndo last edit'
+    at Context.eval (webpack:///./e2e/TrySample.cy.ts:110:9)
+
+      + expected - actual
+
+      -'Keyboard shortcutsHelpShift + /Show keyboard shortcutsEditShift + Cmd + ZRedo last editCmd + ZUndo last edit'
+      +'Shift + Ctrl + Z'
+      ]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

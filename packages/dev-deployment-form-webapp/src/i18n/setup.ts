@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import React, { useContext } from "react";
+import * as React from "react";
+import { useContext } from "react";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { DmnFormI18n } from "./DmnFormI18n";

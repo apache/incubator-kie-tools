@@ -82,4 +82,6 @@ export type ResourceArgs = {
   baseImageUrl: string;
   formWebappImageUrl: string;
   imagePullPolicy: string;
+  quarkusPlatformVersion: string;
+  kogitoRuntimeVersion: string;
 };

@@ -169,6 +169,8 @@ export function DevDeploymentsContextProvider(props: Props) {
             baseImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_BASE_IMAGE_URL,
             formWebappImageUrl: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_FORM_WEBAPP_IMAGE_URL,
             imagePullPolicy: env.KIE_SANDBOX_DMN_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
+            quarkusPlatformVersion: process.env.WEBPACK_REPLACE__quarkusPlatformVersion!,
+            kogitoRuntimeVersion: process.env.WEBPACK_REPLACE__kogitoRuntimeVersion!,
           }),
         });
         return true;

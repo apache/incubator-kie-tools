@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import React, { useCallback, useMemo, useState } from "react";
+import * as React from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import {
@@ -68,19 +69,6 @@ export function DmnFormToolbar(props: Props) {
     },
     [history]
   );
-
-  // const modelName = useMemo(() => {
-  //   const fullFilename = basename(props.modelName);
-  //   const maxSize = 25;
-  //   const extension = fullFilename.substring(fullFilename.lastIndexOf(".") + 1);
-  //   const name = fullFilename.replace(`.${extension}`, "");
-
-  //   if (name.length < maxSize) {
-  //     return fullFilename;
-  //   }
-
-  //   return `${name.substring(0, maxSize)}... .${extension}`;
-  // }, [props.uri]);
 
   const disclaimer = useMemo(() => {
     return (

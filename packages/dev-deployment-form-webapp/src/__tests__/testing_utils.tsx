@@ -18,7 +18,7 @@
  */
 
 import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-tools-core/i18n/dist/react-components";
-import * as React from "react";
+import React from "react";
 import { AppContext, AppContextType } from "../AppContext";
 import { DmnFormI18n, DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "../i18n";
 

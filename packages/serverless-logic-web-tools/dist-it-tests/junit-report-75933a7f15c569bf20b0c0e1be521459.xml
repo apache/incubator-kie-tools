@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Serverless Logic Web Tools" time="19.365" tests="2" failures="0">
+  <testsuite name="" timestamp="2023-01-24T14:50:30" tests="0" file="e2e/UploadFiles.cy.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Root Suite.Serverless Logic Web Tools - Upload files test" timestamp="2023-01-24T14:50:30" tests="2" time="19.358" failures="0">
+    <testcase name="should upload dashbuider file and check rendered content" time="10.571" classname="Serverless Logic Web Tools - Upload files test should upload dashbuider file and check rendered content">
+    </testcase>
+    <testcase name="should upload 2 files (JSON and YAML) and check editors and diagrams content" time="8.691" classname="Serverless Logic Web Tools - Upload files test should upload 2 files (JSON and YAML) and check editors and diagrams content">
+    </testcase>
+  </testsuite>
+</testsuites>
